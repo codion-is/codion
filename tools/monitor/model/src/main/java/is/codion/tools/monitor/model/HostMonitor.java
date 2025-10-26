@@ -153,11 +153,11 @@ public final class HostMonitor {
 		}
 	}
 
-	private static List<ServerInformation> findEntityServers(String serverHostName, int registryPort) {
+	private static List<ServerInformation> findEntityServers(String serverHostname, int registryPort) {
 		List<ServerInformation> servers = new ArrayList<>();
 		try {
-			LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
-			Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
+			LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostname, registryPort);
+			Registry registry = LocateRegistry.getRegistry(serverHostname, registryPort);
 			LOG.debug("HostMonitor located registry: {} on port: {}", registry, registryPort);
 			Collection<String> boundNames = findEntityServers(registry);
 			if (boundNames.isEmpty()) {
@@ -165,7 +165,7 @@ public final class HostMonitor {
 			}
 			for (String name : boundNames) {
 				LOG.debug("HostMonitor found server '{}'", name);
-				Server<?, ?> server = (Server<?, ?>) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
+				Server<?, ?> server = (Server<?, ?>) LocateRegistry.getRegistry(serverHostname, registryPort).lookup(name);
 				servers.add(server.information());
 			}
 		}

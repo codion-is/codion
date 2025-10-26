@@ -104,7 +104,7 @@ tasks.register<JavaExec>("runClientRMI") {
     maxHeapSize = "128m"
     systemProperties = mapOf(
         "codion.client.connectionType" to "remote",
-        "codion.server.hostname" to properties["serverHostName"],
+        "codion.server.hostname" to properties["serverHostname"],
         "codion.client.trustStore" to "../../framework/server/src/main/config/truststore.jks",
         "sun.awt.disablegrab" to "true"
     )
@@ -118,7 +118,7 @@ tasks.register<JavaExec>("runClientHttp") {
     systemProperties = mapOf(
         "codion.client.connectionType" to "http",
         "codion.client.http.secure" to "false",
-        "codion.client.http.hostname" to properties["serverHostName"],
+        "codion.client.http.hostname" to properties["serverHostname"],
         "sun.awt.disablegrab" to "true"
     )
 }
@@ -130,7 +130,7 @@ tasks.register<JavaExec>("runLoadTestRMI") {
     maxHeapSize = "512m"
     systemProperties = mapOf(
         "codion.client.connectionType" to "remote",
-        "codion.server.hostname" to properties["serverHostName"],
+        "codion.server.hostname" to properties["serverHostname"],
         "codion.client.trustStore" to "../../framework/server/src/main/config/truststore.jks"
     )
 }
@@ -143,6 +143,6 @@ tasks.register<JavaExec>("runLoadTestHttp") {
     systemProperties = mapOf(
         "codion.client.connectionType" to "http",
         "codion.client.http.secure" to "false",
-        "codion.client.http.hostname" to properties["serverHostName"]
+        "codion.client.http.hostname" to properties["serverHostname"]
     )
 }

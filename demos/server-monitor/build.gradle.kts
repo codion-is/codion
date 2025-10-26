@@ -15,7 +15,7 @@ application {
     mainClass = "is.codion.tools.monitor.ui.EntityServerMonitorPanel"
     applicationDefaultJvmArgs = listOf(
         "-Xmx512m",
-        "-Dcodion.server.hostname=" + properties["serverHostName"],
+        "-Dcodion.server.hostname=" + properties["serverHostname"],
         "-Dcodion.server.admin.user=scott:tiger",
         "-Dcodion.client.trustStore=../../framework/server/src/main/config/truststore.jks",
         "-Dlogback.configurationFile=src/config/logback.xml"

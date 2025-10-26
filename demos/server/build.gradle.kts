@@ -60,7 +60,7 @@ application {
         "-Dcodion.server.methodTracing=false",
         "-Djavax.net.ssl.keyStore=../../framework/server/src/main/config/keystore.jks",
         "-Djavax.net.ssl.keyStorePassword=crappypass",
-        "-Djava.rmi.server.hostname=" + properties["serverHostName"],
+        "-Djava.rmi.server.hostname=" + properties["serverHostname"],
         "-Dlogback.configurationFile=src/main/config/logback.xml"
     )
 }
