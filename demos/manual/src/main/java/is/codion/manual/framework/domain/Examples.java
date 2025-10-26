@@ -33,15 +33,19 @@ public final class Examples {
 
 		public static final DomainType DOMAIN = DomainType.domainType("store");
 
-		private static final ColumnTemplate<String> NAME = column ->
-						column.define()
-										.column()
-										.nullable(false)
-										.maximumLength(50);
+		private static final ColumnTemplate<String> NAME =
+						column -> column
+										.maximumLength(50)
+										.searchable(true);
+
+		private static final ColumnTemplate<String> REQUIRED =
+						column -> column
+										.nullable(false);
+
+		private static final ColumnTemplate<String> REQUIRED_NAME = NAME.and(REQUIRED);
 
 		private static <T extends Number> ColumnTemplate<T> positiveNumber(double maximum) {
-			return column -> column.define()
-							.column()
+			return column -> column
 							.nullable(false)
 							.minimum(0)
 							.maximum(maximum);
@@ -68,7 +72,7 @@ public final class Examples {
 															.primaryKey()
 															.generator(identity()),
 											Customer.FIRST_NAME.define()
-															.column(NAME)
+															.column(REQUIRED_NAME)
 															.caption("First Name"),
 											Customer.LAST_NAME.define()
 															.column(NAME)

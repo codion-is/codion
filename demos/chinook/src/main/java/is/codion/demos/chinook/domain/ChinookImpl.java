@@ -62,18 +62,15 @@ public final class ChinookImpl extends DomainModel {
 
 	// tag::columnTemplates[]
 	private static final ColumnTemplate<String> REQUIRED_SEARCHABLE =
-					column -> column.define()
-									.column()
+					column -> column
 									.nullable(false)
 									.searchable(true);
 	private static final ColumnTemplate<LocalDateTime> INSERT_TIME =
-					column -> column.define()
-									.column()
+					column -> column
 									.readOnly(true)
 									.captionResource(Chinook.class.getName(), "insert_time");
 	private static final ColumnTemplate<String> INSERT_USER =
-					column -> column.define()
-									.column()
+					column -> column
 									.readOnly(true)
 									.captionResource(Chinook.class.getName(), "insert_user");
 	// end::columnTemplates[]

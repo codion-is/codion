@@ -18,16 +18,15 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import java.util.function.Function;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a column template configuration.
  * {@snippet :
- * ColumnTemplate<Integer> REQUIRED_POSITIVE = column ->
- *             column.define()
- *                   .colum()
- *                   .nullable(false)
- *                   .minimum(0);
+ * ColumnTemplate<Integer> REQUIRED_POSITIVE =
+ *         column -> column
+ *                 .nullable(false)
+ *                 .minimum(0);
  *
  * Customer.AGE.define()
  *            .column(REQUIRED_POSITIVE)
@@ -35,4 +34,30 @@ import java.util.function.Function;
  *}
  * @param <T> the column type
  */
-public interface ColumnTemplate<T> extends Function<Column<T>, ColumnDefinition.Builder<T, ?>> {}
+public interface ColumnTemplate<T> {
+
+	/**
+	 * Applies this column template to the given column definition builder
+	 * @param column the column definition builder
+	 * @return the column definition builder
+	 */
+	ColumnDefinition.Builder<T, ?> apply(ColumnDefinition.Builder<T, ?> column);
+
+	/**
+	 * Returns a composed template that applies this template followed by the given template.
+	 * {@snippet :
+	 * ColumnTemplate<String> REQUIRED = column -> column.nullable(false);
+	 * ColumnTemplate<String> SEARCHABLE = column -> column.searchable(true);
+	 *
+	 * ColumnTemplate<String> REQUIRED_SEARCHABLE = REQUIRED.and(SEARCHABLE);
+	 * // Equivalent to: column -> column.nullable(false).searchable(true)
+	 *}
+	 * @param template the template to apply after this template
+	 * @return a composed template that applies this template followed by the given template
+	 */
+	default ColumnTemplate<T> and(ColumnTemplate<T> template) {
+		requireNonNull(template);
+
+		return (ColumnDefinition.Builder<T, ?> column) -> template.apply(apply(column));
+	}
+}

@@ -435,7 +435,7 @@ This automatic HAVING clause handling makes grouped entities seamless to use in 
 
 Column templates provide a way to define reusable column configurations that can be applied across multiple entities. This eliminates repetition and ensures consistency for common patterns like audit columns, required searchable fields, or domain-specific column types.
 
-Templates are defined using the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ColumnTemplate.html[ColumnTemplate] functional interface, which extends `Function<Column<T>, ColumnDefinition.Builder<T, ?>>`.
+Templates are defined using the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ColumnTemplate.html[ColumnTemplate] functional interface.
 
 [source,java,indent=0]
 ----
@@ -485,29 +485,25 @@ Column templates are particularly powerful when working with complex data types 
 public final class GeospatialTemplates {
 
     // Template for Point geometries with custom formatting
-    public static final ColumnTemplate<Point> POINT = column ->
-        column.define()
-            .column()
-            .converter(PGgeometry.class, new PGgeometryPointConverter(), new PGgeometryGetter())
-            .format(new PointFormat());
+    public static final ColumnTemplate<Point> POINT =
+            column -> column
+                    .converter(PGgeometry.class, new PGgeometryPointConverter(), new PGgeometryGetter())
+                    .format(new PointFormat());
 
     // Template for LineString geometries
-    public static final ColumnTemplate<LineString> LINE = column ->
-        column.define()
-            .column()
-            .converter(PGgeometry.class, new PGgeometryLineConverter(), new PGgeometryGetter());
+    public static final ColumnTemplate<LineString> LINE =
+            column -> column
+                    .converter(PGgeometry.class, new PGgeometryLineConverter(), new PGgeometryGetter());
 
     // Template for Polygon geometries
-    public static final ColumnTemplate<Polygon> POLYGON = column ->
-        column.define()
-            .column()
-            .converter(PGgeometry.class, new PGgeometryPolygonConverter(), new PGgeometryGetter());
+    public static final ColumnTemplate<Polygon> POLYGON =
+            column -> column
+                    .converter(PGgeometry.class, new PGgeometryPolygonConverter(), new PGgeometryGetter());
 
     // Template for MultiPolygon geometries
-    public static final ColumnTemplate<MultiPolygon> MULTI_POLYGON = column ->
-        column.define()
-            .column()
-            .converter(PGgeometry.class, new PGgeometryMultiPolygonConverter(), new PGgeometryGetter());
+    public static final ColumnTemplate<MultiPolygon> MULTI_POLYGON =
+            column -> column
+                    .converter(PGgeometry.class, new PGgeometryMultiPolygonConverter(), new PGgeometryGetter());
 }
 
 // Usage in entity definitions:

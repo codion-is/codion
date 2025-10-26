@@ -25,6 +25,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - EntityType bug fixed, define(List) parameter type changed to List<? extends AttributeDefinition.Builder<?, ?>>.
 - AttributeDefinition.TIME_FORMAT, DATE_FORMAT and DATE_TIME_FORMAT removed.
+- ColumnTemplate improved, no longer extends Function, input type same as output type, add() method added for chaining.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnectionProvider.description() no longer automatically converts database name to upper case.
 - BasicFormatterImpl moved from ui and renamed QueryFormatter.
