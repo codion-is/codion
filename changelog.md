@@ -60,6 +60,7 @@ Codion Change Log
 - LoadTest, major refactoring.
 ### is.codion.tools.loadtest.model
 - LoadTestModel, some renaming.
+- DefaultLoadTest bug fixed, exception column now with correct type.
 ### is.codion.tools.loadtest.ui
 - LoadTestPanel, check box for pause on exception added.
 - LoadTestPanel UI overhaul, exception view improved.

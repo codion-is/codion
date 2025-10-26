@@ -597,7 +597,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 				case ApplicationRow.DURATION:
 					return Long.class;
 				case ApplicationRow.EXCEPTION:
-					return String.class;
+					return Exception.class;
 				case ApplicationRow.MESSAGE:
 					return String.class;
 				case ApplicationRow.CREATED:
@@ -611,7 +611,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		public Object value(ApplicationRow application, String identifier) {
 			List<Result> results = application.results();
 			Result result = results.isEmpty() ? null : results.get(results.size() - 1);
-			Throwable exception = result == null ? null : result.exception().orElse(null);
+			Exception exception = result == null ? null : result.exception().orElse(null);
 			switch (identifier) {
 				case ApplicationRow.NAME:
 					return application.name();
