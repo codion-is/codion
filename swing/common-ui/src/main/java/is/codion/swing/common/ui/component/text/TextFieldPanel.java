@@ -433,7 +433,7 @@ public final class TextFieldPanel extends JPanel {
 
 			@Override
 			public void contentsChanged(DocumentEvent e) {
-				notifyListeners();
+				notifyObserver();
 			}
 		}
 	}

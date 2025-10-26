@@ -46,7 +46,7 @@ final class CheckBoxValue extends AbstractComponentValue<JCheckBox, Boolean> {
 	private final class NotifyOnItemEvent implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent itemEvent) {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 }

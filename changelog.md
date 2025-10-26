@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - TaskScheduler.Builder.name() added, documentation section added.
 - LocaleDateTimePattern.TIME_PATTERN, DATE_PATTERN and DATE_TIME_PATTERN added.
+- AbstractValue.notifyListeners() renamed notifyObserver().
 ### is.codion.common.db
 - DefaultDatabaseConnection bug fixed, rollbackTransaction() and commitTransaction() no longer set the flag if exceptions occur.
 - DatabaseConnection removed, related refactoring.

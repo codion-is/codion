@@ -225,7 +225,7 @@ public final class FileInputPanel extends JPanel {
 
 		private PathInputPanelValue(FileInputPanel fileInputPanel) {
 			super(fileInputPanel);
-			fileInputPanel.filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
+			fileInputPanel.filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
 		}
 
 		@Override
@@ -248,7 +248,7 @@ public final class FileInputPanel extends JPanel {
 
 		private ByteArrayInputPanelValue(FileInputPanel fileInputPanel) {
 			super(fileInputPanel);
-			fileInputPanel.filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
+			fileInputPanel.filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyObserver());
 		}
 
 		@Override

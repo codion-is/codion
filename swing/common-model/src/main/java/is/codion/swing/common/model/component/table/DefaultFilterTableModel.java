@@ -295,7 +295,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			super(SET);
 			this.tableColumns = columns;
 			this.filters = filters;
-			this.filters.changed().addListener(this::notifyListeners);
+			this.filters.changed().addListener(this::notifyObserver);
 		}
 
 		@Override

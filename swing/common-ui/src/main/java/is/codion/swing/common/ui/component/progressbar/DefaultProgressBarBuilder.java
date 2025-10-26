@@ -98,7 +98,7 @@ final class DefaultProgressBarBuilder extends AbstractComponentValueBuilder<JPro
 
 		private IntegerProgressBarValue(JProgressBar progressBar) {
 			super(progressBar, 0);
-			progressBar.getModel().addChangeListener(e -> notifyListeners());
+			progressBar.getModel().addChangeListener(e -> notifyObserver());
 		}
 
 		@Override

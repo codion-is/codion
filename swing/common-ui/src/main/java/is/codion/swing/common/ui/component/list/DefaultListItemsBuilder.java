@@ -96,17 +96,17 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, L
 
 			@Override
 			public void intervalAdded(ListDataEvent e) {
-				notifyListeners();
+				notifyObserver();
 			}
 
 			@Override
 			public void intervalRemoved(ListDataEvent e) {
-				notifyListeners();
+				notifyObserver();
 			}
 
 			@Override
 			public void contentsChanged(ListDataEvent e) {
-				notifyListeners();
+				notifyObserver();
 			}
 		}
 	}

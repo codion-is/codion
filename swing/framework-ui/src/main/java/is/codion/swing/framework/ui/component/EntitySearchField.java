@@ -1001,7 +1001,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private SingleSelectionValue(EntitySearchField searchField) {
 			super(searchField);
-			searchField.model.selection().entity().addListener(this::notifyListeners);
+			searchField.model.selection().entity().addListener(this::notifyObserver);
 		}
 
 		@Override
@@ -1019,7 +1019,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private MultiSelectionValue(EntitySearchField searchField) {
 			super(searchField);
-			searchField.model.selection().entities().addListener(this::notifyListeners);
+			searchField.model.selection().entities().addListener(this::notifyObserver);
 		}
 
 		@Override

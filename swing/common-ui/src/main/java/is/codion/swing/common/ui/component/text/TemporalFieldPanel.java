@@ -327,7 +327,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 			@Override
 			public void run() {
-				notifyListeners();
+				notifyObserver();
 			}
 		}
 	}

@@ -191,7 +191,7 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 	private final class SingleValue extends AbstractValue<T> {
 
 		private SingleValue() {
-			DefaultValueCollection.this.addListener(this::notifyListeners);
+			DefaultValueCollection.this.addListener(this::notifyObserver);
 		}
 
 		@Override

@@ -117,7 +117,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 			this.itemValue = itemValue;
 			this.comboBoxModel = comboBoxModel;
 			this.comboBoxModel.addListDataListener(new ComboBoxModelListener());
-			itemValue.addListener(this::notifyListeners);
+			itemValue.addListener(this::notifyObserver);
 		}
 
 		@Override
@@ -138,17 +138,17 @@ final class ListComboBox<T> extends JComboBox<T> {
 
 			@Override
 			public void intervalAdded(ListDataEvent e) {
-				notifyListeners();
+				notifyObserver();
 			}
 
 			@Override
 			public void intervalRemoved(ListDataEvent e) {
-				notifyListeners();
+				notifyObserver();
 			}
 
 			@Override
 			public void contentsChanged(ListDataEvent e) {
-				notifyListeners();
+				notifyObserver();
 			}
 		}
 	}

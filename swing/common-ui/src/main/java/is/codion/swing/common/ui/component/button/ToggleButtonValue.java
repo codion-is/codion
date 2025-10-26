@@ -46,7 +46,7 @@ final class ToggleButtonValue<C extends AbstractButton> extends AbstractComponen
 	private final class NotifyOnItemEvent implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent itemEvent) {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 }

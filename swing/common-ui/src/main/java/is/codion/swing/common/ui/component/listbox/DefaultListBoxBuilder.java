@@ -152,7 +152,7 @@ final class DefaultListBoxBuilder<T>
 
 		public ListBoxComponentValue(ListComboBox<T> comboBox) {
 			super(comboBox, emptySet());
-			comboBox.linkedValue().addListener(this::notifyListeners);
+			comboBox.linkedValue().addListener(this::notifyObserver);
 		}
 
 		@Override

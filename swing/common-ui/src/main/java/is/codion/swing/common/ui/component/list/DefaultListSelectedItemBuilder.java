@@ -49,7 +49,7 @@ final class DefaultListSelectedItemBuilder<T> extends AbstractListBuilder<T, T, 
 
 		private ListSelectedItemValue(FilterList<T> list) {
 			super(list);
-			list.model().selection().indexes().addListener(this::notifyListeners);
+			list.model().selection().indexes().addListener(this::notifyObserver);
 		}
 
 		@Override

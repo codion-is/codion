@@ -832,7 +832,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				changing.accept(toSelect);
 				this.item = toSelect;
 				empty.set(toSelect == null);
-				notifyListeners();
+				notifyObserver();
 			}
 		}
 
@@ -848,7 +848,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private SelectorValue(ItemFinder<T, V> itemFinder) {
 			this.itemFinder = requireNonNull(itemFinder);
-			selection.selected.addListener(this::notifyListeners);
+			selection.selected.addListener(this::notifyObserver);
 		}
 
 		@Override

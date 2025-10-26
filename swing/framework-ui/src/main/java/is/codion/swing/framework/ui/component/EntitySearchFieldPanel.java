@@ -263,7 +263,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 		private SingleSelectionValue(EntitySearchFieldPanel component) {
 			super(component);
-			component.searchField.model().selection().entity().addListener(this::notifyListeners);
+			component.searchField.model().selection().entity().addListener(this::notifyObserver);
 		}
 
 		@Override
@@ -281,7 +281,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 		private MultiSelectionValue(EntitySearchFieldPanel searchFieldPanel) {
 			super(searchFieldPanel);
-			searchFieldPanel.searchField.model().selection().entities().addListener(this::notifyListeners);
+			searchFieldPanel.searchField.model().selection().entities().addListener(this::notifyObserver);
 		}
 
 		@Override

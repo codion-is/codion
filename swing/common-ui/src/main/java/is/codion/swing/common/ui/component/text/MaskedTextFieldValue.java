@@ -28,7 +28,7 @@ final class MaskedTextFieldValue<T> extends AbstractComponentValue<JFormattedTex
 
 	MaskedTextFieldValue(JFormattedTextField component) {
 		super(component);
-		component.addPropertyChangeListener("value", event -> notifyListeners());
+		component.addPropertyChangeListener("value", event -> notifyObserver());
 	}
 
 	@Override

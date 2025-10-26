@@ -29,7 +29,7 @@ final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<
 		super(spinner, nullValue((SpinnerNumberModel) spinner.getModel(), valueClass));
 		set(null);
 		addValidator(new SpinnerModelValidator<>((SpinnerNumberModel) component().getModel()));
-		spinner.getModel().addChangeListener(e -> notifyListeners());
+		spinner.getModel().addChangeListener(e -> notifyObserver());
 	}
 
 	@Override

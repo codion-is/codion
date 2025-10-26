@@ -581,7 +581,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		private void valueChanged() {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 

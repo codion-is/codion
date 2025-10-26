@@ -90,14 +90,14 @@ public abstract class AbstractTextComponentValue<C extends JTextComponent, T> ex
 	private final class NotifyOnNumberChanged implements Consumer<Number> {
 		@Override
 		public void accept(Number value) {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 
 	private final class NotifyOnContentsChanged implements DocumentAdapter {
 		@Override
 		public void contentsChanged(DocumentEvent e) {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 
@@ -105,7 +105,7 @@ public abstract class AbstractTextComponentValue<C extends JTextComponent, T> ex
 		@Override
 		public void focusLost(FocusEvent e) {
 			if (!e.isTemporary()) {
-				notifyListeners();
+				notifyObserver();
 			}
 		}
 	}

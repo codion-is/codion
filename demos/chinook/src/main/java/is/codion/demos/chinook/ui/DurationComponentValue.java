@@ -48,9 +48,9 @@ final class DurationComponentValue extends AbstractComponentValue<DurationCompon
 
 	DurationComponentValue(DurationPanel panel) {
 		super(panel);
-		component().minutesField.observable().addListener(this::notifyListeners);
-		component().secondsField.observable().addListener(this::notifyListeners);
-		component().millisecondsField.observable().addListener(this::notifyListeners);
+		component().minutesField.observable().addListener(this::notifyObserver);
+		component().secondsField.observable().addListener(this::notifyObserver);
+		component().millisecondsField.observable().addListener(this::notifyObserver);
 	}
 
 	@Override

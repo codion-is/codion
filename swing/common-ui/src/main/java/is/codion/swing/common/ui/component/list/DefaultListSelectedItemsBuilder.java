@@ -65,7 +65,7 @@ final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<List<
 		private ListSelectedItemsValue(FilterList<T> list, boolean nullable) {
 			super(list, nullable ? null : emptyList());
 			this.nullable = nullable;
-			list.model().selection().indexes().addListener(this::notifyListeners);
+			list.model().selection().indexes().addListener(this::notifyObserver);
 		}
 
 		@Override

@@ -66,7 +66,7 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 		boolean wasNotNull = value != null;
 		setValue(null);
 		if (wasNotNull) {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 

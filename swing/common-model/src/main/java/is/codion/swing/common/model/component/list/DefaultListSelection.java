@@ -221,7 +221,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void onChanged() {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 
@@ -364,7 +364,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		void onChanged() {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 
@@ -391,7 +391,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void onChanged() {
-			notifyListeners();
+			notifyObserver();
 		}
 	}
 
@@ -492,7 +492,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void onChanged() {
-			notifyListeners();
+			notifyObserver();
 		}
 
 		private <T> Collection<T> rejectNulls(Collection<T> items) {

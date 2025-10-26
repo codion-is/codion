@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An abstract {@link Value} implementation handling everything except the value itself.
  * <p>The constructor parameter {@code notify} specifies whether this {@link AbstractValue} instance should call
- * {@link #notifyListeners()} each time the value is set ({@link Notify#SET}) or only when it changes
+ * {@link #notifyObserver()} each time the value is set ({@link Notify#SET}) or only when it changes
  * ({@link Notify#CHANGED}), which is determined using {@link Object#equals(Object)}.
  * <p>Implementations that want to handle notifications manually should use the
  * {@link AbstractValue#AbstractValue()} or {@link AbstractValue#AbstractValue(Object)} constructors.
@@ -234,9 +234,9 @@ public abstract class AbstractValue<T> implements Value<T> {
 	protected abstract void setValue(@Nullable T value);
 
 	/**
-	 * Notifies listeners that the underlying value has changed or at least that it may have changed
+	 * Notifies the underlying observer that the underlying value has changed or at least that it may have changed
 	 */
-	protected final void notifyListeners() {
+	protected final void notifyObserver() {
 		if (observer != null) {
 			observer.accept(get());
 		}
@@ -262,12 +262,12 @@ public abstract class AbstractValue<T> implements Value<T> {
 			T previousValue = getValue();
 			setValue(newValue);
 			if (!Objects.equals(previousValue, newValue)) {
-				notifyListeners();
+				notifyObserver();
 			}
 		}
 		else if (notify == Notify.SET) {
 			setValue(newValue);
-			notifyListeners();
+			notifyObserver();
 		}
 		else {
 			setValue(newValue);
