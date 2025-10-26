@@ -30,6 +30,7 @@ Codion Change Log
 - DefaultLocalEntityConnectionProvider.description() no longer automatically converts database name to upper case.
 - BasicFormatterImpl moved from ui and renamed QueryFormatter.
 - DefaultEntityQueries now returns formatted queries.
+- LocalEntityConnection.database() added.
 ### is.codion.framework.db.rmi
 - Test coverage improved.
 ### is.codion.framework.db.http

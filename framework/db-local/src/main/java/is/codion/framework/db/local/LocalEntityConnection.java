@@ -92,6 +92,11 @@ public interface LocalEntityConnection extends EntityConnection {
 	Connection connection();
 
 	/**
+	 * @return the underlying database
+	 */
+	Database database();
+
+	/**
 	 * @return true if optimistic locking is enabled
 	 */
 	boolean optimisticLocking();

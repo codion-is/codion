@@ -719,6 +719,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
+	public Database database() {
+		return database;
+	}
+
+	@Override
 	public boolean optimisticLocking() {
 		synchronized (database) {
 			return optimisticLocking;
