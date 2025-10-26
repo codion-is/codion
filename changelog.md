@@ -57,6 +57,8 @@ Codion Change Log
 - Scenario.Builder.pause(Predicate) added along with Scenario.pause(Exception).
 - LoadTest.Scenario moved up to package level, Builder.PerformerStep added.
 - LoadTest, major refactoring.
+### is.codion.tools.loadtest.model
+- LoadTestModel, some renaming.
 ### is.codion.tools.loadtest.ui
 - LoadTestPanel, check box for pause on exception added.
 - LoadTestPanel UI overhaul, exception view improved.

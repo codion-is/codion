@@ -65,7 +65,7 @@ public class DefaultLoadTestModelTest {
 						.build();
 		LoadTestModel<Object> model = loadTestModel(loadTest);
 		assertEquals(2, loadTest.applications().batchSize().get());
-		model.collectChartData().set(true);
+		model.chartStatistics().set(true);
 
 		assertNotNull(model.memoryUsageDataset());
 		assertNotNull(model.numberOfApplicationsDataset());
@@ -105,7 +105,7 @@ public class DefaultLoadTestModelTest {
 		model.clearExceptions(SCENARIO.name());
 		assertTrue(model.exceptions(SCENARIO.name()).isEmpty());
 		assertEquals(model.successfulRunCount(SCENARIO.name()) + model.unsuccessfulRunCount(SCENARIO.name()), model.totalRunCount(SCENARIO.name()));
-		model.resetRunCounter();
+		model.resetStatistics();
 		assertEquals(0, model.successfulRunCount(SCENARIO.name()));
 		assertEquals(0, model.unsuccessfulRunCount(SCENARIO.name()));
 

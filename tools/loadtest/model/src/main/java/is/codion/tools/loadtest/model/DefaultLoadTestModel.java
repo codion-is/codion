@@ -49,6 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -67,9 +68,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	private final LoadTest<T> loadTest;
 
 	private final FilterTableModel<ApplicationRow, String> applicationTableModel;
-	private final Counter counter = new Counter();
-
-	private final State collectChartData = State.state();
+	private final Statistics statistics = new Statistics();
+	private final State chartStatistics = State.state();
 	private final State autoRefreshApplications = State.state(true);
 	private final ObservableState chartUpdateSchedulerEnabled;
 	private final ObservableState applicationsRefreshSchedulerEnabled;
@@ -106,7 +106,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 						.columns(new ApplicationColumns())
 						.items(new ApplicationItems())
 						.build();
-		chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);
+		chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), chartStatistics);
 		applicationsRefreshSchedulerEnabled = State.and(autoRefreshApplications);
 		initializeChartModels();
 		chartUpdateScheduler = TaskScheduler.builder()
@@ -199,45 +199,45 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	@Override
 	public int totalRunCount(String scenarioName) {
-		synchronized (counter) {
-			return counter.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get() +
-							counter.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
+		synchronized (statistics) {
+			return statistics.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get() +
+							statistics.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
 		}
 	}
 
 	@Override
 	public int successfulRunCount(String scenarioName) {
-		synchronized (counter) {
-			return counter.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get();
+		synchronized (statistics) {
+			return statistics.scenarioRunCounts.getOrDefault(scenarioName, ZERO).get();
 		}
 	}
 
 	@Override
 	public int unsuccessfulRunCount(String scenarioName) {
-		synchronized (counter) {
-			return counter.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
+		synchronized (statistics) {
+			return statistics.scenarioFailureCounts.getOrDefault(scenarioName, ZERO).get();
 		}
 	}
 
 	@Override
-	public void resetRunCounter() {
-		synchronized (counter) {
-			counter.resetCounters();
+	public void resetStatistics() {
+		synchronized (statistics) {
+			statistics.reset();
 		}
 	}
 
 	@Override
 	public List<ExceptionTimestamp> exceptions(String scenarioName) {
-		synchronized (counter) {
-			List<ExceptionTimestamp> exceptions = counter.scenarioExceptions.get(scenarioName);
+		synchronized (statistics) {
+			List<ExceptionTimestamp> exceptions = statistics.scenarioExceptions.get(scenarioName);
 			return exceptions == null ? emptyList() : new ArrayList<>(exceptions);
 		}
 	}
 
 	@Override
 	public void clearExceptions(String scenarioName) {
-		synchronized (counter) {
-			List<ExceptionTimestamp> exceptions = counter.scenarioExceptions.get(scenarioName);
+		synchronized (statistics) {
+			List<ExceptionTimestamp> exceptions = statistics.scenarioExceptions.get(scenarioName);
 			if (exceptions != null) {
 				exceptions.clear();
 			}
@@ -255,8 +255,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	@Override
-	public State collectChartData() {
-		return collectChartData;
+	public State chartStatistics() {
+		return chartStatistics;
 	}
 
 	@Override
@@ -287,7 +287,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	private void bindEvents() {
-		loadTest.result().addConsumer(counter::addScenarioResults);
+		loadTest.result().addConsumer(statistics::addScenarioResults);
 		loadTest.shuttingDown().addListener(() -> {
 			applicationsRefreshScheduler.stop();
 			chartUpdateScheduler.stop();
@@ -308,12 +308,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 		@Override
 		public void run() {
-			counter.updateRequestsPerSecond();
+			statistics.updateRequestsPerSecond();
 			updateChartData();
 		}
 
 		private void updateChartData() {
-			long time = System.currentTimeMillis();
+			long time = currentTimeMillis();
 			minimumThinkTimeSeries.add(time, loadTest.thinkTime().minimum().get());
 			maximumThinkTimeSeries.add(time, loadTest.thinkTime().maximum().get());
 			numberOfApplicationsSeries.add(time, loadTest.applications().count().get());
@@ -322,22 +322,22 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			maxMemoryCollection.add(time, RUNTIME.maxMemory() / K / K);
 			systemLoadSeries.add(time, systemCpuLoad() * HUNDRED);
 			processLoadSeries.add(time, processCpuLoad() * HUNDRED);
-			scenariosRunSeries.add(time, counter.workRequestsPerSecond());
+			scenariosRunSeries.add(time, statistics.workRequestsPerSecond());
 			for (XYSeries series : usageSeries) {
-				series.add(time, counter.scenarioRate((String) series.getKey()));
+				series.add(time, statistics.scenarioRate((String) series.getKey()));
 			}
 			for (YIntervalSeries series : durationSeries.values()) {
 				String scenario = (String) series.getKey();
-				series.add(time, counter.averageScenarioDuration(scenario),
-								counter.minimumScenarioDuration(scenario), counter.maximumScenarioDuration(scenario));
+				series.add(time, statistics.averageScenarioDuration(scenario),
+								statistics.minimumScenarioDuration(scenario), statistics.maximumScenarioDuration(scenario));
 			}
 			for (XYSeries series : failureSeries) {
-				series.add(time, counter.scenarioFailureRate((String) series.getKey()));
+				series.add(time, statistics.scenarioFailureRate((String) series.getKey()));
 			}
 		}
 	}
 
-	private final class Counter {
+	private final class Statistics {
 
 		private static final int UPDATE_INTERVAL = 5;
 
@@ -353,7 +353,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		private final AtomicInteger workRequestCounter = new AtomicInteger();
 
 		private double workRequestsPerSecond = 0;
-		private long time = System.currentTimeMillis();
+		private long time = currentTimeMillis();
 
 		private double workRequestsPerSecond() {
 			return workRequestsPerSecond;
@@ -418,7 +418,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 
 		private synchronized void updateRequestsPerSecond() {
-			long current = System.currentTimeMillis();
+			long current = currentTimeMillis();
 			double elapsedSeconds = (current - time) / THOUSAND;
 			if (elapsedSeconds > UPDATE_INTERVAL) {
 				scenarioAvgDurations.clear();
@@ -430,7 +430,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 					scenarioFailures.put(scenario.name(), scenarioFailureCounts.getOrDefault(scenario.name(), ZERO).get());
 					calculateScenarioDuration(scenario);
 				}
-				resetCounters();
+				reset();
 				time = current;
 			}
 		}
@@ -458,7 +458,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			}
 		}
 
-		private synchronized void resetCounters() {
+		private synchronized void reset() {
 			workRequestCounter.set(0);
 			scenarioDurations.clear();
 			scenarioRunCounts.clear();

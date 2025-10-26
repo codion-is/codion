@@ -57,9 +57,9 @@ public interface LoadTestModel<T> {
 	void setUpdateInterval(int updateInterval);
 
 	/**
-	 * @return the {@link State} controlling whether this load test collects chart data
+	 * @return the {@link State} controlling whether this load test displays statistics in charts
 	 */
-	State collectChartData();
+	State chartStatistics();
 
 	/**
 	 * @return the {@link State} controlling whether the applications table model is automatically refreshed
@@ -95,9 +95,9 @@ public interface LoadTestModel<T> {
 	int unsuccessfulRunCount(String scenarioName);
 
 	/**
-	 * Resets the run counters
+	 * Resets the statistics
 	 */
-	void resetRunCounter();
+	void resetStatistics();
 
 	/**
 	 * @param scenarioName the scenario name
