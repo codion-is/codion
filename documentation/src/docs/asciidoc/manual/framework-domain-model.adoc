@@ -623,7 +623,7 @@ For more complex toString() implementations you can implement a custom *Function
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=customerFormatter]
+include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=formatter]
 ----
 
 [source,java,indent=0]
@@ -757,7 +757,7 @@ IMPORTANT: The WHERE clause specified in `EntitySelectQuery` is always included 
 
 When using custom select queries:
 
-* **Mark entities as read-only** - Entities based on joins or aggregations typically cannot be updated: `.readOnly(true)`
+* **Mark columns as read-only** - Columns from joined tables cannot be updated: `.readOnly(true)`
 * **Avoid specifying columns** - Let the framework generate the SELECT columns clause from column definitions unless you need special expressions
 * **Watch out for ambiguous column names ** - Use `.expression()` when column names become ambiguous due to joins
 * **Use table aliases carefully** - Ensure column expressions in attribute definitions match the aliases used in your FROM clause

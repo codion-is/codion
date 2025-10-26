@@ -110,9 +110,9 @@ public final class Store extends DomainModel {
 														.caption("Active")
 														.withDefault(true)
 														.defaultValue(true))
-						// tag::customerFormatter[]
+						// tag::formatter[]
 						.formatter(new CustomerFormatter())
-						// end::customerFormatter[]
+						// end::formatter[]
 						.caption("Customer")
 						.build();
 		// end::customer[]

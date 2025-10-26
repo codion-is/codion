@@ -170,6 +170,7 @@ configure(subprojects.filter { it.name != "codion-framework-bom" && it.name != "
         java {
             licenseHeaderFile(rootProject.file("documentation/src/misc/license_header")).yearSeparator(" - ")
             targetExclude(
+                "src/main/java/is/codion/framework/db/local/QueryFormatter.java",
                 "src/main/java/is/codion/swing/common/model/component/button/NullableToggleButtonModel.java",
                 "src/main/java/is/codion/swing/common/ui/component/button/NullableCheckBox.java",
                 "src/main/java/is/codion/swing/common/ui/component/combobox/Completion.java",

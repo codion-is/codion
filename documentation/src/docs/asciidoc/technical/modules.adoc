@@ -27,7 +27,6 @@ image::modules/common/core/build/reports/dependency-graph/dependency-graph.svg[o
 
 JDBC related classes.
 
-* {url-javadoc}{common-db}/is/codion/common/db/connection/package-summary.html[is.codion.common.db.connection]
 * {url-javadoc}{common-db}/is/codion/common/db/database/package-summary.html[is.codion.common.db.database]
 
 .Dependency graph

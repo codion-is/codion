@@ -177,8 +177,6 @@ tasks.register("combinedJavadoc") {
             add("-author")
             add("-use")
             add("-notimestamp")
-            add("-Xdoclint:none")
-            add("-quiet")
 
             // Links to external documentation
             add("-link"); add("https://docs.oracle.com/en/java/javase/${properties["jdkVersion"]}/docs/api/")

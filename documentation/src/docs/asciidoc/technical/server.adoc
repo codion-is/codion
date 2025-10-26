@@ -93,7 +93,7 @@ To use serialization filter patterns specified in a string, set the following sy
 
 [source]
 ----
-codion.server.codion.server.serialization.filter.pattern=pattern1;pattern2
+codion.server.serialization.filter.pattern=pattern1;pattern2
 ----
 
 This is equivalent to setting the following:
@@ -109,7 +109,7 @@ The file may contain all the patterns in a single line, using the ; delimiter or
 
 [source]
 ----
-codion.server.codion.server.serialization.filter.patternFile=config/patterns.txt
+codion.server.serialization.filter.patternFile=config/patterns.txt
 ----
 
 ----

@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 /**
- * Plugin that integrates MCP server directly into a Codion application.
+ * Plugin that integrates MCP server directly into a Swing application.
  * This allows AI tools to control the application via the Model Context Protocol over HTTP.
  * <p>
  * Configure with system properties:

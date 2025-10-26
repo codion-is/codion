@@ -351,7 +351,10 @@ public final class FrameworkModelDemo {
 		State detailView = State.state();
 		detailView.addConsumer(showDetails -> {
 			if (showDetails) {
-				queryModel.attributes().included().add(Album.COVER);
+				queryModel.attributes().excluded().remove(Album.COVER);
+			}
+			else {
+				queryModel.attributes().excluded().add(Album.COVER);
 			}
 		});
 		// end::attributeManagement[]
