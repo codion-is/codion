@@ -29,9 +29,11 @@ import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -60,10 +62,27 @@ public interface FrameBuilder {
 	FrameBuilder title(@Nullable Observable<String> title);
 
 	/**
+	 * Clears any icon images previously set via {@link #iconImage(Image)} or {@link #iconImages(List)}
 	 * @param icon the icon
 	 * @return this builder instance
 	 */
 	FrameBuilder icon(@Nullable ImageIcon icon);
+
+	/**
+	 * Clears any icons previously set via {@link #icon(ImageIcon)}, {@link #iconImage(Image)} or {@link #iconImages(List)}
+	 * @param iconImage the icon image
+	 * @return ths builder instance
+	 * @see JFrame#setIconImage(Image)
+	 */
+	FrameBuilder iconImage(@Nullable Image iconImage);
+
+	/**
+	 * Clears any icons previously set via {@link #icon(ImageIcon)}, {@link #iconImage(Image)} or {@link #iconImages(List)}
+	 * @param iconImages the icon images
+	 * @return ths builder instance
+	 * @see JFrame#setIconImages(List)
+	 */
+	FrameBuilder iconImages(List<Image> iconImages);
 
 	/**
 	 * @param size the size

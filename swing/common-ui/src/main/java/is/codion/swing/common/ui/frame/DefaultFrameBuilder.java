@@ -34,6 +34,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -52,9 +53,9 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	private final Collection<Consumer<WindowEvent>> onClosed = new ArrayList<>();
 	private final Collection<Consumer<WindowEvent>> onOpened = new ArrayList<>();
 	private final Collection<Consumer<JFrame>> onBuild = new ArrayList<>();
+	private final List<Image> iconImages = new ArrayList<>();
 
 	private @Nullable JComponent component;
-	private @Nullable ImageIcon icon;
 	private @Nullable Observable<String> title;
 	private @Nullable Dimension size;
 	private boolean resizable = true;
@@ -86,7 +87,23 @@ final class DefaultFrameBuilder implements FrameBuilder {
 
 	@Override
 	public FrameBuilder icon(@Nullable ImageIcon icon) {
-		this.icon = icon;
+		return iconImage(icon == null ? null : icon.getImage());
+	}
+
+	@Override
+	public FrameBuilder iconImage(@Nullable Image iconImage) {
+		iconImages.clear();
+		if (iconImage != null) {
+			iconImages.add(iconImage);
+		}
+		return this;
+	}
+
+	@Override
+	public FrameBuilder iconImages(List<Image> iconImages) {
+		requireNonNull(iconImages);
+		this.iconImages.clear();
+		this.iconImages.addAll(iconImages);
 		return this;
 	}
 
@@ -192,8 +209,8 @@ final class DefaultFrameBuilder implements FrameBuilder {
 			frame.setTitle(title.get());
 			title.addConsumer(frame::setTitle);
 		}
-		if (icon != null) {
-			frame.setIconImage(icon.getImage());
+		if (!iconImages.isEmpty()) {
+			frame.setIconImages(iconImages);
 		}
 		if (size != null) {
 			frame.setSize(size);

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.57
+### is.codion.swing.common.ui
+- FrameBuilder.iconImage() and iconImages() added.
 
 ## 0.18.56
 ### is.codion.common.core
