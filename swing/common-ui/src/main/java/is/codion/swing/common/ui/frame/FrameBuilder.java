@@ -31,6 +31,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
@@ -173,6 +174,12 @@ public interface FrameBuilder {
 	 * @return this builder instance
 	 */
 	FrameBuilder windowListener(WindowListener windowListener);
+
+	/**
+	 * @param componentListener the component listener
+	 * @return this builder instance
+	 */
+	FrameBuilder componentListener(ComponentListener componentListener);
 
 	/**
 	 * @param onBuild called when the frame has been built.

@@ -36,6 +36,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -49,6 +50,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultFrameBuilder implements FrameBuilder {
 
 	private final List<WindowListener> windowListeners = new ArrayList<>(0);
+	private final List<ComponentListener> componentListeners = new ArrayList<>(0);
 	private final Collection<Consumer<WindowEvent>> onClosing = new ArrayList<>();
 	private final Collection<Consumer<WindowEvent>> onClosed = new ArrayList<>();
 	private final Collection<Consumer<WindowEvent>> onOpened = new ArrayList<>();
@@ -192,6 +194,12 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
+	public FrameBuilder componentListener(ComponentListener componentListener) {
+		this.componentListeners.add(requireNonNull(componentListener));
+		return this;
+	}
+
+	@Override
 	public FrameBuilder onBuild(Consumer<JFrame> onBuild) {
 		this.onBuild.add(requireNonNull(onBuild));
 		return this;
@@ -241,6 +249,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 			frame.addWindowListener(new FrameListener(onClosing, onClosed, onOpened));
 		}
 		windowListeners.forEach(frame::addWindowListener);
+		componentListeners.forEach(frame::addComponentListener);
 		onBuild.forEach(consumer -> consumer.accept(frame));
 
 		return frame;
