@@ -1008,6 +1008,37 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	private static <T> T deserialize(HttpServletRequest request) throws IOException, ClassNotFoundException {
+		/*
+		 * SECURITY NOTE (CodeQL warning about deserialization of user-controlled data):
+		 *
+		 * This deserialization is protected by JVM-wide ObjectInputFilter configuration.
+		 * EntityService is an AuxiliaryServer that runs exclusively alongside EntityServer
+		 * in the same JVM process, and cannot be deployed independently.
+		 *
+		 * EntityServer enforces deserialization filter configuration through the following mechanism:
+		 *
+		 * 1. By default, EntityServer REQUIRES an ObjectInputFilterFactory to be configured via:
+		 *    codion.server.objectInputFilterFactory=my.filter.MyObjectInputFilterFactory
+		 *
+		 * 2. If no filter factory is configured, the server throws an exception on startup and
+		 *    refuses to start. This prevents accidental deployment without deserialization filtering.
+		 *
+		 * 3. The requirement can only be explicitly disabled via system property:
+		 *    codion.server.objectInputFilterFactoryRequired=false
+		 *    (not recommended for production)
+		 *
+		 * 4. The configured ObjectInputFilter applies globally to ALL ObjectInputStream instances
+		 *    in the JVM, including this deserialization call, providing defense against
+		 *    deserialization attacks.
+		 *
+		 * See: documentation/src/docs/asciidoc/technical/server.adoc for complete details on
+		 * serialization filtering configuration, including pattern-based filtering, resource
+		 * exhaustion limits (maxbytes, maxdepth, maxarray, maxrefs), and whitelist management.
+		 *
+		 * This architecture ensures that EntityService inherits the same deserialization
+		 * protections as the EntityServer RMI interface, making deployment without proper
+		 * filtering configuration impossible (by default).
+		 */
 		return (T) new ObjectInputStream(request.getInputStream()).readObject();
 	}
 
