@@ -16,8 +16,10 @@
  *
  * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.demos.world.domain.api;
+package is.codion.demos.world.domain;
 
+import is.codion.demos.world.domain.api.World;
+import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.domain.api.World.Location;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.json.domain.DefaultEntityObjectMapperFactory;
@@ -49,6 +51,9 @@ public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFac
 		EntityObjectMapper objectMapper = super.entityObjectMapper(entities);
 		objectMapper.addSerializer(Location.class, new LocationSerializer());
 		objectMapper.addDeserializer(Location.class, new LocationDeserializer());
+		objectMapper.define(Country.AVERAGE_CITY_POPULATION)
+						.returnType(Double.class)
+						.argumentType(String.class);
 
 		return objectMapper;
 	}

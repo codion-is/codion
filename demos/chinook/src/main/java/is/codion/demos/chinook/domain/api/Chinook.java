@@ -187,7 +187,9 @@ public interface Chinook {
 		ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);
 		ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", GENRE_ID, Genre.ID);
 
+		// tag::raisePrice[]
 		FunctionType<EntityConnection, RaisePriceParameters, Collection<Entity>> RAISE_PRICE = functionType("chinook.raise_price");
+		// end::raisePrice[]
 
 		ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("not_in_playlist");
 
@@ -219,7 +221,9 @@ public interface Chinook {
 
 		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
 
+		// tag::updateTotals[]
 		ProcedureType<EntityConnection, Collection<Long>> UPDATE_TOTALS = procedureType("chinook.update_totals");
+		// end::updateTotals[]
 
 		ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
 	}
@@ -247,7 +251,9 @@ public interface Chinook {
 		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> NAME = TYPE.stringColumn("name");
 
+		// tag::randomPlaylist[]
 		FunctionType<EntityConnection, RandomPlaylistParameters, Entity> RANDOM_PLAYLIST = functionType("chinook.random_playlist");
+		// end::randomPlaylist[]
 
 		record RandomPlaylistParameters(String playlistName, Integer noOfTracks, Collection<Entity> genres) implements Serializable {}
 	}

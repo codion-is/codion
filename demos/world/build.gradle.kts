@@ -122,6 +122,7 @@ tasks.register<JavaExec>("runClientHttp") {
     systemProperties = mapOf(
         "codion.client.connectionType" to "http",
         "codion.client.http.secure" to "false",
+        "codion.client.http.json" to "true",
         "codion.client.http.hostname" to properties["serverHostname"],
         "sun.awt.disablegrab" to "true"
     )

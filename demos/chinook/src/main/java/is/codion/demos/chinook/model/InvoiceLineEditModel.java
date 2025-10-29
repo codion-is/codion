@@ -65,6 +65,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		editor().value(InvoiceLine.UNITPRICE).set(track == null ? null : track.get(Track.UNITPRICE));
 	}
 
+	// tag::updateTotals[]
 	private static Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) {
 		// Get the IDs of the invoices that need their totals updated
 		Collection<Long> invoiceIds = distinct(InvoiceLine.INVOICE_ID, invoiceLines);
@@ -73,4 +74,5 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 		return invoiceLines;
 	}
+	// end::updateTotals[]
 }

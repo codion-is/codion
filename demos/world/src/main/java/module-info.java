@@ -37,14 +37,11 @@ module is.codion.demos.world {
 					to is.codion.swing.framework.ui;
 	//for loading reports from classpath
 	opens is.codion.demos.world.model;
-	//for accessing default methods in EntityType interfaces
-	opens is.codion.demos.world.domain.api
-					to is.codion.framework.domain;
 
 	provides is.codion.framework.domain.Domain
 					with is.codion.demos.world.domain.WorldImpl;
 	// tag::customSerializer[]
 	provides is.codion.framework.json.domain.EntityObjectMapperFactory
-					with is.codion.demos.world.domain.api.WorldObjectMapperFactory;
+					with is.codion.demos.world.domain.WorldObjectMapperFactory;
 	// end::customSerializer[]
 }

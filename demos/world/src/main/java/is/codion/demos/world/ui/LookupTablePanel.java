@@ -19,8 +19,8 @@
 package is.codion.demos.world.ui;
 
 import is.codion.common.state.State;
+import is.codion.demos.world.domain.WorldObjectMapperFactory;
 import is.codion.demos.world.domain.api.World.Lookup;
-import is.codion.demos.world.domain.api.WorldObjectMapperFactory;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Utilities;

@@ -75,6 +75,7 @@ public final class ChinookImpl extends DomainModel {
 									.captionResource(Chinook.class.getName(), "insert_user");
 	// end::columnTemplates[]
 
+	// tag::proceduresFunctions[]
 	public ChinookImpl() {
 		super(DOMAIN);
 		add(artist(), album(), employee(), customer(), genre(), preferences(), mediaType(),
@@ -84,6 +85,7 @@ public final class ChinookImpl extends DomainModel {
 		add(Invoice.UPDATE_TOTALS, new UpdateTotals());
 		add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylist(entities()));
 	}
+	// end::proceduresFunctions[]
 
 	@Override
 	public void configure(Database database) throws DatabaseException {
@@ -607,6 +609,7 @@ public final class ChinookImpl extends DomainModel {
 		}
 	}
 
+	// tag::updateTotals[]
 	private static final class UpdateTotals implements DatabaseProcedure<EntityConnection, Collection<Long>> {
 
 		@Override
@@ -629,7 +632,9 @@ public final class ChinookImpl extends DomainModel {
 			return invoice;
 		}
 	}
+	// end::updateTotals[]
 
+	// tag::randomPlaylist[]
 	private static final class CreateRandomPlaylist implements DatabaseFunction<EntityConnection, RandomPlaylistParameters, Entity> {
 
 		private final Entities entities;
@@ -683,7 +688,9 @@ public final class ChinookImpl extends DomainModel {
 											.build());
 		}
 	}
+	// end::randomPlaylist[]
 
+	// tag::raisePrice[]
 	private static final class RaisePrice implements DatabaseFunction<EntityConnection, RaisePriceParameters, Collection<Entity>> {
 
 		@Override
@@ -704,4 +711,5 @@ public final class ChinookImpl extends DomainModel {
 			return track;
 		}
 	}
+	// end::raisePrice[]
 }

@@ -3,6 +3,8 @@
 
 include::{basedir}/manual/framework-domain-model.adoc[leveloffset=+1]
 
+include::{basedir}/manual/framework-domain-procedures-functions.adoc[leveloffset=+1]
+
 include::{basedir}/manual/framework-conditions.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-connection.adoc[leveloffset=+1]

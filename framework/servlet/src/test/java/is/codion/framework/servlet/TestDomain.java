@@ -37,7 +37,6 @@ import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 
 public final class TestDomain extends DomainModel {
 
@@ -159,12 +158,12 @@ public final class TestDomain extends DomainModel {
 						.build());
 	}
 
-	public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
-	public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
+	public static final FunctionType<EntityConnection, List<String>, List<Integer>> FUNCTION_ID = FunctionType.functionType("functionId");
+	public static final ProcedureType<EntityConnection, List<String>> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 
 	void operations() {
 		add(PROCEDURE_ID, (connection, objects) -> {});
-		add(FUNCTION_ID, (connection, objects) -> emptyList());
+		add(FUNCTION_ID, (connection, objects) -> asList(1, 2, 3));
 	}
 
 	public static final ReportType<Object, String, String> REPORT_TYPE = ReportType.reportType("test");

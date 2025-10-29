@@ -18,12 +18,16 @@
  */
 package is.codion.framework.db.http;
 
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.json.db.DatabaseObjectMapper;
+import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -51,7 +55,7 @@ import static java.util.Objects.requireNonNull;
  */
 final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
-	private final ObjectMapper objectMapper;
+	private final DatabaseObjectMapper objectMapper;
 
 	JsonHttpEntityConnection(DefaultBuilder builder) {
 		super(builder, "/entities/json/");
@@ -269,6 +273,46 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("count",
 								objectMapper.writeValueAsString(count))), objectMapper, Integer.class);
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
+	@Override
+	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
+		requireNonNull(functionType);
+		synchronized (httpClient) {
+			try {
+				ObjectNode request = objectMapper.createObjectNode();
+				request.put("functionType", functionType.name());
+				if (argument != null) {
+					request.set("argument", objectMapper.valueToTree(argument));
+				}
+				EntityObjectMapper entityMapper = objectMapper.entityObjectMapper();
+				Class<R> returnType = entityMapper.function(functionType).returnType();
+
+				return handleJsonResponse(execute(createJsonRequest("function", request.toString())), objectMapper, returnType);
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
+	@Override
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
+		requireNonNull(procedureType);
+		synchronized (httpClient) {
+			try {
+				ObjectNode request = objectMapper.createObjectNode();
+				request.put("procedureType", procedureType.name());
+				if (argument != null) {
+					request.set("argument", objectMapper.valueToTree(argument));
+				}
+
+				throwIfError(execute(createJsonRequest("procedure", request.toString())));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);

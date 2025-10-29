@@ -48,6 +48,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		configureLimit();
 	}
 
+	// tag::raisePrice[]
 	public void raisePriceOfSelected(BigDecimal increase) {
 		if (selection().empty().not().is()) {
 			Collection<Long> trackIds = Entity.values(Track.ID, selection().items().get());
@@ -56,6 +57,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 			replace(result);
 		}
 	}
+	// end::raisePrice[]
 
 	private void configureLimit() {
 		queryModel().limit().set(DEFAULT_LIMIT);

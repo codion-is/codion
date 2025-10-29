@@ -74,12 +74,12 @@ abstract class AbstractHttpEntityConnectionTest {
 
 	@Test
 	void executeProcedure() {
-		connection.execute(TestDomain.PROCEDURE_ID);
+		connection.execute(TestDomain.PROCEDURE_ID, asList("one", "two"));
 	}
 
 	@Test
 	void executeFunction() {
-		assertNotNull(connection.execute(TestDomain.FUNCTION_ID));
+		assertEquals(asList(1, 2, 3), connection.execute(TestDomain.FUNCTION_ID, asList("one", "two")));
 	}
 
 	@Test

@@ -24,6 +24,7 @@ module is.codion.framework.demos.chinook {
 	requires is.codion.framework.db.local;
 	requires is.codion.framework.db.http;
 	requires is.codion.framework.db.rmi;
+	requires is.codion.framework.json.domain;
 	requires is.codion.tools.loadtest.ui;
 	requires is.codion.swing.framework.ui;
 	requires is.codion.plugin.jasperreports;
@@ -48,4 +49,8 @@ module is.codion.framework.demos.chinook {
 					with is.codion.demos.chinook.server.ChinookAuthenticator;
 	provides is.codion.common.resource.Resources
 					with is.codion.demos.chinook.i18n.ChinookResources;
+	// tag::entityObjectMapper[]
+	provides is.codion.framework.json.domain.EntityObjectMapperFactory
+					with is.codion.demos.chinook.domain.ChinookObjectMapperFactory;
+	// end::entityObjectMapper[]
 }

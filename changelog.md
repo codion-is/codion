@@ -5,6 +5,12 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FrameBuilder.iconImage() and iconImages() added.
 - FrameBuilder.componentListener() added.
+### is.codion.framework.json.domain
+- EntityObjectMapper, methods for registering procedure and function argument and return types added, for serialization.
+### is.codion.framework.servlet
+- EntityService.FunctionHandler and ProcedureHandler.json() added.
+### is.codion.framework.db.http
+- JsonHttpEntityConnection, JSON based function and procedure execution added.
 
 ## 0.18.56
 ### is.codion.common.core

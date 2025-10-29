@@ -1,0 +1,187 @@
+[#_procedures_functions]
+= Procedures & Functions
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:url-javadoc: link:../api
+
+NOTE: All examples are from the Chinook demo
+
+== Overview
+
+Codion's procedure and function support provides a type-safe abstraction for executing database operations that go beyond simple CRUD. While you can implement procedures and functions by directly calling database stored procedures, Codion encourages implementing business logic in Java using the {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html[EntityConnection] API.
+
+*{url-javadoc}{common-db}/is/codion/common/db/operation/ProcedureType.html[ProcedureType]*::
+A typed identifier for a procedure that performs an operation without returning a value.
+
+*{url-javadoc}{common-db}/is/codion/common/db/operation/DatabaseProcedure.html[DatabaseProcedure]*::
+The implementation interface for procedures, taking a connection and optional argument.
+
+*{url-javadoc}{common-db}/is/codion/common/db/operation/FunctionType.html[FunctionType]*::
+A typed identifier for a function that performs an operation and returns a result.
+
+*{url-javadoc}{common-db}/is/codion/common/db/operation/DatabaseFunction.html[DatabaseFunction]*::
+The implementation interface for functions, taking a connection and optional argument, returning a result.
+
+Both procedures and functions are:
+
+* Registered with the domain model
+* Executed via {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html[EntityConnection]
+* Type-safe with compile-time checking
+
+TIP: Transaction control should be external to procedures and functions. Let the caller manage transactions rather than implementing transaction control within the procedure or function itself.
+
+== API Definition
+
+Procedures and functions are defined as constants within the domain API, typically in the same interface that defines the related entity. The type parameters specify:
+
+* `C` - The connection type (usually `EntityConnection`)
+* `T` - The argument type (can be `Void` for no argument)
+* `R` - The return type (functions only)
+
+=== Function with Custom Parameter Object
+
+The `RAISE_PRICE` function demonstrates a function with a custom parameter record and collection return type:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/api/Chinook.java[tags=raisePrice]
+----
+
+=== Procedure with Collection Parameter
+
+The `UPDATE_TOTALS` procedure demonstrates a procedure with a collection parameter type:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/api/Chinook.java[tags=updateTotals]
+----
+
+=== Function Returning an Entity
+
+The `RANDOM_PLAYLIST` function demonstrates a function that creates data and returns the resulting entity:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/api/Chinook.java[tags=randomPlaylist]
+----
+
+== Implementation
+
+Procedure and function implementations are registered with the domain model in the DomainModel constructor using the `add()` method. Implementations can be:
+
+* Inline lambda expressions for simple operations
+* Named classes for complex logic
+* Calls to database stored procedures/functions
+
+=== Registration
+
+Procedures and functions are registered alongside entity definitions:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=proceduresFunctions]
+----
+
+=== Function Implementation
+
+`RaisePrice`
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=raisePrice]
+----
+
+=== Procedure Implementation
+
+`UpdateTotals`
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=updateTotals]
+----
+
+=== Complex Function Implementation
+
+`CreateRandomPlaylist`
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=randomPlaylist]
+----
+
+== Usage
+
+Procedures and functions are executed via {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#execute(is.codion.common.db.operation.FunctionType,T)[EntityConnection.execute()]. The connection is passed to the implementation, which can use it for database operations.
+
+=== Executing a Function
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/TrackTableModel.java[tags=raisePrice]
+----
+
+=== Executing a Procedure
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLineEditModel.java[tags=updateTotals]
+----
+
+=== Transactional Execution
+
+Use {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.TransactionalResult{cpar}[EntityConnection.transaction()] to execute procedures or functions, when multiple operations must succeed or fail together:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/PlaylistTableModel.java[tags=randomPlaylist]
+----
+
+== HTTP/JSON Serialization
+
+When using HTTP-based connections with JSON serialization enabled (via {url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnection.html[HttpEntityConnection]), procedures and functions are executed by serializing arguments and return values as JSON. This requires registering the argument and return types with the {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper].
+
+=== Why Type Registration is Needed
+
+Jackson's `ObjectMapper` requires target types to deserialize JSON. While `FunctionType` and `ProcedureType` carry generic type parameters, these are erased at runtime. The type registry provides this information to the JSON serialization layer.
+
+=== EntityObjectMapperFactory
+
+Create an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory] implementation and define your procedure and function types:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookObjectMapperFactory.java[tags=procedureFunction]
+----
+
+=== Service Registration
+
+Register your factory implementation using Java's ServiceLoader mechanism in _src/main/java/module-info.java_:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/module-info.java[tags=entityObjectMapper]
+----
+
+or by creating a file at
+
+----
+src/main/resources/META-INF/services/is.codion.framework.json.domain.EntityObjectMapperFactory
+----
+
+Containing the fully qualified class name:
+
+----
+is.codion.demos.chinook.domain.ChinookObjectMapperFactory
+----
+
+=== HTTP Connection Protocol
+
+When a procedure or function is executed via HTTP:
+
+1. Client serializes the argument to JSON
+2. HTTP POST sends the request to the server
+3. Server deserializes using the registered argument type
+4. Server executes the procedure/function
+5. Server serializes the result (functions only)
+6. Client deserializes using the registered return type
+
+NOTE: Only HTTP connections with JSON serialization enabled require type registration.

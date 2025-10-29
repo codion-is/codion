@@ -62,7 +62,6 @@ import java.util.UUID;
 
 import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.json.db.DatabaseObjectMapper.databaseObjectMapper;
-import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -72,7 +71,8 @@ public class EntityServiceTest {
 
 	private static final Entities ENTITIES = new TestDomain().entities();
 
-	private static final DatabaseObjectMapper OBJECT_MAPPER = databaseObjectMapper(entityObjectMapper(ENTITIES));
+	private static final DatabaseObjectMapper OBJECT_MAPPER =
+					databaseObjectMapper(new TestObjectMapperFactory().entityObjectMapper(ENTITIES));
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -207,24 +207,27 @@ public class EntityServiceTest {
 
 	@Test
 	void procedure() throws Exception {
-		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("procedure",
-						BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.PROCEDURE_ID)))), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-
-		response = HTTP_CLIENT.send(createJsonRequest("procedure",
-						BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.PROCEDURE_ID)))), BodyHandlers.ofByteArray());
+		ObjectNode request = OBJECT_MAPPER.createObjectNode();
+		request.put("procedureType", TestDomain.PROCEDURE_ID.name());
+		request.put("argument", OBJECT_MAPPER.valueToTree(asList("one", "two")));
+		// No argument field since procedure has no arguments
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("procedure",
+						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 	}
 
 	@Test
 	void function() throws Exception {
-		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("function",
-						BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.FUNCTION_ID)))), BodyHandlers.ofByteArray());
+		ObjectNode request = OBJECT_MAPPER.createObjectNode();
+		request.put("functionType", TestDomain.FUNCTION_ID.name());
+		request.put("argument", OBJECT_MAPPER.valueToTree(asList("one", "two")));
+		// No argument field since function has no arguments
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("function",
+						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
-
-		response = HTTP_CLIENT.send(createJsonRequest("function",
-						BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.FUNCTION_ID)))), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
+		// Deserialize response (returns empty list)
+		List<Integer> result = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), new TypeReference<List<Integer>>() {});
+		assertEquals(asList(1, 2, 3), result);
 	}
 
 	@Test

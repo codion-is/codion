@@ -243,7 +243,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
+	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
 		requireNonNull(functionType);
 		synchronized (httpClient) {
 			try {
@@ -261,7 +261,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
 		requireNonNull(procedureType);
 		synchronized (httpClient) {
 			try {

@@ -43,6 +43,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
+import is.codion.framework.json.domain.EntityObjectMapper.FunctionDefinition;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -77,6 +78,8 @@ import java.util.function.Consumer;
 import static is.codion.common.Configuration.*;
 import static is.codion.common.Serializer.serialize;
 import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.db.operation.FunctionType.functionType;
+import static is.codion.common.db.operation.ProcedureType.procedureType;
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
 import static java.util.Objects.requireNonNull;
@@ -256,9 +259,9 @@ public final class EntityService implements AuxiliaryServer {
 		javalin.post(URL_SERIAL + "setQueryCacheEnabled", setQueryCacheEnabledHandler::serial);
 		javalin.post(URL_JSON + "setQueryCacheEnabled", setQueryCacheEnabledHandler::json);
 		javalin.post(URL_SERIAL + "procedure", procedureHandler::serial);
-		javalin.post(URL_JSON + "procedure", procedureHandler::serial);
+		javalin.post(URL_JSON + "procedure", procedureHandler::json);
 		javalin.post(URL_SERIAL + "function", functionHandler::serial);
-		javalin.post(URL_JSON + "function", functionHandler::serial);
+		javalin.post(URL_JSON + "function", functionHandler::json);
 		javalin.post(URL_SERIAL + "report", reportHandler::serial);
 		javalin.post(URL_JSON + "report", reportHandler::serial);
 		javalin.post(URL_SERIAL + "dependencies", dependenciesHandler::serial);
@@ -453,6 +456,29 @@ public final class EntityService implements AuxiliaryServer {
 				handleException(context, e);
 			}
 		}
+
+		private void json(Context context) {
+			try {
+				RemoteEntityConnection connection = authenticate(context);
+				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
+
+				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
+				ProcedureType<? extends EntityConnection, Object> procedureType = procedureType(requestNode.get("procedureType").asText());
+				Object argument = null;
+				JsonNode argumentNode = requestNode.get("argument");
+				if (argumentNode != null) {
+					Class<?> argumentType = objectMapper.entityObjectMapper().procedure(procedureType).argumentType();
+					argument = objectMapper.readValue(argumentNode.toString(), argumentType);
+				}
+
+				connection.execute(procedureType, argument);
+
+				context.status(HttpStatus.OK_200);
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
 	}
 
 	private final class FunctionHandler {
@@ -467,6 +493,33 @@ public final class EntityService implements AuxiliaryServer {
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(connection.execute(functionType, argument)));
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+
+		private void json(Context context) {
+			try {
+				RemoteEntityConnection connection = authenticate(context);
+				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
+
+				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
+				FunctionType<? extends EntityConnection, Object, Object> functionType = functionType(requestNode.get("functionType").asText());
+				Object argument = null;
+				JsonNode argumentNode = requestNode.get("argument");
+				if (argumentNode != null) {
+					FunctionDefinition<?, ?> definition = objectMapper.entityObjectMapper().function(functionType);
+					Class<?> argumentType = definition.argumentType().orElseThrow(() ->
+									new IllegalStateException("Function argument type not defined: " + functionType));
+					argument = objectMapper.readValue(argumentNode.toString(), argumentType);
+				}
+
+				Object result = connection.execute(functionType, argument);
+
+				context.status(HttpStatus.OK_200)
+								.contentType(ContentType.APPLICATION_JSON)
+								.result(objectMapper.writeValueAsString(result));
 			}
 			catch (Exception e) {
 				handleException(context, e);

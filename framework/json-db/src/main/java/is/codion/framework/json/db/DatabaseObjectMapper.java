@@ -39,8 +39,11 @@ public final class DatabaseObjectMapper extends ObjectMapper {
 	@Serial
 	private static final long serialVersionUID = 1;
 
+	private final EntityObjectMapper entityObjectMapper;
+
 	private DatabaseObjectMapper(EntityObjectMapper entityObjectMapper) {
-		registerModule(requireNonNull(entityObjectMapper).module());
+		this.entityObjectMapper = requireNonNull(entityObjectMapper);
+		registerModule(entityObjectMapper.module());
 		SimpleModule module = new SimpleModule();
 		module.addSerializer(Select.class, new SelectSerializer(entityObjectMapper));
 		module.addDeserializer(Select.class, new SelectDeserializer(entityObjectMapper));
@@ -49,6 +52,13 @@ public final class DatabaseObjectMapper extends ObjectMapper {
 		module.addSerializer(Count.class, new CountSerializer(entityObjectMapper));
 		module.addDeserializer(Count.class, new CountDeserializer(entityObjectMapper));
 		registerModule(module);
+	}
+
+	/**
+	 * @return the underlying {@link EntityObjectMapper}
+	 */
+	public EntityObjectMapper entityObjectMapper() {
+		return entityObjectMapper;
 	}
 
 	/**

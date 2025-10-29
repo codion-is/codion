@@ -685,7 +685,7 @@ When using the HTTP connection in an application using a custom data type, you m
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/demos/world/domain/api/WorldObjectMapperFactory.java[tags=customSerializer]
+include::{dir-world-source}/is/codion/demos/world/domain/WorldObjectMapperFactory.java[tags=customSerializer]
 ----
 
 This *EntityObjectMapperFactory* must be exposed to the ServiceLoader.
