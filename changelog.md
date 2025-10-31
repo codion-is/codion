@@ -9,6 +9,8 @@ Codion Change Log
 - FrameBuilder.componentListener() added.
 ### is.codion.framework.json.domain
 - EntityObjectMapper, methods for registering procedure and function argument and return types added, for serialization.
+### is.codion.framework.db.core
+- EntityConnection.report() reportParameters renamed parameter.
 ### is.codion.framework.servlet
 - EntityService.FunctionHandler and ProcedureHandler.json() added.
 - EntityService.deserialize() removed, Serializer.deserialize() used instead.

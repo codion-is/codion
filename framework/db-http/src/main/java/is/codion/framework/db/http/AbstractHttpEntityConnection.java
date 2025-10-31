@@ -274,11 +274,11 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public final <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) {
+	public final <T, R, P> R report(ReportType<T, R, P> reportType, P parameter) {
 		requireNonNull(reportType);
 		synchronized (httpClient) {
 			try {
-				return handleResponse(execute(createRequest("report", serialize(asList(reportType, reportParameters)))));
+				return handleResponse(execute(createRequest("report", serialize(asList(reportType, parameter)))));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);

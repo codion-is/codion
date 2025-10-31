@@ -667,13 +667,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) {
+	public <T, R, P> R report(ReportType<T, R, P> reportType, P parameter) {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
-		tracer.enter(REPORT, reportType, reportParameters);
+		tracer.enter(REPORT, reportType, parameter);
 		synchronized (database) {
 			try {
-				R result = domain.report(reportType).fill(verifyOpenConnection(), reportParameters);
+				R result = domain.report(reportType).fill(verifyOpenConnection(), parameter);
 				commitIfTransactionIsNotOpen();
 
 				return result;

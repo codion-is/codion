@@ -102,9 +102,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	}
 
 	@Override
-	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) {
+	public <T, R, P> R report(ReportType<T, R, P> reportType, P parameter) {
 		synchronized (connectionProxy) {
-			return connectionProxy.report(reportType, reportParameters);
+			return connectionProxy.report(reportType, parameter);
 		}
 	}
 
