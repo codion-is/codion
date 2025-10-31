@@ -83,7 +83,7 @@ public final class ClientServer {
 						.createDatabase("jdbc:h2:mem:testdb",
 										"src/main/sql/create_schema.sql");
 
-		EntityService.HTTP_SERVER_PORT.set(HTTP_PORT);
+		EntityService.PORT.set(HTTP_PORT);
 
 		EntityServerConfiguration configuration =
 						EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)

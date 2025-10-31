@@ -19,7 +19,14 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.framework.servlet.EntityService#HTTP_SERVER_PORT}
+ * <li>{@link is.codion.framework.servlet.EntityService#PORT}
+ * <li>{@link is.codion.framework.servlet.EntityService#SECURE}
+ * <li>{@link is.codion.framework.servlet.EntityService#SECURE_PORT}
+ * <li>{@link is.codion.framework.servlet.EntityService#CLASSPATH_KEYSTORE}
+ * <li>{@link is.codion.framework.servlet.EntityService#KEYSTORE_PATH}
+ * <li>{@link is.codion.framework.servlet.EntityService#KEYSTORE_PASSWORD}
+ * <li>{@link is.codion.framework.servlet.EntityService#JSON}
+ * <li>{@link is.codion.framework.servlet.EntityService#SERALIZATION}
  * </ul>
  */
 package is.codion.framework.servlet;

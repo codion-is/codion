@@ -92,8 +92,8 @@ public class EntityServiceTest {
 	public static void setUp() throws Exception {
 		EntityServerConfiguration configuration = configure();
 		HOSTNAME = Clients.SERVER_HOSTNAME.get();
-		SERVER_BASEURL = "http://" + HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/serial/";
-		SERVER_JSON_BASEURL = "http://" + HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/json/";
+		SERVER_BASEURL = "http://" + HOSTNAME + ":" + EntityService.PORT.get() + "/entities/serial/";
+		SERVER_JSON_BASEURL = "http://" + HOSTNAME + ":" + EntityService.PORT.get() + "/entities/json/";
 		server = EntityServer.startServer(configuration);
 	}
 
@@ -498,7 +498,8 @@ public class EntityServiceTest {
 	private static EntityServerConfiguration configure() {
 		Clients.SERVER_HOSTNAME.set("localhost");
 		Clients.resolveTrustStore();
-		EntityService.HTTP_SERVER_SECURE.set(false);
+		EntityService.SERALIZATION.set(true);
+		EntityService.SECURE.set(false);
 
 		return EntityServerConfiguration.builder(3223, 3221)
 						.adminPort(3223)
@@ -515,6 +516,6 @@ public class EntityServiceTest {
 		System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.FALSE.toString());
 		Clients.SERVER_HOSTNAME.set(null);
 		ServerConfiguration.AUXILIARY_SERVER_FACTORIES.set(null);
-		EntityService.HTTP_SERVER_SECURE.set(true);
+		EntityService.SECURE.set(true);
 	}
 }

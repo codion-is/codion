@@ -377,8 +377,9 @@ abstract class AbstractHttpEntityConnectionTest {
 		Clients.resolveTrustStore();
 		Report.REPORT_PATH.set("report/path");
 		HttpEntityConnection.SECURE.set(true);
-		EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
-		EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
+		EntityService.SERALIZATION.set(true);
+		EntityService.KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
+		EntityService.KEYSTORE_PASSWORD.set("crappypass");
 
 		return EntityServerConfiguration.builder(3223, 3221)
 						.adminPort(3223)
@@ -396,8 +397,9 @@ abstract class AbstractHttpEntityConnectionTest {
 		System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);
 		System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE_PASSWORD);
 		Report.REPORT_PATH.set(null);
-		EntityService.HTTP_SERVER_KEYSTORE_PATH.set(null);
-		EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
+		EntityService.SERALIZATION.set(false);
+		EntityService.KEYSTORE_PATH.set(null);
+		EntityService.KEYSTORE_PASSWORD.set(null);
 		HttpEntityConnection.SECURE.set(false);
 	}
 }

@@ -98,7 +98,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: 8080
 	 * </ul>
 	 */
-	public static final PropertyValue<Integer> HTTP_SERVER_PORT = integerValue("codion.server.http.port", 8080);
+	public static final PropertyValue<Integer> PORT = integerValue("codion.server.http.port", 8080);
 
 	/**
 	 * The port on which the http server is made available to clients.
@@ -107,7 +107,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: 4443
 	 * </ul>
 	 */
-	public static final PropertyValue<Integer> HTTP_SERVER_SECURE_PORT = integerValue("codion.server.http.securePort", 4443);
+	public static final PropertyValue<Integer> SECURE_PORT = integerValue("codion.server.http.securePort", 4443);
 
 	/**
 	 * Specifies whether https should be used.
@@ -116,7 +116,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> HTTP_SERVER_SECURE = booleanValue("codion.server.http.secure", true);
+	public static final PropertyValue<Boolean> SECURE = booleanValue("codion.server.http.secure", true);
 
 	/**
 	 * The https keystore to use on the classpath, this will be resolved to a temporary file and set
@@ -126,7 +126,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: null
 	 * </ul>
 	 */
-	public static final PropertyValue<String> HTTP_SERVER_CLASSPATH_KEYSTORE = stringValue("codion.server.http.classpathKeyStore");
+	public static final PropertyValue<String> CLASSPATH_KEYSTORE = stringValue("codion.server.http.classpathKeyStore");
 
 	/**
 	 * Specifies the keystore to use for securing http connections.
@@ -134,9 +134,9 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Value type: String
 	 * <li>Default value: null
 	 * </ul>
-	 * @see #HTTP_SERVER_CLASSPATH_KEYSTORE
+	 * @see #CLASSPATH_KEYSTORE
 	 */
-	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = stringValue("codion.server.http.keyStore");
+	public static final PropertyValue<String> KEYSTORE_PATH = stringValue("codion.server.http.keyStore");
 
 	/**
 	 * Specifies the password for the keystore used for securing http connections.
@@ -145,7 +145,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: null
 	 * </ul>
 	 */
-	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD =
+	public static final PropertyValue<String> KEYSTORE_PASSWORD =
 					stringValue("codion.server.http.keyStorePassword");
 
 	/**
@@ -157,6 +157,24 @@ public final class EntityService implements AuxiliaryServer {
 	 */
 	public static final PropertyValue<Boolean> USE_VIRTUAL_THREADS =
 					booleanValue("codion.server.http.useVirtualThreads", false);
+
+	/**
+	 * Specifies whether java serialization based services should be enabled.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> SERALIZATION = booleanValue("codion.server.http.serialization", false);
+
+	/**
+	 * Specifies whether json based services should be enabled.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> JSON = booleanValue("codion.server.http.json", true);
 
 	static final String DOMAIN_TYPE_NAME = "domainTypeName";
 	static final String CLIENT_TYPE = "clientType";
@@ -199,6 +217,8 @@ public final class EntityService implements AuxiliaryServer {
 	private final Javalin javalin;
 	private final int port;
 	private final int securePort;
+	private final boolean serialization = SERALIZATION.getOrThrow();
+	private final boolean json = JSON.getOrThrow();
 	private final boolean sslEnabled;
 	private final boolean useVirtualThreads;
 
@@ -210,16 +230,21 @@ public final class EntityService implements AuxiliaryServer {
 
 	EntityService(Server<RemoteEntityConnection, ? extends ServerAdmin> server) {
 		this.server = requireNonNull(server);
-		this.port = HTTP_SERVER_PORT.getOrThrow();
-		this.securePort = HTTP_SERVER_SECURE_PORT.getOrThrow();
-		this.sslEnabled = HTTP_SERVER_SECURE.getOrThrow();
+		this.port = PORT.getOrThrow();
+		this.securePort = SECURE_PORT.getOrThrow();
+		this.sslEnabled = SECURE.getOrThrow();
 		this.useVirtualThreads = USE_VIRTUAL_THREADS.getOrThrow();
 		this.javalin = Javalin.create(new JavalinConfigurer());
 	}
 
 	@Override
 	public void start() {
-		setupHandlers();
+		if (serialization) {
+			addSerializationHandlers();
+		}
+		if (json) {
+			addJsonHandlers();
+		}
 		javalin.start(sslEnabled ? securePort : port);
 	}
 
@@ -238,55 +263,58 @@ public final class EntityService implements AuxiliaryServer {
 						+ ", sslEnabled: " + sslEnabled;
 	}
 
-	private void setupHandlers() {
+	private void addSerializationHandlers() {
+		javalin.post(URL_SERIAL + "entities", entitiesHandler::serial);
+		javalin.post(URL_SERIAL + "close", closeHandler::serial);
+		javalin.post(URL_SERIAL + "isTransactionOpen", isTransactionOpenHandler::serial);
+		javalin.post(URL_SERIAL + "startTransaction", startTransactionHandler::serial);
+		javalin.post(URL_SERIAL + "rollbackTransaction", rollbackTransactionHandler::serial);
+		javalin.post(URL_SERIAL + "commitTransaction", commitTransactionHandler::serial);
+		javalin.post(URL_SERIAL + "isQueryCacheEnabled", isQueryCacheEnabledHandler::serial);
+		javalin.post(URL_SERIAL + "setQueryCacheEnabled", setQueryCacheEnabledHandler::serial);
+		javalin.post(URL_SERIAL + "procedure", procedureHandler::serial);
+		javalin.post(URL_SERIAL + "function", functionHandler::serial);
+		javalin.post(URL_SERIAL + "report", reportHandler::serial);
+		javalin.post(URL_SERIAL + "dependencies", dependenciesHandler::serial);
+		javalin.post(URL_SERIAL + "count", countHandler::serial);
+		javalin.post(URL_SERIAL + "values", valuesHandler::serial);
+		javalin.post(URL_SERIAL + "selectByKey", selectByKeyHandler::serial);
+		javalin.post(URL_SERIAL + "select", selectHandler::serial);
+		javalin.post(URL_SERIAL + "insert", insertHandler::serial);
+		javalin.post(URL_SERIAL + "insertSelect", insertSelectHandler::serial);
+		javalin.post(URL_SERIAL + "update", updateHandler::serial);
+		javalin.post(URL_SERIAL + "updateSelect", updateSelectHandler::serial);
+		javalin.post(URL_SERIAL + "updateByCondition", updateByConditionHandler::serial);
+		javalin.post(URL_SERIAL + "delete", deleteHandler::serial);
+		javalin.post(URL_SERIAL + "deleteByKey", deleteByKeyHandler::serial);
+	}
+
+	private void addJsonHandlers() {
 		// Note: some services only implement java serialization
 		// (report f.ex) so these are not just some glaring mistakes
 		// below, where a ::serial call is associated with the json url
-		javalin.post(URL_SERIAL + "entities", entitiesHandler::serial);
 		javalin.post(URL_JSON + "entities", entitiesHandler::serial);
-		javalin.post(URL_SERIAL + "close", closeHandler::serial);
 		javalin.post(URL_JSON + "close", closeHandler::serial);
-		javalin.post(URL_SERIAL + "isTransactionOpen", isTransactionOpenHandler::serial);
 		javalin.post(URL_JSON + "isTransactionOpen", isTransactionOpenHandler::json);
-		javalin.post(URL_SERIAL + "startTransaction", startTransactionHandler::serial);
 		javalin.post(URL_JSON + "startTransaction", startTransactionHandler::serial);
-		javalin.post(URL_SERIAL + "rollbackTransaction", rollbackTransactionHandler::serial);
 		javalin.post(URL_JSON + "rollbackTransaction", rollbackTransactionHandler::serial);
-		javalin.post(URL_SERIAL + "commitTransaction", commitTransactionHandler::serial);
 		javalin.post(URL_JSON + "commitTransaction", commitTransactionHandler::serial);
-		javalin.post(URL_SERIAL + "isQueryCacheEnabled", isQueryCacheEnabledHandler::serial);
 		javalin.post(URL_JSON + "isQueryCacheEnabled", isQueryCacheEnabledHandler::json);
-		javalin.post(URL_SERIAL + "setQueryCacheEnabled", setQueryCacheEnabledHandler::serial);
 		javalin.post(URL_JSON + "setQueryCacheEnabled", setQueryCacheEnabledHandler::json);
-		javalin.post(URL_SERIAL + "procedure", procedureHandler::serial);
 		javalin.post(URL_JSON + "procedure", procedureHandler::json);
-		javalin.post(URL_SERIAL + "function", functionHandler::serial);
 		javalin.post(URL_JSON + "function", functionHandler::json);
-		javalin.post(URL_SERIAL + "report", reportHandler::serial);
 		javalin.post(URL_JSON + "report", reportHandler::serial);
-		javalin.post(URL_SERIAL + "dependencies", dependenciesHandler::serial);
 		javalin.post(URL_JSON + "dependencies", dependenciesHandler::json);
-		javalin.post(URL_SERIAL + "count", countHandler::serial);
 		javalin.post(URL_JSON + "count", countHandler::json);
-		javalin.post(URL_SERIAL + "values", valuesHandler::serial);
 		javalin.post(URL_JSON + "values", valuesHandler::json);
-		javalin.post(URL_SERIAL + "selectByKey", selectByKeyHandler::serial);
 		javalin.post(URL_JSON + "selectByKey", selectByKeyHandler::json);
-		javalin.post(URL_SERIAL + "select", selectHandler::serial);
 		javalin.post(URL_JSON + "select", selectHandler::json);
-		javalin.post(URL_SERIAL + "insert", insertHandler::serial);
-		javalin.post(URL_SERIAL + "insertSelect", insertSelectHandler::serial);
 		javalin.post(URL_JSON + "insert", insertHandler::json);
 		javalin.post(URL_JSON + "insertSelect", insertSelectHandler::json);
-		javalin.post(URL_SERIAL + "update", updateHandler::serial);
-		javalin.post(URL_SERIAL + "updateSelect", updateSelectHandler::serial);
 		javalin.post(URL_JSON + "update", updateHandler::json);
 		javalin.post(URL_JSON + "updateSelect", updateSelectHandler::json);
-		javalin.post(URL_SERIAL + "updateByCondition", updateByConditionHandler::serial);
 		javalin.post(URL_JSON + "updateByCondition", updateByConditionHandler::json);
-		javalin.post(URL_SERIAL + "delete", deleteHandler::serial);
 		javalin.post(URL_JSON + "delete", deleteHandler::json);
-		javalin.post(URL_SERIAL + "deleteByKey", deleteByKeyHandler::serial);
 		javalin.post(URL_JSON + "deleteByKey", deleteByKeyHandler::json);
 	}
 
@@ -955,7 +983,7 @@ public final class EntityService implements AuxiliaryServer {
 
 		@Override
 		public void accept(SslConfig ssl) {
-			ssl.keystoreFromPath(HTTP_SERVER_KEYSTORE_PATH.getOrThrow(), HTTP_SERVER_KEYSTORE_PASSWORD.getOrThrow());
+			ssl.keystoreFromPath(KEYSTORE_PATH.getOrThrow(), KEYSTORE_PASSWORD.getOrThrow());
 			ssl.securePort = securePort;
 			ssl.insecurePort = port;
 		}
@@ -1061,14 +1089,14 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	private static synchronized void resolveClasspathKeyStore() {
-		String keystore = HTTP_SERVER_CLASSPATH_KEYSTORE.get();
+		String keystore = CLASSPATH_KEYSTORE.get();
 		if (nullOrEmpty(keystore)) {
-			LOG.debug("No classpath key store specified via {}", HTTP_SERVER_CLASSPATH_KEYSTORE.name());
+			LOG.debug("No classpath key store specified via {}", CLASSPATH_KEYSTORE.name());
 			return;
 		}
-		if (!HTTP_SERVER_KEYSTORE_PATH.isNull()) {
+		if (!KEYSTORE_PATH.isNull()) {
 			throw new IllegalStateException("Classpath keystore (" + keystore + ") can not be specified when "
-							+ HTTP_SERVER_KEYSTORE_PATH.name() + " is already set to " + HTTP_SERVER_KEYSTORE_PATH.get());
+							+ KEYSTORE_PATH.name() + " is already set to " + KEYSTORE_PATH.get());
 		}
 		try (InputStream inputStream = EntityService.class.getClassLoader().getResourceAsStream(keystore)) {
 			if (inputStream == null) {
@@ -1079,9 +1107,9 @@ public final class EntityService implements AuxiliaryServer {
 			Files.write(file.toPath(), readBytes(inputStream));
 			file.deleteOnExit();
 
-			HTTP_SERVER_KEYSTORE_PATH.set(file.getPath());
+			KEYSTORE_PATH.set(file.getPath());
 			LOG.debug("Classpath key store {} written to file {} and set as {}",
-							HTTP_SERVER_CLASSPATH_KEYSTORE.name(), file, HTTP_SERVER_KEYSTORE_PATH.name());
+							CLASSPATH_KEYSTORE.name(), file, KEYSTORE_PATH.name());
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
