@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.domain;
 
 import is.codion.demos.chinook.domain.api.Chinook;
+import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
@@ -49,6 +50,8 @@ public final class ChinookObjectMapperFactory extends DefaultEntityObjectMapperF
 		objectMapper.define(Playlist.RANDOM_PLAYLIST)
 						.returnType(Entity.class)
 						.argumentType(RandomPlaylistParameters.class);
+		objectMapper.define(Customer.REPORT)
+						.parameterType(new TypeReference<>() {});
 
 		return objectMapper;
 	}

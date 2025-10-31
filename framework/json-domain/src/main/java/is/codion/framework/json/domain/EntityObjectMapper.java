@@ -20,6 +20,7 @@ package is.codion.framework.json.domain;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -73,6 +74,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	private final ConditionDeserializer conditionDeserializer;
 	private final Map<ProcedureType<?, ?>, DefaultProcedureDefinition<?>> procedureDefinitions = new HashMap<>();
 	private final Map<FunctionType<?, ?, ?>, DefaultFunctionDefinition<?, ?>> functionDefinitions = new HashMap<>();
+	private final Map<ReportType<?, ?, ?>, DefaultReportDefinition<?>> reportDefinitions = new HashMap<>();
 
 	EntityObjectMapper(Entities entities) {
 		this.entities = requireNonNull(entities);
@@ -208,6 +210,17 @@ public final class EntityObjectMapper extends ObjectMapper {
 	}
 
 	/**
+	 * Define the parameter type for a report
+	 * @param reportType the report type
+	 * @param <P> the parameter type
+	 * @return the {@link ReportParameterTypeDefiner}
+	 * @throws IllegalStateException in case this report has already been defined
+	 */
+	public <P> ReportParameterTypeDefiner<P> define(ReportType<?, ?, P> reportType) {
+		return new DefaultReportParameterTypeDefiner<>(requireNonNull(reportType));
+	}
+
+	/**
 	 * Define the argument type for a procedure
 	 * @param procedureType the procedure type
 	 * @param <T> the argument type
@@ -231,9 +244,24 @@ public final class EntityObjectMapper extends ObjectMapper {
 	}
 
 	/**
+	 * @param reportType the report type
+	 * @return the report definition
+	 * @throws IllegalArgumentException in case the report has not been defined
+	 */
+	public <R, P> ReportDefinition<P> report(ReportType<?, R, P> reportType) {
+		ReportDefinition<P> definition = (ReportDefinition<P>) reportDefinitions.get(requireNonNull(reportType));
+		if (definition == null) {
+			throw new IllegalArgumentException("Report not defined " + reportType);
+		}
+
+		return definition;
+	}
+
+	/**
 	 * @param procedureType the procedure type
 	 * @param <T> the argument type
 	 * @return the procedure definition
+	 * @throws IllegalArgumentException in case the procedure has not been defined
 	 */
 	public <T> ProcedureDefinition<T> procedure(ProcedureType<?, T> procedureType) {
 		ProcedureDefinition<T> definition = (ProcedureDefinition<T>) procedureDefinitions.get(requireNonNull(procedureType));
@@ -249,6 +277,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * @param <T> the argument type
 	 * @param <R> the return type
 	 * @return the function definition
+	 * @throws IllegalArgumentException in case the function has not been defined
 	 */
 	public <T, R> FunctionDefinition<T, R> function(FunctionType<?, T, R> functionType) {
 		FunctionDefinition<T, R> definition = (FunctionDefinition<T, R>) functionDefinitions.get(requireNonNull(functionType));
@@ -257,6 +286,33 @@ public final class EntityObjectMapper extends ObjectMapper {
 		}
 
 		return definition;
+	}
+
+	/**
+	 * @param <P> the report parameter type
+	 */
+	public interface ReportDefinition<P> {
+
+		/**
+		 * @return the parameter type or
+		 */
+		Class<P> parameterType();
+	}
+
+	/**
+	 * @param <P> the parameter type
+	 */
+	public interface ReportParameterTypeDefiner<P> {
+
+		/**
+		 * @param parameterType the parameter type
+		 */
+		void parameterType(TypeReference<P> parameterType);
+
+		/**
+		 * @param parameterType the parameter type
+		 */
+		void parameterType(Class<P> parameterType);
 	}
 
 	/**
@@ -336,6 +392,42 @@ public final class EntityObjectMapper extends ObjectMapper {
 		 * @param argumentType the argument type
 		 */
 		void argumentType(Class<T> argumentType);
+	}
+
+	private final class DefaultReportParameterTypeDefiner<P> implements ReportParameterTypeDefiner<P> {
+
+		private final ReportType<?, ?, P> reportType;
+
+		private DefaultReportParameterTypeDefiner(ReportType<?, ?, P> reportType) {
+			if (reportDefinitions.containsKey(reportType)) {
+				throw new IllegalStateException("Report already defined " + reportType);
+			}
+			this.reportType = reportType;
+		}
+
+		@Override
+		public void parameterType(TypeReference<P> parameterType) {
+			parameterType(rawType(requireNonNull(parameterType)));
+		}
+
+		@Override
+		public void parameterType(Class<P> parameterType) {
+			reportDefinitions.put(reportType, new DefaultReportDefinition<>(requireNonNull(parameterType)));
+		}
+	}
+
+	private static final class DefaultReportDefinition<P> implements ReportDefinition<P> {
+
+		private final Class<P> parameterType;
+
+		private DefaultReportDefinition(Class<P> parameterType) {
+			this.parameterType = parameterType;
+		}
+
+		@Override
+		public Class<P> parameterType() {
+			return parameterType;
+		}
 	}
 
 	private final class DefaultProcedureArgumentTypeDefiner<T> implements ProcedureArgumentTypeDefiner<T> {

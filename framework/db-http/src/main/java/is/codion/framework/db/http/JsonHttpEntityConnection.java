@@ -20,6 +20,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
@@ -313,6 +314,25 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				}
 
 				throwIfError(execute(createJsonRequest("procedure", request.toString())));
+			}
+			catch (Exception exception) {
+				throw handleException(exception);
+			}
+		}
+	}
+
+	@Override
+	public <T, R, P> R report(ReportType<T, R, P> reportType, P parameter) {
+		requireNonNull(reportType);
+		synchronized (httpClient) {
+			try {
+				ObjectNode request = objectMapper.createObjectNode();
+				request.put("reportType", reportType.name());
+				if (parameter != null) {
+					request.set("parameter", objectMapper.valueToTree(parameter));
+				}
+
+				return handleResponse(execute(createJsonRequest("report", request.toString())));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);

@@ -35,11 +35,13 @@ public final class TestObjectMapperFactory implements EntityObjectMapperFactory 
 	@Override
 	public EntityObjectMapper entityObjectMapper(Entities entities) {
 		EntityObjectMapper entityObjectMapper = EntityObjectMapperFactory.super.entityObjectMapper(entities);
-		entityObjectMapper.define(TestDomain.FUNCTION_ID)
+		entityObjectMapper.define(TestDomain.FUNCTION)
 						.returnType(new TypeReference<>() {})
 						.argumentType(new TypeReference<>() {});
-		entityObjectMapper.define(TestDomain.PROCEDURE_ID)
+		entityObjectMapper.define(TestDomain.PROCEDURE)
 						.argumentType(new TypeReference<>() {});
+		entityObjectMapper.define(TestDomain.REPORT)
+						.parameterType(String.class);
 
 		return entityObjectMapper;
 	}

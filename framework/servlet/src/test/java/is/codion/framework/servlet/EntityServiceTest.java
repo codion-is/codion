@@ -39,6 +39,7 @@ import is.codion.framework.servlet.TestDomain.Department;
 import is.codion.framework.servlet.TestDomain.Employee;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -207,9 +208,10 @@ public class EntityServiceTest {
 
 	@Test
 	void procedure() throws Exception {
+		JsonNodeFactory nodeFactory = OBJECT_MAPPER.getNodeFactory();
 		ObjectNode request = OBJECT_MAPPER.createObjectNode();
-		request.put("procedureType", TestDomain.PROCEDURE_ID.name());
-		request.put("argument", OBJECT_MAPPER.valueToTree(asList("one", "two")));
+		request.set("procedureType", nodeFactory.textNode(TestDomain.PROCEDURE.name()));
+		request.set("argument", OBJECT_MAPPER.valueToTree(asList("one", "two")));
 		// No argument field since procedure has no arguments
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("procedure",
 						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
@@ -218,9 +220,10 @@ public class EntityServiceTest {
 
 	@Test
 	void function() throws Exception {
+		JsonNodeFactory nodeFactory = OBJECT_MAPPER.getNodeFactory();
 		ObjectNode request = OBJECT_MAPPER.createObjectNode();
-		request.put("functionType", TestDomain.FUNCTION_ID.name());
-		request.put("argument", OBJECT_MAPPER.valueToTree(asList("one", "two")));
+		request.set("functionType", nodeFactory.textNode(TestDomain.FUNCTION.name()));
+		request.set("argument", OBJECT_MAPPER.valueToTree(asList("one", "two")));
 		// No argument field since function has no arguments
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("function",
 						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
@@ -233,11 +236,16 @@ public class EntityServiceTest {
 	@Test
 	void report() throws Exception {
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("report",
-						BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.REPORT_TYPE, "Parameter")))), BodyHandlers.ofByteArray());
+						BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.REPORT, "Parameter")))), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 
+		JsonNodeFactory nodeFactory = OBJECT_MAPPER.getNodeFactory();
+		ObjectNode request = OBJECT_MAPPER.createObjectNode();
+		request.set("reportType", nodeFactory.textNode(TestDomain.REPORT.name()));
+		request.set("argument", nodeFactory.textNode("parameter"));
+
 		response = HTTP_CLIENT.send(createJsonRequest("report",
-						BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.REPORT_TYPE, "Parameter")))), BodyHandlers.ofByteArray());
+						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 	}
 

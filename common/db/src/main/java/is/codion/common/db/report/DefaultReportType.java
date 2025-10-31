@@ -40,17 +40,15 @@ final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializa
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
+	public boolean equals(Object object) {
+		if (this == object) {
 			return true;
 		}
-		if (!(o instanceof DefaultReportType)) {
-			return false;
+		if (object instanceof ReportType) {
+			return name.equals(((ReportType<?, ?, ?>) object).name());
 		}
 
-		DefaultReportType<?, ?, ?> that = (DefaultReportType<?, ?, ?>) o;
-
-		return name.equals(that.name);
+		return false;
 	}
 
 	@Override

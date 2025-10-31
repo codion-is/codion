@@ -40,6 +40,8 @@ public final class TestObjectMapperFactory implements EntityObjectMapperFactory 
 						.argumentType(new TypeReference<>() {});
 		entityObjectMapper.define(TestDomain.PROCEDURE_ID)
 						.argumentType(new TypeReference<>() {});
+		entityObjectMapper.define(TestDomain.REPORT)
+						.parameterType(String.class);
 
 		return entityObjectMapper;
 	}

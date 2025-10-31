@@ -44,17 +44,15 @@ final class DefaultJRReportType implements JRReportType, Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
+	public boolean equals(Object object) {
+		if (this == object) {
 			return true;
 		}
-		if (!(o instanceof DefaultJRReportType)) {
-			return false;
+		if (object instanceof ReportType) {
+			return reportType.equals(object);
 		}
 
-		DefaultJRReportType that = (DefaultJRReportType) o;
-
-		return reportType.equals(that.reportType);
+		return false;
 	}
 
 	@Override

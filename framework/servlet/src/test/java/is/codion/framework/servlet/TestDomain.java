@@ -158,18 +158,18 @@ public final class TestDomain extends DomainModel {
 						.build());
 	}
 
-	public static final FunctionType<EntityConnection, List<String>, List<Integer>> FUNCTION_ID = FunctionType.functionType("functionId");
-	public static final ProcedureType<EntityConnection, List<String>> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
+	public static final FunctionType<EntityConnection, List<String>, List<Integer>> FUNCTION = FunctionType.functionType("functionId");
+	public static final ProcedureType<EntityConnection, List<String>> PROCEDURE = ProcedureType.procedureType("procedureId");
 
 	void operations() {
-		add(PROCEDURE_ID, (connection, objects) -> {});
-		add(FUNCTION_ID, (connection, objects) -> asList(1, 2, 3));
+		add(PROCEDURE, (connection, objects) -> {});
+		add(FUNCTION, (connection, objects) -> asList(1, 2, 3));
 	}
 
-	public static final ReportType<Object, String, String> REPORT_TYPE = ReportType.reportType("test");
+	public static final ReportType<Object, String, String> REPORT = ReportType.reportType("test");
 
 	void report() {
-		add(REPORT_TYPE, new AbstractReport<Object, String, String>("report.path", false) {
+		add(REPORT, new AbstractReport<Object, String, String>("report.path", false) {
 			@Override
 			public String fill(Connection connection, String parameters) {
 				return parameters;

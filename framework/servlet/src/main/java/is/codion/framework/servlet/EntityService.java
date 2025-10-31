@@ -44,6 +44,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapper.FunctionDefinition;
+import is.codion.framework.json.domain.EntityObjectMapper.ReportDefinition;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -80,6 +81,7 @@ import static is.codion.common.Serializer.serialize;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.db.operation.FunctionType.functionType;
 import static is.codion.common.db.operation.ProcedureType.procedureType;
+import static is.codion.common.db.report.ReportType.reportType;
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
 import static java.util.Objects.requireNonNull;
@@ -290,9 +292,9 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	private void addJsonHandlers() {
-		// Note: some services only implement java serialization
-		// (report f.ex) so these are not just some glaring mistakes
-		// below, where a ::serial call is associated with the json url
+		// Note: Some methods (for example those without parameters and return values)
+		// use the java serialization handler, so these are not just some glaring
+		// mistakes below, where a ::serial call is associated with the json url
 		javalin.post(URL_JSON + "entities", entitiesHandler::serial);
 		javalin.post(URL_JSON + "close", closeHandler::serial);
 		javalin.post(URL_JSON + "isTransactionOpen", isTransactionOpenHandler::json);
@@ -303,7 +305,7 @@ public final class EntityService implements AuxiliaryServer {
 		javalin.post(URL_JSON + "setQueryCacheEnabled", setQueryCacheEnabledHandler::json);
 		javalin.post(URL_JSON + "procedure", procedureHandler::json);
 		javalin.post(URL_JSON + "function", functionHandler::json);
-		javalin.post(URL_JSON + "report", reportHandler::serial);
+		javalin.post(URL_JSON + "report", reportHandler::json);
 		javalin.post(URL_JSON + "dependencies", dependenciesHandler::json);
 		javalin.post(URL_JSON + "count", countHandler::json);
 		javalin.post(URL_JSON + "values", valuesHandler::json);
@@ -477,7 +479,7 @@ public final class EntityService implements AuxiliaryServer {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req().getInputStream());
 				Object argument = parameters.size() > 1 ? parameters.get(1) : null;
-				connection.execute((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
+				connection.execute((ProcedureType<EntityConnection, Object>) parameters.get(0), argument);
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {
@@ -491,7 +493,7 @@ public final class EntityService implements AuxiliaryServer {
 				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
 
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
-				ProcedureType<? extends EntityConnection, Object> procedureType = procedureType(requestNode.get("procedureType").asText());
+				ProcedureType<EntityConnection, Object> procedureType = procedureType(requestNode.get("procedureType").asText());
 				Object argument = null;
 				JsonNode argumentNode = requestNode.get("argument");
 				if (argumentNode != null) {
@@ -515,8 +517,8 @@ public final class EntityService implements AuxiliaryServer {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req().getInputStream());
-				FunctionType<? extends EntityConnection, Object, Object> functionType =
-								(FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0);
+				FunctionType<EntityConnection, Object, Object> functionType =
+								(FunctionType<EntityConnection, Object, Object>) parameters.get(0);
 				Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
@@ -533,7 +535,7 @@ public final class EntityService implements AuxiliaryServer {
 				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
 
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
-				FunctionType<? extends EntityConnection, Object, Object> functionType = functionType(requestNode.get("functionType").asText());
+				FunctionType<EntityConnection, Object, Object> functionType = functionType(requestNode.get("functionType").asText());
 				Object argument = null;
 				JsonNode argumentNode = requestNode.get("argument");
 				if (argumentNode != null) {
@@ -565,6 +567,29 @@ public final class EntityService implements AuxiliaryServer {
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(connection.report(reportType, parameters.get(1))));
+			}
+			catch (Exception e) {
+				handleException(context, e);
+			}
+		}
+
+		private void json(Context context) {
+			try {
+				RemoteEntityConnection connection = authenticate(context);
+				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
+
+				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
+				ReportType<Object, Object, Object> reportType = reportType(requestNode.get("reportType").asText());
+				Object parameter = null;
+				JsonNode parameterNode = requestNode.get("parameter");
+				if (parameterNode != null) {
+					ReportDefinition<?> definition = objectMapper.entityObjectMapper().report(reportType);
+					parameter = objectMapper.readValue(parameterNode.toString(), definition.parameterType());
+				}
+
+				context.status(HttpStatus.OK_200)
+								.contentType(ContentType.APPLICATION_OCTET_STREAM)
+								.result(serialize(connection.report(reportType, parameter)));
 			}
 			catch (Exception e) {
 				handleException(context, e);
