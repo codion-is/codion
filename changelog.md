@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.57
+### is.codion.common.core
+- Serializer.deserialize() overloaded with InputStream.
 ### is.codion.swing.common.ui
 - FrameBuilder.iconImage() and iconImages() added.
 - FrameBuilder.componentListener() added.
@@ -9,6 +11,7 @@ Codion Change Log
 - EntityObjectMapper, methods for registering procedure and function argument and return types added, for serialization.
 ### is.codion.framework.servlet
 - EntityService.FunctionHandler and ProcedureHandler.json() added.
+- EntityService.deserialize() removed, Serializer.deserialize() used instead.
 ### is.codion.framework.db.http
 - JsonHttpEntityConnection, JSON based function and procedure execution added.
 

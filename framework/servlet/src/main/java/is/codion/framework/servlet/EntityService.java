@@ -64,7 +64,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.Base64;
@@ -76,6 +75,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.*;
+import static is.codion.common.Serializer.deserialize;
 import static is.codion.common.Serializer.serialize;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.db.operation.FunctionType.functionType;
@@ -421,7 +421,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				connection.queryCache(deserialize(context.req()));
+				connection.queryCache(deserialize(context.req().getInputStream()));
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {
@@ -447,7 +447,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				List<Object> parameters = deserialize(context.req());
+				List<Object> parameters = deserialize(context.req().getInputStream());
 				Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 				connection.execute((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
 				context.status(HttpStatus.OK_200);
@@ -486,7 +486,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				List<Object> parameters = deserialize(context.req());
+				List<Object> parameters = deserialize(context.req().getInputStream());
 				FunctionType<? extends EntityConnection, Object, Object> functionType =
 								(FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0);
 				Object argument = parameters.size() > 1 ? parameters.get(1) : null;
@@ -532,7 +532,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				List<Object> parameters = deserialize(context.req());
+				List<Object> parameters = deserialize(context.req().getInputStream());
 				ReportType<?, ?, Object> reportType = (ReportType<?, ?, Object>) parameters.get(0);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
@@ -551,7 +551,7 @@ public final class EntityService implements AuxiliaryServer {
 				RemoteEntityConnection connection = authenticate(context);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(serialize(connection.dependencies(deserialize(context.req()))));
+								.result(serialize(connection.dependencies(deserialize(context.req().getInputStream()))));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -579,7 +579,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				int rowCount = connection.count(deserialize(context.req()));
+				int rowCount = connection.count(deserialize(context.req().getInputStream()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(rowCount));
@@ -609,7 +609,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				List<Object> parameters = deserialize(context.req());
+				List<Object> parameters = deserialize(context.req().getInputStream());
 				List<?> values = connection.select((Column<?>) parameters.get(0), (Select) parameters.get(1));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
@@ -649,7 +649,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				List<Entity.Key> keys = deserialize(context.req());
+				List<Entity.Key> keys = deserialize(context.req().getInputStream());
 				Collection<Entity> selected = connection.select(keys);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
@@ -681,7 +681,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				Select select = deserialize(context.req());
+				Select select = deserialize(context.req().getInputStream());
 				List<Entity> selected = connection.select(select);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
@@ -713,7 +713,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				Collection<Entity.Key> keys = connection.insert((Collection<Entity>) deserialize(context.req()));
+				Collection<Entity.Key> keys = connection.insert((Collection<Entity>) deserialize(context.req().getInputStream()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(keys));
@@ -744,7 +744,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				Collection<Entity> entities = connection.insertSelect((Collection<Entity>) deserialize(context.req()));
+				Collection<Entity> entities = connection.insertSelect((Collection<Entity>) deserialize(context.req().getInputStream()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(entities));
@@ -775,7 +775,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				connection.update((List<Entity>) deserialize(context.req()));
+				connection.update((List<Entity>) deserialize(context.req().getInputStream()));
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {
@@ -802,7 +802,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				Collection<Entity> updated = connection.updateSelect((Collection<Entity>) deserialize(context.req()));
+				Collection<Entity> updated = connection.updateSelect((Collection<Entity>) deserialize(context.req().getInputStream()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(updated));
@@ -833,7 +833,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				int updateCount = connection.update((Update) deserialize(context.req()));
+				int updateCount = connection.update((Update) deserialize(context.req().getInputStream()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(updateCount));
@@ -864,7 +864,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				Condition condition = deserialize(context.req());
+				Condition condition = deserialize(context.req().getInputStream());
 				int deleteCount = connection.delete(condition);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
@@ -896,7 +896,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				Collection<Entity.Key> keys = deserialize(context.req());
+				Collection<Entity.Key> keys = deserialize(context.req().getInputStream());
 				connection.delete(keys);
 				context.status(HttpStatus.OK_200);
 			}
@@ -1058,41 +1058,6 @@ public final class EntityService implements AuxiliaryServer {
 				return new byte[0];
 			}
 		}
-	}
-
-	private static <T> T deserialize(HttpServletRequest request) throws IOException, ClassNotFoundException {
-		/*
-		 * SECURITY NOTE (CodeQL warning about deserialization of user-controlled data):
-		 *
-		 * This deserialization is protected by JVM-wide ObjectInputFilter configuration.
-		 * EntityService is an AuxiliaryServer that runs exclusively alongside EntityServer
-		 * in the same JVM process, and cannot be deployed independently.
-		 *
-		 * EntityServer enforces deserialization filter configuration through the following mechanism:
-		 *
-		 * 1. By default, EntityServer REQUIRES an ObjectInputFilterFactory to be configured via:
-		 *    codion.server.objectInputFilterFactory=my.filter.MyObjectInputFilterFactory
-		 *
-		 * 2. If no filter factory is configured, the server throws an exception on startup and
-		 *    refuses to start. This prevents accidental deployment without deserialization filtering.
-		 *
-		 * 3. The requirement can only be explicitly disabled via system property:
-		 *    codion.server.objectInputFilterFactoryRequired=false
-		 *    (not recommended for production)
-		 *
-		 * 4. The configured ObjectInputFilter applies globally to ALL ObjectInputStream instances
-		 *    in the JVM, including this deserialization call, providing defense against
-		 *    deserialization attacks.
-		 *
-		 * See: documentation/src/docs/asciidoc/technical/server.adoc for complete details on
-		 * serialization filtering configuration, including pattern-based filtering, resource
-		 * exhaustion limits (maxbytes, maxdepth, maxarray, maxrefs), and whitelist management.
-		 *
-		 * This architecture ensures that EntityService inherits the same deserialization
-		 * protections as the EntityServer RMI interface, making deployment without proper
-		 * filtering configuration impossible (by default).
-		 */
-		return (T) new ObjectInputStream(request.getInputStream()).readObject();
 	}
 
 	private static synchronized void resolveClasspathKeyStore() {
