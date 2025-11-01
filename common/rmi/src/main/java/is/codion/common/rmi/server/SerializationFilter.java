@@ -31,7 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
@@ -165,7 +165,7 @@ final class SerializationFilter {
 
 	private static Collection<String> readFileWhitelistItems(String patternFile) {
 		try {
-			return new HashSet<>(Files.readAllLines(Paths.get(patternFile)));
+			return new LinkedHashSet<>(Files.readAllLines(Paths.get(patternFile)));
 		}
 		catch (IOException e) {
 			LOG.error("Unable to read serialization pattern file: {}", patternFile);

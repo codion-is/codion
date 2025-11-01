@@ -6,6 +6,8 @@ Codion Change Log
 - Serializer.deserialize() overloaded with InputStream.
 ### is.codion.common.db
 - Procedure and Function argument renamed parameter.
+### is.codion.common.rmi
+- SerializationFilter.readFileWhitelistItems() bug fixed, now respects list item order.
 ### is.codion.swing.common.ui
 - FrameBuilder.iconImage() and iconImages() added.
 - FrameBuilder.componentListener() added.
