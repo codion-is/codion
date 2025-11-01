@@ -23,11 +23,8 @@ import org.jspecify.annotations.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class for serialization.
@@ -56,19 +53,6 @@ public final class Serializer {
 	}
 
 	/**
-	 * Deserializes the input stream into a T, an empty input stream results in a null return value
-	 * @param inputStream the input stream containing the serialized object
-	 * @param <T> the type of the object represented in the byte array
-	 * @return the deserialized object, null in case of an empty {@code inputStream}
-	 * @throws IOException in case of an exception
-	 * @throws ClassNotFoundException in case the deserialized class is not found
-	 * @throws ClassCastException if the deserialized object cannot be cast to type T
-	 */
-	public static <T> @Nullable T deserialize(InputStream inputStream) throws IOException, ClassNotFoundException {
-		return (T) new ObjectInputStream(requireNonNull(inputStream)).readObject();
-	}
-
-	/**
 	 * Deserializes the given byte array into a T, null or an empty byte array result in a null return value
 	 * @param bytes a byte array representing the serialized object
 	 * @param <T> the type of the object represented in the byte array
@@ -79,7 +63,7 @@ public final class Serializer {
 	 */
 	public static <T> @Nullable T deserialize(byte @Nullable [] bytes) throws IOException, ClassNotFoundException {
 		if (bytes != null && bytes.length > 0) {
-			return deserialize(new ByteArrayInputStream(bytes));
+			return (T) new ObjectInputStream(new ByteArrayInputStream(bytes)).readObject();
 		}
 
 		return null;

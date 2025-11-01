@@ -17,6 +17,7 @@ Codion Change Log
 - EntityService.deserialize() removed, Serializer.deserialize() used instead.
 - EntityService.JSON (default true) and SERIALIZATION (default false) configuration properties added, other properties renamed.
 - EntityService.ReportHandler.json() added.
+- EntityService.deserialize() reintroduced, proper location for security note.
 ### is.codion.framework.db.http
 - JsonHttpEntityConnection, JSON based function and procedure execution added.
 - HttpEntityConnection.JSON default back to being true.
