@@ -143,7 +143,7 @@ is.codion.demos.store.domain.StoreImpl
 NOTE: The domain model implementation must be on the classpath when running with a local JDBC connection, but when running with an RMI or HTTP connection the domain model API is sufficient.
 If you foresee using RMI or HTTP connections it is recommended to split your domain model into separate API and implementation modules, to simplify client configurations (see https://github.com/codion-is/chinook[Chinook] and https://github.com/codion-is/world[World] demo applications, see https://github.com/codion-is/petclinic[Petclinic] for a simple single class domain model).
 
-The domain model provides an {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html#entities{opar}{cpar}[entities()], which contains the entity definitions and serves as a factory for *Entity* and *Entity.Key* instances.
+The domain model provides an {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html#entities()[entities()], which contains the entity definitions and serves as a factory for *Entity* and *Entity.Key* instances.
 
 [source,java,indent=0]
 ----
@@ -533,8 +533,8 @@ These templates demonstrate how column templates can:
 
 == Domain
 
-Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#define{opar}is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...{cpar}[EntityType.define()] and adding the resulting definition to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add{opar}is.codion.framework.domain.entity.EntityDefinition{cpar}[add(EntityDefinition)] method in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class.
-The framework assumes the *entityType* name is the underlying table name, but the *tableName* can be specified via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#tableName{opar}java.lang.String{cpar}[EntityDefinition.Builder.tableName(String)] method.
+Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#define(is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...)[EntityType.define()] and adding the resulting definition to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add(is.codion.framework.domain.entity.EntityDefinition)[add(EntityDefinition)] method in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class.
+The framework assumes the *entityType* name is the underlying table name, but the *tableName* can be specified via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#tableName(java.lang.String)[EntityDefinition.Builder.tableName(String)] method.
 
 [source,java,indent=0]
 ----
@@ -612,7 +612,7 @@ include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=generator]
 The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityFormatter.html[EntityFormatter] class provides a builder for a *Function<Entity, String>* instance, which is then used to provide the *toString()* implementations for entities.
 This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
 
-*Entity.toString()* values are cached by default and invalidated each time an attribute value changes. This caching can be turned off via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#cacheToString{opar}boolean{cpar}[EntityDefinition.Builder.cacheToString(boolean)]
+*Entity.toString()* values are cached by default and invalidated each time an attribute value changes. This caching can be turned off via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#cacheToString(boolean)[EntityDefinition.Builder.cacheToString(boolean)]
 
 [source,java,indent=0]
 ----
@@ -841,9 +841,9 @@ The unit tests are run within a single transaction which is rolled back after th
 
 The DomainTest uses a default {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DefaultEntityFactory.html[EntityFactory] implementation which provides test entities with randomly created values, based on the value constraints set in the domain model. Extend this class and pass to the super constructor, overriding the required methods.
 
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#foreignKey{opar}is.codion.framework.domain.entity.attribute.ForeignKey{comma}java.util.Map{cpar}[foreignKey] should return an entity instance for the given foreign key to use for a foreign key reference required for inserting the entity being tested.
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#entity{opar}is.codion.framework.domain.entity.EntityType{comma}java.util.Map{cpar}[entity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#modify{opar}is.codion.framework.domain.entity.Entity{comma}java.util.Map{cpar}[modify] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#foreignKey(is.codion.framework.domain.entity.attribute.ForeignKey,java.util.Map)[foreignKey] should return an entity instance for the given foreign key to use for a foreign key reference required for inserting the entity being tested.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#entity(is.codion.framework.domain.entity.EntityType,java.util.Map)[entity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html#modify(is.codion.framework.domain.entity.Entity,java.util.Map)[modify] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated.
 If *modify* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the *test(EntityType entityType)* method with the entity type as parameter.

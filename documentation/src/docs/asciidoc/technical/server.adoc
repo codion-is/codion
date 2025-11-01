@@ -58,6 +58,7 @@ codion.client.trustStorePassword=password
 
 No dynamic class loading is required.
 
+[#_serialization_filtering]
 === Serialization filtering
 
 See https://docs.oracle.com/en/java/javase/23/core/java-serialization-filters.html[Java Serialization Filters] and https://openjdk.org/jeps/290[JEP 290: Filter Incoming Serialization Data].
@@ -160,7 +161,7 @@ maxbytes=10485760;maxarray=100000;maxdepth=100;maxrefs=1000000;java.lang.String;
 Application-level validation (such as User credential length limits) cannot prevent memory allocation during deserialization,
 making these https://openjdk.org/jeps/290[JEP 290] limits essential for security.
 
-[#_server_configuration]
+[#_http_connections]
 == HTTP
 
 Codion provides HTTP-based connections as an alternative to RMI, accessible via the {url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnection.html[HttpEntityConnection] interface. The framework supports two distinct HTTP connection types, each with different serialization strategies optimized for different scenarios.

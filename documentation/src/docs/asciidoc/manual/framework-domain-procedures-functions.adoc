@@ -128,7 +128,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLineEditModel
 
 === Transactional Execution
 
-Use {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.TransactionalResult{cpar}[EntityConnection.transaction()] to execute procedures or functions, when multiple operations must succeed or fail together:
+Use {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#transaction(is.codion.framework.db.EntityConnection,is.codion.framework.db.EntityConnection.TransactionalResult)[EntityConnection.transaction()] to execute procedures or functions, when multiple operations must succeed or fail together:
 
 [source,java,indent=0]
 ----

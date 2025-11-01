@@ -47,6 +47,8 @@ Provides a connection based on a remote HTTP connection.
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=http]
 ----
 
+For more information see <<{basedir}/technical/technical.adoc#_http_connections, HTTP Connections>> in the technical docs.
+
 == Customizing the Description
 
 The connection provider description is displayed in the application frame title (e.g., "Chinook - SCOTT@SERVER@HOST") and can be retrieved via `EntityConnectionProvider.description()`.

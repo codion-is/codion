@@ -77,9 +77,6 @@ tasks.asciidoctor {
             "experimental" to true, "reproducible" to true, "linkcss" to true, "tabsize" to 2,
             "diagram-cachedir" to project.layout.buildDirectory.dir("asciidoc/images/diagram-cache")
                 .get().asFile.absolutePath,
-            "opar" to "(",
-            "cpar" to ")",
-            "comma" to ",",
             "common-core" to "/is.codion.common.core",
             "common-db" to "/is.codion.common.db",
             "common-model" to "/is.codion.common.model",

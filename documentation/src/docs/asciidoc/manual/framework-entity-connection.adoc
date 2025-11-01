@@ -36,7 +36,7 @@ or the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntit
 LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.set(false);
 ----
 
-or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#limitForeignKeyReferenceDepth{opar}boolean{cpar}[limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth)]
+or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#limitForeignKeyReferenceDepth(boolean)[limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth)]
 
 [source,java,]
 ----
@@ -86,27 +86,27 @@ Selecting tracks performs four queries (track + album, mediatype and genre), but
 
 === Selecting entities
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[select(Condition condition)]
+{url-entity-connection}#select(is.codion.framework.domain.entity.condition.Condition)[select(Condition condition)]
 
-{url-entity-connection}#select{opar}is.codion.framework.db.EntityConnection.Select{cpar}[select(Select select)]
+{url-entity-connection}#select(is.codion.framework.db.EntityConnection.Select)[select(Select select)]
 
-{url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[selectSingle(Condition condition)]
+{url-entity-connection}#selectSingle(is.codion.framework.domain.entity.condition.Condition)[selectSingle(Condition condition)]
 
-{url-entity-connection}#selectSingle{opar}is.codion.framework.db.EntityConnection.Select{cpar}[selectSingle(Select select)]
+{url-entity-connection}#selectSingle(is.codion.framework.db.EntityConnection.Select)[selectSingle(Select select)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=select]
 ----
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Entity.Key{cpar}[select(Key key)]
+{url-entity-connection}#select(is.codion.framework.domain.entity.Entity.Key)[select(Key key)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKey]
 ----
 
-{url-entity-connection}#select{opar}java.util.Collection{cpar}[select(Collection<Key> keys)]
+{url-entity-connection}#select(java.util.Collection)[select(Collection<Key> keys)]
 
 [source,java,indent=0]
 ----
@@ -117,11 +117,11 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 For selecting the values of a single column.
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{cpar}[select(Column<T> column)]
+{url-entity-connection}#select(is.codion.framework.domain.entity.attribute.Column)[select(Column<T> column)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.domain.entity.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
+{url-entity-connection}#select(is.codion.framework.domain.entity.attribute.Column,is.codion.framework.domain.entity.condition.Condition)[select(Column<T> column, Condition condition)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.db.EntityConnection.Select{cpar}[select(Column<T> column, Select select)]
+{url-entity-connection}#select(is.codion.framework.domain.entity.attribute.Column,is.codion.framework.db.EntityConnection.Select)[select(Column<T> column, Select select)]
 
 [source,java,indent=0]
 ----
@@ -136,9 +136,9 @@ IMPORTANT: When using remote connections, each call to `hasNext()` and `next()` 
 
 NOTE: `iterator()` is not supported on HTTP based connections, and throws `UnsupportedOperationException`.
 
-{url-entity-connection}#iterator{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[iterator(Condition condition)]
+{url-entity-connection}#iterator(is.codion.framework.domain.entity.condition.Condition)[iterator(Condition condition)]
 
-{url-entity-connection}#iterator{opar}is.codion.framework.db.EntityConnection.Select{cpar}[iterator(Select select)]
+{url-entity-connection}#iterator(is.codion.framework.db.EntityConnection.Select)[iterator(Select select)]
 
 [source,java,indent=0]
 ----
@@ -149,7 +149,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 For selecting entities that depend on a set of entities via foreign keys.
 
-{url-entity-connection}#dependencies{opar}java.util.Collection{cpar}[dependencies(Collection<Entity> entities)]
+{url-entity-connection}#dependencies(java.util.Collection)[dependencies(Collection<Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -160,7 +160,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 For selecting the row count given a count condition.
 
-{url-entity-connection}#count{opar}is.codion.framework.db.EntityConnection.Count{cpar}[count(Count count)]
+{url-entity-connection}#count(is.codion.framework.db.EntityConnection.Count)[count(Count count)]
 
 [source,java,indent=0]
 ----
@@ -173,13 +173,13 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 For inserting rows.
 
-** {url-entity-connection}#insert{opar}is.codion.framework.domain.entity.Entity{cpar}[insert(Entity entity)]
+** {url-entity-connection}#insert(is.codion.framework.domain.entity.Entity)[insert(Entity entity)]
 
-** {url-entity-connection}#insertSelect{opar}is.codion.framework.domain.entity.Entity{cpar}[insertSelect(Entity entity)]
+** {url-entity-connection}#insertSelect(is.codion.framework.domain.entity.Entity)[insertSelect(Entity entity)]
 
-** {url-entity-connection}#insert{opar}java.util.Collection{cpar}[insert(Collection<Entity> entities)]
+** {url-entity-connection}#insert(java.util.Collection)[insert(Collection<Entity> entities)]
 
-** {url-entity-connection}#insertSelect{opar}java.util.Collection{cpar}[insertSelect(Collection<Entity> entities)]
+** {url-entity-connection}#insertSelect(java.util.Collection)[insertSelect(Collection<Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -192,13 +192,13 @@ For updating one or more entity instances.
 
 IMPORTANT: These methods throw an exception if any of the entities is unmodified.
 
-** {url-entity-connection}#update{opar}is.codion.framework.domain.entity.Entity{cpar}[update(Entity entity)]
+** {url-entity-connection}#update(is.codion.framework.domain.entity.Entity)[update(Entity entity)]
 
-** {url-entity-connection}#updateSelect{opar}is.codion.framework.domain.entity.Entity{cpar}[updateSelect(Entity entity)]
+** {url-entity-connection}#updateSelect(is.codion.framework.domain.entity.Entity)[updateSelect(Entity entity)]
 
-** {url-entity-connection}#update{opar}java.util.Collection{cpar}[update(Collection<Entity> entities)]
+** {url-entity-connection}#update(java.util.Collection)[update(Collection<Entity> entities)]
 
-** {url-entity-connection}#updateSelect{opar}java.util.Collection{cpar}[updateSelect(Collection<Entity> entities)]
+** {url-entity-connection}#updateSelect(java.util.Collection)[updateSelect(Collection<Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -233,18 +233,18 @@ or by using the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/L
 LocalEntityConnection.OPTIMISTIC_LOCKING.set(false);
 ----
 
-or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#optimisticLocking{opar}boolean{cpar}[optimisticLocking()]:
+or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#optimisticLocking(boolean)[optimisticLocking()]:
 
 [source,java,]
 ----
 connection.optimisticLocking(false);
 ----
 
-or on a per-entity basis via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#optimisticLocking{opar}boolean{cpar}[EntityDefinition.Builder.optimisticLocking(false)].
+or on a per-entity basis via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#optimisticLocking(boolean)[EntityDefinition.Builder.optimisticLocking(false)].
 
 For updating by condition.
 
-** {url-entity-connection}#update{opar}is.codion.framework.db.EntityConnection.Update{cpar}[update(Update update)]
+** {url-entity-connection}#update(is.codion.framework.db.EntityConnection.Update)[update(Update update)]
 
 [source,java,indent=0]
 ----
@@ -255,16 +255,16 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 For deleting existing rows.
 
-** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[delete(Condition condition)]
+** {url-entity-connection}#delete(is.codion.framework.domain.entity.condition.Condition)[delete(Condition condition)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
 ----
 
-** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.Entity.Key{cpar}[delete(Key key)]
+** {url-entity-connection}#delete(is.codion.framework.domain.entity.Entity.Key)[delete(Key key)]
 
-** {url-entity-connection}#delete{opar}java.util.Collection{cpar}[delete(Collection<Key> keys)]
+** {url-entity-connection}#delete(java.util.Collection)[delete(Collection<Key> keys)]
 
 [source,java,indent=0]
 ----
@@ -279,8 +279,8 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === Function
 
-** {url-entity-connection}#execute{opar}is.codion.common.db.operation.FunctionType{cpar}[execute(FunctionType functionType)]
-** {url-entity-connection}#execute{opar}is.codion.common.db.operation.FunctionType{comma}T{cpar}[execute(FunctionType functionType, T argument)]
+** {url-entity-connection}#execute(is.codion.common.db.operation.FunctionType)[execute(FunctionType functionType)]
+** {url-entity-connection}#execute(is.codion.common.db.operation.FunctionType,T)[execute(FunctionType functionType, T argument)]
 
 [source,java,indent=0]
 ----
@@ -289,8 +289,8 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === Procedure
 
-** {url-entity-connection}#execute{opar}is.codion.common.db.operation.ProcedureType{cpar}[execute(ProcedureType procedureType)]
-** {url-entity-connection}#execute{opar}is.codion.common.db.operation.ProcedureType{comma}T{cpar}[execute(ProcedureType procedureType, T argument)]
+** {url-entity-connection}#execute(is.codion.common.db.operation.ProcedureType)[execute(ProcedureType procedureType)]
+** {url-entity-connection}#execute(is.codion.common.db.operation.ProcedureType,T)[execute(ProcedureType procedureType, T argument)]
 
 [source,java,indent=0]
 ----
@@ -301,7 +301,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === report
 
-** {url-entity-connection}#report{opar}is.codion.common.db.report.ReportType{comma}P{cpar}[report(ReportType reportType, P reportParameters)]
+** {url-entity-connection}#report(is.codion.common.db.report.ReportType,P)[report(ReportType reportType, P reportParameters)]
 
 [source,java,indent=0]
 ----
@@ -316,8 +316,8 @@ Codion encourages declarative transaction boundaries using lambdas or anonymous 
 
 Most use cases are covered by:
 
-* {url-entity-connection}#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.Transactional{cpar}[EntityConnection.transaction(EntityConnection, Transactional transactional)] – no return value
-* {url-entity-connection}#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.TransactionalResult{cpar}[EntityConnection.transaction(EntityConnection, TransactionalResult transactional)] – with return value
+* {url-entity-connection}#transaction(is.codion.framework.db.EntityConnection,is.codion.framework.db.EntityConnection.Transactional)[EntityConnection.transaction(EntityConnection, Transactional transactional)] – no return value
+* {url-entity-connection}#transaction(is.codion.framework.db.EntityConnection,is.codion.framework.db.EntityConnection.TransactionalResult)[EntityConnection.transaction(EntityConnection, TransactionalResult transactional)] – with return value
 
 These methods perform a commit on success and rollback on failure.
 

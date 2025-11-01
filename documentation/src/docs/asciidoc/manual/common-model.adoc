@@ -4,7 +4,7 @@
 
 == File Preferences
 
-{url-javadoc}{common-model}/is/codion/common/model/preferences/UserPreferences.html#file{opar}java.lang.String{cpar}[UserPreferences.file(String)] provides a file-based implementation of the Java Preferences API that removes the restrictive length limitations of the default implementation.
+{url-javadoc}{common-model}/is/codion/common/model/preferences/UserPreferences.html#file(java.lang.String)[UserPreferences.file(String)] provides a file-based implementation of the Java Preferences API that removes the restrictive length limitations of the default implementation.
 
 === Motivation
 
@@ -34,6 +34,8 @@ Preferences are stored in a JSON file at a platform-specific location:
 * **macOS**: `~/Library/Preferences/Codion/{filename}.json`
 * **Linux**: `~/.config/codion/{filename}.json` (follows XDG Base Directory specification)
 * **Other**: `~/.codion/{filename}.json`
+
+NOTE: The global preferences file location can also be specified via {url-javadoc}{common-model}/is/codion/common/model/preferences/UserPreferences.html#PREFERENCES_LOCATION[UserPreferences.PREFERENCES_LOCATION] if these default locations do not fit your use-case.
 
 The file uses the following JSON format:
 
