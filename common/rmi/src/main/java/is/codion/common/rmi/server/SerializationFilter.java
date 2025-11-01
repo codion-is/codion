@@ -56,7 +56,7 @@ final class SerializationFilter {
 	 * @param limitsPrefix the resource limits prefix (maxbytes, maxarray, maxdepth, maxrefs)
 	 */
 	static ObjectInputFilter fromPatterns(String patterns, String limitsPrefix) {
-		String fullPattern = limitsPrefix + patterns;
+		String fullPattern = limitsPrefix + appendExcludeAll(requireNonNull(patterns).trim());
 		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(fullPattern);
 		LOG.info("Serialization filter created from patterns: {}", fullPattern);
 
@@ -69,7 +69,7 @@ final class SerializationFilter {
 	 * @param limitsPrefix the resource limits prefix (maxbytes, maxarray, maxdepth, maxrefs)
 	 */
 	static ObjectInputFilter fromFile(String patternFile, String limitsPrefix) {
-		String fullPattern = limitsPrefix + readPattern(patternFile);
+		String fullPattern = limitsPrefix + appendExcludeAll(readPattern(patternFile));
 		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(fullPattern);
 		LOG.info("Serialization filter created from pattern file: {} with limits: {}", patternFile, limitsPrefix);
 
@@ -90,6 +90,10 @@ final class SerializationFilter {
 		if (serialFilter instanceof DryRun) {
 			((DryRun) serialFilter).writeToFile();
 		}
+	}
+
+	private static String appendExcludeAll(String patterns) {
+		return patterns.endsWith("!*") ? patterns : patterns + ";!*";
 	}
 
 	static final class DryRun implements ObjectInputFilter {
@@ -145,7 +149,8 @@ final class SerializationFilter {
 
 		return lines.stream()
 						.filter(line -> !line.startsWith("#"))
-						.collect(joining(";"));
+						.collect(joining(";"))
+						.trim();
 	}
 
 	private static Collection<String> readClasspathWhitelistItems(String patternFile) {

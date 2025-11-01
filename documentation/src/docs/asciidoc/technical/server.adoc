@@ -61,7 +61,7 @@ No dynamic class loading is required.
 [#_serialization_filtering]
 === Serialization filtering
 
-See https://docs.oracle.com/en/java/javase/23/core/java-serialization-filters.html[Java Serialization Filters] and https://openjdk.org/jeps/290[JEP 290: Filter Incoming Serialization Data].
+See https://docs.oracle.com/en/java/javase/25/core/java-serialization-filters.html[Java Serialization Filters] and https://openjdk.org/jeps/290[JEP 290: Filter Incoming Serialization Data].
 
 The framework provides a way to configure a https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/ObjectInputFilter.html[ObjectInputFilter] for deserialization, by specifying a {url-javadoc}{common-rmi}/is/codion/common/rmi/server/ObjectInputFilterFactory.html[ObjectInputFilterFactory] implementation class with the following system property.
 
@@ -92,16 +92,18 @@ codion.server.objectInputFilterFactory=\
 
 To use serialization filter patterns specified in a string, set the following system property.
 
+IMPORTANT: SerializationFilterFactory automatically appends the exclude all pattern `!*` if it's missing, but it is good practice to always include it in your pattern list.
+
 [source]
 ----
-codion.server.serialization.filter.pattern=pattern1;pattern2
+codion.server.serialization.filter.pattern=pattern1;pattern2;!*
 ----
 
 This is equivalent to setting the following:
 
 [source]
 ----
-jdk.serialFilter=pattern1;pattern2
+jdk.serialFilter=pattern1;pattern2;!*
 ----
 
 To use the serialization pattern filter based on patterns in a file, set the following system property.
