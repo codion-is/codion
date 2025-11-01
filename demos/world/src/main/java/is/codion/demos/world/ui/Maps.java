@@ -43,7 +43,8 @@ final class Maps {
 
 	static JXMapKit createMapKit() {
 		JXMapKit mapKit = new JXMapKit();
-		mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
+		//https://github.com/msteiger/jxmapviewer2/issues/136
+		mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo("OpenStreetMap", "https://tile.openstreetmap.org")));
 		mapKit.setMiniMapVisible(false);
 		mapKit.setZoomSliderVisible(false);
 		mapKit.setZoomButtonsVisible(false);
