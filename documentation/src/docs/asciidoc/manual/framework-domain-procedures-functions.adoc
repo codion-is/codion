@@ -143,6 +143,7 @@ When using HTTP-based connections with JSON serialization enabled (via {url-java
 
 Jackson's `ObjectMapper` requires target types to deserialize JSON. While `FunctionType` and `ProcedureType` carry generic type parameters, these are erased at runtime. The type registry provides this information to the JSON serialization layer.
 
+[#_entityobjectmapperfactory]
 === EntityObjectMapperFactory
 
 Create an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory] implementation and define your procedure and function types:

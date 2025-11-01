@@ -161,6 +161,91 @@ Application-level validation (such as User credential length limits) cannot prev
 making these https://openjdk.org/jeps/290[JEP 290] limits essential for security.
 
 [#_server_configuration]
+== HTTP
+
+Codion provides HTTP-based connections as an alternative to RMI, accessible via the {url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnection.html[HttpEntityConnection] interface. The framework supports two distinct HTTP connection types, each with different serialization strategies optimized for different scenarios.
+
+=== Connection Types
+
+==== Serialization-based Connection
+
+The default HTTP connection uses Java serialization for all communication:
+
+* **Performance**: More efficient for complex object graphs with automatic deduplication
+* **Memory**: Lower memory footprint due to object reference handling
+* **Security**: Requires proper deserialization filtering (see <<#_serialization_filtering, Serialization filtering>>)
+* **Configuration**: Server-side enabled via `codion.server.http.serialization=true` (default: `false`)
+
+The serialization-based connection is ideal for trusted networks and scenarios where performance is critical.
+
+==== JSON-based Connection
+
+The JSON connection provides a more security-conscious approach:
+
+* **Security**: Eliminates server-side deserialization vulnerabilities by using JSON for incoming requests
+* **Transparency**: Human-readable request/response format for debugging
+* **Compatibility**: Works with non-Java clients (when using JSON throughout)
+* **Configuration**: Server-side enabled via `codion.server.http.json=true` (default: `true`)
+
+The JSON connection uses a **hybrid serialization strategy**:
+
+[cols="2,3,2", options="header"]
+|===
+|Operation|Request|Response
+|CRUD operations|JSON|JSON
+|Function parameters|JSON|Java serialization
+|Function results|N/A|Java serialization
+|Procedure parameters|JSON|N/A
+|Report parameters|JSON|Java serialization
+|Report results|N/A|Java serialization
+|Entities instance|N/A|Java serialization
+|===
+
+IMPORTANT: The hybrid approach protects the server from deserialization attacks (the primary security concern) while maintaining compatibility with complex return types like `JasperPrint` that don't support JSON serialization. The client deserializing responses from its chosen server is not a security concern.
+
+=== Choosing a Connection Type
+
+**Use serialization-based connections when:**
+
+* Operating in a trusted network environment
+* Performance and memory efficiency are priorities
+* You have proper deserialization filtering configured
+* All clients are Java-based
+
+**Use JSON-based connections when:**
+
+* Security is the primary concern (avoiding server-side deserialization)
+* Operating in less trusted environments
+* You want human-readable request/response payloads
+* You need non-Java client compatibility (with custom JSON handling)
+
+=== JSON Connection Requirements
+
+When using the JSON connection with functions, procedures, or reports that have parameters, you must register parameter types with the {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper]. This is required because Jackson needs target types to deserialize JSON, and generic type parameters are erased at runtime.
+
+See the manual section on <<../manual/framework-domain-procedures-functions.adoc#_entityobjectmapperfactory, HTTP/JSON Serialization>> for details on registering parameter types via {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory].
+
+=== Server Configuration
+
+Enable or disable connection types on the server:
+
+[source]
+----
+codion.server.http.serialization=false  # Default: false
+codion.server.http.json=true            # Default: true
+----
+
+Both can be enabled simultaneously, allowing clients to choose their preferred connection type.
+
+=== Client Configuration
+
+Clients select their connection type via configuration:
+
+[source]
+----
+codion.client.http.json=true   # Default: true (JSON), false for serialization
+----
+
 == Configuration
 
 === Example configuration file
