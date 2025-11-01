@@ -169,11 +169,11 @@ public final class TestDomain extends DomainModel {
 						.build());
 	}
 
-	public static final FunctionType<EntityConnection, List<String>, List<Integer>> FUNCTION_ID = FunctionType.functionType("functionId");
-	public static final ProcedureType<EntityConnection, List<String>> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
+	public static final FunctionType<EntityConnection, List<String>, List<Integer>> FUNCTION = FunctionType.functionType("functionId");
+	public static final ProcedureType<EntityConnection, List<String>> PROCEDURE = ProcedureType.procedureType("procedureId");
 
 	void operations() {
-		add(PROCEDURE_ID, (connection, objects) -> {});
-		add(FUNCTION_ID, (connection, objects) -> asList(1, 2, 3));
+		add(PROCEDURE, (connection, parameter) -> {});
+		add(FUNCTION, (connection, parameter) -> asList(1, 2, 3));
 	}
 }

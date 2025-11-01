@@ -39,7 +39,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +48,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -72,9 +70,9 @@ public final class EntityObjectMapper extends ObjectMapper {
 	private final EntityDeserializer entityDeserializer;
 	private final ConditionSerializer conditionSerializer;
 	private final ConditionDeserializer conditionDeserializer;
-	private final Map<ProcedureType<?, ?>, DefaultProcedureDefinition<?>> procedureDefinitions = new HashMap<>();
-	private final Map<FunctionType<?, ?, ?>, DefaultFunctionDefinition<?, ?>> functionDefinitions = new HashMap<>();
-	private final Map<ReportType<?, ?, ?>, DefaultReportDefinition<?>> reportDefinitions = new HashMap<>();
+	private final Map<ProcedureType<?, ?>, ParameterType<?>> procedureParameters = new HashMap<>();
+	private final Map<FunctionType<?, ?, ?>, ParameterType<?>> functionParameters = new HashMap<>();
+	private final Map<ReportType<?, ?, ?>, ParameterType<?>> reportParameters = new HashMap<>();
 
 	EntityObjectMapper(Entities entities) {
 		this.entities = requireNonNull(entities);
@@ -210,324 +208,54 @@ public final class EntityObjectMapper extends ObjectMapper {
 	}
 
 	/**
-	 * Define the parameter type for a report
-	 * @param reportType the report type
-	 * @param <P> the parameter type
-	 * @return the {@link ReportParameterTypeDefiner}
-	 * @throws IllegalStateException in case this report has already been defined
-	 */
-	public <P> ReportParameterTypeDefiner<P> define(ReportType<?, ?, P> reportType) {
-		return new DefaultReportParameterTypeDefiner<>(requireNonNull(reportType));
-	}
-
-	/**
-	 * Define the argument type for a procedure
 	 * @param procedureType the procedure type
-	 * @param <T> the argument type
-	 * @return the {@link ProcedureArgumentTypeDefiner}
-	 * @throws IllegalStateException in case this procedure has already been defined
+	 * @param <T> the procedure parameter type
+	 * @return the {@link ParameterType} for the given procedure
 	 */
-	public <T> ProcedureArgumentTypeDefiner<T> define(ProcedureType<?, T> procedureType) {
-		return new DefaultProcedureArgumentTypeDefiner<>(requireNonNull(procedureType));
-	}
-
-	/**
-	 * Define the return type for a function
-	 * @param functionType the function type
-	 * @param <T> the argument type
-	 * @param <R> the return type
-	 * @return the {@link FunctionArgumentTypeDefiner}
-	 * @throws IllegalStateException in case this function has already been defined
-	 */
-	public <T, R> FunctionReturnTypeDefiner<T, R> define(FunctionType<?, T, R> functionType) {
-		return new DefaultFunctionReturnTypeDefiner<>(requireNonNull(functionType));
-	}
-
-	/**
-	 * @param reportType the report type
-	 * @return the report definition
-	 * @throws IllegalArgumentException in case the report has not been defined
-	 */
-	public <R, P> ReportDefinition<P> report(ReportType<?, R, P> reportType) {
-		ReportDefinition<P> definition = (ReportDefinition<P>) reportDefinitions.get(requireNonNull(reportType));
-		if (definition == null) {
-			throw new IllegalArgumentException("Report not defined " + reportType);
-		}
-
-		return definition;
-	}
-
-	/**
-	 * @param procedureType the procedure type
-	 * @param <T> the argument type
-	 * @return the procedure definition
-	 * @throws IllegalArgumentException in case the procedure has not been defined
-	 */
-	public <T> ProcedureDefinition<T> procedure(ProcedureType<?, T> procedureType) {
-		ProcedureDefinition<T> definition = (ProcedureDefinition<T>) procedureDefinitions.get(requireNonNull(procedureType));
-		if (definition == null) {
-			throw new IllegalArgumentException("Procedure not defined " + procedureType);
-		}
-
-		return definition;
+	public <T> ParameterType<T> parameter(ProcedureType<?, T> procedureType) {
+		return (ParameterType<T>) procedureParameters.computeIfAbsent(requireNonNull(procedureType),
+						k -> new DefaultParameterType<>("procedure: " + procedureType.name()));
 	}
 
 	/**
 	 * @param functionType the function type
-	 * @param <T> the argument type
-	 * @param <R> the return type
-	 * @return the function definition
-	 * @throws IllegalArgumentException in case the function has not been defined
+	 * @param <T> the function parameter type
+	 * @return the {@link ParameterType} for the given function
 	 */
-	public <T, R> FunctionDefinition<T, R> function(FunctionType<?, T, R> functionType) {
-		FunctionDefinition<T, R> definition = (FunctionDefinition<T, R>) functionDefinitions.get(requireNonNull(functionType));
-		if (definition == null) {
-			throw new IllegalArgumentException("Function not defined " + functionType);
-		}
-
-		return definition;
+	public <T> ParameterType<T> parameter(FunctionType<?, T, ?> functionType) {
+		return (ParameterType<T>) functionParameters.computeIfAbsent(requireNonNull(functionType),
+						k -> new DefaultParameterType<>("function: " + functionType.name()));
 	}
 
 	/**
-	 * @param <P> the report parameter type
+	 * @param reportType the report type
+	 * @param <T> the report parameter type
+	 * @return the {@link ParameterType} for the given report
 	 */
-	public interface ReportDefinition<P> {
-
-		/**
-		 * @return the parameter type or
-		 */
-		Class<P> parameterType();
+	public <T> ParameterType<T> parameter(ReportType<?, T, ?> reportType) {
+		return (ParameterType<T>) reportParameters.computeIfAbsent(requireNonNull(reportType),
+						k -> new DefaultParameterType<>("report: " + reportType.name()));
 	}
 
 	/**
-	 * @param <P> the parameter type
+	 * @param <T> the parameter type
 	 */
-	public interface ReportParameterTypeDefiner<P> {
+	public sealed interface ParameterType<T> {
 
 		/**
-		 * @param parameterType the parameter type
+		 * @param type the type
 		 */
-		void parameterType(TypeReference<P> parameterType);
+		void set(TypeReference<T> type);
 
 		/**
-		 * @param parameterType the parameter type
+		 * @param type the type
 		 */
-		void parameterType(Class<P> parameterType);
-	}
-
-	/**
-	 * @param <T> the argument type
-	 */
-	public interface ProcedureDefinition<T> {
+		void set(Class<T> type);
 
 		/**
-		 * @return the argument type
+		 * @return the type
 		 */
-		Class<T> argumentType();
-	}
-
-	/**
-	 * @param <T> the argument type
-	 * @param <R> the return type
-	 */
-	public interface FunctionDefinition<T, R> {
-
-		/**
-		 * @return the argument type or an empty {@link Optional} in case none is defined
-		 */
-		Optional<Class<T>> argumentType();
-
-		/**
-		 * @return the return type
-		 */
-		Class<R> returnType();
-	}
-
-	/**
-	 * @param <T> the argument type
-	 */
-	public interface ProcedureArgumentTypeDefiner<T> {
-
-		/**
-		 * @param argumentType the argument type
-		 */
-		void argumentType(TypeReference<T> argumentType);
-
-		/**
-		 * @param argumentType the argument type
-		 */
-		void argumentType(Class<T> argumentType);
-	}
-
-	/**
-	 * @param <T> the argument type
-	 * @param <R> the return type
-	 */
-	public interface FunctionReturnTypeDefiner<T, R> {
-
-		/**
-		 * @param returnType the return type
-		 * @return the function definer
-		 */
-		FunctionArgumentTypeDefiner<T> returnType(TypeReference<R> returnType);
-
-		/**
-		 * @param returnType the return type
-		 * @return the function definer
-		 */
-		FunctionArgumentTypeDefiner<T> returnType(Class<R> returnType);
-	}
-
-	/**
-	 * @param <T> the argument type
-	 */
-	public interface FunctionArgumentTypeDefiner<T> {
-
-		/**
-		 * @param argumentType the argument type
-		 */
-		void argumentType(TypeReference<T> argumentType);
-
-		/**
-		 * @param argumentType the argument type
-		 */
-		void argumentType(Class<T> argumentType);
-	}
-
-	private final class DefaultReportParameterTypeDefiner<P> implements ReportParameterTypeDefiner<P> {
-
-		private final ReportType<?, ?, P> reportType;
-
-		private DefaultReportParameterTypeDefiner(ReportType<?, ?, P> reportType) {
-			if (reportDefinitions.containsKey(reportType)) {
-				throw new IllegalStateException("Report already defined " + reportType);
-			}
-			this.reportType = reportType;
-		}
-
-		@Override
-		public void parameterType(TypeReference<P> parameterType) {
-			parameterType(rawType(requireNonNull(parameterType)));
-		}
-
-		@Override
-		public void parameterType(Class<P> parameterType) {
-			reportDefinitions.put(reportType, new DefaultReportDefinition<>(requireNonNull(parameterType)));
-		}
-	}
-
-	private static final class DefaultReportDefinition<P> implements ReportDefinition<P> {
-
-		private final Class<P> parameterType;
-
-		private DefaultReportDefinition(Class<P> parameterType) {
-			this.parameterType = parameterType;
-		}
-
-		@Override
-		public Class<P> parameterType() {
-			return parameterType;
-		}
-	}
-
-	private final class DefaultProcedureArgumentTypeDefiner<T> implements ProcedureArgumentTypeDefiner<T> {
-
-		private final ProcedureType<?, T> procedureType;
-
-		private DefaultProcedureArgumentTypeDefiner(ProcedureType<?, T> procedureType) {
-			if (procedureDefinitions.containsKey(procedureType)) {
-				throw new IllegalStateException("Procedure already defined " + procedureType);
-			}
-			this.procedureType = procedureType;
-		}
-
-		@Override
-		public void argumentType(TypeReference<T> argumentType) {
-			argumentType(rawType(requireNonNull(argumentType)));
-		}
-
-		@Override
-		public void argumentType(Class<T> argumentType) {
-			procedureDefinitions.computeIfAbsent(procedureType, k -> new DefaultProcedureDefinition<>(requireNonNull(argumentType)));
-		}
-	}
-
-	private final class DefaultFunctionReturnTypeDefiner<T, R> implements FunctionReturnTypeDefiner<T, R> {
-
-		private final FunctionType<?, T, R> functionType;
-
-		private DefaultFunctionReturnTypeDefiner(FunctionType<?, T, R> functionType) {
-			if (functionDefinitions.containsKey(functionType)) {
-				throw new IllegalStateException("Function already defined " + functionType);
-			}
-			this.functionType = functionType;
-		}
-
-		@Override
-		public FunctionArgumentTypeDefiner<T> returnType(TypeReference<R> returnType) {
-			return returnType(rawType(requireNonNull(returnType)));
-		}
-
-		@Override
-		public FunctionArgumentTypeDefiner<T> returnType(Class<R> returnType) {
-			return new DefaultFunctionArgumentTypeDefiner<>(functionType, requireNonNull(returnType));
-		}
-	}
-
-	private final class DefaultFunctionArgumentTypeDefiner<T, R> implements FunctionArgumentTypeDefiner<T> {
-
-		private final FunctionType<?, T, R> functionType;
-
-		private DefaultFunctionArgumentTypeDefiner(FunctionType<?, T, R> functionType, Class<R> returnType) {
-			this.functionType = requireNonNull(functionType);
-			functionDefinitions.put(functionType, new DefaultFunctionDefinition<>(returnType, null));
-		}
-
-		@Override
-		public void argumentType(TypeReference<T> argumentType) {
-			argumentType(rawType(requireNonNull(argumentType)));
-		}
-
-		@Override
-		public void argumentType(Class<T> argumentType) {
-			functionDefinitions.compute(functionType, (k, definition) ->
-							new DefaultFunctionDefinition<>(definition.returnType, requireNonNull(argumentType)));
-		}
-	}
-
-	private static final class DefaultProcedureDefinition<T> implements ProcedureDefinition<T> {
-
-		private final Class<T> argumentType;
-
-		private DefaultProcedureDefinition(Class<T> argumentType) {
-			this.argumentType = argumentType;
-		}
-
-		@Override
-		public Class<T> argumentType() {
-			return argumentType;
-		}
-	}
-
-	private static final class DefaultFunctionDefinition<T, R> implements FunctionDefinition<T, R> {
-
-		private final Class<R> returnType;
-		private final @Nullable Class<T> argumentType;
-
-		private DefaultFunctionDefinition(Class<R> returnType, @Nullable Class<T> argumentType) {
-			this.returnType = returnType;
-			this.argumentType = argumentType;
-		}
-
-		@Override
-		public Class<R> returnType() {
-			return returnType;
-		}
-
-		@Override
-		public Optional<Class<T>> argumentType() {
-			return Optional.ofNullable(argumentType);
-		}
+		Class<T> get();
 	}
 
 	/**
@@ -539,15 +267,48 @@ public final class EntityObjectMapper extends ObjectMapper {
 		return new EntityObjectMapper(entities);
 	}
 
-	private static <T> Class<T> rawType(TypeReference<T> typeReference) {
-		Type type = typeReference.getType();
-		if (type instanceof ParameterizedType) {
-			return (Class<T>) ((ParameterizedType) type).getRawType();
-		}
-		else if (type instanceof Class<?>) {
-			return (Class<T>) type;
+	private static final class DefaultParameterType<T> implements ParameterType<T> {
+
+		private final String identifier;
+
+		private Class<T> type;
+
+		private DefaultParameterType(String identifier) {
+			this.identifier = identifier;
 		}
 
-		throw new IllegalArgumentException("Cannot extract raw type from: " + type);
+		@Override
+		public void set(TypeReference<T> type) {
+			set(rawType(requireNonNull(type)));
+		}
+
+		@Override
+		public void set(Class<T> type) {
+			if (this.type != null) {
+				throw new IllegalStateException("Type already set for " + identifier);
+			}
+			this.type = requireNonNull(type);
+		}
+
+		@Override
+		public Class<T> get() {
+			if (type == null) {
+				throw new IllegalStateException("Type not set for " + identifier);
+			}
+
+			return type;
+		}
+
+		private static <T> Class<T> rawType(TypeReference<T> typeReference) {
+			Type type = typeReference.getType();
+			if (type instanceof ParameterizedType) {
+				return (Class<T>) ((ParameterizedType) type).getRawType();
+			}
+			else if (type instanceof Class<?>) {
+				return (Class<T>) type;
+			}
+
+			throw new IllegalArgumentException("Cannot extract raw type from: " + type);
+		}
 	}
 }

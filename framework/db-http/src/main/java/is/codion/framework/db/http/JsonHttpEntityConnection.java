@@ -28,7 +28,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
-import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -52,9 +51,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Http based {@link EntityConnection} implementation based on EntityJsonService
+ * An Http based {@link EntityConnection} implementation based on EntityService
  */
 final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
+
+	private static final String PARAMETER = "parameter";
 
 	private final DatabaseObjectMapper objectMapper;
 
@@ -289,12 +290,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				ObjectNode request = objectMapper.createObjectNode();
 				request.put("functionType", functionType.name());
 				if (parameter != null) {
-					request.set("parameter", objectMapper.valueToTree(parameter));
+					request.set(PARAMETER, objectMapper.valueToTree(parameter));
 				}
-				EntityObjectMapper entityMapper = objectMapper.entityObjectMapper();
-				Class<R> returnType = entityMapper.function(functionType).returnType();
 
-				return handleJsonResponse(execute(createJsonRequest("function", request.toString())), objectMapper, returnType);
+				return handleResponse(execute(createJsonRequest("function", request.toString())));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);
@@ -310,7 +309,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				ObjectNode request = objectMapper.createObjectNode();
 				request.put("procedureType", procedureType.name());
 				if (parameter != null) {
-					request.set("parameter", objectMapper.valueToTree(parameter));
+					request.set(PARAMETER, objectMapper.valueToTree(parameter));
 				}
 
 				throwIfError(execute(createJsonRequest("procedure", request.toString())));
@@ -329,7 +328,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				ObjectNode request = objectMapper.createObjectNode();
 				request.put("reportType", reportType.name());
 				if (parameter != null) {
-					request.set("parameter", objectMapper.valueToTree(parameter));
+					request.set(PARAMETER, objectMapper.valueToTree(parameter));
 				}
 
 				return handleResponse(execute(createJsonRequest("report", request.toString())));

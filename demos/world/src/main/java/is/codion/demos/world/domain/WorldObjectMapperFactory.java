@@ -51,9 +51,7 @@ public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFac
 		EntityObjectMapper objectMapper = super.entityObjectMapper(entities);
 		objectMapper.addSerializer(Location.class, new LocationSerializer());
 		objectMapper.addDeserializer(Location.class, new LocationDeserializer());
-		objectMapper.define(Country.AVERAGE_CITY_POPULATION)
-						.returnType(Double.class)
-						.argumentType(String.class);
+		objectMapper.parameter(Country.AVERAGE_CITY_POPULATION).set(String.class);
 
 		return objectMapper;
 	}

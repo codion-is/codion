@@ -43,8 +43,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
-import is.codion.framework.json.domain.EntityObjectMapper.FunctionDefinition;
-import is.codion.framework.json.domain.EntityObjectMapper.ReportDefinition;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -190,6 +188,7 @@ public final class EntityService implements AuxiliaryServer {
 
 	private static final String URL_SERIAL = "entities/serial/";
 	private static final String URL_JSON = "entities/json/";
+	private static final String PARAMETER = "parameter";
 
 	private final EntitiesHandler entitiesHandler = new EntitiesHandler();
 	private final CloseHandler closeHandler = new CloseHandler();
@@ -495,10 +494,10 @@ public final class EntityService implements AuxiliaryServer {
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
 				ProcedureType<EntityConnection, Object> procedureType = procedureType(requestNode.get("procedureType").asText());
 				Object parameter = null;
-				JsonNode argumentNode = requestNode.get("parameter");
-				if (argumentNode != null) {
-					Class<?> argumentType = objectMapper.entityObjectMapper().procedure(procedureType).argumentType();
-					parameter = objectMapper.readValue(argumentNode.toString(), argumentType);
+				JsonNode parameterNode = requestNode.get(PARAMETER);
+				if (parameterNode != null) {
+					Class<?> parameterType = objectMapper.entityObjectMapper().parameter(procedureType).get();
+					parameter = objectMapper.readValue(parameterNode.toString(), parameterType);
 				}
 
 				connection.execute(procedureType, parameter);
@@ -537,19 +536,15 @@ public final class EntityService implements AuxiliaryServer {
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
 				FunctionType<EntityConnection, Object, Object> functionType = functionType(requestNode.get("functionType").asText());
 				Object parameter = null;
-				JsonNode argumentNode = requestNode.get("parameter");
-				if (argumentNode != null) {
-					FunctionDefinition<?, ?> definition = objectMapper.entityObjectMapper().function(functionType);
-					Class<?> argumentType = definition.argumentType().orElseThrow(() ->
-									new IllegalStateException("Function argument type not defined: " + functionType));
-					parameter = objectMapper.readValue(argumentNode.toString(), argumentType);
+				JsonNode parameterNode = requestNode.get(PARAMETER);
+				if (parameterNode != null) {
+					Class<?> parameterType = objectMapper.entityObjectMapper().parameter(functionType).get();
+					parameter = objectMapper.readValue(parameterNode.toString(), parameterType);
 				}
 
-				Object result = connection.execute(functionType, parameter);
-
 				context.status(HttpStatus.OK_200)
-								.contentType(ContentType.APPLICATION_JSON)
-								.result(objectMapper.writeValueAsString(result));
+								.contentType(ContentType.APPLICATION_OCTET_STREAM)
+								.result(serialize(connection.execute(functionType, parameter)));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -581,10 +576,10 @@ public final class EntityService implements AuxiliaryServer {
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
 				ReportType<Object, Object, Object> reportType = reportType(requestNode.get("reportType").asText());
 				Object parameter = null;
-				JsonNode parameterNode = requestNode.get("parameter");
+				JsonNode parameterNode = requestNode.get(PARAMETER);
 				if (parameterNode != null) {
-					ReportDefinition<?> definition = objectMapper.entityObjectMapper().report(reportType);
-					parameter = objectMapper.readValue(parameterNode.toString(), definition.parameterType());
+					Class<?> parameterType = objectMapper.entityObjectMapper().parameter(reportType).get();
+					parameter = objectMapper.readValue(parameterNode.toString(), parameterType);
 				}
 
 				context.status(HttpStatus.OK_200)

@@ -26,7 +26,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParamet
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.json.domain.DefaultEntityObjectMapperFactory;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
@@ -42,16 +41,10 @@ public final class ChinookObjectMapperFactory extends DefaultEntityObjectMapperF
 	@Override
 	public EntityObjectMapper entityObjectMapper(Entities entities) {
 		EntityObjectMapper objectMapper = super.entityObjectMapper(entities);
-		objectMapper.define(Invoice.UPDATE_TOTALS)
-						.argumentType(new TypeReference<>() {});
-		objectMapper.define(Track.RAISE_PRICE)
-						.returnType(new TypeReference<>() {})
-						.argumentType(RaisePriceParameters.class);
-		objectMapper.define(Playlist.RANDOM_PLAYLIST)
-						.returnType(Entity.class)
-						.argumentType(RandomPlaylistParameters.class);
-		objectMapper.define(Customer.REPORT)
-						.parameterType(new TypeReference<>() {});
+		objectMapper.parameter(Invoice.UPDATE_TOTALS).set(new TypeReference<>() {});
+		objectMapper.parameter(Track.RAISE_PRICE).set(RaisePriceParameters.class);
+		objectMapper.parameter(Playlist.RANDOM_PLAYLIST).set(RandomPlaylistParameters.class);
+		objectMapper.parameter(Customer.REPORT).set(new TypeReference<>() {});
 
 		return objectMapper;
 	}

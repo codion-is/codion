@@ -229,7 +229,7 @@ public class EntityServiceTest {
 						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 		// Deserialize response (returns empty list)
-		List<Integer> result = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), new TypeReference<List<Integer>>() {});
+		List<Integer> result = Serializer.deserialize(response.body());
 		assertEquals(asList(1, 2, 3), result);
 	}
 

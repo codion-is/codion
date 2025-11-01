@@ -12,6 +12,7 @@ Codion Change Log
 ### is.codion.framework.json.domain
 - EntityObjectMapper, methods for registering procedure and function argument and return types added, for serialization.
 - EntityObjectMapper, method for registering report parameter type added, for serialization.
+- EntityObjectMapper now only registers parameter types for procedures, functions and reports.
 ### is.codion.framework.db.core
 - EntityConnection.report() reportParameters renamed parameter.
 ### is.codion.framework.servlet
@@ -20,6 +21,7 @@ Codion Change Log
 - EntityService.JSON (default true) and SERIALIZATION (default false) configuration properties added, other properties renamed.
 - EntityService.ReportHandler.json() added.
 - EntityService.deserialize() reintroduced, proper location for security note.
+- EntityService, json function, procedure and report handlers now return java serialized results.
 ### is.codion.framework.db.http
 - JsonHttpEntityConnection, JSON based function and procedure execution added.
 - HttpEntityConnection.JSON default back to being true.
