@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.57
 ### is.codion.common.core
 - Serializer.deserialize() overloaded with InputStream.
+### is.codion.common.db
+- Procedure and Function argument renamed parameter.
 ### is.codion.swing.common.ui
 - FrameBuilder.iconImage() and iconImages() added.
 - FrameBuilder.componentListener() added.

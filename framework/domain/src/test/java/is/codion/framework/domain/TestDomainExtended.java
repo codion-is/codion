@@ -65,11 +65,11 @@ public final class TestDomainExtended extends DomainModel {
 	}
 
 	void procedure() {
-		add(PROC_TYPE, (connection, arguments) -> {});
+		add(PROC_TYPE, (connection, parameter) -> {});
 	}
 
 	void function() {
-		add(FUNC_TYPE, (connection, arguments) -> null);
+		add(FUNC_TYPE, (connection, parameter) -> null);
 	}
 
 	void report() {

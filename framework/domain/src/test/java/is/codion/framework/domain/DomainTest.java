@@ -132,7 +132,7 @@ public class DomainTest {
 	@Test
 	void defineProcedureExisting() {
 		ProcedureType<Connection, Object> procedureType = ProcedureType.procedureType("operationId");
-		DatabaseProcedure<Connection, Object> operation = (connection, arguments) -> {};
+		DatabaseProcedure<Connection, Object> operation = (connection, parameter) -> {};
 		domain.add(procedureType, operation);
 		assertThrows(IllegalArgumentException.class, () -> domain.add(procedureType, operation));
 	}
@@ -140,7 +140,7 @@ public class DomainTest {
 	@Test
 	void defineFunctionExisting() {
 		FunctionType<Connection, Object, Object> functionType = FunctionType.functionType("operationId");
-		DatabaseFunction<Connection, Object, Object> function = (connection, arguments) -> null;
+		DatabaseFunction<Connection, Object, Object> function = (connection, parameter) -> null;
 		domain.add(functionType, function);
 		assertThrows(IllegalArgumentException.class, () -> domain.add(functionType, function));
 	}

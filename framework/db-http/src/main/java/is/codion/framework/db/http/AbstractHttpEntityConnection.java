@@ -243,11 +243,11 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
+	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T parameter) {
 		requireNonNull(functionType);
 		synchronized (httpClient) {
 			try {
-				return handleResponse(execute(createRequest("function", serialize(asList(functionType, argument)))));
+				return handleResponse(execute(createRequest("function", serialize(asList(functionType, parameter)))));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);
@@ -261,11 +261,11 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T parameter) {
 		requireNonNull(procedureType);
 		synchronized (httpClient) {
 			try {
-				handleResponse(execute(createRequest("procedure", serialize(asList(procedureType, argument)))));
+				handleResponse(execute(createRequest("procedure", serialize(asList(procedureType, parameter)))));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);

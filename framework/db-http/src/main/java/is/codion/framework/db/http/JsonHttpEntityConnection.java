@@ -282,14 +282,14 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
+	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T parameter) {
 		requireNonNull(functionType);
 		synchronized (httpClient) {
 			try {
 				ObjectNode request = objectMapper.createObjectNode();
 				request.put("functionType", functionType.name());
-				if (argument != null) {
-					request.set("argument", objectMapper.valueToTree(argument));
+				if (parameter != null) {
+					request.set("parameter", objectMapper.valueToTree(parameter));
 				}
 				EntityObjectMapper entityMapper = objectMapper.entityObjectMapper();
 				Class<R> returnType = entityMapper.function(functionType).returnType();
@@ -303,14 +303,14 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T parameter) {
 		requireNonNull(procedureType);
 		synchronized (httpClient) {
 			try {
 				ObjectNode request = objectMapper.createObjectNode();
 				request.put("procedureType", procedureType.name());
-				if (argument != null) {
-					request.set("argument", objectMapper.valueToTree(argument));
+				if (parameter != null) {
+					request.set("parameter", objectMapper.valueToTree(parameter));
 				}
 
 				throwIfError(execute(createJsonRequest("procedure", request.toString())));

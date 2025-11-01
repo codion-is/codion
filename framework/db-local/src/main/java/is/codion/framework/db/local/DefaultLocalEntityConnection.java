@@ -619,18 +619,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T argument) {
+	public <C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T parameter) {
 		requireNonNull(functionType, "functionType may not be null");
 		Exception exception = null;
-		tracer.enter(EXECUTE, functionType, argument);
+		tracer.enter(EXECUTE, functionType, parameter);
 		try {
 			synchronized (database) {
-				return domain.function(functionType).execute((C) this, argument);
+				return domain.function(functionType).execute((C) this, parameter);
 			}
 		}
 		catch (Exception e) {
 			exception = e;
-			LOG.error(createLogMessage(functionType.name(), argument instanceof List ? (List<?>) argument : singletonList(argument), emptyList(), e), e);
+			LOG.error(createLogMessage(functionType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
 			throwDatabaseException(e, OTHER);
 			throw runtimeException(e);
 		}
@@ -645,19 +645,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T argument) {
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T parameter) {
 		requireNonNull(procedureType, "procedureType may not be null");
 		Exception exception = null;
-		tracer.enter(EXECUTE, procedureType, argument);
+		tracer.enter(EXECUTE, procedureType, parameter);
 		try {
 			synchronized (database) {
-				domain.procedure(procedureType).execute((C) this, argument);
+				domain.procedure(procedureType).execute((C) this, parameter);
 			}
 		}
 		catch (Exception e) {
 			exception = e;
 			rollbackQuietlyIfTransactionIsNotOpen();
-			LOG.error(createLogMessage(procedureType.name(), argument instanceof List ? (List<?>) argument : singletonList(argument), emptyList(), e), e);
+			LOG.error(createLogMessage(procedureType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
 			throwDatabaseException(e, OTHER);
 			throw runtimeException(e);
 		}

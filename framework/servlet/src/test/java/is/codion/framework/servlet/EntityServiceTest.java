@@ -211,7 +211,7 @@ public class EntityServiceTest {
 		JsonNodeFactory nodeFactory = OBJECT_MAPPER.getNodeFactory();
 		ObjectNode request = OBJECT_MAPPER.createObjectNode();
 		request.set("procedureType", nodeFactory.textNode(TestDomain.PROCEDURE.name()));
-		request.set("argument", OBJECT_MAPPER.valueToTree(asList("one", "two")));
+		request.set("parameter", OBJECT_MAPPER.valueToTree(asList("one", "two")));
 		// No argument field since procedure has no arguments
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("procedure",
 						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
@@ -223,7 +223,7 @@ public class EntityServiceTest {
 		JsonNodeFactory nodeFactory = OBJECT_MAPPER.getNodeFactory();
 		ObjectNode request = OBJECT_MAPPER.createObjectNode();
 		request.set("functionType", nodeFactory.textNode(TestDomain.FUNCTION.name()));
-		request.set("argument", OBJECT_MAPPER.valueToTree(asList("one", "two")));
+		request.set("parameter", OBJECT_MAPPER.valueToTree(asList("one", "two")));
 		// No argument field since function has no arguments
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("function",
 						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
@@ -242,7 +242,7 @@ public class EntityServiceTest {
 		JsonNodeFactory nodeFactory = OBJECT_MAPPER.getNodeFactory();
 		ObjectNode request = OBJECT_MAPPER.createObjectNode();
 		request.set("reportType", nodeFactory.textNode(TestDomain.REPORT.name()));
-		request.set("argument", nodeFactory.textNode("parameter"));
+		request.set("parameter", nodeFactory.textNode("parameter"));
 
 		response = HTTP_CLIENT.send(createJsonRequest("report",
 						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());

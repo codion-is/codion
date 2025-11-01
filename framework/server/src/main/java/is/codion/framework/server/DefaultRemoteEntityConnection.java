@@ -114,9 +114,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T parameter) {
 		synchronized (connectionProxy) {
-			connectionProxy.execute(procedureType, argument);
+			connectionProxy.execute(procedureType, parameter);
 		}
 	}
 
@@ -126,9 +126,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
+	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T parameter) {
 		synchronized (connectionProxy) {
-			return connectionProxy.execute(functionType, argument);
+			return connectionProxy.execute(functionType, parameter);
 		}
 	}
 

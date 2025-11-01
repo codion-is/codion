@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 /**
  * A database function
  * @param <C> the connection type required by this function
- * @param <T> the argument type
+ * @param <T> the parameter type
  * @param <R> the return type
  */
 public interface DatabaseFunction<C, T, R> {
@@ -31,8 +31,8 @@ public interface DatabaseFunction<C, T, R> {
 	/**
 	 * Executes this function using the given connection
 	 * @param connection the connection to use
-	 * @param argument the function argument, if any
-	 * @return the function return argument
+	 * @param parameter the function parameter, if any
+	 * @return the function return parameter
 	 */
-	@Nullable R execute(C connection, @Nullable T argument);
+	@Nullable R execute(C connection, @Nullable T parameter);
 }

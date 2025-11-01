@@ -23,14 +23,14 @@ import org.jspecify.annotations.Nullable;
 /**
  * A database procedure
  * @param <C> the connection type required by this procedure
- * @param <T> the procedure argument type
+ * @param <T> the procedure parameter type
  */
 public interface DatabaseProcedure<C, T> {
 
 	/**
 	 * Executes this procedure using the given connection
 	 * @param connection the connection to use
-	 * @param argument the procedure argument, if any
+	 * @param parameter the procedure parameter, if any
 	 */
-	void execute(C connection, @Nullable T argument);
+	void execute(C connection, @Nullable T parameter);
 }

@@ -204,10 +204,10 @@ public interface EntityConnection extends AutoCloseable {
 	boolean queryCache();
 
 	/**
-	 * Executes the function with the given type with no arguments
+	 * Executes the function with the given type with no parameter
 	 * @param functionType the function type
 	 * @param <C> the connection type
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @param <R> the return value type
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
@@ -217,20 +217,20 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the function with the given type
 	 * @param functionType the function type
-	 * @param argument the function argument
+	 * @param parameter the function parameter
 	 * @param <C> the connection type
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @param <R> the return value type
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T argument);
+	<C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T parameter);
 
 	/**
-	 * Executes the procedure with the given type with no arguments
+	 * Executes the procedure with the given type with no parameter
 	 * @param procedureType the procedure type
 	 * @param <C> the connection type
-	 * @param <T> the procedure argument type
+	 * @param <T> the procedure parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
 	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType);
@@ -238,12 +238,12 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the procedure with the given type
 	 * @param procedureType the procedure type
-	 * @param argument the procedure argument
+	 * @param parameter the procedure parameter
 	 * @param <C> the connection type
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T argument);
+	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T parameter);
 
 	/**
 	 * Inserts the given entity, returning the primary key.

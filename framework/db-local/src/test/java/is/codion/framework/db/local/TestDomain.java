@@ -390,8 +390,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void operations() {
-		add(PROCEDURE_ID, (connection, arguments) -> {});
-		add(FUNCTION_ID, (connection, arguments) -> null);
+		add(PROCEDURE_ID, (connection, parameter) -> {});
+		add(FUNCTION_ID, (connection, parameter) -> null);
 	}
 
 	public interface Job {

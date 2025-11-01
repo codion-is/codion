@@ -140,10 +140,10 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	boolean queryCache() throws RemoteException;
 
 	/**
-	 * Executes the function with the given type with no arguments
+	 * Executes the function with the given type with no parameter
 	 * @param functionType the function type
 	 * @param <C> the connection type
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @param <R> the return value type
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
@@ -154,21 +154,21 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	/**
 	 * Executes the function with the given type
 	 * @param functionType the function type
-	 * @param argument the function argument
+	 * @param parameter the function parameter
 	 * @param <C> the connection type
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @param <R> the return value type
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 * @throws RemoteException in case of a remote exception
 	 */
-	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws RemoteException;
+	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T parameter) throws RemoteException;
 
 	/**
-	 * Executes the procedure with the given type with no arguments
+	 * Executes the procedure with the given type with no parameter
 	 * @param procedureType the procedure type
 	 * @param <C> the connection type
-	 * @param <T> the procedure argument type
+	 * @param <T> the procedure parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 * @throws RemoteException in case of a remote exception
 	 */
@@ -177,13 +177,13 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	/**
 	 * Executes the procedure with the given type
 	 * @param procedureType the procedure type
-	 * @param argument the procedure argument
+	 * @param parameter the procedure parameter
 	 * @param <C> the connection type
-	 * @param <T> the procedure argument type
+	 * @param <T> the procedure parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 * @throws RemoteException in case of a remote exception
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws RemoteException;
+	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T parameter) throws RemoteException;
 
 	/**
 	 * Inserts the given entity, returning the primary key.

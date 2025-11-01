@@ -82,7 +82,7 @@ public interface Domain {
 	/**
 	 * Retrieves the procedure of the given type.
 	 * @param <C> the type of the database connection this procedure requires
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @param procedureType the procedure type
 	 * @return the procedure
 	 * @throws IllegalArgumentException in case the procedure is not found
@@ -92,7 +92,7 @@ public interface Domain {
 	/**
 	 * Retrieves the function of the given type.
 	 * @param <C> the type of the database connection this function requires
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @param <R> the result type
 	 * @param functionType the function type
 	 * @return the function

@@ -139,7 +139,7 @@ public abstract class DomainModel implements Domain {
 	 * @param procedureType the procedure type to identify the procedure
 	 * @param procedure the procedure to add
 	 * @param <C> the connection type
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @throws IllegalArgumentException in case a procedure has already been associated with the given type
 	 */
 	protected final <C, T> void add(ProcedureType<C, T> procedureType, DatabaseProcedure<C, T> procedure) {
@@ -151,7 +151,7 @@ public abstract class DomainModel implements Domain {
 	 * @param functionType the function type to identify the function
 	 * @param function the function to add
 	 * @param <C> the connection type
-	 * @param <T> the argument type
+	 * @param <T> the parameter type
 	 * @param <R> the result type
 	 * @throws IllegalArgumentException in case a function has already been associated with the given type
 	 */

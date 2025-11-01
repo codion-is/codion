@@ -478,8 +478,8 @@ public final class EntityService implements AuxiliaryServer {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
-				Object argument = parameters.size() > 1 ? parameters.get(1) : null;
-				connection.execute((ProcedureType<EntityConnection, Object>) parameters.get(0), argument);
+				Object parameter = parameters.size() > 1 ? parameters.get(1) : null;
+				connection.execute((ProcedureType<EntityConnection, Object>) parameters.get(0), parameter);
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {
@@ -494,14 +494,14 @@ public final class EntityService implements AuxiliaryServer {
 
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
 				ProcedureType<EntityConnection, Object> procedureType = procedureType(requestNode.get("procedureType").asText());
-				Object argument = null;
-				JsonNode argumentNode = requestNode.get("argument");
+				Object parameter = null;
+				JsonNode argumentNode = requestNode.get("parameter");
 				if (argumentNode != null) {
 					Class<?> argumentType = objectMapper.entityObjectMapper().procedure(procedureType).argumentType();
-					argument = objectMapper.readValue(argumentNode.toString(), argumentType);
+					parameter = objectMapper.readValue(argumentNode.toString(), argumentType);
 				}
 
-				connection.execute(procedureType, argument);
+				connection.execute(procedureType, parameter);
 
 				context.status(HttpStatus.OK_200);
 			}
@@ -519,10 +519,10 @@ public final class EntityService implements AuxiliaryServer {
 				List<Object> parameters = deserialize(context.req());
 				FunctionType<EntityConnection, Object, Object> functionType =
 								(FunctionType<EntityConnection, Object, Object>) parameters.get(0);
-				Object argument = parameters.size() > 1 ? parameters.get(1) : null;
+				Object parameter = parameters.size() > 1 ? parameters.get(1) : null;
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(serialize(connection.execute(functionType, argument)));
+								.result(serialize(connection.execute(functionType, parameter)));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -536,16 +536,16 @@ public final class EntityService implements AuxiliaryServer {
 
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
 				FunctionType<EntityConnection, Object, Object> functionType = functionType(requestNode.get("functionType").asText());
-				Object argument = null;
-				JsonNode argumentNode = requestNode.get("argument");
+				Object parameter = null;
+				JsonNode argumentNode = requestNode.get("parameter");
 				if (argumentNode != null) {
 					FunctionDefinition<?, ?> definition = objectMapper.entityObjectMapper().function(functionType);
 					Class<?> argumentType = definition.argumentType().orElseThrow(() ->
 									new IllegalStateException("Function argument type not defined: " + functionType));
-					argument = objectMapper.readValue(argumentNode.toString(), argumentType);
+					parameter = objectMapper.readValue(argumentNode.toString(), argumentType);
 				}
 
-				Object result = connection.execute(functionType, argument);
+				Object result = connection.execute(functionType, parameter);
 
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_JSON)

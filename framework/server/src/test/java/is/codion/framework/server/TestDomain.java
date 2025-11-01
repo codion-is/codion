@@ -78,7 +78,7 @@ public final class TestDomain extends DomainModel {
 						.caption("Department")
 						.build());
 
-		add(Department.PROC, (connection, argument) -> {});
+		add(Department.PROC, (connection, parameter) -> {});
 	}
 
 	public interface Employee {
@@ -157,7 +157,7 @@ public final class TestDomain extends DomainModel {
 
 		add(Employee.EMP_REPORT, new AbstractReport<Object, Object, Object>("path", true) {
 			@Override
-			public Object fill(Connection connection, Object parameters) {
+			public Object fill(Connection connection, Object parameter) {
 				return null;
 			}
 
@@ -167,6 +167,6 @@ public final class TestDomain extends DomainModel {
 			}
 		});
 
-		add(Employee.FUNC, (connection, argument) -> null);
+		add(Employee.FUNC, (connection, parameter) -> null);
 	}
 }
