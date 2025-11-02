@@ -31,6 +31,8 @@ Codion Change Log
 - HttpEntityConnection.JSON default back to being true.
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel, serialization filter pattern view added.
+### is.codion.tools.generator.model
+- DomainGeneratorModel.COMBINED_SOURCE_DIRECTORY default now empty.
 
 ## 0.18.56
 ### is.codion.common.core

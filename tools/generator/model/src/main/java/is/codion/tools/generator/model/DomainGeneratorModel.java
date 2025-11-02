@@ -77,10 +77,10 @@ public final class DomainGeneratorModel {
 
 	/**
 	 * The combined source directory, relative to the user directory.
-	 * <p>Default "combined".
+	 * <p>Default none.
 	 */
 	public static final PropertyValue<String> COMBINED_SOURCE_DIRECTORY =
-					stringValue("codion.domain.generator.combinedSourceDirectory", "combined");
+					stringValue("codion.domain.generator.combinedSourceDirectory", "");
 
 	/**
 	 * The api source directory, relative to the user directory, used when saving the domain files when split into api/impl
