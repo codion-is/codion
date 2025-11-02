@@ -13,6 +13,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FrameBuilder.iconImage() and iconImages() added.
 - FrameBuilder.componentListener() added.
+### is.codion.framework.domain
+- DomainType.entityType() overloaded with Class<?> as resource base class.
 ### is.codion.framework.json.domain
 - EntityObjectMapper, methods for registering procedure and function argument and return types added, for serialization.
 - EntityObjectMapper, method for registering report parameter type added, for serialization.

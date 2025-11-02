@@ -1060,8 +1060,7 @@ public final class DomainSource {
 
 		@Override
 		public String entityTypeInitializer(EntityDefinition definition, String interfaceName) {
-			return "DOMAIN.entityType(\"" + definition.table().toLowerCase() + "\", " +
-							interfaceName + ".class.getName())";
+			return "DOMAIN.entityType(\"" + definition.table().toLowerCase() + "\", " + interfaceName + ".class)";
 		}
 
 		@Override
