@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
@@ -97,7 +98,9 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static is.codion.common.Configuration.enumValue;
+import static is.codion.common.Configuration.integerValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.color.Colors.darker;
@@ -109,7 +112,7 @@ import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.ADD;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.EDIT;
-import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
+import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.PROGRESS_BAR;
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.event.FocusEvent.Cause.ACTIVATION;
 import static java.awt.event.KeyEvent.*;
@@ -146,11 +149,24 @@ public final class EntitySearchField extends HintTextField {
 	 * Specifies the way a {@link EntitySearchField} indicates that a search is in progress.
 	 * <ul>
 	 * <li>Value type: {@link SearchIndicator}
-	 * <li>Default value: {@link SearchIndicator#WAIT_CURSOR}
+	 * <li>Default value: {@link SearchIndicator#PROGRESS_BAR}
 	 * </ul>
+	 * @see #SEARCH_PROGRESS_BAR_DELAY
 	 */
 	public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR =
-					enumValue(EntitySearchField.class.getName() + ".searchIndicator", SearchIndicator.class, WAIT_CURSOR);
+					enumValue(EntitySearchField.class.getName() + ".searchIndicator", SearchIndicator.class, PROGRESS_BAR);
+
+	/**
+	 * Specifies the number of milliseconds to delay showing the refresh progress bar, if enabled.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 350
+	 * </ul>
+	 * @see #SEARCH_INDICATOR
+	 * @see SearchIndicator#PROGRESS_BAR
+	 */
+	public static final PropertyValue<Integer> SEARCH_PROGRESS_BAR_DELAY =
+					integerValue(EntitySearchField.class.getName() + ".searchProgressBarDelay", 350);
 
 	/**
 	 * The ways which a search field can indicate that a search is in progress.
@@ -202,6 +218,7 @@ public final class EntitySearchField extends HintTextField {
 	private final boolean singleSelection;
 	private final State searching = State.state();
 	private final Consumer<Boolean> searchIndicator;
+	private final int searchRefreshProgressBarDelay;
 	private final Function<EntitySearchField, Selector> selector;
 	private final ControlMap controlMap;
 
@@ -236,6 +253,7 @@ public final class EntitySearchField extends HintTextField {
 		selectionToolTip = builder.selectionToolTip;
 		singleSelection = builder.singleSelection;
 		searchIndicator = createSearchIndicator(builder.searchIndicator);
+		searchRefreshProgressBarDelay = builder.searchProgressBarDelay;
 		searching.addConsumer(searchIndicator);
 		selector = builder.selector;
 		formatter = builder.formatter;
@@ -414,6 +432,13 @@ public final class EntitySearchField extends HintTextField {
 		 * @return this builder instance
 		 */
 		B searchIndicator(SearchIndicator searchIndicator);
+
+		/**
+		 * @param searchProgressBarDelay the number of milliseconds to delay showing the search progress bar, if enabled
+		 * @return this builder instance
+		 * @see #SEARCH_PROGRESS_BAR_DELAY
+		 */
+		B searchProgressBarDelay(int searchProgressBarDelay);
 
 		/**
 		 * @param selector the selector factory to use
@@ -1099,19 +1124,40 @@ public final class EntitySearchField extends HintTextField {
 						.string(MESSAGES.getString("searching") + "...")
 						.stringPainted(true)
 						.build();
+		private @Nullable DelayedAction showProgressBarAction;
 
 		@Override
 		public void accept(Boolean isSearching) {
 			if (isSearching) {
-				setLayout(new BorderLayout());
-				add(progressBar, BorderLayout.CENTER);
+				showProgressBarDelayed();
 			}
 			else {
-				remove(progressBar);
-				setLayout(null);
+				hideProgressBar();
 			}
+		}
+
+		private void showProgressBarDelayed() {
+			showProgressBarAction = delayedAction(searchRefreshProgressBarDelay, () -> {
+				setLayout(new BorderLayout());
+				add(progressBar, BorderLayout.CENTER);
+				revalidate();
+				repaint();
+			});
+		}
+
+		private void hideProgressBar() {
+			cancelShowProgressBar();
+			remove(progressBar);
+			setLayout(null);
 			revalidate();
 			repaint();
+		}
+
+		private void cancelShowProgressBar() {
+			if (showProgressBarAction != null) {
+				showProgressBarAction.cancel();
+				showProgressBarAction = null;
+			}
 		}
 	}
 
@@ -1185,6 +1231,7 @@ public final class EntitySearchField extends HintTextField {
 		private boolean selectionToolTip = true;
 		private boolean singleSelection = false;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.getOrThrow();
+		private int searchProgressBarDelay = SEARCH_PROGRESS_BAR_DELAY.getOrThrow();
 		private Function<EntitySearchField, Selector> selector = new ListSelectorFactory();
 		private Function<Entity, String> formatter = DEFAULT_FORMATTER;
 		private String separator = DEFAULT_SEPARATOR;
@@ -1269,6 +1316,12 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public B searchIndicator(SearchIndicator searchIndicator) {
 			this.searchIndicator = requireNonNull(searchIndicator);
+			return (B) this;
+		}
+
+		@Override
+		public B searchProgressBarDelay(int searchProgressBarDelay) {
+			this.searchProgressBarDelay = searchProgressBarDelay;
 			return (B) this;
 		}
 

@@ -20,6 +20,7 @@
  * Package configuration values:
  * <ul>
  * <li>{@link is.codion.swing.framework.ui.component.EntitySearchField#SEARCH_INDICATOR}
+ * <li>{@link is.codion.swing.framework.ui.component.EntitySearchField#SEARCH_PROGRESS_BAR_DELAY}
  * <li>{@link is.codion.swing.framework.ui.component.DefaultEditComponentFactory#DEFAULT_TEXT_FIELD_COLUMNS}
  * </ul>
  */

@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
+import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
@@ -29,7 +30,6 @@ import is.codion.swing.common.ui.control.Control;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
-import javax.swing.Timer;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.util.List;
@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -57,7 +58,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	private Consumer<Exception> onException = new DisplayExceptionInDialog();
 	private int showDelay = SHOW_DELAY.getOrThrow();
 	private int hideDelay = HIDE_DELAY.getOrThrow();
-	private @Nullable Timer showTimer;
+	private @Nullable DelayedAction showAction;
 	private long startTime;
 
 	DefaultProgressWorkerDialogBuilder(Task task) {
@@ -253,27 +254,23 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	private void showDialog(ProgressDialog progressDialog) {
 		startTime = currentTimeMillis();
-		showTimer = new Timer(showDelay, e -> progressDialog.setVisible(true));
-		showTimer.setRepeats(false);
-		showTimer.start();
+		showAction = delayedAction(showDelay, () -> progressDialog.setVisible(true));
 	}
 
 	private void closeDialog(ProgressDialog progressDialog) {
-		stopShowTimer();
+		cancelShowAction();
 		long elapsed = currentTimeMillis() - startTime;
 		long remainingDelay = hideDelay - elapsed;
-		Timer hideTimer = new Timer((int) Math.max(0, remainingDelay), e -> {
+		delayedAction((int) Math.max(0, remainingDelay), () -> {
 			progressDialog.setVisible(false);
 			progressDialog.dispose();
 		});
-		hideTimer.setRepeats(false);
-		hideTimer.start();
 	}
 
-	private void stopShowTimer() {
-		if (showTimer != null) {
-			showTimer.stop();
-			showTimer = null;
+	private void cancelShowAction() {
+		if (showAction != null) {
+			showAction.cancel();
+			showAction = null;
 		}
 	}
 

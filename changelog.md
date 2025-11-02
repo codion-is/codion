@@ -10,9 +10,12 @@ Codion Change Log
 - SerializationFilter.readFileWhitelistItems() bug fixed, now respects list item order.
 - SerializationFilter.fromPatterns() and fromFile() now appends exclude all if missing.
 - ServerAdmin.serializationFilterPatterns() added. SerializationFilterFactory refactored.
+### is.codion.swing.common.model
+- DelayedAction added.
 ### is.codion.swing.common.ui
 - FrameBuilder.iconImage() and iconImages() added.
 - FrameBuilder.componentListener() added.
+- DefaultProgressWorkerDialogBuilder now uses DelayedAction.
 ### is.codion.framework.domain
 - DomainType.entityType() overloaded with Class<?> as resource base class.
 ### is.codion.framework.json.domain
@@ -31,6 +34,9 @@ Codion Change Log
 ### is.codion.framework.db.http
 - JsonHttpEntityConnection, JSON based function and procedure execution added.
 - HttpEntityConnection.JSON default back to being true.
+### is.codion.swing.framework.ui
+- EntityTablePanel now uses DelayedAction when displaying the refresh progress bar.
+- EntitySearchField now uses DelayedAction when displaying the search progress bar, PROGRESS_BAR now default search indicator.
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel, serialization filter pattern view added.
 ### is.codion.tools.generator.model

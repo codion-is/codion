@@ -44,6 +44,7 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditTask;
 import is.codion.framework.model.EntityTableModel;
+import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
@@ -130,6 +131,7 @@ import java.util.prefs.Preferences;
 import static is.codion.common.Configuration.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.common.value.ValueSet.valueSet;
+import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
@@ -2056,6 +2058,17 @@ public class EntityTablePanel extends JPanel {
 						booleanValue(EntityTablePanel.class.getName() + ".refreshProgressBar", true);
 
 		/**
+		 * Specifies the number of milliseconds to delay showing the refresh progress bar, if enabled.
+		 * <ul>
+		 * <li>Value type: Integer
+		 * <li>Default value: 350
+		 * </ul>
+		 * @see #REFRESH_PROGRESS_BAR
+		 */
+		public static final PropertyValue<Integer> REFRESH_PROGRESS_BAR_DELAY =
+						integerValue(EntityTablePanel.class.getName() + ".refreshProgressBarDelay", 350);
+
+		/**
 		 * Specifies whether the refresh button should always be visible or only when the condition panel is visible
 		 * <ul>
 		 * <li>Value type: Boolean
@@ -2180,6 +2193,7 @@ public class EntityTablePanel extends JPanel {
 		private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.getOrThrow();
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
 		private boolean refreshProgressBar = REFRESH_PROGRESS_BAR.getOrThrow();
+		private int refreshProgressBarDelay = REFRESH_PROGRESS_BAR_DELAY.getOrThrow();
 		private Confirmer deleteConfirmer;
 
 		final ControlMap controlMap;
@@ -2234,6 +2248,7 @@ public class EntityTablePanel extends JPanel {
 			this.refreshButtonVisible = config.refreshButtonVisible;
 			this.statusMessage = config.statusMessage;
 			this.refreshProgressBar = config.refreshProgressBar;
+			this.refreshProgressBarDelay = config.refreshProgressBarDelay;
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeToolBar = config.includeToolBar;
 			this.conditionPanelFactory = config.conditionPanelFactory;
@@ -2606,6 +2621,17 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * @param refreshProgressBarDelay controls the delay before the refresh progress bar is shown, if enabled
+		 * @return this Config instance
+		 * @see #refreshProgressBar(boolean)
+		 * @see #REFRESH_PROGRESS_BAR_DELAY
+		 */
+		public Config refreshProgressBarDelay(int refreshProgressBarDelay) {
+			this.refreshProgressBarDelay = refreshProgressBarDelay;
+			return this;
+		}
+
+		/**
 		 * Specifies whether the values of hidden columns are excluded when querying data
 		 * @return this Config instance
 		 * @see #EXCLUDE_HIDDEN_COLUMNS
@@ -2939,6 +2965,7 @@ public class EntityTablePanel extends JPanel {
 						.layout(new GridBagLayout())
 						.add(progressBar, createHorizontalFillConstraints())
 						.build();
+		private @Nullable DelayedAction showProgressBarAction;
 
 		private StatusPanel() {
 			super(new BorderLayout());
@@ -2983,10 +3010,36 @@ public class EntityTablePanel extends JPanel {
 
 		private void refresherActive(boolean refresherActive) {
 			if (configuration.refreshProgressBar) {
+				if (refresherActive) {
+					showProgressBarDelayed();
+				}
+				else {
+					hideProgressBar();
+				}
+			}
+		}
+
+		private void showProgressBarDelayed() {
+			showProgressBarAction = delayedAction(configuration.refreshProgressBarDelay, () -> {
 				removeAll();
-				add(refresherActive ? progressPanel : label, BorderLayout.CENTER);
+				add(progressPanel, BorderLayout.CENTER);
 				revalidate();
 				repaint();
+			});
+		}
+
+		private void hideProgressBar() {
+			cancelShowProgressBar();
+			removeAll();
+			add(label, BorderLayout.CENTER);
+			revalidate();
+			repaint();
+		}
+
+		private void cancelShowProgressBar() {
+			if (showProgressBarAction != null) {
+				showProgressBarAction.cancel();
+				showProgressBarAction = null;
 			}
 		}
 

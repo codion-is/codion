@@ -57,6 +57,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_FILTERS}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_SUMMARY}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#REFRESH_PROGRESS_BAR}
+ * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#REFRESH_PROGRESS_BAR_DELAY}
  * <li>{@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}
  * <li>{@link is.codion.swing.framework.ui.TabbedApplicationLayout#TAB_PLACEMENT}
  * <li>{@link is.codion.swing.framework.ui.TabbedDetailLayout#INCLUDE_CONTROLS}
