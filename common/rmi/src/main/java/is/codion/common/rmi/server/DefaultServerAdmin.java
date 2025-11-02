@@ -22,6 +22,7 @@ import is.codion.common.property.PropertyStore;
 import is.codion.common.user.User;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	private static final Runtime RUNTIME = Runtime.getRuntime();
 
 	private final transient AbstractServer<?, ? extends ServerAdmin> server;
+	private final transient ServerConfiguration configuration;
 	private final transient LinkedList<GcEvent> gcEventList = new LinkedList<>();
 
 	/**
@@ -71,6 +73,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 		super(requireNonNull(configuration).adminPort(),
 						configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
 		this.server = requireNonNull(server);
+		this.configuration = configuration;
 		initializeGarbageCollectionListener();
 	}
 
@@ -85,7 +88,17 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	}
 
 	@Override
-	public final Collection<User> users() throws RemoteException {
+	public final @Nullable String serializationFilterPatterns(){
+		if (configuration.objectInputFilterFactory().isPresent() &&
+						SerializationFilterFactory.class.getName().equals(configuration.objectInputFilterFactory().get())) {
+				return SerializationFilterFactory.createPatterns();
+		}
+
+		return null;
+	}
+
+	@Override
+	public final Collection<User> users() {
 		return server.users();
 	}
 

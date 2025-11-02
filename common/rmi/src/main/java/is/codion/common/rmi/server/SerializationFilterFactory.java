@@ -20,9 +20,25 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.property.PropertyValue;
 
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputFilter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 
 import static is.codion.common.Configuration.*;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A {@link ObjectInputFilterFactory} implementation based on patterns, specified as a string via {@link #SERIALIZATION_FILTER_PATTERNS}
@@ -31,6 +47,8 @@ import static is.codion.common.Configuration.*;
  * <a href="https://openjdk.org/jeps/290">JEP 290: Filter Incoming Serialization Data</a>
  */
 public final class SerializationFilterFactory implements ObjectInputFilterFactory {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SerializationFilterFactory.class);
 
 	/**
 	 * <p>The serialization patterns to use.
@@ -85,19 +103,44 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	 */
 	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_REFS = integerValue("codion.server.serialization.filter.maxRefs", 1_000_000);
 
+	private static final String CLASSPATH_PREFIX = "classpath:";
+
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {
+		if (!SERIALIZATION_FILTER_DRYRUN_FILE.isNull()) {
+			return SerializationFilterDryRun.whitelistDryRun(SERIALIZATION_FILTER_DRYRUN_FILE.getOrThrow());
+		}
+		String patterns = createPatterns();
 		if (!SERIALIZATION_FILTER_PATTERN_FILE.isNull()) {
-			return SerializationFilter.fromFile(SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow(), buildLimitsPrefix());
+			LOG.info("Serialization filter created from pattern file: {} with patterns: {}", SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow(), patterns);
 		}
 		if (!SERIALIZATION_FILTER_PATTERNS.isNull()) {
-			return SerializationFilter.fromPatterns(SERIALIZATION_FILTER_PATTERNS.getOrThrow(), buildLimitsPrefix());
+			LOG.info("Serialization filter created from patterns: {}", patterns);
 		}
-		if (!SERIALIZATION_FILTER_DRYRUN_FILE.isNull()) {
-			return SerializationFilter.whitelistDryRun(SERIALIZATION_FILTER_DRYRUN_FILE.getOrThrow());
+		if (patterns == null) {
+			throw new IllegalStateException("No serialization filter pattern configuration available");
 		}
 
-		throw new IllegalStateException("No serialization filter pattern configuration available");
+		return ObjectInputFilter.Config.createFilter(patterns);
+	}
+
+	static @Nullable String createPatterns() {
+		if (!SERIALIZATION_FILTER_PATTERN_FILE.isNull()) {
+			return addLimitsAndExcludeAll(readPattern(SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow()));
+		}
+		if (!SERIALIZATION_FILTER_PATTERNS.isNull()) {
+			return addLimitsAndExcludeAll(SERIALIZATION_FILTER_PATTERNS.getOrThrow());
+		}
+
+		return null;
+	}
+
+	private static String addLimitsAndExcludeAll(String patterns) {
+		return buildLimitsPrefix() + appendExcludeAll(requireNonNull(patterns).trim());
+	}
+
+	private static String appendExcludeAll(String patterns) {
+		return patterns.endsWith("!*") ? patterns : patterns + ";!*";
 	}
 
 	private static String buildLimitsPrefix() {
@@ -107,5 +150,57 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 						.append("maxdepth=").append(SERIALIZATION_FILTER_MAX_DEPTH.getOrThrow()).append(";")
 						.append("maxrefs=").append(SERIALIZATION_FILTER_MAX_REFS.getOrThrow()).append(";")
 						.toString();
+	}
+
+	private static String readPattern(String patternFile) {
+		Collection<String> lines;
+		if (requireNonNull(patternFile).startsWith(CLASSPATH_PREFIX)) {
+			lines = readClasspathWhitelistItems(patternFile);
+		}
+		else {
+			lines = readFileWhitelistItems(patternFile);
+		}
+
+		return lines.stream()
+						.filter(line -> !line.startsWith("#"))
+						.collect(joining(";"))
+						.trim();
+	}
+
+	private static Collection<String> readClasspathWhitelistItems(String patternFile) {
+		String path = classpathFilepath(patternFile);
+		try (InputStream patternFileStream = SerializationFilterDryRun.class.getClassLoader().getResourceAsStream(path)) {
+			if (patternFileStream == null) {
+				throw new RuntimeException("Serialization pattern file not found on classpath: " + path);
+			}
+			return new BufferedReader(new InputStreamReader(patternFileStream, StandardCharsets.UTF_8))
+							.lines()
+							.collect(toList());
+		}
+		catch (IOException e) {
+			throw new RuntimeException("Unable to load serialization pattern file from classpath: " + patternFile, e);
+		}
+	}
+
+	private static Collection<String> readFileWhitelistItems(String patternFile) {
+		try {
+			return new LinkedHashSet<>(Files.readAllLines(Paths.get(patternFile)));
+		}
+		catch (IOException e) {
+			LOG.error("Unable to read serialization pattern file: {}", patternFile);
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static String classpathFilepath(String patternFile) {
+		String path = patternFile.substring(CLASSPATH_PREFIX.length());
+		if (path.startsWith("/")) {
+			path = path.substring(1);
+		}
+		if (path.contains("/")) {
+			throw new IllegalArgumentException("Serialization pattern file file must be in the classpath root");
+		}
+
+		return path;
 	}
 }

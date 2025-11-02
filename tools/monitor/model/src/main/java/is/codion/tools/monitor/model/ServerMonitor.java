@@ -309,6 +309,19 @@ public final class ServerMonitor {
 	}
 
 	/**
+	 * @return the serialization filter patterns being used
+	 * @throws RemoteException in case of a communication error
+	 */
+	public String serializationFilterPatterns() throws RemoteException {
+		String patterns = server.serializationFilterPatterns();
+		if (patterns != null) {
+			return patterns.replace(';', '\n');
+		}
+
+		return "No serialization filter patterns configured";
+	}
+
+	/**
 	 * Clears all collected statistics
 	 */
 	public void clearStatistics() {

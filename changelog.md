@@ -8,7 +8,8 @@ Codion Change Log
 - Procedure and Function argument renamed parameter.
 ### is.codion.common.rmi
 - SerializationFilter.readFileWhitelistItems() bug fixed, now respects list item order.
-- SerializationFilter.fromPatterns() and fromFile() now appends exclude all if missing. 
+- SerializationFilter.fromPatterns() and fromFile() now appends exclude all if missing.
+- ServerAdmin.serializationFilterPatterns() added. SerializationFilterFactory refactored.
 ### is.codion.swing.common.ui
 - FrameBuilder.iconImage() and iconImages() added.
 - FrameBuilder.componentListener() added.
@@ -28,6 +29,8 @@ Codion Change Log
 ### is.codion.framework.db.http
 - JsonHttpEntityConnection, JSON based function and procedure execution added.
 - HttpEntityConnection.JSON default back to being true.
+### is.codion.tools.monitor.ui
+- ServerMonitorPanel, serialization filter pattern view added.
 
 ## 0.18.56
 ### is.codion.common.core

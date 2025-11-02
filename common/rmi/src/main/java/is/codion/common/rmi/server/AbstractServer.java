@@ -243,7 +243,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
 		authenticators.values().forEach(AbstractServer::closeAuthenticator);
 		auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
-		SerializationFilter.handleDryRun();
+		SerializationFilterDryRun.handleDryRun();
 		shutdownEvent.run();
 	}
 
@@ -445,8 +445,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	private static void configureObjectInputFilter(ServerConfiguration configuration) {
 		if (configuration.objectInputFilterFactory().isPresent()) {
-			String objectInputFilterFactory = configuration.objectInputFilterFactory().get();
-			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(objectInputFilterFactory);
+			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(configuration.objectInputFilterFactory().get());
 			ObjectInputFilter objectInputFilter = inputFilterFactory.createObjectInputFilter();
 			ObjectInputFilter.Config.setSerialFilter(objectInputFilter);
 			LOG.info("ObjectInputFilter {} enabled", objectInputFilter.getClass().getName());
@@ -457,7 +456,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 							"codion.server.objectInputFilterFactoryRequired=false to disable this check");
 		}
 		else {
-			LOG.warn("No ObjectInputFilterFactoryClassName specified");
+			LOG.warn("No ObjectInputFilterFactory specified");
 		}
 	}
 

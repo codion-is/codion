@@ -292,14 +292,24 @@ public final class ServerMonitorPanel extends JPanel {
 						.build();
 	}
 
-	private JScrollPane createEnvironmentInfoPanel() throws RemoteException {
-		return textArea()
-						.autoscrolls(false)
-						.editable(false)
-						.lineWrap(true)
-						.wrapStyleWord(true)
-						.value(model.environmentInfo())
-						.scrollPane()
+	private JTabbedPane createEnvironmentInfoPanel() throws RemoteException {
+		return tabbedPane()
+						.tab("Environment", textArea()
+										.autoscrolls(false)
+										.editable(false)
+										.lineWrap(true)
+										.wrapStyleWord(true)
+										.value(model.environmentInfo())
+										.scrollPane()
+										.build())
+						.tab("Serialization", textArea()
+										.autoscrolls(false)
+										.editable(false)
+										.lineWrap(true)
+										.wrapStyleWord(true)
+										.value(model.serializationFilterPatterns())
+										.scrollPane()
+										.build())
 						.build();
 	}
 

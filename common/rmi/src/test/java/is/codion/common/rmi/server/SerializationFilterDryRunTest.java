@@ -32,14 +32,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class SerializationFilterTest {
+public final class SerializationFilterDryRunTest {
 
 	@Test
 	void dryRun() throws IOException, ClassNotFoundException {
-		assertThrows(IllegalArgumentException.class, () -> SerializationFilter.whitelistDryRun("classpath:dryrun").writeToFile());
+		assertThrows(IllegalArgumentException.class, () -> SerializationFilterDryRun.whitelistDryRun("classpath:dryrun").writeToFile());
 		File tempFile = File.createTempFile("serialization_dry_run_test", "txt");
 
-		SerializationFilter.DryRun serialFilter = SerializationFilter.whitelistDryRun(tempFile.getAbsolutePath());
+		SerializationFilterDryRun.DryRun serialFilter = SerializationFilterDryRun.whitelistDryRun(tempFile.getAbsolutePath());
 		ObjectInputFilter.Config.setSerialFilter(serialFilter);
 
 		Serializer.deserialize(Serializer.serialize(Integer.valueOf(42)));

@@ -88,6 +88,12 @@ public interface ServerAdmin extends Remote {
 	String systemProperties() throws RemoteException;
 
 	/**
+	 * @return the active serialization filter patterns
+	 * @throws RemoteException in case of an exception
+	 */
+	String serializationFilterPatterns() throws RemoteException;
+
+	/**
 	 * @param since the time since from which to retrieve statistics
 	 * @return current statistics for this server
 	 * @throws RemoteException in case of an exception

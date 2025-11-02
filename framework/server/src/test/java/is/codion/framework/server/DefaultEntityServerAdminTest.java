@@ -107,6 +107,7 @@ public final class DefaultEntityServerAdminTest {
 			assertEquals(500, admin.getMaintenanceInterval());
 			admin.serverInformation();
 			admin.systemProperties();
+			admin.serializationFilterPatterns();
 			admin.users();
 			admin.statistics(System.currentTimeMillis());
 			admin.disconnectTimedOutClients();
