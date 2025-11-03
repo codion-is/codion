@@ -738,8 +738,8 @@ For complete working examples:
 * *Configuration*: <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>>
 * *Generated Code*: `tools/generator/domain/src/test/resources/` (Chinook, World, Petstore)
 * *Hand-crafted Domains*: See domain model sections in demo tutorials:
-** <<../tutorials/chinook/chinook.adoc#_domain, Chinook domain model>>
-** <<../tutorials/world/world.adoc#_domain, World domain model>>
-** <<../tutorials/petstore/petstore.adoc#_domain, Petstore domain model>>
+** <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook domain model>>
+** <<{dir-tutorials}/world/world.adoc#_domain_model, World domain model>>
+** <<{dir-tutorials}/petstore/petstore.adoc#_domain, Petstore domain model>>
 
 The generator produces code that follows the same patterns as these hand-crafted examples, although the structure may differ, making it easy to compare generated vs manually-written domain models.

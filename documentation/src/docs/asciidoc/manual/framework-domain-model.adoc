@@ -652,7 +652,7 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=val
 == Examples
 
 * <<{dir-tutorials}/employees/employees.adoc#_domain, Employees domain model>>
-* <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>>
+* <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook domain model>>
 * <<{dir-tutorials}/petstore/petstore.adoc#_domain, Petstore domain model>>
 
 == Custom data types
@@ -697,7 +697,7 @@ _src/main/java/module-info.java_
 include::{dir-world-source}/module-info.java[tag=customSerializer]
 ----
 
-See <<{dir-tutorials}/world/world.adoc#_domain, World domain model>>
+See <<{dir-tutorials}/world/world.adoc#_domain_model, World domain model>>
 
 == Custom select queries
 

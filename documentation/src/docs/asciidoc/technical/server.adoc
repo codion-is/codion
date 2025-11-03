@@ -29,7 +29,7 @@ An authentication layer can be added by implementing an {url-javadoc}{common-rmi
 
 ==== Authenticator examples
 
-<<{dir-tutorials}/chinook/chinook.adoc#_chinookauthenticator, ChinookAuthenticator>>
+<<{dir-tutorials}/chinook/chinook.adoc#_authenticator, ChinookAuthenticator>>
 
 === RMI SSL encryption
 
@@ -276,16 +276,14 @@ The JSON connection uses a **hybrid serialization strategy**:
 [cols="2,3,2", options="header"]
 |===
 |Operation|Request|Response
-|CRUD operations|JSON|JSON
-|Function parameters|JSON|Java serialization
-|Function results|N/A|Java serialization
-|Procedure parameters|JSON|N/A
-|Report parameters|JSON|Java serialization
-|Report results|N/A|Java serialization
-|Entities instance|N/A|Java serialization
+|CRUD|JSON|JSON
+|{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#execute(is.codion.common.db.operation.FunctionType)[Functions]|JSON|Java serialization
+|{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#execute(is.codion.common.db.operation.ProcedureType)[Procedures]|JSON|N/A
+|{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#report(is.codion.common.db.report.ReportType,P)[Reports]|JSON|Java serialization
+|{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#entities()[Entities]|N/A|Java serialization
 |===
 
-IMPORTANT: The hybrid approach protects the server from deserialization attacks (the primary security concern) while maintaining compatibility with complex return types like `JasperPrint` that don't support JSON serialization. The client deserializing responses from its chosen server is not a security concern.
+IMPORTANT: The hybrid approach protects the server from deserialization attacks while maintaining compatibility with complex return types like `JasperPrint` and `Entities` that don't support JSON serialization.
 
 === Choosing a Connection Type
 

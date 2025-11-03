@@ -19,6 +19,7 @@
             </appender>
         </sift>
     </appender>
+    <!--An appender handling client specific trace output, enabled via the ServerMonitor-->
     <appender name="TRACER" class="ch.qos.logback.classic.sift.SiftingAppender">
         <discriminator>
             <key>logIdentifier</key>

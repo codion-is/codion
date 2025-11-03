@@ -30,5 +30,5 @@ EntityApplicationPanel.SQL_TRACING.set(true);
 == Examples
 
 * <<{dir-tutorials}/employees/employees.adoc#_main_application_panel, Employees application panel>>
-* <<{dir-tutorials}/chinook/chinook.adoc#_main_application_panel, Chinook application panel>>
+* <<{dir-tutorials}/chinook/chinook.adoc#_chinookapppanel, Chinook application panel>>
 * <<{dir-tutorials}/petstore/petstore.adoc#_main_application_panel, Petstore application panel>>

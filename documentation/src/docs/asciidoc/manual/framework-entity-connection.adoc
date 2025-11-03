@@ -11,7 +11,7 @@ Codion’s database layer is intentionally minimal. It does not perform SQL join
 
 Instead, it gives you predictable, queryable access to individual Entity objects and their associated foreign keys — controlled through a feature called reference depth.
 
-The <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
+The <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
 
 [#_entity_connection_selecting]
 == Selecting

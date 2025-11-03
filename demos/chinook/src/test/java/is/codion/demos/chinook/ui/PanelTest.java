@@ -102,13 +102,15 @@ public final class PanelTest {
 	@Test
 	void playlist() {
 		SwingEntityModel model = new PlaylistModel(connectionProvider);
-		new EntityPanel(model, new PlaylistEditPanel(model.editModel()), new PlaylistTablePanel(model.tableModel())).initialize();
+		new EntityPanel(model, new PlaylistEditPanel(model.editModel()),
+						new PlaylistTablePanel(model.tableModel())).initialize();
 	}
 
 	@Test
 	void playlistTrack() {
 		SwingEntityModel model = new SwingEntityModel(new PlaylistTrackEditModel(connectionProvider));
-		new EntityPanel(model, new PlaylistTrackEditPanel(model.editModel()), new PlaylistTrackTablePanel(model.tableModel())).initialize();
+		new EntityPanel(model, new PlaylistTrackEditPanel(model.editModel()),
+						new PlaylistTrackTablePanel(model.tableModel())).initialize();
 	}
 
 	@Test
@@ -120,6 +122,7 @@ public final class PanelTest {
 	void track() {
 		SwingEntityModel model = new SwingEntityModel(new TrackTableModel(connectionProvider));
 		TrackTableModel tableModel = (TrackTableModel) model.tableModel();
-		new EntityPanel(model, new TrackEditPanel((TrackEditModel) model.editModel(), tableModel.selection()), new TrackTablePanel(tableModel)).initialize();
+		new EntityPanel(model, new TrackEditPanel((TrackEditModel) model.editModel(), tableModel.selection()),
+						new TrackTablePanel(tableModel)).initialize();
 	}
 }

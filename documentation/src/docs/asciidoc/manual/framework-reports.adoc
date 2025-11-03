@@ -31,5 +31,5 @@ include::{dir-source}/is/codion/manual/store/Misc.java[tags=jasperReportDataSour
 == Examples
 
 * <<{dir-tutorials}/employees/employees.adoc#_ui, Employees UI layer>>
-* <<{dir-tutorials}/chinook/chinook.adoc#_ui, Chinook UI layer>>
+* <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook UI layer>>
 * <<{dir-tutorials}/world/world.adoc#_ui, World UI layer>>
