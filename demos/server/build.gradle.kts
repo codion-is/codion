@@ -59,6 +59,8 @@ application {
         "-Dcodion.server.auxiliaryServerFactories=is.codion.framework.servlet.EntityServiceFactory",
         "-Dcodion.server.objectInputFilterFactory=is.codion.common.rmi.server.SerializationFilterFactory",
         "-Dcodion.server.serialization.filter.patternFile=src/main/config/serialization-whitelist.txt",
+        // Configure separate logging for serialization filter rejections
+        "-Djava.util.logging.config.file=src/main/config/serialization-logging.properties",
         "-Dcodion.server.methodTracing=false",
         "-Djavax.net.ssl.keyStore=../../framework/server/src/main/config/keystore.jks",
         "-Djavax.net.ssl.keyStorePassword=crappypass",
