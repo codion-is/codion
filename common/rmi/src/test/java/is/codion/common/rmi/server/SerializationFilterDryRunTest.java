@@ -36,10 +36,10 @@ public final class SerializationFilterDryRunTest {
 
 	@Test
 	void dryRun() throws IOException, ClassNotFoundException {
-		assertThrows(IllegalArgumentException.class, () -> SerializationFilterDryRun.whitelistDryRun("classpath:dryrun").writeToFile());
+		assertThrows(IllegalArgumentException.class, () -> new SerializationFilterDryRun("classpath:dryrun", false));
 		File tempFile = File.createTempFile("serialization_dry_run_test", "txt");
 
-		SerializationFilterDryRun.DryRun serialFilter = SerializationFilterDryRun.whitelistDryRun(tempFile.getAbsolutePath());
+		SerializationFilterDryRun serialFilter = new SerializationFilterDryRun(tempFile.getAbsolutePath(), false);
 		ObjectInputFilter.Config.setSerialFilter(serialFilter);
 
 		Serializer.deserialize(Serializer.serialize(Integer.valueOf(42)));

@@ -27,73 +27,60 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Set;
 
+import static java.lang.Runtime.getRuntime;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ConcurrentHashMap.newKeySet;
 import static java.util.stream.Collectors.toList;
 
-final class SerializationFilterDryRun {
+final class SerializationFilterDryRun implements ObjectInputFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SerializationFilterDryRun.class);
 
 	private static final String CLASSPATH_PREFIX = "classpath:";
 
-	private SerializationFilterDryRun() {}
+	private final String patternFile;
+	private final Set<Class<?>> deserializedClasses = newKeySet();
+
+	SerializationFilterDryRun(String patternFile) {
+		this(patternFile, true);
+	}
+
+	SerializationFilterDryRun(String patternFile, boolean writeOnShutdown) {
+		if (requireNonNull(patternFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
+			throw new IllegalArgumentException("Filter dry run can not be performed with a classpath result file: " + patternFile);
+		}
+		this.patternFile = patternFile;
+		if (writeOnShutdown) {
+			getRuntime().addShutdownHook(new Thread(this::writeToFile));
+		}
+	}
+
+	@Override
+	public Status checkInput(FilterInfo filterInfo) {
+		Class<?> clazz = filterInfo.serialClass();
+		if (clazz != null) {
+			while (clazz.isArray()) {
+				clazz = clazz.getComponentType();
+			}
+			deserializedClasses.add(clazz);
+		}
+
+		return Status.ALLOWED;
+	}
 
 	/**
-	 * Creates a serialization filter for a whitelist dry run.
-	 * @param patternFile the file to write the dry-run results to
-	 * @throws IllegalArgumentException in case of a classpath dry run file
+	 * Writes all classnames found during the dry-run to the whitelist file.
 	 */
-	static DryRun whitelistDryRun(String patternFile) {
-		return new DryRun(patternFile);
-	}
-
-	static void handleDryRun() {
-		ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
-		if (serialFilter instanceof DryRun) {
-			((DryRun) serialFilter).writeToFile();
+	void writeToFile() {
+		try {
+			Files.write(Paths.get(patternFile), deserializedClasses.stream()
+							.map(Class::getName)
+							.sorted()
+							.collect(toList()), StandardOpenOption.TRUNCATE_EXISTING);
+			LOG.info("Serialization dryrun result written to file: {}", patternFile);
 		}
-	}
-
-	static final class DryRun implements ObjectInputFilter {
-
-		private final String patternFile;
-		private final Set<Class<?>> deserializedClasses = newKeySet();
-
-		private DryRun(String patternFile) {
-			if (requireNonNull(patternFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
-				throw new IllegalArgumentException("Filter dry run can not be performed with a classpath result file: " + patternFile);
-			}
-			this.patternFile = patternFile;
-		}
-
-		@Override
-		public Status checkInput(FilterInfo filterInfo) {
-			Class<?> clazz = filterInfo.serialClass();
-			if (clazz != null) {
-				while (clazz.isArray()) {
-					clazz = clazz.getComponentType();
-				}
-				deserializedClasses.add(clazz);
-			}
-
-			return Status.ALLOWED;
-		}
-
-		/**
-		 * Writes all classnames found during the dry-run to the whitelist file.
-		 */
-		void writeToFile() {
-			try {
-				Files.write(Paths.get(patternFile), deserializedClasses.stream()
-								.map(Class::getName)
-								.sorted()
-								.collect(toList()), StandardOpenOption.CREATE);
-				LOG.info("Serialization dryrun result written to file: {}", patternFile);
-			}
-			catch (Exception e) {
-				LOG.error("Error while writing dryrun results to file: {}", patternFile, e);
-			}
+		catch (Exception e) {
+			LOG.error("Error while writing dryrun results to file: {}", patternFile, e);
 		}
 	}
 }

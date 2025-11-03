@@ -108,7 +108,8 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {
 		if (!SERIALIZATION_FILTER_DRYRUN_FILE.isNull()) {
-			return SerializationFilterDryRun.whitelistDryRun(SERIALIZATION_FILTER_DRYRUN_FILE.getOrThrow());
+			LOG.warn("SerializationFilterDryRun active, no filtering performed");
+			return new SerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN_FILE.getOrThrow());
 		}
 		String patterns = createPatterns();
 		if (!SERIALIZATION_FILTER_PATTERN_FILE.isNull()) {
@@ -169,7 +170,7 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 
 	private static Collection<String> readClasspathWhitelistItems(String patternFile) {
 		String path = classpathFilepath(patternFile);
-		try (InputStream patternFileStream = SerializationFilterDryRun.class.getClassLoader().getResourceAsStream(path)) {
+		try (InputStream patternFileStream = SerializationFilterFactory.class.getClassLoader().getResourceAsStream(path)) {
 			if (patternFileStream == null) {
 				throw new RuntimeException("Serialization pattern file not found on classpath: " + path);
 			}

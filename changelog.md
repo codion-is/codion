@@ -10,6 +10,7 @@ Codion Change Log
 - SerializationFilter.readFileWhitelistItems() bug fixed, now respects list item order.
 - SerializationFilter.fromPatterns() and fromFile() now appends exclude all if missing.
 - ServerAdmin.serializationFilterPatterns() added. SerializationFilterFactory refactored.
+- SerializationFilterDryRun refactored, now writes output on jvm shutdown.
 ### is.codion.swing.common.model
 - DelayedAction added.
 ### is.codion.swing.common.ui

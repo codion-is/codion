@@ -163,6 +163,76 @@ maxbytes=10485760;maxarray=100000;maxdepth=100;maxrefs=1000000;java.lang.String;
 Application-level validation (such as User credential length limits) cannot prevent memory allocation during deserialization,
 making these https://openjdk.org/jeps/290[JEP 290] limits essential for security.
 
+==== Serialization Filter Dry Run
+
+The serialization filter dry-run mode helps you discover exactly which classes are deserialized during program execution. This is essential when creating or updating serialization filter patterns, as it eliminates guesswork about what classes need to be whitelisted.
+
+===== How It Works
+
+When dry-run mode is enabled, the framework records every class that gets deserialized during the program's lifetime. On JVM shutdown, it writes a sorted list of unique class names to the specified file. This file can then be used directly as input for the pattern-based filter.
+
+IMPORTANT: During dry-run mode, **all** classes are accepted (no filtering is performed). This allows you to capture the complete set of deserialized classes without being blocked by an incomplete filter.
+
+===== Configuration
+
+Enable dry-run mode by setting the following system property:
+
+[source]
+----
+codion.server.serialization.filter.dryRunFile=deserialized_classes.txt
+----
+
+The specified file will be created (or overwritten) on JVM shutdown with the discovered class names.
+
+===== Direct Usage Example
+
+The dry-run mode can be used outside of the server context to analyze deserialization in any Java application. Here's an example that discovers which classes are deserialized when loading a JasperReports report:
+
+[source,java]
+----
+public static void main(String[] args) {
+    // Set the dry-run output file
+    SerializationFilterFactory.SERIALIZATION_FILTER_DRYRUN_FILE.set(
+        "/path/to/output.txt");
+
+    // Configure the filter in dry-run mode
+    ObjectInputFilter.Config.setSerialFilter(
+        new SerializationFilterFactory().createObjectInputFilter());
+
+    // Perform operations that deserializes data
+    Report.REPORT_PATH.set("path/to/reports");
+    JRReport report = JasperReports.fileReport("customer_report.jasper");
+    report.load();
+
+    // Dry-run output is written on JVM shutdown
+}
+----
+
+===== Workflow
+
+1. **Enable dry-run mode** with the `dryRunFile` property
+2. **Run your application** through typical usage scenarios to trigger deserialization
+3. **Shut down the JVM** gracefully to write the discovered classes to the file
+4. **Review the output file** containing the sorted list of class names
+5. **Use the output as your whitelist** by setting it as the pattern file:
+
+[source]
+----
+codion.server.serialization.filter.patternFile=deserialized_classes.txt
+----
+
+===== Array Handling
+
+The dry-run mode automatically handles array types by extracting and recording the component type. For example, if `java.lang.String[]` is deserialized, the output file will contain `java.lang.String`, not the array type itself.
+
+===== Best Practices
+
+* Run dry-run mode in a test environment that exercises all application features
+* Include all expected user workflows to ensure complete coverage
+* Use dry-run mode when adding new features that might deserialize new types
+* Keep the dry-run output file under version control to track changes over time
+* Re-run dry-run mode after dependency upgrades that might introduce new deserialized classes
+
 [#_http_connections]
 == HTTP
 
