@@ -68,6 +68,15 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	public static final PropertyValue<String> SERIALIZATION_FILTER_DRYRUN_FILE = stringValue("codion.server.serialization.filter.dryRunFile");
 
 	/**
+	 * The interval in seconds for periodically flushing the dry-run output to disk.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 30
+	 * </ul>
+	 */
+	public static final PropertyValue<Integer> SERIALIZATION_FILTER_DRYRUN_FLUSH_INTERVAL = integerValue("codion.server.serialization.filter.dryRunFlushInterval", 30);
+
+	/**
 	 * The maximum number of bytes in the input stream to prevent resource exhaustion attacks.
 	 * <ul>
 	 * <li>Value type: Long
@@ -108,8 +117,9 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {
 		if (!SERIALIZATION_FILTER_DRYRUN_FILE.isNull()) {
-			LOG.warn("SerializationFilterDryRun active, no filtering performed");
-			return new SerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN_FILE.getOrThrow());
+			int flushInterval = SERIALIZATION_FILTER_DRYRUN_FLUSH_INTERVAL.getOrThrow();
+			LOG.warn("SerializationFilterDryRun active, no filtering performed (flush interval: {}s)", flushInterval);
+			return new SerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN_FILE.getOrThrow(), true, flushInterval);
 		}
 		String patterns = createPatterns();
 		if (!SERIALIZATION_FILTER_PATTERN_FILE.isNull()) {
@@ -199,7 +209,7 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 			path = path.substring(1);
 		}
 		if (path.contains("/")) {
-			throw new IllegalArgumentException("Serialization pattern file file must be in the classpath root");
+			throw new IllegalArgumentException("Serialization pattern file must be in the classpath root");
 		}
 
 		return path;

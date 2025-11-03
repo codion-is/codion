@@ -35,6 +35,7 @@
  * <li>{@link is.codion.common.rmi.server.SerializationFilterFactory#SERIALIZATION_FILTER_PATTERNS}
  * <li>{@link is.codion.common.rmi.server.SerializationFilterFactory#SERIALIZATION_FILTER_PATTERN_FILE}
  * <li>{@link is.codion.common.rmi.server.SerializationFilterFactory#SERIALIZATION_FILTER_DRYRUN_FILE}
+ * <li>{@link is.codion.common.rmi.server.SerializationFilterFactory#SERIALIZATION_FILTER_DRYRUN_FLUSH_INTERVAL}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

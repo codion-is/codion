@@ -184,6 +184,17 @@ codion.server.serialization.filter.dryRunFile=deserialized_classes.txt
 
 The specified file will be created (or overwritten) on JVM shutdown with the discovered class names.
 
+====== Periodic Flushing
+
+To prevent data loss if the JVM crashes during dry-run, the results are automatically flushed to disk periodically (default: every 30 seconds):
+
+[source]
+----
+codion.server.serialization.filter.dryRunFlushInterval=30
+----
+
+Set `dryRunFlushInterval=0` to disable periodic flushing. For dry-runs in unstable environments, consider setting a shorter interval (e.g., `dryRunFlushInterval=5`).
+
 ===== Direct Usage Example
 
 The dry-run mode can be used outside of the server context to analyze deserialization in any Java application. Here's an example that discovers which classes are deserialized when loading a JasperReports report:

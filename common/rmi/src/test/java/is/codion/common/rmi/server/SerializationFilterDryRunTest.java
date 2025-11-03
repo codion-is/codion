@@ -67,4 +67,67 @@ public final class SerializationFilterDryRunTest {
 
 		tempFile.delete();
 	}
+
+	@Test
+	void timeBasedFlushing() throws IOException, InterruptedException {
+		File tempFile = File.createTempFile("serialization_dry_run_time_test", "txt");
+
+		// Set flush interval to 1 second
+		SerializationFilterDryRun serialFilter = new SerializationFilterDryRun(tempFile.getAbsolutePath(), false, 1);
+
+		// Add a class
+		serialFilter.checkInput(new TestFilterInfo(Integer.class));
+
+		// Should not be flushed immediately
+		List<String> classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+		assertEquals(0, classNames.size(), "Should not flush immediately");
+
+		// Wait for flush to occur
+		Thread.sleep(1500);
+
+		classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+		assertEquals(1, classNames.size(), "Should flush after 1 second");
+		assertEquals(Integer.class.getName(), classNames.get(0));
+
+		tempFile.delete();
+	}
+
+	@Test
+	void flushConfigValidation() {
+		assertThrows(IllegalArgumentException.class, () -> new SerializationFilterDryRun("test.txt", false, -1));
+	}
+
+	// Helper class for testing without needing to set global serial filter
+	private static class TestFilterInfo implements ObjectInputFilter.FilterInfo {
+		private final Class<?> clazz;
+
+		TestFilterInfo(Class<?> clazz) {
+			this.clazz = clazz;
+		}
+
+		@Override
+		public Class<?> serialClass() {
+			return clazz;
+		}
+
+		@Override
+		public long arrayLength() {
+			return 0;
+		}
+
+		@Override
+		public long depth() {
+			return 0;
+		}
+
+		@Override
+		public long references() {
+			return 0;
+		}
+
+		@Override
+		public long streamBytes() {
+			return 0;
+		}
+	}
 }

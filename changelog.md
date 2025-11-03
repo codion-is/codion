@@ -11,6 +11,7 @@ Codion Change Log
 - SerializationFilter.fromPatterns() and fromFile() now appends exclude all if missing.
 - ServerAdmin.serializationFilterPatterns() added. SerializationFilterFactory refactored.
 - SerializationFilterDryRun refactored, now writes output on jvm shutdown.
+- SerializationFilterDryRun periodic flushing implemented.
 ### is.codion.swing.common.model
 - DelayedAction added.
 ### is.codion.swing.common.ui
