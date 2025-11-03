@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.58
+
 ## 0.18.57
 ### is.codion.common.core
 - Serializer.deserialize() overloaded with InputStream.
