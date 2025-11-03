@@ -24,7 +24,7 @@ dependencies {
     implementation("com.formdev:flatlaf-extras:3.6.2")
     implementation(libs.ikonli.foundation.pack)
 
-    implementation(project(":codion-plugin-swing-mcp"))
+    implementation(project(":codion-tools-swing-mcp"))
 
     testImplementation(project(":codion-framework-domain-test"))
 

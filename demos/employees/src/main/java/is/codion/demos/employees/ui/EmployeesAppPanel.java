@@ -27,8 +27,6 @@ import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
-import is.codion.plugin.swing.mcp.SwingMcpPlugin;
-import is.codion.plugin.swing.robot.Automation;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -39,6 +37,8 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
+import is.codion.tools.swing.mcp.SwingMcpPlugin;
+import is.codion.tools.swing.robot.Automation;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;

@@ -34,7 +34,7 @@ module is.codion.framework.demos.chinook {
 	requires com.formdev.flatlaf.extras;
 	requires is.codion.plugin.flatlaf.intellij.themes;
 	requires org.kordamp.ikonli.foundation;
-	requires is.codion.plugin.swing.mcp;
+	requires is.codion.tools.swing.mcp;
 
 	exports is.codion.demos.chinook.model
 					to is.codion.swing.framework.model, is.codion.swing.framework.ui;

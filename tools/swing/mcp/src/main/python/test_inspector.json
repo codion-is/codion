@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "codion": {
+      "command": "python3",
+      "args": [
+        "/home/darri/Projects/github/codion/tools/swing/mcp/src/main/python/mcp_bridge.py"
+      ]
+    }
+  }
+}

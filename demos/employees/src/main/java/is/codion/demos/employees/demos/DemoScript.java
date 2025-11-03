@@ -18,9 +18,9 @@
  */
 package is.codion.demos.employees.demos;
 
-import is.codion.plugin.swing.robot.Automation;
-import is.codion.plugin.swing.robot.Controller;
-import is.codion.plugin.swing.robot.Narrator;
+import is.codion.tools.swing.robot.Automation;
+import is.codion.tools.swing.robot.Controller;
+import is.codion.tools.swing.robot.Narrator;
 
 import java.util.function.Consumer;
 

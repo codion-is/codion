@@ -341,26 +341,6 @@ is/codion/plugin/imagepanel/NavigableImagePanel_is_IS.properties
 |file_not_found|File not found|Skrá fannst ekki
 |===
 
-== codion-plugin-swing-robot
-
-=== is/codion/plugin/swing/robot/Narrator.java
-
-[source]
-----
-is/codion/plugin/swing/robot/Narrator.properties
-is/codion/plugin/swing/robot/Narrator_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|description|Description|Skýring
-|keystrokes|Keystrokes|Lyklaborð
-|narration|Narration|Lýsing
-|narrator|Narrator|Þulur
-|===
-
 == codion-swing-common-ui
 
 === is/codion/swing/common/ui/SwingMessages.java
@@ -1039,4 +1019,24 @@ is/codion/swing/framework/ui/component/EntitySearchField_is_IS.properties
 |searching|Searching|Leita
 |select_entity|Select record|Veldu færslu
 |space_as_wildcard|Space as wildcard|Stafabil sem algildi
+|===
+
+== codion-tools-swing-robot
+
+=== is/codion/tools/swing/robot/Narrator.java
+
+[source]
+----
+is/codion/tools/swing/robot/Narrator.properties
+is/codion/tools/swing/robot/Narrator_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|description|Description|Skýring
+|keystrokes|Keystrokes|Lyklaborð
+|narration|Narration|Lýsing
+|narrator|Narrator|Þulur
 |===

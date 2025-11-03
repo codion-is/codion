@@ -32,7 +32,6 @@ import is.codion.demos.chinook.model.GenreModel;
 import is.codion.demos.chinook.model.PlaylistModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
-import is.codion.plugin.swing.mcp.SwingMcpPlugin;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -52,6 +51,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.EntityTablePanel.SelectionMode;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
+import is.codion.tools.swing.mcp.SwingMcpPlugin;
 
 import org.kordamp.ikonli.foundation.Foundation;
 

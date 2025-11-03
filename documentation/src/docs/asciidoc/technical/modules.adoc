@@ -414,6 +414,34 @@ image::modules/swing/framework-ui/build/reports/dependency-graph/dependency-grap
 == Tools
 
 [discrete]
+==== codion-tools-jul-classpath
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/logging/jul-classpath/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== codion-tools-swing-robot
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/swing/robot/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== codion-tools-swing-mcp
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/swing/mcp/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+
+[discrete]
 === codion-tools-server-monitor-model
 
 .Dependency graph
@@ -587,22 +615,4 @@ image::modules/plugins/flatlaf-intellij-themes/build/reports/dependency-graph/de
 [%collapsible]
 ====
 image::modules/plugins/imagepanel/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
-==== codion-plugin-swing-robot
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/plugins/swing-robot/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
-==== codion-plugin-swing-mcp
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/plugins/swing-mcp/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====

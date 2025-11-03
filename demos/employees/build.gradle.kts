@@ -22,8 +22,8 @@ dependencies {
     implementation(project(":codion-plugin-flatlaf"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
-    implementation(project(":codion-plugin-swing-robot"))
-    implementation(project(":codion-plugin-swing-mcp"))
+    implementation(project(":codion-tools-swing-robot"))
+    implementation(project(":codion-tools-swing-mcp"))
 
     runtimeOnly(project(":codion-plugin-logback-proxy"))
 

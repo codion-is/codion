@@ -136,6 +136,15 @@ project(":codion-tools-monitor-model").projectDir = file("tools/monitor/model")
 include "codion-tools-monitor-ui"
 project(":codion-tools-monitor-ui").projectDir = file("tools/monitor/ui")
 
+include "codion-tools-jul-classpath"
+project(":codion-tools-jul-classpath").projectDir = file("tools/logging/jul-classpath")
+
+include "codion-tools-swing-mcp"
+project(":codion-tools-swing-mcp").projectDir = file("tools/swing/mcp")
+
+include "codion-tools-swing-robot"
+project(":codion-tools-swing-robot").projectDir = file("tools/swing/robot")
+
 include "codion-plugin-hikari-pool"
 project(":codion-plugin-hikari-pool").projectDir = file("plugins/hikari-pool")
 
@@ -162,12 +171,6 @@ project(":codion-plugin-flatlaf").projectDir = file("plugins/flatlaf")
 
 include "codion-plugin-flatlaf-intellij-themes"
 project(":codion-plugin-flatlaf-intellij-themes").projectDir = file("plugins/flatlaf-intellij-themes")
-
-include "codion-plugin-swing-mcp"
-project(":codion-plugin-swing-mcp").projectDir = file("plugins/swing-mcp")
-
-include "codion-plugin-swing-robot"
-project(":codion-plugin-swing-robot").projectDir = file("plugins/swing-robot")
 
 include "demo-chinook"
 project(":demo-chinook").projectDir = file("demos/chinook")
