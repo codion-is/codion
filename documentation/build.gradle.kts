@@ -104,7 +104,7 @@ tasks.asciidoctor {
         )
     )
     asciidoctorj {
-        setVersion("2.5.13")
+        setVersion("3.0.0")
         modules {
             diagram.use()
         }
