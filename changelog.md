@@ -39,6 +39,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel now uses DelayedAction when displaying the refresh progress bar.
 - EntitySearchField now uses DelayedAction when displaying the search progress bar, PROGRESS_BAR now default search indicator.
+### is.codion.plugin.jul.proxy
+- ClasspathConfiguration added.
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel, serialization filter pattern view added.
 ### is.codion.tools.generator.model
