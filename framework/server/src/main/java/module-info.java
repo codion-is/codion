@@ -26,6 +26,7 @@
  */
 module is.codion.framework.server {
 	requires org.slf4j;
+	requires is.codion.tools.jul.classpath;
 	requires is.codion.framework.db.local;
 	requires transitive is.codion.framework.db.rmi;
 

@@ -10,6 +10,8 @@ Codion Change Log
 - is.codion.tools.swing.mcp migrated from is.codion.plugin.swing.mcp.
 ### is.codion.swing.common.ui
 - ImagePanel migrated from is.codion.plugin.imagepanel module, which has been removed.
+### is.codion.framework.server
+- is.codion.framework.server module now requires is.codion.tools.jul.classpath.
 
 ## 0.18.57
 ### is.codion.common.core

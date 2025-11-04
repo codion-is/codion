@@ -35,14 +35,44 @@ import static java.util.logging.LogManager.getLogManager;
  * from the classpath instead of the filesystem. It uses the standard JUL configuration mechanism via
  * {@code -Djava.util.logging.config.class} to install itself as the configuration handler.
  *
- * <h2>Usage</h2>
+ * <h2>Module Path Requirements</h2>
+ * <p>
+ * This class is in the {@code is.codion.tools.jul.classpath} module, which must be on the module path
+ * for the JVM to load it. There are two ways to ensure this:
+ *
+ * <h3>Option 1: Module Dependency (Recommended)</h3>
+ * <p>
+ * Add a {@code requires} clause to your {@code module-info.java}:
+ * <pre>{@code
+ * module your.module {
+ *     requires is.codion.tools.jul.classpath;
+ * }
+ * }</pre>
+ * <p>
+ * Note: The {@code is.codion.framework.server} module already requires this module, so server applications
+ * using EntityServer get this functionality automatically without additional configuration.
+ *
+ * <h3>Option 2: Runtime Module Addition</h3>
+ * <p>
+ * If you cannot add a module dependency (e.g., configuration-only modules with no {@code module-info.java}),
+ * explicitly add the module at runtime:
+ * <pre>{@code
+ * --add-modules is.codion.tools.jul.classpath
+ * }</pre>
+ * <p>
+ * For jlink images, add the module to the jlink configuration:
+ * <pre>{@code
+ * jlink --add-modules is.codion.tools.jul.classpath,...
+ * }</pre>
+ *
+ * <h2>Basic Usage</h2>
  * <p>
  * Place your logging configuration file (e.g., {@code logging.properties}) on the classpath and configure
  * the JVM with both properties:
  *
  * <pre>{@code
  * -Djava.util.logging.config.file=logging.properties
- * -Djava.util.logging.config.class=is.codion.plugin.jul.ClasspathConfiguration
+ * -Djava.util.logging.config.class=is.codion.tools.jul.classpath.ClasspathConfiguration
  * }</pre>
  * <p>
  * The configuration file will be loaded from the classpath root using the context class loader.
@@ -89,7 +119,7 @@ public final class ClasspathConfiguration {
 	 * specified by {@code java.util.logging.config.file} from the classpath.
 	 * <p>
 	 * This constructor is invoked automatically by the JVM when
-	 * {@code -Djava.util.logging.config.class=is.codion.plugin.jul.ClasspathConfiguration}
+	 * {@code -Djava.util.logging.config.class=is.codion.tools.jul.classpath.ClasspathConfiguration}
 	 * is specified.
 	 * <p>
 	 * If the configuration file is found and successfully loaded, a confirmation message is
