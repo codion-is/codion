@@ -21,8 +21,9 @@ package is.codion.demos.chinook.ui;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.image.ImagePanel;
+import is.codion.swing.common.ui.component.image.ImagePanel.ZoomDevice;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.transfer.FileTransferHandler;
@@ -71,7 +72,7 @@ final class CoverArtPanel extends JPanel {
 	private final JButton addButton;
 	private final JButton removeButton;
 	private final JPanel centerPanel;
-	private final NavigableImagePanel imagePanel;
+	private final ImagePanel imagePanel;
 	private final Value<byte[]> imageBytes;
 	private final ObservableState imageSelected;
 	private final State embedded = State.state(true);
@@ -121,7 +122,7 @@ final class CoverArtPanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		imageBytes.addConsumer(bytes -> imagePanel.setImage(readImage(bytes)));
+		imageBytes.addConsumer(bytes -> imagePanel.image().set(readImage(bytes)));
 		embedded.addConsumer(this::setEmbedded);
 		imagePanel.addMouseListener(new EmbeddingMouseListener());
 	}
@@ -175,19 +176,18 @@ final class CoverArtPanel extends JPanel {
 	}
 
 	private void configureImagePanel(boolean embedded) {
-		imagePanel.setZoomDevice(embedded ? NavigableImagePanel.ZoomDevice.NONE : NavigableImagePanel.ZoomDevice.MOUSE_WHEEL);
-		imagePanel.setMoveImageEnabled(!embedded);
+		imagePanel.zoomDevice().set(embedded ? ZoomDevice.NONE : ZoomDevice.MOUSE_WHEEL);
+		imagePanel.movable().set(!embedded);
 	}
 
-	private NavigableImagePanel createImagePanel() {
-		NavigableImagePanel panel = new NavigableImagePanel();
-		panel.setZoomDevice(NavigableImagePanel.ZoomDevice.NONE);
-		panel.setNavigationImageEnabled(false);
-		panel.setMoveImageEnabled(false);
-		panel.setTransferHandler(new CoverTransferHandler());
-		panel.setBorder(createEtchedBorder());
-
-		return panel;
+	private ImagePanel createImagePanel() {
+		return ImagePanel.builder()
+						.zoomDevice(ZoomDevice.NONE)
+						.transferHandler(new CoverTransferHandler())
+						.border(createEtchedBorder())
+						.navigable(false)
+						.movable(false)
+						.build();
 	}
 
 	private static BufferedImage readImage(byte[] bytes) {

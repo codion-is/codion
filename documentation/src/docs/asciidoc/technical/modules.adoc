@@ -605,14 +605,3 @@ Provides a bunch of IntelliJ Theme based https://github.com/JFormDesigner/FlatLa
 ====
 image::modules/plugins/flatlaf-intellij-themes/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
-
-=== Other
-
-[discrete]
-==== codion-plugin-imagepanel
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/plugins/imagepanel/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====

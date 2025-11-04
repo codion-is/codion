@@ -148,9 +148,6 @@ project(":codion-tools-swing-robot").projectDir = file("tools/swing/robot")
 include "codion-plugin-hikari-pool"
 project(":codion-plugin-hikari-pool").projectDir = file("plugins/hikari-pool")
 
-include "codion-plugin-imagepanel"
-project(":codion-plugin-imagepanel").projectDir = file("plugins/imagepanel")
-
 include "codion-plugin-jasperreports"
 project(":codion-plugin-jasperreports").projectDir = file("plugins/jasperreports")
 

@@ -175,7 +175,7 @@ configure(subprojects.filter { it.name != "codion-framework-bom" && it.name != "
                 "src/main/java/is/codion/swing/common/ui/component/button/NullableCheckBox.java",
                 "src/main/java/is/codion/swing/common/ui/component/combobox/Completion.java",
                 "src/main/java/is/codion/swing/common/ui/component/combobox/CompletionDocument.java",
-                "src/main/java/is/codion/plugin/imagepanel/NavigableImagePanel.java"
+                "src/main/java/is/codion/swing/common/ui/component/image/ImagePanel.java"
             )
         }
         format("javaMisc") {

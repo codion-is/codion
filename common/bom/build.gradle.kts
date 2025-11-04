@@ -28,7 +28,6 @@ dependencies.constraints {
 
     api(project(":codion-plugin-flatlaf"))
     api(project(":codion-plugin-flatlaf-intellij-themes"))
-    api(project(":codion-plugin-imagepanel"))
     api(project(":codion-plugin-jasperreports"))
     api(project(":codion-plugin-jul-proxy"))
     api(project(":codion-plugin-log4j-proxy"))
