@@ -29,7 +29,7 @@ import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.exception.UpdateException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;

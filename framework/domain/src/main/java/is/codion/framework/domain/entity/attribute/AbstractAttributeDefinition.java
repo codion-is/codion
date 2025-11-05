@@ -18,10 +18,10 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.Text;
-import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.item.Item;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.Text;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
@@ -55,7 +55,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;

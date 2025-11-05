@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Serializer;
+import is.codion.common.utilities.Serializer;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomainExtended;
 import is.codion.framework.domain.entity.attribute.Attribute;

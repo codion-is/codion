@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Text;
+import is.codion.common.utilities.Text;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
 import static org.junit.jupiter.api.Assertions.*;
 

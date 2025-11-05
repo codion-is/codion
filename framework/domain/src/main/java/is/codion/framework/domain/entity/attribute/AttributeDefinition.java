@@ -18,9 +18,9 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.item.Item;
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.AbstractAttributeDefinition.AbstractAttributeDefinitionBuilder;
@@ -40,7 +40,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import static is.codion.common.Configuration.*;
+import static is.codion.common.utilities.Configuration.*;
 
 /**
  * Defines an Attribute configuration including validation, formatting, and behavior settings.

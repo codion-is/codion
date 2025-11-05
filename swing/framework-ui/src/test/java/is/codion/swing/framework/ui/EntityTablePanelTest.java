@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.model.preferences.UserPreferences;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;

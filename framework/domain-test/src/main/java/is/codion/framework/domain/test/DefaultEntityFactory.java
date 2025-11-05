@@ -19,7 +19,7 @@
 package is.codion.framework.domain.test;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.item.Item;
+import is.codion.common.utilities.item.Item;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;

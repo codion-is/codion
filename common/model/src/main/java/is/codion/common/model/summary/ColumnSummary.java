@@ -19,13 +19,13 @@
 package is.codion.common.model.summary;
 
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.OptionalDouble;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 

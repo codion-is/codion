@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
 

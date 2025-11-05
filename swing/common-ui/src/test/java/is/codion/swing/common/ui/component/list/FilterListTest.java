@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.common.Text;
+import is.codion.common.utilities.Text;
 import is.codion.swing.common.model.component.list.FilterListModel;
 
 import org.junit.jupiter.api.Test;

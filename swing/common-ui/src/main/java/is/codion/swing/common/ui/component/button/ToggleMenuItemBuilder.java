@@ -18,15 +18,15 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JMenuItem;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.enumValue;
+import static is.codion.common.utilities.Configuration.enumValue;
 
 /**
  * Builds a toggle menu item.

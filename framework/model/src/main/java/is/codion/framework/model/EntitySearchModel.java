@@ -18,9 +18,9 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * Searches for entities based on a search text and set of String based condition columns.

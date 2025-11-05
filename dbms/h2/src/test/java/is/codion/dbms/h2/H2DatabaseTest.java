@@ -18,7 +18,7 @@
  */
 package is.codion.dbms.h2;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

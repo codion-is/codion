@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -35,7 +35,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.util.function.Consumer;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 

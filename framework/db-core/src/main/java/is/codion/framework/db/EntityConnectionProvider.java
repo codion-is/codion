@@ -19,9 +19,9 @@
 package is.codion.framework.db;
 
 import is.codion.common.observer.Observer;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
@@ -33,8 +33,8 @@ import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static is.codion.common.Configuration.stringValue;
-import static is.codion.common.Configuration.value;
+import static is.codion.common.utilities.Configuration.stringValue;
+import static is.codion.common.utilities.Configuration.value;
 import static java.util.stream.StreamSupport.stream;
 
 /**

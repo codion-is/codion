@@ -18,7 +18,7 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.scheduler.TaskScheduler;
+import is.codion.common.utilities.scheduler.TaskScheduler;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;

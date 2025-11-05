@@ -19,15 +19,15 @@
 package is.codion.tools.monitor.model;
 
 import is.codion.common.event.Event;
-import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.logging.LoggerProxy;
 import is.codion.common.observer.Observable;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
-import is.codion.common.scheduler.TaskScheduler;
-import is.codion.common.user.User;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
+import is.codion.common.utilities.logging.LoggerProxy;
+import is.codion.common.utilities.scheduler.TaskScheduler;
+import is.codion.common.utilities.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;

@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.UIManagerDefaults;

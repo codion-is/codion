@@ -18,10 +18,10 @@
  */
 package is.codion.common.model.condition;
 
-import is.codion.common.Operator;
 import is.codion.common.observer.Observer;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
+import is.codion.common.utilities.Operator;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
@@ -33,10 +33,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.enumValue;
 import static is.codion.common.model.condition.DefaultConditionModel.addWildcard;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.enumValue;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**

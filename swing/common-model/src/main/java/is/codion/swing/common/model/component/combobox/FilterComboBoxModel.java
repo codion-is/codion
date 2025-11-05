@@ -19,10 +19,10 @@
 package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.item.Item;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;
@@ -37,8 +37,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.stringValue;
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.Configuration.stringValue;
+import static is.codion.common.utilities.item.Item.item;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 

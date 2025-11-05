@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.preferences;
 
-import is.codion.common.Text;
+import is.codion.common.utilities.Text;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -28,8 +28,8 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.listValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.listValue;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 

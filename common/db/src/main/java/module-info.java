@@ -33,7 +33,7 @@ module is.codion.common.db {
 	requires transitive org.jspecify;
 	requires transitive java.sql;
 	requires org.slf4j;
-	requires transitive is.codion.common.core;
+	requires transitive is.codion.common.utilities;
 
 	exports is.codion.common.db.database;
 	exports is.codion.common.db.exception;

@@ -18,7 +18,7 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import static is.codion.common.Configuration.*;
+import static is.codion.common.utilities.Configuration.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;

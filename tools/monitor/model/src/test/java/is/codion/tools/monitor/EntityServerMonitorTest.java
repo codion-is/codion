@@ -23,7 +23,7 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;

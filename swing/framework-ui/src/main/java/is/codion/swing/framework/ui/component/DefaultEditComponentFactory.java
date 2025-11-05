@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -32,7 +32,7 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import javax.swing.JComponent;
 import java.time.temporal.Temporal;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 

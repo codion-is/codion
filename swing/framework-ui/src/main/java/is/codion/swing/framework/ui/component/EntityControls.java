@@ -18,9 +18,9 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.Components;
@@ -47,7 +47,7 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
 import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 import static java.awt.ComponentOrientation.getOrientation;

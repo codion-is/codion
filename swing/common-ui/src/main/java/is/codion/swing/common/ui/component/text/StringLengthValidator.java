@@ -18,12 +18,12 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**

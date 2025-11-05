@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity.condition;
 
-import is.codion.common.Conjunction;
+import is.codion.common.utilities.Conjunction;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static is.codion.common.Operator.EQUAL;
+import static is.codion.common.utilities.Operator.EQUAL;
 import static is.codion.framework.domain.entity.condition.DefaultForeignKeyConditionFactory.compositeEqualCondition;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;

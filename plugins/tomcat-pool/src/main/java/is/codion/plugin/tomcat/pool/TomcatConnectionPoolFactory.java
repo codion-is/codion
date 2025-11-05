@@ -22,7 +22,7 @@ import is.codion.common.db.database.ConnectionFactory;
 import is.codion.common.db.pool.AbstractConnectionPoolWrapper;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;

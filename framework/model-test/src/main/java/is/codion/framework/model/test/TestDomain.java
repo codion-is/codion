@@ -18,7 +18,7 @@
  */
 package is.codion.framework.model.test;
 
-import is.codion.common.item.Item;
+import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -35,7 +35,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;

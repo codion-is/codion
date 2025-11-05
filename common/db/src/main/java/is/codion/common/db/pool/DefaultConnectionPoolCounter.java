@@ -18,7 +18,7 @@
  */
 package is.codion.common.db.pool;
 
-import is.codion.common.scheduler.TaskScheduler;
+import is.codion.common.utilities.scheduler.TaskScheduler;
 
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;

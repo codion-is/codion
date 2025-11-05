@@ -18,9 +18,9 @@
  */
 package is.codion.tools.monitor.model;
 
-import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
+import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.framework.server.EntityServerAdmin;
 
 import java.rmi.RemoteException;

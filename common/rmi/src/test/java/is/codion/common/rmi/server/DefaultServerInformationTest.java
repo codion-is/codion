@@ -18,8 +18,8 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.Text;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.Text;
+import is.codion.common.utilities.version.Version;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

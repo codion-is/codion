@@ -18,7 +18,7 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.version.Version;
+import is.codion.common.utilities.version.Version;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 

@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component.logging;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
@@ -44,7 +44,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.function.Supplier;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;

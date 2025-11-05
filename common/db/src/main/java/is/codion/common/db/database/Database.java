@@ -21,15 +21,15 @@ package is.codion.common.db.database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
 
 import org.jspecify.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.Collection;
 
-import static is.codion.common.Configuration.*;
+import static is.codion.common.utilities.Configuration.*;
 
 /**
  * Defines DBMS specific functionality as well as basic database configuration settings.

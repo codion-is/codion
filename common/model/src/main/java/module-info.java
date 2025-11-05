@@ -34,8 +34,8 @@
 module is.codion.common.model {
 	requires transitive org.jspecify;
 	requires transitive java.prefs;
+	requires transitive is.codion.common.utilities;
 	requires org.slf4j;
-	requires transitive is.codion.common.core;
 	requires org.json;
 
 	exports is.codion.common.model;

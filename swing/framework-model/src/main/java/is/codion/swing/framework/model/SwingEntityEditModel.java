@@ -18,8 +18,8 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.proxy.ProxyBuilder;
-import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
+import is.codion.common.utilities.proxy.ProxyBuilder;
+import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;

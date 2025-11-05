@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.framework.domain.entity.Entity;
@@ -89,8 +89,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Collections.unmodifiableMap;

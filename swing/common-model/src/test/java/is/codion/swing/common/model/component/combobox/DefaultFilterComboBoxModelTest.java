@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.model.component.combobox;
 
-import is.codion.common.item.Item;
+import is.codion.common.utilities.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.booleanItems;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;

@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.preferences;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**

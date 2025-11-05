@@ -23,8 +23,8 @@ import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
-import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
+import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.value.Value;
 
 import org.jfree.data.xy.IntervalXYDataset;

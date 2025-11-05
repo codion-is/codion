@@ -18,7 +18,7 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.common.Conjunction;
+import is.codion.common.utilities.Conjunction;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.domain.entity.condition.Condition.Combination;

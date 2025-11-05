@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.DefaultEntityDefinition.DefaultAttributes;
 import is.codion.framework.domain.entity.DefaultEntityDefinition.DefaultBuilder;
 import is.codion.framework.domain.entity.DefaultEntityDefinition.DefaultColumns;
@@ -44,7 +44,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Specifies an entity definition, encapsulating the metadata for an entity type.

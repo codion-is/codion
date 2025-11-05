@@ -20,7 +20,7 @@ package is.codion.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.common.value.Value;
 import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.framework.db.EntityConnectionProvider;

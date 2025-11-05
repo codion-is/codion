@@ -23,9 +23,9 @@ import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 
 import org.jspecify.annotations.NonNull;
@@ -41,7 +41,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Specifies a data model that can be filtered to exclude some or all of the items it contains.

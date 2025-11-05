@@ -19,10 +19,10 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.item.Item;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -97,9 +97,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static is.codion.common.Configuration.enumValue;
-import static is.codion.common.Configuration.integerValue;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Configuration.enumValue;
+import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -116,7 +116,7 @@ import static is.codion.swing.framework.ui.component.EntitySearchField.SearchInd
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.event.FocusEvent.Cause.ACTIVATION;
 import static java.awt.event.KeyEvent.*;
-import static java.text.MessageFormat.format;
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;

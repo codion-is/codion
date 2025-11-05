@@ -71,6 +71,17 @@ RMI related classes.
 image::modules/common/rmi/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
+[discrete]
+=== codion-common-utilities
+
+Common utilities.
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/common/utilities/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
 == DBMS
 
 Database specific implementation classes.

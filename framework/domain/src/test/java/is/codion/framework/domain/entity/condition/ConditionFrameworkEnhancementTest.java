@@ -18,8 +18,8 @@
  */
 package is.codion.framework.domain.entity.condition;
 
-import is.codion.common.Conjunction;
-import is.codion.common.item.Item;
+import is.codion.common.utilities.Conjunction;
+import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;

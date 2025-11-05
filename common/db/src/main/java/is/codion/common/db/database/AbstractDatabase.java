@@ -25,7 +25,7 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import org.jspecify.annotations.Nullable;
 

@@ -18,12 +18,12 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 

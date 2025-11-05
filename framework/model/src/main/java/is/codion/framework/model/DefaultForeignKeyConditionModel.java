@@ -18,10 +18,10 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Operator;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
+import is.codion.common.utilities.Operator;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;

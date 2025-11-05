@@ -18,9 +18,9 @@
  */
 package is.codion.tools.loadtest.model;
 
-import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.tools.loadtest.LoadTest;

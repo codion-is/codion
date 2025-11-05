@@ -18,7 +18,7 @@
  */
 package is.codion.common.rmi.client;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 
 import nl.altindag.ssl.SSLFactory;
 import nl.altindag.ssl.util.KeyStoreUtils;
@@ -31,7 +31,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.security.KeyStore;
 
-import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.utilities.Configuration.stringValue;
 
 /**
  * Utility methods for remote clients

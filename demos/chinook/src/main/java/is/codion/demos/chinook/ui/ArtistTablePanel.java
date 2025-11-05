@@ -18,8 +18,8 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.common.Text;
 import is.codion.common.model.CancelException;
+import is.codion.common.utilities.Text;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.model.ArtistTableModel;
 import is.codion.framework.domain.entity.Entity;

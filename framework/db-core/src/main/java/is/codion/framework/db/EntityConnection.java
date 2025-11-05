@@ -23,8 +23,8 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.DefaultSelect.DefaultBuilder;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -47,7 +47,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 import static java.util.Objects.requireNonNull;
 
 /**

@@ -34,7 +34,7 @@ import is.codion.manual.store.domain.Store.Customer;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static is.codion.common.user.User.parse;
+import static is.codion.common.utilities.user.User.parse;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 
 public final class ClientServer {

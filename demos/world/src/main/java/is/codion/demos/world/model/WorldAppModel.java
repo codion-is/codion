@@ -18,7 +18,7 @@
  */
 package is.codion.demos.world.model;
 
-import is.codion.common.version.Version;
+import is.codion.common.utilities.version.Version;
 import is.codion.demos.world.domain.api.World.Continent;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.domain.api.World.Lookup;

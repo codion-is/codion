@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T> {

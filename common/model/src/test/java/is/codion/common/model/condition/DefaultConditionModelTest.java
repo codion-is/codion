@@ -18,9 +18,9 @@
  */
 package is.codion.common.model.condition;
 
-import is.codion.common.Operator;
 import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
+import is.codion.common.utilities.Operator;
 import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.BeforeEach;

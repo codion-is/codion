@@ -18,17 +18,17 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
-import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.model.summary.TableSummaryModel;
 import is.codion.common.observer.Observer;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.Text;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -97,11 +97,11 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.integerValue;
-import static is.codion.common.item.Item.item;
 import static is.codion.common.model.summary.TableSummaryModel.tableSummaryModel;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.common.utilities.item.Item.item;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;

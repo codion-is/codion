@@ -25,7 +25,7 @@
 @org.jspecify.annotations.NullMarked
 module is.codion.common.i18n {
 	requires transitive org.jspecify;
-	requires is.codion.common.core;
+	requires is.codion.common.utilities;
 
 	exports is.codion.common.i18n;
 }

@@ -19,9 +19,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.property.PropertyStore;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.property.PropertyStore;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
@@ -50,7 +50,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;

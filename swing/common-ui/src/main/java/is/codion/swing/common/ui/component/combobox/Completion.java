@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.combobox.CompletionDocument.AutoCompletionDocument;
 import is.codion.swing.common.ui.component.combobox.CompletionDocument.CompletionFocusListener;
 import is.codion.swing.common.ui.component.combobox.CompletionDocument.MaximumMatchDocument;
@@ -26,8 +26,8 @@ import is.codion.swing.common.ui.component.combobox.CompletionDocument.MaximumMa
 import javax.swing.JComboBox;
 import javax.swing.text.JTextComponent;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.enumValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.enumValue;
 import static java.util.Objects.requireNonNull;
 
 /**

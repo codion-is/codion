@@ -28,7 +28,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.text.Format;
 
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static java.util.Objects.requireNonNull;
 

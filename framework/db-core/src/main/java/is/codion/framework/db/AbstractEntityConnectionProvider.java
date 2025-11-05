@@ -20,8 +20,8 @@ package is.codion.framework.db;
 
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
-import is.codion.common.user.User;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 

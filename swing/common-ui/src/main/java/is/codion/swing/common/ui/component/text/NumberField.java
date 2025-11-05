@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.observer.Observable;
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParsingDocumentFilter;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -35,7 +35,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Optional;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.util.Objects.requireNonNull;

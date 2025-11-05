@@ -18,14 +18,14 @@
  */
 package is.codion.common.db.report;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.Nullable;
 
 import java.sql.Connection;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**

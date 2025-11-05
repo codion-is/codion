@@ -18,7 +18,6 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.Conjunction;
 import is.codion.common.observer.Observer;
 
 import java.util.Collection;
@@ -29,21 +28,21 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultStateCombination implements State.Combination {
+final class DefaultStateCombination implements ObservableState {
 
 	private final DefaultObservableState observableState;
 	private final List<StateCombinationConsumer> stateListeners;
-	private final Conjunction conjunction;
+	private final boolean and;
 
 	private final Lock updateLock = new Lock() {};
 	private volatile boolean value;
 
-	DefaultStateCombination(Conjunction conjunction, ObservableState... states) {
-		this(conjunction, states == null ? emptyList() : asList(states));
+	DefaultStateCombination(boolean and, ObservableState... states) {
+		this(and, states == null ? emptyList() : asList(states));
 	}
 
-	DefaultStateCombination(Conjunction conjunction, Collection<? extends ObservableState> states) {
-		this.conjunction = requireNonNull(conjunction);
+	DefaultStateCombination(boolean and, Collection<? extends ObservableState> states) {
+		this.and = and;
 		this.observableState = new DefaultObservableState(this, false);
 		this.stateListeners = states.stream() // Create consumers but don't register them yet
 						.map(state -> new StateCombinationConsumer(requireNonNull(state)))
@@ -55,17 +54,12 @@ final class DefaultStateCombination implements State.Combination {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder("Combination");
-		stringBuilder.append(toString(conjunction)).append(value);
+		stringBuilder.append(toString(and)).append(value);
 		for (StateCombinationConsumer listener : stateListeners) {
 			stringBuilder.append(", ").append(listener.state);
 		}
 
 		return stringBuilder.toString();
-	}
-
-	@Override
-	public Conjunction conjunction() {
-		return conjunction;
 	}
 
 	@Override
@@ -89,7 +83,7 @@ final class DefaultStateCombination implements State.Combination {
 		}
 		for (StateCombinationConsumer listener : stateListeners) {
 			boolean is = listener.state.is();
-			if (conjunction == Conjunction.AND) {
+			if (and) {
 				if (!is) {
 					return false;
 				}
@@ -99,7 +93,7 @@ final class DefaultStateCombination implements State.Combination {
 			}
 		}
 
-		return conjunction == Conjunction.AND;
+		return and;
 	}
 
 	private final class StateCombinationConsumer implements Runnable {
@@ -127,15 +121,8 @@ final class DefaultStateCombination implements State.Combination {
 		}
 	}
 
-	private static String toString(Conjunction conjunction) {
-		switch (conjunction) {
-			case AND:
-				return " and ";
-			case OR:
-				return " or ";
-			default:
-				throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
-		}
+	private static String toString(boolean and) {
+		return and ? " and " : " or ";
 	}
 
 	private interface Lock {}

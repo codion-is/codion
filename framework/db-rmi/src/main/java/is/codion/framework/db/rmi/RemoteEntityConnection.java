@@ -23,7 +23,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;

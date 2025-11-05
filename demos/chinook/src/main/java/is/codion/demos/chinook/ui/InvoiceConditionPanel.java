@@ -18,9 +18,9 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.common.Operator;
-import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.utilities.Operator;
+import is.codion.common.utilities.item.Item;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;

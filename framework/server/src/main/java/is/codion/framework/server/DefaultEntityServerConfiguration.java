@@ -18,11 +18,11 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.Text;
 import is.codion.common.db.database.Database;
 import is.codion.common.rmi.server.ServerConfiguration;
-import is.codion.common.user.User;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.Text;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;

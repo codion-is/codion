@@ -65,7 +65,7 @@ import static com.palantir.javapoet.MethodSpec.constructorBuilder;
 import static com.palantir.javapoet.MethodSpec.methodBuilder;
 import static com.palantir.javapoet.TypeSpec.classBuilder;
 import static com.palantir.javapoet.TypeSpec.interfaceBuilder;
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;

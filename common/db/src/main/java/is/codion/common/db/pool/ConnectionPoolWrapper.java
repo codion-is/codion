@@ -19,13 +19,13 @@
 package is.codion.common.db.pool;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
 
 import java.sql.Connection;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * A connection pool wrapper, providing statistics from the underlying pool and allowing some configuration.

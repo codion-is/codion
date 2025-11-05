@@ -18,10 +18,10 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.item.Item;
 import is.codion.common.model.preferences.UserPreferences;
-import is.codion.common.scheduler.TaskScheduler;
-import is.codion.common.user.User;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.scheduler.TaskScheduler;
+import is.codion.common.utilities.user.User;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
@@ -75,7 +75,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;

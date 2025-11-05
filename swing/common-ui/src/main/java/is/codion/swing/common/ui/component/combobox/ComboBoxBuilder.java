@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
@@ -30,7 +30,7 @@ import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 import java.awt.event.ItemListener;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 
 /**

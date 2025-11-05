@@ -21,11 +21,11 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
-import is.codion.common.logging.MethodTrace;
 import is.codion.common.observer.Observer;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.common.user.User;
+import is.codion.common.utilities.logging.MethodTrace;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.rmi.RemoteEntityResultIterator;
@@ -47,7 +47,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.Configuration.longValue;
+import static is.codion.common.utilities.Configuration.longValue;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.newSetFromMap;
 

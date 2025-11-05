@@ -19,8 +19,8 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.rmi.client.ConnectionRequest;
-import is.codion.common.user.User;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 
 import java.io.Serial;
 import java.io.Serializable;

@@ -20,7 +20,7 @@ package is.codion.common.db.pool;
 
 import is.codion.common.db.database.ConnectionFactory;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;

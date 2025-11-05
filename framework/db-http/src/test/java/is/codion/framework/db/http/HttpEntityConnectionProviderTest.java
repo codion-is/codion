@@ -18,7 +18,7 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 
 import org.junit.jupiter.api.Test;

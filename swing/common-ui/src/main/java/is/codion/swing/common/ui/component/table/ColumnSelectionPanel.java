@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.KeyEvent.VK_DOWN;

@@ -38,7 +38,7 @@ module is.codion.common.rmi {
 	requires jdk.management;
 	requires nl.altindag.ssl;
 	requires transitive java.rmi;
-	requires transitive is.codion.common.core;
+	requires transitive is.codion.common.utilities;
 
 	exports is.codion.common.rmi.client;
 	exports is.codion.common.rmi.server;

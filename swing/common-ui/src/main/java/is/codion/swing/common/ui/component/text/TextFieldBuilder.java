@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -27,7 +27,7 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.text.Format;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Builds a JTextField.

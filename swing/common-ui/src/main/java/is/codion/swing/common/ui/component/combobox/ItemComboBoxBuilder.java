@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.common.item.Item;
+import is.codion.common.utilities.item.Item;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 

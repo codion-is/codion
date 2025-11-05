@@ -18,14 +18,14 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.Operator;
 import is.codion.common.event.Event;
-import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.observer.Observer;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.Operator;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
@@ -73,9 +73,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static is.codion.common.Operator.*;
 import static is.codion.common.model.condition.ConditionModel.Wildcard.*;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Operator.*;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.enabled;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;

@@ -20,7 +20,7 @@ package is.codion.common.db.database;
 
 import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.pool.ConnectionPoolFactory;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -19,7 +19,7 @@
 package is.codion.tools.monitor.ui;
 
 import is.codion.common.db.pool.ConnectionPoolStatistics;
-import is.codion.common.format.LocaleDateTimePattern;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.tools.monitor.model.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;

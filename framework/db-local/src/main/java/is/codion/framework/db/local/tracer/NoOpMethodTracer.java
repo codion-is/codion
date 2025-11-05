@@ -18,7 +18,7 @@
  */
 package is.codion.framework.db.local.tracer;
 
-import is.codion.common.logging.MethodTrace;
+import is.codion.common.utilities.logging.MethodTrace;
 
 import org.jspecify.annotations.Nullable;
 

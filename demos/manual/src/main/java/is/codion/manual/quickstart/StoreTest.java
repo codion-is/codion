@@ -18,7 +18,7 @@
  */
 package is.codion.manual.quickstart;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.domain.test.DomainTest;
 import is.codion.manual.quickstart.Store.Address;
 import is.codion.manual.quickstart.Store.Customer;

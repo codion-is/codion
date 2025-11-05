@@ -18,9 +18,9 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.logging.MethodTrace;
-import is.codion.common.user.User;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
+import is.codion.common.utilities.logging.MethodTrace;
+import is.codion.common.utilities.user.User;
 import is.codion.swing.common.ui.component.logging.LogViewer;
 import is.codion.tools.monitor.model.ClientInstanceMonitor;
 

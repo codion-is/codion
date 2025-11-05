@@ -19,7 +19,7 @@
 package is.codion.tools.monitor.model;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.scheduler.TaskScheduler;
+import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.value.Value;
 import is.codion.framework.server.EntityServerAdmin;
 

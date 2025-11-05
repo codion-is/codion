@@ -22,9 +22,9 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Specifies a class for editing an {@link Entity} instance.

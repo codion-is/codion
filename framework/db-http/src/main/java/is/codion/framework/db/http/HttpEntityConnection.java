@@ -18,15 +18,15 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 
 import java.util.UUID;
 
-import static is.codion.common.Configuration.*;
+import static is.codion.common.utilities.Configuration.*;
 
 /**
  * A factory for http based EntityConnection builder.

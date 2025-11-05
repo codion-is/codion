@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.spinner;
 
 /**
- * A builder for JSpinner based on a list of {@link is.codion.common.item.Item}s.
+ * A builder for JSpinner based on a list of {@link is.codion.common.utilities.item.Item}s.
  */
 public interface ItemSpinnerBuilder<T> extends SpinnerBuilder<T, ItemSpinnerBuilder<T>> {
 

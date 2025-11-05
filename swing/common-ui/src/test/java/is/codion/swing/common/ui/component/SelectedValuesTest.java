@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.item.Item;
+import is.codion.common.utilities.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -28,7 +28,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import java.util.List;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

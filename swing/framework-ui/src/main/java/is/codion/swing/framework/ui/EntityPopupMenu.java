@@ -18,8 +18,8 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Text;
 import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.utilities.Text;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;

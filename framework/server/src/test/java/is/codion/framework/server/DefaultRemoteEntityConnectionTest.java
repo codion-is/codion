@@ -23,7 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;

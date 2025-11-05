@@ -1,3 +1,3 @@
 dependencies {
-    implementation(project(":codion-common-core"))
+    implementation(project(":codion-common-utilities"))
 }

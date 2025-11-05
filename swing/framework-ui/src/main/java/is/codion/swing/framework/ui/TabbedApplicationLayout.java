@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -31,7 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;

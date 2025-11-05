@@ -20,9 +20,9 @@ package is.codion.framework.domain.test;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
-import is.codion.common.proxy.ProxyBuilder;
-import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
-import is.codion.common.user.User;
+import is.codion.common.utilities.proxy.ProxyBuilder;
+import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;

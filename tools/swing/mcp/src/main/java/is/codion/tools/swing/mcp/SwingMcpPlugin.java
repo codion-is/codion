@@ -18,9 +18,9 @@
  */
 package is.codion.tools.swing.mcp;
 
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.version.Version;
 import is.codion.tools.swing.mcp.SwingMcpHttpServer.HttpTool;
 
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.tools.swing.mcp.SwingMcpServer.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;

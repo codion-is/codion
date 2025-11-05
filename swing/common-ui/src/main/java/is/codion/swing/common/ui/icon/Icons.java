@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.icon;
 
-import is.codion.common.Configuration;
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.Configuration;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 
 import org.kordamp.ikonli.Ikon;

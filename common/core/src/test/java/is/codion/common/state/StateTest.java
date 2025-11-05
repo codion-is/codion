@@ -18,7 +18,6 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.Conjunction;
 import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.Test;
@@ -201,10 +200,9 @@ public class StateTest {
 		State stateOne = State.state();
 		State stateTwo = State.state();
 		State stateThree = State.state();
-		State.Combination orState = State.or(asList(stateOne, stateTwo, stateThree));
+		ObservableState orState = State.or(asList(stateOne, stateTwo, stateThree));
 
-		State.Combination andState = State.and(asList(stateOne, stateTwo, stateThree));
-		assertEquals(Conjunction.AND, andState.conjunction());
+		ObservableState andState = State.and(asList(stateOne, stateTwo, stateThree));
 		assertEquals(CONJUNCTION_AND_PATTERN, andState.toString());
 
 		assertFalse(orState.is(), "Or state should be inactive");
@@ -238,8 +236,8 @@ public class StateTest {
 		State stateOne = State.state();
 		State stateTwo = State.state();
 		State stateThree = State.state();
-		State.Combination orState = State.or(stateOne, stateTwo, stateThree);
-		State.Combination andState = State.and(stateOne, stateTwo, stateThree);
+		ObservableState orState = State.or(stateOne, stateTwo, stateThree);
+		ObservableState andState = State.and(stateOne, stateTwo, stateThree);
 		assertEquals(CONJUNCTION_AND_PATTERN, andState.toString());
 		assertEquals(CONJUNCTION_OR_PATTERN, orState.toString());
 
@@ -283,7 +281,7 @@ public class StateTest {
 		State two = State.state();
 		State three = State.state();
 
-		ObservableState combinationAnd = State.combination(Conjunction.AND, one, two, three);
+		ObservableState combinationAnd = State.and(one, two, three);
 		Runnable listener = () -> {};
 		Consumer<Boolean> consumer = newValue -> assertEquals(combinationAnd.is(), newValue);
 		combinationAnd.addListener(listener);
@@ -297,7 +295,7 @@ public class StateTest {
 		combinationAnd.removeListener(listener);
 		combinationAnd.removeConsumer(consumer);
 
-		ObservableState combinationOr = State.combination(Conjunction.OR, one, two, three);
+		ObservableState combinationOr = State.or(one, two, three);
 		consumer = newValue -> assertEquals(combinationOr.is(), newValue);
 		combinationOr.addConsumer(consumer);
 		one.set(true);
@@ -340,7 +338,7 @@ public class StateTest {
 		state.removeWeakConsumer(consumer);
 
 		State state2 = State.state();
-		ObservableState combination = State.combination(Conjunction.AND, state, state2);
+		ObservableState combination = State.and(state, state2);
 		combination.addWeakListener(listener);
 		combination.addWeakListener(listener);
 		combination.addWeakConsumer(consumer);
@@ -355,7 +353,7 @@ public class StateTest {
 		State state1 = State.state();
 		State state2 = State.state();
 		State state3 = State.state();
-		State.Combination combination = State.and(state1, state2, state3);
+		ObservableState combination = State.and(state1, state2, state3);
 
 		int threadCount = 100;
 		int iterations = 10000;
@@ -389,8 +387,8 @@ public class StateTest {
 		State state1 = State.state();
 		State state2 = State.state();
 		State state3 = State.state();
-		State.Combination andCombination = State.and(state1, state2, state3);
-		State.Combination orCombination = State.or(state1, state2, state3);
+		ObservableState andCombination = State.and(state1, state2, state3);
+		ObservableState orCombination = State.or(state1, state2, state3);
 
 		// Simple concurrent test - just verify no deadlocks or exceptions
 		for (int i = 0; i < 1000; i++) {
@@ -419,8 +417,8 @@ public class StateTest {
 	void combinationRapidStateFlipping() {
 		State state1 = State.state(false);
 		State state2 = State.state(false);
-		State.Combination andCombination = State.and(state1, state2);
-		State.Combination orCombination = State.or(state1, state2);
+		ObservableState andCombination = State.and(state1, state2);
+		ObservableState orCombination = State.or(state1, state2);
 
 		// Simple test - just verify no deadlocks
 		for (int i = 0; i < 1000; i++) {
@@ -435,7 +433,7 @@ public class StateTest {
 	void combinationListenerNotificationUnderConcurrency() {
 		State state1 = State.state();
 		State state2 = State.state();
-		State.Combination combination = State.and(state1, state2);
+		ObservableState combination = State.and(state1, state2);
 
 		AtomicInteger notificationCount = new AtomicInteger(0);
 
@@ -459,9 +457,9 @@ public class StateTest {
 		State s3 = State.state();
 		State s4 = State.state();
 
-		State.Combination inner1 = State.and(s1, s2);
-		State.Combination inner2 = State.or(s3, s4);
-		State.Combination outer = State.and(inner1, inner2);
+		ObservableState inner1 = State.and(s1, s2);
+		ObservableState inner2 = State.or(s3, s4);
+		ObservableState outer = State.and(inner1, inner2);
 
 		// Rapidly change states and read from nested combinations
 		for (int i = 0; i < 1000; i++) {
@@ -492,7 +490,7 @@ public class StateTest {
 	void combinationMemoryConsistency() {
 		State state1 = State.state(false);
 		State state2 = State.state(false);
-		State.Combination combination = State.or(state1, state2);
+		ObservableState combination = State.or(state1, state2);
 
 		// Simple memory consistency test
 		for (int i = 0; i < 1000; i++) {

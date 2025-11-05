@@ -59,7 +59,7 @@ public interface TableConditionModel<C> {
 
 	/**
 	 * Clears the search state of all non-persistant condition models, disables them and
-	 * resets the operator to {@link is.codion.common.Operator#EQUAL}.
+	 * resets the operator to {@link is.codion.common.utilities.Operator#EQUAL}.
 	 * @see #persist()
 	 */
 	void clear();

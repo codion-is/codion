@@ -18,13 +18,13 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * A builder for JSpinner.

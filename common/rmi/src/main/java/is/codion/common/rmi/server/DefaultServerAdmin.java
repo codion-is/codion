@@ -18,8 +18,8 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.property.PropertyStore;
-import is.codion.common.user.User;
+import is.codion.common.utilities.property.PropertyStore;
+import is.codion.common.utilities.user.User;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
 import org.jspecify.annotations.Nullable;

@@ -18,12 +18,12 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.Text;
 import is.codion.common.i18n.Messages;
-import is.codion.common.item.Item;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.Text;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.control.Control;
@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static is.codion.common.item.Item.item;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.item.Item.item;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;

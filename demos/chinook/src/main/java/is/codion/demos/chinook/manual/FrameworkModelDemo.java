@@ -18,11 +18,11 @@
  */
 package is.codion.demos.chinook.manual;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.Conjunction;
 import is.codion.common.value.Value;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Customer;

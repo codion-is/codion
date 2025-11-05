@@ -37,7 +37,7 @@ import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.framework.db.EntityConnection.Select.all;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.swing.common.ui.component.Components.*;

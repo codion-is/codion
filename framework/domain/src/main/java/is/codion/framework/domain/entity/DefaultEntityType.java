@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;

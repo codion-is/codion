@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.58
+### is.codion.common.utilities
+- is.codion.common.utilities split from is.codion.common.core.
 ### is.codion.tools.jul.classpath
 - ClasspathConfiguration split from is.codion.plugin.jul.proxy module.
 ### is.codion.tools.swing.robot

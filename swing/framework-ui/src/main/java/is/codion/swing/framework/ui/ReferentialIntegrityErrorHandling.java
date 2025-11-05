@@ -18,9 +18,9 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 
-import static is.codion.common.Configuration.enumValue;
+import static is.codion.common.utilities.Configuration.enumValue;
 
 /**
  * The possible actions to take on a referential integrity error.

@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -46,7 +46,7 @@ import javax.swing.JTextField;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;

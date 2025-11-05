@@ -18,7 +18,7 @@
  */
 package is.codion.demos.schemabrowser.client.ui;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.Constraint;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.ConstraintColumn;

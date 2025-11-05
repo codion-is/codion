@@ -23,7 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.result.ResultPacker;
-import is.codion.common.format.LocaleDateTimePattern;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;

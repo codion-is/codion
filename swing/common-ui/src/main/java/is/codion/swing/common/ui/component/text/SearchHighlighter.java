@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.control.Control;
@@ -48,7 +48,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.Components.menu;

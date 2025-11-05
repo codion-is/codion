@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui.icon;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.icon.Logos;
@@ -28,8 +28,8 @@ import org.kordamp.ikonli.Ikon;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 
-import static is.codion.common.Configuration.integerValue;
-import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.stringValue;
 
 /**
  * Provides icons for framework ui components.

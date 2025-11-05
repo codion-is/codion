@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.common.Serializer.serialize;
+import static is.codion.common.utilities.Serializer.serialize;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 

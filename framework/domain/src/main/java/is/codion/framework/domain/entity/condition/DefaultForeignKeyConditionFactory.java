@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity.condition;
 
-import is.codion.common.Operator;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -32,10 +32,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.common.Conjunction.AND;
-import static is.codion.common.Conjunction.OR;
-import static is.codion.common.Operator.EQUAL;
-import static is.codion.common.Operator.NOT_EQUAL;
+import static is.codion.common.utilities.Conjunction.AND;
+import static is.codion.common.utilities.Conjunction.OR;
+import static is.codion.common.utilities.Operator.EQUAL;
+import static is.codion.common.utilities.Operator.NOT_EQUAL;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;

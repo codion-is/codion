@@ -18,14 +18,14 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
 
 import java.util.List;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * Represents a reference to another entity, typically but not necessarily based on a foreign key.

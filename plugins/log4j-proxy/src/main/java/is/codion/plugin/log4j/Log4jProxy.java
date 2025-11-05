@@ -18,7 +18,7 @@
  */
 package is.codion.plugin.log4j;
 
-import is.codion.common.logging.LoggerProxy;
+import is.codion.common.utilities.logging.LoggerProxy;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

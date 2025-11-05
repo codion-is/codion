@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.migration;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import org.junit.jupiter.api.Test;
 

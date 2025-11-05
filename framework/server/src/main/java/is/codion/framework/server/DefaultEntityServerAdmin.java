@@ -20,9 +20,9 @@ package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
-import is.codion.common.logging.LoggerProxy;
-import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.DefaultServerAdmin;
+import is.codion.common.utilities.logging.LoggerProxy;
+import is.codion.common.utilities.logging.MethodTrace;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

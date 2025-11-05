@@ -6,7 +6,7 @@
 
 == Overriding
 
-The default i18n strings can be overridden by implementing {url-javadoc}{common-core}/is/codion/common/resource/Resources.html[Resources] and registering the implementation with the ServiceLoader.
+The default i18n strings can be overridden by implementing {url-javadoc}{common-utilities}/is/codion/common/utilities/resource/Resources.html[Resources] and registering the implementation with the ServiceLoader.
 
 [source,java]
 ----
@@ -19,7 +19,7 @@ module is.codion.demos.chinook {
 
 	...
 
-	provides is.codion.common.resource.Resources
+	provides is.codion.common.utilities.resource.Resources
             with is.codion.demos.chinook.domain.impl.ChinookResources;
 }
 ----

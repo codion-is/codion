@@ -19,10 +19,10 @@
 package is.codion.tools.monitor.model;
 
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.common.scheduler.TaskScheduler;
-import is.codion.common.user.User;
+import is.codion.common.utilities.scheduler.TaskScheduler;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.common.value.Value;
-import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;

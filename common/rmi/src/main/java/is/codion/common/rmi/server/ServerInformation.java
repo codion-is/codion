@@ -18,7 +18,7 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.version.Version;
+import is.codion.common.utilities.version.Version;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

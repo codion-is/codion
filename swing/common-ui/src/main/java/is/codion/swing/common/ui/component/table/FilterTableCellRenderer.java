@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import org.jspecify.annotations.Nullable;
@@ -31,8 +31,8 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.util.function.Function;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static javax.swing.BorderFactory.*;
 

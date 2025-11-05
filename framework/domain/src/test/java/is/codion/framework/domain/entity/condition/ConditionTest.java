@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity.condition;
 
-import is.codion.common.Conjunction;
+import is.codion.common.utilities.Conjunction;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;

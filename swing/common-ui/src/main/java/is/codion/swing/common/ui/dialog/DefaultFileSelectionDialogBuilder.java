@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 
 import org.jspecify.annotations.Nullable;
 
@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.common.Text.nullOrEmpty;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Text.nullOrEmpty;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.awt.Cursor.getDefaultCursor;
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.util.Collections.singletonList;

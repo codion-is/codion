@@ -18,7 +18,7 @@
  */
 package is.codion.demos.employees.ui;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.demos.employees.domain.Employees;
 import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.model.EmployeeEditModel;

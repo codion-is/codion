@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.time.LocalDate;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.JasperReports.fileReport;

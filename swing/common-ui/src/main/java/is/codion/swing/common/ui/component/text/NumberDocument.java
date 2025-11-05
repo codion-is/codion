@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.observer.Observable;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParser.NumberParseResult;
 
@@ -40,7 +40,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Objects;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 

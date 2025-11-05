@@ -18,9 +18,9 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;

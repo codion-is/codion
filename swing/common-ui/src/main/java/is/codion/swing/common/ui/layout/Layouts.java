@@ -24,7 +24,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * A utility class for layouts. All layouts created use the centrally configured hgap and vgap.

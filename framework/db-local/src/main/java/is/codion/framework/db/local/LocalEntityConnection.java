@@ -20,8 +20,8 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 
@@ -29,8 +29,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.sql.Connection;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.

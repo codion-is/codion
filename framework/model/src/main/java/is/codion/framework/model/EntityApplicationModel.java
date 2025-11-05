@@ -18,9 +18,9 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -30,8 +30,8 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.stringValue;
 
 /**
  * A central application model class.

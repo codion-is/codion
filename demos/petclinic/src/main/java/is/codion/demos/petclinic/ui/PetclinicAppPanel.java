@@ -19,7 +19,7 @@
 package is.codion.demos.petclinic.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.demos.petclinic.domain.api.Owner;
 import is.codion.demos.petclinic.domain.api.Pet;
 import is.codion.demos.petclinic.domain.api.PetType;

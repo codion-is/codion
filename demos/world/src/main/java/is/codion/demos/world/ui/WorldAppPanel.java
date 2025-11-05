@@ -19,7 +19,7 @@
 package is.codion.demos.world.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.demos.world.domain.api.World;
 import is.codion.demos.world.domain.api.World.Continent;
 import is.codion.demos.world.domain.api.World.Country;

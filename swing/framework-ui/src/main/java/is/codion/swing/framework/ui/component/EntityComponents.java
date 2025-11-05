@@ -295,7 +295,7 @@ public final class EntityComponents {
 	 * Note that the attribute must have items associated.
 	 * @param attribute the attribute
 	 * @param <T> the attribute type
-	 * @return an {@link is.codion.common.item.Item} based JComboBox builder
+	 * @return an {@link is.codion.common.utilities.item.Item} based JComboBox builder
 	 * @throws IllegalArgumentException in case the given attribute has no associated items
 	 */
 	public <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {

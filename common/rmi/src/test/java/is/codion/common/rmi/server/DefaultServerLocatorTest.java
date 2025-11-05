@@ -18,7 +18,7 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -27,31 +27,13 @@
  * <li>{@link is.codion.common.value.Value}
  * </ul>
  * <p>
- * Configuration values:
- * <ul>
- * <li>{@link is.codion.common.Text#COLLATOR_LANGUAGE}
- * </ul>
- * @uses is.codion.common.logging.LoggerProxy
- * @uses is.codion.common.resource.Resources
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.common.core {
 	requires transitive org.jspecify;
-	exports is.codion.common;
-	exports is.codion.common.event;
-	exports is.codion.common.format;
-	exports is.codion.common.item;
-	exports is.codion.common.logging;
-	exports is.codion.common.observer;
-	exports is.codion.common.property;
-	exports is.codion.common.proxy;
-	exports is.codion.common.resource;
-	exports is.codion.common.scheduler;
-	exports is.codion.common.state;
-	exports is.codion.common.user;
-	exports is.codion.common.value;
-	exports is.codion.common.version;
 
-	uses is.codion.common.logging.LoggerProxy;
-	uses is.codion.common.resource.Resources;
+	exports is.codion.common.event;
+	exports is.codion.common.observer;
+	exports is.codion.common.state;
+	exports is.codion.common.value;
 }

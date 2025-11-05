@@ -18,9 +18,9 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.Serializer;
-import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.item.Item;
+import is.codion.common.utilities.Serializer;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
+import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 

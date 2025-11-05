@@ -18,8 +18,8 @@
  */
 package is.codion.tools.swing.robot;
 
-import is.codion.common.property.PropertyValue;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -41,8 +41,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import static is.codion.common.Configuration.integerValue;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Arrays.asList;

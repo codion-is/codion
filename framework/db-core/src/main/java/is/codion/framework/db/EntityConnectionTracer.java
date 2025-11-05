@@ -18,9 +18,9 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.logging.MethodTrace;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
+import is.codion.common.utilities.logging.MethodTrace;
 
 /**
  * Provides method tracing for entity connection.

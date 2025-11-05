@@ -20,7 +20,7 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.local.TestDomain.Department;
 import is.codion.framework.domain.entity.Entities;

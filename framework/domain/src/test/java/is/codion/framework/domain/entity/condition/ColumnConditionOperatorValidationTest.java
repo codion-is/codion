@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity.condition;
 
-import is.codion.common.Operator;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;

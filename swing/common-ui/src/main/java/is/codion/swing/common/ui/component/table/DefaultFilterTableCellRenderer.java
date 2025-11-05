@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.state.ObservableState;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 

@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static is.codion.common.Text.rightPad;
+import static is.codion.common.utilities.Text.rightPad;
 import static is.codion.demos.chinook.ui.DurationComponentValue.minutes;
 import static is.codion.demos.chinook.ui.DurationComponentValue.seconds;
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;

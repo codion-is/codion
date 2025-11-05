@@ -1,5 +1,5 @@
 dependencies {
-    api(project(":codion-common-core"))
+    api(project(":codion-common-utilities"))
 
     implementation(libs.logback.classic)
     implementation(libs.logback.core)

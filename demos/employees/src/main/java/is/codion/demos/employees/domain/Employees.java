@@ -18,8 +18,8 @@
  */
 package is.codion.demos.employees.domain;
 
-import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.item.Item;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
+import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -34,7 +34,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;

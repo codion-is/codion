@@ -18,8 +18,8 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.item.Item;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
+import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -36,7 +36,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.queried;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;

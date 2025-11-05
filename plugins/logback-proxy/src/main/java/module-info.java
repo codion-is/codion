@@ -17,16 +17,16 @@
  * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
  */
 /**
- * Logback implementation of {@link is.codion.common.logging.LoggerProxy}.
+ * Logback implementation of {@link is.codion.common.utilities.logging.LoggerProxy}.
  */
 module is.codion.plugin.logback.proxy {
 	requires org.slf4j;
 	requires ch.qos.logback.core;
 	requires ch.qos.logback.classic;
-	requires is.codion.common.core;
+	requires is.codion.common.utilities;
 
 	exports is.codion.plugin.logback;
 
-	provides is.codion.common.logging.LoggerProxy
+	provides is.codion.common.utilities.logging.LoggerProxy
 					with is.codion.plugin.logback.LogbackProxy;
 }

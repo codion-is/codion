@@ -18,8 +18,8 @@
  */
 package is.codion.swing.framework.model.component;
 
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -40,7 +40,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * <p>A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.</p>

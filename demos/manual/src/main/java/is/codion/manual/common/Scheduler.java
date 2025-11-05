@@ -18,7 +18,7 @@
  */
 package is.codion.manual.common;
 
-import is.codion.common.scheduler.TaskScheduler;
+import is.codion.common.utilities.scheduler.TaskScheduler;
 
 import java.util.concurrent.TimeUnit;
 

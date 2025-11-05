@@ -24,7 +24,7 @@
  */
 module is.codion.tools.loadtest.core {
 	requires org.slf4j;
-	requires transitive is.codion.common.core;
+	requires transitive is.codion.common.utilities;
 
 	exports is.codion.tools.loadtest;
 	exports is.codion.tools.loadtest.randomizer;

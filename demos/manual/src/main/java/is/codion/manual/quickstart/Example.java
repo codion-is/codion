@@ -19,7 +19,7 @@
 package is.codion.manual.quickstart;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;

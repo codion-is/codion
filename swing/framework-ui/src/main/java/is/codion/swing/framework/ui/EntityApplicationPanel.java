@@ -18,18 +18,18 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
-import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.observer.Observer;
-import is.codion.common.property.PropertyStore;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.Text;
+import is.codion.common.utilities.logging.LoggerProxy;
+import is.codion.common.utilities.property.PropertyStore;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.resource.MessageBundle;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.domain.entity.Entities;
@@ -106,9 +106,9 @@ import java.util.function.Function;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.stringValue;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.stringValue;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;

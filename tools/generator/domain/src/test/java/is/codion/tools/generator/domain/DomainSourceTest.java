@@ -19,7 +19,7 @@
 package is.codion.tools.generator.domain;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityDefinition;

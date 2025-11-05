@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.item.Item;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.state.State;
+import is.codion.common.utilities.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.common.value.ValueSet;
@@ -88,7 +88,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

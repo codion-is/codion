@@ -13,6 +13,9 @@ project(":codion-common-bom").projectDir = file("common/bom")
 include "codion-common-core"
 project(":codion-common-core").projectDir = file("common/core")
 
+include "codion-common-utilities"
+project(":codion-common-utilities").projectDir = file("common/utilities")
+
 include "codion-common-db"
 project(":codion-common-db").projectDir = file("common/db")
 

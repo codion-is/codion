@@ -20,8 +20,8 @@ package is.codion.demos.chinook.migration;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.migration.MigrationDomain.Migration;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * A simple database migration manager for the Chinook demo.

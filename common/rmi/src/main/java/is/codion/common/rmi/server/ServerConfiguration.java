@@ -18,8 +18,8 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.Text;
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.Text;
+import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.*;
+import static is.codion.common.utilities.Configuration.*;
 
 /**
  * Configuration values for a {@link Server}.

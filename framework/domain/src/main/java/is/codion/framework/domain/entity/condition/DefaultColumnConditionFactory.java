@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
-import static is.codion.common.Operator.*;
+import static is.codion.common.utilities.Operator.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 

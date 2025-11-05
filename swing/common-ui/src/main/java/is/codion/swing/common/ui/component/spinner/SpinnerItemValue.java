@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import is.codion.common.item.Item;
+import is.codion.common.utilities.item.Item;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import org.jspecify.annotations.Nullable;

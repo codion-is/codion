@@ -18,7 +18,7 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.common.Operator;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;

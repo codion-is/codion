@@ -20,9 +20,9 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.observer.Observable;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -40,8 +40,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.stringValue;
 
 /**
  * Builds a and starts an application.

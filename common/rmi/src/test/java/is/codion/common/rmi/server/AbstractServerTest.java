@@ -24,7 +24,7 @@ import is.codion.common.rmi.server.ServerAdmin.ThreadStatistics;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.rmi.server.exception.ServerException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

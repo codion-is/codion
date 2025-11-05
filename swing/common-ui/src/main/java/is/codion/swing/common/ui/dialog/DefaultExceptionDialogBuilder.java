@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;
@@ -30,8 +30,8 @@ import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-import static is.codion.common.Text.nullOrEmpty;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Text.nullOrEmpty;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 

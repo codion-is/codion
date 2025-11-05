@@ -23,7 +23,7 @@
  * </ul>
  */
 module is.codion.framework.i18n {
-	requires transitive is.codion.common.core;
+	requires transitive is.codion.common.utilities;
 
 	exports is.codion.framework.i18n;
 }

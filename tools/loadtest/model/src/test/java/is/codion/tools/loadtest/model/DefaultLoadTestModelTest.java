@@ -18,7 +18,7 @@
  */
 package is.codion.tools.loadtest.model;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario;
 import is.codion.tools.loadtest.Scenario.Performer;

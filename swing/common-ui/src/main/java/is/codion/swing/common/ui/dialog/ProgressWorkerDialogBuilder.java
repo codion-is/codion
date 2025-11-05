@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.control.Control;
 
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * A builder for a {@link ProgressWorker} implementation which displays a progress bar in a modal dialog

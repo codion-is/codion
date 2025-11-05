@@ -18,8 +18,8 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.database.Database;
+import is.codion.common.utilities.Conjunction;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityQueries;
 import is.codion.framework.domain.entity.condition.Condition;

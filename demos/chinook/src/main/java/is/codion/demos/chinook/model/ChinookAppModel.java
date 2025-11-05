@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.common.version.Version;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;

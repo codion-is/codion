@@ -19,15 +19,15 @@
 package is.codion.tools.monitor.model;
 
 import is.codion.common.event.Event;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.user.User;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static is.codion.common.Configuration.integerValue;
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**

@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -57,7 +57,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.lang.String.join;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;

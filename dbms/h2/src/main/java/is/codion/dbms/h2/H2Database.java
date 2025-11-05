@@ -19,7 +19,7 @@
 package is.codion.dbms.h2;
 
 import is.codion.common.db.database.AbstractDatabase;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;

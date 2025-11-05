@@ -19,7 +19,6 @@
 package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.RemoteClient;
@@ -29,7 +28,8 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.logging.MethodTrace;
+import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;

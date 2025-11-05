@@ -18,14 +18,14 @@
  */
 package is.codion.swing.common.ui.component.indicator;
 
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
+import is.codion.common.utilities.property.PropertyValue;
 
 import javax.swing.JComponent;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
-import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 

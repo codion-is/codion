@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.swing.common.ui.icon.Logos;
 
 import org.junit.jupiter.api.Test;

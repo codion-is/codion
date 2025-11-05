@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.testing;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.testing.scenarios.InsertDeleteAlbum;

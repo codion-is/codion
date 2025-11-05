@@ -18,12 +18,12 @@
  */
 package is.codion.framework.servlet;
 
-import is.codion.common.Serializer;
 import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
-import is.codion.common.user.User;
-import is.codion.common.version.Version;
+import is.codion.common.utilities.Serializer;
+import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;

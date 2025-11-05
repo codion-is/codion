@@ -18,14 +18,14 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
 import java.util.function.Consumer;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Represents a link between two entity models based on a foreign key.

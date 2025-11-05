@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.version.Version;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.DefaultEntityApplicationModel;
 

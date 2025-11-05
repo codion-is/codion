@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.time.LocalDateTime;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 

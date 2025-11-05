@@ -18,9 +18,9 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Conjunction;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.Conjunction;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;

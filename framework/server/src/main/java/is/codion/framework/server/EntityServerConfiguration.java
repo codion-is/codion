@@ -21,14 +21,14 @@ package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPoolFactory;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.rmi.server.ServerConfiguration;
-import is.codion.common.user.User;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.user.User;
 
 import java.util.Collection;
 import java.util.Map;
 
-import static is.codion.common.Configuration.*;
+import static is.codion.common.utilities.Configuration.*;
 
 /**
  * Configuration values for a {@link EntityServer}.

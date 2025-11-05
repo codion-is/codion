@@ -21,7 +21,7 @@ package is.codion.tools.loadtest;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.common.value.Value;
 import is.codion.tools.loadtest.Scenario.Result;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer;

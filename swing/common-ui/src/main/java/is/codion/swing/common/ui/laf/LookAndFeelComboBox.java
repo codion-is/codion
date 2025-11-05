@@ -18,10 +18,10 @@
  */
 package is.codion.swing.common.ui.laf;
 
-import is.codion.common.item.Item;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
@@ -39,8 +39,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.swing.common.ui.Utilities.enabled;
 import static is.codion.swing.common.ui.component.combobox.ComboBoxBuilder.enableMouseWheelSelection;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeels;

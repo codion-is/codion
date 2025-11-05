@@ -19,7 +19,7 @@
 package is.codion.common.db.database;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import java.sql.Connection;
 

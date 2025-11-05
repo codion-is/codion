@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.Operator;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.DefaultSwingForeignKeyConditionModel.DefaultBuilder;

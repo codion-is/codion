@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.property.PropertyValue;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.DomainType;
 
 import org.jspecify.annotations.Nullable;
@@ -26,7 +26,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * A repository containing the {@link EntityDefinition}s for a given domain.

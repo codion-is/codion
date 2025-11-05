@@ -4,6 +4,7 @@ dependencies.constraints {
     api(project(":codion-common-i18n"))
     api(project(":codion-common-model"))
     api(project(":codion-common-rmi"))
+    api(project(":codion-common-utilities"))
 
     api(project(":codion-swing-common-model"))
     api(project(":codion-swing-common-ui"))

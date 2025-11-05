@@ -18,7 +18,7 @@
  */
 package is.codion.manual.store.ui;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.manual.store.domain.Store;
 import is.codion.manual.store.domain.Store.Address;
 import is.codion.manual.store.domain.Store.Customer;

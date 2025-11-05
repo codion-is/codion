@@ -2,34 +2,6 @@
 
 Overview of the available i18n properties files and their keys and values.
 
-== codion-common-core
-
-=== is/codion/common/Operator.java
-
-[source]
-----
-is/codion/common/Operator.properties
-is/codion/common/Operator_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|between|Between|Innan bils eða jafnt og
-|between_exclusive|Between (exclusive)|Innan bils
-|equal|Equal|Jafnt og
-|greater_than|Greater than|Stærra en
-|greater_than_or_equal|Greater than or equal|Stærra eða jafnt og
-|in|In|Í mengi
-|less_than|Less than|Minna en
-|less_than_or_equal|Less than or equal|Minna eða jafnt og
-|not_between|Not between|Utan bils eða jafnt og
-|not_between_exclusive|Not between (exclusive)|Utan bils
-|not_equal|Not equal|Ekki jafnt og
-|not_in|Not in|Ekki í mengi
-|===
-
 == codion-common-i18n
 
 === is/codion/common/i18n/Messages.java
@@ -126,6 +98,34 @@ is/codion/common/rmi/server/exception/ConnectionNotAvailableException_is_IS.prop
 |key|default|is_IS
 
 |connection_not_available|This server is not accepting more connections|Þessi þjónn tekur ekki við fleiri tengingum
+|===
+
+== codion-common-utilities
+
+=== is/codion/common/utilities/Operator.java
+
+[source]
+----
+is/codion/common/utilities/Operator.properties
+is/codion/common/utilities/Operator_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|between|Between|Innan bils eða jafnt og
+|between_exclusive|Between (exclusive)|Innan bils
+|equal|Equal|Jafnt og
+|greater_than|Greater than|Stærra en
+|greater_than_or_equal|Greater than or equal|Stærra eða jafnt og
+|in|In|Í mengi
+|less_than|Less than|Minna en
+|less_than_or_equal|Less than or equal|Minna eða jafnt og
+|not_between|Not between|Utan bils eða jafnt og
+|not_between_exclusive|Not between (exclusive)|Utan bils
+|not_equal|Not equal|Ekki jafnt og
+|not_in|Not in|Ekki í mengi
 |===
 
 == codion-dbms-h2
@@ -324,23 +324,6 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |view_mnemonic|V|N
 |===
 
-== codion-plugin-imagepanel
-
-=== is/codion/plugin/imagepanel/NavigableImagePanel.java
-
-[source]
-----
-is/codion/plugin/imagepanel/NavigableImagePanel.properties
-is/codion/plugin/imagepanel/NavigableImagePanel_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|file_not_found|File not found|Skrá fannst ekki
-|===
-
 == codion-swing-common-ui
 
 === is/codion/swing/common/ui/SwingMessages.java
@@ -427,6 +410,21 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 |today|Today|Í dag
 |today_mnemonic|T|D
 |week|Week|Vika
+|===
+
+=== is/codion/swing/common/ui/component/image/ImagePanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/image/ImagePanel.properties
+is/codion/swing/common/ui/component/image/ImagePanel_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|file_not_found|File not found|Skrá fannst ekki
 |===
 
 === is/codion/swing/common/ui/component/logging/LogViewer.java

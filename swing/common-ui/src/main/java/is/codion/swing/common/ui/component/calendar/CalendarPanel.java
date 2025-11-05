@@ -19,13 +19,13 @@
 package is.codion.swing.common.ui.component.calendar;
 
 import is.codion.common.event.Event;
-import is.codion.common.item.Item;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
-import is.codion.common.property.PropertyValue;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.item.Item;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.FlexibleGridLayoutPanelBuilder;
@@ -75,8 +75,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlKeys.*;

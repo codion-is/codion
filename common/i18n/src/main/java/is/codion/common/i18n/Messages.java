@@ -18,9 +18,9 @@
  */
 package is.codion.common.i18n;
 
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**
@@ -68,7 +68,7 @@ import static java.util.ResourceBundle.getBundle;
  * <strong>Mnemonic Guidelines:</strong><br>
  * Mnemonics should be unique within each locale to avoid keyboard navigation conflicts.
  * If a mnemonic string is empty, the corresponding method returns the null character ('\0').
- * @see is.codion.common.resource.MessageBundle
+ * @see is.codion.common.utilities.resource.MessageBundle
  */
 public final class Messages {
 

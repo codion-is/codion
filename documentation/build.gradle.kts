@@ -81,6 +81,7 @@ tasks.asciidoctor {
             "common-db" to "/is.codion.common.db",
             "common-model" to "/is.codion.common.model",
             "common-rmi" to "/is.codion.common.rmi",
+            "common-utilities" to "/is.codion.common.utilities",
             "framework-db-core" to "/is.codion.framework.db.core",
             "framework-db-http" to "/is.codion.framework.db.http",
             "framework-db-local" to "/is.codion.framework.db.local",

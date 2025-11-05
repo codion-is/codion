@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 
 import org.jspecify.annotations.Nullable;
@@ -28,7 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarDialogBuilder> implements CalendarDialogBuilder {

@@ -19,7 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -29,7 +29,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import java.awt.event.InputEvent;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.control.Control.command;

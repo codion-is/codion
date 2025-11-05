@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;

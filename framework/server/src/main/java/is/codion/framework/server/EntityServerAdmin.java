@@ -20,8 +20,8 @@ package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
-import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.ServerAdmin;
+import is.codion.common.utilities.logging.MethodTrace;
 
 import java.rmi.RemoteException;
 import java.util.Collection;

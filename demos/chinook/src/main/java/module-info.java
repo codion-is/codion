@@ -46,7 +46,7 @@ module is.codion.framework.demos.chinook {
 					with is.codion.demos.chinook.domain.ChinookImpl;
 	provides is.codion.common.rmi.server.Authenticator
 					with is.codion.demos.chinook.server.ChinookAuthenticator;
-	provides is.codion.common.resource.Resources
+	provides is.codion.common.utilities.resource.Resources
 					with is.codion.demos.chinook.i18n.ChinookResources;
 	// tag::entityObjectMapper[]
 	provides is.codion.framework.json.domain.EntityObjectMapperFactory

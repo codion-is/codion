@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui;
 
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.resource.MessageBundle;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**

@@ -40,7 +40,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.Objects;
 
-import static is.codion.common.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultAttribute<T> implements Attribute<T>, Serializable {

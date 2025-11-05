@@ -18,7 +18,7 @@
  */
 package is.codion.framework.db.local.tracer;
 
-import is.codion.common.logging.MethodTrace;
+import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
@@ -31,7 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static is.codion.common.logging.MethodTrace.methodTrace;
+import static is.codion.common.utilities.logging.MethodTrace.methodTrace;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.joining;

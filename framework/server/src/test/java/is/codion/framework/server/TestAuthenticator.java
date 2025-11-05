@@ -21,7 +21,7 @@ package is.codion.framework.server;
 import is.codion.common.rmi.server.Authenticator;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 
 import java.util.Arrays;
 import java.util.HashMap;

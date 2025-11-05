@@ -18,7 +18,7 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.Serializer;
+import is.codion.common.utilities.Serializer;
 
 import org.junit.jupiter.api.Test;
 

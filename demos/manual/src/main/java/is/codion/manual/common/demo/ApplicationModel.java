@@ -18,8 +18,8 @@
  */
 package is.codion.manual.common.demo;
 
-import is.codion.common.item.Item;
 import is.codion.common.observer.Observable;
+import is.codion.common.utilities.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
@@ -35,13 +35,13 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.common.value.ValueList.valueList;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 
 /*
 // tag::demoModelImport[]
-import static is.codion.common.item.Item.item;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.common.value.ValueList.valueList;
 import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;

@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
@@ -51,7 +51,7 @@ import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.panel;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlKeys.DISPLAY_TEXT_AREA;

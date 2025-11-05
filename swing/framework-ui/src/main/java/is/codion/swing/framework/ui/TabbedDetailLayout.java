@@ -18,8 +18,8 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.property.PropertyValue;
-import is.codion.common.resource.MessageBundle;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -65,8 +65,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;

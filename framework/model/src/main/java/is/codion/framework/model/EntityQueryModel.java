@@ -18,10 +18,10 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Conjunction;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.utilities.Conjunction;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection.Select;
@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * Provides entities based on query conditions.

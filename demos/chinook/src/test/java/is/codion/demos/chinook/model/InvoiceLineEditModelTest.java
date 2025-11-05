@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.common.user.User;
+import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;

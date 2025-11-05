@@ -21,8 +21,8 @@ package is.codion.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.MultiSelection;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -34,8 +34,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.Collection;
 
-import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.enumValue;
+import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.enumValue;
 
 /**
  * Specifies a table model containing {@link Entity} instances.

@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.indicator;
 
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import org.jspecify.annotations.Nullable;
@@ -33,7 +33,7 @@ import java.awt.font.TextAttribute;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 import static java.util.Objects.requireNonNull;
 
 /**
