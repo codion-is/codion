@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.listbox;
 
-import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
+import is.codion.common.reactive.value.AbstractValue;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.KeyEvents;

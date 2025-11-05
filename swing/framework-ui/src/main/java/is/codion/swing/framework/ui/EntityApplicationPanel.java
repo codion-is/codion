@@ -18,12 +18,12 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.preferences.UserPreferences;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.State;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.logging.LoggerProxy;
 import is.codion.common.utilities.property.PropertyStore;

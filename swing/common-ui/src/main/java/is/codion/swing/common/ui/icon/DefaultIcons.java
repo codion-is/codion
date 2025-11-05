@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.icon;
 
-import is.codion.common.value.Value;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.scaler.Scaler;
 
 import org.kordamp.ikonli.Ikon;

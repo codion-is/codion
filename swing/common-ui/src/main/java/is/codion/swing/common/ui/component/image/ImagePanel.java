@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.image;
 
-import is.codion.common.state.State;
-import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.AbstractValue;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;

@@ -18,7 +18,7 @@
  */
 package is.codion.tools.swing.mcp;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.tools.swing.mcp.SwingMcpHttpServer.HttpTool;
 
 import com.fasterxml.jackson.databind.JsonNode;

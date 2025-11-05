@@ -19,7 +19,7 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;

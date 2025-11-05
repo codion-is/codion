@@ -19,11 +19,11 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.model.filter.FilterModel.IncludedItems;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueList;
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.item.Item;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueList;
-import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;

@@ -18,7 +18,7 @@
  */
 package is.codion.tools.monitor.model;
 
-import is.codion.common.event.Event;
+import is.codion.common.reactive.event.Event;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 

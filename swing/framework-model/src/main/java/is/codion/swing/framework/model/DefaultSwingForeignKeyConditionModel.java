@@ -19,11 +19,11 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.State;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.Operator;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;

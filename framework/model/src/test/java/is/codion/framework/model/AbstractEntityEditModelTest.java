@@ -20,10 +20,10 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.UpdateException;
 import is.codion.common.model.CancelException;
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;

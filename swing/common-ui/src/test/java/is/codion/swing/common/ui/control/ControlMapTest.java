@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.value.Value;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.junit.jupiter.api.Test;

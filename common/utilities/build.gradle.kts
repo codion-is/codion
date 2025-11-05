@@ -1,5 +1,5 @@
 dependencies {
-    api(project(":codion-common-core"))
+    api(project(":codion-common-reactive"))
 }
 
 tasks.register<WriteProperties>("writeVersion") {

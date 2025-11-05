@@ -18,7 +18,7 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;

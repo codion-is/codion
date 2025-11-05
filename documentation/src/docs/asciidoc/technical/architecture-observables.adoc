@@ -31,7 +31,7 @@ This hierarchy enables type-based discovery: any type that extends or implements
 
 === Observer Interface
 
-The {url-javadoc}{common-core}/is/codion/common/observer/Observer.html[Observer] interface is the foundation for all change notification:
+The {url-javadoc}{common-reactive}/is/codion/common/reactive/observer/Observer.html[Observer] interface is the foundation for all change notification:
 
 [source,java]
 ----
@@ -60,7 +60,7 @@ Key design decisions:
 
 === Observable Interface
 
-{url-javadoc}{common-core}/is/codion/common/observer/Observable.html[Observable] combines value access with observation:
+{url-javadoc}{common-reactive}/is/codion/common/reactive/observer/Observable.html[Observable] combines value access with observation:
 
 [source,java]
 ----
@@ -86,7 +86,7 @@ This separation allows exposing read-only observables while keeping mutation con
 
 === Value Interface
 
-{url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] is the primary mutable observable:
+{url-javadoc}{common-reactive}/is/codion/common/reactive/value/Value.html[Value] is the primary mutable observable:
 
 [source,java]
 ----
@@ -149,7 +149,7 @@ display.link(source);  // display follows source changes
 
 == State Implementation
 
-{url-javadoc}{common-core}/is/codion/common/state/State.html[State] is optimized for boolean values:
+{url-javadoc}{common-reactive}/is/codion/common/reactive/state/State.html[State] is optimized for boolean values:
 
 [source,java]
 ----
@@ -240,7 +240,7 @@ listView.set(true);   // tableView becomes false
 
 == Event Implementation
 
-{url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] provides push-only notifications:
+{url-javadoc}{common-reactive}/is/codion/common/reactive/event/Event.html[Event] provides push-only notifications:
 
 [source,java]
 ----

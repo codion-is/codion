@@ -18,8 +18,8 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.value.ObservableValueList;
-import is.codion.common.value.ValueList;
+import is.codion.common.reactive.value.ObservableValueList;
+import is.codion.common.reactive.value.ValueList;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;

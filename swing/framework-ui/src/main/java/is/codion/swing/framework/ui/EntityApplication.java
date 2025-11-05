@@ -19,7 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.observer.Observable;
+import is.codion.common.reactive.observer.Observable;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;

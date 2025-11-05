@@ -18,8 +18,8 @@
  */
 package is.codion.swing.framework.ui.icon;
 
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.icon.Logos;
 

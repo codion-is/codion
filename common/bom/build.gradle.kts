@@ -1,8 +1,8 @@
 dependencies.constraints {
-    api(project(":codion-common-core"))
     api(project(":codion-common-db"))
     api(project(":codion-common-i18n"))
     api(project(":codion-common-model"))
+    api(project(":codion-common-reactive"))
     api(project(":codion-common-rmi"))
     api(project(":codion-common-utilities"))
 

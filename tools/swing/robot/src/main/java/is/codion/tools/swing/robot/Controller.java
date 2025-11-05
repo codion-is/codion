@@ -18,8 +18,8 @@
  */
 package is.codion.tools.swing.robot;
 
-import is.codion.common.event.Event;
-import is.codion.common.observer.Observer;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;

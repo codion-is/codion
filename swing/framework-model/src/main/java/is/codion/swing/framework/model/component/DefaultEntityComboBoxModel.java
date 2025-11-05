@@ -19,8 +19,8 @@
 package is.codion.swing.framework.model.component;
 
 import is.codion.common.model.selection.SingleSelection;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -46,7 +46,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.value.Value.Notify.SET;
+import static is.codion.common.reactive.value.Value.Notify.SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.model.EntityEditModel.events;
 import static java.text.MessageFormat.format;

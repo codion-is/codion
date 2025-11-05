@@ -20,7 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.model.preferences.UserPreferences;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.model.AlbumModel;

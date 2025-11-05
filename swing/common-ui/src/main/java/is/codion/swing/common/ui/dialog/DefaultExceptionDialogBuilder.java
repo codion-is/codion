@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;
 

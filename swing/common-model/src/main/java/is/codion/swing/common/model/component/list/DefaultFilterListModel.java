@@ -18,10 +18,10 @@
  */
 package is.codion.swing.common.model.component.list;
 
-import is.codion.common.event.Event;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
-import is.codion.common.observer.Observer;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.value.Value;
 
 import org.jspecify.annotations.Nullable;
 

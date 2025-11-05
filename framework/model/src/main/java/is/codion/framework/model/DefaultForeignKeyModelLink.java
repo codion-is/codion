@@ -18,7 +18,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 

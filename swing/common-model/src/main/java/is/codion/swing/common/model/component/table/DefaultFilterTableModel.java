@@ -22,7 +22,7 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
-import is.codion.common.value.AbstractValue;
+import is.codion.common.reactive.value.AbstractValue;
 import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
@@ -46,7 +46,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
-import static is.codion.common.value.Value.Notify.SET;
+import static is.codion.common.reactive.value.Value.Notify.SET;
 import static java.lang.String.join;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;

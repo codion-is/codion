@@ -18,7 +18,7 @@
  */
 package is.codion.demos.world.ui;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.model.CityEditModel;
 import is.codion.demos.world.model.CityTableModel;

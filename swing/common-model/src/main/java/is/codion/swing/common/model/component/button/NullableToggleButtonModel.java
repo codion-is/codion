@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.model.component.button;
 
-import is.codion.common.value.Value;
+import is.codion.common.reactive.value.Value;
 
 import org.jspecify.annotations.Nullable;
 

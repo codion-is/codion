@@ -21,9 +21,9 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;
 

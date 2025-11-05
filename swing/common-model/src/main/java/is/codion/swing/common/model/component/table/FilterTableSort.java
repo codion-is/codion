@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.filter.FilterModel;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 
 import javax.swing.SortOrder;
 import java.util.List;

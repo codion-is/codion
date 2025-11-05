@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.layout;
 
-import is.codion.common.value.Value;
+import is.codion.common.reactive.value.Value;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

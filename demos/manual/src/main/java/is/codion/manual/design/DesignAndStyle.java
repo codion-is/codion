@@ -18,12 +18,12 @@
  */
 package is.codion.manual.design;
 
-import is.codion.common.event.Event;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.State;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueList;
 import is.codion.common.utilities.scheduler.TaskScheduler;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueList;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -38,7 +38,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.event.Event.event;
+import static is.codion.common.reactive.event.Event.event;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static javax.swing.BorderFactory.createTitledBorder;
 

@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.control.CommandControl.CommandControlBuilder;
 
 import javax.swing.AbstractAction;

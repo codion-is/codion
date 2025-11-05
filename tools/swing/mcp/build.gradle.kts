@@ -1,5 +1,4 @@
 dependencies {
-    implementation(project(":codion-common-core"))
     implementation(project(":codion-swing-common-ui"))
     implementation(project(":codion-tools-swing-robot"))
 

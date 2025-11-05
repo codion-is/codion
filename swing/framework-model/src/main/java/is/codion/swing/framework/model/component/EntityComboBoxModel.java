@@ -18,9 +18,9 @@
  */
 package is.codion.swing.framework.model.component;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;

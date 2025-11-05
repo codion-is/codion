@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.model.component.combobox;
 
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 
 import org.junit.jupiter.api.AfterEach;

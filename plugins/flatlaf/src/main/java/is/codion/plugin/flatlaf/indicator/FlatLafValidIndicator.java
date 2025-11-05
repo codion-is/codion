@@ -18,7 +18,7 @@
  */
 package is.codion.plugin.flatlaf.indicator;
 
-import is.codion.common.state.ObservableState;
+import is.codion.common.reactive.state.ObservableState;
 
 import com.formdev.flatlaf.FlatClientProperties;
 

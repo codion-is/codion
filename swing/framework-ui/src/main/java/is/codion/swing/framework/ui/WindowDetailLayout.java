@@ -18,9 +18,9 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.common.value.Value;
-import is.codion.common.value.Value.Notify;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.Controls;

@@ -19,9 +19,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
@@ -49,7 +49,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import static is.codion.common.state.State.present;
+import static is.codion.common.reactive.state.State.present;
 import static java.util.Objects.requireNonNull;
 
 /**

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.swing.common.ui.icon.Logos;
 
 import org.junit.jupiter.api.Test;

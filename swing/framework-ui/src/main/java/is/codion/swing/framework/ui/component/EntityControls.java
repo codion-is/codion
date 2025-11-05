@@ -18,8 +18,8 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;

@@ -20,11 +20,11 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;

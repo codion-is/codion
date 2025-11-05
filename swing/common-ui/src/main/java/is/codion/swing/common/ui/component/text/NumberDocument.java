@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.observer.Observable;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParser.NumberParseResult;
 
 import org.jspecify.annotations.Nullable;

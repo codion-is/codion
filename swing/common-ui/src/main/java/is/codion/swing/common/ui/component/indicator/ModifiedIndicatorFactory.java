@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.indicator;
 
-import is.codion.common.state.ObservableState;
+import is.codion.common.reactive.state.ObservableState;
 
 import javax.swing.JComponent;
 

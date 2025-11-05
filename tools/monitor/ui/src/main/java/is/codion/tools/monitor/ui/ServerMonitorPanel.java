@@ -18,7 +18,7 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;

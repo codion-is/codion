@@ -18,7 +18,7 @@
  */
 package is.codion.tools.loadtest.model;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario.Result;

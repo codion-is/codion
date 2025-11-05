@@ -18,13 +18,13 @@
  */
 package is.codion.manual.common;
 
-import is.codion.common.event.Event;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueList;
-import is.codion.common.value.ValueSet;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueList;
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;

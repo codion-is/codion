@@ -18,8 +18,8 @@
  */
 package is.codion.tools.monitor.model;
 
-import is.codion.common.event.Event;
-import is.codion.common.observer.Observer;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;

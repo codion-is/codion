@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.label;
 
-import is.codion.common.observer.Observable;
+import is.codion.common.reactive.observer.Observable;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;

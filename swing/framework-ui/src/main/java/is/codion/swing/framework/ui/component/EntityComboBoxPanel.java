@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.state.ObservableState;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;

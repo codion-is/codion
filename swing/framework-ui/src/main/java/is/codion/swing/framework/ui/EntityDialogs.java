@@ -20,8 +20,8 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
-import is.codion.common.observer.Observable;
-import is.codion.common.state.State;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;

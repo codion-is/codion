@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.observer.Observable;
+import is.codion.common.reactive.observer.Observable;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParsingDocumentFilter;

@@ -18,9 +18,9 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.image.ImagePanel;
 import is.codion.swing.common.ui.component.image.ImagePanel.ZoomDevice;
@@ -49,7 +49,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static is.codion.common.state.State.present;
+import static is.codion.common.reactive.state.State.present;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.ResourceBundle.getBundle;

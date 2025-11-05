@@ -21,11 +21,11 @@ package is.codion.tools.monitor.model;
 import is.codion.common.db.pool.ConnectionPoolState;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.event.Event;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.State;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.scheduler.TaskScheduler;
-import is.codion.common.value.Value;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;

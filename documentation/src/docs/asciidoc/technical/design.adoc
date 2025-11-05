@@ -38,7 +38,7 @@ A `get`/`is` prefix implies that the field is mutable and that a corresponding s
 
 === Observables
 
-Many classes expose their internal state via the {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] class, which can be used to mutate the associated state or observe it by adding listeners or consumers.
+Many classes expose their internal state via the {url-javadoc}{common-reactive}/is/codion/common/reactive/value/Value.html[Value] class, which can be used to mutate the associated state or observe it by adding listeners or consumers.
 
 [source,java]
 ----

@@ -19,8 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.filter.FilterModel;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;

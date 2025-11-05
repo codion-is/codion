@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.laf;
 
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;

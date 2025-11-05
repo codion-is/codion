@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.filter.FilterModel.Items;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 

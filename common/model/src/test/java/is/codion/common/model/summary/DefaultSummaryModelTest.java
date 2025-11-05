@@ -18,9 +18,9 @@
  */
 package is.codion.common.model.summary;
 
-import is.codion.common.event.Event;
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
-import is.codion.common.observer.Observer;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
 
 import org.junit.jupiter.api.Test;
 

@@ -23,11 +23,11 @@ import is.codion.common.model.filter.FilterModel.IncludedPredicate;
 import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
-import is.codion.common.observer.Observable;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -664,7 +664,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public is.codion.common.observer.Observable<Predicate<String>> observable() {
+		public Observable<Predicate<String>> observable() {
 			return predicate.observable();
 		}
 
@@ -684,12 +684,12 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public void link(is.codion.common.observer.Observable<Predicate<String>> observable) {
+		public void link(Observable<Predicate<String>> observable) {
 			predicate.link(observable);
 		}
 
 		@Override
-		public void unlink(is.codion.common.observer.Observable<Predicate<String>> observable) {
+		public void unlink(Observable<Predicate<String>> observable) {
 			predicate.unlink(observable);
 		}
 
@@ -1132,7 +1132,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public is.codion.common.observer.Observable<List<String>> observable() {
+			public Observable<List<String>> observable() {
 				return selectedItems.observable();
 			}
 
@@ -1152,12 +1152,12 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public void link(is.codion.common.observer.Observable<List<String>> observable) {
+			public void link(Observable<List<String>> observable) {
 				selectedItems.link(observable);
 			}
 
 			@Override
-			public void unlink(is.codion.common.observer.Observable<List<String>> observable) {
+			public void unlink(Observable<List<String>> observable) {
 				selectedItems.unlink(observable);
 			}
 

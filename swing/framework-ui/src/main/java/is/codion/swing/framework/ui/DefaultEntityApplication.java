@@ -20,12 +20,12 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
-import is.codion.common.observer.Observable;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.model.EntityApplicationModel;

@@ -18,9 +18,9 @@
  */
 package is.codion.manual.swing.common.ui;
 
-import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
-import is.codion.common.state.State;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.state.State;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;

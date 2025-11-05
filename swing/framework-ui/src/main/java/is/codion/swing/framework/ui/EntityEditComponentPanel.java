@@ -19,10 +19,10 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.common.value.Value;
-import is.codion.common.value.Value.Notify;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;

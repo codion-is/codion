@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.common.value.Value.Validator;
+import is.codion.common.reactive.value.Value.Validator;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;

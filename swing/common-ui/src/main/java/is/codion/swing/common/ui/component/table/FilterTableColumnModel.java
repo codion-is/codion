@@ -18,11 +18,11 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.observer.Observable;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
-import is.codion.common.value.ObservableValueList;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.ObservableValueList;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ListSelectionModel;

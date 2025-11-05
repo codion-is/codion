@@ -19,7 +19,7 @@
 package is.codion.common.model.summary;
 
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
-import is.codion.common.observer.Observer;
+import is.codion.common.reactive.observer.Observer;
 import is.codion.common.utilities.Text;
 
 import org.junit.jupiter.api.BeforeEach;

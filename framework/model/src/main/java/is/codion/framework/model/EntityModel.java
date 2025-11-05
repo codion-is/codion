@@ -18,8 +18,8 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.state.State;
-import is.codion.common.value.ObservableValueSet;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;

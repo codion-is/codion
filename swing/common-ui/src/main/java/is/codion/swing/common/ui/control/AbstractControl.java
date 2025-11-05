@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
 
 import org.jspecify.annotations.Nullable;
 

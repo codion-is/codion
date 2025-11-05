@@ -18,7 +18,7 @@
  */
 package is.codion.tools.swing.mcp;
 
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.version.Version;
 import is.codion.tools.swing.mcp.SwingMcpHttpServer.HttpTool;

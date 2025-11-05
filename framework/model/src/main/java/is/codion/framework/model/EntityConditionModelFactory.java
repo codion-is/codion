@@ -20,8 +20,8 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Operands;
-import is.codion.common.value.Value;
-import is.codion.common.value.Value.Notify;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.Value.Notify;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;

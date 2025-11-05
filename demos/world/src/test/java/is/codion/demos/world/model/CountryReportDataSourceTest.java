@@ -18,8 +18,8 @@
  */
 package is.codion.demos.world.model;
 
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
-import is.codion.common.value.Value;
 import is.codion.demos.world.domain.WorldImpl;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;

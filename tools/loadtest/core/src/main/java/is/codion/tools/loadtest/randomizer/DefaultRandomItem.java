@@ -18,9 +18,9 @@
  */
 package is.codion.tools.loadtest.randomizer;
 
-import is.codion.common.state.State;
-import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.AbstractValue;
+import is.codion.common.reactive.value.Value;
 
 /**
  * A class encapsulating an Object item and an integer weight value.

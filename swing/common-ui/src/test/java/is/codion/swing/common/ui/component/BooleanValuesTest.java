@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;

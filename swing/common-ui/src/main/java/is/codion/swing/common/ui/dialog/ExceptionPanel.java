@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.property.PropertyStore;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.Utilities;

@@ -20,7 +20,7 @@
  * MCP
  */
 module is.codion.tools.swing.mcp {
-	requires is.codion.common.core;
+	requires is.codion.common.reactive;
 	requires is.codion.swing.common.ui;
 	requires is.codion.tools.swing.robot;
 	requires org.slf4j;

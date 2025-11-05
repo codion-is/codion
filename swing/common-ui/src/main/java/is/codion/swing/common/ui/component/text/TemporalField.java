@@ -18,12 +18,12 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.observer.Observable;
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -54,7 +54,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Optional;
 
-import static is.codion.common.state.State.present;
+import static is.codion.common.reactive.state.State.present;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.TemporalField.ControlKeys.*;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;

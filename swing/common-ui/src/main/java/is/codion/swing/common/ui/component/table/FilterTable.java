@@ -18,18 +18,18 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.model.summary.TableSummaryModel;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.State;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;

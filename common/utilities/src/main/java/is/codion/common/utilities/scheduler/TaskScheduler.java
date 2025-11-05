@@ -18,8 +18,8 @@
  */
 package is.codion.common.utilities.scheduler;
 
-import is.codion.common.value.Value;
-import is.codion.common.value.Value.Validator;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.Value.Validator;
 
 import org.jspecify.annotations.Nullable;
 

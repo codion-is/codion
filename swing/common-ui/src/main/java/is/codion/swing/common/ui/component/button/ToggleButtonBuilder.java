@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JToggleButton;

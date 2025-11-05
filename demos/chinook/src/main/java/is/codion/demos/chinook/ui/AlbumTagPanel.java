@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.filter.FilterModel;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -39,7 +39,7 @@ import java.awt.BorderLayout;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.common.state.State.present;
+import static is.codion.common.reactive.state.State.present;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;

@@ -19,9 +19,9 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;

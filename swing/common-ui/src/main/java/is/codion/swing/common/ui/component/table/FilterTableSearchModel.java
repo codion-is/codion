@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.observer.Observable;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 
 import java.util.List;
 import java.util.Optional;

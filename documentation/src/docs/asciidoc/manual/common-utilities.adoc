@@ -4,8 +4,6 @@
 
 Codion provides a few classes with miscellanous utility functions.
 
-== Core
-
 == TaskScheduler
 
 {url-javadoc}{common-utilities}/is/codion/common/utilities/scheduler/TaskScheduler.html[TaskScheduler] provides a simple, lightweight way to execute tasks periodically on a background thread.

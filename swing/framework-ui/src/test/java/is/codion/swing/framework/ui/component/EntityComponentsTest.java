@@ -18,9 +18,9 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.user.User;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;

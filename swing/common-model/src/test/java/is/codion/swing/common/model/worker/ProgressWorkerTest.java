@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.worker;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.value.Value;
 
 import org.junit.jupiter.api.Test;
 

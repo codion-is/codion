@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.listbox;
 
-import is.codion.common.value.ValueSet;
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 

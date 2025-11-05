@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.observer.Observable;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.key.KeyEvents;
 

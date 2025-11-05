@@ -26,7 +26,7 @@
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.common.utilities {
-	requires transitive is.codion.common.core;
+	requires transitive is.codion.common.reactive;
 
 	exports is.codion.common.utilities;
 	exports is.codion.common.utilities.format;

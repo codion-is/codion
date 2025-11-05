@@ -18,7 +18,6 @@
  */
 package is.codion.common.model.filter;
 
-import is.codion.common.event.Event;
 import is.codion.common.model.filter.FilterModel.FilteredItems;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
@@ -27,8 +26,9 @@ import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Refresher;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
-import is.codion.common.observer.Observer;
-import is.codion.common.value.AbstractValue;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.value.AbstractValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -46,7 +46,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static is.codion.common.value.Value.Notify.SET;
+import static is.codion.common.reactive.value.Value.Notify.SET;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;

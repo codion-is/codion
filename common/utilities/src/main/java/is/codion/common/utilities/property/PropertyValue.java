@@ -18,7 +18,7 @@
  */
 package is.codion.common.utilities.property;
 
-import is.codion.common.value.AbstractValue;
+import is.codion.common.reactive.value.AbstractValue;
 
 import org.jspecify.annotations.Nullable;
 

@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.frame;
 
-import is.codion.common.observer.Observable;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.window.Windows;
 

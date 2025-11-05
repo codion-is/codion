@@ -18,12 +18,12 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
-import is.codion.common.observer.Observer;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.ModelLink;

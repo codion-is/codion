@@ -10,8 +10,8 @@ project(":documentation").projectDir = file("documentation")
 include "codion-common-bom"
 project(":codion-common-bom").projectDir = file("common/bom")
 
-include "codion-common-core"
-project(":codion-common-core").projectDir = file("common/core")
+include "codion-common-reactive"
+project(":codion-common-reactive").projectDir = file("common/reactive")
 
 include "codion-common-utilities"
 project(":codion-common-utilities").projectDir = file("common/utilities")

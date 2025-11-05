@@ -18,8 +18,8 @@
  */
 package is.codion.demos.world.model;
 
-import is.codion.common.observer.Observable;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.value.Value;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;

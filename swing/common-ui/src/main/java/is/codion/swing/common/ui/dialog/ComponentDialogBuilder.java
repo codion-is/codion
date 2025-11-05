@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.observer.Observer;
-import is.codion.common.state.State;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.State;
 
 import org.jspecify.annotations.Nullable;
 

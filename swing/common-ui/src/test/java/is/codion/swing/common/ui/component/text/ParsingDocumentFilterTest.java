@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
+import is.codion.common.reactive.value.Value;
 
 import org.junit.jupiter.api.Test;
 

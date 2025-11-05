@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.state.State;
+import is.codion.common.reactive.state.State;
 
 import org.junit.jupiter.api.Test;
 

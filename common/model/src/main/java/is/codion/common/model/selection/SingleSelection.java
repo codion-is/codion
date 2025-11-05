@@ -19,9 +19,9 @@
 package is.codion.common.model.selection;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.observer.Observer;
-import is.codion.common.state.ObservableState;
-import is.codion.common.value.Value;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.value.Value;
 
 /**
  * A selection model managing a single selected item.

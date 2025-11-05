@@ -18,7 +18,7 @@
  */
 package is.codion.plugin.flatlaf.indicator;
 
-import is.codion.common.state.ObservableState;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 
 import javax.swing.JComponent;

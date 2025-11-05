@@ -10,16 +10,16 @@ Common classes used throughout the framework.
 === codion-common-bom
 
 [discrete]
-=== codion-common-core
+=== codion-common-reactive
 
-* {url-javadoc}{common-core}/is/codion/common/event/package-summary.html[is.codion.common.event]
-* {url-javadoc}{common-core}/is/codion/common/state/package-summary.html[is.codion.common.state]
-* {url-javadoc}{common-core}/is/codion/common/value/package-summary.html[is.codion.common.value]
+* {url-javadoc}{common-reactive}/is/codion/common/reactive/event/package-summary.html[is.codion.common.reactive.event]
+* {url-javadoc}{common-reactive}/is/codion/common/reactive/state/package-summary.html[is.codion.common.reactive.state]
+* {url-javadoc}{common-reactive}/is/codion/common/reactive/value/package-summary.html[is.codion.common.reactive.value]
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/common/core/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/common/reactive/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
