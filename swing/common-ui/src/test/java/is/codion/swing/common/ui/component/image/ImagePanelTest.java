@@ -245,7 +245,7 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void readImageFromFile() throws Exception {
+	void readImageFromFile() {
 		// This tests the static utility method
 		assertThrows(Exception.class, () -> ImagePanel.readImage("nonexistent.png"));
 	}

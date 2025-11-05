@@ -547,26 +547,6 @@ public final class ImagePanel extends JPanel {
 		navigationImage.getGraphics().drawImage(bufferedImage, 0, 0, navigationImageWidth, navigationImageHeight, null);
 	}
 
-	private Point navigationToZoomedImagePoint(Point panelPoint) {
-		int x = panelPoint.x * getScreenImageWidth() / getScreenNavImageWidth();
-		int y = panelPoint.y * getScreenImageHeight() / getScreenNavImageHeight();
-
-		return new Point(x, y);
-	}
-
-	/**
-	 * The user clicked within the navigation image and this part of the image
-	 * is displayed in the panel.
-	 * The clicked point of the image is centered in the panel.
-	 * @param panelPoint the point
-	 */
-	private void displayImageAt(Point panelPoint) {
-		Point scrImagePoint = navigationToZoomedImagePoint(panelPoint);
-		origin.x = -(scrImagePoint.x - getWidth() / 2);
-		origin.y = -(scrImagePoint.y - getHeight() / 2);
-		origin.changed();
-	}
-
 	/**
 	 * Tests whether a given point in the panel falls within the navigation image boundaries.
 	 * @param panelPoint the point in the panel
@@ -574,16 +554,6 @@ public final class ImagePanel extends JPanel {
 	 */
 	private boolean isInNavigationImage(Point panelPoint) {
 		return navigable.is() && panelPoint.x < getScreenNavImageWidth() && panelPoint.y < getScreenNavImageHeight();
-	}
-
-	/**
-	 * Used when the image is resized.
-	 */
-	private boolean isImageEdgeInPanel() {
-		boolean originXOK = origin.x > 0 && origin.x < previousPanelSize.width;
-		boolean originYOK = origin.y > 0 && origin.y < previousPanelSize.height;
-
-		return previousPanelSize != null && (originXOK || originYOK);
 	}
 
 	/**
@@ -605,26 +575,8 @@ public final class ImagePanel extends JPanel {
 		return scale > HIGH_QUALITY_RENDERING_SCALE_THRESHOLD;
 	}
 
-	/**
-	 * Used when the panel is resized
-	 */
-	private void scaleOrigin() {
-		origin.x = origin.x * getWidth() / previousPanelSize.width;
-		origin.y = origin.y * getHeight() / previousPanelSize.height;
-		origin.changed();
-	}
-
-	/**
-	 * Converts the specified zoom level	to scale.
-	 * @param zoom the zoom level
-	 * @return the zoom scale
-	 */
-	private double zoomToScale(double zoom) {
-		return initialScale * zoom;
-	}
-
 	private void zoomImage(Point mousePosition) {
-		if (initialScale != 0d) {
+		if (Double.compare(initialScale, 0) != 0) {
 			Point2D.Double imagePoint = toImageCoordinates(mousePosition);
 			scale *= zoomFactor;
 			Point2D.Double panelPoint = toPanelCoordinates(imagePoint);
@@ -869,7 +821,7 @@ public final class ImagePanel extends JPanel {
 
 		@Override
 		protected Double getValue() {
-			if (initialScale == 0d) {
+			if (Double.compare(initialScale, 0) == 0) {
 				return 0d;
 			}
 
@@ -914,6 +866,10 @@ public final class ImagePanel extends JPanel {
 			origin.changed();
 
 			notifyObserver();
+		}
+
+		private double zoomToScale(double zoom) {
+			return initialScale * zoom;
 		}
 	}
 
@@ -1025,6 +981,19 @@ public final class ImagePanel extends JPanel {
 			}
 			previousPanelSize = getSize();
 		}
+
+		private boolean isImageEdgeInPanel() {
+			boolean originXOK = origin.x > 0 && origin.x < previousPanelSize.width;
+			boolean originYOK = origin.y > 0 && origin.y < previousPanelSize.height;
+
+			return previousPanelSize != null && (originXOK || originYOK);
+		}
+
+		private void scaleOrigin() {
+			origin.x = origin.x * getWidth() / previousPanelSize.width;
+			origin.y = origin.y * getHeight() / previousPanelSize.height;
+			origin.changed();
+		}
 	}
 
 	private final class ImageMouseAdapter extends MouseAdapter {
@@ -1034,6 +1003,20 @@ public final class ImagePanel extends JPanel {
 			if (isLeftMouseButton(e) && isInNavigationImage(e.getPoint())) {
 				displayImageAt(e.getPoint());
 			}
+		}
+
+		private void displayImageAt(Point panelPoint) {
+			Point scrImagePoint = navigationToZoomedImagePoint(panelPoint);
+			origin.x = -(scrImagePoint.x - getWidth() / 2);
+			origin.y = -(scrImagePoint.y - getHeight() / 2);
+			origin.changed();
+		}
+
+		private Point navigationToZoomedImagePoint(Point panelPoint) {
+			int x = panelPoint.x * getScreenImageWidth() / getScreenNavImageWidth();
+			int y = panelPoint.y * getScreenImageHeight() / getScreenNavImageHeight();
+
+			return new Point(x, y);
 		}
 	}
 
