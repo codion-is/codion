@@ -39,6 +39,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -2712,9 +2713,12 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public <T extends Number> Optional<SummaryModel.SummaryValues<T>> createSummaryValues(Attribute<?> identifier, Format format) {
-			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(identifier);
-			if (identifier.type().isNumeric() && attributeDefinition.items().isEmpty()) {
-				return Optional.of(FilterTable.summaryValues(identifier, tableModel, format));
+			AttributeDefinition<?> definition = entityDefinition.attributes().definition(identifier);
+			if (definition instanceof ValueAttributeDefinition<?>) {
+				ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>) definition;
+				if (identifier.type().isNumeric() && attributeDefinition.items().isEmpty()) {
+					return Optional.of(FilterTable.summaryValues(identifier, tableModel, format));
+				}
 			}
 
 			return Optional.empty();

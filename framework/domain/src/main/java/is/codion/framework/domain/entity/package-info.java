@@ -22,12 +22,12 @@
  * <li>{@link is.codion.framework.domain.entity.EntityValidator#STRICT_VALIDATION}
  * <li>{@link is.codion.framework.domain.entity.Entities#VALIDATE_FOREIGN_KEYS}
  * <li>{@link is.codion.framework.domain.entity.Entities#STRICT_DESERIALIZATION}
- * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#FRACTION_DIGITS}<br>
- * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#NUMBER_GROUPING}<br>
- * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#GROUPING_SEPARATOR}<br>
- * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DECIMAL_SEPARATOR}<br>
- * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#USE_LEXICAL_STRING_COMPARATOR}<br>
- * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#ROUNDING_MODE}<br>
+ * <li>{@link is.codion.framework.domain.entity.attribute.ValueAttributeDefinition#FRACTION_DIGITS}<br>
+ * <li>{@link is.codion.framework.domain.entity.attribute.ValueAttributeDefinition#NUMBER_GROUPING}<br>
+ * <li>{@link is.codion.framework.domain.entity.attribute.ValueAttributeDefinition#GROUPING_SEPARATOR}<br>
+ * <li>{@link is.codion.framework.domain.entity.attribute.ValueAttributeDefinition#DECIMAL_SEPARATOR}<br>
+ * <li>{@link is.codion.framework.domain.entity.attribute.ValueAttributeDefinition#USE_LEXICAL_STRING_COMPARATOR}<br>
+ * <li>{@link is.codion.framework.domain.entity.attribute.ValueAttributeDefinition#ROUNDING_MODE}<br>
  * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition#REFERENCE_DEPTH}
  * </ul>
  */

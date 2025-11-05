@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -73,11 +74,15 @@ public class DefaultEditComponentFactory<C extends JComponent, T> implements Edi
 		if (attribute.type().isTemporal()) {
 			return createTemporalComponentValue(attribute, entityComponents(editModel.entityDefinition()));
 		}
+		AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+		if (!(attributeDefinition instanceof ValueAttributeDefinition)) {
+			throw new IllegalArgumentException("Value based attribute expected: " + attribute);
+		}
 		EntityComponents components = entityComponents(editModel.entityDefinition());
-		AttributeDefinition<T> definition = editModel.entityDefinition().attributes().definition(attribute);
+		ValueAttributeDefinition<T> definition = (ValueAttributeDefinition<T>) attributeDefinition;
 		if (attribute.type().isString() && definition.items().isEmpty()) {
 			return (ComponentValue<C, T>) components.textFieldPanel((Attribute<String>) attribute)
-							.columns(textFieldColumns((AttributeDefinition<String>) definition))
+							.columns(textFieldColumns((ValueAttributeDefinition<String>) definition))
 							.buildValue();
 		}
 
@@ -136,7 +141,7 @@ public class DefaultEditComponentFactory<C extends JComponent, T> implements Edi
 		return (ComponentValue<C, T>) inputComponents.temporalField((Attribute<Temporal>) attribute).buildValue();
 	}
 
-	private static int textFieldColumns(AttributeDefinition<String> definition) {
+	private static int textFieldColumns(ValueAttributeDefinition<String> definition) {
 		int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow();
 		if (definition.maximumLength() > defaultTextFieldColumns) {
 			return MAXIMUM_TEXT_FIELD_COLUMNS;

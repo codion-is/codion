@@ -29,6 +29,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableConditionModel;
@@ -417,26 +419,32 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 		private static ConditionModel<?> conditionModel(AttributeDefinition<?> definition) {
 			if (useStringCondition(definition)) {
+				// Covers foreign keys
 				return ConditionModel.builder()
 								.valueClass(String.class)
 								.build();
 			}
 
+			ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>) definition;
 			return ConditionModel.builder()
-							.valueClass(definition.attribute().type().valueClass())
-							.format(definition.format().orElse(null))
-							.dateTimePattern(definition.dateTimePattern().orElse(null))
+							.valueClass(attributeDefinition.attribute().type().valueClass())
+							.format(attributeDefinition.format().orElse(null))
+							.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
 							.build();
 		}
 
 		private static boolean include(AttributeDefinition<?> definition) {
-			return !definition.hidden();
+			return !definition.hidden() && (definition instanceof ForeignKeyDefinition || definition instanceof ValueAttributeDefinition<?>);
 		}
 
-		private static boolean useStringCondition(AttributeDefinition<?> attributeDefinition) {
-			return attributeDefinition.attribute().type().isEntity() || // entities
-							!attributeDefinition.items().isEmpty() || // items
-							!Comparable.class.isAssignableFrom(attributeDefinition.attribute().type().valueClass()); // non-comparables
+		private static boolean useStringCondition(AttributeDefinition<?> definition) {
+			return definition.attribute().type().isEntity() || // entities
+							itemBased(definition) || // items
+							!Comparable.class.isAssignableFrom(definition.attribute().type().valueClass()); // non-comparables
+		}
+
+		private static boolean itemBased(AttributeDefinition<?> definition) {
+			return definition instanceof ValueAttributeDefinition<?> && !((ValueAttributeDefinition<?>) definition).items().isEmpty();
 		}
 	}
 

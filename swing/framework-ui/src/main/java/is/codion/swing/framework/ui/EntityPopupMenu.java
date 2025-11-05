@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.control.Control;
 
@@ -110,16 +111,20 @@ final class EntityPopupMenu extends JPopupMenu {
 		List<AttributeDefinition<?>> attributeDefinitions = Text.collate(new ArrayList<>(entity.definition().attributes().definitions()));
 		for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
 			boolean primaryKeyColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).primaryKey();
-			if (!primaryKeyColumn && !(attributeDefinition instanceof ForeignKeyDefinition)) {
+			if (!primaryKeyColumn && attributeDefinition instanceof ValueAttributeDefinition<?>) {
 				JMenuItem menuItem = new JMenuItem(new StringBuilder(attributeDefinition.toString())
 								.append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
-								.append(attributeDefinition.derived() ? "*" : "").append("]: ")
+								.append(isDerived(attributeDefinition) ? "*" : "").append("]: ")
 								.append(createValueString(entity, attributeDefinition)).toString());
 				menuItem.addActionListener(clipboardControl(entity, attributeDefinition.attribute()));
 				configureMenuItem(menuItem, entity, attributeDefinition.attribute(), attributeDefinition.attribute().toString());
 				rootMenu.add(menuItem);
 			}
 		}
+	}
+
+	private static boolean isDerived(AttributeDefinition<?> definition) {
+		return definition instanceof ValueAttributeDefinition<?> && ((ValueAttributeDefinition<?>) definition).derived();
 	}
 
 	private static String createValueString(Entity entity, AttributeDefinition<?> attributeDefinition) {

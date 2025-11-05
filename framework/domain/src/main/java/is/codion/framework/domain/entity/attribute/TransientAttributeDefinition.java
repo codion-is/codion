@@ -23,9 +23,10 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
 /**
  * An attribute that does not map to an underlying database column.
  * <p>
- * Transient attributes are used for temporary data, UI state, calculated values,
- * or any other data that should not be persisted to the database. They are
- * initialized to null when entities are loaded and ignored during DML operations.
+ * TransientAttributeDefinition extends {@link ValueAttributeDefinition} for attributes
+ * used for temporary data, UI state, calculated values, or any other data that should
+ * not be persisted to the database. They are initialized to null when entities are
+ * loaded and ignored during DML operations.
  * <p>
  * The value of transient attributes can be set and retrieved like normal attributes
  * but are ignored during insert, update, and delete operations. By default, setting
@@ -124,8 +125,7 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  * @see #modifies()
  * @see DerivedAttributeDefinition
  */
-public sealed interface TransientAttributeDefinition<T> extends AttributeDefinition<T>
-				permits DefaultTransientAttributeDefinition {
+public sealed interface TransientAttributeDefinition<T> extends ValueAttributeDefinition<T> permits DefaultTransientAttributeDefinition {
 
 	/**
 	 * @return true if the value of this attribute being modified should result in a modified entity
@@ -136,7 +136,7 @@ public sealed interface TransientAttributeDefinition<T> extends AttributeDefinit
 	 * Builds a transient AttributeDefinition instance
 	 * @param <T> the attribute value type
 	 */
-	sealed interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B>
+	sealed interface Builder<T, B extends Builder<T, B>> extends ValueAttributeDefinition.Builder<T, B>
 					permits DefaultTransientAttributeDefinitionBuilder {
 
 		/**

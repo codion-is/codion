@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
@@ -111,12 +112,13 @@ public final class EntityComponents {
 	 * @throws IllegalArgumentException in case the given attribute is not supported
 	 */
 	public <C extends JComponent, T, B extends ComponentValueBuilder<C, T, B>> ComponentValueBuilder<C, T, B> component(Attribute<T> attribute) {
-		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
-		if (!attributeDefinition.items().isEmpty()) {
-			return (ComponentValueBuilder<C, T, B>) itemComboBox(attribute);
-		}
+		requireNonNull(attribute);
 		if (attribute instanceof ForeignKey) {
 			return (ComponentValueBuilder<C, T, B>) textField((ForeignKey) attribute);
+		}
+		ValueAttributeDefinition<T> attributeDefinition = definition(attribute);
+		if (!attributeDefinition.items().isEmpty()) {
+			return (ComponentValueBuilder<C, T, B>) itemComboBox(attribute);
 		}
 		Attribute.Type<T> type = attribute.type();
 		if (type.isTemporal()) {
@@ -299,7 +301,7 @@ public final class EntityComponents {
 	 * @throws IllegalArgumentException in case the given attribute has no associated items
 	 */
 	public <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
-		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<T> attributeDefinition = definition(attribute);
 		if (attributeDefinition.items().isEmpty()) {
 			throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item based attribute");
 		}
@@ -321,7 +323,7 @@ public final class EntityComponents {
 	 */
 	public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> comboBox(Attribute<T> attribute,
 																																																					 ComboBoxModel<T> comboBoxModel) {
-		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return (ComboBoxBuilder<C, T, B>) Components.comboBox()
 						.model(comboBoxModel)
@@ -335,7 +337,7 @@ public final class EntityComponents {
 	 * @return a {@link TemporalFieldPanel} builder
 	 */
 	public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
-		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return Components.temporalFieldPanel()
 						.temporalClass(attribute.type().valueClass())
@@ -350,7 +352,7 @@ public final class EntityComponents {
 	 * @return a {@link TextFieldPanel} builder
 	 */
 	public TextFieldPanel.Builder textFieldPanel(Attribute<String> attribute) {
-		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<String> attributeDefinition = definition(attribute);
 
 		return Components.textFieldPanel()
 						.toolTipText(attributeDefinition.description().orElse(null))
@@ -365,7 +367,7 @@ public final class EntityComponents {
 	 * @return a JTextArea builder
 	 */
 	public TextAreaBuilder textArea(Attribute<String> attribute) {
-		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<String> attributeDefinition = definition(attribute);
 		if (!attribute.type().isString()) {
 			throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
 		}
@@ -384,7 +386,7 @@ public final class EntityComponents {
 	 * @return a JTextField builder
 	 */
 	public <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> textField(Attribute<T> attribute) {
-		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		if (!attributeDefinition.items().isEmpty()) {
 			return (TextFieldBuilder<C, T, B>) Components.textField()
@@ -421,7 +423,7 @@ public final class EntityComponents {
 	 * @return a {@link TemporalField} builder
 	 */
 	public <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
-		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return Components.temporalField()
 						.temporalClass(attributeDefinition.attribute().type().valueClass())
@@ -436,7 +438,7 @@ public final class EntityComponents {
 	 * @return a {@link NumberField} builder
 	 */
 	public NumberField.Builder<Short> shortField(Attribute<Short> attribute) {
-		AttributeDefinition<Short> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<Short> attributeDefinition = definition(attribute);
 
 		return Components.shortField()
 						.format(attributeDefinition.format().orElse(null))
@@ -449,7 +451,7 @@ public final class EntityComponents {
 	 * @return a {@link NumberField} builder
 	 */
 	public NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
-		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<Integer> attributeDefinition = definition(attribute);
 
 		return Components.integerField()
 						.format(attributeDefinition.format().orElse(null))
@@ -462,7 +464,7 @@ public final class EntityComponents {
 	 * @return a {@link NumberField} builder
 	 */
 	public NumberField.Builder<Long> longField(Attribute<Long> attribute) {
-		AttributeDefinition<Long> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<Long> attributeDefinition = definition(attribute);
 
 		return Components.longField()
 						.format(attributeDefinition.format().orElse(null))
@@ -475,7 +477,7 @@ public final class EntityComponents {
 	 * @return a {@link NumberField} builder
 	 */
 	public NumberField.Builder<Double> doubleField(Attribute<Double> attribute) {
-		AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<Double> attributeDefinition = definition(attribute);
 
 		return Components.doubleField()
 						.format(attributeDefinition.format().orElse(null))
@@ -489,7 +491,7 @@ public final class EntityComponents {
 	 * @return a {@link NumberField} builder
 	 */
 	public NumberField.Builder<BigDecimal> bigDecimalField(Attribute<BigDecimal> attribute) {
-		AttributeDefinition<BigDecimal> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<BigDecimal> attributeDefinition = definition(attribute);
 
 		return Components.bigDecimalField()
 						.format(attributeDefinition.format().orElse(null))
@@ -504,7 +506,7 @@ public final class EntityComponents {
 	 * @return a {@link javax.swing.JSlider} builder
 	 */
 	public SliderBuilder slider(Attribute<Integer> attribute) {
-		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<Integer> attributeDefinition = definition(attribute);
 		Number minimumValue = attributeDefinition.minimum().orElse(null);
 		Number maximumValue = attributeDefinition.maximum().orElse(null);
 		if (minimumValue == null || maximumValue == null) {
@@ -525,7 +527,7 @@ public final class EntityComponents {
 	 * @return a {@link javax.swing.JSlider} builder
 	 */
 	public SliderBuilder slider(Attribute<Integer> attribute, BoundedRangeModel boundedRangeModel) {
-		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<Integer> attributeDefinition = definition(attribute);
 
 		return Components.slider()
 						.model(boundedRangeModel)
@@ -538,7 +540,7 @@ public final class EntityComponents {
 	 * @return a {@link javax.swing.JSpinner} builder
 	 */
 	public NumberSpinnerBuilder<Integer> integerSpinner(Attribute<Integer> attribute) {
-		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<Integer> attributeDefinition = definition(attribute);
 		Number minimumValue = attributeDefinition.minimum().orElse(null);
 		Number maximumValue = attributeDefinition.maximum().orElse(null);
 
@@ -554,7 +556,7 @@ public final class EntityComponents {
 	 * @return a {@link javax.swing.JSpinner} builder
 	 */
 	public NumberSpinnerBuilder<Double> doubleSpinner(Attribute<Double> attribute) {
-		AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<Double> attributeDefinition = definition(attribute);
 		Number minimumValue = attributeDefinition.minimum().orElse(null);
 		Number maximumValue = attributeDefinition.maximum().orElse(null);
 
@@ -572,7 +574,7 @@ public final class EntityComponents {
 	 * @return a {@link javax.swing.JSpinner} builder
 	 */
 	public <T> ListSpinnerBuilder<T> listSpinner(Attribute<T> attribute, SpinnerListModel listModel) {
-		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<T> attributeDefinition = definition(attribute);
 
 		return Components.<T>listSpinner()
 						.model(listModel)
@@ -586,7 +588,7 @@ public final class EntityComponents {
 	 * @return a {@link javax.swing.JSpinner} builder
 	 */
 	public <T> ItemSpinnerBuilder<T> itemSpinner(Attribute<T> attribute) {
-		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<T> attributeDefinition = definition(attribute);
 		if (attributeDefinition.items().isEmpty()) {
 			throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item based attribute");
 		}
@@ -602,7 +604,7 @@ public final class EntityComponents {
 	 * @return a JFormattedTextField builder
 	 */
 	public MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
-		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<String> attributeDefinition = definition(attribute);
 
 		return Components.maskedTextField()
 						.toolTipText(attributeDefinition.description().orElse(null));
@@ -614,7 +616,7 @@ public final class EntityComponents {
 	 * @return a {@link FileInputPanel.Builder}
 	 */
 	public ComponentValueBuilder<FileInputPanel, byte[], FileInputPanel.Builder<byte[]>> byteArrayInputPanel(Attribute<byte[]> attribute) {
-		AttributeDefinition<byte[]> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		ValueAttributeDefinition<byte[]> attributeDefinition = definition(attribute);
 
 		return Components.byteArrayInputPanel()
 						.toolTipText(attributeDefinition.description().orElse(null));
@@ -626,6 +628,15 @@ public final class EntityComponents {
 	 */
 	public static EntityComponents entityComponents(EntityDefinition entityDefinition) {
 		return new EntityComponents(entityDefinition);
+	}
+
+	private <T> ValueAttributeDefinition<T> definition(Attribute<T> attribute) {
+		AttributeDefinition<T> definition = entityDefinition.attributes().definition(attribute);
+		if (!(definition instanceof ValueAttributeDefinition<T>)) {
+			throw new IllegalArgumentException("Value based attribute expected: " + attribute);
+		}
+
+		return (ValueAttributeDefinition<T>) definition;
 	}
 
 	private static <T> FilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {

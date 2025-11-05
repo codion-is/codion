@@ -19,52 +19,29 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.utilities.Text;
-import is.codion.common.utilities.format.LocaleDateTimePattern;
-import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeDefinitionBuilder;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
-import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
-import is.codion.framework.domain.entity.exception.ItemValidationException;
-import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
-import is.codion.framework.domain.entity.exception.RangeValidationException;
 
 import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.Format;
 import java.text.MessageFormat;
-import java.text.NumberFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static java.time.format.DateTimeFormatter.ofPattern;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.toMap;
 
 abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable
-				permits DefaultColumnDefinition, DefaultForeignKeyDefinition, DefaultDerivedAttributeDefinition, DefaultTransientAttributeDefinition {
+				permits AbstractValueAttributeDefinition, DefaultForeignKeyDefinition {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -73,9 +50,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 					messageBundle(AbstractAttributeDefinition.class, getBundle(AbstractAttributeDefinition.class.getName()));
 
 	private static final String VALUE_REQUIRED_KEY = "value_is_required";
-	private static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
+	static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
 	private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
-	private static final String INVALID_ITEM_SUFFIX = MESSAGES.getString(INVALID_ITEM_SUFFIX_KEY);
+	static final String INVALID_ITEM_SUFFIX = MESSAGES.getString(INVALID_ITEM_SUFFIX_KEY);
 
 	private static final Comparator<String> LEXICAL_COMPARATOR = Text.collator();
 	private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
@@ -93,22 +70,11 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final ValueSupplier<T> defaultValueSupplier;
 	private final boolean nullable;
 	private final boolean hidden;
-	private final int maximumLength;
-	private final boolean trim;
-	private final @Nullable Number maximum;
-	private final @Nullable Number minimum;
 	private final @Nullable String description;
 	private final char mnemonic;
-	private final @Nullable Format format;
-	private final @Nullable LocaleDateTimePattern localeDateTimePattern;
-	private final RoundingMode roundingMode;
-	private final @Nullable List<Item<T>> items;
-	private final @Nullable Map<T, Item<T>> itemMap;
 	private transient @Nullable String resourceCaption;
 	private transient @Nullable Character resourceMnemonic;
 	private transient @Nullable String resourceDescription;
-	private transient @Nullable String dateTimePattern;
-	private transient @Nullable DateTimeFormatter dateTimeFormatter;
 	private @Nullable Comparator<T> comparator;
 
 	protected AbstractAttributeDefinition(AbstractAttributeDefinitionBuilder<T, ?> builder) {
@@ -124,21 +90,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		this.defaultValueSupplier = builder.defaultValueSupplier;
 		this.nullable = builder.nullable;
 		this.hidden = builder.hidden;
-		this.maximumLength = builder.maximumLength;
-		this.trim = builder.trim;
-		this.maximum = builder.maximum;
-		this.minimum = builder.minimum;
 		this.description = builder.description;
 		this.mnemonic = builder.mnemonic;
-		this.format = builder.format;
-		this.localeDateTimePattern = builder.localeDateTimePattern;
-		this.roundingMode = builder.roundingMode;
 		this.comparator = builder.comparator;
-		this.dateTimePattern = builder.dateTimePattern;
-		this.dateTimeFormatter = builder.dateTimeFormatter;
-		this.items = builder.items;
-		this.itemMap = items == null ? null : items.stream()
-						.collect(toMap(Item::get, Function.identity()));
 	}
 
 	@Override
@@ -149,11 +103,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	@Override
 	public Attribute<T> attribute() {
 		return attribute;
-	}
-
-	@Override
-	public boolean derived() {
-		return false;
 	}
 
 	@Override
@@ -182,26 +131,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final int maximumLength() {
-		return maximumLength;
-	}
-
-	@Override
-	public final boolean trim() {
-		return trim;
-	}
-
-	@Override
-	public final Optional<Number> maximum() {
-		return Optional.ofNullable(maximum);
-	}
-
-	@Override
-	public final Optional<Number> minimum() {
-		return Optional.ofNullable(minimum);
-	}
-
-	@Override
 	public final Optional<String> description() {
 		if (descriptionResourceBundleName != null) {
 			if (resourceDescription == null) {
@@ -218,51 +147,12 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final Optional<Format> format() {
-		return Optional.ofNullable(format);
-	}
-
-	@Override
-	public final Optional<String> dateTimePattern() {
-		return Optional.ofNullable(dateTimePatternInternal());
-	}
-
-	@Override
-	public final Optional<DateTimeFormatter> dateTimeFormatter() {
-		return Optional.ofNullable(dateTimeFormatterInternal());
-	}
-
-	@Override
-	public final Comparator<T> comparator() {
+	public Comparator<T> comparator() {
 		if (comparator == null) {
 			comparator = defaultComparator(attribute);
 		}
 
 		return comparator;
-	}
-
-	@Override
-	public final boolean validItem(@Nullable T value) {
-		return itemMap == null || itemMap.containsKey(value);
-	}
-
-	@Override
-	public final List<Item<T>> items() {
-		return items == null ? emptyList() : items;
-	}
-
-	@Override
-	public final int fractionDigits() {
-		if (!(format instanceof NumberFormat)) {
-			return -1;
-		}
-
-		return ((NumberFormat) format).getMaximumFractionDigits();
-	}
-
-	@Override
-	public final RoundingMode roundingMode() {
-		return roundingMode;
 	}
 
 	@Override
@@ -309,22 +199,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final void validate(Entity entity, boolean nullable) {
+	public void validate(Entity entity, boolean nullable) {
 		requireNonNull(entity);
 		if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
 			validateNull(entity, nullable);
-		}
-		T value = entity.get(attribute);
-		if (!items().isEmpty()) {
-			validateItem(value);
-		}
-		if (value != null) {
-			if (attribute.type().isNumeric()) {
-				validateRange((Number) value);
-			}
-			else if (attribute.type().isString()) {
-				validateLength((String) value);
-			}
 		}
 	}
 
@@ -347,70 +225,12 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final String format(T value) {
-		if (itemMap != null) {
-			Item<T> item = itemMap.get(value);
-
-			return item == null ? invalidItemString(value) : item.caption();
-		}
-
+	public String format(T value) {
 		if (value == null) {
 			return "";
 		}
-		if (attribute.type().isTemporal()) {
-			DateTimeFormatter formatter = dateTimeFormatterInternal();
-			if (formatter != null) {
-				return formatter.format((TemporalAccessor) value);
-			}
-		}
-		if (format != null) {
-			return format.format(value);
-		}
 
 		return value.toString();
-	}
-
-	private @Nullable String dateTimePatternInternal() {
-		if (dateTimePattern == null) {
-			dateTimePattern = localeDateTimePattern == null ? defaultDateTimePattern() : localeDateTimePattern.dateTimePattern();
-		}
-
-		return dateTimePattern;
-	}
-
-	private @Nullable DateTimeFormatter dateTimeFormatterInternal() {
-		if (dateTimeFormatter == null) {
-			String pattern = dateTimePatternInternal();
-			dateTimeFormatter = pattern == null ? null : ofPattern(pattern);
-		}
-
-		return dateTimeFormatter;
-	}
-
-	private String invalidItemString(T value) {
-		if (value == null && nullable()) {
-			//technically valid
-			return "";
-		}
-		//mark invalid values
-		return value + " <" + INVALID_ITEM_SUFFIX + ">";
-	}
-
-	private @Nullable String defaultDateTimePattern() {
-		if (attribute.type().isLocalDate()) {
-			return LocaleDateTimePattern.DATE_PATTERN.getOrThrow();
-		}
-		else if (attribute.type().isLocalTime()) {
-			return LocaleDateTimePattern.TIME_PATTERN.getOrThrow();
-		}
-		else if (attribute.type().isLocalDateTime()) {
-			return LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow();
-		}
-		else if (attribute.type().isOffsetDateTime()) {
-			return LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow();
-		}
-
-		return null;
 	}
 
 	private void validateNull(Entity entity, boolean nullable) throws NullValidationException {
@@ -443,38 +263,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 						&& !((ColumnDefinition<?>) this).withDefault();
 	}
 
-	private void validateItem(@Nullable T value) {
-		if (value == null && nullable()) {
-			return;
-		}
-		if (!validItem(value)) {
-			throw new ItemValidationException(attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
-		}
-	}
 
-	private <T extends Number> void validateRange(T value) {
-		if (minimum != null && value.doubleValue() < minimum.doubleValue()) {
-			throw new RangeValidationException(attribute(), value, "'" + caption() + "' " +
-							MESSAGES.getString("value_too_small") + " " + minimum);
-		}
-		if (maximum != null && value.doubleValue() > maximum.doubleValue()) {
-			throw new RangeValidationException(attribute(), value, "'" + caption() + "' " +
-							MESSAGES.getString("value_too_large") + " " + maximum);
-		}
-	}
-
-	private void validateLength(String value) {
-		if (maximumLength != -1 && value.length() > maximumLength) {
-			throw new LengthValidationException(attribute(), value, "'" + caption() + "' " +
-							MESSAGES.getString("value_too_long") + " " + maximumLength + "\n:'" + value + "'");
-		}
-	}
-
-	private Comparator<T> defaultComparator(Attribute<T> attribute) {
-		if (items != null && !items.isEmpty()) {
-			return new ItemComparator<>(items);
-		}
-		if (attribute.type().isString() && USE_LEXICAL_STRING_COMPARATOR.getOrThrow()) {
+	Comparator<T> defaultComparator(Attribute<T> attribute) {
+		if (attribute.type().isString() && ValueAttributeDefinition.USE_LEXICAL_STRING_COMPARATOR.getOrThrow()) {
 			return (Comparator<T>) LEXICAL_COMPARATOR;
 		}
 		if (Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
@@ -533,27 +324,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 	}
 
-	private static final class ItemComparator<T> implements Comparator<T>, Serializable {
 
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private final Map<T, String> captions;
-
-		private ItemComparator(List<Item<T>> items) {
-			this.captions = items.stream()
-							.collect(toMap(Item::get, Item::caption));
-		}
-
-		@Override
-		public int compare(T o1, T o2) {
-			return LEXICAL_COMPARATOR.compare(captions.getOrDefault(o1, ""), captions.getOrDefault(o2, ""));
-		}
-	}
-
-	abstract static sealed class AbstractAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>> implements AttributeDefinition.Builder<T, B>
-					permits DefaultColumnDefinitionBuilder, DefaultDerivedAttributeDefinitionBuilder, DefaultDenormalizedAttributeDefinitionBuilder,
-					DefaultForeignKeyDefinitionBuilder, DefaultTransientAttributeDefinitionBuilder {
+	abstract static sealed class AbstractAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>>
+					implements AttributeDefinition.Builder<T, B>
+					permits AbstractValueAttributeDefinitionBuilder, DefaultForeignKeyDefinitionBuilder {
 
 		private static final String NO_RESOURCE_BUNDLE_SPECIFIED_FOR_ENTITY = "No resource bundle specified for entity: ";
 		private static final String RESOURCE = "Resource ";
@@ -571,23 +345,12 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private String descriptionResourceKey;
 		private boolean nullable;
 		private boolean hidden;
-		private int maximumLength;
-		private boolean trim;
-		private @Nullable Number maximum;
-		private @Nullable Number minimum;
 		private @Nullable String description;
 		private char mnemonic;
-		private @Nullable Format format;
-		private @Nullable LocaleDateTimePattern localeDateTimePattern;
-		private RoundingMode roundingMode;
 		private @Nullable Comparator<T> comparator;
-		private @Nullable String dateTimePattern;
-		private @Nullable DateTimeFormatter dateTimeFormatter;
-		private @Nullable List<Item<T>> items;
 
 		AbstractAttributeDefinitionBuilder(Attribute<T> attribute) {
 			this.attribute = requireNonNull(attribute);
-			format = defaultFormat(attribute);
 			captionResourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
 			mnemonicResourceBundleName = captionResourceBundleName;
 			descriptionResourceBundleName = captionResourceBundleName;
@@ -596,12 +359,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			descriptionResourceKey = captionResourceKey + DESCRIPTION_RESOURCE_SUFFIX;
 			hidden = resourceNotFound(captionResourceBundleName, captionResourceKey);
 			nullable = true;
-			maximumLength = attribute.type().isCharacter() ? 1 : -1;
-			trim = TRIM_STRINGS.getOrThrow();
 			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
-			roundingMode = ROUNDING_MODE.getOrThrow();
-			minimum = defaultMinimum();
-			maximum = defaultMaximum();
 		}
 
 		@Override
@@ -684,60 +442,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		@Override
-		public B maximumLength(int maximumLength) {
-			if (!attribute.type().isString()) {
-				throw new IllegalStateException("maximumLength is only applicable to string attributes: " + attribute);
-			}
-			if (maximumLength <= 0) {
-				throw new IllegalArgumentException("maximumLength must be a positive integer: " + attribute);
-			}
-			this.maximumLength = maximumLength;
-			return self();
-		}
-
-		@Override
-		public final B trim(boolean trim) {
-			if (!attribute.type().isString()) {
-				throw new IllegalStateException("trim is only applicable to string attributes: " + attribute);
-			}
-			this.trim = trim;
-			return (B) this;
-		}
-
-		@Override
-		public final B minimum(Number minimum) {
-			return range(requireNonNull(minimum), null);
-		}
-
-		@Override
-		public final B maximum(Number maximum) {
-			return range(null, requireNonNull(maximum));
-		}
-
-		@Override
-		public B range(@Nullable Number minimum, @Nullable Number maximum) {
-			if (!attribute.type().isNumeric()) {
-				throw new IllegalStateException("range is only applicable to numerical attributes");
-			}
-			if (maximum != null && minimum != null && maximum.doubleValue() < minimum.doubleValue()) {
-				throw new IllegalArgumentException("minimum value must be smaller than maximum value: " + attribute);
-			}
-			this.minimum = minimum;
-			this.maximum = maximum;
-			return self();
-		}
-
-		@Override
-		public final B numberGrouping(boolean numberGrouping) {
-			if (!attribute.type().isNumeric()) {
-				throw new IllegalStateException("numberGrouping is only applicable to numerical attributes: " + attribute);
-			}
-			requireNonNull(format);
-			((NumberFormat) format).setGroupingUsed(numberGrouping);
-			return self();
-		}
-
-		@Override
 		public final B description(String description) {
 			this.description = description;
 			return self();
@@ -770,75 +474,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		@Override
-		public final B format(Format format) {
-			requireNonNull(format);
-			if (attribute.type().isNumeric() && !(format instanceof NumberFormat)) {
-				throw new IllegalArgumentException("NumberFormat required for numerical attribute: " + attribute);
-			}
-			if (attribute.type().isTemporal()) {
-				throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal attributes: " + attribute);
-			}
-			this.format = format;
-			return self();
-		}
-
-		@Override
-		public final B dateTimePattern(String dateTimePattern) {
-			requireNonNull(dateTimePattern);
-			if (!attribute.type().isTemporal()) {
-				throw new IllegalStateException("dateTimePattern is only applicable to temporal attributes: " + attribute);
-			}
-			if (this.localeDateTimePattern != null) {
-				throw new IllegalStateException("localeDateTimePattern has already been set for attribute: " + attribute);
-			}
-			this.dateTimePattern = dateTimePattern;
-			this.dateTimeFormatter = ofPattern(dateTimePattern);
-			return self();
-		}
-
-		@Override
-		public final B dateTimePattern(LocaleDateTimePattern dateTimePattern) {
-			requireNonNull(dateTimePattern);
-			if (!attribute.type().isTemporal()) {
-				throw new IllegalStateException("dateTimePattern is only applicable to temporal attributes: " + attribute);
-			}
-			if (this.dateTimePattern != null) {
-				throw new IllegalStateException("dateTimePattern has already been set for attribute: " + attribute);
-			}
-			this.localeDateTimePattern = dateTimePattern;
-			this.dateTimePattern = dateTimePattern.dateTimePattern();
-			this.dateTimeFormatter = dateTimePattern.formatter();
-			return self();
-		}
-
-		@Override
-		public final B fractionDigits(int fractionDigits) {
-			if (!attribute.type().isDecimal()) {
-				throw new IllegalStateException("fractionDigits is only applicable to decimal attributes: " + attribute);
-			}
-			requireNonNull(format);
-			((NumberFormat) format).setMaximumFractionDigits(fractionDigits);
-			return self();
-		}
-
-		@Override
-		public final B roundingMode(RoundingMode roundingMode) {
-			if (!attribute.type().isDecimal()) {
-				throw new IllegalStateException("roundingMode is only applicable to decimal attributes: " + attribute);
-			}
-			this.roundingMode = requireNonNull(roundingMode);
-			return self();
-		}
-
-		@Override
 		public B comparator(Comparator<T> comparator) {
 			this.comparator = requireNonNull(comparator);
-			return self();
-		}
-
-		@Override
-		public final B items(List<Item<T>> items) {
-			this.items = validateItems(items);
 			return self();
 		}
 
@@ -856,106 +493,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			catch (MissingResourceException e) {
 				return true;
 			}
-		}
-
-		private static <T> List<Item<T>> validateItems(List<Item<T>> items) {
-			if (requireNonNull(items).size() != items.stream()
-							.distinct()
-							.count()) {
-				throw new IllegalArgumentException("Item list contains duplicate values: " + items);
-			}
-
-			return unmodifiableList(new ArrayList<>(items));
-		}
-
-		private static @Nullable Format defaultFormat(Attribute<?> attribute) {
-			if (attribute.type().isNumeric()) {
-				NumberFormat numberFormat = defaultNumberFormat(attribute);
-				if (attribute.type().isDecimal()) {
-					((DecimalFormat) numberFormat).setParseBigDecimal(attribute.type().isBigDecimal());
-					numberFormat.setMaximumFractionDigits(AttributeDefinition.FRACTION_DIGITS.getOrThrow());
-				}
-
-				return numberFormat;
-			}
-
-			return null;
-		}
-
-		private static NumberFormat defaultNumberFormat(Attribute<?> attribute) {
-			boolean grouping = NUMBER_GROUPING.getOrThrow();
-			if (attribute.type().isInteger() || attribute.type().isLong()) {
-				return setSeparators(grouping ? NumberFormat.getIntegerInstance() : nonGroupingIntegerFormat());
-			}
-
-			return setSeparators(grouping ? NumberFormat.getNumberInstance() : nonGroupingNumberFormat());
-		}
-
-		private static NumberFormat nonGroupingNumberFormat() {
-			NumberFormat format = NumberFormat.getNumberInstance();
-			format.setGroupingUsed(false);
-
-			return format;
-		}
-
-		private static NumberFormat nonGroupingIntegerFormat() {
-			NumberFormat format = NumberFormat.getIntegerInstance();
-			format.setGroupingUsed(false);
-
-			return format;
-		}
-
-		private static NumberFormat setSeparators(NumberFormat numberFormat) {
-			if (numberFormat instanceof DecimalFormat) {
-				Character defaultGroupingSeparator = GROUPING_SEPARATOR.get();
-				Character defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
-				if (defaultGroupingSeparator != null && defaultDecimalSeparator != null) {
-					DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
-					symbols.setDecimalSeparator(defaultDecimalSeparator);
-					symbols.setGroupingSeparator(defaultGroupingSeparator);
-					((DecimalFormat) numberFormat).setDecimalFormatSymbols(symbols);
-				}
-			}
-
-			return numberFormat;
-		}
-
-		private @Nullable Number defaultMinimum() {
-			if (attribute.type().isNumeric()) {
-				if (attribute.type().isShort()) {
-					return Short.MIN_VALUE;
-				}
-				if (attribute.type().isInteger()) {
-					return Integer.MIN_VALUE;
-				}
-				if (attribute.type().isLong()) {
-					return Long.MIN_VALUE;
-				}
-				if (attribute.type().isDouble()) {
-					return -Double.MAX_VALUE;
-				}
-			}
-
-			return null;
-		}
-
-		private @Nullable Number defaultMaximum() {
-			if (attribute.type().isNumeric()) {
-				if (attribute.type().isShort()) {
-					return Short.MAX_VALUE;
-				}
-				if (attribute.type().isInteger()) {
-					return Integer.MAX_VALUE;
-				}
-				if (attribute.type().isLong()) {
-					return Long.MAX_VALUE;
-				}
-				if (attribute.type().isDouble()) {
-					return Double.MAX_VALUE;
-				}
-			}
-
-			return null;
 		}
 	}
 }

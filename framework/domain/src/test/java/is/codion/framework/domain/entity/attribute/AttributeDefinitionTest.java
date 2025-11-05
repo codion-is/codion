@@ -287,7 +287,7 @@ public final class AttributeDefinitionTest {
 		assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("item").define().column().items(itemsDuplicate));
 
 		List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
-		AttributeDefinition<Integer> attribute = ENTITY_TYPE.integerAttribute("item").define().attribute().items(items).build();
+		ValueAttributeDefinition<Integer> attribute = ENTITY_TYPE.integerAttribute("item").define().attribute().items(items).build();
 		assertFalse(attribute.validItem(4));
 		assertTrue(attribute.validItem(null));
 		assertTrue(attribute.validItem(2));

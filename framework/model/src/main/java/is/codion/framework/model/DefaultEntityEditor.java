@@ -328,6 +328,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	private void addTransientValues(ValueSupplier valueSupplier, Entity newEntity) {
 		entityDefinition.attributes().definitions().stream()
 						.filter(TransientAttributeDefinition.class::isInstance)
+						.map(TransientAttributeDefinition.class::cast)
 						.filter(attributeDefinition -> !attributeDefinition.derived())
 						.map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
 						.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));

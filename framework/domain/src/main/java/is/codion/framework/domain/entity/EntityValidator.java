@@ -22,6 +22,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import java.util.List;
@@ -205,7 +206,7 @@ public interface EntityValidator {
 	 * @see #strict()
 	 */
 	default boolean validated(Entity entity, AttributeDefinition<?> definition) {
-		if (definition.derived()) {
+		if (definition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<?>) definition).derived()) {
 			return false;
 		}
 		if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).readOnly()) {

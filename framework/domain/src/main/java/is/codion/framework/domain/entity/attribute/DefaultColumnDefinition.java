@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T> {
+final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<T> implements ColumnDefinition<T> {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -287,7 +287,8 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 	}
 
 	static sealed class DefaultColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
-					extends AbstractAttributeDefinitionBuilder<T, B> implements ColumnDefinition.Builder<T, B> {
+					extends AbstractValueAttributeDefinitionBuilder<T, B> implements ColumnDefinition.Builder<T, B>
+					permits AbstractReadOnlyColumnDefinitionBuilder {
 
 		private final int keyIndex;
 
@@ -329,7 +330,7 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 		}
 
 		@Override
-		public AttributeDefinition<T> build() {
+		public ValueAttributeDefinition<T> build() {
 			return new DefaultColumnDefinition<>(this);
 		}
 
@@ -476,7 +477,7 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 	}
 
 	abstract static sealed class AbstractReadOnlyColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
-					extends DefaultColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B>
+					extends DefaultColumnDefinitionBuilder<T, B>
 					permits DefaultSubqueryColumnDefinitionBuilder {
 
 		protected AbstractReadOnlyColumnDefinitionBuilder(Column<T> column) {
@@ -501,7 +502,7 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 	}
 
 	static final class DefaultSubqueryColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
-					extends AbstractReadOnlyColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B> {
+					extends AbstractReadOnlyColumnDefinitionBuilder<T, B> {
 
 		DefaultSubqueryColumnDefinitionBuilder(Column<T> column, String subquery) {
 			super(column);

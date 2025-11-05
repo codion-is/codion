@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 
 import org.jspecify.annotations.Nullable;
 
@@ -404,7 +405,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private @Nullable <T> T get(AttributeDefinition<T> attributeDefinition) {
-		if (attributeDefinition.derived()) {
+		if (attributeDefinition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<T>) attributeDefinition).derived()) {
 			return derived((DerivedAttributeDefinition<T>) attributeDefinition);
 		}
 
@@ -425,7 +426,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private @Nullable <T> T original(AttributeDefinition<T> attributeDefinition) {
-		if (attributeDefinition.derived()) {
+		if (attributeDefinition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<T>) attributeDefinition).derived()) {
 			return derivedOriginal((DerivedAttributeDefinition<T>) attributeDefinition);
 		}
 		if (isModified(attributeDefinition.attribute())) {
@@ -492,21 +493,27 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private @Nullable <T> T validateAndAdjustValue(AttributeDefinition<T> attributeDefinition, @Nullable T value) {
-		if (attributeDefinition.derived()) {
+		if (attributeDefinition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<T>) attributeDefinition).derived()) {
 			throw new IllegalArgumentException("Can not set the value of a derived attribute");
 		}
 		if (value == null) {
 			return null;
 		}
-		if (!attributeDefinition.validItem(value)) {
-			throw new IllegalArgumentException("Invalid item value: " + value + " for attribute " + attributeDefinition.attribute());
+		if (attributeDefinition instanceof ValueAttributeDefinition) {
+			ValueAttributeDefinition<T> valueAttrDef = (ValueAttributeDefinition<T>) attributeDefinition;
+			if (!valueAttrDef.validItem(value)) {
+				throw new IllegalArgumentException("Invalid item value: " + value + " for attribute " + attributeDefinition.attribute());
+			}
 		}
 		attributeDefinition.attribute().type().validateType(value);
 		if (attributeDefinition instanceof ForeignKeyDefinition) {
 			return (T) validateForeignKeyValue((ForeignKeyDefinition) attributeDefinition, (Entity) value);
 		}
-		if (attributeDefinition.attribute().type().isString() && attributeDefinition.trim()) {
-			return (T) ((String) value).trim();
+		if (attributeDefinition instanceof ValueAttributeDefinition) {
+			ValueAttributeDefinition<T> valueAttrDef = (ValueAttributeDefinition<T>) attributeDefinition;
+			if (attributeDefinition.attribute().type().isString() && valueAttrDef.trim()) {
+				return (T) ((String) value).trim();
+			}
 		}
 
 		return adjustDecimalFractionDigits(attributeDefinition, value);
@@ -830,14 +837,17 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private static <T> T adjustDecimalFractionDigits(AttributeDefinition<T> attributeDefinition, T value) {
-		if (value instanceof Double) {
-			return (T) round((Double) value, attributeDefinition.fractionDigits(),
-							attributeDefinition.roundingMode());
-		}
-		if (value instanceof BigDecimal) {
-			return (T) ((BigDecimal) value).setScale(attributeDefinition.fractionDigits(),
-											attributeDefinition.roundingMode())
-							.stripTrailingZeros();
+		if (attributeDefinition instanceof ValueAttributeDefinition) {
+			ValueAttributeDefinition<T> valueAttrDef = (ValueAttributeDefinition<T>) attributeDefinition;
+			if (value instanceof Double) {
+				return (T) round((Double) value, valueAttrDef.fractionDigits(),
+								valueAttrDef.roundingMode());
+			}
+			if (value instanceof BigDecimal) {
+				return (T) ((BigDecimal) value).setScale(valueAttrDef.fractionDigits(),
+												valueAttrDef.roundingMode())
+								.stripTrailingZeros();
+			}
 		}
 
 		return value;

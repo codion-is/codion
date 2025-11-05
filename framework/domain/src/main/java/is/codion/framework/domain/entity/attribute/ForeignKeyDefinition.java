@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.utilities.Configuration.integerValue;
@@ -184,6 +185,18 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	 * Builds a {@link ForeignKeyDefinition}.
 	 */
 	sealed interface Builder extends AttributeDefinition.Builder<Entity, Builder> permits DefaultForeignKeyDefinitionBuilder {
+
+		/**
+		 * Setting this value has no effect, foreign key nullability is always based on the nullability of their underlying column(s).
+		 */
+		@Override
+		Builder nullable(boolean nullable);
+
+		/**
+		 * @throws UnsupportedOperationException Foreign key values are compared using the comparator of the underlying entity
+		 */
+		@Override
+		Builder comparator(Comparator<Entity> comparator);
 
 		/**
 		 * Marks this foreign key as being soft, that is, not based on a physical (table) foreign key and should not prevent deletion

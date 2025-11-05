@@ -32,8 +32,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.framework.model.test.TestDomain;
@@ -307,7 +307,8 @@ public final class AbstractEntityEditModelTest {
 		catch (ValidationException e) {
 			assertEquals(Employee.COMMISSION, e.attribute());
 			assertEquals(50d, e.value());
-			AttributeDefinition<?> attributeDefinition = ENTITIES.definition(Employee.TYPE).attributes().definition(e.attribute());
+			ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>)
+							ENTITIES.definition(Employee.TYPE).attributes().definition(e.attribute());
 			assertTrue(e.getMessage().contains(attributeDefinition.toString()));
 			assertTrue(e.getMessage().contains(attributeDefinition.minimum().map(Objects::toString).get()));
 		}

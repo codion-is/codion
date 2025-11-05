@@ -33,7 +33,7 @@ import java.sql.SQLException;
 /**
  * Specifies an attribute definition based on a table column.
  * <p>
- * ColumnDefinition extends {@link AttributeDefinition} with column-specific configuration
+ * ColumnDefinition extends {@link ValueAttributeDefinition} with column-specific configuration
  * such as primary key properties, SQL expressions, insertable/updatable flags, and
  * database value conversion logic.
  * <p>
@@ -77,10 +77,10 @@ import java.sql.SQLException;
  *     .build();
  *}
  * @param <T> the underlying type
- * @see AttributeDefinition
+ * @see ValueAttributeDefinition
  * @see Column#define()
  */
-public sealed interface ColumnDefinition<T> extends AttributeDefinition<T> permits DefaultColumnDefinition {
+public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> permits DefaultColumnDefinition {
 
 	@Override
 	Column<T> attribute();
@@ -205,7 +205,8 @@ public sealed interface ColumnDefinition<T> extends AttributeDefinition<T> permi
 	 * @param <T> the underlying type
 	 * @param <B> the builder type
 	 */
-	sealed interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B>
+	sealed interface Builder<T, B extends Builder<T, B>>
+					extends ValueAttributeDefinition.Builder<T, B>
 					permits DefaultColumnDefinitionBuilder {
 
 		/**

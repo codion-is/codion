@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
@@ -62,12 +63,16 @@ public final class EntityTableCellRenderer {
 						.<Entity, Attribute<?>, T>columnClass(attributeDefinition.attribute().type().valueClass())
 						.uiSettings(new EntityUISettings(queryCondition))
 						.formatter(attributeDefinition::format);
-		if (!attributeDefinition.items().isEmpty()) {
+		if (itemBased(attributeDefinition)) {
 			// Otherwise the horizontal aligment is based on the Item value type
 			builder.horizontalAlignment(FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 
 		return builder;
+	}
+
+	private static <T> boolean itemBased(AttributeDefinition<T> definition) {
+		return definition instanceof ValueAttributeDefinition<?> && !((ValueAttributeDefinition<?>) definition).items().isEmpty();
 	}
 
 	/**

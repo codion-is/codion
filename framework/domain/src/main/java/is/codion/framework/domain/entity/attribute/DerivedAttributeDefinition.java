@@ -20,20 +20,16 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeDefinitionBuilder;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeStep;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedValueStep;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributeStep;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributesStep;
 
 import java.util.List;
 
 /**
  * A definition for attributes which value is derived from the values of one or more attributes.
  * <p>
- * DerivedAttributeDefinition configures attributes that compute their values from other attributes
- * within the same entity or from related entities. These attributes provide calculated fields,
- * formatting, aggregation, and other computed values.
+ * DerivedAttributeDefinition extends {@link ValueAttributeDefinition} and configures attributes
+ * that compute their values from other attributes within the same entity or from related entities.
+ * These attributes provide calculated fields, formatting, aggregation, and other computed values.
  * <p>
  * Derived attributes can be cached for performance or computed on-demand:
  * {@snippet :
@@ -155,7 +151,7 @@ import java.util.List;
  * @see #sources()
  * @see #cached()
  */
-public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> permits DefaultDerivedAttributeDefinition {
+public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefinition<T> permits DefaultDerivedAttributeDefinition {
 
 	/**
 	 * @return the source attributes this attribute derives from.
@@ -177,7 +173,8 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 	 * Builds a derived AttributeDefinition instance
 	 * @param <T> the attribute value type
 	 */
-	sealed interface DerivedBuilder<T, B extends DerivedBuilder<T, B>> extends AttributeDefinition.Builder<T, B>
+	sealed interface DerivedBuilder<T, B extends DerivedBuilder<T, B>>
+					extends ValueAttributeDefinition.Builder<T, B>
 					permits DefaultDerivedAttributeDefinitionBuilder {
 
 		/**
@@ -194,7 +191,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		sealed interface SourceAttributesStep<T, B extends DerivedBuilder<T, B>> permits DefaultSourceAttributesStep {
+		interface SourceAttributesStep<T, B extends DerivedBuilder<T, B>> {
 
 			/**
 			 * @param attributes the attributes to derive the value from
@@ -208,7 +205,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		sealed interface DerivedValueStep<T, B extends DerivedBuilder<T, B>> permits DefaultDerivedValueStep {
+		interface DerivedValueStep<T, B extends DerivedBuilder<T, B>> {
 
 			/**
 			 * @param value a {@link DerivedValue} instance responsible for providing the derived value
@@ -222,7 +219,8 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 	 * Builds a derived AttributeDefinition instance
 	 * @param <T> the attribute value type
 	 */
-	sealed interface DenormalizedBuilder<T, B extends DenormalizedBuilder<T, B>> extends AttributeDefinition.Builder<T, B>
+	sealed interface DenormalizedBuilder<T, B extends DenormalizedBuilder<T, B>>
+					extends ValueAttributeDefinition.Builder<T, B>
 					permits DefaultDenormalizedAttributeDefinitionBuilder {
 
 		/**
@@ -230,7 +228,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		sealed interface SourceAttributeStep<T, B extends DenormalizedBuilder<T, B>> permits DefaultSourceAttributeStep {
+		interface SourceAttributeStep<T, B extends DenormalizedBuilder<T, B>> {
 
 			/**
 			 * @param source the source attribute to denormalize from
@@ -244,7 +242,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		sealed interface DenormalizedAttributeStep<T, B extends DenormalizedBuilder<T, B>> permits DefaultDenormalizedAttributeStep {
+		interface DenormalizedAttributeStep<T, B extends DenormalizedBuilder<T, B>> {
 
 			/**
 			 * @param denormalized the denormalized attribute

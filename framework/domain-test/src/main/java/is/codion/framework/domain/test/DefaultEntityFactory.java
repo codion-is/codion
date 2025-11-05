@@ -30,7 +30,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.test.DomainTest.EntityFactory;
 
 import org.slf4j.Logger;
@@ -134,11 +134,15 @@ public class DefaultEntityFactory implements EntityFactory {
 	 */
 	protected <T> T value(Attribute<T> attribute) {
 		requireNonNull(attribute);
-		AttributeDefinition<T> attributeDefinition = entities.definition(attribute.entityType()).attributes().definition(attribute);
 		try {
-			if (attributeDefinition instanceof ForeignKeyDefinition) {
-				return (T) entity(((ForeignKeyDefinition) attributeDefinition).attribute()).orElse(null);
+			if (attribute instanceof ForeignKey) {
+				return (T) entity((ForeignKey) attribute).orElse(null);
 			}
+			AttributeDefinition<T> definition = entities.definition(attribute.entityType()).attributes().definition(attribute);
+			if (!(definition instanceof ValueAttributeDefinition<T>)) {
+				return null;
+			}
+			ValueAttributeDefinition<T> attributeDefinition = (ValueAttributeDefinition<T>) definition;
 			if (!attributeDefinition.items().isEmpty()) {
 				return randomItem(attributeDefinition);
 			}
@@ -191,7 +195,7 @@ public class DefaultEntityFactory implements EntityFactory {
 			return null;
 		}
 		catch (Exception e) {
-			LOG.error("Exception while fetching a value for: {}", attributeDefinition.attribute(), e);
+			LOG.error("Exception while fetching a value for: {}", attribute, e);
 			if (e instanceof RuntimeException) {
 				throw e;
 			}
@@ -229,7 +233,7 @@ public class DefaultEntityFactory implements EntityFactory {
 						.collect(toList());
 	}
 
-	private static String randomString(AttributeDefinition<?> attributeDefinition) {
+	private static String randomString(ValueAttributeDefinition<?> attributeDefinition) {
 		int length = attributeDefinition.maximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : attributeDefinition.maximumLength();
 
 		return IntStream.range(0, length)
@@ -260,14 +264,14 @@ public class DefaultEntityFactory implements EntityFactory {
 		return (T) enumConstants[RANDOM.nextInt(enumConstants.length)];
 	}
 
-	private static <T> T randomItem(AttributeDefinition<T> attributeDefinition) {
+	private static <T> T randomItem(ValueAttributeDefinition<T> attributeDefinition) {
 		List<Item<T>> items = attributeDefinition.items();
 		Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
 		return item.get();
 	}
 
-	private static int randomInteger(AttributeDefinition<?> attributeDefinition) {
+	private static int randomInteger(ValueAttributeDefinition<?> attributeDefinition) {
 		int min = attributeDefinition.minimum()
 						.map(minimum -> Math.max(minimum.intValue(), MININUM_RANDOM_NUMBER))
 						.orElse(MININUM_RANDOM_NUMBER);
@@ -278,7 +282,7 @@ public class DefaultEntityFactory implements EntityFactory {
 		return RANDOM.nextInt((max - min) + 1) + min;
 	}
 
-	private static long randomLong(AttributeDefinition<?> attributeDefinition) {
+	private static long randomLong(ValueAttributeDefinition<?> attributeDefinition) {
 		long min = attributeDefinition.minimum()
 						.map(minimum -> Math.max(minimum.longValue(), MININUM_RANDOM_NUMBER))
 						.orElse((long) MININUM_RANDOM_NUMBER);
@@ -289,7 +293,7 @@ public class DefaultEntityFactory implements EntityFactory {
 		return RANDOM.nextLong() % (max - min) + min;
 	}
 
-	private static short randomShort(AttributeDefinition<?> attributeDefinition) {
+	private static short randomShort(ValueAttributeDefinition<?> attributeDefinition) {
 		short min = attributeDefinition.minimum()
 						.map(minimum -> (short) Math.max(minimum.intValue(), MININUM_RANDOM_NUMBER))
 						.orElse((short) MININUM_RANDOM_NUMBER);
@@ -300,7 +304,7 @@ public class DefaultEntityFactory implements EntityFactory {
 		return (short) (RANDOM.nextInt((max - min) + 1) + min);
 	}
 
-	private static double randomDouble(AttributeDefinition<?> attributeDefinition) {
+	private static double randomDouble(ValueAttributeDefinition<?> attributeDefinition) {
 		double min = attributeDefinition.minimum()
 						.map(minimum -> Math.max(minimum.doubleValue(), MININUM_RANDOM_NUMBER))
 						.orElse((double) MININUM_RANDOM_NUMBER);

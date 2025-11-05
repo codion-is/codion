@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -663,7 +664,7 @@ public final class DerivedAttributeEnhancementTest {
 			// Access to circular derived attribute should cause StackOverflowError
 			assertThrows(StackOverflowError.class, () -> {
 				for (AttributeDefinition<?> attrDef : entity.definition().attributes().definitions()) {
-					if (attrDef.derived()) {
+					if (((ValueAttributeDefinition<?>) attrDef).derived()) {
 						entity.get(attrDef.attribute());
 						break;
 					}
