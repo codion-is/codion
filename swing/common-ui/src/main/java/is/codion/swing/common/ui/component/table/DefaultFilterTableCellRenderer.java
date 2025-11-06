@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -54,11 +55,14 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	private final Settings<R, C, T> settings;
 	private final Class<T> columnClass;
 	private final @Nullable TableCellRenderer renderer;
+	private final @Nullable ComponentValue<? extends JComponent, T> componentValue;
 
-	DefaultFilterTableCellRenderer(Settings<R, C, T> settings, Class<T> columnClass, @Nullable TableCellRenderer renderer) {
+	DefaultFilterTableCellRenderer(Settings<R, C, T> settings, Class<T> columnClass, @Nullable TableCellRenderer renderer,
+																 @Nullable ComponentValue<? extends JComponent, T> componentValue) {
 		this.settings = settings;
 		this.columnClass = columnClass;
 		this.renderer = renderer;
+		this.componentValue = componentValue;
 		this.settings.update();
 		setHorizontalAlignment(settings.horizontalAlignment);
 	}
@@ -68,6 +72,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		super.updateUI();
 		if (renderer instanceof JComponent) {
 			((JComponent) renderer).updateUI();
+		}
+		if (componentValue != null) {
+			componentValue.component().updateUI();
 		}
 		if (settings != null) {
 			settings.update();
@@ -96,7 +103,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		JComponent component = (JComponent) component(table, value, isSelected, hasFocus, row, column);
+		JComponent component = component(table, value, isSelected, hasFocus, row, column);
 		settings.configure((FilterTable<R, C>) table, component, (T) value, isSelected, hasFocus, row, column);
 		if (settings.toolTipData) {
 			setToolTipText(settings.formatter.apply((T) value));
@@ -114,10 +121,17 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		return settings.uiSettings;
 	}
 
-	private Component component(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		return renderer == null ?
-						super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
-						renderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	private JComponent component(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		if (componentValue != null) {
+			componentValue.set((T) value);
+
+			return componentValue.component();
+		}
+		if (renderer != null) {
+			return (JComponent) renderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		}
+
+		return (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}
 
 	/**
@@ -523,6 +537,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private boolean useBooleanRenderer;
 		private @Nullable TableCellRenderer renderer;
+		private @Nullable ComponentValue<? extends JComponent, T> componentValue;
 
 		private DefaultBuilder(Class<T> columnClass) {
 			this.columnClass = requireNonNull(columnClass);
@@ -592,7 +607,20 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		@Override
 		public Builder<R, C, T> renderer(TableCellRenderer renderer) {
+			if (componentValue != null) {
+				throw new IllegalStateException("Component has already been set");
+			}
 			this.renderer = requireNonNull(renderer);
+			this.useBooleanRenderer = false;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C, T> component(ComponentValue<? extends JComponent, T> component) {
+			if (renderer != null) {
+				throw new IllegalStateException("Renderer has already been set");
+			}
+			this.componentValue = requireNonNull(component);
 			this.useBooleanRenderer = false;
 			return this;
 		}
@@ -603,7 +631,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 				return (FilterTableCellRenderer<T>) new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build());
 			}
 
-			return new DefaultFilterTableCellRenderer<>(settings.build(), columnClass, renderer);
+			return new DefaultFilterTableCellRenderer<>(settings.build(), columnClass, renderer, componentValue);
 		}
 	}
 

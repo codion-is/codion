@@ -20,9 +20,11 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -187,6 +189,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		Builder<R, C, T> uiSettings(UISettings uiSettings);
 
 		/**
+		 * Note that this setting does not apply when using {@link #renderer(TableCellRenderer)} or {@link #component(ComponentValue)}.
 		 * @param horizontalAlignment the horizontal alignment
 		 * @return this builder instance
 		 */
@@ -248,6 +251,14 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		 * @return this builder instance
 		 */
 		Builder<R, C, T> renderer(TableCellRenderer renderer);
+
+		/**
+		 * Wraps the given component, using it as the base renderer before
+		 * applying the rendering settings of this renderer.
+		 * @param component the {@link ComponentValue} to use when rendering
+		 * @return this builder instance
+		 */
+		Builder<R, C, T> component(ComponentValue<? extends JComponent, T> component);
 
 		/**
 		 * @return a new {@link FilterTableCellRenderer} instance based on this builder

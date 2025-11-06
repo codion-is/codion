@@ -16,6 +16,7 @@ Codion Change Log
 - ImagePanel migrated from is.codion.plugin.imagepanel module, which has been removed.
 - ImagePanel overlay painter now receives the panel instead of just the graphics context.
 - ImagePanel no longer opaque by default.
+- FilterTableCellRenderer.Builder.component() added.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.server
