@@ -19,6 +19,7 @@ Codion Change Log
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.server
 - is.codion.framework.server module now requires is.codion.tools.jul.classpath.
+- is.codion.framework.server module transitive requires for is.codion.framework.db.rmi removed.
 
 ## 0.18.57
 ### is.codion.common.core

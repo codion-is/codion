@@ -1,4 +1,5 @@
 dependencies {
+    api(project(":codion-common-db"))
     api(project(":codion-swing-common-model"))
     api(project(":codion-framework-db-rmi"))
     api(project(":codion-framework-server"))

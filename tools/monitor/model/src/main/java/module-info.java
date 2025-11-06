@@ -22,6 +22,8 @@
 module is.codion.tools.monitor.model {
 	requires org.slf4j;
 	requires org.jfree.jfreechart;
+	requires transitive is.codion.common.db;
+	requires transitive is.codion.common.rmi;
 	requires is.codion.framework.server;
 	requires is.codion.swing.common.model;
 
