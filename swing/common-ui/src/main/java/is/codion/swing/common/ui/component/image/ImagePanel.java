@@ -240,7 +240,6 @@ public final class ImagePanel extends JPanel {
 	private Dimension previousPanelSize = getSize();
 
 	private ImagePanel(DefaultBuilder builder) {
-		setOpaque(false);
 		addComponentListener(new ImageComponentAdapter());
 		addMouseListener(new ImageMouseAdapter());
 		addMouseMotionListener(new ImageMouseMotionListener());

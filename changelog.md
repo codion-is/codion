@@ -15,6 +15,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ImagePanel migrated from is.codion.plugin.imagepanel module, which has been removed.
 - ImagePanel overlay painter now receives the panel instead of just the graphics context.
+- ImagePanel no longer opaque by default.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.server
