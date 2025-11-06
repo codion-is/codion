@@ -14,6 +14,7 @@ Codion Change Log
 - is.codion.tools.swing.mcp migrated from is.codion.plugin.swing.mcp.
 ### is.codion.swing.common.ui
 - ImagePanel migrated from is.codion.plugin.imagepanel module, which has been removed.
+- ImagePanel overlay painter now receives the panel instead of just the graphics context.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.server
