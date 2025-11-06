@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.58
 ### is.codion.common.reactive
 - is.codion.common.core renamed is.codion.common.reactive.
+- AbstractValue now relies on Objects.deepEquals(), now handles arrays correctly.
 ### is.codion.common.utilities
 - is.codion.common.utilities split from is.codion.common.core.
 ### is.codion.tools.jul.classpath

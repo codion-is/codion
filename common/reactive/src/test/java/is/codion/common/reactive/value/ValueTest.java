@@ -402,4 +402,74 @@ public class ValueTest {
 		};
 		assertNotNull(value.get());
 	}
+
+	@Test
+	void arraysEqual() {
+		// Test byte arrays
+		AtomicInteger byteArrayCounter = new AtomicInteger();
+		Value<byte[]> byteArrayValue = Value.nullable(new byte[] {1, 2, 3});
+		byteArrayValue.addListener(byteArrayCounter::incrementAndGet);
+
+		// Setting to equal array should not trigger notification (Notify.CHANGED is default)
+		byteArrayValue.set(new byte[] {1, 2, 3});
+		assertEquals(0, byteArrayCounter.get(), "Equal byte arrays should not trigger notification");
+
+		// Setting to different array should trigger notification
+		byteArrayValue.set(new byte[] {1, 2, 4});
+		assertEquals(1, byteArrayCounter.get(), "Different byte arrays should trigger notification");
+
+		// Test int arrays
+		AtomicInteger intArrayCounter = new AtomicInteger();
+		Value<int[]> intArrayValue = Value.nullable(new int[] {10, 20, 30});
+		intArrayValue.addListener(intArrayCounter::incrementAndGet);
+
+		intArrayValue.set(new int[] {10, 20, 30});
+		assertEquals(0, intArrayCounter.get(), "Equal int arrays should not trigger notification");
+
+		intArrayValue.set(new int[] {10, 20, 31});
+		assertEquals(1, intArrayCounter.get(), "Different int arrays should trigger notification");
+
+		// Test Object arrays
+		AtomicInteger objectArrayCounter = new AtomicInteger();
+		Value<String[]> stringArrayValue = Value.nullable(new String[] {"a", "b", "c"});
+		stringArrayValue.addListener(objectArrayCounter::incrementAndGet);
+
+		stringArrayValue.set(new String[] {"a", "b", "c"});
+		assertEquals(0, objectArrayCounter.get(), "Equal String arrays should not trigger notification");
+
+		stringArrayValue.set(new String[] {"a", "b", "d"});
+		assertEquals(1, objectArrayCounter.get(), "Different String arrays should trigger notification");
+
+		// Test multi-dimensional arrays
+		AtomicInteger multiDimCounter = new AtomicInteger();
+		Value<int[][]> multiDimValue = Value.nullable(new int[][] {{1, 2}, {3, 4}});
+		multiDimValue.addListener(multiDimCounter::incrementAndGet);
+
+		multiDimValue.set(new int[][] {{1, 2}, {3, 4}});
+		assertEquals(0, multiDimCounter.get(), "Equal multi-dimensional arrays should not trigger notification");
+
+		multiDimValue.set(new int[][] {{1, 2}, {3, 5}});
+		assertEquals(1, multiDimCounter.get(), "Different multi-dimensional arrays should trigger notification");
+
+		// Test null array handling
+		byteArrayValue.set(null);
+		assertEquals(2, byteArrayCounter.get(), "Setting to null should trigger notification");
+
+		byteArrayValue.set(null);
+		assertEquals(2, byteArrayCounter.get(), "Setting null to null should not trigger notification");
+
+		// Test with Notify.SET (should always notify, even for equal arrays)
+		Value<byte[]> alwaysNotifyValue = Value.builder()
+						.nullable(new byte[] {1, 2, 3})
+						.notify(Notify.SET)
+						.build();
+		AtomicInteger setCounter = new AtomicInteger();
+		alwaysNotifyValue.addListener(setCounter::incrementAndGet);
+
+		alwaysNotifyValue.set(new byte[] {1, 2, 3});
+		assertEquals(1, setCounter.get(), "Notify.SET should notify even for equal arrays");
+
+		alwaysNotifyValue.set(new byte[] {1, 2, 3});
+		assertEquals(2, setCounter.get(), "Notify.SET should notify every time");
+	}
 }
