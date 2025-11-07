@@ -23,11 +23,11 @@ import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.image.ImagePanel;
+import is.codion.swing.common.ui.component.image.ImagePanel.ZoomDevice;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.window.Windows;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static is.codion.demos.chinook.ui.TrackTablePanel.RATINGS;
+import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
 
 public final class AlbumTablePanel extends EntityTablePanel {
 
@@ -58,7 +59,10 @@ public final class AlbumTablePanel extends EntityTablePanel {
 										.toolTipData(true)
 										.build()));
 		coverPanel = ImagePanel.builder()
-						.preferredSize(Windows.screenSizeRatio(0.5))
+						.preferredSize(screenSizeRatio(0.5))
+						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
+						.navigable(true)
+						.movable(true)
 						.build();
 		table().doubleClick().set(viewCoverControl());
 	}

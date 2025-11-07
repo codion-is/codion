@@ -19,42 +19,114 @@
 package is.codion.swing.common.ui.component.image;
 
 import is.codion.swing.common.ui.component.image.ImagePanel.ZoomDevice;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.junit.jupiter.api.Test;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ImagePanelTest {
 
+	private static final String TEST_IMAGE_PATH = "../../documentation/src/docs/asciidoc/images/chinook-client.png";
+
 	@Test
-	void builder() {
-		BufferedImage image = createTestImage(100, 100);
+	void imageBytes() throws IOException {
+		AtomicInteger bytesEventCounter = new AtomicInteger();
+		AtomicInteger imageEventCounter = new AtomicInteger();
+
+		ComponentValue<ImagePanel, byte[]> bytesValue = ImagePanel.builder().buildValue();
+		bytesValue.addListener(bytesEventCounter::incrementAndGet);
+
+		ImagePanel imagePanel = bytesValue.component();
+		imagePanel.image().addListener(imageEventCounter::incrementAndGet);
+
+		byte[] allBytes = Files.readAllBytes(new File(TEST_IMAGE_PATH).toPath());
+		bytesValue.set(allBytes);
+
+		assertNotNull(imagePanel.image().get());
+		assertEquals(1, bytesEventCounter.get());
+		assertEquals(1, imageEventCounter.get());
+
+		BufferedImage image = ImageIO.read(new File(TEST_IMAGE_PATH));
+		imagePanel.image().set(image);
+
+		assertFalse(bytesValue.getOrThrow().length > 0);
+		assertEquals(2, bytesEventCounter.get());
+		assertEquals(2, imageEventCounter.get());
+
+		bytesValue.set(allBytes);
+		assertEquals(3, bytesEventCounter.get());
+		assertEquals(3, imageEventCounter.get());
+
+		imagePanel.image().set(image, "png");
+
+		assertTrue(bytesValue.getOrThrow().length > 0);
+		assertEquals(4, bytesEventCounter.get());
+		assertEquals(4, imageEventCounter.get());
+
+		bytesValue.clear();
+		assertNull(imagePanel.image().get());
+		assertEquals(5, bytesEventCounter.get());
+		assertEquals(5, imageEventCounter.get());
+
+		imagePanel.image().set(image, "png");
+
+		assertNotNull(imagePanel.image().get());
+		assertTrue(bytesValue.getOrThrow().length > 0);
+		assertEquals(6, bytesEventCounter.get());
+		assertEquals(6, imageEventCounter.get());
+
+		imagePanel.image().clear();
+		assertFalse(bytesValue.getOrThrow().length > 0);
+		assertEquals(7, bytesEventCounter.get());
+		assertEquals(7, imageEventCounter.get());
+
+		imagePanel.image().set(TEST_IMAGE_PATH);
+		assertTrue(bytesValue.getOrThrow().length > 0);
+		assertEquals(8, bytesEventCounter.get());
+		assertEquals(8, imageEventCounter.get());
+
+		bytesValue.clear();
+		assertFalse(bytesValue.getOrThrow().length > 0);
+		assertEquals(9, bytesEventCounter.get());
+		assertEquals(9, imageEventCounter.get());
+
+		imagePanel.image().set(allBytes);
+
+		assertTrue(bytesValue.getOrThrow().length > 0);
+		assertEquals(10, bytesEventCounter.get());
+		assertEquals(10, imageEventCounter.get());
+	}
+
+	@Test
+	void builder() throws IOException {
 		ImagePanel panel = ImagePanel.builder()
-						.image(image)
+						.image(TEST_IMAGE_PATH)
 						.zoomDevice(ZoomDevice.MOUSE_BUTTON)
 						.navigable(false)
 						.movable(false)
 						.build();
 
-		assertEquals(image, panel.image().get());
 		assertEquals(ZoomDevice.MOUSE_BUTTON, panel.zoomDevice().get());
 		assertFalse(panel.navigable().is());
 		assertFalse(panel.movable().is());
 	}
 
 	@Test
-	void imageValue() {
+	void imageValue() throws IOException {
 		ImagePanel panel = ImagePanel.builder().build();
 		assertNull(panel.image().get());
 
-		BufferedImage image = createTestImage(100, 100);
+		BufferedImage image = ImageIO.read(new File(TEST_IMAGE_PATH));
 		panel.image().set(image);
 
 		assertEquals(image, panel.image().get());
@@ -118,10 +190,9 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void zoomValue() {
-		BufferedImage image = createTestImage(200, 200);
+	void zoomValue() throws IOException {
 		ImagePanel panel = ImagePanel.builder()
-						.image(image)
+						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
 
@@ -134,10 +205,9 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void zoomValueNegativeThrows() {
-		BufferedImage image = createTestImage(200, 200);
+	void zoomValueNegativeThrows() throws IOException {
 		ImagePanel panel = ImagePanel.builder()
-						.image(image)
+						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
 
@@ -145,10 +215,9 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void coordinateConversion() {
-		BufferedImage image = createTestImage(100, 100);
+	void coordinateConversion() throws IOException {
 		ImagePanel panel = ImagePanel.builder()
-						.image(image)
+						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
 		panel.setSize(200, 200);
@@ -168,10 +237,9 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void isWithinImage() {
-		BufferedImage image = createTestImage(100, 100);
+	void isWithinImage() throws IOException {
 		ImagePanel panel = ImagePanel.builder()
-						.image(image)
+						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
 
@@ -188,10 +256,9 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void centerImage() {
-		BufferedImage image = createTestImage(100, 100);
+	void centerImage() throws IOException {
 		ImagePanel panel = ImagePanel.builder()
-						.image(image)
+						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
 		panel.setSize(200, 200);
@@ -207,10 +274,9 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void centerImageOnImageCoordinates() {
-		BufferedImage image = createTestImage(100, 100);
+	void centerImageOnImageCoordinates() throws IOException {
 		ImagePanel panel = ImagePanel.builder()
-						.image(image)
+						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
 		panel.setSize(200, 200);
@@ -227,10 +293,9 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void resetView() {
-		BufferedImage image = createTestImage(100, 100);
+	void resetView() throws IOException {
 		ImagePanel panel = ImagePanel.builder()
-						.image(image)
+						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
 
@@ -248,28 +313,5 @@ public final class ImagePanelTest {
 	void readImageFromFile() {
 		// This tests the static utility method
 		assertThrows(Exception.class, () -> ImagePanel.readImage("nonexistent.png"));
-	}
-
-	@Test
-	void componentValueIntegration() {
-		BufferedImage image = createTestImage(100, 100);
-		ImagePanel panel = ImagePanel.builder()
-						.image(image)
-						.navigable(false)
-						.build();
-
-		// ComponentValue should be linked to image() Value
-		assertEquals(image, panel.image().get());
-	}
-
-	private static BufferedImage createTestImage(int width, int height) {
-		BufferedImage image = new BufferedImage(width, height, TYPE_INT_RGB);
-		Graphics2D g2d = image.createGraphics();
-		g2d.setColor(Color.BLUE);
-		g2d.fillRect(0, 0, width, height);
-		g2d.setColor(Color.RED);
-		g2d.fillOval(width / 4, height / 4, width / 2, height / 2);
-		g2d.dispose();
-		return image;
 	}
 }

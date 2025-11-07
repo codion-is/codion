@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.image;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.Value.Validator;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
@@ -49,15 +51,22 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Hashtable;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.common.utilities.Configuration.enumValue;
+import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.copyOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -203,7 +212,17 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  */
 public final class ImagePanel extends JPanel {
 
+	/**
+	 * Specifies the default {@link ZoomDevice} for {@link ImagePanel}s.
+	 * <ul>
+	 * <li>Value type: {@link ZoomDevice}
+	 * <li>Default value: {@link ZoomDevice#NONE}
+	 * </ul>
+	 */
+	public static final PropertyValue<ZoomDevice> ZOOM_DEVICE = enumValue(ImagePanel.class.getName() + ".zoomDevice", ZoomDevice.class, ZoomDevice.NONE);
+
 	private static final ResourceBundle MESSAGES = getBundle(ImagePanel.class.getName());
+	private static final byte[] EMPTY_BYTES = new byte[0];
 
 	private static final EmptyOverlay EMPTY_OVERLAY = new EmptyOverlay();
 	private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of panel's width
@@ -211,14 +230,15 @@ public final class ImagePanel extends JPanel {
 	private static final double HIGH_QUALITY_RENDERING_SCALE_THRESHOLD = 1;
 	private static final double DEFAULT_ZOOM_INCREMENT = 0.2;
 	private static final Object INTERPOLATION_TYPE = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
-	private static final Value.Validator<? super Double> POSITIVE_NUMBER = value -> {
+	private static final Validator<BufferedImage> IMAGE_VALIDATOR = new ImageValidator();
+	private static final Validator<? super Double> POSITIVE_NUMBER = value -> {
 		if (value != null && value < 0) {
 			throw new IllegalArgumentException("Value must be a positive number");
 		}
 	};
 
 	private final Consumer<ImagePanel> overlay;
-	private final Value<BufferedImage> image;
+	private final DefaultImageValue image;
 	private final Value<ZoomDevice> zoomDevice;
 	private final State movable;
 	private final State navigable;
@@ -244,7 +264,7 @@ public final class ImagePanel extends JPanel {
 		addMouseListener(new ImageMouseAdapter());
 		addMouseMotionListener(new ImageMouseMotionListener());
 		overlay = builder.overlay;
-		image = new ImageValue(builder.image);
+		image = new DefaultImageValue(builder.image);
 		zoomDevice = new ZoomDeviceValue(builder.zoomDevice);
 		movable = State.state(builder.movable);
 		navigable = State.state(builder.navigable);
@@ -256,9 +276,11 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * @return the {@link Value} controlling the displayed image
+	 * Note that setting the image via this value without specifying the format does not populate the associated
+	 * byte[] {@link ComponentValue}, for that to happen you must use {@link ImageValue#set(BufferedImage, String)}
+	 * @return the {@link ImageValue} controlling the image
 	 */
-	public Value<BufferedImage> image() {
+	public ImageValue image() {
 		return image;
 	}
 
@@ -430,15 +452,58 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * Builds an {@link ImagePanel}
+	 * Controls the image displayed in an {@link ImagePanel}
 	 */
-	public interface Builder extends ComponentValueBuilder<ImagePanel, BufferedImage, Builder> {
+	public interface ImageValue extends Value<BufferedImage> {
 
 		/**
+		 * @param imageBytes the image bytes
+		 */
+		void set(byte[] imageBytes);
+
+		/**
+		 * @param imagePath the path from which to load the image
+		 * @throws IOException in case image loading failed
+		 */
+		void set(String imagePath) throws IOException;
+
+		/**
+		 * @param image the image
+		 * @param format the format
+		 * @throws IOException in case of an exception
+		 * @throws IllegalArgumentException in case no writer was found for the given format
+		 */
+		void set(BufferedImage image, String format) throws IOException;
+	}
+
+	/**
+	 * Builds an {@link ImagePanel}
+	 */
+	public interface Builder extends ComponentValueBuilder<ImagePanel, byte[], Builder> {
+
+		/**
+		 * Clears any image set via {@link #image(BufferedImage)}.
+		 * @param imagePath the path to the image to initially display
+		 * @return this builder
+		 */
+		Builder image(String imagePath) throws IOException;
+
+		/**
+		 * Clears any value set via {@link #value(Object)}.
 		 * @param image the image to initially display
 		 * @return this builder
 		 */
 		Builder image(BufferedImage image);
+
+
+		/**
+		 * Clears any image set via {@link #image(BufferedImage)}.
+		 * @param image the image to initially display
+		 * @param format the format name
+		 * @return this builder
+		 * @throws IllegalArgumentException in case no image writer was found for the given format
+		 */
+		Builder image(BufferedImage image, String format) throws IOException;
 
 		/**
 		 * Sets the overlay painter that will be called after the image is painted but before the navigation image.
@@ -495,21 +560,22 @@ public final class ImagePanel extends JPanel {
 		Builder overlay(Consumer<ImagePanel> overlay);
 
 		/**
-		 * Default {@link ZoomDevice#MOUSE_WHEEL}
+		 * Default {@link ZoomDevice#NONE}
 		 * @param zoomDevice the initial zoom device
 		 * @return this builder
+		 * @see #ZOOM_DEVICE
 		 */
 		Builder zoomDevice(ZoomDevice zoomDevice);
 
 		/**
-		 * Default true
+		 * Default false
 		 * @param navigable true if the image should be navigable with a navigation image
 		 * @return this builder
 		 */
 		Builder navigable(boolean navigable);
 
 		/**
-		 * Default true
+		 * Default false
 		 * @param movable true if the image should be movable within the panel
 		 * @return this builder
 		 */
@@ -789,30 +855,105 @@ public final class ImagePanel extends JPanel {
 		}
 	}
 
-	private final class ImageValue extends AbstractValue<BufferedImage> {
+	private final class DefaultImageValue extends AbstractValue<BufferedImage> implements ImageValue {
 
-		private @Nullable BufferedImage image;
+		private final ImageBytes bytes;
 
-		private ImageValue(@Nullable BufferedImage image) {
+		private @Nullable BufferedImage bufferedImage;
+		private boolean settingBytesFromImage = false;
+
+		private DefaultImageValue(@Nullable BufferedImage image) {
 			super(Notify.SET);
-			this.image = image;
+			this.bytes = new ImageBytes();
+			addListener(this::onImageChanged);
+			addValidator(IMAGE_VALIDATOR);
+			set(image);
+		}
+
+		@Override
+		public void set(byte[] imageBytes) {
+			bytes.set(imageBytes);
+		}
+
+		@Override
+		public void set(String imagePath) throws IOException {
+			bytes.set(readAllBytes(Path.of(requireNonNull(imagePath))));
+		}
+
+		@Override
+		public void set(BufferedImage image, String format) throws IOException {
+			requireNonNull(image);
+			requireNonNull(format);
+			settingBytesFromImage = true;
+			set(image);
+			try {
+				bytes.set(readImage(image, format));
+			}
+			finally {
+				settingBytesFromImage = false;
+			}
 		}
 
 		@Override
 		protected @Nullable BufferedImage getValue() {
-			return image;
+			return bufferedImage;
 		}
 
 		@Override
-		protected void setValue(@Nullable BufferedImage image) {
-			if (image != null && (image.getHeight() == 0 || image.getWidth() == 0)) {
-				throw new IllegalArgumentException("Only images of non-zero size can be viewed");
-			}
-			this.image = image;
+		protected void setValue(@Nullable BufferedImage bufferedImage) {
+			this.bufferedImage = bufferedImage;
 			navigationImage = null;
 			//Reset scale so that initializeParameters() is called in paintComponent() for the new image.
 			scale = 0d;
 			repaint();
+		}
+
+		private void onImageChanged() {
+			if (!settingBytesFromImage && !bytes.settingImageFromBytes) {
+				settingBytesFromImage = true;
+				try {
+					bytes.clear();
+				}
+				finally {
+					settingBytesFromImage = false;
+				}
+			}
+		}
+
+		private final class ImageBytes extends AbstractValue<byte[]> {
+
+			private byte[] imageBytes = EMPTY_BYTES;
+			private boolean settingImageFromBytes = false;
+
+			private ImageBytes() {
+				super(EMPTY_BYTES, Notify.CHANGED);
+				addConsumer(this::onBytesChanged);
+			}
+
+			@Override
+			protected byte[] getValue() {
+				return imageBytes;
+			}
+
+			@Override
+			protected void setValue(byte[] value) {
+				imageBytes = value;
+			}
+
+			private void onBytesChanged(byte[] bytes) {
+				if (!settingBytesFromImage) {
+					settingImageFromBytes = true;
+					try {
+						image.set(bytes.length == 0 ? null : ImageIO.read(new ByteArrayInputStream(bytes)));
+					}
+					catch (IOException e) {
+						throw new UncheckedIOException(e);
+					}
+					finally {
+						settingImageFromBytes = false;
+					}
+				}
+			}
 		}
 	}
 
@@ -1058,17 +1199,39 @@ public final class ImagePanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultBuilder extends AbstractComponentValueBuilder<ImagePanel, BufferedImage, Builder> implements Builder {
+	private static final class ImageValidator implements Validator<BufferedImage> {
 
-		private Consumer<ImagePanel> overlay = EMPTY_OVERLAY;
-		private ZoomDevice zoomDevice = ZoomDevice.MOUSE_WHEEL;
+		@Override
+		public void validate(@Nullable BufferedImage image) {
+			if (image != null && (image.getHeight() == 0 || image.getWidth() == 0)) {
+				throw new IllegalArgumentException("Only images of non-zero size can be viewed");
+			}
+		}
+	}
+
+	private static final class DefaultBuilder extends AbstractComponentValueBuilder<ImagePanel, byte[], Builder> implements Builder {
+
 		private @Nullable BufferedImage image;
-		private boolean navigable = true;
-		private boolean movable = true;
+		private Consumer<ImagePanel> overlay = EMPTY_OVERLAY;
+		private ZoomDevice zoomDevice = ZOOM_DEVICE.getOrThrow();
+		private boolean navigable = false;
+		private boolean movable = false;
+
+		@Override
+		public Builder image(String imagePath) throws IOException {
+			return value(readAllBytes(Path.of(requireNonNull(imagePath))));
+		}
 
 		@Override
 		public Builder image(BufferedImage image) {
 			this.image = requireNonNull(image);
+			return value(null);
+		}
+
+		@Override
+		public Builder image(BufferedImage image, String format) throws IOException {
+			value(readImage(requireNonNull(image), requireNonNull(format)));
+			this.image = null;
 			return this;
 		}
 
@@ -1102,9 +1265,18 @@ public final class ImagePanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<ImagePanel, BufferedImage> createComponentValue(ImagePanel component) {
-			return new BufferedImageComponentValue(requireNonNull(component));
+		protected ComponentValue<ImagePanel, byte[]> createComponentValue(ImagePanel component) {
+			return new ByteArrayComponentValue(requireNonNull(component));
 		}
+	}
+
+	private static byte[] readImage(BufferedImage image, String format) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		if (!ImageIO.write(image, format, outputStream)) {
+			throw new IllegalArgumentException("No image writer found for format: " + format);
+		}
+
+		return outputStream.toByteArray();
 	}
 
 	private static final class EmptyOverlay implements Consumer<ImagePanel> {
@@ -1113,20 +1285,23 @@ public final class ImagePanel extends JPanel {
 		public void accept(ImagePanel panel) {}
 	}
 
-	private static final class BufferedImageComponentValue extends AbstractComponentValue<ImagePanel, BufferedImage> {
+	private static final class ByteArrayComponentValue extends AbstractComponentValue<ImagePanel, byte[]> {
 
-		private BufferedImageComponentValue(ImagePanel component) {
-			super(component);
+		private ByteArrayComponentValue(ImagePanel component) {
+			super(component, EMPTY_BYTES);
+			component.image.bytes.addListener(this::notifyObserver);
 		}
 
 		@Override
-		protected @Nullable BufferedImage getComponentValue() {
-			return component().image.get();
+		protected byte[] getComponentValue() {
+			byte[] bytes = component().image.bytes.getOrThrow();
+
+			return copyOf(bytes, bytes.length);
 		}
 
 		@Override
-		protected void setComponentValue(@Nullable BufferedImage value) {
-			component().image.set(value);
+		protected void setComponentValue(byte[] value) {
+			component().image.bytes.set(copyOf(value, value.length));
 		}
 	}
 }

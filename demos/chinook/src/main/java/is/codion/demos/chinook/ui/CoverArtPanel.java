@@ -178,15 +178,13 @@ final class CoverArtPanel extends JPanel {
 	private void configureImagePanel(boolean embedded) {
 		imagePanel.zoomDevice().set(embedded ? ZoomDevice.NONE : ZoomDevice.MOUSE_WHEEL);
 		imagePanel.movable().set(!embedded);
+		imagePanel.navigable().set(!embedded);
 	}
 
 	private ImagePanel createImagePanel() {
 		return ImagePanel.builder()
-						.zoomDevice(ZoomDevice.NONE)
 						.transferHandler(new CoverTransferHandler())
 						.border(createEtchedBorder())
-						.navigable(false)
-						.movable(false)
 						.build();
 	}
 

@@ -18,6 +18,7 @@ Codion Change Log
 - ImagePanel overlay painter now receives the panel instead of just the graphics context.
 - ImagePanel no longer opaque by default.
 - FilterTableCellRenderer.Builder.component() added.
+- ImagePanel refactored, ComponentValue now byte array based.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.server
