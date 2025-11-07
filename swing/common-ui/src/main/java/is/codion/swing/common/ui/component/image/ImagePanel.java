@@ -356,9 +356,9 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * Resets the view so the image fits the panel
+	 * Resets the view so the image is centered and fits the panel
 	 */
-	public void resetView() {
+	public void reset() {
 		scale = 0.0;
 		repaint();
 	}
@@ -922,7 +922,7 @@ public final class ImagePanel extends JPanel {
 
 		private final class ImageBytes extends AbstractValue<byte[]> {
 
-			private byte[] imageBytes = EMPTY_BYTES;
+			private byte[] bytes = EMPTY_BYTES;
 			private boolean settingImageFromBytes = false;
 
 			private ImageBytes() {
@@ -932,12 +932,12 @@ public final class ImagePanel extends JPanel {
 
 			@Override
 			protected byte[] getValue() {
-				return imageBytes;
+				return bytes;
 			}
 
 			@Override
 			protected void setValue(byte[] value) {
-				imageBytes = value;
+				bytes = value;
 			}
 
 			private void onBytesChanged(byte[] bytes) {

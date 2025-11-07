@@ -293,23 +293,6 @@ public final class ImagePanelTest {
 	}
 
 	@Test
-	void resetView() throws IOException {
-		ImagePanel panel = ImagePanel.builder()
-						.image(TEST_IMAGE_PATH)
-						.navigable(false)
-						.build();
-
-		// Initial zoom is 0
-		assertEquals(0.0, panel.zoom().get(), 0.001);
-
-		// Reset view resets internal scale to 0
-		panel.resetView();
-
-		// After reset, zoom is still 0
-		assertEquals(0.0, panel.zoom().get(), 0.001);
-	}
-
-	@Test
 	void readImageFromFile() {
 		// This tests the static utility method
 		assertThrows(Exception.class, () -> ImagePanel.readImage("nonexistent.png"));

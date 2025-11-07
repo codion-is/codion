@@ -39,6 +39,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -63,7 +65,6 @@ final class CoverArtPanel extends JPanel {
 	private static final ResourceBundle BUNDLE = getBundle(CoverArtPanel.class.getName());
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
-	private static final Dimension EMBEDDED_SIZE = new Dimension(200, 200);
 	private static final Dimension DIALOG_SIZE = new Dimension(400, 400);
 	private static final FileNameExtensionFilter IMAGE_FILE_FILTER =
 					new FileNameExtensionFilter(BUNDLE.getString("images"),
@@ -112,7 +113,6 @@ final class CoverArtPanel extends JPanel {
 
 	private JPanel createCenterPanel() {
 		return borderLayoutPanel()
-						.preferredSize(EMBEDDED_SIZE)
 						.center(imagePanel)
 						.south(borderLayoutPanel()
 										.east(panel()
@@ -153,8 +153,6 @@ final class CoverArtPanel extends JPanel {
 
 	private void embed() {
 		Utilities.disposeParentWindow(centerPanel);
-		centerPanel.setSize(EMBEDDED_SIZE);
-		imagePanel.resetView();
 		add(centerPanel, BorderLayout.CENTER);
 		revalidate();
 		repaint();
@@ -170,7 +168,7 @@ final class CoverArtPanel extends JPanel {
 						.modal(false)
 						.title(BUNDLE.getString("cover"))
 						.onClosed(windowEvent -> embedded.set(true))
-						.onOpened(windowEvent -> imagePanel.resetView())
+						.onOpened(windowEvent -> imagePanel.reset())
 						.size(DIALOG_SIZE)
 						.show();
 	}
@@ -185,6 +183,7 @@ final class CoverArtPanel extends JPanel {
 		return ImagePanel.builder()
 						.transferHandler(new CoverTransferHandler())
 						.border(createEtchedBorder())
+						.componentListener(new ResetOnEmbedded())
 						.build();
 	}
 
@@ -206,6 +205,16 @@ final class CoverArtPanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 2) {
 				embedded.toggle();
+			}
+		}
+	}
+
+	private final class ResetOnEmbedded extends ComponentAdapter {
+
+		@Override
+		public void componentResized(ComponentEvent e) {
+			if (embedded.is()) {
+				imagePanel.reset();
 			}
 		}
 	}

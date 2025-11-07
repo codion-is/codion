@@ -21,6 +21,7 @@ Codion Change Log
 - ImagePanel refactored, ComponentValue now byte array based.
 - ComponentBuilder.ancestorListener() added.
 - ComponentBuilder.hierarchyListener() added.
+- ImagePanel.resetView() renamed reset().
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.server
