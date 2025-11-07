@@ -1909,7 +1909,6 @@ public class DefaultLocalEntityConnectionTest {
 		Collection<Column<?>> modifiedColumns = modifiedColumns(emp1, emp2);
 		assertTrue(modifiedColumns.contains(Employee.DATA));
 
-		//lazy loaded blob
 		Entity dept1 = ENTITIES.entity(Department.TYPE)
 						.with(Department.DNAME, "name")
 						.with(Department.LOC, "loc")
@@ -2355,6 +2354,43 @@ public class DefaultLocalEntityConnectionTest {
 
 		// Should still have primary key
 		assertTrue(employee.contains(Employee.ID));
+	}
+
+	@Test
+	void insertUpdateSelectLazy() {
+		byte[] lazyBytes = new byte[1024];
+		new Random().nextBytes(lazyBytes);
+		Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
+		connection.startTransaction();
+		try {
+			Entity ari = ENTITIES.entity(Employee.TYPE)
+							.with(Employee.DEPARTMENT_FK, sales)
+							.with(Employee.NAME, "ari")
+							.with(Employee.SALARY, (double) 1500)
+							.with(Employee.DATA_LAZY, lazyBytes)
+							.build();
+			Entity bjorn = ENTITIES.entity(Employee.TYPE)
+							.with(Employee.DEPARTMENT_FK, sales)
+							.with(Employee.NAME, "björn")
+							.with(Employee.SALARY, (double) 1500)
+							.build();
+			Collection<Entity> inserted = connection.insertSelect(asList(ari, bjorn));
+			// Lazy inserted for one, selected for both
+			inserted.forEach(entity -> assertTrue(entity.contains(Employee.DATA_LAZY)));
+
+			ari = inserted.stream().filter(entity -> "ari".equals(entity.get(Employee.NAME))).findFirst().orElse(null);
+			bjorn = inserted.stream().filter(entity -> "björn".equals(entity.get(Employee.NAME))).findFirst().orElse(null);
+
+			ari.set(Employee.NAME, "new name");
+			bjorn.set(Employee.DATA_LAZY, lazyBytes);
+
+			Collection<Entity> updated = connection.updateSelect(asList(ari, bjorn));
+			// Lazy updated for one, selected for both
+			updated.forEach(entity -> assertTrue(entity.contains(Employee.DATA_LAZY)));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
 	}
 
 	private static LocalEntityConnection createConnection() {

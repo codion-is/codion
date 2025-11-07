@@ -33,6 +33,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import java.rmi.Remote;
@@ -196,8 +197,21 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	Entity.Key insert(Entity entity) throws RemoteException;
 
 	/**
-	 * Inserts the given entity, returning the inserted etity.
+	 * Inserts the given entity, returning the inserted entity.
 	 * Performs a commit unless a transaction is open.
+	 * <p>
+	 * The returned entity includes any lazy-loaded attributes (defined with
+	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were populated in the inserted entity.
+	 * {@snippet :
+	 * Entity album = entities.entity(Album.TYPE)
+	 *     .with(Album.ARTIST_FK, artist)
+	 *     .with(Album.TITLE, "Abbey Road")
+	 *     .build();
+	 *
+	 * // Insert and get the entity with generated ID
+	 * album = connection.insertSelect(album);
+	 * Long generatedId = album.get(Album.ID);
+	 *}
 	 * @param entity the entity to insert
 	 * @return the inserted entity
 	 * @throws DatabaseException in case of a database exception
@@ -218,6 +232,13 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	/**
 	 * Inserts the given entities, returning the inserted entities.
 	 * Performs a commit unless a transaction is open.
+	 * <p>
+	 * The returned entities include any lazy-loaded attributes (defined with
+	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were populated in the inserted entities.
+	 * <p>
+	 * <b>Note:</b> When inserting multiple entities, if a lazy attribute is populated in <i>any</i> of the entities,
+	 * it will be included in the select for <i>all</i> of them. This means that if one entity has a lazy attribute
+	 * with a value, that attribute will be loaded for all entities in the batch, even those where it wasn't populated.
 	 * @param entities the entities to insert
 	 * @return the inserted entities
 	 * @throws DatabaseException in case of a database exception
@@ -241,6 +262,9 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Updates the given entity based on its attribute values. Returns the updated entity.
 	 * Throws an exception if the given entity is unmodified.
 	 * Performs a commit unless a transaction is open.
+	 * <p>
+	 * The returned entity includes all modified attributes in the select, including any lazy-loaded
+	 * attributes (defined with {@link ColumnDefinition.Builder#selected(boolean)})
 	 * @param entity the entity to update
 	 * @return the updated entity
 	 * @throws DatabaseException in case of a database exception
@@ -262,9 +286,17 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 
 	/**
 	 * Updates the given entities based on their attribute values. Returns the updated entities, in no particular order.
+	 * Throws an exception if any of the given entities is unmodified.
 	 * Performs a commit unless a transaction is open.
+	 * <p>
+	 * The returned entities include all modified attributes in the select, including any lazy-loaded
+	 * attributes (defined with {@link ColumnDefinition.Builder#selected(boolean)})
+	 * <p>
+	 * <b>Note:</b> When updating multiple entities, if an attribute is modified in <i>any</i> of the entities,
+	 * it will be included in the select for <i>all</i> of them. This means that if one entity has a modified
+	 * lazy attribute, that attribute will be loaded for all entities in the batch, even those where it wasn't modified.
 	 * @param entities the entities to update
-	 * @return the updated entities
+	 * @return the updated entities, in no particular order
 	 * @throws DatabaseException in case of a db exception
 	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
 	 * @throws RemoteException in case of a remote exception

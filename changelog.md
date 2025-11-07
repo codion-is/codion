@@ -26,6 +26,8 @@ Codion Change Log
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.db.core
 - EntityConnection.Select.Builder.include() and exclude() added, related refactoring.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection.insertSelect() and updateSelect() now always include all inserted or updated attributes in the returned entities, lazy loaded as well.
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() renamed include() and exclude(), defaults() added.
 ### is.codion.framework.server

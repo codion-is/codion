@@ -78,8 +78,12 @@ public final class EntityConnectionDemo {
 
 		List<Entity> metalTracks = connection.select(
 						Select.where(Track.GENRE_FK.equalTo(metal))
-										.attributes(Track.NAME, Track.ALBUM_FK)
 										.orderBy(descending(Track.NAME))
+										.build());
+
+		Entity metallica = connection.selectSingle(
+						Select.where(Artist.NAME.equalTo("Metallica"))
+										.exclude(Artist.NUMBER_OF_ALBUMS, Artist.NUMBER_OF_TRACKS)
 										.build());
 
 		Long classicalPlaylistId = connection.select(
