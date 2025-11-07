@@ -74,6 +74,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	private final List<MouseWheelListener> mouseWheelListeners = new ArrayList<>();
 	private final List<KeyListener> keyListeners = new ArrayList<>();
 	private final List<ComponentListener> componentListeners = new ArrayList<>();
+	private final List<AncestorListener> ancestorListeners = new ArrayList<>();
 	private final List<PropertyChangeListener> propertyChangeListeners = new ArrayList<>();
 	private final Map<String, PropertyChangeListener> propertyChangeListenerMap = new HashMap<>();
 
@@ -367,6 +368,12 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	@Override
+	public final B ancestorListener(AncestorListener ancestorListener) {
+		this.ancestorListeners.add(requireNonNull(ancestorListener));
+		return self();
+	}
+
+	@Override
 	public final B propertyChangeListener(PropertyChangeListener propertyChangeListener) {
 		this.propertyChangeListeners.add(requireNonNull(propertyChangeListener));
 		return self();
@@ -541,6 +548,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		mouseWheelListeners.forEach(component::addMouseWheelListener);
 		keyListeners.forEach(component::addKeyListener);
 		componentListeners.forEach(component::addComponentListener);
+		ancestorListeners.forEach(component::addAncestorListener);
 		propertyChangeListeners.forEach(component::addPropertyChangeListener);
 		propertyChangeListenerMap.forEach(component::addPropertyChangeListener);
 

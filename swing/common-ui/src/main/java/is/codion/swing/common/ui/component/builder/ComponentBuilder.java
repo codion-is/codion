@@ -35,6 +35,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.TransferHandler;
 import javax.swing.border.Border;
+import javax.swing.event.AncestorListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
@@ -352,6 +353,13 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	 * @see JComponent#addComponentListener(ComponentListener)
 	 */
 	B componentListener(ComponentListener componentListener);
+
+	/**
+	 * @param ancestorListener the ancestor listener
+	 * @return this builder instance
+	 * @see JComponent#addAncestorListener(AncestorListener)
+	 */
+	B ancestorListener(AncestorListener ancestorListener);
 
 	/**
 	 * @param propertyChangeListener the property change listener

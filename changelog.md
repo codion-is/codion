@@ -19,6 +19,7 @@ Codion Change Log
 - ImagePanel no longer opaque by default.
 - FilterTableCellRenderer.Builder.component() added.
 - ImagePanel refactored, ComponentValue now byte array based.
+- ComponentBuilder.ancestorListener() added.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.server
