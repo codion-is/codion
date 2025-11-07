@@ -31,14 +31,10 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -48,7 +44,6 @@ import java.util.function.Supplier;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
@@ -163,7 +158,9 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	public Select select() {
 		return Select.where(createCondition(conditionModel.where(Conjunction.AND), additionalWhere))
 						.having(createCondition(conditionModel.having(Conjunction.AND), additionalHaving))
-						.attributes(attributes.get())
+						.attributes(attributes.defaults.get())
+						.include(attributes.include.get())
+						.exclude(attributes.exclude.get())
 						.limit(limit.get())
 						.orderBy(orderBy.get())
 						.build();
@@ -235,50 +232,29 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final class DefaultSelectAttributes implements SelectAttributes {
 
 		private final AttributeValidator attributeValidator = new AttributeValidator();
-		private final ValueSet<Attribute<?>> included = ValueSet.<Attribute<?>>builder()
+		private final ValueSet<Attribute<?>> defaults = ValueSet.<Attribute<?>>builder()
 						.validator(attributeValidator)
 						.build();
-		private final ValueSet<Attribute<?>> excluded = ValueSet.<Attribute<?>>builder()
+		private final ValueSet<Attribute<?>> include = ValueSet.<Attribute<?>>builder()
+						.validator(attributeValidator)
+						.build();
+		private final ValueSet<Attribute<?>> exclude = ValueSet.<Attribute<?>>builder()
 						.validator(attributeValidator)
 						.build();
 
 		@Override
-		public ValueSet<Attribute<?>> included() {
-			return included;
+		public ValueSet<Attribute<?>> defaults() {
+			return defaults;
 		}
 
 		@Override
-		public ValueSet<Attribute<?>> excluded() {
-			return excluded;
+		public ValueSet<Attribute<?>> include() {
+			return include;
 		}
 
 		@Override
-		public Collection<Attribute<?>> get() {
-			if (included.isEmpty() && excluded.isEmpty()) {
-				return emptyList();
-			}
-
-			return entityDefinition.attributes().definitions().stream()
-							.filter(this::included)
-							.filter(this::notExcluded)
-							.map(AttributeDefinition::attribute)
-							.collect(toList());
-		}
-
-		private boolean included(AttributeDefinition<?> attribute) {
-			if (included.contains(attribute.attribute())) {
-				return true;
-			}
-
-			boolean column = attribute instanceof ColumnDefinition<?>;
-			boolean foreignKey = !column && attribute instanceof ForeignKeyDefinition;
-			boolean selectedColumn = column && ((ColumnDefinition<?>) attribute).selected();
-
-			return included.isEmpty() && (foreignKey || selectedColumn);
-		}
-
-		private boolean notExcluded(AttributeDefinition<?> attributeDefinition) {
-			return excluded.isEmpty() || !excluded.contains(attributeDefinition.attribute());
+		public ValueSet<Attribute<?>> exclude() {
+			return exclude;
 		}
 	}
 

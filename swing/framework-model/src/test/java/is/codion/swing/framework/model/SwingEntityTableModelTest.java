@@ -267,7 +267,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void replaceByKey() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		tableModel.queryModel().attributes().included().set(asList(Employee.NAME, Employee.COMMISSION));
+		tableModel.queryModel().attributes().exclude().set(asList(Employee.JOB, Employee.SALARY));
 		tableModel.items().refresh();
 		Entity.Key jonesKey = tableModel.entities().primaryKey(Employee.TYPE, 3);
 		tableModel.refresh(singleton(jonesKey));

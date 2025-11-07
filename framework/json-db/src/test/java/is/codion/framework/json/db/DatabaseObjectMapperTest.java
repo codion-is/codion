@@ -58,6 +58,8 @@ public final class DatabaseObjectMapperTest {
 						.referenceDepth(2)
 						.referenceDepth(Employee.DEPARTMENT_FK, 0)
 						.attributes(Employee.COMMISSION, Employee.DEPARTMENT)
+						.include(Employee.JOB)
+						.exclude(Employee.SALARY)
 						.build();
 
 		String jsonString = mapper.writeValueAsString(select);
@@ -73,6 +75,8 @@ public final class DatabaseObjectMapperTest {
 			assertEquals(select.foreignKeyReferenceDepths().get(foreignKey), readCondition.foreignKeyReferenceDepths().get(foreignKey));
 		}
 		assertEquals(select.attributes(), readCondition.attributes());
+		assertEquals(select.include(), readCondition.include());
+		assertEquals(select.exclude(), readCondition.exclude());
 		assertTrue(readCondition.forUpdate());
 		assertEquals(42, readCondition.timeout());
 		assertEquals(select, readCondition);

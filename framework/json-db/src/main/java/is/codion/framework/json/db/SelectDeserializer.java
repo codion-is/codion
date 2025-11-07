@@ -98,6 +98,14 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 		if (attributes != null && !attributes.isNull()) {
 			selectBuilder.attributes(deserializeAttributes(definition, attributes));
 		}
+		JsonNode include = jsonNode.get("include");
+		if (include != null && !include.isNull()) {
+			selectBuilder.include(deserializeAttributes(definition, include));
+		}
+		JsonNode exclude = jsonNode.get("exclude");
+		if (exclude != null && !exclude.isNull()) {
+			selectBuilder.exclude(deserializeAttributes(definition, exclude));
+		}
 		JsonNode timeout = jsonNode.get("timeout");
 		if (timeout != null && !timeout.isNull()) {
 			selectBuilder.timeout(timeout.asInt());

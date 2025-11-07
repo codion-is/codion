@@ -101,7 +101,25 @@ final class SelectSerializer extends StdSerializer<Select> {
 				generator.writeString(attribute.name());
 			}
 			generator.writeEndArray();
-			generator.writeEndObject();
 		}
+		Collection<Attribute<?>> include = select.include();
+		if (!include.isEmpty()) {
+			generator.writeFieldName("include");
+			generator.writeStartArray();
+			for (Attribute<?> attribute : include) {
+				generator.writeString(attribute.name());
+			}
+			generator.writeEndArray();
+		}
+		Collection<Attribute<?>> exclude = select.exclude();
+		if (!exclude.isEmpty()) {
+			generator.writeFieldName("exclude");
+			generator.writeStartArray();
+			for (Attribute<?> attribute : exclude) {
+				generator.writeString(attribute.name());
+			}
+			generator.writeEndArray();
+		}
+		generator.writeEndObject();
 	}
 }

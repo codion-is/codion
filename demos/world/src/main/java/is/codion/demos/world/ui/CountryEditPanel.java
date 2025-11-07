@@ -23,15 +23,22 @@ import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.component.image.ImagePanel;
 import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static javax.swing.BorderFactory.createEtchedBorder;
 
 final class CountryEditPanel extends EntityEditPanel {
 
@@ -80,6 +87,10 @@ final class CountryEditPanel extends EntityEditPanel {
 		createComboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
 						.preferredComboBoxWidth(PREFERRED_COMBO_BOX_WIDTH)
 						.includeAddButton(true);
+		component(Country.FLAG).set(ImagePanel.builder()
+						.preferredWidth(50)
+						.border(createEtchedBorder())
+						.buildValue());
 		//add a field displaying the avarage city population for the selected country
 		CountryEditModel editModel = (CountryEditModel) editModel();
 		NumberField<Double> averageCityPopulationField = doubleField()
@@ -125,9 +136,33 @@ final class CountryEditPanel extends EntityEditPanel {
 		addInputPanel(Country.GOVERNMENTFORM);
 		addInputPanel(Country.HEADOFSTATE);
 		add(borderLayoutPanel()
-						.north(label("Avg. city population")
-										.horizontalAlignment(SwingConstants.CENTER))
-						.center(averageCityPopulationField));
+						.west(createInputPanel(Country.FLAG)
+										.component(borderLayoutPanel()
+														.center(component(Country.FLAG).get())
+														.east(button()
+																		.control(createSelectFlagControl())
+																		.transferFocusOnEnter(true))))
+						.center(borderLayoutPanel()
+										.north(label("Avg. city pop.")
+														.horizontalAlignment(SwingConstants.CENTER))
+										.center(averageCityPopulationField)));
+	}
+
+	private Control createSelectFlagControl() {
+		return Control.builder()
+						.command(this::selectFlag)
+						.caption("...")
+						.build();
+	}
+
+	private void selectFlag() throws IOException {
+		editModel().editor().value(Country.FLAG).set(Files.readAllBytes(Dialogs.select()
+						.files()
+						.owner(this)
+						.title("Select flag")
+						.filter(new FileNameExtensionFilter("PNG image files", "png"))
+						.selectFile()
+						.toPath()));
 	}
 
 	private EntityEditPanel createCapitalEditPanel() {

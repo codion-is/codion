@@ -917,10 +917,76 @@ public interface EntityConnection extends AutoCloseable {
 		Map<ForeignKey, Integer> foreignKeyReferenceDepths();
 
 		/**
-		 * @return the attributes to include in the query result,
-		 * an empty Collection if all should be included
+		 * Returns the explicit attributes specified for this select, if any.
+		 * An empty collection indicates that default attributes should be used (those marked with {@code .selected(true)}).
+		 * <p>
+		 * The final set of attributes is computed as: {@code (attributes ∪ include) \ exclude},
+		 * where {@code attributes} defaults to the entity's selected attributes when empty.
+		 * @return the explicit attributes to include in the query result,
+		 * an empty Collection if defaults should be used
+		 * @see #include()
+		 * @see #exclude()
 		 */
 		Collection<Attribute<?>> attributes();
+
+		/**
+		 * Returns the attributes to include in addition to those specified via {@link #attributes()}.
+		 * If {@link #attributes()} is empty, these are added to the default selected attributes.
+		 * <p>
+		 * This is useful for including lazy-loaded attributes ({@code .selected(false)}) without
+		 * having to explicitly list all default attributes.
+		 * <p>
+		 * Note that attributes required by included foreign keys cannot be excluded, even if listed
+		 * in {@link #exclude()}, as foreign keys need their reference columns to function.
+		 * {@snippet :
+		 * // Include a lazy blob column along with all defaults
+		 * List<Entity> countries = connection.select(
+		 *     Select.all(Country.TYPE)
+		 *         .include(Country.FLAG)  // FLAG is .selected(false)
+		 *         .build()
+		 * );
+		 *
+		 * // Include lazy column with explicit attributes
+		 * List<Entity> countries = connection.select(
+		 *     Select.all(Country.TYPE)
+		 *         .attributes(Country.CODE, Country.NAME)
+		 *         .include(Country.FLAG)
+		 *         .build()
+		 * );
+		 *}
+		 * @return the attributes to include in addition to the base set
+		 * @see #attributes()
+		 * @see #exclude()
+		 */
+		Collection<Attribute<?>> include();
+
+		/**
+		 * Returns the attributes to exclude from the query result.
+		 * These are removed from the final attribute set after applying {@link #attributes()} and {@link #include()}.
+		 * <p>
+		 * Note that primary key attributes are always included regardless of exclusions,
+		 * and attributes required by included foreign keys cannot be excluded.
+		 * {@snippet :
+		 * // Exclude an expensive computed column
+		 * List<Entity> employees = connection.select(
+		 *     Select.all(Employee.TYPE)
+		 *         .exclude(Employee.COMPUTED_BONUS)
+		 *         .build()
+		 * );
+		 *
+		 * // Exclude multiple columns
+		 * List<Entity> employees = connection.select(
+		 *     Select.all(Employee.TYPE)
+		 *         .include(Employee.PHOTO)
+		 *         .exclude(Employee.NOTES, Employee.RESUME)
+		 *         .build()
+		 * );
+		 *}
+		 * @return the attributes to exclude from the query result
+		 * @see #attributes()
+		 * @see #include()
+		 */
+		Collection<Attribute<?>> exclude();
 
 		/**
 		 * Builds a {@link Select}.
@@ -998,6 +1064,94 @@ public interface EntityConnection extends AutoCloseable {
 			 * @return this builder instance
 			 */
 			Builder attributes(Collection<? extends Attribute<?>> attributes);
+
+			/**
+			 * Specifies additional attributes to include in the query result beyond those in {@link #attributes()}.
+			 * If {@link #attributes()} is empty, these are added to the default selected attributes.
+			 * <p>
+			 * This is particularly useful for including lazy-loaded attributes (defined with {@code .selected(false)})
+			 * without having to explicitly list all default attributes.
+			 * <p>
+			 * The final attribute set is: {@code (attributes ∪ include) \ exclude}
+			 * {@snippet :
+			 * // Include lazy FLAG column with all defaults
+			 * Select.all(Country.TYPE)
+			 *     .include(Country.FLAG)
+			 *     .build();
+			 *
+			 * // Include lazy column with specific attributes
+			 * Select.all(Country.TYPE)
+			 *     .attributes(Country.CODE, Country.NAME)
+			 *     .include(Country.FLAG)
+			 *     .build();
+			 *}
+			 * @param attributes the attributes to include in addition to the base set
+			 * @param <T> the attribute type
+			 * @return this builder instance
+			 * @see #attributes(Attribute[])
+			 * @see #exclude(Attribute[])
+			 */
+			<T extends Attribute<?>> Builder include(T... attributes);
+
+			/**
+			 * Specifies additional attributes to include in the query result beyond those in {@link #attributes()}.
+			 * If {@link #attributes()} is empty, these are added to the default selected attributes.
+			 * <p>
+			 * This is particularly useful for including lazy-loaded attributes (defined with {@code .selected(false)})
+			 * without having to explicitly list all default attributes.
+			 * <p>
+			 * The final attribute set is: {@code (attributes ∪ include) \ exclude}
+			 * @param attributes the attributes to include in addition to the base set
+			 * @return this builder instance
+			 * @see #attributes(Collection)
+			 * @see #exclude(Collection)
+			 */
+			Builder include(Collection<? extends Attribute<?>> attributes);
+
+			/**
+			 * Specifies attributes to exclude from the query result.
+			 * These are removed from the final attribute set after applying {@link #attributes()} and {@link #include()}.
+			 * <p>
+			 * Note that primary key attributes are always included regardless of exclusions.
+			 * Additionally, attributes required by included foreign keys cannot be excluded,
+			 * as foreign keys need their reference columns to function properly.
+			 * <p>
+			 * The final attribute set is: {@code (attributes ∪ include) \ exclude}
+			 * {@snippet :
+			 * // Exclude expensive columns
+			 * Select.all(Employee.TYPE)
+			 *     .exclude(Employee.PHOTO, Employee.RESUME)
+			 *     .build();
+			 *
+			 * // Include lazy, exclude others
+			 * Select.all(Employee.TYPE)
+			 *     .include(Employee.PHOTO)
+			 *     .exclude(Employee.NOTES, Employee.RESUME)
+			 *     .build();
+			 *}
+			 * @param attributes the attributes to exclude from the query result
+			 * @param <T> the attribute type
+			 * @return this builder instance
+			 * @see #attributes(Attribute[])
+			 * @see #include(Attribute[])
+			 */
+			<T extends Attribute<?>> Builder exclude(T... attributes);
+
+			/**
+			 * Specifies attributes to exclude from the query result.
+			 * These are removed from the final attribute set after applying {@link #attributes()} and {@link #include()}.
+			 * <p>
+			 * Note that primary key attributes are always included regardless of exclusions.
+			 * Additionally, attributes required by included foreign keys cannot be excluded,
+			 * as foreign keys need their reference columns to function properly.
+			 * <p>
+			 * The final attribute set is: {@code (attributes ∪ include) \ exclude}
+			 * @param attributes the attributes to exclude from the query result
+			 * @return this builder instance
+			 * @see #attributes(Collection)
+			 * @see #include(Collection)
+			 */
+			Builder exclude(Collection<? extends Attribute<?>> attributes);
 
 			/**
 			 * Default 120 seconds.

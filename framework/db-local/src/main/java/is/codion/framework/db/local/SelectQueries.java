@@ -25,9 +25,11 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
@@ -48,6 +50,7 @@ final class SelectQueries {
 
 	private final Database database;
 	private final Map<EntityType, List<ColumnDefinition<?>>> defaultSelectColumnsCache = new ConcurrentHashMap<>();
+	private final Map<EntityType, List<Attribute<?>>> defaultAttributesCache = new ConcurrentHashMap<>();
 	private final Map<EntityType, String> defaultColumnsClauseCache = new ConcurrentHashMap<>();
 	private final Map<EntityType, String> groupByClauseCache = new ConcurrentHashMap<>();
 	private final Map<EntityType, String> withClauseCache = new ConcurrentHashMap<>();
@@ -252,14 +255,16 @@ final class SelectQueries {
 
 		private void setColumns(Select select) {
 			Collection<Attribute<?>> attributes = select.attributes();
-			if (attributes.isEmpty()) {
+			Collection<Attribute<?>> include = select.include();
+			Collection<Attribute<?>> exclude = select.exclude();
+			if (attributes.isEmpty() && include.isEmpty() && exclude.isEmpty()) {
 				// No specific attributes requested - use default selectable columns (marked with .selected(true))
 				this.selectedColums = defaultSelectColumns();
 				columns(defaultColumnsClause());
 			}
 			else {
-				// Specific attributes requested - resolve columns and foreign key references
-				this.selectedColums = columnsToSelect(attributes);
+				// Attributes, includes or excludes specified - resolve columns and foreign key references
+				this.selectedColums = columnsToSelect(select);
 				columns(columnsClause(selectedColums));
 			}
 		}
@@ -309,14 +314,22 @@ final class SelectQueries {
 			return from;
 		}
 
-		private List<ColumnDefinition<?>> columnsToSelect(Collection<Attribute<?>> selectAttributes) {
+		private List<ColumnDefinition<?>> columnsToSelect(Select select) {
+			Collection<Attribute<?>> selectAttributes = new HashSet<>(select.attributes().isEmpty() ? defaultAttributes() : select.attributes());
+			selectAttributes.addAll(select.include());
+			select.exclude().forEach(exclude -> {
+				selectAttributes.remove(exclude);
+				if (exclude instanceof ForeignKey) {
+					// For foreign keys, remove the foreign key column(s)
+					((ForeignKey) exclude).references().forEach(reference -> selectAttributes.remove(reference.column()));
+				}
+			});
 			// Always include primary key columns to ensure entities can be properly constructed
 			Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKey().definitions());
-
 			// Add columns for each requested attribute
 			selectAttributes.forEach(attribute -> {
 				if (attribute instanceof ForeignKey) {
-					// For foreign keys, include the foreign key column(s) and any additional referenced columns
+					// For foreign keys, include the foreign key column(s)
 					((ForeignKey) attribute).references().forEach(reference ->
 									columnsToSelect.add(definition.columns().definition(reference.column())));
 				}
@@ -335,6 +348,19 @@ final class SelectQueries {
 							definition.columns().definitions().stream()
 											.filter(ColumnDefinition::selected)
 											.collect(toList()));
+		}
+
+		private List<Attribute<?>> defaultAttributes() {
+			// Cache the default attributes (foreign keys and columns marked with .selected(true) in entity definition)
+			return defaultAttributesCache.computeIfAbsent(definition.type(), entityType ->
+							definition.attributes().definitions().stream()
+											.filter(Builder::defaultAttribute)
+											.map(AttributeDefinition::attribute)
+											.collect(toList()));
+		}
+
+		private static boolean defaultAttribute(AttributeDefinition<?> attribute) {
+			return attribute instanceof ForeignKeyDefinition || (attribute instanceof ColumnDefinition<?> && ((ColumnDefinition<?>) attribute).selected());
 		}
 
 		private String defaultColumnsClause() {

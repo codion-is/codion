@@ -56,7 +56,9 @@ final class SelectQueryInspector extends JPanel {
 		this.queryModel.condition().changed().addListener(this::refreshQuery);
 		this.queryModel.limit().addListener(this::refreshQuery);
 		this.queryModel.orderBy().addListener(this::refreshQuery);
-		this.queryModel.attributes().included().addListener(this::refreshQuery);
+		this.queryModel.attributes().defaults().addListener(this::refreshQuery);
+		this.queryModel.attributes().include().addListener(this::refreshQuery);
+		this.queryModel.attributes().exclude().addListener(this::refreshQuery);
 		initializeUI();
 		refreshQuery();
 	}
@@ -73,7 +75,9 @@ final class SelectQueryInspector extends JPanel {
 		Condition having = createCondition(queryModel.condition().having(Conjunction.AND), queryModel.having());
 		EntityConnection.Select select = EntityConnection.Select.where(where)
 						.having(having)
-						.attributes(queryModel.attributes().get())
+						.include(queryModel.attributes().defaults().get())
+						.include(queryModel.attributes().include().get())
+						.exclude(queryModel.attributes().exclude().get())
 						.limit(queryModel.limit().get())
 						.orderBy(queryModel.orderBy().get())
 						.build();

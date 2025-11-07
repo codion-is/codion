@@ -49,6 +49,8 @@ final class DefaultSelect implements Select, Serializable {
 	private final Condition having;
 	private final @Nullable Map<ForeignKey, Integer> foreignKeyReferenceDepths;
 	private final Collection<Attribute<?>> attributes;
+	private final Collection<Attribute<?>> include;
+	private final Collection<Attribute<?>> exclude;
 	private final @Nullable OrderBy orderBy;
 	private final @Nullable Integer referenceDepth;
 	private final boolean forUpdate;
@@ -63,6 +65,8 @@ final class DefaultSelect implements Select, Serializable {
 						null :
 						unmodifiableMap(builder.foreignKeyReferenceDepths);
 		this.attributes = builder.attributes;
+		this.include = builder.include;
+		this.exclude = builder.exclude;
 		this.orderBy = builder.orderBy;
 		this.referenceDepth = builder.referenceDepth;
 		this.forUpdate = builder.forUpdate;
@@ -132,6 +136,16 @@ final class DefaultSelect implements Select, Serializable {
 	}
 
 	@Override
+	public Collection<Attribute<?>> include() {
+		return include;
+	}
+
+	@Override
+	public Collection<Attribute<?>> exclude() {
+		return exclude;
+	}
+
+	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
 			return true;
@@ -147,13 +161,15 @@ final class DefaultSelect implements Select, Serializable {
 						having.equals(that.having) &&
 						Objects.equals(foreignKeyReferenceDepths, that.foreignKeyReferenceDepths) &&
 						attributes.equals(that.attributes) &&
+						include.equals(that.include) &&
+						exclude.equals(that.exclude) &&
 						Objects.equals(orderBy, that.orderBy) &&
 						Objects.equals(referenceDepth, that.referenceDepth);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(forUpdate, limit, offset, where, having, foreignKeyReferenceDepths, attributes, orderBy, referenceDepth);
+		return Objects.hash(forUpdate, limit, offset, where, having, foreignKeyReferenceDepths, attributes, include, exclude, orderBy, referenceDepth);
 	}
 
 	@Override
@@ -163,6 +179,8 @@ final class DefaultSelect implements Select, Serializable {
 						", having=" + having +
 						", foreignKeyReferenceDepths=" + foreignKeyReferenceDepths +
 						", attributes=" + attributes +
+						", include=" + include +
+						", exclude=" + exclude +
 						", orderBy=" + orderBy +
 						", referenceDepth=" + referenceDepth +
 						", forUpdate=" + forUpdate +
@@ -177,6 +195,8 @@ final class DefaultSelect implements Select, Serializable {
 
 		private @Nullable Map<ForeignKey, Integer> foreignKeyReferenceDepths;
 		private Collection<Attribute<?>> attributes = emptyList();
+		private Collection<Attribute<?>> include = emptyList();
+		private Collection<Attribute<?>> exclude = emptyList();
 
 		private Condition having;
 		private @Nullable OrderBy orderBy;
@@ -241,6 +261,30 @@ final class DefaultSelect implements Select, Serializable {
 		@Override
 		public Builder attributes(Collection<? extends Attribute<?>> attributes) {
 			this.attributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
+			return this;
+		}
+
+		@Override
+		public <T extends Attribute<?>> Builder include(T... attributes) {
+			this.include = requireNonNull(attributes).length == 0 ? emptyList() : unmodifiableList(asList(attributes));
+			return this;
+		}
+
+		@Override
+		public Builder include(Collection<? extends Attribute<?>> attributes) {
+			this.include = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
+			return this;
+		}
+
+		@Override
+		public <T extends Attribute<?>> Builder exclude(T... attributes) {
+			this.exclude = requireNonNull(attributes).length == 0 ? emptyList() : unmodifiableList(asList(attributes));
+			return this;
+		}
+
+		@Override
+		public Builder exclude(Collection<? extends Attribute<?>> attributes) {
+			this.exclude = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
 			return this;
 		}
 

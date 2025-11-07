@@ -1506,9 +1506,9 @@ public class EntityTablePanel extends JPanel {
 
 	private void configureExcludedColumns() {
 		if (configuration.excludeHiddenColumns) {
-			ValueSet<Attribute<?>> excluded = tableModel.queryModel().attributes().excluded();
-			table.columnModel().hidden().addConsumer(excluded::set);
-			excluded.set(table.columnModel().hidden().get());
+			ValueSet<Attribute<?>> exclude = tableModel.queryModel().attributes().exclude();
+			table.columnModel().hidden().addConsumer(exclude::set);
+			exclude.set(table.columnModel().hidden().get());
 		}
 	}
 

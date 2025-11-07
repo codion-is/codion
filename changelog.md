@@ -24,6 +24,10 @@ Codion Change Log
 - ImagePanel.resetView() renamed reset().
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
+### is.codion.framework.db.core
+- EntityConnection.Select.Builder.include() and exclude() added, related refactoring.
+### is.codion.framework.model
+- EntityQueryModel.SelectAttributes.included() and excluded() renamed include() and exclude(), defaults() added.
 ### is.codion.framework.server
 - is.codion.framework.server module now requires is.codion.tools.jul.classpath.
 - is.codion.framework.server module transitive requires for is.codion.framework.db.rmi removed.

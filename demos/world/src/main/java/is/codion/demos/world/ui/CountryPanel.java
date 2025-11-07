@@ -23,6 +23,7 @@ import is.codion.demos.world.domain.api.World.CountryLanguage;
 import is.codion.demos.world.model.CityTableModel;
 import is.codion.demos.world.model.CountryLanguageTableModel;
 import is.codion.demos.world.model.CountryModel;
+import is.codion.demos.world.model.CountryTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
@@ -33,7 +34,7 @@ final class CountryPanel extends EntityPanel {
 		super(countryModel,
 						new CountryEditPanel(countryModel.editModel(),
 										countryModel.detailModels().get(City.TYPE).tableModel().items()),
-						new CountryTablePanel(countryModel.tableModel()),
+						new CountryTablePanel((CountryTableModel) countryModel.tableModel()),
 						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder()
 										.panel(entityPanel)
 										.splitPaneResizeWeight(0.7)

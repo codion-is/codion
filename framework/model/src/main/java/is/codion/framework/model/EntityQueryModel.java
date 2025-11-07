@@ -33,7 +33,6 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.condition.Condition;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -185,28 +184,92 @@ public interface EntityQueryModel {
 	}
 
 	/**
-	 * Manages the attributes to include when querying.
+	 * Manages the attributes to include and exclude when querying.
+	 * <p>
+	 * The final set of attributes is computed as: {@code (defaults ∪ included) \ excluded}
+	 * <p>
+	 * Provides runtime configuration of which attributes to load:
+	 * <ul>
+	 *   <li>{@link #defaults()} - Override the base set of attributes (normally those with {@code .selected(true)})</li>
+	 *   <li>{@link #include()} - Add attributes beyond the defaults (e.g., lazy-loaded columns)</li>
+	 *   <li>{@link #exclude()} - Remove attributes from the final set</li>
+	 * </ul>
 	 */
 	interface SelectAttributes {
 
 		/**
-		 * Returns the {@link ValueSet} controlling which attributes are included when querying entities.
-		 * Note that an empty {@link ValueSet} indicates that the default select attributes should be used.
-		 * @return the {@link ValueSet} controlling the included attributes
+		 * Returns the {@link ValueSet} controlling the default attributes to use as the base set when querying entities.
+		 * <p>
+		 * When empty, the entity definition's default selected attributes (those marked with {@code .selected(true)})
+		 * are used. When non-empty, these attributes completely replace the entity definition defaults.
+		 * <p>
+		 * This allows complete control over the base attribute set, rather than just adding to or removing from defaults.
+		 * <p>
+		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
+		 * {@snippet :
+		 * // Replace defaults with a minimal set
+		 * EntityQueryModel queryModel = tableModel.queryModel();
+		 * queryModel.attributes().defaults().set(Employee.ID, Employee.NAME);
+		 * tableModel.items().refresh();
+		 *
+		 * // Revert to entity definition defaults
+		 * queryModel.attributes().defaults().clear();
+		 * tableModel.items().refresh();
+		 *}
+		 * @return the {@link ValueSet} controlling the default base attributes
+		 * @see #include()
+		 * @see #exclude()
 		 */
-		ValueSet<Attribute<?>> included();
+		ValueSet<Attribute<?>> defaults();
 
 		/**
-		 * Returns the {@link ValueSet} controlling which attributes are excluded when querying entities.
-		 * @return the {@link ValueSet} controlling the excluded attributes
+		 * Returns the {@link ValueSet} controlling additional attributes to include when querying entities,
+		 * beyond the default selected attributes.
+		 * <p>
+		 * An empty {@link ValueSet} means no additional attributes will be included - only the defaults
+		 * (those marked with {@code .selected(true)}) will be loaded.
+		 * <p>
+		 * This is particularly useful for including lazy-loaded attributes on-demand without having to
+		 * replace the entire default attribute set.
+		 * <p>
+		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
+		 * {@snippet :
+		 * // Include a lazy blob column on-demand
+		 * EntityQueryModel queryModel = tableModel.queryModel();
+		 * queryModel.attributes().include().add(Country.FLAG);
+		 * tableModel.items().refresh();
+		 *
+		 * // Remove the lazy attribute
+		 * queryModel.attributes().include().remove(Country.FLAG);
+		 * tableModel.items().refresh();
+		 *}
+		 * @return the {@link ValueSet} controlling additional attributes to include
+		 * @see #exclude()
 		 */
-		ValueSet<Attribute<?>> excluded();
+		ValueSet<Attribute<?>> include();
 
 		/**
-		 * <p>Provides the attributes to include when querying based on {@link #included()} and {@link #excluded()}.
-		 * <p>An empty result indicates that all attributes should be included.
-		 * @return the attributes to include, taking into account {@link #included()} and {@link #excluded()}
+		 * Returns the {@link ValueSet} controlling attributes to exclude when querying entities.
+		 * <p>
+		 * These attributes are removed from the final set after applying defaults and {@link #include()}.
+		 * <p>
+		 * Note that primary key attributes are always included regardless of exclusions,
+		 * and attributes required by included foreign keys cannot be excluded.
+		 * <p>
+		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
+		 * {@snippet :
+		 * // Exclude expensive computed columns
+		 * EntityQueryModel queryModel = tableModel.queryModel();
+		 * queryModel.attributes().exclude().add(Employee.COMPUTED_BONUS);
+		 * tableModel.items().refresh();
+		 *
+		 * // Re-include the column
+		 * queryModel.attributes().exclude().remove(Employee.COMPUTED_BONUS);
+		 * tableModel.items().refresh();
+		 *}
+		 * @return the {@link ValueSet} controlling attributes to exclude
+		 * @see #include()
 		 */
-		Collection<Attribute<?>> get();
+		ValueSet<Attribute<?>> exclude();
 	}
 }

@@ -2215,6 +2215,148 @@ public class DefaultLocalEntityConnectionTest {
 		connection.delete(Entity.primaryKeys(selected));
 	}
 
+	@Test
+	void selectIncludeExclude() {
+		// Test 1: Default selection (no include/exclude)
+		List<Entity> defaultSelect = connection.select(Select.all(Employee.TYPE)
+						.limit(1)
+						.build());
+		assertEquals(1, defaultSelect.size());
+		Entity employee = defaultSelect.get(0);
+
+		// Should have regular columns
+		assertNotNull(employee.get(Employee.NAME));
+		assertNotNull(employee.get(Employee.JOB));
+		assertNotNull(employee.get(Employee.SALARY));
+
+		// Should NOT have lazy column
+		assertNull(employee.get(Employee.DATA_LAZY));
+
+		// Test 2: Include lazy column
+		List<Entity> withLazy = connection.select(Select.all(Employee.TYPE)
+						.include(Employee.DATA_LAZY)
+						.limit(1)
+						.build());
+		assertEquals(1, withLazy.size());
+		Entity employeeWithLazy = withLazy.get(0);
+
+		// Should have regular columns
+		assertNotNull(employeeWithLazy.get(Employee.NAME));
+		assertNotNull(employeeWithLazy.get(Employee.JOB));
+
+		// Should now have lazy column (even if null)
+		assertTrue(employeeWithLazy.contains(Employee.DATA_LAZY));
+
+		// Test 3: Exclude a regular column
+		List<Entity> withoutJob = connection.select(Select.all(Employee.TYPE)
+						.exclude(Employee.JOB)
+						.limit(1)
+						.build());
+		assertEquals(1, withoutJob.size());
+		Entity employeeWithoutJob = withoutJob.get(0);
+
+		// Should have other columns
+		assertNotNull(employeeWithoutJob.get(Employee.NAME));
+		assertNotNull(employeeWithoutJob.get(Employee.SALARY));
+
+		// Should NOT have excluded column
+		assertFalse(employeeWithoutJob.contains(Employee.JOB));
+
+		// Test 4: Include lazy AND exclude regular
+		List<Entity> lazyNoJob = connection.select(Select.all(Employee.TYPE)
+						.include(Employee.DATA_LAZY)
+						.exclude(Employee.JOB, Employee.COMMISSION)
+						.limit(1)
+						.build());
+		assertEquals(1, lazyNoJob.size());
+		Entity employeeLazyNoJob = lazyNoJob.get(0);
+
+		// Should have name and salary
+		assertNotNull(employeeLazyNoJob.get(Employee.NAME));
+		assertNotNull(employeeLazyNoJob.get(Employee.SALARY));
+
+		// Should have lazy column
+		assertTrue(employeeLazyNoJob.contains(Employee.DATA_LAZY));
+
+		// Should NOT have excluded columns
+		assertFalse(employeeLazyNoJob.contains(Employee.JOB));
+		assertFalse(employeeLazyNoJob.contains(Employee.COMMISSION));
+
+		// Test 5: Explicit attributes() with include
+		List<Entity> explicitPlusLazy = connection.select(Select.all(Employee.TYPE)
+						.attributes(Employee.NAME, Employee.SALARY)
+						.include(Employee.DATA_LAZY)
+						.limit(1)
+						.build());
+		assertEquals(1, explicitPlusLazy.size());
+		Entity employeeExplicitPlusLazy = explicitPlusLazy.get(0);
+
+		// Should only have NAME, SALARY, and DATA_LAZY (plus PK)
+		assertTrue(employeeExplicitPlusLazy.contains(Employee.ID)); // PK always included
+		assertTrue(employeeExplicitPlusLazy.contains(Employee.NAME));
+		assertTrue(employeeExplicitPlusLazy.contains(Employee.SALARY));
+		assertTrue(employeeExplicitPlusLazy.contains(Employee.DATA_LAZY));
+
+		// Should NOT have other columns
+		assertFalse(employeeExplicitPlusLazy.contains(Employee.JOB));
+		assertFalse(employeeExplicitPlusLazy.contains(Employee.COMMISSION));
+		assertFalse(employeeExplicitPlusLazy.contains(Employee.HIREDATE));
+
+		// Test 6: Explicit attributes() with exclude
+		List<Entity> explicitMinusOne = connection.select(Select.all(Employee.TYPE)
+						.attributes(Employee.NAME, Employee.JOB, Employee.SALARY)
+						.exclude(Employee.JOB)
+						.limit(1)
+						.build());
+		assertEquals(1, explicitMinusOne.size());
+		Entity employeeExplicitMinusOne = explicitMinusOne.get(0);
+
+		// Should have NAME and SALARY
+		assertTrue(employeeExplicitMinusOne.contains(Employee.NAME));
+		assertTrue(employeeExplicitMinusOne.contains(Employee.SALARY));
+
+		// Should NOT have JOB (excluded)
+		assertFalse(employeeExplicitMinusOne.contains(Employee.JOB));
+	}
+
+	@Test
+	void selectIncludeExcludeWithForeignKeys() {
+		List<Entity> result = connection.select(Select.all(Employee.TYPE)
+						.exclude(Employee.DEPARTMENT_FK)
+						.limit(1)
+						.build());
+		Entity employee = result.get(0);
+
+		// Should have NAME and SALARY
+		assertTrue(employee.contains(Employee.NAME));
+		assertTrue(employee.contains(Employee.SALARY));
+
+		// Should not have DEPARTMENT_FK
+		assertFalse(employee.contains(Employee.DEPARTMENT));
+		assertFalse(employee.contains(Employee.DEPARTMENT_FK));
+
+		// Should still have primary key
+		assertTrue(employee.contains(Employee.ID));
+
+		result = connection.select(Select.all(Employee.TYPE)
+						.attributes(Employee.NAME, Employee.SALARY, Employee.DEPARTMENT_FK)
+						.exclude(Employee.DEPARTMENT)
+						.limit(1)
+						.build());
+		employee = result.get(0);
+
+		// Should have NAME and SALARY
+		assertTrue(employee.contains(Employee.NAME));
+		assertTrue(employee.contains(Employee.SALARY));
+
+		// Should have DEPARTMENT_FK, even though we tried to exclude the underlying column
+		assertTrue(employee.contains(Employee.DEPARTMENT));
+		assertTrue(employee.contains(Employee.DEPARTMENT_FK));
+
+		// Should still have primary key
+		assertTrue(employee.contains(Employee.ID));
+	}
+
 	private static LocalEntityConnection createConnection() {
 		return createConnection(false);
 	}

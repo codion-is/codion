@@ -160,7 +160,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	public final void refresh(Collection<Entity.Key> keys) {
 		if (!requireNonNull(keys).isEmpty()) {
 			replaceEntities(connection().select(where(keys(keys))
-											.attributes(queryModel.attributes().get())
+											.attributes(queryModel.attributes().defaults().get())
+											.include(queryModel.attributes().include().get())
+											.exclude(queryModel.attributes().exclude().get())
 											.build()).stream()
 							.collect(toMap(Entity::primaryKey, identity())));
 		}

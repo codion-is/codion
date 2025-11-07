@@ -21,9 +21,10 @@ package is.codion.demos.world.ui;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryTableModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.swing.common.ui.component.image.ImagePanel;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -36,9 +37,19 @@ import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
 
 final class CountryTablePanel extends EntityTablePanel {
 
-	CountryTablePanel(SwingEntityTableModel tableModel) {
+	CountryTablePanel(CountryTableModel tableModel) {
 		super(tableModel, config -> config
-						.editable(attributes -> attributes.remove(Country.CAPITAL_FK)));
+						.editable(attributes -> attributes.remove(Country.CAPITAL_FK))
+						.cellRenderer(Country.FLAG, FilterTableCellRenderer.builder()
+										.columnClass(byte[].class)
+										.component(ImagePanel.builder().buildValue())
+										.build()));
+		configurePopupMenu(layout -> layout.clear()
+						.control(Control.builder()
+										.toggle(tableModel.showflags())
+										.caption("Show flags"))
+						.separator()
+						.defaults());
 	}
 
 	@Override
