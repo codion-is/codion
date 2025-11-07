@@ -46,6 +46,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusListener;
+import java.awt.event.HierarchyListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -75,6 +76,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	private final List<KeyListener> keyListeners = new ArrayList<>();
 	private final List<ComponentListener> componentListeners = new ArrayList<>();
 	private final List<AncestorListener> ancestorListeners = new ArrayList<>();
+	private final List<HierarchyListener> hierarchyListeners = new ArrayList<>();
 	private final List<PropertyChangeListener> propertyChangeListeners = new ArrayList<>();
 	private final Map<String, PropertyChangeListener> propertyChangeListenerMap = new HashMap<>();
 
@@ -374,6 +376,12 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	@Override
+	public final B hierarchyListener(HierarchyListener hierarchyListener) {
+		this.hierarchyListeners.add(requireNonNull(hierarchyListener));
+		return self();
+	}
+
+	@Override
 	public final B propertyChangeListener(PropertyChangeListener propertyChangeListener) {
 		this.propertyChangeListeners.add(requireNonNull(propertyChangeListener));
 		return self();
@@ -549,6 +557,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		keyListeners.forEach(component::addKeyListener);
 		componentListeners.forEach(component::addComponentListener);
 		ancestorListeners.forEach(component::addAncestorListener);
+		hierarchyListeners.forEach(component::addHierarchyListener);
 		propertyChangeListeners.forEach(component::addPropertyChangeListener);
 		propertyChangeListenerMap.forEach(component::addPropertyChangeListener);
 

@@ -43,6 +43,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusListener;
+import java.awt.event.HierarchyListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -360,6 +361,13 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	 * @see JComponent#addAncestorListener(AncestorListener)
 	 */
 	B ancestorListener(AncestorListener ancestorListener);
+
+	/**
+	 * @param hierarchyListener the hierarchy listener
+	 * @return this builder instance
+	 * @see JComponent#addHierarchyListener(HierarchyListener)
+	 */
+	B hierarchyListener(HierarchyListener hierarchyListener);
 
 	/**
 	 * @param propertyChangeListener the property change listener

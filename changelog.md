@@ -20,6 +20,7 @@ Codion Change Log
 - FilterTableCellRenderer.Builder.component() added.
 - ImagePanel refactored, ComponentValue now byte array based.
 - ComponentBuilder.ancestorListener() added.
+- ComponentBuilder.hierarchyListener() added.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.server
