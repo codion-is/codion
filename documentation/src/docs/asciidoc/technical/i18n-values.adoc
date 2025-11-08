@@ -427,6 +427,22 @@ is/codion/swing/common/ui/component/image/ImagePanel_is_IS.properties
 |file_not_found|File not found|Skrá fannst ekki
 |===
 
+=== is/codion/swing/common/ui/component/logging/LogLevelPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/logging/LogLevelPanel.properties
+is/codion/swing/common/ui/component/logging/LogLevelPanel_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|level|Level|Nákvæmni
+|logger|Logger|Loggur
+|===
+
 === is/codion/swing/common/ui/component/logging/LogViewer.java
 
 [source]
@@ -740,6 +756,8 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |key|default|is_IS
 
 |about|About|Um Forritið
+|advanced_log_level|Advanced|Fínstilla
+|advanced_log_level_mnemonic|A|F
 |always_on_top|Always on Top|Alltaf Ofan á
 |application_version|Application Version|Kerfisútgáfa
 |codion_version|Codion Version|Codion Útgáfa

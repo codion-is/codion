@@ -31,10 +31,10 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A Log4j LoggerProxy implementation
@@ -76,6 +76,13 @@ public final class Log4jProxy implements LoggerProxy {
 	}
 
 	@Override
+	public Collection<String> loggers() {
+		return ((LoggerContext) LogManager.getContext(false)).getLoggers().stream()
+						.map(Logger::getName)
+						.collect(toList());
+	}
+
+	@Override
 	public Collection<String> files() {
 		Map<String, Appender> appenderMap = ((Logger) LogManager.getLogger()).getAppenders();
 
@@ -83,6 +90,6 @@ public final class Log4jProxy implements LoggerProxy {
 						.filter(RollingFileAppender.class::isInstance)
 						.map(RollingFileAppender.class::cast)
 						.map(RollingFileAppender::getFileName)
-						.collect(Collectors.toList());
+						.collect(toList());
 	}
 }

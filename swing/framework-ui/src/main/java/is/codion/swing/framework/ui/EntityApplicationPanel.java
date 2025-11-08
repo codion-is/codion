@@ -111,6 +111,7 @@ import static is.codion.common.utilities.Configuration.stringValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.logging.LogLevelPanel.logLevelPanel;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.util.Collections.unmodifiableList;
@@ -172,6 +173,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private static final String APPLICATION_VERSION = "application_version";
 	private static final String CODION_VERSION = "codion_version";
 	private static final String MEMORY_USAGE = "memory_usage";
+	private static final String ADVANCED_LOG_LEVEL = "advanced_log_level";
+	private static final String ADVANCED_LOG_LEVEL_MNEMONIC = "advanced_log_level_mnemonic";
 	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
 	private static final Runtime RUNTIME = Runtime.getRuntime();
 
@@ -610,6 +613,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 														.caption(entry.getKey().toString())
 														.build())
 										.collect(toList()))
+						.separator()
+						.control(Control.builder()
+										.command(this::advancedLogLevelConfiguration)
+										.caption(resourceBundle.getString(ADVANCED_LOG_LEVEL) + "...")
+										.mnemonic(resourceBundle.getString(ADVANCED_LOG_LEVEL_MNEMONIC).charAt(0)))
 						.build();
 	}
 
@@ -1182,6 +1190,16 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 
 		return Optional.of(new File(files.iterator().next()));
+	}
+
+	private void advancedLogLevelConfiguration() {
+		Dialogs.builder()
+						.component(borderLayoutPanel()
+										.center(logLevelPanel(() -> LoggerProxy.instance().loggers()))
+										.border(emptyBorder()))
+						.owner(this)
+						.title(resourceBundle.getString(ADVANCED_LOG_LEVEL))
+						.show();
 	}
 
 	private static JScrollPane createTree(TreeModel treeModel) {

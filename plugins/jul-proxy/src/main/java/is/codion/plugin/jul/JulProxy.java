@@ -20,6 +20,8 @@ package is.codion.plugin.jul;
 
 import is.codion.common.utilities.logging.LoggerProxy;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -59,5 +61,10 @@ public final class JulProxy implements LoggerProxy {
 	@Override
 	public List<Object> levels() {
 		return asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF);
+	}
+
+	@Override
+	public Collection<String> loggers() {
+		return Collections.list(LogManager.getLogManager().getLoggerNames());
 	}
 }

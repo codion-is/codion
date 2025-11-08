@@ -72,6 +72,13 @@ public final class LogbackProxy implements LoggerProxy {
 	}
 
 	@Override
+	public Collection<String> loggers() {
+		return ((LoggerContext) LoggerFactory.getILoggerFactory()).getLoggerList().stream()
+						.map(Logger::getName)
+						.collect(Collectors.toList());
+	}
+
+	@Override
 	public Collection<String> files() {
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 

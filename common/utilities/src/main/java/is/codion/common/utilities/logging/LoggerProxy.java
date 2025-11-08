@@ -58,6 +58,11 @@ public interface LoggerProxy {
 		public List<Object> levels() {
 			return emptyList();
 		}
+
+		@Override
+		public Collection<String> loggers() {
+			return emptyList();
+		}
 	};
 
 	/**
@@ -88,6 +93,11 @@ public interface LoggerProxy {
 	 * @return the available log levels
 	 */
 	List<Object> levels();
+
+	/**
+	 * @return all loggers
+	 */
+	Collection<String> loggers();
 
 	/**
 	 * @return the log file paths, if available
