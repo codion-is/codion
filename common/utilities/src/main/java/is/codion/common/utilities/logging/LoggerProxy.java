@@ -44,7 +44,15 @@ public interface LoggerProxy {
 		}
 
 		@Override
+		public Object getLogLevel(String name) {
+			return NO_LOG_LEVEL;
+		}
+
+		@Override
 		public void setLogLevel(Object logLevel) {/*no op*/}
+
+		@Override
+		public void setLogLevel(String name, Object logLevel) {/*no op*/}
 
 		@Override
 		public List<Object> levels() {
@@ -53,15 +61,28 @@ public interface LoggerProxy {
 	};
 
 	/**
-	 * @return the current log level
+	 * @return the root log level
 	 */
 	Object getLogLevel();
+
+	/**
+	 * @param name the logger name
+	 * @return the log level
+	 */
+	Object getLogLevel(String name);
 
 	/**
 	 * Sets the log level
 	 * @param logLevel the log level
 	 */
 	void setLogLevel(Object logLevel);
+
+	/**
+	 * Sets the log level
+	 * @param name the logger name
+	 * @param logLevel the log level
+	 */
+	void setLogLevel(String name, Object logLevel);
 
 	/**
 	 * @return the available log levels

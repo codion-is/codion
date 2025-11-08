@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 import static java.util.Spliterators.spliteratorUnknownSize;
 
 /**
@@ -44,15 +45,25 @@ public final class LogbackProxy implements LoggerProxy {
 
 	@Override
 	public Object getLogLevel() {
-		return ((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).getLevel();
+		return getLogLevel(org.slf4j.Logger.ROOT_LOGGER_NAME);
+	}
+
+	@Override
+	public Object getLogLevel(String name) {
+		return ((Logger) LoggerFactory.getLogger(requireNonNull(name))).getLevel();
 	}
 
 	@Override
 	public void setLogLevel(Object logLevel) {
+		setLogLevel(org.slf4j.Logger.ROOT_LOGGER_NAME, logLevel);
+	}
+
+	@Override
+	public void setLogLevel(String name, Object logLevel) {
 		if (!(logLevel instanceof Level)) {
 			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
 		}
-		((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel((Level) logLevel);
+		((Logger) LoggerFactory.getLogger(requireNonNull(name))).setLevel((Level) logLevel);
 	}
 
 	@Override

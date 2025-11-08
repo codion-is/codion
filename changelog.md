@@ -8,6 +8,7 @@ Codion Change Log
 ### is.codion.common.utilities
 - is.codion.common.utilities split from is.codion.common.core.
 - is.codion.plugin.jul.proxy, is.codion.plugin.log4j.proxy, is.codion.plugin.logback.proxy META-INF service definition filename fixed.
+- LoggerProxy.getLogLevel() and setLogLevel() overloaded with logger name.
 ### is.codion.tools.jul.classpath
 - ClasspathConfiguration split from is.codion.plugin.jul.proxy module.
 ### is.codion.tools.swing.robot

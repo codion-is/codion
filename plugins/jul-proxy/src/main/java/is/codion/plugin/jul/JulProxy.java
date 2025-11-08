@@ -26,6 +26,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A java.util.logging LoggerProxy implementation
@@ -34,15 +35,25 @@ public final class JulProxy implements LoggerProxy {
 
 	@Override
 	public Object getLogLevel() {
-		return LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME).getLevel();
+		return getLogLevel(Logger.GLOBAL_LOGGER_NAME);
+	}
+
+	@Override
+	public Object getLogLevel(String name) {
+		return LogManager.getLogManager().getLogger(requireNonNull(name)).getLevel();
 	}
 
 	@Override
 	public void setLogLevel(Object logLevel) {
+		setLogLevel(Logger.GLOBAL_LOGGER_NAME, logLevel);
+	}
+
+	@Override
+	public void setLogLevel(String name, Object logLevel) {
 		if (!(logLevel instanceof Level)) {
 			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
 		}
-		LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME).setLevel((Level) logLevel);
+		LogManager.getLogManager().getLogger(requireNonNull(name)).setLevel((Level) logLevel);
 	}
 
 	@Override

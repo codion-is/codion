@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Log4j LoggerProxy implementation
@@ -42,14 +43,24 @@ public final class Log4jProxy implements LoggerProxy {
 
 	@Override
 	public Object getLogLevel() {
+		return getLogLevel(LogManager.ROOT_LOGGER_NAME);
+	}
+
+	@Override
+	public Object getLogLevel(String name) {
 		LoggerContext context = (LoggerContext) LogManager.getContext(false);
-		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(requireNonNull(name));
 
 		return loggerConfig.getLevel();
 	}
 
 	@Override
 	public void setLogLevel(Object logLevel) {
+		setLogLevel(LogManager.ROOT_LOGGER_NAME, logLevel);
+	}
+
+	@Override
+	public void setLogLevel(String name, Object logLevel) {
 		if (!(logLevel instanceof Level)) {
 			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
 		}
