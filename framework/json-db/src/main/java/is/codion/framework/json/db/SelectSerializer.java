@@ -68,58 +68,46 @@ final class SelectSerializer extends StdSerializer<Select> {
 		}
 		int limit = select.limit().orElse(-1);
 		if (limit != -1) {
-			generator.writeObjectField("limit", limit);
+			generator.writeNumberField("limit", limit);
 		}
 		int offset = select.offset().orElse(-1);
 		if (offset != -1) {
-			generator.writeObjectField("offset", offset);
+			generator.writeNumberField("offset", offset);
 		}
 		if (select.forUpdate()) {
-			generator.writeObjectField("forUpdate", select.forUpdate());
+			generator.writeBooleanField("forUpdate", select.forUpdate());
 		}
 		if (select.timeout() != 0) {
-			generator.writeObjectField("timeout", select.timeout());
+			generator.writeNumberField("timeout", select.timeout());
 		}
 		int conditionReferenceDepth = select.referenceDepth().orElse(-1);
 		if (conditionReferenceDepth != -1) {
-			generator.writeObjectField("referenceDepth", conditionReferenceDepth);
+			generator.writeNumberField("referenceDepth", conditionReferenceDepth);
 		}
 		Map<ForeignKey, Integer> foreignKeyReferenceDepths = select.foreignKeyReferenceDepths();
 		if (!foreignKeyReferenceDepths.isEmpty()) {
 			generator.writeFieldName("fkReferenceDepth");
 			generator.writeStartObject();
 			for (Map.Entry<ForeignKey, Integer> entry : foreignKeyReferenceDepths.entrySet()) {
-				generator.writeObjectField(entry.getKey().name(), entry.getValue());
+				generator.writeNumberField(entry.getKey().name(), entry.getValue());
 			}
 			generator.writeEndObject();
 		}
-		Collection<Attribute<?>> attributes = select.attributes();
+		writeAttributeArray(generator, "attributes", select.attributes());
+		writeAttributeArray(generator, "include", select.include());
+		writeAttributeArray(generator, "exclude", select.exclude());
+		generator.writeEndObject();
+	}
+
+	private static void writeAttributeArray(JsonGenerator generator, String fieldName,
+																					Collection<Attribute<?>> attributes) throws IOException {
 		if (!attributes.isEmpty()) {
-			generator.writeFieldName("attributes");
+			generator.writeFieldName(fieldName);
 			generator.writeStartArray();
 			for (Attribute<?> attribute : attributes) {
 				generator.writeString(attribute.name());
 			}
 			generator.writeEndArray();
 		}
-		Collection<Attribute<?>> include = select.include();
-		if (!include.isEmpty()) {
-			generator.writeFieldName("include");
-			generator.writeStartArray();
-			for (Attribute<?> attribute : include) {
-				generator.writeString(attribute.name());
-			}
-			generator.writeEndArray();
-		}
-		Collection<Attribute<?>> exclude = select.exclude();
-		if (!exclude.isEmpty()) {
-			generator.writeFieldName("exclude");
-			generator.writeStartArray();
-			for (Attribute<?> attribute : exclude) {
-				generator.writeString(attribute.name());
-			}
-			generator.writeEndArray();
-		}
-		generator.writeEndObject();
 	}
 }
