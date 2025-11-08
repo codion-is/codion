@@ -22,7 +22,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -85,11 +84,9 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
 	private Map<Attribute<?>, Object> attributeValueMap(EntityDefinition definition, JsonNode values) throws JsonProcessingException {
 		Map<Attribute<?>, Object> valueMap = new HashMap<>();
 		for (Map.Entry<String, JsonNode> field : values.properties()) {
-			AttributeDefinition<?> attributeDefinition = definition.attributes()
-							.definition(definition.attributes().getOrThrow(field.getKey()));
-			valueMap.put(attributeDefinition.attribute(),
-							entityObjectMapper.readValue(field.getValue().toString(),
-											attributeDefinition.attribute().type().valueClass()));
+			Attribute<?> attribute = definition.attributes().getOrThrow(field.getKey());
+			Object value = entityObjectMapper.convertValue(field.getValue(), attribute.type().valueClass());
+			valueMap.put(attribute, value);
 		}
 
 		return valueMap;

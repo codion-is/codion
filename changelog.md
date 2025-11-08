@@ -31,6 +31,8 @@ Codion Change Log
 - DefaultLocalEntityConnection.insertSelect() and updateSelect() now always include all inserted or updated attributes in the returned entities, lazy loaded as well.
 ### is.codion.framework.json.db
 - SelectSerializer and UpdateDeserializer improved.
+### is.codion.framework.json.domain
+- ColumnConditionDeserializer and EntityDeserializer improved.
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() renamed include() and exclude(), defaults() added.
 ### is.codion.framework.server
