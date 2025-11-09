@@ -16,6 +16,8 @@ Codion Change Log
 - is.codion.tools.swing.robot migrated from is.codion.plugin.swing.robot.
 ### is.codion.tools.swing.mcp
 - is.codion.tools.swing.mcp migrated from is.codion.plugin.swing.mcp.
+### is.codion.swing.common.model
+- FilterTableModel.Builder.refresh() added.
 ### is.codion.swing.common.ui
 - ImagePanel migrated from is.codion.plugin.imagepanel module, which has been removed.
 - ImagePanel overlay painter now receives the panel instead of just the graphics context.

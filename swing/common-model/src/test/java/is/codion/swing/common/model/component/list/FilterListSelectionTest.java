@@ -57,8 +57,8 @@ public class FilterListSelectionTest {
 											}
 										})
 										.items(() -> data)
+										.refresh(true)
 										.build();
-		tableModel.items().refresh();
 
 		testModel = filterListSelection(tableModel.items().included());
 	}

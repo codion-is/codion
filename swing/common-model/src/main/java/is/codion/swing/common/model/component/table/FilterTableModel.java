@@ -208,6 +208,13 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> included(Predicate<R> included);
 
 		/**
+		 * Default false.
+		 * @param refresh true if the model items should be refreshed on init
+		 * @return this builder instance
+		 */
+		Builder<R, C> refresh(boolean refresh);
+
+		/**
 		 * @return a new {@link FilterTableModel} instance.
 		 */
 		FilterTableModel<R, C> build();

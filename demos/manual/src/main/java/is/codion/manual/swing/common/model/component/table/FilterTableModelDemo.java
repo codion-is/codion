@@ -127,10 +127,9 @@ public final class FilterTableModelDemo {
 										.columns(new PersonColumns())
 										.items(items)
 										.editor(PersonEditor::new)
+										// Populate the model right away
+										.refresh(true)
 										.build();
-
-		// Populate the model
-		tableModel.items().refresh();
 		// end::filterTableModel[]
 
 		return tableModel;

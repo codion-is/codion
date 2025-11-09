@@ -147,13 +147,13 @@ public class FilterTableTest {
 														asList("dac", "hidden"),
 														asList("dansinn", "hidden"),
 														asList("dlabo", "hidden")))
+										.refresh(true)
 										.build();
 
 		FilterTable<List<String>, Integer> filterTable = FilterTable.builder()
 						.model(tableModel)
 						.build();
 		filterTable.columnModel().visible(1).set(false);
-		tableModel.items().refresh();
 
 		new JScrollPane(filterTable);
 
@@ -232,12 +232,14 @@ public class FilterTableTest {
 
 												return row.value;
 											}
-										}).items(() -> items).build();
+										})
+										.items(() -> items)
+										.refresh(true)
+										.build();
 
 		FilterTable<Row, Integer> table = FilterTable.builder()
 						.model(testModel)
 						.build();
-		testModel.items().refresh();
 
 		FilterTableSearchModel searchModel = table.search();
 		searchModel.searchString().set("b");

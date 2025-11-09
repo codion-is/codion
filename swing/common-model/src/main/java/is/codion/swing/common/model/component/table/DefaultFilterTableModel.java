@@ -91,6 +91,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.items.included().predicate().set(builder.included);
 		this.selection = (FilterListSelection<R>) items.included().selection();
 		this.removeSelectionListener = new RemoveSelectionListener();
+		if (builder.refresh) {
+			items.refresh();
+		}
 		addTableModelListener(removeSelectionListener);
 	}
 
@@ -369,6 +372,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory = new DefaultEditorFactory<>();
 		private @Nullable Predicate<R> included;
+		private boolean refresh = false;
 
 		private DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
@@ -411,6 +415,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public Builder<R, C> included(Predicate<R> included) {
 			this.included = requireNonNull(included);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> refresh(boolean refresh) {
+			this.refresh = refresh;
 			return this;
 		}
 

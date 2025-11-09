@@ -881,9 +881,9 @@ public final class DefaultFilterTableModelTest {
 						.columns(new TestColumns())
 						.items(() -> ITEMS)
 						.editor(ItemEditor::new)
+						.refresh(true)
 						.build();
 
-		model.items().refresh();
 		model.sort().ascending(0);
 
 		assertTrue(model.items().contains(A));
