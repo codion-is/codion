@@ -28,6 +28,7 @@ Codion Change Log
 - ComponentBuilder.hierarchyListener() added.
 - ImagePanel.resetView() renamed reset().
 - LogLevelPanel added.
+- ImagePanel.autoResize() added.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.db.core

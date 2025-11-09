@@ -63,6 +63,7 @@ import java.util.Hashtable;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.enumValue;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
@@ -114,6 +115,19 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * around the center of the panel.
  * <p>
  * There are no lower or upper zoom level limits.
+ * <b>Auto-Resize</b>
+ * When auto-resize is enabled, the image automatically re-fits to the panel whenever the panel is resized:
+ * <pre>
+ * ImagePanel panel = ImagePanel.builder()
+ *     .autoResize(true)
+ *     .build();
+ *
+ * // Or toggle reactively
+ * panel.autoResize().set(true);
+ * </pre>
+ * When auto-resize is enabled, the image will reset to fit the panel dimensions on every resize event,
+ * regardless of the current zoom level. This is useful for responsive layouts where you want the image
+ * to always fill the available space.
  * <b>Navigation</b>
  * {@code ImagePanel} does not use scroll bars for navigation, but can optionally display a navigation image
  * in the upper left corner. The navigation image is a small replica of the main image. Clicking on any point
@@ -181,6 +195,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * ImagePanel imagePanel = ImagePanel.builder()
  *     .image(image)
  *     .zoomDevice(ZoomDevice.MOUSE_WHEEL)
+ *     .autoResize(true)
  *     .navigable(true)
  *     .movable(true)
  *     .overlay(panel -&gt; {
@@ -221,6 +236,15 @@ public final class ImagePanel extends JPanel {
 	 */
 	public static final PropertyValue<ZoomDevice> ZOOM_DEVICE = enumValue(ImagePanel.class.getName() + ".zoomDevice", ZoomDevice.class, ZoomDevice.NONE);
 
+	/**
+	 * Specifies the default auto-resize behaviour for {@link ImagePanel}s.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> AUTO_RESIZE = booleanValue(ImagePanel.class.getName() + ".autoResize", false);
+
 	private static final ResourceBundle MESSAGES = getBundle(ImagePanel.class.getName());
 	private static final byte[] EMPTY_BYTES = new byte[0];
 
@@ -240,6 +264,7 @@ public final class ImagePanel extends JPanel {
 	private final Consumer<ImagePanel> overlay;
 	private final DefaultImageValue image;
 	private final Value<ZoomDevice> zoomDevice;
+	private final State autoResize;
 	private final State movable;
 	private final State navigable;
 	private final Value<Double> zoomIncrement = Value.builder()
@@ -266,6 +291,7 @@ public final class ImagePanel extends JPanel {
 		overlay = builder.overlay;
 		image = new DefaultImageValue(builder.image);
 		zoomDevice = new ZoomDeviceValue(builder.zoomDevice);
+		autoResize = State.state(builder.autoResize);
 		movable = State.state(builder.movable);
 		navigable = State.state(builder.navigable);
 		zoom = new ZoomValue();
@@ -289,6 +315,16 @@ public final class ImagePanel extends JPanel {
 	 */
 	public Value<ZoomDevice> zoomDevice() {
 		return zoomDevice;
+	}
+
+	/**
+	 * Returns the {@link State} controlling whether the image automatically re-fits to the panel on resize.
+	 * When enabled, the image will reset to fit the panel dimensions whenever the panel is resized,
+	 * regardless of the current zoom level.
+	 * @return the {@link State} controlling the auto-resize behavior
+	 */
+	public State autoResize() {
+		return autoResize;
 	}
 
 	/**
@@ -560,12 +596,21 @@ public final class ImagePanel extends JPanel {
 		Builder overlay(Consumer<ImagePanel> overlay);
 
 		/**
-		 * Default {@link ZoomDevice#NONE}
 		 * @param zoomDevice the initial zoom device
 		 * @return this builder
 		 * @see #ZOOM_DEVICE
 		 */
 		Builder zoomDevice(ZoomDevice zoomDevice);
+
+		/**
+		 * Sets whether the image should automatically re-fit to the panel when the panel is resized.
+		 * When enabled, the image resets to fit the panel dimensions on every resize event,
+		 * regardless of the current zoom level.
+		 * @param autoResize true to enable auto-resize
+		 * @return this builder
+		 * @see #AUTO_RESIZE
+		 */
+		Builder autoResize(boolean autoResize);
 
 		/**
 		 * Default false
@@ -1113,11 +1158,16 @@ public final class ImagePanel extends JPanel {
 		@Override
 		public void componentResized(ComponentEvent e) {
 			if (scale > 0.0) {
-				if (isFullImageInPanel()) {
-					centerImage();
+				if (autoResize.is()) {
+					reset(); // Fit to new panel size
 				}
-				else if (isImageEdgeInPanel()) {
-					scaleOrigin();
+				else {
+					if (isFullImageInPanel()) {
+						centerImage();
+					}
+					else if (isImageEdgeInPanel()) {
+						scaleOrigin();
+					}
 				}
 				if (navigable.is()) {
 					createNavigationImage();
@@ -1214,6 +1264,7 @@ public final class ImagePanel extends JPanel {
 		private @Nullable BufferedImage image;
 		private Consumer<ImagePanel> overlay = EMPTY_OVERLAY;
 		private ZoomDevice zoomDevice = ZOOM_DEVICE.getOrThrow();
+		private boolean autoResize = AUTO_RESIZE.getOrThrow();
 		private boolean navigable = false;
 		private boolean movable = false;
 
@@ -1244,6 +1295,12 @@ public final class ImagePanel extends JPanel {
 		@Override
 		public Builder zoomDevice(ZoomDevice zoomDevice) {
 			this.zoomDevice = requireNonNull(zoomDevice);
+			return this;
+		}
+
+		@Override
+		public Builder autoResize(boolean autoResize) {
+			this.autoResize = autoResize;
 			return this;
 		}
 

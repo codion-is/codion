@@ -177,6 +177,7 @@ final class CoverArtPanel extends JPanel {
 		imagePanel.zoomDevice().set(embedded ? ZoomDevice.NONE : ZoomDevice.MOUSE_WHEEL);
 		imagePanel.movable().set(!embedded);
 		imagePanel.navigable().set(!embedded);
+		imagePanel.autoResize().set(!embedded);
 	}
 
 	private ImagePanel createImagePanel() {
