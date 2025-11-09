@@ -48,10 +48,10 @@ public final class Text {
 	 * </ul>
 	 * @see #collator()
 	 * @see #collate(List)
-	 * @see Locale#toLanguageTag()
+	 * @see Locale#getLanguage()
 	 */
 	public static final PropertyValue<String> COLLATOR_LANGUAGE =
-					stringValue("codion.collatorLanguage", Locale.getDefault().getLanguage());
+					stringValue("codion.collator.language", Locale.getDefault().getLanguage());
 
 	private static final class SpaceAwareComparatorHolder {
 		private static final Comparator<String> INSTANCE = new SpaceAwareComparator<>(new Locale(COLLATOR_LANGUAGE.getOrThrow()));

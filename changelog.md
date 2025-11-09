@@ -10,6 +10,7 @@ Codion Change Log
 - is.codion.plugin.jul.proxy, is.codion.plugin.log4j.proxy, is.codion.plugin.logback.proxy META-INF service definition filename fixed.
 - LoggerProxy.getLogLevel() and setLogLevel() overloaded with logger name.
 - LoggerProxy.loggers() added.
+- LoggerProxy.NULL_PROXY renamed NONE, related refactoring.
 ### is.codion.tools.jul.classpath
 - ClasspathConfiguration split from is.codion.plugin.jul.proxy module.
 ### is.codion.tools.swing.robot

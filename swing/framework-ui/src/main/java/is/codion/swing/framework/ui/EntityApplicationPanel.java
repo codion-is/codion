@@ -1022,7 +1022,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private static Map<Object, State> createLogLevelStateMap() {
 		LoggerProxy loggerProxy = LoggerProxy.instance();
-		if (loggerProxy == LoggerProxy.NULL_PROXY) {
+		if (loggerProxy == LoggerProxy.NONE) {
 			return Collections.emptyMap();
 		}
 		Object currentLogLevel = loggerProxy.getLogLevel();

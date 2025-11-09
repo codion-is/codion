@@ -32,38 +32,9 @@ import static java.util.Collections.emptyList;
 public interface LoggerProxy {
 
 	/**
-	 * The null logger proxy instance, zero functionality.
+	 * The no-op logger proxy instance, zero functionality.
 	 */
-	LoggerProxy NULL_PROXY = new LoggerProxy() {
-
-		private static final String NO_LOG_LEVEL = "NULL";
-
-		@Override
-		public Object getLogLevel() {
-			return NO_LOG_LEVEL;
-		}
-
-		@Override
-		public Object getLogLevel(String name) {
-			return NO_LOG_LEVEL;
-		}
-
-		@Override
-		public void setLogLevel(Object logLevel) {/*no op*/}
-
-		@Override
-		public void setLogLevel(String name, Object logLevel) {/*no op*/}
-
-		@Override
-		public List<Object> levels() {
-			return emptyList();
-		}
-
-		@Override
-		public Collection<String> loggers() {
-			return emptyList();
-		}
-	};
+	LoggerProxy NONE = new NoOpLoggerProxy();
 
 	/**
 	 * @return the root log level
@@ -107,7 +78,7 @@ public interface LoggerProxy {
 	}
 
 	/**
-	 * @return the first available LoggerProxy implementation found, {@link #NULL_PROXY} if none is available.
+	 * @return the first available LoggerProxy implementation found, {@link #NONE} if none is available.
 	 */
 	static LoggerProxy instance() {
 		try {
@@ -118,7 +89,7 @@ public interface LoggerProxy {
 			}
 
 			System.err.println("No LoggerProxy service implementation found");
-			return NULL_PROXY;
+			return NONE;
 		}
 		catch (ServiceConfigurationError e) {
 			Throwable cause = e.getCause();

@@ -26,7 +26,6 @@ import is.codion.framework.domain.entity.condition.ColumnCondition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ final class ColumnConditionDeserializer implements Serializable {
 		this.entityObjectMapper = requireNonNull(entityObjectMapper);
 	}
 
-	<T> ColumnCondition<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
+	<T> ColumnCondition<T> deserialize(EntityDefinition definition, JsonNode conditionNode) {
 		String columnName = conditionNode.get("column").asText();
 		ColumnDefinition<T> columnDefinition = definition.columns().definition((Column<T>) definition.attributes().getOrThrow(columnName));
 		boolean wildcard = conditionNode.get("wildcard").asBoolean();
