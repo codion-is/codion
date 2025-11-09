@@ -39,8 +39,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -177,14 +175,13 @@ final class CoverArtPanel extends JPanel {
 		imagePanel.zoomDevice().set(embedded ? ZoomDevice.NONE : ZoomDevice.MOUSE_WHEEL);
 		imagePanel.movable().set(!embedded);
 		imagePanel.navigable().set(!embedded);
-		imagePanel.autoResize().set(!embedded);
 	}
 
 	private ImagePanel createImagePanel() {
 		return ImagePanel.builder()
 						.transferHandler(new CoverTransferHandler())
 						.border(createEtchedBorder())
-						.componentListener(new ResetOnEmbedded())
+						.autoResize(true)
 						.build();
 	}
 
@@ -206,16 +203,6 @@ final class CoverArtPanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 2) {
 				embedded.toggle();
-			}
-		}
-	}
-
-	private final class ResetOnEmbedded extends ComponentAdapter {
-
-		@Override
-		public void componentResized(ComponentEvent e) {
-			if (embedded.is()) {
-				imagePanel.reset();
 			}
 		}
 	}
