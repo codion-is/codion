@@ -69,8 +69,6 @@ public final class DefaultEntityServerAdminTest {
 			EntityServerAdmin admin = new DefaultEntityServerAdmin(server, configuration);
 			admin.setTracingEnabled(connectionRequest.clientId(), true);
 			assertTrue(admin.isTracingEnabled(connectionRequest.clientId()));
-			admin.setLogLevel("TEST");//no op logger
-			admin.getLogLevel();
 			admin.resetConnectionPoolStatistics(SCOTT);
 			admin.setCollectPoolSnapshotStatistics(SCOTT, true);
 			assertTrue(admin.isCollectPoolSnapshotStatistics(SCOTT));

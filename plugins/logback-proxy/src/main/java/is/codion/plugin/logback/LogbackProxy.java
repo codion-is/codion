@@ -44,18 +44,8 @@ import static java.util.Spliterators.spliteratorUnknownSize;
 public final class LogbackProxy implements LoggerProxy {
 
 	@Override
-	public Object getLogLevel() {
-		return getLogLevel(org.slf4j.Logger.ROOT_LOGGER_NAME);
-	}
-
-	@Override
 	public Object getLogLevel(String name) {
 		return ((Logger) LoggerFactory.getLogger(requireNonNull(name))).getLevel();
-	}
-
-	@Override
-	public void setLogLevel(Object logLevel) {
-		setLogLevel(org.slf4j.Logger.ROOT_LOGGER_NAME, logLevel);
 	}
 
 	@Override
@@ -69,6 +59,11 @@ public final class LogbackProxy implements LoggerProxy {
 	@Override
 	public List<Object> levels() {
 		return asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);
+	}
+
+	@Override
+	public String rootLogger() {
+		return org.slf4j.Logger.ROOT_LOGGER_NAME;
 	}
 
 	@Override

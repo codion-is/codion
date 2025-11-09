@@ -92,16 +92,36 @@ public interface EntityServerAdmin extends ServerAdmin {
 	void setTracingEnabled(UUID clientId, boolean tracingEnabled) throws RemoteException;
 
 	/**
-	 * @return the server log level
+	 * @param logger the logger
+	 * @return the log level
 	 * @throws RemoteException in case of a communication error
 	 */
-	Object getLogLevel() throws RemoteException;
+	Object getLogLevel(String logger) throws RemoteException;
 
 	/**
+	 * @param logger the logger
 	 * @param level the log level
 	 * @throws RemoteException in case of a communication error
 	 */
-	void setLogLevel(Object level) throws RemoteException;
+	void setLogLevel(String logger, Object level) throws RemoteException;
+
+	/**
+	 * @return the root logger name
+	 */
+	String rootLogger() throws RemoteException;
+
+	/**
+	 * @return the active server loggers
+	 * @throws RemoteException in case of a communication error
+	 */
+	Collection<String> loggers() throws RemoteException;
+
+
+	/**
+	 * @return the server log levels
+	 * @throws RemoteException in case of a communication error
+	 */
+	Collection<Object> logLevels() throws RemoteException;
 
 	/**
 	 * Returns the idle connection timeout in ms

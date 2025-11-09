@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.comboBox;
@@ -41,6 +40,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
 
 /**
  * A UI panel for configuring logging levels for a set of loggers.
@@ -75,36 +75,36 @@ public final class LogLevelPanel extends JPanel {
 	private static final MessageBundle MESSAGES =
 					messageBundle(LogLevelPanel.class, getBundle(LogLevelPanel.class.getName()));
 
-	private static final LoggerProxy LOGGER_PROXY = LoggerProxy.instance();
+	private final LoggerProxy loggerProxy;
+	private final FilterTableModel<LogLevelRow, LogLevelColumn> tableModel;
+	private final FilterTable<LogLevelRow, LogLevelColumn> table;
 
-	private final Supplier<Collection<String>> loggers;
-	private final FilterTableModel<LogLevelRow, LogLevelColumn> tableModel = FilterTableModel.builder()
-					.columns(new LogLevelColumns())
-					.items(this::logLevelRows)
-					.editor(LogLevelEditor::new)
-					.build();
-	private final FilterTable<LogLevelRow, LogLevelColumn> table = FilterTable.builder()
-					.model(tableModel)
-					.sortable(false)
-					.columnResizing(false)
-					.columnReordering(false)
-					.columns(LogLevelPanel::configureColumns)
-					.cellEditor(LogLevelColumn.LEVEL, FilterTableCellEditor.builder()
-									.component(() -> comboBox()
-													.model(FilterComboBoxModel.builder()
-																	.items(LOGGER_PROXY.levels())
-																	.comparator(null)
-																	.build())
-													.buildValue())
-									.build())
-					.cellEditable(LogLevelPanel::cellEditable)
-					.surrendersFocusOnKeystroke(true)
-					.build();
-
-	private LogLevelPanel(Supplier<Collection<String>> loggers) {
+	private LogLevelPanel(LoggerProxy loggerProxy) {
 		super(borderLayout());
-		this.loggers = loggers;
-		tableModel.items().refresh();
+		this.loggerProxy = loggerProxy;
+		tableModel = FilterTableModel.builder()
+						.columns(new LogLevelColumns())
+						.items(this::logLevelRows)
+						.editor(LogLevelEditor::new)
+						.refresh(true)
+						.build();
+		table = FilterTable.builder()
+						.model(tableModel)
+						.sortable(false)
+						.autoResizeMode(AUTO_RESIZE_ALL_COLUMNS)
+						.columnReordering(false)
+						.columns(LogLevelPanel::configureColumns)
+						.cellEditor(LogLevelColumn.LEVEL, FilterTableCellEditor.builder()
+										.component(() -> comboBox()
+														.model(FilterComboBoxModel.builder()
+																		.items(loggerProxy.levels())
+																		.comparator(null)
+																		.build())
+														.buildValue())
+										.build())
+						.cellEditable(LogLevelPanel::cellEditable)
+						.surrendersFocusOnKeystroke(true)
+						.build();
 		add(scrollPane()
 						.view(table)
 						.build(), BorderLayout.CENTER);
@@ -112,13 +112,13 @@ public final class LogLevelPanel extends JPanel {
 
 	private Collection<LogLevelRow> logLevelRows() {
 		List<LogLevelRow> rows = new ArrayList<>();
-		Object rootLevel = LOGGER_PROXY.getLogLevel();
-		loggers.get().stream().sorted().forEach(logger -> {
+		Object rootLevel = loggerProxy.getLogLevel(loggerProxy.rootLogger());
+		loggerProxy.loggers().stream().sorted().forEach(logger -> {
 			String loggerName = logger;
-			Object logLevel = LOGGER_PROXY.getLogLevel(loggerName);
+			Object logLevel = loggerProxy.getLogLevel(loggerName);
 			while (logLevel == null && loggerName.contains(".")) {
 				loggerName = loggerName.substring(0, loggerName.lastIndexOf('.'));
-				logLevel = LOGGER_PROXY.getLogLevel(loggerName);
+				logLevel = loggerProxy.getLogLevel(loggerName);
 			}
 			rows.add(new DefaultLogLevelRow(logger, logLevel == null ? rootLevel : logLevel));
 		});
@@ -145,16 +145,29 @@ public final class LogLevelPanel extends JPanel {
 	}
 
 	/**
-	 * Creates a new {@link LogLevelPanel} for configuring the provided loggers.
+	 * Creates a new {@link LogLevelPanel} configured to use the local {@link LoggerProxy} instance.
 	 * <p>
 	 * The panel will display the supplied loggers plus all parent loggers in the hierarchy,
 	 * up to and including the ROOT logger. This allows configuration at any level of the
 	 * package hierarchy.
-	 * @param loggers supplies the loggers to configure
+	 * @return a new {@link LogLevelPanel}
+	 * @see LoggerProxy#instance()
+	 */
+	public static LogLevelPanel logLevelPanel() {
+		return logLevelPanel(LoggerProxy.instance());
+	}
+
+	/**
+	 * Creates a new {@link LogLevelPanel} configured to use the given {@link LoggerProxy} instance.
+	 * <p>
+	 * The panel will display the supplied loggers plus all parent loggers in the hierarchy,
+	 * up to and including the ROOT logger. This allows configuration at any level of the
+	 * package hierarchy.
+	 * @param loggerProxy the logger proxy
 	 * @return a new {@link LogLevelPanel}
 	 */
-	public static LogLevelPanel logLevelPanel(Supplier<Collection<String>> loggers) {
-		return new LogLevelPanel(requireNonNull(loggers));
+	public static LogLevelPanel logLevelPanel(LoggerProxy loggerProxy) {
+		return new LogLevelPanel(requireNonNull(loggerProxy));
 	}
 
 	enum LogLevelColumn {
@@ -168,7 +181,7 @@ public final class LogLevelPanel extends JPanel {
 		Object level();
 	}
 
-	private static final class LogLevelEditor implements FilterTableModel.Editor<LogLevelRow, LogLevelColumn> {
+	private final class LogLevelEditor implements FilterTableModel.Editor<LogLevelRow, LogLevelColumn> {
 
 		private final FilterTableModel<LogLevelRow, LogLevelColumn> tableModel;
 
@@ -184,7 +197,7 @@ public final class LogLevelPanel extends JPanel {
 		@Override
 		public void set(Object value, int rowIndex, LogLevelRow row, LogLevelColumn identifier) {
 			if (LogLevelColumn.LEVEL.equals(identifier)) {
-				LOGGER_PROXY.setLogLevel(row.logger(), value);
+				loggerProxy.setLogLevel(row.logger(), value);
 				tableModel.items().refresh();
 			}
 		}

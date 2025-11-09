@@ -42,21 +42,11 @@ import static java.util.stream.Collectors.toList;
 public final class Log4jProxy implements LoggerProxy {
 
 	@Override
-	public Object getLogLevel() {
-		return getLogLevel(LogManager.ROOT_LOGGER_NAME);
-	}
-
-	@Override
 	public Object getLogLevel(String name) {
 		LoggerContext context = (LoggerContext) LogManager.getContext(false);
 		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(requireNonNull(name));
 
 		return loggerConfig.getLevel();
-	}
-
-	@Override
-	public void setLogLevel(Object logLevel) {
-		setLogLevel(LogManager.ROOT_LOGGER_NAME, logLevel);
 	}
 
 	@Override
@@ -73,6 +63,11 @@ public final class Log4jProxy implements LoggerProxy {
 	@Override
 	public List<Object> levels() {
 		return asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL);
+	}
+
+	@Override
+	public String rootLogger() {
+		return LogManager.ROOT_LOGGER_NAME;
 	}
 
 	@Override

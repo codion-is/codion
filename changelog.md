@@ -11,6 +11,7 @@ Codion Change Log
 - LoggerProxy.getLogLevel() and setLogLevel() overloaded with logger name.
 - LoggerProxy.loggers() added.
 - LoggerProxy.NULL_PROXY renamed NONE, related refactoring.
+- LoggerProxy.rootLogger() added, getLogLevel() and setLogLevel() removed.
 ### is.codion.tools.jul.classpath
 - ClasspathConfiguration split from is.codion.plugin.jul.proxy module.
 ### is.codion.tools.swing.robot
@@ -30,6 +31,7 @@ Codion Change Log
 - ImagePanel.resetView() renamed reset().
 - LogLevelPanel added.
 - ImagePanel.autoResize() added.
+- LogLevelPanel refactored to be able to use any provided LoggerProxy instance.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.db.core
@@ -45,8 +47,11 @@ Codion Change Log
 ### is.codion.framework.server
 - is.codion.framework.server module now requires is.codion.tools.jul.classpath.
 - is.codion.framework.server module transitive requires for is.codion.framework.db.rmi removed.
+- EntityServerAdmin, detailed logging configuration methods added.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, advanced logging configuration added.
+### is.codion.tools.monitor.ui
+- ServerMonitorPanel now provides detailed server logging configuration via LogLevelPanel.
 
 ## 0.18.57
 ### is.codion.common.core

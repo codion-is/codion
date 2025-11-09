@@ -20,12 +20,10 @@ package is.codion.swing.common.ui.component.logging;
 
 import org.junit.jupiter.api.Test;
 
-import static java.util.Collections.singleton;
-
 public final class LogLevelPanelTest {
 
 	@Test
 	void test() {
-		LogLevelPanel.logLevelPanel(() -> singleton("is.codion.swing.common.ui.component.logging"));
+		LogLevelPanel.logLevelPanel();
 	}
 }

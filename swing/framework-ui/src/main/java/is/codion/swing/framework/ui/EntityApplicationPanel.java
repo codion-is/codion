@@ -1025,7 +1025,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		if (loggerProxy == LoggerProxy.NONE) {
 			return Collections.emptyMap();
 		}
-		Object currentLogLevel = loggerProxy.getLogLevel();
+		Object currentLogLevel = loggerProxy.getLogLevel(loggerProxy.rootLogger());
 		Map<Object, State> levelStateMap = new LinkedHashMap<>();
 		State.Group logLevelStateGroup = State.group();
 		for (Object logLevel : loggerProxy.levels()) {
@@ -1033,7 +1033,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			logLevelStateGroup.add(logLevelState);
 			logLevelState.addConsumer(enabled -> {
 				if (enabled) {
-					loggerProxy.setLogLevel(logLevel);
+					loggerProxy.setLogLevel(loggerProxy.rootLogger(), logLevel);
 				}
 			});
 			levelStateMap.put(logLevel, logLevelState);
@@ -1195,7 +1195,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private void advancedLogLevelConfiguration() {
 		Dialogs.builder()
 						.component(borderLayoutPanel()
-										.center(logLevelPanel(() -> LoggerProxy.instance().loggers()))
+										.center(logLevelPanel())
 										.border(emptyBorder()))
 						.owner(this)
 						.title(resourceBundle.getString(ADVANCED_LOG_LEVEL))

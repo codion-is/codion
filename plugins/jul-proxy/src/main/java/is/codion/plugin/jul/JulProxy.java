@@ -36,18 +36,8 @@ import static java.util.Objects.requireNonNull;
 public final class JulProxy implements LoggerProxy {
 
 	@Override
-	public Object getLogLevel() {
-		return getLogLevel(Logger.GLOBAL_LOGGER_NAME);
-	}
-
-	@Override
 	public Object getLogLevel(String name) {
 		return LogManager.getLogManager().getLogger(requireNonNull(name)).getLevel();
-	}
-
-	@Override
-	public void setLogLevel(Object logLevel) {
-		setLogLevel(Logger.GLOBAL_LOGGER_NAME, logLevel);
 	}
 
 	@Override
@@ -61,6 +51,11 @@ public final class JulProxy implements LoggerProxy {
 	@Override
 	public List<Object> levels() {
 		return asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF);
+	}
+
+	@Override
+	public String rootLogger() {
+		return Logger.GLOBAL_LOGGER_NAME;
 	}
 
 	@Override

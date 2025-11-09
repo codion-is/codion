@@ -34,8 +34,6 @@ import org.jfree.chart.event.AxisChangeEvent;
 import org.jfree.chart.event.AxisChangeListener;
 import org.jfree.chart.plot.PlotOrientation;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -50,6 +48,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.logging.LogLevelPanel.logLevelPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -137,8 +136,6 @@ public final class ServerMonitorPanel extends JPanel {
 										.columns(SPINNER_COLUMNS))
 						.add(label("Mem. usage"))
 						.add(createMemoryField())
-						.add(label("Logging"))
-						.add(createLogLevelField())
 						.build();
 
 		JPanel northPanel = borderLayoutPanel()
@@ -310,6 +307,7 @@ public final class ServerMonitorPanel extends JPanel {
 										.value(model.serializationFilterPatterns())
 										.scrollPane()
 										.build())
+						.tab("Logging", logLevelPanel(model.loggerProxy()))
 						.build();
 	}
 
@@ -328,13 +326,6 @@ public final class ServerMonitorPanel extends JPanel {
 						.editable(false)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.link(model.memoryUsage())
-						.build();
-	}
-
-	private JComboBox<Object> createLogLevelField() {
-		return comboBox()
-						.model(new DefaultComboBoxModel<>(model.logLevels().toArray()))
-						.link(model.logLevel())
 						.build();
 	}
 

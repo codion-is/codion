@@ -47,6 +47,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -72,8 +73,8 @@ public final class ServerMonitor {
 	private static final String DOMAIN = "Domain";
 
 	private final Event<?> serverShutDownEvent = Event.event();
-	private final Value<Object> logLevelValue;
 	private final Value<Integer> connectionLimitValue;
+	private final LoggerProxy loggerProxy = new ServerLoggerProxy();
 
 	private final String hostname;
 	private final ServerInformation serverInformation;
@@ -85,8 +86,6 @@ public final class ServerMonitor {
 
 	private final DatabaseMonitor databaseMonitor;
 	private final ClientUserMonitor clientMonitor;
-
-	private final LoggerProxy loggerProxy = LoggerProxy.instance();
 
 	private boolean shutdown = false;
 
@@ -155,10 +154,6 @@ public final class ServerMonitor {
 						.nonNull(-1)
 						.value(getConnectionLimit())
 						.consumer(this::setConnectionLimit)
-						.build();
-		this.logLevelValue = Value.builder()
-						.nullable(this.server.getLogLevel())
-						.consumer(this::setLogLevel)
 						.build();
 		this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
 		this.memoryUsageCollection.addSeries(maxMemorySeries);
@@ -234,13 +229,6 @@ public final class ServerMonitor {
 	}
 
 	/**
-	 * @return the available log levels
-	 */
-	public List<Object> logLevels() {
-		return loggerProxy.levels();
-	}
-
-	/**
 	 * @return the connection request dataset
 	 */
 	public XYDataset connectionRequestsDataset() {
@@ -280,6 +268,13 @@ public final class ServerMonitor {
 	 */
 	public XYDataset threadCountDataset() {
 		return threadCountCollection;
+	}
+
+	/**
+	 * @return the logger proxy
+	 */
+	public LoggerProxy loggerProxy() {
+		return loggerProxy;
 	}
 
 	/**
@@ -435,13 +430,6 @@ public final class ServerMonitor {
 		return connectionLimitValue;
 	}
 
-	/**
-	 * @return a {@link Value} controlling the log level
-	 */
-	public Value<Object> logLevel() {
-		return logLevelValue;
-	}
-
 	private int getConnectionLimit() {
 		try {
 			return server.getConnectionLimit();
@@ -460,18 +448,6 @@ public final class ServerMonitor {
 		}
 		try {
 			server.setConnectionLimit(value);
-		}
-		catch (RemoteException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * @param level the server log level
-	 */
-	private void setLogLevel(Object level) {
-		try {
-			server.setLogLevel(level);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -560,6 +536,59 @@ public final class ServerMonitor {
 				return server.domainOperations().values().stream()
 								.flatMap(Collection::stream)
 								.collect(Collectors.toList());
+			}
+			catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private final class ServerLoggerProxy implements LoggerProxy {
+
+		@Override
+		public Object getLogLevel(String logger) {
+			try {
+				return server.getLogLevel(logger);
+			}
+			catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public void setLogLevel(String logger, Object level) {
+			try {
+				server.setLogLevel(logger, level);
+			}
+			catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public List<Object> levels() {
+			try {
+				return new ArrayList<>(server.logLevels());
+			}
+			catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public String rootLogger() {
+			try {
+				return server.rootLogger();
+			}
+			catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public Collection<String> loggers() {
+			try {
+				return server.loggers();
 			}
 			catch (RemoteException e) {
 				throw new RuntimeException(e);

@@ -70,14 +70,29 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 	}
 
 	@Override
-	public Object getLogLevel() {
-		return loggerProxy.getLogLevel();
+	public Object getLogLevel(String logger) throws RemoteException {
+		return loggerProxy.getLogLevel(logger);
 	}
 
 	@Override
-	public void setLogLevel(Object level) {
-		LOG.info("setLogLevel({})", level);
-		loggerProxy.setLogLevel(level);
+	public void setLogLevel(String logger, Object level) throws RemoteException {
+		LOG.info("setLogLevel({}, {})", logger, level);
+		loggerProxy.setLogLevel(logger, level);
+	}
+
+	@Override
+	public Collection<String> loggers() throws RemoteException {
+		return loggerProxy.loggers();
+	}
+
+	@Override
+	public String rootLogger() throws RemoteException {
+		return loggerProxy.rootLogger();
+	}
+
+	@Override
+	public Collection<Object> logLevels() throws RemoteException {
+		return loggerProxy.levels();
 	}
 
 	@Override

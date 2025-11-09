@@ -28,17 +28,9 @@ final class NoOpLoggerProxy implements LoggerProxy {
 	private static final String NO_LOG_LEVEL = "NULL";
 
 	@Override
-	public Object getLogLevel() {
-		return NO_LOG_LEVEL;
-	}
-
-	@Override
 	public Object getLogLevel(String name) {
 		return NO_LOG_LEVEL;
 	}
-
-	@Override
-	public void setLogLevel(Object logLevel) {/*no op*/}
 
 	@Override
 	public void setLogLevel(String name, Object logLevel) {/*no op*/}
@@ -46,6 +38,11 @@ final class NoOpLoggerProxy implements LoggerProxy {
 	@Override
 	public List<Object> levels() {
 		return emptyList();
+	}
+
+	@Override
+	public String rootLogger() {
+		return "";
 	}
 
 	@Override
