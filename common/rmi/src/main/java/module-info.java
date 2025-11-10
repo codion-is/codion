@@ -33,7 +33,6 @@
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.common.rmi {
-	requires transitive org.jspecify;
 	requires org.slf4j;
 	requires jdk.management;
 	requires nl.altindag.ssl;

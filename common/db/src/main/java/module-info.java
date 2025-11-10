@@ -30,7 +30,6 @@
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.common.db {
-	requires transitive org.jspecify;
 	requires transitive java.sql;
 	requires org.slf4j;
 	requires transitive is.codion.common.utilities;
