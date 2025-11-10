@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.59
+
 ## 0.18.58
 ### is.codion.common.reactive
 - is.codion.common.core renamed is.codion.common.reactive.
