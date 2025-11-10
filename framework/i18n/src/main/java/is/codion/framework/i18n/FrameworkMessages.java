@@ -73,7 +73,6 @@ public final class FrameworkMessages {
 	private static final String SEARCH_NOUN = "search_noun";
 	private static final String SEARCH_VERB = "search_verb";
 	private static final String FILTER_NOUN = "filter_noun";
-	private static final String FILTER_VERB = "filter_verb";
 	private static final String SEARCH_MNEMONIC = "search_mnemonic";
 	private static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
@@ -361,13 +360,6 @@ public final class FrameworkMessages {
 	 */
 	public static String searchNoun() {
 		return get(SEARCH_NOUN);
-	}
-
-	/**
-	 * @return filter as a verb
-	 */
-	public static String filterVerb() {
-		return get(FILTER_VERB);
 	}
 
 	/**

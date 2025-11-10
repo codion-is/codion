@@ -100,6 +100,7 @@ public final class Messages {
 	private static final String SAVE_MNEMONIC = "save_mnemonic";
 	private static final String OPEN = "open";
 	private static final String OPEN_MNEMONIC = "open_mnemonic";
+	private static final String FILTER_VERB = "filter_verb";
 
 	private Messages() {}
 
@@ -290,6 +291,13 @@ public final class Messages {
 		String mnemonic = get(OPEN_MNEMONIC);
 
 		return mnemonic.isEmpty() ? '\0' : mnemonic.charAt(0);
+	}
+
+	/**
+	 * @return filter as a verb
+	 */
+	public static String filterVerb() {
+		return get(FILTER_VERB);
 	}
 
 	private static String get(String key) {

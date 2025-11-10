@@ -23,6 +23,7 @@ is/codion/common/i18n/Messages_is_IS.properties
 |clear_tip|Clear all fields|Hreinsa alla reiti
 |copy|Copy|Afrita
 |error|Error|Villa
+|filter_verb|Filter|Sýja
 |find|Find|Finna
 |login|Login|Innskrá
 |no|No|Nei
@@ -301,7 +302,6 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |file|File|Skrá
 |file_mnemonic|F|K
 |filter_noun|Filter|Sýjun
-|filter_verb|Filter|Sýja
 |insert|Add|Vista
 |insert_mnemonic|A|V
 |insert_tip|Add a new record based on the given values|Vista nýja færslu byggða á innslegnum gildum

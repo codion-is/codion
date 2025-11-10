@@ -18,16 +18,22 @@
  */
 package is.codion.swing.common.ui.component.logging;
 
+import is.codion.common.i18n.Messages;
 import is.codion.common.utilities.logging.LoggerProxy;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +45,7 @@ import java.util.function.Supplier;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.comboBox;
 import static is.codion.swing.common.ui.component.Components.scrollPane;
+import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -80,6 +87,7 @@ public final class LogLevelPanel extends JPanel {
 	private final LoggerProxy loggerProxy;
 	private final FilterTableModel<LogLevelRow, LogLevelColumn> tableModel;
 	private final FilterTable<LogLevelRow, LogLevelColumn> table;
+	private final JTextField filterField;
 
 	private LogLevelPanel(LoggerProxy loggerProxy) {
 		super(borderLayout());
@@ -90,6 +98,7 @@ public final class LogLevelPanel extends JPanel {
 						.editor(LogLevelEditor::new)
 						.refresh(true)
 						.build();
+		tableModel.sort().ascending(LogLevelColumn.LOGGER);
 		table = FilterTable.builder()
 						.model(tableModel)
 						.sortable(false)
@@ -107,9 +116,23 @@ public final class LogLevelPanel extends JPanel {
 						.cellEditable(LogLevelPanel::cellEditable)
 						.surrendersFocusOnKeystroke(true)
 						.build();
+		filterField = Components.stringField()
+						.link(tableModel.filters().<String>get(LogLevelColumn.LOGGER).operands().equal())
+						.hint(Messages.filterVerb())
+						.selectAllOnFocusGained(true)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(KeyEvent.VK_ESCAPE)
+										.action(command(table::requestFocusInWindow)))
+						.build();
+		KeyEvents.builder()
+						.keyCode(KeyEvent.VK_F)
+						.modifiers(InputEvent.CTRL_DOWN_MASK)
+						.action(command(filterField::requestFocusInWindow))
+						.enable(table);
 		add(scrollPane()
 						.view(table)
 						.build(), BorderLayout.CENTER);
+		add(filterField, BorderLayout.SOUTH);
 	}
 
 	private static boolean cellEditable(LogLevelRow row, LogLevelColumn column) {

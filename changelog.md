@@ -32,7 +32,7 @@ Codion Change Log
 - LogLevelPanel added.
 - ImagePanel.autoResize() added.
 - LogLevelPanel refactored to be able to use any provided LoggerProxy instance.
-- LogLevelPanel, minor refactoring.
+- LogLevelPanel, filter field added, minor refactoring.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.db.core

@@ -49,5 +49,6 @@ public class MessagesTest {
 		Messages.saveMnemonic();
 		Messages.open();
 		Messages.openMnemonic();
+		Messages.filterVerb();
 	}
 }
