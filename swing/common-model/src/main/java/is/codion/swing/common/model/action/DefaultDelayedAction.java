@@ -18,9 +18,9 @@
  */
 package is.codion.swing.common.model.action;
 
-import javax.swing.AbstractAction;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 final class DefaultDelayedAction implements DelayedAction {
 
@@ -37,7 +37,7 @@ final class DefaultDelayedAction implements DelayedAction {
 		timer.stop();
 	}
 
-	private static final class Performer extends AbstractAction {
+	private static final class Performer implements ActionListener {
 
 		private final Runnable action;
 
