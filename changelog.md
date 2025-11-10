@@ -33,6 +33,7 @@ Codion Change Log
 - ImagePanel.autoResize() added.
 - LogLevelPanel refactored to be able to use any provided LoggerProxy instance.
 - LogLevelPanel, filter field added, minor refactoring.
+- ImagePanel bug fixed, overlay now receives the Graphics2D context along with the ImagePanel.
 ### is.codion.framework.domain
 - ValueAttributeDefinition added, related refactoring.
 ### is.codion.framework.db.core

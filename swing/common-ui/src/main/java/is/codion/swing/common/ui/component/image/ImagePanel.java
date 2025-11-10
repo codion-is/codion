@@ -61,7 +61,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.Hashtable;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.enumValue;
@@ -158,15 +158,14 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * When the scaled image becomes larger than the original image, Bilinear interpolation is applied,
  * but only to the part of the image displayed in the panel.
  * <b>Custom Overlays</b>
- * The panel supports custom overlay painting via a {@link Consumer}&lt;{@link Graphics2D}&gt; that is called
- * after the image is painted but before the navigation image. This is useful for drawing annotations, grids,
+ * The panel supports custom overlay painting via a {@link java.util.function.BiConsumer BiConsumer}&lt;{@link Graphics2D}, {@link ImagePanel}&gt;
+ * that is called after the image is painted but before the navigation image. This is useful for drawing annotations, grids,
  * highlighting regions, or any custom graphics on top of the image:
  * <pre>
  * ImagePanel imagePanel = ImagePanel.builder()
  *     .image(image)
- *     .overlay(panel -&gt; {
+ *     .overlay((g2d, panel) -&gt; {
  *         // Draw a red rectangle at image coordinates (100, 100)
- *         Graphics2D g2d = (Graphics2D) panel.getGraphics();
  *         Point2D.Double imagePoint = new Point2D.Double(100, 100);
  *         Point2D.Double panelPoint = panel.toPanelCoordinates(imagePoint);
  *         g2d.setColor(Color.RED);
@@ -174,9 +173,9 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  *     })
  *     .build();
  * </pre>
- * The overlay painter receives the panel and can draw directly on it.
- * Coordinate conversion methods ({@link #toImageCoordinates(Point)} and {@link #toPanelCoordinates(Point2D.Double)})
- * allow you to work in image coordinates and convert to panel coordinates for drawing.
+ * The overlay painter receives the Graphics2D context for drawing and the ImagePanel for accessing
+ * coordinate conversion methods ({@link #toImageCoordinates(Point)} and {@link #toPanelCoordinates(Point2D.Double)})
+ * and other panel state like {@link #scale()}.
  * <p>
  * The {@link #origin()} Value provides access to the current image origin (top-left corner position in panel coordinates),
  * which can be used to programmatically position the image to make specific regions visible:
@@ -198,9 +197,8 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  *     .autoResize(true)
  *     .navigable(true)
  *     .movable(true)
- *     .overlay(panel -&gt; {
+ *     .overlay((g2d, panel) -&gt; {
  *         // Draw custom annotations
- *         Graphics2D g2d = (Graphics2D) panel.getGraphics();
  *         g2d.setColor(new Color(255, 0, 0, 128));
  *         g2d.fillOval(100, 100, 50, 50);
  *     })
@@ -261,7 +259,7 @@ public final class ImagePanel extends JPanel {
 		}
 	};
 
-	private final Consumer<ImagePanel> overlay;
+	private final BiConsumer<Graphics2D, ImagePanel> overlay;
 	private final DefaultImageValue image;
 	private final Value<ZoomDevice> zoomDevice;
 	private final State autoResize;
@@ -546,15 +544,13 @@ public final class ImagePanel extends JPanel {
 		 * This allows custom graphics to be drawn on top of the image, such as annotations, grids, highlights,
 		 * or selection markers.
 		 * <p>
-		 * The overlay painter receives the panel and can draw directly on it.
-		 * Use coordinate conversion methods ({@link #toImageCoordinates(Point)} and {@link #toPanelCoordinates(Point2D.Double)})
-		 * to work in image coordinates and convert to panel coordinates for drawing.
+		 * The overlay painter receives the Graphics2D context for drawing and the ImagePanel for accessing
+		 * coordinate conversion methods and panel state.
 		 * <b>Example - Drawing Grid Lines</b>
 		 * <pre>
 		 * ImagePanel imagePanel = ImagePanel.builder()
 		 *     .image(image)
-		 *     .overlay(panel -&gt; {
-		 *         Graphics2D g2d = (Graphics2D) panel.getGraphics();
+		 *     .overlay((g2d, panel) -&gt; {
 		 *         g2d.setColor(new Color(255, 255, 255, 100));
 		 *         // Draw grid lines every 100 image pixels
 		 *         for (int x = 0; x &lt; image.getWidth(); x += 100) {
@@ -572,8 +568,7 @@ public final class ImagePanel extends JPanel {
 		 *
 		 * ImagePanel imagePanel = ImagePanel.builder()
 		 *     .image(image)
-		 *     .overlay(panel -&gt; {
-		 *         Graphics2D g2d = (Graphics2D) panel.getGraphics();
+		 *     .overlay((g2d, panel) -&gt; {
 		 *         g2d.setColor(new Color(255, 0, 0, 128));
 		 *         for (Rectangle region : taggedRegions) {
 		 *             // Convert image coordinates to panel coordinates
@@ -590,10 +585,10 @@ public final class ImagePanel extends JPanel {
 		 *     .build();
 		 * </pre>
 		 * The overlay is redrawn automatically whenever the panel repaints (e.g., when zooming, panning, or resizing).
-		 * @param overlay the overlay painter, called after image painting in {@link #paintComponent(Graphics)}
+		 * @param overlay the overlay painter, receives Graphics2D for drawing and ImagePanel for coordinate conversion
 		 * @return this builder
 		 */
-		Builder overlay(Consumer<ImagePanel> overlay);
+		Builder overlay(BiConsumer<Graphics2D, ImagePanel> overlay);
 
 		/**
 		 * @param zoomDevice the initial zoom device
@@ -767,7 +762,7 @@ public final class ImagePanel extends JPanel {
 		}
 
 		// Paint overlay last, but not over the navigation image and zoom area outline
-		overlay.accept(this);
+		overlay.accept((Graphics2D) g, this);
 
 		if (navigable.is()) {
 			g.drawImage(navigationImage, 0, 0, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
@@ -1262,7 +1257,7 @@ public final class ImagePanel extends JPanel {
 	private static final class DefaultBuilder extends AbstractComponentValueBuilder<ImagePanel, byte[], Builder> implements Builder {
 
 		private @Nullable BufferedImage image;
-		private Consumer<ImagePanel> overlay = EMPTY_OVERLAY;
+		private BiConsumer<Graphics2D, ImagePanel> overlay = EMPTY_OVERLAY;
 		private ZoomDevice zoomDevice = ZOOM_DEVICE.getOrThrow();
 		private boolean autoResize = AUTO_RESIZE.getOrThrow();
 		private boolean navigable = false;
@@ -1287,7 +1282,7 @@ public final class ImagePanel extends JPanel {
 		}
 
 		@Override
-		public Builder overlay(Consumer<ImagePanel> overlay) {
+		public Builder overlay(BiConsumer<Graphics2D, ImagePanel> overlay) {
 			this.overlay = requireNonNull(overlay);
 			return this;
 		}
@@ -1336,10 +1331,10 @@ public final class ImagePanel extends JPanel {
 		return outputStream.toByteArray();
 	}
 
-	private static final class EmptyOverlay implements Consumer<ImagePanel> {
+	private static final class EmptyOverlay implements BiConsumer<Graphics2D, ImagePanel> {
 
 		@Override
-		public void accept(ImagePanel panel) {}
+		public void accept(Graphics2D graphics, ImagePanel imagePanel) {}
 	}
 
 	private static final class ByteArrayComponentValue extends AbstractComponentValue<ImagePanel, byte[]> {
