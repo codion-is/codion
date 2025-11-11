@@ -71,7 +71,9 @@ final class SerializationFilterDryRun implements ObjectInputFilter {
 			while (clazz.isArray()) {
 				clazz = clazz.getComponentType();
 			}
-			deserializedClasses.add(clazz);
+			if (!clazz.isPrimitive()) {
+				deserializedClasses.add(clazz);
+			}
 		}
 
 		return Status.ALLOWED;
