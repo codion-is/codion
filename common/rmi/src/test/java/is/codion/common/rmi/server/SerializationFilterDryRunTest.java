@@ -46,24 +46,24 @@ public final class SerializationFilterDryRunTest {
 		Serializer.deserialize(Serializer.serialize(Long.valueOf(42)));
 		serialFilter.writeToFile();
 
-		List<String> classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+		List<String> patterns = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
 
-		assertEquals(3, classNames.size());
-		assertEquals(Integer.class.getName(), classNames.get(0));
-		assertEquals(Long.class.getName(), classNames.get(1));
-		assertEquals(Number.class.getName(), classNames.get(2));
+		assertEquals(4, patterns.size());
+		assertEquals(Integer.class.getName(), patterns.get(0));
+		assertEquals(Long.class.getName(), patterns.get(1));
+		assertEquals(Number.class.getName(), patterns.get(2));
 
 		Serializer.deserialize(Serializer.serialize(Double.valueOf(42)));
 		Serializer.deserialize(Serializer.serialize(new Double[] {42d}));
 		serialFilter.writeToFile();
 
-		classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+		patterns = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
 
-		assertEquals(4, classNames.size());
-		assertEquals(Double.class.getName(), classNames.get(0));
-		assertEquals(Integer.class.getName(), classNames.get(1));
-		assertEquals(Long.class.getName(), classNames.get(2));
-		assertEquals(Number.class.getName(), classNames.get(3));
+		assertEquals(5, patterns.size());
+		assertEquals(Double.class.getName(), patterns.get(0));
+		assertEquals(Integer.class.getName(), patterns.get(1));
+		assertEquals(Long.class.getName(), patterns.get(2));
+		assertEquals(Number.class.getName(), patterns.get(3));
 
 		tempFile.delete();
 	}
@@ -79,15 +79,15 @@ public final class SerializationFilterDryRunTest {
 		serialFilter.checkInput(new TestFilterInfo(Integer.class));
 
 		// Should not be flushed immediately
-		List<String> classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
-		assertEquals(0, classNames.size(), "Should not flush immediately");
+		List<String> patterns = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+		assertEquals(0, patterns.size(), "Should not flush immediately");
 
 		// Wait for flush to occur
 		Thread.sleep(1500);
 
-		classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
-		assertEquals(1, classNames.size(), "Should flush after 1 second");
-		assertEquals(Integer.class.getName(), classNames.get(0));
+		patterns = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+		assertEquals(2, patterns.size(), "Should flush after 1 second");
+		assertEquals(Integer.class.getName(), patterns.get(0));
 
 		tempFile.delete();
 	}

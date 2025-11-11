@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.59
 ### is.codion.common.rmi
 - SerializationFilterDryRun no longer includes primitives in output.
+- SerializationFilterDryRun now appends exclude all to output.
 ### is.codion.swing.common.model
 - DelayedAction.Performer now ActionListener instead of Action.
 ### is.codion.swing.common.ui

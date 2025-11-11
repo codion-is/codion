@@ -28,13 +28,15 @@ import java.io.ObjectInputFilter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Runtime.getRuntime;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ConcurrentHashMap.newKeySet;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toCollection;
 
 final class SerializationFilterDryRun implements ObjectInputFilter {
 
@@ -84,10 +86,12 @@ final class SerializationFilterDryRun implements ObjectInputFilter {
 	 */
 	void writeToFile() {
 		try {
-			Files.write(Paths.get(patternFile), deserializedClasses.stream()
+			List<String> patterns = deserializedClasses.stream()
 							.map(Class::getName)
 							.sorted()
-							.collect(toList()), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+							.collect(toCollection(ArrayList::new));
+			patterns.add("!*");
+			Files.write(Paths.get(patternFile), patterns, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 			LOG.info("Serialization dryrun result written to file: {} ({} classes)", patternFile, deserializedClasses.size());
 		}
 		catch (Exception e) {
