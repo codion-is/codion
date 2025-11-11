@@ -49,6 +49,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 	private @Nullable JComponent owner;
 	private boolean enableOnSelection = LookAndFeelComboBox.ENABLE_ON_SELECTION.getOrThrow();
+	private boolean allowInstalled = ALLOW_INSTALLED.getOrThrow();
 
 	@Override
 	public LookAndFeelSelectionDialogBuilder owner(@Nullable JComponent owner) {
@@ -59,6 +60,12 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	@Override
 	public LookAndFeelSelectionDialogBuilder enableOnSelection(boolean enableOnSelection) {
 		this.enableOnSelection = enableOnSelection;
+		return this;
+	}
+
+	@Override
+	public LookAndFeelSelectionDialogBuilder allowInstalled(boolean allowInstalled) {
+		this.allowInstalled = allowInstalled;
 		return this;
 	}
 
@@ -87,7 +94,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 		JPanel basePanel = new JPanel(new BorderLayout());
 		basePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, 0, PADDING));
 		basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);
-		if (auxiliaryLookAndFeelsAvailable()) {
+		if (auxiliaryLookAndFeelsAvailable() && allowInstalled) {
 			basePanel.add(PanelBuilder.builder()
 							.flowLayout(FlowLayout.TRAILING)
 							.add(CheckBoxBuilder.builder()

@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.59
 ### is.codion.swing.common.model
 - DelayedAction.Performer now ActionListener instead of Action.
+### is.codion.swing.common.ui
+- LookAndFeelSelectionDialogBuilder.allowInstalled() added along with ALLOW_INSTALLED configuration property. 
 
 ## 0.18.58
 ### is.codion.common.reactive

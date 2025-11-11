@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
@@ -26,10 +27,22 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JComponent;
 import java.util.function.Consumer;
 
+import static is.codion.common.utilities.Configuration.booleanValue;
+
 /**
  * Builds a dialog for selecting a look and feel.
  */
 public interface LookAndFeelSelectionDialogBuilder {
+
+	/**
+	 * Specifies whether to allow selecting an installed (platform) Look and Feel when auxiliary ones are available.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> ALLOW_INSTALLED =
+					booleanValue(LookAndFeelSelectionDialogBuilder.class.getName() + ".allowInstalled", true);
 
 	/**
 	 * @param owner the dialog owner
@@ -42,6 +55,13 @@ public interface LookAndFeelSelectionDialogBuilder {
 	 * @return this builder
 	 */
 	LookAndFeelSelectionDialogBuilder enableOnSelection(boolean enableOnSelection);
+
+	/**
+	 * @param allowInstalled true if selecting installed (platform) look and feels should be allowed if auxiliary ones are available
+	 * @return this builder
+	 * @see #ALLOW_INSTALLED
+	 */
+	LookAndFeelSelectionDialogBuilder allowInstalled(boolean allowInstalled);
 
 	/**
 	 * Displays a dialog allowing the user the select between all available Look and Feels.
