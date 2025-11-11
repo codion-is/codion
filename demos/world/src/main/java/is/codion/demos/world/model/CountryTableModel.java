@@ -48,6 +48,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 	CountryTableModel(EntityConnectionProvider connectionProvider) {
 		super(new CountryEditModel(connectionProvider));
 		configureCapitalConditionModel();
+		sort().order(Country.FLAG).locked().set(true);
 		showFlags.addConsumer(this::showFlagsChanged);
 	}
 

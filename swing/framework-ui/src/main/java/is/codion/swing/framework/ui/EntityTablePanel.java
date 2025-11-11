@@ -2584,6 +2584,15 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * @param columns called to configure each column builder
+		 * @return this builder instance
+		 */
+		public Config columns(Consumer<FilterTableColumn.Builder<Attribute<?>>> columns) {
+			tableBuilder.columns(columns);
+			return this;
+		}
+
+		/**
 		 * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
 		 * @return this Config instance
 		 */

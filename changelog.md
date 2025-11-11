@@ -16,6 +16,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.allowInstalled() added along with ALLOW_INSTALLED configuration property.
 - ImagePanel can now have multiple overlays.
+### is.codion.swing.framework.ui
+- EntityTablePanel.Config.columns() added.
 
 ## 0.18.58
 ### is.codion.common.reactive

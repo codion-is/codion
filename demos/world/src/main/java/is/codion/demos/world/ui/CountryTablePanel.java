@@ -20,9 +20,11 @@ package is.codion.demos.world.ui;
 
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryTableModel;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.ui.component.image.ImagePanel;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -31,6 +33,7 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Dimension;
 
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
@@ -43,7 +46,8 @@ final class CountryTablePanel extends EntityTablePanel {
 						.cellRenderer(Country.FLAG, FilterTableCellRenderer.builder()
 										.columnClass(byte[].class)
 										.component(ImagePanel.builder().buildValue())
-										.build()));
+										.build())
+						.columns(CountryTablePanel::columns));
 		configurePopupMenu(layout -> layout.clear()
 						.control(Control.builder()
 										.toggle(tableModel.showflags())
@@ -86,5 +90,17 @@ final class CountryTablePanel extends EntityTablePanel {
 						.title("Country report")
 						.size(new Dimension(800, 600))
 						.show();
+	}
+
+	private static void columns(FilterTableColumn.Builder<Attribute<?>> column) {
+		if (column.identifier().equals(Country.FLAG)) {
+			column.fixedWidth(30);
+			column.headerRenderer(new DefaultTableCellRenderer() {
+				@Override
+				protected void setValue(Object value) {
+					super.setValue("Flg.");
+				}
+			});
+		}
 	}
 }
