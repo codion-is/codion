@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.ListModel;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -92,6 +93,14 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 		 * @return this builder instance
 		 */
 		Builder<T> async(boolean async);
+
+		/**
+		 * By default, exceptions during refresh are rethrown,
+		 * use this method to handle async exceptions differently
+		 * @param onRefreshException the exception handler to use during refresh
+		 * @return this builder instance
+		 */
+		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
 
 		/**
 		 * @param included the {@link Predicate} controlling which items should be included

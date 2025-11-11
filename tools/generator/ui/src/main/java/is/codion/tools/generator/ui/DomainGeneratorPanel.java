@@ -597,8 +597,6 @@ public final class DomainGeneratorPanel extends JPanel {
 		model.implSearchValue().addConsumer(implementationHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
 		model.i18nSearchValue().addConsumer(i18nHighlighter.searchString()::set);
-		model.schemaModel().items().refresher().exception().addConsumer(this::displayException);
-		model.entityModel().items().refresher().exception().addConsumer(this::displayException);
 		model.dtos().addConsumer(entityTable.columnModel().visible(EntityColumns.DTO)::set);
 		model.i18n().addConsumer(this::onI18nChanged);
 	}
@@ -635,10 +633,6 @@ public final class DomainGeneratorPanel extends JPanel {
 						.enable(this);
 	}
 
-	private void displayException(Exception e) {
-		Dialogs.displayException(e, parentWindow(this));
-	}
-
 	private static SearchHighlighter searchHighlighter(JTextArea textArea) {
 		return SearchHighlighter.builder()
 						.component(textArea)
@@ -672,12 +666,16 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static void start() {
 		Database database = Database.instance();
+		DomainGeneratorPanel panel;
 		if (USER_REQUIRED.getOrThrow()) {
-			new DomainGeneratorPanel(domainGeneratorModel(database, user(database))).showFrame();
+			panel = new DomainGeneratorPanel(domainGeneratorModel(database, user(database)));
 		}
 		else {
-			new DomainGeneratorPanel(domainGeneratorModel(database)).showFrame();
+			panel = new DomainGeneratorPanel(domainGeneratorModel(database));
 		}
+		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
+						Dialogs.displayException(throwable, parentWindow(panel)));
+		panel.showFrame();
 	}
 
 	private static User user(Database database) {

@@ -206,9 +206,7 @@ public final class DefaultFilterTableModelTest {
 	void refreshEvents() {
 		AtomicInteger done = new AtomicInteger();
 		Runnable onResult = done::incrementAndGet;
-		Consumer<Throwable> onException = exception -> {};
 		tableModel.items().refresher().result().addListener(onResult);
-		tableModel.items().refresher().exception().addConsumer(onException);
 		tableModel.items().refresh();
 		assertFalse(tableModel.items().included().get().isEmpty());
 		assertEquals(1, done.get());
@@ -218,7 +216,6 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(1, done.get());
 
 		tableModel.items().refresher().result().removeListener(onResult);
-		tableModel.items().refresher().exception().removeConsumer(onException);
 	}
 
 	@Test

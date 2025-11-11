@@ -29,6 +29,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.SortOrder;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -185,6 +186,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 		private @Nullable Comparator<T> comparator;
 		private boolean async = ASYNC.getOrThrow();
+		private @Nullable Consumer<Exception> onRefreshException;
 		private @Nullable Predicate<T> included;
 
 		private DefaultBuilder(Collection<T> items, @Nullable Supplier<? extends Collection<T>> supplier) {
@@ -205,6 +207,12 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 
 		@Override
+		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
+			this.onRefreshException = requireNonNull(onRefreshException);
+			return this;
+		}
+
+		@Override
 		public Builder<T> included(Predicate<T> included) {
 			this.included = requireNonNull(included);
 			return this;
@@ -216,7 +224,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 
 		private Refresher<T> createRefresher(Items<T> items) {
-			return new DefaultRefreshWorker<>(supplier, items, async);
+			return new DefaultRefreshWorker<>(supplier, items, async, onRefreshException);
 		}
 
 		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {
@@ -224,8 +232,9 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 			private final Items<R> items;
 
 			private DefaultRefreshWorker(@Nullable Supplier<? extends Collection<R>> supplier,
-																	 Items<R> items, boolean async) {
-				super((Supplier<Collection<R>>) supplier, async);
+																	 Items<R> items, boolean async,
+																	 @Nullable Consumer<Exception> onException) {
+				super((Supplier<Collection<R>>) supplier, async, onException);
 				this.items = items;
 			}
 

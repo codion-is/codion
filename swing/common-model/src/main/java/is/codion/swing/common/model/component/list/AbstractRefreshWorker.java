@@ -35,14 +35,19 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 
+	private final Consumer<Exception> onException;
+
 	private @Nullable ProgressWorker<Collection<T>, ?> worker;
 
 	/**
 	 * @param items supplies the items
 	 * @param async true if async refresh should be used
+	 * @param onException exceptions are rethrown by default, override with this exception handler
 	 */
-	protected AbstractRefreshWorker(@Nullable Supplier<Collection<T>> items, boolean async) {
+	protected AbstractRefreshWorker(@Nullable Supplier<Collection<T>> items, boolean async,
+																	@Nullable Consumer<Exception> onException) {
 		super(items, async);
+		this.onException = onException == null ? new RethrowExceptionHandler() : onException;
 	}
 
 	@Override
@@ -57,7 +62,7 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 							.task(items::get)
 							.onStarted(this::onRefreshStarted)
 							.onResult(result -> onRefreshResult(result, onResult))
-							.onException(this::onRefreshFailedAsync)
+							.onException(this::onException)
 							.execute();
 		});
 	}
@@ -69,7 +74,7 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 				onRefreshResult(items.get(), onResult);
 			}
 			catch (Exception e) {
-				onRefreshFailedSync(e);
+				onException(e);
 			}
 		});
 	}
@@ -78,19 +83,10 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 		setActive(true);
 	}
 
-	private void onRefreshFailedAsync(Exception exception) {
+	private void onException(Exception exception) {
 		worker = null;
 		setActive(false);
-		notifyException(exception);
-	}
-
-	private void onRefreshFailedSync(Exception exception) {
-		setActive(false);
-		if (exception instanceof RuntimeException) {
-			throw (RuntimeException) exception;
-		}
-
-		throw new RuntimeException(exception);
+		onException.accept(exception);
 	}
 
 	private void onRefreshResult(Collection<T> result, Consumer<Collection<T>> onResult) {
@@ -107,6 +103,18 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 		ProgressWorker<?, ?> progressWorker = worker;
 		if (progressWorker != null) {
 			progressWorker.cancel(true);
+		}
+	}
+
+	private static final class RethrowExceptionHandler implements Consumer<Exception> {
+
+		@Override
+		public void accept(Exception exception) {
+			if (exception instanceof RuntimeException) {
+				throw (RuntimeException) exception;
+			}
+
+			throw new RuntimeException(exception);
 		}
 	}
 }

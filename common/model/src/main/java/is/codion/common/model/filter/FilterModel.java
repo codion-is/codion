@@ -87,29 +87,21 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
-		 * <p>Note that this method only throws exceptions when run synchronously off the user interface thread.
-		 * Use {@link Refresher#exception()} to listen for exceptions that happen during asynchronous refresh.
 		 * <br><br>
 		 * Retains the selection and filtering. Sorts the refreshed data.
-		 * @throws RuntimeException in case of an exception when running refresh synchronously
 		 * @see Refresher#active()
 		 * @see Refresher#result()
-		 * @see Refresher#exception()
 		 * @see Refresher#async()
 		 */
 		void refresh();
 
 		/**
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
-		 * <p>Note that this method only throws exceptions when run synchronously off the user interface thread.
-		 * Use {@link Refresher#exception()} to listen for exceptions that happen during asynchronous refresh.
 		 * <br><br>
 		 * Retains the selection and filtering. Sorts the refreshed data.
 		 * @param onResult called on the EDT after a successful refresh
-		 * @throws RuntimeException in case of an exception when running refresh synchronously
 		 * @see Refresher#active()
 		 * @see Refresher#result()
-		 * @see Refresher#exception()
 		 * @see Refresher#async()
 		 */
 		void refresh(Consumer<Collection<T>> onResult);
@@ -500,20 +492,10 @@ public interface FilterModel<T> {
 		Observer<Collection<T>> result();
 
 		/**
-		 * <p>This event is always triggered on the UI thread.
-		 * @return an observer notified with the exception when an asynchronous refresh has failed
-		 */
-		Observer<Exception> exception();
-
-		/**
-		 * <p>Refreshes the data. Note that this method only throws exceptions when run synchronously.
-		 * <p>Use {@link #exception()} to listen for exceptions that happen during asynchronous refresh.
-		 * <p>Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
+		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
 		 * @param onResult called on the EDT with the result after a successful refresh, may be null
-		 * @throws RuntimeException in case of an exception when running synchronously.
 		 * @see #active()
 		 * @see #result()
-		 * @see #exception()
 		 * @see #async()
 		 */
 		void refresh(@Nullable Consumer<Collection<T>> onResult);
@@ -543,7 +525,6 @@ public interface FilterModel<T> {
 	abstract class AbstractRefresher<T> implements Refresher<T> {
 
 		private final Event<Collection<T>> onResult = Event.event();
-		private final Event<Exception> onException = Event.event();
 		private final State active = State.state();
 		private final @Nullable Supplier<Collection<T>> items;
 		private final State async;
@@ -570,11 +551,6 @@ public interface FilterModel<T> {
 		@Override
 		public final Observer<Collection<T>> result() {
 			return onResult.observer();
-		}
-
-		@Override
-		public final Observer<Exception> exception() {
-			return onException.observer();
 		}
 
 		@Override
@@ -611,16 +587,6 @@ public interface FilterModel<T> {
 		 */
 		protected final void notifyResult(Collection<T> result) {
 			onResult.accept(result);
-		}
-
-		/**
-		 * <p>Triggers the refresh exception event
-		 * <p>This method must be called on the UI thread.
-		 * @param exception the refresh exception
-		 * @see #exception()
-		 */
-		protected final void notifyException(Exception exception) {
-			onException.accept(exception);
 		}
 
 		/**

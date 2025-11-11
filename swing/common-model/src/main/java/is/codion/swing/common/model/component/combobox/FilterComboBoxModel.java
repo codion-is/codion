@@ -204,6 +204,14 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		Builder<T> async(boolean async);
 
 		/**
+		 * By default, exceptions during refresh are rethrown,
+		 * use this method to handle async exceptions differently
+		 * @param onRefreshException the exception handler to use during refresh
+		 * @return this builder instance
+		 */
+		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
+
+		/**
 		 * Default false.
 		 * @param refresh true if the model items should be refreshed on initialization
 		 * @return this builder instance

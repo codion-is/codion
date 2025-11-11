@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -370,6 +371,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Predicate<R> validator = new ValidPredicate<>();
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
+		private @Nullable Consumer<Exception> onRefreshException;
 		private Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory = new DefaultEditorFactory<>();
 		private @Nullable Predicate<R> included;
 		private boolean refresh = false;
@@ -407,6 +409,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
+		public Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException) {
+			this.onRefreshException = requireNonNull(onRefreshException);
+			return this;
+		}
+
+		@Override
 		public Builder<R, C> editor(Function<FilterTableModel<R, C>, Editor<R, C>> editor) {
 			this.editorFactory = requireNonNull(editor);
 			return this;
@@ -438,7 +446,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private Refresher<R> createRefresher(Items<R> items) {
-			return new DefaultRefreshWorker<>(itemSupplier, items, async);
+			return new DefaultRefreshWorker<>(itemSupplier, items, async, onRefreshException);
 		}
 
 		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {
@@ -446,8 +454,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			private final Items<R> items;
 
 			private DefaultRefreshWorker(@Nullable Supplier<? extends Collection<R>> supplier,
-																	 Items<R> items, boolean async) {
-				super((Supplier<Collection<R>>) supplier, async);
+																	 Items<R> items, boolean async,
+																	 @Nullable Consumer<Exception> onException) {
+				super((Supplier<Collection<R>>) supplier, async, onException);
 				this.items = items;
 			}
 

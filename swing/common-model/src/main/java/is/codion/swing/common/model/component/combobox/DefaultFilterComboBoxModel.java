@@ -175,6 +175,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
 		private boolean async = ASYNC.getOrThrow();
+		private @Nullable Consumer<Exception> onRefreshException;
 		private boolean filterSelected;
 		private boolean includeNull;
 		private @Nullable T nullItem;
@@ -225,6 +226,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Builder<T> async(boolean async) {
 			this.async = async;
+			return this;
+		}
+
+		@Override
+		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
+			this.onRefreshException = requireNonNull(onRefreshException);
 			return this;
 		}
 
@@ -356,7 +363,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (builder.items != null) {
 				set(builder.items);
 			}
-			refresher = new DefaultRefreshWorker(builder.supplier, builder.async);
+			refresher = new DefaultRefreshWorker(builder.supplier, builder.async, builder.onRefreshException);
 			if (builder.items == null && builder.refresh) {
 				refresher.refresh(null);
 			}
@@ -609,8 +616,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final class DefaultRefreshWorker extends AbstractRefreshWorker<T> {
 
-			private DefaultRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async) {
-				super(supplier, async);
+			private DefaultRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async,
+																	 @Nullable Consumer<Exception> onException) {
+				super(supplier, async, onException);
 			}
 
 			@Override

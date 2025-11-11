@@ -134,7 +134,6 @@ public final class LoadTestPanel<T> extends JPanel {
 	private LoadTestPanel(LoadTestModel<T> loadTestModel) {
 		this.loadTestModel = requireNonNull(loadTestModel);
 		this.loadTest = loadTestModel.loadTest();
-		this.loadTestModel.applicationTableModel().items().refresher().exception().addConsumer(this::displayException);
 		loadTest.applications().user().optional().ifPresent(user -> {
 			Item<User> item = item(user, user.username());
 			userComboBoxModel.items().add(item);
