@@ -20,6 +20,7 @@ package is.codion.demos.chinook.domain.api;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.utilities.TypeReference;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
@@ -30,7 +31,6 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition.ValueSupp
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.TypeReference;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.plugin.jasperreports.JRReportType;

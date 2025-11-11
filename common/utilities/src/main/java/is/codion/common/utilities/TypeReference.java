@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2024 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity.attribute;
+package is.codion.common.utilities;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -52,5 +52,27 @@ public abstract class TypeReference<T> {
 	 */
 	public final Class<T> rawType() {
 		return (Class<T>) ((ParameterizedType) type).getRawType();
+	}
+
+	@Override
+	public final int hashCode() {
+		return type.hashCode();
+	}
+
+	@Override
+	public final boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof TypeReference)) {
+			return false;
+		}
+		TypeReference<?> other = (TypeReference<?>) object;
+		return type.equals(other.type);
+	}
+
+	@Override
+	public final String toString() {
+		return type.getTypeName();
 	}
 }

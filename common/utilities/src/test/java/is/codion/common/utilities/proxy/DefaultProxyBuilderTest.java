@@ -18,6 +18,8 @@
  */
 package is.codion.common.utilities.proxy;
 
+import is.codion.common.utilities.TypeReference;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public final class DefaultProxyBuilderTest {
 			assertInstanceOf(NoSuchMethodException.class, e.getCause());
 		}
 
-		List<Object> proxyInstance = ProxyBuilder.of(List.class)
+		List<String> proxyInstance = ProxyBuilder.of(new TypeReference<List<String>>() {})
 						.delegate(emptyList())
 						.method("toString", parameters -> "toStringResult")
 						.method("equals", Object.class, parameters ->
@@ -55,14 +57,14 @@ public final class DefaultProxyBuilderTest {
 		assertTrue(proxyInstance::isEmpty);
 
 		//delegate is an immutable list
-		assertThrows(UnsupportedOperationException.class, () -> proxyInstance.add(new Object()));
+		assertThrows(UnsupportedOperationException.class, () -> proxyInstance.add("test"));
 
 		List<Object> proxyInstance2 = ProxyBuilder.of(List.class)
 						.delegate(emptyList())
 						.build();
 		assertEquals(proxyInstance2, proxyInstance2);
 
-		List<Object> proxyInstance3 = ProxyBuilder.of(List.class)
+		List<String> proxyInstance3 = ProxyBuilder.of(new TypeReference<List<String>>() {})
 						.method("size", parameters -> parameters.delegate().size())
 						.build();
 		assertThrows(IllegalStateException.class, proxyInstance3::size);//no delegate
@@ -73,10 +75,10 @@ public final class DefaultProxyBuilderTest {
 	void example() {
 		List<String> list = new ArrayList<>();
 
-		List<String> listProxy = ProxyBuilder.of(List.class)
+		List<String> listProxy = ProxyBuilder.of(new TypeReference<List<String>>() {})
 						.delegate(list)
 						.method("add", Object.class, parameters -> {
-							Object item = parameters.arguments().get(0);
+							String item = (String) parameters.arguments().get(0);
 							System.out.println("Adding: " + item);
 
 							return parameters.delegate().add(item);

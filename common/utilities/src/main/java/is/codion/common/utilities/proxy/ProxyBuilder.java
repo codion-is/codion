@@ -18,6 +18,8 @@
  */
 package is.codion.common.utilities.proxy;
 
+import is.codion.common.utilities.TypeReference;
+
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.InvocationHandler;
@@ -48,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  * {@snippet :
  * List<String> list = new ArrayList<>();
  *
- * ProxyBuilder<List> builder = ProxyBuilder.of(List.class)
+ * ProxyBuilder<List<String>> builder = ProxyBuilder.of(new TypeReference<List<String>>() {})
  *     .delegate(list)
  *     .method("add", Object.class, parameters -> {
  *       Object item = parameters.arguments().get(0);
@@ -76,6 +78,7 @@ import static java.util.Objects.requireNonNull;
  * // proxy1 still has only add() and size() methods proxied
  *}
  * @param <T> the proxy type
+ * @see #of(TypeReference)
  * @see #of(Class)
  */
 public final class ProxyBuilder<T> {
@@ -214,6 +217,20 @@ public final class ProxyBuilder<T> {
 			 */
 			List<?> arguments();
 		}
+	}
+
+	/**
+	 * Returns a new {@link ProxyBuilder} instance.
+	 * <p>Note: Unlike other builders in the framework, ProxyBuilder serves as both the
+	 * builder interface and the factory, as it builds dynamic proxy instances rather
+	 * than framework objects with separate builder interfaces.
+	 * @param interfaceToProxy the interface to proxy
+	 * @param <T> the proxy type
+	 * @return a new {@link ProxyBuilder} instance.
+	 * @throws IllegalArgumentException in case {@code interfaceToProxy} is not an interface
+	 */
+	public static <T> ProxyBuilder<T> of(TypeReference<T> interfaceToProxy) {
+		return of(requireNonNull(interfaceToProxy).rawType());
 	}
 
 	/**

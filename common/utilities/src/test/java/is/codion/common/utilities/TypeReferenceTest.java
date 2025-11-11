@@ -16,9 +16,7 @@
  *
  * Copyright (c) 2024 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity;
-
-import is.codion.framework.domain.entity.attribute.TypeReference;
+package is.codion.common.utilities;
 
 import org.junit.jupiter.api.Test;
 

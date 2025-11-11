@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.common.utilities.TypeReference;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column.ColumnDefiner;

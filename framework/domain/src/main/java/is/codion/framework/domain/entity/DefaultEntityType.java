@@ -18,12 +18,12 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.utilities.TypeReference;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.TypeReference;
 import is.codion.framework.domain.entity.condition.ConditionType;
 
 import org.jspecify.annotations.Nullable;

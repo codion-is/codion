@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.59
+### is.codion.common.utilities
+- TypeReference moved from domain module.
+- ProxyBuilder.of() overloaded with TypeReference.
 ### is.codion.common.rmi
 - SerializationFilterDryRun no longer includes primitives in output.
 - SerializationFilterDryRun now appends exclude all to output.
