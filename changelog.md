@@ -8,7 +8,8 @@ Codion Change Log
 ### is.codion.swing.common.model
 - DelayedAction.Performer now ActionListener instead of Action.
 ### is.codion.swing.common.ui
-- LookAndFeelSelectionDialogBuilder.allowInstalled() added along with ALLOW_INSTALLED configuration property. 
+- LookAndFeelSelectionDialogBuilder.allowInstalled() added along with ALLOW_INSTALLED configuration property.
+- ImagePanel can now have multiple overlays.
 
 ## 0.18.58
 ### is.codion.common.reactive

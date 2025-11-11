@@ -59,7 +59,9 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
 
@@ -68,6 +70,7 @@ import static is.codion.common.utilities.Configuration.enumValue;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOf;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -246,7 +249,6 @@ public final class ImagePanel extends JPanel {
 	private static final ResourceBundle MESSAGES = getBundle(ImagePanel.class.getName());
 	private static final byte[] EMPTY_BYTES = new byte[0];
 
-	private static final EmptyOverlay EMPTY_OVERLAY = new EmptyOverlay();
 	private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of panel's width
 	private static final double NAV_IMAGE_FACTOR = 0.3; // 30% of panel's width
 	private static final double HIGH_QUALITY_RENDERING_SCALE_THRESHOLD = 1;
@@ -259,7 +261,7 @@ public final class ImagePanel extends JPanel {
 		}
 	};
 
-	private final BiConsumer<Graphics2D, ImagePanel> overlay;
+	private final List<BiConsumer<Graphics2D, ImagePanel>> overlays;
 	private final DefaultImageValue image;
 	private final Value<ZoomDevice> zoomDevice;
 	private final State autoResize;
@@ -286,7 +288,7 @@ public final class ImagePanel extends JPanel {
 		addComponentListener(new ImageComponentAdapter());
 		addMouseListener(new ImageMouseAdapter());
 		addMouseMotionListener(new ImageMouseMotionListener());
-		overlay = builder.overlay;
+		overlays = builder.overlays.isEmpty() ? emptyList() : new ArrayList<>(builder.overlays);
 		image = new DefaultImageValue(builder.image);
 		zoomDevice = new ZoomDeviceValue(builder.zoomDevice);
 		autoResize = State.state(builder.autoResize);
@@ -761,8 +763,10 @@ public final class ImagePanel extends JPanel {
 			g.drawImage(bufferedImage, origin.x, origin.y, getScreenImageWidth(), getScreenImageHeight(), null);
 		}
 
-		// Paint overlay last, but not over the navigation image and zoom area outline
-		overlay.accept((Graphics2D) g, this);
+		// Paint overlays last, but not over the navigation image and zoom area outline
+		if (!overlays.isEmpty()) {
+			overlays.forEach(overlay -> overlay.accept((Graphics2D) g, this));
+		}
 
 		if (navigable.is()) {
 			g.drawImage(navigationImage, 0, 0, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
@@ -1256,8 +1260,9 @@ public final class ImagePanel extends JPanel {
 
 	private static final class DefaultBuilder extends AbstractComponentValueBuilder<ImagePanel, byte[], Builder> implements Builder {
 
+		private final List<BiConsumer<Graphics2D, ImagePanel>> overlays = new ArrayList<>(1);
+
 		private @Nullable BufferedImage image;
-		private BiConsumer<Graphics2D, ImagePanel> overlay = EMPTY_OVERLAY;
 		private ZoomDevice zoomDevice = ZOOM_DEVICE.getOrThrow();
 		private boolean autoResize = AUTO_RESIZE.getOrThrow();
 		private boolean navigable = false;
@@ -1283,7 +1288,7 @@ public final class ImagePanel extends JPanel {
 
 		@Override
 		public Builder overlay(BiConsumer<Graphics2D, ImagePanel> overlay) {
-			this.overlay = requireNonNull(overlay);
+			this.overlays.add(requireNonNull(overlay));
 			return this;
 		}
 
@@ -1329,12 +1334,6 @@ public final class ImagePanel extends JPanel {
 		}
 
 		return outputStream.toByteArray();
-	}
-
-	private static final class EmptyOverlay implements BiConsumer<Graphics2D, ImagePanel> {
-
-		@Override
-		public void accept(Graphics2D graphics, ImagePanel imagePanel) {}
 	}
 
 	private static final class ByteArrayComponentValue extends AbstractComponentValue<ImagePanel, byte[]> {
