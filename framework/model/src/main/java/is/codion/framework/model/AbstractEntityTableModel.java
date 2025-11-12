@@ -28,7 +28,10 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +47,7 @@ import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
+import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -58,7 +62,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	private final FilterModel<Entity> filterModel;
 	private final E editModel;
 	private final EntityQueryModel queryModel;
-	private final State editable = State.state();
 	private final State removeDeleted = State.state(true);
 	private final State orderQuery = State.state(ORDER_QUERY.getOrThrow());
 	private final Value<OnInsert> onInsert = Value.nonNull(ON_INSERT.getOrThrow());
@@ -68,19 +71,19 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	/**
 	 * @param editModel the edit model
-	 * @param filterModel the list model
+	 * @param filterModel provides the filter model
 	 */
 	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel) {
-		this(editModel, filterModel, new DefaultEntityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider())));
+		this(editModel, new DefaultEntityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider())), filterModel);
 	}
 
 	/**
 	 * @param editModel the edit model
-	 * @param filterModel the list model
+	 * @param filterModel provides the filter model
 	 * @param queryModel the table query model
 	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
 	 */
-	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel, EntityQueryModel queryModel) {
+	protected AbstractEntityTableModel(E editModel, EntityQueryModel queryModel, FilterModel<Entity> filterModel) {
 		this.editModel = requireNonNull(editModel);
 		this.queryModel = requireNonNull(queryModel);
 		this.filterModel = requireNonNull(filterModel);
@@ -144,11 +147,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	@Override
 	public final EntityQueryModel queryModel() {
 		return queryModel;
-	}
-
-	@Override
-	public final State editable() {
-		return editable;
 	}
 
 	@Override
@@ -310,6 +308,57 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		private void updated(EntityType entityType, Map<Entity.Key, Entity> entities) {
 			entityDefinition().foreignKeys().get(entityType)
 							.forEach(foreignKey -> AbstractEntityTableModel.this.updated(foreignKey, entities));
+		}
+	}
+
+	/**
+	 * An abstract {@link EntityTableEditor} implementation.
+	 */
+	protected static abstract class AbstractEntityTableEditor implements EntityTableEditor {
+
+		private final EntityEditModel editModel;
+		private final State enabled = State.state();
+		private final Value<Editable> editable;
+
+		protected AbstractEntityTableEditor(EntityEditModel editModel) {
+			this.editModel = requireNonNull(editModel);
+			this.editable = Value.nonNull(new Editable() {});
+		}
+
+		@Override
+		public final State enabled() {
+			return enabled;
+		}
+
+		@Override
+		public final Value<Editable> editable() {
+			return editable;
+		}
+
+		@Override
+		public final boolean editable(Entity entity, Attribute<?> attribute) {
+			if (editModel.settings().readOnly().is() || !editModel.settings().updateEnabled().is()) {
+				return false;
+			}
+
+			return EntityTableEditor.super.editable(entity, attribute);
+		}
+
+		@Override
+		public final <T> void set(@Nullable T value, Entity entity, Attribute<T> attribute) {
+			if (!editable(entity, attribute)) {
+				throw new IllegalStateException("Attribute is not editable, entity: " + entity + ", attribute: " + attribute);
+			}
+			Entity copy = entity.copy().mutable();
+			editModel.applyEdit(singleton(copy), attribute, value);
+			try {
+				if (copy.modified()) {
+					editModel.update(singleton(copy));
+				}
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

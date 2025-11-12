@@ -30,12 +30,17 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.enumValue;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a table model containing {@link Entity} instances.
@@ -128,11 +133,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	void refresh(Collection<Entity.Key> keys);
 
 	/**
-	 * @return the {@link State} controlling whether this table model is editable
-	 */
-	State editable();
-
-	/**
 	 * Deletes the selected entities
 	 * @return the deleted entities
 	 * @throws DatabaseException in case of a database exception
@@ -175,4 +175,71 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * @return the underlying query model
 	 */
 	EntityQueryModel queryModel();
+
+	/**
+	 * @return the {@link EntityTableEditor}
+	 */
+	EntityTableEditor editor();
+
+	/**
+	 * Controls table model editing
+	 */
+	interface EntityTableEditor {
+
+		/**
+		 * @return the {@link State} controlling whether editing is enabled
+		 */
+		State enabled();
+
+		/**
+		 * @return the {@link Value} managing the {@link Editable} instance, which specifies whether an attribute is editable for a given entity instance
+		 */
+		Value<Editable> editable();
+
+		/**
+		 * @param entity the entity
+		 * @param attribute the attribute
+		 * @return true if the given attribute is editable for the given entity
+		 * @see #enabled()
+		 * @see #editable()
+		 */
+		default boolean editable(Entity entity, Attribute<?> attribute) {
+			return enabled().is() && editable().getOrThrow().is(entity, attribute);
+		}
+
+		/**
+		 * Updates the value of the given attribute in the given entity.
+		 * @param value the value to set
+		 * @param entity the entity
+		 * @param attribute the attribute
+		 * @param <T> the attribute type
+		 * @throws IllegalStateException in case the attribute is not editable
+		 * @see #editable(Entity, Attribute)
+		 */
+		<T> void set(@Nullable T value, Entity entity, Attribute<T> attribute);
+
+		/**
+		 * Specifies whether an attribute is editable for a given entity instance.
+		 */
+		interface Editable {
+
+			/**
+			 * @param entity the entity
+			 * @param attribute the attribute
+			 * @return true if the given attribute is editable for the given entity
+			 */
+			default boolean is(Entity entity, Attribute<?> attribute) {
+				requireNonNull(entity);
+				requireNonNull(attribute);
+				if (attribute instanceof ForeignKey) {
+					return entity.definition().foreignKeys().updatable((ForeignKey) attribute);
+				}
+				if (attribute instanceof Column) {
+					return entity.definition().columns().definition((Column<?>) attribute).updatable();
+				}
+
+				return false;
+			}
+		}
+	}
 }

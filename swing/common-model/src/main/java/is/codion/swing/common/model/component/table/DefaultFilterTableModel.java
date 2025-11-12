@@ -169,6 +169,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
+	public Editor<R, C> editor() {
+		if (editor == null) {
+			editor = editorFactory.apply(this);
+		}
+
+		return editor;
+	}
+
+	@Override
 	public void addTableModelListener(TableModelListener listener) {
 		super.addTableModelListener(listener);
 		if (listener instanceof JTable) {
@@ -184,14 +193,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			// JTable handles removing the selected indexes on row removal
 			addTableModelListener(removeSelectionListener);
 		}
-	}
-
-	private Editor<R, C> editor() {
-		if (editor == null) {
-			editor = editorFactory.apply(this);
-		}
-
-		return editor;
 	}
 
 	private final class RemoveSelectionListener implements TableModelListener {

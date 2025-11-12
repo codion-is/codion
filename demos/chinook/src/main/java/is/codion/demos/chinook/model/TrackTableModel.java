@@ -44,7 +44,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		super(new TrackEditModel(connectionProvider),
 						entityQueryModel(entityTableConditionModel(Track.TYPE, connectionProvider,
 										new TrackColumnConditionFactory(connectionProvider))));
-		editable().set(true);
+		editor().enabled().set(true);
 		configureLimit();
 	}
 

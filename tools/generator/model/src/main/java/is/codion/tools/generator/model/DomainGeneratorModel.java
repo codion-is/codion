@@ -532,10 +532,10 @@ public final class DomainGeneratorModel {
 
 	private final class EntityEditor implements Editor<EntityRow, String> {
 
-		private final IncludedItems<EntityRow> included;
+		private final IncludedItems<EntityRow> items;
 
 		private EntityEditor(FilterTableModel<EntityRow, String> tableModel) {
-			included = tableModel.items().included();
+			items = tableModel.items().included();
 		}
 
 		@Override
@@ -545,7 +545,7 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public void set(Object value, int rowIndex, EntityRow row, String identifier) {
-			included.set(rowIndex, new EntityRow(row.definition, row.tableType, (Boolean) value));
+			items.set(rowIndex, new EntityRow(row.definition, row.tableType, (Boolean) value));
 			updateDomainSource();
 		}
 	}

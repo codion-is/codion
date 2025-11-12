@@ -50,19 +50,19 @@ final class ScenarioPanel<T> extends JPanel {
 
 	private final ItemRandomizer<Scenario<T>> itemRandomizer;
 	private final Collection<RandomItem<Scenario<T>>> scenarioRows;
-	private final FilterTableModel<RandomItem<Scenario<T>>, String> tableModel;
+	private final FilterTableModel<RandomItem<Scenario<T>>, String> scenarioTableModel;
 	private final ValueList<Scenario<T>> selected = ValueList.<Scenario<T>>builder().build();
 
 	ScenarioPanel(ItemRandomizer<Scenario<T>> randomizer) {
 		this.itemRandomizer = requireNonNull(randomizer);
 		this.scenarioRows = createRows();
-		this.tableModel = FilterTableModel.builder()
+		this.scenarioTableModel = FilterTableModel.builder()
 						.columns(new ScenarioColumns())
-						.editor(t -> new ScenarioEditor())
+						.editor(ScenarioEditor::new)
 						.items(() -> scenarioRows)
 						.build();
 		FilterTable<RandomItem<Scenario<T>>, String> table = FilterTable.builder()
-						.model(tableModel)
+						.model(scenarioTableModel)
 						.columns(this::configureColumn)
 						.surrendersFocusOnKeystroke(true)
 						.cellEditor(ScenarioColumns.ENABLED, FilterTableCellEditor.builder()
@@ -77,8 +77,8 @@ final class ScenarioPanel<T> extends JPanel {
 						.columnResizing(false)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();
-		this.tableModel.selection().items().addConsumer(this::onSelectionChanged);
-		this.tableModel.items().refresh();
+		this.scenarioTableModel.selection().items().addConsumer(this::onSelectionChanged);
+		this.scenarioTableModel.items().refresh();
 		setLayout(borderLayout());
 		add(new JScrollPane(table), BorderLayout.CENTER);
 	}
@@ -154,6 +154,12 @@ final class ScenarioPanel<T> extends JPanel {
 
 	private final class ScenarioEditor implements Editor<RandomItem<Scenario<T>>, String> {
 
+		private final FilterTableModel<RandomItem<Scenario<T>>, String> tableModel;
+
+		private ScenarioEditor(FilterTableModel<RandomItem<Scenario<T>>, String> tableModel) {
+			this.tableModel = tableModel;
+		}
+
 		@Override
 		public boolean editable(RandomItem<Scenario<T>> row, String identifier) {
 			return ScenarioColumns.ENABLED.equals(identifier) || ScenarioColumns.WEIGHT.equals(identifier);
@@ -167,6 +173,7 @@ final class ScenarioPanel<T> extends JPanel {
 			else if (ScenarioColumns.WEIGHT.equals(identifier)) {
 				row.weight().set((Integer) value);
 			}
+			tableModel.fireTableRowsUpdated(rowIndex, rowIndex);
 		}
 	}
 }

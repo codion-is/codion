@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityTableModel;
+import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -53,7 +54,6 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
-import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -128,14 +128,14 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @throws IllegalArgumentException in case the edit model and query model entity type is not the same
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
-		super(requireNonNull(editModel), tableModelBuilder(editModel.entityDefinition())
+		super(requireNonNull(editModel), queryModel, tableModelBuilder(editModel)
 						.items(requireNonNull(queryModel)::query)
-						.build(), queryModel);
+						.build());
 		addTableModelListener(this::onTableModelEvent);
 	}
 
 	private SwingEntityTableModel(SwingEntityEditModel editModel, Collection<Entity> items) {
-		super(requireNonNull(editModel), tableModelBuilder(editModel.entityDefinition()).build());
+		super(requireNonNull(editModel), tableModelBuilder(editModel).build());
 		items().add(requireNonNull(items));
 	}
 
@@ -144,15 +144,10 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param rowIndex the row to edit
 	 * @param modelColumnIndex the model index of the column to edit
 	 * @return true if the cell is editable
-	 * @see #editable(Entity, Attribute)
 	 */
 	@Override
 	public final boolean isCellEditable(int rowIndex, int modelColumnIndex) {
-		if (!editable().is() || editModel().settings().readOnly().is() || !editModel().settings().updateEnabled().is()) {
-			return false;
-		}
-
-		return editable(items().included().get(rowIndex), columns().identifier(modelColumnIndex));
+		return filterModel().isCellEditable(rowIndex, modelColumnIndex);
 	}
 
 	/**
@@ -163,19 +158,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	@Override
 	public final void setValueAt(@Nullable Object value, int rowIndex, int modelColumnIndex) {
-		if (!isCellEditable(rowIndex, modelColumnIndex)) {
-			throw new IllegalStateException("Table model cell is not editable, row: " + rowIndex + ", column: " + modelColumnIndex);
-		}
-		Entity entity = items().included().get(rowIndex).copy().mutable();
-		editModel().applyEdit(singleton(entity), (Attribute<Object>) columns().identifier(modelColumnIndex), value);
-		try {
-			if (entity.modified()) {
-				editModel().update(singleton(entity));
-			}
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		filterModel().setValueAt(value, rowIndex, modelColumnIndex);
 	}
 
 	@Override
@@ -264,6 +247,11 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
+	public final SwingEntityTableEditor editor() {
+		return (SwingEntityTableEditor) filterModel().editor();
+	}
+
+	@Override
 	protected final FilterTableModel<Entity, Attribute<?>> filterModel() {
 		return (FilterTableModel<Entity, Attribute<?>>) super.filterModel();
 	}
@@ -298,26 +286,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		return Optional.of(builder.build());
 	}
 
-	/**
-	 * Returns true if the given attribute is editable for the given entity.
-	 * @param entity the entity row item
-	 * @param attribute the attribute
-	 * @return true if the attribute is editable
-	 * @see #setValueAt(Object, int, int)
-	 */
-	protected boolean editable(Entity entity, Attribute<?> attribute) {
-		requireNonNull(entity);
-		requireNonNull(attribute);
-		if (attribute instanceof ForeignKey) {
-			return entityDefinition().foreignKeys().updatable((ForeignKey) attribute);
-		}
-		if (attribute instanceof Column) {
-			return entityDefinition().columns().definition((Column<?>) attribute).updatable();
-		}
-
-		return false;
-	}
-
 	private void onTableModelEvent(TableModelEvent tableModelEvent) {
 		//if the selected row is updated via the table model, refresh the one in the edit model
 		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selection().index()
@@ -328,11 +296,12 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
-	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(EntityDefinition definition) {
+	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(EntityEditModel editModel) {
 		return FilterTableModel.builder()
-						.columns(new EntityTableColumns(definition))
-						.filters(new EntityColumnFilterFactory(definition))
-						.validator(new EntityItemValidator(definition.type()));
+						.columns(new EntityTableColumns(editModel.entityDefinition()))
+						.filters(new EntityColumnFilterFactory(editModel.entityDefinition()))
+						.validator(new EntityItemValidator(editModel.entityType()))
+						.editor(tableModel -> new SwingEntityTableEditor(editModel));
 	}
 
 	private static EntityType entityType(Collection<Entity> entities) {
@@ -341,6 +310,22 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 
 		return entities.iterator().next().type();
+	}
+
+	/**
+	 * A Swing specific {@link EntityTableEditor} implementation.
+	 */
+	public static final class SwingEntityTableEditor extends AbstractEntityTableEditor
+					implements EntityTableEditor, Editor<Entity, Attribute<?>> {
+
+		private SwingEntityTableEditor(EntityEditModel editModel) {
+			super(editModel);
+		}
+
+		@Override
+		public void set(@Nullable Object value, int rowIndex, Entity entity, Attribute<?> identifier) {
+			super.set(value, entity, (Attribute<Object>) identifier);
+		}
 	}
 
 	private static final class EntityTableColumns implements TableColumns<Entity, Attribute<?>> {

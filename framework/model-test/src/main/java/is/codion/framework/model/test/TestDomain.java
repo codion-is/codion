@@ -87,8 +87,8 @@ public final class TestDomain extends DomainModel {
 		Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
 		Column<Boolean> BOOLEAN_NULLABLE = TYPE.booleanColumn("boolean_nullable");
 		Column<Long> MASTER_ID = TYPE.longColumn("master_id");
-		Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
-		Column<Integer> MASTER_CODE = TYPE.integerColumn("master_code");
+		Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
+		Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
 		Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
 		Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
 
@@ -211,7 +211,7 @@ public final class TestDomain extends DomainModel {
 		Column<Double> SALARY = TYPE.doubleColumn("sal");
 		Column<Double> COMMISSION = TYPE.doubleColumn("comm");
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
-		Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
+		Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 		Column<String> DATA = TYPE.stringColumn("data");
 
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);

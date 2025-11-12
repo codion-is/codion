@@ -167,8 +167,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		// but that doesn't make sense with these two
 		preferencesModel.editModel().editor().value(Preferences.CUSTOMER_FK).persist().set(false);
 		preferencesModel.editModel().editor().value(Preferences.PREFERRED_GENRE_FK).persist().set(false);
-		// Assure the table is editable
-		preferencesModel.tableModel().editable().set(true);
+		// Make the table editable
+		preferencesModel.tableModel().editor().enabled().set(true);
 		preferencesModel.tableModel().items().refresh();
 
 		return new EntityPanel(preferencesModel,

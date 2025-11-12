@@ -13,9 +13,15 @@ Codion Change Log
 ### is.codion.swing.common.model
 - DelayedAction.Performer now ActionListener instead of Action.
 - AbstractRefreshWorker onRefreshException handler parameter added.
+- FilterTableModel.editor() added.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.allowInstalled() added along with ALLOW_INSTALLED configuration property.
 - ImagePanel can now have multiple overlays.
+### is.codion.framework.model
+- EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.SwingEntityTableEditor added.
+- SwingEntityTableModel, table editing now FilterTableModel.Editor based.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.columns() added.
 - EntityPopupMenu, string values now surrounded by quotes, for spotting leading and trailing spaces. Clipboard action now includes full values.

@@ -88,6 +88,11 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	Export<C> export();
 
 	/**
+	 * @return the {@link Editor} providing the row editing functionality
+	 */
+	Editor<R, C> editor();
+
+	/**
 	 * Notifies all listeners that all cell values in the table's rows may have changed.
 	 * The number of rows may also have changed and the JTable should redraw the table from scratch.
 	 * The structure of the table (as in the order of the columns) is assumed to be the same.
@@ -347,12 +352,15 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		boolean editable(R row, C identifier);
 
 		/**
-		 * Sets the value of the given column
+		 * <p>Sets the value of the given column and row.
+		 * <p>This method is responsible for notifying the model of the change.
 		 * @param value the value to set
 		 * @param rowIndex the row index
 		 * @param row the row object
 		 * @param identifier the column identifier
 		 * @see TableModel#setValueAt(Object, int, int)
+		 * @see #editable(Object, Object)
+		 * @throws IllegalStateException in case the cell is not editable
 		 */
 		void set(@Nullable Object value, int rowIndex, R row, C identifier);
 	}
