@@ -77,8 +77,8 @@ final class EntityPopupMenu extends JPopupMenu {
 			JMenuItem menuItem = new JMenuItem(new StringBuilder("[PK] ")
 							.append(primaryKeyColumn.attribute())
 							.append(" [").append(primaryKeyColumn.attribute().type().valueClass().getSimpleName()).append("]: ")
-							.append(createValueString(entity, primaryKeyColumn)).toString());
-			menuItem.addActionListener(clipboardControl(entity, primaryKeyColumn.attribute()));
+							.append(createValueString(entity, primaryKeyColumn, true)).toString());
+			menuItem.addActionListener(clipboardControl(entity, primaryKeyColumn));
 			configureMenuItem(menuItem, entity, primaryKeyColumn.attribute(), primaryKeyColumn.attribute().name());
 			rootMenu.add(menuItem);
 		}
@@ -90,7 +90,7 @@ final class EntityPopupMenu extends JPopupMenu {
 		for (ForeignKeyDefinition fkDefinition : fkDefinitions) {
 			StringBuilder captionBuilder = new StringBuilder("[FK] ").append(fkDefinition.caption()).append(": ");
 			ForeignKey foreignKey = fkDefinition.attribute();
-			String caption = captionBuilder.append(createValueString(entity, fkDefinition)).toString();
+			String caption = captionBuilder.append(createValueString(entity, fkDefinition, true)).toString();
 			JMenuItem menuItem = entity.isNull(foreignKey) ? new JMenuItem(caption) : new JMenu(caption);
 			configureMenuItem(menuItem, entity, foreignKey, foreignKeyAttributeNames(foreignKey));
 			rootMenu.add(menuItem);
@@ -115,8 +115,8 @@ final class EntityPopupMenu extends JPopupMenu {
 				JMenuItem menuItem = new JMenuItem(new StringBuilder(attributeDefinition.toString())
 								.append(" [").append(attributeDefinition.attribute().type().valueClass().getSimpleName())
 								.append(isDerived(attributeDefinition) ? "*" : "").append("]: ")
-								.append(createValueString(entity, attributeDefinition)).toString());
-				menuItem.addActionListener(clipboardControl(entity, attributeDefinition.attribute()));
+								.append(createValueString(entity, attributeDefinition, true)).toString());
+				menuItem.addActionListener(clipboardControl(entity, attributeDefinition));
 				configureMenuItem(menuItem, entity, attributeDefinition.attribute(), attributeDefinition.attribute().toString());
 				rootMenu.add(menuItem);
 			}
@@ -127,21 +127,24 @@ final class EntityPopupMenu extends JPopupMenu {
 		return definition instanceof ValueAttributeDefinition<?> && ((ValueAttributeDefinition<?>) definition).derived();
 	}
 
-	private static String createValueString(Entity entity, AttributeDefinition<?> attributeDefinition) {
+	private static String createValueString(Entity entity, AttributeDefinition<?> attributeDefinition, boolean trim) {
 		StringBuilder builder = new StringBuilder();
 		if (entity.modified(attributeDefinition.attribute())) {
-			builder.append(createValueString(entity.original(attributeDefinition.attribute()), (AttributeDefinition<Object>) attributeDefinition));
+			builder.append(createValueString(entity.original(attributeDefinition.attribute()), (AttributeDefinition<Object>) attributeDefinition, trim));
 			builder.append(" → ");
 		}
-		builder.append(createValueString(entity.get(attributeDefinition.attribute()), (AttributeDefinition<Object>) attributeDefinition));
+		builder.append(createValueString(entity.get(attributeDefinition.attribute()), (AttributeDefinition<Object>) attributeDefinition, trim));
 
 		return builder.toString();
 	}
 
-	private static String createValueString(@Nullable Object value, AttributeDefinition<Object> attributeDefinition) {
+	private static String createValueString(@Nullable Object value, AttributeDefinition<Object> attributeDefinition, boolean trim) {
 		String formatted = value == null ? "<null>" : attributeDefinition.format(value);
-		if (formatted.length() > MAXIMUM_VALUE_LENGTH) {
+		if (trim && formatted.length() > MAXIMUM_VALUE_LENGTH) {
 			formatted = formatted.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
+		}
+		if (attributeDefinition.attribute().type().isString() && value != null) {
+			formatted = "\"" + formatted + "\"";
 		}
 
 		return formatted;
@@ -203,23 +206,23 @@ final class EntityPopupMenu extends JPopupMenu {
 		return entity.definition().entity(entity + " <DUPLICATE>");
 	}
 
-	private static Control clipboardControl(Entity entity, Attribute<?> attribute) {
+	private static Control clipboardControl(Entity entity, AttributeDefinition<?> attribute) {
 		return command(new ClipboardCommand(entity, attribute));
 	}
 
 	private static final class ClipboardCommand implements Control.Command {
 
 		private final Entity entity;
-		private final Attribute<?> attribute;
+		private final AttributeDefinition<?> attribute;
 
-		private ClipboardCommand(Entity entity, Attribute<?> attribute) {
+		private ClipboardCommand(Entity entity, AttributeDefinition<?> attribute) {
 			this.entity = entity;
 			this.attribute = attribute;
 		}
 
 		@Override
 		public void execute() {
-			setClipboard(entity.formatted(attribute));
+			setClipboard(createValueString(entity, attribute, false));
 		}
 	}
 
