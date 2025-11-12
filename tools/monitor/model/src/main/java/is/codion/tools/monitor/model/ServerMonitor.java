@@ -68,13 +68,17 @@ public final class ServerMonitor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
 	private static final Format MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
+	private static final long GB = 1073741824;
 	private static final double K = 1024;
 	private static final String GC_EVENT_PREFIX = "GC ";
 	private static final String DOMAIN = "Domain";
+	private static final String REACHABLE = "Reachable";
+	private static final String UNREACHABLE = "Unreachable";
 
 	private final Event<?> serverShutDownEvent = Event.event();
 	private final Value<Integer> connectionLimitValue;
 	private final LoggerProxy loggerProxy = new ServerLoggerProxy();
+	private final Value<String> status = Value.nonNull("");
 
 	private final String hostname;
 	private final ServerInformation serverInformation;
@@ -191,6 +195,13 @@ public final class ServerMonitor {
 	 */
 	public EntityServerAdmin server() {
 		return server;
+	}
+
+	/**
+	 * @return an {@link Observable} indicating the server status
+	 */
+	public Observable<String> status() {
+		return status.observable();
 	}
 
 	/**
@@ -486,7 +497,7 @@ public final class ServerMonitor {
 				lastStatisticsUpdateTime = timestamp;
 				connectionLimitValue.set(statistics.connectionLimit());
 				connectionCountValue.set(statistics.connectionCount());
-				memoryUsageValue.set(MEMORY_USAGE_FORMAT.format(statistics.usedMemory() / K) + " KB");
+				memoryUsageValue.set(memoryUsageFormatted(statistics.usedMemory()));
 				connectionRequestsPerSecondSeries.add(timestamp, statistics.requestsPerSecond());
 				maxMemorySeries.add(timestamp, statistics.maximumMemory() / K / K);
 				totalMemorySeries.add(timestamp, statistics.totalMemory() / K / K);
@@ -497,9 +508,20 @@ public final class ServerMonitor {
 				connectionLimitSeries.add(timestamp, statistics.connectionLimit());
 				addThreadStatistics(timestamp, statistics.threadStatistics());
 				addGCInfo(statistics.gcEvents());
+				status.set(REACHABLE);
 			}
 		}
-		catch (RemoteException ignored) {/*ignored*/}
+		catch (RemoteException ignored) {
+			status.set(UNREACHABLE);
+		}
+	}
+
+	private static String memoryUsageFormatted(long bytes) {
+		if (bytes < GB) {
+			return MEMORY_USAGE_FORMAT.format(bytes / K) + " KB";
+		}
+
+		return MEMORY_USAGE_FORMAT.format(bytes / K / K) + " MB";
 	}
 
 	private void addThreadStatistics(long timestamp, ServerAdmin.ThreadStatistics threadStatistics) {

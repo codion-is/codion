@@ -136,6 +136,8 @@ public final class ServerMonitorPanel extends JPanel {
 										.columns(SPINNER_COLUMNS))
 						.add(label("Mem. usage"))
 						.add(createMemoryField())
+						.add(label("Status"))
+						.add(createStatusField())
 						.build();
 
 		JPanel northPanel = borderLayoutPanel()
@@ -326,6 +328,15 @@ public final class ServerMonitorPanel extends JPanel {
 						.editable(false)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.link(model.memoryUsage())
+						.build();
+	}
+
+	private JTextField createStatusField() {
+		return stringField()
+						.columns(8)
+						.editable(false)
+						.horizontalAlignment(SwingConstants.CENTER)
+						.link(model.status())
 						.build();
 	}
 

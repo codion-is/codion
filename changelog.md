@@ -19,6 +19,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.columns() added.
 - EntityPopupMenu, string values now surrounded by quotes, for spotting leading and trailing spaces. Clipboard action now includes full values.
+### is.codion.tools.monitor.ui
+- ServerMonitorPanel memory usage display improved, server reachability status shown.
 
 ## 0.18.58
 ### is.codion.common.reactive
