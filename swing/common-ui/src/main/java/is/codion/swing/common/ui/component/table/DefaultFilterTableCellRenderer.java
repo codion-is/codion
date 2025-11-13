@@ -92,6 +92,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	}
 
 	@Override
+	public boolean focusedCellIndicator() {
+		return settings.focusedCellIndicator;
+	}
+
+	@Override
 	public boolean alternateRowColoring() {
 		return settings.alternateRowColoring;
 	}
@@ -168,6 +173,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
+		public boolean focusedCellIndicator() {
+			return settings.focusedCellIndicator;
+		}
+
+		@Override
 		public boolean alternateRowColoring() {
 			return settings.alternateRowColoring;
 		}
@@ -196,6 +206,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final int rightPadding;
 		private final boolean alternateRowColoring;
 		private final boolean filterIndicator;
+		private final boolean focusedCellIndicator;
 		private final CellColor<R, C, T> backgroundColor;
 		private final CellColor<R, C, T> foregroundColor;
 		private final int horizontalAlignment;
@@ -213,6 +224,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.rightPadding = builder.rightPadding;
 			this.alternateRowColoring = builder.alternateRowColoring;
 			this.filterIndicator = builder.filterIndicator;
+			this.focusedCellIndicator = builder.focuseCellIndicator;
 			this.foregroundColor = builder.foregroundColor;
 			this.backgroundColor = builder.backgroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
@@ -320,7 +332,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Border border(FilterTable<?, ?> filterTable, boolean hasFocus, int rowIndex, int columnIndex) {
-			return hasFocus || isSearchResult(filterTable.search(), rowIndex, columnIndex) ?
+			return (focusedCellIndicator && hasFocus) || isSearchResult(filterTable.search(), rowIndex, columnIndex) ?
 							uiSettings.focusedCellBorder() : uiSettings.defaultCellBorder();
 		}
 
@@ -360,6 +372,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
 		private boolean filterIndicator = true;
+		private boolean focuseCellIndicator = FOCUSED_CELL_INDICATOR.getOrThrow();
 		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private boolean toolTipData = false;
@@ -393,6 +406,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		SettingsBuilder<R, C, T> filterIndicator(boolean filterIndicator) {
 			this.filterIndicator = filterIndicator;
+			return this;
+		}
+
+		SettingsBuilder<R, C, T> focuseCellIndicator(boolean focuseCellIndicator) {
+			this.focuseCellIndicator = focuseCellIndicator;
 			return this;
 		}
 
@@ -566,6 +584,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		@Override
 		public Builder<R, C, T> filterIndicator(boolean filterIndicator) {
 			this.settings.filterIndicator(filterIndicator);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C, T> focusedCellIndicator(boolean focusedCellIndicator) {
+			this.settings.focuseCellIndicator(focusedCellIndicator);
 			return this;
 		}
 

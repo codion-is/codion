@@ -18,6 +18,7 @@ Codion Change Log
 - LookAndFeelSelectionDialogBuilder.allowInstalled() added along with ALLOW_INSTALLED configuration property.
 - ImagePanel can now have multiple overlays.
 - FilterTable.copySelectedColumn() added along with ControlKeys.COPY_COLUMN.
+- FilterTableCellRenderer.Builder.focusedCellIndicator() added.
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
 - AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.

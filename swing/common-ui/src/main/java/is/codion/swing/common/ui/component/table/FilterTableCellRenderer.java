@@ -115,6 +115,16 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 					booleanValue(FilterTableCellRenderer.class.getName() + ".alternateRowColoring", true);
 
 	/**
+	 * Specifies whether if a focused cell should be indicated with a cell border.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> FOCUSED_CELL_INDICATOR =
+					booleanValue(FilterTableCellRenderer.class.getName() + ".focusedCellIndicator", true);
+
+	/**
 	 * @return the column class
 	 */
 	Class<T> columnClass();
@@ -123,6 +133,11 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	 * @return true if an enabled filter should be indicated
 	 */
 	boolean filterIndicator();
+
+	/**
+	 * @return true if the focused cell should be indicated with a cell border
+	 */
+	boolean focusedCellIndicator();
 
 	/**
 	 * @return true if alternate row coloring is enabled
@@ -202,10 +217,16 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		Builder<R, C, T> toolTipData(boolean toolTipData);
 
 		/**
-		 * @param columnShading true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
+		 * @param filterIndicator true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> filterIndicator(boolean columnShading);
+		Builder<R, C, T> filterIndicator(boolean filterIndicator);
+
+		/**
+		 * @param focusedCellIndicator true if the focused cell should be indicated with a cell border
+		 * @return this builder instance
+		 */
+		Builder<R, C, T> focusedCellIndicator(boolean focusedCellIndicator);
 
 		/**
 		 * @param alternateRowColoring true if alternate row coloring should be enabled
