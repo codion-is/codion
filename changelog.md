@@ -20,9 +20,12 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
 - AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.
+- EntityTableModel.refreshTask() added along with RefreshTask, for async refreshing of entities.
+- AbstractEntityTableModel.refresh(keys) implementation removed.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.SwingEntityTableEditor added.
 - SwingEntityTableModel, table editing now FilterTableModel.Editor based.
+- SwingEntityTableModel.refresh(keys) added, runs async on EDT.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.columns() added.
 - EntityPopupMenu, string values now surrounded by quotes, for spotting leading and trailing spaces. Clipboard action now includes full values.

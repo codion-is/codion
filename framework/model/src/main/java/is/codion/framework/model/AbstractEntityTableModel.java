@@ -45,6 +45,7 @@ import java.util.function.Predicate;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
@@ -154,18 +155,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final void refresh(Collection<Entity.Key> keys) {
-		if (!requireNonNull(keys).isEmpty()) {
-			items().replace(connection().select(where(keys(keys))
-											.attributes(queryModel.attributes().defaults().get())
-											.include(queryModel.attributes().include().get())
-											.exclude(queryModel.attributes().exclude().get())
-											.build()).stream()
-							.collect(toMap(identity(), identity())));
-		}
-	}
-
-	@Override
 	public final void select(Collection<Entity.Key> keys) {
 		selection().items().set(new SelectByKeyPredicate(requireNonNull(keys)));
 	}
@@ -173,6 +162,11 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	@Override
 	public final Collection<Entity> deleteSelected() {
 		return editModel.delete(selection().items().get());
+	}
+
+	@Override
+	public final RefreshTask refreshTask(Collection<Entity.Key> keys) {
+		return new DefaultRefreshTask(requireNonNull(keys));
 	}
 
 	/**
@@ -293,10 +287,46 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		}
 	}
 
+	private final class DefaultRefreshTask implements RefreshTask {
+
+		private final Collection<Entity.Key> keys;
+
+		private DefaultRefreshTask(Collection<Entity.Key> keys) {
+			this.keys = keys;
+		}
+
+		@Override
+		public Result perform() {
+			if (keys.isEmpty()) {
+				return new DefaultRefreshResult(emptyList());
+			}
+
+			return new DefaultRefreshResult(connection().select(where(keys(keys))
+							.attributes(queryModel.attributes().defaults().get())
+							.include(queryModel.attributes().include().get())
+							.exclude(queryModel.attributes().exclude().get())
+							.build()));
+		}
+	}
+
+	private final class DefaultRefreshResult implements RefreshTask.Result {
+
+		private final Collection<Entity> entities;
+
+		private DefaultRefreshResult(Collection<Entity> entities) {
+			this.entities = entities;
+		}
+
+		@Override
+		public void handle() {
+			replace(entities);
+		}
+	}
+
 	/**
 	 * An abstract {@link EntityTableEditor} implementation.
 	 */
-	protected static abstract class AbstractEntityTableEditor implements EntityTableEditor {
+	protected abstract static class AbstractEntityTableEditor implements EntityTableEditor {
 
 		private final EntityEditModel editModel;
 		private final State enabled = State.state();

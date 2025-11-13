@@ -35,10 +35,12 @@ import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.framework.model.EntityTableModel.RefreshTask.Result;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
+import is.codion.swing.common.model.worker.ProgressWorker;
 
 import org.jspecify.annotations.Nullable;
 
@@ -58,6 +60,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -249,6 +252,22 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	@Override
 	public final SwingEntityTableEditor editor() {
 		return (SwingEntityTableEditor) filterModel().editor();
+	}
+
+	@Override
+	public final void refresh(Collection<Entity.Key> keys) {
+		if (!requireNonNull(keys).isEmpty()) {
+			RefreshTask task = refreshTask(keys);
+			if (isEventDispatchThread()) {
+				ProgressWorker.builder()
+								.task(task::perform)
+								.onResult(Result::handle)
+								.execute();
+			}
+			else {
+				task.perform().handle();
+			}
+		}
 	}
 
 	@Override
