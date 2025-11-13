@@ -27,6 +27,7 @@
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#HORIZONTAL_ALIGNMENT}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#ALTERNATE_ROW_COLORING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#FOCUSED_CELL_INDICATOR}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableHeaderRenderer#FOCUSED_COLUMN_INDICATOR}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#COLUMN_REORDERING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#AUTO_RESIZE_MODE}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#COLUMN_RESIZING}

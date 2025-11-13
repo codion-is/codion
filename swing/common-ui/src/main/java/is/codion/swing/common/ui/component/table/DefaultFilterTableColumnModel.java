@@ -473,6 +473,8 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		@Override
 		protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
 			super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
+			lead.set(getLeadSelectionIndex());
+			anchor.set(getAnchorSelectionIndex());
 			if (!isAdjusting) {
 				List<Integer> selectedIndexes = IntStream.of(getSelectedIndices())
 								.boxed()
@@ -481,8 +483,6 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 				identifiers.set(selectedIndexes.stream()
 								.map(DefaultFilterTableColumnModel.this::identifier)
 								.collect(toList()));
-				anchor.set(getAnchorSelectionIndex());
-				lead.set(getLeadSelectionIndex());
 			}
 		}
 	}

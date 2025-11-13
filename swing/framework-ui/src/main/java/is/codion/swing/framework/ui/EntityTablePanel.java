@@ -23,7 +23,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.selection.MultiSelection;
-import is.codion.common.model.summary.SummaryModel;
+import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -44,6 +44,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditTask;
+import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -60,6 +61,7 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
+import is.codion.swing.common.ui.component.table.FilterTableHeaderRenderer;
 import is.codion.swing.common.ui.component.table.TableConditionPanel;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -1543,7 +1545,6 @@ public class EntityTablePanel extends JPanel {
 	private void setupComponents() {
 		tableScrollPane.setViewportView(table());
 		tablePanel.initialize();
-		table.columnModel().columns().forEach(this::configureColumn);
 		summaryPanelVisibleState.addValidator(new ComponentAvailableValidator(summaryPanel, "summary"));
 	}
 
@@ -1633,10 +1634,6 @@ public class EntityTablePanel extends JPanel {
 		control(FILTER_CONTROLS).map(new ReplaceIfNull(this::createFilterControls));
 		control(COLUMN_CONTROLS).map(new ReplaceIfNull(this::createColumnControls));
 		control(COPY_CONTROLS).map(new ReplaceIfNull(this::createCopyControls));
-	}
-
-	private void configureColumn(FilterTableColumn<Attribute<?>> column) {
-		column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
 	}
 
 	private void addTablePopupMenu() {
@@ -1860,33 +1857,6 @@ public class EntityTablePanel extends JPanel {
 		return table.columnModel().identifiers().stream()
 						.map(table.summaries()::get)
 						.anyMatch(Optional::isPresent);
-	}
-
-	private final class HeaderRenderer implements TableCellRenderer {
-
-		private final TableCellRenderer wrappedRenderer;
-
-		private HeaderRenderer(TableCellRenderer wrappedRenderer) {
-			this.wrappedRenderer = wrappedRenderer;
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-																									 boolean hasFocus, int row, int column) {
-			Component component = wrappedRenderer == null ?
-							table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
-							wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			FilterTableColumn<Attribute<?>> tableColumn = table().columnModel().getColumn(column);
-			TableCellRenderer renderer = tableColumn.getCellRenderer();
-			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
-							&& ((FilterTableCellRenderer<?>) renderer).filterIndicator()
-							&& tableModel.queryModel().condition().optional(tableColumn.identifier())
-							.map(conditionModel -> conditionModel.enabled().is()).orElse(false);
-			Font defaultFont = component.getFont();
-			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
-
-			return component;
-		}
 	}
 
 	private static final class DeleteConfirmer implements Confirmer {
@@ -2212,6 +2182,7 @@ public class EntityTablePanel extends JPanel {
 							.model(tablePanel.tableModel)
 							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
 							.cellRendererFactory(EntityTableCellRenderer.factory())
+							.headerRendererFactory(new EntityTableHeaderRendererFactory())
 							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))
 							.cellEditable(new EntityCellEditable(tablePanel.tableModel.entities()))
 							.scrollToAddedItem(true)
@@ -2716,7 +2687,45 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private static final class EntitySummaryValuesFactory implements SummaryModel.SummaryValues.Factory<Attribute<?>> {
+	private static final class EntityTableHeaderRendererFactory implements FilterTableHeaderRenderer.Factory<Attribute<?>> {
+
+		@Override
+		public FilterTableHeaderRenderer create(FilterTableColumn<Attribute<?>> column, FilterTableModel<?, Attribute<?>> tableModel) {
+			return new EntityTableHeaderRenderer(column, (SwingEntityTableModel) tableModel);
+		}
+	}
+
+	private static final class EntityTableHeaderRenderer implements FilterTableHeaderRenderer {
+
+		private static final FilterTableHeaderRenderer.Factory<Attribute<?>> DEFAULT_FACTORY = FilterTableHeaderRenderer.factory();
+
+		private final TableCellRenderer wrappedRenderer;
+		private final FilterTableColumn<Attribute<?>> tableColumn;
+		private final EntityTableConditionModel condition;
+
+		private EntityTableHeaderRenderer(FilterTableColumn<Attribute<?>> column, SwingEntityTableModel tableModel) {
+			this.wrappedRenderer = DEFAULT_FACTORY.create(column, tableModel);
+			this.tableColumn = column;
+			this.condition = tableModel.queryModel().condition();
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+																									 boolean hasFocus, int row, int column) {
+			Component component = wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			TableCellRenderer renderer = tableColumn.getCellRenderer();
+			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
+							&& ((FilterTableCellRenderer<?>) renderer).filterIndicator()
+							&& condition.optional(tableColumn.identifier())
+							.map(conditionModel -> conditionModel.enabled().is()).orElse(false);
+			Font defaultFont = component.getFont();
+			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
+
+			return component;
+		}
+	}
+
+	private static final class EntitySummaryValuesFactory implements SummaryValues.Factory<Attribute<?>> {
 
 		private final EntityDefinition entityDefinition;
 		private final FilterTableModel<?, Attribute<?>> tableModel;
@@ -2727,7 +2736,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		@Override
-		public <T extends Number> Optional<SummaryModel.SummaryValues<T>> createSummaryValues(Attribute<?> identifier, Format format) {
+		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(Attribute<?> identifier, Format format) {
 			AttributeDefinition<?> definition = entityDefinition.attributes().definition(identifier);
 			if (definition instanceof ValueAttributeDefinition<?>) {
 				ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>) definition;

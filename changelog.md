@@ -19,6 +19,9 @@ Codion Change Log
 - ImagePanel can now have multiple overlays.
 - FilterTable.copySelectedColumn() added along with ControlKeys.COPY_COLUMN.
 - FilterTableCellRenderer.Builder.focusedCellIndicator() added.
+- FilterTableHeaderRenderer added, now indicates the focused column with a darkened header, FOCUSED_COLUMN_INDICATOR configuration property added.
+- FilterTable.Builder.headerRendererFactory() added.
+- DefaultFilterTableColumnModel.DefaultColumnSelection now updates lead and anchor indexes when adjusting.
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
 - AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.

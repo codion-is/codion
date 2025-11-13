@@ -921,7 +921,7 @@ public final class FilterTable<R, C> extends JTable {
 										builder.cellRendererFactory.create(column.identifier(), tableModel))));
 		columnModel().columns().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
-						.forEach(column -> column.setHeaderRenderer(new FilterTableHeaderRenderer<>(this, column)));
+						.forEach(column -> column.setHeaderRenderer(builder.headerRendererFactory.create(column, tableModel)));
 		columnModel().columns().stream()
 						.filter(column -> column.getCellEditor() == null)
 						.forEach(column -> {
@@ -970,6 +970,8 @@ public final class FilterTable<R, C> extends JTable {
 	private void bindEvents(boolean columnReorderingAllowed,
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
+		columnModel().selection().lead().addListener(getTableHeader()::repaint);
+		tableModel.selection().indexes().addListener(getTableHeader()::repaint);
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
 		tableModel.items().included().added().addConsumer(new ScrollToAdded());
 		tableModel.filters().changed().addListener(getTableHeader()::repaint);
@@ -1274,6 +1276,13 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory);
 
 		/**
+		 * Note that this factory is only used to create header renderers for columns which do not already have a header renderer
+		 * @param headerRendererFactory the header renderer factory
+		 * @return this builder instance
+		 */
+		Builder<R, C> headerRendererFactory(FilterTableHeaderRenderer.Factory<C> headerRendererFactory);
+
+		/**
 		 * the cell renderer for the given column, overrides {@link #cellEditorFactory(FilterTableCellEditor.Factory)}.
 		 * @param identifier the column identifier
 		 * @param cellEditor the cell editor to use for the given column
@@ -1499,6 +1508,7 @@ public final class FilterTable<R, C> extends JTable {
 		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private ComponentFactory filterComponentFactory = new FilterComponentFactory();
+		private FilterTableHeaderRenderer.Factory<C> headerRendererFactory;
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
 		private BiPredicate<R, C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
@@ -1530,6 +1540,7 @@ public final class FilterTable<R, C> extends JTable {
 		private DefaultBuilder(FilterTableModel<R, C> tableModel) {
 			this.tableModel = tableModel;
 			this.cellRendererFactory = FilterTableCellRenderer.factory();
+			this.headerRendererFactory = FilterTableHeaderRenderer.factory();
 		}
 
 		@Override
@@ -1573,6 +1584,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory) {
 			this.cellRendererFactory = requireNonNull(cellRendererFactory);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> headerRendererFactory(FilterTableHeaderRenderer.Factory<C> headerRendererFactory) {
+			this.headerRendererFactory = requireNonNull(headerRendererFactory);
 			return this;
 		}
 
