@@ -23,10 +23,11 @@ import is.codion.common.reactive.value.AbstractValue;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 import java.lang.reflect.InvocationTargetException;
 
 import static java.util.Objects.requireNonNull;
+import static javax.swing.SwingUtilities.invokeAndWait;
+import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
  * An abstract base implementation of {@link ComponentValue}.
@@ -69,12 +70,12 @@ public abstract class AbstractComponentValue<C extends JComponent, T> extends Ab
 
 	@Override
 	protected final void setValue(@Nullable T value) {
-		if (SwingUtilities.isEventDispatchThread()) {
+		if (isEventDispatchThread()) {
 			setComponentValue(value);
 			return;
 		}
 		try {
-			SwingUtilities.invokeAndWait(() -> setComponentValue(value));
+			invokeAndWait(() -> setComponentValue(value));
 		}
 		catch (Exception ex) {
 			handleInvokeAndWaitException(ex);

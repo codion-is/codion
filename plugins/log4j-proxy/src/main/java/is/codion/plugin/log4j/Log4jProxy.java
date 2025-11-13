@@ -42,15 +42,15 @@ import static java.util.stream.Collectors.toList;
 public final class Log4jProxy implements LoggerProxy {
 
 	@Override
-	public Object getLogLevel(String name) {
+	public Object getLogLevel(String logger) {
 		LoggerContext context = (LoggerContext) LogManager.getContext(false);
-		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(requireNonNull(name));
+		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(requireNonNull(logger));
 
 		return loggerConfig.getLevel();
 	}
 
 	@Override
-	public void setLogLevel(String name, Object logLevel) {
+	public void setLogLevel(String logger, Object logLevel) {
 		if (!(logLevel instanceof Level)) {
 			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
 		}

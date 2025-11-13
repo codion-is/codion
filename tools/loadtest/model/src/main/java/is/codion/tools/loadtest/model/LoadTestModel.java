@@ -19,6 +19,7 @@
 package is.codion.tools.loadtest.model;
 
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario.Result;
@@ -47,14 +48,9 @@ public interface LoadTestModel<T> {
 	FilterTableModel<ApplicationRow, String> applicationTableModel();
 
 	/**
-	 * @return the chart data update interval in milliseconds
+	 * @return the {@link Value} controlling the chart data update interval in milliseconds
 	 */
-	int getUpdateInterval();
-
-	/**
-	 * @param updateInterval the chart data update interval in milliseconds
-	 */
-	void setUpdateInterval(int updateInterval);
+	Value<Integer> chartUpdateInterval();
 
 	/**
 	 * @return the {@link State} controlling whether this load test displays statistics in charts

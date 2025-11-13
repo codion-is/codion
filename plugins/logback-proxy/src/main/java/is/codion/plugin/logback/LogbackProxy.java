@@ -44,16 +44,16 @@ import static java.util.Spliterators.spliteratorUnknownSize;
 public final class LogbackProxy implements LoggerProxy {
 
 	@Override
-	public Object getLogLevel(String name) {
-		return ((Logger) LoggerFactory.getLogger(requireNonNull(name))).getLevel();
+	public Object getLogLevel(String logger) {
+		return ((Logger) LoggerFactory.getLogger(requireNonNull(logger))).getLevel();
 	}
 
 	@Override
-	public void setLogLevel(String name, Object logLevel) {
+	public void setLogLevel(String logger, Object logLevel) {
 		if (!(logLevel instanceof Level)) {
 			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
 		}
-		((Logger) LoggerFactory.getLogger(requireNonNull(name))).setLevel((Level) logLevel);
+		((Logger) LoggerFactory.getLogger(requireNonNull(logger))).setLevel((Level) logLevel);
 	}
 
 	@Override

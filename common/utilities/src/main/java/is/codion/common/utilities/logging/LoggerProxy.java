@@ -37,17 +37,17 @@ public interface LoggerProxy {
 	LoggerProxy NONE = new NoOpLoggerProxy();
 
 	/**
-	 * @param name the logger name
+	 * @param logger the logger name
 	 * @return the log level
 	 */
-	Object getLogLevel(String name);
+	Object getLogLevel(String logger);
 
 	/**
 	 * Sets the log level
-	 * @param name the logger name
+	 * @param logger the logger name
 	 * @param logLevel the log level
 	 */
-	void setLogLevel(String name, Object logLevel);
+	void setLogLevel(String logger, Object logLevel);
 
 	/**
 	 * @return the available log levels

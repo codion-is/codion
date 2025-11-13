@@ -75,7 +75,7 @@ public class DefaultLoadTestModelTest {
 		assertEquals(2, loadTest.applications().loginDelayFactor().get());
 		loadTest.applications().loginDelayFactor().set(3);
 		assertEquals(3, loadTest.applications().loginDelayFactor().get());
-		Assertions.assertEquals(DefaultLoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
+		Assertions.assertEquals(DefaultLoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.chartUpdateInterval().get());
 		assertEquals(2, loadTest.applications().batchSize().get());
 
 		assertEquals(25, loadTest.thinkTime().minimum().get());
@@ -132,6 +132,6 @@ public class DefaultLoadTestModelTest {
 						.user(User.user("test"))
 						.build();
 		LoadTestModel<Object> model = loadTestModel(loadTest);
-		assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
+		assertThrows(IllegalArgumentException.class, () -> model.chartUpdateInterval().set(-1));
 	}
 }

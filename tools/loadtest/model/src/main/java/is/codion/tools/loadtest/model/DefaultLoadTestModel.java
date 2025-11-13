@@ -20,6 +20,7 @@ package is.codion.tools.loadtest.model;
 
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
@@ -245,13 +246,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	@Override
-	public int getUpdateInterval() {
-		return chartUpdateScheduler.interval().getOrThrow();
-	}
-
-	@Override
-	public void setUpdateInterval(int updateInterval) {
-		chartUpdateScheduler.interval().set(updateInterval);
+	public Value<Integer> chartUpdateInterval() {
+		return chartUpdateScheduler.interval();
 	}
 
 	@Override

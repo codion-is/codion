@@ -36,16 +36,16 @@ import static java.util.Objects.requireNonNull;
 public final class JulProxy implements LoggerProxy {
 
 	@Override
-	public Object getLogLevel(String name) {
-		return LogManager.getLogManager().getLogger(requireNonNull(name)).getLevel();
+	public Object getLogLevel(String logger) {
+		return LogManager.getLogManager().getLogger(requireNonNull(logger)).getLevel();
 	}
 
 	@Override
-	public void setLogLevel(String name, Object logLevel) {
+	public void setLogLevel(String logger, Object logLevel) {
 		if (!(logLevel instanceof Level)) {
 			throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
 		}
-		LogManager.getLogManager().getLogger(requireNonNull(name)).setLevel((Level) logLevel);
+		LogManager.getLogManager().getLogger(requireNonNull(logger)).setLevel((Level) logLevel);
 	}
 
 	@Override
