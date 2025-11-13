@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.59
+### is.codion.common.model
+- DefaultFilterModelItems.replace() bug fixed, now uses ItemsListener.inserted() and updated() instead of changed().
 ### is.codion.common.utilities
 - TypeReference moved from domain module.
 - ProxyBuilder.of() overloaded with TypeReference.
@@ -14,6 +16,7 @@ Codion Change Log
 - DelayedAction.Performer now ActionListener instead of Action.
 - AbstractRefreshWorker onRefreshException handler parameter added.
 - FilterTableModel.editor() added.
+- DefaultFilterListModel.ListModelAdapter.updated() bug fixed, missing fireIntervalAdded() added.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.allowInstalled() added along with ALLOW_INSTALLED configuration property.
 - ImagePanel can now have multiple overlays.

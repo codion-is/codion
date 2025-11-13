@@ -201,6 +201,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 					R replacement = toReplace.remove(itemToReplace);
 					if (included.predicate.test(replacement)) {
 						included.items.add(replacement);
+						int index = included.items.size() - 1;
+						itemsListener.inserted(index, index);
 					}
 					else {
 						filtered.items.add(replacement);
@@ -214,6 +216,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				if (replacement != null) {
 					if (included.predicate.test(replacement)) {
 						iterator.set(replacement);
+						itemsListener.updated(iterator.previousIndex(), iterator.previousIndex());
 					}
 					else {
 						iterator.remove();
@@ -221,7 +224,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 					}
 				}
 			}
-			itemsListener.changed();
 			included.sort();
 		}
 	}

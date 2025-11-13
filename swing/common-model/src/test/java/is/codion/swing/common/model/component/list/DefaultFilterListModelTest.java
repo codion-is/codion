@@ -138,11 +138,12 @@ final class DefaultFilterListModelTest {
 
 		// Update/replace item
 		model.items().replace(ONE, "ONE_UPDATED");
-		assertEquals(1, listener.contentsChangedCount);
+		assertEquals(2, listener.intervalRemovedCount);
+		assertEquals(2, listener.intervalAddedCount);
 
 		// Clear all
 		model.items().clear();
-		assertTrue(listener.intervalRemovedCount > 1); // Should fire remove events
+		assertTrue(listener.intervalRemovedCount > 2); // Should fire remove events
 
 		// Add new items after clear
 		model.items().add(asList("New1", "New2"));

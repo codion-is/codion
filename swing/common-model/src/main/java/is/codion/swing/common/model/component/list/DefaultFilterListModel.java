@@ -92,6 +92,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		@Override
 		public void updated(int firstIndex, int lastIndex) {
 			fireIntervalRemoved(this, firstIndex, lastIndex);
+			fireIntervalAdded(this, firstIndex, lastIndex);
 		}
 
 		@Override
