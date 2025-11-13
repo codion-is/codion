@@ -19,6 +19,7 @@ Codion Change Log
 - ImagePanel can now have multiple overlays.
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
+- AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.SwingEntityTableEditor added.
 - SwingEntityTableModel, table editing now FilterTableModel.Editor based.

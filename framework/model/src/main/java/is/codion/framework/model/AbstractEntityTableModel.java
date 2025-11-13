@@ -36,7 +36,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,7 +43,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.singleton;
@@ -151,18 +149,19 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final void replace(Collection<Entity> entities) {
-		replaceEntities(primaryKeyMap(entities));
+		items().replace(requireNonNull(entities).stream()
+						.collect(toMap(identity(), identity())));
 	}
 
 	@Override
 	public final void refresh(Collection<Entity.Key> keys) {
 		if (!requireNonNull(keys).isEmpty()) {
-			replaceEntities(connection().select(where(keys(keys))
+			items().replace(connection().select(where(keys(keys))
 											.attributes(queryModel.attributes().defaults().get())
 											.include(queryModel.attributes().include().get())
 											.exclude(queryModel.attributes().exclude().get())
 											.build()).stream()
-							.collect(toMap(Entity::primaryKey, identity())));
+							.collect(toMap(identity(), identity())));
 		}
 	}
 
@@ -247,8 +246,11 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	private void onUpdate(Map<Entity, Entity> updatedEntities) {
-		replaceEntities(updatedEntities.entrySet().stream()
-						.collect(toMap(entry -> entry.getKey().originalPrimaryKey(), Map.Entry::getValue)));
+		items().replace(updatedEntities.entrySet().stream()
+						.collect(toMap(entry -> entry.getKey().copy()
+										.builder()
+										.originalPrimaryKey()
+										.build(), Map.Entry::getValue)));
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
@@ -260,26 +262,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	private void onEntityChanged(Entity entity) {
 		if (entity == null) {
 			selection().clear();
-		}
-	}
-
-	private void replaceEntities(Map<Entity.Key, Entity> entities) {
-		Map<Entity.Key, Entity> replacements = new HashMap<>(entities);
-		IncludedItems<Entity> includedItems = items().included();
-		List<Entity> included = includedItems.get();
-		for (int i = 0; i < included.size() && !replacements.isEmpty(); i++) {
-			Entity replacement = replacements.remove(included.get(i).primaryKey());
-			if (replacement != null) {
-				includedItems.set(i, replacement);
-			}
-		}
-		Iterator<Entity> filtered = items().filtered().get().iterator();
-		while (filtered.hasNext() && !replacements.isEmpty()) {
-			Entity entity = filtered.next();
-			Entity replacement = replacements.remove(entity.primaryKey());
-			if (replacement != null) {
-				entity.set(replacement);
-			}
 		}
 	}
 
