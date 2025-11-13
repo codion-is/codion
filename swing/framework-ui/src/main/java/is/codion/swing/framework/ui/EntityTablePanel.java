@@ -365,6 +365,11 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
+		 * A {@link Control} for copying the selected column data.<br>
+		 * Default key stroke: CTRL-ALT-SHIFT-C
+		 */
+		public static final ControlKey<CommandControl> COPY_COLUMN = CommandControl.key("copyColumn", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		/**
 		 * A {@link Control} for copying the table rows with header.
 		 */
 		public static final ControlKey<CommandControl> COPY_ROWS = CommandControl.key("copyRows");
@@ -1358,6 +1363,7 @@ public class EntityTablePanel extends JPanel {
 						.caption(Messages.copy())
 						.icon(ICONS.copy());
 		control(COPY_CELL).optional().ifPresent(builder::control);
+		control(COPY_COLUMN).optional().ifPresent(builder::control);
 		control(COPY_ROWS).optional().ifPresent(builder::control);
 		control(EXPORT_DATA).optional().ifPresent(builder::control);
 
@@ -1598,6 +1604,7 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(DECREMENT_SELECTION).set(createDecrementSelectionControl());
 		controlMap.control(INCREMENT_SELECTION).set(createIncrementSelectionControl());
 		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
+		controlMap.control(COPY_COLUMN).set(table.createCopyColumn());
 		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
 		if (configuration.includeExport) {
 			controlMap.control(EXPORT_DATA).set(createExportControl());

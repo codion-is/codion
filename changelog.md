@@ -17,6 +17,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.allowInstalled() added along with ALLOW_INSTALLED configuration property.
 - ImagePanel can now have multiple overlays.
+- FilterTable.copySelectedColumn() added along with ControlKeys.COPY_COLUMN.
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
 - AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.
@@ -29,6 +30,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel.Config.columns() added.
 - EntityPopupMenu, string values now surrounded by quotes, for spotting leading and trailing spaces. Clipboard action now includes full values.
+- EntityTablePanel.ControlKeys.COPY_COLUMN added.
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel memory usage display improved, server reachability status shown.
 

@@ -509,6 +509,7 @@ is/codion/swing/common/ui/component/table/FilterTable_is_IS.properties
 |auto_resize|Auto-resize|Stærðarjafna
 |case_sensitive_search|Case-sensitive|Hástafanæmni
 |copy_cell|Copy Cell|Afrita Reit
+|copy_column|Copy Column|Afrita Dálk
 |regular_expression_search|Regular expression search|Leita með reglulegum segðum
 |reset|Reset|Frumstilla
 |reset_columns_description|Reset columns to their original location|Frumstilla dálka í upphaflega stöðu
@@ -920,6 +921,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |clear_condition|Clear condition|Hreinsa leitarreit dálks
 |condition_panel|Table condition panel|Leitarflötur
 |copy_selected_cell|Copy selected cell to clipboard|Afrita valinn reit á klippiborð
+|copy_selected_column|Copy selected column cells to clipboard|Afrita reiti valins dálks á klippiborð
 |copy_selected_rows|Copy selected rows to clipboard|Afrita valdar línur á klippiborð
 |date_time_field|Date/time field|Dagsetning/tíma reitur
 |delete|Delete|Eyða

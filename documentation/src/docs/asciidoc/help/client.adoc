@@ -285,6 +285,14 @@ To copy a single cell value:
 2. Press kbd:[Ctrl + Alt + C] or use the *Copy* → *Copy cell* action in the popup menu
 3. Paste the value wherever needed
 
+==== Copying Individual Columns
+
+To copy the cell values for the selected column:
+
+1. Select one or more rows, with the required column highlighted
+2. Press kbd:[Ctrl + Alt + Shift + C] or use the *Copy* → *Copy column* action in the popup menu
+3. Paste the values wherever needed
+
 ==== Copying Rows
 
 To copy entire rows to the clipboard:
@@ -697,6 +705,7 @@ NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for all shortcuts 
 |kbd:[Del]|Delete selected
 |kbd:[Ctrl + C]|Copy selected rows to clipboard
 |kbd:[Ctrl + Alt + C]|Copy selected cell to clipboard
+|kbd:[Ctrl + Alt + Shift + C]|Copy selected column cells to clipboard
 |kbd:[Ctrl + Shift + &#x2190;/&#x2192;]|Move selected column
 |kbd:[Ctrl + &#x002B;/&#x2212;]|Resize selected column
 |kbd:[Ctrl + Shift + &#x2191;/&#x2193;]|Move selection

@@ -115,6 +115,7 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -205,6 +206,11 @@ public final class FilterTable<R, C> extends JTable {
 		 * Default key stroke: CTRL-ALT-C
 		 */
 		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		/**
+		 * Copy the selected column contents to the clipboard.<br>
+		 * Default key stroke: CTRL-ALT-SHIFT-C
+		 */
+		public static final ControlKey<CommandControl> COPY_COLUMN = CommandControl.key("copyColumn", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column from {@link SortOrder#ASCENDING} to {@link SortOrder#DESCENDING} to {@link SortOrder#UNSORTED}.<br>
 		 * Default key stroke: ALT-DOWN ARROW
@@ -305,6 +311,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.sortable = State.state(builder.sortable);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
+		this.controlMap.control(COPY_COLUMN).set(createCopyColumn());
 		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER).set(createToggleSortOrderControl(true));
 		this.controlMap.control(TOGGLE_NEXT_SORT_ORDER).set(createToggleSortOrderControl(false));
 		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER_ADD).set(createToggleSortOrderAddControl(true));
@@ -604,6 +611,20 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
+	 * Copies the contents of the selected column cells to the clipboard.
+	 */
+	public void copySelectedColumn() {
+		int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
+		if (selectedColumn >= 0) {
+			Utilities.setClipboard(tableModel.export()
+							.columns(singletonList(columnModel().getColumn(selectedColumn).identifier()))
+							.header(false)
+							.selected(true)
+							.get());
+		}
+	}
+
+	/**
 	 * <p>Copies the table data as a TAB delimited string, with header, to the clipboard.
 	 * <p>If the selection is empty, all rows are included, otherwise only selected ones.
 	 * <p>If column selection is enabled, only selected columns are included, otherwise all visible columns.
@@ -693,6 +714,17 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::copySelectedCell)
 						.caption(MESSAGES.getString("copy_cell"))
+						.enabled(State.and(tableModel.selection().empty().not(), columnModel().selection().lead().present()))
+						.build();
+	}
+
+	/**
+	 * @return a Control for copying the contents of the selected column
+	 */
+	public CommandControl createCopyColumn() {
+		return Control.builder()
+						.command(this::copySelectedColumn)
+						.caption(MESSAGES.getString("copy_column"))
 						.enabled(State.and(tableModel.selection().empty().not(), columnModel().selection().lead().present()))
 						.build();
 	}
@@ -946,6 +978,7 @@ public final class FilterTable<R, C> extends JTable {
 		addMouseListener(new FilterTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
 		controlMap.keyEvent(COPY_CELL).ifPresent(keyEvent -> keyEvent.enable(this));
+		controlMap.keyEvent(COPY_COLUMN).ifPresent(keyEvent -> keyEvent.enable(this));
 		controlMap.keyEvent(TOGGLE_PREVIOUS_SORT_ORDER_ADD).ifPresent(keyEvent -> keyEvent.enable(this));
 		controlMap.keyEvent(TOGGLE_NEXT_SORT_ORDER_ADD).ifPresent(keyEvent -> keyEvent.enable(this));
 		controlMap.keyEvent(TOGGLE_PREVIOUS_SORT_ORDER).ifPresent(keyEvent -> keyEvent.enable(this));
