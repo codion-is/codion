@@ -58,6 +58,8 @@ import static java.util.stream.Collectors.joining;
 
 final class DefaultEntityEditor implements EntityEditor {
 
+	private static final ValueSupplier INITIAL_VALUE = new InitialValue();
+
 	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 	private final Event<Attribute<?>> valueChanged = Event.event();
 	private final Event<Entity> changing = Event.event();
@@ -81,7 +83,7 @@ final class DefaultEntityEditor implements EntityEditor {
 
 	DefaultEntityEditor(EntityDefinition entityDefinition) {
 		this.entityDefinition = requireNonNull(entityDefinition);
-		this.entity = createEntity(AttributeDefinition::defaultValue);
+		this.entity = createEntity(INITIAL_VALUE);
 		this.exists = new DefaultExists(entityDefinition);
 		this.modified = new DefaultModified();
 		this.validator = Value.builder()
@@ -298,13 +300,12 @@ final class DefaultEntityEditor implements EntityEditor {
 
 	/**
 	 * Instantiates a new {@link Entity} using the values provided by {@code valueSupplier}.
-	 * Values are populated for {@link ColumnDefinition} and its descendants, {@link ForeignKeyDefinition}
-	 * and {@link TransientAttributeDefinition} (excluding its descendants).
+	 * Values are populated for {@link ValueAttributeDefinition} and its descendants.
 	 * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
 	 * skipped unless the attribute itself has a default value, which then overrides the columns default value.
 	 * @return an entity instance populated with default values
-	 * @see ColumnDefinition.Builder#withDefault(boolean)
-	 * @see ColumnDefinition.Builder#defaultValue(Object)
+	 * @see ValueAttributeDefinition.Builder#withDefault(boolean)
+	 * @see ValueAttributeDefinition.Builder#defaultValue(Object)
 	 */
 	private Entity createEntity(ValueSupplier valueSupplier) {
 		Entity newEntity = entityDefinition.entity();
@@ -322,16 +323,15 @@ final class DefaultEntityEditor implements EntityEditor {
 						//these are set via their respective parent foreign key
 						.filter(columnDefinition -> !entityDefinition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
 						.filter(columnDefinition -> !columnDefinition.withDefault() || columnDefinition.hasDefaultValue())
-						.map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
-						.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+						.map(columnDefinition -> (ColumnDefinition<Object>) columnDefinition)
+						.forEach(columnDefinition -> newEntity.set(columnDefinition.attribute(), valueSupplier.get(columnDefinition)));
 	}
 
 	private void addTransientValues(ValueSupplier valueSupplier, Entity newEntity) {
 		entityDefinition.attributes().definitions().stream()
 						.filter(TransientAttributeDefinition.class::isInstance)
 						.map(TransientAttributeDefinition.class::cast)
-						.filter(attributeDefinition -> !attributeDefinition.derived())
-						.map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
+						.map(attributeDefinition -> (TransientAttributeDefinition<Object>) attributeDefinition)
 						.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
 	}
 
@@ -438,12 +438,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		private DefaultEditorValue(Attribute<T> attribute) {
 			super(nullValue(entityDefinition.attributes().definition(attribute)));
 			this.attribute = attribute;
-			this.defaultValue = Value.nonNull(new Supplier<T>() {
-				@Override
-				public @Nullable T get() {
-					return entityDefinition.attributes().definition(attribute).defaultValue();
-				}
-			});
+			this.defaultValue = Value.nonNull(new DefaultValue(entityDefinition.attributes().definition(attribute)));
 		}
 
 		@Override
@@ -582,8 +577,38 @@ final class DefaultEntityEditor implements EntityEditor {
 							.collect(joining("<br>", "<html>", "</html"));
 		}
 
+		private final class DefaultValue implements Supplier<T> {
+
+			private final AttributeDefinition<T> definition;
+
+			private DefaultValue(AttributeDefinition<T> definition) {
+				this.definition = definition;
+			}
+
+			@Override
+			public @Nullable T get() {
+				if (definition instanceof ValueAttributeDefinition) {
+					return ((ValueAttributeDefinition<T>) definition).defaultValue();
+				}
+
+				return null;
+			}
+		}
+
 		private void valueChanged() {
 			notifyObserver();
+		}
+	}
+
+	private static final class InitialValue implements ValueSupplier {
+
+		@Override
+		public <T> @Nullable T get(AttributeDefinition<T> attributeDefinition) {
+			if (attributeDefinition instanceof ValueAttributeDefinition<T>) {
+				return ((ValueAttributeDefinition<T>) attributeDefinition).defaultValue();
+			}
+
+			return null;
 		}
 	}
 

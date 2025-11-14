@@ -55,7 +55,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private static final Comparator<String> LEXICAL_COMPARATOR = Text.collator();
 	private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
 	private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
-	private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
 	private final Attribute<T> attribute;
 	private final @Nullable String caption;
@@ -65,7 +64,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final String captionResourceKey;
 	private final String mnemonicResourceKey;
 	private final String descriptionResourceKey;
-	private final ValueSupplier<T> defaultValueSupplier;
 	private final boolean hidden;
 	private final @Nullable String description;
 	private final char mnemonic;
@@ -89,7 +87,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		this.captionResourceKey = builder.captionResourceKey;
 		this.mnemonicResourceKey = builder.mnemonicResourceKey;
 		this.descriptionResourceKey = builder.descriptionResourceKey;
-		this.defaultValueSupplier = builder.defaultValueSupplier;
 		this.hidden = builder.hidden;
 		this.description = builder.description;
 		this.mnemonic = builder.mnemonic;
@@ -119,16 +116,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	@Override
 	public final boolean hidden() {
 		return hidden;
-	}
-
-	@Override
-	public final boolean hasDefaultValue() {
-		return !(defaultValueSupplier instanceof AbstractAttributeDefinition.NullDefaultValueSupplier);
-	}
-
-	@Override
-	public final @Nullable T defaultValue() {
-		return defaultValueSupplier.get();
 	}
 
 	@Override
@@ -321,16 +308,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 	}
 
-	private static final class NullDefaultValueSupplier extends DefaultValueSupplier<Object> {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private NullDefaultValueSupplier() {
-			super(null);
-		}
-	}
-
 	private static final class DefaultComparator implements Comparator<Comparable<Object>>, Serializable {
 
 		@Serial
@@ -365,7 +342,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private final Attribute<T> attribute;
 
 		private @Nullable String caption;
-		private ValueSupplier<T> defaultValueSupplier;
 		private @Nullable String captionResourceBundleName;
 		private @Nullable String mnemonicResourceBundleName;
 		private @Nullable String descriptionResourceBundleName;
@@ -393,7 +369,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			hidden = resourceNotFound(captionResourceBundleName, captionResourceKey);
 			format = defaultFormat(attribute);
 			roundingMode = ROUNDING_MODE.getOrThrow();
-			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
 		}
 
 		@Override
@@ -523,20 +498,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		@Override
 		public final B hidden(boolean hidden) {
 			this.hidden = hidden;
-			return self();
-		}
-
-		@Override
-		public final B defaultValue(T defaultValue) {
-			return defaultValue(new DefaultValueSupplier<>(defaultValue));
-		}
-
-		@Override
-		public B defaultValue(ValueSupplier<T> supplier) {
-			if (supplier != null) {
-				attribute.type().validateType(supplier.get());
-			}
-			this.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
 			return self();
 		}
 

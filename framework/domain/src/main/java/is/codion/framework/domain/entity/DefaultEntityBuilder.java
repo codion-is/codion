@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 
 import org.jspecify.annotations.Nullable;
 
@@ -85,7 +86,9 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	@Override
 	public Entity.Builder withDefaults() {
 		definition.attributes().definitions().stream()
-						.filter(AttributeDefinition::hasDefaultValue)
+						.filter(ValueAttributeDefinition.class::isInstance)
+						.map(ValueAttributeDefinition.class::cast)
+						.filter(ValueAttributeDefinition::hasDefaultValue)
 						.forEach(attributeDefinition -> builderValues.put(attributeDefinition.attribute(), attributeDefinition.defaultValue()));
 
 		return this;

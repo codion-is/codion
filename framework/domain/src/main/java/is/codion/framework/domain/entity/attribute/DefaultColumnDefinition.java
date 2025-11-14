@@ -312,12 +312,11 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		DefaultColumnDefinitionBuilder(Column<T> column, int keyIndex) {
-			super(column);
+			super(column, keyIndex < 0);
 			this.keyIndex = keyIndex;
 			this.type = sqlType(column.type().valueClass());
 			this.withDefault = false;
 			this.insertable = true;
-			nullable(keyIndex < 0);
 			this.updatable = keyIndex < 0;
 			this.searchable = false;
 			this.name = column.name();

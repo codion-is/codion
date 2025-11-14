@@ -58,6 +58,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 					messageBundle(AbstractValueAttributeDefinition.class, getBundle(AbstractValueAttributeDefinition.class.getName()));
 
 	private static final String INVALID_ITEM_SUFFIX = MESSAGES.getString("invalid_item_suffix");
+	private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
 	private final boolean nullable;
 	private final int maximumLength;
@@ -66,6 +67,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	private final @Nullable Number minimum;
 	private final @Nullable List<Item<T>> items;
 	private final @Nullable Map<T, Item<T>> itemMap;
+	private final ValueSupplier<T> defaultValueSupplier;
 
 	protected AbstractValueAttributeDefinition(AbstractValueAttributeDefinitionBuilder<T, ?> builder) {
 		super(builder);
@@ -77,6 +79,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		this.items = builder.items;
 		this.itemMap = items == null ? null : items.stream()
 						.collect(toMap(Item::get, Function.identity()));
+		this.defaultValueSupplier = builder.defaultValueSupplier;
 	}
 
 	@Override
@@ -140,7 +143,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	@Override
-	public String format(T value) {
+	public final String format(T value) {
 		if (itemMap != null) {
 			Item<T> item = itemMap.get(value);
 
@@ -148,6 +151,16 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 
 		return super.format(value);
+	}
+
+	@Override
+	public final boolean hasDefaultValue() {
+		return !(defaultValueSupplier instanceof NullDefaultValueSupplier);
+	}
+
+	@Override
+	public final @Nullable T defaultValue() {
+		return defaultValueSupplier.get();
 	}
 
 	private String invalidItemString(T value) {
@@ -249,6 +262,16 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 	}
 
+	private static final class NullDefaultValueSupplier extends DefaultValueSupplier<Object> {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		private NullDefaultValueSupplier() {
+			super(null);
+		}
+	}
+
 	abstract static sealed class AbstractValueAttributeDefinitionBuilder<T, B extends ValueAttributeDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements ValueAttributeDefinition.Builder<T, B>
 					permits DefaultColumnDefinitionBuilder, DefaultTransientAttributeDefinitionBuilder {
@@ -259,14 +282,16 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		private @Nullable Number maximum;
 		private @Nullable Number minimum;
 		private @Nullable List<Item<T>> items;
+		private ValueSupplier<T> defaultValueSupplier;
 
-		AbstractValueAttributeDefinitionBuilder(Attribute<T> attribute) {
+		AbstractValueAttributeDefinitionBuilder(Attribute<T> attribute, boolean nullable) {
 			super(attribute);
-			nullable = true;
+			this.nullable = nullable;
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
 			trim = TRIM_STRINGS.getOrThrow();
 			minimum = defaultMinimum();
 			maximum = defaultMaximum();
+			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
 		}
 
 		@Override
@@ -322,6 +347,20 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		@Override
 		public final B items(List<Item<T>> items) {
 			this.items = validateItems(items);
+			return self();
+		}
+
+		@Override
+		public final B defaultValue(T defaultValue) {
+			return defaultValue(new DefaultValueSupplier<>(defaultValue));
+		}
+
+		@Override
+		public B defaultValue(ValueSupplier<T> supplier) {
+			if (supplier != null) {
+				attribute().type().validateType(supplier.get());
+			}
+			this.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
 			return self();
 		}
 

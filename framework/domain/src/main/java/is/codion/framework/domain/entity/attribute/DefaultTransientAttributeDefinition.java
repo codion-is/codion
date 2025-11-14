@@ -43,7 +43,7 @@ final class DefaultTransientAttributeDefinition<T> extends AbstractValueAttribut
 		private boolean modifies = true;
 
 		DefaultTransientAttributeDefinitionBuilder(Attribute<T> attribute) {
-			super(attribute);
+			super(attribute, true);
 		}
 
 		@Override

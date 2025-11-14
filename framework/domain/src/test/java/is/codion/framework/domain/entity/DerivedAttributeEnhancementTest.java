@@ -782,34 +782,4 @@ public final class DerivedAttributeEnhancementTest {
 			assertEquals(100, entity.get(sum)); // 55 - 5 + 50 = 100
 		}
 	}
-
-	@Nested
-	@DisplayName("Attribute Definition Constraints")
-	class AttributeDefinitionConstraintsTest {
-
-		@Test
-		@DisplayName("derived attributes ignore default value")
-		void derivedAttribute_defaultValue_ignored() {
-			assertThrows(UnsupportedOperationException.class, () -> {
-				class DefaultDomain extends DomainModel {
-					DefaultDomain() {
-						super(domainType("default"));
-						EntityType type = type().entityType("default_entity");
-						Column<Integer> sourceAttribute = type.integerColumn("source");
-						Attribute<Integer> derived = type.integerAttribute("derived");
-
-						add(type.define(
-										sourceAttribute.define().column(),
-										derived.define()
-														.derived()
-														.from(sourceAttribute)
-														.with(source -> source.get(sourceAttribute))
-														.defaultValue(42) // This should throw
-						).build());
-					}
-				}
-				new DefaultDomain();
-			});
-		}
-	}
 }

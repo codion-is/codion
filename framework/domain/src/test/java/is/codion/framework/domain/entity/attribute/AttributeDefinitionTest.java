@@ -43,17 +43,6 @@ public final class AttributeDefinitionTest {
 	private static final EntityType ENTITY_TYPE2 = DOMAIN_TYPE.entityType("entityType2");
 
 	@Test
-	void derivedAttribute() {
-		Attribute<Integer> derived = ENTITY_TYPE.integerAttribute("derived");
-		Attribute<Integer> attribute = ENTITY_TYPE.integerColumn("source");
-		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived()
-						.from(attribute)
-						.with(source -> null)
-						.defaultValue(10));
-	}
-
-	@Test
 	void foreignKeyNonUniqueReferencedAttribute() {
 		Column<Integer> attribute = ENTITY_TYPE.integerColumn("attr");
 		assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute, attribute));

@@ -138,11 +138,6 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		}
 
 		@Override
-		public B defaultValue(ValueSupplier<T> supplier) {
-			throw new UnsupportedOperationException("A derived attribute can not have a default value");
-		}
-
-		@Override
 		public AttributeDefinition<T> build() {
 			return new DefaultDerivedAttributeDefinition<>(this);
 		}
@@ -196,11 +191,6 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 			}
 			this.source = source;
 			this.denormalizedValue = new DenormalizedValue<>(source, denormalized);
-		}
-
-		@Override
-		public B defaultValue(ValueSupplier<T> supplier) {
-			throw new UnsupportedOperationException("A denormalized attribute can not have a default value");
 		}
 
 		@Override

@@ -241,17 +241,6 @@ public sealed interface AttributeDefinition<T>
 	String format(@Nullable T value);
 
 	/**
-	 * @return true if a default value has been set for this attribute
-	 */
-	boolean hasDefaultValue();
-
-	/**
-	 * @return the default value for this attribute, if no default value has been set null is returned
-	 * @see #hasDefaultValue()
-	 */
-	@Nullable T defaultValue();
-
-	/**
 	 * @return true if this attribute should be hidden in table views
 	 */
 	boolean hidden();
@@ -448,20 +437,6 @@ public sealed interface AttributeDefinition<T>
 		 * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
 		 */
 		B dateTimePattern(LocaleDateTimePattern dateTimePattern);
-
-		/**
-		 * Sets the default value for this attribute, overrides the underlying column default value, if any
-		 * @param defaultValue the value to use as default
-		 * @return this builder instance
-		 */
-		B defaultValue(T defaultValue);
-
-		/**
-		 * Sets the default value supplier, use in case of dynamic default values.
-		 * @param supplier the default value supplier
-		 * @return this builder instance
-		 */
-		B defaultValue(ValueSupplier<T> supplier);
 
 		/**
 		 * Specifies whether this attribute should be hidden in table views
