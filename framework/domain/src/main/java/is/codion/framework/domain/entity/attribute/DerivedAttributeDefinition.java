@@ -151,7 +151,7 @@ import java.util.List;
  * @see #sources()
  * @see #cached()
  */
-public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefinition<T> permits DefaultDerivedAttributeDefinition {
+public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> permits DefaultDerivedAttributeDefinition {
 
 	/**
 	 * @return the source attributes this attribute derives from.
@@ -174,7 +174,7 @@ public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefi
 	 * @param <T> the attribute value type
 	 */
 	sealed interface DerivedBuilder<T, B extends DerivedBuilder<T, B>>
-					extends ValueAttributeDefinition.Builder<T, B>
+					extends AttributeDefinition.Builder<T, B>
 					permits DefaultDerivedAttributeDefinitionBuilder {
 
 		/**
@@ -220,7 +220,7 @@ public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefi
 	 * @param <T> the attribute value type
 	 */
 	sealed interface DenormalizedBuilder<T, B extends DenormalizedBuilder<T, B>>
-					extends ValueAttributeDefinition.Builder<T, B>
+					extends AttributeDefinition.Builder<T, B>
 					permits DefaultDenormalizedAttributeDefinitionBuilder {
 
 		/**

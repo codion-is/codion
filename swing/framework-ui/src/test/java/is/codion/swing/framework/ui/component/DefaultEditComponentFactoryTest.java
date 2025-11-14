@@ -27,6 +27,8 @@ import is.codion.swing.framework.ui.TestDomain.Detail;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public final class DefaultEditComponentFactoryTest {
 
 	private static final User UNIT_TEST_USER =
@@ -45,6 +47,6 @@ public final class DefaultEditComponentFactoryTest {
 		new DefaultEditComponentFactory<>(Detail.DETAIL_FK).component(editModel);
 
 		new DefaultEditComponentFactory<>(Detail.INT).component(editModel);
-		new DefaultEditComponentFactory<>(Detail.INT_DERIVED).component(editModel);
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEditComponentFactory<>(Detail.INT_DERIVED).component(editModel));
 	}
 }

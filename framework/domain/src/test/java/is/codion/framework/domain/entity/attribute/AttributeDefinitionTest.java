@@ -56,21 +56,6 @@ public final class AttributeDefinitionTest {
 						.from(attribute)
 						.with(source -> null)
 						.defaultValue(10));
-		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived()
-						.from(attribute)
-						.with(source -> null)
-						.maximumLength(10));
-		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived()
-						.from(attribute)
-						.with(source -> null)
-						.minimum(10));
-		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived()
-						.from(attribute)
-						.with(source -> null)
-						.range(10, 20));
 	}
 
 	@Test

@@ -405,7 +405,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private @Nullable <T> T get(AttributeDefinition<T> attributeDefinition) {
-		if (attributeDefinition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<T>) attributeDefinition).derived()) {
+		if (attributeDefinition.derived()) {
 			return derived((DerivedAttributeDefinition<T>) attributeDefinition);
 		}
 
@@ -426,7 +426,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private @Nullable <T> T original(AttributeDefinition<T> attributeDefinition) {
-		if (attributeDefinition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<T>) attributeDefinition).derived()) {
+		if (attributeDefinition.derived()) {
 			return derivedOriginal((DerivedAttributeDefinition<T>) attributeDefinition);
 		}
 		if (isModified(attributeDefinition.attribute())) {
@@ -493,7 +493,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private @Nullable <T> T validateAndAdjustValue(AttributeDefinition<T> attributeDefinition, @Nullable T value) {
-		if (attributeDefinition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<T>) attributeDefinition).derived()) {
+		if (attributeDefinition.derived()) {
 			throw new IllegalArgumentException("Can not set the value of a derived attribute");
 		}
 		if (value == null) {

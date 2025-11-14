@@ -23,7 +23,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 
 import org.jspecify.annotations.Nullable;
 
@@ -63,7 +62,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	@Override
 	public <T> Entity.Builder with(Attribute<T> attribute, @Nullable T value) {
 		AttributeDefinition<T> attributeDefinition = definition.attributes().definition(attribute);
-		if (attributeDefinition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<T>) attributeDefinition).derived()) {
+		if (attributeDefinition.derived()) {
 			throw new IllegalArgumentException("Can not set the value of a derived attribute");
 		}
 		if (nonGeneratedPrimaryKeyColumn(attributeDefinition)) {

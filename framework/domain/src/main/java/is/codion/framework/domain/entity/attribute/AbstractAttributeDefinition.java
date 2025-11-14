@@ -19,10 +19,13 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.utilities.Text;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 
@@ -30,18 +33,26 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.Format;
 import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Comparator;
 import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
 abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable
-				permits AbstractValueAttributeDefinition, DefaultForeignKeyDefinition {
+				permits AbstractValueAttributeDefinition, DefaultDerivedAttributeDefinition, DefaultForeignKeyDefinition {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -50,10 +61,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 					messageBundle(AbstractAttributeDefinition.class, getBundle(AbstractAttributeDefinition.class.getName()));
 
 	private static final String VALUE_REQUIRED_KEY = "value_is_required";
-	static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
-	private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
-	static final String INVALID_ITEM_SUFFIX = MESSAGES.getString(INVALID_ITEM_SUFFIX_KEY);
-
 	private static final Comparator<String> LEXICAL_COMPARATOR = Text.collator();
 	private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
 	private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
@@ -72,9 +79,14 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final boolean hidden;
 	private final @Nullable String description;
 	private final char mnemonic;
+	private final @Nullable Format format;
+	private final @Nullable LocaleDateTimePattern localeDateTimePattern;
+	private final RoundingMode roundingMode;
 	private transient @Nullable String resourceCaption;
 	private transient @Nullable Character resourceMnemonic;
 	private transient @Nullable String resourceDescription;
+	private transient @Nullable String dateTimePattern;
+	private transient @Nullable DateTimeFormatter dateTimeFormatter;
 	private @Nullable Comparator<T> comparator;
 
 	protected AbstractAttributeDefinition(AbstractAttributeDefinitionBuilder<T, ?> builder) {
@@ -93,6 +105,11 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		this.description = builder.description;
 		this.mnemonic = builder.mnemonic;
 		this.comparator = builder.comparator;
+		this.format = builder.format;
+		this.localeDateTimePattern = builder.localeDateTimePattern;
+		this.roundingMode = builder.roundingMode;
+		this.dateTimePattern = builder.dateTimePattern;
+		this.dateTimeFormatter = builder.dateTimeFormatter;
 	}
 
 	@Override
@@ -131,6 +148,53 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
+	public final Optional<Format> format() {
+		return Optional.ofNullable(format);
+	}
+
+	@Override
+	public final Optional<String> dateTimePattern() {
+		return Optional.ofNullable(dateTimePatternInternal());
+	}
+
+	@Override
+	public final Optional<DateTimeFormatter> dateTimeFormatter() {
+		return Optional.ofNullable(dateTimeFormatterInternal());
+	}
+
+	@Override
+	public final int fractionDigits() {
+		if (!(format instanceof NumberFormat)) {
+			return -1;
+		}
+
+		return ((NumberFormat) format).getMaximumFractionDigits();
+	}
+
+	@Override
+	public final RoundingMode roundingMode() {
+		return roundingMode;
+	}
+
+	@Override
+	public String format(T value) {
+		if (value == null) {
+			return "";
+		}
+		if (attribute().type().isTemporal()) {
+			DateTimeFormatter formatter = dateTimeFormatterInternal();
+			if (formatter != null) {
+				return formatter.format((TemporalAccessor) value);
+			}
+		}
+		if (format != null) {
+			return format.format(value);
+		}
+
+		return value.toString();
+	}
+
+	@Override
 	public final Optional<String> description() {
 		if (descriptionResourceBundleName != null) {
 			if (resourceDescription == null) {
@@ -147,7 +211,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public Comparator<T> comparator() {
+	public final Comparator<T> comparator() {
 		if (comparator == null) {
 			comparator = defaultComparator(attribute);
 		}
@@ -224,13 +288,38 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		return attribute.hashCode();
 	}
 
-	@Override
-	public String format(T value) {
-		if (value == null) {
-			return "";
+	private @Nullable String dateTimePatternInternal() {
+		if (dateTimePattern == null) {
+			dateTimePattern = localeDateTimePattern == null ? defaultDateTimePattern() : localeDateTimePattern.dateTimePattern();
 		}
 
-		return value.toString();
+		return dateTimePattern;
+	}
+
+	private @Nullable DateTimeFormatter dateTimeFormatterInternal() {
+		if (dateTimeFormatter == null) {
+			String pattern = dateTimePatternInternal();
+			dateTimeFormatter = pattern == null ? null : ofPattern(pattern);
+		}
+
+		return dateTimeFormatter;
+	}
+
+	private @Nullable String defaultDateTimePattern() {
+		if (attribute().type().isLocalDate()) {
+			return LocaleDateTimePattern.DATE_PATTERN.getOrThrow();
+		}
+		else if (attribute().type().isLocalTime()) {
+			return LocaleDateTimePattern.TIME_PATTERN.getOrThrow();
+		}
+		else if (attribute().type().isLocalDateTime()) {
+			return LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow();
+		}
+		else if (attribute().type().isOffsetDateTime()) {
+			return LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow();
+		}
+
+		return null;
 	}
 
 	private void validateNull(Entity entity, boolean nullable) throws NullValidationException {
@@ -263,9 +352,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 						&& !((ColumnDefinition<?>) this).withDefault();
 	}
 
-
-	Comparator<T> defaultComparator(Attribute<T> attribute) {
-		if (attribute.type().isString() && ValueAttributeDefinition.USE_LEXICAL_STRING_COMPARATOR.getOrThrow()) {
+	protected Comparator<T> defaultComparator(Attribute<T> attribute) {
+		if (attribute.type().isString() && USE_LEXICAL_STRING_COMPARATOR.getOrThrow()) {
 			return (Comparator<T>) LEXICAL_COMPARATOR;
 		}
 		if (Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
@@ -324,10 +412,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 	}
 
-
 	abstract static sealed class AbstractAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>>
 					implements AttributeDefinition.Builder<T, B>
-					permits AbstractValueAttributeDefinitionBuilder, DefaultForeignKeyDefinitionBuilder {
+					permits AbstractValueAttributeDefinitionBuilder, DefaultDenormalizedAttributeDefinitionBuilder,
+					DefaultDerivedAttributeDefinitionBuilder, DefaultForeignKeyDefinitionBuilder {
 
 		private static final String NO_RESOURCE_BUNDLE_SPECIFIED_FOR_ENTITY = "No resource bundle specified for entity: ";
 		private static final String RESOURCE = "Resource ";
@@ -347,6 +435,11 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private boolean hidden;
 		private @Nullable String description;
 		private char mnemonic;
+		private @Nullable Format format;
+		private @Nullable LocaleDateTimePattern localeDateTimePattern;
+		private RoundingMode roundingMode;
+		private @Nullable String dateTimePattern;
+		private @Nullable DateTimeFormatter dateTimeFormatter;
 		private @Nullable Comparator<T> comparator;
 
 		AbstractAttributeDefinitionBuilder(Attribute<T> attribute) {
@@ -358,6 +451,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			mnemonicResourceKey = captionResourceKey + MNEMONIC_RESOURCE_SUFFIX;
 			descriptionResourceKey = captionResourceKey + DESCRIPTION_RESOURCE_SUFFIX;
 			hidden = resourceNotFound(captionResourceBundleName, captionResourceKey);
+			format = defaultFormat(attribute);
+			roundingMode = ROUNDING_MODE.getOrThrow();
 			nullable = true;
 			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
 		}
@@ -412,6 +507,77 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			}
 			this.mnemonicResourceBundleName = resourceBundleName;
 			this.mnemonicResourceKey = mnemonicResourceKey;
+			return self();
+		}
+
+		@Override
+		public final B numberGrouping(boolean numberGrouping) {
+			if (!attribute().type().isNumeric()) {
+				throw new IllegalStateException("numberGrouping is only applicable to numerical attributes: " + attribute());
+			}
+			requireNonNull(format);
+			((NumberFormat) format).setGroupingUsed(numberGrouping);
+			return self();
+		}
+
+		@Override
+		public final B format(Format format) {
+			requireNonNull(format);
+			if (attribute().type().isNumeric() && !(format instanceof NumberFormat)) {
+				throw new IllegalArgumentException("NumberFormat required for numerical attribute: " + attribute());
+			}
+			if (attribute().type().isTemporal()) {
+				throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal attributes: " + attribute());
+			}
+			this.format = format;
+			return self();
+		}
+
+		@Override
+		public final B dateTimePattern(String dateTimePattern) {
+			requireNonNull(dateTimePattern);
+			if (!attribute().type().isTemporal()) {
+				throw new IllegalStateException("dateTimePattern is only applicable to temporal attributes: " + attribute());
+			}
+			if (this.localeDateTimePattern != null) {
+				throw new IllegalStateException("localeDateTimePattern has already been set for attribute: " + attribute());
+			}
+			this.dateTimePattern = dateTimePattern;
+			this.dateTimeFormatter = ofPattern(dateTimePattern);
+			return self();
+		}
+
+		@Override
+		public final B dateTimePattern(LocaleDateTimePattern dateTimePattern) {
+			requireNonNull(dateTimePattern);
+			if (!attribute().type().isTemporal()) {
+				throw new IllegalStateException("dateTimePattern is only applicable to temporal attributes: " + attribute());
+			}
+			if (this.dateTimePattern != null) {
+				throw new IllegalStateException("dateTimePattern has already been set for attribute: " + attribute());
+			}
+			this.localeDateTimePattern = dateTimePattern;
+			this.dateTimePattern = dateTimePattern.dateTimePattern();
+			this.dateTimeFormatter = dateTimePattern.formatter();
+			return self();
+		}
+
+		@Override
+		public final B fractionDigits(int fractionDigits) {
+			if (!attribute().type().isDecimal()) {
+				throw new IllegalStateException("fractionDigits is only applicable to decimal attributes: " + attribute());
+			}
+			requireNonNull(format);
+			((NumberFormat) format).setMaximumFractionDigits(fractionDigits);
+			return self();
+		}
+
+		@Override
+		public final B roundingMode(RoundingMode roundingMode) {
+			if (!attribute().type().isDecimal()) {
+				throw new IllegalStateException("roundingMode is only applicable to decimal attributes: " + attribute());
+			}
+			this.roundingMode = requireNonNull(roundingMode);
 			return self();
 		}
 
@@ -481,6 +647,58 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 		protected final B self() {
 			return (B) this;
+		}
+
+		private static @Nullable Format defaultFormat(Attribute<?> attribute) {
+			if (attribute.type().isNumeric()) {
+				NumberFormat numberFormat = defaultNumberFormat(attribute);
+				if (attribute.type().isDecimal()) {
+					((DecimalFormat) numberFormat).setParseBigDecimal(attribute.type().isBigDecimal());
+					numberFormat.setMaximumFractionDigits(FRACTION_DIGITS.getOrThrow());
+				}
+
+				return numberFormat;
+			}
+
+			return null;
+		}
+
+		private static NumberFormat defaultNumberFormat(Attribute<?> attribute) {
+			boolean grouping = NUMBER_GROUPING.getOrThrow();
+			if (attribute.type().isInteger() || attribute.type().isLong()) {
+				return setSeparators(grouping ? NumberFormat.getIntegerInstance() : nonGroupingIntegerFormat());
+			}
+
+			return setSeparators(grouping ? NumberFormat.getNumberInstance() : nonGroupingNumberFormat());
+		}
+
+		private static NumberFormat nonGroupingNumberFormat() {
+			NumberFormat format = NumberFormat.getNumberInstance();
+			format.setGroupingUsed(false);
+
+			return format;
+		}
+
+		private static NumberFormat nonGroupingIntegerFormat() {
+			NumberFormat format = NumberFormat.getIntegerInstance();
+			format.setGroupingUsed(false);
+
+			return format;
+		}
+
+		private static NumberFormat setSeparators(NumberFormat numberFormat) {
+			if (numberFormat instanceof DecimalFormat) {
+				Character defaultGroupingSeparator = GROUPING_SEPARATOR.get();
+				Character defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
+				if (defaultGroupingSeparator != null && defaultDecimalSeparator != null) {
+					DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
+					symbols.setDecimalSeparator(defaultDecimalSeparator);
+					symbols.setGroupingSeparator(defaultGroupingSeparator);
+					((DecimalFormat) numberFormat).setDecimalFormatSymbols(symbols);
+				}
+			}
+
+			return numberFormat;
 		}
 
 		private static boolean resourceNotFound(@Nullable String resourceBundleName, String captionResourceKey) {

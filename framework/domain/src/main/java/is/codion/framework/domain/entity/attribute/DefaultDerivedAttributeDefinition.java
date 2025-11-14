@@ -32,7 +32,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultDerivedAttributeDefinition<T> extends AbstractValueAttributeDefinition<T> implements DerivedAttributeDefinition<T> {
+final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefinition<T> implements DerivedAttributeDefinition<T> {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -107,7 +107,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractValueAttributeD
 	}
 
 	static final class DefaultDerivedAttributeDefinitionBuilder<T, B extends DerivedBuilder<T, B>>
-					extends AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder<T, B> implements DerivedBuilder<T, B> {
+					extends AbstractAttributeDefinitionBuilder<T, B> implements DerivedBuilder<T, B> {
 
 		private final DerivedValue<T> derivedValue;
 		private final List<Attribute<?>> sources;
@@ -148,17 +148,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractValueAttributeD
 		}
 
 		@Override
-		public B maximumLength(int maximumLength) {
-			throw new UnsupportedOperationException("Can not set the maximum length of a derived attribute");
-		}
-
-		@Override
-		public B range(Number minimum, Number maximum) {
-			throw new UnsupportedOperationException("Can not set minimum or maximum value of a derived attribute");
-		}
-
-		@Override
-		public ValueAttributeDefinition<T> build() {
+		public AttributeDefinition<T> build() {
 			return new DefaultDerivedAttributeDefinition<>(this);
 		}
 	}
@@ -194,7 +184,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractValueAttributeD
 	}
 
 	static final class DefaultDenormalizedAttributeDefinitionBuilder<T, B extends DenormalizedBuilder<T, B>>
-					extends AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder<T, B> implements DenormalizedBuilder<T, B> {
+					extends AbstractAttributeDefinitionBuilder<T, B> implements DenormalizedBuilder<T, B> {
 
 		private final Attribute<Entity> source;
 		private final DenormalizedValue<T> denormalizedValue;
@@ -224,17 +214,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractValueAttributeD
 		}
 
 		@Override
-		public B maximumLength(int maximumLength) {
-			throw new UnsupportedOperationException("Can not set the maximum length of a denormalized attribute");
-		}
-
-		@Override
-		public B range(Number minimum, Number maximum) {
-			throw new UnsupportedOperationException("Can not set minimum or maximum value of a denormalized attribute");
-		}
-
-		@Override
-		public ValueAttributeDefinition<T> build() {
+		public AttributeDefinition<T> build() {
 			return new DefaultDerivedAttributeDefinition<>(this);
 		}
 	}

@@ -57,6 +57,11 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 	}
 
 	@Override
+	public boolean derived() {
+		return false;
+	}
+
+	@Override
 	public int referenceDepth() {
 		return referenceDepth;
 	}
