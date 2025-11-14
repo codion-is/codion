@@ -27,8 +27,11 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.manual.framework.domain.Composition.Orders.Customer;
 import is.codion.manual.framework.domain.Composition.Products.Product;
+import is.codion.plugin.jasperreports.JRReportType;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
+import static is.codion.plugin.jasperreports.JasperReports.reportType;
 
 public class Composition {
 	// tag::composition[]
@@ -42,11 +45,14 @@ public class Composition {
 
 			Column<Integer> ID = TYPE.integerColumn("id");
 			Column<String> NAME = TYPE.stringColumn("name");
+
+			JRReportType REPORT = reportType("product_report");
 		}
 
 		public Products() {
 			super(DOMAIN);
 			add(product());
+			add(Product.REPORT, classPathReport(Products.class, "product_report.jasper"));
 		}
 
 		EntityDefinition product() {

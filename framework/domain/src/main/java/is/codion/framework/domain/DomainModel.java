@@ -48,9 +48,9 @@ public abstract class DomainModel implements Domain {
 	private final DomainType domainType;
 	private final Entities entities;
 	private final Configurable configurable;
-	private final DomainReports reports = new DomainReports();
-	private final DomainProcedures procedures = new DomainProcedures();
-	private final DomainFunctions functions = new DomainFunctions();
+	private final DomainReports domainReports = new DomainReports();
+	private final DomainProcedures domainProcedures = new DomainProcedures();
+	private final DomainFunctions domainFunctions = new DomainFunctions();
 
 	/**
 	 * Instantiates a new DomainModel identified by the given {@link DomainType}.
@@ -74,22 +74,22 @@ public abstract class DomainModel implements Domain {
 
 	@Override
 	public final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports() {
-		return unmodifiableMap(reports.reports);
+		return unmodifiableMap(domainReports.reports);
 	}
 
 	@Override
 	public final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> procedures() {
-		return unmodifiableMap(procedures.procedures);
+		return unmodifiableMap(domainProcedures.procedures);
 	}
 
 	@Override
 	public final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> functions() {
-		return unmodifiableMap(functions.functions);
+		return unmodifiableMap(domainFunctions.functions);
 	}
 
 	@Override
 	public final <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {
-		Report<T, R, P> report = reports.report(reportType);
+		Report<T, R, P> report = domainReports.report(reportType);
 		if (report == null) {
 			throw new IllegalArgumentException("Undefined report: " + reportType);
 		}
@@ -99,12 +99,12 @@ public abstract class DomainModel implements Domain {
 
 	@Override
 	public final <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType) {
-		return procedures.procedure(procedureType);
+		return domainProcedures.procedure(procedureType);
 	}
 
 	@Override
 	public final <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType) {
-		return functions.function(functionType);
+		return domainFunctions.function(functionType);
 	}
 
 	/**
@@ -112,12 +112,9 @@ public abstract class DomainModel implements Domain {
 	 * @param definitions the definitions to add
 	 * @throws IllegalArgumentException in case a entityType has already been used to define an entity
 	 * @throws IllegalArgumentException in case no attribute definitions are specified for an entity
-	 * @throws IllegalArgumentException in case an entity definition is not associated with this domain
 	 */
 	protected final void add(EntityDefinition... definitions) {
-		Arrays.stream(requireNonNull(definitions))
-						.map(this::validate)
-						.forEach(configurable::add);
+		Arrays.stream(requireNonNull(definitions)).forEach(configurable::add);
 	}
 
 	/**
@@ -131,7 +128,7 @@ public abstract class DomainModel implements Domain {
 	 * @throws IllegalArgumentException in case the report has already been added
 	 */
 	protected final <T, R, P> void add(ReportType<T, R, P> reportType, Report<T, R, P> report) {
-		reports.addReport(reportType, report);
+		domainReports.addReport(reportType, report);
 	}
 
 	/**
@@ -143,7 +140,7 @@ public abstract class DomainModel implements Domain {
 	 * @throws IllegalArgumentException in case a procedure has already been associated with the given type
 	 */
 	protected final <C, T> void add(ProcedureType<C, T> procedureType, DatabaseProcedure<C, T> procedure) {
-		procedures.addProcedure(procedureType, procedure);
+		domainProcedures.addProcedure(procedureType, procedure);
 	}
 
 	/**
@@ -156,7 +153,7 @@ public abstract class DomainModel implements Domain {
 	 * @throws IllegalArgumentException in case a function has already been associated with the given type
 	 */
 	protected final <C, T, R> void add(FunctionType<C, T, R> functionType, DatabaseFunction<C, T, R> function) {
-		functions.addFunction(functionType, function);
+		domainFunctions.addFunction(functionType, function);
 	}
 
 	/**
@@ -169,7 +166,10 @@ public abstract class DomainModel implements Domain {
 	}
 
 	/**
-	 * Adds all entities, procedures, functions and reports from the given domain model.
+	 * Adds all non-existing entities, procedures, functions and reports from the given domain model.
+	 * Entries that already exist are silently skipped. This means you can safely compose domains
+	 * that may have already been composed - only the first occurrence of each type is included.
+	 * Types cannot be overridden or replaced.
 	 * @param domain the domain model to copy from
 	 * @see #addEntities(Domain)
 	 * @see #addProcedures(Domain)
@@ -184,63 +184,49 @@ public abstract class DomainModel implements Domain {
 	}
 
 	/**
-	 * Adds all the entities from the given domain to this domain.
-	 * Note that the entity type names must be unique.
+	 * Adds all non-existing entities from the given domain to this domain.
+	 * Entities that already exist are silently skipped.
 	 * @param domain the domain model which entities to add
-	 * @throws IllegalArgumentException in case a non-unique entity type name is encountered
 	 * @see EntityType#name()
+	 * @see Entities#contains(EntityType)
 	 */
 	protected final void addEntities(Domain domain) {
-		requireNonNull(domain).entities().definitions().forEach(definition -> {
-			if (!entities.contains(definition.type())) {
-				configurable.add(definition);
-			}
-		});
+		requireNonNull(domain).entities().definitions().stream()
+						.filter(definition -> !entities.contains(definition.type()))
+						.forEach(configurable::add);
 	}
 
 	/**
-	 * Adds all the procedures from the given domain to this domain.
+	 * Adds all non-existing procedures from the given domain to this domain.
+	 * Procedures that already exist are silently skipped.
 	 * @param domain the domain model which procedures to add
 	 */
 	protected final void addProcedures(Domain domain) {
-		requireNonNull(domain).procedures().forEach((procedureType, procedure) -> {
-			if (!procedures.procedures.containsKey(procedureType)) {
-				procedures.procedures.put(procedureType, procedure);
-			}
-		});
+		requireNonNull(domain).procedures().entrySet().stream()
+						.filter(entry -> !domainProcedures.procedures.containsKey(entry.getKey()))
+						.forEach(entry -> domainProcedures.procedures.put(entry.getKey(), entry.getValue()));
 	}
 
 	/**
-	 * Adds all the functions from the given domain to this domain.
+	 * Adds all non-existing functions from the given domain to this domain.
+	 * Functions that already exist are silently skipped.
 	 * @param domain the domain model which functions to add
 	 */
 	protected final void addFunctions(Domain domain) {
-		requireNonNull(domain).functions().forEach((functionType, function) -> {
-			if (!functions.functions.containsKey(functionType)) {
-				functions.functions.put(functionType, function);
-			}
-		});
+		requireNonNull(domain).functions().entrySet().stream()
+						.filter(entry -> !domainFunctions.functions.containsKey(entry.getKey()))
+						.forEach(entry -> domainFunctions.functions.put(entry.getKey(), entry.getValue()));
 	}
 
 	/**
-	 * Adds all the reports from the given domain to this domain.
+	 * Adds all non-existing reports from the given domain to this domain.
+	 * Reports that already exist are silently skipped.
 	 * @param domain the domain model which reports to add
 	 */
 	protected final void addReports(Domain domain) {
-		requireNonNull(domain).reports().forEach((reportType, report) -> {
-			if (!reports.reports.containsKey(reportType)) {
-				reports.reports.put(reportType, report);
-			}
-		});
-	}
-
-	private EntityDefinition validate(EntityDefinition definition) {
-		if (!domainType.contains(requireNonNull(definition).type())) {
-			throw new IllegalArgumentException("Entity type '" +
-							definition.type() + "' is not part of domain: " + domainType);
-		}
-
-		return definition;
+		requireNonNull(domain).reports().entrySet().stream()
+						.filter(entry -> !domainReports.reports.containsKey(entry.getKey()))
+						.forEach(entry -> domainReports.reports.put(entry.getKey(), entry.getValue()));
 	}
 
 	private static final class DomainProcedures {

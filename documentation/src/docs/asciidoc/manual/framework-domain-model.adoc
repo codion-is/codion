@@ -805,7 +805,7 @@ include::{dir-source}/is/codion/manual/framework/domain/Composition.java[tag=sel
 
 Selective composition provides several specialized methods:
 
-* `add(EntityDefinition)` - Adds a specific entity definition from another domain
+* `addEntities(Domain)` - Includes only the entity definitions from another domain
 * `addReports(Domain)` - Includes only the reports from another domain
 * `addFunctions(Domain)` - Includes only the functions from another domain
 * `addProcedures(Domain)` - Includes only the procedures from another domain
@@ -818,6 +818,51 @@ This approach is useful when:
 * Avoiding circular dependencies between domain modules
 
 NOTE: When selectively adding entity definitions, ensure that any foreign key references are satisfied - if an entity references another via foreign key, both entities must be included in the domain.
+
+=== Idempotent composition behavior
+
+**IMPORTANT:** All composition methods (`add(Domain)`, `addEntities()`, `addReports()`, `addFunctions()`, `addProcedures()`) silently skip entries that already exist. This idempotent behavior means:
+
+* You can safely compose domains that may have already been composed
+* Only the first occurrence of each type is included
+* Types cannot be overridden or replaced through composition
+* Duplicate composition is safe and has no effect
+
+[source,java]
+----
+public class MyDomain extends DomainModel {
+    public MyDomain() {
+        super(DOMAIN_TYPE);
+
+        // These can be called in any order without issues
+        add(new SharedDomain());
+        add(new AnotherDomain());  // May also include SharedDomain
+
+        // Even if both domains above include the same entities,
+        // only the first occurrence is registered
+    }
+}
+----
+
+This behavior contrasts with **surgical addition** of individual items:
+
+[source,java]
+----
+// Surgical addition via add(EntityDefinition), add(ReportType, Report), etc.
+// throws IllegalArgumentException if the type already exists
+add(SomeEntity.TYPE.define()...build());  // First time: OK
+add(SomeEntity.TYPE.define()...build());  // Second time: throws exception
+
+// To check before surgical addition:
+if (!entities().contains(SomeEntity.TYPE)) {
+    add(domain.entities().definition(SomeEntity.TYPE));
+}
+----
+
+**When to use each approach:**
+
+* **Composition methods** (`add(Domain)`, `addEntities()`, etc.) - For building layered domains where duplicate inclusion is expected and should be silently ignored
+* **Surgical addition** (`add(EntityDefinition)`, `add(ReportType, Report)`, etc.) - For direct entity/report/function/procedure definition where duplicates indicate a configuration error that should fail fast
 
 == Entities in action
 
