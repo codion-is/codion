@@ -25,7 +25,6 @@ import is.codion.common.reactive.state.ObservableState;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.Action;
-import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -33,8 +32,6 @@ import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -197,15 +194,6 @@ public final class Utilities {
 		component.addPropertyChangeListener(property, changeEvent -> event.accept((T) changeEvent.getNewValue()));
 
 		return event.observer();
-	}
-
-	/**
-	 * Links the given {@link BoundedRangeModel}s so that changes in {@code main} are reflected in {@code linked}
-	 * @param main the main model
-	 * @param linked the model to link with main
-	 */
-	public static void link(BoundedRangeModel main, BoundedRangeModel linked) {
-		requireNonNull(main).addChangeListener(new BoundedRangeModelListener(main, requireNonNull(linked)));
 	}
 
 	/**
@@ -469,23 +457,6 @@ public final class Utilities {
 			else {
 				SwingUtilities.invokeLater(() -> component.setFocusable(focusable));
 			}
-		}
-	}
-
-	private static final class BoundedRangeModelListener implements ChangeListener {
-
-		private final BoundedRangeModel main;
-		private final BoundedRangeModel linked;
-
-		private BoundedRangeModelListener(BoundedRangeModel main, BoundedRangeModel linked) {
-			this.main = main;
-			this.linked = linked;
-		}
-
-		@Override
-		public void stateChanged(ChangeEvent e) {
-			linked.setRangeProperties(main.getValue(), main.getExtent(),
-							main.getMinimum(), main.getMaximum(), main.getValueIsAdjusting());
 		}
 	}
 }

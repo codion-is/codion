@@ -27,6 +27,7 @@ Codion Change Log
 - DefaultFilterTableColumnModel.DefaultColumnSelection now updates lead and anchor indexes when adjusting.
 - ImagePanel renamed ImagePane.
 - ImagePane public api improved.
+- Utilities.link() removed.
 ### is.codion.framework.domain
 - DerivedValueStep.value() renamed DerivedWithStep.with().
 - DenormalizedAttributeStep.attribute() renamed DenormalizedUsingStep.using().
@@ -45,8 +46,10 @@ Codion Change Log
 - EntityTablePanel.Config.columns() added.
 - EntityPopupMenu, string values now surrounded by quotes, for spotting leading and trailing spaces. Clipboard action now includes full values.
 - EntityTablePanel.ControlKeys.COPY_COLUMN added.
+- EntityTablePanel bug fixed, filter and condition panels now scrolled correctly when initially shown.
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel memory usage display improved, server reachability status shown.
+- ClientMonitorPanel bug fixed, filter panel now scrolled correctly when initially shown.
 
 ## 0.18.58
 ### is.codion.common.reactive

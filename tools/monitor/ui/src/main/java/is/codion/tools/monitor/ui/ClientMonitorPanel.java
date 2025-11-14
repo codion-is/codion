@@ -31,6 +31,7 @@ import is.codion.tools.monitor.model.ClientInstanceMonitor;
 import is.codion.tools.monitor.model.ClientMonitor;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoundedRangeModel;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -42,7 +43,6 @@ import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static is.codion.swing.common.ui.Utilities.link;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -179,9 +179,25 @@ public final class ClientMonitorPanel extends JPanel {
 						.view(componentToScroll)
 						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-						.onBuild(scrollPane -> link(
-										parentScrollPane.getHorizontalScrollBar().getModel(),
-										scrollPane.getHorizontalScrollBar().getModel()))
+						.onBuild(scrollPane -> new ScrollPaneSynchronizer(parentScrollPane, scrollPane))
 						.build();
+	}
+
+	private static final class ScrollPaneSynchronizer {
+
+		private final BoundedRangeModel mainModel;
+		private final BoundedRangeModel linkedModel;
+
+		private ScrollPaneSynchronizer(JScrollPane main, JScrollPane linked) {
+			mainModel = main.getHorizontalScrollBar().getModel();
+			linkedModel = linked.getHorizontalScrollBar().getModel();
+			mainModel.addChangeListener(e -> synchronize());
+			linked.addHierarchyListener(e -> synchronize());
+		}
+
+		private void synchronize() {
+			linkedModel.setRangeProperties(mainModel.getValue(), mainModel.getExtent(),
+							mainModel.getMinimum(), mainModel.getMaximum(), mainModel.getValueIsAdjusting());
+		}
 	}
 }
