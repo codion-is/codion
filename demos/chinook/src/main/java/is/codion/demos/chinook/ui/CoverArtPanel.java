@@ -22,8 +22,8 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.image.ImagePanel;
-import is.codion.swing.common.ui.component.image.ImagePanel.ZoomDevice;
+import is.codion.swing.common.ui.component.image.ImagePane;
+import is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.transfer.FileTransferHandler;
@@ -71,7 +71,7 @@ final class CoverArtPanel extends JPanel {
 	private final JButton addButton;
 	private final JButton removeButton;
 	private final JPanel centerPanel;
-	private final ImagePanel imagePanel;
+	private final ImagePane imagePane;
 	private final Value<byte[]> imageBytes;
 	private final ObservableState imageSelected;
 	private final State embedded = State.state(true);
@@ -83,7 +83,7 @@ final class CoverArtPanel extends JPanel {
 		super(borderLayout());
 		this.imageBytes = imageBytes;
 		this.imageSelected = present(imageBytes);
-		this.imagePanel = createImagePanel();
+		this.imagePane = createImagePane();
 		this.addButton = button()
 						.control(Control.builder()
 										.command(this::addCover)
@@ -111,7 +111,7 @@ final class CoverArtPanel extends JPanel {
 
 	private JPanel createCenterPanel() {
 		return borderLayoutPanel()
-						.center(imagePanel)
+						.center(imagePane)
 						.south(borderLayoutPanel()
 										.east(panel()
 														.layout(new GridLayout(1, 2, 0, 0))
@@ -120,9 +120,9 @@ final class CoverArtPanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		imageBytes.addConsumer(bytes -> imagePanel.image().set(readImage(bytes)));
+		imageBytes.addConsumer(bytes -> imagePane.image().set(readImage(bytes)));
 		embedded.addConsumer(this::setEmbedded);
-		imagePanel.addMouseListener(new EmbeddingMouseListener());
+		imagePane.addMouseListener(new EmbeddingMouseListener());
 	}
 
 	private void addCover() throws IOException {
@@ -140,7 +140,7 @@ final class CoverArtPanel extends JPanel {
 	}
 
 	private void setEmbedded(boolean embedded) {
-		configureImagePanel(embedded);
+		configureImagePane(embedded);
 		if (embedded) {
 			embed();
 		}
@@ -166,19 +166,19 @@ final class CoverArtPanel extends JPanel {
 						.modal(false)
 						.title(BUNDLE.getString("cover"))
 						.onClosed(windowEvent -> embedded.set(true))
-						.onOpened(windowEvent -> imagePanel.reset())
+						.onOpened(windowEvent -> imagePane.reset())
 						.size(DIALOG_SIZE)
 						.show();
 	}
 
-	private void configureImagePanel(boolean embedded) {
-		imagePanel.zoomDevice().set(embedded ? ZoomDevice.NONE : ZoomDevice.MOUSE_WHEEL);
-		imagePanel.movable().set(!embedded);
-		imagePanel.navigable().set(!embedded);
+	private void configureImagePane(boolean embedded) {
+		imagePane.zoomDevice().set(embedded ? ZoomDevice.NONE : ZoomDevice.MOUSE_WHEEL);
+		imagePane.movable().set(!embedded);
+		imagePane.navigable().set(!embedded);
 	}
 
-	private ImagePanel createImagePanel() {
-		return ImagePanel.builder()
+	private ImagePane createImagePane() {
+		return ImagePane.builder()
 						.transferHandler(new CoverTransferHandler())
 						.border(createEtchedBorder())
 						.autoResize(true)

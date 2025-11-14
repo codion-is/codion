@@ -25,6 +25,7 @@ Codion Change Log
 - FilterTableHeaderRenderer added, now indicates the focused column with a darkened header, FOCUSED_COLUMN_INDICATOR configuration property added.
 - FilterTable.Builder.headerRendererFactory() added.
 - DefaultFilterTableColumnModel.DefaultColumnSelection now updates lead and anchor indexes when adjusting.
+- ImagePanel renamed ImagePane.
 ### is.codion.framework.domain
 - DerivedValueStep.value() renamed DerivedWithStep.with().
 - DenormalizedAttributeStep.attribute() renamed DenormalizedUsingStep.using().

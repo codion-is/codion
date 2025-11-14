@@ -22,8 +22,8 @@ import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.image.ImagePanel;
-import is.codion.swing.common.ui.component.image.ImagePanel.ZoomDevice;
+import is.codion.swing.common.ui.component.image.ImagePane;
+import is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -46,7 +46,7 @@ import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
 
 public final class AlbumTablePanel extends EntityTablePanel {
 
-	private final ImagePanel coverPanel;
+	private final ImagePane coverPane;
 
 	public AlbumTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
@@ -58,7 +58,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 										.formatter(RATINGS::get)
 										.toolTipData(true)
 										.build()));
-		coverPanel = ImagePanel.builder()
+		coverPane = ImagePane.builder()
 						.preferredSize(screenSizeRatio(0.5))
 						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
 						.navigable(true)
@@ -81,19 +81,19 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	}
 
 	private void displayCover(String title, byte[] coverBytes) {
-		coverPanel.image().set(readImage(coverBytes));
-		if (coverPanel.isShowing()) {
-			JDialog dialog = Utilities.parentDialog(coverPanel);
+		coverPane.image().set(readImage(coverBytes));
+		if (coverPane.isShowing()) {
+			JDialog dialog = Utilities.parentDialog(coverPane);
 			dialog.setTitle(title);
 			dialog.toFront();
 		}
 		else {
 			Dialogs.builder()
-							.component(coverPanel)
+							.component(coverPane)
 							.owner(Utilities.parentWindow(this))
 							.title(title)
 							.modal(false)
-							.onClosed(dialog -> coverPanel.image().clear())
+							.onClosed(dialog -> coverPane.image().clear())
 							.show();
 		}
 	}

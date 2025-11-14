@@ -76,19 +76,19 @@ import static java.util.ResourceBundle.getBundle;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 /**
- * {@code ImagePanel} is a lightweight container displaying an image that can be zoomed in and out
+ * {@code ImagePane} is a lightweight container displaying an image that can be zoomed in and out
  * and panned with ease and simplicity, using adaptive rendering for high quality display and satisfactory performance.
  * <p>
  * All configuration is done via an Observable/Value-based API, allowing reactive UI updates.
  * <b>Image</b>
  * <p>An image is loaded via the builder or controlled via the {@link #image()} Value:</p>
  * <pre>
- * ImagePanel panel = ImagePanel.builder()
+ * ImagePane pane = ImagePane.builder()
  *     .image(bufferedImage)
  *     .build();
  *
  * // Or change the image reactively
- * panel.image().set(newImage);
+ * pane.image().set(newImage);
  * </pre>
  * When an image is set, it is initially painted centered in the component at the largest possible size,
  * fully visible, with its aspect ratio preserved. This is defined as 100% of the image size and
@@ -97,110 +97,110 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * Zooming can be controlled interactively using either the mouse scroll wheel (default) or mouse buttons,
  * or programmatically via the {@link #zoom()} Value. To change the zoom device:
  * <pre>
- * ImagePanel panel = ImagePanel.builder()
+ * ImagePane pane = ImagePane.builder()
  *     .zoomDevice(ZoomDevice.MOUSE_BUTTON)
  *     .build();
  *
  * // Or change reactively
- * panel.zoomDevice().set(ZoomDevice.NONE);
+ * pane.zoomDevice().set(ZoomDevice.NONE);
  * </pre>
  * When using {@code ZoomDevice.MOUSE_BUTTON}, the left mouse button toggles between zooming in and out modes,
  * and the right button zooms by one increment (default 20%). The zoom increment can be controlled:
  * <pre>
- * panel.zoomIncrement().set(0.3); // 30% increment
+ * pane.zoomIncrement().set(0.3); // 30% increment
  * </pre>
  * For programmatic zoom control, set the zoom device to {@code ZoomDevice.NONE} and use the {@link #zoom()} Value:
  * <pre>
- * panel.zoom().set(2.0); // Zoom to 200%
+ * pane.zoom().set(2.0); // Zoom to 200%
  * </pre>
  * Mouse wheel zooming is always around the point the mouse pointer is currently at, ensuring that
  * the area being zoomed into remains visible. Programmatic zooming via {@code zoom().set()} zooms
- * around the center of the panel.
+ * around the center of the pane.
  * <p>
  * There are no lower or upper zoom level limits.
  * <b>Auto-Resize</b>
- * When auto-resize is enabled, the image automatically re-fits to the panel whenever the panel is resized:
+ * When auto-resize is enabled, the image automatically re-fits to the pane whenever the pane is resized:
  * <pre>
- * ImagePanel panel = ImagePanel.builder()
+ * ImagePane pane = ImagePane.builder()
  *     .autoResize(true)
  *     .build();
  *
  * // Or toggle reactively
- * panel.autoResize().set(true);
+ * pane.autoResize().set(true);
  * </pre>
- * When auto-resize is enabled, the image will reset to fit the panel dimensions on every resize event,
+ * When auto-resize is enabled, the image will reset to fit the pane dimensions on every resize event,
  * regardless of the current zoom level. This is useful for responsive layouts where you want the image
  * to always fill the available space.
  * <b>Navigation</b>
- * {@code ImagePanel} does not use scroll bars for navigation, but can optionally display a navigation image
+ * {@code ImagePane} does not use scroll bars for navigation, but can optionally display a navigation image
  * in the upper left corner. The navigation image is a small replica of the main image. Clicking on any point
- * of the navigation image displays that part of the image in the panel, centered. The navigation image can
+ * of the navigation image displays that part of the image in the pane, centered. The navigation image can
  * be enabled/disabled via the {@link #navigable()} State:
  * <pre>
- * ImagePanel panel = ImagePanel.builder()
+ * ImagePane pane = ImagePane.builder()
  *     .navigable(true)
  *     .build();
  *
  * // Or toggle reactively
- * panel.navigable().set(false);
+ * pane.navigable().set(false);
  * </pre>
  * The image can be dragged with the left mouse button when {@link #movable()} is enabled (default):
  * <pre>
- * panel.movable().set(false); // Disable dragging
+ * pane.movable().set(false); // Disable dragging
  * </pre>
  * For programmatic navigation, use {@link #centerImage(Point)} or {@link #centerImage(Point2D.Double)}.
  * <b>Coordinate Conversion</b>
- * The panel provides methods to convert between panel coordinates and image coordinates:
+ * The pane provides methods to convert between pane coordinates and image coordinates:
  * <ul>
- *   <li>{@link #toImageCoordinates(Point)} - Convert panel point to image coordinates</li>
- *   <li>{@link #toPanelCoordinates(Point2D.Double)} - Convert image point to panel coordinates</li>
- *   <li>{@link #isWithinImage(Point)} - Check if panel point is within image bounds</li>
+ *   <li>{@link #toImageCoordinates(Point)} - Convert pane point to image coordinates</li>
+ *   <li>{@link #toPaneCoordinates(Point2D.Double)} - Convert image point to pane coordinates</li>
+ *   <li>{@link #isWithinImage(Point)} - Check if pane point is within image bounds</li>
  * </ul>
  * <b>Rendering</b>
- * {@code ImagePanel} uses Nearest Neighbor interpolation for image rendering (default in Java).
+ * {@code ImagePane} uses Nearest Neighbor interpolation for image rendering (default in Java).
  * When the scaled image becomes larger than the original image, Bilinear interpolation is applied,
- * but only to the part of the image displayed in the panel.
+ * but only to the part of the image displayed in the pane.
  * <b>Custom Overlays</b>
- * The panel supports custom overlay painting via a {@link java.util.function.BiConsumer BiConsumer}&lt;{@link Graphics2D}, {@link ImagePanel}&gt;
+ * The pane supports custom overlay painting via a {@link java.util.function.BiConsumer BiConsumer}&lt;{@link Graphics2D}, {@link ImagePane}&gt;
  * that is called after the image is painted but before the navigation image. This is useful for drawing annotations, grids,
  * highlighting regions, or any custom graphics on top of the image:
  * <pre>
- * ImagePanel imagePanel = ImagePanel.builder()
+ * ImagePane imagePane = ImagePane.builder()
  *     .image(image)
- *     .overlay((g2d, panel) -&gt; {
+ *     .overlay((g2d, pane) -&gt; {
  *         // Draw a red rectangle at image coordinates (100, 100)
  *         Point2D.Double imagePoint = new Point2D.Double(100, 100);
- *         Point2D.Double panelPoint = panel.toPanelCoordinates(imagePoint);
+ *         Point2D.Double panePoint = pane.toPaneCoordinates(imagePoint);
  *         g2d.setColor(Color.RED);
- *         g2d.drawRect((int) panelPoint.x, (int) panelPoint.y, 50, 50);
+ *         g2d.drawRect((int) panePoint.x, (int) panePoint.y, 50, 50);
  *     })
  *     .build();
  * </pre>
- * The overlay painter receives the Graphics2D context for drawing and the ImagePanel for accessing
- * coordinate conversion methods ({@link #toImageCoordinates(Point)} and {@link #toPanelCoordinates(Point2D.Double)})
- * and other panel state like {@link #scale()}.
+ * The overlay painter receives the Graphics2D context for drawing and the ImagePane for accessing
+ * coordinate conversion methods ({@link #toImageCoordinates(Point)} and {@link #toPaneCoordinates(Point2D.Double)})
+ * and other pane state like {@link #scale()}.
  * <p>
- * The {@link #origin()} Value provides access to the current image origin (top-left corner position in panel coordinates),
+ * The {@link #origin()} Value provides access to the current image origin (top-left corner position in pane coordinates),
  * which can be used to programmatically position the image to make specific regions visible:
  * <pre>
  * // Move image to show a specific region
- * panel.origin().set(new Point(-200, -100));
+ * pane.origin().set(new Point(-200, -100));
  *
  * // React to origin changes
- * panel.origin().addConsumer(origin -&gt;
+ * pane.origin().addConsumer(origin -&gt;
  *     System.out.println("Image origin: " + origin));
  * </pre>
  * <b>Example Usage</b>
  * <pre>
  * BufferedImage image = ImageIO.read(new File("photo.jpg"));
  *
- * ImagePanel imagePanel = ImagePanel.builder()
+ * ImagePane imagePane = ImagePane.builder()
  *     .image(image)
  *     .zoomDevice(ZoomDevice.MOUSE_WHEEL)
  *     .autoResize(true)
  *     .navigable(true)
  *     .movable(true)
- *     .overlay((g2d, panel) -&gt; {
+ *     .overlay((g2d, pane) -&gt; {
  *         // Draw custom annotations
  *         g2d.setColor(new Color(255, 0, 0, 128));
  *         g2d.fillOval(100, 100, 50, 50);
@@ -208,49 +208,49 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  *     .build();
  *
  * // React to zoom changes
- * panel.zoom().addConsumer(zoom -&gt;
+ * pane.zoom().addConsumer(zoom -&gt;
  *     System.out.println("Zoom level: " + zoom));
  *
  * // Programmatic zoom
- * panel.zoom().set(1.5);
+ * pane.zoom().set(1.5);
  *
  * // Change image dynamically
- * panel.image().set(newImage);
+ * pane.image().set(newImage);
  *
  * // Position image to show specific region
- * panel.origin().set(new Point(-100, -50));
+ * pane.origin().set(new Point(-100, -50));
  * </pre>
  * <p>
- * Originally based on <a href="http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html">http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html</a>
+ * Originally based on <a href="http://today.java.net/pub/a/today/2007/03/27/navigable-image-pane.html">http://today.java.net/pub/a/today/2007/03/27/navigable-image-pane.html</a>
  * Included with express permission from the author, 2019.
  * @author Slav Boleslawski
  * @author Björn Darri Sigurðsson
  */
-public final class ImagePanel extends JPanel {
+public final class ImagePane extends JPanel {
 
 	/**
-	 * Specifies the default {@link ZoomDevice} for {@link ImagePanel}s.
+	 * Specifies the default {@link ZoomDevice} for {@link ImagePane}s.
 	 * <ul>
 	 * <li>Value type: {@link ZoomDevice}
 	 * <li>Default value: {@link ZoomDevice#NONE}
 	 * </ul>
 	 */
-	public static final PropertyValue<ZoomDevice> ZOOM_DEVICE = enumValue(ImagePanel.class.getName() + ".zoomDevice", ZoomDevice.class, ZoomDevice.NONE);
+	public static final PropertyValue<ZoomDevice> ZOOM_DEVICE = enumValue(ImagePane.class.getName() + ".zoomDevice", ZoomDevice.class, ZoomDevice.NONE);
 
 	/**
-	 * Specifies the default auto-resize behaviour for {@link ImagePanel}s.
+	 * Specifies the default auto-resize behaviour for {@link ImagePane}s.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> AUTO_RESIZE = booleanValue(ImagePanel.class.getName() + ".autoResize", false);
+	public static final PropertyValue<Boolean> AUTO_RESIZE = booleanValue(ImagePane.class.getName() + ".autoResize", false);
 
-	private static final ResourceBundle MESSAGES = getBundle(ImagePanel.class.getName());
+	private static final ResourceBundle MESSAGES = getBundle(ImagePane.class.getName());
 	private static final byte[] EMPTY_BYTES = new byte[0];
 
-	private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of panel's width
-	private static final double NAV_IMAGE_FACTOR = 0.3; // 30% of panel's width
+	private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of pane's width
+	private static final double NAV_IMAGE_FACTOR = 0.3; // 30% of pane's width
 	private static final double HIGH_QUALITY_RENDERING_SCALE_THRESHOLD = 1;
 	private static final double DEFAULT_ZOOM_INCREMENT = 0.2;
 	private static final Object INTERPOLATION_TYPE = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
@@ -261,7 +261,7 @@ public final class ImagePanel extends JPanel {
 		}
 	};
 
-	private final List<BiConsumer<Graphics2D, ImagePanel>> overlays;
+	private final List<BiConsumer<Graphics2D, ImagePane>> overlays;
 	private final DefaultImageValue image;
 	private final Value<ZoomDevice> zoomDevice;
 	private final State autoResize;
@@ -282,9 +282,9 @@ public final class ImagePanel extends JPanel {
 	private double initialScale = 0;
 	private double scale = 0;
 	private double navigationScale = 0;
-	private Dimension previousPanelSize = getSize();
+	private Dimension previousPaneSize = getSize();
 
-	private ImagePanel(DefaultBuilder builder) {
+	private ImagePane(DefaultBuilder builder) {
 		addComponentListener(new ImageComponentAdapter());
 		addMouseListener(new ImageMouseAdapter());
 		addMouseMotionListener(new ImageMouseMotionListener());
@@ -318,8 +318,8 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * Returns the {@link State} controlling whether the image automatically re-fits to the panel on resize.
-	 * When enabled, the image will reset to fit the panel dimensions whenever the panel is resized,
+	 * Returns the {@link State} controlling whether the image automatically re-fits to the pane on resize.
+	 * When enabled, the image will reset to fit the pane dimensions whenever the pane is resized,
 	 * regardless of the current zoom level.
 	 * @return the {@link State} controlling the auto-resize behavior
 	 */
@@ -328,7 +328,7 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * @return the {@link State} controlling whether the image is movable within the panel
+	 * @return the {@link State} controlling whether the image is movable within the pane
 	 */
 	public State movable() {
 		return movable;
@@ -357,28 +357,28 @@ public final class ImagePanel extends JPanel {
 
 	/**
 	 * Returns the {@link Value} controlling the image origin (the position of the image's top-left corner
-	 * in panel coordinates). This can be used to programmatically position the image within the panel.
+	 * in pane coordinates). This can be used to programmatically position the image within the pane.
 	 * <p>
-	 * The origin is typically negative when the image is zoomed in and larger than the panel,
-	 * representing how much of the image is scrolled off the top-left edge of the panel.
+	 * The origin is typically negative when the image is zoomed in and larger than the pane,
+	 * representing how much of the image is scrolled off the top-left edge of the pane.
 	 * <b>Example Usage</b>
 	 * <pre>
 	 * // Move image to show a region at image coordinates (500, 300)
 	 * Point2D.Double imagePoint = new Point2D.Double(500, 300);
-	 * Point2D.Double panelPoint = panel.toPanelCoordinates(imagePoint);
+	 * Point2D.Double panePoint = pane.toPaneCoordinates(imagePoint);
 	 *
-	 * // Center that point in the panel
-	 * int centerX = panel.getWidth() / 2;
-	 * int centerY = panel.getHeight() / 2;
-	 * panel.origin().set(new Point(
-	 *     centerX - (int) panelPoint.x,
-	 *     centerY - (int) panelPoint.y));
+	 * // Center that point in the pane
+	 * int centerX = pane.getWidth() / 2;
+	 * int centerY = pane.getHeight() / 2;
+	 * pane.origin().set(new Point(
+	 *     centerX - (int) panePoint.x,
+	 *     centerY - (int) panePoint.y));
 	 *
 	 * // React to origin changes (e.g., when user drags the image)
-	 * panel.origin().addConsumer(origin -&gt;
+	 * pane.origin().addConsumer(origin -&gt;
 	 *     updateVisibleRegionIndicator(origin));
 	 * </pre>
-	 * @return the {@link Value} controlling the image origin in panel coordinates
+	 * @return the {@link Value} controlling the image origin in pane coordinates
 	 */
 	public Value<Point> origin() {
 		return origin;
@@ -392,7 +392,7 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * Resets the view so the image is centered and fits the panel
+	 * Resets the view so the image is centered and fits the pane
 	 */
 	public void reset() {
 		scale = 0.0;
@@ -400,21 +400,21 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * Converts this panel's point into the original image coordinates
-	 * @param panelCoordinates the panel coordinates
+	 * Converts this pane's point into the original image coordinates
+	 * @param paneCoordinates the pane coordinates
 	 * @return the image coordinates
 	 */
-	public Point2D.Double toImageCoordinates(Point panelCoordinates) {
-		requireNonNull(panelCoordinates);
-		return new Point2D.Double((panelCoordinates.x - origin.x) / scale, (panelCoordinates.y - origin.y) / scale);
+	public Point2D.Double toImageCoordinates(Point paneCoordinates) {
+		requireNonNull(paneCoordinates);
+		return new Point2D.Double((paneCoordinates.x - origin.x) / scale, (paneCoordinates.y - origin.y) / scale);
 	}
 
 	/**
-	 * Converts the original image point into this panel's coordinates
+	 * Converts the original image point into this pane's coordinates
 	 * @param imageCoordinates the image coordinates
-	 * @return the panel coordinates
+	 * @return the pane coordinates
 	 */
-	public Point2D.Double toPanelCoordinates(Point2D.Double imageCoordinates) {
+	public Point2D.Double toPaneCoordinates(Point2D.Double imageCoordinates) {
 		requireNonNull(imageCoordinates);
 		return new Point2D.Double((imageCoordinates.x * scale) + origin.x, (imageCoordinates.y * scale) + origin.y);
 	}
@@ -424,33 +424,33 @@ public final class ImagePanel extends JPanel {
 	 * @param imagePoint the image point on which to center the image
 	 */
 	public void centerImage(Point2D.Double imagePoint) {
-		centerImage(toPoint(toPanelCoordinates(requireNonNull(imagePoint))));
+		centerImage(toPoint(toPaneCoordinates(requireNonNull(imagePoint))));
 	}
 
 	/**
-	 * Centers the image on the given point on the panel, if it is within the image boundaries.
-	 * @param panelPoint the point on which to center the image
+	 * Centers the image on the given point on the pane, if it is within the image boundaries.
+	 * @param panePoint the point on which to center the image
 	 */
-	public void centerImage(Point panelPoint) {
-		requireNonNull(panelPoint);
-		if (isWithinImage(panelPoint)) {
+	public void centerImage(Point panePoint) {
+		requireNonNull(panePoint);
+		if (isWithinImage(panePoint)) {
 			Point currentCenter = new Point(getWidth() / 2, getHeight() / 2);
-			origin.x += (int) (currentCenter.getX() - panelPoint.getX());
-			origin.y += (int) (currentCenter.getY() - panelPoint.getY());
+			origin.x += (int) (currentCenter.getX() - panePoint.getX());
+			origin.y += (int) (currentCenter.getY() - panePoint.getY());
 			origin.changed();
 		}
 	}
 
 	/**
-	 * Tests whether a given point in the panel falls within the image boundaries.
-	 * @param panelPoint the point on the panel
+	 * Tests whether a given point in the pane falls within the image boundaries.
+	 * @param panePoint the point on the pane
 	 * @return true if an image is available and the given point is within the image
 	 */
-	public boolean isWithinImage(Point panelPoint) {
-		requireNonNull(panelPoint);
+	public boolean isWithinImage(Point panePoint) {
+		requireNonNull(panePoint);
 		if (!image.isNull()) {
 			BufferedImage bufferedImage = image.getOrThrow();
-			Point2D.Double imagePoint = toImageCoordinates(panelPoint);
+			Point2D.Double imagePoint = toImageCoordinates(panePoint);
 			double width = bufferedImage.getWidth();
 			double height = bufferedImage.getHeight();
 
@@ -488,7 +488,7 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * Controls the image displayed in an {@link ImagePanel}
+	 * Controls the image displayed in an {@link ImagePane}
 	 */
 	public interface ImageValue extends Value<BufferedImage> {
 
@@ -513,9 +513,9 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * Builds an {@link ImagePanel}
+	 * Builds an {@link ImagePane}
 	 */
-	public interface Builder extends ComponentValueBuilder<ImagePanel, byte[], Builder> {
+	public interface Builder extends ComponentValueBuilder<ImagePane, byte[], Builder> {
 
 		/**
 		 * Clears any image set via {@link #image(BufferedImage)}.
@@ -546,18 +546,18 @@ public final class ImagePanel extends JPanel {
 		 * This allows custom graphics to be drawn on top of the image, such as annotations, grids, highlights,
 		 * or selection markers.
 		 * <p>
-		 * The overlay painter receives the Graphics2D context for drawing and the ImagePanel for accessing
-		 * coordinate conversion methods and panel state.
+		 * The overlay painter receives the Graphics2D context for drawing and the ImagePane for accessing
+		 * coordinate conversion methods and pane state.
 		 * <b>Example - Drawing Grid Lines</b>
 		 * <pre>
-		 * ImagePanel imagePanel = ImagePanel.builder()
+		 * ImagePane imagePane = ImagePane.builder()
 		 *     .image(image)
-		 *     .overlay((g2d, panel) -&gt; {
+		 *     .overlay((g2d, pane) -&gt; {
 		 *         g2d.setColor(new Color(255, 255, 255, 100));
 		 *         // Draw grid lines every 100 image pixels
 		 *         for (int x = 0; x &lt; image.getWidth(); x += 100) {
-		 *             Point2D.Double top = panel.toPanelCoordinates(new Point2D.Double(x, 0));
-		 *             Point2D.Double bottom = panel.toPanelCoordinates(
+		 *             Point2D.Double top = pane.toPaneCoordinates(new Point2D.Double(x, 0));
+		 *             Point2D.Double bottom = pane.toPaneCoordinates(
 		 *                 new Point2D.Double(x, image.getHeight()));
 		 *             g2d.drawLine((int) top.x, (int) top.y, (int) bottom.x, (int) bottom.y);
 		 *         }
@@ -568,15 +568,15 @@ public final class ImagePanel extends JPanel {
 		 * <pre>
 		 * List&lt;Rectangle&gt; taggedRegions = getTaggedRegions();
 		 *
-		 * ImagePanel imagePanel = ImagePanel.builder()
+		 * ImagePane imagePane = ImagePane.builder()
 		 *     .image(image)
-		 *     .overlay((g2d, panel) -&gt; {
+		 *     .overlay((g2d, pane) -&gt; {
 		 *         g2d.setColor(new Color(255, 0, 0, 128));
 		 *         for (Rectangle region : taggedRegions) {
-		 *             // Convert image coordinates to panel coordinates
-		 *             Point2D.Double topLeft = panel.toPanelCoordinates(
+		 *             // Convert image coordinates to pane coordinates
+		 *             Point2D.Double topLeft = pane.toPaneCoordinates(
 		 *                 new Point2D.Double(region.x, region.y));
-		 *             Point2D.Double bottomRight = panel.toPanelCoordinates(
+		 *             Point2D.Double bottomRight = pane.toPaneCoordinates(
 		 *                 new Point2D.Double(region.x + region.width, region.y + region.height));
 		 *
 		 *             int width = (int) (bottomRight.x - topLeft.x);
@@ -586,11 +586,11 @@ public final class ImagePanel extends JPanel {
 		 *     })
 		 *     .build();
 		 * </pre>
-		 * The overlay is redrawn automatically whenever the panel repaints (e.g., when zooming, panning, or resizing).
-		 * @param overlay the overlay painter, receives Graphics2D for drawing and ImagePanel for coordinate conversion
+		 * The overlay is redrawn automatically whenever the pane repaints (e.g., when zooming, panning, or resizing).
+		 * @param overlay the overlay painter, receives Graphics2D for drawing and ImagePane for coordinate conversion
 		 * @return this builder
 		 */
-		Builder overlay(BiConsumer<Graphics2D, ImagePanel> overlay);
+		Builder overlay(BiConsumer<Graphics2D, ImagePane> overlay);
 
 		/**
 		 * @param zoomDevice the initial zoom device
@@ -600,8 +600,8 @@ public final class ImagePanel extends JPanel {
 		Builder zoomDevice(ZoomDevice zoomDevice);
 
 		/**
-		 * Sets whether the image should automatically re-fit to the panel when the panel is resized.
-		 * When enabled, the image resets to fit the panel dimensions on every resize event,
+		 * Sets whether the image should automatically re-fit to the pane when the pane is resized.
+		 * When enabled, the image resets to fit the pane dimensions on every resize event,
 		 * regardless of the current zoom level.
 		 * @param autoResize true to enable auto-resize
 		 * @return this builder
@@ -618,7 +618,7 @@ public final class ImagePanel extends JPanel {
 
 		/**
 		 * Default false
-		 * @param movable true if the image should be movable within the panel
+		 * @param movable true if the image should be movable within the pane
 		 * @return this builder
 		 */
 		Builder movable(boolean movable);
@@ -660,19 +660,19 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * Tests whether a given point in the panel falls within the navigation image boundaries.
-	 * @param panelPoint the point in the panel
+	 * Tests whether a given point in the pane falls within the navigation image boundaries.
+	 * @param panePoint the point in the pane
 	 * @return true if the given point is within the navigation image
 	 */
-	private boolean isInNavigationImage(Point panelPoint) {
-		return navigable.is() && panelPoint.x < getScreenNavImageWidth() && panelPoint.y < getScreenNavImageHeight();
+	private boolean isInNavigationImage(Point panePoint) {
+		return navigable.is() && panePoint.x < getScreenNavImageWidth() && panePoint.y < getScreenNavImageHeight();
 	}
 
 	/**
-	 * Tests whether the image is displayed in its entirety in the panel.
-	 * @return true if the image is fully within the panel bounds
+	 * Tests whether the image is displayed in its entirety in the pane.
+	 * @return true if the image is fully within the pane bounds
 	 */
-	private boolean isFullImageInPanel() {
+	private boolean isFullImageInPane() {
 		return origin.x >= 0 && (origin.x + getScreenImageWidth()) < getWidth() &&
 						origin.y >= 0 && (origin.y + getScreenImageHeight()) < getHeight();
 	}
@@ -691,10 +691,10 @@ public final class ImagePanel extends JPanel {
 		if (Double.compare(initialScale, 0) != 0) {
 			Point2D.Double imagePoint = toImageCoordinates(mousePosition);
 			scale *= zoomFactor;
-			Point2D.Double panelPoint = toPanelCoordinates(imagePoint);
+			Point2D.Double panePoint = toPaneCoordinates(imagePoint);
 
-			origin.x += (mousePosition.x - (int) panelPoint.x);
-			origin.y += (mousePosition.y - (int) panelPoint.y);
+			origin.x += (mousePosition.x - (int) panePoint.x);
+			origin.y += (mousePosition.y - (int) panePoint.y);
 			origin.changed();
 
 			zoom.set(scale / initialScale);
@@ -707,31 +707,31 @@ public final class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * @return the bounds of the image area currently displayed in the panel (in image coordinates).
+	 * @return the bounds of the image area currently displayed in the pane (in image coordinates).
 	 */
 	private @Nullable Rectangle getImageClipBounds() {
 		Point2D.Double startPoint = toImageCoordinates(new Point(0, 0));
 		Point2D.Double endPoint = toImageCoordinates(new Point(getWidth() - 1, getHeight() - 1));
-		int panelX1 = (int) Math.round(startPoint.getX());
-		int panelY1 = (int) Math.round(startPoint.getY());
-		int panelX2 = (int) Math.round(endPoint.getX());
-		int panelY2 = (int) Math.round(endPoint.getY());
+		int paneX1 = (int) Math.round(startPoint.getX());
+		int paneY1 = (int) Math.round(startPoint.getY());
+		int paneX2 = (int) Math.round(endPoint.getX());
+		int paneY2 = (int) Math.round(endPoint.getY());
 		BufferedImage bufferedImage = image.getOrThrow();
 		//No intersection?
-		if (panelX1 >= bufferedImage.getWidth() || panelX2 < 0 || panelY1 >= bufferedImage.getHeight() || panelY2 < 0) {
+		if (paneX1 >= bufferedImage.getWidth() || paneX2 < 0 || paneY1 >= bufferedImage.getHeight() || paneY2 < 0) {
 			return null;
 		}
 
-		int x1 = Math.max(panelX1, 0);
-		int y1 = Math.max(panelY1, 0);
-		int x2 = (panelX2 >= bufferedImage.getWidth()) ? bufferedImage.getWidth() - 1 : panelX2;
-		int y2 = (panelY2 >= bufferedImage.getHeight()) ? bufferedImage.getHeight() - 1 : panelY2;
+		int x1 = Math.max(paneX1, 0);
+		int y1 = Math.max(paneY1, 0);
+		int x2 = (paneX2 >= bufferedImage.getWidth()) ? bufferedImage.getWidth() - 1 : paneX2;
+		int y2 = (paneY2 >= bufferedImage.getHeight()) ? bufferedImage.getHeight() - 1 : paneY2;
 
 		return new Rectangle(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 	}
 
 	/**
-	 * Paints the panel and its image at the current zoom level, location, and
+	 * Paints the pane and its image at the current zoom level, location, and
 	 * interpolation method dependent on the image scale.
 	 * @param g the {@code Graphics} context for painting
 	 */
@@ -749,7 +749,7 @@ public final class ImagePanel extends JPanel {
 		BufferedImage bufferedImage = image.getOrThrow();
 		if (isHighQualityRendering()) {
 			Rectangle rect = getImageClipBounds();
-			if (rect == null || rect.width == 0 || rect.height == 0) { // no part of image is displayed in the panel
+			if (rect == null || rect.width == 0 || rect.height == 0) { // no part of image is displayed in the pane
 				return;
 			}
 			BufferedImage subimage = bufferedImage.getSubimage(rect.x, rect.y, rect.width, rect.height);
@@ -776,11 +776,11 @@ public final class ImagePanel extends JPanel {
 
 	/**
 	 * Paints a white outline over the navigation image indicating
-	 * the area of the image currently displayed in the panel.
+	 * the area of the image currently displayed in the pane.
 	 * @param g the graphics
 	 */
 	private void drawZoomAreaOutline(Graphics g) {
-		if (isFullImageInPanel()) {
+		if (isFullImageInPane()) {
 			return;
 		}
 
@@ -828,8 +828,8 @@ public final class ImagePanel extends JPanel {
 	public enum ZoomDevice {
 
 		/**
-		 * <p>Identifies that the panel does not implement zooming,
-		 * but the component using the panel does (programmatic zooming method).</p>
+		 * <p>Identifies that the pane does not implement zooming,
+		 * but the component using the pane does (programmatic zooming method).</p>
 		 */
 		NONE,
 
@@ -1027,7 +1027,7 @@ public final class ImagePanel extends JPanel {
 		 * around which zooming is done.</p>
 		 * <p>This method is used in programmatic zooming.
 		 * After a new zoom level is set the image is repainted.</p>
-		 * @param newZoom the zoom level used to display this panel's image.
+		 * @param newZoom the zoom level used to display this pane's image.
 		 * @param zoomingCenter the zooming center
 		 */
 		private void setZoom(double newZoom, Point zoomingCenter) {
@@ -1046,12 +1046,12 @@ public final class ImagePanel extends JPanel {
 				imageP = new Point2D.Double(imageP.getX(), bufferedImage.getHeight() - 1d);
 			}
 
-			Point2D.Double correctedP = toPanelCoordinates(imageP);
+			Point2D.Double correctedP = toPaneCoordinates(imageP);
 			scale = zoomToScale(newZoom);
-			Point2D.Double panelP = toPanelCoordinates(imageP);
+			Point2D.Double paneP = toPaneCoordinates(imageP);
 
-			origin.x += (int) (Math.round(correctedP.getX()) - (int) panelP.x);
-			origin.y += (int) (Math.round(correctedP.getY()) - (int) panelP.y);
+			origin.x += (int) (Math.round(correctedP.getX()) - (int) paneP.x);
+			origin.y += (int) (Math.round(correctedP.getY()) - (int) paneP.y);
 			origin.changed();
 
 			notifyObserver();
@@ -1158,13 +1158,13 @@ public final class ImagePanel extends JPanel {
 		public void componentResized(ComponentEvent e) {
 			if (scale > 0.0) {
 				if (autoResize.is()) {
-					reset(); // Fit to new panel size
+					reset(); // Fit to new pane size
 				}
 				else {
-					if (isFullImageInPanel()) {
+					if (isFullImageInPane()) {
 						centerImage();
 					}
-					else if (isImageEdgeInPanel()) {
+					else if (isImageEdgeInPane()) {
 						scaleOrigin();
 					}
 				}
@@ -1173,19 +1173,19 @@ public final class ImagePanel extends JPanel {
 				}
 				repaint();
 			}
-			previousPanelSize = getSize();
+			previousPaneSize = getSize();
 		}
 
-		private boolean isImageEdgeInPanel() {
-			boolean originXOK = origin.x > 0 && origin.x < previousPanelSize.width;
-			boolean originYOK = origin.y > 0 && origin.y < previousPanelSize.height;
+		private boolean isImageEdgeInPane() {
+			boolean originXOK = origin.x > 0 && origin.x < previousPaneSize.width;
+			boolean originYOK = origin.y > 0 && origin.y < previousPaneSize.height;
 
-			return previousPanelSize != null && (originXOK || originYOK);
+			return previousPaneSize != null && (originXOK || originYOK);
 		}
 
 		private void scaleOrigin() {
-			origin.x = origin.x * getWidth() / previousPanelSize.width;
-			origin.y = origin.y * getHeight() / previousPanelSize.height;
+			origin.x = origin.x * getWidth() / previousPaneSize.width;
+			origin.y = origin.y * getHeight() / previousPaneSize.height;
 			origin.changed();
 		}
 	}
@@ -1199,16 +1199,16 @@ public final class ImagePanel extends JPanel {
 			}
 		}
 
-		private void displayImageAt(Point panelPoint) {
-			Point scrImagePoint = navigationToZoomedImagePoint(panelPoint);
+		private void displayImageAt(Point panePoint) {
+			Point scrImagePoint = navigationToZoomedImagePoint(panePoint);
 			origin.x = -(scrImagePoint.x - getWidth() / 2);
 			origin.y = -(scrImagePoint.y - getHeight() / 2);
 			origin.changed();
 		}
 
-		private Point navigationToZoomedImagePoint(Point panelPoint) {
-			int x = panelPoint.x * getScreenImageWidth() / getScreenNavImageWidth();
-			int y = panelPoint.y * getScreenImageHeight() / getScreenNavImageHeight();
+		private Point navigationToZoomedImagePoint(Point panePoint) {
+			int x = panePoint.x * getScreenImageWidth() / getScreenNavImageWidth();
+			int y = panePoint.y * getScreenImageHeight() / getScreenNavImageHeight();
 
 			return new Point(x, y);
 		}
@@ -1234,13 +1234,13 @@ public final class ImagePanel extends JPanel {
 
 		/**
 		 * Moves te image (by dragging with the mouse) to a new mouse position p.
-		 * @param panelPoint the point
+		 * @param panePoint the point
 		 */
-		private void moveImage(Point panelPoint) {
+		private void moveImage(Point panePoint) {
 			if (mousePosition != null) {
-				int xDelta = panelPoint.x - mousePosition.x;
-				int yDelta = panelPoint.y - mousePosition.y;
-				mousePosition = panelPoint;
+				int xDelta = panePoint.x - mousePosition.x;
+				int yDelta = panePoint.y - mousePosition.y;
+				mousePosition = panePoint;
 				origin.x += xDelta;
 				origin.y += yDelta;
 				origin.changed();
@@ -1258,9 +1258,9 @@ public final class ImagePanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultBuilder extends AbstractComponentValueBuilder<ImagePanel, byte[], Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComponentValueBuilder<ImagePane, byte[], Builder> implements Builder {
 
-		private final List<BiConsumer<Graphics2D, ImagePanel>> overlays = new ArrayList<>(1);
+		private final List<BiConsumer<Graphics2D, ImagePane>> overlays = new ArrayList<>(1);
 
 		private @Nullable BufferedImage image;
 		private ZoomDevice zoomDevice = ZOOM_DEVICE.getOrThrow();
@@ -1287,7 +1287,7 @@ public final class ImagePanel extends JPanel {
 		}
 
 		@Override
-		public Builder overlay(BiConsumer<Graphics2D, ImagePanel> overlay) {
+		public Builder overlay(BiConsumer<Graphics2D, ImagePane> overlay) {
 			this.overlays.add(requireNonNull(overlay));
 			return this;
 		}
@@ -1317,12 +1317,12 @@ public final class ImagePanel extends JPanel {
 		}
 
 		@Override
-		protected ImagePanel createComponent() {
-			return new ImagePanel(this);
+		protected ImagePane createComponent() {
+			return new ImagePane(this);
 		}
 
 		@Override
-		protected ComponentValue<ImagePanel, byte[]> createComponentValue(ImagePanel component) {
+		protected ComponentValue<ImagePane, byte[]> createComponentValue(ImagePane component) {
 			return new ByteArrayComponentValue(requireNonNull(component));
 		}
 	}
@@ -1336,9 +1336,9 @@ public final class ImagePanel extends JPanel {
 		return outputStream.toByteArray();
 	}
 
-	private static final class ByteArrayComponentValue extends AbstractComponentValue<ImagePanel, byte[]> {
+	private static final class ByteArrayComponentValue extends AbstractComponentValue<ImagePane, byte[]> {
 
-		private ByteArrayComponentValue(ImagePanel component) {
+		private ByteArrayComponentValue(ImagePane component) {
 			super(component, EMPTY_BYTES);
 			component.image.bytes.addListener(this::notifyObserver);
 		}

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.image;
 
-import is.codion.swing.common.ui.component.image.ImagePanel.ZoomDevice;
+import is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class ImagePanelTest {
+public final class ImagePaneTest {
 
 	private static final String TEST_IMAGE_PATH = "../../documentation/src/docs/asciidoc/images/chinook-client.png";
 
@@ -43,21 +43,21 @@ public final class ImagePanelTest {
 		AtomicInteger bytesEventCounter = new AtomicInteger();
 		AtomicInteger imageEventCounter = new AtomicInteger();
 
-		ComponentValue<ImagePanel, byte[]> bytesValue = ImagePanel.builder().buildValue();
+		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder().buildValue();
 		bytesValue.addListener(bytesEventCounter::incrementAndGet);
 
-		ImagePanel imagePanel = bytesValue.component();
-		imagePanel.image().addListener(imageEventCounter::incrementAndGet);
+		ImagePane imagePane = bytesValue.component();
+		imagePane.image().addListener(imageEventCounter::incrementAndGet);
 
 		byte[] allBytes = Files.readAllBytes(new File(TEST_IMAGE_PATH).toPath());
 		bytesValue.set(allBytes);
 
-		assertNotNull(imagePanel.image().get());
+		assertNotNull(imagePane.image().get());
 		assertEquals(1, bytesEventCounter.get());
 		assertEquals(1, imageEventCounter.get());
 
 		BufferedImage image = ImageIO.read(new File(TEST_IMAGE_PATH));
-		imagePanel.image().set(image);
+		imagePane.image().set(image);
 
 		assertFalse(bytesValue.getOrThrow().length > 0);
 		assertEquals(2, bytesEventCounter.get());
@@ -67,30 +67,30 @@ public final class ImagePanelTest {
 		assertEquals(3, bytesEventCounter.get());
 		assertEquals(3, imageEventCounter.get());
 
-		imagePanel.image().set(image, "png");
+		imagePane.image().set(image, "png");
 
 		assertTrue(bytesValue.getOrThrow().length > 0);
 		assertEquals(4, bytesEventCounter.get());
 		assertEquals(4, imageEventCounter.get());
 
 		bytesValue.clear();
-		assertNull(imagePanel.image().get());
+		assertNull(imagePane.image().get());
 		assertEquals(5, bytesEventCounter.get());
 		assertEquals(5, imageEventCounter.get());
 
-		imagePanel.image().set(image, "png");
+		imagePane.image().set(image, "png");
 
-		assertNotNull(imagePanel.image().get());
+		assertNotNull(imagePane.image().get());
 		assertTrue(bytesValue.getOrThrow().length > 0);
 		assertEquals(6, bytesEventCounter.get());
 		assertEquals(6, imageEventCounter.get());
 
-		imagePanel.image().clear();
+		imagePane.image().clear();
 		assertFalse(bytesValue.getOrThrow().length > 0);
 		assertEquals(7, bytesEventCounter.get());
 		assertEquals(7, imageEventCounter.get());
 
-		imagePanel.image().set(TEST_IMAGE_PATH);
+		imagePane.image().set(TEST_IMAGE_PATH);
 		assertTrue(bytesValue.getOrThrow().length > 0);
 		assertEquals(8, bytesEventCounter.get());
 		assertEquals(8, imageEventCounter.get());
@@ -100,7 +100,7 @@ public final class ImagePanelTest {
 		assertEquals(9, bytesEventCounter.get());
 		assertEquals(9, imageEventCounter.get());
 
-		imagePanel.image().set(allBytes);
+		imagePane.image().set(allBytes);
 
 		assertTrue(bytesValue.getOrThrow().length > 0);
 		assertEquals(10, bytesEventCounter.get());
@@ -109,7 +109,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void builder() throws IOException {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.zoomDevice(ZoomDevice.MOUSE_BUTTON)
 						.navigable(false)
@@ -123,7 +123,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void imageValue() throws IOException {
-		ImagePanel panel = ImagePanel.builder().build();
+		ImagePane panel = ImagePane.builder().build();
 		assertNull(panel.image().get());
 
 		BufferedImage image = ImageIO.read(new File(TEST_IMAGE_PATH));
@@ -134,7 +134,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void zoomDeviceValue() {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
 						.build();
 
@@ -149,7 +149,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void movableState() {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.movable(true)
 						.build();
 
@@ -161,7 +161,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void navigableState() {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.navigable(true)
 						.build();
 
@@ -173,7 +173,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void zoomIncrement() {
-		ImagePanel panel = ImagePanel.builder().build();
+		ImagePane panel = ImagePane.builder().build();
 
 		// Default value
 		assertEquals(0.2, panel.zoomIncrement().getOrThrow(), 0.001);
@@ -184,14 +184,14 @@ public final class ImagePanelTest {
 
 	@Test
 	void zoomIncrementNegativeThrows() {
-		ImagePanel panel = ImagePanel.builder().build();
+		ImagePane panel = ImagePane.builder().build();
 
 		assertThrows(IllegalArgumentException.class, () -> panel.zoomIncrement().set(-0.1));
 	}
 
 	@Test
 	void zoomValue() throws IOException {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
@@ -206,7 +206,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void zoomValueNegativeThrows() throws IOException {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
@@ -216,7 +216,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void coordinateConversion() throws IOException {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
@@ -232,13 +232,13 @@ public final class ImagePanelTest {
 		assertNotNull(imagePoint);
 
 		// Convert back
-		Point2D.Double backToPanel = panel.toPanelCoordinates(imagePoint);
+		Point2D.Double backToPanel = panel.toPaneCoordinates(imagePoint);
 		assertNotNull(backToPanel);
 	}
 
 	@Test
 	void isWithinImage() throws IOException {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
@@ -250,14 +250,14 @@ public final class ImagePanelTest {
 
 	@Test
 	void isWithinImageNoImage() {
-		ImagePanel panel = ImagePanel.builder().build();
+		ImagePane panel = ImagePane.builder().build();
 
 		assertFalse(panel.isWithinImage(new Point(50, 50)));
 	}
 
 	@Test
 	void centerImage() throws IOException {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
@@ -275,7 +275,7 @@ public final class ImagePanelTest {
 
 	@Test
 	void centerImageOnImageCoordinates() throws IOException {
-		ImagePanel panel = ImagePanel.builder()
+		ImagePane panel = ImagePane.builder()
 						.image(TEST_IMAGE_PATH)
 						.navigable(false)
 						.build();
@@ -295,6 +295,6 @@ public final class ImagePanelTest {
 	@Test
 	void readImageFromFile() {
 		// This tests the static utility method
-		assertThrows(Exception.class, () -> ImagePanel.readImage("nonexistent.png"));
+		assertThrows(Exception.class, () -> ImagePane.readImage("nonexistent.png"));
 	}
 }

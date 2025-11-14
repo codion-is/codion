@@ -23,7 +23,7 @@ import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.ui.component.image.ImagePanel;
+import is.codion.swing.common.ui.component.image.ImagePane;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -87,7 +87,7 @@ final class CountryEditPanel extends EntityEditPanel {
 		createComboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
 						.preferredComboBoxWidth(PREFERRED_COMBO_BOX_WIDTH)
 						.includeAddButton(true);
-		component(Country.FLAG).set(ImagePanel.builder()
+		component(Country.FLAG).set(ImagePane.builder()
 						.preferredWidth(50)
 						.border(createEtchedBorder())
 						.buildValue());

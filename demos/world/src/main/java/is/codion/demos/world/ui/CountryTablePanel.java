@@ -22,7 +22,7 @@ import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryTableModel;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.ui.component.image.ImagePanel;
+import is.codion.swing.common.ui.component.image.ImagePane;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
@@ -45,7 +45,7 @@ final class CountryTablePanel extends EntityTablePanel {
 						.editable(attributes -> attributes.remove(Country.CAPITAL_FK))
 						.cellRenderer(Country.FLAG, FilterTableCellRenderer.builder()
 										.columnClass(byte[].class)
-										.component(ImagePanel.builder().buildValue())
+										.component(ImagePane.builder().buildValue())
 										.build())
 						.columns(CountryTablePanel::columns));
 		configurePopupMenu(layout -> layout.clear()
