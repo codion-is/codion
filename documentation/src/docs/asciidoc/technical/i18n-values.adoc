@@ -412,12 +412,12 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 |week|Week|Vika
 |===
 
-=== is/codion/swing/common/ui/component/image/ImagePanel.java
+=== is/codion/swing/common/ui/component/image/ImagePane.java
 
 [source]
 ----
-is/codion/swing/common/ui/component/image/ImagePanel.properties
-is/codion/swing/common/ui/component/image/ImagePanel_is_IS.properties
+is/codion/swing/common/ui/component/image/ImagePane.properties
+is/codion/swing/common/ui/component/image/ImagePane_is_IS.properties
 ----
 
 [cols="1,1,1"]

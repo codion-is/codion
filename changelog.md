@@ -26,6 +26,7 @@ Codion Change Log
 - FilterTable.Builder.headerRendererFactory() added.
 - DefaultFilterTableColumnModel.DefaultColumnSelection now updates lead and anchor indexes when adjusting.
 - ImagePanel renamed ImagePane.
+- ImagePane public api improved.
 ### is.codion.framework.domain
 - DerivedValueStep.value() renamed DerivedWithStep.with().
 - DenormalizedAttributeStep.attribute() renamed DenormalizedUsingStep.using().

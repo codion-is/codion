@@ -148,37 +148,17 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * <pre>
  * pane.movable().set(false); // Disable dragging
  * </pre>
- * For programmatic navigation, use {@link #centerImage(Point)} or {@link #centerImage(Point2D.Double)}.
+ * For programmatic navigation, use {@link #center()}.
  * <b>Coordinate Conversion</b>
- * The pane provides methods to convert between pane coordinates and image coordinates:
- * <ul>
- *   <li>{@link #toImageCoordinates(Point)} - Convert pane point to image coordinates</li>
- *   <li>{@link #toPaneCoordinates(Point2D.Double)} - Convert image point to pane coordinates</li>
- *   <li>{@link #isWithinImage(Point)} - Check if pane point is within image bounds</li>
- * </ul>
+ * The pane provides coordinate translation between pane and image coordinate spaces via {@link #coordinates()}.
+ * Use this for overlay drawing or when working with mouse events on the image.
  * <b>Rendering</b>
  * {@code ImagePane} uses Nearest Neighbor interpolation for image rendering (default in Java).
  * When the scaled image becomes larger than the original image, Bilinear interpolation is applied,
  * but only to the part of the image displayed in the pane.
  * <b>Custom Overlays</b>
- * The pane supports custom overlay painting via a {@link java.util.function.BiConsumer BiConsumer}&lt;{@link Graphics2D}, {@link ImagePane}&gt;
- * that is called after the image is painted but before the navigation image. This is useful for drawing annotations, grids,
- * highlighting regions, or any custom graphics on top of the image:
- * <pre>
- * ImagePane imagePane = ImagePane.builder()
- *     .image(image)
- *     .overlay((g2d, pane) -&gt; {
- *         // Draw a red rectangle at image coordinates (100, 100)
- *         Point2D.Double imagePoint = new Point2D.Double(100, 100);
- *         Point2D.Double panePoint = pane.toPaneCoordinates(imagePoint);
- *         g2d.setColor(Color.RED);
- *         g2d.drawRect((int) panePoint.x, (int) panePoint.y, 50, 50);
- *     })
- *     .build();
- * </pre>
- * The overlay painter receives the Graphics2D context for drawing and the ImagePane for accessing
- * coordinate conversion methods ({@link #toImageCoordinates(Point)} and {@link #toPaneCoordinates(Point2D.Double)})
- * and other pane state like {@link #scale()}.
+ * The pane supports custom overlay painting for drawing annotations, grids, highlights, or any custom
+ * graphics on top of the image. See {@link Builder#overlay(BiConsumer)} for details.
  * <p>
  * The {@link #origin()} Value provides access to the current image origin (top-left corner position in pane coordinates),
  * which can be used to programmatically position the image to make specific regions visible:
@@ -200,25 +180,20 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  *     .autoResize(true)
  *     .navigable(true)
  *     .movable(true)
- *     .overlay((g2d, pane) -&gt; {
- *         // Draw custom annotations
- *         g2d.setColor(new Color(255, 0, 0, 128));
- *         g2d.fillOval(100, 100, 50, 50);
- *     })
  *     .build();
  *
- * // React to zoom changes
- * pane.zoom().addConsumer(zoom -&gt;
- *     System.out.println("Zoom level: " + zoom));
+ * // Coordinate translation
+ * Point2D.Double imagePoint = pane.coordinates().toImage(mouseEvent.getPoint());
+ *
+ * // Center image on a specific point
+ * pane.center().onImage(new Point2D.Double(500, 300));
  *
  * // Programmatic zoom
  * pane.zoom().set(1.5);
  *
- * // Change image dynamically
- * pane.image().set(newImage);
- *
- * // Position image to show specific region
- * pane.origin().set(new Point(-100, -50));
+ * // React to zoom changes
+ * pane.zoom().addConsumer(zoom -&gt;
+ *     System.out.println("Zoom level: " + zoom));
  * </pre>
  * <p>
  * Originally based on <a href="http://today.java.net/pub/a/today/2007/03/27/navigable-image-pane.html">http://today.java.net/pub/a/today/2007/03/27/navigable-image-pane.html</a>
@@ -273,6 +248,8 @@ public final class ImagePane extends JPanel {
 					.build();
 	private final ImageOriginValue origin;
 	private final ZoomValue zoom;
+	private final CoordinateTranslator coordinates = new CoordinateTranslator();
+	private final CenterImage centerImage = new CenterImage();
 
 	private double zoomFactor = 1 + zoomIncrement.getOrThrow();
 	private double navZoomFactor = 1 + zoomIncrement.getOrThrow();
@@ -400,64 +377,17 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
-	 * Converts this pane's point into the original image coordinates
-	 * @param paneCoordinates the pane coordinates
-	 * @return the image coordinates
+	 * @return the coordinate translator
 	 */
-	public Point2D.Double toImageCoordinates(Point paneCoordinates) {
-		requireNonNull(paneCoordinates);
-		return new Point2D.Double((paneCoordinates.x - origin.x) / scale, (paneCoordinates.y - origin.y) / scale);
+	public CoordinateTranslator coordinates() {
+		return coordinates;
 	}
 
 	/**
-	 * Converts the original image point into this pane's coordinates
-	 * @param imageCoordinates the image coordinates
-	 * @return the pane coordinates
+	 * @return image centerer
 	 */
-	public Point2D.Double toPaneCoordinates(Point2D.Double imageCoordinates) {
-		requireNonNull(imageCoordinates);
-		return new Point2D.Double((imageCoordinates.x * scale) + origin.x, (imageCoordinates.y * scale) + origin.y);
-	}
-
-	/**
-	 * Centers the image on the given image point
-	 * @param imagePoint the image point on which to center the image
-	 */
-	public void centerImage(Point2D.Double imagePoint) {
-		centerImage(toPoint(toPaneCoordinates(requireNonNull(imagePoint))));
-	}
-
-	/**
-	 * Centers the image on the given point on the pane, if it is within the image boundaries.
-	 * @param panePoint the point on which to center the image
-	 */
-	public void centerImage(Point panePoint) {
-		requireNonNull(panePoint);
-		if (isWithinImage(panePoint)) {
-			Point currentCenter = new Point(getWidth() / 2, getHeight() / 2);
-			origin.x += (int) (currentCenter.getX() - panePoint.getX());
-			origin.y += (int) (currentCenter.getY() - panePoint.getY());
-			origin.changed();
-		}
-	}
-
-	/**
-	 * Tests whether a given point in the pane falls within the image boundaries.
-	 * @param panePoint the point on the pane
-	 * @return true if an image is available and the given point is within the image
-	 */
-	public boolean isWithinImage(Point panePoint) {
-		requireNonNull(panePoint);
-		if (!image.isNull()) {
-			BufferedImage bufferedImage = image.getOrThrow();
-			Point2D.Double imagePoint = toImageCoordinates(panePoint);
-			double width = bufferedImage.getWidth();
-			double height = bufferedImage.getHeight();
-
-			return imagePoint.getX() >= 0 && imagePoint.getX() <= width && imagePoint.getY() >= 0 && imagePoint.getY() <= height;
-		}
-
-		return false;
+	public CenterImage center() {
+		return centerImage;
 	}
 
 	/**
@@ -625,6 +555,84 @@ public final class ImagePane extends JPanel {
 	}
 
 	/**
+	 * Provides coordinate translations.
+	 */
+	public final class CoordinateTranslator {
+
+		private CoordinateTranslator() {}
+
+		/**
+		 * Converts this pane's point into the original image coordinates
+		 * @param paneCoordinate the pane coordinates
+		 * @return the image coordinates
+		 */
+		public Point2D.Double toImage(Point paneCoordinate) {
+			requireNonNull(paneCoordinate);
+			return new Point2D.Double((paneCoordinate.x - origin.x) / scale, (paneCoordinate.y - origin.y) / scale);
+		}
+
+		/**
+		 * Converts the original image point into this pane's coordinates
+		 * @param imageCoordinate the image coordinates
+		 * @return the pane coordinates
+		 */
+		public Point2D.Double toPane(Point2D.Double imageCoordinate) {
+			requireNonNull(imageCoordinate);
+			return new Point2D.Double((imageCoordinate.x * scale) + origin.x, (imageCoordinate.y * scale) + origin.y);
+		}
+
+
+		/**
+		 * Tests whether a given pane coordinate in the pane falls within the image boundaries.
+		 * @param paneCoordinate the point on the pane
+		 * @return true if an image is available and the given point is within the image
+		 */
+		public boolean withinImage(Point paneCoordinate) {
+			requireNonNull(paneCoordinate);
+			if (!image.isNull()) {
+				BufferedImage bufferedImage = image.getOrThrow();
+				Point2D.Double imagePoint = coordinates.toImage(paneCoordinate);
+				double width = bufferedImage.getWidth();
+				double height = bufferedImage.getHeight();
+
+				return imagePoint.getX() >= 0 && imagePoint.getX() <= width && imagePoint.getY() >= 0 && imagePoint.getY() <= height;
+			}
+
+			return false;
+		}
+	}
+
+	/**
+	 * Centers the image
+	 */
+	public final class CenterImage {
+
+		private CenterImage() {}
+
+		/**
+		 * Centers the image on the given image coordinate
+		 * @param coordinate the image coordinate on which to center the image
+		 */
+		public void onImage(Point2D.Double coordinate) {
+			onPane(toPoint(coordinates.toPane(requireNonNull(coordinate))));
+		}
+
+		/**
+		 * Centers the image on the given coordinate on the pane, if it is within the image boundaries.
+		 * @param coordinate the pane coordinate on which to center the image
+		 */
+		public void onPane(Point coordinate) {
+			requireNonNull(coordinate);
+			if (coordinates.withinImage(coordinate)) {
+				Point currentCenter = new Point(getWidth() / 2, getHeight() / 2);
+				origin.x += (int) (currentCenter.getX() - coordinate.getX());
+				origin.y += (int) (currentCenter.getY() - coordinate.getY());
+				origin.changed();
+			}
+		}
+	}
+
+	/**
 	 * Called from paintComponent() when a new image is set.
 	 */
 	private void initializeParams() {
@@ -689,9 +697,9 @@ public final class ImagePane extends JPanel {
 
 	private void zoomImage(Point mousePosition) {
 		if (Double.compare(initialScale, 0) != 0) {
-			Point2D.Double imagePoint = toImageCoordinates(mousePosition);
+			Point2D.Double imagePoint = coordinates.toImage(mousePosition);
 			scale *= zoomFactor;
-			Point2D.Double panePoint = toPaneCoordinates(imagePoint);
+			Point2D.Double panePoint = coordinates.toPane(imagePoint);
 
 			origin.x += (mousePosition.x - (int) panePoint.x);
 			origin.y += (mousePosition.y - (int) panePoint.y);
@@ -710,8 +718,8 @@ public final class ImagePane extends JPanel {
 	 * @return the bounds of the image area currently displayed in the pane (in image coordinates).
 	 */
 	private @Nullable Rectangle getImageClipBounds() {
-		Point2D.Double startPoint = toImageCoordinates(new Point(0, 0));
-		Point2D.Double endPoint = toImageCoordinates(new Point(getWidth() - 1, getHeight() - 1));
+		Point2D.Double startPoint = coordinates.toImage(new Point(0, 0));
+		Point2D.Double endPoint = coordinates.toImage(new Point(getWidth() - 1, getHeight() - 1));
 		int paneX1 = (int) Math.round(startPoint.getX());
 		int paneY1 = (int) Math.round(startPoint.getY());
 		int paneX2 = (int) Math.round(endPoint.getX());
@@ -859,7 +867,7 @@ public final class ImagePane extends JPanel {
 				}
 				zoomNavigationImage();
 			}
-			else if (isWithinImage(point)) {
+			else if (coordinates.withinImage(point)) {
 				if (zoomIn) {
 					zoomFactor = 1 + zoomIncrement.getOrThrow();
 				}
@@ -881,7 +889,7 @@ public final class ImagePane extends JPanel {
 					navZoomFactor = 1 - zoomIncrement.getOrThrow();
 					zoomNavigationImage();
 				}
-				else if (isWithinImage(point)) {
+				else if (coordinates.withinImage(point)) {
 					zoomFactor = 1 - zoomIncrement.getOrThrow();
 					zoomImage(point);
 				}
@@ -891,7 +899,7 @@ public final class ImagePane extends JPanel {
 					navZoomFactor = 1 + zoomIncrement.getOrThrow();
 					zoomNavigationImage();
 				}
-				else if (isWithinImage(point)) {
+				else if (coordinates.withinImage(point)) {
 					zoomFactor = 1 + zoomIncrement.getOrThrow();
 					zoomImage(point);
 				}
@@ -1031,7 +1039,7 @@ public final class ImagePane extends JPanel {
 		 * @param zoomingCenter the zooming center
 		 */
 		private void setZoom(double newZoom, Point zoomingCenter) {
-			Point2D.Double imageP = toImageCoordinates(zoomingCenter);
+			Point2D.Double imageP = coordinates.toImage(zoomingCenter);
 			if (imageP.x < 0.0) {
 				imageP = new Point2D.Double(0.0, imageP.getY());
 			}
@@ -1046,9 +1054,9 @@ public final class ImagePane extends JPanel {
 				imageP = new Point2D.Double(imageP.getX(), bufferedImage.getHeight() - 1d);
 			}
 
-			Point2D.Double correctedP = toPaneCoordinates(imageP);
+			Point2D.Double correctedP = coordinates.toPane(imageP);
 			scale = zoomToScale(newZoom);
-			Point2D.Double paneP = toPaneCoordinates(imageP);
+			Point2D.Double paneP = coordinates.toPane(imageP);
 
 			origin.x += (int) (Math.round(correctedP.getX()) - (int) paneP.x);
 			origin.y += (int) (Math.round(correctedP.getY()) - (int) paneP.y);

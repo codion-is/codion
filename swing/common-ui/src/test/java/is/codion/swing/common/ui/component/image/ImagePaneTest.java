@@ -227,12 +227,12 @@ public final class ImagePaneTest {
 
 		// Panel center should map to image coordinates
 		Point panelCenter = new Point(100, 100);
-		Point2D.Double imagePoint = panel.toImageCoordinates(panelCenter);
+		Point2D.Double imagePoint = panel.coordinates().toImage(panelCenter);
 
 		assertNotNull(imagePoint);
 
 		// Convert back
-		Point2D.Double backToPanel = panel.toPaneCoordinates(imagePoint);
+		Point2D.Double backToPanel = panel.coordinates().toPane(imagePoint);
 		assertNotNull(backToPanel);
 	}
 
@@ -245,14 +245,14 @@ public final class ImagePaneTest {
 
 		// Without painting/initializing, coordinates aren't properly initialized
 		// We can only verify the method doesn't throw
-		assertFalse(panel.isWithinImage(new Point(1000, 1000)));
+		assertFalse(panel.coordinates().withinImage(new Point(1000, 1000)));
 	}
 
 	@Test
 	void isWithinImageNoImage() {
 		ImagePane panel = ImagePane.builder().build();
 
-		assertFalse(panel.isWithinImage(new Point(50, 50)));
+		assertFalse(panel.coordinates().withinImage(new Point(50, 50)));
 	}
 
 	@Test
@@ -267,7 +267,7 @@ public final class ImagePaneTest {
 		panel.zoom().set(1.0);
 
 		// Center on specific point
-		panel.centerImage(new Point(50, 50));
+		panel.center().onPane(new Point(50, 50));
 
 		// Should not throw
 		assertNotNull(panel.image().get());
@@ -286,7 +286,7 @@ public final class ImagePaneTest {
 
 		// Center on image coordinates
 		Point2D.Double imagePoint = new Point2D.Double(25.0, 25.0);
-		panel.centerImage(imagePoint);
+		panel.center().onImage(imagePoint);
 
 		// Should not throw
 		assertNotNull(panel.image().get());
