@@ -27,14 +27,18 @@ import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * A default {@link Entities} implementation.
@@ -122,7 +126,6 @@ final class DefaultEntities implements Entities, Serializable {
 	}
 
 	void add(EntityDefinition definition) {
-		requireNonNull(definition);
 		if (entityDefinitions.containsKey(definition.type().name())) {
 			throw new IllegalArgumentException("Entity has already been defined: " +
 							definition.type() + ", for table: " + definition.table());
@@ -130,6 +133,50 @@ final class DefaultEntities implements Entities, Serializable {
 		validateForeignKeys(definition);
 		entityDefinitions.put(definition.type().name(), (DefaultEntityDefinition) definition);
 		populateForeignDefinitions();
+	}
+
+	void add(Entities entities) {
+		add(entities, entities.definitions().stream()
+						.map(EntityDefinition::type)
+						.collect(toSet()));
+	}
+
+	void add(Entities entities, Collection<EntityType> entityTypes) {
+		boolean isValidate = validateForeignKeys;
+		// The entities are coming from an existing domain model,
+		// and we guarantee that all required references will be added
+		validateForeignKeys = false;
+		try {
+			entities.definitions().stream()
+							.filter(definition -> entityTypes.contains(definition.type()))
+							.flatMap(definition -> includingDependencies(definition, entities))
+							.filter(definition -> !contains(definition.type()))
+							.forEach(this::add);
+		}
+		finally {
+			validateForeignKeys = isValidate;
+		}
+	}
+
+	private static Stream<EntityDefinition> includingDependencies(EntityDefinition definition, Entities entities) {
+		return Stream.concat(dependencies(definition, entities, new HashSet<>()), Stream.of(definition));
+	}
+
+	private static Stream<EntityDefinition> dependencies(EntityDefinition definition, Entities entities, Set<EntityType> visited) {
+		if (definition.foreignKeys().get().isEmpty()) {
+			return Stream.empty();
+		}
+
+		return definition.foreignKeys().get().stream()
+						.map(ForeignKey::referencedType)
+						.filter(visited::add) // Only process each type once, returns false if already in set
+						.flatMap(referencedType -> {
+							EntityDefinition referencedDefinition = entities.definition(referencedType);
+							// Recursively get dependencies of the referenced entity, then the entity itself
+							return Stream.concat(
+											dependencies(referencedDefinition, entities, visited),
+											Stream.of(referencedDefinition));
+						});
 	}
 
 	private EntityDefinition definitionInternal(String entityTypeName) {

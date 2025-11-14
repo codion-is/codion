@@ -31,6 +31,7 @@ Codion Change Log
 - DerivedValueStep.value() renamed DerivedWithStep.with().
 - DenormalizedAttributeStep.attribute() renamed DenormalizedUsingStep.using().
 - DomainModel.add(EntityDefinition) bug fixed, no longer validates entity domain, prevented selective composition, docs updated.
+- DomainModel composition improved, Entities.Configurable.add(entities, entityTypes) added, dependencies now automatically included.
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
 - AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.

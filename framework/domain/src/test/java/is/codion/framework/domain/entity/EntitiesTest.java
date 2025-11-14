@@ -19,6 +19,8 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.utilities.Serializer;
+import is.codion.framework.domain.DomainModel;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomainExtended;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -778,6 +780,28 @@ public final class EntitiesTest {
 			nameDefinition = deserialized.columns().definition(Employee.NAME);
 			assertNull(nameDefinition.name());
 			assertNull(nameDefinition.expression());
+		}
+	}
+
+	@Test
+	void compose() {
+		Entities composed = new ComposedDomain().entities();
+		assertTrue(composed.contains(Detail.TYPE));
+		assertTrue(composed.contains(Detail2.TYPE));
+		assertTrue(composed.contains(Employee.TYPE));
+		assertTrue(composed.contains(ForeignKeyLazyColumn.TYPE));
+		assertTrue(composed.contains(Master.TYPE));
+		assertTrue(composed.contains(Master2.TYPE));
+		assertTrue(composed.contains(Department.TYPE));
+	}
+
+	private static final class ComposedDomain extends DomainModel {
+
+		private static final DomainType COMPOSED = DomainType.domainType("composed");
+
+		private ComposedDomain() {
+			super(COMPOSED);
+			addEntities(new TestDomain(), Detail.TYPE, Detail2.TYPE, Employee.TYPE, ForeignKeyLazyColumn.TYPE);
 		}
 	}
 }

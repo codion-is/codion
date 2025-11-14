@@ -30,9 +30,12 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
@@ -191,9 +194,31 @@ public abstract class DomainModel implements Domain {
 	 * @see Entities#contains(EntityType)
 	 */
 	protected final void addEntities(Domain domain) {
-		requireNonNull(domain).entities().definitions().stream()
-						.filter(definition -> !entities.contains(definition.type()))
-						.forEach(configurable::add);
+		configurable.add(requireNonNull(domain).entities());
+	}
+
+	/**
+	 * Adds the specified entities and their required dependencies from the given domain to this domain.
+	 * Entities that already exist are silently skipped.
+	 * @param domain the domain model
+	 * @param entityTypes the entity types from the given domain to add
+	 * @see EntityType#name()
+	 * @see Entities#contains(EntityType)
+	 */
+	protected final void addEntities(Domain domain, EntityType... entityTypes) {
+		addEntities(domain, asList(entityTypes));
+	}
+
+	/**
+	 * Adds the specified entities and their required dependencies from the given domain to this domain.
+	 * Entities that already exist are silently skipped.
+	 * @param domain the domain model
+	 * @param entityTypes the entity types from the given domain to add
+	 * @see EntityType#name()
+	 * @see Entities#contains(EntityType)
+	 */
+	protected final void addEntities(Domain domain, Collection<EntityType> entityTypes) {
+		configurable.add(requireNonNull(domain).entities(), new HashSet<>(requireNonNull(entityTypes)));
 	}
 
 	/**

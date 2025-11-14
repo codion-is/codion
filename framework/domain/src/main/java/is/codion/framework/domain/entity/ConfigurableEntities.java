@@ -18,6 +18,10 @@
  */
 package is.codion.framework.domain.entity;
 
+import java.util.Collection;
+
+import static java.util.Objects.requireNonNull;
+
 final class ConfigurableEntities implements Entities.Configurable {
 
 	private final DefaultEntities entities;
@@ -33,7 +37,17 @@ final class ConfigurableEntities implements Entities.Configurable {
 
 	@Override
 	public void add(EntityDefinition definition) {
-		entities.add(definition);
+		entities.add(requireNonNull(definition));
+	}
+
+	@Override
+	public void add(Entities entities) {
+		this.entities.add(requireNonNull(entities));
+	}
+
+	@Override
+	public void add(Entities entities, Collection<EntityType> entityTypes) {
+		this.entities.add(requireNonNull(entities), requireNonNull(entityTypes));
 	}
 
 	@Override

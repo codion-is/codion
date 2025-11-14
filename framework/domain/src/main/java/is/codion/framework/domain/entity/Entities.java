@@ -267,6 +267,19 @@ public sealed interface Entities permits DefaultEntities {
 		void add(EntityDefinition definition);
 
 		/**
+		 * Adds all entity definitions from the given instance.
+		 * @param entities the entities instance from which to add
+		 */
+		void add(Entities entities);
+
+		/**
+		 * Adds the given entity definitions, including dependencies, from the given instance.
+		 * @param entities the entities
+		 * @param entityTypes the types to add
+		 */
+		void add(Entities entities, Collection<EntityType> entityTypes);
+
+		/**
 		 * Specifies whether to validate foreign keys when created, asserting that
 		 * the referenced entity has been defined. Disable in case of cyclical dependencies.
 		 * @param validateForeignKeys true if foreign keys should be validated
