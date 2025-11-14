@@ -27,7 +27,6 @@ import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.condition.ConditionString;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
@@ -51,7 +50,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Collections.*;
@@ -596,7 +594,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			foreignKeyColumns.addAll(foreignKeyColumnDefinitions.values().stream()
 							.flatMap(definitions -> definitions.stream().map(ColumnDefinition::attribute))
 							.collect(toSet()));
-			foreignKeyBuilders.forEach(foreignKeyBuilder -> setForeignKeyNullable(foreignKeyBuilder, foreignKeyColumnDefinitions));
 		}
 
 		private List<ForeignKeyDefinition> foreignKeyDefinitions() {
@@ -686,7 +683,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		private static Map<String, Attribute<?>> attributeNameMap(Map<Attribute<?>, AttributeDefinition<?>> attributeDefinitions) {
 			return attributeDefinitions.keySet().stream()
-							.collect(Collectors.toMap(Attribute::name, Function.identity()));
+							.collect(toMap(Attribute::name, Function.identity()));
 		}
 
 		private static void validateAndAddAttribute(AttributeDefinition<?> definition, Map<Attribute<?>,
@@ -740,7 +737,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		private Map<ForeignKey, ForeignKeyDefinition> foreignKeyDefinitionMap() {
 			return foreignKeyDefinitions.stream()
-							.collect(Collectors.toMap(ForeignKeyDefinition::attribute, Function.identity()));
+							.collect(toMap(ForeignKeyDefinition::attribute, Function.identity()));
 		}
 
 		private static List<ColumnDefinition<?>> foreignKeyColumnDefinitions(ForeignKey foreignKey, Map<Attribute<?>,
@@ -759,13 +756,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			}
 
 			return definition;
-		}
-
-		private static void setForeignKeyNullable(ForeignKeyDefinition.Builder foreignKeyBuilder,
-																							Map<ForeignKey, List<ColumnDefinition<?>>> foreignKeyColumnDefinitions) {
-			//make foreign keys nullable if and only if any of their constituent columns are nullable
-			foreignKeyBuilder.nullable(foreignKeyColumnDefinitions.get(foreignKeyBuilder.attribute()).stream()
-							.anyMatch(ValueAttributeDefinition::nullable));
 		}
 	}
 

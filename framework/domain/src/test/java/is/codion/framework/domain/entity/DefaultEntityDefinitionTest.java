@@ -317,9 +317,11 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void testForeignKeyNullability() {
 		Domain domain = new TestDomain();
-		assertFalse(domain.entities().definition(CompositeDetail.TYPE)
-						.foreignKeys().definition(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK).nullable());
-		assertTrue(domain.entities().definition(Detail.TYPE).foreignKeys().definition(Detail.MASTER_FK).nullable());
+		EntityValidator validator = new EntityValidator() {};
+		Entity entity = domain.entities().entity(CompositeDetail.TYPE).build();
+		assertFalse(validator.nullable(entity, CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+		entity = domain.entities().entity(Detail.TYPE).build();
+		assertTrue(validator.nullable(entity, Detail.MASTER_FK));
 	}
 
 	@Test

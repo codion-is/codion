@@ -157,11 +157,6 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	ForeignKey attribute();
 
 	/**
-	 * @return true if null is a valid value for this attribute
-	 */
-	boolean nullable();
-
-	/**
 	 * @return the default query reference depth for this foreign key
 	 */
 	int referenceDepth();
@@ -201,11 +196,6 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	 * Builds a {@link ForeignKeyDefinition}.
 	 */
 	sealed interface Builder extends AttributeDefinition.Builder<Entity, Builder> permits DefaultForeignKeyDefinitionBuilder {
-
-		/**
-		 * Setting this value has no effect, foreign key nullability is always based on the nullability of their underlying column(s).
-		 */
-		Builder nullable(boolean nullable);
 
 		/**
 		 * @throws UnsupportedOperationException Foreign key values are compared using the comparator of the underlying entity

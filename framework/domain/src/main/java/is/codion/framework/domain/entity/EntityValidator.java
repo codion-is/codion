@@ -22,6 +22,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -123,15 +124,17 @@ public interface EntityValidator {
 	 * @param attribute the attribute
 	 * @return true if the attribute is non-value based or accepts a null value
 	 * @see ValueAttributeDefinition#nullable()
-	 * @see ForeignKeyDefinition#nullable()
 	 */
 	default boolean nullable(Entity entity, Attribute<?> attribute) {
 		AttributeDefinition<?> definition = requireNonNull(entity).definition().attributes().definition(attribute);
 		if (definition instanceof ValueAttributeDefinition<?>) {
 			return ((ValueAttributeDefinition<?>) definition).nullable();
 		}
-		else if (definition instanceof ForeignKeyDefinition) {
-			return ((ForeignKeyDefinition) definition).nullable();
+		else if (attribute instanceof ForeignKey) {
+			return ((ForeignKey) attribute).references().stream()
+							.map(ForeignKey.Reference::column)
+							.map(entity.definition().columns()::definition)
+							.anyMatch(ValueAttributeDefinition::nullable);
 		}
 
 		return true;
