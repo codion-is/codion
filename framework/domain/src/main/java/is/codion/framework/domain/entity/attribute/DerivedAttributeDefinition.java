@@ -232,9 +232,9 @@ public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefi
 
 			/**
 			 * @param source the source attribute to denormalize from
-			 * @return a {@link DenormalizedAttributeStep} instance
+			 * @return a {@link DenormalizedUsingStep} instance
 			 */
-			DenormalizedAttributeStep<T, B> from(Attribute<Entity> source);
+			DenormalizedUsingStep<T, B> from(Attribute<Entity> source);
 		}
 
 		/**
@@ -242,13 +242,13 @@ public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefi
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		interface DenormalizedAttributeStep<T, B extends DenormalizedBuilder<T, B>> {
+		interface DenormalizedUsingStep<T, B extends DenormalizedBuilder<T, B>> {
 
 			/**
 			 * @param denormalized the denormalized attribute
 			 * @return a {@link DenormalizedBuilder} instance
 			 */
-			DenormalizedBuilder<T, B> attribute(Attribute<T> denormalized);
+			DenormalizedBuilder<T, B> using(Attribute<T> denormalized);
 		}
 	}
 }

@@ -27,6 +27,7 @@ Codion Change Log
 - DefaultFilterTableColumnModel.DefaultColumnSelection now updates lead and anchor indexes when adjusting.
 ### is.codion.framework.domain
 - DerivedValueStep.value() renamed DerivedWithStep.with().
+- DenormalizedAttributeStep.attribute() renamed DenormalizedUsingStep.using().
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
 - AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.

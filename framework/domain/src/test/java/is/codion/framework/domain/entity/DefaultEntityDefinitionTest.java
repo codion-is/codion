@@ -263,7 +263,7 @@ public class DefaultEntityDefinitionTest {
 										denormalized.define()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
-														.attribute(Employee.JOB))// <- the problem
+														.using(Employee.JOB))// <- the problem
 						.build());
 	}
 

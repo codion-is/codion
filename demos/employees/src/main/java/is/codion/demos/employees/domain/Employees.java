@@ -182,7 +182,7 @@ public final class Employees extends DomainModel {
 										Employee.DEPARTMENT_LOCATION.define()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
-														.attribute(Department.LOCATION)
+														.using(Department.LOCATION)
 														.caption("Location"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.formatter(Employee.NAME)

@@ -531,7 +531,7 @@ public final class ChinookImpl extends DomainModel {
 										PlaylistTrack.ARTIST.define()
 														.denormalized()
 														.from(PlaylistTrack.ALBUM)
-														.attribute(Album.ARTIST_FK),
+														.using(Album.ARTIST_FK),
 										PlaylistTrack.TRACK_ID.define()
 														.column()
 														.nullable(false),
@@ -541,7 +541,7 @@ public final class ChinookImpl extends DomainModel {
 										PlaylistTrack.ALBUM.define()
 														.denormalized()
 														.from(PlaylistTrack.TRACK_FK)
-														.attribute(Track.ALBUM_FK))
+														.using(Track.ALBUM_FK))
 						.formatter(EntityFormatter.builder()
 										.value(PlaylistTrack.PLAYLIST_FK)
 										.text(" - ")

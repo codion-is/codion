@@ -148,7 +148,7 @@ public final class TestDomain extends DomainModel {
 										Employee.DEPARTMENT_LOCATION.define()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
-														.attribute(Department.LOCATION)
+														.using(Department.LOCATION)
 														.caption(Department.LOCATION.name()))
 						.formatter(Employee.NAME)
 						.condition(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")

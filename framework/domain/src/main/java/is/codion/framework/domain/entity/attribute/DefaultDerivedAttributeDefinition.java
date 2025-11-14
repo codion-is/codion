@@ -19,8 +19,8 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder.DenormalizedAttributeStep;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder.DenormalizedFromStep;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder.DenormalizedUsingStep;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DerivedBuilder.DerivedFromStep;
 
 import java.io.Serial;
@@ -172,23 +172,23 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractValueAttributeD
 		}
 
 		@Override
-		public DenormalizedAttributeStep<T, B> from(Attribute<Entity> source) {
-			return new DefaultDenormalizedAttributeStep<>(attribute, source);
+		public DenormalizedUsingStep<T, B> from(Attribute<Entity> source) {
+			return new DefaultDenormalizedUsingStep<>(attribute, source);
 		}
 	}
 
-	static final class DefaultDenormalizedAttributeStep<T, B extends DenormalizedBuilder<T, B>> implements DenormalizedAttributeStep<T, B> {
+	static final class DefaultDenormalizedUsingStep<T, B extends DenormalizedBuilder<T, B>> implements DenormalizedUsingStep<T, B> {
 
 		private final Attribute<T> attribute;
 		private final Attribute<Entity> source;
 
-		private DefaultDenormalizedAttributeStep(Attribute<T> attribute, Attribute<Entity> source) {
+		private DefaultDenormalizedUsingStep(Attribute<T> attribute, Attribute<Entity> source) {
 			this.attribute = requireNonNull(attribute);
 			this.source = requireNonNull(source);
 		}
 
 		@Override
-		public DenormalizedBuilder<T, B> attribute(Attribute<T> denormalized) {
+		public DenormalizedBuilder<T, B> using(Attribute<T> denormalized) {
 			return new DefaultDenormalizedAttributeDefinitionBuilder<>(attribute, source, denormalized);
 		}
 	}

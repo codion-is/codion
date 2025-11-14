@@ -163,7 +163,7 @@ public final class TestDomain extends DomainModel {
 										Employee.EMP_DEPARTMENT_LOCATION.define()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
-														.attribute(Department.LOCATION))
+														.using(Department.LOCATION))
 						.formatter(Employee.NAME)
 						.caption("Employee")
 						.build());

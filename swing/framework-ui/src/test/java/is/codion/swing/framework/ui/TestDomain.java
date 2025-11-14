@@ -161,12 +161,12 @@ public final class TestDomain extends DomainModel {
 										Detail.MASTER_NAME.define()
 														.denormalized()
 														.from(Detail.MASTER_FK)
-														.attribute(Master.NAME)
+														.using(Master.NAME)
 														.caption(Detail.MASTER_NAME.name()),
 										Detail.MASTER_CODE.define()
 														.denormalized()
 														.from(Detail.MASTER_FK)
-														.attribute(Master.CODE)
+														.using(Master.CODE)
 														.caption(Detail.MASTER_CODE.name()),
 										Detail.INT_ITEMS.define()
 														.column()
@@ -288,7 +288,7 @@ public final class TestDomain extends DomainModel {
 										Employee.DEPARTMENT_LOCATION.define()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
-														.attribute(Department.LOCATION)
+														.using(Department.LOCATION)
 														.caption(Department.LOCATION.name()))
 						.formatter(Employee.NAME)
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
