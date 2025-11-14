@@ -46,6 +46,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityType implements EntityType, Serializable {
 
@@ -92,7 +93,9 @@ final class DefaultEntityType implements EntityType, Serializable {
 
 	@Override
 	public EntityDefinition.Builder define(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders) {
-		return new DefaultEntityDefinition.DefaultBuilder(this, requireNonNull(definitionBuilders));
+		return new DefaultEntityDefinition.DefaultBuilder(this, requireNonNull(definitionBuilders).stream()
+						.map(AttributeDefinition.Builder::build)
+						.collect(toList()));
 	}
 
 	@Override

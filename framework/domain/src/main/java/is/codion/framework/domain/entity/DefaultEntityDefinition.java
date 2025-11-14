@@ -516,13 +516,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
 		private final List<Attribute<?>> defaultSelectAttributes;
 
-		private EntityAttributes(EntityType entityType, List<? extends AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
+		private EntityAttributes(EntityType entityType, List<AttributeDefinition<?>> attributeDefinitions) {
 			this.entityType = requireNonNull(entityType);
-			if (requireNonNull(attributeDefinitionBuilders).isEmpty()) {
+			if (requireNonNull(attributeDefinitions).isEmpty()) {
 				throw new IllegalArgumentException("One or more attribute definition builder must be specified when defining an entity");
 			}
-			List<EntityType> attributeEntityTypes = attributeDefinitionBuilders.stream()
-							.map(builder -> builder.attribute().entityType())
+			List<EntityType> attributeEntityTypes = attributeDefinitions.stream()
+							.map(attributeDefinition -> attributeDefinition.attribute().entityType())
 							.distinct()
 							.collect(toList());
 			if (attributeEntityTypes.size() > 1) {
@@ -531,7 +531,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			if (!entityType.equals(attributeEntityTypes.get(0))) {
 				throw new IllegalArgumentException("Entity definition: " + entityType + ", " + attributeEntityTypes.get(0) + " found in attribute definitions");
 			}
-			this.attributeMap = unmodifiableMap(attributeMap(attributeDefinitionBuilders));
+			this.attributeMap = unmodifiableMap(attributeMap(attributeDefinitions));
 			this.attributeNameMap = unmodifiableMap(attributeNameMap(attributeMap));
 			this.attributeDefinitions = unmodifiableList(new ArrayList<>(attributeMap.values()));
 			this.columnDefinitions = unmodifiableList(columnDefinitions());
@@ -547,29 +547,29 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			this.defaultSelectAttributes = unmodifiableList(defaultSelectAttributes());
 		}
 
-		private Map<Attribute<?>, AttributeDefinition<?>> attributeMap(List<? extends AttributeDefinition.Builder<?, ?>> builders) {
-			preventDuplicateAttributeNames(builders);
-			Map<Attribute<?>, AttributeDefinition<?>> attributes = new HashMap<>(builders.size());
-			for (AttributeDefinition.Builder<?, ?> builder : builders) {
-				if (!(builder instanceof ForeignKeyDefinition.Builder)) {
-					validateAndAddAttribute(builder.build(), attributes, entityType);
+		private Map<Attribute<?>, AttributeDefinition<?>> attributeMap(List<AttributeDefinition<?>> attributeDefinitions) {
+			preventDuplicateAttributeNames(attributeDefinitions);
+			Map<Attribute<?>, AttributeDefinition<?>> attributes = new HashMap<>(attributeDefinitions.size());
+			for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
+				if (!(attributeDefinition instanceof ForeignKeyDefinition)) {
+					validateAndAddAttribute(attributeDefinition, attributes, entityType);
 				}
 			}
 			validatePrimaryKeyAttributes(attributes, entityType);
 
-			configureForeignKeyColumns(builders.stream()
-							.filter(ForeignKeyDefinition.Builder.class::isInstance)
-							.map(ForeignKeyDefinition.Builder.class::cast)
+			configureForeignKeyColumns(attributeDefinitions.stream()
+							.filter(ForeignKeyDefinition.class::isInstance)
+							.map(ForeignKeyDefinition.class::cast)
 							.collect(toList()), attributes);
-			for (AttributeDefinition.Builder<?, ?> builder : builders) {
-				if (builder instanceof ForeignKeyDefinition.Builder) {
-					validateAndAddAttribute(builder.build(), attributes, entityType);
+			for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
+				if (attributeDefinition instanceof ForeignKeyDefinition) {
+					validateAndAddAttribute(attributeDefinition, attributes, entityType);
 				}
 			}
-			Map<Attribute<?>, AttributeDefinition<?>> ordereredMap = new LinkedHashMap<>(builders.size());
+			Map<Attribute<?>, AttributeDefinition<?>> ordereredMap = new LinkedHashMap<>(attributeDefinitions.size());
 			//retain the original attribute order
-			for (AttributeDefinition.Builder<?, ?> builder : builders) {
-				ordereredMap.put(builder.attribute(), attributes.get(builder.attribute()));
+			for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
+				ordereredMap.put(attributeDefinition.attribute(), attributes.get(attributeDefinition.attribute()));
 			}
 
 			return ordereredMap;
@@ -585,11 +585,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			return foreignKeyMap;
 		}
 
-		private void configureForeignKeyColumns(List<ForeignKeyDefinition.Builder> foreignKeyBuilders,
+		private void configureForeignKeyColumns(List<ForeignKeyDefinition> foreignKeyDefinitions,
 																						Map<Attribute<?>, AttributeDefinition<?>> attributeMap) {
-			Map<ForeignKey, List<ColumnDefinition<?>>> foreignKeyColumnDefinitions = foreignKeyBuilders.stream()
-							.map(ForeignKeyDefinition.Builder::attribute)
-							.map(ForeignKey.class::cast)
+			Map<ForeignKey, List<ColumnDefinition<?>>> foreignKeyColumnDefinitions = foreignKeyDefinitions.stream()
+							.map(ForeignKeyDefinition::attribute)
 							.collect(toMap(Function.identity(), foreignKey -> foreignKeyColumnDefinitions(foreignKey, attributeMap)));
 			foreignKeyColumns.addAll(foreignKeyColumnDefinitions.values().stream()
 							.flatMap(definitions -> definitions.stream().map(ColumnDefinition::attribute))
@@ -671,13 +670,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			});
 		}
 
-		private static void preventDuplicateAttributeNames(List<? extends AttributeDefinition.Builder<?, ?>> builders) {
+		private static void preventDuplicateAttributeNames(List<AttributeDefinition<?>> attributeDefinitions) {
 			Set<String> attributeNames = new HashSet<>();
-			for (AttributeDefinition.Builder<?, ?> builder : builders) {
-				if (attributeNames.contains(builder.attribute().name())) {
-					throw new IllegalArgumentException("Duplicate attribute name: " + builder.attribute().name());
+			for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
+				if (attributeNames.contains(attributeDefinition.attribute().name())) {
+					throw new IllegalArgumentException("Duplicate attribute name: " + attributeDefinition.attribute().name());
 				}
-				attributeNames.add(builder.attribute().name());
+				attributeNames.add(attributeDefinition.attribute().name());
 			}
 		}
 
@@ -781,8 +780,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
 		private Predicate<Entity> exists = DefaultEntity.DEFAULT_EXISTS;
 
-		DefaultBuilder(EntityType entityType, List<? extends AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
-			this.attributes = new EntityAttributes(entityType, attributeDefinitionBuilders);
+		DefaultBuilder(EntityType entityType, List<AttributeDefinition<?>> attributeDefinitions) {
+			this.attributes = new EntityAttributes(entityType, attributeDefinitions);
 			this.table = attributes.entityType.name();
 			this.captionResourceKey = attributes.entityType.name();
 			this.descriptionResourceKey = attributes.entityType.name() + ".description";
