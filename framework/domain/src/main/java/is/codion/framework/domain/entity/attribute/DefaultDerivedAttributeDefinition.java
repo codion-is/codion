@@ -143,11 +143,6 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		}
 
 		@Override
-		public B nullable(boolean nullable) {
-			throw new UnsupportedOperationException("Can not set the nullable state of a derived attribute");
-		}
-
-		@Override
 		public AttributeDefinition<T> build() {
 			return new DefaultDerivedAttributeDefinition<>(this);
 		}
@@ -206,11 +201,6 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		@Override
 		public B defaultValue(ValueSupplier<T> supplier) {
 			throw new UnsupportedOperationException("A denormalized attribute can not have a default value");
-		}
-
-		@Override
-		public B nullable(boolean nullable) {
-			throw new UnsupportedOperationException("Can not set the nullable state of a denormalized attribute");
 		}
 
 		@Override

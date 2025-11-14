@@ -243,12 +243,12 @@ is/codion/framework/db/local/LocalEntityConnection_is_IS.properties
 
 == codion-framework-domain
 
-=== is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition.java
+=== is/codion/framework/domain/entity/attribute/AbstractValueAttributeDefinition.java
 
 [source]
 ----
-is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition.properties
-is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition_is_IS.properties
+is/codion/framework/domain/entity/attribute/AbstractValueAttributeDefinition.properties
+is/codion/framework/domain/entity/attribute/AbstractValueAttributeDefinition_is_IS.properties
 ----
 
 [cols="1,1,1"]

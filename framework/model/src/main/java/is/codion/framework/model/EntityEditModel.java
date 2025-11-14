@@ -34,8 +34,8 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.jspecify.annotations.Nullable;
@@ -415,7 +415,7 @@ public interface EntityEditModel {
 		 * @param entity the entity to set, if null, then defaults are set
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
-		 * @see AttributeDefinition#defaultValue()
+		 * @see ValueAttributeDefinition#defaultValue()
 		 */
 		void set(@Nullable Entity entity);
 
@@ -428,7 +428,7 @@ public interface EntityEditModel {
 		 * Populates this edit model with default values for all non-persistent attributes.
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
-		 * @see AttributeDefinition#defaultValue()
+		 * @see ValueAttributeDefinition#defaultValue()
 		 */
 		void defaults();
 

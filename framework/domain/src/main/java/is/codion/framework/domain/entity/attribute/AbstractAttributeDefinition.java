@@ -20,14 +20,11 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
-import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
-import is.codion.framework.domain.entity.exception.NullValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -37,7 +34,6 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.Format;
-import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -46,7 +42,6 @@ import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -57,10 +52,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private static final MessageBundle MESSAGES =
-					messageBundle(AbstractAttributeDefinition.class, getBundle(AbstractAttributeDefinition.class.getName()));
-
-	private static final String VALUE_REQUIRED_KEY = "value_is_required";
 	private static final Comparator<String> LEXICAL_COMPARATOR = Text.collator();
 	private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
 	private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
@@ -75,7 +66,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final String mnemonicResourceKey;
 	private final String descriptionResourceKey;
 	private final ValueSupplier<T> defaultValueSupplier;
-	private final boolean nullable;
 	private final boolean hidden;
 	private final @Nullable String description;
 	private final char mnemonic;
@@ -100,7 +90,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		this.mnemonicResourceKey = builder.mnemonicResourceKey;
 		this.descriptionResourceKey = builder.descriptionResourceKey;
 		this.defaultValueSupplier = builder.defaultValueSupplier;
-		this.nullable = builder.nullable;
 		this.hidden = builder.hidden;
 		this.description = builder.description;
 		this.mnemonic = builder.mnemonic;
@@ -140,11 +129,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	@Override
 	public final @Nullable T defaultValue() {
 		return defaultValueSupplier.get();
-	}
-
-	@Override
-	public final boolean nullable() {
-		return nullable;
 	}
 
 	@Override
@@ -258,19 +242,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final void validate(Entity entity) {
-		validate(entity, nullable());
-	}
-
-	@Override
-	public void validate(Entity entity, boolean nullable) {
-		requireNonNull(entity);
-		if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
-			validateNull(entity, nullable);
-		}
-	}
-
-	@Override
 	public final boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -320,36 +291,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		return null;
-	}
-
-	private void validateNull(Entity entity, boolean nullable) throws NullValidationException {
-		if (!nullable && entity.isNull(attribute)) {
-			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attribute instanceof ForeignKey)) {
-				//a new entity being inserted, allow null for columns with default values and generated primary key values
-				boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue();
-				boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn();
-				if (nonKeyColumnWithoutDefaultValue || primaryKeyColumnWithoutAutoGenerate) {
-					throw new NullValidationException(attribute,
-									MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), caption()));
-				}
-			}
-			else {
-				throw new NullValidationException(attribute,
-								MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), caption()));
-			}
-		}
-	}
-
-	private boolean isNonGeneratedPrimaryKeyColumn() {
-		return (this instanceof ColumnDefinition
-						&& ((ColumnDefinition<?>) this).primaryKey()
-						&& !((ColumnDefinition<?>) this).generated());
-	}
-
-	private boolean isNonKeyColumnWithoutDefaultValue() {
-		return this instanceof ColumnDefinition
-						&& !((ColumnDefinition<?>) this).primaryKey()
-						&& !((ColumnDefinition<?>) this).withDefault();
 	}
 
 	protected Comparator<T> defaultComparator(Attribute<T> attribute) {
@@ -431,7 +372,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private String captionResourceKey;
 		private String mnemonicResourceKey;
 		private String descriptionResourceKey;
-		private boolean nullable;
 		private boolean hidden;
 		private @Nullable String description;
 		private char mnemonic;
@@ -453,7 +393,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			hidden = resourceNotFound(captionResourceBundleName, captionResourceKey);
 			format = defaultFormat(attribute);
 			roundingMode = ROUNDING_MODE.getOrThrow();
-			nullable = true;
 			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
 		}
 
@@ -598,12 +537,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 				attribute.type().validateType(supplier.get());
 			}
 			this.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
-			return self();
-		}
-
-		@Override
-		public B nullable(boolean nullable) {
-			this.nullable = nullable;
 			return self();
 		}
 

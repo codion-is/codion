@@ -20,10 +20,10 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.entity.DefaultEntity.DefaultCopy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 
 import org.jspecify.annotations.Nullable;
 
@@ -523,8 +523,8 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 		/**
 		 * Sets the default value for all attributes which have a default value.
 		 * @return this builder instance
-		 * @see AttributeDefinition#defaultValue()
-		 * @see AttributeDefinition#hasDefaultValue()
+		 * @see ValueAttributeDefinition#defaultValue()
+		 * @see ValueAttributeDefinition#hasDefaultValue()
 		 */
 		Builder withDefaults();
 

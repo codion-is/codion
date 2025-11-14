@@ -335,11 +335,6 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		@Override
-		public final B nullable(boolean nullable) {
-			return super.nullable(nullable);
-		}
-
-		@Override
 		public final B generator(Generator<T> generator) {
 			this.generator = requireNonNull(generator);
 			return self();

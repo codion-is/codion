@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static is.codion.framework.domain.entity.attribute.AbstractValueAttributeDefinition.createNullValidationException;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -40,6 +41,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 
 	private final Set<Column<?>> readOnlyColumns;
 	private final List<Attribute<?>> attributes;
+	private final boolean nullable;
 	private final int referenceDepth;
 	private final boolean soft;
 
@@ -47,6 +49,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		super(builder);
 		this.readOnlyColumns = builder.readOnlyColumns;
 		this.attributes = builder.attributes;
+		this.nullable = builder.nullable;
 		this.referenceDepth = builder.referenceDepth;
 		this.soft = builder.soft;
 	}
@@ -54,6 +57,11 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 	@Override
 	public ForeignKey attribute() {
 		return (ForeignKey) super.attribute();
+	}
+
+	@Override
+	public boolean nullable() {
+		return nullable;
 	}
 
 	@Override
@@ -86,6 +94,13 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		return attributes;
 	}
 
+	@Override
+	public void validate(Entity entity, boolean nullable) {
+		if (!nullable && entity.isNull(attribute())) {
+			throw createNullValidationException(attribute(), caption());
+		}
+	}
+
 	static final class DefaultForeignKeyDefinitionBuilder extends AbstractAttributeDefinitionBuilder<Entity, ForeignKeyDefinition.Builder>
 					implements ForeignKeyDefinition.Builder {
 
@@ -93,6 +108,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		private final EntityType referencedType;
 
 		private List<Attribute<?>> attributes = emptyList();
+		private boolean nullable;
 		private boolean soft = false;
 		private int referenceDepth = REFERENCE_DEPTH.getOrThrow();
 
@@ -102,8 +118,9 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		}
 
 		@Override
-		public ForeignKeyDefinition build() {
-			return new DefaultForeignKeyDefinition(this);
+		public ForeignKeyDefinition.Builder nullable(boolean nullable) {
+			this.nullable = nullable;
+			return this;
 		}
 
 		@Override
@@ -147,6 +164,11 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		@Override
 		public ForeignKeyDefinition.Builder comparator(Comparator<Entity> comparator) {
 			throw new UnsupportedOperationException("Foreign key values are compared using the comparator of the underlying entity");
+		}
+
+		@Override
+		public ForeignKeyDefinition build() {
+			return new DefaultForeignKeyDefinition(this);
 		}
 	}
 }

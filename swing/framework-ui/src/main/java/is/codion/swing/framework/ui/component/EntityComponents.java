@@ -167,7 +167,8 @@ public final class EntityComponents {
 	 */
 	public CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
-		if (attributeDefinition.nullable()) {
+		if (attributeDefinition instanceof ValueAttributeDefinition<Boolean> &&
+						((ValueAttributeDefinition<Boolean>) attributeDefinition).nullable()) {
 			throw new IllegalArgumentException("Attribute: " + attribute + " is nullable, use nullableCheckBox()");
 		}
 

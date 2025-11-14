@@ -26,12 +26,14 @@ import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.Defau
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.exception.ItemValidationException;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
+import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 
 import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -53,12 +55,11 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	private static final long serialVersionUID = 1;
 
 	private static final MessageBundle MESSAGES =
-					messageBundle(AbstractValueAttributeDefinition.class, getBundle(AbstractAttributeDefinition.class.getName()));
+					messageBundle(AbstractValueAttributeDefinition.class, getBundle(AbstractValueAttributeDefinition.class.getName()));
 
-	private static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
-	private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
-	private static final String INVALID_ITEM_SUFFIX = MESSAGES.getString(INVALID_ITEM_SUFFIX_KEY);
+	private static final String INVALID_ITEM_SUFFIX = MESSAGES.getString("invalid_item_suffix");
 
+	private final boolean nullable;
 	private final int maximumLength;
 	private final boolean trim;
 	private final @Nullable Number maximum;
@@ -68,6 +69,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 
 	protected AbstractValueAttributeDefinition(AbstractValueAttributeDefinitionBuilder<T, ?> builder) {
 		super(builder);
+		this.nullable = builder.nullable;
 		this.maximumLength = builder.maximumLength;
 		this.trim = builder.trim;
 		this.maximum = builder.maximum;
@@ -78,7 +80,12 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	@Override
-	public boolean derived() {
+	public final boolean nullable() {
+		return nullable;
+	}
+
+	@Override
+	public final boolean derived() {
 		return false;
 	}
 
@@ -113,8 +120,11 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	@Override
-	public void validate(Entity entity, boolean nullable) {
-		super.validate(entity, nullable);
+	public final void validate(Entity entity, boolean nullable) {
+		requireNonNull(entity);
+		if (!(attribute() instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute())) {
+			validateNull(entity, nullable);
+		}
 		T value = entity.get(attribute());
 		if (!items().isEmpty()) {
 			validateItem(value);
@@ -149,13 +159,46 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		return value + " <" + INVALID_ITEM_SUFFIX + ">";
 	}
 
+	private void validateNull(Entity entity, boolean nullable) throws NullValidationException {
+		if (!nullable && entity.isNull(attribute())) {
+			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attribute() instanceof ForeignKey)) {
+				//a new entity being inserted, allow null for columns with default values and generated primary key values
+				boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue();
+				boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn();
+				if (nonKeyColumnWithoutDefaultValue || primaryKeyColumnWithoutAutoGenerate) {
+					throw createNullValidationException(attribute(), caption());
+				}
+			}
+			else {
+				throw createNullValidationException(attribute(), caption());
+			}
+		}
+	}
+
+	static NullValidationException createNullValidationException(Attribute<?> attribute, String caption) {
+		return new NullValidationException(attribute,
+						MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
+	}
+
+	private boolean isNonGeneratedPrimaryKeyColumn() {
+		return (this instanceof ColumnDefinition
+						&& ((ColumnDefinition<?>) this).primaryKey()
+						&& !((ColumnDefinition<?>) this).generated());
+	}
+
+	private boolean isNonKeyColumnWithoutDefaultValue() {
+		return this instanceof ColumnDefinition
+						&& !((ColumnDefinition<?>) this).primaryKey()
+						&& !((ColumnDefinition<?>) this).withDefault();
+	}
+
 	private void validateItem(@Nullable T value) {
 		if (value == null && nullable()) {
 			return;
 		}
 		if (!validItem(value)) {
 			throw new ItemValidationException(attribute(), value,
-							MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
+							MESSAGES.getString("invalid_item_value") + ": " + value);
 		}
 	}
 
@@ -207,10 +250,10 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	abstract static sealed class AbstractValueAttributeDefinitionBuilder<T, B extends ValueAttributeDefinition.Builder<T, B>>
-					extends AbstractAttributeDefinitionBuilder<T, B>
-					implements ValueAttributeDefinition.Builder<T, B>
+					extends AbstractAttributeDefinitionBuilder<T, B> implements ValueAttributeDefinition.Builder<T, B>
 					permits DefaultColumnDefinitionBuilder, DefaultTransientAttributeDefinitionBuilder {
 
+		private boolean nullable;
 		private int maximumLength;
 		private boolean trim;
 		private @Nullable Number maximum;
@@ -219,6 +262,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 
 		AbstractValueAttributeDefinitionBuilder(Attribute<T> attribute) {
 			super(attribute);
+			nullable = true;
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
 			trim = TRIM_STRINGS.getOrThrow();
 			minimum = defaultMinimum();
@@ -226,7 +270,13 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 
 		@Override
-		public B maximumLength(int maximumLength) {
+		public final B nullable(boolean nullable) {
+			this.nullable = nullable;
+			return self();
+		}
+
+		@Override
+		public final B maximumLength(int maximumLength) {
 			if (!attribute().type().isString()) {
 				throw new IllegalStateException("maximumLength is only applicable to string attributes: " + attribute());
 			}
@@ -257,7 +307,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 
 		@Override
-		public B range(@Nullable Number minimum, @Nullable Number maximum) {
+		public final B range(@Nullable Number minimum, @Nullable Number maximum) {
 			if (!attribute().type().isNumeric()) {
 				throw new IllegalStateException("range is only applicable to numerical attributes");
 			}

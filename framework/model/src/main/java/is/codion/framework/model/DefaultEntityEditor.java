@@ -35,6 +35,7 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
@@ -587,8 +588,11 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	private static <T> @Nullable T nullValue(AttributeDefinition<T> attributeDefinition) {
-		if (attributeDefinition.attribute().type().isBoolean() && !attributeDefinition.nullable()) {
-			return (T) Boolean.FALSE;
+		if (attributeDefinition instanceof ValueAttributeDefinition<?>) {
+			ValueAttributeDefinition<T> valueAttributeDefinition = (ValueAttributeDefinition<T>) attributeDefinition;
+			if (valueAttributeDefinition.attribute().type().isBoolean() && !valueAttributeDefinition.nullable()) {
+				return (T) Boolean.FALSE;
+			}
 		}
 
 		return null;

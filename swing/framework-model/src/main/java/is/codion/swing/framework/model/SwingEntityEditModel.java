@@ -23,10 +23,10 @@ import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
@@ -177,7 +177,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * @see FilterComboBoxModel#NULL_CAPTION
 	 * @see EntityComboBoxModel.Builder#nullCaption(String)
 	 * @see EntityComboBoxModel.Builder#includeNull(boolean)
-	 * @see AttributeDefinition#nullable()
+	 * @see ValueAttributeDefinition#nullable()
 	 * @see EntityComboBoxModel.Builder#attributes(Collection)
 	 * @see ForeignKeyDefinition#attributes()
 	 */

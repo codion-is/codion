@@ -20,13 +20,10 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.AbstractAttributeDefinition.AbstractAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DerivedBuilder;
-import is.codion.framework.domain.entity.exception.NullValidationException;
-import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -260,11 +257,6 @@ public sealed interface AttributeDefinition<T>
 	boolean hidden();
 
 	/**
-	 * @return true if null is a valid value for this attribute
-	 */
-	boolean nullable();
-
-	/**
 	 * Returns the mnemonic associated with this attribute.
 	 * @return the mnemonic to use when creating a label for this attribute, 0 meaning no mnemonic
 	 */
@@ -312,34 +304,6 @@ public sealed interface AttributeDefinition<T>
 	 * @return the DateTimeFormatter for this attribute or an empty Optional if this is not a date/time based attribute
 	 */
 	Optional<DateTimeFormatter> dateTimeFormatter();
-
-	/**
-	 * Validates the value of this attribute as found in the given entity.
-	 * <p>Note: When validating non-nullable attributes during entity insertion
-	 * (when the entity does not exist), null values are allowed for:
-	 * <ul>
-	 * <li>Columns with default values - the database will provide the default value
-	 * <li>Generated primary key columns - the database will generate the key value
-	 * </ul>
-	 * @param entity the {@link Entity} the containing the value to validate
-	 * @throws ValidationException in case of an invalid value
-	 */
-	void validate(Entity entity);
-
-	/**
-	 * Validates the value of this attribute as found in the given entity.
-	 * <p>Note: When validating non-nullable attributes during entity insertion
-	 * (when the entity does not exist), null values are allowed for:
-	 * <ul>
-	 * <li>Columns with default values - the database will provide the default value
-	 * <li>Generated primary key columns - the database will generate the key value
-	 * </ul>
-	 * @param entity the entity containing the value to validate
-	 * @param nullable true if null values are allowed in this validation context,
-	 * false if null should trigger a {@link NullValidationException}
-	 * @throws ValidationException in case of an invalid value
-	 */
-	void validate(Entity entity, boolean nullable);
 
 	/**
 	 * Supplies values, for example default ones.
@@ -505,14 +469,6 @@ public sealed interface AttributeDefinition<T>
 		 * @return this builder instance
 		 */
 		B hidden(boolean hidden);
-
-		/**
-		 * Specifies whether this attribute is nullable. Note that this will not prevent
-		 * the value from being set to null, only prevent successful validation of the entity.
-		 * @param nullable specifies whether null is a valid value for this attribute
-		 * @return this builder instance
-		 */
-		B nullable(boolean nullable);
 
 		/**
 		 * Sets the mnemonic to use when creating a label for this attribute

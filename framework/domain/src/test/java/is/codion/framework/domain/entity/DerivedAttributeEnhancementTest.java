@@ -788,33 +788,6 @@ public final class DerivedAttributeEnhancementTest {
 	class AttributeDefinitionConstraintsTest {
 
 		@Test
-		@DisplayName("derived attributes ignore nullable constraint")
-		void derivedAttribute_nullableConstraint_ignored() {
-			// The AttributeDefinitionTest already covers this, but let's ensure
-			// it's clear in our enhanced tests
-			assertThrows(UnsupportedOperationException.class, () -> {
-				class ConstraintDomain extends DomainModel {
-					ConstraintDomain() {
-						super(domainType("constraint"));
-						EntityType type = type().entityType("constraint_entity");
-						Column<Integer> sourceAttribute = type.integerColumn("source");
-						Attribute<Integer> derived = type.integerAttribute("derived");
-
-						add(type.define(
-										sourceAttribute.define().column(),
-										derived.define()
-														.derived()
-														.from(sourceAttribute)
-														.with(source -> source.get(sourceAttribute))
-														.nullable(false) // This should throw
-						).build());
-					}
-				}
-				new ConstraintDomain();
-			});
-		}
-
-		@Test
 		@DisplayName("derived attributes ignore default value")
 		void derivedAttribute_defaultValue_ignored() {
 			assertThrows(UnsupportedOperationException.class, () -> {

@@ -20,7 +20,10 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.exception.NullValidationException;
+import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -53,6 +56,11 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 	 * @see String#trim()
 	 */
 	PropertyValue<Boolean> TRIM_STRINGS = booleanValue("codion.domain.trimStrings", true);
+
+	/**
+	 * @return true if null is a valid value for this attribute
+	 */
+	boolean nullable();
 
 	/**
 	 * @return the maximum allowed value for this attribute, an empty Optional if none is defined,
@@ -94,12 +102,35 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 	List<Item<T>> items();
 
 	/**
+	 * Validates the value of this attribute as found in the given entity.
+	 * <p>Note: When validating non-nullable attributes during entity insertion
+	 * (when the entity does not exist), null values are allowed for:
+	 * <ul>
+	 * <li>Columns with default values - the database will provide the default value
+	 * <li>Generated primary key columns - the database will generate the key value
+	 * </ul>
+	 * @param entity the entity containing the value to validate
+	 * @param nullable true if null values are allowed in this validation context,
+	 * false if null should trigger a {@link NullValidationException}
+	 * @throws ValidationException in case of an invalid value
+	 */
+	void validate(Entity entity, boolean nullable);
+
+	/**
 	 * Builds a ValueAttributeDefinition instance
 	 * @param <T> the value type
 	 * @param <B> the builder type
 	 */
 	sealed interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B>
 					permits AbstractValueAttributeDefinitionBuilder, ColumnDefinition.Builder, TransientAttributeDefinition.Builder {
+
+		/**
+		 * Specifies whether this attribute is nullable. Note that this will not prevent
+		 * the value from being set to null, only prevent successful validation of the entity.
+		 * @param nullable specifies whether null is a valid value for this attribute
+		 * @return this builder instance
+		 */
+		B nullable(boolean nullable);
 
 		/**
 		 * Only applicable to numerical attributes

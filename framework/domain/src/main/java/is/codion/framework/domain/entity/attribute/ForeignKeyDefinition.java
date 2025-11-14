@@ -22,6 +22,8 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
+import is.codion.framework.domain.entity.exception.NullValidationException;
+import is.codion.framework.domain.entity.exception.ValidationException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -155,6 +157,11 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	ForeignKey attribute();
 
 	/**
+	 * @return true if null is a valid value for this attribute
+	 */
+	boolean nullable();
+
+	/**
 	 * @return the default query reference depth for this foreign key
 	 */
 	int referenceDepth();
@@ -182,6 +189,15 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	List<Attribute<?>> attributes();
 
 	/**
+	 * Validates the value of this attribute as found in the given entity.
+	 * @param entity the entity containing the value to validate
+	 * @param nullable true if null values are allowed in this validation context,
+	 * false if null should trigger a {@link NullValidationException}
+	 * @throws ValidationException in case of an invalid value
+	 */
+	void validate(Entity entity, boolean nullable);
+
+	/**
 	 * Builds a {@link ForeignKeyDefinition}.
 	 */
 	sealed interface Builder extends AttributeDefinition.Builder<Entity, Builder> permits DefaultForeignKeyDefinitionBuilder {
@@ -189,7 +205,6 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 		/**
 		 * Setting this value has no effect, foreign key nullability is always based on the nullability of their underlying column(s).
 		 */
-		@Override
 		Builder nullable(boolean nullable);
 
 		/**

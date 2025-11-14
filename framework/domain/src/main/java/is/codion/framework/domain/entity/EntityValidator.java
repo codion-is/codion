@@ -22,6 +22,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
@@ -120,11 +121,20 @@ public interface EntityValidator {
 	 *}
 	 * @param entity the entity being validated
 	 * @param attribute the attribute
-	 * @return true if the attribute accepts a null value
-	 * @see AttributeDefinition#nullable()
+	 * @return true if the attribute is non-value based or accepts a null value
+	 * @see ValueAttributeDefinition#nullable()
+	 * @see ForeignKeyDefinition#nullable()
 	 */
 	default boolean nullable(Entity entity, Attribute<?> attribute) {
-		return requireNonNull(entity).definition().attributes().definition(attribute).nullable();
+		AttributeDefinition<?> definition = requireNonNull(entity).definition().attributes().definition(attribute);
+		if (definition instanceof ValueAttributeDefinition<?>) {
+			return ((ValueAttributeDefinition<?>) definition).nullable();
+		}
+		else if (definition instanceof ForeignKeyDefinition) {
+			return ((ForeignKeyDefinition) definition).nullable();
+		}
+
+		return true;
 	}
 
 	/**
@@ -195,7 +205,13 @@ public interface EntityValidator {
 	 * @throws ValidationException if the given value is not valid for the given attribute
 	 */
 	default void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
-		requireNonNull(entity).definition().attributes().definition(attribute).validate(entity, nullable(entity, attribute));
+		AttributeDefinition<?> definition = requireNonNull(entity).definition().attributes().definition(attribute);
+		if (definition instanceof ValueAttributeDefinition<?>) {
+			((ValueAttributeDefinition<?>) definition).validate(entity, nullable(entity, attribute));
+		}
+		else if (definition instanceof ForeignKeyDefinition) {
+			((ForeignKeyDefinition) definition).validate(entity, nullable(entity, attribute));
+		}
 	}
 
 	/**
@@ -206,7 +222,7 @@ public interface EntityValidator {
 	 * @see #strict()
 	 */
 	default boolean validated(Entity entity, AttributeDefinition<?> definition) {
-		if (definition instanceof ValueAttributeDefinition && ((ValueAttributeDefinition<?>) definition).derived()) {
+		if (definition.derived()) {
 			return false;
 		}
 		if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).readOnly()) {

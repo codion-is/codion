@@ -50,11 +50,6 @@ public final class AttributeDefinitionTest {
 						.derived()
 						.from(attribute)
 						.with(source -> null)
-						.nullable(false));
-		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived()
-						.from(attribute)
-						.with(source -> null)
 						.defaultValue(10));
 	}
 
