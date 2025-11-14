@@ -130,7 +130,7 @@ public final class DerivedAttributeEnhancementTest {
 							Product.TOTAL_VALUE.define()
 											.derived()
 											.from(Product.PRICE, Product.QUANTITY)
-											.value(source -> {
+											.with(source -> {
 												BigDecimal price = source.get(Product.PRICE);
 												Integer quantity = source.get(Product.QUANTITY);
 												if (price != null && quantity != null) {
@@ -143,7 +143,7 @@ public final class DerivedAttributeEnhancementTest {
 							Product.TAX_AMOUNT.define()
 											.derived()
 											.from(Product.TOTAL_VALUE, Product.TAX_RATE)
-											.value(source -> {
+											.with(source -> {
 												BigDecimal total = source.get(Product.TOTAL_VALUE);
 												BigDecimal taxRate = source.get(Product.TAX_RATE);
 												if (total != null && taxRate != null) {
@@ -156,7 +156,7 @@ public final class DerivedAttributeEnhancementTest {
 							Product.TOTAL_WITH_TAX.define()
 											.derived()
 											.from(Product.TOTAL_VALUE, Product.TAX_AMOUNT)
-											.value(source -> {
+											.with(source -> {
 												BigDecimal total = source.get(Product.TOTAL_VALUE);
 												BigDecimal tax = source.get(Product.TAX_AMOUNT);
 												if (total != null && tax != null) {
@@ -169,7 +169,7 @@ public final class DerivedAttributeEnhancementTest {
 							Product.DAYS_SINCE_PURCHASE.define()
 											.derived()
 											.from(Product.PURCHASE_DATE)
-											.value(source -> {
+											.with(source -> {
 												LocalDate purchaseDate = source.get(Product.PURCHASE_DATE);
 												if (purchaseDate != null) {
 													return (int) ChronoUnit.DAYS.between(purchaseDate, LocalDate.now());
@@ -181,7 +181,7 @@ public final class DerivedAttributeEnhancementTest {
 							Product.DISPLAY_NAME.define()
 											.derived()
 											.from(Product.NAME, Product.QUANTITY)
-											.value(source -> {
+											.with(source -> {
 												String name = source.get(Product.NAME);
 												Integer quantity = source.get(Product.QUANTITY);
 												if (name != null && quantity != null) {
@@ -218,7 +218,7 @@ public final class DerivedAttributeEnhancementTest {
 							OrderLine.PRODUCT_NAME.define()
 											.derived()
 											.from(OrderLine.PRODUCT_FK)
-											.value(source -> {
+											.with(source -> {
 												Entity product = source.get(OrderLine.PRODUCT_FK);
 												if (product != null) {
 													return product.get(Product.NAME);
@@ -230,7 +230,7 @@ public final class DerivedAttributeEnhancementTest {
 							OrderLine.LINE_TOTAL.define()
 											.derived()
 											.from(OrderLine.QUANTITY, OrderLine.UNIT_PRICE)
-											.value(source -> {
+											.with(source -> {
 												Integer quantity = source.get(OrderLine.QUANTITY);
 												BigDecimal unitPrice = source.get(OrderLine.UNIT_PRICE);
 												if (quantity != null && unitPrice != null) {
@@ -243,7 +243,7 @@ public final class DerivedAttributeEnhancementTest {
 							OrderLine.ORDER_STATUS.define()
 											.derived()
 											.from(OrderLine.ORDER_FK)
-											.value(source -> {
+											.with(source -> {
 												Entity order = source.get(OrderLine.ORDER_FK);
 												if (order != null) {
 													return order.get(Order.STATUS);
@@ -254,7 +254,7 @@ public final class DerivedAttributeEnhancementTest {
 							OrderLine.ORDER_DATE.define()
 											.derived()
 											.from(OrderLine.ORDER_FK)
-											.value(source -> {
+											.with(source -> {
 												Entity order = source.get(OrderLine.ORDER_FK);
 												if (order != null) {
 													return order.get(Order.ORDER_DATE);
@@ -274,7 +274,7 @@ public final class DerivedAttributeEnhancementTest {
 							ComplexEntity.CONCAT_VALUES.define()
 											.derived()
 											.from(ComplexEntity.VALUE1, ComplexEntity.VALUE2)
-											.value(source -> {
+											.with(source -> {
 												String v1 = source.get(ComplexEntity.VALUE1);
 												String v2 = source.get(ComplexEntity.VALUE2);
 												if (v1 != null && v2 != null) {
@@ -286,7 +286,7 @@ public final class DerivedAttributeEnhancementTest {
 							ComplexEntity.SUM_NUMBERS.define()
 											.derived()
 											.from(ComplexEntity.NUMBER1, ComplexEntity.NUMBER2)
-											.value(source -> {
+											.with(source -> {
 												Integer n1 = source.get(ComplexEntity.NUMBER1);
 												Integer n2 = source.get(ComplexEntity.NUMBER2);
 												if (n1 != null && n2 != null) {
@@ -299,7 +299,7 @@ public final class DerivedAttributeEnhancementTest {
 							ComplexEntity.COMPLEX_DERIVED.define()
 											.derived()
 											.from(ComplexEntity.CONCAT_VALUES, ComplexEntity.SUM_NUMBERS)
-											.value(source -> {
+											.with(source -> {
 												String concat = source.get(ComplexEntity.CONCAT_VALUES);
 												Integer sum = source.get(ComplexEntity.SUM_NUMBERS);
 												if (concat != null && sum != null) {
@@ -595,7 +595,7 @@ public final class DerivedAttributeEnhancementTest {
 									doubled.define()
 													.derived()
 													.from(value)
-													.value(source -> {
+													.with(source -> {
 														callCount.incrementAndGet();
 														Integer val = source.get(value);
 														return val != null ? val * 2 : null;
@@ -646,11 +646,11 @@ public final class DerivedAttributeEnhancementTest {
 									attr1.define()
 													.derived()
 													.from(attr2)
-													.value(source -> source.get(attr2)),
+													.with(source -> source.get(attr2)),
 									attr2.define()
 													.derived()
 													.from(attr1)
-													.value(source -> source.get(attr1))
+													.with(source -> source.get(attr1))
 					).build());
 				}
 			}
@@ -687,7 +687,7 @@ public final class DerivedAttributeEnhancementTest {
 									problematic.define()
 													.derived()
 													.from(value)
-													.value(source -> {
+													.with(source -> {
 														Integer val = source.get(value);
 														if (val != null && val < 0) {
 															throw new IllegalArgumentException("Negative values not allowed");
@@ -749,7 +749,7 @@ public final class DerivedAttributeEnhancementTest {
 					definitions.add(sum.define()
 									.derived()
 									.from(columns.toArray(new Attribute[0]))
-									.value(source -> {
+									.with(source -> {
 										int total = 0;
 										for (Column<Integer> col : columns) {
 											Integer val = source.get(col);
@@ -806,7 +806,7 @@ public final class DerivedAttributeEnhancementTest {
 										derived.define()
 														.derived()
 														.from(sourceAttribute)
-														.value(source -> source.get(sourceAttribute))
+														.with(source -> source.get(sourceAttribute))
 														.nullable(false) // This should throw
 						).build());
 					}
@@ -831,7 +831,7 @@ public final class DerivedAttributeEnhancementTest {
 										derived.define()
 														.derived()
 														.from(sourceAttribute)
-														.value(source -> source.get(sourceAttribute))
+														.with(source -> source.get(sourceAttribute))
 														.defaultValue(42) // This should throw
 						).build());
 					}

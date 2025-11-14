@@ -1244,18 +1244,18 @@ public class DefaultEntityTest {
 													derivedAttributeCached.define()
 																	.derived()
 																	.from(stringAttribute)
-																	.value(source ->
+																	.with(source ->
 																					source.get(stringAttribute) + "-derived"),
 													derivedAttributeNonCached.define()
 																	.derived()
 																	.from(stringAttribute)
-																	.value(source ->
+																	.with(source ->
 																					source.get(stringAttribute) + "-derived")
 																	.cached(false),
 													derivedAttributeNoSource.define()
 																	.derived()
 																	.from()
-																	.value(source -> UUID.randomUUID()))
+																	.with(source -> UUID.randomUUID()))
 									.build());
 				}
 			}

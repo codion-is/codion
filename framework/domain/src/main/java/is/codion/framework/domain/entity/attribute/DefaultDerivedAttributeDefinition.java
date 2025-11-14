@@ -20,8 +20,8 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder.DenormalizedAttributeStep;
-import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder.SourceAttributeStep;
-import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DerivedBuilder.SourceAttributesStep;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder.DenormalizedFromStep;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DerivedBuilder.DerivedFromStep;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -75,33 +75,33 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractValueAttributeD
 		return true;
 	}
 
-	static final class DefaultSourceAttributesStep<T, B extends DerivedBuilder<T, B>> implements SourceAttributesStep<T, B> {
+	static final class DefaultDerivedFromStep<T, B extends DerivedBuilder<T, B>> implements DerivedFromStep<T, B> {
 
 		private final Attribute<T> attribute;
 
-		DefaultSourceAttributesStep(Attribute<T> attribute) {
+		DefaultDerivedFromStep(Attribute<T> attribute) {
 			this.attribute = requireNonNull(attribute);
 		}
 
 		@Override
-		public DerivedBuilder.DerivedValueStep<T, B> from(Attribute<?>... attributes) {
-			return new DefaultDerivedValueStep<>(attribute, asList(attributes));
+		public DerivedBuilder.DerivedWithStep<T, B> from(Attribute<?>... attributes) {
+			return new DefaultDerivedWithStep<>(attribute, asList(attributes));
 		}
 	}
 
-	static final class DefaultDerivedValueStep<T, B extends DerivedBuilder<T, B>>
-					implements DerivedBuilder.DerivedValueStep<T, B> {
+	static final class DefaultDerivedWithStep<T, B extends DerivedBuilder<T, B>>
+					implements DerivedBuilder.DerivedWithStep<T, B> {
 
 		private final Attribute<T> attribute;
 		private final List<Attribute<?>> sources;
 
-		private DefaultDerivedValueStep(Attribute<T> attribute, List<Attribute<?>> sources) {
+		private DefaultDerivedWithStep(Attribute<T> attribute, List<Attribute<?>> sources) {
 			this.attribute = requireNonNull(attribute);
 			this.sources = requireNonNull(sources);
 		}
 
 		@Override
-		public DerivedBuilder<T, B> value(DerivedValue<T> value) {
+		public DerivedBuilder<T, B> with(DerivedValue<T> value) {
 			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, sources, value);
 		}
 	}
@@ -163,11 +163,11 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractValueAttributeD
 		}
 	}
 
-	static final class DefaultSourceAttributeStep<T, B extends DenormalizedBuilder<T, B>> implements SourceAttributeStep<T, B> {
+	static final class DefaultDenormalizedFromStep<T, B extends DenormalizedBuilder<T, B>> implements DenormalizedFromStep<T, B> {
 
 		private final Attribute<T> attribute;
 
-		DefaultSourceAttributeStep(Attribute<T> attribute) {
+		DefaultDenormalizedFromStep(Attribute<T> attribute) {
 			this.attribute = requireNonNull(attribute);
 		}
 

@@ -175,7 +175,7 @@ public final class TestDomain extends DomainModel {
 										Detail.INT_DERIVED.define()
 														.derived()
 														.from(Detail.INT)
-														.value(source -> {
+														.with(source -> {
 															Integer intValue = source.get(Detail.INT);
 															if (intValue == null) {
 																return null;

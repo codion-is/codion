@@ -49,27 +49,27 @@ public final class AttributeDefinitionTest {
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
 						.derived()
 						.from(attribute)
-						.value(source -> null)
+						.with(source -> null)
 						.nullable(false));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
 						.derived()
 						.from(attribute)
-						.value(source -> null)
+						.with(source -> null)
 						.defaultValue(10));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
 						.derived()
 						.from(attribute)
-						.value(source -> null)
+						.with(source -> null)
 						.maximumLength(10));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
 						.derived()
 						.from(attribute)
-						.value(source -> null)
+						.with(source -> null)
 						.minimum(10));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
 						.derived()
 						.from(attribute)
-						.value(source -> null)
+						.with(source -> null)
 						.range(10, 20));
 	}
 

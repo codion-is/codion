@@ -168,7 +168,7 @@ public final class EntityValidationEnhancementTest {
 							Customer.AGE.define()
 											.derived()
 											.from(Customer.BIRTH_DATE)
-											.value(source -> {
+											.with(source -> {
 												LocalDate birthDate = source.get(Customer.BIRTH_DATE);
 												if (birthDate != null) {
 													return LocalDate.now().getYear() - birthDate.getYear();
@@ -268,7 +268,7 @@ public final class EntityValidationEnhancementTest {
 											OrderItem.LINE_TOTAL.define()
 															.derived()
 															.from(OrderItem.QUANTITY, OrderItem.UNIT_PRICE, OrderItem.DISCOUNT)
-															.value(source -> {
+															.with(source -> {
 																Integer quantity = source.get(OrderItem.QUANTITY);
 																BigDecimal unitPrice = source.get(OrderItem.UNIT_PRICE);
 																BigDecimal discount = source.get(OrderItem.DISCOUNT);

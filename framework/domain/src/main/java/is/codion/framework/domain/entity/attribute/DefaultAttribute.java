@@ -21,8 +21,8 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributeStep;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributesStep;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedFromStep;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedFromStep;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKey.DefaultForeignKeyDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder;
@@ -242,13 +242,13 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		}
 
 		@Override
-		public final <B extends DenormalizedBuilder<T, B>> DenormalizedBuilder.SourceAttributeStep<T, B> denormalized() {
-			return new DefaultSourceAttributeStep<>(attribute);
+		public final <B extends DenormalizedBuilder<T, B>> DenormalizedBuilder.DenormalizedFromStep<T, B> denormalized() {
+			return new DefaultDenormalizedFromStep<>(attribute);
 		}
 
 		@Override
-		public final <B extends DerivedBuilder<T, B>> DerivedBuilder.SourceAttributesStep<T, B> derived() {
-			return new DefaultSourceAttributesStep<>(attribute);
+		public final <B extends DerivedBuilder<T, B>> DerivedBuilder.DerivedFromStep<T, B> derived() {
+			return new DefaultDerivedFromStep<>(attribute);
 		}
 	}
 }

@@ -86,7 +86,7 @@ import static java.util.Objects.requireNonNull;
  *                 Customer.DISPLAY_NAME.define()
  *                     .derived()
  *				             .from(Customer.NAME, Customer.EMAIL)
- *                     .value(source ->
+ *                     .with(source ->
  *                         source.get(Customer.NAME) + " (" + source.get(Customer.EMAIL) + ")"),
  *
  *                 // Custom typed attribute
@@ -289,18 +289,18 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 		<B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute();
 
 		/**
-		 * Instantiates a {@link DenormalizedBuilder.SourceAttributeStep} instance, for displaying a value from a referenced entity attribute.
+		 * Instantiates a {@link DenormalizedBuilder.DenormalizedFromStep} instance, for displaying a value from a referenced entity attribute.
 		 * @param <B> the builder type
-		 * @return a new {@link DenormalizedBuilder.SourceAttributeStep}
+		 * @return a new {@link DenormalizedBuilder.DenormalizedFromStep}
 		 */
-		<B extends DenormalizedBuilder<T, B>> DenormalizedBuilder.SourceAttributeStep<T, B> denormalized();
+		<B extends DenormalizedBuilder<T, B>> DenormalizedBuilder.DenormalizedFromStep<T, B> denormalized();
 
 		/**
-		 * Instantiates a {@link DerivedBuilder.SourceAttributesStep} instance, for building an attribute which
+		 * Instantiates a {@link DerivedBuilder.DerivedFromStep} instance, for building an attribute which
 		 * value is derived from zero or more source attributes.
 		 * @param <B> the builder type
-		 * @return a new {@link DerivedBuilder.SourceAttributesStep}
+		 * @return a new {@link DerivedBuilder.DerivedFromStep}
 		 */
-		<B extends DerivedBuilder<T, B>> DerivedBuilder.SourceAttributesStep<T, B> derived();
+		<B extends DerivedBuilder<T, B>> DerivedBuilder.DerivedFromStep<T, B> derived();
 	}
 }

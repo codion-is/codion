@@ -69,7 +69,7 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *                 Customer.FULL_NAME.define()
  *                     .derived()
  *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .value(source -> {
+ *                     .with(source -> {
  *                         String first = source.get(Customer.FIRST_NAME);
  *                         String last = source.get(Customer.LAST_NAME);
  *                         return ((first != null ? first : "") + " " +

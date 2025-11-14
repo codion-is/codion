@@ -68,7 +68,7 @@ import java.util.List;
  *                 Customer.FULL_NAME.define()
  *                     .derived()
  *                     .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .value(source -> {
+ *                     .with(source -> {
  *                         String first = source.get(Customer.FIRST_NAME);
  *                         String last = source.get(Customer.LAST_NAME);
  *                         if (first == null && last == null) {
@@ -83,7 +83,7 @@ import java.util.List;
  *                 Customer.CONTACT_INFO.define()
  *                     .derived()
  *                     .from(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
- *                     .value(source -> {
+ *                     .with(source -> {
  *                         String name = source.get(Customer.FULL_NAME);
  *                         String email = source.get(Customer.EMAIL);
  *                         String phone = source.get(Customer.PHONE);
@@ -107,7 +107,7 @@ import java.util.List;
  *                 Customer.AGE.define()
  *                     .derived()
  *			               .from(Customer.BIRTH_DATE)
- *                     .value(source -> {
+ *                     .with(source -> {
  *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
  *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
@@ -119,7 +119,7 @@ import java.util.List;
  *                 Customer.NAME_UPPER.define()
  *                     .derived()
  *		                 .from(Customer.FULL_NAME)
- *                     .value(source -> {
+ *                     .with(source -> {
  *                         String fullName = source.get(Customer.FULL_NAME);
  *                         return fullName != null ? fullName.toUpperCase() : null;
  *                     })
@@ -191,13 +191,13 @@ public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefi
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		interface SourceAttributesStep<T, B extends DerivedBuilder<T, B>> {
+		interface DerivedFromStep<T, B extends DerivedBuilder<T, B>> {
 
 			/**
 			 * @param attributes the attributes to derive the value from
-			 * @return a {@link DerivedValueStep} instance
+			 * @return a {@link DerivedWithStep} instance
 			 */
-			DerivedValueStep<T, B> from(Attribute<?>... attributes);
+			DerivedWithStep<T, B> from(Attribute<?>... attributes);
 		}
 
 		/**
@@ -205,13 +205,13 @@ public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefi
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		interface DerivedValueStep<T, B extends DerivedBuilder<T, B>> {
+		interface DerivedWithStep<T, B extends DerivedBuilder<T, B>> {
 
 			/**
 			 * @param value a {@link DerivedValue} instance responsible for providing the derived value
 			 * @return a {@link DerivedBuilder} instance
 			 */
-			DerivedBuilder<T, B> value(DerivedValue<T> value);
+			DerivedBuilder<T, B> with(DerivedValue<T> value);
 		}
 	}
 
@@ -228,7 +228,7 @@ public sealed interface DerivedAttributeDefinition<T> extends ValueAttributeDefi
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		interface SourceAttributeStep<T, B extends DenormalizedBuilder<T, B>> {
+		interface DenormalizedFromStep<T, B extends DenormalizedBuilder<T, B>> {
 
 			/**
 			 * @param source the source attribute to denormalize from

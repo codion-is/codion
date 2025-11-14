@@ -260,7 +260,7 @@ public final class TestDomain extends DomainModel {
 										Detail2.INT_DERIVED.define()
 														.derived()
 														.from(Detail2.INT)
-														.value(source -> {
+														.with(source -> {
 															Integer intValue = source.get(Detail2.INT);
 															if (intValue == null) {
 																return null;
@@ -373,7 +373,7 @@ public final class TestDomain extends DomainModel {
 										Detail.INT_DERIVED.define()
 														.derived()
 														.from(Detail.INT)
-														.value(source -> {
+														.with(source -> {
 															Integer intValue = source.get(Detail.INT);
 															if (intValue == null) {
 
@@ -525,7 +525,7 @@ public final class TestDomain extends DomainModel {
 										Employee.DEPARTMENT_NAME.define()
 														.derived()
 														.from(Employee.NAME, Employee.DEPARTMENT_FK)
-														.value(new DepartmentName()),
+														.with(new DepartmentName()),
 										Employee.DATA.define()
 														.column()
 														.caption("Data"))
@@ -663,7 +663,7 @@ public final class TestDomain extends DomainModel {
 										InvalidDerived.INVALID_DERIVED.define()
 														.derived()
 														.from(InvalidDerived.ID)
-														.value(source -> source.get(InvalidDerived.INT).intValue()))
+														.with(source -> source.get(InvalidDerived.INT).intValue()))
 						.caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
 						.formatter(entity -> null)
 						.build());

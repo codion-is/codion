@@ -495,7 +495,7 @@ public final class ChinookImpl extends DomainModel {
 										InvoiceLine.TOTAL.define()
 														.derived()
 														.from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
-														.value(new InvoiceLineTotal()),
+														.with(new InvoiceLineTotal()),
 										InvoiceLine.INSERT_TIME.define()
 														.column(INSERT_TIME)
 														.hidden(true),

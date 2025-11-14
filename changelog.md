@@ -25,6 +25,8 @@ Codion Change Log
 - FilterTableHeaderRenderer added, now indicates the focused column with a darkened header, FOCUSED_COLUMN_INDICATOR configuration property added.
 - FilterTable.Builder.headerRendererFactory() added.
 - DefaultFilterTableColumnModel.DefaultColumnSelection now updates lead and anchor indexes when adjusting.
+### is.codion.framework.domain
+- DerivedValueStep.value() renamed DerivedWithStep.with().
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
 - AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.
