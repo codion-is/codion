@@ -1351,7 +1351,7 @@ public class EntityPanel extends JPanel {
 		private WindowType windowType = WINDOW_TYPE.getOrThrow();
 		private PanelState initialEditState = EMBEDDED;
 		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.getOrThrow();
-		private Border border = createEmptyBorder(Layouts.GAP.getOrThrow(), 0, 0, 0);
+		private @Nullable Border border = createEmptyBorder(Layouts.GAP.getOrThrow(), 0, 0, 0);
 
 		private String caption;
 		private @Nullable String description;
@@ -1514,7 +1514,7 @@ public class EntityPanel extends JPanel {
 		 * @param border specifies the border to use around the main panel
 		 * @return this Config instance
 		 */
-		public EntityPanel.Config border(Border border) {
+		public EntityPanel.Config border(@Nullable Border border) {
 			this.border = border;
 			return this;
 		}
