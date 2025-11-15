@@ -45,7 +45,7 @@ import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JTextField;
 
-public final class PanelTest {
+public final class ChinookPanelsTest {
 
 	static {
 		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);

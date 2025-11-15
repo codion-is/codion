@@ -19,15 +19,11 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Artist;
-import is.codion.swing.common.model.component.list.FilterListModel;
-import is.codion.swing.common.ui.component.list.FilterList;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.util.List;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Album;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
@@ -45,50 +41,28 @@ public final class AlbumEditPanel extends EntityEditPanel {
 
 		createSearchField(Album.ARTIST_FK)
 						.columns(15)
-						// We provide a edit panel supplier, which enables
+						// We provide an edit panel supplier, which enables
 						// keyboard shortcuts for adding a new artist (INSERT)
 						// or editing the currently selected one (CTRL-INSERT).
 						.editPanel(this::createArtistEditPanel);
 		createTextField(Album.TITLE)
 						.columns(15);
-		// We create a custom component for the album tags,
-		// the JList it is based on is automatically associated
-		// with Album.TAGS, since we use the createList() method.
-		AlbumTagPanel albumTagPanel = createAlbumTagPanel();
-		// We create a custom component for the album cover art
-		CoverArtPanel coverArtPanel = new CoverArtPanel(editModel().editor().value(Album.COVER));
-		// We set the CoverArtPanel as the component for Album.COVER,
-		// so that it will appear in the input component selection dialog
-		component(Album.COVER).set(coverArtPanel);
+		// We use our custom component for the album tags,
+		// which is automatically associated with Album.TAGS.
+		component(Album.TAGS).set(new AlbumTagsValue());
+		// And our custom component for the album cover
+		// which is automatically associated with Album.COVER.
+		component(Album.COVER).set(new CoverArtValue());
 
 		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)
 						.add(createInputPanel(Album.ARTIST_FK))
 						.add(createInputPanel(Album.TITLE))
-						.add(createInputPanel(Album.TAGS)
-										.component(albumTagPanel))
+						.add(createInputPanel(Album.TAGS))
 						.add(createInputPanel(Album.COVER))
 						.build();
 
 		setLayout(borderLayout());
 		add(centerPanel, BorderLayout.CENTER);
-	}
-
-	private AlbumTagPanel createAlbumTagPanel() {
-		// We create JList based value for the album tags.
-		ComponentValue<FilterList<String>, List<String>> tagsValue =
-						createList(FilterListModel.builder()
-										.<String>items()
-										.build())
-										// The value should be based on the items in
-										// the list as opposed to the selected items
-										.items(Album.TAGS)
-										// Use null instead of an empty list, in
-										// order to match the null column value.
-										.nullable(true)
-										.buildValue();
-		// We then base the custom AlbumTagPanel component
-		// on the above component value
-		return new AlbumTagPanel(tagsValue);
 	}
 
 	private EntityEditPanel createArtistEditPanel() {

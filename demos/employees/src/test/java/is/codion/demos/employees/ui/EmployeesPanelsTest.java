@@ -29,7 +29,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 import org.junit.jupiter.api.Test;
 
-public final class PanelTest {
+public final class EmployeesPanelsTest {
 
 	private final EntityConnectionProvider connectionProvider =
 					LocalEntityConnectionProvider.builder()
