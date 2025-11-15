@@ -38,6 +38,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -52,6 +53,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -95,6 +97,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.SwingConstants.HORIZONTAL;
 import static javax.swing.SwingConstants.VERTICAL;
 
@@ -320,11 +323,12 @@ public class EntityPanel extends JPanel {
 		this.entityModel = requireNonNull(entityModel);
 		this.editPanel = editPanel;
 		this.tablePanel = tablePanel;
+		this.configuration = configure(config);
 		this.editControlPanel = createEditControlPanel();
 		this.mainPanel = borderLayoutPanel()
 						.minimumSize(new Dimension(0, 0))
+						.border(configuration.border)
 						.build();
-		this.configuration = configure(config);
 		this.controlsLayout = createControlsLayout();
 		this.detailLayout = configuration.detailLayout.apply(this);
 		this.detailController = detailLayout.controller().orElse(new DetailController() {});
@@ -1335,6 +1339,8 @@ public class EntityPanel extends JPanel {
 		private WindowType windowType = WINDOW_TYPE.getOrThrow();
 		private PanelState initialEditState = EMBEDDED;
 		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.getOrThrow();
+		private Border border = createEmptyBorder(Layouts.GAP.getOrThrow(), 0, 0, 0);
+
 		private String caption;
 		private @Nullable String description;
 		private @Nullable ImageIcon icon;
@@ -1366,6 +1372,7 @@ public class EntityPanel extends JPanel {
 			this.disposeEditDialogOnEscape = config.disposeEditDialogOnEscape;
 			this.windowType = config.windowType;
 			this.editPanelContstraints = config.editPanelContstraints;
+			this.border = config.border;
 		}
 
 		/**
@@ -1487,6 +1494,16 @@ public class EntityPanel extends JPanel {
 		 */
 		public Config editPanelConstraints(String editPanelConstraints) {
 			this.editPanelContstraints = validateBorderLayoutConstraints(editPanelConstraints);
+			return this;
+		}
+
+		/**
+		 * By default, the main panel uses an empty border, with a top inset of size {@link Layouts#GAP}.
+		 * @param border specifies the border to use around the main panel
+		 * @return this Config instance
+		 */
+		public EntityPanel.Config border(Border border) {
+			this.border = border;
 			return this;
 		}
 

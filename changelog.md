@@ -54,6 +54,7 @@ Codion Change Log
 - EntityPopupMenu, string values now surrounded by quotes, for spotting leading and trailing spaces. Clipboard action now includes full values.
 - EntityTablePanel.ControlKeys.COPY_COLUMN added.
 - EntityTablePanel bug fixed, filter and condition panels now scrolled correctly when initially shown.
+- EntityPanel, now includes an empty border by default, with a top inset, Config.border().
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel memory usage display improved, server reachability status shown.
 - ClientMonitorPanel bug fixed, filter panel now scrolled correctly when initially shown.

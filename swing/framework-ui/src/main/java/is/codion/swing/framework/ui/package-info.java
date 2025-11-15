@@ -42,6 +42,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#CONTROL_PANEL_CONSTRAINTS}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#CONTROL_TOOLBAR_CONSTRAINTS}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#WINDOW_TYPE}
+ * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#EDIT_PANEL_CONSTRAINTS}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#EXCLUDE_HIDDEN_COLUMNS}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#CONDITION_VIEW}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#FILTER_VIEW}
