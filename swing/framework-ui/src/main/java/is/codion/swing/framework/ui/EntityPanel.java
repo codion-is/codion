@@ -245,6 +245,7 @@ public class EntityPanel extends JPanel {
 	private @Nullable Window editWindow;
 
 	private boolean initialized = false;
+	private boolean mainPanelInitialized = false;
 
 	/**
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
@@ -629,12 +630,12 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Initializes this EntityPanels UI.
 	 * @see #detailLayout()
-	 * @see #createMainComponent()
-	 * @see #mainPanel()
+	 * @see #initializeMainComponent()
+	 * @see #initializeMainPanel()
 	 */
 	protected void initializeUI() {
 		setLayout(borderLayout());
-		add(createMainComponent(), BorderLayout.CENTER);
+		add(initializeMainComponent(), BorderLayout.CENTER);
 	}
 
 	/**
@@ -679,39 +680,50 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Creates the main component, which is {@link #mainPanel()} in case of no detail panels
+	 * Initializes the main component, which is {@link #initializeMainPanel()} in case of no detail panels
 	 * or the result of {@link DetailLayout#layout()} in case of one or more detail panels.
 	 * @return the main component to base this entity panel on
+	 * @throws IllegalStateException in case the panel has already been initialized
 	 */
-	protected final JComponent createMainComponent() {
+	protected final JComponent initializeMainComponent() {
 		if (detailPanels.get().isEmpty()) {
-			return mainPanel();
+			return initializeMainPanel();
 		}
 
-		return detailLayout.layout().orElseGet(this::mainPanel);
+		return detailLayout.layout().orElseGet(this::initializeMainPanel);
 	}
 
 	/**
-	 * @return the main panel containing the table, edit and control panels
+	 * Initializes the main panel, containing the table, edit and control panels
+	 * @return the initalized main panel
+	 * @throws IllegalStateException in case the panel has already been initialized
 	 */
-	protected final JPanel mainPanel() {
-		if (editControlPanel != null && editControlPanel.getComponents().length == 0) {
-			editControlPanel.add(configuration.editBasePanel.apply(editPanel), BorderLayout.CENTER);
+	protected final JPanel initializeMainPanel() {
+		if (mainPanelInitialized) {
+			throw new IllegalStateException("Main panel has already been initialized");
 		}
-		if (tablePanel != null && mainPanel.getComponents().length == 0) {
-			mainPanel.add(tablePanel, BorderLayout.CENTER);
-		}
-		if (configuration.includeControls && editControlPanel != null) {
-			Controls controls = controlsLayout.create(configuration.controlMap);
-			if (controls.size() > 0) {
-				JComponent controlComponent = configuration.controlComponent.apply(controls);
-				if (controlComponent != null) {
-					editControlPanel.add(controlComponent, configuration.controlComponentConstraints);
+		try {
+			if (editControlPanel != null && editControlPanel.getComponents().length == 0) {
+				editControlPanel.add(configuration.editBasePanel.apply(editPanel), BorderLayout.CENTER);
+			}
+			if (tablePanel != null && mainPanel.getComponents().length == 0) {
+				mainPanel.add(tablePanel, BorderLayout.CENTER);
+			}
+			if (configuration.includeControls && editControlPanel != null) {
+				Controls controls = controlsLayout.create(configuration.controlMap);
+				if (controls.size() > 0) {
+					JComponent controlComponent = configuration.controlComponent.apply(controls);
+					if (controlComponent != null) {
+						editControlPanel.add(controlComponent, configuration.controlComponentConstraints);
+					}
 				}
 			}
+			if (containsEditPanel()) {
+				updateEditState(configuration.initialEditState);
+			}
 		}
-		if (containsEditPanel()) {
-			updateEditState(configuration.initialEditState);
+		finally {
+			mainPanelInitialized = true;
 		}
 
 		return mainPanel;

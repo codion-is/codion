@@ -55,6 +55,7 @@ Codion Change Log
 - EntityTablePanel.ControlKeys.COPY_COLUMN added.
 - EntityTablePanel bug fixed, filter and condition panels now scrolled correctly when initially shown.
 - EntityPanel, now includes an empty border by default, with a top inset, Config.border().
+- EntityPanel.mainPanel() renamed initializeMainPanel(), now throws exception if called more than once,  createMainComponent() renamed initializeMainComponent.
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel memory usage display improved, server reachability status shown.
 - ClientMonitorPanel bug fixed, filter panel now scrolled correctly when initially shown.

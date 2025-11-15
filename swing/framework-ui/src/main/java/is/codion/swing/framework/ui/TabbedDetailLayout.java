@@ -192,7 +192,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has already been laid out");
 		}
 		entityPanel.activated().addListener(new ShowIfHidden());
-		splitPane = createSplitPane(entityPanel.mainPanel());
+		splitPane = createSplitPane(entityPanel.initializeMainPanel());
 		tabbedPane = createTabbedPane(entityPanel.detailPanels().get());
 		setupControls(entityPanel);
 		detailController.initialize();
