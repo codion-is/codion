@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSort;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
@@ -50,7 +49,6 @@ final class DefaultFilterTableHeaderRenderer<C> implements FilterTableHeaderRend
 
 	static final Factory<?> FACTORY = new DefaultFactory<>();
 
-	private final FilterListSelection<?> selection;
 	private final TableConditionModel<C> filters;
 	private final ColumnSort<C> columnSort;
 	private final FilterTableColumn<C> tableColumn;
@@ -58,7 +56,6 @@ final class DefaultFilterTableHeaderRenderer<C> implements FilterTableHeaderRend
 	private final boolean focusedColumnIndicator = FOCUSED_COLUMN_INDICATOR.getOrThrow();
 
 	private DefaultFilterTableHeaderRenderer(FilterTableModel<?, C> tableModel, FilterTableColumn<C> column) {
-		this.selection = tableModel.selection();
 		this.filters = tableModel.filters();
 		this.columnSort = tableModel.sort().columns();
 		this.tableColumn = column;
@@ -86,7 +83,7 @@ final class DefaultFilterTableHeaderRenderer<C> implements FilterTableHeaderRend
 				Border tableCellBorder = ((DefaultFilterTableCellRenderer<?, ?, ?>) columnCellRenderer).settings().defaultCellBorder();
 				label.setBorder(label.getBorder() == null ? tableCellBorder : createCompoundBorder(label.getBorder(), tableCellBorder));
 			}
-			if (focusedColumnIndicator && !selection.empty().is()) {
+			if (focusedColumnIndicator && !table.getSelectionModel().isSelectionEmpty()) {
 				int selectedColumn = table.getColumnModel().getSelectionModel().getLeadSelectionIndex();
 				if (column == selectedColumn) {
 					label.setBackground(darker(label.getBackground(), FOCUSED_COLUMN_DARKENING_FACTOR));

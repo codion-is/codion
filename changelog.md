@@ -28,6 +28,7 @@ Codion Change Log
 - ImagePanel renamed ImagePane.
 - ImagePane public api improved.
 - Utilities.link() removed.
+- DefaultFilterTableHeaderRenderer bug fixed, focused column indicator now shown while selection is adjusting.
 ### is.codion.framework.domain
 - DerivedValueStep.value() renamed DerivedWithStep.with().
 - DenormalizedAttributeStep.attribute() renamed DenormalizedUsingStep.using().
