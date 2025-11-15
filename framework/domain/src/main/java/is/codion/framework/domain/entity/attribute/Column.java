@@ -190,10 +190,10 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * {@snippet :
 		 * CountryLanguage.COUNTRY_CODE.define()
 		 *   .primaryKey(0)
-		 *   .updatable(true),
+		 *   .updatable(true)
 		 * CountryLanguage.LANGUAGE.define()
 		 *   .primaryKey(1)
-		 *   .updatable(true),
+		 *   .updatable(true)
 		 *}
 		 * @param index the zero-based index of this column in the primary key
 		 * @param <B> the builder type

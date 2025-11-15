@@ -59,6 +59,7 @@ Codion Change Log
 - EntityPanel, now includes an empty border by default, with a top inset, Config.border().
 - EntityPanel.mainPanel() renamed initializeMainPanel(), now throws exception if called more than once,  createMainComponent() renamed initializeMainComponent.
 - EntityPanel.mainPanel() reintroduced.
+- EntityComponents bug fixed, no longer assumes all attributes are ValueAttributeDefinition based.
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel memory usage display improved, server reachability status shown.
 - ClientMonitorPanel bug fixed, filter panel now scrolled correctly when initially shown.
