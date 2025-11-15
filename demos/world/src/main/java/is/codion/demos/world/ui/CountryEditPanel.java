@@ -33,6 +33,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -138,6 +139,7 @@ final class CountryEditPanel extends EntityEditPanel {
 		add(borderLayoutPanel()
 						.west(createInputPanel(Country.FLAG)
 										.component(borderLayoutPanel()
+														.layout(new BorderLayout())
 														.center(component(Country.FLAG).get())
 														.east(button()
 																		.control(createSelectFlagControl())
