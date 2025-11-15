@@ -596,14 +596,14 @@ public final class ChinookImpl extends DomainModel {
 		private final ResultPacker<String> packer = resultSet -> resultSet.getString(ARRAY_VALUE_INDEX);
 
 		@Override
-		public Array toColumnValue(List<String> value, Statement statement) throws SQLException {
+		public Array toColumn(List<String> value, Statement statement) throws SQLException {
 			return value.isEmpty() ? null :
 							statement.getConnection().createArrayOf("VARCHAR", value.toArray(new Object[0]));
 		}
 
 		@Override
-		public List<String> fromColumnValue(Array columnValue) throws SQLException {
-			try (ResultSet resultSet = columnValue.getResultSet()) {
+		public List<String> fromColumn(Array value) throws SQLException {
+			try (ResultSet resultSet = value.getResultSet()) {
 				return packer.pack(resultSet);
 			}
 		}

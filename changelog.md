@@ -38,6 +38,7 @@ Codion Change Log
 - AttributeDefinition.defaultValue() moved to ValueAttributeDefinition.
 - ForeignKeyDefinition.nullable() removed, EntityValidator.nullable() handles it.
 - DefaultEntityDefinition refactored, builders no longer required internally.
+- Column.Converter.fromColumnValue() and toColumnValue() renamed fromColumn() and toColumn().
 ### is.codion.framework.model
 - EntityTableModel.EntityTableEditor added along with AbstractEntityTableModel.AbstractAbstractEntityTableEditor.
 - AbstractEntityTableModel.replaceEntities() removed, now relies on FilterModel.Items.replace() instead.

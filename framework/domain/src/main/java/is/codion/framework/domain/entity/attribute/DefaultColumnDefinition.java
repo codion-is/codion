@@ -185,9 +185,9 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public @Nullable T get(ResultSet resultSet, int index) throws SQLException {
-		Object columnValue = getValue.get(resultSet, index);
-		if (columnValue != null || converter.handlesNull()) {
-			return converter.fromColumnValue(columnValue);
+		Object value = getValue.get(resultSet, index);
+		if (value != null || converter.handlesNull()) {
+			return converter.fromColumn(value);
 		}
 
 		return null;
@@ -200,12 +200,12 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException {
-		setParameter.set(statement, index, columnValue(statement, value));
+		setParameter.set(statement, index, columnValue(value, statement));
 	}
 
-	private @Nullable Object columnValue(PreparedStatement statement, @Nullable T value) throws SQLException {
+	private @Nullable Object columnValue(@Nullable T value, PreparedStatement statement) throws SQLException {
 		if (value != null || converter.handlesNull()) {
-			return converter.toColumnValue(value, statement);
+			return converter.toColumn(value, statement);
 		}
 
 		return null;
@@ -232,13 +232,13 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	private static final class DefaultConverter implements Converter<Object, Object> {
 		@Override
-		public @Nullable Object toColumnValue(@Nullable Object value, Statement statement) {
+		public @Nullable Object toColumn(@Nullable Object value, Statement statement) {
 			return value;
 		}
 
 		@Override
-		public @Nullable Object fromColumnValue(@Nullable Object columnValue) {
-			return columnValue;
+		public @Nullable Object fromColumn(@Nullable Object value) {
+			return value;
 		}
 	}
 

@@ -1675,7 +1675,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			try {
 				Column.Converter<Object, Object> converter = columnDefinition.converter();
 				if (value != null || converter.handlesNull()) {
-					columnValue = converter.fromColumnValue(value);
+					columnValue = converter.fromColumn(value);
 				}
 				else {
 					columnValue = null;

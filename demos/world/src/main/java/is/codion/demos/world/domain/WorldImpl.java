@@ -416,13 +416,12 @@ public final class WorldImpl extends DomainModel {
 	private static final class LocationConverter implements Converter<Location, String> {
 
 		@Override
-		public String toColumnValue(Location location,
-																Statement statement) {
+		public String toColumn(Location location, Statement statement) {
 			return "POINT (" + location.longitude() + " " + location.latitude() + ")";
 		}
 
 		@Override
-		public Location fromColumnValue(String columnValue) {
+		public Location fromColumn(String columnValue) {
 			String[] latLon = columnValue
 							.replace("POINT (", "")
 							.replace(")", "")

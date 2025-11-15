@@ -267,11 +267,11 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * but for certain types this may be necessary, such as boolean values where
 		 * the values are represented by a non-boolean data type in the underlying database
 		 * @param value the value to translate, not null unless {@link #handlesNull()} is overridden
-		 * @param statement the statement using the value, may be null
+		 * @param statement the statement using the value
 		 * @return the sql value used to represent the given value
 		 * @throws SQLException in case of an exception
 		 */
-		@Nullable C toColumnValue(@Nullable T value, Statement statement) throws SQLException;
+		@Nullable C toColumn(@Nullable T value, Statement statement) throws SQLException;
 
 		/**
 		 * Translates the given sql column value into a column value.
@@ -279,7 +279,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * @return the value of sql {@code columnValue}
 		 * @throws SQLException in case of an exception
 		 */
-		@Nullable T fromColumnValue(@Nullable C columnValue) throws SQLException;
+		@Nullable T fromColumn(@Nullable C columnValue) throws SQLException;
 	}
 
 	/**

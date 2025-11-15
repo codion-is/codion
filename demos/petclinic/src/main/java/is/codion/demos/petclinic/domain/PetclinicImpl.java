@@ -179,13 +179,13 @@ public final class PetclinicImpl extends DomainModel {
 	private static final class PhoneTypeConverter implements Converter<PhoneType, String> {
 
 		@Override
-		public String toColumnValue(PhoneType value, Statement statement) {
+		public String toColumn(PhoneType value, Statement statement) {
 			return value.name();
 		}
 
 		@Override
-		public PhoneType fromColumnValue(String columnValue) {
-			return PhoneType.valueOf(columnValue);
+		public PhoneType fromColumn(String value) {
+			return PhoneType.valueOf(value);
 		}
 	}
 

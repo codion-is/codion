@@ -687,7 +687,7 @@ public final class TestDomain extends DomainModel {
 			}
 
 			@Override
-			public String toColumnValue(String value, Statement statement) throws SQLException {
+			public String toColumn(String value, Statement statement) throws SQLException {
 				if (value == null) {
 					return "null";
 				}
@@ -696,12 +696,12 @@ public final class TestDomain extends DomainModel {
 			}
 
 			@Override
-			public String fromColumnValue(String columnValue) throws SQLException {
-				if ("null".equals(columnValue)) {
+			public String fromColumn(String value) throws SQLException {
+				if ("null".equals(value)) {
 					return null;
 				}
 
-				return columnValue;
+				return value;
 			}
 		}
 		add(NullConverter.TYPE.define(

@@ -426,12 +426,12 @@ public final class Petstore extends DomainModel {
 	private static final class BooleanConverter implements Converter<Boolean, Integer> {
 
 		@Override
-		public Integer toColumnValue(Boolean value, Statement statement) throws SQLException {
+		public Integer toColumn(Boolean value, Statement statement) throws SQLException {
 			return value ? 1 : 0;
 		}
 
 		@Override
-		public Boolean fromColumnValue(Integer columnValue) throws SQLException {
+		public Boolean fromColumn(Integer columnValue) throws SQLException {
 			return columnValue.intValue() == 1;
 		}
 	}
