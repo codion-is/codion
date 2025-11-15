@@ -694,6 +694,19 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
+	 * @return the main panel, containing the table, edit and control panels
+	 * @throws IllegalStateException in case the main panel has not been initialized
+	 * @see #initializeMainPanel()
+	 */
+	protected final JPanel mainPanel() {
+		if (!mainPanelInitialized) {
+			throw new IllegalStateException("Main panel has not been initialized");
+		}
+
+		return mainPanel;
+	}
+
+	/**
 	 * Initializes the main panel, containing the table, edit and control panels
 	 * @return the initalized main panel
 	 * @throws IllegalStateException in case the panel has already been initialized
