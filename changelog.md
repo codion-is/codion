@@ -29,6 +29,7 @@ Codion Change Log
 - ImagePane public api improved.
 - Utilities.link() removed.
 - DefaultFilterTableHeaderRenderer bug fixed, focused column indicator now shown while selection is adjusting.
+- ImagePane bug fixed, ByteArrayComponentValue.optional() now returns an empty Optional when the byte array is empty.
 ### is.codion.framework.domain
 - DerivedValueStep.value() renamed DerivedWithStep.with().
 - DenormalizedAttributeStep.attribute() renamed DenormalizedUsingStep.using().

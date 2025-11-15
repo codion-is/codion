@@ -45,12 +45,14 @@ public final class ImagePaneTest {
 
 		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder().buildValue();
 		bytesValue.addListener(bytesEventCounter::incrementAndGet);
+		assertFalse(bytesValue.optional().isPresent());
 
 		ImagePane imagePane = bytesValue.component();
 		imagePane.image().addListener(imageEventCounter::incrementAndGet);
 
 		byte[] allBytes = Files.readAllBytes(new File(TEST_IMAGE_PATH).toPath());
 		bytesValue.set(allBytes);
+		assertTrue(bytesValue.optional().isPresent());
 
 		assertNotNull(imagePane.image().get());
 		assertEquals(1, bytesEventCounter.get());
@@ -74,6 +76,7 @@ public final class ImagePaneTest {
 		assertEquals(4, imageEventCounter.get());
 
 		bytesValue.clear();
+		assertFalse(bytesValue.optional().isPresent());
 		assertNull(imagePane.image().get());
 		assertEquals(5, bytesEventCounter.get());
 		assertEquals(5, imageEventCounter.get());

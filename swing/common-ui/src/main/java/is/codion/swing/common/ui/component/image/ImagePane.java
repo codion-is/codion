@@ -62,6 +62,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
 
@@ -1349,6 +1350,13 @@ public final class ImagePane extends JPanel {
 		private ByteArrayComponentValue(ImagePane component) {
 			super(component, EMPTY_BYTES);
 			component.image.bytes.addListener(this::notifyObserver);
+		}
+
+		@Override
+		public Optional<byte[]> optional() {
+			byte[] bytes = getOrThrow();
+
+			return bytes.length > 0 ? Optional.of(bytes) : Optional.empty();
 		}
 
 		@Override
