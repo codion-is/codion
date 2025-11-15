@@ -30,6 +30,7 @@ Codion Change Log
 - Utilities.link() removed.
 - DefaultFilterTableHeaderRenderer bug fixed, focused column indicator now shown while selection is adjusting.
 - ImagePane bug fixed, ByteArrayComponentValue.optional() now returns an empty Optional when the byte array is empty.
+- TextFieldPanel.maximumLength can now be 0, for consistency.
 ### is.codion.framework.domain
 - DerivedValueStep.value() renamed DerivedWithStep.with().
 - DenormalizedAttributeStep.attribute() renamed DenormalizedUsingStep.using().

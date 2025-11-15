@@ -110,8 +110,8 @@ public final class TextFieldPanel extends JPanel {
 	 * @throws IllegalArgumentException in case the text length exceeds maximum length
 	 */
 	public void setText(@Nullable String text) {
-		if (text != null && maximumLength > 0 && text.length() > maximumLength) {
-			throw new IllegalArgumentException("Maximum allowed text length exceeded");
+		if (text != null && maximumLength >= 0 && text.length() > maximumLength) {
+			throw new IllegalArgumentException("Maximum allowed text length exceeded: " + maximumLength);
 		}
 		textField.setText(text == null ? "" : text);
 	}
@@ -310,7 +310,7 @@ public final class TextFieldPanel extends JPanel {
 		private boolean buttonFocusable;
 		private @Nullable ImageIcon buttonIcon;
 		private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
-		private int maximumLength;
+		private int maximumLength = -1;
 		private @Nullable String caption;
 		private @Nullable String dialogTitle;
 
