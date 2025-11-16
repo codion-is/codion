@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.60
+
 ## 0.18.59
 ### is.codion.common.model
 - DefaultFilterModelItems.replace() bug fixed, now uses ItemsListener.inserted() and updated() instead of changed().
