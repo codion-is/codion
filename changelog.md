@@ -60,6 +60,7 @@ Codion Change Log
 - EntityPanel.mainPanel() renamed initializeMainPanel(), now throws exception if called more than once,  createMainComponent() renamed initializeMainComponent.
 - EntityPanel.mainPanel() reintroduced.
 - EntityComponents bug fixed, no longer assumes all attributes are ValueAttributeDefinition based.
+- EntityPanel.mainPanel() and initializeMainPanel() combined in defaultPanel().
 ### is.codion.tools.monitor.ui
 - ServerMonitorPanel memory usage display improved, server reachability status shown.
 - ClientMonitorPanel bug fixed, filter panel now scrolled correctly when initially shown.

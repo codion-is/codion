@@ -50,7 +50,7 @@ public final class PlaylistPanel extends EntityPanel {
 	protected void initializeUI() {
 		setLayout(borderLayout());
 		add(splitPane()
-						.leftComponent(initializeMainPanel())
+						.leftComponent(defaultPanel())
 						.rightComponent(detailPanels().get(PlaylistTrack.TYPE).initialize())
 						.continuousLayout(true)
 						.build(), BorderLayout.CENTER);
