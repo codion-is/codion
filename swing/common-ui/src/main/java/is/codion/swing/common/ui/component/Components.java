@@ -34,7 +34,6 @@ import is.codion.swing.common.ui.component.button.ToolBarBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
-import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.listbox.ListBoxBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlexibleGridLayoutPanelBuilder;
@@ -378,13 +377,6 @@ public final class Components {
 	 */
 	public static SliderBuilder.ModelStep slider() {
 		return SliderBuilder.builder();
-	}
-
-	/**
-	 * @return a new list builder
-	 */
-	public static ListBuilder.ModelStep list() {
-		return ListBuilder.builder();
 	}
 
 	/**

@@ -26,9 +26,10 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.ListSelectionModel;
 
-final class DefaultListSelectedItemBuilder<T> extends AbstractListBuilder<T, T, ListBuilder.SelectedItem<T>> implements ListBuilder.SelectedItem<T> {
+final class DefaultFilterListSelectedItemBuilder<T> extends AbstractFilterListBuilder<T, T, FilterList.Builder.SelectedItem<T>>
+				implements FilterList.Builder.SelectedItem<T> {
 
-	DefaultListSelectedItemBuilder(FilterListModel<T> listModel) {
+	DefaultFilterListSelectedItemBuilder(FilterListModel<T> listModel) {
 		super(listModel);
 	}
 
@@ -42,12 +43,12 @@ final class DefaultListSelectedItemBuilder<T> extends AbstractListBuilder<T, T, 
 
 	@Override
 	protected ComponentValue<FilterList<T>, T> createComponentValue(FilterList<T> component) {
-		return new ListSelectedItemValue<>(component);
+		return new SelectedItemValue<>(component);
 	}
 
-	private static final class ListSelectedItemValue<T> extends AbstractComponentValue<FilterList<T>, T> {
+	private static final class SelectedItemValue<T> extends AbstractComponentValue<FilterList<T>, T> {
 
-		private ListSelectedItemValue(FilterList<T> list) {
+		private SelectedItemValue(FilterList<T> list) {
 			super(list);
 			list.model().selection().indexes().addListener(this::notifyObserver);
 		}

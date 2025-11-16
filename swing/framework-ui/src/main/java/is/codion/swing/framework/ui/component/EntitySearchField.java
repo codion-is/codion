@@ -36,11 +36,9 @@ import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
-import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.HintTextField;
@@ -860,15 +858,15 @@ public final class EntitySearchField extends HintTextField {
 			FilterListModel<Entity> listModel = FilterListModel.builder()
 							.<Entity>items()
 							.build();
-			ListBuilder<?, Entity, ?> listBuilder = searchField.singleSelection() ?
-							Components.list()
+
+			return (searchField.singleSelection() ?
+							FilterList.builder()
 											.model(listModel)
 											.selectedItem() :
-							Components.list()
+							FilterList.builder()
 											.model(listModel)
-											.selectedItems();
-
-			return listBuilder.mouseListener(new DoubleClickListener())
+											.selectedItems())
+							.mouseListener(new DoubleClickListener())
 							.cellRenderer(new Renderer())
 							.onBuild(new RemoveDefaultEnterAction())
 							.build();

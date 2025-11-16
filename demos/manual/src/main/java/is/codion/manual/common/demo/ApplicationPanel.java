@@ -28,6 +28,7 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemF
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -336,7 +337,7 @@ public final class ApplicationPanel extends JPanel {
 										.build(inputPanel::add))
 						.build(inputPanel::add);
 
-		Components.list()
+		FilterList.builder()
 						.model(model.createStringListModel())
 						.selectedItems()
 						.link(model.stringListValues())

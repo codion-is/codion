@@ -40,7 +40,7 @@ import is.codion.swing.common.ui.component.button.NullableCheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
-import is.codion.swing.common.ui.component.list.ListBuilder;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.panel.InputPanelBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
@@ -596,8 +596,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <T> the value type
 	 * @return a list builder factory
 	 */
-	protected final <T> ListBuilderFactory<T> createList(FilterListModel<T> listModel) {
-		return new ListBuilderFactory<>(listModel);
+	protected final <T> FilterListBuilderFactory<T> createList(FilterListModel<T> listModel) {
+		return new FilterListBuilderFactory<>(listModel);
 	}
 
 	protected final Map<Attribute<?>, EditorComponent<?>> components() {
@@ -892,12 +892,12 @@ public class EntityEditComponentPanel extends JPanel {
 	 * A factory for list builders for list based attributes.
 	 * @param <T> the value type
 	 */
-	public final class ListBuilderFactory<T> {
+	public final class FilterListBuilderFactory<T> {
 
-		private final ListBuilder.Factory<T> builderFactory;
+		private final FilterList.Builder.Factory<T> builderFactory;
 
-		private ListBuilderFactory(FilterListModel<T> listModel) {
-			this.builderFactory = Components.list().model(listModel);
+		private FilterListBuilderFactory(FilterListModel<T> listModel) {
+			this.builderFactory = FilterList.builder().model(listModel);
 		}
 
 		/**
@@ -905,7 +905,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @param attribute the attribute
 		 * @return a JList builder
 		 */
-		public ListBuilder.Items<T> items(Attribute<List<T>> attribute) {
+		public FilterList.Builder.Items<T> items(Attribute<List<T>> attribute) {
 			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
 			return setComponentBuilder(attribute, builderFactory.items()
@@ -917,7 +917,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @param attribute the attribute
 		 * @return a JList builder
 		 */
-		public ListBuilder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute) {
+		public FilterList.Builder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute) {
 			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
 			return setComponentBuilder(attribute, builderFactory.selectedItems()
@@ -929,7 +929,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @param attribute the attribute
 		 * @return a JList builder
 		 */
-		public ListBuilder.SelectedItem<T> selectedItem(Attribute<T> attribute) {
+		public FilterList.Builder.SelectedItem<T> selectedItem(Attribute<T> attribute) {
 			AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
 			return setComponentBuilder(attribute, builderFactory.selectedItem()

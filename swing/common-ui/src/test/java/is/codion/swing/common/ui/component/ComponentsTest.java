@@ -30,7 +30,6 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.list.FilterList;
-import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.InputPanelLayout;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -866,7 +865,7 @@ public final class ComponentsTest {
 						.build();
 
 		ValueList<String> textValue = ValueList.valueList(singletonList("two"));
-		ListBuilder.SelectedItems<String> listBuilder = Components.list()
+		FilterList.Builder.SelectedItems<String> listBuilder = FilterList.builder()
 						.model(listModel)
 						.selectedItems()
 						.visibleRowCount(4)
@@ -887,7 +886,7 @@ public final class ComponentsTest {
 		assertNotNull(componentValue.get());
 		listBuilder.scrollPane().build();
 
-		componentValue = Components.list()
+		componentValue = FilterList.builder()
 						.model(FilterListModel.builder()
 										.items(asList("one", "two", "three"))
 										.build())
@@ -908,7 +907,7 @@ public final class ComponentsTest {
 						.build();
 
 		Value<String> textValue = Value.nullable("two");
-		ListBuilder.SelectedItem<String> listBuilder = Components.list()
+		FilterList.Builder.SelectedItem<String> listBuilder = FilterList.builder()
 						.model(listModel)
 						.selectedItem()
 						.visibleRowCount(4)
@@ -935,7 +934,7 @@ public final class ComponentsTest {
 	@Test
 	void listItems() {
 		ValueList<String> textValue = ValueList.valueList(asList("one", "two", "three"));
-		ListBuilder.Items<String> listBuilder = Components.list()
+		FilterList.Builder.Items<String> listBuilder = FilterList.builder()
 						.model(FilterListModel.builder()
 										.items(asList("one", "two", "three"))
 										.build())
@@ -959,7 +958,7 @@ public final class ComponentsTest {
 		listBuilder.scrollPane().build();
 
 		// Nullable
-		componentValue = Components.list()
+		componentValue = FilterList.builder()
 						.model(FilterListModel.builder()
 										.<String>items()
 										.build())

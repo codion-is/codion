@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.60
+### is.codion.swing.common.ui
+- ListBuilder moved to FilterList.Builder, FilterList.builder() added, related refactoring.
+- Components.list() removed.
 
 ## 0.18.59
 ### is.codion.common.model

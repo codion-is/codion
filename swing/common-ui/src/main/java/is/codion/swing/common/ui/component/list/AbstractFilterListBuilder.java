@@ -28,10 +28,12 @@ import javax.swing.ListCellRenderer;
 import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractListBuilder<V, T, B extends ListBuilder<V, T, B>> extends AbstractComponentValueBuilder<FilterList<T>, V, B> implements ListBuilder<V, T, B> {
+abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T, B>>
+				extends AbstractComponentValueBuilder<FilterList<T>, V, B> implements FilterList.Builder<V, T, B> {
 
 	private final FilterListModel<T> listModel;
 	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
@@ -43,7 +45,7 @@ abstract class AbstractListBuilder<V, T, B extends ListBuilder<V, T, B>> extends
 	private int fixedCellHeight = -1;
 	private int fixedCellWidth = -1;
 
-	AbstractListBuilder(FilterListModel<T> listModel) {
+	AbstractFilterListBuilder(FilterListModel<T> listModel) {
 		this.listModel = requireNonNull(listModel);
 	}
 
@@ -97,5 +99,19 @@ abstract class AbstractListBuilder<V, T, B extends ListBuilder<V, T, B>> extends
 		list.setFixedCellWidth(fixedCellWidth);
 
 		return list;
+	}
+
+	private static final class AddListSelectionListener implements Consumer<ListSelectionListener> {
+
+		private final JList<?> list;
+
+		private AddListSelectionListener(JList<?> list) {
+			this.list = list;
+		}
+
+		@Override
+		public void accept(ListSelectionListener listener) {
+			list.addListSelectionListener(listener);
+		}
 	}
 }

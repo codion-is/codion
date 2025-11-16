@@ -25,31 +25,21 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, ListBuilder.Items<T>> implements ListBuilder.Items<T> {
+final class DefaultFilterListSelectedItemsBuilder<T> extends AbstractFilterListBuilder<List<T>, T, FilterList.Builder.SelectedItems<T>>
+				implements FilterList.Builder.SelectedItems<T> {
 
-	private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 	private boolean nullable = false;
 
-	DefaultListItemsBuilder(FilterListModel<T> listModel) {
+	DefaultFilterListSelectedItemsBuilder(FilterListModel<T> listModel) {
 		super(listModel);
 	}
 
 	@Override
-	public Items<T> selectionMode(int selectionMode) {
-		this.selectionMode = selectionMode;
-		return this;
-	}
-
-	@Override
-	public Items<T> nullable(boolean nullable) {
+	public SelectedItems<T> nullable(boolean nullable) {
 		this.nullable = nullable;
 		return this;
 	}
@@ -57,57 +47,39 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, L
 	@Override
 	protected FilterList<T> createComponent() {
 		FilterList<T> list = createList();
-		list.setSelectionMode(selectionMode);
+		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		return list;
 	}
 
 	@Override
 	protected ComponentValue<FilterList<T>, List<T>> createComponentValue(FilterList<T> component) {
-		return new ListItemsValue<>(component, nullable);
+		return new SelectedItemsValue<>(component, nullable);
 	}
 
-	private static final class ListItemsValue<T> extends AbstractComponentValue<FilterList<T>, List<T>> {
+	private static final class SelectedItemsValue<T> extends AbstractComponentValue<FilterList<T>, List<T>> {
 
 		private final boolean nullable;
 
-		private ListItemsValue(FilterList<T> list, boolean nullable) {
+		private SelectedItemsValue(FilterList<T> list, boolean nullable) {
 			super(list, nullable ? null : emptyList());
 			this.nullable = nullable;
-			list.model().addListDataListener(new DefaultListDataNotifier());
+			list.model().selection().indexes().addListener(this::notifyObserver);
 		}
 
 		@Override
 		protected @Nullable List<T> getComponentValue() {
-			Collection<T> collection = component().model().items().get();
-			if (nullable && collection.isEmpty()) {
+			List<T> items = component().model().selection().items().get();
+			if (nullable && items.isEmpty()) {
 				return null;
 			}
 
-			return new ArrayList<>(collection);
+			return items;
 		}
 
 		@Override
 		protected void setComponentValue(List<T> value) {
-			component().model().items().set(value == null ? emptyList() : value);
-		}
-
-		private final class DefaultListDataNotifier implements ListDataListener {
-
-			@Override
-			public void intervalAdded(ListDataEvent e) {
-				notifyObserver();
-			}
-
-			@Override
-			public void intervalRemoved(ListDataEvent e) {
-				notifyObserver();
-			}
-
-			@Override
-			public void contentsChanged(ListDataEvent e) {
-				notifyObserver();
-			}
+			component().model().selection().items().set(value == null ? emptyList() : value);
 		}
 	}
 }

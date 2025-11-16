@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.State;
 import is.codion.swing.common.model.component.list.FilterListModel;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.control.Control;
 
@@ -155,7 +154,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 							.items(values)
 							.comparator(comparator)
 							.build();
-			FilterList<T> list = Components.list()
+			FilterList<T> list = FilterList.builder()
 							.model(model)
 							.items()
 							.build();

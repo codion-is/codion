@@ -22,36 +22,36 @@ import is.codion.swing.common.model.component.list.FilterListModel;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultListBuilderFactory<T> implements ListBuilder.Factory<T> {
+final class DefaultFilterListBuilderFactory<T> implements FilterList.Builder.Factory<T> {
 
-	static final ListBuilder.ModelStep MODEL = new DefaultModelStep();
+	static final FilterList.Builder.ModelStep MODEL = new DefaultModelStep();
 
 	private final FilterListModel<T> listModel;
 
-	DefaultListBuilderFactory(FilterListModel<T> listModel) {
+	private DefaultFilterListBuilderFactory(FilterListModel<T> listModel) {
 		this.listModel = requireNonNull(listModel);
 	}
 
 	@Override
-	public ListBuilder.Items<T> items() {
-		return new DefaultListItemsBuilder<>(listModel);
+	public FilterList.Builder.Items<T> items() {
+		return new DefaultFilterListItemsBuilder<>(listModel);
 	}
 
 	@Override
-	public ListBuilder.SelectedItems<T> selectedItems() {
-		return new DefaultListSelectedItemsBuilder<>(listModel);
+	public FilterList.Builder.SelectedItems<T> selectedItems() {
+		return new DefaultFilterListSelectedItemsBuilder<>(listModel);
 	}
 
 	@Override
-	public ListBuilder.SelectedItem<T> selectedItem() {
-		return new DefaultListSelectedItemBuilder<>(listModel);
+	public FilterList.Builder.SelectedItem<T> selectedItem() {
+		return new DefaultFilterListSelectedItemBuilder<>(listModel);
 	}
 
-	private static final class DefaultModelStep implements ListBuilder.ModelStep {
+	private static final class DefaultModelStep implements FilterList.Builder.ModelStep {
 
 		@Override
-		public <T> ListBuilder.Factory<T> model(FilterListModel<T> listModel) {
-			return new DefaultListBuilderFactory<>(listModel);
+		public <T> FilterList.Builder.Factory<T> model(FilterListModel<T> listModel) {
+			return new DefaultFilterListBuilderFactory<>(listModel);
 		}
 	}
 }

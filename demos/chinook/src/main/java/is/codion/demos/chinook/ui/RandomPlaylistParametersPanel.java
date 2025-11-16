@@ -27,7 +27,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParamet
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.component.list.FilterListModel;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.text.NumberField;
 
@@ -102,7 +101,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
 	}
 
 	private FilterList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
-		return Components.list()
+		return FilterList.builder()
 						.model(FilterListModel.builder()
 										.items(allGenres(connectionProvider))
 										.build())

@@ -20,7 +20,6 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.list.FilterListModel;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -68,7 +67,7 @@ final class AlbumTagsValue extends AbstractComponentValue<AlbumTagsValue.AlbumTa
 		private final FilterListModel<String> model = FilterListModel.builder()
 						.<String>items()
 						.build();
-		private final ComponentValue<FilterList<String>, List<String>> value = Components.list()
+		private final ComponentValue<FilterList<String>, List<String>> value = FilterList.builder()
 						.model(model)
 						.items()
 						.nullable(true)
