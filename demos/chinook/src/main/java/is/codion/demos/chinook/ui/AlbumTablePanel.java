@@ -25,7 +25,6 @@ import is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.imageio.ImageIO;
@@ -47,10 +46,9 @@ public final class AlbumTablePanel extends EntityTablePanel {
 						.editComponentFactory(Album.TAGS, editModel -> new AlbumTagsValue())
 						// Custom cell renderer for Album.RATING
 						// rendering the rating as stars, i.e. *****
-						.cellRenderer(Album.RATING, EntityTableCellRenderer.builder(Album.RATING, tableModel)
+						.cellRenderer(Album.RATING, renderer -> renderer
 										.formatter(RATINGS::get)
-										.toolTipData(true)
-										.build()));
+										.toolTipData(true)));
 		coverPane = ImagePane.builder()
 						.preferredSize(screenSizeRatio(0.5))
 						.zoomDevice(ZoomDevice.MOUSE_WHEEL)

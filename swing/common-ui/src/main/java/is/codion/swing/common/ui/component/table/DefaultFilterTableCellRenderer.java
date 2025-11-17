@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
@@ -122,7 +120,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		setText(settings.formatter.apply((T) value));
 	}
 
-	UISettings settings() {
+	UISettings<C> settings() {
 		return settings.uiSettings;
 	}
 
@@ -213,10 +211,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final boolean toolTipData;
 		private final Function<T, String> formatter;
 
-		private final UISettings uiSettings;
-
-		private @Nullable ObservableState filterEnabled;
-		private boolean filterEnabledSet = false;
+		private final UISettings<C> uiSettings;
 
 		private Settings(SettingsBuilder<R, C, T> builder) {
 			this.uiSettings = builder.uiSettings;
@@ -278,7 +273,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
 			cellBackgroundColor = backgroundAlternating(cellBackgroundColor, alternateRow, selected);
 			if (filterIndicator) {
-				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, identifier), alternateRow, cellBackgroundColor);
+				cellBackgroundColor = uiSettings.background(identifier, alternateRow, cellBackgroundColor, filterTable.model());
 			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
@@ -291,7 +286,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
 			cellBackgroundColor = backgroundNonAlternating(cellBackgroundColor, selected);
 			if (filterIndicator) {
-				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, identifier), false, cellBackgroundColor);
+				cellBackgroundColor = uiSettings.background(identifier, false, cellBackgroundColor, filterTable.model());
 			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
@@ -336,18 +331,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 							uiSettings.focusedCellBorder() : uiSettings.defaultCellBorder();
 		}
 
-		private <C> boolean filterEnabled(FilterTable<?, C> filterTable, C identifier) {
-			if (filterEnabledSet) {
-				return filterEnabled != null && filterEnabled.is();
-			}
-
-			ConditionModel<?> filter = filterTable.model().filters().get().get(identifier);
-			filterEnabled = filter == null ? null : filter.enabled();
-			filterEnabledSet = true;
-
-			return filterEnabled != null && filterEnabled.is();
-		}
-
 		private static boolean isSearchResult(FilterTableSearchModel searchModel, int rowIndex, int columnIndex) {
 			return searchModel.results().current().getOrThrow().equals(rowIndex, columnIndex);
 		}
@@ -367,7 +350,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private static final OffsetDateTimeFormatter OFFSET_DATE_TIME_FORMATTER = new OffsetDateTimeFormatter();
 		private static final DefaultFormatter<Object> FORMATTER = new DefaultFormatter<>();
 
-		private UISettings uiSettings = new DefaultUISettings();
+		private UISettings<C> uiSettings = new DefaultUISettings<>();
 		private int leftPadding = TABLE_CELL_LEFT_PADDING.getOrThrow();
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
@@ -381,10 +364,10 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private SettingsBuilder(Class<T> columnClass) {
 			this.horizontalAlignment = defaultHorizontalAlignment(columnClass);
-			this.formatter = createDefaultFormatter(columnClass);
+			this.formatter = defaultFormatter(columnClass);
 		}
 
-		SettingsBuilder<R, C, T> uiSettings(UISettings uiSettings) {
+		SettingsBuilder<R, C, T> uiSettings(UISettings<C> uiSettings) {
 			this.uiSettings = requireNonNull(uiSettings);
 			return this;
 		}
@@ -457,7 +440,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return HORIZONTAL_ALIGNMENT.getOrThrow();
 		}
 
-		private Function<T, String> createDefaultFormatter(Class<T> columnClass) {
+		private Function<T, String> defaultFormatter(Class<T> columnClass) {
 			if (columnClass.equals(LocalTime.class)) {
 				return (Function<T, String>) TIME_FORMATTER;
 			}
@@ -564,7 +547,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Builder<R, C, T> uiSettings(UISettings uiSettings) {
+		public Builder<R, C, T> uiSettings(UISettings<C> uiSettings) {
 			this.settings.uiSettings(uiSettings);
 			return this;
 		}
@@ -659,7 +642,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
-	static final class DefaultFactory<R, C> implements Factory<R, C> {
+	static final class DefaultFactory<R, C> implements Factory<C, FilterTableModel<R, C>> {
 
 		@Override
 		public FilterTableCellRenderer<?> create(C identifier, FilterTableModel<R, C> tableModel) {

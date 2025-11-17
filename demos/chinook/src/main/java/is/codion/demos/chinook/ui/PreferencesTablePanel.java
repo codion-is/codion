@@ -20,7 +20,6 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -37,10 +36,8 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 						.editComponentFactory(Preferences.NEWSLETTER_SUBSCRIBED,
 										e -> new TriStateCheckBoxValue())
 						.surrendersFocusOnKeystroke(true)
-						.cellRenderer(Preferences.NEWSLETTER_SUBSCRIBED, FilterTableCellRenderer.builder()
-										.columnClass(Boolean.class)
-										.renderer(new FlatTriStateRenderer())
-										.build())
+						.cellRenderer(Preferences.NEWSLETTER_SUBSCRIBED, renderer -> renderer
+										.renderer(new FlatTriStateRenderer()))
 						.cellEditor(Preferences.NEWSLETTER_SUBSCRIBED, FilterTableCellEditor.builder()
 										.component(TriStateCheckBoxValue::new)
 										.clickCountToStart(1)

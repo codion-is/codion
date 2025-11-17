@@ -5,10 +5,15 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ListBuilder moved to FilterList.Builder, FilterList.builder() added, related refactoring.
 - Components.list() removed.
+- FilterTable.Builder.cellRenderer() now consumer based, with columnClass parameter.
+- FilterTableCellRenderer.UISettings column identifier type parameter added.
+- FilterTableCellRenderer.UISettings.background() filterEnabled parameter removed, identifier and tableModel added.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 ### is.codion.swing.framework.ui
 - EntityTableExportModel bug fixed, incorrect i18n keys fixed.
+- EntityTableCellRenderer renamed EntityTableCellRendererFactory.
+- EntityTablePanel.Configuration.cellRenderer() now consumer based.
 
 ## 0.18.59
 ### is.codion.common.model

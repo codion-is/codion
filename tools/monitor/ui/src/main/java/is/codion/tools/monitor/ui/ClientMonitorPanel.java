@@ -24,7 +24,6 @@ import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.tools.monitor.model.ClientInstanceMonitor;
@@ -78,10 +77,8 @@ public final class ClientMonitorPanel extends JPanel {
 		this.model = model;
 		clientInstanceTable = FilterTable.builder()
 						.model(model.clientInstanceTableModel())
-						.cellRenderer(CREATION_TIME, FilterTableCellRenderer.builder()
-										.columnClass(LocalDateTime.class)
-										.formatter(CREATED_FORMATTER::format)
-										.build())
+						.cellRenderer(CREATION_TIME, LocalDateTime.class, renderer -> renderer
+										.formatter(CREATED_FORMATTER::format))
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.filterView(ConditionView.SIMPLE)

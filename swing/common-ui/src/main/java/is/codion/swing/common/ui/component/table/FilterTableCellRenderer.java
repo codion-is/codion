@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -201,7 +203,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		 * @param uiSettings the ui settings
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> uiSettings(UISettings uiSettings);
+		Builder<R, C, T> uiSettings(UISettings<C> uiSettings);
 
 		/**
 		 * Note that this setting does not apply when using {@link #renderer(TableCellRenderer)} or {@link #component(ComponentValue)}.
@@ -292,27 +294,30 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	 * @param <C> the column identifier type
 	 * @return a new default {@link Factory} instance
 	 */
-	static <R, C> Factory<R, C> factory() {
+	static <R, C> Factory<C, FilterTableModel<R, C>> factory() {
 		return new DefaultFilterTableCellRenderer.DefaultFactory<>();
 	}
 
 	/**
 	 * A factory for {@link FilterTableCellRenderer} instances.
+	 * @param <C> the column identifier type
+	 * @param <T> the table model type
 	 */
-	interface Factory<R, C> {
+	interface Factory<C, T extends FilterTableModel<?, C>> {
 
 		/**
 		 * @param identifier the column identifier
 		 * @param tableModel the table model
 		 * @return a {@link FilterTableCellRenderer} instance for the given column
 		 */
-		FilterTableCellRenderer<?> create(C identifier, FilterTableModel<R, C> tableModel);
+		FilterTableCellRenderer<?> create(C identifier, T tableModel);
 	}
 
 	/**
 	 * Represents the UI cell colors according to the look and feel.
+	 * @param <C> the column identifier type
 	 */
-	interface UISettings {
+	interface UISettings<C> {
 
 		/**
 		 * The table foreground color associated with the {@code Table.foreground} UI key
@@ -381,12 +386,13 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		Border focusedCellBorder();
 
 		/**
-		 * @param filterEnabled true if a filter is enabled
+		 * @param identifier the column identifier
 		 * @param alternateRow true if this is an alternate row number
 		 * @param cellBackgroundColor the cell specific background color, if any
+		 * @param tableModel the table model
 		 * @return the background color
 		 */
-		Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor);
+		Color background(C identifier, boolean alternateRow, Color cellBackgroundColor, FilterTableModel<?, C> tableModel);
 
 		/**
 		 * @return the alternate selection background color
@@ -404,7 +410,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	/**
 	 * A default {@link UISettings} implementation.
 	 */
-	class DefaultUISettings implements UISettings {
+	class DefaultUISettings<C> implements UISettings<C> {
 
 		protected static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
 		protected static final double DARKENING_FACTOR = 0.9;
@@ -422,6 +428,9 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		private Color alternateSelectionBackground;
 		private Border defaultCellBorder;
 		private Border focusedCellBorder;
+
+		private @Nullable ObservableState filterEnabled;
+		private boolean filterEnabledSet = false;
 
 		protected DefaultUISettings() {}
 
@@ -502,12 +511,30 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		}
 
 		@Override
-		public Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor) {
-			if (filterEnabled) {
+		public Color background(C identifier, boolean alternateRow, Color cellBackgroundColor, FilterTableModel<?, C> tableModel) {
+			if (filterEnabled(identifier, tableModel)) {
 				return filteredBackground(alternateRow, cellBackgroundColor);
 			}
 
 			return cellBackgroundColor;
+		}
+
+		/**
+		 * @param <C> the column identifier type
+		 * @param identifier the column identifier
+		 * @param tableModel the table model
+		 * @return true if the filter for the given column is enabled
+		 */
+		protected final <C> boolean filterEnabled(C identifier, FilterTableModel<?, C> tableModel) {
+			if (filterEnabledSet) {
+				return filterEnabled != null && filterEnabled.is();
+			}
+
+			ConditionModel<?> filter = tableModel.filters().get().get(identifier);
+			filterEnabled = filter == null ? null : filter.enabled();
+			filterEnabledSet = true;
+
+			return filterEnabled != null && filterEnabled.is();
 		}
 
 		private Color filteredBackground(boolean alternateRow, Color cellBackgroundColor) {

@@ -21,7 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -30,10 +29,9 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.framework.ui.EntityTableCellRenderer.factory;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EntityTableCellRendererFactoryTest {
+public class EntityTableCellRendererFactoryFactoryTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -47,7 +45,7 @@ public class EntityTableCellRendererFactoryTest {
 	void test() {
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
 		tablePanel.tableModel().items().refresh();
-		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = factory();
+		FilterTableCellRenderer.Factory<Attribute<?>, SwingEntityTableModel> factory = new EntityTableCellRendererFactory();
 		FilterTableCellRenderer<?> renderer = factory.create(Employee.NAME, tablePanel.tableModel());
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
@@ -64,7 +62,7 @@ public class EntityTableCellRendererFactoryTest {
 
 	@Test
 	void entityMismatch() {
-		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = factory();
+		FilterTableCellRenderer.Factory<Attribute<?>, SwingEntityTableModel> factory = new EntityTableCellRendererFactory();
 		assertThrows(IllegalArgumentException.class, () -> factory.create(Department.NAME, new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER)));
 	}
 }

@@ -21,7 +21,6 @@ package is.codion.manual.swing.common.ui.component.table;
 import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
@@ -42,10 +41,8 @@ final class FilterTableDemo {
 		FilterTable<Person, String> table =
 						FilterTable.builder()
 										.model(tableModel)
-										.cellRenderer(Person.AGE, FilterTableCellRenderer.builder()
-														.columnClass(Integer.class)
-														.horizontalAlignment(SwingConstants.CENTER)
-														.build())
+										.cellRenderer(Person.AGE, Integer.class, renderer -> renderer
+														.horizontalAlignment(SwingConstants.CENTER))
 										.doubleClick(Control.command(() ->
 														tableModel.selection().item().optional()
 																		.ifPresent(System.out::println)))

@@ -27,7 +27,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -159,25 +158,6 @@ public class EntityTablePanelTest {
 
 		EntityTablePanelPreferences.clearLegacyPreferences(tablePanel);
 		UserPreferences.flush();
-	}
-
-	@Test
-	void cellRenderers() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		tableModel.items().refresh();
-		FilterTableCellRenderer<String> nameRenderer = EntityTableCellRenderer.builder(Employee.NAME, tableModel).build();
-		FilterTableCellRenderer<Double> commissionRenderer = EntityTableCellRenderer.builder(Employee.COMMISSION, tableModel).build();
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config
-						.cellRenderer(Employee.NAME, nameRenderer)
-						.cellRendererFactory((attribute, model) -> {
-							if (attribute.equals(Employee.COMMISSION)) {
-								return commissionRenderer;
-							}
-
-							return EntityTableCellRenderer.builder(attribute, model).build();
-						}));
-		assertSame(nameRenderer, tablePanel.table().columnModel().column(Employee.NAME).getCellRenderer());
-		assertSame(commissionRenderer, tablePanel.table().columnModel().column(Employee.COMMISSION).getCellRenderer());
 	}
 
 	@Test

@@ -2182,7 +2182,7 @@ public class EntityTablePanel extends JPanel {
 			this.tableBuilder = FilterTable.builder()
 							.model(tablePanel.tableModel)
 							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
-							.cellRendererFactory(EntityTableCellRenderer.factory())
+							.cellRendererFactory(new EntityTableCellRendererFactory())
 							.headerRendererFactory(new EntityTableHeaderRendererFactory())
 							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))
 							.cellEditable(new EntityCellEditable(tablePanel.tableModel.entities()))
@@ -2539,25 +2539,30 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Sets the cell renderer for the given attribute
 		 * @param attribute the attribute
-		 * @param cellRenderer the cell renderer
+		 * @param renderer provided with the cell renderer builder for configuring
 		 * @param <T> the value type
 		 * @param <A> the attribute type
 		 * @return this Config instance
-		 * @see FilterTable.Builder#cellRenderer(Object, FilterTableCellRenderer)
+		 * @see FilterTable.Builder#cellRenderer(Object, Class, Consumer)
 		 */
-		public <T, A extends Attribute<T>> Config cellRenderer(A attribute, FilterTableCellRenderer<T> cellRenderer) {
-			entityDefinition.attributes().definition(attribute);
-			tableBuilder.cellRenderer(attribute, requireNonNull(cellRenderer));
+		public <T, A extends Attribute<T>> Config cellRenderer(A attribute,
+																													 Consumer<FilterTableCellRenderer.Builder<Entity, Attribute<?>, T>> renderer) {
+			AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+			requireNonNull(renderer);
+			tableBuilder.cellRenderer(attribute, attribute.type().valueClass(), builder -> {
+				EntityTableCellRendererFactory.configure(attributeDefinition, builder);
+				renderer.accept(builder);
+			});
 			return this;
 		}
 
 		/**
-		 * Overridden by {@link #cellRenderer(Attribute, FilterTableCellRenderer)}.
+		 * Overridden by {@link #cellRenderer(Attribute, Consumer)}.
 		 * @param cellRendererFactory the cell renderer factory
 		 * @return this Config instance
 		 * @see FilterTable.Builder#cellRendererFactory(FilterTableCellRenderer.Factory)
 		 */
-		public Config cellRendererFactory(EntityTableCellRenderer.Factory cellRendererFactory) {
+		public Config cellRendererFactory(EntityTableCellRendererFactory cellRendererFactory) {
 			tableBuilder.cellRendererFactory(cellRendererFactory);
 			return this;
 		}

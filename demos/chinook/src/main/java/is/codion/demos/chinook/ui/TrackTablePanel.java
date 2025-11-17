@@ -21,7 +21,9 @@ package is.codion.demos.chinook.ui;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.model.TrackTableModel;
 import is.codion.demos.chinook.ui.DurationComponentValue.DurationPanel;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
@@ -30,8 +32,6 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EditComponentFactory;
 
@@ -69,9 +69,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 						// Custom component for editing track durations
 						.editComponentFactory(Track.MILLISECONDS, new DurationEditComponentFactory())
 						// Custom cell renderer for ratings
-						.cellRenderer(Track.RATING, ratingRenderer(tableModel))
+						.cellRenderer(Track.RATING, TrackTablePanel::ratingRenderer)
 						// Custom cell renderer for track duration (min:sec)
-						.cellRenderer(Track.MILLISECONDS, durationRenderer(tableModel))
+						.cellRenderer(Track.MILLISECONDS, TrackTablePanel::durationRenderer)
 						// Custom cell editor for track ratings
 						.cellEditor(Track.RATING, ratingEditor(tableModel.entityDefinition()))
 						// Custom cell editor for track durations (min:sec:ms)
@@ -114,11 +114,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.show();
 	}
 
-	private static FilterTableCellRenderer<Integer> durationRenderer(SwingEntityTableModel tableModel) {
-		return EntityTableCellRenderer.builder(Track.MILLISECONDS, tableModel)
-						.formatter(milliseconds -> minutes(milliseconds) + " min " + seconds(milliseconds) + " sec")
-						.toolTipData(true)
-						.build();
+	private static void durationRenderer(FilterTableCellRenderer.Builder<Entity, Attribute<?>, Integer> renderer) {
+		renderer.formatter(milliseconds -> minutes(milliseconds) + " min " + seconds(milliseconds) + " sec")
+						.toolTipData(true);
 	}
 
 	private static FilterTableCellEditor<Integer> durationEditor() {
@@ -127,11 +125,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.build();
 	}
 
-	private static FilterTableCellRenderer<Integer> ratingRenderer(SwingEntityTableModel tableModel) {
-		return EntityTableCellRenderer.builder(Track.RATING, tableModel)
-						.formatter(RATINGS::get)
-						.toolTipData(true)
-						.build();
+	private static void ratingRenderer(FilterTableCellRenderer.Builder<Entity, Attribute<?>, Integer> renderer) {
+		renderer.formatter(RATINGS::get)
+						.toolTipData(true);
 	}
 
 	private static FilterTableCellEditor<Integer> ratingEditor(EntityDefinition entityDefinition) {

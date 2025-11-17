@@ -24,7 +24,6 @@ import is.codion.demos.world.model.CityTableModel;
 import is.codion.demos.world.model.CityTableModel.PopulateLocationTask;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
@@ -36,14 +35,12 @@ final class CityTablePanel extends ChartTablePanel {
 
 	CityTablePanel(CityTableModel tableModel) {
 		super(tableModel, tableModel.chartDataset(), "Cities", config -> config
-						.cellRenderer(City.POPULATION, EntityTableCellRenderer.builder(City.POPULATION, tableModel)
+						.cellRenderer(City.POPULATION, renderer -> renderer
 										.foreground((table, city, attribute, population) ->
-														population > 1_000_000 ? Color.YELLOW : null)
-										.build())
-						.cellRenderer(City.NAME, EntityTableCellRenderer.builder(City.NAME, tableModel)
+														population > 1_000_000 ? Color.YELLOW : null))
+						.cellRenderer(City.NAME, renderer -> renderer
 										.foreground((table, city, attribute, name) ->
-														Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL)) ? Color.GREEN : null)
-										.build())
+														Objects.equals(city.get(City.ID), city.get(City.COUNTRY_FK).get(Country.CAPITAL)) ? Color.GREEN : null))
 						.editable(attributes -> attributes.remove(City.LOCATION)));
 		configurePopupMenu(layout -> layout.clear()
 						.control(createPopulateLocationControl())

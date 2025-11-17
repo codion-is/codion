@@ -20,7 +20,6 @@ package is.codion.demos.employees.ui;
 
 import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.awt.Color;
@@ -30,14 +29,12 @@ public class EmployeeTablePanel extends EntityTablePanel {
 
 	public EmployeeTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
-						.cellRenderer(Employee.JOB, EntityTableCellRenderer.builder(Employee.JOB, tableModel)
+						.cellRenderer(Employee.JOB, renderer -> renderer
 										.background((table, employee, attribute, job) ->
-														"Manager".equals(job) ? Color.CYAN : null)
-										.build())
-						.cellRenderer(Employee.SALARY, EntityTableCellRenderer.builder(Employee.SALARY, tableModel)
+														"Manager".equals(job) ? Color.CYAN : null))
+						.cellRenderer(Employee.SALARY, renderer -> renderer
 										.foreground((table, employee, attribute, salary) ->
-														salary.doubleValue() < 1300 ? Color.RED : null)
-										.build()));
+														salary.doubleValue() < 1300 ? Color.RED : null)));
 	}
 }
 // end::employeeTablePanel[]

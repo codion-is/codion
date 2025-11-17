@@ -1261,19 +1261,20 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * The cell renderer for the given column, overrides {@link #cellRendererFactory(FilterTableCellRenderer.Factory)}.
 		 * @param identifier the column identifier
-		 * @param cellRenderer the cell renderer to use for the given column
+		 * @param columnClass the column class
+		 * @param renderer provided with the cell renderer to for the given column
 		 * @param <T> the column type
 		 * @return this builder instance
 		 */
-		<T> Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer<T> cellRenderer);
+		<T> Builder<R, C> cellRenderer(C identifier, Class<T> columnClass, Consumer<FilterTableCellRenderer.Builder<R, C, T>> renderer);
 
 		/**
 		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer
-		 * and is overridden by any renderer set via {@link #cellRenderer(Object, FilterTableCellRenderer)}.
+		 * and is overridden by any renderer set via {@link #cellRenderer(Object, Class, Consumer)}.
 		 * @param cellRendererFactory the table cell renderer factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory);
+		<T extends FilterTableModel<R, C>> Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C, T> cellRendererFactory);
 
 		/**
 		 * Note that this factory is only used to create header renderers for columns which do not already have a header renderer
@@ -1509,7 +1510,7 @@ public final class FilterTable<R, C> extends JTable {
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private ComponentFactory filterComponentFactory = new FilterComponentFactory();
 		private FilterTableHeaderRenderer.Factory<C> headerRendererFactory;
-		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
+		private FilterTableCellRenderer.Factory<C, FilterTableModel<R, C>> cellRendererFactory;
 		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
 		private BiPredicate<R, C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
 		private @Nullable Boolean autoStartsEdit;
@@ -1576,14 +1577,19 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public <T> Builder<R, C> cellRenderer(C identifier, FilterTableCellRenderer<T> cellRenderer) {
-			this.cellRenderers.put(requireNonNull(identifier), requireNonNull(cellRenderer));
+		public <T> Builder<R, C> cellRenderer(C identifier, Class<T> columnClass, Consumer<FilterTableCellRenderer.Builder<R, C, T>> renderer) {
+			requireNonNull(identifier);
+			requireNonNull(columnClass);
+			requireNonNull(renderer);
+			FilterTableCellRenderer.Builder<R, C, T> builder = FilterTableCellRenderer.builder().columnClass(columnClass);
+			renderer.accept(builder);
+			this.cellRenderers.put(identifier, builder.build());
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory) {
-			this.cellRendererFactory = requireNonNull(cellRendererFactory);
+		public <T extends FilterTableModel<R, C>> Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C, T> cellRendererFactory) {
+			this.cellRendererFactory = (FilterTableCellRenderer.Factory<C, FilterTableModel<R, C>>) requireNonNull(cellRendererFactory);
 			return this;
 		}
 

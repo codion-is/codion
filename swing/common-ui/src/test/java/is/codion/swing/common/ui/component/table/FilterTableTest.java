@@ -461,10 +461,6 @@ public class FilterTableTest {
 						.build();
 		model.items().add(new Row());
 
-		FilterTableCellRenderer<Integer> zeroRenderer = FilterTableCellRenderer.builder()
-						.columnClass(Integer.class)
-						.horizontalAlignment(SwingConstants.CENTER)
-						.build();
 		FilterTableCellRenderer<Integer> oneRenderer = FilterTableCellRenderer.builder()
 						.columnClass(Integer.class)
 						.horizontalAlignment(SwingConstants.LEFT)
@@ -472,14 +468,12 @@ public class FilterTableTest {
 
 		FilterTable<Row, Integer> table = FilterTable.builder()
 						.model(model)
-						.cellRenderer(0, zeroRenderer)
+						.cellRenderer(0, Integer.class, renderer ->
+										renderer.horizontalAlignment(SwingConstants.CENTER))
 						.cellRendererFactory((identifier, tableModel) -> oneRenderer)
 						// Trigger the condition panel to be built right away
 						.filterView(ConditionView.SIMPLE)
 						.build();
-
-		assertSame(zeroRenderer, table.columnModel().column(0).getCellRenderer());
-		assertSame(zeroRenderer, table.getCellRenderer(0, 0));
 
 		assertSame(oneRenderer, table.columnModel().column(1).getCellRenderer());
 		assertSame(oneRenderer, table.getCellRenderer(0, 1));
