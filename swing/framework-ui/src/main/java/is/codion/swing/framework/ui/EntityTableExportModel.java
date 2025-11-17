@@ -382,7 +382,7 @@ final class EntityTableExportModel {
 
 		@Override
 		String successMessage() {
-			return MESSAGES.getString("copied_to_file") + ": " + file;
+			return MESSAGES.getString("exported_to_file") + ": " + file;
 		}
 	}
 
@@ -404,7 +404,7 @@ final class EntityTableExportModel {
 
 		@Override
 		String successMessage() {
-			return MESSAGES.getString("copied_to_clipboard");
+			return MESSAGES.getString("exported_to_clipboard");
 		}
 
 		private List<String> createLine(Entity entity, ProgressReporter<Void> progress) {

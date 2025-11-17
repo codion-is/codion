@@ -7,6 +7,8 @@ Codion Change Log
 - Components.list() removed.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
+### is.codion.swing.framework.ui
+- EntityTableExportModel bug fixed, incorrect i18n keys fixed.
 
 ## 0.18.59
 ### is.codion.common.model
