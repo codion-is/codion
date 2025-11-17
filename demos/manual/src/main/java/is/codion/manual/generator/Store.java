@@ -51,10 +51,10 @@ public final class Store extends DomainModel {
 	}
 
 	static EntityDefinition customer() {
-		return Customer.TYPE.define(/* ... */).build();
+		return Customer.TYPE.as(/* ... */).build();
 	}
 
 	static EntityDefinition order() {
-		return Order.TYPE.define(/* ... */).build();
+		return Order.TYPE.as(/* ... */).build();
 	}
 }

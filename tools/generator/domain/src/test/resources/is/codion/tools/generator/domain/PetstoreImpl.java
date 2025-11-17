@@ -23,76 +23,76 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition address() {
-		return Address.TYPE.define(
-				Address.ADDRESS_ID.define()
+		return Address.TYPE.as(
+				Address.ADDRESS_ID.as()
 					.primaryKey()
 					.generator(identity()),
-				Address.STREET1.define()
+				Address.STREET1.as()
 					.column()
 					.nullable(false)
 					.maximumLength(55),
-				Address.STREET2.define()
+				Address.STREET2.as()
 					.column()
 					.maximumLength(55),
-				Address.CITY.define()
+				Address.CITY.as()
 					.column()
 					.nullable(false)
 					.maximumLength(55),
-				Address.STATE.define()
+				Address.STATE.as()
 					.column()
 					.nullable(false)
 					.maximumLength(25),
-				Address.ZIP.define()
+				Address.ZIP.as()
 					.column()
 					.nullable(false),
-				Address.LATITUDE.define()
+				Address.LATITUDE.as()
 					.column()
 					.nullable(false)
 					.fractionDigits(2),
-				Address.LONGITUDE.define()
+				Address.LONGITUDE.as()
 					.column()
 					.nullable(false)
 					.fractionDigits(2),
-				Address.LOCATION.define()
+				Address.LOCATION.as()
 					.column(),
-				Address.IMAGE.define()
+				Address.IMAGE.as()
 					.column())
 			.build();
 	}
 
 	static EntityDefinition category() {
-		return Category.TYPE.define(
-				Category.CATEGORY_ID.define()
+		return Category.TYPE.as(
+				Category.CATEGORY_ID.as()
 					.primaryKey()
 					.generator(identity()),
-				Category.NAME.define()
+				Category.NAME.as()
 					.column()
 					.nullable(false)
 					.maximumLength(25),
-				Category.DESCRIPTION.define()
+				Category.DESCRIPTION.as()
 					.column()
 					.nullable(false)
 					.maximumLength(255),
-				Category.IMAGE_URL.define()
+				Category.IMAGE_URL.as()
 					.column()
 					.maximumLength(55))
 			.build();
 	}
 
 	static EntityDefinition contactInfo() {
-		return ContactInfo.TYPE.define(
-				ContactInfo.CONTACT_INFO_ID.define()
+		return ContactInfo.TYPE.as(
+				ContactInfo.CONTACT_INFO_ID.as()
 					.primaryKey()
 					.generator(identity()),
-				ContactInfo.LAST_NAME.define()
+				ContactInfo.LAST_NAME.as()
 					.column()
 					.nullable(false)
 					.maximumLength(24),
-				ContactInfo.FIRST_NAME.define()
+				ContactInfo.FIRST_NAME.as()
 					.column()
 					.nullable(false)
 					.maximumLength(24),
-				ContactInfo.EMAIL.define()
+				ContactInfo.EMAIL.as()
 					.column()
 					.nullable(false)
 					.maximumLength(24))
@@ -100,21 +100,21 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition itemTagsView() {
-		return ItemTagsView.TYPE.define(
-				ItemTagsView.NAME.define()
+		return ItemTagsView.TYPE.as(
+				ItemTagsView.NAME.as()
 					.column(),
-				ItemTagsView.TAG.define()
+				ItemTagsView.TAG.as()
 					.column())
 			.readOnly(true)
 			.build();
 	}
 
 	static EntityDefinition tag() {
-		return Tag.TYPE.define(
-				Tag.TAG_ID.define()
+		return Tag.TYPE.as(
+				Tag.TAG_ID.as()
 					.primaryKey()
 					.generator(identity()),
-				Tag.TAG.define()
+				Tag.TAG.as()
 					.column()
 					.nullable(false)
 					.maximumLength(30))
@@ -122,99 +122,99 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition product() {
-		return Product.TYPE.define(
-				Product.PRODUCT_ID.define()
+		return Product.TYPE.as(
+				Product.PRODUCT_ID.as()
 					.primaryKey()
 					.generator(identity()),
-				Product.CATEGORY_ID.define()
+				Product.CATEGORY_ID.as()
 					.column()
 					.nullable(false),
-				Product.CATEGORY_FK.define()
+				Product.CATEGORY_FK.as()
 					.foreignKey(),
-				Product.NAME.define()
+				Product.NAME.as()
 					.column()
 					.nullable(false)
 					.maximumLength(25),
-				Product.DESCRIPTION.define()
+				Product.DESCRIPTION.as()
 					.column()
 					.nullable(false)
 					.maximumLength(255),
-				Product.IMAGE_URL.define()
+				Product.IMAGE_URL.as()
 					.column()
 					.maximumLength(55),
-				Product.INSERT_TIME.define()
+				Product.INSERT_TIME.as()
 					.column()
 					.readOnly(true),
-				Product.INSERT_USER.define()
+				Product.INSERT_USER.as()
 					.column()
 					.readOnly(true))
 			.build();
 	}
 
 	static EntityDefinition item() {
-		return Item.TYPE.define(
-				Item.ITEM_ID.define()
+		return Item.TYPE.as(
+				Item.ITEM_ID.as()
 					.primaryKey()
 					.generator(identity()),
-				Item.PRODUCT_ID.define()
+				Item.PRODUCT_ID.as()
 					.column()
 					.nullable(false),
-				Item.PRODUCT_FK.define()
+				Item.PRODUCT_FK.as()
 					.foreignKey(),
-				Item.NAME.define()
+				Item.NAME.as()
 					.column()
 					.nullable(false)
 					.maximumLength(30),
-				Item.DESCRIPTION.define()
+				Item.DESCRIPTION.as()
 					.column()
 					.nullable(false)
 					.maximumLength(500),
-				Item.IMAGE_URL.define()
+				Item.IMAGE_URL.as()
 					.column()
 					.maximumLength(55),
-				Item.IMAGE_THUMB_URL.define()
+				Item.IMAGE_THUMB_URL.as()
 					.column()
 					.maximumLength(55),
-				Item.PRICE.define()
+				Item.PRICE.as()
 					.column()
 					.nullable(false)
 					.fractionDigits(2),
-				Item.ADDRESS_ID.define()
+				Item.ADDRESS_ID.as()
 					.column()
 					.nullable(false),
-				Item.ADDRESS_FK.define()
+				Item.ADDRESS_FK.as()
 					.foreignKey(),
-				Item.CONTACT_INFO_ID.define()
+				Item.CONTACT_INFO_ID.as()
 					.column()
 					.nullable(false),
-				Item.CONTACT_INFO_FK.define()
+				Item.CONTACT_INFO_FK.as()
 					.foreignKey(),
-				Item.TOTAL_SCORE.define()
+				Item.TOTAL_SCORE.as()
 					.column(),
-				Item.NUMBER_OF_VOTES.define()
+				Item.NUMBER_OF_VOTES.as()
 					.column(),
-				Item.DISABLED.define()
+				Item.DISABLED.as()
 					.column()
 					.nullable(false)
 					.withDefault(true),
-				Item.INSERT_TIME.define()
+				Item.INSERT_TIME.as()
 					.column()
 					.readOnly(true),
-				Item.INSERT_USER.define()
+				Item.INSERT_USER.as()
 					.column()
 					.readOnly(true))
 			.build();
 	}
 
 	static EntityDefinition tagItem() {
-		return TagItem.TYPE.define(
-				TagItem.TAG_ID.define()
+		return TagItem.TYPE.as(
+				TagItem.TAG_ID.as()
 					.primaryKey(0),
-				TagItem.TAG_FK.define()
+				TagItem.TAG_FK.as()
 					.foreignKey(),
-				TagItem.ITEM_ID.define()
+				TagItem.ITEM_ID.as()
 					.primaryKey(1),
-				TagItem.ITEM_FK.define()
+				TagItem.ITEM_FK.as()
 					.foreignKey())
 			.build();
 	}

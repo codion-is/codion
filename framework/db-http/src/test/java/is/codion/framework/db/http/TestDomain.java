@@ -71,19 +71,19 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.define(
-										Department.ID.define()
+		add(Department.TYPE.as(
+										Department.ID.as()
 														.primaryKey()
 														.caption(Department.ID.name())
 														.updatable(true)
 														.nullable(false),
-										Department.NAME.define()
+										Department.NAME.as()
 														.column()
 														.caption(Department.NAME.name())
 														.searchable(true)
 														.maximumLength(14)
 														.nullable(false),
-										Department.LOCATION.define()
+										Department.LOCATION.as()
 														.column()
 														.caption(Department.LOCATION.name())
 														.maximumLength(13))
@@ -113,54 +113,54 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.define(
-										Employee.ID.define()
+		add(Employee.TYPE.as(
+										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name()),
-										Employee.NAME.define()
+										Employee.NAME.as()
 														.column()
 														.caption(Employee.NAME.name())
 														.searchable(true)
 														.maximumLength(10)
 														.nullable(false),
-										Employee.DEPARTMENT.define()
+										Employee.DEPARTMENT.as()
 														.column()
 														.nullable(false),
-										Employee.DEPARTMENT_FK.define()
+										Employee.DEPARTMENT_FK.as()
 														.foreignKey()
 														.caption(Employee.DEPARTMENT_FK.name()),
-										Employee.JOB.define()
+										Employee.JOB.as()
 														.column()
 														.items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
 														.caption(Employee.JOB.name())
 														.searchable(true),
-										Employee.SALARY.define()
+										Employee.SALARY.as()
 														.column()
 														.caption(Employee.SALARY.name())
 														.nullable(false)
 														.range(1000, 10000)
 														.fractionDigits(2),
-										Employee.COMMISSION.define()
+										Employee.COMMISSION.as()
 														.column()
 														.caption(Employee.COMMISSION.name())
 														.range(100, 2000)
 														.fractionDigits(2),
-										Employee.MGR.define()
+										Employee.MGR.as()
 														.column(),
-										Employee.MGR_FK.define()
+										Employee.MGR_FK.as()
 														.foreignKey()
 														.caption(Employee.MGR_FK.name()),
-										Employee.HIREDATE.define()
+										Employee.HIREDATE.as()
 														.column()
 														.caption(Employee.HIREDATE.name())
 														.nullable(false),
-										Employee.DEPARTMENT_LOCATION.define()
+										Employee.DEPARTMENT_LOCATION.as()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
 														.using(Department.LOCATION)
 														.caption(Department.LOCATION.name()),
-										Employee.DATA.define()
+										Employee.DATA.as()
 														.column()
 														.caption("Data"))
 						.formatter(Employee.NAME)

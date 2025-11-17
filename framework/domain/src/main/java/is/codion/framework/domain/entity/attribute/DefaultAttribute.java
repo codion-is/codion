@@ -62,7 +62,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 	}
 
 	@Override
-	public AttributeDefiner<T> define() {
+	public AttributeDefiner<T> as() {
 		return new DefaultAttributeDefiner<>(this);
 	}
 

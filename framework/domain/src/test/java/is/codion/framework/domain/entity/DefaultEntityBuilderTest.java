@@ -74,16 +74,16 @@ public final class DefaultEntityBuilderTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(domainType);
-				add(entityType.define(
-												id.define()
+				add(entityType.as(
+												id.as()
 																.primaryKey(),
-												name.define()
+												name.as()
 																.column()
 																.defaultValue("DefName"),
-												value.define()
+												value.as()
 																.column()
 																.defaultValue(42),
-												derivedValue.define()
+												derivedValue.as()
 																.derived()
 																.from(value)
 																.with(source -> {

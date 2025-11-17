@@ -114,16 +114,16 @@ codion/
    }
    
    EntityDefinition artist() {
-       return Artist.TYPE.define(
-           Artist.ID.define()
+       return Artist.TYPE.as(
+           Artist.ID.as()
                .primaryKey()
                .generator(KeyGenerator.identity()),
-           Artist.NAME.define()
+           Artist.NAME.as()
                .column()
                .caption("Name")
                .nullable(false)
                .maximumLength(120),
-           Artist.RECORD_LABEL_FK.define()
+           Artist.RECORD_LABEL_FK.as()
                .foreignKey()
                .caption("Record label"))
        .caption("Artist")
@@ -174,7 +174,7 @@ Foreign keys in Codion are first-class citizens with automatic entity loading:
 
 ```java
 // Define foreign key with attributes to fetch from referenced entity
-Artist.RECORD_LABEL_FK.define()
+Artist.RECORD_LABEL_FK.as()
     .foreignKey()
     .include(RecordLabel.NAME, RecordLabel.FOUNDED)  // Fetched with the Artist
     .referenceDepth(2)  // How deep to follow foreign key chains
@@ -535,7 +535,7 @@ record Location(double latitude, double longitude) implements Serializable {
 Column<Location> LOCATION = TYPE.column("location", Location.class);
 
 // LocationConverter handles database ↔ Java conversion
-LOCATION.define()
+LOCATION.as()
     .column()
     .columnClass(String.class, new LocationConverter());
 ```
@@ -549,7 +549,7 @@ Support for database arrays:
 Column<List<String>> TAGS = TYPE.column("tags", new TypeReference<>() {});
 
 // TagsConverter handles SQL Array ↔ List<String>
-TAGS.define()
+TAGS.as()
     .column()
     .columnClass(Array.class, new TagsConverter());
 ```
@@ -584,7 +584,7 @@ Calculate values dynamically from other attributes:
 // World demo - Calculate speakers from percentage and population
 Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
-CountryLanguage.NO_OF_SPEAKERS.define()
+CountryLanguage.NO_OF_SPEAKERS.as()
      .derived()
      .from(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
      .provider(new NoOfSpeakersProvider())
@@ -605,7 +605,7 @@ class NoOfSpeakers implements DerivedValue<Integer> {
 }
 
 //Derived values do not need to have source values
-SomeEntity.RANDOM.define()
+SomeEntity.RANDOM.as()
      .derived()
      .from()
      .value(source -> randomNumber())
@@ -652,7 +652,7 @@ public class UUIDGenerator implements Column.Generator<String> {
 }
 
 // Usage in domain definition
-Artist.ID.define()
+Artist.ID.as()
     .primaryKey()
     .generator(new UUIDGenerator())
 ```
@@ -664,18 +664,18 @@ Note: Generators now receive `Database` and `Connection` directly, providing exp
 #### Denormalized Attributes
 ```java
 // World demo - simply fetches the the denormalized value from the referenced entity, if available
-Country.CAPITAL_POPULATION.define()
+Country.CAPITAL_POPULATION.as()
     .denormalized(Country.CAPITAL_FK, City.POPULATION)
 ```
 
 #### Reference Depth Control
 ```java
 // Chinook demo - Control how deep to fetch relationships
-Track.ALBUM_FK.define()
+Track.ALBUM_FK.as()
     .foreignKey()
     .referenceDepth(1);  // Default, also fetches the Album's Artist
 
-PlaylistTrack.TRACK_FK.define()
+PlaylistTrack.TRACK_FK.as()
     .foreignKey()
     .referenceDepth(2);  // Fetch Track → Album → Artist
 ```
@@ -683,7 +683,7 @@ PlaylistTrack.TRACK_FK.define()
 #### Lazy Loading
 ```java
 // Don't load expensive columns by default
-Country.FLAG.define()
+Country.FLAG.as()
     .column()
     .selected(false);  // Only loaded when explicitly requested
 ```
@@ -707,7 +707,7 @@ List<Entity> tracks = connection.select(noneClassical);
 #### Subquery Columns
 ```java
 // World demo - Count related entities
-Country.NO_OF_CITIES.define()
+Country.NO_OF_CITIES.as()
     .subquery("SELECT COUNT(*) FROM world.city WHERE countrycode = country.code")
 ```
 
@@ -844,7 +844,7 @@ Dialogs.componentDialog(new JRViewer(employeeReport)).show();
 4. **Code Navigation Tips:**
    - Entity definitions are in `domain/api/` packages
    - Entity implementations are in `domain/` or `domain/impl/` packages
-   - Look for `TYPE.define()` to see how entities are configured
+   - Look for `TYPE.as()` to see how entities are configured
    - Search for `.conditionType()` to find custom condition examples
 
 ### Best Practices

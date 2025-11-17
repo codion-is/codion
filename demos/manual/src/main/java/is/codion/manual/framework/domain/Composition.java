@@ -56,10 +56,10 @@ public class Composition {
 		}
 
 		EntityDefinition product() {
-			return Product.TYPE.define(
-											Product.ID.define()
+			return Product.TYPE.as(
+											Product.ID.as()
 															.primaryKey(),
-											Product.NAME.define()
+											Product.NAME.as()
 															.column())
 							.build();
 		}
@@ -97,25 +97,25 @@ public class Composition {
 		}
 
 		EntityDefinition customer() {
-			return Customer.TYPE.define(
-											Customer.ID.define()
+			return Customer.TYPE.as(
+											Customer.ID.as()
 															.primaryKey(),
-											Customer.NAME.define()
+											Customer.NAME.as()
 															.column())
 							.build();
 		}
 
 		EntityDefinition order() {
-			return Order.TYPE.define(
-											Order.ID.define()
+			return Order.TYPE.as(
+											Order.ID.as()
 															.primaryKey(),
-											Order.CUSTOMER_ID.define()
+											Order.CUSTOMER_ID.as()
 															.column(),
-											Order.CUSTOMER_FK.define()
+											Order.CUSTOMER_FK.as()
 															.foreignKey(),
-											Order.PRODUCT_ID.define()
+											Order.PRODUCT_ID.as()
 															.column(),
-											Order.PRODUCT_FK.define()
+											Order.PRODUCT_FK.as()
 															.foreignKey())
 							.build();
 		}
@@ -141,10 +141,10 @@ public class Composition {
 		}
 
 		EntityDefinition employee() {
-			return Employee.TYPE.define(
-											Employee.ID.define()
+			return Employee.TYPE.as(
+											Employee.ID.as()
 															.primaryKey(),
-											Employee.NAME.define()
+											Employee.NAME.as()
 															.column())
 							.build();
 		}

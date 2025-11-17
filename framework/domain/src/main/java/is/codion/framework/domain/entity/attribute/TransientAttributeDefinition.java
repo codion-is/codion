@@ -54,19 +54,19 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.define(
+ *         Customer.TYPE.as(
  *                 // Database columns
- *                 Customer.ID.define()
+ *                 Customer.ID.as()
  *                     .primaryKey(),
- *                 Customer.FIRST_NAME.define()
+ *                 Customer.FIRST_NAME.as()
  *                     .column(),
- *                 Customer.LAST_NAME.define()
+ *                 Customer.LAST_NAME.as()
  *                     .column(),
- *                 Customer.EMAIL.define()
+ *                 Customer.EMAIL.as()
  *                     .column(),
  *
  *                 // Derived transient attribute (computed from other attributes)
- *                 Customer.FULL_NAME.define()
+ *                 Customer.FULL_NAME.as()
  *                     .derived()
  *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .with(source -> {
@@ -78,19 +78,19 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *                     .caption("Full Name"),
  *
  *                 // UI state attribute that doesn't modify entity
- *                 Customer.SELECTED.define()
+ *                 Customer.SELECTED.as()
  *                     .attribute()
  *                     .modifies(false) // Doesn't mark entity as modified
  *                     .defaultValue(false)
  *                     .caption("Selected"),
  *
  *                 // Temporary notes (modifies entity by default)
- *                 Customer.TEMP_NOTES.define()
+ *                 Customer.TEMP_NOTES.as()
  *                     .attribute()
  *                     .caption("Temporary Notes"),
  *
  *                 // Generic UI state storage
- *                 Customer.UI_STATE.define()
+ *                 Customer.UI_STATE.as()
  *                     .attribute()
  *                     .modifies(false)
  *                     .caption("UI State"))

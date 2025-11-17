@@ -78,17 +78,17 @@ public final class ClientTutorial {
 
 		public Chinook() {
 			super(DOMAIN);
-			add(Artist.TYPE.define(
-											Artist.ID.define()
+			add(Artist.TYPE.as(
+											Artist.ID.as()
 															.primaryKey()
 															.generator(automatic("chinook.artist")),
-											Artist.NAME.define()
+											Artist.NAME.as()
 															.column()
 															.caption("Name")
 															.searchable(true)
 															.nullable(false)
 															.maximumLength(120),
-											Artist.NUMBER_OF_ALBUMS.define()
+											Artist.NUMBER_OF_ALBUMS.as()
 															.subquery("""
 																			SELECT COUNT(*)
 																			FROM chinook.album
@@ -98,17 +98,17 @@ public final class ClientTutorial {
 							.caption("Artists")
 							.build());
 
-			add(Album.TYPE.define(
-											Album.ID.define()
+			add(Album.TYPE.as(
+											Album.ID.as()
 															.primaryKey()
 															.generator(automatic("chinook.artist")),
-											Album.ARTIST_ID.define()
+											Album.ARTIST_ID.as()
 															.column()
 															.nullable(false),
-											Album.ARTIST_FK.define()
+											Album.ARTIST_FK.as()
 															.foreignKey()
 															.caption("Artist"),
-											Album.TITLE.define()
+											Album.TITLE.as()
 															.column()
 															.caption("Title")
 															.nullable(false)

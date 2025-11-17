@@ -58,46 +58,46 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition address() {
-		return Address.TYPE.define(
-										Address.ID.define()
+		return Address.TYPE.as(
+										Address.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.address_seq"))
 														.name("addressid"),
-										Address.STREET_1.define()
+										Address.STREET_1.as()
 														.column()
 														.caption(Address.STREET_1.name())
 														.name("street1")
 														.maximumLength(55)
 														.nullable(false),
-										Address.STREET_2.define()
+										Address.STREET_2.as()
 														.column()
 														.caption(Address.STREET_2.name())
 														.name("street2")
 														.maximumLength(55),
-										Address.CITY.define()
+										Address.CITY.as()
 														.column()
 														.caption(Address.CITY.name())
 														.name("city")
 														.maximumLength(55)
 														.nullable(false),
-										Address.STATE.define()
+										Address.STATE.as()
 														.column()
 														.caption(Address.STATE.name())
 														.name("state")
 														.maximumLength(25)
 														.nullable(false),
-										Address.ZIP.define()
+										Address.ZIP.as()
 														.column()
 														.caption(Address.ZIP.name())
 														.name("zip")
 														.nullable(false),
-										Address.LATITUDE.define()
+										Address.LATITUDE.as()
 														.column()
 														.caption(Address.LATITUDE.name())
 														.name("latitude")
 														.nullable(false)
 														.fractionDigits(2),
-										Address.LONGITUDE.define()
+										Address.LONGITUDE.as()
 														.column()
 														.caption(Address.LONGITUDE.name())
 														.name("longitude")
@@ -126,24 +126,24 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition category() {
-		return Category.TYPE.define(
-										Category.ID.define()
+		return Category.TYPE.as(
+										Category.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.category_seq"))
 														.name("categoryid"),
-										Category.NAME.define()
+										Category.NAME.as()
 														.column()
 														.caption(Category.NAME.name())
 														.name("name")
 														.maximumLength(25)
 														.nullable(false),
-										Category.DESCRIPTION.define()
+										Category.DESCRIPTION.as()
 														.column()
 														.caption(Category.DESCRIPTION.name())
 														.name("description")
 														.maximumLength(255)
 														.nullable(false),
-										Category.IMAGE_URL.define()
+										Category.IMAGE_URL.as()
 														.column()
 														.caption(Category.IMAGE_URL.name())
 														.name("imageurl")
@@ -168,31 +168,31 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition product() {
-		return Product.TYPE.define(
-										Product.ID.define()
+		return Product.TYPE.as(
+										Product.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.product_seq"))
 														.name("productid"),
-										Product.CATEGORY_ID.define()
+										Product.CATEGORY_ID.as()
 														.column()
 														.name("categoryid")
 														.nullable(false),
-										Product.CATEGORY_FK.define()
+										Product.CATEGORY_FK.as()
 														.foreignKey()
 														.caption(Product.CATEGORY_FK.name()),
-										Product.NAME.define()
+										Product.NAME.as()
 														.column()
 														.caption(Product.NAME.name())
 														.name("name")
 														.maximumLength(25)
 														.nullable(false),
-										Product.DESCRIPTION.define()
+										Product.DESCRIPTION.as()
 														.column()
 														.caption(Product.DESCRIPTION.name())
 														.name("description")
 														.maximumLength(255)
 														.nullable(false),
-										Product.IMAGE_URL.define()
+										Product.IMAGE_URL.as()
 														.column()
 														.caption(Product.IMAGE_URL.name())
 														.name("imageurl")
@@ -219,26 +219,26 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition sellerContactInfo() {
-		return SellerContactInfo.TYPE.define(
-										SellerContactInfo.ID.define()
+		return SellerContactInfo.TYPE.as(
+										SellerContactInfo.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.sellercontactinfo_seq"))
 														.name("contactinfoid"),
-										SellerContactInfo.FIRST_NAME.define()
+										SellerContactInfo.FIRST_NAME.as()
 														.column()
 														.caption(SellerContactInfo.FIRST_NAME.name())
 														.searchable(true)
 														.name("firstname")
 														.maximumLength(24)
 														.nullable(false),
-										SellerContactInfo.LAST_NAME.define()
+										SellerContactInfo.LAST_NAME.as()
 														.column()
 														.caption(SellerContactInfo.LAST_NAME.name())
 														.searchable(true)
 														.name("lastname")
 														.maximumLength(24)
 														.nullable(false),
-										SellerContactInfo.EMAIL.define()
+										SellerContactInfo.EMAIL.as()
 														.column()
 														.caption(SellerContactInfo.EMAIL.name())
 														.name("email")
@@ -275,65 +275,65 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition item() {
-		return Item.TYPE.define(
-										Item.ID.define()
+		return Item.TYPE.as(
+										Item.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.item_seq"))
 														.name("itemid"),
-										Item.PRODUCT_ID.define()
+										Item.PRODUCT_ID.as()
 														.column()
 														.name("productid")
 														.nullable(false),
-										Item.PRODUCT_FK.define()
+										Item.PRODUCT_FK.as()
 														.foreignKey()
 														.referenceDepth(2)
 														.caption(Item.PRODUCT_FK.name()),
-										Item.NAME.define()
+										Item.NAME.as()
 														.column()
 														.caption(Item.NAME.name())
 														.name("name")
 														.maximumLength(30)
 														.nullable(false),
-										Item.DESCRIPTION.define()
+										Item.DESCRIPTION.as()
 														.column()
 														.caption(Item.DESCRIPTION.name())
 														.name("description")
 														.maximumLength(500)
 														.nullable(false),
-										Item.IMAGE_URL.define()
+										Item.IMAGE_URL.as()
 														.column()
 														.caption(Item.IMAGE_URL.name())
 														.name("imageurl")
 														.maximumLength(55)
 														.hidden(true),
-										Item.IMAGE_THUMB_URL.define()
+										Item.IMAGE_THUMB_URL.as()
 														.column()
 														.caption(Item.IMAGE_THUMB_URL.name())
 														.name("imagethumburl")
 														.maximumLength(55)
 														.hidden(true),
-										Item.PRICE.define()
+										Item.PRICE.as()
 														.column()
 														.caption(Item.PRICE.name())
 														.name("price")
 														.nullable(false)
 														.fractionDigits(2),
-										Item.CONTACT_INFO_ID.define()
+										Item.CONTACT_INFO_ID.as()
 														.column()
 														.name("contactinfo_contactinfoid")
 														.nullable(false),
-										Item.CONTACT_INFO_FK.define()
+										Item.CONTACT_INFO_FK.as()
 														.foreignKey()
 														.caption(Item.CONTACT_INFO_FK.name()),
-										Item.ADDRESS_ID.define()
+										Item.ADDRESS_ID.as()
 														.column()
 														.name("address_addressid")
 														.nullable(false),
-										Item.ADDRESS_FK.define()
+										Item.ADDRESS_FK.as()
 														.foreignKey()
 														.caption("Address"),
 										// tag::booleanColumn[]
-										Item.DISABLED.define()
+										Item.DISABLED.as()
 														.column()
 														.converter(Integer.class, new BooleanConverter())
 														.caption(Item.DISABLED.name())
@@ -361,18 +361,18 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition tag() {
-		return Tag.TYPE.define(
-										Tag.ID.define()
+		return Tag.TYPE.as(
+										Tag.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.tag_seq"))
 														.name("tagid"),
-										Tag.TAG.define()
+										Tag.TAG.as()
 														.column()
 														.caption(Tag.TAG.name())
 														.name("tag")
 														.maximumLength(30)
 														.nullable(false),
-										Tag.REFCOUNT.define()
+										Tag.REFCOUNT.as()
 														.subquery("""
 																		SELECT COUNT(*)
 																		FROM petstore.tag_item
@@ -398,18 +398,18 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition tagItem() {
-		return TagItem.TYPE.define(
-										TagItem.ITEM_ID.define()
+		return TagItem.TYPE.as(
+										TagItem.ITEM_ID.as()
 														.primaryKey(0)
 														.name("itemid"),
-										TagItem.ITEM_FK.define()
+										TagItem.ITEM_FK.as()
 														.foreignKey()
 														.referenceDepth(3)
 														.caption(TagItem.ITEM_FK.name()),
-										TagItem.TAG_ID.define()
+										TagItem.TAG_ID.as()
 														.primaryKey(1)
 														.name("tagid"),
-										TagItem.TAG_FK.define()
+										TagItem.TAG_FK.as()
 														.foreignKey()
 														.caption(TagItem.TAG_FK.name()))
 						.table("petstore.tag_item")

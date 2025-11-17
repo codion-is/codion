@@ -68,11 +68,11 @@ class ManualDomainModel {
 		}
 
 		EntityDefinition city() {
-			return City.TYPE.define(
-											City.ID.define()
+			return City.TYPE.as(
+											City.ID.as()
 															.primaryKey()
 															.generator(Generator.identity()),
-											City.NAME.define()
+											City.NAME.as()
 															.column()
 															.caption("Name")
 															.nullable(false))
@@ -81,17 +81,17 @@ class ManualDomainModel {
 		}
 
 		EntityDefinition customer() {
-			return Customer.TYPE.define(
-											Customer.ID.define()
+			return Customer.TYPE.as(
+											Customer.ID.as()
 															.primaryKey()
 															.generator(Generator.identity()),
-											Customer.NAME.define()
+											Customer.NAME.as()
 															.column()
 															.caption("Name")
 															.maximumLength(42),
-											Customer.CITY_ID.define()
+											Customer.CITY_ID.as()
 															.column(),
-											Customer.CITY_FK.define()
+											Customer.CITY_FK.as()
 															.foreignKey()
 															.caption("City"))
 							.caption("Customers")

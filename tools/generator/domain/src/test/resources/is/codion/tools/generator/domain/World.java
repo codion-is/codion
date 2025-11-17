@@ -27,69 +27,69 @@ public final class World extends DomainModel {
 	}
 
 	static EntityDefinition countryCityView() {
-		return CountryCityView.TYPE.define(
-				CountryCityView.COUNTRYCODE.define()
+		return CountryCityView.TYPE.as(
+				CountryCityView.COUNTRYCODE.as()
 					.column()
 					.caption("Countrycode"),
-				CountryCityView.COUNTRYNAME.define()
+				CountryCityView.COUNTRYNAME.as()
 					.column()
 					.caption("Countryname"),
-				CountryCityView.CONTINENT.define()
+				CountryCityView.CONTINENT.as()
 					.column()
 					.caption("Continent"),
-				CountryCityView.REGION.define()
+				CountryCityView.REGION.as()
 					.column()
 					.caption("Region"),
-				CountryCityView.SURFACEAREA.define()
+				CountryCityView.SURFACEAREA.as()
 					.column()
 					.caption("Surfacearea")
 					.fractionDigits(2),
-				CountryCityView.INDEPYEAR.define()
+				CountryCityView.INDEPYEAR.as()
 					.column()
 					.caption("Indepyear"),
-				CountryCityView.COUNTRYPOPULATION.define()
+				CountryCityView.COUNTRYPOPULATION.as()
 					.column()
 					.caption("Countrypopulation"),
-				CountryCityView.LIFEEXPECTANCY.define()
+				CountryCityView.LIFEEXPECTANCY.as()
 					.column()
 					.caption("Lifeexpectancy")
 					.fractionDigits(1),
-				CountryCityView.GNP.define()
+				CountryCityView.GNP.as()
 					.column()
 					.caption("Gnp")
 					.fractionDigits(2),
-				CountryCityView.GNPOLD.define()
+				CountryCityView.GNPOLD.as()
 					.column()
 					.caption("Gnpold")
 					.fractionDigits(2),
-				CountryCityView.LOCALNAME.define()
+				CountryCityView.LOCALNAME.as()
 					.column()
 					.caption("Localname"),
-				CountryCityView.GOVERNMENTFORM.define()
+				CountryCityView.GOVERNMENTFORM.as()
 					.column()
 					.caption("Governmentform"),
-				CountryCityView.HEADOFSTATE.define()
+				CountryCityView.HEADOFSTATE.as()
 					.column()
 					.caption("Headofstate"),
-				CountryCityView.CAPITAL.define()
+				CountryCityView.CAPITAL.as()
 					.column()
 					.caption("Capital"),
-				CountryCityView.CODE2.define()
+				CountryCityView.CODE2.as()
 					.column()
 					.caption("Code2"),
-				CountryCityView.FLAG.define()
+				CountryCityView.FLAG.as()
 					.column()
 					.caption("Flag"),
-				CountryCityView.CITYID.define()
+				CountryCityView.CITYID.as()
 					.column()
 					.caption("Cityid"),
-				CountryCityView.CITYNAME.define()
+				CountryCityView.CITYNAME.as()
 					.column()
 					.caption("Cityname"),
-				CountryCityView.DISTRICT.define()
+				CountryCityView.DISTRICT.as()
 					.column()
 					.caption("District"),
-				CountryCityView.CITYPOPULATION.define()
+				CountryCityView.CITYPOPULATION.as()
 					.column()
 					.caption("Citypopulation"))
 			.caption("Country city")
@@ -98,31 +98,31 @@ public final class World extends DomainModel {
 	}
 
 	static EntityDefinition city() {
-		return City.TYPE.define(
-				City.ID.define()
+		return City.TYPE.as(
+				City.ID.as()
 					.primaryKey(),
-				City.NAME.define()
+				City.NAME.as()
 					.column()
 					.caption("Name")
 					.nullable(false)
 					.maximumLength(35),
-				City.COUNTRYCODE.define()
+				City.COUNTRYCODE.as()
 					.column()
 					.nullable(false)
 					.maximumLength(3),
-				City.COUNTRYCODE_FK.define()
+				City.COUNTRYCODE_FK.as()
 					.foreignKey()
 					.caption("Country"),
-				City.DISTRICT.define()
+				City.DISTRICT.as()
 					.column()
 					.caption("District")
 					.nullable(false)
 					.maximumLength(20),
-				City.POPULATION.define()
+				City.POPULATION.as()
 					.column()
 					.caption("Population")
 					.nullable(false),
-				City.LOCATION.define()
+				City.LOCATION.as()
 					.column()
 					.caption("Location"))
 			.caption("City")
@@ -130,74 +130,74 @@ public final class World extends DomainModel {
 	}
 
 	static EntityDefinition country() {
-		return Country.TYPE.define(
-				Country.CODE.define()
+		return Country.TYPE.as(
+				Country.CODE.as()
 					.primaryKey()
 					.maximumLength(3),
-				Country.NAME.define()
+				Country.NAME.as()
 					.column()
 					.caption("Name")
 					.nullable(false)
 					.maximumLength(52),
-				Country.CONTINENT.define()
+				Country.CONTINENT.as()
 					.column()
 					.caption("Continent")
 					.nullable(false)
 					.maximumLength(20),
-				Country.REGION.define()
+				Country.REGION.as()
 					.column()
 					.caption("Region")
 					.nullable(false)
 					.maximumLength(26),
-				Country.SURFACEAREA.define()
+				Country.SURFACEAREA.as()
 					.column()
 					.caption("Surfacearea")
 					.nullable(false)
 					.fractionDigits(2),
-				Country.INDEPYEAR.define()
+				Country.INDEPYEAR.as()
 					.column()
 					.caption("Indepyear"),
-				Country.POPULATION.define()
+				Country.POPULATION.as()
 					.column()
 					.caption("Population")
 					.nullable(false),
-				Country.LIFEEXPECTANCY.define()
+				Country.LIFEEXPECTANCY.as()
 					.column()
 					.caption("Lifeexpectancy")
 					.fractionDigits(1),
-				Country.GNP.define()
+				Country.GNP.as()
 					.column()
 					.caption("Gnp")
 					.fractionDigits(2),
-				Country.GNPOLD.define()
+				Country.GNPOLD.as()
 					.column()
 					.caption("Gnpold")
 					.fractionDigits(2),
-				Country.LOCALNAME.define()
+				Country.LOCALNAME.as()
 					.column()
 					.caption("Localname")
 					.nullable(false)
 					.maximumLength(45),
-				Country.GOVERNMENTFORM.define()
+				Country.GOVERNMENTFORM.as()
 					.column()
 					.caption("Governmentform")
 					.nullable(false)
 					.maximumLength(45),
-				Country.HEADOFSTATE.define()
+				Country.HEADOFSTATE.as()
 					.column()
 					.caption("Headofstate")
 					.maximumLength(60),
-				Country.CAPITAL.define()
+				Country.CAPITAL.as()
 					.column(),
-				Country.CAPITAL_FK.define()
+				Country.CAPITAL_FK.as()
 					.foreignKey()
 					.caption("City"),
-				Country.CODE2.define()
+				Country.CODE2.as()
 					.column()
 					.caption("Code2")
 					.nullable(false)
 					.maximumLength(2),
-				Country.FLAG.define()
+				Country.FLAG.as()
 					.column()
 					.caption("Flag"))
 			.caption("Country")
@@ -205,22 +205,22 @@ public final class World extends DomainModel {
 	}
 
 	static EntityDefinition countrylanguage() {
-		return Countrylanguage.TYPE.define(
-				Countrylanguage.COUNTRYCODE.define()
+		return Countrylanguage.TYPE.as(
+				Countrylanguage.COUNTRYCODE.as()
 					.primaryKey(0)
 					.maximumLength(3),
-				Countrylanguage.COUNTRYCODE_FK.define()
+				Countrylanguage.COUNTRYCODE_FK.as()
 					.foreignKey()
 					.caption("Country"),
-				Countrylanguage.LANGUAGE.define()
+				Countrylanguage.LANGUAGE.as()
 					.primaryKey(1)
 					.maximumLength(30),
-				Countrylanguage.ISOFFICIAL.define()
+				Countrylanguage.ISOFFICIAL.as()
 					.column()
 					.caption("Isofficial")
 					.nullable(false)
 					.withDefault(true),
-				Countrylanguage.PERCENTAGE.define()
+				Countrylanguage.PERCENTAGE.as()
 					.column()
 					.caption("Percentage")
 					.nullable(false)

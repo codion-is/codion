@@ -108,18 +108,18 @@ public final class Employees extends DomainModel {
 	// tag::defineDepartment[]
 	EntityDefinition department() {
 		// Defining the entity Department.TYPE
-		return Department.TYPE.define(
-										Department.DEPARTMENT_NO.define()
+		return Department.TYPE.as(
+										Department.DEPARTMENT_NO.as()
 														.primaryKey()
 														.caption("No.")
 														.nullable(false),
-										Department.NAME.define()
+										Department.NAME.as()
 														.column()
 														.caption("Name")
 														.maximumLength(14)
 														.searchable(true)
 														.nullable(false),
-										Department.LOCATION.define()
+										Department.LOCATION.as()
 														.column()
 														.caption("Location")
 														.maximumLength(13))
@@ -134,44 +134,44 @@ public final class Employees extends DomainModel {
 	// tag::defineEmployee[]
 	EntityDefinition employee() {
 		// Defining the entity Employee.TYPE
-		return Employee.TYPE.define(
-										Employee.ID.define()
+		return Employee.TYPE.as(
+										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq")),
-										Employee.NAME.define()
+										Employee.NAME.as()
 														.column()
 														.caption("Name")
 														.searchable(true)
 														.maximumLength(10)
 														.nullable(false),
-										Employee.DEPARTMENT.define()
+										Employee.DEPARTMENT.as()
 														.column()
 														.nullable(false),
-										Employee.DEPARTMENT_FK.define()
+										Employee.DEPARTMENT_FK.as()
 														.foreignKey()
 														.caption("Department"),
-										Employee.JOB.define()
+										Employee.JOB.as()
 														.column()
 														.caption("Job")
 														.items(Employee.JOB_ITEMS)
 														.nullable(false),
-										Employee.SALARY.define()
+										Employee.SALARY.as()
 														.column()
 														.caption("Salary")
 														.nullable(false)
 														.range(900, 10000)
 														.fractionDigits(2),
-										Employee.COMMISSION.define()
+										Employee.COMMISSION.as()
 														.column()
 														.caption("Commission")
 														.range(100, 2000)
 														.fractionDigits(2),
-										Employee.MANAGER_ID.define()
+										Employee.MANAGER_ID.as()
 														.column(),
-										Employee.MANAGER_FK.define()
+										Employee.MANAGER_FK.as()
 														.foreignKey()
 														.caption("Manager"),
-										Employee.HIREDATE.define()
+										Employee.HIREDATE.as()
 														.column()
 														.caption("Hiredate")
 														.nullable(false)
@@ -179,7 +179,7 @@ public final class Employees extends DomainModel {
 																		.delimiterDash()
 																		.yearFourDigits()
 																		.build()),
-										Employee.DEPARTMENT_LOCATION.define()
+										Employee.DEPARTMENT_LOCATION.as()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
 														.using(Department.LOCATION)

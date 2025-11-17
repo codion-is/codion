@@ -153,13 +153,13 @@ public final class ConditionFrameworkEnhancementTest {
 			super(DOMAIN_TYPE);
 
 			// Company entity
-			add(Company.TYPE.define(
-											Company.ID.define().primaryKey(),
-											Company.NAME.define().column().nullable(false),
-											Company.COUNTRY.define().column().nullable(false),
-											Company.FOUNDED.define().column(),
-											Company.REVENUE.define().column(),
-											Company.ACTIVE.define().column().nullable(false).defaultValue(true)
+			add(Company.TYPE.as(
+											Company.ID.as().primaryKey(),
+											Company.NAME.as().column().nullable(false),
+											Company.COUNTRY.as().column().nullable(false),
+											Company.FOUNDED.as().column(),
+											Company.REVENUE.as().column(),
+											Company.ACTIVE.as().column().nullable(false).defaultValue(true)
 							).condition(Company.REVENUE_RANGE,
 											(columns, values) -> "revenue BETWEEN ? AND ?")
 							.condition(Company.BY_COUNTRY_AND_ACTIVE,
@@ -167,32 +167,32 @@ public final class ConditionFrameworkEnhancementTest {
 							.build());
 
 			// Department entity
-			add(Department.TYPE.define(
-											Department.ID.define().primaryKey(),
-											Department.COMPANY_ID.define().column().nullable(false),
-											Department.NAME.define().column().nullable(false),
-											Department.LOCATION.define().column(),
-											Department.EMPLOYEE_COUNT.define().column().defaultValue(0),
-											Department.BUDGET.define().column(),
-											Department.COMPANY_FK.define().foreignKey()
+			add(Department.TYPE.as(
+											Department.ID.as().primaryKey(),
+											Department.COMPANY_ID.as().column().nullable(false),
+											Department.NAME.as().column().nullable(false),
+											Department.LOCATION.as().column(),
+											Department.EMPLOYEE_COUNT.as().column().defaultValue(0),
+											Department.BUDGET.as().column(),
+											Department.COMPANY_FK.as().foreignKey()
 							).condition(Department.BUDGET_THRESHOLD,
 											(columns, values) -> "budget > ?")
 							.build());
 
 			// Employee entity
-			add(Employee.TYPE.define(
-											Employee.ID.define().primaryKey(),
-											Employee.DEPARTMENT_ID.define().column().nullable(false),
-											Employee.MANAGER_ID.define().column(),
-											Employee.NAME.define().column().nullable(false),
-											Employee.EMAIL.define().column().nullable(false),
-											Employee.POSITION.define().column().nullable(false),
-											Employee.SALARY.define().column().nullable(false),
-											Employee.HIRE_DATE.define().column().nullable(false),
-											Employee.REMOTE.define().column().nullable(false).defaultValue(false),
-											Employee.DEPARTMENT_FK.define().foreignKey()
+			add(Employee.TYPE.as(
+											Employee.ID.as().primaryKey(),
+											Employee.DEPARTMENT_ID.as().column().nullable(false),
+											Employee.MANAGER_ID.as().column(),
+											Employee.NAME.as().column().nullable(false),
+											Employee.EMAIL.as().column().nullable(false),
+											Employee.POSITION.as().column().nullable(false),
+											Employee.SALARY.as().column().nullable(false),
+											Employee.HIRE_DATE.as().column().nullable(false),
+											Employee.REMOTE.as().column().nullable(false).defaultValue(false),
+											Employee.DEPARTMENT_FK.as().foreignKey()
 															.include(Department.NAME, Department.LOCATION),
-											Employee.MANAGER_FK.define().foreignKey()
+											Employee.MANAGER_FK.as().foreignKey()
 															.include(Employee.NAME)
 							).condition(Employee.HIGH_EARNERS,
 											(columns, values) -> "salary > ?")
@@ -203,17 +203,17 @@ public final class ConditionFrameworkEnhancementTest {
 							.build());
 
 			// Project entity
-			add(Project.TYPE.define(
-											Project.ID.define().primaryKey(),
-											Project.LEAD_ID.define().column(),
-											Project.NAME.define().column().nullable(false),
-											Project.STATUS.define().column().nullable(false)
+			add(Project.TYPE.as(
+											Project.ID.as().primaryKey(),
+											Project.LEAD_ID.as().column(),
+											Project.NAME.as().column().nullable(false),
+											Project.STATUS.as().column().nullable(false)
 															.items(asList(Item.item("PLANNING"), Item.item("ACTIVE"), Item.item("ON_HOLD"), Item.item("COMPLETED"), Item.item("CANCELLED"))),
-											Project.START_DATE.define().column().nullable(false),
-											Project.END_DATE.define().column(),
-											Project.BUDGET.define().column(),
-											Project.PRIORITY.define().column().nullable(false).range(1, 5),
-											Project.LEAD_FK.define().foreignKey()
+											Project.START_DATE.as().column().nullable(false),
+											Project.END_DATE.as().column(),
+											Project.BUDGET.as().column(),
+											Project.PRIORITY.as().column().nullable(false).range(1, 5),
+											Project.LEAD_FK.as().foreignKey()
 															.include(Employee.NAME, Employee.EMAIL)
 							).condition(Project.ACTIVE_PROJECTS,
 											(columns, values) -> "status IN ('PLANNING', 'ACTIVE')")
@@ -224,17 +224,17 @@ public final class ConditionFrameworkEnhancementTest {
 							.build());
 
 			// Assignment entity
-			add(Assignment.TYPE.define(
-											Assignment.ID.define().primaryKey(),
-											Assignment.EMPLOYEE_ID.define().column().nullable(false),
-											Assignment.PROJECT_ID.define().column().nullable(false),
-											Assignment.ROLE.define().column().nullable(false),
-											Assignment.ALLOCATION_PERCENT.define().column().nullable(false).range(1, 100),
-											Assignment.START_DATE.define().column().nullable(false),
-											Assignment.END_DATE.define().column(),
-											Assignment.EMPLOYEE_FK.define().foreignKey()
+			add(Assignment.TYPE.as(
+											Assignment.ID.as().primaryKey(),
+											Assignment.EMPLOYEE_ID.as().column().nullable(false),
+											Assignment.PROJECT_ID.as().column().nullable(false),
+											Assignment.ROLE.as().column().nullable(false),
+											Assignment.ALLOCATION_PERCENT.as().column().nullable(false).range(1, 100),
+											Assignment.START_DATE.as().column().nullable(false),
+											Assignment.END_DATE.as().column(),
+											Assignment.EMPLOYEE_FK.as().foreignKey()
 															.include(Employee.NAME, Employee.POSITION),
-											Assignment.PROJECT_FK.define().foreignKey()
+											Assignment.PROJECT_FK.as().foreignKey()
 															.include(Project.NAME, Project.STATUS)
 							).condition(Assignment.FULL_TIME_ASSIGNMENTS,
 											(columns, values) -> "allocation_percent = 100")

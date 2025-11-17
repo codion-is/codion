@@ -83,7 +83,7 @@ import static java.util.Objects.requireNonNull;
  *     }
  * }
  *}
- * @see #define(AttributeDefinition.Builder...)
+ * @see #as(AttributeDefinition.Builder...)
  * @see DomainType#entityType(String)
  */
 public sealed interface EntityType permits DefaultEntityType {
@@ -110,28 +110,28 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
 	 * @throws IllegalArgumentException in case of a entityType mismatch
 	 */
-	EntityDefinition.Builder define(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders);
+	EntityDefinition.Builder as(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders);
 
 	/**
 	 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
 	 * {@snippet :
-	 * EntityDefinition definition = Customer.TYPE.define(
-	 *         Customer.ID.define()
+	 * EntityDefinition definition = Customer.TYPE.as(
+	 *         Customer.ID.as()
 	 *             .primaryKey(),
-	 *         Customer.NAME.define()
+	 *         Customer.NAME.as()
 	 *             .column()
 	 *             .caption("Customer Name")
 	 *             .nullable(false)
 	 *             .maximumLength(100),
-	 *         Customer.EMAIL.define()
+	 *         Customer.EMAIL.as()
 	 *             .column()
 	 *             .caption("Email Address")
 	 *             .maximumLength(255),
-	 *         Customer.BIRTH_DATE.define()
+	 *         Customer.BIRTH_DATE.as()
 	 *             .column()
 	 *             .caption("Date of Birth")
 	 *             .nullable(true),
-	 *         Customer.ACTIVE.define()
+	 *         Customer.ACTIVE.as()
 	 *             .column()
 	 *             .caption("Active")
 	 *             .nullable(false)
@@ -149,7 +149,7 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
 	 * @throws IllegalArgumentException in case of a entityType mismatch
 	 */
-	EntityDefinition.Builder define(AttributeDefinition.Builder<?, ?>... definitionBuilders);
+	EntityDefinition.Builder as(AttributeDefinition.Builder<?, ?>... definitionBuilders);
 
 	/**
 	 * Creates a new {@link Attribute}, associated with this EntityType.
@@ -392,12 +392,12 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * }
 	 *
 	 * // Usage in entity definition
-	 * Order.TYPE.define(
-	 *         Order.ID.define()
+	 * Order.TYPE.as(
+	 *         Order.ID.as()
 	 *             .primaryKey(),
-	 *         Order.CUSTOMER_ID.define()
+	 *         Order.CUSTOMER_ID.as()
 	 *             .column(),
-	 *         Order.CUSTOMER_FK.define()
+	 *         Order.CUSTOMER_FK.as()
 	 *             .foreignKey()
 	 *             .caption("Customer"))
 	 *     .build();

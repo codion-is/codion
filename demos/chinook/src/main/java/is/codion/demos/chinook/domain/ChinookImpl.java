@@ -93,19 +93,19 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition artist() {
-		return Artist.TYPE.define(
-										Artist.ID.define()
+		return Artist.TYPE.as(
+										Artist.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Artist.NAME.define()
+										Artist.NAME.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(120),
-										Artist.NUMBER_OF_ALBUMS.define()
+										Artist.NUMBER_OF_ALBUMS.as()
 														.subquery("""
 																		SELECT COUNT(*)
 																		FROM chinook.album
 																		WHERE album.artist_id = artist.id"""),
-										Artist.NUMBER_OF_TRACKS.define()
+										Artist.NUMBER_OF_TRACKS.as()
 														.subquery("""
 																		SELECT count(*)
 																		FROM chinook.track
@@ -117,39 +117,39 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition album() {
-		return Album.TYPE.define(
-										Album.ID.define()
+		return Album.TYPE.as(
+										Album.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Album.ARTIST_ID.define()
+										Album.ARTIST_ID.as()
 														.column()
 														.nullable(false),
-										Album.ARTIST_FK.define()
+										Album.ARTIST_FK.as()
 														.foreignKey()
 														.include(Artist.NAME),
 										// tag::columnTemplateUsage1[]
-										Album.TITLE.define()
+										Album.TITLE.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(160),
 										// end::columnTemplateUsage1[]
-										Album.COVER.define()
+										Album.COVER.as()
 														.column()
 														.format(new CoverFormat()),
-										Album.NUMBER_OF_TRACKS.define()
+										Album.NUMBER_OF_TRACKS.as()
 														.subquery("""
 																		SELECT COUNT(*) FROM chinook.track
 																		WHERE track.album_id = album.id"""),
-										Album.TAGS.define()
+										Album.TAGS.as()
 														.column()
 														.converter(Array.class, new TagsConverter(), ResultSet::getArray),
-										Album.RATING.define()
+										Album.RATING.as()
 														.subquery("""
 																		SELECT AVG(rating) FROM chinook.track
 																		WHERE track.album_id = album.id"""),
 										// tag::columnTemplateUsage2[]
-										Album.INSERT_TIME.define()
+										Album.INSERT_TIME.as()
 														.column(INSERT_TIME),
-										Album.INSERT_USER.define()
+										Album.INSERT_USER.as()
 														.column(INSERT_USER))
 						// end::columnTemplateUsage2[]
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
@@ -158,59 +158,59 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition employee() {
-		return Employee.TYPE.define(
-										Employee.ID.define()
+		return Employee.TYPE.as(
+										Employee.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Employee.LASTNAME.define()
+										Employee.LASTNAME.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
-										Employee.FIRSTNAME.define()
+										Employee.FIRSTNAME.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
-										Employee.TITLE.define()
+										Employee.TITLE.as()
 														.column()
 														.maximumLength(30),
-										Employee.REPORTSTO.define()
+										Employee.REPORTSTO.as()
 														.column(),
-										Employee.REPORTSTO_FK.define()
+										Employee.REPORTSTO_FK.as()
 														.foreignKey()
 														.include(Employee.FIRSTNAME, Employee.LASTNAME),
-										Employee.BIRTHDATE.define()
+										Employee.BIRTHDATE.as()
 														.column(),
-										Employee.HIREDATE.define()
+										Employee.HIREDATE.as()
 														.column()
 														.dateTimePattern(LocaleDateTimePattern.builder()
 																		.delimiterDot()
 																		.yearFourDigits()
 																		.build()),
-										Employee.ADDRESS.define()
+										Employee.ADDRESS.as()
 														.column()
 														.maximumLength(70),
-										Employee.CITY.define()
+										Employee.CITY.as()
 														.column()
 														.maximumLength(40),
-										Employee.STATE.define()
+										Employee.STATE.as()
 														.column()
 														.maximumLength(40),
-										Employee.COUNTRY.define()
+										Employee.COUNTRY.as()
 														.column()
 														.maximumLength(40),
-										Employee.POSTALCODE.define()
+										Employee.POSTALCODE.as()
 														.column()
 														.maximumLength(10),
-										Employee.PHONE.define()
+										Employee.PHONE.as()
 														.column()
 														.maximumLength(24),
-										Employee.FAX.define()
+										Employee.FAX.as()
 														.column()
 														.maximumLength(24),
-										Employee.EMAIL.define()
+										Employee.EMAIL.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(60),
-										Employee.INSERT_TIME.define()
+										Employee.INSERT_TIME.as()
 														.column(INSERT_TIME),
-										Employee.INSERT_USER.define()
+										Employee.INSERT_USER.as()
 														.column(INSERT_USER))
 						.validator(new EmailValidator(Employee.EMAIL))
 						.orderBy(name(Employee.FIRSTNAME, Employee.LASTNAME))
@@ -223,51 +223,51 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition customer() {
-		return Customer.TYPE.define(
-										Customer.ID.define()
+		return Customer.TYPE.as(
+										Customer.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Customer.LASTNAME.define()
+										Customer.LASTNAME.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
-										Customer.FIRSTNAME.define()
+										Customer.FIRSTNAME.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(40),
-										Customer.COMPANY.define()
+										Customer.COMPANY.as()
 														.column()
 														.maximumLength(80),
-										Customer.ADDRESS.define()
+										Customer.ADDRESS.as()
 														.column()
 														.maximumLength(70),
-										Customer.CITY.define()
+										Customer.CITY.as()
 														.column()
 														.maximumLength(40),
-										Customer.STATE.define()
+										Customer.STATE.as()
 														.column()
 														.maximumLength(40),
-										Customer.COUNTRY.define()
+										Customer.COUNTRY.as()
 														.column()
 														.maximumLength(40),
-										Customer.POSTALCODE.define()
+										Customer.POSTALCODE.as()
 														.column()
 														.maximumLength(10),
-										Customer.PHONE.define()
+										Customer.PHONE.as()
 														.column()
 														.maximumLength(24),
-										Customer.FAX.define()
+										Customer.FAX.as()
 														.column()
 														.maximumLength(24),
-										Customer.EMAIL.define()
+										Customer.EMAIL.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(60),
-										Customer.SUPPORTREP_ID.define()
+										Customer.SUPPORTREP_ID.as()
 														.column(),
-										Customer.SUPPORTREP_FK.define()
+										Customer.SUPPORTREP_FK.as()
 														.foreignKey()
 														.include(Employee.FIRSTNAME, Employee.LASTNAME),
-										Customer.INSERT_TIME.define()
+										Customer.INSERT_TIME.as()
 														.column(INSERT_TIME),
-										Customer.INSERT_USER.define()
+										Customer.INSERT_USER.as()
 														.column(INSERT_USER))
 						.validator(new EmailValidator(Customer.EMAIL))
 						.orderBy(name(Customer.FIRSTNAME, Customer.LASTNAME))
@@ -276,27 +276,27 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition preferences() {
-		return Preferences.TYPE.define(
-										Preferences.CUSTOMER_ID.define()
+		return Preferences.TYPE.as(
+										Preferences.CUSTOMER_ID.as()
 														.primaryKey(),
-										Preferences.CUSTOMER_FK.define()
+										Preferences.CUSTOMER_FK.as()
 														.foreignKey(),
-										Preferences.PREFERRED_GENRE_ID.define()
+										Preferences.PREFERRED_GENRE_ID.as()
 														.column(),
-										Preferences.PREFERRED_GENRE_FK.define()
+										Preferences.PREFERRED_GENRE_FK.as()
 														.foreignKey(),
-										Preferences.NEWSLETTER_SUBSCRIBED.define()
+										Preferences.NEWSLETTER_SUBSCRIBED.as()
 														.column())
 						.caption("Preferences")
 						.build();
 	}
 
 	EntityDefinition genre() {
-		return Genre.TYPE.define(
-										Genre.ID.define()
+		return Genre.TYPE.as(
+										Genre.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Genre.NAME.define()
+										Genre.NAME.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(120))
 						.orderBy(ascending(Genre.NAME))
@@ -306,11 +306,11 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition mediaType() {
-		return MediaType.TYPE.define(
-										MediaType.ID.define()
+		return MediaType.TYPE.as(
+										MediaType.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										MediaType.NAME.define()
+										MediaType.NAME.as()
 														.column()
 														.nullable(false)
 														.maximumLength(120))
@@ -320,69 +320,69 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition track() {
-		return Track.TYPE.define(
-										Track.ID.define()
+		return Track.TYPE.as(
+										Track.ID.as()
 														.primaryKey()
 														.generator(identity())
 														.expression("track.id"),
-										Track.ALBUM_ID.define()
+										Track.ALBUM_ID.as()
 														.column()
 														.nullable(false),
 										// tag::referenceDepth2[]
-										Track.ALBUM_FK.define()
+										Track.ALBUM_FK.as()
 														.foreignKey()
 														.referenceDepth(2)
 														.include(Album.ARTIST_FK, Album.TITLE),
 										// end::referenceDepth2[]
-										Track.ARTIST_NAME.define()
+										Track.ARTIST_NAME.as()
 														.column()
 														.expression("artist.name")
 														.readOnly(true),
-										Track.NAME.define()
+										Track.NAME.as()
 														.column(REQUIRED_SEARCHABLE)
 														.expression("track.name")
 														.maximumLength(200),
-										Track.GENRE_ID.define()
+										Track.GENRE_ID.as()
 														.column(),
-										Track.GENRE_FK.define()
+										Track.GENRE_FK.as()
 														.foreignKey(),
-										Track.COMPOSER.define()
+										Track.COMPOSER.as()
 														.column()
 														.maximumLength(220),
-										Track.MEDIATYPE_ID.define()
+										Track.MEDIATYPE_ID.as()
 														.column()
 														.nullable(false),
-										Track.MEDIATYPE_FK.define()
+										Track.MEDIATYPE_FK.as()
 														.foreignKey(),
-										Track.MILLISECONDS.define()
+										Track.MILLISECONDS.as()
 														.column()
 														.nullable(false)
 														.format(NumberFormat.getIntegerInstance()),
-										Track.BYTES.define()
+										Track.BYTES.as()
 														.column()
 														.format(NumberFormat.getIntegerInstance()),
-										Track.RATING.define()
+										Track.RATING.as()
 														.column()
 														.nullable(false)
 														.defaultValue(5)
 														.range(1, 10),
-										Track.UNITPRICE.define()
+										Track.UNITPRICE.as()
 														.column()
 														.nullable(false)
 														.minimum(0)
 														.fractionDigits(2),
-										Track.PLAY_COUNT.define()
+										Track.PLAY_COUNT.as()
 														.column()
 														.nullable(false)
 														.defaultValue(0),
-										Track.RANDOM.define()
+										Track.RANDOM.as()
 														.column()
 														.readOnly(true)
 														.selected(false),
-										Track.INSERT_TIME.define()
+										Track.INSERT_TIME.as()
 														.column(INSERT_TIME)
 														.expression("track.insert_time"),
-										Track.INSERT_USER.define()
+										Track.INSERT_USER.as()
 														.column(INSERT_USER)
 														.expression("track.insert_user"))
 						.selectQuery(EntitySelectQuery.builder()
@@ -407,19 +407,19 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition invoice() {
-		return Invoice.TYPE.define(
-										Invoice.ID.define()
+		return Invoice.TYPE.as(
+										Invoice.ID.as()
 														.primaryKey()
 														// tag::identity[]
 														.generator(identity()),
 										// end::identity[]
-										Invoice.CUSTOMER_ID.define()
+										Invoice.CUSTOMER_ID.as()
 														.column()
 														.nullable(false),
-										Invoice.CUSTOMER_FK.define()
+										Invoice.CUSTOMER_FK.as()
 														.foreignKey()
 														.include(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL),
-										Invoice.DATE.define()
+										Invoice.DATE.as()
 														.column()
 														.nullable(false)
 														.defaultValue(Invoice.DATE_DEFAULT_VALUE)
@@ -427,35 +427,35 @@ public final class ChinookImpl extends DomainModel {
 																		.delimiterDot()
 																		.yearFourDigits()
 																		.build()),
-										Invoice.BILLINGADDRESS.define()
+										Invoice.BILLINGADDRESS.as()
 														.column()
 														.maximumLength(70),
-										Invoice.BILLINGCITY.define()
+										Invoice.BILLINGCITY.as()
 														.column()
 														.maximumLength(40),
-										Invoice.BILLINGSTATE.define()
+										Invoice.BILLINGSTATE.as()
 														.column()
 														.maximumLength(40),
-										Invoice.BILLINGCOUNTRY.define()
+										Invoice.BILLINGCOUNTRY.as()
 														.column()
 														.maximumLength(40),
-										Invoice.BILLINGPOSTALCODE.define()
+										Invoice.BILLINGPOSTALCODE.as()
 														.column()
 														.maximumLength(10),
-										Invoice.TOTAL.define()
+										Invoice.TOTAL.as()
 														.column()
 														.fractionDigits(2)
 														.nullable(false)
 														.withDefault(true),
-										Invoice.CALCULATED_TOTAL.define()
+										Invoice.CALCULATED_TOTAL.as()
 														.subquery("""
 																		SELECT SUM(unitprice * quantity)
 																		FROM chinook.invoiceline
 																		WHERE invoice_id = invoice.id""")
 														.fractionDigits(2),
-										Invoice.INSERT_TIME.define()
+										Invoice.INSERT_TIME.as()
 														.column(INSERT_TIME),
-										Invoice.INSERT_USER.define()
+										Invoice.INSERT_USER.as()
 														.column(INSERT_USER))
 						.orderBy(OrderBy.builder()
 										.ascending(Invoice.CUSTOMER_ID)
@@ -466,51 +466,51 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition invoiceLine() {
-		return InvoiceLine.TYPE.define(
-										InvoiceLine.ID.define()
+		return InvoiceLine.TYPE.as(
+										InvoiceLine.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										InvoiceLine.INVOICE_ID.define()
+										InvoiceLine.INVOICE_ID.as()
 														.column()
 														.nullable(false),
 										// tag::referenceDepth0[]
-										InvoiceLine.INVOICE_FK.define()
+										InvoiceLine.INVOICE_FK.as()
 														.foreignKey()
 														.referenceDepth(0)
 														.hidden(true),
 										// end::referenceDepth0[]
-										InvoiceLine.TRACK_ID.define()
+										InvoiceLine.TRACK_ID.as()
 														.column()
 														.nullable(false),
-										InvoiceLine.TRACK_FK.define()
+										InvoiceLine.TRACK_FK.as()
 														.foreignKey()
 														.include(Track.NAME, Track.UNITPRICE),
-										InvoiceLine.UNITPRICE.define()
+										InvoiceLine.UNITPRICE.as()
 														.column()
 														.nullable(false),
-										InvoiceLine.QUANTITY.define()
+										InvoiceLine.QUANTITY.as()
 														.column()
 														.nullable(false)
 														.defaultValue(1),
-										InvoiceLine.TOTAL.define()
+										InvoiceLine.TOTAL.as()
 														.derived()
 														.from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
 														.with(new InvoiceLineTotal()),
-										InvoiceLine.INSERT_TIME.define()
+										InvoiceLine.INSERT_TIME.as()
 														.column(INSERT_TIME)
 														.hidden(true),
-										InvoiceLine.INSERT_USER.define()
+										InvoiceLine.INSERT_USER.as()
 														.column(INSERT_USER)
 														.hidden(true))
 						.build();
 	}
 
 	EntityDefinition playlist() {
-		return Playlist.TYPE.define(
-										Playlist.ID.define()
+		return Playlist.TYPE.as(
+										Playlist.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Playlist.NAME.define()
+										Playlist.NAME.as()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(120))
 						.orderBy(ascending(Playlist.NAME))
@@ -519,26 +519,26 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition playlistTrack() {
-		return PlaylistTrack.TYPE.define(
-										PlaylistTrack.ID.define()
+		return PlaylistTrack.TYPE.as(
+										PlaylistTrack.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										PlaylistTrack.PLAYLIST_ID.define()
+										PlaylistTrack.PLAYLIST_ID.as()
 														.column()
 														.nullable(false),
-										PlaylistTrack.PLAYLIST_FK.define()
+										PlaylistTrack.PLAYLIST_FK.as()
 														.foreignKey(),
-										PlaylistTrack.ARTIST.define()
+										PlaylistTrack.ARTIST.as()
 														.denormalized()
 														.from(PlaylistTrack.ALBUM)
 														.using(Album.ARTIST_FK),
-										PlaylistTrack.TRACK_ID.define()
+										PlaylistTrack.TRACK_ID.as()
 														.column()
 														.nullable(false),
-										PlaylistTrack.TRACK_FK.define()
+										PlaylistTrack.TRACK_FK.as()
 														.foreignKey()
 														.referenceDepth(3),
-										PlaylistTrack.ALBUM.define()
+										PlaylistTrack.ALBUM.as()
 														.denormalized()
 														.from(PlaylistTrack.TRACK_FK)
 														.using(Track.ALBUM_FK))
@@ -551,13 +551,13 @@ public final class ChinookImpl extends DomainModel {
 	}
 
 	EntityDefinition artistRevenue() {
-		return ArtistRevenue.TYPE.define(
-										ArtistRevenue.ARTIST_ID.define()
+		return ArtistRevenue.TYPE.as(
+										ArtistRevenue.ARTIST_ID.as()
 														.primaryKey(),
-										ArtistRevenue.NAME.define()
+										ArtistRevenue.NAME.as()
 														.column()
 														.expression("artist.name"),
-										ArtistRevenue.TOTAL_REVENUE.define()
+										ArtistRevenue.TOTAL_REVENUE.as()
 														.column()
 														.expression("SUM(tr.revenue)")
 														.fractionDigits(2))

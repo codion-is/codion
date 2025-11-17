@@ -133,39 +133,39 @@ public final class EntityValidationEnhancementTest {
 			super(DOMAIN_TYPE);
 
 			// Customer entity
-			add(Customer.TYPE.define(
-							Customer.ID.define().primaryKey(),
-							Customer.NAME.define()
+			add(Customer.TYPE.as(
+							Customer.ID.as().primaryKey(),
+							Customer.NAME.as()
 											.column()
 											.nullable(false)
 											.maximumLength(100),
-							Customer.EMAIL.define()
+							Customer.EMAIL.as()
 											.column()
 											.nullable(false)
 											.maximumLength(255),
-							Customer.PHONE.define()
+							Customer.PHONE.as()
 											.column()
 											.maximumLength(20),
-							Customer.BIRTH_DATE.define()
+							Customer.BIRTH_DATE.as()
 											.column(),
-							Customer.CREDIT_LIMIT.define()
+							Customer.CREDIT_LIMIT.as()
 											.column()
 											.nullable(false)
 											.range(BigDecimal.ZERO, new BigDecimal("1000000")),
-							Customer.STATUS.define()
+							Customer.STATUS.as()
 											.column()
 											.nullable(false)
 											.items(Arrays.asList(item("ACTIVE"), item("INACTIVE"), item("SUSPENDED"))),
-							Customer.COUNTRY_CODE.define()
+							Customer.COUNTRY_CODE.as()
 											.column()
 											.nullable(false)
 											.maximumLength(2),
-							Customer.LOYALTY_POINTS.define()
+							Customer.LOYALTY_POINTS.as()
 											.column()
 											.nullable(false)
 											.defaultValue(0)
 											.minimum(0),
-							Customer.AGE.define()
+							Customer.AGE.as()
 											.derived()
 											.from(Customer.BIRTH_DATE)
 											.with(source -> {
@@ -178,94 +178,94 @@ public final class EntityValidationEnhancementTest {
 			).validator(new CustomerValidator()).build());
 
 			// Product entity
-			add(Product.TYPE.define(
-							Product.ID.define().primaryKey(),
-							Product.CODE.define()
+			add(Product.TYPE.as(
+							Product.ID.as().primaryKey(),
+							Product.CODE.as()
 											.column()
 											.nullable(false)
 											.maximumLength(20),
-							Product.NAME.define()
+							Product.NAME.as()
 											.column()
 											.nullable(false)
 											.maximumLength(200),
-							Product.PRICE.define()
+							Product.PRICE.as()
 											.column()
 											.nullable(false)
 											.minimum(BigDecimal.ZERO),
-							Product.STOCK_QUANTITY.define()
+							Product.STOCK_QUANTITY.as()
 											.column()
 											.nullable(false)
 											.minimum(0),
-							Product.CATEGORY.define()
+							Product.CATEGORY.as()
 											.column()
 											.nullable(false)
 											.items(Arrays.asList(item("ELECTRONICS"), item("CLOTHING"), item("FOOD"), item("BOOKS"), item("OTHER"))),
-							Product.EXPIRY_DATE.define()
+							Product.EXPIRY_DATE.as()
 											.column(),
-							Product.ACTIVE.define()
+							Product.ACTIVE.as()
 											.column()
 											.nullable(false)
 											.defaultValue(true),
-							Product.WEIGHT.define()
+							Product.WEIGHT.as()
 											.column()
 											.range(0.0, 1000.0),
-							Product.BARCODE.define()
+							Product.BARCODE.as()
 											.column()
 											.maximumLength(13)
 			).validator(new ProductValidator()).build());
 
 			// Order entity
-			add(Order.TYPE.define(
-							Order.ID.define().primaryKey(),
-							Order.CUSTOMER_ID.define()
+			add(Order.TYPE.as(
+							Order.ID.as().primaryKey(),
+							Order.CUSTOMER_ID.as()
 											.column()
 											.nullable(false),
-							Order.ORDER_DATE.define()
+							Order.ORDER_DATE.as()
 											.column()
 											.nullable(false),
-							Order.STATUS.define()
+							Order.STATUS.as()
 											.column()
 											.nullable(false)
 											.items(Arrays.asList(item("PENDING"), item("PROCESSING"), item("SHIPPED"), item("DELIVERED"), item("CANCELLED"))),
-							Order.TOTAL.define()
+							Order.TOTAL.as()
 											.column()
 											.nullable(false)
 											.minimum(BigDecimal.ZERO),
-							Order.NOTES.define()
+							Order.NOTES.as()
 											.column()
 											.maximumLength(1000),
-							Order.CUSTOMER_FK.define()
+							Order.CUSTOMER_FK.as()
 											.foreignKey()
 			).validator(new OrderValidator()).build());
 
 			// OrderItem entity
-			add(OrderItem.TYPE.define(
-											OrderItem.ID.define().primaryKey(),
-											OrderItem.ORDER_ID.define()
+			add(OrderItem.TYPE.as(
+											OrderItem.ID.as().primaryKey(),
+											OrderItem.ORDER_ID.as()
 															.column()
 															.nullable(false),
-											OrderItem.PRODUCT_ID.define()
+											OrderItem.PRODUCT_ID.as()
 															.column()
 															.nullable(false),
-											OrderItem.QUANTITY.define()
+											OrderItem.QUANTITY.as()
 															.column()
 															.nullable(false)
 															.range(1, 1000),
-											OrderItem.UNIT_PRICE.define()
+											OrderItem.UNIT_PRICE.as()
 															.column()
 															.nullable(false)
 															.minimum(BigDecimal.ZERO),
-											OrderItem.DISCOUNT.define()
+											OrderItem.DISCOUNT.as()
 															.column()
 															.nullable(false)
 															.defaultValue(BigDecimal.ZERO)
 															.range(BigDecimal.ZERO, new BigDecimal("100")),
-											OrderItem.ORDER_FK.define()
+											OrderItem.ORDER_FK.as()
 															.foreignKey(),
-											OrderItem.PRODUCT_FK.define()
+											OrderItem.PRODUCT_FK.as()
 															.foreignKey()
 															.include(Product.STOCK_QUANTITY, Product.ACTIVE),
-											OrderItem.LINE_TOTAL.define()
+											OrderItem.LINE_TOTAL.as()
 															.derived()
 															.from(OrderItem.QUANTITY, OrderItem.UNIT_PRICE, OrderItem.DISCOUNT)
 															.with(source -> {

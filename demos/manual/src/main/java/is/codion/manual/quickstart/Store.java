@@ -54,16 +54,16 @@ public class Store extends DomainModel {
 
 	// tag::customerImpl[]
 	EntityDefinition customer() {
-		return Customer.TYPE.define(
-										Customer.ID.define()
+		return Customer.TYPE.as(
+										Customer.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Customer.FIRST_NAME.define()
+										Customer.FIRST_NAME.as()
 														.column()
 														.caption("First name")
 														.nullable(false)
 														.maximumLength(40),
-										Customer.LAST_NAME.define()
+										Customer.LAST_NAME.as()
 														.column()
 														.caption("Last name")
 														.nullable(false)
@@ -87,16 +87,16 @@ public class Store extends DomainModel {
 	}
 
 	EntityDefinition address() {
-		return Address.TYPE.define(
-										Address.ID.define()
+		return Address.TYPE.as(
+										Address.ID.as()
 														.primaryKey()
 														.generator(automatic("store.address")),
-										Address.STREET.define()
+										Address.STREET.as()
 														.column()
 														.caption("Street")
 														.nullable(false)
 														.maximumLength(120),
-										Address.CITY.define()
+										Address.CITY.as()
 														.column()
 														.caption("City")
 														.nullable(false)
@@ -123,20 +123,20 @@ public class Store extends DomainModel {
 	}
 
 	EntityDefinition customerAddress() {
-		return CustomerAddress.TYPE.define(
-										CustomerAddress.ID.define()
+		return CustomerAddress.TYPE.as(
+										CustomerAddress.ID.as()
 														.primaryKey()
 														.generator(automatic("store.customer_address")),
-										CustomerAddress.CUSTOMER_ID.define()
+										CustomerAddress.CUSTOMER_ID.as()
 														.column()
 														.nullable(false),
-										CustomerAddress.CUSTOMER_FK.define()
+										CustomerAddress.CUSTOMER_FK.as()
 														.foreignKey()
 														.caption("Customer"),
-										CustomerAddress.ADDRESS_ID.define()
+										CustomerAddress.ADDRESS_ID.as()
 														.column()
 														.nullable(false),
-										CustomerAddress.ADDRESS_FK.define()
+										CustomerAddress.ADDRESS_FK.as()
 														.foreignKey()
 														.caption("Address"))
 						.caption("Customer address")

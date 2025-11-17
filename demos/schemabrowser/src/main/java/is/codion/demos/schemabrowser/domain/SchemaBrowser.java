@@ -65,8 +65,8 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition schema() {
-		return Schema.TYPE.define(
-										Schema.NAME.define()
+		return Schema.TYPE.as(
+										Schema.NAME.as()
 														.primaryKey()
 														.caption("Name"))
 						.table(bundle.getString("t_schema"))
@@ -87,13 +87,13 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition table() {
-		EntityDefinition.Builder tableBuilder = Table.TYPE.define(
-										Table.SCHEMA.define()
+		EntityDefinition.Builder tableBuilder = Table.TYPE.as(
+										Table.SCHEMA.as()
 														.primaryKey(0),
-										Table.SCHEMA_FK.define()
+										Table.SCHEMA_FK.as()
 														.foreignKey()
 														.caption("Schema"),
-										Table.NAME.define()
+										Table.NAME.as()
 														.primaryKey(1)
 														.caption("Name"))
 						.table(bundle.getString("t_table"))
@@ -133,19 +133,19 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition tableColumn() {
-		return TableColumn.TYPE.define(
-										TableColumn.SCHEMA.define()
+		return TableColumn.TYPE.as(
+										TableColumn.SCHEMA.as()
 														.primaryKey(0),
-										TableColumn.TABLE_NAME.define()
+										TableColumn.TABLE_NAME.as()
 														.primaryKey(1),
-										TableColumn.TABLE_FK.define()
+										TableColumn.TABLE_FK.as()
 														.foreignKey()
 														.referenceDepth(2)
 														.caption("Table"),
-										TableColumn.NAME.define()
+										TableColumn.NAME.as()
 														.primaryKey(2)
 														.caption("Column name"),
-										TableColumn.DATA_TYPE.define()
+										TableColumn.DATA_TYPE.as()
 														.column()
 														.caption("Data type"))
 						.table(bundle.getString("t_column"))
@@ -174,19 +174,19 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition constraint() {
-		return Constraint.TYPE.define(
-										Constraint.SCHEMA.define()
+		return Constraint.TYPE.as(
+										Constraint.SCHEMA.as()
 														.primaryKey(0),
-										Constraint.TABLE_NAME.define()
+										Constraint.TABLE_NAME.as()
 														.primaryKey(1),
-										Constraint.TABLE_FK.define()
+										Constraint.TABLE_FK.as()
 														.foreignKey()
 														.referenceDepth(2)
 														.caption("Table"),
-										Constraint.NAME.define()
+										Constraint.NAME.as()
 														.primaryKey(2)
 														.caption("Constraint name"),
-										Constraint.CONSTRAINT_TYPE.define()
+										Constraint.CONSTRAINT_TYPE.as()
 														.column()
 														.caption("Type"))
 						.table(bundle.getString("t_constraint"))
@@ -217,21 +217,21 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition constraintColumn() {
-		return ConstraintColumn.TYPE.define(
-										ConstraintColumn.SCHEMA.define()
+		return ConstraintColumn.TYPE.as(
+										ConstraintColumn.SCHEMA.as()
 														.primaryKey(0),
-										ConstraintColumn.TABLE_NAME.define()
+										ConstraintColumn.TABLE_NAME.as()
 														.primaryKey(1),
-										ConstraintColumn.CONSTRAINT_NAME.define()
+										ConstraintColumn.CONSTRAINT_NAME.as()
 														.primaryKey(2),
-										ConstraintColumn.CONSTRAINT_FK.define()
+										ConstraintColumn.CONSTRAINT_FK.as()
 														.foreignKey()
 														.referenceDepth(3)
 														.caption("Constraint"),
-										ConstraintColumn.COLUMN_NAME.define()
+										ConstraintColumn.COLUMN_NAME.as()
 														.column()
 														.caption("Column name"),
-										ConstraintColumn.POSITION.define()
+										ConstraintColumn.POSITION.as()
 														.column()
 														.caption("Position"))
 						.table(bundle.getString("t_column_constraint"))

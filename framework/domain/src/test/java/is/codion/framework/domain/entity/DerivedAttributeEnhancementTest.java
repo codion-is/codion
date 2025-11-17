@@ -117,16 +117,16 @@ public final class DerivedAttributeEnhancementTest {
 			super(DOMAIN_TYPE);
 
 			// Product entity definition
-			add(Product.TYPE.define(
-							Product.ID.define().primaryKey(),
-							Product.NAME.define().column().nullable(false),
-							Product.PRICE.define().column().nullable(false),
-							Product.QUANTITY.define().column().nullable(false),
-							Product.TAX_RATE.define().column().nullable(false),
-							Product.PURCHASE_DATE.define().column(),
+			add(Product.TYPE.as(
+							Product.ID.as().primaryKey(),
+							Product.NAME.as().column().nullable(false),
+							Product.PRICE.as().column().nullable(false),
+							Product.QUANTITY.as().column().nullable(false),
+							Product.TAX_RATE.as().column().nullable(false),
+							Product.PURCHASE_DATE.as().column(),
 
 							// Simple calculation
-							Product.TOTAL_VALUE.define()
+							Product.TOTAL_VALUE.as()
 											.derived()
 											.from(Product.PRICE, Product.QUANTITY)
 											.with(source -> {
@@ -139,7 +139,7 @@ public final class DerivedAttributeEnhancementTest {
 											}),
 
 							// Derived from derived
-							Product.TAX_AMOUNT.define()
+							Product.TAX_AMOUNT.as()
 											.derived()
 											.from(Product.TOTAL_VALUE, Product.TAX_RATE)
 											.with(source -> {
@@ -152,7 +152,7 @@ public final class DerivedAttributeEnhancementTest {
 											}),
 
 							// Complex calculation
-							Product.TOTAL_WITH_TAX.define()
+							Product.TOTAL_WITH_TAX.as()
 											.derived()
 											.from(Product.TOTAL_VALUE, Product.TAX_AMOUNT)
 											.with(source -> {
@@ -165,7 +165,7 @@ public final class DerivedAttributeEnhancementTest {
 											}),
 
 							// Date calculation
-							Product.DAYS_SINCE_PURCHASE.define()
+							Product.DAYS_SINCE_PURCHASE.as()
 											.derived()
 											.from(Product.PURCHASE_DATE)
 											.with(source -> {
@@ -177,7 +177,7 @@ public final class DerivedAttributeEnhancementTest {
 											}),
 
 							// String manipulation
-							Product.DISPLAY_NAME.define()
+							Product.DISPLAY_NAME.as()
 											.derived()
 											.from(Product.NAME, Product.QUANTITY)
 											.with(source -> {
@@ -191,30 +191,30 @@ public final class DerivedAttributeEnhancementTest {
 			).build());
 
 			// Order entity definition
-			add(Order.TYPE.define(
-							Order.ID.define().primaryKey(),
-							Order.ORDER_DATE.define().column().nullable(false),
-							Order.STATUS.define().column().nullable(false)
+			add(Order.TYPE.as(
+							Order.ID.as().primaryKey(),
+							Order.ORDER_DATE.as().column().nullable(false),
+							Order.STATUS.as().column().nullable(false)
 			).build());
 
 			// OrderLine entity definition
-			add(OrderLine.TYPE.define(
-							OrderLine.ID.define().primaryKey(),
-							OrderLine.ORDER_ID.define().column().nullable(false),
-							OrderLine.PRODUCT_ID.define().column().nullable(false),
-							OrderLine.QUANTITY.define().column().nullable(false),
-							OrderLine.UNIT_PRICE.define().column().nullable(false),
+			add(OrderLine.TYPE.as(
+							OrderLine.ID.as().primaryKey(),
+							OrderLine.ORDER_ID.as().column().nullable(false),
+							OrderLine.PRODUCT_ID.as().column().nullable(false),
+							OrderLine.QUANTITY.as().column().nullable(false),
+							OrderLine.UNIT_PRICE.as().column().nullable(false),
 
-							OrderLine.ORDER_FK.define()
+							OrderLine.ORDER_FK.as()
 											.foreignKey()
 											.include(Order.STATUS, Order.ORDER_DATE),
 
-							OrderLine.PRODUCT_FK.define()
+							OrderLine.PRODUCT_FK.as()
 											.foreignKey()
 											.include(Product.NAME),
 
 							// Derived from foreign key
-							OrderLine.PRODUCT_NAME.define()
+							OrderLine.PRODUCT_NAME.as()
 											.derived()
 											.from(OrderLine.PRODUCT_FK)
 											.with(source -> {
@@ -226,7 +226,7 @@ public final class DerivedAttributeEnhancementTest {
 											}),
 
 							// Simple calculation
-							OrderLine.LINE_TOTAL.define()
+							OrderLine.LINE_TOTAL.as()
 											.derived()
 											.from(OrderLine.QUANTITY, OrderLine.UNIT_PRICE)
 											.with(source -> {
@@ -239,7 +239,7 @@ public final class DerivedAttributeEnhancementTest {
 											}),
 
 							// Derived from foreign key attributes
-							OrderLine.ORDER_STATUS.define()
+							OrderLine.ORDER_STATUS.as()
 											.derived()
 											.from(OrderLine.ORDER_FK)
 											.with(source -> {
@@ -250,7 +250,7 @@ public final class DerivedAttributeEnhancementTest {
 												return null;
 											}),
 
-							OrderLine.ORDER_DATE.define()
+							OrderLine.ORDER_DATE.as()
 											.derived()
 											.from(OrderLine.ORDER_FK)
 											.with(source -> {
@@ -263,14 +263,14 @@ public final class DerivedAttributeEnhancementTest {
 			).build());
 
 			// Complex entity with multi-level derived
-			add(ComplexEntity.TYPE.define(
-							ComplexEntity.ID.define().primaryKey(),
-							ComplexEntity.VALUE1.define().column(),
-							ComplexEntity.VALUE2.define().column(),
-							ComplexEntity.NUMBER1.define().column(),
-							ComplexEntity.NUMBER2.define().column(),
+			add(ComplexEntity.TYPE.as(
+							ComplexEntity.ID.as().primaryKey(),
+							ComplexEntity.VALUE1.as().column(),
+							ComplexEntity.VALUE2.as().column(),
+							ComplexEntity.NUMBER1.as().column(),
+							ComplexEntity.NUMBER2.as().column(),
 
-							ComplexEntity.CONCAT_VALUES.define()
+							ComplexEntity.CONCAT_VALUES.as()
 											.derived()
 											.from(ComplexEntity.VALUE1, ComplexEntity.VALUE2)
 											.with(source -> {
@@ -282,7 +282,7 @@ public final class DerivedAttributeEnhancementTest {
 												return v1 != null ? v1 : v2;
 											}),
 
-							ComplexEntity.SUM_NUMBERS.define()
+							ComplexEntity.SUM_NUMBERS.as()
 											.derived()
 											.from(ComplexEntity.NUMBER1, ComplexEntity.NUMBER2)
 											.with(source -> {
@@ -295,7 +295,7 @@ public final class DerivedAttributeEnhancementTest {
 											}),
 
 							// Derived from other derived attributes
-							ComplexEntity.COMPLEX_DERIVED.define()
+							ComplexEntity.COMPLEX_DERIVED.as()
 											.derived()
 											.from(ComplexEntity.CONCAT_VALUES, ComplexEntity.SUM_NUMBERS)
 											.with(source -> {
@@ -589,9 +589,9 @@ public final class DerivedAttributeEnhancementTest {
 					Column<Integer> value = type.integerColumn("value");
 					Attribute<Integer> doubled = type.integerAttribute("doubled");
 
-					add(type.define(
-									value.define().column(),
-									doubled.define()
+					add(type.as(
+									value.as().column(),
+									doubled.as()
 													.derived()
 													.from(value)
 													.with(source -> {
@@ -641,12 +641,12 @@ public final class DerivedAttributeEnhancementTest {
 					Attribute<Integer> attr1 = type.integerAttribute("attr1");
 					Attribute<Integer> attr2 = type.integerAttribute("attr2");
 
-					add(type.define(
-									attr1.define()
+					add(type.as(
+									attr1.as()
 													.derived()
 													.from(attr2)
 													.with(source -> source.get(attr2)),
-									attr2.define()
+									attr2.as()
 													.derived()
 													.from(attr1)
 													.with(source -> source.get(attr1))
@@ -681,9 +681,9 @@ public final class DerivedAttributeEnhancementTest {
 					Column<Integer> value = type.integerColumn("value");
 					Attribute<Integer> problematic = type.integerAttribute("problematic");
 
-					add(type.define(
-									value.define().column(),
-									problematic.define()
+					add(type.as(
+									value.as().column(),
+									problematic.as()
 													.derived()
 													.from(value)
 													.with(source -> {
@@ -742,10 +742,10 @@ public final class DerivedAttributeEnhancementTest {
 
 					List<AttributeDefinition.Builder<?, ?>> definitions = new ArrayList<>();
 					for (Column<Integer> col : columns) {
-						definitions.add(col.define().column());
+						definitions.add(col.as().column());
 					}
 
-					definitions.add(sum.define()
+					definitions.add(sum.as()
 									.derived()
 									.from(columns.toArray(new Attribute[0]))
 									.with(source -> {
@@ -759,7 +759,7 @@ public final class DerivedAttributeEnhancementTest {
 										return total;
 									}));
 
-					add(type.define(definitions.toArray(new AttributeDefinition.Builder[0])).build());
+					add(type.as(definitions.toArray(new AttributeDefinition.Builder[0])).build());
 				}
 			}
 

@@ -42,11 +42,11 @@ class ForeignKeyDomain extends DomainModel {
 	}
 
 	EntityDefinition species() {
-		return Species.TYPE.define(
-										Species.NO.define()
+		return Species.TYPE.as(
+										Species.NO.as()
 														.primaryKey()
 														.caption("Number"),
-										Species.NAME.define()
+										Species.NAME.as()
 														.column()
 														.caption("Name")
 														.maximumLength(50))
@@ -61,12 +61,12 @@ class ForeignKeyDomain extends DomainModel {
 	}
 
 	EntityDefinition maturity() {
-		return Maturity.TYPE.define(
-										Maturity.NO.define()
+		return Maturity.TYPE.as(
+										Maturity.NO.as()
 														.primaryKey(0),
-										Maturity.SPECIES_NO.define()
+										Maturity.SPECIES_NO.as()
 														.primaryKey(1),
-										Maturity.SPECIES_FK.define()
+										Maturity.SPECIES_FK.as()
 														.foreignKey())
 						.build();
 	}
@@ -79,12 +79,12 @@ class ForeignKeyDomain extends DomainModel {
 	}
 
 	EntityDefinition otolithCategory() {
-		return OtolithCategory.TYPE.define(
-										OtolithCategory.NO.define()
+		return OtolithCategory.TYPE.as(
+										OtolithCategory.NO.as()
 														.primaryKey(0),
-										OtolithCategory.SPECIES_NO.define()
+										OtolithCategory.SPECIES_NO.as()
 														.primaryKey(1),
-										OtolithCategory.SPECIES_FK.define()
+										OtolithCategory.SPECIES_FK.as()
 														.foreignKey())
 						.build();
 	}
@@ -105,23 +105,23 @@ class ForeignKeyDomain extends DomainModel {
 	}
 
 	EntityDefinition otolith() {
-		return Otolith.TYPE.define(
-										Otolith.STATION_ID.define()
+		return Otolith.TYPE.as(
+										Otolith.STATION_ID.as()
 														.primaryKey(0),
-										Otolith.SPECIES_NO.define()
+										Otolith.SPECIES_NO.as()
 														.primaryKey(1)
 														.updatable(true)
 														.nullable(false),
-										Otolith.SPECIES_FK.define()
+										Otolith.SPECIES_FK.as()
 														.foreignKey(),
-										Otolith.MATURITY_NO.define()
+										Otolith.MATURITY_NO.as()
 														.column(),
-										Otolith.MATURITY_FK.define()
+										Otolith.MATURITY_FK.as()
 														.foreignKey()
 														.readOnly(Otolith.SPECIES_NO),
-										Otolith.OTOLITH_CATEGORY_NO.define()
+										Otolith.OTOLITH_CATEGORY_NO.as()
 														.column(),
-										Otolith.OTOLITH_CATEGORY_FK.define()
+										Otolith.OTOLITH_CATEGORY_FK.as()
 														.foreignKey()
 														.readOnly(Otolith.SPECIES_NO))
 						.build();

@@ -67,20 +67,20 @@ public final class Examples {
 		}
 
 		EntityDefinition customer() {
-			return Customer.TYPE.define(
-											Customer.ID.define()
+			return Customer.TYPE.as(
+											Customer.ID.as()
 															.primaryKey()
 															.generator(identity()),
-											Customer.FIRST_NAME.define()
+											Customer.FIRST_NAME.as()
 															.column(REQUIRED_NAME)
 															.caption("First Name"),
-											Customer.LAST_NAME.define()
+											Customer.LAST_NAME.as()
 															.column(NAME)
 															.caption("Last Name"),
-											Customer.BIRTH_YEAR.define()
+											Customer.BIRTH_YEAR.as()
 															.column(positiveNumber(2100))
 															.caption("Age"),
-											Customer.DISCOUNT.define()
+											Customer.DISCOUNT.as()
 															.column(positiveNumber(8))
 															.defaultValue(0d)
 															.caption("Discount"))

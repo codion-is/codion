@@ -80,12 +80,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void compositeMaster() {
-		add(CompositeMaster.TYPE.define(
-										CompositeMaster.COMPOSITE_MASTER_ID.define()
+		add(CompositeMaster.TYPE.as(
+										CompositeMaster.COMPOSITE_MASTER_ID.as()
 														.primaryKey(0).nullable(true),
-										CompositeMaster.COMPOSITE_MASTER_ID_2.define()
+										CompositeMaster.COMPOSITE_MASTER_ID_2.as()
 														.primaryKey(1),
-										CompositeMaster.COMPOSITE_MASTER_ID_3.define()
+										CompositeMaster.COMPOSITE_MASTER_ID_3.as()
 														.primaryKey(2))
 						.build());
 	}
@@ -103,14 +103,14 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void compositeDetail() {
-		add(CompositeDetail.TYPE.define(
-										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID.define()
+		add(CompositeDetail.TYPE.as(
+										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID.as()
 														.primaryKey(0),
-										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2.define()
+										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2.as()
 														.primaryKey(1),
-										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3.define()
+										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3.as()
 														.primaryKey(2),
-										CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.define()
+										CompositeDetail.COMPOSITE_DETAIL_MASTER_FK.as()
 														.foreignKey()
 														.caption("master")
 														.readOnly(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3))
@@ -124,7 +124,7 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void superEntity() {
-		add(Super.TYPE.define(Super.ID.define().primaryKey()).build());
+		add(Super.TYPE.as(Super.ID.as().primaryKey()).build());
 	}
 
 	public interface Master {
@@ -136,14 +136,14 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void master() {
-		add(Master.TYPE.define(
-										Master.ID.define()
+		add(Master.TYPE.as(
+										Master.ID.as()
 														.primaryKey(),
-										Master.NAME.define()
+										Master.NAME.as()
 														.column(),
-										Master.CODE.define()
+										Master.CODE.as()
 														.column(),
-										Master.READ_ONLY.define()
+										Master.READ_ONLY.as()
 														.column()
 														.readOnly(true))
 						.comparator(new MasterComparator())
@@ -164,14 +164,14 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void master2() {
-		add(Master2.TYPE.define(
-										Master2.ID_1.define().primaryKey(0),
-										Master2.ID_2.define().primaryKey(1),
-										Master2.SUPER_ID.define().column(),
-										Master2.SUPER_FK.define()
+		add(Master2.TYPE.as(
+										Master2.ID_1.as().primaryKey(0),
+										Master2.ID_2.as().primaryKey(1),
+										Master2.SUPER_ID.as().column(),
+										Master2.SUPER_FK.as()
 														.foreignKey().caption("Super"),
-										Master2.NAME.define().column(),
-										Master2.CODE.define().column())
+										Master2.NAME.as().column(),
+										Master2.CODE.as().column())
 						.comparator(Comparator.comparing(o -> o.get(Master2.CODE)))
 						.formatter(Master2.NAME)
 						.build());
@@ -207,57 +207,57 @@ public final class TestDomain extends DomainModel {
 					item(2, "Two"), item(3, "Three"));
 
 	void detail2() {
-		add(Detail2.TYPE.define(
-										Detail2.ID.define()
+		add(Detail2.TYPE.as(
+										Detail2.ID.as()
 														.primaryKey(),
-										Detail2.INT.define()
+										Detail2.INT.as()
 														.column()
 														.caption(Detail2.INT.name()),
-										Detail2.DOUBLE.define()
+										Detail2.DOUBLE.as()
 														.column()
 														.caption(Detail2.DOUBLE.name()),
-										Detail2.STRING.define()
+										Detail2.STRING.as()
 														.column()
 														.caption("Detail2 string"),
-										Detail2.DATE.define()
+										Detail2.DATE.as()
 														.column()
 														.caption(Detail2.DATE.name()),
-										Detail2.TIMESTAMP.define()
+										Detail2.TIMESTAMP.as()
 														.column()
 														.caption(Detail2.TIMESTAMP.name()),
-										Detail2.BOOLEAN.define()
+										Detail2.BOOLEAN.as()
 														.column()
 														.caption(Detail2.BOOLEAN.name())
 														.nullable(false)
 														.defaultValue(true)
 														.description("A boolean column"),
-										Detail2.BOOLEAN_NULLABLE.define()
+										Detail2.BOOLEAN_NULLABLE.as()
 														.column()
 														.caption(Detail2.BOOLEAN_NULLABLE.name())
 														.defaultValue(true),
-										Detail2.MASTER_ID_1.define()
+										Detail2.MASTER_ID_1.as()
 														.column(),
-										Detail2.MASTER_ID_2.define()
+										Detail2.MASTER_ID_2.as()
 														.column(),
-										Detail2.MASTER_FK.define()
+										Detail2.MASTER_FK.as()
 														.foreignKey()
 														.caption(Detail2.MASTER_FK.name()),
-										Detail2.MASTER_VIA_CODE_FK.define()
+										Detail2.MASTER_VIA_CODE_FK.as()
 														.foreignKey()
 														.caption(Detail2.MASTER_FK.name()),
-										Detail2.MASTER_NAME.define()
+										Detail2.MASTER_NAME.as()
 														.denormalized()
 														.from(Detail2.MASTER_FK)
 														.using(Master2.NAME)
 														.caption(Detail2.MASTER_NAME.name()),
-										Detail2.MASTER_CODE.define()
+										Detail2.MASTER_CODE.as()
 														.column()
 														.caption(Detail2.MASTER_CODE.name()),
-										Detail2.INT_ITEMS.define()
+										Detail2.INT_ITEMS.as()
 														.column()
 														.items(INT_VALUE_ITEMS)
 														.caption(Detail2.INT_ITEMS.name()),
-										Detail2.INT_DERIVED.define()
+										Detail2.INT_DERIVED.as()
 														.derived()
 														.from(Detail2.INT)
 														.with(source -> {
@@ -310,67 +310,67 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void detail() {
-		add(Detail.TYPE.define(
-										Detail.ID.define()
+		add(Detail.TYPE.as(
+										Detail.ID.as()
 														.primaryKey()
 														.generator(queried("select id from dual")),
-										Detail.SHORT.define()
+										Detail.SHORT.as()
 														.column()
 														.caption(Detail.SHORT.name()),
-										Detail.INT.define()
+										Detail.INT.as()
 														.column()
 														.caption(Detail.INT.name()),
-										Detail.DOUBLE.define()
+										Detail.DOUBLE.as()
 														.column()
 														.caption(Detail.DOUBLE.name())
 														.withDefault(true),
-										Detail.STRING.define()
+										Detail.STRING.as()
 														.column()
 														.caption("Detail string")
 														.selected(false),
-										Detail.DATE.define()
+										Detail.DATE.as()
 														.column()
 														.caption(Detail.DATE.name())
 														.withDefault(true),
-										Detail.TIMESTAMP.define()
+										Detail.TIMESTAMP.as()
 														.column()
 														.caption(Detail.TIMESTAMP.name()),
-										Detail.BOOLEAN.define()
+										Detail.BOOLEAN.as()
 														.column()
 														.caption(Detail.BOOLEAN.name())
 														.nullable(false)
 														.defaultValue(true)
 														.description("A boolean property"),
-										Detail.BOOLEAN_NULLABLE.define()
+										Detail.BOOLEAN_NULLABLE.as()
 														.column()
 														.caption(Detail.BOOLEAN_NULLABLE.name())
 														.withDefault(true)
 														.defaultValue(true),
-										Detail.MASTER_ID.define()
+										Detail.MASTER_ID.as()
 														.column(),
-										Detail.MASTER_FK.define()
+										Detail.MASTER_FK.as()
 														.foreignKey()
 														.caption(Detail.MASTER_FK.name()),
-										Detail.MASTER_CODE_NON_DENORM.define()
+										Detail.MASTER_CODE_NON_DENORM.as()
 														.column(),
-										Detail.MASTER_VIA_CODE_FK.define()
+										Detail.MASTER_VIA_CODE_FK.as()
 														.foreignKey()
 														.caption(Detail.MASTER_FK.name()),
-										Detail.MASTER_NAME.define()
+										Detail.MASTER_NAME.as()
 														.denormalized()
 														.from(Detail.MASTER_FK)
 														.using(Master.NAME)
 														.caption(Detail.MASTER_NAME.name()),
-										Detail.MASTER_CODE.define()
+										Detail.MASTER_CODE.as()
 														.denormalized()
 														.from(Detail.MASTER_FK)
 														.using(Master.CODE)
 														.caption(Detail.MASTER_CODE.name()),
-										Detail.INT_ITEMS.define()
+										Detail.INT_ITEMS.as()
 														.column()
 														.items(INT_VALUE_ITEMS)
 														.caption(Detail.INT_ITEMS.name()),
-										Detail.INT_DERIVED.define()
+										Detail.INT_DERIVED.as()
 														.derived()
 														.from(Detail.INT)
 														.with(source -> {
@@ -383,7 +383,7 @@ public final class TestDomain extends DomainModel {
 															return intValue * 10;
 														})
 														.caption(Detail.INT_DERIVED.name()),
-										Detail.BYTES.define()
+										Detail.BYTES.as()
 														.column()
 														.updatable(false)
 														.selected(false))
@@ -408,28 +408,28 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.define(
-										Department.ID.define()
+		add(Department.TYPE.as(
+										Department.ID.as()
 														.primaryKey()
 														.caption(Department.ID.name())
 														.updatable(true).nullable(false),
-										Department.NAME.define()
+										Department.NAME.as()
 														.column()
 														.caption(Department.NAME.name())
 														.searchable(true)
 														.maximumLength(14)
 														.nullable(false),
-										Department.LOCATION.define()
+										Department.LOCATION.as()
 														.column()
 														.caption(Department.LOCATION.name())
 														.maximumLength(13),
-										Department.ACTIVE.define()
+										Department.ACTIVE.as()
 														.column()
 														.readOnly(true),
-										Department.DATA.define()
+										Department.DATA.as()
 														.column()
 														.selected(false),
-										Department.CODE.define()
+										Department.CODE.as()
 														.column())
 						.table("employees.department")
 						.smallDataset(true)
@@ -467,48 +467,48 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.define(
-										Employee.ID.define()
+		add(Employee.TYPE.as(
+										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name())
 														.name("empno"),
-										Employee.NAME.define()
+										Employee.NAME.as()
 														.column()
 														.caption(Employee.NAME.name())
 														.searchable(true)
 														.name("ename")
 														.maximumLength(10)
 														.nullable(false),
-										Employee.DEPARTMENT_NO.define()
+										Employee.DEPARTMENT_NO.as()
 														.column()
 														.nullable(false),
-										Employee.DEPARTMENT_FK.define()
+										Employee.DEPARTMENT_FK.as()
 														.foreignKey()
 														.caption(Employee.DEPARTMENT_FK.name()),
-										Employee.JOB.define()
+										Employee.JOB.as()
 														.column()
 														.items(asList(item("ANALYST"), item("CLERK"),
 																		item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
 														.caption(Employee.JOB.name())
 														.searchable(true),
-										Employee.SALARY.define()
+										Employee.SALARY.as()
 														.column()
 														.caption(Employee.SALARY.name())
 														.nullable(false)
 														.range(1000, 10000)
 														.fractionDigits(2),
-										Employee.COMMISSION.define()
+										Employee.COMMISSION.as()
 														.column()
 														.caption(Employee.COMMISSION.name())
 														.range(100, 2000)
 														.fractionDigits(2),
-										Employee.MGR.define()
+										Employee.MGR.as()
 														.column(),
-										Employee.MANAGER_FK.define()
+										Employee.MANAGER_FK.as()
 														.foreignKey()
 														.caption(Employee.MANAGER_FK.name()),
-										Employee.HIREDATE.define()
+										Employee.HIREDATE.as()
 														.column()
 														.caption(Employee.HIREDATE.name())
 														.updatable(false)
@@ -517,16 +517,16 @@ public final class TestDomain extends DomainModel {
 																		.yearFourDigits()
 																		.build())
 														.nullable(false),
-										Employee.DEPARTMENT_LOCATION.define()
+										Employee.DEPARTMENT_LOCATION.as()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
 														.using(Department.LOCATION)
 														.caption(Department.LOCATION.name()),
-										Employee.DEPARTMENT_NAME.define()
+										Employee.DEPARTMENT_NAME.as()
 														.derived()
 														.from(Employee.NAME, Employee.DEPARTMENT_FK)
 														.with(new DepartmentName()),
-										Employee.DATA.define()
+										Employee.DATA.as()
 														.column()
 														.caption("Data"))
 						.table("employees.employee")
@@ -564,12 +564,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void keyTest() {
-		add(KeyTest.TYPE.define(
-										KeyTest.ID1.define()
+		add(KeyTest.TYPE.as(
+										KeyTest.ID1.as()
 														.primaryKey(0),
-										KeyTest.ID2.define()
+										KeyTest.ID2.as()
 														.primaryKey(1),
-										KeyTest.ID3.define()
+										KeyTest.ID3.as()
 														.primaryKey(2)
 														.nullable(true))
 						.build());
@@ -583,12 +583,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void noPKEntity() {
-		add(NoPk.TYPE.define(
-										NoPk.COL1.define()
+		add(NoPk.TYPE.as(
+										NoPk.COL1.as()
 														.column(),
-										NoPk.COL2.define()
+										NoPk.COL2.as()
 														.column(),
-										NoPk.COL3.define()
+										NoPk.COL3.as()
 														.column())
 						.build());
 	}
@@ -601,10 +601,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void transientModifies() {
-		add(TransModifies.TYPE.define(
-										TransModifies.ID.define()
+		add(TransModifies.TYPE.as(
+										TransModifies.ID.as()
 														.primaryKey(),
-										TransModifies.TRANS.define()
+										TransModifies.TRANS.as()
 														.attribute())
 						.build());
 	}
@@ -617,10 +617,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void transientModifiesNot() {
-		add(TransModifiesNot.TYPE.define(
-										TransModifiesNot.ID.define()
+		add(TransModifiesNot.TYPE.as(
+										TransModifiesNot.ID.as()
 														.primaryKey(),
-										TransModifiesNot.TRANS.define()
+										TransModifiesNot.TRANS.as()
 														.attribute()
 														.modifies(false))
 						.build());
@@ -635,12 +635,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void nullString() {
-		add(NullString.TYPE.define(
-										NullString.ID.define()
+		add(NullString.TYPE.as(
+										NullString.ID.as()
 														.primaryKey(),
-										NullString.ATTR.define()
+										NullString.ATTR.as()
 														.column(),
-										NullString.ATTR2.define()
+										NullString.ATTR2.as()
 														.column())
 						.formatter(entity -> null)
 						.build());
@@ -655,12 +655,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void invalidDerived() {
-		add(InvalidDerived.TYPE.define(
-										InvalidDerived.ID.define()
+		add(InvalidDerived.TYPE.as(
+										InvalidDerived.ID.as()
 														.primaryKey(),
-										InvalidDerived.INT.define()
+										InvalidDerived.INT.as()
 														.column(),
-										InvalidDerived.INVALID_DERIVED.define()
+										InvalidDerived.INVALID_DERIVED.as()
 														.derived()
 														.from(InvalidDerived.ID)
 														.with(source -> source.get(InvalidDerived.INT).intValue()))
@@ -679,13 +679,13 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void foreignKeyLazyColumn() {
-		add(ForeignKeyLazyColumn.TYPE.define(
-										ForeignKeyLazyColumn.ID.define()
+		add(ForeignKeyLazyColumn.TYPE.as(
+										ForeignKeyLazyColumn.ID.as()
 														.primaryKey(),
-										ForeignKeyLazyColumn.DEPARTMENT_ID.define()
+										ForeignKeyLazyColumn.DEPARTMENT_ID.as()
 														.column()
 														.selected(false),
-										ForeignKeyLazyColumn.DEPARTMENT_FK.define()
+										ForeignKeyLazyColumn.DEPARTMENT_FK.as()
 														.foreignKey())
 						.build());
 	}
@@ -698,10 +698,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void nonCachedToString() {
-		add(NonCachedToString.TYPE.define(
-										NonCachedToString.ID.define()
+		add(NonCachedToString.TYPE.as(
+										NonCachedToString.ID.as()
 														.primaryKey(),
-										NonCachedToString.STRING.define()
+										NonCachedToString.STRING.as()
 														.column())
 						.formatter(entity -> entity.formatted(NonCachedToString.ID) + "." + entity.get(NonCachedToString.STRING))
 						.cacheToString(false)

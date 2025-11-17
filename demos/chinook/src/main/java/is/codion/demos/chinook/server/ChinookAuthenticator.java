@@ -128,12 +128,12 @@ public final class ChinookAuthenticator implements Authenticator {
 
 		private Authentication() {
 			super(DOMAIN);
-			add(User.TYPE.define(
-											User.ID.define()
+			add(User.TYPE.as(
+											User.ID.as()
 															.primaryKey(),
-											User.USERNAME.define()
+											User.USERNAME.as()
 															.column(),
-											User.PASSWORD_HASH.define()
+											User.PASSWORD_HASH.as()
 															.column())
 							.readOnly(true)
 							.build());

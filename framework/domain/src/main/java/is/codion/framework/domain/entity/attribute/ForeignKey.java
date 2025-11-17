@@ -66,14 +66,14 @@ import java.util.List;
  *     }
  *
  *     void defineOrder() {
- *         Order.TYPE.define(
- *                 Order.ID.define()
+ *         Order.TYPE.as(
+ *                 Order.ID.as()
  *                     .primaryKey(),
- *                 Order.CUSTOMER_ID.define()
+ *                 Order.CUSTOMER_ID.as()
  *                     .column(),
- *                 Order.ORDER_DATE.define()
+ *                 Order.ORDER_DATE.as()
  *                     .column(),
- *                 Order.CUSTOMER_FK.define()
+ *                 Order.CUSTOMER_FK.as()
  *                     .foreignKey()
  *                     .caption("Customer")
  *                     .referenceDepth(1))  // Load customer automatically (1 is the default)
@@ -109,7 +109,7 @@ import java.util.List;
  *     Order.CUSTOMER_FK.in(connection.select(Customer.ACTIVE.equalTo(true))));
  *}
  * @see ForeignKeyConditionFactory
- * @see #define()
+ * @see #as()
  * @see #referencedType()
  * @see #references()
  */
@@ -118,7 +118,7 @@ public sealed interface ForeignKey extends Attribute<Entity>, ForeignKeyConditio
 	/**
 	 * @return a {@link ForeignKeyDefiner} for this foreign key
 	 */
-	ForeignKeyDefiner define();
+	ForeignKeyDefiner as();
 
 	/**
 	 * @return the entity type referenced by this foreign key

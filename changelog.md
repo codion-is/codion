@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ListBuilder moved to FilterList.Builder, FilterList.builder() added, related refactoring.
 - Components.list() removed.
+### is.codion.framework.domain
+- EntityType.define() and AttributeDefiner.define() renamed as().
 
 ## 0.18.59
 ### is.codion.common.model

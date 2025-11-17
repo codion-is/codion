@@ -66,26 +66,26 @@ import static is.codion.common.utilities.Configuration.*;
  *     }
  *
  *     void defineProduct() {
- *         Product.TYPE.define(
- *                 Product.ID.define()
+ *         Product.TYPE.as(
+ *                 Product.ID.as()
  *                     .primaryKey()
  *                     .generator(Generator.identity())
  *                     .caption("Product ID"),
  *
- *                 Product.NAME.define()
+ *                 Product.NAME.as()
  *                     .column()
  *                     .caption("Product Name")
  *                     .nullable(false)
  *                     .maximumLength(100)
  *                     .description("The name of the product"),
  *
- *                 Product.DESCRIPTION.define()
+ *                 Product.DESCRIPTION.as()
  *                     .column()
  *                     .caption("Description")
  *                     .maximumLength(500)
  *                     .nullable(true),
  *
- *                 Product.PRICE.define()
+ *                 Product.PRICE.as()
  *                     .column()
  *                     .caption("Price")
  *                     .nullable(false)
@@ -94,7 +94,7 @@ import static is.codion.common.utilities.Configuration.*;
  *                     .fractionDigits(2)
  *                     .defaultValue(BigDecimal.ZERO),
  *
- *                 Product.CATEGORY.define()
+ *                 Product.CATEGORY.as()
  *                     .column()
  *                     .caption("Category")
  *                     .nullable(false)
@@ -104,13 +104,13 @@ import static is.codion.common.utilities.Configuration.*;
  *                         Item.item("BOOKS", "Books"),
  *                         Item.item("HOME", "Home & Garden"))),
  *
- *                 Product.ACTIVE.define()
+ *                 Product.ACTIVE.as()
  *                     .column()
  *                     .caption("Active")
  *                     .nullable(false)
  *                     .defaultValue(true),
  *
- *                 Product.CREATED_DATE.define()
+ *                 Product.CREATED_DATE.as()
  *                     .column()
  *                     .caption("Created")
  *                     .nullable(false)
@@ -121,7 +121,7 @@ import static is.codion.common.utilities.Configuration.*;
  * }
  *}
  * @param <T> the underlying type
- * @see Attribute#define()
+ * @see Attribute#as()
  * @see Builder
  */
 public sealed interface AttributeDefinition<T>

@@ -85,19 +85,19 @@ public final class EntitiesTutorial {
 
 			// create columns for the table 'chinook.artist'
 			ColumnDefinition.Builder<Long, ?> artistId =
-							Artist.ID.define()
+							Artist.ID.as()
 											.primaryKey()
 											.generator(identity());
 
 			ColumnDefinition.Builder<String, ?> artistName =
-							Artist.NAME.define()
+							Artist.NAME.as()
 											.column()
 											.caption("Name")
 											.nullable(false)
 											.maximumLength(120);
 
 			// define an entity based on the table 'chinook.artist', with the above columns
-			EntityDefinition artist = Artist.TYPE.define(artistId, artistName)
+			EntityDefinition artist = Artist.TYPE.as(artistId, artistName)
 							.formatter(Artist.NAME)
 							.smallDataset(true)
 							.caption("Artist")
@@ -108,29 +108,29 @@ public final class EntitiesTutorial {
 
 			// create columns and foreign key for the table 'chinook.album'
 			ColumnDefinition.Builder<Long, ?> albumId =
-							Album.ID.define()
+							Album.ID.as()
 											.primaryKey()
 											.generator(identity());
 
 			ColumnDefinition.Builder<String, ?> albumTitle =
-							Album.TITLE.define()
+							Album.TITLE.as()
 											.column()
 											.caption("Title")
 											.nullable(false)
 											.maximumLength(160);
 
 			ColumnDefinition.Builder<Long, ?> albumArtistId =
-							Album.ARTIST_ID.define()
+							Album.ARTIST_ID.as()
 											.column()
 											.nullable(false);
 
 			ForeignKeyDefinition.Builder albumArtist =
-							Album.ARTIST_FK.define()
+							Album.ARTIST_FK.as()
 											.foreignKey()
 											.caption("Artist");
 
 			// define an entity based on the table 'chinook.album', with the above columns and foreign key
-			EntityDefinition album = Album.TYPE.define(albumId, albumTitle, albumArtistId, albumArtist)
+			EntityDefinition album = Album.TYPE.as(albumId, albumTitle, albumArtistId, albumArtist)
 							.formatter(EntityFormatter.builder()
 											.value(Album.ARTIST_FK)
 											.text(" - ")

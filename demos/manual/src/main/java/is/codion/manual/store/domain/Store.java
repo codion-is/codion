@@ -88,24 +88,24 @@ public final class Store extends DomainModel {
 
 	private EntityDefinition customer() {
 		// tag::customer[]
-		return Customer.TYPE.define(
-										Customer.ID.define()
+		return Customer.TYPE.as(
+										Customer.ID.as()
 														.primaryKey()
 														.generator(new UUIDGenerator()),
-										Customer.FIRST_NAME.define()
+										Customer.FIRST_NAME.as()
 														.column()
 														.caption("First name")
 														.nullable(false)
 														.maximumLength(40),
-										Customer.LAST_NAME.define()
+										Customer.LAST_NAME.as()
 														.column()
 														.caption("Last name")
 														.nullable(false)
 														.maximumLength(40),
-										Customer.EMAIL.define()
+										Customer.EMAIL.as()
 														.column()
 														.caption("Email"),
-										Customer.ACTIVE.define()
+										Customer.ACTIVE.as()
 														.column()
 														.caption("Active")
 														.withDefault(true)
@@ -120,21 +120,21 @@ public final class Store extends DomainModel {
 
 	private EntityDefinition address() {
 		// tag::address[]
-		return Address.TYPE.define(
-										Address.ID.define()
+		return Address.TYPE.as(
+										Address.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Address.STREET.define()
+										Address.STREET.as()
 														.column()
 														.caption("Street")
 														.nullable(false)
 														.maximumLength(120),
-										Address.CITY.define()
+										Address.CITY.as()
 														.column()
 														.caption("City")
 														.nullable(false)
 														.maximumLength(50),
-										Address.VALID.define()
+										Address.VALID.as()
 														.column()
 														.caption("Valid")
 														.withDefault(true)
@@ -153,20 +153,20 @@ public final class Store extends DomainModel {
 
 	private EntityDefinition customerAddress() {
 		// tag::customerAddress[]
-		return CustomerAddress.TYPE.define(
-										CustomerAddress.ID.define()
+		return CustomerAddress.TYPE.as(
+										CustomerAddress.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										CustomerAddress.CUSTOMER_ID.define()
+										CustomerAddress.CUSTOMER_ID.as()
 														.column()
 														.nullable(false),
-										CustomerAddress.CUSTOMER_FK.define()
+										CustomerAddress.CUSTOMER_FK.as()
 														.foreignKey()
 														.caption("Customer"),
-										CustomerAddress.ADDRESS_ID.define()
+										CustomerAddress.ADDRESS_ID.as()
 														.column()
 														.nullable(false),
-										CustomerAddress.ADDRESS_FK.define()
+										CustomerAddress.ADDRESS_FK.as()
 														.foreignKey()
 														.caption("Address"))
 						.caption("Customer address")

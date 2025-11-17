@@ -1238,21 +1238,21 @@ public class DefaultEntityTest {
 			class DerivedDomain extends DomainModel {
 				DerivedDomain() {
 					super(domainType);
-					add(type.define(
-													stringAttribute.define()
+					add(type.as(
+													stringAttribute.as()
 																	.attribute(),
-													derivedAttributeCached.define()
+													derivedAttributeCached.as()
 																	.derived()
 																	.from(stringAttribute)
 																	.with(source ->
 																					source.get(stringAttribute) + "-derived"),
-													derivedAttributeNonCached.define()
+													derivedAttributeNonCached.as()
 																	.derived()
 																	.from(stringAttribute)
 																	.with(source ->
 																					source.get(stringAttribute) + "-derived")
 																	.cached(false),
-													derivedAttributeNoSource.define()
+													derivedAttributeNoSource.as()
 																	.derived()
 																	.from()
 																	.with(source -> UUID.randomUUID()))

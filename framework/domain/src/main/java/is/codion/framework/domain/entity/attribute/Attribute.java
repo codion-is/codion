@@ -43,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  * names and entityTypes are equal, the valueClass does not factor into equality.
  * <p>
  * Attributes are typically created through entity type factory methods and then configured
- * using the {@link #define()} method to create attribute definitions:
+ * using the {@link #as()} method to create attribute definitions:
  * {@snippet :
  * public class Store extends DefaultDomain {
  *
@@ -65,32 +65,32 @@ import static java.util.Objects.requireNonNull;
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.define(
+ *         Customer.TYPE.as(
  *                 // Column attributes
- *                 Customer.ID.define()
+ *                 Customer.ID.as()
  *                     .primaryKey(),
- *                 Customer.NAME.define()
+ *                 Customer.NAME.as()
  *                     .column()
  *                     .nullable(false)
  *                     .maximumLength(100),
- *                 Customer.EMAIL.define()
+ *                 Customer.EMAIL.as()
  *                     .column()
  *                     .nullable(false),
- *                 Customer.BIRTH_DATE.define()
+ *                 Customer.BIRTH_DATE.as()
  *                     .column(),
- *                 Customer.ACTIVE.define()
+ *                 Customer.ACTIVE.as()
  *                     .column()
  *                     .defaultValue(true),
  *
  *                 // Derived attribute
- *                 Customer.DISPLAY_NAME.define()
+ *                 Customer.DISPLAY_NAME.as()
  *                     .derived()
  *				             .from(Customer.NAME, Customer.EMAIL)
  *                     .with(source ->
  *                         source.get(Customer.NAME) + " (" + source.get(Customer.EMAIL) + ")"),
  *
  *                 // Custom typed attribute
- *                 Customer.STATUS.define()
+ *                 Customer.STATUS.as()
  *                     .column()
  *                     .columnClass(String.class, CustomerStatus::valueOf))
  *             .build();
@@ -115,7 +115,7 @@ import static java.util.Objects.requireNonNull;
  * boolean isTemporal = Customer.BIRTH_DATE.type().isTemporal(); // true
  *}
  * @param <T> the attribute type
- * @see #define()
+ * @see #as()
  * @see #type()
  * @see EntityType
  */
@@ -124,7 +124,7 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 	/**
 	 * @return a {@link AttributeDefiner} for this attribute
 	 */
-	AttributeDefiner<T> define();
+	AttributeDefiner<T> as();
 
 	/**
 	 * @return the attribute type

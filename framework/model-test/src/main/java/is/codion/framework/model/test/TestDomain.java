@@ -58,12 +58,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition master() {
-		return Master.TYPE.define(
-										Master.ID.define()
+		return Master.TYPE.as(
+										Master.ID.as()
 														.primaryKey(),
-										Master.NAME.define()
+										Master.NAME.as()
 														.column(),
-										Master.CODE.define()
+										Master.CODE.as()
 														.column())
 						.comparator((o1, o2) -> {
 							Integer code1 = o1.get(Master.CODE);
@@ -101,55 +101,55 @@ public final class TestDomain extends DomainModel {
 					item(2, "2"), item(3, "3"));
 
 	EntityDefinition detail() {
-		return Detail.TYPE.define(
-										Detail.ID.define()
+		return Detail.TYPE.as(
+										Detail.ID.as()
 														.primaryKey(),
-										Detail.INT.define()
+										Detail.INT.as()
 														.column()
 														.caption(Detail.INT.name()),
-										Detail.DOUBLE.define()
+										Detail.DOUBLE.as()
 														.column()
 														.caption(Detail.DOUBLE.name()),
-										Detail.STRING.define()
+										Detail.STRING.as()
 														.column()
 														.caption("Detail string"),
-										Detail.DATE.define()
+										Detail.DATE.as()
 														.column()
 														.caption(Detail.DATE.name()),
-										Detail.TIMESTAMP.define()
+										Detail.TIMESTAMP.as()
 														.column()
 														.caption(Detail.TIMESTAMP.name()),
-										Detail.BOOLEAN.define()
+										Detail.BOOLEAN.as()
 														.column()
 														.caption(Detail.BOOLEAN.name())
 														.nullable(false)
 														.defaultValue(true)
 														.description("A boolean column"),
-										Detail.BOOLEAN_NULLABLE.define()
+										Detail.BOOLEAN_NULLABLE.as()
 														.column()
 														.caption(Detail.BOOLEAN_NULLABLE.name())
 														.defaultValue(true),
-										Detail.MASTER_ID.define()
+										Detail.MASTER_ID.as()
 														.column()
 														.readOnly(true),//AbstractEntityEditModelTest.persistWritableForeignKey()
-										Detail.MASTER_FK.define()
+										Detail.MASTER_FK.as()
 														.foreignKey()
 														.caption(Detail.MASTER_FK.name()),
-										Detail.MASTER_NAME.define()
+										Detail.MASTER_NAME.as()
 														.denormalized()
 														.from(Detail.MASTER_FK)
 														.using(Master.NAME)
 														.caption(Detail.MASTER_NAME.name()),
-										Detail.MASTER_CODE.define()
+										Detail.MASTER_CODE.as()
 														.denormalized()
 														.from(Detail.MASTER_FK)
 														.using(Master.CODE)
 														.caption(Detail.MASTER_CODE.name()),
-										Detail.INT_VALUE_LIST.define()
+										Detail.INT_VALUE_LIST.as()
 														.column()
 														.items(ITEMS)
 														.caption(Detail.INT_VALUE_LIST.name()),
-										Detail.INT_DERIVED.define()
+										Detail.INT_DERIVED.as()
 														.derived()
 														.from(Detail.INT)
 														.with(source -> {
@@ -177,19 +177,19 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition department() {
-		return Department.TYPE.define(
-										Department.ID.define()
+		return Department.TYPE.as(
+										Department.ID.as()
 														.primaryKey()
 														.caption(Department.ID.name())
 														.updatable(true)
 														.nullable(false),
-										Department.NAME.define()
+										Department.NAME.as()
 														.column()
 														.caption(Department.NAME.name())
 														.searchable(true)
 														.maximumLength(14)
 														.nullable(false),
-										Department.LOCATION.define()
+										Department.LOCATION.as()
 														.column()
 														.caption(Department.LOCATION.name())
 														.maximumLength(13))
@@ -223,55 +223,55 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition employee() {
-		return Employee.TYPE.define(
-										Employee.ID.define()
+		return Employee.TYPE.as(
+										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name()),
-										Employee.NAME.define()
+										Employee.NAME.as()
 														.column()
 														.caption(Employee.NAME.name())
 														.searchable(true)
 														.maximumLength(10)
 														.nullable(false),
-										Employee.DEPARTMENT.define()
+										Employee.DEPARTMENT.as()
 														.column()
 														.nullable(false),
-										Employee.DEPARTMENT_FK.define()
+										Employee.DEPARTMENT_FK.as()
 														.foreignKey()
 														.caption(Employee.DEPARTMENT_FK.name())
 														.include(Department.NAME),
-										Employee.JOB.define()
+										Employee.JOB.as()
 														.column()
 														.items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
 														.caption(Employee.JOB.name())
 														.searchable(true),
-										Employee.SALARY.define()
+										Employee.SALARY.as()
 														.column()
 														.caption(Employee.SALARY.name())
 														.nullable(false)
 														.range(1000, 10000)
 														.fractionDigits(2),
-										Employee.COMMISSION.define()
+										Employee.COMMISSION.as()
 														.column()
 														.caption(Employee.COMMISSION.name())
 														.range(100, 2000)
 														.fractionDigits(2),
-										Employee.MGR.define()
+										Employee.MGR.as()
 														.column(),
-										Employee.MGR_FK.define()
+										Employee.MGR_FK.as()
 														.foreignKey()
 														.caption(Employee.MGR_FK.name()),
-										Employee.HIREDATE.define()
+										Employee.HIREDATE.as()
 														.column()
 														.caption(Employee.HIREDATE.name())
 														.nullable(false),
-										Employee.DEPARTMENT_LOCATION.define()
+										Employee.DEPARTMENT_LOCATION.as()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
 														.using(Department.LOCATION)
 														.caption(Department.LOCATION.name()),
-										Employee.DATA.define()
+										Employee.DATA.as()
 														.column()
 														.selected(false))
 						.formatter(Employee.NAME)
@@ -295,10 +295,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition enumEntity() {
-		return EnumEntity.TYPE.define(
-										EnumEntity.ID.define()
+		return EnumEntity.TYPE.as(
+										EnumEntity.ID.as()
 														.primaryKey(),
-										EnumEntity.ENUM_TYPE.define()
+										EnumEntity.ENUM_TYPE.as()
 														.column())
 						.build();
 	}
@@ -313,22 +313,22 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition derived() {
-		return Derived.TYPE.define(
-										Derived.INT1.define()
+		return Derived.TYPE.as(
+										Derived.INT1.as()
 														.column(),
-										Derived.INT2.define()
+										Derived.INT2.as()
 														.derived()
 														.from(Derived.INT1)
 														.with(source -> source.optional(Derived.INT1)
 																		.map(value -> value + 1)
 																		.orElse(null)),
-										Derived.INT3.define()
+										Derived.INT3.as()
 														.derived()
 														.from(Derived.INT2)
 														.with(source -> source.optional(Derived.INT2)
 																		.map(value -> value + 1)
 																		.orElse(null)),
-										Derived.INT4.define()
+										Derived.INT4.as()
 														.derived()
 														.from(Derived.INT3)
 														.with(source -> source.optional(Derived.INT3)
@@ -350,23 +350,23 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition job() {
-		return Job.TYPE.define(
-										Job.JOB.define()
+		return Job.TYPE.as(
+										Job.JOB.as()
 														.primaryKey()
 														.groupBy(true),
-										Job.MAX_SALARY.define()
+										Job.MAX_SALARY.as()
 														.column()
 														.expression("max(sal)")
 														.aggregate(true),
-										Job.MIN_SALARY.define()
+										Job.MIN_SALARY.as()
 														.column()
 														.expression("min(sal)")
 														.aggregate(true),
-										Job.MAX_COMMISSION.define()
+										Job.MAX_COMMISSION.as()
 														.column()
 														.expression("max(comm)")
 														.aggregate(true),
-										Job.MIN_COMMISSION.define()
+										Job.MIN_COMMISSION.as()
 														.column()
 														.expression("min(comm)")
 														.aggregate(true))
@@ -387,12 +387,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition dateTimeTest() {
-		return DateTimeTest.TYPE.define(
-						DateTimeTest.ID.define()
+		return DateTimeTest.TYPE.as(
+						DateTimeTest.ID.as()
 										.primaryKey(),
-						DateTimeTest.TIME.define()
+						DateTimeTest.TIME.as()
 										.column(),
-						DateTimeTest.DATE_TIME.define()
+						DateTimeTest.DATE_TIME.as()
 										.column())
 						.build();
 	}
@@ -405,10 +405,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition nongen() {
-		return NonGeneratedPK.TYPE.define(
-										NonGeneratedPK.ID.define()
+		return NonGeneratedPK.TYPE.as(
+										NonGeneratedPK.ID.as()
 														.primaryKey(),
-										NonGeneratedPK.NAME.define()
+										NonGeneratedPK.NAME.as()
 														.column()
 														.maximumLength(5))
 						.build();

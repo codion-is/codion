@@ -62,23 +62,23 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void testEntity() {
-		add(TestEntity.TYPE.define(
-										TestEntity.DECIMAL.define()
+		add(TestEntity.TYPE.as(
+										TestEntity.DECIMAL.as()
 														.primaryKey(0),
-										TestEntity.DATE_TIME.define()
+										TestEntity.DATE_TIME.as()
 														.primaryKey(1),
-										TestEntity.OFFSET_DATE_TIME.define()
+										TestEntity.OFFSET_DATE_TIME.as()
 														.column(),
-										TestEntity.BLOB.define()
+										TestEntity.BLOB.as()
 														.column(),
-										TestEntity.READ_ONLY.define()
+										TestEntity.READ_ONLY.as()
 														.column()
 														.readOnly(true),
-										TestEntity.BOOLEAN.define()
+										TestEntity.BOOLEAN.as()
 														.column(),
-										TestEntity.TIME.define()
+										TestEntity.TIME.as()
 														.column(),
-										TestEntity.ENTITY.define()
+										TestEntity.ENTITY.as()
 														.attribute())
 						.condition(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2")
 						.build());
@@ -93,19 +93,19 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.define(
-										Department.DEPTNO.define()
+		add(Department.TYPE.as(
+										Department.DEPTNO.as()
 														.primaryKey()
 														.updatable(true).nullable(false),
-										Department.NAME.define()
+										Department.NAME.as()
 														.column()
 														.searchable(true)
 														.maximumLength(14)
 														.nullable(false),
-										Department.LOCATION.define()
+										Department.LOCATION.as()
 														.column()
 														.maximumLength(13),
-										Department.LOGO.define()
+										Department.LOGO.as()
 														.column())
 						.smallDataset(true)
 						.caption("Department")
@@ -128,39 +128,39 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.define(
-										Employee.EMPNO.define()
+		add(Employee.TYPE.as(
+										Employee.EMPNO.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq")),
-										Employee.NAME.define()
+										Employee.NAME.as()
 														.column()
 														.searchable(true).maximumLength(10).nullable(false),
-										Employee.DEPARTMENT.define()
+										Employee.DEPARTMENT.as()
 														.column()
 														.nullable(false),
-										Employee.DEPARTMENT_FK.define()
+										Employee.DEPARTMENT_FK.as()
 														.foreignKey(),
-										Employee.JOB.define()
+										Employee.JOB.as()
 														.column()
 														.items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
 														.searchable(true),
-										Employee.SALARY.define()
+										Employee.SALARY.as()
 														.column()
 														.nullable(false)
 														.range(1000, 10000)
 														.fractionDigits(2),
-										Employee.COMMISSION.define()
+										Employee.COMMISSION.as()
 														.column()
 														.range(100, 2000)
 														.fractionDigits(2),
-										Employee.MGR.define()
+										Employee.MGR.as()
 														.column(),
-										Employee.MGR_FK.define()
+										Employee.MGR_FK.as()
 														.foreignKey(),
-										Employee.HIREDATE.define()
+										Employee.HIREDATE.as()
 														.column()
 														.nullable(false),
-										Employee.EMP_DEPARTMENT_LOCATION.define()
+										Employee.EMP_DEPARTMENT_LOCATION.as()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
 														.using(Department.LOCATION))

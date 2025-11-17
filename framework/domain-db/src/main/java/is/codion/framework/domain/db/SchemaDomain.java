@@ -136,7 +136,7 @@ public final class SchemaDomain extends DomainModel {
 	private void defineEntity(MetaDataTable table, EntityType entityType, String captionName, boolean view) {
 		List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders = defineAttributes(table, entityType, new ArrayList<>(table.foreignKeys()));
 		if (!attributeDefinitionBuilders.isEmpty()) {
-			EntityDefinition.Builder entityDefinitionBuilder = entityType.define(attributeDefinitionBuilders.toArray(new AttributeDefinition.Builder[0]));
+			EntityDefinition.Builder entityDefinitionBuilder = entityType.as(attributeDefinitionBuilders.toArray(new AttributeDefinition.Builder[0]));
 			entityDefinitionBuilder.caption(caption(captionName));
 			if (!nullOrEmpty(table.comment())) {
 				entityDefinitionBuilder.description(table.comment());
@@ -191,7 +191,7 @@ public final class SchemaDomain extends DomainModel {
 										.map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
 										.collect(toList()));
 
-		return foreignKey.define().foreignKey().caption(caption(referencedTable.tableName().toLowerCase()));
+		return foreignKey.as().foreignKey().caption(caption(referencedTable.tableName().toLowerCase()));
 	}
 
 	private ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
@@ -199,10 +199,10 @@ public final class SchemaDomain extends DomainModel {
 		Column<?> column = column(entityType, metadataColumn);
 		ColumnDefinition.Builder<?, ?> builder;
 		if (metadataColumn.primaryKeyColumn()) {
-			builder = column.define().primaryKey(metadataColumn.primaryKeyIndex() - 1);
+			builder = column.as().primaryKey(metadataColumn.primaryKeyIndex() - 1);
 		}
 		else {
-			builder = column.define().column().caption(caption);
+			builder = column.as().column().caption(caption);
 		}
 		if (metadataColumn.autoIncrement()) {
 			builder.generator(identity());

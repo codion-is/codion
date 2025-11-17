@@ -93,21 +93,21 @@ public final class NotesDemo {
 
 		private Notes() {
 			super(DOMAIN);
-			add(Note.TYPE.define(
-											Note.ID.define()
+			add(Note.TYPE.as(
+											Note.ID.as()
 															.primaryKey()
 															.generator(Generator.identity()),
-											Note.NOTE.define()
+											Note.NOTE.as()
 															.column()
 															.caption("Note")
 															.nullable(false),
-											Note.CREATED.define()
+											Note.CREATED.as()
 															.column()
 															.caption("Created")
 															.nullable(false)
 															.updatable(false)
 															.withDefault(true),
-											Note.UPDATED.define()
+											Note.UPDATED.as()
 															.column()
 															.caption("Updated"))
 							.orderBy(OrderBy.descending(Note.CREATED))

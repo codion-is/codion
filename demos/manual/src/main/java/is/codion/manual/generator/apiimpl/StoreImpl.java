@@ -33,16 +33,16 @@ public final class StoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition customer() {
-		return Customer.TYPE.define(
-										Customer.ID.define()
+		return Customer.TYPE.as(
+										Customer.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Customer.NAME.define()
+										Customer.NAME.as()
 														.column()
 														.caption("Name")
 														.nullable(false)
 														.maximumLength(100),
-										Customer.EMAIL.define()
+										Customer.EMAIL.as()
 														.column()
 														.caption("Email")
 														.maximumLength(255))
@@ -51,13 +51,13 @@ public final class StoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition order() {
-		return Order.TYPE.define(
-										Order.ID.define()
+		return Order.TYPE.as(
+										Order.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Order.CUSTOMER_ID.define()
+										Order.CUSTOMER_ID.as()
 														.column(),
-										Order.CUSTOMER_FK.define()
+										Order.CUSTOMER_FK.as()
 														.foreignKey()
 														.caption("Customer"))
 						.caption("Order")

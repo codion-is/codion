@@ -57,27 +57,27 @@ public final class CustomSelectQueries {
 	static class StoreDomain extends DomainModel {
 		StoreDomain() {
 			super(DOMAIN);
-			// add(Album.TYPE.define(....
-			add(Track.TYPE.define(
-											Track.ID.define()
+			// add(Album.TYPE.as(....
+			add(Track.TYPE.as(
+											Track.ID.as()
 															.primaryKey(),
-											Track.NAME.define()
+											Track.NAME.as()
 															.column()
 															.caption("Name")
 															// set the expression since the column 'NAME' is ambiguous
 															.expression("track.name"),
-											Track.ALBUM_ID.define()
+											Track.ALBUM_ID.as()
 															.column(),
-											Track.ALBUM_FK.define()
+											Track.ALBUM_FK.as()
 															.foreignKey(),
 											// These columns come from the joined tables,
-											Track.ARTIST_NAME.define()
+											Track.ARTIST_NAME.as()
 															.column()
 															.caption("Artist")
 															// set the expression since the column 'NAME' is ambiguous
 															.expression("artist.name")
 															.readOnly(true), // always mark denormalized values as read-only
-											Track.ALBUM_TITLE.define()
+											Track.ALBUM_TITLE.as()
 															.column()
 															.caption("Album")
 															// No need for an expression, since 'TITLE' is unambiguous
@@ -104,10 +104,10 @@ public final class CustomSelectQueries {
 	static class AvailableTracksDomain extends DomainModel {
 		AvailableTracksDomain() {
 			super(DOMAIN);
-			add(AvailableTrack.TYPE.define(
-											AvailableTrack.ID.define()
+			add(AvailableTrack.TYPE.as(
+											AvailableTrack.ID.as()
 															.primaryKey(),
-											AvailableTrack.TITLE.define()
+											AvailableTrack.TITLE.as()
 															.column()
 															.caption("Title"))
 							// Static WHERE clause filters to available tracks only

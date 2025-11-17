@@ -68,32 +68,32 @@ import static is.codion.common.utilities.Configuration.integerValue;
  *     }
  *
  *     void defineEntities() {
- *         Order.TYPE.define(
- *                 Order.ID.define()
+ *         Order.TYPE.as(
+ *                 Order.ID.as()
  *                     .primaryKey(),
- *                 Order.CUSTOMER_ID.define()
+ *                 Order.CUSTOMER_ID.as()
  *                     .column(),
- *                 Order.ORDER_DATE.define()
+ *                 Order.ORDER_DATE.as()
  *                     .column(),
- *                 Order.TOTAL.define()
+ *                 Order.TOTAL.as()
  *                     .column(),
  *
  *                 // Basic foreign key with default reference depth (1)
- *                 Order.CUSTOMER_FK.define()
+ *                 Order.CUSTOMER_FK.as()
  *                     .foreignKey()
  *                     .caption("Customer"))
  *             .build();
  *
- *         OrderLine.TYPE.define(
- *                 OrderLine.ORDER_ID.define()
+ *         OrderLine.TYPE.as(
+ *                 OrderLine.ORDER_ID.as()
  *                     .primaryKey(),
- *                 OrderLine.PRODUCT_ID.define()
+ *                 OrderLine.PRODUCT_ID.as()
  *                     .column(),
- *                 OrderLine.QUANTITY.define()
+ *                 OrderLine.QUANTITY.as()
  *                     .column(),
  *
  *                 // Foreign key with deeper reference depth to load customer info
- *                 OrderLine.ORDER_FK.define()
+ *                 OrderLine.ORDER_FK.as()
  *                     .foreignKey()
  *                     .caption("Order")
  *                     .referenceDepth(2)  // Load order AND its customer

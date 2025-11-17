@@ -667,7 +667,7 @@ public final class DomainSource {
 		String interfaceName = interfaceName(definition, true);
 		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
 		StringBuilder builder = new StringBuilder()
-						.append(RETURN).append(interfaceName).append(".TYPE.define(").append("\n")
+						.append(RETURN).append(interfaceName).append(".TYPE.as(").append("\n")
 						.append(String.join("," + "\n",
 										createAttributes(definition.attributes().definitions(), definition, interfaceName, i18n)))
 						.append(")");
@@ -1115,7 +1115,7 @@ public final class DomainSource {
 
 		private String formatColumn(ColumnDefinition<?> column, ColumnContext context) {
 			CodeBlock.Builder builder = CodeBlock.builder()
-							.add("$L$L.$L.define()\n", DOUBLE_INDENT, interfaceName, column.name().toUpperCase())
+							.add("$L$L.$L.as()\n", DOUBLE_INDENT, interfaceName, column.name().toUpperCase())
 							.add("$L.$L", TRIPLE_INDENT, definitionType(column, context.compositePrimaryKey));
 
 			if (!context.foreignKeyColumn && !column.primaryKey()) {
@@ -1161,7 +1161,7 @@ public final class DomainSource {
 		private String formatForeignKey(ForeignKeyDefinition definition) {
 			String foreignKeyName = definition.attribute().name().toUpperCase();
 			CodeBlock.Builder builder = CodeBlock.builder()
-							.add("$L$L.$L.define()\n", DOUBLE_INDENT, interfaceName, foreignKeyName)
+							.add("$L$L.$L.as()\n", DOUBLE_INDENT, interfaceName, foreignKeyName)
 							.add("$L.foreignKey()", TRIPLE_INDENT);
 
 			captionStrategy.addAttributeCaption(builder, definition.caption());

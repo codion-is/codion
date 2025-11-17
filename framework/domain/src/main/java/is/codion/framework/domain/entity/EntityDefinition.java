@@ -73,15 +73,15 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  *
  *     // Define the entity structure
  *     void defineCustomer() {
- *         EntityDefinition definition = Customer.TYPE.define(
- *                 Customer.ID.define()
+ *         EntityDefinition definition = Customer.TYPE.as(
+ *                 Customer.ID.as()
  *                     .primaryKey(),
- *                 Customer.NAME.define()
+ *                 Customer.NAME.as()
  *                     .column()
  *                     .caption("Name")
  *                     .nullable(false)
  *                     .maximumLength(100),
- *                 Customer.EMAIL.define()
+ *                 Customer.EMAIL.as()
  *                     .column()
  *                     .caption("Email")
  *                     .maximumLength(255))
@@ -93,7 +93,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  *     }
  * }
  *}
- * @see EntityType#define(AttributeDefinition.Builder[])
+ * @see EntityType#as(AttributeDefinition.Builder[])
  * @see Builder
  */
 public sealed interface EntityDefinition permits DefaultEntityDefinition {
@@ -182,14 +182,14 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	 * Returns the formatter responsible for providing toString values for this entity type.
 	 * {@snippet :
 	 * // Define custom string representation
-	 * Customer.TYPE.define(
-	 *         Customer.ID.define()
+	 * Customer.TYPE.as(
+	 *         Customer.ID.as()
 	 *             .primaryKey(),
-	 *         Customer.FIRST_NAME.define()
+	 *         Customer.FIRST_NAME.as()
 	 *             .column(),
-	 *         Customer.LAST_NAME.define()
+	 *         Customer.LAST_NAME.as()
 	 *             .column(),
-	 *         Customer.EMAIL.define()
+	 *         Customer.EMAIL.as()
 	 *             .column())
 	 *     .formatter(customer ->
 	 *         customer.get(Customer.LAST_NAME) + ", " +
@@ -285,8 +285,8 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * Builds a EntityDefinition
-	 * @see EntityType#define(AttributeDefinition.Builder[])
-	 * @see EntityType#define(List)
+	 * @see EntityType#as(AttributeDefinition.Builder[])
+	 * @see EntityType#as(List)
 	 */
 	sealed interface Builder permits DefaultBuilder {
 

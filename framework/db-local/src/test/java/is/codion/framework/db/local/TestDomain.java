@@ -121,25 +121,25 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.define(
-										Department.DEPTNO.define()
+		add(Department.TYPE.as(
+										Department.DEPTNO.as()
 														.primaryKey()
 														.caption(Department.DEPTNO.name())
 														.updatable(true)
 														.nullable(false),
-										Department.DNAME.define()
+										Department.DNAME.as()
 														.column()
 														.caption(Department.DNAME.name())
 														.searchable(true)
 														.maximumLength(14)
 														.nullable(false),
-										Department.LOC.define()
+										Department.LOC.as()
 														.column()
 														.caption(Department.LOC.name())
 														.maximumLength(13),
-										Department.ACTIVE.define()
+										Department.ACTIVE.as()
 														.attribute(),
-										Department.DATA.define()
+										Department.DATA.as()
 														.attribute())
 						.smallDataset(true)
 						.formatter(Department.DNAME)
@@ -180,60 +180,60 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.define(
-										Employee.ID.define()
+		add(Employee.TYPE.as(
+										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name()),
-										Employee.NAME.define()
+										Employee.NAME.as()
 														.column()
 														.caption(Employee.NAME.name())
 														.searchable(true).maximumLength(10).nullable(false),
-										Employee.DEPARTMENT.define()
+										Employee.DEPARTMENT.as()
 														.column()
 														.nullable(false),
-										Employee.DEPARTMENT_FK.define()
+										Employee.DEPARTMENT_FK.as()
 														.foreignKey()
 														.caption(Employee.DEPARTMENT_FK.name()),
-										Employee.JOB.define()
+										Employee.JOB.as()
 														.column()
 														.items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
 														.caption(Employee.JOB.name())
 														.searchable(true),
-										Employee.SALARY.define()
+										Employee.SALARY.as()
 														.column()
 														.caption(Employee.SALARY.name())
 														.nullable(false)
 														.range(1000, 10000)
 														.fractionDigits(2),
-										Employee.COMMISSION.define()
+										Employee.COMMISSION.as()
 														.column()
 														.caption(Employee.COMMISSION.name())
 														.range(100, 2000)
 														.fractionDigits(2),
-										Employee.MGR.define()
+										Employee.MGR.as()
 														.column(),
-										Employee.MGR_FK.define()
+										Employee.MGR_FK.as()
 														.foreignKey()
 														//not really soft, just for testing purposes
 														.soft(true)
 														.caption(Employee.MGR_FK.name()),
-										Employee.HIREDATE.define()
+										Employee.HIREDATE.as()
 														.column()
 														.caption(Employee.HIREDATE.name())
 														.nullable(false),
-										Employee.HIRETIME.define()
+										Employee.HIRETIME.as()
 														.column()
 														.caption(Employee.HIRETIME.name()),
-										Employee.DEPARTMENT_LOCATION.define()
+										Employee.DEPARTMENT_LOCATION.as()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
 														.using(Department.LOC)
 														.caption(Department.LOC.name()),
-										Employee.DATA_LAZY.define()
+										Employee.DATA_LAZY.as()
 														.column()
 														.selected(false),
-										Employee.DATA.define()
+										Employee.DATA.as()
 														.column())
 						.formatter(Employee.NAME)
 						.condition(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
@@ -251,14 +251,14 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void departmentFk() {
-		add(DepartmentFk.TYPE.define(
-										DepartmentFk.DEPTNO.define()
+		add(DepartmentFk.TYPE.as(
+										DepartmentFk.DEPTNO.as()
 														.primaryKey()
 														.caption(Department.DEPTNO.name()),
-										DepartmentFk.DNAME.define()
+										DepartmentFk.DNAME.as()
 														.column()
 														.caption(DepartmentFk.DNAME.name()),
-										DepartmentFk.LOC.define()
+										DepartmentFk.LOC.as()
 														.column()
 														.caption(DepartmentFk.LOC.name()))
 						.table("employees.department")
@@ -284,44 +284,44 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employeeFk() {
-		add(EmployeeFk.TYPE.define(
-										EmployeeFk.ID.define()
+		add(EmployeeFk.TYPE.as(
+										EmployeeFk.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
 														.caption(EmployeeFk.ID.name()),
-										EmployeeFk.NAME.define()
+										EmployeeFk.NAME.as()
 														.column()
 														.caption(EmployeeFk.NAME.name())
 														.nullable(false),
-										EmployeeFk.DEPARTMENT.define()
+										EmployeeFk.DEPARTMENT.as()
 														.column()
 														.nullable(false),
-										EmployeeFk.DEPARTMENT_FK.define()
+										EmployeeFk.DEPARTMENT_FK.as()
 														.foreignKey()
 														.caption(EmployeeFk.DEPARTMENT_FK.name())
 														.include(DepartmentFk.DNAME),
-										EmployeeFk.JOB.define()
+										EmployeeFk.JOB.as()
 														.column()
 														.caption(EmployeeFk.JOB.name()),
-										EmployeeFk.SALARY.define()
+										EmployeeFk.SALARY.as()
 														.column()
 														.caption(EmployeeFk.SALARY.name())
 														.fractionDigits(2),
-										EmployeeFk.COMMISSION.define()
+										EmployeeFk.COMMISSION.as()
 														.column()
 														.caption(EmployeeFk.COMMISSION.name()),
-										EmployeeFk.MGR.define()
+										EmployeeFk.MGR.as()
 														.column(),
-										EmployeeFk.MGR_FK.define()
+										EmployeeFk.MGR_FK.as()
 														.foreignKey()
 														.soft(true)
 														.caption(EmployeeFk.MGR_FK.name())
 														.include(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
-										EmployeeFk.HIREDATE.define()
+										EmployeeFk.HIREDATE.as()
 														.column()
 														.caption(EmployeeFk.HIREDATE.name())
 														.nullable(false),
-										EmployeeFk.HIRETIME.define()
+										EmployeeFk.HIRETIME.as()
 														.column()
 														.caption(EmployeeFk.HIRETIME.name()))
 						.table("employees.employee")
@@ -353,12 +353,12 @@ public final class TestDomain extends DomainModel {
 				return true;
 			}
 		};
-		add(UUIDTestDefault.TYPE.define(
-										UUIDTestDefault.ID.define()
+		add(UUIDTestDefault.TYPE.as(
+										UUIDTestDefault.ID.as()
 														.primaryKey()
 														.caption("Id")
 														.generator(uuidGenerator),
-										UUIDTestDefault.DATA.define()
+										UUIDTestDefault.DATA.as()
 														.column()
 														.caption("Data"))
 						.build());
@@ -378,12 +378,12 @@ public final class TestDomain extends DomainModel {
 				entity.set(column, UUID.randomUUID());
 			}
 		};
-		add(UUIDTestNoDefault.TYPE.define(
-										UUIDTestNoDefault.ID.define()
+		add(UUIDTestNoDefault.TYPE.as(
+										UUIDTestNoDefault.ID.as()
 														.primaryKey()
 														.generator(uuidGenerator)
 														.caption("Id"),
-										UUIDTestNoDefault.DATA.define()
+										UUIDTestNoDefault.DATA.as()
 														.column()
 														.caption("Data"))
 						.build());
@@ -405,23 +405,23 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void job() {
-		add(Job.TYPE.define(
-										Job.JOB.define()
+		add(Job.TYPE.as(
+										Job.JOB.as()
 														.primaryKey()
 														.groupBy(true),
-										Job.MAX_SALARY.define()
+										Job.MAX_SALARY.as()
 														.column()
 														.expression("max(sal)")
 														.aggregate(true),
-										Job.MIN_SALARY.define()
+										Job.MIN_SALARY.as()
 														.column()
 														.expression("min(sal)")
 														.aggregate(true),
-										Job.MAX_COMMISSION.define()
+										Job.MAX_COMMISSION.as()
 														.column()
 														.expression("max(comm)")
 														.aggregate(true),
-										Job.MIN_COMMISSION.define()
+										Job.MIN_COMMISSION.as()
 														.column()
 														.expression("min(comm)")
 														.aggregate(true))
@@ -442,14 +442,14 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void noPkEntity() {
-		add(NoPrimaryKey.TYPE.define(
-										NoPrimaryKey.COL_1.define()
+		add(NoPrimaryKey.TYPE.as(
+										NoPrimaryKey.COL_1.as()
 														.column(),
-										NoPrimaryKey.COL_2.define()
+										NoPrimaryKey.COL_2.as()
 														.column(),
-										NoPrimaryKey.COL_3.define()
+										NoPrimaryKey.COL_3.as()
 														.column(),
-										NoPrimaryKey.COL_4.define()
+										NoPrimaryKey.COL_4.as()
 														.column())
 						.build());
 	}
@@ -466,15 +466,15 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void empnoDeptno() {
-		add(EmpnoDeptno.TYPE.define(
-										EmpnoDeptno.EMPLOYEE_NAME.define()
+		add(EmpnoDeptno.TYPE.as(
+										EmpnoDeptno.EMPLOYEE_NAME.as()
 														.column(),
-										EmpnoDeptno.DEPTNO.define()
+										EmpnoDeptno.DEPTNO.as()
 														.column()
 														.expression("d.deptno"),
-										EmpnoDeptno.EMPNO.define()
+										EmpnoDeptno.EMPNO.as()
 														.primaryKey(),
-										EmpnoDeptno.DEPARTMENT_NAME.define()
+										EmpnoDeptno.DEPARTMENT_NAME.as()
 														.column())
 						.selectQuery(EntitySelectQuery.builder()
 										.columns("empno as empno, dname, d.deptno as deptno, ename")// different order than attribute definitions
@@ -494,10 +494,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void query() {
-		add(Query.TYPE.define(
-										Query.EMPNO.define()
+		add(Query.TYPE.as(
+										Query.EMPNO.as()
 														.column(),
-										Query.ENAME.define()
+										Query.ENAME.as()
 														.column())
 						.table("employees.employee")
 						.orderBy(OrderBy.descending(Query.ENAME))
@@ -517,10 +517,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryColumnsWhereClause() {
-		add(QueryColumnsWhereClause.TYPE.define(
-										QueryColumnsWhereClause.EMPNO.define()
+		add(QueryColumnsWhereClause.TYPE.as(
+										QueryColumnsWhereClause.EMPNO.as()
 														.column(),
-										QueryColumnsWhereClause.ENAME.define()
+										QueryColumnsWhereClause.ENAME.as()
 														.column())
 						.table("employees.employee e")
 						.orderBy(OrderBy.descending(QueryColumnsWhereClause.ENAME))
@@ -539,10 +539,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryFromClause() {
-		add(QueryFromClause.TYPE.define(
-										QueryFromClause.EMPNO.define()
+		add(QueryFromClause.TYPE.as(
+										QueryFromClause.EMPNO.as()
 														.column(),
-										QueryFromClause.ENAME.define()
+										QueryFromClause.ENAME.as()
 														.column())
 						.orderBy(OrderBy.descending(QueryFromClause.ENAME))
 						.selectQuery(EntitySelectQuery.builder()
@@ -560,10 +560,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryFromWhereClause() {
-		add(QueryFromWhereClause.TYPE.define(
-										QueryFromWhereClause.EMPNO.define()
+		add(QueryFromWhereClause.TYPE.as(
+										QueryFromWhereClause.EMPNO.as()
 														.column(),
-										QueryFromWhereClause.ENAME.define()
+										QueryFromWhereClause.ENAME.as()
 														.column())
 						.orderBy(OrderBy.descending(QueryFromWhereClause.ENAME))
 						.selectQuery(EntitySelectQuery.builder()
@@ -582,11 +582,11 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void master() {
-		add(Master.TYPE.define(
-										Master.ID.define()
+		add(Master.TYPE.as(
+										Master.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Master.DATA.define()
+										Master.DATA.as()
 														.column())
 						.build());
 	}
@@ -603,17 +603,17 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void detail() {
-		add(Detail.TYPE.define(
-										Detail.ID.define()
+		add(Detail.TYPE.as(
+										Detail.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Detail.MASTER_1_ID.define()
+										Detail.MASTER_1_ID.as()
 														.column(),
-										Detail.MASTER_1_FK.define()
+										Detail.MASTER_1_FK.as()
 														.foreignKey(),
-										Detail.MASTER_2_ID.define()
+										Detail.MASTER_2_ID.as()
 														.column(),
-										Detail.MASTER_2_FK.define()
+										Detail.MASTER_2_FK.as()
 														.foreignKey())
 						.build());
 	}
@@ -626,10 +626,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void masterFk() {
-		add(MasterFk.TYPE.define(
-										MasterFk.ID.define()
+		add(MasterFk.TYPE.as(
+										MasterFk.ID.as()
 														.primaryKey(),
-										MasterFk.NAME.define()
+										MasterFk.NAME.as()
 														.column())
 						.build());
 	}
@@ -644,12 +644,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void detailFk() {
-		add(DetailFk.TYPE.define(
-										DetailFk.ID.define()
+		add(DetailFk.TYPE.as(
+										DetailFk.ID.as()
 														.primaryKey(),
-										DetailFk.MASTER_NAME.define()
+										DetailFk.MASTER_NAME.as()
 														.column(),
-										DetailFk.MASTER_FK.define()
+										DetailFk.MASTER_FK.as()
 														.foreignKey())
 						.build());
 	}
@@ -662,10 +662,10 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employeeNonOpt() {
-		add(EmployeeNonOpt.TYPE.define(
-										EmployeeNonOpt.ID.define()
+		add(EmployeeNonOpt.TYPE.as(
+										EmployeeNonOpt.ID.as()
 														.primaryKey(),
-										EmployeeNonOpt.NAME.define()
+										EmployeeNonOpt.NAME.as()
 														.column())
 						.table("employees.employee")
 						.optimisticLocking(false)
@@ -704,10 +704,10 @@ public final class TestDomain extends DomainModel {
 				return value;
 			}
 		}
-		add(NullConverter.TYPE.define(
-										NullConverter.ID.define()
+		add(NullConverter.TYPE.as(
+										NullConverter.ID.as()
 														.primaryKey(),
-										NullConverter.NAME.define()
+										NullConverter.NAME.as()
 														.column()
 														.converter(String.class, new NullColumnConverter()))
 						.table("employees.master_fk")
@@ -724,14 +724,14 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void generatorTestWithPk() {
-		add(GeneratorTestWithPk.TYPE.define(
-										GeneratorTestWithPk.ID.define()
+		add(GeneratorTestWithPk.TYPE.as(
+										GeneratorTestWithPk.ID.as()
 														.primaryKey(0)
 														.generator(identity()),
-										GeneratorTestWithPk.SEQ.define()
+										GeneratorTestWithPk.SEQ.as()
 														.primaryKey(1)
 														.generator(sequence("employees.generator_test_seq")),
-										GeneratorTestWithPk.UUID.define()
+										GeneratorTestWithPk.UUID.as()
 														.primaryKey(2)
 														.generator(new Generator<UUID>() {
 															@Override
@@ -739,7 +739,7 @@ public final class TestDomain extends DomainModel {
 																entity.set(column, UUID.randomUUID());
 															}
 														}),
-										GeneratorTestWithPk.DATA.define()
+										GeneratorTestWithPk.DATA.as()
 														.column()
 														.maximumLength(10))
 						.build());
@@ -755,14 +755,14 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void generatorTestWithoutPk() {
-		add(GeneratorTestWithoutPk.TYPE.define(
-										GeneratorTestWithoutPk.ID.define()
+		add(GeneratorTestWithoutPk.TYPE.as(
+										GeneratorTestWithoutPk.ID.as()
 														.column()
 														.generator(identity()),
-										GeneratorTestWithoutPk.SEQ.define()
+										GeneratorTestWithoutPk.SEQ.as()
 														.column()
 														.generator(sequence("employees.generator_test_seq")),
-										GeneratorTestWithoutPk.UUID.define()
+										GeneratorTestWithoutPk.UUID.as()
 														.column()
 														.generator(new Generator<UUID>() {
 															@Override
@@ -770,7 +770,7 @@ public final class TestDomain extends DomainModel {
 																entity.set(column, UUID.randomUUID());
 															}
 														}),
-										GeneratorTestWithoutPk.DATA.define()
+										GeneratorTestWithoutPk.DATA.as()
 														.column()
 														.maximumLength(10))
 						.table("employees.generator")
@@ -786,13 +786,13 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void generatorNonPk() {
-		add(GeneratorNonPk.TYPE.define(
-										GeneratorNonPk.ID.define()
+		add(GeneratorNonPk.TYPE.as(
+										GeneratorNonPk.ID.as()
 														.primaryKey(),
-										GeneratorNonPk.GENERATED_COL.define()
+										GeneratorNonPk.GENERATED_COL.as()
 														.column()
 														.generator(identity()),
-										GeneratorNonPk.DATA.define()
+										GeneratorNonPk.DATA.as()
 														.column()
 														.maximumLength(10))
 						.build());
@@ -805,8 +805,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void noPkIdentical() {
-		add(NoPkIdentical.TYPE.define(
-										NoPkIdentical.DATA.define()
+		add(NoPkIdentical.TYPE.as(
+										NoPkIdentical.DATA.as()
 														.column()
 														.maximumLength(10))
 						.build());
@@ -822,16 +822,16 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void mixedGenerated() {
-		add(MixedGenerated.TYPE.define(
-										MixedGenerated.ID.define()
+		add(MixedGenerated.TYPE.as(
+										MixedGenerated.ID.as()
 														.primaryKey(0)
 														.generator(identity()),
-										MixedGenerated.MANUAL_PK.define()
+										MixedGenerated.MANUAL_PK.as()
 														.primaryKey(1),
-										MixedGenerated.GENERATED_COL.define()
+										MixedGenerated.GENERATED_COL.as()
 														.column()
 														.generator(sequence("employees.mixed_seq")),
-										MixedGenerated.DATA.define()
+										MixedGenerated.DATA.as()
 														.column()
 														.maximumLength(10))
 						.build());
@@ -846,13 +846,13 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void partialGeneratedPk() {
-		add(PartialGeneratedPk.TYPE.define(
-										PartialGeneratedPk.ID.define()
+		add(PartialGeneratedPk.TYPE.as(
+										PartialGeneratedPk.ID.as()
 														.primaryKey(0)
 														.generator(identity()),
-										PartialGeneratedPk.MANUAL_ID.define()
+										PartialGeneratedPk.MANUAL_ID.as()
 														.primaryKey(1),
-										PartialGeneratedPk.DATA.define()
+										PartialGeneratedPk.DATA.as()
 														.column()
 														.maximumLength(10))
 						.build());
@@ -867,12 +867,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryWithCte() {
-		add(QueryWithCte.TYPE.define(
-										QueryWithCte.EMPNO.define()
+		add(QueryWithCte.TYPE.as(
+										QueryWithCte.EMPNO.as()
 														.column(),
-										QueryWithCte.ENAME.define()
+										QueryWithCte.ENAME.as()
 														.column(),
-										QueryWithCte.DEPTNO.define()
+										QueryWithCte.DEPTNO.as()
 														.column())
 						.table("employees.employee")
 						.selectQuery(EntitySelectQuery.builder()
@@ -893,14 +893,14 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryWithRecursiveCte() {
-		add(QueryWithRecursiveCte.TYPE.define(
-										QueryWithRecursiveCte.EMPNO.define()
+		add(QueryWithRecursiveCte.TYPE.as(
+										QueryWithRecursiveCte.EMPNO.as()
 														.column(),
-										QueryWithRecursiveCte.ENAME.define()
+										QueryWithRecursiveCte.ENAME.as()
 														.column(),
-										QueryWithRecursiveCte.MGR.define()
+										QueryWithRecursiveCte.MGR.as()
 														.column(),
-										QueryWithRecursiveCte.LEVEL.define()
+										QueryWithRecursiveCte.LEVEL.as()
 														.column())
 						.table("employees.employee")
 						.selectQuery(EntitySelectQuery.builder()
@@ -928,12 +928,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryWithMultipleCtes() {
-		add(QueryWithMultipleCtes.TYPE.define(
-										QueryWithMultipleCtes.EMPNO.define()
+		add(QueryWithMultipleCtes.TYPE.as(
+										QueryWithMultipleCtes.EMPNO.as()
 														.column(),
-										QueryWithMultipleCtes.ENAME.define()
+										QueryWithMultipleCtes.ENAME.as()
 														.column(),
-										QueryWithMultipleCtes.DNAME.define()
+										QueryWithMultipleCtes.DNAME.as()
 														.column())
 						.table("employees.employee")
 						.selectQuery(EntitySelectQuery.builder()

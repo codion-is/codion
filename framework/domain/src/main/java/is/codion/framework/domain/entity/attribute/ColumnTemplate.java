@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  *                 .nullable(false)
  *                 .minimum(0);
  *
- * Customer.AGE.define()
+ * Customer.AGE.as()
  *            .column(REQUIRED_POSITIVE)
  *            .caption("Age")
  *}

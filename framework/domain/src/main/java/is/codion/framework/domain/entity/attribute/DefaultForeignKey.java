@@ -87,7 +87,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 	}
 
 	@Override
-	public ForeignKeyDefiner define() {
+	public ForeignKeyDefiner as() {
 		return new DefaultForeignKeyDefiner(this);
 	}
 

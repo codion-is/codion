@@ -102,31 +102,31 @@ final class MigrationDomain extends DomainModel {
 
 	MigrationDomain() {
 		super(DOMAIN);
-		add(SchemaMigration.TYPE.define(
-										SchemaMigration.VERSION.define()
+		add(SchemaMigration.TYPE.as(
+										SchemaMigration.VERSION.as()
 														.primaryKey(),
-										SchemaMigration.DESCRIPTION.define()
+										SchemaMigration.DESCRIPTION.as()
 														.column()
 														.maximumLength(200)
 														.nullable(false),
-										SchemaMigration.SCRIPT.define()
+										SchemaMigration.SCRIPT.as()
 														.column()
 														.maximumLength(200)
 														.nullable(false),
-										SchemaMigration.CHECKSUM.define()
+										SchemaMigration.CHECKSUM.as()
 														.column()
 														.nullable(false),
-										SchemaMigration.EXECUTED_BY.define()
+										SchemaMigration.EXECUTED_BY.as()
 														.column()
 														.maximumLength(100)
 														.nullable(false),
-										SchemaMigration.EXECUTED_AT.define()
+										SchemaMigration.EXECUTED_AT.as()
 														.column()
 														.nullable(false),
-										SchemaMigration.EXECUTION_TIME.define()
+										SchemaMigration.EXECUTION_TIME.as()
 														.column()
 														.nullable(false),
-										SchemaMigration.SUCCESS.define()
+										SchemaMigration.SUCCESS.as()
 														.column()
 														.nullable(false))
 						.build());

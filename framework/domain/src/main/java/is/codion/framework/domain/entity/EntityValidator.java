@@ -65,12 +65,12 @@ import static java.util.Objects.requireNonNull;
  * }
  *
  * // Usage in domain definition
- * Customer.TYPE.define(
- *         Customer.EMAIL.define()
+ * Customer.TYPE.as(
+ *         Customer.EMAIL.as()
  *             .column(),
- *         Customer.ACTIVE.define()
+ *         Customer.ACTIVE.as()
  *             .column(),
- *         Customer.BIRTH_DATE.define()
+ *         Customer.BIRTH_DATE.as()
  *             .column())
  *     .validator(new CustomerValidator())
  *     .build();

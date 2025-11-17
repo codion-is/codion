@@ -87,12 +87,12 @@ final class DefaultEntityType implements EntityType, Serializable {
 	}
 
 	@Override
-	public EntityDefinition.Builder define(AttributeDefinition.Builder<?, ?>... definitionBuilders) {
-		return define(Arrays.asList(requireNonNull(definitionBuilders)));
+	public EntityDefinition.Builder as(AttributeDefinition.Builder<?, ?>... definitionBuilders) {
+		return as(Arrays.asList(requireNonNull(definitionBuilders)));
 	}
 
 	@Override
-	public EntityDefinition.Builder define(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders) {
+	public EntityDefinition.Builder as(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders) {
 		return new DefaultEntityDefinition.DefaultBuilder(this, requireNonNull(definitionBuilders).stream()
 						.map(AttributeDefinition.Builder::build)
 						.collect(toList()));

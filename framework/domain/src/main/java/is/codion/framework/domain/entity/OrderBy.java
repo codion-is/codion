@@ -44,14 +44,14 @@ import java.util.List;
  *
  *     void defineCustomer() {
  *         // Default ordering for the entity
- *         Customer.TYPE.define(
- *                 Customer.LAST_NAME.define()
+ *         Customer.TYPE.as(
+ *                 Customer.LAST_NAME.as()
  *                     .column(),
- *                 Customer.FIRST_NAME.define()
+ *                 Customer.FIRST_NAME.as()
  *                     .column(),
- *                 Customer.BIRTH_DATE.define()
+ *                 Customer.BIRTH_DATE.as()
  *                     .column(),
- *                 Customer.ACTIVE.define()
+ *                 Customer.ACTIVE.as()
  *                     .column())
  *             .orderBy(OrderBy.builder()
  *                 .ascending(Customer.LAST_NAME, Customer.FIRST_NAME)
@@ -271,10 +271,10 @@ public sealed interface OrderBy permits DefaultOrderBy {
 	 *         .build());
 	 *
 	 * // Usage in entity definition as default ordering
-	 * Customer.TYPE.define(
-	 *         Customer.LAST_NAME.define()
+	 * Customer.TYPE.as(
+	 *         Customer.LAST_NAME.as()
 	 *             .column(),
-	 *         Customer.FIRST_NAME.define()
+	 *         Customer.FIRST_NAME.as()
 	 *             .column())
 	 *     .orderBy(OrderBy.ascending(Customer.LAST_NAME, Customer.FIRST_NAME))
 	 *     .build();

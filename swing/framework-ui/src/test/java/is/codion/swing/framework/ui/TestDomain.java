@@ -60,13 +60,13 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void master() {
-		add(Master.TYPE.define(
-										Master.ID.define()
+		add(Master.TYPE.as(
+										Master.ID.as()
 														.primaryKey(),
-										Master.NAME.define()
+										Master.NAME.as()
 														.column()
 														.searchable(true),
-										Master.CODE.define()
+										Master.CODE.as()
 														.column())
 						.comparator(Comparator.comparing(o -> o.get(Master.CODE)))
 						.formatter(Master.NAME)
@@ -109,70 +109,70 @@ public final class TestDomain extends DomainModel {
 					item(2, "Two"), item(3, "Three"));
 
 	void detail() {
-		add(Detail.TYPE.define(
-										Detail.ID.define()
+		add(Detail.TYPE.as(
+										Detail.ID.as()
 														.primaryKey(),
-										Detail.INT.define()
+										Detail.INT.as()
 														.column()
 														.caption(Detail.INT.name())
 														.range(-10_000, 10_000),
-										Detail.DOUBLE.define()
+										Detail.DOUBLE.as()
 														.column()
 														.caption(Detail.DOUBLE.name())
 														.range(-10_000, 10_000),
-										Detail.BIG_DECIMAL.define()
+										Detail.BIG_DECIMAL.as()
 														.column()
 														.caption(Detail.BIG_DECIMAL.name()),
-										Detail.STRING.define()
+										Detail.STRING.as()
 														.column()
 														.caption("Detail string"),
-										Detail.DATE.define()
+										Detail.DATE.as()
 														.column()
 														.caption(Detail.DATE.name()),
-										Detail.TIME.define()
+										Detail.TIME.as()
 														.column()
 														.caption(Detail.TIME.name()),
-										Detail.TIMESTAMP.define()
+										Detail.TIMESTAMP.as()
 														.column()
 														.caption(Detail.TIMESTAMP.name()),
-										Detail.OFFSET.define()
+										Detail.OFFSET.as()
 														.column()
 														.caption(Detail.OFFSET.name()),
-										Detail.BOOLEAN.define()
+										Detail.BOOLEAN.as()
 														.column()
 														.caption(Detail.BOOLEAN.name())
 														.nullable(false)
 														.defaultValue(true)
 														.description("A boolean attribute"),
-										Detail.BOOLEAN_NULLABLE.define()
+										Detail.BOOLEAN_NULLABLE.as()
 														.column()
 														.caption(Detail.BOOLEAN_NULLABLE.name())
 														.defaultValue(true),
-										Detail.MASTER_ID.define()
+										Detail.MASTER_ID.as()
 														.column(),
-										Detail.MASTER_FK.define()
+										Detail.MASTER_FK.as()
 														.foreignKey()
 														.caption(Detail.MASTER_FK.name()),
-										Detail.DETAIL_ID.define()
+										Detail.DETAIL_ID.as()
 														.column(),
-										Detail.DETAIL_FK.define()
+										Detail.DETAIL_FK.as()
 														.foreignKey()
 														.caption(Detail.DETAIL_FK.name()),
-										Detail.MASTER_NAME.define()
+										Detail.MASTER_NAME.as()
 														.denormalized()
 														.from(Detail.MASTER_FK)
 														.using(Master.NAME)
 														.caption(Detail.MASTER_NAME.name()),
-										Detail.MASTER_CODE.define()
+										Detail.MASTER_CODE.as()
 														.denormalized()
 														.from(Detail.MASTER_FK)
 														.using(Master.CODE)
 														.caption(Detail.MASTER_CODE.name()),
-										Detail.INT_ITEMS.define()
+										Detail.INT_ITEMS.as()
 														.column()
 														.items(ITEMS)
 														.caption(Detail.INT_ITEMS.name()),
-										Detail.INT_DERIVED.define()
+										Detail.INT_DERIVED.as()
 														.derived()
 														.from(Detail.INT)
 														.with(source -> {
@@ -184,7 +184,7 @@ public final class TestDomain extends DomainModel {
 															return intValue * 10;
 														})
 														.caption(Detail.INT_DERIVED.name()),
-										Detail.ENUM_TYPE.define()
+										Detail.ENUM_TYPE.as()
 														.column())
 						.selectTable(DETAIL_SELECT_TABLE_NAME)
 						.orderBy(ascending(Detail.STRING))
@@ -202,19 +202,19 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.define(
-										Department.ID.define()
+		add(Department.TYPE.as(
+										Department.ID.as()
 														.primaryKey()
 														.caption(Department.ID.name())
 														.updatable(true)
 														.nullable(false),
-										Department.NAME.define()
+										Department.NAME.as()
 														.column()
 														.caption(Department.NAME.name())
 														.searchable(true)
 														.maximumLength(14)
 														.nullable(false),
-										Department.LOCATION.define()
+										Department.LOCATION.as()
 														.column()
 														.caption(Department.LOCATION.name())
 														.maximumLength(13))
@@ -243,49 +243,49 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.define(
-										Employee.ID.define()
+		add(Employee.TYPE.as(
+										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name()),
-										Employee.NAME.define()
+										Employee.NAME.as()
 														.column()
 														.caption(Employee.NAME.name())
 														.searchable(true)
 														.maximumLength(10)
 														.nullable(false),
-										Employee.DEPARTMENT.define()
+										Employee.DEPARTMENT.as()
 														.column()
 														.nullable(false),
-										Employee.DEPARTMENT_FK.define()
+										Employee.DEPARTMENT_FK.as()
 														.foreignKey()
 														.caption(Employee.DEPARTMENT_FK.name()),
-										Employee.JOB.define()
+										Employee.JOB.as()
 														.column()
 														.items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
 														.caption(Employee.JOB.name())
 														.searchable(true),
-										Employee.SALARY.define()
+										Employee.SALARY.as()
 														.column()
 														.caption(Employee.SALARY.name())
 														.nullable(false)
 														.range(1000, 10000)
 														.fractionDigits(2),
-										Employee.COMMISSION.define()
+										Employee.COMMISSION.as()
 														.column()
 														.caption(Employee.COMMISSION.name())
 														.range(100, 2000)
 														.fractionDigits(2),
-										Employee.MGR.define()
+										Employee.MGR.as()
 														.column(),
-										Employee.MGR_FK.define()
+										Employee.MGR_FK.as()
 														.foreignKey()
 														.caption(Employee.MGR_FK.name()),
-										Employee.HIREDATE.define()
+										Employee.HIREDATE.as()
 														.column()
 														.caption(Employee.HIREDATE.name())
 														.nullable(false),
-										Employee.DEPARTMENT_LOCATION.define()
+										Employee.DEPARTMENT_LOCATION.as()
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
 														.using(Department.LOCATION)

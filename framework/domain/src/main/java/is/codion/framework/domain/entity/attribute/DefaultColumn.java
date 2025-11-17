@@ -81,7 +81,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 	}
 
 	@Override
-	public ColumnDefiner<T> define() {
+	public ColumnDefiner<T> as() {
 		return new DefaultColumnDefiner<>(this);
 	}
 
@@ -241,7 +241,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 
 		@Override
 		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column(ColumnTemplate<T> template) {
-			return (ColumnDefinition.Builder<T, B>) requireNonNull(template).apply(column.define().column());
+			return (ColumnDefinition.Builder<T, B>) requireNonNull(template).apply(column.as().column());
 		}
 
 		@Override

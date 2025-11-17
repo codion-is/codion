@@ -110,7 +110,7 @@ The underlying column name is typically used as the *Column* name, but as with t
 The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class and populating it with *EntityDefinitions* based on the domain tables.
 An *EntityDefinition* consists of *AttributeDefinitions* based on the *Attributes* associated with the entity and the information required to persist and present the entity.
 
-The *EntityType* and *Attribute* constants provide *define()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition).
+The *EntityType* and *Attribute* constants provide *as()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition).
 
 TIP: Omitting a caption marks an attribute as hidden. Hidden attributes won’t appear in table views by default.
 
@@ -508,17 +508,17 @@ public final class GeospatialTemplates {
 
 // Usage in entity definitions:
 EntityDefinition location() {
-    return Location.TYPE.define(
-        Location.ID.define()
+    return Location.TYPE.as(
+        Location.ID.as()
             .primaryKey(),
-        Location.NAME.define()
+        Location.NAME.as()
             .column()
             .nullable(false),
-        Location.COORDINATES.define()
+        Location.COORDINATES.as()
             .column(GeospatialTemplates.POINT),
-        Location.BOUNDARY.define()
+        Location.BOUNDARY.as()
             .column(GeospatialTemplates.POLYGON),
-        Location.ROUTE.define()
+        Location.ROUTE.as()
             .column(GeospatialTemplates.LINE))
     .build();
 }
@@ -533,7 +533,7 @@ These templates demonstrate how column templates can:
 
 == Domain
 
-Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#define(is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...)[EntityType.define()] and adding the resulting definition to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add(is.codion.framework.domain.entity.EntityDefinition)[add(EntityDefinition)] method in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class.
+Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#as(is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...)[EntityType.as()] and adding the resulting definition to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html#add(is.codion.framework.domain.entity.EntityDefinition)[add(EntityDefinition)] method in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class.
 The framework assumes the *entityType* name is the underlying table name, but the *tableName* can be specified via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#tableName(java.lang.String)[EntityDefinition.Builder.tableName(String)] method.
 
 [source,java,indent=0]
@@ -850,8 +850,8 @@ This behavior contrasts with **surgical addition** of individual items:
 ----
 // Surgical addition via add(EntityDefinition), add(ReportType, Report), etc.
 // throws IllegalArgumentException if the type already exists
-add(SomeEntity.TYPE.define()...build());  // First time: OK
-add(SomeEntity.TYPE.define()...build());  // Second time: throws exception
+add(SomeEntity.TYPE.as()...build());  // First time: OK
+add(SomeEntity.TYPE.as()...build());  // Second time: throws exception
 
 // To check before surgical addition:
 if (!entities().contains(SomeEntity.TYPE)) {

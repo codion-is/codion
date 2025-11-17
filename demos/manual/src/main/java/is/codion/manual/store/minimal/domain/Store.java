@@ -74,25 +74,25 @@ public class Store extends DomainModel {
 		// Use the Customer.TYPE constant to define a new entity,
 		// based on attributes defined using the Column constants.
 		// This entity definition is then added to the domain model.
-		add(Customer.TYPE.define(                   // returns EntityDefinition.Builder
-										Customer.ID.define()
+		add(Customer.TYPE.as(                   // returns EntityDefinition.Builder
+										Customer.ID.as()
 														.primaryKey()       // returns ColumnDefinition.Builder
 														.generator(identity()),
-										Customer.FIRST_NAME.define()
+										Customer.FIRST_NAME.as()
 														.column()           // returns ColumnDefinition.Builder
 														.caption("First name")
 														.nullable(false)
 														.maximumLength(40),
-										Customer.LAST_NAME.define()
+										Customer.LAST_NAME.as()
 														.column()
 														.caption("Last name")
 														.nullable(false)
 														.maximumLength(40),
-										Customer.EMAIL.define()
+										Customer.EMAIL.as()
 														.column()
 														.caption("Email")
 														.maximumLength(100),
-										Customer.ACTIVE.define()
+										Customer.ACTIVE.as()
 														.column()
 														.caption("Active")
 														.nullable(false)
@@ -108,22 +108,22 @@ public class Store extends DomainModel {
 		// Use the Address.TYPE constant to define a new entity,
 		// based on attributes defined using the Column and ForeignKey constants.
 		// This entity definition is then added to the domain model.
-		add(Address.TYPE.define(
-										Address.ID.define()
+		add(Address.TYPE.as(
+										Address.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Address.CUSTOMER_ID.define()
+										Address.CUSTOMER_ID.as()
 														.column()
 														.nullable(false),
-										Address.CUSTOMER_FK.define()
+										Address.CUSTOMER_FK.as()
 														.foreignKey()       // returns ForeignKeyDefinition.Builder
 														.caption("Customer"),
-										Address.STREET.define()
+										Address.STREET.as()
 														.column()
 														.caption("Street")
 														.nullable(false)
 														.maximumLength(100),
-										Address.CITY.define()
+										Address.CITY.as()
 														.column()
 														.caption("City")
 														.nullable(false)
@@ -141,29 +141,29 @@ public class Store extends DomainModel {
 		Generator<Long> generator = Generator.identity();
 
 		ColumnDefinition.Builder<Long, ?> id =
-						Address.ID.define()
+						Address.ID.as()
 										.primaryKey()
 										.generator(generator);
 
 		ColumnDefinition.Builder<Long, ?> customerId =
-						Address.CUSTOMER_ID.define()
+						Address.CUSTOMER_ID.as()
 										.column()
 										.nullable(false);
 
 		ForeignKeyDefinition.Builder customerFk =
-						Address.CUSTOMER_FK.define()
+						Address.CUSTOMER_FK.as()
 										.foreignKey()
 										.caption("Customer");
 
 		ColumnDefinition.Builder<String, ?> street =
-						Address.STREET.define()
+						Address.STREET.as()
 										.column()
 										.caption("Street")
 										.nullable(false)
 										.maximumLength(100);
 
 		ColumnDefinition.Builder<String, ?> city =
-						Address.CITY.define()
+						Address.CITY.as()
 										.column()
 										.caption("City")
 										.nullable(false)
@@ -176,7 +176,7 @@ public class Store extends DomainModel {
 						.build();
 
 		EntityDefinition address =
-						Address.TYPE.define(id, customerId, customerFk, street, city)
+						Address.TYPE.as(id, customerId, customerFk, street, city)
 										.formatter(formatter)
 										.caption("Address")
 						.build();

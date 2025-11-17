@@ -94,16 +94,16 @@ public final class EmployeesMinimalApp {
 			/*
 			 * We then define the entity based on the EMPLOYEES.DEPARTMENT table
 			 */
-			add(Department.TYPE.define(
-											Department.DEPARTMENT_NO.define()
+			add(Department.TYPE.as(
+											Department.DEPARTMENT_NO.as()
 															.primaryKey(),
-											Department.DEPARTMENT_NO.define()
+											Department.DEPARTMENT_NO.as()
 															.column()
 															.caption("Department name")
 															.searchable(true)
 															.nullable(false)
 															.maximumLength(14),
-											Department.LOCATION.define()
+											Department.LOCATION.as()
 															.column()
 															.caption("Department location")
 															.maximumLength(13))
@@ -115,43 +115,43 @@ public final class EmployeesMinimalApp {
 			 * note the foreign keys, referencing the
 			 * department as well as the manager
 			 */
-			add(Employee.TYPE.define(
-											Employee.ID.define()
+			add(Employee.TYPE.as(
+											Employee.ID.as()
 															.primaryKey()
 															.generator(Generator.sequence("employees.emp_seq")),
-											Employee.NAME.define()
+											Employee.NAME.as()
 															.column()
 															.caption("Name")
 															.searchable(true)
 															.nullable(false)
 															.maximumLength(10),
-											Employee.DEPARTMENT_NO.define()
+											Employee.DEPARTMENT_NO.as()
 															.column()
 															.nullable(false),
-											Employee.DEPARTMENT_FK.define()
+											Employee.DEPARTMENT_FK.as()
 															.foreignKey()
 															.caption("Department"),
-											Employee.JOB.define()
+											Employee.JOB.as()
 															.column()
 															.caption("Job")
 															.nullable(false)
 															.maximumLength(9),
-											Employee.SALARY.define()
+											Employee.SALARY.as()
 															.column()
 															.caption("Salary")
 															.nullable(false)
 															.fractionDigits(2)
 															.range(1000, 10000),
-											Employee.COMMISSION.define()
+											Employee.COMMISSION.as()
 															.column()
 															.caption("Commission")
 															.fractionDigits(2),
-											Employee.MANAGER_ID.define()
+											Employee.MANAGER_ID.as()
 															.column(),
-											Employee.MANAGER_FK.define()
+											Employee.MANAGER_FK.as()
 															.foreignKey()
 															.caption("Manager"),
-											Employee.HIREDATE.define()
+											Employee.HIREDATE.as()
 															.column()
 															.caption("Hiredate")
 															.nullable(false))

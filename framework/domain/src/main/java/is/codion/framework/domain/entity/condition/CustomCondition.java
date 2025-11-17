@@ -50,7 +50,7 @@ import java.util.List;
  * }
  *
  * // Register custom conditions in entity definition
- * Track.TYPE.define(
+ * Track.TYPE.as(
  *         // ... attribute definitions
  *         )
  *     .condition(Track.NOT_IN_PLAYLIST, (columns, values) -> {

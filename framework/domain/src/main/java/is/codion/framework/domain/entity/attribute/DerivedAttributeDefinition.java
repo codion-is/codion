@@ -52,20 +52,20 @@ import java.util.List;
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.define(
- *                 Customer.FIRST_NAME.define()
+ *         Customer.TYPE.as(
+ *                 Customer.FIRST_NAME.as()
  *                     .column(),
- *                 Customer.LAST_NAME.define()
+ *                 Customer.LAST_NAME.as()
  *                     .column(),
- *                 Customer.EMAIL.define()
+ *                 Customer.EMAIL.as()
  *                     .column(),
- *                 Customer.BIRTH_DATE.define()
+ *                 Customer.BIRTH_DATE.as()
  *                     .column(),
- *                 Customer.PHONE.define()
+ *                 Customer.PHONE.as()
  *                     .column(),
  *
  *                 // Simple derived attribute (cached by default)
- *                 Customer.FULL_NAME.define()
+ *                 Customer.FULL_NAME.as()
  *                     .derived()
  *                     .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .with(source -> {
@@ -80,7 +80,7 @@ import java.util.List;
  *                     .caption("Full Name"),
  *
  *                 // Multi-source derived attribute with caching disabled
- *                 Customer.CONTACT_INFO.define()
+ *                 Customer.CONTACT_INFO.as()
  *                     .derived()
  *                     .from(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
  *                     .with(source -> {
@@ -104,7 +104,7 @@ import java.util.List;
  *                     .caption("Contact Information"),
  *
  *                 // Time-dependent derived attribute (not cached)
- *                 Customer.AGE.define()
+ *                 Customer.AGE.as()
  *                     .derived()
  *			               .from(Customer.BIRTH_DATE)
  *                     .with(source -> {
@@ -116,7 +116,7 @@ import java.util.List;
  *                     .caption("Age"),
  *
  *                 // Formatting derived attribute
- *                 Customer.NAME_UPPER.define()
+ *                 Customer.NAME_UPPER.as()
  *                     .derived()
  *		                 .from(Customer.FULL_NAME)
  *                     .with(source -> {

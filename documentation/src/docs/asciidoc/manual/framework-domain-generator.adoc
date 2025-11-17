@@ -247,7 +247,7 @@ Many schemas include audit columns like `INSERT_USER`, `INSERT_TIME`, `UPDATE_US
 .Example: Audit columns "insert_user,insert_time,update_user,update_time"
 [source,java]
 ----
-Customer.INSERT_USER.define()
+Customer.INSERT_USER.as()
     .column()
     .readOnly(true)
     .hidden(true)  // If "Hide Audit Columns" enabled
@@ -435,7 +435,7 @@ interface Order {
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
 }
 
-Order.CUSTOMER_FK.define()
+Order.CUSTOMER_FK.as()
     .foreignKey()
     .caption("Customer")
 ----
@@ -449,7 +449,7 @@ Database views are automatically marked as read-only entities:
 [source,java]
 ----
 EntityDefinition customerSummary() {
-    return CustomerSummary.TYPE.define(/* ... */)
+    return CustomerSummary.TYPE.as(/* ... */)
         .caption("Customer summary")
         .readOnly(true)  // Automatically added for views
         .build();
@@ -599,7 +599,7 @@ Captions and descriptions are embedded directly in the generated code:
 +
 [source,java]
 ----
-Customer.NAME.define()
+Customer.NAME.as()
     .column()
     .caption("Name")
     .description("Customer full name")
@@ -614,7 +614,7 @@ Captions and descriptions are loaded from resource bundles:
 EntityType TYPE = DOMAIN.entityType("customer", Customer.class.getName());
 
 // No caption() or description() calls - loaded from properties
-Customer.NAME.define()
+Customer.NAME.as()
     .column()
     .nullable(false)
 ----

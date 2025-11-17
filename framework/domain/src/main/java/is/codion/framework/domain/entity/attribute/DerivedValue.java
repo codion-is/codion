@@ -54,18 +54,18 @@ import static java.util.Objects.requireNonNull;
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.define(
- *                 Customer.FIRST_NAME.define()
+ *         Customer.TYPE.as(
+ *                 Customer.FIRST_NAME.as()
  *                     .column(),
- *                 Customer.LAST_NAME.define()
+ *                 Customer.LAST_NAME.as()
  *                     .column(),
- *                 Customer.EMAIL.define()
+ *                 Customer.EMAIL.as()
  *                     .column(),
- *                 Customer.BIRTH_DATE.define()
+ *                 Customer.BIRTH_DATE.as()
  *                     .column(),
  *
  *                 // Simple concatenation
- *                 Customer.FULL_NAME.define()
+ *                 Customer.FULL_NAME.as()
  *                     .derived()
  *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .with(source -> {
@@ -75,7 +75,7 @@ import static java.util.Objects.requireNonNull;
  *                     }),
  *
  *                 // Complex formatting with multiple sources
- *                 Customer.DISPLAY_NAME.define()
+ *                 Customer.DISPLAY_NAME.as()
  *                     .derived()
  *				             .from(Customer.FULL_NAME, Customer.EMAIL)
  *                     .with(source -> {
@@ -85,7 +85,7 @@ import static java.util.Objects.requireNonNull;
  *                     }),
  *
  *                 // Age calculation
- *                 Customer.AGE.define()
+ *                 Customer.AGE.as()
  *                     .derived()
  *				             .from(Customer.BIRTH_DATE)
  *                     .with(source -> {
@@ -95,7 +95,7 @@ import static java.util.Objects.requireNonNull;
  *                     }),
  *
  *                 // Initials from names
- *                 Customer.INITIALS.define()
+ *                 Customer.INITIALS.as()
  *                     .derived()
  *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .with(source -> {

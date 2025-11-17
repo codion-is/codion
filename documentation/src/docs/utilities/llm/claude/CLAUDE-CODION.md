@@ -76,16 +76,16 @@ interface Artist {
 }
 
 EntityDefinition artist() {
-    return Artist.TYPE.define(
-        Artist.ID.define()
+    return Artist.TYPE.as(
+        Artist.ID.as()
             .primaryKey()
             .generator(Generator.identity()),
-        Artist.NAME.define()
+        Artist.NAME.as()
             .column()
             .caption("Name")
             .nullable(false)
             .maximumLength(120),
-        Artist.RECORD_LABEL_FK.define()
+        Artist.RECORD_LABEL_FK.as()
             .foreignKey()
             .caption("Record label"))
     .caption("Artist")
@@ -166,7 +166,7 @@ Foreign keys are first-class citizens with automatic entity loading:
 
 ```java
 // Define foreign key with attributes to fetch from referenced entity
-Artist.RECORD_LABEL_FK.define()
+Artist.RECORD_LABEL_FK.as()
     .foreignKey()
     .include(RecordLabel.NAME, RecordLabel.FOUNDED)  // Fetched with the Artist
     .referenceDepth(2)  // How deep to follow foreign key chains
@@ -258,7 +258,7 @@ record Location(double latitude, double longitude) implements Serializable {}
 Column<Location> LOCATION = TYPE.column("location", Location.class);
 
 // Converter handles database ↔ Java conversion
-LOCATION.define()
+LOCATION.as()
     .column()
     .converter(String.class, new LocationConverter());
 ```
@@ -270,7 +270,7 @@ Calculate values dynamically:
 ```java
 Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
-NO_OF_SPEAKERS.define()
+NO_OF_SPEAKERS.as()
     .derived()
     .from(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
     .value(source -> {
@@ -305,17 +305,17 @@ Integer result = connection.function(RAISE_PRICE, new BigDecimal("0.1"));
 
 ```java
 // Control reference depth
-Track.ALBUM_FK.define()
+Track.ALBUM_FK.as()
     .foreignKey()
     .referenceDepth(2);  // Fetch Track → Album → Artist
 
 // Lazy loading
-LargeEntity.BLOB_DATA.define()
+LargeEntity.BLOB_DATA.as()
     .column()
     .selected(false);  // Only loaded when explicitly requested
 
 // Denormalized attributes
-Country.CAPITAL_POPULATION.define()
+Country.CAPITAL_POPULATION.as()
     .denormalized()
     .from(Country.CAPITAL_FK)
     .attribute(City.POPULATION);

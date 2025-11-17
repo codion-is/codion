@@ -56,10 +56,10 @@ import java.util.List;
  *
  * // In the entity definition, provide the SQL generation logic
  * EntityDefinition track() {
- *     return Track.TYPE.define(
- *             Track.ID.define()
+ *     return Track.TYPE.as(
+ *             Track.ID.as()
  *                 .primaryKey(),
- *             Track.NAME.define()
+ *             Track.NAME.as()
  *                 .column())
  *         .condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
  *             "track.id NOT IN (SELECT track_id FROM playlist_track WHERE playlist_id = ?)")

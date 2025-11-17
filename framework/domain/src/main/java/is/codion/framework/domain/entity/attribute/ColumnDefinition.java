@@ -48,20 +48,20 @@ import java.sql.SQLException;
  *     Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
  * }
  *
- * Product.TYPE.define(
+ * Product.TYPE.as(
  *         // Primary key with auto-generation
- *         Product.ID.define()
+ *         Product.ID.as()
  *             .primaryKey()
  *             .generator(Generator.identity()),
  *
  *         // Required string column with length constraint
- *         Product.NAME.define()
+ *         Product.NAME.as()
  *             .column()
  *             .nullable(false)
  *             .maximumLength(100),
  *
  *         // Decimal column with precision and range validation
- *         Product.PRICE.define()
+ *         Product.PRICE.as()
  *             .column()
  *             .nullable(false)
  *             .minimum(BigDecimal.ZERO)
@@ -69,7 +69,7 @@ import java.sql.SQLException;
  *             .fractionDigits(2),
  *
  *         // Audit column (database-managed)
- *         Product.CREATED_DATE.define()
+ *         Product.CREATED_DATE.as()
  *             .column()
  *             .insertable(false)  // Not included in INSERT
  *             .updatable(false)   // Not included in UPDATE
@@ -78,7 +78,7 @@ import java.sql.SQLException;
  *}
  * @param <T> the underlying type
  * @see ValueAttributeDefinition
- * @see Column#define()
+ * @see Column#as()
  */
 public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> permits DefaultColumnDefinition {
 

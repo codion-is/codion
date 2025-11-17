@@ -59,30 +59,30 @@ import static java.util.Objects.requireNonNull;
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.define(
- *                 Customer.ID.define()
+ *         Customer.TYPE.as(
+ *                 Customer.ID.as()
  *                     .primaryKey()
  *                     .generator(Generator.identity()),
- *                 Customer.NAME.define()
+ *                 Customer.NAME.as()
  *                     .column()
  *                     .nullable(false)
  *                     .maximumLength(100)
  *                     .caption("Customer Name"),
- *                 Customer.EMAIL.define()
+ *                 Customer.EMAIL.as()
  *                     .column()
  *                     .nullable(false)
  *                     .maximumLength(255)
  *                     .caption("Email Address"),
- *                 Customer.BIRTH_DATE.define()
+ *                 Customer.BIRTH_DATE.as()
  *                     .column()
  *                     .nullable(true)
  *                     .caption("Date of Birth"),
- *                 Customer.ACTIVE.define()
+ *                 Customer.ACTIVE.as()
  *                     .column()
  *                     .nullable(false)
  *                     .defaultValue(true)
  *                     .caption("Active"),
- *                 Customer.CREDIT_LIMIT.define()
+ *                 Customer.CREDIT_LIMIT.as()
  *                     .column()
  *                     .nullable(true)
  *                     .minimum(BigDecimal.ZERO)
@@ -112,14 +112,14 @@ import static java.util.Objects.requireNonNull;
  *}
  * @param <T> the column value type
  * @see ColumnConditionFactory
- * @see #define()
+ * @see #as()
  */
 public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T> permits DefaultColumn {
 
 	/**
 	 * @return a {@link ColumnDefiner} for this column
 	 */
-	ColumnDefiner<T> define();
+	ColumnDefiner<T> as();
 
 	/**
 	 * Creates a new {@link Column}, associated with the given entityType.
@@ -171,7 +171,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
 		 * {@snippet :
-		 * Employee.ID.define()
+		 * Employee.ID.as()
 		 *   .primaryKey()
 		 *   .nullable(true)
 		 *   .updatable(true)
@@ -188,10 +188,10 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
 		 * {@snippet :
-		 * CountryLanguage.COUNTRY_CODE.define()
+		 * CountryLanguage.COUNTRY_CODE.as()
 		 *   .primaryKey(0)
 		 *   .updatable(true)
-		 * CountryLanguage.LANGUAGE.define()
+		 * CountryLanguage.LANGUAGE.as()
 		 *   .primaryKey(1)
 		 *   .updatable(true)
 		 *}
@@ -320,22 +320,22 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 	 *
 	 *     void defineEntities() {
 	 *         // Identity column (database auto-increment)
-	 *         Customer.TYPE.define(
-	 *                 Customer.ID.define()
+	 *         Customer.TYPE.as(
+	 *                 Customer.ID.as()
 	 *                     .primaryKey()
 	 *                     .generator(Generator.identity()))
 	 *             .build();
 	 *
 	 *         // Sequence-based key generation (Oracle, PostgreSQL)
-	 *         Product.TYPE.define(
-	 *                 Product.ID.define()
+	 *         Product.TYPE.as(
+	 *                 Product.ID.as()
 	 *                     .primaryKey()
 	 *                     .generator(Generator.sequence("product_seq")))
 	 *             .build();
 	 *
 	 *         // Custom query-based key generation
-	 *         Order.TYPE.define(
-	 *                 Order.ID.define()
+	 *         Order.TYPE.as(
+	 *                 Order.ID.as()
 	 *                     .primaryKey()
 	 *                     .generator(Generator.queried("SELECT 'ORD-' || NEXT VALUE FOR order_seq")))
 	 *             .build();
@@ -425,8 +425,8 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert.
 		 * {@snippet :
 		 * // Oracle or PostgreSQL sequence
-		 * Product.TYPE.define(
-		 *         Product.ID.define()
+		 * Product.TYPE.as(
+		 *         Product.ID.as()
 		 *             .primaryKey()
 		 *             .generator(Generator.sequence("product_seq")))
 		 *     .build();
@@ -453,15 +453,15 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * Instantiates a primary key generator which fetches primary key values using the given query prior to insert.
 		 * {@snippet :
 		 * // Custom query-based key generation
-		 * Order.TYPE.define(
-		 *         Order.ID.define()
+		 * Order.TYPE.as(
+		 *         Order.ID.as()
 		 *             .primaryKey()
 		 *             .generator(Generator.queried("SELECT 'ORD-' || NEXT VALUE FOR order_seq")))
 		 *     .build();
 		 *
 		 * // Another example with date-based keys
-		 * Invoice.TYPE.define(
-		 *         Invoice.ID.define()
+		 * Invoice.TYPE.as(
+		 *         Invoice.ID.as()
 		 *             .primaryKey()
 		 *             .generator(Generator.queried(
 		 *                 "SELECT FORMAT(GETDATE(), 'yyyyMMdd') + '-' + RIGHT('0000' + CAST(NEXT VALUE FOR invoice_seq AS VARCHAR), 4)")))
@@ -498,8 +498,8 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * Returns a column value generator based on an IDENTITY type column.
 		 * {@snippet :
 		 * // SQL Server, MySQL auto-increment, or similar
-		 * Customer.TYPE.define(
-		 *         Customer.ID.define()
+		 * Customer.TYPE.as(
+		 *         Customer.ID.as()
 		 *             .primaryKey()
 		 *             .generator(Generator.identity()))
 		 *     .build();

@@ -38,11 +38,11 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition artist() {
-		return Artist.TYPE.define(
-				Artist.ARTISTID.define()
+		return Artist.TYPE.as(
+				Artist.ARTISTID.as()
 					.primaryKey()
 					.generator(identity()),
-				Artist.NAME.define()
+				Artist.NAME.as()
 					.column()
 					.caption("Name")
 					.nullable(false)
@@ -52,64 +52,64 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition employee() {
-		return Employee.TYPE.define(
-				Employee.EMPLOYEEID.define()
+		return Employee.TYPE.as(
+				Employee.EMPLOYEEID.as()
 					.primaryKey()
 					.generator(identity()),
-				Employee.LASTNAME.define()
+				Employee.LASTNAME.as()
 					.column()
 					.caption("Lastname")
 					.nullable(false)
 					.maximumLength(20),
-				Employee.FIRSTNAME.define()
+				Employee.FIRSTNAME.as()
 					.column()
 					.caption("Firstname")
 					.nullable(false)
 					.maximumLength(20),
-				Employee.TITLE.define()
+				Employee.TITLE.as()
 					.column()
 					.caption("Title")
 					.maximumLength(30),
-				Employee.REPORTSTO.define()
+				Employee.REPORTSTO.as()
 					.column(),
-				Employee.REPORTSTO_FK.define()
+				Employee.REPORTSTO_FK.as()
 					.foreignKey()
 					.caption("Employee"),
-				Employee.BIRTHDATE.define()
+				Employee.BIRTHDATE.as()
 					.column()
 					.caption("Birthdate"),
-				Employee.HIREDATE.define()
+				Employee.HIREDATE.as()
 					.column()
 					.caption("Hiredate"),
-				Employee.ADDRESS.define()
+				Employee.ADDRESS.as()
 					.column()
 					.caption("Address")
 					.maximumLength(70),
-				Employee.CITY.define()
+				Employee.CITY.as()
 					.column()
 					.caption("City")
 					.maximumLength(40),
-				Employee.STATE.define()
+				Employee.STATE.as()
 					.column()
 					.caption("State")
 					.maximumLength(40),
-				Employee.COUNTRY.define()
+				Employee.COUNTRY.as()
 					.column()
 					.caption("Country")
 					.maximumLength(40),
-				Employee.POSTALCODE.define()
+				Employee.POSTALCODE.as()
 					.column()
 					.caption("Postalcode")
 					.maximumLength(10),
-				Employee.PHONE.define()
+				Employee.PHONE.as()
 					.column()
 					.caption("Phone")
 					.maximumLength(24),
-				Employee.FAX.define()
+				Employee.FAX.as()
 					.column()
 					.caption("Fax")
 					.maximumLength(24),
-				Employee.EMAIL.define()
+				Employee.EMAIL.as()
 					.column()
 					.caption("Email")
 					.nullable(false)
@@ -119,11 +119,11 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition genre() {
-		return Genre.TYPE.define(
-				Genre.GENREID.define()
+		return Genre.TYPE.as(
+				Genre.GENREID.as()
 					.primaryKey()
 					.generator(identity()),
-				Genre.NAME.define()
+				Genre.NAME.as()
 					.column()
 					.caption("Name")
 					.nullable(false)
@@ -133,11 +133,11 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition mediatype() {
-		return Mediatype.TYPE.define(
-				Mediatype.MEDIATYPEID.define()
+		return Mediatype.TYPE.as(
+				Mediatype.MEDIATYPEID.as()
 					.primaryKey()
 					.generator(identity()),
-				Mediatype.NAME.define()
+				Mediatype.NAME.as()
 					.column()
 					.caption("Name")
 					.nullable(false)
@@ -147,11 +147,11 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition playlist() {
-		return Playlist.TYPE.define(
-				Playlist.PLAYLISTID.define()
+		return Playlist.TYPE.as(
+				Playlist.PLAYLISTID.as()
 					.primaryKey()
 					.generator(identity()),
-				Playlist.NAME.define()
+				Playlist.NAME.as()
 					.column()
 					.caption("Name")
 					.nullable(false)
@@ -161,16 +161,16 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition users() {
-		return Users.TYPE.define(
-				Users.USERID.define()
+		return Users.TYPE.as(
+				Users.USERID.as()
 					.primaryKey()
 					.generator(identity()),
-				Users.USERNAME.define()
+				Users.USERNAME.as()
 					.column()
 					.caption("Username")
 					.nullable(false)
 					.maximumLength(20),
-				Users.PASSWORDHASH.define()
+				Users.PASSWORDHASH.as()
 					.column()
 					.caption("Passwordhash")
 					.nullable(false))
@@ -179,25 +179,25 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition album() {
-		return Album.TYPE.define(
-				Album.ALBUMID.define()
+		return Album.TYPE.as(
+				Album.ALBUMID.as()
 					.primaryKey()
 					.generator(identity()),
-				Album.TITLE.define()
+				Album.TITLE.as()
 					.column()
 					.caption("Title")
 					.nullable(false)
 					.maximumLength(160),
-				Album.ARTISTID.define()
+				Album.ARTISTID.as()
 					.column()
 					.nullable(false),
-				Album.ARTISTID_FK.define()
+				Album.ARTISTID_FK.as()
 					.foreignKey()
 					.caption("Artist"),
-				Album.COVER.define()
+				Album.COVER.as()
 					.column()
 					.caption("Cover"),
-				Album.TAGS.define()
+				Album.TAGS.as()
 					.column()
 					.caption("Tags"))
 			.caption("Album")
@@ -205,60 +205,60 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition customer() {
-		return Customer.TYPE.define(
-				Customer.CUSTOMERID.define()
+		return Customer.TYPE.as(
+				Customer.CUSTOMERID.as()
 					.primaryKey()
 					.generator(identity()),
-				Customer.FIRSTNAME.define()
+				Customer.FIRSTNAME.as()
 					.column()
 					.caption("Firstname")
 					.nullable(false)
 					.maximumLength(40),
-				Customer.LASTNAME.define()
+				Customer.LASTNAME.as()
 					.column()
 					.caption("Lastname")
 					.nullable(false)
 					.maximumLength(20),
-				Customer.COMPANY.define()
+				Customer.COMPANY.as()
 					.column()
 					.caption("Company")
 					.maximumLength(80),
-				Customer.ADDRESS.define()
+				Customer.ADDRESS.as()
 					.column()
 					.caption("Address")
 					.maximumLength(70),
-				Customer.CITY.define()
+				Customer.CITY.as()
 					.column()
 					.caption("City")
 					.maximumLength(40),
-				Customer.STATE.define()
+				Customer.STATE.as()
 					.column()
 					.caption("State")
 					.maximumLength(40),
-				Customer.COUNTRY.define()
+				Customer.COUNTRY.as()
 					.column()
 					.caption("Country")
 					.maximumLength(40),
-				Customer.POSTALCODE.define()
+				Customer.POSTALCODE.as()
 					.column()
 					.caption("Postalcode")
 					.maximumLength(10),
-				Customer.PHONE.define()
+				Customer.PHONE.as()
 					.column()
 					.caption("Phone")
 					.maximumLength(24),
-				Customer.FAX.define()
+				Customer.FAX.as()
 					.column()
 					.caption("Fax")
 					.maximumLength(24),
-				Customer.EMAIL.define()
+				Customer.EMAIL.as()
 					.column()
 					.caption("Email")
 					.nullable(false)
 					.maximumLength(60),
-				Customer.SUPPORTREPID.define()
+				Customer.SUPPORTREPID.as()
 					.column(),
-				Customer.SUPPORTREPID_FK.define()
+				Customer.SUPPORTREPID_FK.as()
 					.foreignKey()
 					.caption("Employee"))
 			.caption("Customer")
@@ -266,41 +266,41 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition invoice() {
-		return Invoice.TYPE.define(
-				Invoice.INVOICEID.define()
+		return Invoice.TYPE.as(
+				Invoice.INVOICEID.as()
 					.primaryKey()
 					.generator(identity()),
-				Invoice.CUSTOMERID.define()
+				Invoice.CUSTOMERID.as()
 					.column()
 					.nullable(false),
-				Invoice.CUSTOMERID_FK.define()
+				Invoice.CUSTOMERID_FK.as()
 					.foreignKey()
 					.caption("Customer"),
-				Invoice.INVOICEDATE.define()
+				Invoice.INVOICEDATE.as()
 					.column()
 					.caption("Invoicedate")
 					.nullable(false),
-				Invoice.BILLINGADDRESS.define()
+				Invoice.BILLINGADDRESS.as()
 					.column()
 					.caption("Billingaddress")
 					.maximumLength(70),
-				Invoice.BILLINGCITY.define()
+				Invoice.BILLINGCITY.as()
 					.column()
 					.caption("Billingcity")
 					.maximumLength(40),
-				Invoice.BILLINGSTATE.define()
+				Invoice.BILLINGSTATE.as()
 					.column()
 					.caption("Billingstate")
 					.maximumLength(40),
-				Invoice.BILLINGCOUNTRY.define()
+				Invoice.BILLINGCOUNTRY.as()
 					.column()
 					.caption("Billingcountry")
 					.maximumLength(40),
-				Invoice.BILLINGPOSTALCODE.define()
+				Invoice.BILLINGPOSTALCODE.as()
 					.column()
 					.caption("Billingpostalcode")
 					.maximumLength(10),
-				Invoice.TOTAL.define()
+				Invoice.TOTAL.as()
 					.column()
 					.caption("Total")
 					.fractionDigits(2))
@@ -309,48 +309,48 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition track() {
-		return Track.TYPE.define(
-				Track.TRACKID.define()
+		return Track.TYPE.as(
+				Track.TRACKID.as()
 					.primaryKey()
 					.generator(identity()),
-				Track.NAME.define()
+				Track.NAME.as()
 					.column()
 					.caption("Name")
 					.nullable(false)
 					.maximumLength(200),
-				Track.ALBUMID.define()
+				Track.ALBUMID.as()
 					.column()
 					.nullable(false),
-				Track.ALBUMID_FK.define()
+				Track.ALBUMID_FK.as()
 					.foreignKey()
 					.caption("Album"),
-				Track.MEDIATYPEID.define()
+				Track.MEDIATYPEID.as()
 					.column()
 					.nullable(false),
-				Track.MEDIATYPEID_FK.define()
+				Track.MEDIATYPEID_FK.as()
 					.foreignKey()
 					.caption("Mediatype"),
-				Track.GENREID.define()
+				Track.GENREID.as()
 					.column(),
-				Track.GENREID_FK.define()
+				Track.GENREID_FK.as()
 					.foreignKey()
 					.caption("Genre"),
-				Track.COMPOSER.define()
+				Track.COMPOSER.as()
 					.column()
 					.caption("Composer")
 					.maximumLength(220),
-				Track.MILLISECONDS.define()
+				Track.MILLISECONDS.as()
 					.column()
 					.caption("Milliseconds")
 					.nullable(false),
-				Track.BYTES.define()
+				Track.BYTES.as()
 					.column()
 					.caption("Bytes"),
-				Track.RATING.define()
+				Track.RATING.as()
 					.column()
 					.caption("Rating")
 					.nullable(false),
-				Track.UNITPRICE.define()
+				Track.UNITPRICE.as()
 					.column()
 					.caption("Unitprice")
 					.nullable(false))
@@ -359,27 +359,27 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition invoiceline() {
-		return Invoiceline.TYPE.define(
-				Invoiceline.INVOICELINEID.define()
+		return Invoiceline.TYPE.as(
+				Invoiceline.INVOICELINEID.as()
 					.primaryKey()
 					.generator(identity()),
-				Invoiceline.INVOICEID.define()
+				Invoiceline.INVOICEID.as()
 					.column()
 					.nullable(false),
-				Invoiceline.INVOICEID_FK.define()
+				Invoiceline.INVOICEID_FK.as()
 					.foreignKey()
 					.caption("Invoice"),
-				Invoiceline.TRACKID.define()
+				Invoiceline.TRACKID.as()
 					.column()
 					.nullable(false),
-				Invoiceline.TRACKID_FK.define()
+				Invoiceline.TRACKID_FK.as()
 					.foreignKey()
 					.caption("Track"),
-				Invoiceline.UNITPRICE.define()
+				Invoiceline.UNITPRICE.as()
 					.column()
 					.caption("Unitprice")
 					.nullable(false),
-				Invoiceline.QUANTITY.define()
+				Invoiceline.QUANTITY.as()
 					.column()
 					.caption("Quantity")
 					.nullable(false))
@@ -388,20 +388,20 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition playlisttrack() {
-		return Playlisttrack.TYPE.define(
-				Playlisttrack.PLAYLISTTRACKID.define()
+		return Playlisttrack.TYPE.as(
+				Playlisttrack.PLAYLISTTRACKID.as()
 					.primaryKey()
 					.generator(identity()),
-				Playlisttrack.PLAYLISTID.define()
+				Playlisttrack.PLAYLISTID.as()
 					.column()
 					.nullable(false),
-				Playlisttrack.PLAYLISTID_FK.define()
+				Playlisttrack.PLAYLISTID_FK.as()
 					.foreignKey()
 					.caption("Playlist"),
-				Playlisttrack.TRACKID.define()
+				Playlisttrack.TRACKID.as()
 					.column()
 					.nullable(false),
-				Playlisttrack.TRACKID_FK.define()
+				Playlisttrack.TRACKID_FK.as()
 					.foreignKey()
 					.caption("Track"))
 			.caption("Playlisttrack")
