@@ -47,9 +47,9 @@ public interface EntityQueries {
 	String insert(Entity entity);
 
 	/**
+	 * Note that this method is not guaranteed to return a valid query, in case the entity is not modified.
 	 * @param entity an existing and modified entity
 	 * @return a String representation of the update query for the given entity, for debugging
-	 * @throws IllegalArgumentException in case the entity is unmodified
 	 * @see Entity#modified()
 	 */
 	String update(Entity entity);

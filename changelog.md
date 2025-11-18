@@ -10,6 +10,8 @@ Codion Change Log
 - FilterTableCellRenderer.UISettings.background() filterEnabled parameter removed, identifier and tableModel added.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
+### is.codion.framework.db.local
+- DefaultEntityQueries.update() bug fixed, buggy modified check removed, caller is responsible for providing a modified entity.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel bug fixed, incorrect i18n keys fixed.
 - EntityTableCellRenderer renamed EntityTableCellRendererFactory.

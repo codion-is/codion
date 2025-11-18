@@ -85,9 +85,6 @@ final class DefaultEntityQueries implements EntityQueries {
 	@Override
 	public String update(Entity entity) {
 		requireNonNull(entity);
-		if (!entity.exists() || entity.modified()) {
-			throw new IllegalArgumentException("Entity is unmodified");
-		}
 		Condition condition = Condition.key(entity.originalPrimaryKey());
 		List<ColumnDefinition<?>> columnDefinitions =
 						writableColumnDefinitions(entity.definition(), true, false).stream()
