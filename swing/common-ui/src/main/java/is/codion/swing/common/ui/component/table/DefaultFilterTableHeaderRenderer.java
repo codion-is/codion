@@ -65,7 +65,9 @@ final class DefaultFilterTableHeaderRenderer<C> implements FilterTableHeaderRend
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																								 boolean hasFocus, int row, int column) {
-		Component component = table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		Component component = table.getTableHeader()
+						.getDefaultRenderer()
+						.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		if (component instanceof JLabel) {
 			Font defaultFont = component.getFont();
 			JLabel label = (JLabel) component;

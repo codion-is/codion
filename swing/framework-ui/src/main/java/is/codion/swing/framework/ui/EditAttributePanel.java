@@ -118,8 +118,8 @@ final class EditAttributePanel<T> extends JPanel {
 		editModel.applyEdit(toUpdate, attribute, componentValue.get());
 		ProgressWorker.builder()
 						.task(editModel.updateTask(toUpdate.stream()
-										.filter(Entity::modified)
-										.collect(toList()))
+														.filter(Entity::modified)
+														.collect(toList()))
 										.prepare()::perform)
 						.onStarted(this::showProgress)
 						.onResult(this::onResult)

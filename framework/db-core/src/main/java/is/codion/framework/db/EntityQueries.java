@@ -49,8 +49,8 @@ public interface EntityQueries {
 	/**
 	 * @param entity an existing and modified entity
 	 * @return a String representation of the update query for the given entity, for debugging
-	 * @see Entity#modified()
 	 * @throws IllegalArgumentException in case the entity is unmodified
+	 * @see Entity#modified()
 	 */
 	String update(Entity entity);
 

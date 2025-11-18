@@ -829,22 +829,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private static void notifyInserted(Collection<Entity> inserted) {
-				groupByType(inserted).forEach((entityType, entities) ->
-								editEvents(entityType).inserted().accept(entities));
+			groupByType(inserted).forEach((entityType, entities) ->
+							editEvents(entityType).inserted().accept(entities));
 		}
 
 		private static void notifyUpdated(Map<Entity, Entity> updated) {
 			updated.entrySet()
-								.stream()
-								.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
-												toMap(Map.Entry::getKey, Map.Entry::getValue)))
-								.forEach((entityType, entities) ->
-												editEvents(entityType).updated().accept(entities));
+							.stream()
+							.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
+											toMap(Map.Entry::getKey, Map.Entry::getValue)))
+							.forEach((entityType, entities) ->
+											editEvents(entityType).updated().accept(entities));
 		}
 
 		private static void notifyDeleted(Collection<Entity> deleted) {
 			groupByType(deleted).forEach((entityType, entities) ->
-								editEvents(entityType).deleted().accept(entities));
+							editEvents(entityType).deleted().accept(entities));
 		}
 	}
 }

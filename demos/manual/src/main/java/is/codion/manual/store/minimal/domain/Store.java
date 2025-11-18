@@ -179,7 +179,7 @@ public class Store extends DomainModel {
 						Address.TYPE.as(id, customerId, customerFk, street, city)
 										.formatter(formatter)
 										.caption("Address")
-						.build();
+										.build();
 
 		add(address);
 	}

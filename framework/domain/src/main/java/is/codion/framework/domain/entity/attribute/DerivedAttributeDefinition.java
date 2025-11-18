@@ -106,7 +106,7 @@ import java.util.List;
  *                 // Time-dependent derived attribute (not cached)
  *                 Customer.AGE.as()
  *                     .derived()
- *			               .from(Customer.BIRTH_DATE)
+ * 			               .from(Customer.BIRTH_DATE)
  *                     .with(source -> {
  *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
@@ -118,7 +118,7 @@ import java.util.List;
  *                 // Formatting derived attribute
  *                 Customer.NAME_UPPER.as()
  *                     .derived()
- *		                 .from(Customer.FULL_NAME)
+ * 		                 .from(Customer.FULL_NAME)
  *                     .with(source -> {
  *                         String fullName = source.get(Customer.FULL_NAME);
  *                         return fullName != null ? fullName.toUpperCase() : null;

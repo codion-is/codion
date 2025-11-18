@@ -239,7 +239,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		private int initialDelay() {
 			int time = thinkTime.maximum().getOrThrow() - thinkTime.minimum().getOrThrow();
 
-			return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.getOrThrow()) + thinkTime.minimum().getOrThrow() : thinkTime.minimum().getOrThrow();
+			return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.getOrThrow()) +
+							thinkTime.minimum().getOrThrow() : thinkTime.minimum().getOrThrow();
 		}
 
 		private void stop() {

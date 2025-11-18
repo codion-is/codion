@@ -60,37 +60,37 @@ final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDial
 						.show();
 	}
 
-		private static List<Item<Integer>> initializeValues() {
-			List<Item<Integer>> values = new ArrayList<>();
-			for (int i = 50; i <= 300; i += 5) {
-				values.add(Item.item(i, i + "%"));
-			}
-
-			return values;
+	private static List<Item<Integer>> initializeValues() {
+		List<Item<Integer>> values = new ArrayList<>();
+		for (int i = 50; i <= 300; i += 5) {
+			values.add(Item.item(i, i + "%"));
 		}
 
-		private static final class FontSizeCellRenderer implements ListCellRenderer<Item<Integer>> {
+		return values;
+	}
 
-			private final DefaultListCellRenderer defaultListCellRenderer = new DefaultListCellRenderer();
-			private final List<Item<Integer>> values;
-			private final Integer currentFontSize;
+	private static final class FontSizeCellRenderer implements ListCellRenderer<Item<Integer>> {
 
-			private FontSizeCellRenderer(List<Item<Integer>> values, Integer currentFontSize) {
-				this.values = values;
-				this.currentFontSize = currentFontSize;
-			}
+		private final DefaultListCellRenderer defaultListCellRenderer = new DefaultListCellRenderer();
+		private final List<Item<Integer>> values;
+		private final Integer currentFontSize;
 
-			@Override
-			public Component getListCellRendererComponent(JList<? extends Item<Integer>> list, Item<Integer> value, int index,
-																										boolean isSelected, boolean cellHasFocus) {
-				Component component = defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-				if (index >= 0) {
-					Font font = component.getFont();
-					int newSize = Math.round(font.getSize() * (values.get(index).getOrThrow() / (float) currentFontSize.doubleValue()));
-					component.setFont(new Font(font.getName(), font.getStyle(), newSize));
-				}
-
-				return component;
-			}
+		private FontSizeCellRenderer(List<Item<Integer>> values, Integer currentFontSize) {
+			this.values = values;
+			this.currentFontSize = currentFontSize;
 		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Item<Integer>> list, Item<Integer> value, int index,
+																									boolean isSelected, boolean cellHasFocus) {
+			Component component = defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			if (index >= 0) {
+				Font font = component.getFont();
+				int newSize = Math.round(font.getSize() * (values.get(index).getOrThrow() / (float) currentFontSize.doubleValue()));
+				component.setFont(new Font(font.getName(), font.getStyle(), newSize));
+			}
+
+			return component;
+		}
+	}
 }

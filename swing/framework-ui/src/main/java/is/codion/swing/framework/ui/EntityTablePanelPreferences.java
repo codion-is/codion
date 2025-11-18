@@ -419,9 +419,9 @@ final class EntityTablePanelPreferences {
 				JSONObject conditionObject = preferences.getJSONObject(attribute.name());
 				try {
 					return Optional.of(new ConditionPreferences(attribute,
-								conditionObject.getInt(AUTO_ENABLE_KEY) == 1,
-								conditionObject.getInt(CASE_SENSITIVE_KEY) == 1,
-								Wildcard.valueOf(conditionObject.getString(WILDCARD_KEY))));
+									conditionObject.getInt(AUTO_ENABLE_KEY) == 1,
+									conditionObject.getInt(CASE_SENSITIVE_KEY) == 1,
+									Wildcard.valueOf(conditionObject.getString(WILDCARD_KEY))));
 				}
 				catch (Exception e) {
 					LOG.error("Error parsing condition preferences for attribute: {}", attribute, e);

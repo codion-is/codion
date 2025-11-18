@@ -446,10 +446,10 @@ public class RemoteEntityConnectionTest {
 		for (Method entityConnectionMethod : entityConnectionMethods) {
 			if (!entityConnectionMethod.getName().equals("iterator") && // these don't have the same return type
 							remoteEntityConnectionMethods.stream().noneMatch(remoteConnectionMethod ->
-							remoteConnectionMethod.getReturnType().equals(entityConnectionMethod.getReturnType())
-											&& remoteConnectionMethod.getName().equals(entityConnectionMethod.getName())
-											&& Arrays.equals(remoteConnectionMethod.getParameterTypes(), entityConnectionMethod.getParameterTypes())
-											&& asList(remoteConnectionMethod.getExceptionTypes()).containsAll(asList(entityConnectionMethod.getExceptionTypes())))) {
+											remoteConnectionMethod.getReturnType().equals(entityConnectionMethod.getReturnType())
+															&& remoteConnectionMethod.getName().equals(entityConnectionMethod.getName())
+															&& Arrays.equals(remoteConnectionMethod.getParameterTypes(), entityConnectionMethod.getParameterTypes())
+															&& asList(remoteConnectionMethod.getExceptionTypes()).containsAll(asList(entityConnectionMethod.getExceptionTypes())))) {
 				fail(EntityConnection.class.getSimpleName() + " method " + entityConnectionMethod.getName()
 								+ " not found in " + RemoteEntityConnection.class.getSimpleName());
 			}

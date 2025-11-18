@@ -74,7 +74,9 @@ public final class PetstoreLoadTest {
 			categoryModel.tableModel().items().refresh();
 			selectRandomRow(categoryModel.tableModel());
 			selectRandomRow(categoryModel.detailModels().get().keySet().iterator().next().tableModel());
-			selectRandomRow(categoryModel.detailModels().get().keySet().iterator().next().detailModels().get().keySet().iterator().next().tableModel());
+			selectRandomRow(categoryModel.detailModels().get().keySet().iterator().next()
+							.detailModels().get().keySet().iterator().next()
+							.tableModel());
 		}
 
 		private static void selectRandomRow(EntityTableModel<?> tableModel) {

@@ -388,12 +388,12 @@ public final class TestDomain extends DomainModel {
 
 	EntityDefinition dateTimeTest() {
 		return DateTimeTest.TYPE.as(
-						DateTimeTest.ID.as()
-										.primaryKey(),
-						DateTimeTest.TIME.as()
-										.column(),
-						DateTimeTest.DATE_TIME.as()
-										.column())
+										DateTimeTest.ID.as()
+														.primaryKey(),
+										DateTimeTest.TIME.as()
+														.column(),
+										DateTimeTest.DATE_TIME.as()
+														.column())
 						.build();
 	}
 

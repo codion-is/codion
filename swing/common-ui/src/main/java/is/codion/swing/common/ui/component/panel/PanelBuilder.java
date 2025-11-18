@@ -43,36 +43,28 @@ public interface PanelBuilder<L extends LayoutManager, B extends PanelBuilder<L,
 	 * @param panel the panel
 	 * @return this builder instancwe
 	 */
-  B panel(@Nullable JPanel panel);
+	B panel(@Nullable JPanel panel);
 
 	/**
 	 * @param layoutManager the layout manager
 	 * @return this builder instance
 	 * @see JPanel#setLayout(LayoutManager)
 	 */
-  B layout(@Nullable L layoutManager);
+	B layout(@Nullable L layoutManager);
 
 	/**
 	 * @param component the component to add
 	 * @return this builder instance
 	 * @see JPanel#add(Component)
 	 */
-  B add(JComponent component);
+	B add(JComponent component);
 
 	/**
 	 * @param component the component to add
 	 * @return this builder instance
 	 * @see JPanel#add(Component)
 	 */
-  B add(Supplier<? extends JComponent> component);
-
-	/**
-	 * @param component the component to add
-	 * @param constraints the layout constraints
-	 * @return this builder instance
-	 * @see JPanel#add(Component, Object)
-	 */
-  B add(JComponent component, Object constraints);
+	B add(Supplier<? extends JComponent> component);
 
 	/**
 	 * @param component the component to add
@@ -80,21 +72,29 @@ public interface PanelBuilder<L extends LayoutManager, B extends PanelBuilder<L,
 	 * @return this builder instance
 	 * @see JPanel#add(Component, Object)
 	 */
-  B add(Supplier<? extends JComponent> component, Object constraints);
+	B add(JComponent component, Object constraints);
+
+	/**
+	 * @param component the component to add
+	 * @param constraints the layout constraints
+	 * @return this builder instance
+	 * @see JPanel#add(Component, Object)
+	 */
+	B add(Supplier<? extends JComponent> component, Object constraints);
 
 	/**
 	 * @param components the components to add
 	 * @return this builder instance
 	 * @see JPanel#add(Component)
 	 */
-  B addAll(JComponent... components);
+	B addAll(JComponent... components);
 
 	/**
 	 * @param components the components to add
 	 * @return this builder instance
 	 * @see JPanel#add(Component)
 	 */
-  B addAll(Collection<? extends JComponent> components);
+	B addAll(Collection<? extends JComponent> components);
 
 	/**
 	 * Provides panel builders.
@@ -103,9 +103,9 @@ public interface PanelBuilder<L extends LayoutManager, B extends PanelBuilder<L,
 
 		/**
 		 * @param layout the layout
-		 * @return a new panel builder
 		 * @param <L> the layout type
 		 * @param <B> the builder type
+		 * @return a new panel builder
 		 */
 		<L extends LayoutManager, B extends PanelBuilder<L, B>> PanelBuilder<L, B> layout(L layout);
 

@@ -126,7 +126,7 @@ final class AnalyticsPanel extends JPanel {
 				categoryPlot.getRangeAxis().setLabelPaint(foreground);
 				categoryPlot.getRangeAxis().setTickLabelPaint(foreground);
 				categoryPlot.setRangeGridlinePaint(foreground);
-      	categoryPlot.setDomainGridlinePaint(foreground);
+				categoryPlot.setDomainGridlinePaint(foreground);
 			}
 			LegendTitle legend = chart.getLegend();
 			if (legend != null) {

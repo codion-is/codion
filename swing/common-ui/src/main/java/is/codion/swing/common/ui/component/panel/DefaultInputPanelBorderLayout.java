@@ -47,7 +47,7 @@ final class DefaultInputPanelBorderLayout implements InputPanelLayout {
 	static class DefaultBuilder implements InputPanelBorderLayoutBuilder {
 
 		private String labelConstraints = BorderLayout.NORTH;
-		private String componentConstraints =  BorderLayout.CENTER;
+		private String componentConstraints = BorderLayout.CENTER;
 
 		@Override
 		public InputPanelBorderLayoutBuilder labelConstraints(String constraints) {

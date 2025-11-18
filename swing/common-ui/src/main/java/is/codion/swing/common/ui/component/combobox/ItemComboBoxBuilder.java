@@ -126,15 +126,15 @@ public interface ItemComboBoxBuilder<T> extends ComponentValueBuilder<JComboBox<
 
 		/**
 		 * @param comboBoxModel the model
-		 * @return a {@link ItemComboBoxBuilder}
 		 * @param <T> the item type
+		 * @return a {@link ItemComboBoxBuilder}
 		 */
 		<T> ItemComboBoxBuilder<T> model(FilterComboBoxModel<Item<T>> comboBoxModel);
 
 		/**
 		 * @param items the items
-		 * @return a {@link ItemComboBoxBuilder}
 		 * @param <T> the item type
+		 * @return a {@link ItemComboBoxBuilder}
 		 */
 		<T> ItemComboBoxBuilder<T> items(List<Item<T>> items);
 	}

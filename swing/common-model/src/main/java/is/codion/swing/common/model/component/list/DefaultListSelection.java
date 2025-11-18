@@ -246,7 +246,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		@Override
 		protected void setValue(List<Integer> indexes) {
 			checkIndexes(indexes);
-			
+
 			Set<Integer> currentIndexes = new HashSet<>(getValue());
 			if (currentIndexes.isEmpty() && indexes.isEmpty()) {
 				return;
@@ -265,7 +265,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 			if (indexesToRemove.isEmpty() && indexesToAdd.isEmpty()) {
 				return;
 			}
-			
+
 			changing.run();
 			setValueIsAdjusting(true);
 			for (Integer index : indexesToRemove) {
@@ -418,10 +418,10 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		protected void setValue(List<R> items) {
 			rejectNulls(items);
 			selectedIndexes.set(items.stream()
-					.mapToInt(DefaultListSelection.this.items::indexOf)
-					.filter(index -> index >= 0)
-					.boxed()
-					.collect(toList()));
+							.mapToInt(DefaultListSelection.this.items::indexOf)
+							.filter(index -> index >= 0)
+							.boxed()
+							.collect(toList()));
 		}
 
 		@Override

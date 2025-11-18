@@ -184,8 +184,8 @@ public interface LoadTest<T> {
 
 			/**
 			 * @param createApplication creates the application
-			 * @return a {@link CloseApplicationStep}
 			 * @param <T> the application type
+			 * @return a {@link CloseApplicationStep}
 			 */
 			<T> CloseApplicationStep<T> createApplication(Function<User, T> createApplication);
 		}

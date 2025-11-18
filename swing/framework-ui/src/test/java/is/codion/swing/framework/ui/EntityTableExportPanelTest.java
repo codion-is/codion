@@ -128,7 +128,7 @@ public final class EntityTableExportPanelTest {
 
 		// Create new panel and apply preferences
 		SwingEntityTableModel newTableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel, config ->  config.includeExport(true));
+		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel, config -> config.includeExport(true));
 		EntityTableExportPanel newExportPanel = newTablePanel.exportPanel();
 
 		// Before apply, nothing is selected (or defaults are selected)
@@ -188,7 +188,7 @@ public final class EntityTableExportPanelTest {
 
 		// Create new panel and apply
 		SwingEntityTableModel newTableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel, config ->  config.includeExport(true));
+		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel, config -> config.includeExport(true));
 		EntityTablePanelPreferences loadedPreferences = new EntityTablePanelPreferences(newTablePanel, prefs);
 		loadedPreferences.apply(newTablePanel);
 

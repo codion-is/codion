@@ -123,7 +123,7 @@ final class ColumnConditionDeserializer implements Serializable {
 	private static <T> ColumnCondition<T> caseSensitiveNotEqualColumnCondition(List<T> values, Column<T> column, boolean wildcard) {
 		if (values.size() == 1) {
 			return wildcard ?
-							(ColumnCondition<T>) column.notLike((String)values.iterator().next()) :
+							(ColumnCondition<T>) column.notLike((String) values.iterator().next()) :
 							column.notEqualTo(values.iterator().next());
 		}
 

@@ -88,10 +88,10 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	}
 
 	@Override
-	public final @Nullable String serializationFilterPatterns(){
+	public final @Nullable String serializationFilterPatterns() {
 		if (configuration.objectInputFilterFactory().isPresent() &&
 						SerializationFilterFactory.class.getName().equals(configuration.objectInputFilterFactory().get())) {
-				return SerializationFilterFactory.createPatterns();
+			return SerializationFilterFactory.createPatterns();
 		}
 
 		return null;

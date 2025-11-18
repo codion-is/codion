@@ -462,7 +462,7 @@ public class DefaultEntityDefinitionTest {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.as(idColumn.as()
-								.primaryKey().generator(automatic("table")))
+												.primaryKey().generator(automatic("table")))
 								.build());
 			}
 		}

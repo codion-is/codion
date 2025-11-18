@@ -41,5 +41,5 @@ public interface ScalingSelectionDialogBuilder {
 	 * @return the selected scaling
 	 * @throws CancelException in case of cancel
 	 */
- 	int show(String title);
+	int show(String title);
 }

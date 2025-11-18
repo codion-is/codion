@@ -42,7 +42,7 @@ public final class TrackTableModelTest {
 
 			TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
 			trackTableModel.queryModel().condition()
-						.get(Track.ALBUM_FK).set().equalTo(masterOfPuppets);
+							.get(Track.ALBUM_FK).set().equalTo(masterOfPuppets);
 
 			trackTableModel.items().refresh();
 			assertEquals(8, trackTableModel.items().included().size());

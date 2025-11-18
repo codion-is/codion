@@ -26,7 +26,7 @@ public final class EntityRow {
 	final EntityDefinition definition;
 	final boolean dto;
 
-	EntityRow(EntityDefinition definition, String tableType,  boolean dto) {
+	EntityRow(EntityDefinition definition, String tableType, boolean dto) {
 		this.definition = definition;
 		this.tableType = tableType;
 		this.dto = dto;

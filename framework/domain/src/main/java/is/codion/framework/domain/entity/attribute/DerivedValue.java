@@ -67,7 +67,7 @@ import static java.util.Objects.requireNonNull;
  *                 // Simple concatenation
  *                 Customer.FULL_NAME.as()
  *                     .derived()
- *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
+ * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .with(source -> {
  *                         String first = source.get(Customer.FIRST_NAME);
  *                         String last = source.get(Customer.LAST_NAME);
@@ -77,7 +77,7 @@ import static java.util.Objects.requireNonNull;
  *                 // Complex formatting with multiple sources
  *                 Customer.DISPLAY_NAME.as()
  *                     .derived()
- *				             .from(Customer.FULL_NAME, Customer.EMAIL)
+ * 				             .from(Customer.FULL_NAME, Customer.EMAIL)
  *                     .with(source -> {
  *                         String fullName = source.get(Customer.FULL_NAME);
  *                         String email = source.get(Customer.EMAIL);
@@ -87,7 +87,7 @@ import static java.util.Objects.requireNonNull;
  *                 // Age calculation
  *                 Customer.AGE.as()
  *                     .derived()
- *				             .from(Customer.BIRTH_DATE)
+ * 				             .from(Customer.BIRTH_DATE)
  *                     .with(source -> {
  *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
@@ -97,7 +97,7 @@ import static java.util.Objects.requireNonNull;
  *                 // Initials from names
  *                 Customer.INITIALS.as()
  *                     .derived()
- *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
+ * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .with(source -> {
  *                         String first = source.get(Customer.FIRST_NAME);
  *                         String last = source.get(Customer.LAST_NAME);

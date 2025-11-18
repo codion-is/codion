@@ -85,7 +85,7 @@ import static java.util.Objects.requireNonNull;
  *                 // Derived attribute
  *                 Customer.DISPLAY_NAME.as()
  *                     .derived()
- *				             .from(Customer.NAME, Customer.EMAIL)
+ * 				             .from(Customer.NAME, Customer.EMAIL)
  *                     .with(source ->
  *                         source.get(Customer.NAME) + " (" + source.get(Customer.EMAIL) + ")"),
  *

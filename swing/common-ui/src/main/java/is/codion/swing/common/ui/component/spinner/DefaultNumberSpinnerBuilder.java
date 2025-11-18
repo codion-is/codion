@@ -44,7 +44,7 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 	boolean commitOnValidEdit = true;
 
 	DefaultNumberSpinnerBuilder(Class<T> valueClass) {
-		super(new  SpinnerNumberModel());
+		super(new SpinnerNumberModel());
 		this.valueClass = requireNonNull(valueClass);
 		if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
 			throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);

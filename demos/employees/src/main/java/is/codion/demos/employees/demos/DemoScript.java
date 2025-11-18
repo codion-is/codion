@@ -60,7 +60,7 @@ public final class DemoScript implements Consumer<Automation> {
 		controller.autoDelay(200);
 		controller.key("LEFT", 2, "Move to the previous day");
 		controller.pause(300);
-		controller.key("DOWN",  "Move to the next week");
+		controller.key("DOWN", "Move to the next week");
 		controller.pause(500);
 
 		controller.key("ENTER", "Accept date");

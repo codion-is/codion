@@ -358,9 +358,9 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param rowIndex the row index
 		 * @param row the row object
 		 * @param identifier the column identifier
+		 * @throws IllegalStateException in case the cell is not editable
 		 * @see TableModel#setValueAt(Object, int, int)
 		 * @see #editable(Object, Object)
-		 * @throws IllegalStateException in case the cell is not editable
 		 */
 		void set(@Nullable Object value, int rowIndex, R row, C identifier);
 	}

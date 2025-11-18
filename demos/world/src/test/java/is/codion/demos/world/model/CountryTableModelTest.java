@@ -43,7 +43,7 @@ public final class CountryTableModelTest {
 				@Override
 				public void report(int progress) {}
 				@Override
-				public void publish(String... chunks) {				}
+				public void publish(String... chunks) {}
 			});
 		}
 	}

@@ -74,7 +74,7 @@ public final class Employees extends DomainModel {
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("department_no");
 
 		// Foreign key attribute for the DEPTNO column in the table employees.employee
-		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_no_fk", DEPARTMENT, Department.DEPARTMENT_NO);
+		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT, Department.DEPARTMENT_NO);
 		// Foreign key attribute for the MGR column in the table employees.employee
 		ForeignKey MANAGER_FK = TYPE.foreignKey("manager_fk", MANAGER_ID, Employee.ID);
 		// Attribute for the denormalized department location property

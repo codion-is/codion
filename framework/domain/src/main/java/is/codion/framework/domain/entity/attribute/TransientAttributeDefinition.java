@@ -68,7 +68,7 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *                 // Derived transient attribute (computed from other attributes)
  *                 Customer.FULL_NAME.as()
  *                     .derived()
- *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
+ * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .with(source -> {
  *                         String first = source.get(Customer.FIRST_NAME);
  *                         String last = source.get(Customer.LAST_NAME);

@@ -148,7 +148,7 @@ final class DefaultSliderBuilder extends AbstractComponentValueBuilder<JSlider, 
 
 		@Override
 		public SliderBuilder model(BoundedRangeModel boundedRangeModel) {
-			return new  DefaultSliderBuilder(boundedRangeModel);
+			return new DefaultSliderBuilder(boundedRangeModel);
 		}
 	}
 }

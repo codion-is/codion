@@ -47,8 +47,8 @@ public interface ListBoxBuilder<T> extends ComponentValueBuilder<JComboBox<T>, S
 
 		/**
 		 * @param itemValue supplies new items to add to the list box.
-		 * @return a {@link LinkedValueBuilder}
 		 * @param <T> the item type
+		 * @return a {@link LinkedValueBuilder}
 		 */
 		<T> ListBoxBuilder.LinkedValueBuilder<T> itemValue(ComponentValue<? extends JComponent, T> itemValue);
 	}

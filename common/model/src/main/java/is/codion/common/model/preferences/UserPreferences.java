@@ -123,7 +123,7 @@ public final class UserPreferences {
 		validateFilename(filename);
 		FilePreferences filePreferences = FILE_PREFERENCES.remove(filename);
 		if (filePreferences == null) {
-			throw new IllegalArgumentException("Preferences file with name '" +  filename + "' not found");
+			throw new IllegalArgumentException("Preferences file with name '" + filename + "' not found");
 		}
 		filePreferences.delete();
 	}

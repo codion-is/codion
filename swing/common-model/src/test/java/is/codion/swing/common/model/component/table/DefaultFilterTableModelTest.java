@@ -247,7 +247,7 @@ public final class DefaultFilterTableModelTest {
 
 		// Test 1: Refresh with same data - should preserve selection without empty event
 		testModel.items().refresh();
-		
+
 		assertEquals(asList(B, D), testModel.selection().items().get());
 		assertEquals(0, emptySelectionEvents.get()); // No empty selection event!
 		// Note: We may get an extra selection event due to the surgical update process,

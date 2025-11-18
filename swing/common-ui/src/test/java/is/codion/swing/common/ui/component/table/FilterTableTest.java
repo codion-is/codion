@@ -479,7 +479,8 @@ public class FilterTableTest {
 		assertSame(oneRenderer, table.getCellRenderer(0, 1));
 
 		// Should follow cell renderer alignment
-		NumberField<Integer> equalComponent = (NumberField<Integer>) ((ColumnConditionPanel<Integer>) table.filters().panel(0)).operands().equal().get();
+		NumberField<Integer> equalComponent = (NumberField<Integer>)
+						((ColumnConditionPanel<Integer>) table.filters().panel(0)).operands().equal().get();
 		assertEquals(SwingConstants.CENTER, equalComponent.getHorizontalAlignment());
 		equalComponent = (NumberField<Integer>) ((ColumnConditionPanel<Integer>) table.filters().panel(1)).operands().equal().get();
 		assertEquals(SwingConstants.LEFT, equalComponent.getHorizontalAlignment());
