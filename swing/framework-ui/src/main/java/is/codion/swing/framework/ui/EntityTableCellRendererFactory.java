@@ -34,6 +34,7 @@ import org.jspecify.annotations.Nullable;
 import java.awt.Color;
 
 import static is.codion.swing.common.ui.color.Colors.darker;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link FilterTableCellRenderer.Factory} for {@link EntityTablePanel}
@@ -45,8 +46,28 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 	 * @param tableModel the table model
 	 * @return a new {@link FilterTableCellRenderer} for the given attribute
 	 */
-	public FilterTableCellRenderer<?> create(Attribute<?> attribute, SwingEntityTableModel tableModel) {
-		return builder(tableModel.entityDefinition().attributes().definition(attribute)).build();
+	public final FilterTableCellRenderer<?> create(Attribute<?> attribute, SwingEntityTableModel tableModel) {
+		return create(requireNonNull(tableModel).entityDefinition().attributes().definition(attribute), tableModel);
+	}
+
+	/**
+	 * @param attributeDefinition the attribute definition
+	 * @param tableModel the table model
+	 * @return a new {@link FilterTableCellRenderer} for the given attribute
+	 * @param <T> the attribute type
+	 */
+	protected <T> FilterTableCellRenderer<T> create(AttributeDefinition<T> attributeDefinition, SwingEntityTableModel tableModel) {
+		return builder(attributeDefinition).build();
+	}
+
+	/**
+	 * @param attributeDefinition the attribute definition
+	 * @param <T> the attribute value type
+	 * @return a {@link FilterTableCellRenderer.Builder} based on the given attribute
+	 */
+	protected static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder(AttributeDefinition<T> attributeDefinition) {
+		return configure(requireNonNull(attributeDefinition), FilterTableCellRenderer.builder()
+						.<Entity, Attribute<?>, T>columnClass(attributeDefinition.attribute().type().valueClass()));
 	}
 
 	static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> configure(AttributeDefinition<T> attributeDefinition,
@@ -59,11 +80,6 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 		}
 
 		return renderer;
-	}
-
-	private static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder(AttributeDefinition<T> attributeDefinition) {
-		return configure(attributeDefinition, FilterTableCellRenderer.builder()
-						.<Entity, Attribute<?>, T>columnClass(attributeDefinition.attribute().type().valueClass()));
 	}
 
 	private static <T> boolean itemBased(AttributeDefinition<T> definition) {
