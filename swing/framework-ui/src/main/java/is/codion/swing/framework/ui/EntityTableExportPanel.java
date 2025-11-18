@@ -19,9 +19,9 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -30,6 +30,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
 import is.codion.swing.framework.ui.EntityTableExportModel.ExportTask;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
@@ -39,9 +40,14 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
@@ -50,6 +56,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -59,9 +67,11 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.RADIO_BUTTON;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static java.awt.event.KeyEvent.VK_SPACE;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
+import static java.awt.event.KeyEvent.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.SwingConstants.CENTER;
 
@@ -74,31 +84,44 @@ final class EntityTableExportPanel extends JPanel {
 
 	private final EntityTableExportModel model;
 	private final JTree exportTree;
+	private final State refreshingNodes = State.state();
+	private final State singleLevelSelection = State.state();
+	private final ObservableState moveEnabled = State.or(refreshingNodes, singleLevelSelection);
 
-	private final CommandControl selectDefaults = Control.builder()
+	private final Control selectDefaults = Control.builder()
 					.command(this::selectDefaults)
 					.caption(MESSAGES.getString("default_columns"))
 					.mnemonic(MESSAGES.getString("default_columns_mnemonic").charAt(0))
 					.build();
-	private final CommandControl selectAll = Control.builder()
+	private final Control selectAll = Control.builder()
 					.command(this::selectAll)
 					.caption(MESSAGES.getString("columns_all"))
 					.mnemonic(MESSAGES.getString("columns_all_mnemonic").charAt(0))
 					.build();
-	private final CommandControl selectNone = Control.builder()
+	private final Control selectNone = Control.builder()
 					.command(this::selectNone)
 					.caption(MESSAGES.getString("columns_none"))
 					.mnemonic(MESSAGES.getString("columns_none_mnemonic").charAt(0))
 					.build();
-	private final CommandControl saveConfiguration = Control.builder()
+	private final Control saveConfiguration = Control.builder()
 					.command(this::saveConfiguration)
 					.caption(Messages.save() + "...")
 					.mnemonic(Messages.saveMnemonic())
 					.build();
-	private final CommandControl openConfiguration = Control.builder()
+	private final Control openConfiguration = Control.builder()
 					.command(this::openConfiguration)
 					.caption(Messages.open())
 					.mnemonic(Messages.openMnemonic())
+					.build();
+	private final Control moveUp = Control.builder()
+					.command(this::moveSelectionUp)
+					.enabled(moveEnabled)
+					.icon(FrameworkIcons.instance().up())
+					.build();
+	private final Control moveDown = Control.builder()
+					.command(this::moveSelectionDown)
+					.enabled(moveEnabled)
+					.icon(FrameworkIcons.instance().down())
 					.build();
 	private final ToggleControl allRows;
 	private final ToggleControl selectedRows;
@@ -124,6 +147,12 @@ final class EntityTableExportPanel extends JPanel {
 										.border(createTitledBorder(MESSAGES.getString("columns")))
 										.center(scrollPane()
 														.view(exportTree))
+										.east(borderLayoutPanel()
+														.north(gridLayoutPanel(0, 1)
+																		.add(button()
+																						.control(moveUp))
+																		.add(button()
+																						.control(moveDown))))
 										.south(borderLayoutPanel()
 														.center(stringField()
 																		.horizontalAlignment(CENTER)
@@ -232,20 +261,67 @@ final class EntityTableExportPanel extends JPanel {
 		tree.setShowsRootHandles(true);
 		tree.setRootVisible(false);
 		tree.addTreeWillExpandListener(new ExpandListener());
-		tree.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.isAltDown()) {
-					toggleSelected();
-				}
-			}
-		});
+		tree.addTreeSelectionListener(new SingleLevelSelectionListener());
+		tree.addMouseListener(new ExportTreeMouseListener());
 		KeyEvents.builder()
 						.keyCode(VK_SPACE)
 						.action(command(this::toggleSelected))
 						.enable(tree);
+		KeyEvents.builder()
+						.modifiers(ALT_DOWN_MASK)
+						.keyCode(VK_UP)
+						.action(moveUp)
+						.enable(tree)
+						.keyCode(VK_DOWN)
+						.action(moveDown)
+						.enable(tree);
 
 		return tree;
+	}
+
+	private void moveSelectionUp() {
+		TreePath[] selectionPaths = exportTree.getSelectionPaths();
+		List<AttributeNode> nodes = selectedNodes(selectionPaths);
+		AttributeNode topNode = nodes.get(0);
+		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) topNode.getParent();
+		List<TreeNode> children = Collections.list(parent.children());
+		int topSelectionIndex = parent.getIndex(topNode);
+		if (topSelectionIndex > 0) {
+			children.add(children.indexOf(nodes.get(nodes.size() - 1)), children.remove(topSelectionIndex - 1));
+			refreshNodes(parent, children, selectionPaths);
+		}
+	}
+
+	private void moveSelectionDown() {
+		TreePath[] selectionPaths = exportTree.getSelectionPaths();
+		List<AttributeNode> nodes = selectedNodes(selectionPaths);
+		AttributeNode bottomNode = nodes.get(nodes.size() - 1);
+		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) bottomNode.getParent();
+		List<TreeNode> children = Collections.list(parent.children());
+		int bottomSelectedIndex = parent.getIndex(bottomNode);
+		if (bottomSelectedIndex < children.size() - 1) {
+			children.add(children.indexOf(nodes.get(0)), children.remove(bottomSelectedIndex + 1));
+			refreshNodes(parent, children, selectionPaths);
+		}
+	}
+
+	private List<AttributeNode> selectedNodes(TreePath[] selectionPaths) {
+		return Stream.of(selectionPaths)
+						.filter(exportTree::isPathSelected)
+						.map(TreePath::getLastPathComponent)
+						.map(AttributeNode.class::cast)
+						.collect(toList());
+	}
+
+	private void refreshNodes(DefaultMutableTreeNode parent, List<TreeNode> nodes, TreePath[] selectionPaths) {
+		refreshingNodes.set(true);
+		List<TreePath> expandedPaths = Collections.list(exportTree.getExpandedDescendants(new TreePath(exportTree.getModel().getRoot())));
+		parent.removeAllChildren();
+		nodes.forEach(child -> parent.add((MutableTreeNode) child));
+		((DefaultTreeModel) exportTree.getModel()).nodeStructureChanged(parent);
+		expandedPaths.forEach(exportTree::expandPath);
+		exportTree.setSelectionPaths(selectionPaths);
+		refreshingNodes.set(false);
 	}
 
 	private void selectDefaults() {
@@ -304,6 +380,15 @@ final class EntityTableExportPanel extends JPanel {
 		exportTree.repaint();
 	}
 
+	private final class ExportTreeMouseListener extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (e.isAltDown()) {
+				toggleSelected();
+			}
+		}
+	}
+
 	private final class ExpandListener implements TreeWillExpandListener {
 		@Override
 		public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
@@ -319,6 +404,17 @@ final class EntityTableExportPanel extends JPanel {
 
 		@Override
 		public void treeWillCollapse(TreeExpansionEvent event) {}
+	}
+
+	private final class SingleLevelSelectionListener implements TreeSelectionListener {
+		@Override
+		public void valueChanged(TreeSelectionEvent e) {
+			singleLevelSelection.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
+							.filter(exportTree::isPathSelected)
+							.map(TreePath::getPathCount)
+							.distinct()
+							.count() == 1);
+		}
 	}
 
 	static final class ExportPreferences {

@@ -14,6 +14,7 @@ Codion Change Log
 - EntityTableExportModel bug fixed, incorrect i18n keys fixed.
 - EntityTableCellRenderer renamed EntityTableCellRendererFactory.
 - EntityTablePanel.Configuration.cellRenderer() now consumer based.
+- EntityTableExportPanel, attribute ordering implemented.
 
 ## 0.18.59
 ### is.codion.common.model
