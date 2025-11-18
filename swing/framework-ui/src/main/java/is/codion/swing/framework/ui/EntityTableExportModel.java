@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
@@ -73,7 +74,6 @@ final class EntityTableExportModel {
 	private static final String TSV = ".tsv";
 	private static final String JSON = ".json";
 	private static final String ATTRIBUTES_KEY = "attributes";
-	private static final String FOREIGN_KEYS_KEY = "foreignKeys";
 
 	private final EntityTableModel<?> tableModel;
 	private final EntityConnectionProvider connectionProvider;
@@ -119,7 +119,7 @@ final class EntityTableExportModel {
 			selectDefaults();
 		}
 		else {
-			applyAttributesAndForeignKeys(preferences, treeModel.getRoot().children());
+			applyAttributesAndForeignKeys(preferences, treeModel.getRoot());
 		}
 	}
 
@@ -202,7 +202,6 @@ final class EntityTableExportModel {
 
 	private static JSONObject attributesToJson(Enumeration<TreeNode> nodes) {
 		JSONArray attributes = new JSONArray();
-		JSONObject foreignKeys = new JSONObject();
 		while (nodes.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) nodes.nextElement();
 			String attributeName = node.definition().attribute().name();
@@ -213,14 +212,16 @@ final class EntityTableExportModel {
 				if (!node.selected().is() && fkChildren.isEmpty()) {
 					continue;
 				}
-				if (node.selected().is()) {
+				if (node.selected().is()) {// If FK itself is selected, add its name to the attributes array
 					attributes.put(attributeName);
 				}
-				if (!fkChildren.isEmpty()) {
-					foreignKeys.put(attributeName, fkChildren);
+				if (!fkChildren.isEmpty()) {// If FK has selected children, add the structure object
+					JSONObject fkObject = new JSONObject();
+					fkObject.put(attributeName, fkChildren);
+					attributes.put(fkObject);
 				}
 			}
-			else if (node.selected().is()) {
+			else if (node.selected().is()) {// Simple attributes are just strings
 				attributes.put(attributeName);
 			}
 		}
@@ -229,39 +230,55 @@ final class EntityTableExportModel {
 		if (!attributes.isEmpty()) {
 			result.put(ATTRIBUTES_KEY, attributes);
 		}
-		if (!foreignKeys.isEmpty()) {
-			result.put(FOREIGN_KEYS_KEY, foreignKeys);
-		}
 
 		return result;
 	}
 
-	private void applyAttributesAndForeignKeys(JSONObject json, Enumeration<TreeNode> nodes) {
-		Set<String> selectedAttributes = new HashSet<>();
-		if (json.has(ATTRIBUTES_KEY)) {
-			JSONArray attributes = json.getJSONArray(ATTRIBUTES_KEY);
-			for (int i = 0; i < attributes.length(); i++) {
-				selectedAttributes.add(attributes.getString(i));
+	private void applyAttributesAndForeignKeys(JSONObject json, MutableTreeNode node) {
+		if (!json.has(ATTRIBUTES_KEY)) {
+			return;
+		}
+		Enumeration<TreeNode> childNodes = (Enumeration<TreeNode>) node.children();
+		Map<String, AttributeNode> children = new HashMap<>();
+		while (childNodes.hasMoreElements()) {
+			AttributeNode child = (AttributeNode) childNodes.nextElement();
+			children.put(child.definition().attribute().name(), child);
+		}
+		JSONArray attributes = json.getJSONArray(ATTRIBUTES_KEY);
+		Set<String> processed = new HashSet<>();
+		int insertIndex = 0;
+		for (Object item : attributes) {
+			if (item instanceof String) {// String = attribute/FK is selected
+				String attributeName = (String) item;
+				AttributeNode child = children.get(attributeName);
+				if (child != null && processed.add(attributeName)) {
+					child.selected().set(true);
+					reorderNode(node, child, insertIndex++);
+				}
+			}
+			else if (item instanceof JSONObject) {// Object = FK with children structure
+				JSONObject fkObject = (JSONObject) item;
+				String fkName = fkObject.keys().next();
+				AttributeNode child = children.get(fkName);
+				if (child != null) {
+					if (processed.add(fkName)) {// Only reorder if we haven't already processed this FK as a string
+						reorderNode(node, child, insertIndex++);
+					}
+					if (child.isCyclicalStub()) {// Expand and apply children
+						child.expand();
+						treeModel.nodeStructureChanged(child);
+					}
+					JSONObject fkChildren = fkObject.getJSONObject(fkName);
+					applyAttributesAndForeignKeys(fkChildren, child);
+				}
 			}
 		}
-
-		JSONObject foreignKeys = json.has(FOREIGN_KEYS_KEY) ? json.getJSONObject(FOREIGN_KEYS_KEY) : new JSONObject();
-		while (nodes.hasMoreElements()) {
-			AttributeNode node = (AttributeNode) nodes.nextElement();
-			String attributeName = node.definition().attribute().name();
-			boolean isForeignKey = node.getChildCount() > 0 || node.isCyclicalStub();
-
-			node.selected().set(selectedAttributes.contains(attributeName));
-
-			if (isForeignKey && foreignKeys.has(attributeName)) {
-				if (node.isCyclicalStub()) {
-					node.expand();
-					treeModel.nodeStructureChanged(node);
+		for (AttributeNode child : children.values()) {// Nodes not in JSON: deselect and leave at end in their current order
+			if (!processed.contains(child.definition().attribute().name())) {
+				child.selected().set(false);
+				if (child.getChildCount() > 0 || child.isCyclicalStub()) {
+					deselectAll(child.children());
 				}
-				applyAttributesAndForeignKeys(foreignKeys.getJSONObject(attributeName), node.children());
-			}
-			else if (isForeignKey) {
-				deselectAll(node.children());
 			}
 		}
 	}
@@ -273,6 +290,15 @@ final class EntityTableExportModel {
 			if (node.getChildCount() > 0) {
 				deselectAll(node.children());
 			}
+		}
+	}
+
+	private void reorderNode(MutableTreeNode parent, MutableTreeNode node, int index) {
+		int currentIndex = parent.getIndex(node);
+		if (currentIndex != index) {
+			parent.remove(currentIndex);
+			parent.insert(node, index);
+			treeModel.nodeStructureChanged(parent);
 		}
 	}
 

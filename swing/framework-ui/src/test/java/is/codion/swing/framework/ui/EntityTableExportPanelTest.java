@@ -98,12 +98,10 @@ public final class EntityTableExportPanelTest {
 		// Should save non-empty JSON
 		String exportJson = prefs.get(tablePanel.preferencesKey() + "-export", "");
 		assertNotEquals("{}", exportJson);
-		// Attributes array contains selected attribute names
+		// Attributes array contains selected attribute names and FK structure
 		assertTrue(exportJson.contains("\"attributes\""));
 		assertTrue(exportJson.contains("\"" + Employee.ID.name() + "\""));
 		assertTrue(exportJson.contains("\"" + Employee.DEPARTMENT_FK.name() + "\""));
-		// ForeignKeys object contains FK structure
-		assertTrue(exportJson.contains("\"foreignKeys\""));
 		assertTrue(exportJson.contains("\"" + Department.NAME.name() + "\""));
 	}
 

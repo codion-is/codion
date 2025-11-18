@@ -15,6 +15,7 @@ Codion Change Log
 - EntityTableCellRenderer renamed EntityTableCellRendererFactory.
 - EntityTablePanel.Configuration.cellRenderer() now consumer based.
 - EntityTableExportPanel, attribute ordering implemented.
+- EntityTableExportModel, attribute ordering included in json.
 
 ## 0.18.59
 ### is.codion.common.model
