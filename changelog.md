@@ -9,6 +9,8 @@ Codion Change Log
 - FilterTableCellRenderer.UISettings column identifier type parameter added.
 - FilterTableCellRenderer.UISettings.background() filterEnabled parameter removed, identifier and tableModel added.
 - DefaultFilterTableCellRenderer typo fixed.
+- FilterTableCellRenderer.SET_BORDER configuration value added.
+- FilterTable.selectSearchResult() cell focus simplified.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 ### is.codion.framework.db.local

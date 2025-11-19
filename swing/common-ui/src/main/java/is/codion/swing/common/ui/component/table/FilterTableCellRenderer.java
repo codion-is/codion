@@ -127,6 +127,16 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 					booleanValue(FilterTableCellRenderer.class.getName() + ".focusedCellIndicator", true);
 
 	/**
+	 * Specifies whether cell borders are set. Disable to use the table cell borders provided by the look and feel.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> SET_BORDER =
+					booleanValue(FilterTableCellRenderer.class.getName() + ".setBorder", true);
+
+	/**
 	 * @return the column class
 	 */
 	Class<T> columnClass();

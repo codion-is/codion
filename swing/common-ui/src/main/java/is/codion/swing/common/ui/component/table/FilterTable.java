@@ -823,9 +823,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void selectSearchResult(boolean addToSelection, boolean next) {
 		searchResult(addToSelection, next).ifPresent(rowColumn -> {
-			if (!addToSelection) {
-				setColumnSelectionInterval(rowColumn.column(), rowColumn.column());
-			}
+			changeSelection(rowColumn.row(), rowColumn.column(), true, true);
 			scrollToRowColumn(rowColumn.row(), rowColumn.column(), centerOnScroll.getOrThrow());
 		});
 	}

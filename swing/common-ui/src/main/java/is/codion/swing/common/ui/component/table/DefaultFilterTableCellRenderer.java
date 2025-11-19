@@ -28,7 +28,6 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
@@ -205,6 +204,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final boolean alternateRowColoring;
 		private final boolean filterIndicator;
 		private final boolean focusedCellIndicator;
+		private final boolean setBorder;
 		private final CellColor<R, C, T> backgroundColor;
 		private final CellColor<R, C, T> foregroundColor;
 		private final int horizontalAlignment;
@@ -220,6 +220,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.alternateRowColoring = builder.alternateRowColoring;
 			this.filterIndicator = builder.filterIndicator;
 			this.focusedCellIndicator = builder.focusedCellIndicator;
+			this.setBorder = builder.setBorder;
 			this.foregroundColor = builder.foregroundColor;
 			this.backgroundColor = builder.backgroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
@@ -238,7 +239,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			boolean alternateRow = alternateRow(rowIndex);
 			Color foreground = foregroundColor(filterTable, row, identifier, value, isSelected);
 			Color background = backgroundColor(filterTable, row, identifier, value, isSelected, alternateRow);
-			Border border = border(filterTable, hasFocus, rowIndex, columnIndex);
 			if (component instanceof JCheckBox) {
 				((JCheckBox) component).setBorderPainted(true);
 			}
@@ -249,7 +249,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 				component.setForeground(foreground);
 			}
 			component.setBackground(background);
-			component.setBorder(border);
+			setComponentBorder(component, isSearchResult(filterTable.search(), rowIndex, columnIndex), hasFocus);
 		}
 
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
@@ -326,17 +326,26 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return cellBackgroundColor;
 		}
 
-		private Border border(FilterTable<?, ?> filterTable, boolean hasFocus, int rowIndex, int columnIndex) {
-			return (focusedCellIndicator && hasFocus) || isSearchResult(filterTable.search(), rowIndex, columnIndex) ?
-							uiSettings.focusedCellBorder() : uiSettings.defaultCellBorder();
-		}
-
 		private static boolean isSearchResult(FilterTableSearchModel searchModel, int rowIndex, int columnIndex) {
 			return searchModel.results().current().getOrThrow().equals(rowIndex, columnIndex);
 		}
 
 		private static boolean alternateRow(int rowIndex) {
 			return rowIndex % 2 != 0;
+		}
+
+		private void setComponentBorder(JComponent component, boolean searchResult, boolean hasFocus) {
+			if (searchResult) {
+				component.setBorder(uiSettings.focusedCellBorder());
+			}
+			else if (setBorder) {
+				if ((focusedCellIndicator && hasFocus)) {
+					component.setBorder(uiSettings.focusedCellBorder());
+				}
+				else {
+					component.setBorder(uiSettings.defaultCellBorder());
+				}
+			}
 		}
 	}
 
@@ -356,6 +365,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
 		private boolean filterIndicator = true;
 		private boolean focusedCellIndicator = FOCUSED_CELL_INDICATOR.getOrThrow();
+		private boolean setBorder = SET_BORDER.getOrThrow();
 		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private boolean toolTipData = false;
@@ -394,6 +404,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		SettingsBuilder<R, C, T> focusedCellIndicator(boolean focusedCellIndicator) {
 			this.focusedCellIndicator = focusedCellIndicator;
+			return this;
+		}
+
+		SettingsBuilder<R, C, T> setBorder(boolean setBorder) {
+			this.setBorder = setBorder;
 			return this;
 		}
 
