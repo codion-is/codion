@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.60
+### is.codion.swing.common.model
+- NullableToggleButtonModel.next() renamed toggle().
 ### is.codion.swing.common.ui
 - ListBuilder moved to FilterList.Builder, FilterList.builder() added, related refactoring.
 - Components.list() removed.

@@ -84,10 +84,10 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	}
 
 	/**
-	 * <p>Iterates between the states: false -&gt; null -&gt; true
+	 * <p>Toggles between the states: false -&gt; null -&gt; true
 	 * <p>This is the same order as used by macOS, win32, IntelliJ IDEA and on the web as recommended by W3C.
 	 */
-	public void next() {
+	public void toggle() {
 		Boolean state = value.get();
 		if (state == null) {
 			value.set(true);

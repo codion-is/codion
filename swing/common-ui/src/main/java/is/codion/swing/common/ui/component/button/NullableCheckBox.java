@@ -141,7 +141,7 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (isEnabled() && (e == null || notModified(e))) {
-				model().next();
+				model().toggle();
 			}
 		}
 
@@ -195,7 +195,7 @@ public class NullableCheckBox extends JCheckBox {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			model.next();
+			model.toggle();
 		}
 	}
 }

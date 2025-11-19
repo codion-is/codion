@@ -26,17 +26,17 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NullableToggleButtonModelTest {
 
 	@Test
-	void iterateState() {
+	void toggle() {
 		NullableToggleButtonModel model = nullableToggleButtonModel();
 		assertNull(model.get());
 		assertFalse(model.isSelected());
-		model.next();
+		model.toggle();
 		assertTrue(model.get());
 		assertTrue(model.isSelected());
-		model.next();
+		model.toggle();
 		assertFalse(model.get());
 		assertFalse(model.isSelected());
-		model.next();
+		model.toggle();
 		assertNull(model.get());
 		assertFalse(model.isSelected());
 	}
