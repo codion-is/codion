@@ -25,6 +25,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
@@ -113,27 +114,28 @@ public final class EntityComponentsTest {
 
 	@Test
 	void nullableCheckBox() {
+		EditorValue<Boolean> value = editor.value(Detail.BOOLEAN_NULLABLE);
+
 		editor.defaults();
 		ComponentValue<NullableCheckBox, Boolean> componentValue =
 						entityComponents.nullableCheckBox(Detail.BOOLEAN_NULLABLE)
 										.transferFocusOnEnter(true)
-										.link(editor.value(Detail.BOOLEAN_NULLABLE))
+										.link(value)
 										.buildValue();
 		NullableCheckBox box = componentValue.component();
 		assertTrue(box.isSelected());//default value is true
-		assertTrue(editor.value(Detail.BOOLEAN_NULLABLE).getOrThrow());
+		assertTrue(value.getOrThrow());
 
-		box.getMouseListeners()[1].mouseClicked(null);
+		value.set(false);
 
 		assertFalse(box.model().get());
-		assertFalse(editor.value(Detail.BOOLEAN_NULLABLE).get());
 
-		box.getMouseListeners()[1].mouseClicked(null);
+		value.set(null);
 
 		assertNull(box.model().get());
-		assertNull(editor.value(Detail.BOOLEAN_NULLABLE).get());
+		assertNull(value.get());
 
-		editor.value(Detail.BOOLEAN_NULLABLE).set(false);
+		value.set(false);
 		assertFalse(box.isSelected());
 	}
 

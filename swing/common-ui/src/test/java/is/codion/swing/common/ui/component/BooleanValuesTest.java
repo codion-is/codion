@@ -95,9 +95,9 @@ public class BooleanValuesTest {
 		NullableToggleButtonModel model = checkBox.model();
 
 		assertNull(value.get());
-		model.setSelected(true);
+		model.set(true);
 		assertTrue(value.getOrThrow());
-		model.setSelected(false);
+		model.set(false);
 		assertFalse(value.getOrThrow());
 
 		value.set(true);
@@ -105,9 +105,9 @@ public class BooleanValuesTest {
 		value.clear();
 		assertNull(model.get());
 
-		model.setSelected(false);
+		model.set(false);
 		assertFalse(value.getOrThrow());
-		model.setSelected(true);
+		model.set(true);
 		assertTrue(value.getOrThrow());
 		model.set(null);
 		assertNull(value.get());

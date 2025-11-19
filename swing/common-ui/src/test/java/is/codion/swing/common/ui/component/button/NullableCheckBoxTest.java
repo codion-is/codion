@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.button;
 
 import org.junit.jupiter.api.Test;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
@@ -31,16 +33,18 @@ public class NullableCheckBoxTest {
 	@Test
 	void test() {
 		NullableCheckBox box = nullableCheckBox(nullableToggleButtonModel(false), "Test");
+		box.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				box.model().toggle();
+			}
+		});
 		assertFalse(box.model().get());
 		MouseListener mouseListener = box.getMouseListeners()[1];
 		mouseListener.mouseClicked(null);
 		assertNull(box.model().get());
 		mouseListener.mouseClicked(null);
 		assertTrue(box.model().get());
-		mouseListener.mouseClicked(null);
-		assertFalse(box.model().get());
-
-		box.getModel().setEnabled(false);
 		mouseListener.mouseClicked(null);
 		assertFalse(box.model().get());
 

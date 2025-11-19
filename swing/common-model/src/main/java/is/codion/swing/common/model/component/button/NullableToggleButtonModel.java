@@ -22,7 +22,7 @@ import is.codion.common.reactive.value.Value;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.DefaultButtonModel;
+import javax.swing.JToggleButton.ToggleButtonModel;
 import java.awt.event.ItemEvent;
 
 /**
@@ -34,7 +34,7 @@ import java.awt.event.ItemEvent;
  * @author Heinz M. Kabutz
  * @author Björn Darri Sigurðsson
  */
-public final class NullableToggleButtonModel extends DefaultButtonModel {
+public final class NullableToggleButtonModel extends ToggleButtonModel {
 
 	/**
 	 * The item state NULL.
@@ -61,12 +61,12 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	}
 
 	/**
-	 * Sets the underlying state to true or false
-	 * @param selected the new state
+	 * Toggles the underlying state
+	 * @param ignored ignored
 	 */
 	@Override
-	public void setSelected(boolean selected) {
-		value.set(selected);
+	public void setSelected(boolean ignored) {
+		toggle();
 	}
 
 	/**

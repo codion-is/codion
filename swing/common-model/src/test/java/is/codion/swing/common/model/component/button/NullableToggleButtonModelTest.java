@@ -55,10 +55,10 @@ public class NullableToggleButtonModelTest {
 	void setSelected() {
 		NullableToggleButtonModel model = nullableToggleButtonModel(false);
 		assertFalse(model.get());
-		model.setSelected(true);
+		model.setSelected(true);// param ignored, toggles
+		assertFalse(model.isSelected());// null
+		model.setSelected(false);// param ignored, toggles
 		assertTrue(model.isSelected());
-		model.setSelected(false);
-		assertFalse(model.isSelected());
 		model.set(null);
 		assertFalse(model.isSelected());
 	}

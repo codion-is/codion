@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.60
 ### is.codion.swing.common.model
 - NullableToggleButtonModel.next() renamed toggle().
+- NullableToggleButtonModel now extends ToggleButtonModel.
 ### is.codion.swing.common.ui
 - ListBuilder moved to FilterList.Builder, FilterList.builder() added, related refactoring.
 - Components.list() removed.
@@ -13,6 +14,7 @@ Codion Change Log
 - DefaultFilterTableCellRenderer typo fixed.
 - FilterTableCellRenderer.SET_BORDER configuration value added.
 - FilterTable.selectSearchResult() cell focus simplified.
+- NullableCheckBox bug fixed, now works as cell editor, simplified.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 ### is.codion.framework.db.local

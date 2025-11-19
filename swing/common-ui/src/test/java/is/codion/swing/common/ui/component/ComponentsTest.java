@@ -76,6 +76,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -506,6 +508,12 @@ public final class ComponentsTest {
 		assertTrue(box.isSelected());
 		assertTrue(value.getOrThrow());
 
+		box.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				box.model().toggle();
+			}
+		});
 		box.getMouseListeners()[1].mouseClicked(null);
 
 		assertFalse(box.model().get());

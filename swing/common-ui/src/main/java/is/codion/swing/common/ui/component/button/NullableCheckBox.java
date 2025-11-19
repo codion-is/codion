@@ -19,11 +19,9 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
-import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
@@ -32,35 +30,17 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
-import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.util.Objects.requireNonNull;
 
-/**
- * A JCheckBox implementation, which allows null values, via {@link NullableToggleButtonModel}.
- * This component is heavily influenced on TristateCheckBox by Heinz M. Kabutz.
- * Original article: http://www.javaspecialists.eu/archive/Issue145.html
- * Included with express permission from the author, 2019.
- * Naming, formatting and behavior refinements by Björn Darri Sigurðsson.
- * @author Heinz M. Kabutz
- * @author Björn Darri Sigurðsson
- */
 public class NullableCheckBox extends JCheckBox {
 
 	protected NullableCheckBox(NullableToggleButtonModel model, @Nullable String text, @Nullable Icon icon) {
 		super(text, icon);
 		super.setModel(requireNonNull(model));
 		setIcon(new NullableIcon());
-		addMouseListener(new NullableMouseListener());
-		KeyEvents.builder()
-						.keyCode(VK_SPACE)
-						.action(new NextStateAction(model))
-						.enable(this);
 	}
 
 	@Override
@@ -137,20 +117,6 @@ public class NullableCheckBox extends JCheckBox {
 		return new NullableCheckBox(model, text, icon);
 	}
 
-	private final class NullableMouseListener extends MouseAdapter {
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			if (isEnabled() && (e == null || notModified(e))) {
-				model().toggle();
-			}
-		}
-
-		private boolean notModified(MouseEvent e) {
-			return !e.isAltDown() && !e.isControlDown() && !e.isShiftDown() &&
-							!e.isAltGraphDown() && !e.isMetaDown() && !e.isPopupTrigger();
-		}
-	}
-
 	private final class NullableIcon implements Icon {
 
 		private final Icon icon = UIManager.getIcon("CheckBox.icon");
@@ -182,20 +148,6 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public int getIconHeight() {
 			return icon.getIconHeight();
-		}
-	}
-
-	private static final class NextStateAction extends AbstractAction {
-
-		private final NullableToggleButtonModel model;
-
-		private NextStateAction(NullableToggleButtonModel model) {
-			this.model = model;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			model.toggle();
 		}
 	}
 }
