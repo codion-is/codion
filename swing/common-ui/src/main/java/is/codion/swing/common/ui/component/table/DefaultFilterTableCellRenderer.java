@@ -219,7 +219,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.rightPadding = builder.rightPadding;
 			this.alternateRowColoring = builder.alternateRowColoring;
 			this.filterIndicator = builder.filterIndicator;
-			this.focusedCellIndicator = builder.focuseCellIndicator;
+			this.focusedCellIndicator = builder.focusedCellIndicator;
 			this.foregroundColor = builder.foregroundColor;
 			this.backgroundColor = builder.backgroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
@@ -355,7 +355,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
 		private boolean filterIndicator = true;
-		private boolean focuseCellIndicator = FOCUSED_CELL_INDICATOR.getOrThrow();
+		private boolean focusedCellIndicator = FOCUSED_CELL_INDICATOR.getOrThrow();
 		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private boolean toolTipData = false;
@@ -392,8 +392,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> focuseCellIndicator(boolean focuseCellIndicator) {
-			this.focuseCellIndicator = focuseCellIndicator;
+		SettingsBuilder<R, C, T> focusedCellIndicator(boolean focusedCellIndicator) {
+			this.focusedCellIndicator = focusedCellIndicator;
 			return this;
 		}
 
@@ -572,7 +572,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		@Override
 		public Builder<R, C, T> focusedCellIndicator(boolean focusedCellIndicator) {
-			this.settings.focuseCellIndicator(focusedCellIndicator);
+			this.settings.focusedCellIndicator(focusedCellIndicator);
 			return this;
 		}
 

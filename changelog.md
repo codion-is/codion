@@ -8,6 +8,7 @@ Codion Change Log
 - FilterTable.Builder.cellRenderer() now consumer based, with columnClass parameter.
 - FilterTableCellRenderer.UISettings column identifier type parameter added.
 - FilterTableCellRenderer.UISettings.background() filterEnabled parameter removed, identifier and tableModel added.
+- DefaultFilterTableCellRenderer typo fixed.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 ### is.codion.framework.db.local
