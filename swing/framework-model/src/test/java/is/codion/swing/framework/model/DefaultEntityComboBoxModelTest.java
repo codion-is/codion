@@ -100,24 +100,24 @@ public final class DefaultEntityComboBoxModelTest {
 	@Test
 	void foreignKeyFilter() {
 		Entities entities = CONNECTION_PROVIDER.entities();
-		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
-						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
-						.filterSelected(true)
-						.build();
+		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER).build();
 		EntityComboBoxModel managerComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.includeNull(true)
 						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
 						.filterSelected(true)
-						.select(employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE")))
+						.select(CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE")))
+						.filter(Employee.DEPARTMENT_FK, departmentComboBoxModel)
 						.build();
-		employeeComboBoxModel.filter().get(Employee.MGR_FK).link(managerComboBoxModel);
-		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
-						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
-		managerComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(departmentComboBoxModel);
+		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.filterSelected(true)
+						.filter(Employee.MGR_FK, managerComboBoxModel)
+						.build();
 		managerComboBoxModel.selection().clear();
 		employeeComboBoxModel.items().refresh();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(true);

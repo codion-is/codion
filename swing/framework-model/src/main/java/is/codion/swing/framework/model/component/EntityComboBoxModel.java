@@ -213,6 +213,16 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder filterSelected(boolean filterSelected);
 
 		/**
+		 * Links the given combo box model representing foreign key entities to this combo box model
+		 * so that selection in the foreign key model filters this model.
+		 * Note that {@code filterModel} is automatically refreshed each time this combo box model is refreshed.
+		 * @param foreignKey the foreign key
+		 * @param filterModel the combo box model filtering this model
+		 * @see ForeignKeyFilter#link(EntityComboBoxModel)
+		 */
+		Builder filter(ForeignKey foreignKey, EntityComboBoxModel filterModel);
+
+		/**
 		 * @param onSelection called when an item is selected, note that this item may be null
 		 * @return this builder instance
 		 */

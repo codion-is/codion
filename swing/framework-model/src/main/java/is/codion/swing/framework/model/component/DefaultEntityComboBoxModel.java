@@ -75,6 +75,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.select(builder.selectEntity)
 						.build();
 		this.filter = new DefaultFilter();
+		builder.filterLinks.forEach((foreignKey, filterModel) ->
+						filter.get(foreignKey).link(filterModel));
 		this.comboBoxModel.items().included().predicate().set(filter);
 		this.comboBoxModel.items().included().predicate().addValidator(predicate -> {
 			if (predicate != filter) {
@@ -236,7 +238,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private final Value<Predicate<Entity>> predicate = Value.builder()
 						.<Predicate<Entity>>nullable()
 						.notify(SET)
-						.listener(items()::filter)
+						.listener(() -> items().filter())
 						.build();
 
 		@Override
@@ -321,10 +323,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public void link(EntityComboBoxModel filterModel) {
 			entityItems.entityDefinition.foreignKeys().definition(foreignKey);
-			if (!foreignKey.referencedType().equals(filterModel.entityDefinition().type())) {
-				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityDefinition().type()
-								+ ", should be: " + foreignKey.referencedType());
-			}
+			validateLink(foreignKey, filterModel);
 			//if foreign key filter keys have been set previously, initialize with one of those
 			Collection<Entity.Key> filterKeys = get();
 			if (!filterKeys.isEmpty()) {
@@ -404,6 +403,13 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
+	private static void validateLink(ForeignKey foreignKey, EntityComboBoxModel filterModel) {
+		if (!foreignKey.referencedType().equals(requireNonNull(filterModel).entityDefinition().type())) {
+			throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityDefinition().type()
+							+ ", should be: " + foreignKey.referencedType());
+		}
+	}
+
 	private static final class DefaultConditionSupplier implements Supplier<Condition> {
 
 		private final Condition condition;
@@ -465,6 +471,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		private final FilterComboBoxModel.Builder<Entity> modelBuilder;
 		private final EntityItems items;
+		private final EntityDefinition entityDefinition;
+		private final Map<ForeignKey, EntityComboBoxModel> filterLinks = new HashMap<>();
 
 		private @Nullable Comparator<Entity> comparator;
 		private boolean editEvents = EDIT_EVENTS.getOrThrow();
@@ -472,7 +480,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private @Nullable Entity selectEntity;
 
 		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			this.items = new EntityItems(connectionProvider.entities().definition(entityType), requireNonNull(connectionProvider));
+			this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
+			this.items = new EntityItems(entityDefinition, connectionProvider);
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();
 			this.modelBuilder = FilterComboBoxModel.builder().items(items);
 		}
@@ -532,6 +541,14 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public Builder filterSelected(boolean filterSelected) {
 			this.filterSelected = filterSelected;
+			return this;
+		}
+
+		@Override
+		public Builder filter(ForeignKey foreignKey, EntityComboBoxModel filterModel) {
+			entityDefinition.foreignKeys().definition(foreignKey);
+			validateLink(foreignKey, filterModel);
+			filterLinks.put(foreignKey, filterModel);
 			return this;
 		}
 
