@@ -22,6 +22,7 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
@@ -34,23 +35,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Handles packing Entity query results.
  */
 final class EntityResultPacker implements ResultPacker<Entity> {
 
-	private static final Function<EntityDefinition, List<TransientAttributeDefinition<?>>> INIT_NON_DERIVED_TRANSIENT_ATTRIBUTES =
-					EntityResultPacker::initializeNonDerivedTransientAttributes;
+	private static final Function<EntityDefinition, List<AttributeDefinition<?>>> INIT_TRANSIENT_ATTRIBUTES =
+					EntityResultPacker::initializeTransientAttributes;
 	private static final Function<EntityDefinition, List<ColumnDefinition<?>>> INIT_NON_SELECTED_COLUMNS =
 					EntityResultPacker::initializeNonSelectedColumns;
-	private static final Map<EntityDefinition, List<TransientAttributeDefinition<?>>> NON_DERIVED_TRANSIENT_ATTRIBUTES = new ConcurrentHashMap<>();
+	private static final Map<EntityDefinition, List<AttributeDefinition<?>>> TRANSIENT_ATTRIBUTES = new ConcurrentHashMap<>();
 	private static final Map<EntityDefinition, List<ColumnDefinition<?>>> NON_SELECTED_COLUMNS = new ConcurrentHashMap<>();
 
 	private final EntityDefinition entityDefinition;
 	private final List<ColumnDefinition<?>> columnDefinitions;
-	private final List<TransientAttributeDefinition<?>> nonDerivedTransientAttributes;
+	private final List<AttributeDefinition<?>> transientAttributes;
 	private final List<ColumnDefinition<?>> nonSelectedColumns;
 	private final boolean customSelectColumns;
 
@@ -61,7 +63,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 	EntityResultPacker(EntityDefinition entityDefinition, List<ColumnDefinition<?>> columnDefinitions) {
 		this.entityDefinition = entityDefinition;
 		this.columnDefinitions = columnDefinitions;
-		this.nonDerivedTransientAttributes = NON_DERIVED_TRANSIENT_ATTRIBUTES.computeIfAbsent(entityDefinition, INIT_NON_DERIVED_TRANSIENT_ATTRIBUTES);
+		this.transientAttributes = TRANSIENT_ATTRIBUTES.computeIfAbsent(entityDefinition, INIT_TRANSIENT_ATTRIBUTES);
 		this.nonSelectedColumns = NON_SELECTED_COLUMNS.computeIfAbsent(entityDefinition, INIT_NON_SELECTED_COLUMNS);
 		this.customSelectColumns = entityDefinition.selectQuery()
 						.map(query -> query.columns() != null)
@@ -70,7 +72,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
 	@Override
 	public Entity get(ResultSet resultSet) throws SQLException {
-		int attributeCount = columnDefinitions.size() + nonDerivedTransientAttributes.size() + nonSelectedColumns.size();
+		int attributeCount = columnDefinitions.size() + transientAttributes.size() + nonSelectedColumns.size();
 		Map<Attribute<?>, Object> values = new HashMap<>((int) (attributeCount / 0.75f) + 1);
 		addResultSetValues(resultSet, values);
 		addTransientNullValues(values);
@@ -95,8 +97,8 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 	}
 
 	private void addTransientNullValues(Map<Attribute<?>, @Nullable Object> values) {
-		for (int i = 0; i < nonDerivedTransientAttributes.size(); i++) {
-			values.put(nonDerivedTransientAttributes.get(i).attribute(), null);
+		for (int i = 0; i < transientAttributes.size(); i++) {
+			values.put(transientAttributes.get(i).attribute(), null);
 		}
 	}
 
@@ -106,17 +108,15 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		}
 	}
 
-	private static List<TransientAttributeDefinition<?>> initializeNonDerivedTransientAttributes(EntityDefinition entityDefinition) {
+	private static List<AttributeDefinition<?>> initializeTransientAttributes(EntityDefinition entityDefinition) {
 		return entityDefinition.attributes().definitions().stream()
 						.filter(TransientAttributeDefinition.class::isInstance)
-						.map(attributeDefinition -> (TransientAttributeDefinition<?>) attributeDefinition)
-						.filter(transientAttributeDefinition -> !transientAttributeDefinition.derived())
-						.collect(Collectors.toList());
+						.collect(toList());
 	}
 
 	private static List<ColumnDefinition<?>> initializeNonSelectedColumns(EntityDefinition entityDefinition) {
 		return entityDefinition.columns().definitions().stream()
 						.filter(columnDefinition -> !columnDefinition.selected())
-						.collect(Collectors.toList());
+						.collect(toList());
 	}
 }
