@@ -235,7 +235,7 @@ tasks.register("checkI18nDocs") {
 }
 
 tasks.register("assembleDocs") {
-    dependsOn("combinedJavadoc", "asciidoctor", "assembleTutorials")
+    dependsOn("clean", "combinedJavadoc", "asciidoctor", "assembleTutorials")
     group = "documentation"
     description = "Creates the javadocs and asciidocs and combines them into the documentation directory"
     val docFolder = project.layout.buildDirectory.dir(documentationVersion).get()
