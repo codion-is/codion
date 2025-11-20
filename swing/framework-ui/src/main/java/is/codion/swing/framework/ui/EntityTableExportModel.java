@@ -19,6 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.db.EntityConnection;
@@ -32,6 +34,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityTableModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.Utilities;
@@ -39,27 +42,36 @@ import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.lang.String.join;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -72,11 +84,18 @@ final class EntityTableExportModel {
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
 	private static final String ATTRIBUTES_KEY = "attributes";
+	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
+	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
+	private static final ConfigurationFile NO_CONFIGURATION_FILE = new ConfigurationFile(null);
+
+	static final String JSON = "json";
 
 	private final EntityTableModel<?> tableModel;
 	private final EntityConnectionProvider connectionProvider;
 	private final FilterTableColumnModel<Attribute<?>> columnModel;
+	private final FilterComboBoxModel<ConfigurationFile> configurationFilesComboBoxModel;
 	private final ExportTreeModel treeModel;
+	private final Event<?> exportPreferencesApplied = Event.event();
 	private final State selected;
 
 	EntityTableExportModel(EntityTableModel<?> tableModel, FilterTableColumnModel<Attribute<?>> columnModel) {
@@ -84,8 +103,13 @@ final class EntityTableExportModel {
 		this.columnModel = columnModel;
 		this.connectionProvider = tableModel.connectionProvider();
 		this.treeModel = new ExportTreeModel(tableModel.entityDefinition(), tableModel.connectionProvider().entities());
+		this.configurationFilesComboBoxModel = FilterComboBoxModel.builder()
+						.items(Collections.<ConfigurationFile>emptyList())
+						.nullItem(NO_CONFIGURATION_FILE)
+						.onSelection(this::configurationFileSelected)
+						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
-		tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
+		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
 	}
 
 	ExportTask exportToClipboard() {
@@ -100,6 +124,14 @@ final class EntityTableExportModel {
 		return treeModel;
 	}
 
+	FilterComboBoxModel<ConfigurationFile> configurationFiles() {
+		return configurationFilesComboBoxModel;
+	}
+
+	EntityDefinition entityDefinition() {
+		return tableModel.entityDefinition();
+	}
+
 	State selected() {
 		return selected;
 	}
@@ -108,8 +140,28 @@ final class EntityTableExportModel {
 		return tableModel.entityDefinition().caption();
 	}
 
-	String defaultConfigFileName() {
-		return tableModel.entityDefinition().caption();
+	Observer<?> preferencesApplied() {
+		return exportPreferencesApplied.observer();
+	}
+
+	void addConfigurationFiles(Collection<File> configurationFiles) {
+		Iterator<File> iterator = configurationFiles.iterator();
+		if (iterator.hasNext()) {
+			applyPreferences(iterator.next());
+		}
+		while(iterator.hasNext()) {
+			configurationFilesComboBoxModel.items().add(new ConfigurationFile(iterator.next()));
+		}
+	}
+
+	void applyPreferences(File file) {
+		try {
+			applyAttributesAndForeignKeys(new JSONObject(new String(Files.readAllBytes(file.toPath()), UTF_8)), treeModel.getRoot());
+			addAndSelect(new ConfigurationFile(file));
+		}
+		catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
 	}
 
 	void applyPreferences(JSONObject preferences) {
@@ -118,15 +170,72 @@ final class EntityTableExportModel {
 		}
 		else {
 			applyAttributesAndForeignKeys(preferences, treeModel.getRoot());
+			applyConfigurationFiles(preferences);
 		}
 	}
 
+	private void applyConfigurationFiles(JSONObject json) {
+		if (json.has(CONFIGURATION_FILES_KEY)) {
+			JSONArray files = json.getJSONArray(CONFIGURATION_FILES_KEY);
+			files.forEach(filePath -> {
+				if (filePath instanceof String) {
+					File file = new File((String) filePath);
+					if (file.exists()) {
+						configurationFilesComboBoxModel.items().add(new ConfigurationFile(file));
+					}
+				}
+			});
+			if (json.has(SELECTED_CONFIGURATION_FILE_KEY)) {
+				File file = new File(json.getString(SELECTED_CONFIGURATION_FILE_KEY));
+				if (file.exists()) {
+					configurationFilesComboBoxModel.selection().item().set(new ConfigurationFile(file));
+				}
+			}
+		}
+	}
+
+	void writeConfig(File file) throws IOException {
+		Files.write(file.toPath(), createExportPreferences().toString().getBytes(UTF_8));
+		addAndSelect(new ConfigurationFile(file));
+	}
+
+	private void addAndSelect(ConfigurationFile fileItem) {
+		configurationFilesComboBoxModel.items().add(fileItem);
+		configurationFilesComboBoxModel.selection().item().set(fileItem);
+	}
+
 	JSONObject createPreferences() {
+		JSONObject json = createExportPreferences();
+		if (!configurationFilesComboBoxModel.items().get().isEmpty()) {
+			JSONArray recentFiles = new JSONArray();
+			configurationFilesComboBoxModel.items().get()
+							.forEach(fileItem -> recentFiles.put(fileItem.file().getAbsolutePath()));
+			json.put(CONFIGURATION_FILES_KEY, recentFiles);
+			ConfigurationFile configurationFile = configurationFilesComboBoxModel.selection().item().getOrThrow();
+			if (configurationFile != NO_CONFIGURATION_FILE) {
+				json.put(SELECTED_CONFIGURATION_FILE_KEY, configurationFile.file().getAbsolutePath());
+			}
+		}
+
+		return json;
+	}
+
+	private JSONObject createExportPreferences() {
 		if (isDefaultConfiguration()) {
 			return new JSONObject("{}");
 		}
 
 		return attributesToJson(treeModel.getRoot().children());
+	}
+
+	private void configurationFileSelected(@Nullable ConfigurationFile fileItem) {
+		if (fileItem == null || fileItem.file() == null) {
+			selectDefaults();
+			exportPreferencesApplied.run();
+		}
+		else {
+			applyPreferences(fileItem.file());
+		}
 	}
 
 	void selectAll() {
@@ -279,6 +388,7 @@ final class EntityTableExportModel {
 				}
 			}
 		}
+		exportPreferencesApplied.run();
 	}
 
 	private static void deselectAll(Enumeration<TreeNode> nodes) {
@@ -550,6 +660,51 @@ final class EntityTableExportModel {
 
 			EntityDefinition referencedDefinition = entities.definition(foreignKey.referencedType());
 			EntityNode.populate(this, referencedDefinition, entities, newVisited, referencedDefinition.type());
+		}
+	}
+
+	static final class ConfigurationFile {
+
+		private final @Nullable File file;
+
+		ConfigurationFile(@Nullable File file) {
+			this.file = file;
+		}
+
+		@Nullable File file() {
+			return file;
+		}
+
+		String filename() {
+			if (file == null) {
+				throw new IllegalStateException("No file");
+			}
+
+			return file.getName().substring(0, file.getName().length() - JSON.length() - 1);
+		}
+
+		@Override
+		public String toString() {
+			if (file == null) {
+				return "-";
+			}
+
+			return filename() + " " + file.getAbsolutePath();
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (object == null || getClass() != object.getClass()) {
+				return false;
+			}
+			ConfigurationFile that = (ConfigurationFile) object;
+
+			return Objects.equals(file, that.file);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(file);
 		}
 	}
 }

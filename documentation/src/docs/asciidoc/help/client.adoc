@@ -318,9 +318,10 @@ If the application has enabled data export:
 2. Navigate to *Copy* → *Export data...*
 3. In the export dialog:
 ** Choose which columns to include (use kbd:[Space] to toggle column inclusion)
-** Select the export format (CSV, Excel, etc., if multiple formats are available)
-** Choose the destination file
-4. Click *Export* to save the data
+** Configure the column order, using kbd:[Alt + Up/Down] or the buttons
+4. Click *Clipboard* to export to the clipboard or *To file* to select a destination file
+
+You can save and open export column configurations, and access recently used configuration files in the drop down menu.
 
 TIP: The export function respects the current search/filter conditions, so you can filter your data first and then export only what you need.
 

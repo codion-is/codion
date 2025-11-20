@@ -31,6 +31,8 @@ Codion Change Log
 - EntityTableExportModel, attribute ordering included in json.
 - EntityTableCellRendererFactory.create() now final, protected Swing specific create() added.
 - EntityTableExportPanel bug fixed, attribute ordering now works correctly.
+- EntityTableExportPanel, configuration file management implemented.
+- EntityTableExportPanel, dialog size added to user preferences.
 
 ## 0.18.59
 ### is.codion.common.model
