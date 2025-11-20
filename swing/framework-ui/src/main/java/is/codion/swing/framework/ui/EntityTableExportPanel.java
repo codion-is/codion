@@ -55,7 +55,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -326,7 +325,7 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
-	private void openConfigurationFiles() throws IOException {
+	private void openConfigurationFiles() {
 		model.addConfigurationFiles(Dialogs.select()
 						.files()
 						.filter(new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON))
@@ -334,7 +333,7 @@ final class EntityTableExportPanel extends JPanel {
 						.selectFiles());
 	}
 
-	private void saveConfiguration() throws IOException {
+	private void saveConfiguration() {
 		ConfigurationFile configurationFile = model.configurationFiles().selection().item().getOrThrow();
 		model.writeConfig(Dialogs.select()
 						.files()

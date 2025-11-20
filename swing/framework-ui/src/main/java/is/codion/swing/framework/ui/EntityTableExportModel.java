@@ -149,7 +149,7 @@ final class EntityTableExportModel {
 		if (iterator.hasNext()) {
 			applyPreferences(iterator.next());
 		}
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			configurationFilesComboBoxModel.items().add(new ConfigurationFile(iterator.next()));
 		}
 	}
@@ -194,9 +194,14 @@ final class EntityTableExportModel {
 		}
 	}
 
-	void writeConfig(File file) throws IOException {
-		Files.write(file.toPath(), createExportPreferences().toString().getBytes(UTF_8));
-		addAndSelect(new ConfigurationFile(file));
+	void writeConfig(File file) {
+		try {
+			Files.write(file.toPath(), createExportPreferences().toString().getBytes(UTF_8));
+			addAndSelect(new ConfigurationFile(file));
+		}
+		catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
 	}
 
 	private void addAndSelect(ConfigurationFile fileItem) {
