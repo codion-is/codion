@@ -284,27 +284,45 @@ final class EntityTableExportPanel extends JPanel {
 
 	private void moveSelectionUp() {
 		TreePath[] selectionPaths = exportTree.getSelectionPaths();
-		List<AttributeNode> nodes = selectedNodes(selectionPaths);
-		AttributeNode topNode = nodes.get(0);
-		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) topNode.getParent();
-		List<TreeNode> children = Collections.list(parent.children());
-		int topSelectionIndex = parent.getIndex(topNode);
-		if (topSelectionIndex > 0) {
-			children.add(children.indexOf(nodes.get(nodes.size() - 1)), children.remove(topSelectionIndex - 1));
+		List<AttributeNode> selected = selectedNodes(selectionPaths);
+		if (!selected.isEmpty()) {
+			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selected.get(0).getParent();
+			List<TreeNode> children = Collections.list(parent.children());
+			moveSelectedUp(children, selected.stream()
+							.map(children::indexOf)
+							.collect(toList()));
 			refreshNodes(parent, children, selectionPaths);
+			exportTree.scrollPathToVisible(selectionPaths[0]);
 		}
 	}
 
 	private void moveSelectionDown() {
 		TreePath[] selectionPaths = exportTree.getSelectionPaths();
-		List<AttributeNode> nodes = selectedNodes(selectionPaths);
-		AttributeNode bottomNode = nodes.get(nodes.size() - 1);
-		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) bottomNode.getParent();
-		List<TreeNode> children = Collections.list(parent.children());
-		int bottomSelectedIndex = parent.getIndex(bottomNode);
-		if (bottomSelectedIndex < children.size() - 1) {
-			children.add(children.indexOf(nodes.get(0)), children.remove(bottomSelectedIndex + 1));
+		List<AttributeNode> selected = selectedNodes(selectionPaths);
+		if (!selected.isEmpty()) {
+			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selected.get(0).getParent();
+			List<TreeNode> children = Collections.list(parent.children());
+			moveNodesDown(children, selected.stream()
+							.map(children::indexOf)
+							.collect(toList()));
 			refreshNodes(parent, children, selectionPaths);
+			exportTree.scrollPathToVisible(selectionPaths[selectionPaths.length - 1]);
+		}
+	}
+
+	private static void moveSelectedUp(List<TreeNode> children, List<Integer> indexes) {
+		if (indexes.get(0).intValue() > 0) {
+			for (int i = 0; i < indexes.size(); i++) {
+				children.add(indexes.get(i) - 1, children.remove(indexes.get(i).intValue()));
+			}
+		}
+	}
+
+	private static void moveNodesDown(List<TreeNode> children, List<Integer> indexes) {
+		if (indexes.get(indexes.size() - 1) < children.size() - 1) {
+			for (int i = indexes.size() - 1; i >= 0; i--) {
+				children.add(indexes.get(i) + 1, children.remove(indexes.get(i).intValue()));
+			}
 		}
 	}
 
