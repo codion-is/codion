@@ -95,6 +95,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1207,9 +1208,20 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		tree.setShowsRootHandles(true);
 		tree.setToggleClickCount(1);
 		tree.setRootVisible(false);
-		Utilities.expandAll(tree, new TreePath(tree.getModel().getRoot()));
+		expandAll(tree, new TreePath(tree.getModel().getRoot()));
 
 		return new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	}
+
+	private static void expandAll(JTree tree, TreePath parent) {
+		TreeNode node = (TreeNode) parent.getLastPathComponent();
+		if (node.getChildCount() >= 0) {
+			Enumeration<? extends TreeNode> e = node.children();
+			while (e.hasMoreElements()) {
+				expandAll(tree, parent.pathByAddingChild(e.nextElement()));
+			}
+		}
+		tree.expandPath(parent);
 	}
 
 	private static DefaultTreeModel createApplicationTree(Collection<? extends EntityPanel> entityPanels) {

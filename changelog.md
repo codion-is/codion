@@ -18,6 +18,7 @@ Codion Change Log
 - FilterTable.selectSearchResult() cell focus simplified.
 - NullableCheckBox bug fixed, now works as cell editor, simplified.
 - DefaultFileSelectionDialogBuilder now adds selected file extension to filename, related refactoring.
+- Utilities.expandAll() and collapseAll() removed.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 - DerivedAttributeDefinition.sources() renamed attributes().

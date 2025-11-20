@@ -29,12 +29,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
@@ -45,7 +42,6 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -194,44 +190,6 @@ public final class Utilities {
 		component.addPropertyChangeListener(property, changeEvent -> event.accept((T) changeEvent.getNewValue()));
 
 		return event.observer();
-	}
-
-	/**
-	 * Expands all the paths from a parent in the given tree
-	 * @param tree the tree
-	 * @param parent the parent from which to exapand
-	 */
-	public static void expandAll(JTree tree, TreePath parent) {
-		requireNonNull(tree);
-		requireNonNull(parent);
-		TreeNode node = (TreeNode) parent.getLastPathComponent();
-		if (node.getChildCount() >= 0) {
-			Enumeration<? extends TreeNode> e = node.children();
-			while (e.hasMoreElements()) {
-				expandAll(tree, parent.pathByAddingChild(e.nextElement()));
-			}
-		}
-		// Expansion or collapse must be done bottom-up
-		tree.expandPath(parent);
-	}
-
-	/**
-	 * Collapses all the paths from a parent in the given tree
-	 * @param tree the tree
-	 * @param parent the parent from which to collapse
-	 */
-	public static void collapseAll(JTree tree, TreePath parent) {
-		requireNonNull(tree);
-		requireNonNull(parent);
-		TreeNode node = (TreeNode) parent.getLastPathComponent();
-		if (node.getChildCount() >= 0) {
-			Enumeration<? extends TreeNode> e = node.children();
-			while (e.hasMoreElements()) {
-				collapseAll(tree, parent.pathByAddingChild(e.nextElement()));
-			}
-		}
-		// Expansion or collapse must be done bottom-up
-		tree.collapsePath(parent);
 	}
 
 	/**
