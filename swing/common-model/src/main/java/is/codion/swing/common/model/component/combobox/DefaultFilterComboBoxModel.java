@@ -78,6 +78,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						selection.item().addConsumer(onSelection));
 		sort = new DefaultComboBoxSort<>(builder.comparator);
 		modelItems = new DefaultComboBoxItems(builder);
+		selection.item().set(builder.selectItem);
 	}
 
 	@Override
@@ -179,6 +180,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private boolean filterSelected;
 		private boolean includeNull;
 		private @Nullable T nullItem;
+		private @Nullable T selectItem;
 		private boolean refresh = false;
 
 		private DefaultBuilder(@Nullable Collection<T> items, @Nullable Supplier<Collection<T>> supplier) {
@@ -203,6 +205,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			this.nullItem = nullItem;
 
 			return includeNull(nullItem != null);
+		}
+
+		@Override
+		public Builder<T> select(@Nullable T item) {
+			this.selectItem = item;
+			return this;
 		}
 
 		@Override

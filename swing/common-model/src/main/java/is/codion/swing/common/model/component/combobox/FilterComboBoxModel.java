@@ -173,6 +173,12 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		Builder<T> nullItem(@Nullable T nullItem);
 
 		/**
+		 * @param item the item to select initially
+		 * @return this builder
+		 */
+		Builder<T> select(@Nullable T item);
+
+		/**
 		 * Provides a way for a combo box model to translate an item received via {@link SingleSelection#item()} to an actual item to select,
 		 * such as selecting the String "1" in a String based model when selected item is set to the Integer 1.
 		 * @param translator the selected item translator

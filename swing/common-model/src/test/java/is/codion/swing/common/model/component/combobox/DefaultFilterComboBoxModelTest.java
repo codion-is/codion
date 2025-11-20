@@ -136,8 +136,9 @@ public class DefaultFilterComboBoxModelTest {
 						.items(ITEMS)
 						.nullItem(NULL)
 						.filterSelected(true)
+						.select(BJORN)
 						.build();
-		model.setSelectedItem(BJORN);
+		assertTrue(model.selection().item().is(BJORN));
 		model.items().included().predicate().set(hideBjorn);
 		assertEquals(NULL, model.getSelectedItem());
 		assertNull(model.selection().item().get());
@@ -146,8 +147,8 @@ public class DefaultFilterComboBoxModelTest {
 						.items(ITEMS)
 						.nullItem(NULL)
 						.filterSelected(false)
+						.select(BJORN)
 						.build();
-		model.setSelectedItem(BJORN);
 		model.items().included().predicate().set(hideBjorn);
 		assertNotNull(model.getSelectedItem());
 		assertEquals(BJORN, model.selection().item().get());
@@ -399,8 +400,8 @@ public class DefaultFilterComboBoxModelTest {
 
 		FilterComboBoxModel<Data> model = FilterComboBoxModel.builder()
 						.items(items)
+						.select(items.get(1))
 						.build();
-		model.setSelectedItem(items.get(1));
 		assertEquals("2", model.selection().item().getOrThrow().data);
 
 		items = asList(new Data(1, "1"), new Data(2, "22"), new Data(3, "3"));
