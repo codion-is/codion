@@ -72,6 +72,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						// otherwise the sorting overrides the order by
 						.comparator(entityItems.orderBy == null ? builder.comparator : null)
 						.filterSelected(builder.filterSelected)
+						.select(builder.selectEntity)
 						.build();
 		this.filter = new DefaultFilter();
 		this.comboBoxModel.items().included().predicate().set(filter);
@@ -468,6 +469,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private @Nullable Comparator<Entity> comparator;
 		private boolean editEvents = EDIT_EVENTS.getOrThrow();
 		private boolean filterSelected = false;
+		private @Nullable Entity selectEntity;
 
 		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			this.items = new EntityItems(connectionProvider.entities().definition(entityType), requireNonNull(connectionProvider));
@@ -512,6 +514,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public Builder nullCaption(@Nullable String nullCaption) {
 			modelBuilder.nullItem(createNullItem(nullCaption, items.entityDefinition));
+			return this;
+		}
+
+		@Override
+		public Builder select(@Nullable Entity entity) {
+			this.selectEntity = entity;
 			return this;
 		}
 

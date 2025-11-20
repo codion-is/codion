@@ -20,6 +20,8 @@ Codion Change Log
 - EntityType.define() and AttributeDefiner.define() renamed as().
 ### is.codion.framework.db.local
 - DefaultEntityQueries.update() bug fixed, buggy modified check removed, caller is responsible for providing a modified entity.
+### is.codion.swing.framework.model
+- EntityComboBox.Builder.select() added.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel bug fixed, incorrect i18n keys fixed.
 - EntityTableCellRenderer renamed EntityTableCellRendererFactory.

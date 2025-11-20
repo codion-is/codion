@@ -111,11 +111,9 @@ public final class DefaultEntityComboBoxModelTest {
 						.includeNull(true)
 						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
 						.filterSelected(true)
+						.select(employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE")))
 						.build();
 		employeeComboBoxModel.filter().get(Employee.MGR_FK).link(managerComboBoxModel);
-		managerComboBoxModel.selection()
-						.item()
-						.set(employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE")));
 		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER).build();
@@ -213,9 +211,10 @@ public final class DefaultEntityComboBoxModelTest {
 		Entity accounting = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		EntityComboBoxModel deptComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connectionProvider(CONNECTION_PROVIDER)
+						.select(accounting)
+						.build();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(deptComboBoxModel);
-		deptComboBoxModel.setSelectedItem(accounting);
 		assertEquals(3, employeeComboBoxModel.getSize());
 		for (int i = 0; i < employeeComboBoxModel.getSize(); i++) {
 			Entity item = employeeComboBoxModel.getElementAt(i);
@@ -250,11 +249,13 @@ public final class DefaultEntityComboBoxModelTest {
 
 	@Test
 	void setSelectedEntityByKey() {
+		Entity clark = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("CLARK"));
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connectionProvider(CONNECTION_PROVIDER)
+						.select(clark)
+						.build();
 		comboBoxModel.items().refresh();
-		Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
 		comboBoxModel.select(clark.primaryKey());
 		assertEquals(clark, comboBoxModel.selection().item().get());
 		comboBoxModel.setSelectedItem(null);

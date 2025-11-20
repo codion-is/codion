@@ -187,6 +187,12 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder nullCaption(@Nullable String nullCaption);
 
 		/**
+		 * @param entity the entity to select initially
+		 * @return this builder
+		 */
+		Builder select(@Nullable Entity entity);
+
+		/**
 		 * @param editEvents controls whether this combo box model should handle entity edit events, by adding inserted items,
 		 * updating any updated items and removing deleted ones
 		 * @return this builder instance

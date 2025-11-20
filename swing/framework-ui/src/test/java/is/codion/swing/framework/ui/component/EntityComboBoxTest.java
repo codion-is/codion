@@ -50,13 +50,13 @@ public class EntityComboBoxTest {
 
 	@Test
 	void inputProvider() {
+		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
 		EntityComboBoxModel model = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
+						.select(operations)
 						.build();
 		model.items().refresh();
-		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
-		model.selection().item().set(operations);
 		ComponentValue<EntityComboBox, Entity> value = EntityComboBox.builder()
 						.model(model)
 						.buildValue();
