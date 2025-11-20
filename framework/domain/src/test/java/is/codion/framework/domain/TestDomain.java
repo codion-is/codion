@@ -260,8 +260,8 @@ public final class TestDomain extends DomainModel {
 										Detail2.INT_DERIVED.as()
 														.derived()
 														.from(Detail2.INT)
-														.with(source -> {
-															Integer intValue = source.get(Detail2.INT);
+														.with(values -> {
+															Integer intValue = values.get(Detail2.INT);
 															if (intValue == null) {
 																return null;
 															}
@@ -373,8 +373,8 @@ public final class TestDomain extends DomainModel {
 										Detail.INT_DERIVED.as()
 														.derived()
 														.from(Detail.INT)
-														.with(source -> {
-															Integer intValue = source.get(Detail.INT);
+														.with(values -> {
+															Integer intValue = values.get(Detail.INT);
 															if (intValue == null) {
 
 																return null;
@@ -545,9 +545,9 @@ public final class TestDomain extends DomainModel {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public String get(SourceValues source) {
-			String name = source.get(Employee.NAME);
-			Entity department = source.get(Employee.DEPARTMENT_FK);
+		public String get(SourceValues values) {
+			String name = values.get(Employee.NAME);
+			Entity department = values.get(Employee.DEPARTMENT_FK);
 			if (name == null || department == null) {
 				return null;
 			}
@@ -663,7 +663,7 @@ public final class TestDomain extends DomainModel {
 										InvalidDerived.INVALID_DERIVED.as()
 														.derived()
 														.from(InvalidDerived.ID)
-														.with(source -> source.get(InvalidDerived.INT).intValue()))
+														.with(values -> values.get(InvalidDerived.INT).intValue()))
 						.caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
 						.formatter(entity -> null)
 						.build());

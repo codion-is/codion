@@ -49,8 +49,8 @@ final class DenormalizedValue<T> implements DerivedValue<T> {
 	}
 
 	@Override
-	public @Nullable T get(SourceValues source) {
-		Entity foreignKeyValue = source.get(entityAttribute);
+	public @Nullable T get(SourceValues values) {
+		Entity foreignKeyValue = values.get(entityAttribute);
 
 		return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
 	}

@@ -68,9 +68,9 @@ import java.util.List;
  *                 Customer.FULL_NAME.as()
  *                     .derived()
  *                     .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .with(source -> {
- *                         String first = source.get(Customer.FIRST_NAME);
- *                         String last = source.get(Customer.LAST_NAME);
+ *                     .with(values -> {
+ *                         String first = values.get(Customer.FIRST_NAME);
+ *                         String last = values.get(Customer.LAST_NAME);
  *                         if (first == null && last == null) {
  *                             return null;
  *                         }
@@ -83,10 +83,10 @@ import java.util.List;
  *                 Customer.CONTACT_INFO.as()
  *                     .derived()
  *                     .from(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
- *                     .with(source -> {
- *                         String name = source.get(Customer.FULL_NAME);
- *                         String email = source.get(Customer.EMAIL);
- *                         String phone = source.get(Customer.PHONE);
+ *                     .with(values -> {
+ *                         String name = values.get(Customer.FULL_NAME);
+ *                         String email = values.get(Customer.EMAIL);
+ *                         String phone = values.get(Customer.PHONE);
  *
  *                         StringBuilder contact = new StringBuilder();
  *                         if (name != null) contact.append(name);
@@ -107,8 +107,8 @@ import java.util.List;
  *                 Customer.AGE.as()
  *                     .derived()
  * 			               .from(Customer.BIRTH_DATE)
- *                     .with(source -> {
- *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
+ *                     .with(values -> {
+ *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
  *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
  *                     })
@@ -119,8 +119,8 @@ import java.util.List;
  *                 Customer.NAME_UPPER.as()
  *                     .derived()
  * 		                 .from(Customer.FULL_NAME)
- *                     .with(source -> {
- *                         String fullName = source.get(Customer.FULL_NAME);
+ *                     .with(values -> {
+ *                         String fullName = values.get(Customer.FULL_NAME);
  *                         return fullName != null ? fullName.toUpperCase() : null;
  *                     })
  *                     .caption("Name (Uppercase)"))

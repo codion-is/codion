@@ -68,9 +68,9 @@ import static java.util.Objects.requireNonNull;
  *                 Customer.FULL_NAME.as()
  *                     .derived()
  * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .with(source -> {
- *                         String first = source.get(Customer.FIRST_NAME);
- *                         String last = source.get(Customer.LAST_NAME);
+ *                     .with(values -> {
+ *                         String first = values.get(Customer.FIRST_NAME);
+ *                         String last = values.get(Customer.LAST_NAME);
  *                         return (first != null ? first : "") + " " + (last != null ? last : "");
  *                     }),
  *
@@ -78,9 +78,9 @@ import static java.util.Objects.requireNonNull;
  *                 Customer.DISPLAY_NAME.as()
  *                     .derived()
  * 				             .from(Customer.FULL_NAME, Customer.EMAIL)
- *                     .with(source -> {
- *                         String fullName = source.get(Customer.FULL_NAME);
- *                         String email = source.get(Customer.EMAIL);
+ *                     .with(values -> {
+ *                         String fullName = values.get(Customer.FULL_NAME);
+ *                         String email = values.get(Customer.EMAIL);
  *                         return fullName + " (" + email + ")";
  *                     }),
  *
@@ -88,8 +88,8 @@ import static java.util.Objects.requireNonNull;
  *                 Customer.AGE.as()
  *                     .derived()
  * 				             .from(Customer.BIRTH_DATE)
- *                     .with(source -> {
- *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
+ *                     .with(values -> {
+ *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
  *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
  *                     }),
@@ -98,9 +98,9 @@ import static java.util.Objects.requireNonNull;
  *                 Customer.INITIALS.as()
  *                     .derived()
  * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .with(source -> {
- *                         String first = source.get(Customer.FIRST_NAME);
- *                         String last = source.get(Customer.LAST_NAME);
+ *                     .with(values -> {
+ *                         String first = values.get(Customer.FIRST_NAME);
+ *                         String last = values.get(Customer.LAST_NAME);
  *                         String firstInitial = first != null && !first.isEmpty() ?
  *                             first.substring(0, 1).toUpperCase() : "";
  *                         String lastInitial = last != null && !last.isEmpty() ?
@@ -132,11 +132,11 @@ import static java.util.Objects.requireNonNull;
 public interface DerivedValue<T> extends Serializable {
 
 	/**
-	 * @param source the source values, mapped to their respective attributes
+	 * @param values the source values, mapped to their respective attributes
 	 * @return the derived value
 	 */
 	@Nullable
-	T get(SourceValues source);
+	T get(SourceValues values);
 
 	/**
 	 * Provides the source values from which to derive a value.

@@ -21,6 +21,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 - DerivedAttributeDefinition.sources() renamed attributes().
+- DerivedValue.get(), SourceValues parameter renamed values.
 ### is.codion.framework.db.local
 - DefaultEntityQueries.update() bug fixed, buggy modified check removed, caller is responsible for providing a modified entity.
 - EntityResultPacker, minor refactoring, transient attributes are never derived.

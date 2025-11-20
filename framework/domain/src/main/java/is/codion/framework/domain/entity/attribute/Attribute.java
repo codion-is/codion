@@ -86,8 +86,8 @@ import static java.util.Objects.requireNonNull;
  *                 Customer.DISPLAY_NAME.as()
  *                     .derived()
  * 				             .from(Customer.NAME, Customer.EMAIL)
- *                     .with(source ->
- *                         source.get(Customer.NAME) + " (" + source.get(Customer.EMAIL) + ")"),
+ *                     .with(values ->
+ *                         values.get(Customer.NAME) + " (" + values.get(Customer.EMAIL) + ")"),
  *
  *                 // Custom typed attribute
  *                 Customer.STATUS.as()

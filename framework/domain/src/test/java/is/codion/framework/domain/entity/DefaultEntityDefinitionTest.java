@@ -205,8 +205,8 @@ public class DefaultEntityDefinitionTest {
 												derived.as()
 																.derived()
 																.from(name, info)
-																.with(source ->
-																				source.get(name).toString() + source.get(info)))
+																.with(values ->
+																				values.get(name).toString() + values.get(info)))
 								.build());
 			}
 		}
@@ -234,7 +234,7 @@ public class DefaultEntityDefinitionTest {
 										derived.as()
 														.derived()
 														.from(name, info)
-														.with(source -> null))
+														.with(values -> null))
 						.build());
 	}
 
@@ -380,7 +380,7 @@ public class DefaultEntityDefinitionTest {
 												der.as()
 																.derived()
 																.from(column1, column2)
-																.with(source -> null))
+																.with(values -> null))
 								.build());
 			}
 		}

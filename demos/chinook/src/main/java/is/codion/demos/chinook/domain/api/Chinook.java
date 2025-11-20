@@ -286,9 +286,9 @@ public interface Chinook {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public BigDecimal get(SourceValues source) {
-			Integer quantity = source.get(InvoiceLine.QUANTITY);
-			BigDecimal unitPrice = source.get(InvoiceLine.UNITPRICE);
+		public BigDecimal get(SourceValues values) {
+			Integer quantity = values.get(InvoiceLine.QUANTITY);
+			BigDecimal unitPrice = values.get(InvoiceLine.UNITPRICE);
 			if (unitPrice == null || quantity == null) {
 				return null;
 			}

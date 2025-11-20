@@ -587,15 +587,15 @@ Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 CountryLanguage.NO_OF_SPEAKERS.as()
      .derived()
      .from(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
-     .provider(new NoOfSpeakersProvider())
+     .with(new NoOfSpeakers())
      .caption("No. of speakers")
      .numberFormatGrouping(true)
 
 class NoOfSpeakers implements DerivedValue<Integer> {
     @Override
-    public Integer get(SourceValues source) {
-        Double percentage = source.get(CountryLanguage.PERCENTAGE);
-        Entity country = source.get(CountryLanguage.COUNTRY_FK);
+    public Integer get(SourceValues values) {
+        Double percentage = values.get(CountryLanguage.PERCENTAGE);
+        Entity country = values.get(CountryLanguage.COUNTRY_FK);
         if (percentage != null && country != null) {
             Integer population = country.get(Country.POPULATION);
             return (int)(population * (percentage / 100));
@@ -608,7 +608,7 @@ class NoOfSpeakers implements DerivedValue<Integer> {
 SomeEntity.RANDOM.as()
      .derived()
      .from()
-     .value(source -> randomNumber())
+     .with(values -> randomNumber())
 ```
 
 ### Database Functions and Procedures

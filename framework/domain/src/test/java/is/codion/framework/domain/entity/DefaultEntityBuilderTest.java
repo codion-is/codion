@@ -86,8 +86,8 @@ public final class DefaultEntityBuilderTest {
 												derivedValue.as()
 																.derived()
 																.from(value)
-																.with(source -> {
-																	Integer sourceValue = source.get(value);
+																.with(values -> {
+																	Integer sourceValue = values.get(value);
 
 																	return sourceValue == null ? null : sourceValue + 1;
 																}))

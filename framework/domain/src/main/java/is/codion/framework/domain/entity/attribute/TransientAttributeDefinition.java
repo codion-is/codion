@@ -69,9 +69,9 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *                 Customer.FULL_NAME.as()
  *                     .derived()
  * 				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .with(source -> {
- *                         String first = source.get(Customer.FIRST_NAME);
- *                         String last = source.get(Customer.LAST_NAME);
+ *                     .with(values -> {
+ *                         String first = values.get(Customer.FIRST_NAME);
+ *                         String last = values.get(Customer.LAST_NAME);
  *                         return ((first != null ? first : "") + " " +
  *                                 (last != null ? last : "")).trim();
  *                     })
