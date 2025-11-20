@@ -148,7 +148,7 @@ import java.util.List;
  *}
  * @param <T> the underlying type
  * @see DerivedValue
- * @see #sources()
+ * @see #attributes()
  * @see #cached()
  */
 public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> permits DefaultDerivedAttributeDefinition {
@@ -156,7 +156,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 	/**
 	 * @return the source attributes this attribute derives from.
 	 */
-	List<Attribute<?>> sources();
+	List<Attribute<?>> attributes();
 
 	/**
 	 * @return the derived value

@@ -733,15 +733,15 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 	private DerivedValue.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,
 																								 boolean originalValue) {
-		List<Attribute<?>> sources = derivedDefinition.sources();
-		if (sources.isEmpty()) {
+		List<Attribute<?>> attributes = derivedDefinition.attributes();
+		if (attributes.isEmpty()) {
 			return DerivedValue.sourceValues(derivedDefinition.attribute(), EMPTY_MAP);
 		}
-		else if (sources.size() == 1) {
-			return DerivedValue.sourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sources.get(0), originalValue));
+		else if (attributes.size() == 1) {
+			return DerivedValue.sourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(attributes.get(0), originalValue));
 		}
 
-		return DerivedValue.sourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(sources, originalValue));
+		return DerivedValue.sourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(attributes, originalValue));
 	}
 
 	private Map<Attribute<?>, @Nullable Object> createSingleAttributeSourceValueMap(Attribute<?> source, boolean originalValue) {
