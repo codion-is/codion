@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -194,7 +195,8 @@ final class ExceptionPanel extends JPanel {
 	private void saveDetails() throws IOException {
 		Files.write(new DefaultFileSelectionDialogBuilder()
 										.owner(stackTraceArea)
-										.selectFileToSave("error.txt")
+										.filter(new FileNameExtensionFilter("Text files", "txt"))
+										.selectFileToSave("error")
 										.toPath(),
 						Arrays.asList(stackTraceArea.getText().split("\\r?\\n")));
 	}

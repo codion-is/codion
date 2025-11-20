@@ -110,7 +110,8 @@ final class DialogsDemo {
 						.owner(window)
 						.title("Select file to save")
 						.confirmOverwrite(false)
-						.selectFileToSave("default-filename.txt");
+						.filter(new FileNameExtensionFilter("Text files", "txt"))
+						.selectFileToSave("default-filename");
 		// end::fileToSave[]
 
 		// tag::directory[]

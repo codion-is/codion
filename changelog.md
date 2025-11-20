@@ -16,6 +16,7 @@ Codion Change Log
 - FilterTableCellRenderer.SET_BORDER configuration value added.
 - FilterTable.selectSearchResult() cell focus simplified.
 - NullableCheckBox bug fixed, now works as cell editor, simplified.
+- DefaultFileSelectionDialogBuilder now adds selected file extension to filename, related refactoring.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 ### is.codion.framework.db.local

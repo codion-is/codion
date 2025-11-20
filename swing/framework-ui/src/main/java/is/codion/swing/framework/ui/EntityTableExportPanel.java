@@ -80,6 +80,7 @@ final class EntityTableExportPanel extends JPanel {
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityTableExportPanel.class, getBundle(EntityTableExportPanel.class.getName()));
 
+	private static final String TSV = "tsv";
 	private static final String JSON = "json";
 
 	private final EntityTableExportModel model;
@@ -217,6 +218,7 @@ final class EntityTableExportPanel extends JPanel {
 		File file = Dialogs.select()
 						.files()
 						.owner(this)
+						.filter(new FileNameExtensionFilter(JSON, JSON))
 						.selectFileToSave(model.defaultConfigFileName());
 		Files.write(file.toPath(), new ExportPreferences(this).preferences().toString().getBytes(UTF_8));
 	}
@@ -225,6 +227,7 @@ final class EntityTableExportPanel extends JPanel {
 		ExportTask task = model.exportToFile(Dialogs.select()
 						.files()
 						.owner(this)
+						.filter(new FileNameExtensionFilter(TSV, TSV))
 						.selectFileToSave(model.defaultExportFileName())
 						.toPath());
 		Dialogs.progressWorker()

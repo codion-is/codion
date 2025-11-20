@@ -71,8 +71,6 @@ final class EntityTableExportModel {
 
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
-	private static final String TSV = ".tsv";
-	private static final String JSON = ".json";
 	private static final String ATTRIBUTES_KEY = "attributes";
 
 	private final EntityTableModel<?> tableModel;
@@ -107,11 +105,11 @@ final class EntityTableExportModel {
 	}
 
 	String defaultExportFileName() {
-		return tableModel.entityDefinition().caption() + TSV;
+		return tableModel.entityDefinition().caption();
 	}
 
 	String defaultConfigFileName() {
-		return tableModel.entityDefinition().caption() + JSON;
+		return tableModel.entityDefinition().caption();
 	}
 
 	void applyPreferences(JSONObject preferences) {

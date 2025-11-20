@@ -27,18 +27,20 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static java.awt.Cursor.getDefaultCursor;
 import static java.awt.Cursor.getPredefinedCursor;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -145,7 +147,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 			}
 			fileChooserSave.setSelectedFiles(new File[] {new File("")});
 			fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
+			resetFileFilters(fileChooserSave);
 			fileChooserSave.setMultiSelectionEnabled(false);
 			File startDirectory;
 			if (!nullOrEmpty(this.startDirectory) && new File(this.startDirectory).exists()) {
@@ -165,7 +167,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 				}
 				int option = fileChooserSave.showSaveDialog(owner);
 				if (option == JFileChooser.APPROVE_OPTION) {
-					selectedFile = fileChooserSave.getSelectedFile();
+					selectedFile = addFileExtension(fileChooserSave.getSelectedFile(), fileChooserSave.getFileFilter());
 					if (selectedFile.exists() && confirmOverwrite) {
 						option = JOptionPane.showConfirmDialog(owner, MESSAGES.getString("overwrite_file"),
 										MESSAGES.getString("file_exists"), JOptionPane.YES_NO_CANCEL_OPTION);
@@ -187,6 +189,17 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 
 			return selectedFile;
 		}
+	}
+
+	private static File addFileExtension(File selectedFile, FileFilter fileFilter) {
+		if (fileFilter instanceof FileNameExtensionFilter) {
+			String extension = ((FileNameExtensionFilter) fileFilter).getExtensions()[0];
+			if (!selectedFile.getName().toLowerCase().endsWith("." + extension.toLowerCase())) {
+				return new File(selectedFile.getAbsolutePath() + "." + extension);
+			}
+		}
+
+		return selectedFile;
 	}
 
 	/**
@@ -246,11 +259,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 					break;
 			}
 			fileChooserOpen.setSelectedFiles(new File[] {initialSelection(filesOrDirectories)});
-			fileChooserOpen.resetChoosableFileFilters();
-			if (!fileFilters.isEmpty()) {
-				fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
-			}
-			fileFilters.forEach(fileChooserOpen::addChoosableFileFilter);
+			resetFileFilters(fileChooserOpen);
 			fileChooserOpen.setMultiSelectionEnabled(!singleSelection);
 			if (!nullOrEmpty(startDirectory) && new File(startDirectory).exists()) {
 				fileChooserOpen.setCurrentDirectory(new File(startDirectory));
@@ -266,7 +275,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 					selectedFiles = singletonList(fileChooserOpen.getSelectedFile());
 				}
 				else {
-					selectedFiles = Arrays.asList(fileChooserOpen.getSelectedFiles());
+					selectedFiles = asList(fileChooserOpen.getSelectedFiles());
 				}
 				if (!selectedFiles.isEmpty()) {
 					return selectedFiles;
@@ -283,6 +292,14 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 		}
 
 		return new File("");
+	}
+
+	private void resetFileFilters(JFileChooser fileChooser) {
+		Stream.of(fileChooser.getChoosableFileFilters()).forEach(fileChooser::removeChoosableFileFilter);
+		fileFilters.forEach(fileChooser::addChoosableFileFilter);
+		if (!fileFilters.isEmpty()) {
+			fileChooser.setFileFilter(fileFilters.get(0));
+		}
 	}
 
 	private static final class LookAndFeelChangeListener implements PropertyChangeListener {

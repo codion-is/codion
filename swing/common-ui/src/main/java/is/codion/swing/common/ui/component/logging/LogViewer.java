@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
@@ -140,6 +141,7 @@ public final class LogViewer extends JPanel {
 		Files.write(Dialogs.select()
 						.files()
 						.owner(this)
+						.filter(new FileNameExtensionFilter("Text files", "txt"))
 						.selectFileToSave(filename.get()).toPath(), logArea.getText().getBytes());
 	}
 
@@ -151,7 +153,7 @@ public final class LogViewer extends JPanel {
 	 * @return a new {@link LogViewer}
 	 */
 	public static LogViewer logViewer() {
-		return logViewer(() -> "log.txt");
+		return logViewer(() -> "log");
 	}
 
 	/**
