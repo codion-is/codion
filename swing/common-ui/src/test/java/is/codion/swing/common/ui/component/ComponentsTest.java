@@ -511,12 +511,12 @@ public final class ComponentsTest {
 		box.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				box.model().toggle();
+				box.toggle();
 			}
 		});
 		box.getMouseListeners()[1].mouseClicked(null);
 
-		assertFalse(box.model().get());
+		assertFalse(box.get());
 		assertNotNull(value.get());
 
 		value.set(false);

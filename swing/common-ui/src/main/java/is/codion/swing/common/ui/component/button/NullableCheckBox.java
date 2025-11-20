@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
+import is.codion.common.reactive.value.Value;
 
 import org.jspecify.annotations.Nullable;
 
@@ -30,16 +30,21 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseListener;
-
-import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
-import static java.util.Objects.requireNonNull;
 
 public class NullableCheckBox extends JCheckBox {
 
-	protected NullableCheckBox(NullableToggleButtonModel model, @Nullable String text, @Nullable Icon icon) {
+	/**
+	 * The item state NULL.
+	 * @see ItemEvent#SELECTED
+	 * @see ItemEvent#DESELECTED
+	 */
+	public static final int NULL = 3;
+
+	protected NullableCheckBox(@Nullable String text, @Nullable Icon icon) {
 		super(text, icon);
-		super.setModel(requireNonNull(model));
+		super.setModel(new NullableCheckBoxModel());
 		setIcon(new NullableIcon());
 	}
 
@@ -50,23 +55,38 @@ public class NullableCheckBox extends JCheckBox {
 	}
 
 	/**
-	 * @return the underlying button model
-	 */
-	public final NullableToggleButtonModel model() {
-		return (NullableToggleButtonModel) getModel();
-	}
-
-	/**
 	 * Disabled.
 	 * @param model the model
 	 * @throws UnsupportedOperationException always
 	 */
 	@Override
 	public final void setModel(ButtonModel model) {
-		if (getModel() instanceof NullableToggleButtonModel) {
+		if (getModel() instanceof NullableCheckBoxModel) {
 			throw new UnsupportedOperationException("Setting the model of a NullableCheckBox after construction is not supported");
 		}
 		super.setModel(model);
+	}
+
+	/**
+	 * @return the toggle state
+	 */
+	public final @Nullable Boolean get() {
+		return model().value.get();
+	}
+
+	/**
+	 * @param state the toggle state
+	 */
+	public final void set(@Nullable Boolean state) {
+		model().value.set(state);
+	}
+
+	/**
+	 * <p>Toggles between the states: false -&gt; null -&gt; true
+	 * <p>This is the same order as used by macOS, win32, IntelliJ IDEA and on the web as recommended by W3C.
+	 */
+	public final void toggle() {
+		model().toggle();
 	}
 
 	/**
@@ -83,38 +103,32 @@ public class NullableCheckBox extends JCheckBox {
 		super.setIcon(defaultIcon);
 	}
 
+	private NullableCheckBoxModel model() {
+		return (NullableCheckBoxModel) getModel();
+	}
+
 	/**
 	 * Instantiates a new NullableCheckBox with no caption.
 	 */
 	public static NullableCheckBox nullableCheckBox() {
-		return new NullableCheckBox(nullableToggleButtonModel(), null, null);
-	}
-
-	/**
-	 * Instantiates a new NullableCheckBox with no caption.
-	 * @param model the model
-	 */
-	public static NullableCheckBox nullableCheckBox(NullableToggleButtonModel model) {
-		return new NullableCheckBox(model, null, null);
+		return new NullableCheckBox(null, null);
 	}
 
 	/**
 	 * Instantiates a new NullableCheckBox.
-	 * @param model the model
 	 * @param text the caption text, if any
 	 */
-	public static NullableCheckBox nullableCheckBox(NullableToggleButtonModel model, @Nullable String text) {
-		return new NullableCheckBox(model, text, null);
+	public static NullableCheckBox nullableCheckBox(@Nullable String text) {
+		return new NullableCheckBox(text, null);
 	}
 
 	/**
 	 * Instantiates a new NullableCheckBox.
-	 * @param model the model
 	 * @param text the caption text, if any
 	 * @param icon the icon, if any
 	 */
-	public static NullableCheckBox nullableCheckBox(NullableToggleButtonModel model, @Nullable String text, @Nullable Icon icon) {
-		return new NullableCheckBox(model, text, icon);
+	public static NullableCheckBox nullableCheckBox(@Nullable String text, @Nullable Icon icon) {
+		return new NullableCheckBox(text, icon);
 	}
 
 	private final class NullableIcon implements Icon {
@@ -124,7 +138,7 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void paintIcon(Component component, Graphics graphics, int x, int y) {
 			icon.paintIcon(component, graphics, x, y);
-			if (model().get() == null) {
+			if (get() == null) {
 				int width = getIconWidth();
 				int height = getIconHeight();
 
@@ -148,6 +162,47 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public int getIconHeight() {
 			return icon.getIconHeight();
+		}
+	}
+
+	private static final class NullableCheckBoxModel extends ToggleButtonModel {
+
+		private final Value<Boolean> value = Value.builder()
+						.<Boolean>nullable()
+						.consumer(this::onStateChanged)
+						.build();
+
+		@Override
+		public boolean isSelected() {
+			return value.is(true);
+		}
+
+		/**
+		 * Toggles the underlying state
+		 * @param ignored ignored
+		 */
+		@Override
+		public void setSelected(boolean ignored) {
+			toggle();
+		}
+
+		private void toggle() {
+			Boolean state = value.get();
+			if (state == null) {
+				value.set(true);
+			}
+			else if (state) {
+				value.set(false);
+			}
+			else {
+				value.set(null);
+			}
+		}
+
+		private void onStateChanged(Boolean state) {
+			fireStateChanged();
+			fireItemStateChanged(new ItemEvent(NullableCheckBoxModel.this, ItemEvent.ITEM_STATE_CHANGED, this,
+							state == null ? NULL : (state ? ItemEvent.SELECTED : ItemEvent.DESELECTED)));
 		}
 	}
 }

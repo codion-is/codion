@@ -20,11 +20,11 @@ package is.codion.swing.common.ui.component.button;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JToggleButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static is.codion.swing.common.ui.component.button.NullableCheckBox.nullableCheckBox;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,25 +32,26 @@ public class NullableCheckBoxTest {
 
 	@Test
 	void test() {
-		NullableCheckBox box = nullableCheckBox(nullableToggleButtonModel(false), "Test");
+		NullableCheckBox box = nullableCheckBox("Test");
+		box.set(false);
 		box.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				box.model().toggle();
+				box.toggle();
 			}
 		});
-		assertFalse(box.model().get());
+		assertFalse(box.get());
 		MouseListener mouseListener = box.getMouseListeners()[1];
 		mouseListener.mouseClicked(null);
-		assertNull(box.model().get());
+		assertNull(box.get());
 		mouseListener.mouseClicked(null);
-		assertTrue(box.model().get());
+		assertTrue(box.get());
 		mouseListener.mouseClicked(null);
-		assertFalse(box.model().get());
+		assertFalse(box.get());
 
-		box.model().set(null);
-		assertNull(box.model().get());
+		box.set(null);
+		assertNull(box.get());
 
-		assertThrows(UnsupportedOperationException.class, () -> box.setModel(nullableToggleButtonModel()));
+		assertThrows(UnsupportedOperationException.class, () -> box.setModel(new JToggleButton.ToggleButtonModel()));
 	}
 }

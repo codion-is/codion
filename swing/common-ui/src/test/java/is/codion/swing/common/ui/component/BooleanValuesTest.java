@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -92,24 +91,23 @@ public class BooleanValuesTest {
 						.buildValue();
 
 		NullableCheckBox checkBox = value.component();
-		NullableToggleButtonModel model = checkBox.model();
 
 		assertNull(value.get());
-		model.set(true);
+		checkBox.set(true);
 		assertTrue(value.getOrThrow());
-		model.set(false);
+		checkBox.set(false);
 		assertFalse(value.getOrThrow());
 
 		value.set(true);
-		assertTrue(model.isSelected());
+		assertTrue(checkBox.isSelected());
 		value.clear();
-		assertNull(model.get());
+		assertNull(checkBox.get());
 
-		model.set(false);
+		checkBox.set(false);
 		assertFalse(value.getOrThrow());
-		model.set(true);
+		checkBox.set(true);
 		assertTrue(value.getOrThrow());
-		model.set(null);
+		checkBox.set(null);
 		assertNull(value.get());
 	}
 }

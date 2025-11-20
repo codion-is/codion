@@ -40,7 +40,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.function.Function;
 
-import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.DOUBLE_DARKENING_FACTOR;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.blendColors;
@@ -145,7 +144,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final Settings<R, C, Boolean> settings;
 
 		BooleanRenderer(Settings<R, C, Boolean> settings) {
-			super(nullableToggleButtonModel(), null, null);
+			super(null, null);
 			this.settings = requireNonNull(settings);
 			this.settings.update();
 			setHorizontalAlignment(settings.horizontalAlignment);
@@ -187,7 +186,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
-			model().set((Boolean) value);
+			set((Boolean) value);
 			settings.configure((FilterTable<R, C>) table, this, (Boolean) value, isSelected, hasFocus, row, column);
 			if (settings.toolTipData) {
 				setToolTipText(value == null ? "" : value.toString());

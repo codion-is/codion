@@ -20,10 +20,10 @@ package is.codion.swing.common.ui.control;
 
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
+import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
 
 import org.junit.jupiter.api.Test;
@@ -73,11 +73,6 @@ public class DefaultToggleControlTest {
 						.value(true)
 						.build();
 		ToggleControl nonNullableControl = Control.builder().toggle(nonNullableValue).build();
-		ButtonModel buttonModel = toggleButton()
-						.toggle(nonNullableControl)
-						.build()
-						.getModel();
-		assertFalse(buttonModel instanceof NullableToggleButtonModel);
 		assertTrue(nonNullableControl.value().getOrThrow());
 		nonNullableValue.set(false);
 		assertFalse(nonNullableControl.value().getOrThrow());
@@ -134,28 +129,27 @@ public class DefaultToggleControlTest {
 	void nullableToggleControl() {
 		Value<Boolean> value = Value.nullable();
 		ToggleControl toggleControl = Control.builder().toggle(value).build();
-		NullableToggleButtonModel buttonModel = Components.nullableCheckBox()
+		NullableCheckBox checkBox = Components.nullableCheckBox()
 						.toggle(toggleControl)
-						.build()
-						.model();
-		buttonModel.set(null);
+						.build();
+		checkBox.set(null);
 		assertNull(value.get());
-		buttonModel.set(false);
+		checkBox.set(false);
 		assertFalse(value.getOrThrow());
-		buttonModel.set(true);
+		checkBox.set(true);
 		assertTrue(value.getOrThrow());
-		buttonModel.set(null);
+		checkBox.set(null);
 		assertNull(value.get());
 
 		value.set(false);
-		assertFalse(buttonModel.isSelected());
-		assertFalse(buttonModel.get());
+		assertFalse(checkBox.isSelected());
+		assertFalse(checkBox.get());
 		value.set(true);
-		assertTrue(buttonModel.isSelected());
-		assertTrue(buttonModel.get());
+		assertTrue(checkBox.isSelected());
+		assertTrue(checkBox.get());
 		value.clear();
-		assertFalse(buttonModel.isSelected());
-		assertNull(buttonModel.get());
+		assertFalse(checkBox.isSelected());
+		assertNull(checkBox.get());
 	}
 
 	@Test

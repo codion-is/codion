@@ -34,12 +34,12 @@ final class NullableCheckBoxValue extends AbstractComponentValue<NullableCheckBo
 
 	@Override
 	protected @Nullable Boolean getComponentValue() {
-		return component().model().get();
+		return component().get();
 	}
 
 	@Override
 	protected void setComponentValue(@Nullable Boolean value) {
-		component().model().set(value);
+		component().set(value);
 	}
 
 	private final class NotifyOnItemEvent implements ItemListener {

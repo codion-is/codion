@@ -6,6 +6,7 @@ Codion Change Log
 - NullableToggleButtonModel.next() renamed toggle().
 - NullableToggleButtonModel now extends ToggleButtonModel.
 - FilterComboBoxModel.Builder.select() added.
+- NullableToggleButtonModel moved to NullableCheckBox and renamed NullableCheckBoxModel, no longer public.
 ### is.codion.swing.common.ui
 - ListBuilder moved to FilterList.Builder, FilterList.builder() added, related refactoring.
 - Components.list() removed.

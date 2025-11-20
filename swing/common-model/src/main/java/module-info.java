@@ -32,7 +32,6 @@ module is.codion.swing.common.model {
 	requires transitive is.codion.common.i18n;
 
 	exports is.codion.swing.common.model.action;
-	exports is.codion.swing.common.model.component.button;
 	exports is.codion.swing.common.model.component.combobox;
 	exports is.codion.swing.common.model.component.list;
 	exports is.codion.swing.common.model.component.table;

@@ -128,11 +128,11 @@ public final class EntityComponentsTest {
 
 		value.set(false);
 
-		assertFalse(box.model().get());
+		assertFalse(box.get());
 
 		value.set(null);
 
-		assertNull(box.model().get());
+		assertNull(box.get());
 		assertNull(value.get());
 
 		value.set(false);
