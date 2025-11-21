@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
@@ -60,5 +61,13 @@ public final class EntityEditComponentPanelTest {
 		componentPanel.component(Employee.SALARY).set(salary);
 		salary.set(2000d);
 		assertEquals(salary.get(), editModel.editor().value(Employee.SALARY).get());
+	}
+
+	@Test
+	void derived() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
+		EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
+		JTextField textField = componentPanel.createTextField(Detail.INT_DERIVED).build();
+		assertFalse(textField.isEnabled());
 	}
 }

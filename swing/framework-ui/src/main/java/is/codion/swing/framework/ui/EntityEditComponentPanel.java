@@ -662,6 +662,7 @@ public class EntityEditComponentPanel extends JPanel {
 		EditorValue<T> editorValue = editModel.editor().value(attribute);
 		componentBuilders.put(attribute, componentBuilder
 						.name(attribute.toString())
+						.enabled(!attributeDefinition.derived())
 						.label(label -> label
 										.text(attributeDefinition.caption())
 										.displayedMnemonic(attributeDefinition.mnemonic()))
