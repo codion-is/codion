@@ -24,6 +24,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
@@ -552,9 +553,19 @@ public interface EntityEditModel {
 
 		/**
 		 * Indicates whether the active entity is modified, that is, exists and has one or more modified attribute values.
+		 * @see #attributes()
 		 * @see #predicate()
 		 */
 		interface Modified extends ObservableState {
+
+			/**
+			 * Indicates which editor attributes are modified.
+			 * Note that only attributes of an existing entity are regarded as modified.
+			 * @return an {@link ObservableValueSet} indicating the currently modified attributes
+			 * @see #value(Attribute)
+			 * @see #exists()
+			 */
+			ObservableValueSet<Attribute<?>> attributes();
 
 			/**
 			 * Controls the 'modified' predicate for this {@link Modified} instance, which is responsible for providing

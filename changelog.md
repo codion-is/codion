@@ -30,6 +30,8 @@ Codion Change Log
 ### is.codion.framework.db.local
 - DefaultEntityQueries.update() bug fixed, buggy modified check removed, caller is responsible for providing a modified entity.
 - EntityResultPacker, minor refactoring, transient attributes are never derived.
+### is.codion.framework.model
+- EntityEditModel.EntityEditor.Modified.attributes() added.
 ### is.codion.swing.framework.model
 - EntityComboBox.Builder.select() added.
 - EntityComboBoxModel.Builder.filter() added.

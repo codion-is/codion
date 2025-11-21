@@ -24,7 +24,9 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
+import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -53,8 +55,10 @@ import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 
 final class DefaultEntityEditor implements EntityEditor {
 
@@ -399,10 +403,16 @@ final class DefaultEntityEditor implements EntityEditor {
 	private final class DefaultModified implements Modified {
 
 		private final State modified = State.state();
+		private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
 		private final Value<Predicate<Entity>> predicate = Value.builder()
 						.nonNull((Predicate<Entity>) Entity::modified)
 						.listener(this::update)
 						.build();
+
+		@Override
+		public ObservableValueSet<Attribute<?>> attributes() {
+			return attributes.observable();
+		}
 
 		@Override
 		public Value<Predicate<Entity>> predicate() {
@@ -421,7 +431,11 @@ final class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public void update() {
-			modified.set(exists.predicate.getOrThrow().test(entity) && predicate.getOrThrow().test(entity));
+			boolean existing = exists.predicate.getOrThrow().test(entity);
+			attributes.set(existing ? editorValues.keySet().stream()
+							.filter(entity::modified)
+							.collect(toSet()) : emptySet());
+			modified.set(existing && predicate.getOrThrow().test(entity));
 		}
 
 		@Override

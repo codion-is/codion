@@ -497,6 +497,25 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
+	void modifiedAttributes() {
+		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
+		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
+		editor.set(martin);
+
+		editor.value(Employee.MGR_FK).clear();
+		assertTrue(editor.modified().attributes().containsOnly(singleton(Employee.MGR_FK)));
+		editor.value(Employee.MGR_FK).revert();
+		assertTrue(editor.modified().attributes().isEmpty());
+
+		editor.value(Employee.NAME).set("NewName");
+		assertTrue(editor.modified().attributes().containsOnly(singleton(Employee.NAME)));
+		editor.value(Employee.MGR_FK).set(king);
+		assertTrue(editor.modified().attributes().containsOnly(Arrays.asList(Employee.MGR_FK, Employee.NAME)));
+		editor.value(Employee.SALARY).set(3210d);
+		assertTrue(editor.modified().attributes().containsOnly(Arrays.asList(Employee.SALARY, Employee.NAME, Employee.MGR_FK)));
+	}
+
+	@Test
 	void persist() {
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
 		editor.set(king);
