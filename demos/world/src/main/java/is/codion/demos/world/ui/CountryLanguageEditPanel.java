@@ -19,6 +19,7 @@
 package is.codion.demos.world.ui;
 
 import is.codion.demos.world.domain.api.World.CountryLanguage;
+import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -26,6 +27,7 @@ import javax.swing.JPanel;
 
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static java.util.Collections.singleton;
 
 final class CountryLanguageEditPanel extends EntityEditPanel {
 
@@ -33,7 +35,8 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 		super(editModel);
 		// Perform an update each time the IS_OFFICIAL
 		// value is edited, bypassing the update confirmation
-		editModel.editor().value(CountryLanguage.IS_OFFICIAL).edited().addListener(this::updateIfValid);
+		editModel.editor().value(CountryLanguage.IS_OFFICIAL)
+						.edited().addListener(this::updateIsOfficial);
 	}
 
 	@Override
@@ -44,12 +47,17 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 						.preferredWidth(120);
 		createTextField(CountryLanguage.LANGUAGE);
 		createCheckBox(CountryLanguage.IS_OFFICIAL);
-		createTextField(CountryLanguage.PERCENTAGE)
+		createDoubleField(CountryLanguage.PERCENTAGE)
+						.range(0, 100)
+						.silentValidation(true)
 						.columns(4);
+		createTextField(CountryLanguage.NO_OF_SPEAKERS)
+						.columns(6);
 
-		JPanel percentageOfficialPanel = gridLayoutPanel(1, 2)
+		JPanel percentageOfficialPanel = gridLayoutPanel(1, 3)
 						.add(createInputPanel(CountryLanguage.PERCENTAGE))
 						.add(createInputPanel(CountryLanguage.IS_OFFICIAL))
+						.add(createInputPanel(CountryLanguage.NO_OF_SPEAKERS))
 						.build();
 
 		setLayout(gridLayout(0, 1));
@@ -59,9 +67,14 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 		add(percentageOfficialPanel);
 	}
 
-	private void updateIfValid() {
-		if (editModel().editor().valid().is()) {
-			editModel().update();
+	private void updateIsOfficial() {
+		EntityEditModel.EntityEditor editor = editModel().editor();
+		//Only when IS_OFFICIAL is the only attribute being edited in an existing entity
+		if (editor.modified().attributes().is(singleton(CountryLanguage.IS_OFFICIAL))) {
+			updateCommand()
+							.confirm(false)
+							.build()
+							.execute();
 		}
 	}
 }
