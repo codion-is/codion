@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.State;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;
@@ -31,7 +32,6 @@ import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Optional;
 
-import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.component.Components.comboBox;
 import static java.util.Objects.requireNonNull;
 
@@ -63,7 +63,7 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 						.model(comboBoxModel)
 						.build();
 		Control okControl = Control.builder()
-						.command(() -> disposeParentWindow(comboBox))
+						.command(() -> Ancestor.window().of(comboBox).dispose())
 						.enabled(allowEmptySelection ? null : comboBoxModel.selection().empty().not())
 						.build();
 		State cancelledState = State.state();

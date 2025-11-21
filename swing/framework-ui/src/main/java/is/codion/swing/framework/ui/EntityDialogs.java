@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -55,8 +56,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static java.awt.event.KeyEvent.VK_ENTER;
@@ -429,12 +428,12 @@ public final class EntityDialogs {
 		}
 
 		private void ok() {
-			disposeParentWindow(tablePanel);
+			Ancestor.window().of(tablePanel).dispose();
 		}
 
 		private void cancel() {
 			tablePanel.tableModel().selection().clear();
-			disposeParentWindow(tablePanel);
+			Ancestor.window().of(tablePanel).dispose();
 			cancelled.set(true);
 		}
 
@@ -446,7 +445,7 @@ public final class EntityDialogs {
 					tablePanel.table().requestFocusInWindow();
 				}
 				else {
-					showMessageDialog(parentWindow(tablePanel), FrameworkMessages.noSearchResults());
+					showMessageDialog(Ancestor.window().of(tablePanel).get(), FrameworkMessages.noSearchResults());
 				}
 			});
 		}
@@ -732,7 +731,7 @@ public final class EntityDialogs {
 
 		@Override
 		public void run() {
-			disposeParentWindow(editPanel);
+			Ancestor.window().of(editPanel).dispose();
 		}
 	}
 
@@ -747,7 +746,7 @@ public final class EntityDialogs {
 		@Override
 		public void run() {
 			editPanel.editModel().editor().revert();
-			disposeParentWindow(editPanel);
+			Ancestor.window().of(editPanel).dispose();
 		}
 	}
 }

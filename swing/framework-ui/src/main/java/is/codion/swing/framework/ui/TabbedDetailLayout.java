@@ -22,6 +22,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -67,7 +68,6 @@ import java.util.function.UnaryOperator;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -521,15 +521,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private void showWindow(EntityPanel detailPanel) {
-			Window parentWindow = parentWindow(detailPanel);
-			if (parentWindow != null) {
-				parentWindow.toFront();
-			}
+			Ancestor.window().of(detailPanel).toFront();
 			if (detailPanel.containsEditPanel()) {
-				Window editPanelWindow = parentWindow(detailPanel.editPanel());
-				if (editPanelWindow != null) {
-					editPanelWindow.toFront();
-				}
+				Ancestor.window().of(detailPanel.editPanel()).toFront();
 			}
 		}
 
@@ -583,12 +577,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private void displayDetailWindow() {
-			Window parent = parentWindow(entityPanel);
-			if (parent != null) {
+			Ancestor.window().of(entityPanel).optional().ifPresent(parent -> {
 				getCurrentManager().clearFocusOwner();
 				panelWindow = createDetailWindow(parent);
 				panelWindow.setVisible(true);
-			}
+			});
 		}
 
 		private void disposeDetailWindow() {

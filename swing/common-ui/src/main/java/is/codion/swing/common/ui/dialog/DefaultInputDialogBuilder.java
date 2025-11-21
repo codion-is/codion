@@ -24,6 +24,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -44,7 +45,6 @@ import java.awt.Window;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
@@ -148,7 +148,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		CommandControl okControl = Control.builder()
 						.command(() -> {
 							if (closeDialog.test(componentValue.get())) {
-								disposeParentWindow(componentValue.component());
+								Ancestor.window().of(componentValue.component()).dispose();
 							}
 						})
 						.caption(Messages.ok())
@@ -205,7 +205,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
 		@Override
 		public void run() {
-			disposeParentWindow(componentValue.component());
+			Ancestor.window().of(componentValue.component()).dispose();
 			okPressed.set(true);
 		}
 	}

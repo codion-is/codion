@@ -18,7 +18,7 @@
  */
 package is.codion.tools.swing.mcp;
 
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.tools.swing.robot.Controller;
 import is.codion.tools.swing.robot.Narrator;
 
@@ -104,7 +104,7 @@ final class SwingMcpServer {
 
 	SwingMcpServer(JComponent applicationComponent, boolean includeNarrator) {
 		this.applicationComponent = requireNonNull(applicationComponent);
-		Window window = Utilities.parentWindow(applicationComponent);
+		Window window = Ancestor.window().of(applicationComponent).get();
 		this.controller = window == null ? Controller.controller() : Controller.controller(window.getGraphicsConfiguration().getDevice());
 		this.narrator = window == null || !includeNarrator ? null : Narrator.narrator(controller, window);
 		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);

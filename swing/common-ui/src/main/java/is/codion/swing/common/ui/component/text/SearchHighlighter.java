@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -49,7 +50,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -275,16 +275,17 @@ public final class SearchHighlighter {
 	}
 
 	private void scrollToPosition(int position) {
-		JViewport viewport = parentOfType(JViewport.class, textComponent);
-		try {
-			Rectangle view = textComponent.modelToView(position);
-			if (viewport != null && view != null) {
-				viewport.setViewPosition(viewPosition(viewport, view));
+		Ancestor.ofType(JViewport.class).of(textComponent).optional().ifPresent(viewport -> {
+			try {
+				Rectangle view = textComponent.modelToView(position);
+				if (view != null) {
+					viewport.setViewPosition(viewPosition(viewport, view));
+				}
 			}
-		}
-		catch (BadLocationException e) {
-			throw new RuntimeException(e);
-		}
+			catch (BadLocationException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	private Point viewPosition(JViewport viewport, Rectangle view) {

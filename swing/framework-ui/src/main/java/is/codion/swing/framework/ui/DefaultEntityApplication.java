@@ -30,6 +30,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ExceptionDialogBuilder;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
@@ -63,7 +64,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
@@ -586,7 +586,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private static void displayException(Throwable exception, @Nullable JFrame applicationFrame) {
 		if (!(exception instanceof CancelException)) {
-			Window focusOwnerParentWindow = parentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
+			Window focusOwnerParentWindow = Ancestor.window().of(getCurrentKeyboardFocusManager().getFocusOwner()).get();
 			Dialogs.displayException(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
 		}
 	}

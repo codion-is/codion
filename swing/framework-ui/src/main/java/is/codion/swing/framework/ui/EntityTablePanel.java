@@ -50,6 +50,7 @@ import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
@@ -136,7 +137,7 @@ import static is.codion.common.reactive.value.ValueSet.valueSet;
 import static is.codion.common.utilities.Configuration.*;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
-import static is.codion.swing.common.ui.Utilities.*;
+import static is.codion.swing.common.ui.Utilities.updateComponentTreeUI;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
@@ -1007,7 +1008,7 @@ public class EntityTablePanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityTablePanel.this;
 		}
-		Dialogs.displayException(exception, parentWindow(focusOwner));
+		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
 	}
 
 	/**
@@ -1669,7 +1670,7 @@ public class EntityTablePanel extends JPanel {
 			queryInspector = new SelectQueryInspector(tableModel.queryModel());
 		}
 		if (queryInspector.isShowing()) {
-			parentWindow(queryInspector).toFront();
+			Ancestor.window().of(queryInspector).toFront();
 		}
 		else {
 			Dialogs.builder()
@@ -1695,8 +1696,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void setConditionViewHidden(JScrollPane scrollPane, Value<ConditionView> conditionView) {
 		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
-		boolean conditionPanelHasFocus = parentOfType(JScrollPane.class,
-						focusManager.getFocusOwner()) == scrollPane;
+		boolean conditionPanelHasFocus = Ancestor.ofType(JScrollPane.class).of(focusManager.getFocusOwner()).get() == scrollPane;
 		if (conditionPanelHasFocus) {
 			focusManager.clearFocusOwner();
 		}

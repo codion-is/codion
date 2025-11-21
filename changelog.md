@@ -19,6 +19,8 @@ Codion Change Log
 - NullableCheckBox bug fixed, now works as cell editor, simplified.
 - DefaultFileSelectionDialogBuilder now adds selected file extension to filename, related refactoring.
 - Utilities.expandAll() and collapseAll() removed.
+- Utilities.parentOfType(), parentWindow(), parentFrame(), parentDialog() and disposeParentWindow() removed.
+- Ancestor added.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 - DerivedAttributeDefinition.sources() renamed attributes().

@@ -29,6 +29,7 @@ import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -77,7 +78,6 @@ import static is.codion.common.model.condition.ConditionModel.Wildcard.*;
 import static is.codion.common.utilities.Operator.*;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.enabled;
-import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
@@ -579,7 +579,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		initialize();
 		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
 		Component focusOwner = focusManager.getFocusOwner();
-		boolean parentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
+		boolean parentOfFocusOwner = Ancestor.ofType(ColumnConditionPanel.class).of(focusOwner).get() == this;
 		if (parentOfFocusOwner) {
 			focusManager.clearFocusOwner();
 		}
@@ -597,7 +597,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		initialize();
 		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
 		Component focusOwner = focusManager.getFocusOwner();
-		boolean parentOfFocusOwner = parentOfType(ColumnConditionPanel.class, focusOwner) == this;
+		boolean parentOfFocusOwner = Ancestor.ofType(ColumnConditionPanel.class).of(focusOwner).get() == this;
 		if (parentOfFocusOwner) {
 			focusManager.clearFocusOwner();
 		}

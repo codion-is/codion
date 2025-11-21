@@ -36,6 +36,7 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditTask;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
@@ -75,8 +76,6 @@ import java.util.prefs.Preferences;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentOfType;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
@@ -589,7 +588,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			queryInspector = new InsertUpdateQueryInspector(editModel());
 		}
 		if (queryInspector.isShowing()) {
-			parentWindow(queryInspector).toFront();
+			Ancestor.window().of(queryInspector).toFront();
 		}
 		else {
 			Dialogs.builder()
@@ -1333,7 +1332,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 					}
 				}
 				else {
-					editPanel = parentOfType(EntityEditPanel.class, focusedComponent);
+					editPanel = Ancestor.ofType(EntityEditPanel.class).of(focusedComponent).get();
 				}
 				if (editPanel != null && editPanel.configuration.focusActivation) {
 					editPanel.active.set(true);
@@ -1349,7 +1348,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 				}
 			}
 
-			return parentOfType(EntityPanel.class, focusedComponent);
+			return Ancestor.ofType(EntityPanel.class).of(focusedComponent).get();
 		}
 	}
 

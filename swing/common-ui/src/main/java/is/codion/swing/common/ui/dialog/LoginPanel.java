@@ -24,7 +24,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.UIManagerDefaults;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.progressbar.ProgressBarBuilder;
 import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
@@ -202,13 +202,13 @@ final class LoginPanel extends JPanel {
 		user.clear();
 		validating.set(false);
 		new DefaultExceptionDialogBuilder()
-						.owner(Utilities.parentWindow(this))
+						.owner(Ancestor.window().of(this).get())
 						.show(exception);
 		requestInitialFocus();
 	}
 
 	private void closeDialog() {
-		Utilities.disposeParentWindow(this);
+		Ancestor.window().of(this).dispose();
 	}
 
 	private static GridBagConstraints createGridBagConstraints() {

@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel.EditTask.Result;
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -47,8 +48,6 @@ import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.label;
@@ -185,7 +184,7 @@ final class EditAttributePanel<T> extends JPanel {
 	}
 
 	private void handleException(Exception exception) {
-		Dialogs.displayException(exception, parentWindow(this));
+		Dialogs.displayException(exception, Ancestor.window().of(this).get());
 	}
 
 	private JPanel createComponentPanel(@Nullable String caption) {
@@ -217,7 +216,7 @@ final class EditAttributePanel<T> extends JPanel {
 	}
 
 	private void closeDialog() {
-		disposeParentWindow(this);
+		Ancestor.window().of(this).dispose();
 	}
 
 	private void showProgress() {

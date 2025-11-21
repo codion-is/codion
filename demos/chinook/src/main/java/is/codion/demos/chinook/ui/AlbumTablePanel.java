@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Album;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.image.ImagePane;
 import is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice;
 import is.codion.swing.common.ui.control.Control;
@@ -74,14 +74,15 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	private void displayCover(String title, byte[] coverBytes) {
 		coverPane.image().set(readImage(coverBytes));
 		if (coverPane.isShowing()) {
-			JDialog dialog = Utilities.parentDialog(coverPane);
-			dialog.setTitle(title);
-			dialog.toFront();
+			Ancestor.ofType(JDialog.class).of(coverPane).optional().ifPresent(dialog -> {
+				dialog.setTitle(title);
+				dialog.toFront();
+			});
 		}
 		else {
 			Dialogs.builder()
 							.component(coverPane)
-							.owner(Utilities.parentWindow(this))
+							.owner(Ancestor.window().of(this).get())
 							.title(title)
 							.modal(false)
 							.onClosed(dialog -> coverPane.image().clear())

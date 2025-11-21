@@ -41,6 +41,7 @@ import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.logging.LogViewer;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
@@ -232,7 +233,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final ApplicationLayout applicationLayout;
 
 	private final State alwaysOnTopState = State.builder()
-					.consumer(alwaysOnTop -> parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
+					.consumer(alwaysOnTop -> Ancestor.window().of(this).optional()
+									.ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
 					.build();
 	private final Event<?> exiting = Event.event();
 	private final Event<EntityApplicationPanel<?>> initializedEvent = Event.event();
@@ -291,7 +293,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		if (focusOwner == null) {
 			focusOwner = EntityApplicationPanel.this;
 		}
-		Dialogs.displayException(exception, Utilities.parentWindow(focusOwner));
+		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
 	}
 
 	/**
@@ -326,13 +328,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public final List<EntityPanel> entityPanels() {
 		return entityPanels;
-	}
-
-	/**
-	 * @return the parent window of this panel, if one exists, an empty Optional otherwise
-	 */
-	public final Optional<Window> parentWindow() {
-		return Optional.ofNullable(Utilities.parentWindow(this));
 	}
 
 	/**
@@ -791,10 +786,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	protected final void displayEntityPanelFrame(EntityPanel entityPanel) {
 		if (requireNonNull(entityPanel).isShowing()) {
-			Window parentWindow = Utilities.parentWindow(entityPanel);
-			if (parentWindow != null) {
-				parentWindow.toFront();
-			}
+			Ancestor.window().of(entityPanel).toFront();
 		}
 		else {
 			Frames.builder()
@@ -824,15 +816,12 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	protected final void displayEntityPanelDialog(EntityPanel entityPanel, boolean modal) {
 		if (requireNonNull(entityPanel).isShowing()) {
-			Window parentWindow = Utilities.parentWindow(entityPanel);
-			if (parentWindow != null) {
-				parentWindow.toFront();
-			}
+			Ancestor.window().of(entityPanel).toFront();
 		}
 		else {
 			Dialogs.builder()
 							.component(createEmptyBorderBasePanel(entityPanel))
-							.owner(parentWindow().orElse(null))
+							.owner(Ancestor.window().of(this).get())
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
 							.onOpened(e -> entityPanel.activate())
@@ -894,7 +883,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private ApplicationPreferences createPreferences() {
-		JFrame parentFrame = Utilities.parentFrame(this);
+		JFrame parentFrame = Ancestor.ofType(JFrame.class).of(this).get();
 
 		return new ApplicationPreferences(
 						saveDefaultUsername ? applicationModel.connectionProvider().user().username() : null,
@@ -1132,7 +1121,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			sqlTraceViewer = createTraceViewer(tracer);
 		}
 		if (sqlTraceViewer.isShowing()) {
-			Utilities.parentWindow(sqlTraceViewer).toFront();
+			Ancestor.window().of(sqlTraceViewer).toFront();
 		}
 		else {
 			Dialogs.builder()

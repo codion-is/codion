@@ -24,7 +24,7 @@ import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -76,7 +76,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.utilities.item.Item.item;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
@@ -154,7 +153,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	 */
 	public void run() {
 		Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-						Dialogs.displayException(e, Utilities.parentWindow(LoadTestPanel.this)));
+						Dialogs.displayException(e, Ancestor.window().of(LoadTestPanel.this).get()));
 		SwingUtilities.invokeLater(this::showFrame);
 	}
 
@@ -536,7 +535,7 @@ public final class LoadTestPanel<T> extends JPanel {
 			exiting = true;
 			Dialogs.progressWorker()
 							.task(loadTest::shutdown)
-							.owner(Utilities.parentFrame(this))
+							.owner(Ancestor.window().of(this).get())
 							.title("Shutting down...")
 							.onResult(() -> System.exit(0))
 							.execute();
@@ -544,7 +543,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private void displayException(Exception exception) {
-		Dialogs.displayException(exception, parentWindow(this));
+		Dialogs.displayException(exception, Ancestor.window().of(this).get());
 	}
 
 	private static Exception exception(ApplicationRow application) {

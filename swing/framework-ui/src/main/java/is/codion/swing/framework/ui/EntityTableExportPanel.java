@@ -22,6 +22,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.resource.MessageBundle;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -60,7 +61,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.RADIO_BUTTON;
@@ -164,7 +164,7 @@ final class EntityTableExportPanel extends JPanel {
 										.mnemonic(MESSAGES.getString("to_file_mnemonic").charAt(0))
 										.build())
 						.escapeAction(Control.builder()
-										.command(() -> parentWindow(this).dispose())
+										.command(() -> Ancestor.window().of(this).dispose())
 										.caption(MESSAGES.getString("close"))
 										.mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
 										.build())

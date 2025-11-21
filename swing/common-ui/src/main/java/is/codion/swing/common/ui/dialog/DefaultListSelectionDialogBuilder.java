@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.State;
 import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.control.Control;
 
@@ -39,7 +40,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.singletonList;
@@ -111,7 +111,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 		private List<T> select(boolean singleSelection, @Nullable Dimension dialogSize) {
 			FilterList<T> list = createList(singleSelection);
 			Control okControl = Control.builder()
-							.command(() -> disposeParentWindow(list))
+							.command(() -> Ancestor.window().of(list).dispose())
 							.enabled(allowEmptySelection ? null : createSelectionNonEmptyState(list))
 							.build();
 			list.addMouseListener(new MouseAdapter() {

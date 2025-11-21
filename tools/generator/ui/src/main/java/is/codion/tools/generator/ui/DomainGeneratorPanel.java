@@ -28,6 +28,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
@@ -74,7 +75,6 @@ import java.nio.file.Path;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -674,7 +674,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			panel = new DomainGeneratorPanel(domainGeneratorModel(database));
 		}
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
-						Dialogs.displayException(throwable, parentWindow(panel)));
+						Dialogs.displayException(throwable, Ancestor.window().of(panel).get()));
 		panel.showFrame();
 	}
 

@@ -27,8 +27,6 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -214,76 +212,6 @@ public final class Utilities {
 	 */
 	public static void setClipboard(@Nullable String string) {
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
-	}
-
-	/**
-	 * Searches the parent component hierarchy of the given component for
-	 * an ancestor of the given type
-	 * @param <T> the type of parent to find
-	 * @param clazz the class of the parent to find
-	 * @param component the component
-	 * @return the parent of the given component of the given type, null if none is found
-	 */
-	public static <T> @Nullable T parentOfType(Class<T> clazz, @Nullable Component component) {
-		return (T) SwingUtilities.getAncestorOfClass(clazz, component);
-	}
-
-	/**
-	 * Finds the first component of type {@link Window} in the parent hierarchy of {@code component}.
-	 * Note that if {@code component} is of type {@link Window}, it is returned.
-	 * @param component the component
-	 * @return the parent Window of the given component, null if none is found
-	 */
-	public static @Nullable Window parentWindow(@Nullable Component component) {
-		if (component instanceof Window) {
-			return (Window) component;
-		}
-
-		return parentOfType(Window.class, component);
-	}
-
-	/**
-	 * Finds the first component of type {@link JFrame} in the parent hierarchy of {@code component}.
-	 * Note that if {@code component} is of type {@link JFrame}, it is returned.
-	 * @param component the component
-	 * @return the parent JFrame of the given component, null if none is found
-	 */
-	public static @Nullable JFrame parentFrame(@Nullable Component component) {
-		if (component instanceof JFrame) {
-			return (JFrame) component;
-		}
-
-		return parentOfType(JFrame.class, component);
-	}
-
-	/**
-	 * Finds the first component of type {@link JDialog} in the parent hierarchy of {@code component}.
-	 * Note that if {@code component} is of type {@link JDialog}, it is returned.
-	 * @param component the component
-	 * @return the parent JDialog of the given component, null if none is found
-	 */
-	public static @Nullable JDialog parentDialog(@Nullable Component component) {
-		if (component instanceof JDialog) {
-			return (JDialog) component;
-		}
-
-		return parentOfType(JDialog.class, component);
-	}
-
-	/**
-	 * Finds the parent Window and disposes it if found. If no parent Window is found this method has no effect
-	 * @param component the component which parent Window should be disposed
-	 * @return true if a parent Window was found and disposed
-	 */
-	public static boolean disposeParentWindow(@Nullable Component component) {
-		Window parentWindow = parentWindow(component);
-		if (parentWindow != null) {
-			parentWindow.dispose();
-
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

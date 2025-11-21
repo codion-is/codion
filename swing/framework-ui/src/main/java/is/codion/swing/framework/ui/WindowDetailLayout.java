@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.utilities.resource.MessageBundle;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.Controls;
@@ -42,7 +43,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
 import static is.codion.swing.framework.ui.WindowDetailLayout.Builder.PanelStep;
@@ -133,10 +133,7 @@ public final class WindowDetailLayout implements DetailLayout {
 			if (panelWindow != null && panelWindow.isShowing()) {
 				panelWindow.toFront();
 				if (detailPanel.containsEditPanel()) {
-					Window editPanelWindow = parentWindow(detailPanel.editPanel());
-					if (editPanelWindow != null) {
-						editPanelWindow.toFront();
-					}
+					Ancestor.window().of(detailPanel).toFront();
 				}
 			}
 		}

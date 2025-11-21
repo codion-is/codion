@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.reactive.state.ObservableState;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;
@@ -171,7 +171,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 		@Override
 		public void execute() {
 			command.run();
-			Utilities.disposeParentWindow(component);
+			Ancestor.window().of(component).dispose();
 		}
 	}
 
@@ -185,7 +185,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 
 		@Override
 		public void execute() {
-			Utilities.disposeParentWindow(component);
+			Ancestor.window().of(component).dispose();
 		}
 	}
 
@@ -199,7 +199,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 
 		@Override
 		public void execute() {
-			Utilities.disposeParentWindow(component);
+			Ancestor.window().of(component).dispose();
 		}
 	}
 }

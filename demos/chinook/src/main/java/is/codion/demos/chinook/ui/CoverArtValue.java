@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.common.reactive.state.State;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.image.ImagePane;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -152,7 +152,7 @@ final class CoverArtValue extends AbstractComponentValue<CoverArtValue.CoverArtP
 		}
 
 		private void embed() {
-			Utilities.disposeParentWindow(centerPanel);
+			Ancestor.window().of(centerPanel).dispose();
 			add(centerPanel, BorderLayout.CENTER);
 			revalidate();
 			repaint();

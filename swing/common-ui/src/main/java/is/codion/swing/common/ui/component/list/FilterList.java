@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
@@ -31,8 +32,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static is.codion.swing.common.ui.Utilities.parentOfType;
 
 /**
  * A {@link JList} based on a {@link FilterListModel}
@@ -80,10 +79,11 @@ public final class FilterList<T> extends JList<T> {
 
 		@Override
 		public void accept(List<Integer> selectedIndexes) {
-			JViewport viewport = parentOfType(JViewport.class, FilterList.this);
-			if (viewport != null && !selectedIndexes.isEmpty()) {
-				ensureIndexIsVisible(selectedIndexes.get(0));
-			}
+			Ancestor.ofType(JViewport.class).of(FilterList.this).optional().ifPresent(viewport -> {
+				if (!selectedIndexes.isEmpty()) {
+					ensureIndexIsVisible(selectedIndexes.get(0));
+				}
+			});
 		}
 	}
 

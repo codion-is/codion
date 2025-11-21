@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import org.jspecify.annotations.Nullable;
@@ -130,7 +131,7 @@ public final class FilterTableColumnComponentPanel<C> extends JPanel {
 
 	private @Nullable Component childFocusOwner() {
 		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-		if (Utilities.parentOfType(FilterTableColumnComponentPanel.class, focusOwner) == this) {
+		if (Ancestor.ofType(FilterTableColumnComponentPanel.class).of(focusOwner).get() == this) {
 			return focusOwner;
 		}
 

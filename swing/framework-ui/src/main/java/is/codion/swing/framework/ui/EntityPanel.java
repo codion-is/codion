@@ -28,6 +28,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.ModelLink;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -75,7 +76,6 @@ import java.util.prefs.Preferences;
 
 import static is.codion.common.utilities.Configuration.*;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -544,7 +544,7 @@ public class EntityPanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityPanel.this;
 		}
-		Dialogs.displayException(exception, parentWindow(focusOwner));
+		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
 	}
 
 	/**
@@ -1054,10 +1054,7 @@ public class EntityPanel extends JPanel {
 			if (containsEditPanel() && editPanelState.is(HIDDEN)) {
 				editPanelState.map(editPanelStateMapper);
 			}
-			Window editPanelWindow = parentWindow(editControlPanel);
-			if (editPanelWindow != null) {
-				editPanelWindow.toFront();
-			}
+			Ancestor.window().of(editControlPanel).toFront();
 		}
 	}
 
@@ -1216,14 +1213,8 @@ public class EntityPanel extends JPanel {
 		 */
 		public void request() {
 			request.accept(EntityPanel.this);
-			Window parentWindow = parentWindow(EntityPanel.this);
-			if (parentWindow != null) {
-				parentWindow.toFront();
-			}
-			Window editPanelWindow = parentWindow(editControlPanel);
-			if (editPanelWindow != null) {
-				editPanelWindow.toFront();
-			}
+			Ancestor.window().of(EntityPanel.this).toFront();
+			Ancestor.window().of(editControlPanel).toFront();
 		}
 
 		/**

@@ -31,7 +31,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
@@ -91,7 +91,6 @@ import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.integerValue;
-import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -230,7 +229,7 @@ public class EntityEditComponentPanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityEditComponentPanel.this;
 		}
-		Dialogs.displayException(exception, parentWindow(focusOwner));
+		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
 	}
 
 	/**
@@ -1021,10 +1020,11 @@ public class EntityEditComponentPanel extends JPanel {
 			Component focusedComponent = (Component) event.getNewValue();
 			if (focusedComponent instanceof JComponent) {
 				JComponent component = (JComponent) focusedComponent;
-				EntityEditComponentPanel parent = Utilities.parentOfType(EntityEditComponentPanel.class, component);
-				if (parent != null && parent.isInputComponent(component)) {
-					parent.inputFocus.afterUpdate.focusedInputComponent = component;
-				}
+				Ancestor.ofType(EntityEditComponentPanel.class).of(component).optional().ifPresent(parent -> {
+					if (parent.isInputComponent(component)) {
+						parent.inputFocus.afterUpdate.focusedInputComponent = component;
+					}
+				});
 			}
 		}
 	}

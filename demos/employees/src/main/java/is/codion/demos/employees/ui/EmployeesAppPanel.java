@@ -27,6 +27,7 @@ import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -115,7 +116,8 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 														.caption("Import JSON"))
 										.control(Control.builder()
 														.command(() -> Automation.builder()
-																		.narrator(parentWindow().orElseThrow())
+																		.narrator(Ancestor.window().of(this).optional()
+																						.orElseThrow(IllegalStateException::new))
 																		.run(new DemoScript()))
 														.caption("Run demo"))
 										.control(Control.builder()

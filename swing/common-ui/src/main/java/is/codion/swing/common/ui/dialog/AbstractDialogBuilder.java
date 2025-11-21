@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.jspecify.annotations.Nullable;
@@ -62,7 +62,7 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 
 	@Override
 	public final B owner(@Nullable Component owner) {
-		this.owner = owner == null ? null : Utilities.parentWindow(owner);
+		this.owner = owner == null ? null : Ancestor.window().of(owner).get();
 		if (locationRelativeTo == null) {
 			locationRelativeTo = owner;
 		}

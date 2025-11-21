@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.property.PropertyStore;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
@@ -49,7 +50,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -178,18 +178,14 @@ final class ExceptionPanel extends JPanel {
 		printButton.setVisible(showDetails);
 		saveButton.setVisible(showDetails);
 		stackTraceScrollPane.setVisible(showDetails);
-		parentDialog().ifPresent(dialog -> {
+		Ancestor.ofType(JDialog.class).of(this).optional().ifPresent(dialog -> {
 			dialog.pack();
 			dialog.setLocationRelativeTo(dialog.getOwner());
 		});
 	}
 
 	private void closeDialog() {
-		parentDialog().ifPresent(JDialog::dispose);
-	}
-
-	private Optional<JDialog> parentDialog() {
-		return Optional.ofNullable(Utilities.parentDialog(this));
+		Ancestor.window().of(this).dispose();
 	}
 
 	private void saveDetails() throws IOException {

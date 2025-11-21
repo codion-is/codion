@@ -26,7 +26,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
 import is.codion.swing.common.ui.UIManagerDefaults;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -90,7 +90,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 		this(new EntityServerMonitor(Clients.SERVER_HOSTNAME.get(),
 						ServerConfiguration.REGISTRY_PORT.getOrThrow(), adminUser()));
 		Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-						Dialogs.displayException(e, Utilities.parentWindow(EntityServerMonitorPanel.this)));
+						Dialogs.displayException(e, Ancestor.window().of(EntityServerMonitorPanel.this).get()));
 	}
 
 	/**

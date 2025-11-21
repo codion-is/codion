@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
@@ -42,7 +43,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
@@ -503,7 +503,7 @@ public class FilterTableTest {
 		model.sort().ascending(0);
 		model.items().add(new TestRow("200"));
 
-		JViewport viewport = parentOfType(JViewport.class, table);
+		JViewport viewport = Ancestor.ofType(JViewport.class).of(table).get();
 		int row = table.rowAtPoint(viewport.getViewPosition());
 		TestRow testRow = model.items().included().get(row);
 		assertEquals("200", testRow.value);

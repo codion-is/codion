@@ -35,7 +35,7 @@ import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.SwingMessages;
-import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
@@ -99,7 +99,6 @@ import static is.codion.common.utilities.Configuration.enumValue;
 import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
-import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -629,7 +628,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void handleException(Exception exception) {
 		endSearch();
-		Dialogs.displayException(exception, Utilities.parentWindow(this));
+		Dialogs.displayException(exception, Ancestor.window().of(this).get());
 	}
 
 	private void handleCancel() {
@@ -888,7 +887,7 @@ public final class EntitySearchField extends HintTextField {
 			@Override
 			public void execute() {
 				searchField.model.selection().entities().set(list.getSelectedValuesList());
-				disposeParentWindow(list);
+				Ancestor.window().of(list).dispose();
 			}
 		}
 
@@ -1006,7 +1005,7 @@ public final class EntitySearchField extends HintTextField {
 			@Override
 			public void execute() {
 				searchField.model.selection().entities().set(table.model().selection().items().get());
-				disposeParentWindow(table);
+				Ancestor.window().of(table).dispose();
 			}
 		}
 	}
