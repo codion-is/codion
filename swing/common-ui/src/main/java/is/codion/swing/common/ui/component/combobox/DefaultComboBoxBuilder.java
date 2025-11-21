@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -37,7 +36,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.systemLookAndFeelClassName;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
+import static javax.swing.UIManager.getLookAndFeel;
 
 public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBoxBuilder<C, T, B>> extends AbstractComponentValueBuilder<C, T, B>
 				implements ComboBoxBuilder<C, T, B> {
@@ -174,7 +176,7 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 			comboBox.setMaximumRowCount(maximumRowCount);
 		}
 		itemListeners.forEach(new AddItemListener(comboBox));
-		if (Utilities.systemOrCrossPlatformLookAndFeelEnabled()) {
+		if (systemOrCrossPlatformLookAndFeelEnabled()) {
 			new SteppedComboBoxUI(comboBox, popupWidth);
 		}
 		comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
@@ -189,6 +191,13 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 
 	protected C createComboBox() {
 		return (C) new FocusableComboBox<>(comboBoxModel);
+	}
+
+	static boolean systemOrCrossPlatformLookAndFeelEnabled() {
+		String lookAndFeelClassName = getLookAndFeel().getClass().getName();
+
+		return lookAndFeelClassName.equals(systemLookAndFeelClassName()) ||
+						lookAndFeelClassName.equals(getCrossPlatformLookAndFeelClassName());
 	}
 
 	private static final class AddItemListener implements Consumer<ItemListener> {

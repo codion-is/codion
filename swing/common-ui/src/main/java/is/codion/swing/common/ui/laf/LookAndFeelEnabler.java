@@ -25,12 +25,14 @@ import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 
 /**
  * Provides and enables a {@link LookAndFeel} implementation.
@@ -121,5 +123,20 @@ public interface LookAndFeelEnabler {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Note that GTKLookAndFeel is overridden with MetalLookAndFeel, since JTabbedPane
+	 * does not respect the 'TabbedPane.contentBorderInsets' setting, making hierachical
+	 * tabbed panes look bad
+	 * @return the default look and feel for the platform we're running on
+	 */
+	static String systemLookAndFeelClassName() {
+		String systemLookAndFeel = getSystemLookAndFeelClassName();
+		if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
+			systemLookAndFeel = MetalLookAndFeel.class.getName();
+		}
+
+		return systemLookAndFeel;
 	}
 }

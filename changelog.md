@@ -23,6 +23,7 @@ Codion Change Log
 - Utilities.expandAll() and collapseAll() removed.
 - Utilities.parentOfType(), parentWindow(), parentFrame(), parentDialog() and disposeParentWindow() removed.
 - Ancestor added.
+- Utilities.systemLookAndFeelClassName() moved to LookAndFeelEnabler, systemOrCrossPlatformLookAndFeelEnabled() removed.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 - DerivedAttributeDefinition.sources() renamed attributes().

@@ -28,8 +28,6 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
@@ -212,32 +210,6 @@ public final class Utilities {
 	 */
 	public static void setClipboard(@Nullable String string) {
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
-	}
-
-	/**
-	 * Note that GTKLookAndFeel is overridden with MetalLookAndFeel, since JTabbedPane
-	 * does not respect the 'TabbedPane.contentBorderInsets' setting, making hierachical
-	 * tabbed panes look bad
-	 * @return the default look and feel for the platform we're running on
-	 */
-	public static String systemLookAndFeelClassName() {
-		String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-		if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
-			systemLookAndFeel = MetalLookAndFeel.class.getName();
-		}
-
-		return systemLookAndFeel;
-	}
-
-	/**
-	 * @return true if the system or cross-platform look and feel is enabled
-	 * @see #systemLookAndFeelClassName()
-	 */
-	public static boolean systemOrCrossPlatformLookAndFeelEnabled() {
-		String lookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
-
-		return lookAndFeelClassName.equals(systemLookAndFeelClassName()) ||
-						lookAndFeelClassName.equals(UIManager.getCrossPlatformLookAndFeelClassName());
 	}
 
 	/**

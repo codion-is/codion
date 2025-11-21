@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.utilities.item.Item;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -182,7 +181,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 			comboBox.setMaximumRowCount(maximumRowCount);
 		}
 		itemListeners.forEach(new AddItemListener(comboBox));
-		if (Utilities.systemOrCrossPlatformLookAndFeelEnabled()) {
+		if (DefaultComboBoxBuilder.systemOrCrossPlatformLookAndFeelEnabled()) {
 			new SteppedComboBoxUI(comboBox, popupWidth);
 		}
 		comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());

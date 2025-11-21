@@ -64,9 +64,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
+import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
