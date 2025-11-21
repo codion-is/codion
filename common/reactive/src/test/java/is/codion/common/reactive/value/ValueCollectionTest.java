@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueCollectionTest {
@@ -98,7 +99,7 @@ public class ValueCollectionTest {
 		value.clear();
 		assertTrue(observer.isEmpty());
 
-		set.set(Collections.singleton(2));
+		set.set(singleton(2));
 		assertEquals(2, value.get());
 
 		set.clear();
@@ -124,6 +125,52 @@ public class ValueCollectionTest {
 
 		set.clear();
 		set.addAll(1, 2);
+	}
+
+	@Test
+	@DisplayName("ValueSet containsOnly and containsNone")
+	void containsAllNone() {
+		ValueCollection<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ObservableValueCollection<Integer, Set<Integer>> observer = set.observable();
+
+		// Empty collection tests
+		assertTrue(observer.containsOnly(emptyList()));
+		assertTrue(observer.containsNone(emptyList()));
+		assertFalse(observer.containsOnly(singleton(1)));
+		assertTrue(observer.containsNone(singleton(1)));
+
+		// Single element tests
+		set.add(1);
+		assertTrue(observer.containsOnly(singleton(1)));
+		assertFalse(observer.containsOnly(emptyList()));
+		assertFalse(observer.containsOnly(asList(1, 2)));
+		assertTrue(observer.containsNone(singleton(2)));
+		assertTrue(observer.containsNone(asList(2, 3)));
+		assertFalse(observer.containsNone(singleton(1)));
+		assertFalse(observer.containsNone(asList(1, 2)));
+
+		// Multiple elements tests
+		set.add(2);
+		set.add(3);
+		assertTrue(observer.containsOnly(asList(1, 2, 3)));
+		assertTrue(observer.containsOnly(asList(3, 2, 1))); // Order independent
+		assertFalse(observer.containsOnly(asList(1, 2)));    // Missing element
+		assertFalse(observer.containsOnly(asList(1, 2, 3, 4))); // Extra element
+		assertTrue(observer.containsNone(asList(4, 5, 6)));
+		assertTrue(observer.containsNone(emptyList()));
+		assertFalse(observer.containsNone(asList(3, 4, 5))); // Partial overlap
+		assertFalse(observer.containsNone(asList(1, 2, 3))); // Complete overlap
+
+		// Modification tests
+		set.remove(2);
+		assertTrue(observer.containsOnly(asList(1, 3)));
+		assertFalse(observer.containsOnly(asList(1, 2, 3)));
+		assertTrue(observer.containsNone(singleton(2)));
+
+		// Clear and verify
+		set.clear();
+		assertTrue(observer.containsOnly(emptyList()));
+		assertTrue(observer.containsNone(asList(1, 2, 3)));
 	}
 
 	@Test
@@ -226,7 +273,7 @@ public class ValueCollectionTest {
 		value.clear();
 		assertTrue(observable.isEmpty());
 
-		list.set(Collections.singleton(2));
+		list.set(singleton(2));
 		assertEquals(2, value.get());
 
 		list.clear();

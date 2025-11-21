@@ -27,8 +27,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C> implements ValueCollection<T, C> {
@@ -149,6 +148,24 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 	}
 
 	@Override
+	public final boolean containsOnly(Collection<T> values) {
+		requireNonNull(values);
+		synchronized (lock) {
+			C collection = getOrThrow();
+
+			return collection.size() == values.size() && collection.containsAll(values);
+		}
+	}
+
+	@Override
+	public final boolean containsNone(Collection<T> values) {
+		requireNonNull(values);
+		synchronized (lock) {
+			return disjoint(getOrThrow(), values);
+		}
+	}
+
+	@Override
 	public final boolean isEmpty() {
 		synchronized (lock) {
 			return getOrThrow().isEmpty();
@@ -251,6 +268,16 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 		@Override
 		public final boolean containsAll(Collection<T> values) {
 			return super.value().containsAll(values);
+		}
+
+		@Override
+		public final boolean containsOnly(Collection<T> values) {
+			return super.value().containsOnly(values);
+		}
+
+		@Override
+		public final boolean containsNone(Collection<T> values) {
+			return super.value().containsNone(values);
 		}
 
 		@Override

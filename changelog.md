@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.60
+### is.codion.common.reactive
+- ObservableValueCollection.containsOnly() and containsNone() added.
 ### is.codion.swing.common.model
 - NullableToggleButtonModel.next() renamed toggle().
 - NullableToggleButtonModel now extends ToggleButtonModel.
