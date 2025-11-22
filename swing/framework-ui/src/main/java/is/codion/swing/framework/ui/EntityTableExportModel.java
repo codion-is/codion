@@ -85,7 +85,6 @@ final class EntityTableExportModel {
 	private static final String ATTRIBUTES_KEY = "attributes";
 	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
 	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
-	private static final ConfigurationFile NO_CONFIGURATION_FILE = new NoConfigurationFile();
 
 	static final String JSON = "json";
 
@@ -104,11 +103,12 @@ final class EntityTableExportModel {
 		this.treeModel = new ExportTreeModel(tableModel.entityDefinition(), tableModel.connectionProvider().entities());
 		this.configurationFilesComboBoxModel = FilterComboBoxModel.builder()
 						.items(this::refreshConfigurationFiles)
-						.nullItem(NO_CONFIGURATION_FILE)
+						.nullItem(new NullConfigurationFile())
 						.onSelection(this::configurationFileSelected)
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
 		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
+		selectDefaults();
 	}
 
 	ExportTask exportToClipboard() {
@@ -146,36 +146,29 @@ final class EntityTableExportModel {
 	void addConfigurationFiles(Collection<File> configurationFiles) {
 		Iterator<File> iterator = configurationFiles.iterator();
 		if (iterator.hasNext()) {
-			applyPreferences(iterator.next());
+			addAndSelect(new DefaultConfigurationFile(iterator.next()));
 		}
 		while (iterator.hasNext()) {
 			configurationFilesComboBoxModel.items().add(new DefaultConfigurationFile(iterator.next()));
 		}
 	}
 
-	void applyPreferences(File file) {
+	void applyAttributePreferences(File file) {
 		try {
-			applyAttributesAndForeignKeys(new JSONObject(new String(Files.readAllBytes(file.toPath()), UTF_8)), treeModel.getRoot());
-			addAndSelect(new DefaultConfigurationFile(file));
+			applyAttributePreferences(new JSONObject(new String(Files.readAllBytes(file.toPath()), UTF_8)));
 		}
 		catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
 	}
 
-	void applyPreferences(JSONObject preferences) {
-		if (preferences.isEmpty()) {
-			selectDefaults();
-		}
-		else {
-			applyAttributesAndForeignKeys(preferences, treeModel.getRoot());
-			applyConfigurationFiles(preferences);
-		}
+	void applyAttributePreferences(JSONObject preferences) {
+		applyAttributesAndForeignKeys(preferences, treeModel.getRoot());
 	}
 
-	private void applyConfigurationFiles(JSONObject json) {
-		if (json.has(CONFIGURATION_FILES_KEY)) {
-			JSONArray files = json.getJSONArray(CONFIGURATION_FILES_KEY);
+	void applyPreferences(JSONObject preferences) {
+		if (preferences.has(CONFIGURATION_FILES_KEY)) {
+			JSONArray files = preferences.getJSONArray(CONFIGURATION_FILES_KEY);
 			files.forEach(filePath -> {
 				if (filePath instanceof String) {
 					File file = new File((String) filePath);
@@ -184,8 +177,8 @@ final class EntityTableExportModel {
 					}
 				}
 			});
-			if (json.has(SELECTED_CONFIGURATION_FILE_KEY)) {
-				File file = new File(json.getString(SELECTED_CONFIGURATION_FILE_KEY));
+			if (preferences.has(SELECTED_CONFIGURATION_FILE_KEY)) {
+				File file = new File(preferences.getString(SELECTED_CONFIGURATION_FILE_KEY));
 				if (file.exists()) {
 					configurationFilesComboBoxModel.selection().item().set(new DefaultConfigurationFile(file));
 				}
@@ -209,7 +202,7 @@ final class EntityTableExportModel {
 	}
 
 	JSONObject createPreferences() {
-		JSONObject json = createExportPreferences();
+		JSONObject json = new JSONObject();
 		if (!configurationFilesComboBoxModel.items().get().isEmpty()) {
 			JSONArray recentFiles = new JSONArray();
 			configurationFilesComboBoxModel.items().get()
@@ -244,7 +237,7 @@ final class EntityTableExportModel {
 			exportPreferencesApplied.run();
 		}
 		else {
-			applyPreferences(fileItem.file());
+			applyAttributePreferences(fileItem.file());
 		}
 	}
 
@@ -680,7 +673,7 @@ final class EntityTableExportModel {
 		String filename();
 	}
 
-	static final class NoConfigurationFile implements ConfigurationFile {
+	private static final class NullConfigurationFile implements ConfigurationFile {
 
 		@Override
 		public File file() {
