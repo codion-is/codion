@@ -86,8 +86,11 @@ final class EntityTableExportPanel extends JPanel {
 	private final EntityTableExportModel model;
 	private final JTree exportTree;
 	private final State refreshingNodes = State.state();
+	private final State singleSelection = State.state();
 	private final State singleLevelSelection = State.state();
-	private final ObservableState moveEnabled = State.or(refreshingNodes, singleLevelSelection);
+	private final State includedNodesSelected = State.state();
+	private final ObservableState moveEnabled = State.or(refreshingNodes,
+					State.and(singleLevelSelection, includedNodesSelected));
 
 	private @Nullable Dimension dialogSize;
 
@@ -225,6 +228,14 @@ final class EntityTableExportPanel extends JPanel {
 						.action(command(this::toggleSelected))
 						.enable(tree);
 		KeyEvents.builder()
+						.modifiers(SHIFT_DOWN_MASK)
+						.keyCode(VK_SPACE)
+						.action(Control.builder()
+										.command(this::toggleChildren)
+										.enabled(singleSelection)
+										.build())
+						.enable(tree);
+		KeyEvents.builder()
 						.modifiers(ALT_DOWN_MASK)
 						.keyCode(VK_UP)
 						.action(moveUp)
@@ -322,7 +333,28 @@ final class EntityTableExportPanel extends JPanel {
 							.map(TreePath::getLastPathComponent)
 							.map(AttributeNode.class::cast)
 							.forEach(node -> node.selected().toggle());
+			updateIncludedNodesSelected();
 			exportTree.repaint();
+		}
+	}
+
+	private void toggleChildren() {
+		TreePath[] selectionPaths = exportTree.getSelectionPaths();
+		if (selectionPaths != null) {
+			List<AttributeNode> children = Stream.of(selectionPaths)
+							.filter(exportTree::isPathSelected)
+							.map(TreePath::getLastPathComponent)
+							.map(AttributeNode.class::cast)
+							.flatMap(node -> Collections.list(node.children()).stream())
+							.map(AttributeNode.class::cast)
+							.collect(toList());
+			if (!children.isEmpty()) {
+				boolean allSelected = children.stream()
+								.allMatch(child -> child.selected().is());
+				children.forEach(node -> node.selected().set(!allSelected));
+				updateIncludedNodesSelected();
+				exportTree.repaint();
+			}
 		}
 	}
 
@@ -465,6 +497,13 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
+	private void updateIncludedNodesSelected() {
+		includedNodesSelected.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
+						.map(TreePath::getLastPathComponent)
+						.map(AttributeNode.class::cast)
+						.allMatch(node -> node.selected().is()));
+	}
+
 	private final class ExportTreeMouseListener extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -499,6 +538,8 @@ final class EntityTableExportPanel extends JPanel {
 							.map(TreePath::getPathCount)
 							.distinct()
 							.count() == 1);
+			singleSelection.set(!exportTree.isSelectionEmpty() && exportTree.getSelectionPaths().length == 1);
+			updateIncludedNodesSelected();
 		}
 	}
 

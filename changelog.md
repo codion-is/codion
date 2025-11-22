@@ -50,6 +50,7 @@ Codion Change Log
 - EntityTableExportPanel bug fixed, save now possible with no configuration file selected as well as saving preferences.
 - EntityTableExportModel no longer saves the current export configuration to preferences.
 - EntityTableExportPanel now collapses unselected nodes when applying configuration.
+- EntityTableExportPanel, only selected nodes can be moved, ALT-space toggles one level of foreign key items.
 
 ## 0.18.59
 ### is.codion.common.model
