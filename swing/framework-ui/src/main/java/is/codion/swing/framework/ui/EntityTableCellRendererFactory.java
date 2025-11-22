@@ -24,14 +24,14 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Configurer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jspecify.annotations.Nullable;
 
-import java.awt.Color;
+import javax.swing.JComponent;
 
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static java.util.Objects.requireNonNull;
@@ -53,8 +53,8 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 	/**
 	 * @param attributeDefinition the attribute definition
 	 * @param tableModel the table model
-	 * @return a new {@link FilterTableCellRenderer} for the given attribute
 	 * @param <T> the attribute type
+	 * @return a new {@link FilterTableCellRenderer} for the given attribute
 	 */
 	protected <T> FilterTableCellRenderer<T> create(AttributeDefinition<T> attributeDefinition, SwingEntityTableModel tableModel) {
 		return builder(attributeDefinition).build();
@@ -65,15 +65,25 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 	 * @param <T> the attribute value type
 	 * @return a {@link FilterTableCellRenderer.Builder} based on the given attribute
 	 */
-	protected static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder(AttributeDefinition<T> attributeDefinition) {
+	protected <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder(AttributeDefinition<T> attributeDefinition) {
 		return configure(requireNonNull(attributeDefinition), FilterTableCellRenderer.builder()
-						.<Entity, Attribute<?>, T>columnClass(attributeDefinition.attribute().type().valueClass()));
+						.<Entity, Attribute<?>, T>columnClass(attributeDefinition.attribute().type().valueClass()), conditionIndicator());
+	}
+
+	/**
+	 * @return true if the renderers produced by this factory should indicate an enabled column condition
+	 */
+	protected boolean conditionIndicator() {
+		return true;
 	}
 
 	static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> configure(AttributeDefinition<T> attributeDefinition,
-																																								FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> renderer) {
-		renderer.uiSettings(new EntityUISettings())
-						.formatter(attributeDefinition::format);
+																																								FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> renderer,
+																																								boolean conditionIndicator) {
+		renderer.formatter(attributeDefinition::format);
+		if (conditionIndicator) {
+			renderer.configurer(new ConditionShader());
+		}
 		if (itemBased(attributeDefinition)) {
 			// Otherwise the horizontal aligment is based on the Item value type
 			renderer.horizontalAlignment(FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.getOrThrow());
@@ -86,31 +96,18 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 		return definition instanceof ValueAttributeDefinition<?> && !((ValueAttributeDefinition<?>) definition).items().isEmpty();
 	}
 
-	private static final class EntityUISettings extends DefaultUISettings<Attribute<?>> {
+	private static final class ConditionShader implements Configurer<Entity, Attribute<?>> {
 
-		private @Nullable Color filteredConditionBackground;
-		private @Nullable Color alternateFilteredConditionBackground;
+		private static final double DARKENING_FACTOR = 0.9;
 
 		private @Nullable ObservableState conditionEnabled;
 		private boolean conditionEnabledSet = false;
 
 		@Override
-		public void update(int leftPadding, int rightPadding) {
-			super.update(leftPadding, rightPadding);
-			filteredConditionBackground = darker(background(), DOUBLE_DARKENING_FACTOR);
-			alternateFilteredConditionBackground = darker(alternateBackground(), DOUBLE_DARKENING_FACTOR);
-		}
-
-		@Override
-		public Color background(Attribute<?> attribute, boolean alternateRow, Color cellBackgroundColor,
-														FilterTableModel<?, Attribute<?>> tableModel) {
-			boolean filter = filterEnabled(attribute, tableModel);
-			boolean condition = conditionEnabled(attribute, (SwingEntityTableModel) tableModel);
-			if (condition || filter) {
-				return filteredConditionBackground(alternateRow, condition && filter, cellBackgroundColor);
+		public void configure(FilterTable<Entity, Attribute<?>> table, Attribute<?> attribute, JComponent component) {
+			if (conditionEnabled(attribute, (SwingEntityTableModel) table.model())) {
+				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
 			}
-
-			return cellBackgroundColor;
 		}
 
 		private boolean conditionEnabled(Attribute<?> attribute, SwingEntityTableModel tableModel) {
@@ -123,16 +120,6 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 			conditionEnabledSet = true;
 
 			return conditionEnabled != null && conditionEnabled.is();
-		}
-
-		private Color filteredConditionBackground(boolean alternateRow, boolean filterAndConditionEnabled, Color cellBackgroundColor) {
-			if (cellBackgroundColor != null) {
-				return darker(cellBackgroundColor, DARKENING_FACTOR);
-			}
-
-			return alternateRow ?
-							(filterAndConditionEnabled ? alternateFilteredConditionBackground : alternateFilteredBackground()) :
-							(filterAndConditionEnabled ? filteredConditionBackground : filteredBackground());
 		}
 	}
 }
