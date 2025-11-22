@@ -86,7 +86,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 			component.setRequestFocusEnabled(false);
 		}
 		if (component instanceof JTextField && renderer instanceof FilterTableCellRenderer) {
-			((JTextField) component).setHorizontalAlignment(((FilterTableCellRenderer<?>) renderer).horizontalAlignment());
+			((JTextField) component).setHorizontalAlignment(((FilterTableCellRenderer<?, ?, ?>) renderer).horizontalAlignment());
 		}
 
 		return component;

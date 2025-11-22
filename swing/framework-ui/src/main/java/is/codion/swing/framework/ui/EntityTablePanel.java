@@ -78,6 +78,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel.AttributeDefinitionComparator;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
+import is.codion.swing.framework.ui.EntityTableCellRendererFactory.ConditionIndicator;
 import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
 import is.codion.swing.framework.ui.component.EditComponentFactory;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -103,6 +104,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -1915,6 +1917,16 @@ public class EntityTablePanel extends JPanel {
 										ConditionView.class, HIDDEN);
 
 		/**
+		 * Specifies whether table columns should indicate enabled conditions
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> CONDITION_INDICATOR =
+						booleanValue(EntityTablePanel.class.getName() + ".conditionIndicator", true);
+
+		/**
 		 * Specifies the default initial table filter panel view
 		 * <ul>
 		 * <li>Value type: {@link ConditionView}
@@ -2152,6 +2164,7 @@ public class EntityTablePanel extends JPanel {
 		private ConditionView conditionView = CONDITION_VIEW.getOrThrow();
 		private boolean includeFilters = INCLUDE_FILTERS.getOrThrow();
 		private ConditionView filterView = FILTER_VIEW.getOrThrow();
+		private boolean conditionIndicator = CONDITION_INDICATOR.getOrThrow();
 		private boolean includeSummaries = INCLUDE_SUMMARY.getOrThrow();
 		private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.getOrThrow();
 		private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.getOrThrow();
@@ -2209,6 +2222,7 @@ public class EntityTablePanel extends JPanel {
 			this.conditionView = config.conditionView;
 			this.includeFilters = config.includeFilters;
 			this.filterView = config.filterView;
+			this.conditionIndicator = config.conditionIndicator;
 			this.includeSummaries = config.includeSummaries;
 			this.includeClearControl = config.includeClearControl;
 			this.includeLimitMenu = config.includeLimitMenu;
@@ -2323,6 +2337,15 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public Config filterView(ConditionView filterView) {
 			this.filterView = requireNonNull(filterView);
+			return this;
+		}
+
+		/**
+		 * @param conditionIndicator true if enabled conditions should be indicated
+		 * @return this Config instance
+		 */
+		public Config conditionIndicator(boolean conditionIndicator) {
+			this.conditionIndicator = conditionIndicator;
 			return this;
 		}
 
@@ -2642,9 +2665,26 @@ public class EntityTablePanel extends JPanel {
 
 		private FilterTable<Entity, Attribute<?>> buildTable() {
 			FilterTable<Entity, Attribute<?>> filterTable = tableBuilder.build();
+			configureConditionIndicator(filterTable);
 			tableBuilder = null;
 
 			return filterTable;
+		}
+
+		private void configureConditionIndicator(FilterTable<Entity, Attribute<?>> filterTable) {
+			filterTable.columnModel().columns().stream()
+							.map(TableColumn::getCellRenderer)
+							.filter(FilterTableCellRenderer.class::isInstance)
+							.map(renderer -> (FilterTableCellRenderer<?, ?, ?>) renderer)
+							.flatMap(renderer -> renderer.configurers().stream())
+							.filter(ConditionIndicator.class::isInstance)
+							.map(ConditionIndicator.class::cast)
+							.forEach(configurer -> configurer.enabled = conditionIndicator);
+			filterTable.columnModel().columns().stream()
+							.map(TableColumn::getHeaderRenderer)
+							.filter(EntityTableHeaderRenderer.class::isInstance)
+							.map(EntityTableHeaderRenderer.class::cast)
+							.forEach(renderer -> renderer.conditionIndicator = conditionIndicator);
 		}
 
 		private Collection<Attribute<?>> editableAttributes() {
@@ -2709,6 +2749,8 @@ public class EntityTablePanel extends JPanel {
 		private final FilterTableColumn<Attribute<?>> tableColumn;
 		private final EntityTableConditionModel condition;
 
+		private boolean conditionIndicator;
+
 		private EntityTableHeaderRenderer(FilterTableColumn<Attribute<?>> column, SwingEntityTableModel tableModel) {
 			this.wrappedRenderer = DEFAULT_FACTORY.create(column, tableModel);
 			this.tableColumn = column;
@@ -2719,11 +2761,9 @@ public class EntityTablePanel extends JPanel {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
 			Component component = wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			TableCellRenderer renderer = tableColumn.getCellRenderer();
-			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
-							&& ((FilterTableCellRenderer<?>) renderer).filterIndicator()
-							&& condition.optional(tableColumn.identifier())
-							.map(conditionModel -> conditionModel.enabled().is()).orElse(false);
+			boolean useBoldFont = conditionIndicator &&
+							condition.optional(tableColumn.identifier())
+											.map(conditionModel -> conditionModel.enabled().is()).orElse(false);
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 

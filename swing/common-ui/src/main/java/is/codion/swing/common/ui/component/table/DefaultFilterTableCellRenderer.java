@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
@@ -28,6 +30,9 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
@@ -38,15 +43,20 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.color.Colors.darker;
-import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.DOUBLE_DARKENING_FACTOR;
-import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.blendColors;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.*;
 
-final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<T> {
+final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<R, C, T> {
+
+	private static final double DARKENING_FACTOR = 0.9;
+	private static final double DOUBLE_DARKENING_FACTOR = 0.8;
+	private static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
 
 	private final Settings<R, C, T> settings;
 	private final Class<T> columnClass;
@@ -83,23 +93,18 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	}
 
 	@Override
-	public boolean filterIndicator() {
-		return settings.filterIndicator;
-	}
-
-	@Override
-	public boolean focusedCellIndicator() {
-		return settings.focusedCellIndicator;
-	}
-
-	@Override
-	public boolean alternateRowColoring() {
-		return settings.alternateRowColoring;
-	}
-
-	@Override
 	public int horizontalAlignment() {
 		return getHorizontalAlignment();
+	}
+
+	@Override
+	public Border cellBorder() {
+		return settings.uiSettings.cellBorder();
+	}
+
+	@Override
+	public Collection<Configurer<R, C>> configurers() {
+		return settings.configurers;
 	}
 
 	@Override
@@ -116,10 +121,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	@Override
 	protected void setValue(Object value) {
 		setText(settings.formatter.apply((T) value));
-	}
-
-	UISettings<C> settings() {
-		return settings.uiSettings;
 	}
 
 	private JComponent component(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -139,7 +140,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	 * A default {@link FilterTableCellRenderer} implementation for Boolean values
 	 */
 	private static final class BooleanRenderer<R, C> extends NullableCheckBox
-					implements TableCellRenderer, javax.swing.plaf.UIResource, FilterTableCellRenderer<Boolean> {
+					implements TableCellRenderer, javax.swing.plaf.UIResource, FilterTableCellRenderer<R, C, Boolean> {
 
 		private final Settings<R, C, Boolean> settings;
 
@@ -164,23 +165,18 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public boolean filterIndicator() {
-			return settings.filterIndicator;
-		}
-
-		@Override
-		public boolean focusedCellIndicator() {
-			return settings.focusedCellIndicator;
-		}
-
-		@Override
-		public boolean alternateRowColoring() {
-			return settings.alternateRowColoring;
-		}
-
-		@Override
 		public int horizontalAlignment() {
 			return getHorizontalAlignment();
+		}
+
+		@Override
+		public Border cellBorder() {
+			return settings.uiSettings.cellBorder();
+		}
+
+		@Override
+		public Collection<Configurer<R, C>> configurers() {
+			return settings.configurers;
 		}
 
 		@Override
@@ -198,37 +194,38 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 	private static final class Settings<R, C, T> {
 
-		private final int leftPadding;
-		private final int rightPadding;
 		private final boolean alternateRowColoring;
 		private final boolean filterIndicator;
 		private final boolean focusedCellIndicator;
 		private final boolean setBorder;
 		private final CellColor<R, C, T> backgroundColor;
 		private final CellColor<R, C, T> foregroundColor;
+		private final Collection<Configurer<R, C>> configurers = new ArrayList<>();
 		private final int horizontalAlignment;
-		private final Function<T, String> toolTip;
+		private final @Nullable Function<T, String> toolTip;
 		private final Function<T, String> formatter;
 
-		private final UISettings<C> uiSettings;
+		private UISettings<C> uiSettings;
 
 		private Settings(SettingsBuilder<R, C, T> builder) {
-			this.uiSettings = builder.uiSettings;
-			this.leftPadding = builder.leftPadding;
-			this.rightPadding = builder.rightPadding;
+			this.uiSettings = new UISettings<>(builder.leftPadding, builder.rightPadding);
 			this.alternateRowColoring = builder.alternateRowColoring;
 			this.filterIndicator = builder.filterIndicator;
+			if (filterIndicator) {
+				configurers.add(new FilterIndicator<>());
+			}
+			this.configurers.addAll(builder.configurers);
+			this.backgroundColor = builder.backgroundColor;
 			this.focusedCellIndicator = builder.focusedCellIndicator;
 			this.setBorder = builder.setBorder;
 			this.foregroundColor = builder.foregroundColor;
-			this.backgroundColor = builder.backgroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
 			this.toolTip = builder.toolTip;
 			this.formatter = builder.formatter;
 		}
 
 		private void update() {
-			uiSettings.update(leftPadding, rightPadding);
+			uiSettings = uiSettings.update();
 		}
 
 		private void configure(FilterTable<R, C> filterTable, JComponent component, T value,
@@ -249,6 +246,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 			component.setBackground(background);
 			setComponentBorder(component, isSearchResult(filterTable.search(), rowIndex, columnIndex), hasFocus);
+			for (Configurer configurer : configurers) {
+				if (configurer.enabled()) {
+					configurer.configure(filterTable, identifier, component);
+				}
+			}
 		}
 
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
@@ -261,19 +263,14 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Color backgroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
-			if (alternateRowColoring) {
-				return backgroundAlternating(filterTable, row, identifier, value, selected, alternateRow);
-			}
-
-			return backgroundNonAlternating(filterTable, row, identifier, value, selected, alternateRow);
+			return alternateRowColoring ?
+							backgroundAlternating(filterTable, row, identifier, value, selected, alternateRow) :
+							backgroundNonAlternating(filterTable, row, identifier, value, selected, alternateRow);
 		}
 
 		private Color backgroundAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
 			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
 			cellBackgroundColor = backgroundAlternating(cellBackgroundColor, alternateRow, selected);
-			if (filterIndicator) {
-				cellBackgroundColor = uiSettings.background(identifier, alternateRow, cellBackgroundColor, filterTable.model());
-			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
 			}
@@ -284,9 +281,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private Color backgroundNonAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
 			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
 			cellBackgroundColor = backgroundNonAlternating(cellBackgroundColor, selected);
-			if (filterIndicator) {
-				cellBackgroundColor = uiSettings.background(identifier, false, cellBackgroundColor, filterTable.model());
-			}
 			if (cellBackgroundColor != null) {
 				return cellBackgroundColor;
 			}
@@ -342,13 +336,51 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 					component.setBorder(uiSettings.focusedCellBorder());
 				}
 				else {
-					component.setBorder(uiSettings.defaultCellBorder());
+					component.setBorder(uiSettings.cellBorder());
 				}
 			}
 		}
+
+		private static Color blendColors(Color color1, Color color2) {
+			int r = (int) (color1.getRed() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getRed() * SELECTION_COLOR_BLEND_RATIO);
+			int g = (int) (color1.getGreen() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getGreen() * SELECTION_COLOR_BLEND_RATIO);
+			int b = (int) (color1.getBlue() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getBlue() * SELECTION_COLOR_BLEND_RATIO);
+
+			return new Color(r, g, b, color1.getAlpha());
+		}
 	}
 
-	static final class SettingsBuilder<R, C, T> {
+	private static final class FilterIndicator<R, C> implements Configurer<R, C> {
+
+		private @Nullable ObservableState filterEnabled;
+		private boolean filterEnabledSet = false;
+
+		@Override
+		public boolean enabled() {
+			return true;
+		}
+
+		@Override
+		public void configure(FilterTable<R, C> table, C identifier, JComponent component) {
+			if (filterEnabled(identifier, table.model())) {
+				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
+			}
+		}
+
+		private boolean filterEnabled(C identifier, FilterTableModel<R, C> tableModel) {
+			if (filterEnabledSet) {
+				return filterEnabled != null && filterEnabled.is();
+			}
+
+			ConditionModel<?> filter = tableModel.filters().get().get(identifier);
+			filterEnabled = filter == null ? null : filter.enabled();
+			filterEnabledSet = true;
+
+			return filterEnabled != null && filterEnabled.is();
+		}
+	}
+
+	private static final class SettingsBuilder<R, C, T> {
 
 		private static final CellColor<?, ?, ?> NULL_CELL_COLOR = (table, row, identifier, value) -> null;
 
@@ -358,7 +390,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private static final OffsetDateTimeFormatter OFFSET_DATE_TIME_FORMATTER = new OffsetDateTimeFormatter();
 		private static final DefaultFormatter<Object> FORMATTER = new DefaultFormatter<>();
 
-		private UISettings<C> uiSettings = new DefaultUISettings<>();
+		private final Collection<Configurer<R, C>> configurers = new ArrayList<>();
+
 		private int leftPadding = TABLE_CELL_LEFT_PADDING.getOrThrow();
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
@@ -367,18 +400,13 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private boolean setBorder = SET_BORDER.getOrThrow();
 		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
-		private Function<T, String> toolTip;
+		private @Nullable Function<T, String> toolTip;
 		private Function<T, String> formatter;
 		private int horizontalAlignment;
 
 		private SettingsBuilder(Class<T> columnClass) {
 			this.horizontalAlignment = defaultHorizontalAlignment(columnClass);
 			this.formatter = defaultFormatter(columnClass);
-		}
-
-		SettingsBuilder<R, C, T> uiSettings(UISettings<C> uiSettings) {
-			this.uiSettings = requireNonNull(uiSettings);
-			return this;
 		}
 
 		SettingsBuilder<R, C, T> leftPadding(int leftPadding) {
@@ -418,6 +446,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		SettingsBuilder<R, C, T> foregroundColor(CellColor<R, C, T> foregroundColor) {
 			this.foregroundColor = requireNonNull(foregroundColor);
+			return this;
+		}
+
+		SettingsBuilder<R, C, T> configurer(Configurer<R, C> configurer) {
+			configurers.add(requireNonNull(configurer));
 			return this;
 		}
 
@@ -535,17 +568,15 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
-	private static final class DefaultColumnClassStep implements Builder.ColumnClassStep {
+	static final class DefaultColumnClassStep<R, C> implements Builder.ColumnClassStep<R, C> {
 
 		@Override
-		public <R, C, T> Builder<R, C, T> columnClass(Class<T> columnClass) {
+		public <T> Builder<R, C, T> columnClass(Class<T> columnClass) {
 			return new DefaultBuilder<>(requireNonNull(columnClass));
 		}
 	}
 
-	static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
-
-		static final Builder.ColumnClassStep COLUMN_CLASS = new DefaultColumnClassStep();
+	private static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
 
 		private final SettingsBuilder<R, C, T> settings;
 		private final Class<T> columnClass;
@@ -558,12 +589,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.columnClass = requireNonNull(columnClass);
 			this.useBooleanRenderer = Boolean.class.equals(columnClass);
 			this.settings = new SettingsBuilder<>(columnClass);
-		}
-
-		@Override
-		public Builder<R, C, T> uiSettings(UISettings<C> uiSettings) {
-			this.settings.uiSettings(uiSettings);
-			return this;
 		}
 
 		@Override
@@ -627,6 +652,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
+		public Builder<R, C, T> configurer(Configurer configurer) {
+			this.settings.configurer(configurer);
+			return this;
+		}
+
+		@Override
 		public Builder<R, C, T> renderer(TableCellRenderer renderer) {
 			if (componentValue != null) {
 				throw new IllegalStateException("Component has already been set");
@@ -647,20 +678,96 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public FilterTableCellRenderer<T> build() {
+		public FilterTableCellRenderer<R, C, T> build() {
 			if (useBooleanRenderer) {
-				return (FilterTableCellRenderer<T>) new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build());
+				return (FilterTableCellRenderer<R, C, T>) new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build());
 			}
 
 			return new DefaultFilterTableCellRenderer<>(settings.build(), columnClass, renderer, componentValue);
 		}
 	}
 
-	static final class DefaultFactory<R, C> implements Factory<C, FilterTableModel<R, C>> {
+	static final class DefaultFactory<R, C> implements Factory<R, C, FilterTableModel<R, C>> {
 
 		@Override
-		public FilterTableCellRenderer<?> create(C identifier, FilterTableModel<R, C> tableModel) {
-			return new DefaultBuilder<>(tableModel.getColumnClass(identifier)).build();
+		public FilterTableCellRenderer<R, C, ?> create(C identifier, FilterTableModel<R, C> tableModel) {
+			return (FilterTableCellRenderer<R, C, ?>) new DefaultBuilder<>(tableModel.getColumnClass(identifier)).build();
+		}
+	}
+
+	private static final class UISettings<C> {
+
+		private static final int FOCUSED_CELL_BORDER_THICKNESS = 1;
+
+		private final int leftPadding;
+		private final int rightPadding;
+		private final Color foreground;
+		private final Color background;
+		private final Color alternateRowColor;
+		private final Color alternateBackground;
+		private final Color selectionForeground;
+		private final Color selectionBackground;
+		private final Color alternateSelectionBackground;
+		private final Border cellBorder;
+		private final Border focusedCellBorder;
+
+		private UISettings(int leftPadding, int rightPadding) {
+			this.leftPadding = leftPadding;
+			this.rightPadding = rightPadding;
+			foreground = UIManager.getColor("Table.foreground");
+			background = UIManager.getColor("Table.background");
+			alternateRowColor = UIManager.getColor("Table.alternateRowColor");
+			alternateBackground = alternateRowColor == null ? darker(background, DOUBLE_DARKENING_FACTOR) : alternateRowColor;
+			selectionForeground = UIManager.getColor("Table.selectionForeground");
+			selectionBackground = UIManager.getColor("Table.selectionBackground");
+			alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
+			cellBorder = createEmptyBorder(0, leftPadding, 0, rightPadding);
+			focusedCellBorder = createFocusedCellBorder();
+		}
+
+		private UISettings<C> update() {
+			return new UISettings<>(leftPadding, rightPadding);
+		}
+
+		private Color foreground() {
+			return foreground;
+		}
+
+		private Color background() {
+			return background;
+		}
+
+		private Color alternateRowColor() {
+			return alternateRowColor;
+		}
+
+		private Color selectionForeground() {
+			return selectionForeground;
+		}
+
+		private Color selectionBackground() {
+			return selectionBackground;
+		}
+
+		private Color alternateBackground() {
+			return alternateBackground;
+		}
+
+		private Color alternateSelectionBackground() {
+			return alternateSelectionBackground;
+		}
+
+		private Border cellBorder() {
+			return cellBorder;
+		}
+
+		private Border focusedCellBorder() {
+			return focusedCellBorder;
+		}
+
+		private CompoundBorder createFocusedCellBorder() {
+			return createCompoundBorder(createLineBorder(darker(foreground, DOUBLE_DARKENING_FACTOR),
+							FOCUSED_CELL_BORDER_THICKNESS), cellBorder);
 		}
 	}
 }

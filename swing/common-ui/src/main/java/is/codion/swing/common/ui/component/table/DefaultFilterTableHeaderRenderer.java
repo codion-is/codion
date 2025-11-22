@@ -82,7 +82,7 @@ final class DefaultFilterTableHeaderRenderer<C> implements FilterTableHeaderRend
 				label.setHorizontalAlignment(((AbstractButton) columnCellRenderer).getHorizontalAlignment());
 			}
 			if (columnCellRenderer instanceof DefaultFilterTableCellRenderer) {
-				Border tableCellBorder = ((DefaultFilterTableCellRenderer<?, ?, ?>) columnCellRenderer).settings().defaultCellBorder();
+				Border tableCellBorder = ((DefaultFilterTableCellRenderer<?, ?, ?>) columnCellRenderer).cellBorder();
 				label.setBorder(label.getBorder() == null ? tableCellBorder : createCompoundBorder(label.getBorder(), tableCellBorder));
 			}
 			if (focusedColumnIndicator && !table.getSelectionModel().isSelectionEmpty()) {

@@ -461,7 +461,7 @@ public class FilterTableTest {
 						.build();
 		model.items().add(new Row());
 
-		FilterTableCellRenderer<Integer> oneRenderer = FilterTableCellRenderer.builder()
+		FilterTableCellRenderer<Row, Integer, Integer> oneRenderer = FilterTableCellRenderer.<Row, Integer>builder()
 						.columnClass(Integer.class)
 						.horizontalAlignment(SwingConstants.LEFT)
 						.build();

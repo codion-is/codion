@@ -1270,7 +1270,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param cellRendererFactory the table cell renderer factory
 		 * @return this builder instance
 		 */
-		<T extends FilterTableModel<R, C>> Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C, T> cellRendererFactory);
+		<T extends FilterTableModel<R, C>> Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C, T> cellRendererFactory);
 
 		/**
 		 * Note that this factory is only used to create header renderers for columns which do not already have a header renderer
@@ -1496,7 +1496,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		private final FilterTableModel<R, C> tableModel;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
-		private final Map<C, FilterTableCellRenderer<?>> cellRenderers = new HashMap<>();
+		private final Map<C, FilterTableCellRenderer<R, C, ?>> cellRenderers = new HashMap<>();
 		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
 		private final Collection<KeyStroke> startEditKeyStrokes = new ArrayList<>();
 		private final Set<C> hiddenColumns = new HashSet<>();
@@ -1506,7 +1506,7 @@ public final class FilterTable<R, C> extends JTable {
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private ComponentFactory filterComponentFactory = new FilterComponentFactory();
 		private FilterTableHeaderRenderer.Factory<C> headerRendererFactory;
-		private FilterTableCellRenderer.Factory<C, FilterTableModel<R, C>> cellRendererFactory;
+		private FilterTableCellRenderer.Factory<R, C, FilterTableModel<R, C>> cellRendererFactory;
 		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
 		private BiPredicate<R, C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
 		private @Nullable Boolean autoStartsEdit;
@@ -1577,15 +1577,15 @@ public final class FilterTable<R, C> extends JTable {
 			requireNonNull(identifier);
 			requireNonNull(columnClass);
 			requireNonNull(renderer);
-			FilterTableCellRenderer.Builder<R, C, T> builder = FilterTableCellRenderer.builder().columnClass(columnClass);
+			FilterTableCellRenderer.Builder<R, C, T> builder = FilterTableCellRenderer.<R, C>builder().columnClass(columnClass);
 			renderer.accept(builder);
 			this.cellRenderers.put(identifier, builder.build());
 			return this;
 		}
 
 		@Override
-		public <T extends FilterTableModel<R, C>> Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<C, T> cellRendererFactory) {
-			this.cellRendererFactory = (FilterTableCellRenderer.Factory<C, FilterTableModel<R, C>>) requireNonNull(cellRendererFactory);
+		public <T extends FilterTableModel<R, C>> Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C, T> cellRendererFactory) {
+			this.cellRendererFactory = (FilterTableCellRenderer.Factory<R, C, FilterTableModel<R, C>>) requireNonNull(cellRendererFactory);
 			return this;
 		}
 
