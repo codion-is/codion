@@ -21,7 +21,6 @@ package is.codion.demos.chinook.ui;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.image.ImagePane;
-import is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -34,6 +33,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import static is.codion.demos.chinook.ui.TrackTablePanel.RATINGS;
+import static is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice.MOUSE_WHEEL;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
 
 public final class AlbumTablePanel extends EntityTablePanel {
@@ -48,10 +48,10 @@ public final class AlbumTablePanel extends EntityTablePanel {
 						// rendering the rating as stars, i.e. *****
 						.cellRenderer(Album.RATING, renderer -> renderer
 										.formatter(RATINGS::get)
-										.toolTipData(true)));
+										.toolTip(Object::toString)));
 		coverPane = ImagePane.builder()
 						.preferredSize(screenSizeRatio(0.5))
-						.zoomDevice(ZoomDevice.MOUSE_WHEEL)
+						.zoomDevice(MOUSE_WHEEL)
 						.navigable(true)
 						.movable(true)
 						.build();

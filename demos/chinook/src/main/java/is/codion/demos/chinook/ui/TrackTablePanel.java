@@ -116,7 +116,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	private static void durationRenderer(FilterTableCellRenderer.Builder<Entity, Attribute<?>, Integer> renderer) {
 		renderer.formatter(milliseconds -> minutes(milliseconds) + " min " + seconds(milliseconds) + " sec")
-						.toolTipData(true);
+						.toolTip(milliseconds -> milliseconds + " ms");
 	}
 
 	private static FilterTableCellEditor<Integer> durationEditor() {
@@ -127,7 +127,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	private static void ratingRenderer(FilterTableCellRenderer.Builder<Entity, Attribute<?>, Integer> renderer) {
 		renderer.formatter(RATINGS::get)
-						.toolTipData(true);
+						.toolTip(Object::toString);
 	}
 
 	private static FilterTableCellEditor<Integer> ratingEditor(EntityDefinition entityDefinition) {

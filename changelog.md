@@ -24,6 +24,7 @@ Codion Change Log
 - Utilities.parentOfType(), parentWindow(), parentFrame(), parentDialog() and disposeParentWindow() removed.
 - Ancestor added.
 - Utilities.systemLookAndFeelClassName() moved to LookAndFeelEnabler, systemOrCrossPlatformLookAndFeelEnabled() removed.
+- FilterTableCellRenderer.Builder.toolTipData() replaced with toolTip() function.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 - DerivedAttributeDefinition.sources() renamed attributes().

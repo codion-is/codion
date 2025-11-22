@@ -223,10 +223,10 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		Builder<R, C, T> horizontalAlignment(int horizontalAlignment);
 
 		/**
-		 * @param toolTipData true if the cell should display its contents in a tool tip
+		 * @param toolTip provides the tooltip for the cell, given the cell data
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> toolTipData(boolean toolTipData);
+		Builder<R, C, T> toolTip(Function<T, String> toolTip);
 
 		/**
 		 * @param filterIndicator true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter

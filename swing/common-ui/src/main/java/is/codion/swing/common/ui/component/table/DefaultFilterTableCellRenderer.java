@@ -106,8 +106,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		JComponent component = component(table, value, isSelected, hasFocus, row, column);
 		settings.configure((FilterTable<R, C>) table, component, (T) value, isSelected, hasFocus, row, column);
-		if (settings.toolTipData) {
-			setToolTipText(settings.formatter.apply((T) value));
+		if (settings.toolTip != null) {
+			setToolTipText(settings.toolTip.apply((T) value));
 		}
 
 		return component;
@@ -188,8 +188,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 																									 boolean hasFocus, int row, int column) {
 			set((Boolean) value);
 			settings.configure((FilterTable<R, C>) table, this, (Boolean) value, isSelected, hasFocus, row, column);
-			if (settings.toolTipData) {
-				setToolTipText(value == null ? "" : value.toString());
+			if (settings.toolTip != null) {
+				setToolTipText(settings.toolTip.apply((Boolean) value));
 			}
 
 			return this;
@@ -207,7 +207,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final CellColor<R, C, T> backgroundColor;
 		private final CellColor<R, C, T> foregroundColor;
 		private final int horizontalAlignment;
-		private final boolean toolTipData;
+		private final Function<T, String> toolTip;
 		private final Function<T, String> formatter;
 
 		private final UISettings<C> uiSettings;
@@ -223,7 +223,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.foregroundColor = builder.foregroundColor;
 			this.backgroundColor = builder.backgroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
-			this.toolTipData = builder.toolTipData;
+			this.toolTip = builder.toolTip;
 			this.formatter = builder.formatter;
 		}
 
@@ -367,7 +367,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private boolean setBorder = SET_BORDER.getOrThrow();
 		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
-		private boolean toolTipData = false;
+		private Function<T, String> toolTip;
 		private Function<T, String> formatter;
 		private int horizontalAlignment;
 
@@ -426,8 +426,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> toolTipData(boolean toolTipData) {
-			this.toolTipData = toolTipData;
+		SettingsBuilder<R, C, T> toolTip(Function<T, String> toolTip) {
+			this.toolTip = toolTip;
 			return this;
 		}
 
@@ -573,8 +573,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Builder<R, C, T> toolTipData(boolean toolTipData) {
-			this.settings.toolTipData(toolTipData);
+		public Builder<R, C, T> toolTip(Function<T, String> toolTip) {
+			this.settings.toolTip(toolTip);
 			return this;
 		}
 
