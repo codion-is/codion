@@ -38,9 +38,14 @@ import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTree;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -53,6 +58,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -66,13 +72,15 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.RADIO_BUTTON;
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.ui.EntityTableExportModel.NULL_CONFIGURATION_FILE;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
-import static javax.swing.SwingConstants.CENTER;
 
 final class EntityTableExportPanel extends JPanel {
 
@@ -82,6 +90,8 @@ final class EntityTableExportPanel extends JPanel {
 	private static final String DIALOG_SIZE_KEY = "dialogSize";
 	private static final String TSV = "tsv";
 	private static final String JSON = "json";
+	private static final FileNameExtensionFilter CONFIGURATION_FILE =
+					new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON);
 
 	private final EntityTableExportModel model;
 	private final JTree exportTree;
@@ -152,26 +162,11 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	void export(JComponent dialogOwner) {
-		this.dialogSize = Dialogs.action()
+		dialogSize = Dialogs.builder()
 						.component(this)
 						.owner(dialogOwner)
 						.title(MESSAGES.getString("export"))
 						.size(dialogSize)
-						.action(Control.builder()
-										.command(this::exportToClipboard)
-										.caption(MESSAGES.getString("to_clipboard"))
-										.mnemonic(MESSAGES.getString("to_clipboard_mnemonic").charAt(0))
-										.build())
-						.action(Control.builder()
-										.command(this::exportToFile)
-										.caption(MESSAGES.getString("to_file"))
-										.mnemonic(MESSAGES.getString("to_file_mnemonic").charAt(0))
-										.build())
-						.escapeAction(Control.builder()
-										.command(() -> Ancestor.window().of(this).dispose())
-										.caption(MESSAGES.getString("close"))
-										.mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
-										.build())
 						.show()
 						.getSize();
 	}
@@ -361,8 +356,8 @@ final class EntityTableExportPanel extends JPanel {
 	private void openConfigurationFiles() {
 		model.addConfigurationFiles(Dialogs.select()
 						.files()
-						.filter(new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON))
 						.owner(this)
+						.filter(CONFIGURATION_FILE)
 						.selectFiles());
 	}
 
@@ -372,7 +367,7 @@ final class EntityTableExportPanel extends JPanel {
 						.files()
 						.owner(this)
 						.startDirectory(destinationDirectory(configurationFile))
-						.filter(new FileNameExtensionFilter(JSON, JSON))
+						.filter(CONFIGURATION_FILE)
 						.selectFileToSave(defaultFileName(configurationFile)));
 	}
 
@@ -407,30 +402,70 @@ final class EntityTableExportPanel extends JPanel {
 																		.add(button()
 																						.control(moveUp))
 																		.add(button()
-																						.control(moveDown))))
-										.south(borderLayoutPanel()
-														.center(stringField()
-																		.horizontalAlignment(CENTER)
-																		.value(MESSAGES.getString("help"))
-																		.enabled(false))
-														.south(borderLayoutPanel()
-																		.center(comboBox()
-																						.model(model.configurationFiles()))
+																						.control(moveDown)))))
+						.south(borderLayoutPanel()
+										.border(createTitledBorder(MESSAGES.getString("configurations")))
+										.center(comboBox()
+														.model(model.configurationFiles())
+														.renderer(new ConfigurationFileRenderer()))
+										.east(buttonPanel()
+														.controls(Controls.builder()
+																		.control(openConfiguration)
+																		.control(saveConfiguration))
+														.transferFocusOnEnter(true)))
+						.build(), BorderLayout.CENTER);
+		add(createSouthPanel(), BorderLayout.SOUTH);
+	}
+
+	private JPanel createSouthPanel() {
+		return borderLayoutPanel()
+						.west(button()
+										.control(Control.builder()
+														.command(this::displayHelp)
+														.caption("?")))
+						.east(borderLayoutPanel()
+										.west(borderLayoutPanel()
+														.center(borderLayoutPanel()
 																		.east(buttonPanel()
 																						.controls(Controls.builder()
-																										.actions(openConfiguration, saveConfiguration))
-																						.transferFocusOnEnter(true)))))
-						.south(borderLayoutPanel()
-										.border(createTitledBorder(MESSAGES.getString("rows")))
-										.center(borderLayoutPanel()
-														.east(buttonPanel()
-																		.controls(Controls.builder()
-																						.actions(allRows, selectedRows))
-																		.toggleButtonType(RADIO_BUTTON)
-																		.buttonGroup(new ButtonGroup())
-																		.fixedButtonSize(false)
-																		.transferFocusOnEnter(true))))
-						.build(), BorderLayout.CENTER);
+																										.actions(allRows, selectedRows))
+																						.toggleButtonType(RADIO_BUTTON)
+																						.buttonGroup(new ButtonGroup())
+																						.fixedButtonSize(false)
+																						.transferFocusOnEnter(true))))
+										.center(createActionButtonPanel()))
+						.border(createEmptyBorder(10, 10, 5, 10))
+						.build();
+	}
+
+	private JPanel createActionButtonPanel() {
+		return buttonPanel()
+						.controls(Controls.builder()
+										.control(Control.builder()
+														.command(this::exportToClipboard)
+														.caption(MESSAGES.getString("to_clipboard"))
+														.mnemonic(MESSAGES.getString("to_clipboard_mnemonic").charAt(0)))
+										.control(Control.builder()
+														.command(this::exportToFile)
+														.caption(MESSAGES.getString("to_file"))
+														.mnemonic(MESSAGES.getString("to_file_mnemonic").charAt(0)))
+										.control(Control.builder()
+														.command(() -> Ancestor.window().of(this).dispose())
+														.caption(MESSAGES.getString("close"))
+														.mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
+														.keyStroke(keyStroke(VK_ESCAPE))))
+						.fixedButtonSize(false)
+						.build();
+	}
+
+	private void displayHelp() {
+		Dialogs.builder()
+						.owner(this)
+						.component(textArea()
+										.value(MESSAGES.getString("help"))
+										.editable(false)
+										.focusable(false))
+						.show();
 	}
 
 	private void onConfigurationChanged() {
@@ -568,6 +603,38 @@ final class EntityTableExportPanel extends JPanel {
 
 		JSONObject preferences() {
 			return preferences;
+		}
+	}
+
+	private static final class ConfigurationFileRenderer extends JPanel implements ListCellRenderer<ConfigurationFile> {
+
+		private static final DefaultListCellRenderer FILENAME = new DefaultListCellRenderer();
+		private static final DefaultListCellRenderer PATH = new DefaultListCellRenderer();
+
+		static {
+			FILENAME.setHorizontalAlignment(SwingConstants.LEFT);
+			PATH.setHorizontalAlignment(SwingConstants.RIGHT);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends ConfigurationFile> list, ConfigurationFile value,
+																									int index, boolean isSelected, boolean cellHasFocus) {
+			JLabel filename = (JLabel) FILENAME.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			JLabel path = (JLabel) PATH.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			if (value == NULL_CONFIGURATION_FILE) {
+				filename.setText("-");
+				path.setText("");
+			}
+			else {
+				filename.setText(value.filename());
+				path.setText(value.file().getParentFile().getAbsolutePath());
+			}
+
+			return borderLayoutPanel()
+							.layout(new BorderLayout())
+							.west(filename)
+							.center(path)
+							.build();
 		}
 	}
 }

@@ -86,6 +86,7 @@ final class EntityTableExportModel {
 	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
 	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
 
+	static final NullConfigurationFile NULL_CONFIGURATION_FILE = new NullConfigurationFile();
 	static final String JSON = "json";
 
 	private final EntityTableModel<?> tableModel;
@@ -103,12 +104,11 @@ final class EntityTableExportModel {
 		this.treeModel = new ExportTreeModel(tableModel.entityDefinition(), tableModel.connectionProvider().entities());
 		this.configurationFilesComboBoxModel = FilterComboBoxModel.builder()
 						.items(this::refreshConfigurationFiles)
-						.nullItem(new NullConfigurationFile())
+						.nullItem(NULL_CONFIGURATION_FILE)
 						.onSelection(this::configurationFileSelected)
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
 		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
-		selectDefaults();
 	}
 
 	ExportTask exportToClipboard() {
@@ -167,6 +167,7 @@ final class EntityTableExportModel {
 	}
 
 	void applyPreferences(JSONObject preferences) {
+		selectDefaults();
 		if (preferences.has(CONFIGURATION_FILES_KEY)) {
 			JSONArray files = preferences.getJSONArray(CONFIGURATION_FILES_KEY);
 			files.forEach(filePath -> {
@@ -252,7 +253,7 @@ final class EntityTableExportModel {
 	}
 
 	void selectDefaults() {
-		selectNone();
+		treeModel.setRoot(new EntityNode(entityDefinition(), tableModel.entities()));
 		Enumeration<TreeNode> children = treeModel.getRoot().children();
 		while (children.hasMoreElements()) {
 			TreeNode child = children.nextElement();
@@ -714,7 +715,7 @@ final class EntityTableExportModel {
 
 		@Override
 		public String toString() {
-			return filename() + " " + file.getAbsolutePath();
+			return filename();
 		}
 
 		@Override
