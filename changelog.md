@@ -47,6 +47,7 @@ Codion Change Log
 - EntityTableExportPanel, configuration file management implemented.
 - EntityTableExportPanel, dialog size added to user preferences.
 - EntityEditComponentPanel, components for derived attributes now disabled by default.
+- EntityTableExportPanel bug fixed, save now possible with no configuration file selected as well as saving preferences.
 
 ## 0.18.59
 ### is.codion.common.model

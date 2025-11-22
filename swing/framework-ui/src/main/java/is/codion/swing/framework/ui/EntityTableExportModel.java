@@ -57,7 +57,6 @@ import java.nio.file.Path;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -86,7 +85,7 @@ final class EntityTableExportModel {
 	private static final String ATTRIBUTES_KEY = "attributes";
 	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
 	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
-	private static final ConfigurationFile NO_CONFIGURATION_FILE = new ConfigurationFile(null);
+	private static final ConfigurationFile NO_CONFIGURATION_FILE = new NoConfigurationFile();
 
 	static final String JSON = "json";
 
@@ -104,7 +103,7 @@ final class EntityTableExportModel {
 		this.connectionProvider = tableModel.connectionProvider();
 		this.treeModel = new ExportTreeModel(tableModel.entityDefinition(), tableModel.connectionProvider().entities());
 		this.configurationFilesComboBoxModel = FilterComboBoxModel.builder()
-						.items(Collections.<ConfigurationFile>emptyList())
+						.items(this::refreshConfigurationFiles)
 						.nullItem(NO_CONFIGURATION_FILE)
 						.onSelection(this::configurationFileSelected)
 						.build();
@@ -150,14 +149,14 @@ final class EntityTableExportModel {
 			applyPreferences(iterator.next());
 		}
 		while (iterator.hasNext()) {
-			configurationFilesComboBoxModel.items().add(new ConfigurationFile(iterator.next()));
+			configurationFilesComboBoxModel.items().add(new DefaultConfigurationFile(iterator.next()));
 		}
 	}
 
 	void applyPreferences(File file) {
 		try {
 			applyAttributesAndForeignKeys(new JSONObject(new String(Files.readAllBytes(file.toPath()), UTF_8)), treeModel.getRoot());
-			addAndSelect(new ConfigurationFile(file));
+			addAndSelect(new DefaultConfigurationFile(file));
 		}
 		catch (IOException e) {
 			throw new UncheckedIOException(e);
@@ -181,14 +180,14 @@ final class EntityTableExportModel {
 				if (filePath instanceof String) {
 					File file = new File((String) filePath);
 					if (file.exists()) {
-						configurationFilesComboBoxModel.items().add(new ConfigurationFile(file));
+						configurationFilesComboBoxModel.items().add(new DefaultConfigurationFile(file));
 					}
 				}
 			});
 			if (json.has(SELECTED_CONFIGURATION_FILE_KEY)) {
 				File file = new File(json.getString(SELECTED_CONFIGURATION_FILE_KEY));
 				if (file.exists()) {
-					configurationFilesComboBoxModel.selection().item().set(new ConfigurationFile(file));
+					configurationFilesComboBoxModel.selection().item().set(new DefaultConfigurationFile(file));
 				}
 			}
 		}
@@ -197,7 +196,7 @@ final class EntityTableExportModel {
 	void writeConfig(File file) {
 		try {
 			Files.write(file.toPath(), createExportPreferences().toString().getBytes(UTF_8));
-			addAndSelect(new ConfigurationFile(file));
+			addAndSelect(new DefaultConfigurationFile(file));
 		}
 		catch (IOException e) {
 			throw new UncheckedIOException(e);
@@ -216,10 +215,8 @@ final class EntityTableExportModel {
 			configurationFilesComboBoxModel.items().get()
 							.forEach(fileItem -> recentFiles.put(fileItem.file().getAbsolutePath()));
 			json.put(CONFIGURATION_FILES_KEY, recentFiles);
-			ConfigurationFile configurationFile = configurationFilesComboBoxModel.selection().item().getOrThrow();
-			if (configurationFile != NO_CONFIGURATION_FILE) {
-				json.put(SELECTED_CONFIGURATION_FILE_KEY, configurationFile.file().getAbsolutePath());
-			}
+			configurationFilesComboBoxModel.selection().item().optional().ifPresent(selectedConfigurationFile ->
+							json.put(SELECTED_CONFIGURATION_FILE_KEY, selectedConfigurationFile.file().getAbsolutePath()));
 		}
 
 		return json;
@@ -231,6 +228,14 @@ final class EntityTableExportModel {
 		}
 
 		return attributesToJson(treeModel.getRoot().children());
+	}
+
+	private Collection<ConfigurationFile> refreshConfigurationFiles() {
+		return configurationFilesComboBoxModel.items().get().stream()
+						.filter(DefaultConfigurationFile.class::isInstance)
+						.map(DefaultConfigurationFile.class::cast)
+						.filter(configurationFile -> configurationFile.file.exists())
+						.collect(toList());
 	}
 
 	private void configurationFileSelected(@Nullable ConfigurationFile fileItem) {
@@ -668,32 +673,51 @@ final class EntityTableExportModel {
 		}
 	}
 
-	static final class ConfigurationFile {
+	interface ConfigurationFile {
 
-		private final @Nullable File file;
+		File file();
 
-		ConfigurationFile(@Nullable File file) {
+		String filename();
+	}
+
+	static final class NoConfigurationFile implements ConfigurationFile {
+
+		@Override
+		public File file() {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public String filename() {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public String toString() {
+			return "-";
+		}
+	}
+
+	private static final class DefaultConfigurationFile implements ConfigurationFile {
+
+		private final File file;
+
+		private DefaultConfigurationFile(File file) {
 			this.file = file;
 		}
 
-		@Nullable File file() {
+		@Override
+		public File file() {
 			return file;
 		}
 
-		String filename() {
-			if (file == null) {
-				throw new IllegalStateException("No file");
-			}
-
+		@Override
+		public String filename() {
 			return file.getName().substring(0, file.getName().length() - JSON.length() - 1);
 		}
 
 		@Override
 		public String toString() {
-			if (file == null) {
-				return "-";
-			}
-
 			return filename() + " " + file.getAbsolutePath();
 		}
 
@@ -702,7 +726,7 @@ final class EntityTableExportModel {
 			if (object == null || getClass() != object.getClass()) {
 				return false;
 			}
-			ConfigurationFile that = (ConfigurationFile) object;
+			DefaultConfigurationFile that = (DefaultConfigurationFile) object;
 
 			return Objects.equals(file, that.file);
 		}

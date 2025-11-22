@@ -334,21 +334,21 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void saveConfiguration() {
-		ConfigurationFile configurationFile = model.configurationFiles().selection().item().getOrThrow();
+		ConfigurationFile configurationFile = model.configurationFiles().selection().item().get();
 		model.writeConfig(Dialogs.select()
 						.files()
 						.owner(this)
-						.startDirectory(saveDirectory(configurationFile))
+						.startDirectory(destinationDirectory(configurationFile))
 						.filter(new FileNameExtensionFilter(JSON, JSON))
 						.selectFileToSave(defaultFileName(configurationFile)));
 	}
 
-	private static @Nullable String saveDirectory(ConfigurationFile configurationFile) {
-		return configurationFile.file() != null ? configurationFile.file().getParentFile().getAbsolutePath() : null;
+	private static @Nullable String destinationDirectory(@Nullable ConfigurationFile configurationFile) {
+		return configurationFile != null ? configurationFile.file().getParentFile().getAbsolutePath() : null;
 	}
 
-	private String defaultFileName(ConfigurationFile configurationFile) {
-		if (configurationFile.file() == null) {
+	private String defaultFileName(@Nullable ConfigurationFile configurationFile) {
+		if (configurationFile == null) {
 			return model.entityDefinition().caption();
 		}
 
