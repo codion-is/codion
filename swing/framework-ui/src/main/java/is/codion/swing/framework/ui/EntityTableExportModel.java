@@ -93,7 +93,7 @@ final class EntityTableExportModel {
 	private final FilterTableColumnModel<Attribute<?>> columnModel;
 	private final FilterComboBoxModel<ConfigurationFile> configurationFilesComboBoxModel;
 	private final ExportTreeModel treeModel;
-	private final Event<?> exportPreferencesApplied = Event.event();
+	private final Event<?> configurationChanged = Event.event();
 	private final State selected;
 
 	EntityTableExportModel(EntityTableModel<?> tableModel, FilterTableColumnModel<Attribute<?>> columnModel) {
@@ -139,8 +139,8 @@ final class EntityTableExportModel {
 		return tableModel.entityDefinition().caption();
 	}
 
-	Observer<?> preferencesApplied() {
-		return exportPreferencesApplied.observer();
+	Observer<?> configurationChanged() {
+		return configurationChanged.observer();
 	}
 
 	void addConfigurationFiles(Collection<File> configurationFiles) {
@@ -234,7 +234,7 @@ final class EntityTableExportModel {
 	private void configurationFileSelected(@Nullable ConfigurationFile fileItem) {
 		if (fileItem == null || fileItem.file() == null) {
 			selectDefaults();
-			exportPreferencesApplied.run();
+			configurationChanged.run();
 		}
 		else {
 			applyAttributePreferences(fileItem.file());
@@ -243,10 +243,12 @@ final class EntityTableExportModel {
 
 	void selectAll() {
 		select(true);
+		configurationChanged.run();
 	}
 
 	void selectNone() {
 		select(false);
+		configurationChanged.run();
 	}
 
 	void selectDefaults() {
@@ -261,6 +263,7 @@ final class EntityTableExportModel {
 				}
 			}
 		}
+		configurationChanged.run();
 	}
 
 	private boolean isDefaultConfiguration() {
@@ -391,7 +394,7 @@ final class EntityTableExportModel {
 				}
 			}
 		}
-		exportPreferencesApplied.run();
+		configurationChanged.run();
 	}
 
 	private static void deselectAll(Enumeration<TreeNode> nodes) {

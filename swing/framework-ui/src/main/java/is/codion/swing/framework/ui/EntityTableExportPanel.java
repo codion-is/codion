@@ -57,6 +57,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -143,7 +144,7 @@ final class EntityTableExportPanel extends JPanel {
 						.caption(MESSAGES.getString("rows_all"))
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
-		model.preferencesApplied().addListener(this::onPreferencesApplied);
+		model.configurationChanged().addListener(this::onConfigurationChanged);
 		initializeUI();
 	}
 
@@ -400,9 +401,27 @@ final class EntityTableExportPanel extends JPanel {
 						.build(), BorderLayout.CENTER);
 	}
 
-	private void onPreferencesApplied() {
+	private void onConfigurationChanged() {
+		collapseAll();
 		expandNodeIfHasSelectedChildren(model.treeModel().getRoot());
 		exportTree.repaint();
+	}
+
+	private void collapseAll() {
+		TreePath rootPath = new TreePath(model.treeModel().getRoot());
+		Enumeration<? extends TreeNode> children = model.treeModel().getRoot().children();
+		while (children.hasMoreElements()) {
+			collapseAll(rootPath.pathByAddingChild(children.nextElement()));
+		}
+	}
+
+	private void collapseAll(TreePath parent) {
+		TreeNode node = (TreeNode) parent.getLastPathComponent();
+		Enumeration<? extends TreeNode> children = node.children();
+		while (children.hasMoreElements()) {
+			collapseAll(parent.pathByAddingChild(children.nextElement()));
+		}
+		exportTree.collapsePath(parent);
 	}
 
 	private boolean expandNodeIfHasSelectedChildren(TreeNode node) {

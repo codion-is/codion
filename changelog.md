@@ -49,6 +49,7 @@ Codion Change Log
 - EntityEditComponentPanel, components for derived attributes now disabled by default.
 - EntityTableExportPanel bug fixed, save now possible with no configuration file selected as well as saving preferences.
 - EntityTableExportModel no longer saves the current export configuration to preferences.
+- EntityTableExportPanel now collapses unselected nodes when applying configuration.
 
 ## 0.18.59
 ### is.codion.common.model
