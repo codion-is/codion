@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
@@ -420,13 +421,13 @@ final class EntityTableExportModel {
 	}
 
 	private List<String> createRow(Entity entity) {
-		return addToRow(treeModel.getRoot().children(), entity.primaryKey(),
+		return addToRow(treeModel.getRoot().children(), entity.primaryKey(), null,
 						new ArrayList<>(), new HashMap<>(), connectionProvider.connection());
 	}
 
-	private static List<String> addToRow(Enumeration<TreeNode> attributeNodes, Entity.Key key, List<String> row,
-																			 Map<Entity.Key, Entity> cache, EntityConnection connection) {
-		Entity entity = cache.computeIfAbsent(key, k -> connection.select(key));
+	private static List<String> addToRow(Enumeration<TreeNode> attributeNodes, Entity.Key key, @Nullable ForeignKey foreignKey,
+																			 List<String> row, Map<Entity.Key, Entity> cache, EntityConnection connection) {
+		Entity entity = selectEntity(key, foreignKey, cache, connection);
 		while (attributeNodes.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) attributeNodes.nextElement();
 			Attribute<?> attribute = node.definition.attribute();
@@ -436,12 +437,22 @@ final class EntityTableExportModel {
 			if (attribute instanceof ForeignKey) {
 				Entity.Key referencedKey = entity.key((ForeignKey) attribute);
 				if (referencedKey != null) {
-					addToRow(node.children(), referencedKey, row, cache, connection);
+					addToRow(node.children(), referencedKey, foreignKey, row, cache, connection);
 				}
 			}
 		}
 
 		return row;
+	}
+
+	private static Entity selectEntity(Entity.Key key, @Nullable ForeignKey foreignKey,
+																		 Map<Entity.Key, Entity> cache, EntityConnection connection) {
+		try {
+			return cache.computeIfAbsent(key, k -> connection.select(key));
+		}
+		catch (RecordNotFoundException e) {
+			throw new RuntimeException("Record not found: " + key + (foreignKey == null ? "" : ", foreignKey: " + foreignKey), e);
+		}
 	}
 
 	private static String replaceNewlinesAndTabs(String string) {

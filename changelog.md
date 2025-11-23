@@ -62,6 +62,7 @@ Codion Change Log
 - EntityTableExportPanel, clear control added to configuration file combo box popup menu.
 - EntityTablePanel, export panel now initialized lazily.
 - EntityExportPanel refactored, no longer modal, model now handles all preferences.
+- EntityTableExportModel, record not found exception handling improved.
 
 ## 0.18.59
 ### is.codion.common.model
