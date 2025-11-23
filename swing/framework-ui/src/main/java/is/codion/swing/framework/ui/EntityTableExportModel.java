@@ -38,7 +38,6 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,6 +47,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import java.awt.Dimension;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -83,6 +83,7 @@ final class EntityTableExportModel {
 	private static final String SPACE = " ";
 	private static final String ENTITY_TYPE_KEY = "entityType";
 	private static final String ATTRIBUTES_KEY = "attributes";
+	private static final String DIALOG_SIZE_KEY = "dialogSize";
 	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
 	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
 
@@ -91,15 +92,15 @@ final class EntityTableExportModel {
 
 	private final EntityTableModel<?> tableModel;
 	private final EntityConnectionProvider connectionProvider;
-	private final FilterTableColumnModel<Attribute<?>> columnModel;
 	private final FilterComboBoxModel<ConfigurationFile> configurationFilesComboBoxModel;
 	private final ExportTreeModel treeModel;
 	private final Event<?> configurationChanged = Event.event();
 	private final State selected;
 
-	EntityTableExportModel(EntityTableModel<?> tableModel, FilterTableColumnModel<Attribute<?>> columnModel) {
+	private @Nullable Dimension dialogSize;
+
+	EntityTableExportModel(EntityTableModel<?> tableModel) {
 		this.tableModel = tableModel;
-		this.columnModel = columnModel;
 		this.connectionProvider = tableModel.connectionProvider();
 		this.treeModel = new ExportTreeModel(tableModel.entityDefinition(), tableModel.connectionProvider().entities());
 		this.configurationFilesComboBoxModel = FilterComboBoxModel.builder()
@@ -143,6 +144,14 @@ final class EntityTableExportModel {
 		return configurationChanged.observer();
 	}
 
+	void setDialogSize(Dimension dialogSize) {
+		this.dialogSize = dialogSize;
+	}
+
+	@Nullable Dimension getDialogSize() {
+		return dialogSize;
+	}
+
 	void addConfigurationFiles(Collection<File> configurationFiles) {
 		List<DefaultConfigurationFile> files = configurationFiles.stream()
 						.map(DefaultConfigurationFile::new)
@@ -158,10 +167,6 @@ final class EntityTableExportModel {
 
 	void clearConfigurationFiles() {
 		configurationFilesComboBoxModel.items().clear();
-	}
-
-	void applyAttributePreferences(ConfigurationFile file) {
-		applyAttributesAndForeignKeys(((DefaultConfigurationFile) file).json, treeModel.getRoot());
 	}
 
 	void applyPreferences(JSONObject preferences) {
@@ -185,6 +190,15 @@ final class EntityTableExportModel {
 									.filter(configurationFile -> configurationFile.file().equals(file))
 									.findFirst()
 									.ifPresent(configurationFile -> configurationFilesComboBoxModel.selection().item().set(configurationFile));
+				}
+			}
+		}
+		if (preferences.has(DIALOG_SIZE_KEY)) {
+			String dialogSizePreferences = preferences.getString(DIALOG_SIZE_KEY);
+			if (dialogSizePreferences != null) {
+				String[] size = dialogSizePreferences.split("x");
+				if (size.length == 2) {
+					dialogSize = new Dimension(Integer.parseInt(size[0]), Integer.parseInt(size[1]));
 				}
 			}
 		}
@@ -215,6 +229,9 @@ final class EntityTableExportModel {
 			configurationFilesComboBoxModel.selection().item().optional().ifPresent(selectedConfigurationFile ->
 							json.put(SELECTED_CONFIGURATION_FILE_KEY, selectedConfigurationFile.file().getAbsolutePath()));
 		}
+		if (dialogSize != null) {
+			json.put(DIALOG_SIZE_KEY, dialogSize.width + "x" + dialogSize.height);
+		}
 
 		return json;
 	}
@@ -237,7 +254,7 @@ final class EntityTableExportModel {
 			configurationChanged.run();
 		}
 		else {
-			applyAttributePreferences(configurationFile);
+			applyAttributesAndForeignKeys(((DefaultConfigurationFile) configurationFile).json, treeModel.getRoot());
 		}
 	}
 
@@ -255,13 +272,7 @@ final class EntityTableExportModel {
 		treeModel.setRoot(new EntityNode(entityDefinition(), tableModel.entities()));
 		Enumeration<TreeNode> children = treeModel.getRoot().children();
 		while (children.hasMoreElements()) {
-			TreeNode child = children.nextElement();
-			if (child instanceof AttributeNode) {
-				Attribute<?> attribute = ((AttributeNode) child).definition().attribute();
-				if (columnModel.contains(attribute) && columnModel.visible(attribute).is()) {
-					((AttributeNode) child).selected().set(true);
-				}
-			}
+			((AttributeNode) children.nextElement()).selected().set(true);
 		}
 		configurationChanged.run();
 	}

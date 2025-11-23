@@ -75,7 +75,7 @@ final class EntityTablePanelPreferences {
 	EntityTablePanelPreferences(EntityTablePanel tablePanel) {
 		this(createColumnPreferences(tablePanel.table().columnModel()),
 						createConditionPreferences(tablePanel.tableModel()),
-						new ExportPreferences(tablePanel.exportPanel()),
+						new ExportPreferences(tablePanel.exportModel()),
 						tablePanel.preferencesKey() + COLUMN_PREFERENCES,
 						tablePanel.preferencesKey() + CONDITIONS_PREFERENCES,
 						tablePanel.preferencesKey() + EXPORT_PREFERENCES);
@@ -112,7 +112,7 @@ final class EntityTablePanelPreferences {
 		}
 		if (exportPreferences != null) {// not strictly necessary, but prevents null warning
 			try {
-				exportPreferences.apply(tablePanel.exportPanel());
+				exportPreferences.apply(tablePanel.exportModel());
 			}
 			catch (Exception e) {
 				LOG.error("Error while applying export preferences: {}", exportPreferences, e);

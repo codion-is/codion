@@ -60,6 +60,8 @@ Codion Change Log
 - EntityTableExportPanel UI reorganized, help button added, related refactoring.
 - EntityTableExportModel, entity type added to json, validated on open file, related refactoring.
 - EntityTableExportPanel, clear control added to configuration file combo box popup menu.
+- EntityTablePanel, export panel now initialized lazily.
+- EntityExportPanel refactored, no longer modal, model now handles all preferences.
 
 ## 0.18.59
 ### is.codion.common.model

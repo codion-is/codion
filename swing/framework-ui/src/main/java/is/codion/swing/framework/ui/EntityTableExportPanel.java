@@ -28,7 +28,6 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
 import is.codion.swing.framework.ui.EntityTableExportModel.ConfigurationFile;
 import is.codion.swing.framework.ui.EntityTableExportModel.ExportTask;
@@ -59,7 +58,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
@@ -87,7 +85,6 @@ final class EntityTableExportPanel extends JPanel {
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityTableExportPanel.class, getBundle(EntityTableExportPanel.class.getName()));
 
-	private static final String DIALOG_SIZE_KEY = "dialogSize";
 	private static final String TSV = "tsv";
 	private static final String JSON = "json";
 	private static final FileNameExtensionFilter CONFIGURATION_FILE =
@@ -101,8 +98,6 @@ final class EntityTableExportPanel extends JPanel {
 	private final State includedNodesSelected = State.state();
 	private final ObservableState moveEnabled = State.or(refreshingNodes,
 					State.and(singleLevelSelection, includedNodesSelected));
-
-	private @Nullable Dimension dialogSize;
 
 	private final Control selectDefault = Control.builder()
 					.command(this::selectDefaults)
@@ -142,7 +137,7 @@ final class EntityTableExportPanel extends JPanel {
 	private final ToggleControl allRows;
 	private final ToggleControl selectedRows;
 
-	EntityTableExportPanel(SwingEntityTableModel tableModel, EntityTableExportModel model) {
+	EntityTableExportPanel(EntityTableExportModel model) {
 		super(borderLayout());
 		this.model = model;
 		this.exportTree = createTree();
@@ -150,7 +145,6 @@ final class EntityTableExportPanel extends JPanel {
 						.toggle(model.selected())
 						.caption(MESSAGES.getString("rows_selected"))
 						.mnemonic(MESSAGES.getString("rows_selected_mnemonic").charAt(0))
-						.enabled(tableModel.selection().empty().not())
 						.build();
 		this.allRows = Control.builder()
 						.toggle(State.state(!model.selected().is()))
@@ -161,14 +155,21 @@ final class EntityTableExportPanel extends JPanel {
 		initializeUI();
 	}
 
-	void export(JComponent dialogOwner) {
-		dialogSize = Dialogs.builder()
-						.component(this)
-						.owner(dialogOwner)
-						.title(MESSAGES.getString("export"))
-						.size(dialogSize)
-						.show()
-						.getSize();
+	void show(JComponent dialogOwner) {
+		if (isShowing()) {
+			Ancestor.window().of(this).toFront();
+		}
+		else {
+			Dialogs.builder()
+							.component(this)
+							.owner(dialogOwner)
+							.modal(false)
+							.title(MESSAGES.getString("export"))
+							.size(model.getDialogSize())
+							.onClosed(event ->
+											model.setDialogSize(event.getWindow().getSize()))
+							.show();
+		}
 	}
 
 	EntityTableExportModel model() {
@@ -514,28 +515,6 @@ final class EntityTableExportPanel extends JPanel {
 		return hasSelectedDescendants;
 	}
 
-	private JSONObject createPreferences() {
-		JSONObject preferences = model.createPreferences();
-		if (dialogSize != null) {
-			preferences.put(DIALOG_SIZE_KEY, dialogSize.width + "x" + dialogSize.height);
-		}
-
-		return preferences;
-	}
-
-	private void applyPreferences(JSONObject preferences) {
-		model.applyPreferences(preferences);
-		if (preferences.has(DIALOG_SIZE_KEY)) {
-			String dialogSizePreferences = preferences.getString(DIALOG_SIZE_KEY);
-			if (dialogSizePreferences != null) {
-				String[] size = dialogSizePreferences.split("x");
-				if (size.length == 2) {
-					dialogSize = new Dimension(Integer.parseInt(size[0]), Integer.parseInt(size[1]));
-				}
-			}
-		}
-	}
-
 	private void updateIncludedNodesSelected() {
 		includedNodesSelected.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
 						.map(TreePath::getLastPathComponent)
@@ -590,19 +569,12 @@ final class EntityTableExportPanel extends JPanel {
 			preferences = new JSONObject(preferencesString);
 		}
 
-		ExportPreferences(@Nullable EntityTableExportPanel exportPanel) {
-			if (exportPanel == null) {
-				preferences = new JSONObject("{}");
-			}
-			else {
-				preferences = exportPanel.createPreferences();
-			}
+		ExportPreferences(EntityTableExportModel exportModel) {
+			preferences = exportModel.createPreferences();
 		}
 
-		void apply(@Nullable EntityTableExportPanel exportPanel) {
-			if (exportPanel != null) {
-				exportPanel.applyPreferences(preferences);
-			}
+		void apply(EntityTableExportModel exportModel) {
+			exportModel.applyPreferences(preferences);
 		}
 
 		JSONObject preferences() {

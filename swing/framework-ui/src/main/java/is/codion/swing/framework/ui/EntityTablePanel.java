@@ -459,7 +459,7 @@ public class EntityTablePanel extends JPanel {
 	private final Controls.Layout popupMenuLayout;
 	private final Controls.Layout toolBarLayout;
 	private final SwingEntityTableModel tableModel;
-	private final @Nullable EntityTableExportPanel exportPanel;
+	private final EntityTableExportModel exportModel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
@@ -468,6 +468,7 @@ public class EntityTablePanel extends JPanel {
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 
+	private @Nullable EntityTableExportPanel exportPanel;
 	private @Nullable JScrollPane conditionPanelScrollPane;
 	private @Nullable JScrollPane filterPanelScrollPane;
 	private @Nullable StatusPanel statusPanel;
@@ -502,7 +503,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
-		this.exportPanel = createExportPanel();
+		this.exportModel = new EntityTableExportModel(tableModel);
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();
@@ -533,7 +534,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
-		this.exportPanel = createExportPanel();
+		this.exportModel = new EntityTableExportModel(tableModel);
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();
@@ -1021,8 +1022,16 @@ public class EntityTablePanel extends JPanel {
 		return configuration.deleteConfirmer.confirm(this);
 	}
 
-	@Nullable EntityTableExportPanel exportPanel() {
+	final @Nullable EntityTableExportPanel exportPanel() {
+		if (exportPanel == null) {
+			exportPanel = createExportPanel();
+		}
+
 		return exportPanel;
+	}
+
+	final EntityTableExportModel exportModel() {
+		return exportModel;
 	}
 
 	final void writeLegacyPreferences() {
@@ -1393,7 +1402,12 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void export() {
-		exportPanel.export(this);
+		if (exportPanel == null) {
+			exportPanel = createExportPanel();
+		}
+		if (exportPanel != null) {
+			exportPanel.show(this);
+		}
 	}
 
 	private boolean includeAddControl() {
@@ -1461,7 +1475,7 @@ public class EntityTablePanel extends JPanel {
 			return null;
 		}
 
-		return new EntityTableExportPanel(tableModel, new EntityTableExportModel(tableModel, table.columnModel()));
+		return new EntityTableExportPanel(exportModel);
 	}
 
 	private @Nullable TableConditionPanel<Attribute<?>> createTableConditionPanel() {
