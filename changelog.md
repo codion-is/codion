@@ -27,6 +27,7 @@ Codion Change Log
 - FilterTableCellRenderer.Builder.toolTipData() replaced with toolTip() function.
 - FilterTableCellRenderer.Configurer added along with Builder.configurer(), simplified and refactored.
 - FilterTableCellRenderer.Factory.create() table model parameter replaced with table.
+- FilterTableHeaderRenderer.Factory.create() table model parameter replaced with table.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 - DerivedAttributeDefinition.sources() renamed attributes().

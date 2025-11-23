@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import javax.swing.table.TableCellRenderer;
 
@@ -42,23 +41,25 @@ public interface FilterTableHeaderRenderer extends TableCellRenderer {
 
 	/**
 	 * A factory for {@link FilterTableHeaderRenderer} instances.
+	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
-	interface Factory<C> {
+	interface Factory<R, C> {
 
 		/**
 		 * @param column the column
-		 * @param tableModel the table model
+		 * @param table the table
 		 * @return a {@link FilterTableHeaderRenderer} instance for the given column
 		 */
-		FilterTableHeaderRenderer create(FilterTableColumn<C> column, FilterTableModel<?, C> tableModel);
+		FilterTableHeaderRenderer create(FilterTableColumn<C> column, FilterTable<R, C> table);
 	}
 
 	/**
+	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 * @return a {@link FilterTableHeaderRenderer.Factory} instance
 	 */
-	static <C> FilterTableHeaderRenderer.Factory<C> factory() {
-		return (Factory<C>) DefaultFilterTableHeaderRenderer.FACTORY;
+	static <R, C> FilterTableHeaderRenderer.Factory<R, C> factory() {
+		return (Factory<R, C>) DefaultFilterTableHeaderRenderer.FACTORY;
 	}
 }

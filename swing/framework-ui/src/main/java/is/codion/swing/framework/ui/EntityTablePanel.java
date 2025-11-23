@@ -2733,17 +2733,20 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private static final class EntityTableHeaderRendererFactory implements FilterTableHeaderRenderer.Factory<Attribute<?>> {
+	private static final class EntityTableHeaderRendererFactory implements FilterTableHeaderRenderer.Factory<Entity, Attribute<?>> {
 
 		@Override
-		public FilterTableHeaderRenderer create(FilterTableColumn<Attribute<?>> column, FilterTableModel<?, Attribute<?>> tableModel) {
-			return new EntityTableHeaderRenderer(column, (SwingEntityTableModel) tableModel);
+		public FilterTableHeaderRenderer create(FilterTableColumn<Attribute<?>> column, FilterTable<Entity, Attribute<?>> table) {
+			requireNonNull(column);
+			requireNonNull(table);
+
+			return new EntityTableHeaderRenderer(column, table);
 		}
 	}
 
 	private static final class EntityTableHeaderRenderer implements FilterTableHeaderRenderer {
 
-		private static final FilterTableHeaderRenderer.Factory<Attribute<?>> DEFAULT_FACTORY = FilterTableHeaderRenderer.factory();
+		private static final FilterTableHeaderRenderer.Factory<Entity, Attribute<?>> DEFAULT_FACTORY = FilterTableHeaderRenderer.factory();
 
 		private final TableCellRenderer wrappedRenderer;
 		private final FilterTableColumn<Attribute<?>> tableColumn;
@@ -2751,10 +2754,10 @@ public class EntityTablePanel extends JPanel {
 
 		private boolean conditionIndicator;
 
-		private EntityTableHeaderRenderer(FilterTableColumn<Attribute<?>> column, SwingEntityTableModel tableModel) {
-			this.wrappedRenderer = DEFAULT_FACTORY.create(column, tableModel);
+		private EntityTableHeaderRenderer(FilterTableColumn<Attribute<?>> column, FilterTable<Entity, Attribute<?>> table) {
+			this.wrappedRenderer = DEFAULT_FACTORY.create(column, table);
 			this.tableColumn = column;
-			this.condition = tableModel.queryModel().condition();
+			this.condition = ((SwingEntityTableModel) table.model()).queryModel().condition();
 		}
 
 		@Override

@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSort;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
 
@@ -42,12 +41,12 @@ import static is.codion.swing.common.ui.color.Colors.darker;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createCompoundBorder;
 
-final class DefaultFilterTableHeaderRenderer<C> implements FilterTableHeaderRenderer {
+final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderRenderer {
 
 	private static final int SORT_ICON_SIZE = 5;
 	private static final double FOCUSED_COLUMN_DARKENING_FACTOR = 0.8;
 
-	static final Factory<?> FACTORY = new DefaultFactory<>();
+	static final Factory<?, ?> FACTORY = new DefaultFactory<>();
 
 	private final TableConditionModel<C> filters;
 	private final ColumnSort<C> columnSort;
@@ -55,9 +54,9 @@ final class DefaultFilterTableHeaderRenderer<C> implements FilterTableHeaderRend
 	private final TableCellRenderer columnCellRenderer;
 	private final boolean focusedColumnIndicator = FOCUSED_COLUMN_INDICATOR.getOrThrow();
 
-	private DefaultFilterTableHeaderRenderer(FilterTableModel<?, C> tableModel, FilterTableColumn<C> column) {
-		this.filters = tableModel.filters();
-		this.columnSort = tableModel.sort().columns();
+	private DefaultFilterTableHeaderRenderer(FilterTable<R, C> table, FilterTableColumn<C> column) {
+		this.filters = table.model().filters();
+		this.columnSort = table.model().sort().columns();
 		this.tableColumn = column;
 		this.columnCellRenderer = column.getCellRenderer();
 	}
@@ -164,11 +163,11 @@ final class DefaultFilterTableHeaderRenderer<C> implements FilterTableHeaderRend
 		}
 	}
 
-	private static class DefaultFactory<C> implements Factory<C> {
+	private static class DefaultFactory<R, C> implements Factory<R, C> {
 
 		@Override
-		public FilterTableHeaderRenderer create(FilterTableColumn<C> column, FilterTableModel<?, C> tableModel) {
-			return new DefaultFilterTableHeaderRenderer<>(requireNonNull(tableModel), requireNonNull(column));
+		public FilterTableHeaderRenderer create(FilterTableColumn<C> column, FilterTable<R, C> table) {
+			return new DefaultFilterTableHeaderRenderer<>(requireNonNull(table), requireNonNull(column));
 		}
 	}
 }
