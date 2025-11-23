@@ -118,7 +118,6 @@ public interface ControlBuilder<C extends Control, B extends ControlBuilder<C, B
 
 	/**
 	 * @return a new Control instance
-	 * @throws IllegalStateException in case no command has been set
 	 */
 	C build();
 

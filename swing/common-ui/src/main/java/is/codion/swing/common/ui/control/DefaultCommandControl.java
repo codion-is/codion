@@ -35,10 +35,10 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 	private final @Nullable ActionCommand actionCommand;
 	private final Consumer<Exception> onException;
 
-	private DefaultCommandControl(@Nullable Command command, @Nullable ActionCommand actionCommand, DefaultCommandControlBuilder builder) {
+	private DefaultCommandControl(DefaultCommandControlBuilder builder) {
 		super(builder);
-		this.command = command;
-		this.actionCommand = actionCommand;
+		this.command = builder.command;
+		this.actionCommand = builder.actionCommand;
 		this.onException = builder.onException;
 	}
 
@@ -64,18 +64,15 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 
 	@Override
 	public CommandControlBuilder copy(Command command) {
-		return copyBuilder(command, null);
+		return copyBuilder(requireNonNull(command), null);
 	}
 
 	@Override
 	public CommandControlBuilder copy(ActionCommand actionCommand) {
-		return copyBuilder(null, actionCommand);
+		return copyBuilder(null, requireNonNull(actionCommand));
 	}
 
 	private CommandControlBuilder copyBuilder(@Nullable Command command, @Nullable ActionCommand actionCommand) {
-		if (command == null && actionCommand == null) {
-			throw new NullPointerException("Command or ActionCommand must be specified");
-		}
 		CommandControlBuilder builder = new DefaultCommandControlBuilder(command, actionCommand)
 						.enabled(enabled())
 						.onException(onException);
@@ -92,6 +89,9 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 		private Consumer<Exception> onException = DEFAULT_EXCEPTION_HANDLER;
 
 		DefaultCommandControlBuilder(@Nullable Command command, @Nullable ActionCommand actionCommand) {
+			if (command == null && actionCommand == null) {
+				throw new NullPointerException("Command or ActionCommand must be specified");
+			}
 			this.command = command;
 			this.actionCommand = actionCommand;
 		}
@@ -104,7 +104,7 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 
 		@Override
 		public CommandControl build() {
-			return new DefaultCommandControl(command, actionCommand, this);
+			return new DefaultCommandControl(this);
 		}
 	}
 

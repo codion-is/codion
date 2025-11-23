@@ -29,6 +29,7 @@ Codion Change Log
 - FilterTableCellRenderer.Factory.create() table model parameter replaced with table.
 - FilterTableHeaderRenderer.Factory.create() table model parameter replaced with table.
 - ComponentBuilder.popupControls(BiConsumer<C, ControlsBuilder>) added, popupMenuControl() and popupMenuControls() renamed popupControl() and popupControls().
+- DefaultCommandControl, minor refactoring.
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 - DerivedAttributeDefinition.sources() renamed attributes().
