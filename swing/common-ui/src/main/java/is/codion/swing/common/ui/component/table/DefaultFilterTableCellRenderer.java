@@ -687,11 +687,14 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
-	static final class DefaultFactory<R, C> implements Factory<R, C, FilterTableModel<R, C>> {
+	static final class DefaultFactory<R, C> implements Factory<R, C> {
 
 		@Override
-		public FilterTableCellRenderer<R, C, ?> create(C identifier, FilterTableModel<R, C> tableModel) {
-			return (FilterTableCellRenderer<R, C, ?>) new DefaultBuilder<>(tableModel.getColumnClass(identifier)).build();
+		public FilterTableCellRenderer<R, C, ?> create(C identifier, FilterTable<R, C> table) {
+			requireNonNull(identifier);
+			requireNonNull(table);
+
+			return (FilterTableCellRenderer<R, C, ?>) new DefaultBuilder<>(table.model().getColumnClass(identifier)).build();
 		}
 	}
 

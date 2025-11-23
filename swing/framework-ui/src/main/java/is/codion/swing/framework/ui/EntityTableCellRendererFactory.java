@@ -39,15 +39,17 @@ import static java.util.Objects.requireNonNull;
 /**
  * A {@link FilterTableCellRenderer.Factory} for {@link EntityTablePanel}
  */
-public class EntityTableCellRendererFactory implements FilterTableCellRenderer.Factory<Entity, Attribute<?>, SwingEntityTableModel> {
+public class EntityTableCellRendererFactory implements FilterTableCellRenderer.Factory<Entity, Attribute<?>> {
 
 	/**
 	 * @param attribute the attribute
-	 * @param tableModel the table model
+	 * @param table the table
 	 * @return a new {@link FilterTableCellRenderer} for the given attribute
 	 */
-	public final FilterTableCellRenderer<Entity, Attribute<?>, ?> create(Attribute<?> attribute, SwingEntityTableModel tableModel) {
-		return create(requireNonNull(tableModel).entityDefinition().attributes().definition(attribute), tableModel);
+	public final FilterTableCellRenderer<Entity, Attribute<?>, ?> create(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
+		SwingEntityTableModel model = (SwingEntityTableModel) requireNonNull(table).model();
+
+		return create(model.entityDefinition().attributes().definition(attribute), model);
 	}
 
 	/**

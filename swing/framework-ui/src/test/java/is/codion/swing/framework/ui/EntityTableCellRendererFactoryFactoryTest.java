@@ -23,6 +23,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
@@ -46,8 +47,8 @@ public class EntityTableCellRendererFactoryFactoryTest {
 	void test() {
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
 		tablePanel.tableModel().items().refresh();
-		FilterTableCellRenderer.Factory<Entity, Attribute<?>, SwingEntityTableModel> factory = new EntityTableCellRendererFactory();
-		FilterTableCellRenderer<Entity, Attribute<?>, ?> renderer = factory.create(Employee.NAME, tablePanel.tableModel());
+		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRendererFactory();
+		FilterTableCellRenderer<Entity, Attribute<?>, ?> renderer = factory.create(Employee.NAME, tablePanel.table());
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 0);
@@ -63,7 +64,9 @@ public class EntityTableCellRendererFactoryFactoryTest {
 
 	@Test
 	void entityMismatch() {
-		FilterTableCellRenderer.Factory<Entity, Attribute<?>, SwingEntityTableModel> factory = new EntityTableCellRendererFactory();
-		assertThrows(IllegalArgumentException.class, () -> factory.create(Department.NAME, new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER)));
+		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRendererFactory();
+		assertThrows(IllegalArgumentException.class, () -> factory.create(Department.NAME, FilterTable.builder()
+						.model(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER))
+						.build()));
 	}
 }
