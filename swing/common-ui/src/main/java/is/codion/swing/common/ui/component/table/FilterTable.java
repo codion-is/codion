@@ -805,7 +805,7 @@ public final class FilterTable<R, C> extends JTable {
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ESCAPE)
 										.action(requestTableFocus))
-						.popupMenuControls(textField -> searchFieldPopupMenuControls())
+						.popupControls(textField -> searchFieldPopupMenuControls())
 						.hint(Messages.find() + "...")
 						.onTextChanged(this::onSearchTextChanged)
 						.onBuild(field -> KeyEvents.builder()

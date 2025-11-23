@@ -28,6 +28,7 @@ Codion Change Log
 - FilterTableCellRenderer.Configurer added along with Builder.configurer(), simplified and refactored.
 - FilterTableCellRenderer.Factory.create() table model parameter replaced with table.
 - FilterTableHeaderRenderer.Factory.create() table model parameter replaced with table.
+- ComponentBuilder.popupControls(BiConsumer<C, ControlsBuilder>) added, popupMenuControl() and popupMenuControls() renamed popupControl() and popupControls().
 ### is.codion.framework.domain
 - EntityType.define() and AttributeDefiner.define() renamed as().
 - DerivedAttributeDefinition.sources() renamed attributes().
@@ -57,6 +58,7 @@ Codion Change Log
 - EntityTableExportPanel, only selected nodes can be moved, ALT-space toggles one level of foreign key items.
 - EntityTableExportPanel UI reorganized, help button added, related refactoring.
 - EntityTableExportModel, entity type added to json, validated on open file, related refactoring.
+- EntityTableExportPanel, clear control added to configuration file combo box popup menu.
 
 ## 0.18.59
 ### is.codion.common.model

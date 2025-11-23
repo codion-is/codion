@@ -213,7 +213,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.keyCode(VK_ENTER)
 										.modifiers(MENU_SHORTCUT_MASK)
 										.action(populateSchemaControl))
-						.popupMenuControls(table -> Controls.builder()
+						.popupControls(table -> Controls.builder()
 										.control(populateSchemaControl)
 										.control(schemaSettingsControl)
 										.build())
@@ -239,7 +239,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build())
 						.hiddenColumns(EntityColumns.DTO)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.popupMenuControl(FilterTable::createToggleAutoResizeModeControls)
+						.popupControl(FilterTable::createToggleAutoResizeModeControls)
 						.build();
 	}
 

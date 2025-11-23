@@ -28,6 +28,7 @@ import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -68,6 +70,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	private final List<Consumer<C>> buildConsumers = new ArrayList<>(1);
 	private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
+	private final List<BiConsumer<C, ControlsBuilder>> popupControls = new ArrayList<>();
 	private final Map<Object, @Nullable Object> clientProperties = new HashMap<>();
 	private final List<FocusListener> focusListeners = new ArrayList<>();
 	private final List<MouseListener> mouseListeners = new ArrayList<>();
@@ -238,19 +241,25 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	@Override
-	public final B popupMenuControl(Function<C, Control> popupMenuControl) {
-		requireNonNull(popupMenuControl);
-
-		return popupMenuControls(comp -> Controls.controls(popupMenuControl.apply(comp)));
+	public final B popupControls(BiConsumer<C, ControlsBuilder> popupControls) {
+		this.popupControls.add(requireNonNull(popupControls));
+		return self();
 	}
 
 	@Override
-	public final B popupMenuControls(Function<C, Controls> popupMenuControls) {
+	public final B popupControl(Function<C, Control> popupMenuControl) {
+		requireNonNull(popupMenuControl);
+
+		return popupControls((component, controls) ->
+						controls.control(popupMenuControl.apply(component)));
+	}
+
+	@Override
+	public final B popupControls(Function<C, Controls> popupMenuControls) {
 		requireNonNull(popupMenuControls);
 
-		return popupMenu(comp -> MenuBuilder.builder()
-						.controls(popupMenuControls.apply(comp))
-						.buildPopupMenu());
+		return popupControls((component, controls) ->
+						controls.controls(popupMenuControls.apply(component)));
 	}
 
 	@Override
@@ -504,6 +513,13 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		}
 		if (popupMenu != null) {
 			component.setComponentPopupMenu(popupMenu.apply(component));
+		}
+		else if (!popupControls.isEmpty()) {
+			ControlsBuilder controlsBuilder = Controls.builder();
+			popupControls.forEach(controls -> controls.accept(component, controlsBuilder));
+			component.setComponentPopupMenu(MenuBuilder.builder()
+						.controls(controlsBuilder.build())
+						.buildPopupMenu());
 		}
 		if (toolTipTextObservable != null) {
 			component.setToolTipText(toolTipTextObservable.get());

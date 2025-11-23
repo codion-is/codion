@@ -1089,7 +1089,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 														.value(PropertyStore.systemProperties())
 														.editable(false)
 														.font(font -> new Font(Font.MONOSPACED, font.getStyle(), font.getSize()))
-														.popupMenuControl(textArea -> Control.builder()
+														.popupControl(textArea -> Control.builder()
 																		.command(() -> {
 																			String text = textArea.getSelectedText();
 																			if (Text.nullOrEmpty(text)) {

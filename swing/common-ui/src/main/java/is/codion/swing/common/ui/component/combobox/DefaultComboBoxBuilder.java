@@ -66,10 +66,11 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 		value((T) comboBoxModel.getSelectedItem());
 		preferredHeight(preferredTextFieldHeight());
 		if (comboBoxModel instanceof FilterComboBoxModel) {
-			popupMenuControl(comboBox -> Control.builder()
-							.command(new RefreshCommand((FilterComboBoxModel<?>) comboBoxModel))
-							.caption(Messages.refresh())
-							.build());
+			popupControls((comboBox, controls) ->
+							controls.control(Control.builder()
+											.command(new RefreshCommand((FilterComboBoxModel<?>) comboBoxModel))
+											.caption(Messages.refresh())
+											.build()));
 		}
 	}
 

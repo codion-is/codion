@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
@@ -49,6 +50,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.beans.PropertyChangeListener;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -214,18 +216,28 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B enabled(@Nullable ObservableState enabled);
 
 	/**
-	 * @param popupMenuControl a function, receiving the component being built, providing the control to base a popup menu on
+	 * @param popupMenuControl a function, receiving the component being built, providing a control to add to the popup menu
 	 * @return this builder instance
 	 */
-	B popupMenuControl(@Nullable Function<C, Control> popupMenuControl);
+	B popupControl(Function<C, Control> popupMenuControl);
 
 	/**
-	 * @param popupMenuControls a function, receiving the component being built, providing the controls to base a popup menu on
+	 * @param popupMenuControls a function, receiving the component being built, providing controls to add to the popup menu
 	 * @return this builder instance
 	 */
-	B popupMenuControls(@Nullable Function<C, Controls> popupMenuControls);
+	B popupControls(Function<C, Controls> popupMenuControls);
 
 	/**
+	 * Use {@link ControlsBuilder#removeAll()} in order to clear any previously added controls.
+	 * @param popupMenuControl a function, receiving the component being built and the {@link ControlsBuilder} on which to base the popup menu.
+	 * @return this builder instance
+	 * @see #popupControl(Function)
+	 * @see #popupControls(Function)
+	 */
+	B popupControls(BiConsumer<C, ControlsBuilder> popupMenuControl);
+
+	/**
+	 * Overrides {@link #popupControls(Function)}, {@link #popupControls(BiConsumer)} and {@link #popupControl(Function)}
 	 * @param popupMenu a function, receiving the component being built, providing the popup menu
 	 * @return this builder instance
 	 * @see JComponent#setComponentPopupMenu(JPopupMenu)

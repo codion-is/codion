@@ -444,7 +444,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.scrollToSelectedItem(false)
 						.cellRenderer(ApplicationRow.DURATION, Long.class, renderer -> renderer
 										.formatter(duration -> duration == null ? "" : DURATION_FORMAT.format(duration)))
-						.popupMenuControls(table -> Controls.builder()
+						.popupControls(table -> Controls.builder()
 										.control(Control.builder()
 														.command(table.model().items()::refresh)
 														.caption("Refresh")

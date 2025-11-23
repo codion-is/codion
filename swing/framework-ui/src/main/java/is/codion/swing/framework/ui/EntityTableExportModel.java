@@ -156,6 +156,10 @@ final class EntityTableExportModel {
 		}
 	}
 
+	void clearConfigurationFiles() {
+		configurationFilesComboBoxModel.items().clear();
+	}
+
 	void applyAttributePreferences(ConfigurationFile file) {
 		applyAttributesAndForeignKeys(((DefaultConfigurationFile) file).json, treeModel.getRoot());
 	}
