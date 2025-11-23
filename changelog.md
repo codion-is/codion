@@ -56,6 +56,7 @@ Codion Change Log
 - EntityTableExportPanel now collapses unselected nodes when applying configuration.
 - EntityTableExportPanel, only selected nodes can be moved, ALT-space toggles one level of foreign key items.
 - EntityTableExportPanel UI reorganized, help button added, related refactoring.
+- EntityTableExportModel, entity type added to json, validated on open file, related refactoring.
 
 ## 0.18.59
 ### is.codion.common.model

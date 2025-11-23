@@ -61,7 +61,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -82,6 +81,7 @@ final class EntityTableExportModel {
 
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
+	private static final String ENTITY_TYPE_KEY = "entityType";
 	private static final String ATTRIBUTES_KEY = "attributes";
 	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
 	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
@@ -144,44 +144,43 @@ final class EntityTableExportModel {
 	}
 
 	void addConfigurationFiles(Collection<File> configurationFiles) {
-		Iterator<File> iterator = configurationFiles.iterator();
-		if (iterator.hasNext()) {
-			addAndSelect(new DefaultConfigurationFile(iterator.next()));
+		List<DefaultConfigurationFile> files = configurationFiles.stream()
+						.map(DefaultConfigurationFile::new)
+						.collect(toList());
+		validateEntityType(files);
+		if (files.size() == 1) {
+			addAndSelect(files.get(0));
 		}
-		while (iterator.hasNext()) {
-			configurationFilesComboBoxModel.items().add(new DefaultConfigurationFile(iterator.next()));
-		}
-	}
-
-	void applyAttributePreferences(File file) {
-		try {
-			applyAttributePreferences(new JSONObject(new String(Files.readAllBytes(file.toPath()), UTF_8)));
-		}
-		catch (IOException e) {
-			throw new UncheckedIOException(e);
+		else {
+			files.forEach(file -> configurationFilesComboBoxModel.items().add(file));
 		}
 	}
 
-	void applyAttributePreferences(JSONObject preferences) {
-		applyAttributesAndForeignKeys(preferences, treeModel.getRoot());
+	void applyAttributePreferences(ConfigurationFile file) {
+		applyAttributesAndForeignKeys(((DefaultConfigurationFile) file).json, treeModel.getRoot());
 	}
 
 	void applyPreferences(JSONObject preferences) {
 		selectDefaults();
 		if (preferences.has(CONFIGURATION_FILES_KEY)) {
-			JSONArray files = preferences.getJSONArray(CONFIGURATION_FILES_KEY);
-			files.forEach(filePath -> {
+			JSONArray fileArray = preferences.getJSONArray(CONFIGURATION_FILES_KEY);
+			List<File> files = new ArrayList<>(fileArray.length());
+			fileArray.forEach(filePath -> {
 				if (filePath instanceof String) {
 					File file = new File((String) filePath);
 					if (file.exists()) {
-						configurationFilesComboBoxModel.items().add(new DefaultConfigurationFile(file));
+						files.add(file);
 					}
 				}
 			});
+			addConfigurationFiles(files);
 			if (preferences.has(SELECTED_CONFIGURATION_FILE_KEY)) {
 				File file = new File(preferences.getString(SELECTED_CONFIGURATION_FILE_KEY));
 				if (file.exists()) {
-					configurationFilesComboBoxModel.selection().item().set(new DefaultConfigurationFile(file));
+					configurationFilesComboBoxModel.items().get().stream()
+									.filter(configurationFile -> configurationFile.file().equals(file))
+									.findFirst()
+									.ifPresent(configurationFile -> configurationFilesComboBoxModel.selection().item().set(configurationFile));
 				}
 			}
 		}
@@ -189,7 +188,7 @@ final class EntityTableExportModel {
 
 	void writeConfig(File file) {
 		try {
-			Files.write(file.toPath(), createExportPreferences().toString().getBytes(UTF_8));
+			Files.write(file.toPath(), createExportPreferences().toString(2).getBytes(UTF_8));
 			addAndSelect(new DefaultConfigurationFile(file));
 		}
 		catch (IOException e) {
@@ -217,10 +216,6 @@ final class EntityTableExportModel {
 	}
 
 	private JSONObject createExportPreferences() {
-		if (isDefaultConfiguration()) {
-			return new JSONObject("{}");
-		}
-
 		return attributesToJson(treeModel.getRoot().children());
 	}
 
@@ -232,13 +227,13 @@ final class EntityTableExportModel {
 						.collect(toList());
 	}
 
-	private void configurationFileSelected(@Nullable ConfigurationFile fileItem) {
-		if (fileItem == null || fileItem.file() == null) {
+	private void configurationFileSelected(@Nullable ConfigurationFile configurationFile) {
+		if (configurationFile == null || configurationFile.file() == null) {
 			selectDefaults();
 			configurationChanged.run();
 		}
 		else {
-			applyAttributePreferences(fileItem.file());
+			applyAttributePreferences(configurationFile);
 		}
 	}
 
@@ -267,45 +262,6 @@ final class EntityTableExportModel {
 		configurationChanged.run();
 	}
 
-	private boolean isDefaultConfiguration() {
-		Enumeration<TreeNode> children = treeModel.getRoot().children();
-		while (children.hasMoreElements()) {
-			TreeNode child = children.nextElement();
-			if (child instanceof AttributeNode) {
-				AttributeNode node = (AttributeNode) child;
-				Attribute<?> attribute = node.definition().attribute();
-				// Default: first-level visible columns are selected, hidden are not
-				boolean shouldBeSelected = columnModel.contains(attribute) && columnModel.visible(attribute).is();
-				if (node.selected().is() != shouldBeSelected) {
-					return false;
-				}
-				if (hasSelectedChildren(node)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	private static boolean hasSelectedChildren(AttributeNode node) {
-		Enumeration<TreeNode> children = node.children();
-		while (children.hasMoreElements()) {
-			TreeNode child = children.nextElement();
-			if (child instanceof AttributeNode) {
-				AttributeNode childNode = (AttributeNode) child;
-				if (childNode.selected().is()) {
-					return true;
-				}
-				if (hasSelectedChildren(childNode)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
 	private void select(boolean select) {
 		Enumeration<TreeNode> enumeration = treeModel.getRoot().breadthFirstEnumeration();
 		enumeration.nextElement();// root
@@ -314,7 +270,7 @@ final class EntityTableExportModel {
 		}
 	}
 
-	private static JSONObject attributesToJson(Enumeration<TreeNode> nodes) {
+	private JSONObject attributesToJson(Enumeration<TreeNode> nodes) {
 		JSONArray attributes = new JSONArray();
 		while (nodes.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) nodes.nextElement();
@@ -341,6 +297,7 @@ final class EntityTableExportModel {
 		}
 
 		JSONObject result = new JSONObject();
+		result.put(ENTITY_TYPE_KEY, entityDefinition().type().name());
 		if (!attributes.isEmpty()) {
 			result.put(ATTRIBUTES_KEY, attributes);
 		}
@@ -414,6 +371,16 @@ final class EntityTableExportModel {
 			parent.remove(currentIndex);
 			parent.insert(node, index);
 			treeModel.nodeStructureChanged(parent);
+		}
+	}
+
+	private void validateEntityType(List<DefaultConfigurationFile> files) {
+		List<File> incorrectEntityType = files.stream()
+						.filter(file -> !entityDefinition().type().name().equals(file.entityType))
+						.map(DefaultConfigurationFile::file)
+						.collect(toList());
+		if (!incorrectEntityType.isEmpty()) {
+			throw new IllegalArgumentException("Incorrect entity type:\n" + incorrectEntityType);
 		}
 	}
 
@@ -698,9 +665,23 @@ final class EntityTableExportModel {
 	private static final class DefaultConfigurationFile implements ConfigurationFile {
 
 		private final File file;
+		private final JSONObject json;
+		private final String entityType;
 
 		private DefaultConfigurationFile(File file) {
 			this.file = file;
+			try {
+				this.json = new JSONObject(new String(Files.readAllBytes(file.toPath()), UTF_8));
+				if (json.has(ENTITY_TYPE_KEY)) {
+					this.entityType = json.getString(ENTITY_TYPE_KEY);
+				}
+				else {
+					throw new IllegalStateException("Configuration file is missing '" + ENTITY_TYPE_KEY + "'");
+				}
+			}
+			catch (IOException e) {
+				throw new UncheckedIOException(e);
+			}
 		}
 
 		@Override
