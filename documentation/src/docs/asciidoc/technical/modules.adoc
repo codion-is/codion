@@ -366,7 +366,6 @@ Swing client implementation.
 
 Common Swing model classes.
 
-* {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/button/package-summary.html[is.codion.swing.common.model.component.button]
 * {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/combobox/package-summary.html[is.codion.swing.common.model.component.combobox]
 * {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/package-summary.html[is.codion.swing.common.model.component.table]
 * {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/text/package-summary.html[is.codion.swing.common.model.component.text]

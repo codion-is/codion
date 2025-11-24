@@ -29,7 +29,6 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;

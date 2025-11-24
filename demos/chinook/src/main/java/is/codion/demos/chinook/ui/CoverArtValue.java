@@ -47,6 +47,8 @@ import java.util.ResourceBundle;
 
 import static is.codion.common.reactive.state.State.present;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice.MOUSE_WHEEL;
+import static is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice.NONE;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -174,7 +176,7 @@ final class CoverArtValue extends AbstractComponentValue<CoverArtValue.CoverArtP
 		}
 
 		private void configureImagePane(boolean embedded) {
-			imagePane.zoomDevice().set(embedded ? ImagePane.ZoomDevice.NONE : ImagePane.ZoomDevice.MOUSE_WHEEL);
+			imagePane.zoomDevice().set(embedded ? NONE : MOUSE_WHEEL);
 			imagePane.movable().set(!embedded);
 			imagePane.navigable().set(!embedded);
 		}

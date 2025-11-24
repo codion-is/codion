@@ -604,7 +604,7 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * Species the component used to edit an attribute
+	 * Manages the component used to edit an attribute
 	 * @param <T> the value type
 	 */
 	protected interface EditorComponent<T> {
