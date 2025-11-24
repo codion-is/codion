@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.61
+
 ## 0.18.60
 ### is.codion.common.reactive
 - ObservableValueCollection.containsOnly() and containsNone() added.
