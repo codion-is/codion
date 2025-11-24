@@ -151,8 +151,9 @@ final class EntityTableExportPanel extends JPanel {
 						.caption(MESSAGES.getString("rows_all"))
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
-		model.configurationChanged().addListener(this::onConfigurationChanged);
+		model.configurationChanged().addListener(this::expandSelectedNodes);
 		initializeUI();
+		expandSelectedNodes();
 	}
 
 	void show(JComponent dialogOwner) {
@@ -466,14 +467,16 @@ final class EntityTableExportPanel extends JPanel {
 	private void displayHelp() {
 		Dialogs.builder()
 						.owner(this)
+						.title(MESSAGES.getString("help"))
 						.component(textArea()
-										.value(MESSAGES.getString("help"))
+										.value(MESSAGES.getString("help_text"))
 										.editable(false)
-										.focusable(false))
+										.focusable(false)
+										.border(emptyBorder()))
 						.show();
 	}
 
-	private void onConfigurationChanged() {
+	private void expandSelectedNodes() {
 		collapseAll();
 		expandNodeIfHasSelectedChildren(model.treeModel().getRoot());
 		exportTree.repaint();

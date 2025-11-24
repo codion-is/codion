@@ -63,6 +63,7 @@ Codion Change Log
 - EntityTablePanel, export panel now initialized lazily.
 - EntityExportPanel refactored, no longer modal, model now handles all preferences.
 - EntityTableExportModel, record not found exception handling improved.
+- EntityTableExportPanel bug fixed, now expands tree on initialization, help improved.
 
 ## 0.18.59
 ### is.codion.common.model

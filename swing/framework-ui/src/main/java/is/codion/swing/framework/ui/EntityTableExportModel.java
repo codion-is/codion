@@ -111,6 +111,7 @@ final class EntityTableExportModel {
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
 		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
+		selectDefaults();
 	}
 
 	ExportTask exportToClipboard() {
