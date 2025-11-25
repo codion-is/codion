@@ -22,7 +22,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.utilities.Conjunction;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityQueries;
-import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.swing.common.ui.component.Components;
 
@@ -30,9 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.util.function.Supplier;
 
-import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingUtilities.invokeLater;
@@ -71,18 +68,15 @@ final class SelectQueryInspector extends JPanel {
 	}
 
 	private String createSelectQuery() {
-		Condition where = createCondition(queryModel.condition().where(Conjunction.AND), queryModel.where());
-		Condition having = createCondition(queryModel.condition().having(Conjunction.AND), queryModel.having());
-		EntityConnection.Select select = EntityConnection.Select.where(where)
-						.having(having)
+		return queries.select(EntityConnection.Select
+						.where(queryModel.condition().where(Conjunction.AND))
+						.having(queryModel.condition().having(Conjunction.AND))
 						.include(queryModel.attributes().defaults().get())
 						.include(queryModel.attributes().include().get())
 						.exclude(queryModel.attributes().exclude().get())
 						.limit(queryModel.limit().get())
 						.orderBy(queryModel.orderBy().get())
-						.build();
-
-		return queries.select(select);
+						.build());
 	}
 
 	private void initializeUI() {
@@ -90,14 +84,6 @@ final class SelectQueryInspector extends JPanel {
 		add(scrollPane()
 						.view(textArea)
 						.build());
-	}
-
-	private static Condition createCondition(Condition entityCondition, EntityQueryModel.AdditionalCondition additional) {
-		return additional.optional()
-						.map(Supplier::get)
-						.map(condition -> combination(additional.conjunction().getOrThrow(), entityCondition, condition))
-						.map(Condition.class::cast)
-						.orElse(entityCondition);
 	}
 
 	private static Font monospaced(Font font) {

@@ -255,14 +255,14 @@ public final class FrameworkModelDemo {
 	void additionalWhereConditions(EntityConnectionProvider connectionProvider) {
 		// tag::additionalWhereConditions[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityQueryModel queryModel = customerModel.tableModel().query();
+		EntityTableConditionModel condition = customerModel.tableModel().query().condition();
 
 		// Single additional condition
-		queryModel.where().conjunction().set(Conjunction.AND);
-		queryModel.where().set(() -> Customer.COUNTRY.equalTo("Iceland"));
+		condition.where().conjunction().set(Conjunction.AND);
+		condition.where().set(() -> Customer.COUNTRY.equalTo("Iceland"));
 
 		// Multiple conditions with custom conjunction
-		queryModel.where().set(() -> Condition.or(
+		condition.where().set(() -> Condition.or(
 						Customer.CITY.equalTo("Reykjavik"),
 						Customer.CITY.equalTo("Akureyri")
 		));
@@ -500,7 +500,7 @@ public final class FrameworkModelDemo {
 											if (selectedCustomers.size() > 1) {
 												// Handle multi-selection differently
 												invoiceModel.tableModel().query().condition().clear();
-												invoiceModel.tableModel().query().where().set(() ->
+												invoiceModel.tableModel().query().condition().where().set(() ->
 																Invoice.CUSTOMER_FK.in(selectedCustomers)
 												);
 											}

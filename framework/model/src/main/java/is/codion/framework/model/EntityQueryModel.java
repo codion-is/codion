@@ -22,7 +22,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
-import is.codion.common.utilities.Conjunction;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -31,11 +30,9 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.integerValue;
 
@@ -90,26 +87,6 @@ public interface EntityQueryModel {
 	 * @return the {@link EntityTableConditionModel} instance used by this query model
 	 */
 	EntityTableConditionModel condition();
-
-	/**
-	 * Controls the additional WHERE condition, which can be used in conjunction with {@link #condition()}.
-	 * The condition supplier may return null in case of no condition.
-	 * Note that in order for the {@link #conditionChanged()} {@link ObservableState} to indicate
-	 * a changed condition, the additional condition must be set via {@link AdditionalCondition#set(Object)},
-	 * changing the return value of the underlying {@link Supplier} instance does not trigger a changed condition.
-	 * @return the {@link AdditionalCondition} instance controlling the additional WHERE condition
-	 */
-	AdditionalCondition where();
-
-	/**
-	 * Controls the additional HAVING condition, which can be used in conjunction with {@link #condition()}.
-	 * The condition supplier may return null in case of no condition.
-	 * Note that in order for the {@link #conditionChanged()} {@link ObservableState} to indicate
-	 * a changed condition, the additional condition must be set via {@link AdditionalCondition#set(Object)},
-	 * changing the return value of the underlying {@link Supplier} instance does not trigger a changed condition.
-	 * @return the {@link AdditionalCondition} instance controlling the additional HAVING condition
-	 */
-	AdditionalCondition having();
 
 	/**
 	 * Returns a {@link State} controlling whether this query model should query all underlying entities
@@ -169,18 +146,6 @@ public interface EntityQueryModel {
 	 */
 	static EntityQueryModel entityQueryModel(EntityTableConditionModel conditionModel) {
 		return new DefaultEntityQueryModel(conditionModel);
-	}
-
-	/**
-	 * Specifies an additional condition supplier.
-	 */
-	interface AdditionalCondition extends Value<Supplier<Condition>> {
-
-		/**
-		 * Default {@link Conjunction#AND}.
-		 * @return the {@link Value} controlling the {@link Conjunction} to use when adding the additional condition
-		 */
-		Value<Conjunction> conjunction();
 	}
 
 	/**

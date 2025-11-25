@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Conjunction;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
@@ -67,6 +68,36 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	 * @throws IllegalArgumentException in case no condition model exists for the given foreignKey
 	 */
 	ForeignKeyConditionModel get(ForeignKey foreignKey);
+
+	/**
+	 * Controls the additional WHERE condition. The condition supplier may return null in case of no condition.
+	 * Note that in order for the {@link #changed()} {@link is.codion.common.reactive.observer.Observer} to indicate
+	 * a changed condition, the additional condition must be set via {@link AdditionalCondition#set(Object)},
+	 * changing the return value of the underlying {@link Supplier} instance does not trigger a changed condition.
+	 * @return the {@link AdditionalCondition} instance controlling the additional WHERE condition
+	 */
+	AdditionalCondition where();
+
+	/**
+	 * Controls the additional WHERE condition. The condition supplier may return null in case of no condition.
+	 * Note that in order for the {@link #changed()} {@link is.codion.common.reactive.observer.Observer} to indicate
+	 * a changed condition, the additional condition must be set via {@link AdditionalCondition#set(Object)},
+	 * changing the return value of the underlying {@link Supplier} instance does not trigger a changed condition.
+	 * @return the {@link AdditionalCondition} instance controlling the additional HAVING condition
+	 */
+	AdditionalCondition having();
+
+	/**
+	 * Specifies an additional condition supplier.
+	 */
+	interface AdditionalCondition extends Value<Supplier<Condition>> {
+
+		/**
+		 * Default {@link Conjunction#AND}.
+		 * @return the {@link Value} controlling the {@link Conjunction} to use when adding the additional condition
+		 */
+		Value<Conjunction> conjunction();
+	}
 
 	/**
 	 * Creates a new {@link EntityTableConditionModel}

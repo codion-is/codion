@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
-import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.Conjunction;
@@ -41,21 +40,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
-	private static final Supplier<@Nullable Condition> NULL_CONDITION_SUPPLIER = () -> null;
-
 	private final EntityTableConditionModel conditionModel;
 	private final EntityDefinition entityDefinition;
-	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
-	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final Value<ObservableState> conditionEnabled;
 	private final State conditionRequired = State.state();
 	private final State conditionChanged = State.state();
@@ -77,10 +70,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		resetConditionChanged();
 		Runnable conditionListener = this::onConditionChanged;
 		conditionModel.changed().addListener(conditionListener);
-		additionalWhere.addListener(conditionListener);
-		additionalWhere.conjunction().addListener(conditionListener);
-		additionalHaving.addListener(conditionListener);
-		additionalHaving.conjunction().addListener(conditionListener);
 	}
 
 	@Override
@@ -148,33 +137,15 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public AdditionalCondition where() {
-		return additionalWhere;
-	}
-
-	@Override
-	public AdditionalCondition having() {
-		return additionalHaving;
-	}
-
-	@Override
 	public Select select() {
-		return Select.where(createCondition(conditionModel.where(Conjunction.AND), additionalWhere))
-						.having(createCondition(conditionModel.having(Conjunction.AND), additionalHaving))
+		return Select.where(conditionModel.where(Conjunction.AND))
+						.having(conditionModel.having(Conjunction.AND))
 						.attributes(attributes.defaults.get())
 						.include(attributes.include.get())
 						.exclude(attributes.exclude.get())
 						.limit(limit.get())
 						.orderBy(orderBy.get())
 						.build();
-	}
-
-	private static Condition createCondition(Condition entityCondition, AdditionalCondition additional) {
-		return additional.optional()
-						.map(Supplier::get)
-						.map(condition -> combination(additional.conjunction().getOrThrow(), entityCondition, condition))
-						.map(Condition.class::cast)
-						.orElse(entityCondition);
 	}
 
 	private void resetConditionChanged() {
@@ -212,8 +183,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		private final Condition having;
 
 		private RefreshConditions() {
-			this.where = createCondition(conditionModel.where(Conjunction.AND), additionalWhere);
-			this.having = createCondition(conditionModel.having(Conjunction.AND), additionalHaving);
+			this.where = conditionModel.where(Conjunction.AND);
+			this.having = conditionModel.having(Conjunction.AND);
 		}
 
 		@Override
@@ -274,32 +245,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 			attributeValidator.validate(singleton(requireNonNull(attribute)));
 
 			return excluded.computeIfAbsent(attribute, k -> State.contains(exclude, attribute));
-		}
-	}
-
-	private static final class DefaultAdditionalCondition extends AbstractValue<Supplier<Condition>> implements AdditionalCondition {
-
-		private Supplier<Condition> condition = NULL_CONDITION_SUPPLIER;
-
-		private final Value<Conjunction> conjunction = Value.nonNull(Conjunction.AND);
-
-		private DefaultAdditionalCondition() {
-			super(NULL_CONDITION_SUPPLIER, Notify.SET);
-		}
-
-		@Override
-		public Value<Conjunction> conjunction() {
-			return conjunction;
-		}
-
-		@Override
-		protected Supplier<Condition> getValue() {
-			return condition;
-		}
-
-		@Override
-		protected void setValue(Supplier<Condition> condition) {
-			this.condition = condition;
 		}
 	}
 }

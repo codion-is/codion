@@ -21,8 +21,11 @@ package is.codion.framework.model;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.value.AbstractValue;
+import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.Conjunction;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -41,6 +44,7 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -61,9 +65,14 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private static final int MAX_MILLIS = 999;
 	private static final int MAX_SECONDS_MINUTES = 59;
 
+	private static final Supplier<@Nullable Condition> NULL_CONDITION_SUPPLIER = () -> null;
+
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
 	private final TableConditionModel<Attribute<?>> tableConditionModel;
+	private final Event<?> changed = Event.event();
+	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
+	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 
@@ -72,6 +81,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType));
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.tableConditionModel = tableConditionModel(conditionModels);
+		bindEvents();
 	}
 
 	@Override
@@ -86,12 +96,12 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	@Override
 	public Condition where(Conjunction conjunction) {
-		return createCondition(conjunction, noneAggregateColumn);
+		return createCondition(conjunction, noneAggregateColumn, additionalWhere);
 	}
 
 	@Override
 	public Condition having(Conjunction conjunction) {
-		return createCondition(conjunction, aggregateColumn);
+		return createCondition(conjunction, aggregateColumn, additionalHaving);
 	}
 
 	@Override
@@ -121,7 +131,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	@Override
 	public Observer<?> changed() {
-		return tableConditionModel.changed();
+		return changed.observer();
 	}
 
 	@Override
@@ -134,20 +144,49 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		tableConditionModel.clear();
 	}
 
-	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType) {
+	@Override
+	public AdditionalCondition where() {
+		return additionalWhere;
+	}
+
+	@Override
+	public AdditionalCondition having() {
+		return additionalHaving;
+	}
+
+	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType, AdditionalCondition additionalCondition) {
 		List<Condition> conditions = tableConditionModel.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
 						.filter(entry -> entry.getValue().enabled().is())
 						.map(entry -> condition(entry.getValue(), entry.getKey()))
 						.collect(toList());
+		Condition tableCondition;
 		switch (conditions.size()) {
 			case 0:
-				return all(entityDefinition.type());
+				tableCondition = all(entityDefinition.type());
+				break;
 			case 1:
-				return conditions.get(0);
+				tableCondition = conditions.get(0);
+				break;
 			default:
-				return combination(conjunction, conditions);
+				tableCondition = combination(conjunction, conditions);
+				break;
 		}
+
+		return additionalCondition.optional()
+						.map(Supplier::get)
+						.filter(Objects::nonNull)
+						.map(additional -> combination(additionalCondition.conjunction().getOrThrow(), tableCondition, additional))
+						.map(Condition.class::cast)
+						.orElse(tableCondition);
+	}
+
+	private void bindEvents() {
+		tableConditionModel.changed().addListener(changed);
+		additionalWhere.addListener(changed);
+		additionalWhere.conjunction().addListener(changed);
+		additionalHaving.addListener(changed);
+		additionalHaving.conjunction().addListener(changed);
 	}
 
 	private static Condition condition(ConditionModel<?> conditionModel, Attribute<?> identifier) {
@@ -414,6 +453,32 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		public boolean test(Attribute<?> attribute) {
 			return !(attribute instanceof Column) ||
 							!entityDefinition.columns().definition((Column<?>) attribute).aggregate();
+		}
+	}
+
+	private static final class DefaultAdditionalCondition extends AbstractValue<Supplier<Condition>> implements AdditionalCondition {
+
+		private Supplier<Condition> condition = NULL_CONDITION_SUPPLIER;
+
+		private final Value<Conjunction> conjunction = Value.nonNull(Conjunction.AND);
+
+		private DefaultAdditionalCondition() {
+			super(NULL_CONDITION_SUPPLIER, Notify.SET);
+		}
+
+		@Override
+		public Value<Conjunction> conjunction() {
+			return conjunction;
+		}
+
+		@Override
+		protected Supplier<Condition> getValue() {
+			return condition;
+		}
+
+		@Override
+		protected void setValue(Supplier<Condition> condition) {
+			this.condition = condition;
 		}
 	}
 }

@@ -10,6 +10,7 @@ Codion Change Log
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().
 - EntityTableConditionModel now extends TableConditionModel.
+- EntityQueryModel, additional conditions moved to EntityTableConditionModel.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, status message now updated correctly when all items are filtered.
 - EntityTablePanel limit status message improved.
