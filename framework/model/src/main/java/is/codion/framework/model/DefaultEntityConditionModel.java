@@ -67,7 +67,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
-	private final TableConditionModel<Attribute<?>> tableConditionModel;
+	private final TableConditionModel<Attribute<?>> conditionModel;
 	private final Value<Conjunction> conjunction = Value.builder()
 					.nonNull(Conjunction.AND)
 					.build();
@@ -80,7 +80,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	DefaultEntityConditionModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.connectionProvider.entities().definition(builder.entityType);
 		this.connectionProvider = builder.connectionProvider;
-		this.tableConditionModel = tableConditionModel(builder.conditionModelFactory);
+		this.conditionModel = tableConditionModel(builder.conditionFactory);
 		this.modified = new DefaultModified();
 		bindEvents();
 	}
@@ -112,27 +112,27 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public Map<Attribute<?>, ConditionModel<?>> get() {
-		return tableConditionModel.get();
+		return conditionModel.get();
 	}
 
 	@Override
 	public <T> ConditionModel<T> get(Attribute<?> attribute) {
-		return tableConditionModel.get(attribute);
+		return conditionModel.get(attribute);
 	}
 
 	@Override
 	public <T> Optional<ConditionModel<T>> optional(Attribute<?> attribute) {
-		return tableConditionModel.optional(requireNonNull(attribute));
+		return conditionModel.optional(requireNonNull(attribute));
 	}
 
 	@Override
 	public ForeignKeyConditionModel get(ForeignKey foreignKey) {
-		return (ForeignKeyConditionModel) tableConditionModel.<Entity>get(foreignKey);
+		return (ForeignKeyConditionModel) conditionModel.<Entity>get(foreignKey);
 	}
 
 	@Override
 	public ObservableState enabled() {
-		return tableConditionModel.enabled();
+		return conditionModel.enabled();
 	}
 
 	@Override
@@ -142,12 +142,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public ValueSet<Attribute<?>> persist() {
-		return tableConditionModel.persist();
+		return conditionModel.persist();
 	}
 
 	@Override
 	public void clear() {
-		tableConditionModel.clear();
+		conditionModel.clear();
 	}
 
 	@Override
@@ -161,7 +161,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private Condition createCondition(Predicate<Attribute<?>> columnType, ConditionValue additionalCondition) {
-		List<Condition> conditions = tableConditionModel.get().entrySet().stream()
+		List<Condition> conditions = conditionModel.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
 						.filter(entry -> entry.getValue().enabled().is())
 						.map(entry -> condition(entry.getValue(), entry.getKey()))
@@ -188,7 +188,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private void bindEvents() {
-		tableConditionModel.changed().addListener(changed);
+		conditionModel.changed().addListener(changed);
 		additional.where.addListener(changed);
 		additional.where.conjunction().addListener(changed);
 		additional.having.addListener(changed);
@@ -453,12 +453,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		private final EntityType entityType;
 		private final EntityConnectionProvider connectionProvider;
 
-		private Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory;
+		private Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionFactory;
 
 		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			this.entityType = entityType;
 			this.connectionProvider = connectionProvider;
-			this.conditionModelFactory = new EntityConditionModelFactory(entityType, connectionProvider);
+			this.conditionFactory = new EntityConditionModelFactory(entityType, connectionProvider);
 		}
 
 		private static final class DefaultEntityTypeStep implements EntityTypeStep {
@@ -484,8 +484,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 
 		@Override
-		public Builder conditionModelFactory(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory) {
-			this.conditionModelFactory = requireNonNull(conditionModelFactory);
+		public Builder conditions(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions) {
+			this.conditionFactory = requireNonNull(conditions);
 			return this;
 		}
 

@@ -163,10 +163,10 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 		}
 
 		/**
-		 * @param conditionModelFactory supplies the column condition models for this table condition model
+		 * @param conditions supplies the column condition models for this condition model
 		 * @return this builder
 		 */
-		Builder conditionModelFactory(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory);
+		Builder conditions(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions);
 
 		/**
 		 * @return a new {@link EntityConditionModel} instance

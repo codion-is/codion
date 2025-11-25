@@ -45,7 +45,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 						entityQueryModel(EntityConditionModel.builder()
 										.entityType(Track.TYPE)
 										.connectionProvider(connectionProvider)
-										.conditionModelFactory(new TrackColumnConditionFactory(connectionProvider))
+										.conditions(new TrackConditions(connectionProvider))
 										.build()));
 		editor().enabled().set(true);
 		configureLimit();
@@ -79,9 +79,9 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		}
 	}
 
-	private static class TrackColumnConditionFactory extends SwingEntityConditionModelFactory {
+	private static class TrackConditions extends SwingEntityConditionModelFactory {
 
-		private TrackColumnConditionFactory(EntityConnectionProvider connectionProvider) {
+		private TrackConditions(EntityConnectionProvider connectionProvider) {
 			super(Track.TYPE, connectionProvider);
 		}
 

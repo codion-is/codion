@@ -163,10 +163,10 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		private SimpleConditionPanel(SwingEntityTableModel tableModel) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
-			EntityConditionModel entityConditionModel = tableModel.query().condition();
-			ForeignKeyConditionModel customerConditionModel = entityConditionModel.get(Invoice.CUSTOMER_FK);
-			customerConditionPanel = new CustomerConditionPanel(customerConditionModel, tableModel.entityDefinition());
-			dateConditionPanel = new DateConditionPanel(entityConditionModel.get(Invoice.DATE));
+			EntityConditionModel condition = tableModel.query().condition();
+			ForeignKeyConditionModel customerCondition = condition.get(Invoice.CUSTOMER_FK);
+			customerConditionPanel = new CustomerConditionPanel(customerCondition, tableModel.entityDefinition());
+			dateConditionPanel = new DateConditionPanel(condition.get(Invoice.DATE));
 			dateConditionPanel.yearValue.addListener(tableModel.items()::refresh);
 			dateConditionPanel.monthValue.addListener(tableModel.items()::refresh);
 			conditionPanels.put(Invoice.CUSTOMER_FK, customerConditionPanel);

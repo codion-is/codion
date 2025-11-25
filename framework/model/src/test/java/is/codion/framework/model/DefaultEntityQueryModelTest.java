@@ -57,7 +57,7 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 		EntityConditionModel conditionModel = queryModel.condition();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().is());
@@ -82,7 +82,7 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		ConditionModel<String> nameCondition = queryModel.condition().get(Employee.NAME);
@@ -120,7 +120,7 @@ public final class DefaultEntityQueryModelTest {
 		queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Job.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER))
 						.build());
 		assertFalse(queryModel.condition().modified().is());
 		queryModel.condition().additional().having().set(Job.ADDITIONAL_HAVING::get);
@@ -138,7 +138,7 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 		queryModel.limit().set(1);
 		Entity employee = queryModel.query().get(0);
@@ -196,7 +196,7 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Store initial order by (may have default)
@@ -249,7 +249,7 @@ public final class DefaultEntityQueryModelTest {
 		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Test default limit from configuration
@@ -286,7 +286,7 @@ public final class DefaultEntityQueryModelTest {
 		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Default should be false
@@ -348,7 +348,7 @@ public final class DefaultEntityQueryModelTest {
 		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Job.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Job entity has aggregate columns (MAX_SALARY, MIN_SALARY, etc.)
@@ -390,7 +390,7 @@ public final class DefaultEntityQueryModelTest {
 		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Set a limit to make results predictable

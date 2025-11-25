@@ -16,6 +16,7 @@ Codion Change Log
 - EntityTableConditionModel.conjunction() added, where() and having() conjunction parameters removed.
 - EntityTableConditionModel.Builder added, factory methods removed.
 - EntityTableConditionModel renamed EntityConditionModel.
+- EntityConditionModel.Builder.conditionModelFactory() renamed conditions().
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, status message now updated correctly when all items are filtered.
 - EntityTablePanel limit status message improved.
