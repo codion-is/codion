@@ -42,9 +42,9 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditTask;
-import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -2764,7 +2764,7 @@ public class EntityTablePanel extends JPanel {
 
 		private final TableCellRenderer wrappedRenderer;
 		private final FilterTableColumn<Attribute<?>> tableColumn;
-		private final EntityTableConditionModel condition;
+		private final EntityConditionModel condition;
 
 		private boolean conditionIndicator;
 

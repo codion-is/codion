@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
-	private final EntityTableConditionModel conditionModel;
+	private final EntityConditionModel conditionModel;
 	private final EntityDefinition entityDefinition;
 	private final Value<ObservableState> conditionEnabled;
 	private final State conditionRequired = State.state();
@@ -52,7 +52,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final Value<Integer> limit = Value.nullable(LIMIT.get());
 	private final Value<Function<EntityQueryModel, List<Entity>>> dataSource = Value.nonNull(new DefaultDataSource());
 
-	DefaultEntityQueryModel(EntityTableConditionModel conditionModel) {
+	DefaultEntityQueryModel(EntityConditionModel conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);
 		this.entityDefinition = conditionModel.connectionProvider().entities().definition(conditionModel.entityType());
 		this.conditionEnabled = Value.nonNull(conditionModel.enabled());
@@ -86,7 +86,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public EntityTableConditionModel condition() {
+	public EntityConditionModel condition() {
 		return conditionModel;
 	}
 

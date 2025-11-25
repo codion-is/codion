@@ -33,9 +33,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * Use {@link EntityTableConditionModel#builder()} for instance.
+ * Use {@link EntityConditionModel#builder()} for instance.
  */
-public interface EntityTableConditionModel extends TableConditionModel<Attribute<?>> {
+public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
 
 	/**
 	 * @return the type of the entity this table condition model is based on
@@ -134,12 +134,12 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	}
 
 	/**
-	 * Builds an {@link EntityTableConditionModel}
+	 * Builds an {@link EntityConditionModel}
 	 */
 	interface Builder {
 
 		/**
-		 * The first step in building an {@link EntityTableConditionModel}
+		 * The first step in building an {@link EntityConditionModel}
 		 */
 		interface EntityTypeStep {
 
@@ -151,7 +151,7 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 		}
 
 		/**
-		 * The second step in building an {@link EntityTableConditionModel}
+		 * The second step in building an {@link EntityConditionModel}
 		 */
 		interface ConnectionProviderStep {
 
@@ -169,15 +169,15 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 		Builder conditionModelFactory(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory);
 
 		/**
-		 * @return a new {@link EntityTableConditionModel} instance
+		 * @return a new {@link EntityConditionModel} instance
 		 */
-		EntityTableConditionModel build();
+		EntityConditionModel build();
 	}
 
 	/**
 	 * @return a {@link Builder.EntityTypeStep}
 	 */
 	static Builder.EntityTypeStep builder() {
-		return DefaultEntityTableConditionModel.DefaultBuilder.ENTITY_TYPE_STEP;
+		return DefaultEntityConditionModel.DefaultBuilder.ENTITY_TYPE_STEP;
 	}
 }

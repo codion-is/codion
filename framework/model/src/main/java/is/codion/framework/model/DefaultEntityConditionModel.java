@@ -58,10 +58,7 @@ import static java.time.temporal.ChronoField.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-/**
- * A default {@link EntityTableConditionModel} implementation
- */
-final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
+final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	private static final int MAX_MILLIS = 999;
 	private static final int MAX_SECONDS_MINUTES = 59;
@@ -80,7 +77,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 	private final DefaultModified modified;
 
-	DefaultEntityTableConditionModel(DefaultBuilder builder) {
+	DefaultEntityConditionModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.connectionProvider.entities().definition(builder.entityType);
 		this.connectionProvider = builder.connectionProvider;
 		this.tableConditionModel = tableConditionModel(builder.conditionModelFactory);
@@ -493,8 +490,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		}
 
 		@Override
-		public EntityTableConditionModel build() {
-			return new DefaultEntityTableConditionModel(this);
+		public EntityConditionModel build() {
+			return new DefaultEntityConditionModel(this);
 		}
 	}
 

@@ -54,12 +54,12 @@ public final class DefaultEntityQueryModelTest {
 
 	@Test
 	void condition() {
-		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
-		EntityTableConditionModel conditionModel = queryModel.condition();
+		EntityConditionModel conditionModel = queryModel.condition();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().is());
 		conditionModel.get(Employee.NAME).set().in("Scott", "John");
 		Condition condition = queryModel.select().where();
@@ -79,7 +79,7 @@ public final class DefaultEntityQueryModelTest {
 
 	@Test
 	void conditionChanged() {
-		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
@@ -117,7 +117,7 @@ public final class DefaultEntityQueryModelTest {
 		queryModel.query();
 		assertFalse(queryModel.condition().modified().is());
 
-		queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Job.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER))
@@ -135,7 +135,7 @@ public final class DefaultEntityQueryModelTest {
 
 	@Test
 	void attributes() {
-		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
@@ -193,7 +193,7 @@ public final class DefaultEntityQueryModelTest {
 	@Test
 	void orderBy() {
 		// Test order by clause functionality
-		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
@@ -246,7 +246,7 @@ public final class DefaultEntityQueryModelTest {
 	@Test
 	void limit() {
 		// Test query limit functionality
-		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
@@ -283,7 +283,7 @@ public final class DefaultEntityQueryModelTest {
 	@Test
 	void conditionRequired() {
 		// Test condition required functionality - prevents fetching all rows accidentally
-		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
@@ -345,7 +345,7 @@ public final class DefaultEntityQueryModelTest {
 	@Test
 	void having() {
 		// Test HAVING clause functionality (for aggregate queries)
-		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Job.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER))
@@ -387,7 +387,7 @@ public final class DefaultEntityQueryModelTest {
 	@Test
 	void complexConditions() {
 		// Test complex WHERE conditions combining table conditions and additional where
-		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))

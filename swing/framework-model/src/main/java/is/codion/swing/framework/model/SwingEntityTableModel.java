@@ -32,9 +32,9 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityTableModel;
+import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityQueryModel;
-import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel.RefreshTask.Result;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -99,9 +99,9 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
-	 * @param conditionModel the {@link EntityTableConditionModel}
+	 * @param conditionModel the {@link EntityConditionModel}
 	 */
-	public SwingEntityTableModel(EntityTableConditionModel conditionModel) {
+	public SwingEntityTableModel(EntityConditionModel conditionModel) {
 		this(entityQueryModel(conditionModel));
 	}
 
@@ -119,7 +119,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, entityQueryModel(EntityTableConditionModel.builder()
+		this(editModel, entityQueryModel(EntityConditionModel.builder()
 						.entityType(editModel.entityType())
 						.connectionProvider(editModel.connectionProvider())
 						.conditionModelFactory(new SwingEntityConditionModelFactory(editModel.entityType(), editModel.connectionProvider()))

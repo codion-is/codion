@@ -25,7 +25,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -163,7 +163,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		private SimpleConditionPanel(SwingEntityTableModel tableModel) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
-			EntityTableConditionModel entityConditionModel = tableModel.query().condition();
+			EntityConditionModel entityConditionModel = tableModel.query().condition();
 			ForeignKeyConditionModel customerConditionModel = entityConditionModel.get(Invoice.CUSTOMER_FK);
 			customerConditionPanel = new CustomerConditionPanel(customerConditionModel, tableModel.entityDefinition());
 			dateConditionPanel = new DateConditionPanel(entityConditionModel.get(Invoice.DATE));

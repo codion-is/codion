@@ -72,7 +72,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 * @param filterModel provides the filter model
 	 */
 	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel) {
-		this(editModel, new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+		this(editModel, new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(editModel.entityType())
 						.connectionProvider(editModel.connectionProvider())
 						.build()), filterModel);

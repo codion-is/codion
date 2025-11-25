@@ -42,7 +42,7 @@ import java.time.Month;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultEntityTableConditionModelTest {
+public class DefaultEntityConditionModelTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -52,7 +52,7 @@ public class DefaultEntityTableConditionModelTest {
 					.user(UNIT_TEST_USER)
 					.build();
 
-	private final EntityTableConditionModel conditionModel = EntityTableConditionModel.builder()
+	private final EntityConditionModel conditionModel = EntityConditionModel.builder()
 					.entityType(Employee.TYPE)
 					.connectionProvider(CONNECTION_PROVIDER)
 					.conditionModelFactory(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
@@ -72,7 +72,7 @@ public class DefaultEntityTableConditionModelTest {
 
 	@Test
 	void noSearchColumnsDefined() {
-		EntityTableConditionModel model = EntityTableConditionModel.builder()
+		EntityConditionModel model = EntityConditionModel.builder()
 						.entityType(Detail.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new EntityConditionModelFactory(Detail.TYPE, CONNECTION_PROVIDER))
@@ -172,85 +172,85 @@ public class DefaultEntityTableConditionModelTest {
 
 	@Test
 	void dateTimeEqualTo() {
-		EntityTableConditionModel tableConditionModel = EntityTableConditionModel.builder()
+		EntityConditionModel conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new TimeTestConditionModelFactory("HH:mm"))
 						.build();
 		EntityDefinition entityDefinition = CONNECTION_PROVIDER.entities().definition(DateTimeTest.TYPE);
 
-		ConditionModel<LocalTime> timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
+		ConditionModel<LocalTime> timeConditionModel = conditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().equalTo(LocalTime.of(11, 00));
-		Condition where = tableConditionModel.where();
+		Condition where = conditionModel.where();
 		assertEquals("(time >= ? AND time <= ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00), where.values().get(0));
 		assertEquals(LocalTime.of(11, 00, 59, 999_000_000), where.values().get(1));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new TimeTestConditionModelFactory("HH:mm.ss"))
 						.build();
 
-		timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
+		timeConditionModel = conditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().equalTo(LocalTime.of(11, 00, 2));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("(time >= ? AND time <= ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 2), where.values().get(0));
 		assertEquals(LocalTime.of(11, 00, 2, 999_000_000), where.values().get(1));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new TimeTestConditionModelFactory("HH:mm.ss.SSS"))
 						.build();
 
-		timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
+		timeConditionModel = conditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().equalTo(LocalTime.of(11, 00, 3, 999_000_000));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("time = ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 3, 999_000_000), where.values().get(0));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new DateTimeTestConditionModelFactory("dd-MM-yyyy HH:mm"))
 						.build();
 
-		ConditionModel<LocalDateTime> dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
+		ConditionModel<LocalDateTime> dateTimeConditionModel = conditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().equalTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("(date_time >= ? AND date_time <= ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 59, 999_000_000), where.values().get(1));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new DateTimeTestConditionModelFactory("dd-MM-yyyy HH:mm.ss"))
 						.build();
 
-		dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
+		dateTimeConditionModel = conditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().equalTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("(date_time >= ? AND date_time <= ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(1));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new DateTimeTestConditionModelFactory("dd-MM-yyyy HH:mm.ss.SSS"))
 						.build();
 
-		dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
+		dateTimeConditionModel = conditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().equalTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("date_time = ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(0));
@@ -258,85 +258,85 @@ public class DefaultEntityTableConditionModelTest {
 
 	@Test
 	void dateTimeNotEqualTo() {
-		EntityTableConditionModel tableConditionModel = EntityTableConditionModel.builder()
+		EntityConditionModel conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new TimeTestConditionModelFactory("HH:mm"))
 						.build();
 		EntityDefinition entityDefinition = CONNECTION_PROVIDER.entities().definition(DateTimeTest.TYPE);
 
-		ConditionModel<LocalTime> timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
+		ConditionModel<LocalTime> timeConditionModel = conditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00));
-		Condition where = tableConditionModel.where();
+		Condition where = conditionModel.where();
 		assertEquals("(time < ? OR time > ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00), where.values().get(0));
 		assertEquals(LocalTime.of(11, 00, 59, 999_000_000), where.values().get(1));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new TimeTestConditionModelFactory("HH:mm.ss"))
 						.build();
 
-		timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
+		timeConditionModel = conditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00, 2));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("(time < ? OR time > ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 2), where.values().get(0));
 		assertEquals(LocalTime.of(11, 00, 2, 999_000_000), where.values().get(1));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new TimeTestConditionModelFactory("HH:mm.ss.SSS"))
 						.build();
 
-		timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
+		timeConditionModel = conditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00, 3, 999_000_000));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("time <> ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 3, 999_000_000), where.values().get(0));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new DateTimeTestConditionModelFactory("dd-MM-yyyy HH:mm"))
 						.build();
 
-		ConditionModel<LocalDateTime> dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
+		ConditionModel<LocalDateTime> dateTimeConditionModel = conditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("(date_time < ? OR date_time > ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 59, 999_000_000), where.values().get(1));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new DateTimeTestConditionModelFactory("dd-MM-yyyy HH:mm.ss"))
 						.build();
 
-		dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
+		dateTimeConditionModel = conditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("(date_time < ? OR date_time > ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15), where.values().get(0));
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(1));
 
-		tableConditionModel = EntityTableConditionModel.builder()
+		conditionModel = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.conditionModelFactory(new DateTimeTestConditionModelFactory("dd-MM-yyyy HH:mm.ss.SSS"))
 						.build();
 
-		dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
+		dateTimeConditionModel = conditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000));
-		where = tableConditionModel.where();
+		where = conditionModel.where();
 		assertEquals("date_time <> ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(0));

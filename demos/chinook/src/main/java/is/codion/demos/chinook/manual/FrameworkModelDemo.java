@@ -23,7 +23,6 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.utilities.Conjunction;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
@@ -35,13 +34,12 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.model.EntityConditionModel;
+import is.codion.framework.model.EntityConditionModel.AdditionalConditions;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.framework.model.EntityTableConditionModel.AdditionalConditions;
-import is.codion.framework.model.EntityTableModel;
 import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.framework.model.ModelLink;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -242,7 +240,7 @@ public final class FrameworkModelDemo {
 	void tableConditionModel(EntityConnectionProvider connectionProvider) {
 		// tag::tableConditionModel[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityTableConditionModel conditionModel = customerModel.tableModel().query().condition();
+		EntityConditionModel condition = customerModel.tableModel().query().condition();
 
 		// Set condition values
 		conditionModel.get(Customer.EMAIL).set().isNotNull();

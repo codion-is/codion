@@ -40,13 +40,13 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * Provides entities based on query conditions.
  * The default data source can be overridden by using {@link #dataSource()}.
  * {@snippet :
- * tableModel.queryModel().dataSource().set(queryModel -> {
- * 	 EntityConnection connection = queryModel.connectionProvider().connection();
+ * tableModel.query().dataSource().set(query -> {
+ * 	 EntityConnection connection = query.connectionProvider().connection();
  *
  *   return connection.select(Employee.NAME.equalTo("John"));
  * });
  *}
- * @see #entityQueryModel(EntityTableConditionModel)
+ * @see #entityQueryModel(EntityConditionModel)
  */
 public interface EntityQueryModel {
 
@@ -84,9 +84,9 @@ public interface EntityQueryModel {
 	Select select();
 
 	/**
-	 * @return the {@link EntityTableConditionModel} instance used by this query model
+	 * @return the {@link EntityConditionModel} instance used by this query model
 	 */
-	EntityTableConditionModel condition();
+	EntityConditionModel condition();
 
 	/**
 	 * Returns a {@link State} controlling whether this query model should query all underlying entities
@@ -121,7 +121,7 @@ public interface EntityQueryModel {
 	/**
 	 * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
 	 * This can be done by enabling the {@link EntityQueryModel#conditionRequired()} {@link State}, which prevents a refresh as long as the
-	 * {@link ObservableState} controlled via this method is disabled. The default {@link ObservableState} is simply {@link EntityTableConditionModel#enabled()}.
+	 * {@link ObservableState} controlled via this method is disabled. The default {@link ObservableState} is simply {@link EntityConditionModel#enabled()}.
 	 * Override for a more fine-grained control, such as requiring a specific column condition to be enabled.
 	 * @return the {@link Value} controlling the {@link ObservableState} specifying if enough conditions are enabled for a safe refresh
 	 * @see #conditionRequired()
@@ -135,10 +135,10 @@ public interface EntityQueryModel {
 	Value<Function<EntityQueryModel, List<Entity>>> dataSource();
 
 	/**
-	 * @param conditionModel the {@link EntityTableConditionModel}
-	 * @return a new {@link EntityQueryModel} instance based on the given {@link EntityTableConditionModel}
+	 * @param conditionModel the {@link EntityConditionModel}
+	 * @return a new {@link EntityQueryModel} instance based on the given {@link EntityConditionModel}
 	 */
-	static EntityQueryModel entityQueryModel(EntityTableConditionModel conditionModel) {
+	static EntityQueryModel entityQueryModel(EntityConditionModel conditionModel) {
 		return new DefaultEntityQueryModel(conditionModel);
 	}
 
@@ -167,12 +167,12 @@ public interface EntityQueryModel {
 		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
 		 * {@snippet :
 		 * // Replace defaults with a minimal set
-		 * EntityQueryModel queryModel = tableModel.queryModel();
-		 * queryModel.attributes().defaults().set(Employee.ID, Employee.NAME);
+		 * EntityQueryModel query = tableModel.query();
+		 * query.attributes().defaults().set(Employee.ID, Employee.NAME);
 		 * tableModel.items().refresh();
 		 *
 		 * // Revert to entity definition defaults
-		 * queryModel.attributes().defaults().clear();
+		 * query.attributes().defaults().clear();
 		 * tableModel.items().refresh();
 		 *}
 		 * @return the {@link ValueSet} controlling the default base attributes
@@ -194,12 +194,12 @@ public interface EntityQueryModel {
 		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
 		 * {@snippet :
 		 * // Include a lazy blob column on-demand
-		 * EntityQueryModel queryModel = tableModel.queryModel();
-		 * queryModel.attributes().include().add(Country.FLAG);
+		 * EntityQueryModel query = tableModel.query();
+		 * query.attributes().include().add(Country.FLAG);
 		 * tableModel.items().refresh();
 		 *
 		 * // Remove the lazy attribute
-		 * queryModel.attributes().include().remove(Country.FLAG);
+		 * query.attributes().include().remove(Country.FLAG);
 		 * tableModel.items().refresh();
 		 *}
 		 * @return the {@link ValueSet} controlling additional attributes to include
@@ -218,12 +218,12 @@ public interface EntityQueryModel {
 		 * The final attribute set is: {@code (defaults ∪ included) \ excluded}
 		 * {@snippet :
 		 * // Exclude expensive computed columns
-		 * EntityQueryModel queryModel = tableModel.queryModel();
-		 * queryModel.attributes().exclude().add(Employee.COMPUTED_BONUS);
+		 * EntityQueryModel query = tableModel.query();
+		 * query.attributes().exclude().add(Employee.COMPUTED_BONUS);
 		 * tableModel.items().refresh();
 		 *
 		 * // Re-include the column
-		 * queryModel.attributes().exclude().remove(Employee.COMPUTED_BONUS);
+		 * query.attributes().exclude().remove(Employee.COMPUTED_BONUS);
 		 * tableModel.items().refresh();
 		 *}
 		 * @return the {@link ValueSet} controlling attributes to exclude
