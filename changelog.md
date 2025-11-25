@@ -2,6 +2,10 @@ Codion Change Log
 =================
 
 ## 0.18.61
+### is.codion.common.reactive
+- State.contains(ValueSet, value) added.
+### is.codion.framework.model
+- EntityQueryModel.SelectAttributes.included() and excluded() added.
 
 ## 0.18.60
 ### is.codion.common.reactive

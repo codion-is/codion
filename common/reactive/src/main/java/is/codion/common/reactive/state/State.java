@@ -22,6 +22,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.reactive.value.Value.Validator;
+import is.codion.common.reactive.value.ValueSet;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -157,6 +158,36 @@ public interface State extends ObservableState {
 		observable.addListener(() -> state.set(observable.optional().isPresent()));
 
 		return state;
+	}
+
+	/**
+	 * Creates a {@link State} synchronized with whether the given value is contained in the given {@link ValueSet}.
+	 * The state is bidirectionally synchronized:
+	 * <ul>
+	 *   <li>When the value is added to or removed from the set, the state is updated accordingly</li>
+	 *   <li>When the state is set to {@code true}, the value is added to the set (if not already present)</li>
+	 *   <li>When the state is set to {@code false}, the value is removed from the set (if present)</li>
+	 * </ul>
+	 * The initial state reflects whether the value is currently contained in the set.
+	 * <pre>
+	 * ValueSet&lt;String&gt; tags = ValueSet.valueSet();
+	 * State containsImportant = State.contains(tags, "important");
+	 *
+	 * // State → Set
+	 * containsImportant.set(true);
+	 * assertTrue(tags.contains("important"));
+	 *
+	 * // Set → State
+	 * tags.remove("important");
+	 * assertFalse(containsImportant.is());
+	 * </pre>
+	 * @param <T> the value type
+	 * @param valueSet the value set
+	 * @param value the value
+	 * @return a state synchronized with the set's containment of the value
+	 */
+	static <T> State contains(ValueSet<T> valueSet, T value) {
+		return new ValueSetContains<>(requireNonNull(valueSet), value).state();
 	}
 
 	/**

@@ -19,6 +19,7 @@
 package is.codion.common.reactive.state;
 
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StateTest {
@@ -515,5 +517,69 @@ public class StateTest {
 		assertTrue(present.is());
 		value.clear();
 		assertFalse(present.is());
+	}
+
+	@Test
+	void valueCollectionContains() {
+		AtomicInteger valueChangedCounter = new AtomicInteger(0);
+		AtomicInteger containsOneCounter = new AtomicInteger(0);
+		AtomicInteger containsTwoCounter = new AtomicInteger(0);
+		ValueSet<Integer> values = ValueSet.valueSet(singleton(4));
+		State containsOne = State.contains(values, 1);
+		State containsTwo = State.contains(values, 2);
+		State containsFour = State.contains(values, 4);
+		assertFalse(containsOne.is());
+		assertFalse(containsTwo.is());
+		assertTrue(containsFour.is());
+
+		values.addListener(valueChangedCounter::incrementAndGet);
+		containsOne.addListener(containsOneCounter::incrementAndGet);
+		containsTwo.addListener(containsTwoCounter::incrementAndGet);
+
+		values.add(1);
+		assertEquals(1, valueChangedCounter.get());
+		assertEquals(1, containsOneCounter.get());
+		assertEquals(0, containsTwoCounter.get());
+		assertTrue(containsOne.is());
+		assertFalse(containsTwo.is());
+
+		values.add(2);
+		assertEquals(2, valueChangedCounter.get());
+		assertEquals(1, containsOneCounter.get());
+		assertEquals(1, containsTwoCounter.get());
+		assertTrue(containsOne.is());
+		assertTrue(containsTwo.is());
+
+		values.add(2);
+		assertEquals(2, valueChangedCounter.get());
+		assertEquals(1, containsOneCounter.get());
+		assertEquals(1, containsTwoCounter.get());
+
+		containsOne.set(false);
+		assertEquals(3, valueChangedCounter.get());
+		assertEquals(2, containsOneCounter.get());
+		assertEquals(1, containsTwoCounter.get());
+
+		values.add(3);
+		assertEquals(4, valueChangedCounter.get());
+		assertEquals(2, containsOneCounter.get());
+		assertEquals(1, containsTwoCounter.get());
+
+		State containsThree = State.contains(values, 3);
+		assertTrue(containsThree.is());
+		containsThree.set(false);
+		assertEquals(5, valueChangedCounter.get());
+		assertFalse(values.contains(3));
+
+		containsTwo.set(false);
+		assertEquals(6, valueChangedCounter.get());
+		assertEquals(2, containsOneCounter.get());
+		assertEquals(2, containsTwoCounter.get());
+
+		values.clear();
+		assertFalse(containsFour.is());
+		assertEquals(7, valueChangedCounter.get());
+		assertEquals(2, containsOneCounter.get());
+		assertEquals(2, containsTwoCounter.get());
 	}
 }

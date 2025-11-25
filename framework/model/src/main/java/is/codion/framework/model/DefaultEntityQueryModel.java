@@ -35,7 +35,9 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -43,6 +45,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
@@ -241,6 +244,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		private final ValueSet<Attribute<?>> exclude = ValueSet.<Attribute<?>>builder()
 						.validator(attributeValidator)
 						.build();
+		private final Map<Attribute<?>, State> included = new HashMap<>();
+		private final Map<Attribute<?>, State> excluded = new HashMap<>();
 
 		@Override
 		public ValueSet<Attribute<?>> defaults() {
@@ -255,6 +260,20 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		@Override
 		public ValueSet<Attribute<?>> exclude() {
 			return exclude;
+		}
+
+		@Override
+		public State included(Attribute<?> attribute) {
+			attributeValidator.validate(singleton(requireNonNull(attribute)));
+
+			return included.computeIfAbsent(attribute, k -> State.contains(include, attribute));
+		}
+
+		@Override
+		public State excluded(Attribute<?> attribute) {
+			attributeValidator.validate(singleton(requireNonNull(attribute)));
+
+			return excluded.computeIfAbsent(attribute, k -> State.contains(exclude, attribute));
 		}
 	}
 

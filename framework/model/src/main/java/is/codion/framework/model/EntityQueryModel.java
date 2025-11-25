@@ -271,5 +271,19 @@ public interface EntityQueryModel {
 		 * @see #include()
 		 */
 		ValueSet<Attribute<?>> exclude();
+
+		/**
+		 * @param attribute the attribute
+		 * @return a {@link State} controlling whether the given attribute is included
+		 * @see #include()
+		 */
+		State included(Attribute<?> attribute);
+
+		/**
+		 * @param attribute the attribute
+		 * @return a {@link State} controlling whether the given attribute is excluded
+		 * @see #exclude()
+		 */
+		State excluded(Attribute<?> attribute);
 	}
 }

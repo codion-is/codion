@@ -18,7 +18,6 @@
  */
 package is.codion.demos.world.model;
 
-import is.codion.common.reactive.state.State;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -43,17 +42,11 @@ public final class CountryTableModel extends SwingEntityTableModel {
 	private static final String COUNTRY_REPORT = "country_report.jasper";
 	private static final String CITY_REPORT = "city_report.jasper";
 
-	private final State showFlags = State.state(false);
-
 	CountryTableModel(EntityConnectionProvider connectionProvider) {
 		super(new CountryEditModel(connectionProvider));
 		configureCapitalConditionModel();
 		sort().order(Country.FLAG).locked().set(true);
-		showFlags.addConsumer(this::showFlagsChanged);
-	}
-
-	public State showflags() {
-		return showFlags;
+		queryModel().attributes().included(Country.FLAG).addListener(items()::refresh);
 	}
 
 	public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) {
@@ -75,16 +68,6 @@ public final class CountryTableModel extends SwingEntityTableModel {
 		CapitalCondition cityIsCapital = new CapitalCondition();
 		capitalCondition.equalSearchModel().condition().set(cityIsCapital);
 		capitalCondition.inSearchModel().condition().set(cityIsCapital);
-	}
-
-	private void showFlagsChanged(boolean flags) {
-		if (flags) {
-			queryModel().attributes().include().add(Country.FLAG);
-		}
-		else {
-			queryModel().attributes().include().remove(Country.FLAG);
-		}
-		items().refresh();
 	}
 
 	private final class CapitalCondition implements Supplier<Condition> {

@@ -141,8 +141,12 @@ public final class DefaultEntityQueryModelTest {
 		assertTrue(employee.contains(Employee.JOB));
 		assertNotNull(employee.get(Employee.DATA)); // included manually
 
+		State excludeJob = queryModel.attributes().excluded(Employee.JOB);
+		assertFalse(excludeJob.is());
+
 		queryModel.attributes().include().clear();
-		queryModel.attributes().exclude().set(singleton(Employee.JOB));
+		excludeJob.set(true);
+		assertTrue(queryModel.attributes().exclude().contains(Employee.JOB));
 		employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertFalse(employee.contains(Employee.JOB));
@@ -163,8 +167,15 @@ public final class DefaultEntityQueryModelTest {
 		assertTrue(employee.contains(Employee.MGR_FK));
 		assertTrue(employee.contains(Employee.COMMISSION));
 
+		excludeJob.set(false);
+		employee = queryModel.query().get(0);
+		assertTrue(employee.contains(Employee.JOB));
+
 		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().include().set(singleton(Department.NAME)));
 		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().exclude().set(singleton(Department.NAME)));
+
+		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().included(Department.NAME));
+		assertThrows(IllegalArgumentException.class, () -> queryModel.attributes().excluded(Department.NAME));
 	}
 
 	@Test
