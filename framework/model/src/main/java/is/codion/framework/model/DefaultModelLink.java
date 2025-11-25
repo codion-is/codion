@@ -46,7 +46,7 @@ final class DefaultModelLink<M extends EntityModel<M, E, T>, E extends EntityEdi
 		this.onUpdate = builder.onUpdate;
 		this.onDelete = builder.onDelete;
 		if (model.containsTableModel()) {
-			model.tableModel().queryModel().conditionRequired().set(true);
+			model.tableModel().query().conditionRequired().set(true);
 		}
 	}
 

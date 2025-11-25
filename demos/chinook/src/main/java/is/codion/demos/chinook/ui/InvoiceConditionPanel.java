@@ -87,12 +87,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 												Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
 												FilterTableColumnModel<Attribute<?>> columnModel,
 												Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
-		super(tableModel.queryModel().condition().conditionModel(),
+		super(tableModel.query().condition().conditionModel(),
 						attribute -> columnModel.column(attribute).getHeaderValue().toString());
 		setLayout(new BorderLayout());
-		tableModel.queryModel().condition().persist().add(Invoice.DATE);
+		tableModel.query().condition().persist().add(Invoice.DATE);
 		this.simpleConditionPanel = new SimpleConditionPanel(tableModel);
-		this.advancedConditionPanel = filterTableConditionPanel(tableModel.queryModel().condition().conditionModel(),
+		this.advancedConditionPanel = filterTableConditionPanel(tableModel.query().condition().conditionModel(),
 						conditionPanels, columnModel, onPanelInitialized);
 		view().link(advancedConditionPanel.view());
 	}
@@ -163,7 +163,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		private SimpleConditionPanel(SwingEntityTableModel tableModel) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
-			EntityTableConditionModel entityConditionModel = tableModel.queryModel().condition();
+			EntityTableConditionModel entityConditionModel = tableModel.query().condition();
 			ForeignKeyConditionModel customerConditionModel = entityConditionModel.get(Invoice.CUSTOMER_FK);
 			customerConditionPanel = new CustomerConditionPanel(customerConditionModel, tableModel.entityDefinition());
 			dateConditionPanel = new DateConditionPanel(entityConditionModel.get(Invoice.DATE));

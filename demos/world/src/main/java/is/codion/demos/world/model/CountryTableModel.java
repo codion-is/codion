@@ -46,7 +46,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 		super(new CountryEditModel(connectionProvider));
 		configureCapitalConditionModel();
 		sort().order(Country.FLAG).locked().set(true);
-		queryModel().attributes().included(Country.FLAG).addListener(items()::refresh);
+		query().attributes().included(Country.FLAG).addListener(items()::refresh);
 	}
 
 	public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) {
@@ -64,7 +64,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 
 	private void configureCapitalConditionModel() {
 		ForeignKeyConditionModel capitalCondition =
-						queryModel().condition().get(Country.CAPITAL_FK);
+						query().condition().get(Country.CAPITAL_FK);
 		CapitalCondition cityIsCapital = new CapitalCondition();
 		capitalCondition.equalSearchModel().condition().set(cityIsCapital);
 		capitalCondition.inSearchModel().condition().set(cityIsCapital);

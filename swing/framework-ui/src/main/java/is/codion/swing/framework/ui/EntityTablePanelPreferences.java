@@ -193,7 +193,7 @@ final class EntityTablePanelPreferences {
 	private static Map<Attribute<?>, ConditionPreferences> createConditionPreferences(SwingEntityTableModel tableModel) {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			tableModel.queryModel().condition().optional(attribute)
+			tableModel.query().condition().optional(attribute)
 							.ifPresent(condition ->
 											conditionPreferencesMap.put(attribute, new ConditionPreferences(attribute,
 															condition.autoEnable().is(),
@@ -404,7 +404,7 @@ final class EntityTablePanelPreferences {
 			for (Attribute<?> attribute : tableModel.columns().identifiers()) {
 				ConditionPreferences preferences = conditionPreferences.get(attribute);
 				if (preferences != null) {
-					tableModel.queryModel().condition().optional(attribute)
+					tableModel.query().condition().optional(attribute)
 									.ifPresent(condition -> {
 										condition.caseSensitive().set(preferences.caseSensitive);
 										condition.autoEnable().set(preferences.autoEnable);

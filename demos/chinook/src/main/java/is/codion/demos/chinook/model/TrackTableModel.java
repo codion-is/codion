@@ -60,9 +60,9 @@ public final class TrackTableModel extends SwingEntityTableModel {
 	// end::raisePrice[]
 
 	private void configureLimit() {
-		queryModel().limit().set(DEFAULT_LIMIT);
-		queryModel().limit().addListener(items()::refresh);
-		queryModel().limit().addValidator(new LimitValidator());
+		query().limit().set(DEFAULT_LIMIT);
+		query().limit().addListener(items()::refresh);
+		query().limit().addValidator(new LimitValidator());
 	}
 
 	private static final class LimitValidator implements Validator<Integer> {

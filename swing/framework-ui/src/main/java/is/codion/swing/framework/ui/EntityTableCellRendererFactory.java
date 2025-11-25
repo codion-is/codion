@@ -114,7 +114,7 @@ public class EntityTableCellRendererFactory implements FilterTableCellRenderer.F
 				return conditionEnabled != null && conditionEnabled.is();
 			}
 
-			ConditionModel<?> condition = tableModel.queryModel().condition().conditionModel().get().get(attribute);
+			ConditionModel<?> condition = tableModel.query().condition().conditionModel().get().get(attribute);
 			conditionEnabled = condition == null ? null : condition.enabled();
 			conditionEnabledSet = true;
 

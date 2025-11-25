@@ -177,8 +177,8 @@ public final class FrameworkModelDemo {
 			public CustomerTableModel(EntityConnectionProvider connectionProvider) {
 				super(new SwingEntityEditModel(Customer.TYPE, connectionProvider));
 				// Prevent loading entire customer base
-				queryModel().limit().set(100);
-				queryModel().conditionRequired().set(true);
+				query().limit().set(100);
+				query().conditionRequired().set(true);
 			}
 		}
 		// end::queryOptimization[]
@@ -201,7 +201,7 @@ public final class FrameworkModelDemo {
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Fetch only Customers with emails by default
-		tableModel.queryModel().dataSource().set(queryModel -> {
+		tableModel.query().dataSource().set(queryModel -> {
 			EntityConnection connection = queryModel.connectionProvider().connection();
 
 			return connection.select(and(
@@ -218,7 +218,7 @@ public final class FrameworkModelDemo {
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Alternative approach using ConditionModel
-		ConditionModel<String> condition = tableModel.queryModel().condition().get(Customer.EMAIL);
+		ConditionModel<String> condition = tableModel.query().condition().get(Customer.EMAIL);
 		condition.set().isNotNull();
 		condition.locked().set(true); // disables the UI condition panel
 		// end::conditionConfiguration[]
@@ -229,7 +229,7 @@ public final class FrameworkModelDemo {
 		// tag::entityQueryModel[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 		SwingEntityTableModel tableModel = customerModel.tableModel();
-		EntityQueryModel queryModel = tableModel.queryModel();
+		EntityQueryModel queryModel = tableModel.query();
 
 		// Configure query behavior
 		queryModel.limit().set(200);
@@ -241,7 +241,7 @@ public final class FrameworkModelDemo {
 	void tableConditionModel(EntityConnectionProvider connectionProvider) {
 		// tag::tableConditionModel[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityTableConditionModel conditionModel = customerModel.tableModel().queryModel().condition();
+		EntityTableConditionModel conditionModel = customerModel.tableModel().query().condition();
 
 		// Set condition values
 		conditionModel.get(Customer.EMAIL).set().isNotNull();
@@ -255,7 +255,7 @@ public final class FrameworkModelDemo {
 	void additionalWhereConditions(EntityConnectionProvider connectionProvider) {
 		// tag::additionalWhereConditions[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityQueryModel queryModel = customerModel.tableModel().queryModel();
+		EntityQueryModel queryModel = customerModel.tableModel().query();
 
 		// Single additional condition
 		queryModel.where().conjunction().set(Conjunction.AND);
@@ -272,7 +272,7 @@ public final class FrameworkModelDemo {
 	void queryLimits(EntityConnectionProvider connectionProvider) {
 		// tag::queryLimits[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityQueryModel queryModel = customerModel.tableModel().queryModel();
+		EntityQueryModel queryModel = customerModel.tableModel().query();
 
 		// Set a specific limit
 		queryModel.limit().set(500);
@@ -296,7 +296,7 @@ public final class FrameworkModelDemo {
 	void resultOrdering(EntityConnectionProvider connectionProvider) {
 		// tag::resultOrdering[]
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
-		EntityQueryModel queryModel = invoiceModel.tableModel().queryModel();
+		EntityQueryModel queryModel = invoiceModel.tableModel().query();
 
 		// Single column ordering
 		queryModel.orderBy().set(OrderBy.descending(Invoice.DATE));
@@ -313,7 +313,7 @@ public final class FrameworkModelDemo {
 	void customQueryDataSource(EntityConnectionProvider connectionProvider) {
 		// tag::customQueryDataSource[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityQueryModel entityQueryModel = customerModel.tableModel().queryModel();
+		EntityQueryModel entityQueryModel = customerModel.tableModel().query();
 
 		entityQueryModel.dataSource().set(queryModel -> {
 			EntityConnection connection = queryModel.connectionProvider().connection();
@@ -329,7 +329,7 @@ public final class FrameworkModelDemo {
 	void conditionRequired(EntityConnectionProvider connectionProvider) {
 		// tag::conditionRequired[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityQueryModel queryModel = customerModel.tableModel().queryModel();
+		EntityQueryModel queryModel = customerModel.tableModel().query();
 
 		// Require at least one condition
 		queryModel.conditionRequired().set(true);
@@ -342,7 +342,7 @@ public final class FrameworkModelDemo {
 	void attributeManagement(EntityConnectionProvider connectionProvider) {
 		// tag::attributeManagement[]
 		SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
-		EntityQueryModel queryModel = albumModel.tableModel().queryModel();
+		EntityQueryModel queryModel = albumModel.tableModel().query();
 
 		// Exclude large columns by default
 		queryModel.attributes().exclude().add(Album.COVER);
@@ -458,8 +458,8 @@ public final class FrameworkModelDemo {
 		invoiceModel.detailModels().add(invoiceLineModel);
 
 		// Configure detail model for optimal performance
-		invoiceLineModel.tableModel().queryModel().conditionRequired().set(true); // Don't load all lines
-		invoiceLineModel.tableModel().queryModel().limit().set(1000); // Reasonable limit
+		invoiceLineModel.tableModel().query().conditionRequired().set(true); // Don't load all lines
+		invoiceLineModel.tableModel().query().limit().set(1000); // Reasonable limit
 		// end::simpleMasterDetail[]
 	}
 
@@ -475,8 +475,8 @@ public final class FrameworkModelDemo {
 		invoiceModel.detailModels().add(invoiceLineModel);
 
 		// Configure each level
-		invoiceModel.tableModel().queryModel().conditionRequired().set(true);
-		invoiceLineModel.tableModel().queryModel().conditionRequired().set(true);
+		invoiceModel.tableModel().query().conditionRequired().set(true);
+		invoiceLineModel.tableModel().query().conditionRequired().set(true);
 
 		// Selection cascades down the hierarchy automatically
 		Entity customer = getCustomer(connectionProvider);
@@ -499,8 +499,8 @@ public final class FrameworkModelDemo {
 											// Custom selection logic
 											if (selectedCustomers.size() > 1) {
 												// Handle multi-selection differently
-												invoiceModel.tableModel().queryModel().condition().clear();
-												invoiceModel.tableModel().queryModel().where().set(() ->
+												invoiceModel.tableModel().query().condition().clear();
+												invoiceModel.tableModel().query().where().set(() ->
 																Invoice.CUSTOMER_FK.in(selectedCustomers)
 												);
 											}

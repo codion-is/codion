@@ -6,6 +6,7 @@ Codion Change Log
 - State.contains(ValueSet, value) added.
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
+- EntityTableModel.queryModel() renamed query().
 
 ## 0.18.60
 ### is.codion.common.reactive

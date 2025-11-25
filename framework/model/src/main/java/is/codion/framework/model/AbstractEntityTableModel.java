@@ -144,7 +144,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final EntityQueryModel queryModel() {
+	public final EntityQueryModel query() {
 		return queryModel;
 	}
 

@@ -36,7 +36,7 @@ public final class CountryTableModelTest {
 	void fillCountryReport() {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			CountryTableModel tableModel = new CountryTableModel(connectionProvider);
-			tableModel.queryModel().condition().get(Country.CODE).set().equalTo("ISL");
+			tableModel.query().condition().get(Country.CODE).set().equalTo("ISL");
 			tableModel.items().refresh();
 			tableModel.selection().index().set(0);
 			tableModel.fillCountryReport(new ProgressReporter<String>() {

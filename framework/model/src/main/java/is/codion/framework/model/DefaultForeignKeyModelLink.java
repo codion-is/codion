@@ -58,7 +58,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		this.setConditionOnInsert = builder.setConditionOnInsert;
 		this.refreshOnSelection = builder.refreshOnSelection;
 		if (modelLink.model().containsTableModel()) {
-			modelLink.model().tableModel().queryModel().condition().persist().add(foreignKey);
+			modelLink.model().tableModel().query().condition().persist().add(foreignKey);
 		}
 	}
 
@@ -112,11 +112,11 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 
 		private boolean setConditionOnSelection(Collection<Entity> selection) {
 			if (!selection.isEmpty()) {
-				return model().tableModel().queryModel().condition()
+				return model().tableModel().query().condition()
 								.get(foreignKey).set().in(selection);
 			}
 			if (clearConditionOnEmptySelection) {
-				model().tableModel().queryModel().condition()
+				model().tableModel().query().condition()
 								.get(foreignKey).set().in(selection);
 
 				// Always refresh if the selection is empty, since
@@ -158,7 +158,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 
 		private boolean setConditionOnInsert(Entity insertedEntity) {
 			if (setConditionOnInsert) {
-				return model().tableModel().queryModel().condition()
+				return model().tableModel().query().condition()
 								.get(foreignKey).set().in(insertedEntity);
 			}
 

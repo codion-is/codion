@@ -180,7 +180,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	/**
 	 * @return the underlying query model
 	 */
-	EntityQueryModel queryModel();
+	EntityQueryModel query();
 
 	/**
 	 * @return the {@link EntityTableEditor}

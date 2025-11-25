@@ -299,7 +299,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private void clearTableAndCondition() {
 		tableModel().items().clear();
-		tableModel().queryModel().condition().clear();
+		tableModel().query().condition().clear();
 	}
 
 	private static Control createSelectAllColumnsControl(Controls toggleColumnsControls) {

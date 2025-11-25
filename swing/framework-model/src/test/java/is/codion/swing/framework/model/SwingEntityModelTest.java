@@ -43,7 +43,7 @@ public final class SwingEntityModelTest
 		departmentModel.detailModels().add(departmentModel.link(employeeModel)
 						.active(true)
 						.build());
-		employeeModel.tableModel().queryModel().conditionRequired().set(false);
+		employeeModel.tableModel().query().conditionRequired().set(false);
 
 		return departmentModel;
 	}

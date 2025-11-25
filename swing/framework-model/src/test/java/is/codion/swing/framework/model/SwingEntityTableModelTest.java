@@ -76,7 +76,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
 		assertEquals(0, employeeTableModel.items().included().size());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
-		employeeTableModel.queryModel().condition().get(Employee.DEPARTMENT_FK).set().in(accounting);
+		employeeTableModel.query().condition().get(Employee.DEPARTMENT_FK).set().in(accounting);
 		employeeTableModel.items().refresh();
 		assertEquals(7, employeeTableModel.items().included().size());
 	}
@@ -162,21 +162,21 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	void conditionChanged() {
 		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
 		tableModel.items().refresh();
-		ConditionModel<String> nameCondition = tableModel.queryModel().condition().get(Employee.NAME);
+		ConditionModel<String> nameCondition = tableModel.query().condition().get(Employee.NAME);
 		nameCondition.operands().equal().set("JONES");
-		assertTrue(tableModel.queryModel().conditionChanged().is());
+		assertTrue(tableModel.query().conditionChanged().is());
 		tableModel.items().refresh();
-		assertFalse(tableModel.queryModel().conditionChanged().is());
+		assertFalse(tableModel.query().conditionChanged().is());
 		nameCondition.enabled().set(false);
-		assertTrue(tableModel.queryModel().conditionChanged().is());
+		assertTrue(tableModel.query().conditionChanged().is());
 		nameCondition.enabled().set(true);
-		assertFalse(tableModel.queryModel().conditionChanged().is());
+		assertFalse(tableModel.query().conditionChanged().is());
 	}
 
 	@Test
 	void isConditionEnabled() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		EntityQueryModel queryModel = tableModel.queryModel();
+		EntityQueryModel queryModel = tableModel.query();
 		queryModel.conditionEnabled().set(queryModel.condition().get(Employee.MGR_FK).enabled());
 		tableModel.items().refresh();
 		assertEquals(16, tableModel.items().included().size());
@@ -220,7 +220,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void orderQuery() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		OrderBy orderBy = tableModel.queryModel().orderBy().getOrThrow();
+		OrderBy orderBy = tableModel.query().orderBy().getOrThrow();
 		//default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
@@ -230,7 +230,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 		tableModel.sort().ascending(Employee.NAME);
 
-		orderBy = tableModel.queryModel().orderBy().getOrThrow();
+		orderBy = tableModel.query().orderBy().getOrThrow();
 		//still default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
@@ -239,7 +239,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
 		tableModel.orderQuery().set(true);
-		orderBy = tableModel.queryModel().orderBy().getOrThrow();
+		orderBy = tableModel.query().orderBy().getOrThrow();
 		assertEquals(1, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(0).column());
@@ -247,7 +247,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		tableModel.sort().order(Employee.HIREDATE).set(SortOrder.DESCENDING);
 		tableModel.sort().order(Employee.NAME).add(SortOrder.ASCENDING);
 
-		orderBy = tableModel.queryModel().orderBy().getOrThrow();
+		orderBy = tableModel.query().orderBy().getOrThrow();
 		assertEquals(2, orderBy.orderByColumns().size());
 		assertFalse(orderBy.orderByColumns().get(0).ascending());
 		assertEquals(Employee.HIREDATE, orderBy.orderByColumns().get(0).column());
@@ -255,7 +255,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
 		tableModel.sort().clear();
-		orderBy = tableModel.queryModel().orderBy().getOrThrow();
+		orderBy = tableModel.query().orderBy().getOrThrow();
 		//back to default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
@@ -267,7 +267,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void replaceByKey() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		tableModel.queryModel().attributes().exclude().set(asList(Employee.JOB, Employee.SALARY));
+		tableModel.query().attributes().exclude().set(asList(Employee.JOB, Employee.SALARY));
 		tableModel.items().refresh();
 		Entity.Key jonesKey = tableModel.entities().primaryKey(Employee.TYPE, 3);
 		tableModel.refresh(singleton(jonesKey));

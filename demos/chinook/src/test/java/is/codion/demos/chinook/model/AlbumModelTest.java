@@ -58,7 +58,7 @@ public final class AlbumModelTest {
 			// to populate it with only Master Of Puppets
 			AlbumModel albumModel = new AlbumModel(connectionProvider);
 			SwingEntityTableModel albumTableModel = albumModel.tableModel();
-			albumTableModel.queryModel().condition().get(Album.TITLE).set().equalTo(MASTER_OF_PUPPETS);
+			albumTableModel.query().condition().get(Album.TITLE).set().equalTo(MASTER_OF_PUPPETS);
 			albumTableModel.items().refresh();
 			assertEquals(1, albumTableModel.items().size());
 

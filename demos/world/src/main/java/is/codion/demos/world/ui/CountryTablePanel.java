@@ -47,7 +47,7 @@ final class CountryTablePanel extends EntityTablePanel {
 						.columns(CountryTablePanel::columns));
 		configurePopupMenu(layout -> layout.clear()
 						.control(Control.builder()
-										.toggle(tableModel.queryModel().attributes().included(Country.FLAG))
+										.toggle(tableModel.query().attributes().included(Country.FLAG))
 										.caption("Show flags"))
 						.separator()
 						.defaults());

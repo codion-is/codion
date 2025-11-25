@@ -221,7 +221,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.active(true)
 						.build());
 		assertEquals(new HashSet<>(departmentModel.tableModel().selection().items().get()),
-						employeeModel.tableModel().queryModel().condition().get(Employee.DEPARTMENT_FK).operands().in().get());
+						employeeModel.tableModel().query().condition().get(Employee.DEPARTMENT_FK).operands().in().get());
 	}
 
 	@Test
@@ -243,7 +243,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
 		try {
-			ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
+			ConditionModel<Entity> deptCondition = employeeModel.tableModel().query()
 							.condition()
 							.get(Employee.DEPARTMENT_FK);
 
@@ -270,7 +270,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 
 		connection.startTransaction();
 		try {
-			ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
+			ConditionModel<Entity> deptCondition = employeeModel.tableModel().query()
 							.condition()
 							.get(Employee.DEPARTMENT_FK);
 
@@ -314,7 +314,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 			assertEquals(departmentEditModelValue.get(), inserted);
 
 			// but not when an existing entity is active
-			employeeModel.tableModel().queryModel().conditionRequired().set(false);
+			employeeModel.tableModel().query().conditionRequired().set(false);
 			employeeModel.tableModel().items().refresh();
 			employeeModel.tableModel().selection().index().set(0);// select existing
 
@@ -424,7 +424,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.setConditionOnInsert(false)
 						.setValueOnInsert(false)
 						.build());
-		ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
+		ConditionModel<Entity> deptCondition = employeeModel.tableModel().query()
 						.condition()
 						.get(Employee.DEPARTMENT_FK);
 
@@ -445,7 +445,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.setConditionOnInsert(false)
 						.setValueOnInsert(false)
 						.build());
-		deptCondition = employeeModel.tableModel().queryModel()
+		deptCondition = employeeModel.tableModel().query()
 						.condition()
 						.get(Employee.DEPARTMENT_FK);
 
