@@ -21,7 +21,6 @@ package is.codion.framework.model;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.ValueSet;
@@ -65,7 +64,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
 	private final TableConditionModel<Attribute<?>> tableConditionModel;
-	private final Event<?> conditionChangedEvent = Event.event();
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 
@@ -74,7 +72,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType));
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.tableConditionModel = tableConditionModel(conditionModels);
-		bindEvents();
 	}
 
 	@Override
@@ -98,30 +95,23 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public TableConditionModel<Attribute<?>> conditionModel() {
-		return tableConditionModel;
-	}
-
-	@Override
 	public Map<Attribute<?>, ConditionModel<?>> get() {
 		return tableConditionModel.get();
 	}
 
 	@Override
-	public <T> Optional<ConditionModel<T>> optional(Attribute<T> attribute) {
+	public <T> ConditionModel<T> get(Attribute<?> attribute) {
+		return tableConditionModel.get(attribute);
+	}
+
+	@Override
+	public <T> Optional<ConditionModel<T>> optional(Attribute<?> attribute) {
 		return tableConditionModel.optional(requireNonNull(attribute));
 	}
 
 	@Override
-	public <T> ConditionModel<T> get(Column<T> column) {
-		return tableConditionModel.get(column);
-	}
-
-	@Override
 	public ForeignKeyConditionModel get(ForeignKey foreignKey) {
-		ConditionModel<Entity> model = tableConditionModel.get(foreignKey);
-
-		return (ForeignKeyConditionModel) model;
+		return (ForeignKeyConditionModel) tableConditionModel.<Entity>get(foreignKey);
 	}
 
 	@Override
@@ -158,11 +148,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 			default:
 				return combination(conjunction, conditions);
 		}
-	}
-
-	private void bindEvents() {
-		tableConditionModel.get().values()
-						.forEach(conditionModel -> conditionModel.changed().addListener(conditionChangedEvent));
 	}
 
 	private static Condition condition(ConditionModel<?> conditionModel, Attribute<?> identifier) {

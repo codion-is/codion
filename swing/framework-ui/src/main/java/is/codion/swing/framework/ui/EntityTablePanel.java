@@ -1483,7 +1483,7 @@ public class EntityTablePanel extends JPanel {
 			return null;
 		}
 		TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
-						.create(tableModel.query().condition().conditionModel(), createConditionPanels(),
+						.create(tableModel.query().condition(), createConditionPanels(),
 										table.columnModel(), this::configureTableConditionPanel);
 		KeyEvents.builder()
 						.keyCode(VK_ENTER)
