@@ -82,7 +82,7 @@ public final class FrameworkModelDemo {
 	void entityTableModel(EntityConnectionProvider connectionProvider) {
 		// tag::entityTableModel[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityTableModel tableModel = customerModel.tableModel();
+		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Refresh data
 		tableModel.items().refresh();
@@ -142,10 +142,15 @@ public final class FrameworkModelDemo {
 		ObservableState priceValid = editModel.editor().value(Track.UNITPRICE).valid();
 
 		// React to value changes
-		priceValue.addConsumer(newPrice -> updateTotalPrice(newPrice));
+		priceValue.addConsumer(this::updateTotalPrice);
 
 		// React to value edits
 		priceValue.edited().addConsumer(newPrice -> System.out.println("Price: " + newPrice));
+		priceValid.addConsumer(valid -> {
+			if (!valid) {
+				System.out.println("Invalid price: " + priceValue.get());
+			}
+		});
 		// end::valueObservers[]
 	}
 
@@ -200,12 +205,12 @@ public final class FrameworkModelDemo {
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Fetch only Customers with emails by default
-		tableModel.query().dataSource().set(queryModel -> {
-			EntityConnection connection = queryModel.connectionProvider().connection();
+		tableModel.query().dataSource().set(query -> {
+			EntityConnection connection = query.connectionProvider().connection();
 
 			return connection.select(and(
 							Customer.EMAIL.isNotNull(),
-							queryModel.condition().where())
+							query.condition().where())
 			);
 		});
 		// end::customDataSource[]
@@ -228,12 +233,12 @@ public final class FrameworkModelDemo {
 		// tag::entityQueryModel[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 		SwingEntityTableModel tableModel = customerModel.tableModel();
-		EntityQueryModel queryModel = tableModel.query();
+		EntityQueryModel query = tableModel.query();
 
 		// Configure query behavior
-		queryModel.limit().set(200);
-		queryModel.conditionRequired().set(true);
-		queryModel.orderBy().set(OrderBy.ascending(Customer.LASTNAME));
+		query.limit().set(200);
+		query.conditionRequired().set(true);
+		query.orderBy().set(OrderBy.ascending(Customer.LASTNAME));
 		// end::entityQueryModel[]
 	}
 
@@ -243,8 +248,8 @@ public final class FrameworkModelDemo {
 		EntityConditionModel condition = customerModel.tableModel().query().condition();
 
 		// Set condition values
-		conditionModel.get(Customer.EMAIL).set().isNotNull();
-		conditionModel.get(Customer.COUNTRY).set().equalTo("Iceland");
+		condition.get(Customer.EMAIL).set().isNotNull();
+		condition.get(Customer.COUNTRY).set().equalTo("Iceland");
 
 		// The resulting query will include:
 		// WHERE email is not null AND country = 'Iceland'
@@ -257,7 +262,6 @@ public final class FrameworkModelDemo {
 		AdditionalConditions additional = customerModel.tableModel().query().condition().additional();
 
 		// Single additional condition
-		additional.where().conjunction().set(Conjunction.AND);
 		additional.where().set(() -> Customer.COUNTRY.equalTo("Iceland"));
 
 		// Multiple conditions with custom conjunction
@@ -271,23 +275,26 @@ public final class FrameworkModelDemo {
 	void queryLimits(EntityConnectionProvider connectionProvider) {
 		// tag::queryLimits[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityQueryModel queryModel = customerModel.tableModel().query();
+		EntityQueryModel query = customerModel.tableModel().query();
 
 		// Set a specific limit
-		queryModel.limit().set(500);
+		query.limit().set(500);
 
-		// Remove limit (fetch all matching rows)
-		queryModel.limit().clear();
+	  // Resets to the default limit specified by the
+		// EntityQueryModel.LIMIT configuration setting,
+		// if one is specified, otherwise clears the
+		// limit and allows fetching of all matching rows
+		query.limit().clear();
 
 		// Add a max limit validator
-		queryModel.limit().addValidator(newLimit -> {
+		query.limit().addValidator(newLimit -> {
 			if (newLimit > 10.000) {
 				throw new IllegalArgumentException("Limit may not exceed 10.000");
 			}
 		});
 
 		// Listen for limit changes
-		queryModel.limit().addConsumer(newLimit ->
+		query.limit().addConsumer(newLimit ->
 						System.out.println("Query limit changed to: " + newLimit));
 		// end::queryLimits[]
 	}
@@ -295,13 +302,13 @@ public final class FrameworkModelDemo {
 	void resultOrdering(EntityConnectionProvider connectionProvider) {
 		// tag::resultOrdering[]
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
-		EntityQueryModel queryModel = invoiceModel.tableModel().query();
+		EntityQueryModel query = invoiceModel.tableModel().query();
 
 		// Single column ordering
-		queryModel.orderBy().set(OrderBy.descending(Invoice.DATE));
+		query.orderBy().set(OrderBy.descending(Invoice.DATE));
 
 		// Multiple columns
-		queryModel.orderBy().set(OrderBy.builder()
+		query.orderBy().set(OrderBy.builder()
 						.ascending(Invoice.BILLINGCOUNTRY)
 						.descending(Invoice.DATE)
 						.build()
@@ -312,10 +319,9 @@ public final class FrameworkModelDemo {
 	void customQueryDataSource(EntityConnectionProvider connectionProvider) {
 		// tag::customQueryDataSource[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityQueryModel entityQueryModel = customerModel.tableModel().query();
 
-		entityQueryModel.dataSource().set(queryModel -> {
-			EntityConnection connection = queryModel.connectionProvider().connection();
+		customerModel.tableModel().query().dataSource().set(query -> {
+			EntityConnection connection = query.connectionProvider().connection();
 
 			// Custom query with complex joins or database-specific features
 			return connection.select(Select.where(customComplexCondition())
@@ -328,32 +334,32 @@ public final class FrameworkModelDemo {
 	void conditionRequired(EntityConnectionProvider connectionProvider) {
 		// tag::conditionRequired[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityQueryModel queryModel = customerModel.tableModel().query();
+		EntityQueryModel query = customerModel.tableModel().query();
 
 		// Require at least one condition
-		queryModel.conditionRequired().set(true);
+		query.conditionRequired().set(true);
 
 		// Specify that a certain condition must be enabled
-		queryModel.conditionEnabled().set(queryModel.condition().get(Customer.SUPPORTREP_FK).enabled());
+		query.conditionEnabled().set(query.condition().get(Customer.SUPPORTREP_FK).enabled());
 		// end::conditionRequired[]
 	}
 
 	void attributeManagement(EntityConnectionProvider connectionProvider) {
 		// tag::attributeManagement[]
 		SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
-		EntityQueryModel queryModel = albumModel.tableModel().query();
+		EntityQueryModel query = albumModel.tableModel().query();
 
 		// Exclude large columns by default
-		queryModel.attributes().exclude().add(Album.COVER);
+		query.attributes().exclude().add(Album.COVER);
 
 		// Include them only when needed
 		State detailView = State.state();
 		detailView.addConsumer(showDetails -> {
 			if (showDetails) {
-				queryModel.attributes().exclude().remove(Album.COVER);
+				query.attributes().exclude().remove(Album.COVER);
 			}
 			else {
-				queryModel.attributes().exclude().add(Album.COVER);
+				query.attributes().exclude().add(Album.COVER);
 			}
 		});
 		// end::attributeManagement[]

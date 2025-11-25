@@ -43,7 +43,7 @@ public class SwingEntityConditions extends EntityConditions {
 	}
 
 	@Override
-	protected ForeignKeyConditionModel conditionModel(ForeignKey foreignKey) {
+	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
 		if (definition(requireNonNull(foreignKey).referencedType()).smallDataset()) {
 			return SwingForeignKeyConditionModel.builder()
 							.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
@@ -51,7 +51,7 @@ public class SwingEntityConditions extends EntityConditions {
 							.build();
 		}
 
-		return super.conditionModel(foreignKey);
+		return super.condition(foreignKey);
 	}
 
 	/**

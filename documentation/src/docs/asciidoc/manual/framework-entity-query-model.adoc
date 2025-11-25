@@ -31,9 +31,9 @@ The primary condition mechanism is the {url-javadoc}{framework-model}/is/codion/
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=tableConditionModel]
 ----
 
-=== Additional WHERE Conditions
+=== Additional  Conditions
 
-Beyond the table condition model, you can add custom WHERE conditions:
+Beyond the table condition model, you can add custom WHERE and/or HAVING conditions:
 
 [source,java]
 ----

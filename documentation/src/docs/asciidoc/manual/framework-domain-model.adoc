@@ -398,10 +398,10 @@ The framework model layer automatically handles aggregate columns - conditions o
 SwingEntityTableModel continentModel = new SwingEntityTableModel(Continent.TYPE, connectionProvider);
 
 // Condition on regular column (NAME) - automatically goes in WHERE
-continentModel.queryModel().condition().get(Continent.NAME).set().equalTo("Asia");
+continentModel.query().condition().get(Continent.NAME).set().equalTo("Asia");
 
 // Condition on aggregate column (POPULATION) - automatically goes in HAVING
-continentModel.queryModel().condition().get(Continent.POPULATION).set().greaterThan(1_000_000_000L);
+continentModel.query().condition().get(Continent.POPULATION).set().greaterThan(1_000_000_000L);
 
 // Both conditions work together correctly
 continentModel.items().refresh();

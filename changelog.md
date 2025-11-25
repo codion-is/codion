@@ -18,6 +18,7 @@ Codion Change Log
 - EntityTableConditionModel renamed EntityConditionModel.
 - EntityConditionModel.Builder.conditionModelFactory() renamed conditions().
 - EntityConditionModelFactory renamed EntityConditions.
+- EntityConditions.conditionModel() renamed condition().
 ### is.codion.swing.framework.model
 - SwingEntityConditionModelFactory renamed SwingEntityConditions.
 ### is.codion.swing.framework.ui

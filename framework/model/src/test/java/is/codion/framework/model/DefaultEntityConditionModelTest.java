@@ -352,7 +352,7 @@ public class DefaultEntityConditionModelTest {
 		}
 
 		@Override
-		protected <T> ConditionModel<T> conditionModel(Column<T> column) {
+		protected <T> ConditionModel<T> condition(Column<T> column) {
 			if (column.equals(DateTimeTest.TIME)) {
 				return (ConditionModel<T>) ConditionModel.builder()
 								.valueClass(LocalTime.class)
@@ -360,7 +360,7 @@ public class DefaultEntityConditionModelTest {
 								.build();
 			}
 
-			return super.conditionModel(column);
+			return super.condition(column);
 		}
 	}
 
@@ -374,7 +374,7 @@ public class DefaultEntityConditionModelTest {
 		}
 
 		@Override
-		protected <T> ConditionModel<T> conditionModel(Column<T> column) {
+		protected <T> ConditionModel<T> condition(Column<T> column) {
 			if (column.equals(DateTimeTest.DATE_TIME)) {
 				return (ConditionModel<T>) ConditionModel.builder()
 								.valueClass(LocalDateTime.class)
@@ -382,7 +382,7 @@ public class DefaultEntityConditionModelTest {
 								.build();
 			}
 
-			return super.conditionModel(column);
+			return super.condition(column);
 		}
 	}
 }

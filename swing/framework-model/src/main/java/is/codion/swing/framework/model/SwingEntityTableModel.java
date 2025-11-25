@@ -320,7 +320,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(EntityEditModel editModel) {
 		return FilterTableModel.builder()
 						.columns(new EntityTableColumns(editModel.entityDefinition()))
-						.filters(new EntityColumnFilterFactory(editModel.entityDefinition()))
+						.filters(new EntityFilters(editModel.entityDefinition()))
 						.validator(new EntityItemValidator(editModel.entityType()))
 						.editor(tableModel -> new SwingEntityTableEditor(editModel));
 	}
@@ -408,22 +408,22 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
-	private static final class EntityColumnFilterFactory implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
+	private static final class EntityFilters implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
 
 		private final EntityDefinition entityDefinition;
 
-		private EntityColumnFilterFactory(EntityDefinition entityDefinition) {
+		private EntityFilters(EntityDefinition entityDefinition) {
 			this.entityDefinition = requireNonNull(entityDefinition);
 		}
 
 		@Override
 		public Map<Attribute<?>, ConditionModel<?>> get() {
 			return entityDefinition.attributes().definitions().stream()
-							.filter(EntityColumnFilterFactory::include)
-							.collect(toMap(AttributeDefinition::attribute, EntityColumnFilterFactory::conditionModel));
+							.filter(EntityFilters::include)
+							.collect(toMap(AttributeDefinition::attribute, EntityFilters::condition));
 		}
 
-		private static ConditionModel<?> conditionModel(AttributeDefinition<?> definition) {
+		private static ConditionModel<?> condition(AttributeDefinition<?> definition) {
 			if (useStringCondition(definition)) {
 				// Covers foreign keys
 				return ConditionModel.builder()

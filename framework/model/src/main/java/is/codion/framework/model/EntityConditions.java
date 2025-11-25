@@ -62,10 +62,10 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 		Map<Attribute<?>, ConditionModel<?>> models = new HashMap<>();
 		models.putAll(definition().columns().get().stream()
 						.filter(this::include)
-						.collect(toMap(Function.identity(), this::conditionModel)));
+						.collect(toMap(Function.identity(), this::condition)));
 		models.putAll(definition().foreignKeys().get().stream()
 						.filter(this::include)
-						.collect(toMap(Function.identity(), this::conditionModel)));
+						.collect(toMap(Function.identity(), this::condition)));
 
 		return unmodifiableMap(models);
 	}
@@ -92,7 +92,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	 * @param <T> the column type
 	 * @return a {@link ConditionModel} based on the given column
 	 */
-	protected <T> ConditionModel<T> conditionModel(Column<T> column) {
+	protected <T> ConditionModel<T> condition(Column<T> column) {
 		ColumnDefinition<T> definition = definition().columns().definition(column);
 
 		return ConditionModel.builder()
@@ -108,7 +108,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	 * @param foreignKey the foreign key
 	 * @return a {@link ForeignKeyConditionModel} based on the given foreign key
 	 */
-	protected ForeignKeyConditionModel conditionModel(ForeignKey foreignKey) {
+	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
 		return ForeignKeyConditionModel.builder()
 						.equalSearchModel(createEqualSearchModel(foreignKey))
 						.inSearchModel(createInSearchModel(foreignKey))
