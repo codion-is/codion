@@ -40,6 +40,7 @@ import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.framework.model.EntityTableConditionModel.AdditionalConditions;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.framework.model.ModelLink;
@@ -255,14 +256,14 @@ public final class FrameworkModelDemo {
 	void additionalWhereConditions(EntityConnectionProvider connectionProvider) {
 		// tag::additionalWhereConditions[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityTableConditionModel condition = customerModel.tableModel().query().condition();
+		AdditionalConditions additional = customerModel.tableModel().query().condition().additional();
 
 		// Single additional condition
-		condition.where().conjunction().set(Conjunction.AND);
-		condition.where().set(() -> Customer.COUNTRY.equalTo("Iceland"));
+		additional.where().conjunction().set(Conjunction.AND);
+		additional.where().set(() -> Customer.COUNTRY.equalTo("Iceland"));
 
 		// Multiple conditions with custom conjunction
-		condition.where().set(() -> Condition.or(
+		additional.where().set(() -> Condition.or(
 						Customer.CITY.equalTo("Reykjavik"),
 						Customer.CITY.equalTo("Akureyri")
 		));
@@ -500,7 +501,7 @@ public final class FrameworkModelDemo {
 											if (selectedCustomers.size() > 1) {
 												// Handle multi-selection differently
 												invoiceModel.tableModel().query().condition().clear();
-												invoiceModel.tableModel().query().condition().where().set(() ->
+												invoiceModel.tableModel().query().condition().additional().where().set(() ->
 																Invoice.CUSTOMER_FK.in(selectedCustomers)
 												);
 											}

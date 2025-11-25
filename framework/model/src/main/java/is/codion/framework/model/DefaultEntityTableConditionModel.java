@@ -72,8 +72,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private final EntityConnectionProvider connectionProvider;
 	private final TableConditionModel<Attribute<?>> tableConditionModel;
 	private final Event<?> changed = Event.event();
-	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
-	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
+	private final DefaultAdditional additional = new DefaultAdditional();
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 	private final DefaultModified modified;
@@ -99,12 +98,12 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	@Override
 	public Condition where(Conjunction conjunction) {
-		return createCondition(conjunction, noneAggregateColumn, additionalWhere);
+		return createCondition(conjunction, noneAggregateColumn, additional.where);
 	}
 
 	@Override
 	public Condition having(Conjunction conjunction) {
-		return createCondition(conjunction, aggregateColumn, additionalHaving);
+		return createCondition(conjunction, aggregateColumn, additional.having);
 	}
 
 	@Override
@@ -148,13 +147,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public AdditionalCondition where() {
-		return additionalWhere;
-	}
-
-	@Override
-	public AdditionalCondition having() {
-		return additionalHaving;
+	public AdditionalConditions additional() {
+		return additional;
 	}
 
 	@Override
@@ -162,7 +156,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return modified;
 	}
 
-	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType, AdditionalCondition additionalCondition) {
+	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType, ConditionValue additionalCondition) {
 		List<Condition> conditions = tableConditionModel.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
 						.filter(entry -> entry.getValue().enabled().is())
@@ -191,10 +185,10 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	private void bindEvents() {
 		tableConditionModel.changed().addListener(changed);
-		additionalWhere.addListener(changed);
-		additionalWhere.conjunction().addListener(changed);
-		additionalHaving.addListener(changed);
-		additionalHaving.conjunction().addListener(changed);
+		additional.where.addListener(changed);
+		additional.where.conjunction().addListener(changed);
+		additional.having.addListener(changed);
+		additional.having.conjunction().addListener(changed);
 		changed.addListener(modified::set);
 	}
 
@@ -527,7 +521,23 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		}
 	}
 
-	private static final class DefaultAdditionalCondition extends AbstractValue<Supplier<Condition>> implements AdditionalCondition {
+	private static final class DefaultAdditional implements AdditionalConditions {
+
+		private final ConditionValue where = new DefaultAdditionalCondition();
+		private final ConditionValue having = new DefaultAdditionalCondition();
+
+		@Override
+		public ConditionValue where() {
+			return where;
+		}
+
+		@Override
+		public ConditionValue having() {
+			return having;
+		}
+	}
+
+	private static final class DefaultAdditionalCondition extends AbstractValue<Supplier<Condition>> implements ConditionValue {
 
 		private Supplier<Condition> condition = NULL_CONDITION_SUPPLIER;
 

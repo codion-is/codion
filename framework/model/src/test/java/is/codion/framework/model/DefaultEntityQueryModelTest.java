@@ -61,15 +61,15 @@ public final class DefaultEntityQueryModelTest {
 		conditionModel.get(Employee.NAME).set().in("Scott", "John");
 		Condition condition = queryModel.select().where();
 		assertFalse(condition instanceof Combination);
-		queryModel.condition().where().set(Employee.CONDITION_2_TYPE::get);
-		assertNotNull(queryModel.condition().where().get());
+		queryModel.condition().additional().where().set(Employee.CONDITION_2_TYPE::get);
+		assertNotNull(queryModel.condition().additional().where().get());
 		condition = queryModel.select().where();
 		assertInstanceOf(Combination.class, condition);
 		assertEquals(Conjunction.AND, ((Combination) condition).conjunction());
-		queryModel.condition().where().conjunction().set(Conjunction.OR);
+		queryModel.condition().additional().where().conjunction().set(Conjunction.OR);
 		condition = queryModel.select().where();
 		assertEquals(Conjunction.OR, ((Combination) condition).conjunction());
-		queryModel.condition().where().set(null);
+		queryModel.condition().additional().where().set(null);
 		condition = queryModel.select().where();
 		assertFalse(condition instanceof Combination);
 	}
@@ -102,11 +102,11 @@ public final class DefaultEntityQueryModelTest {
 		nameCondition.clear();
 		assertFalse(queryModel.condition().modified().is());
 
-		queryModel.condition().where().set(Employee.CONDITION_2_TYPE::get);
+		queryModel.condition().additional().where().set(Employee.CONDITION_2_TYPE::get);
 		assertTrue(queryModel.condition().modified().is());
 		queryModel.query();
 		assertFalse(queryModel.condition().modified().is());
-		queryModel.condition().where().conjunction().set(Conjunction.OR);
+		queryModel.condition().additional().where().conjunction().set(Conjunction.OR);
 		assertTrue(queryModel.condition().modified().is());
 		queryModel.query();
 		assertFalse(queryModel.condition().modified().is());
@@ -114,11 +114,11 @@ public final class DefaultEntityQueryModelTest {
 		queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Job.TYPE,
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER)));
 		assertFalse(queryModel.condition().modified().is());
-		queryModel.condition().having().set(Job.ADDITIONAL_HAVING::get);
+		queryModel.condition().additional().having().set(Job.ADDITIONAL_HAVING::get);
 		assertTrue(queryModel.condition().modified().is());
 		queryModel.query();
 		assertFalse(queryModel.condition().modified().is());
-		queryModel.condition().having().conjunction().set(Conjunction.OR);
+		queryModel.condition().additional().having().conjunction().set(Conjunction.OR);
 		assertTrue(queryModel.condition().modified().is());
 		queryModel.query();
 		assertFalse(queryModel.condition().modified().is());
@@ -334,28 +334,28 @@ public final class DefaultEntityQueryModelTest {
 		assertTrue(initialCount > 0);
 
 		// Add HAVING condition
-		queryModel.condition().having().set(() -> Job.MAX_SALARY.greaterThan(5000.0));
+		queryModel.condition().additional().having().set(() -> Job.MAX_SALARY.greaterThan(5000.0));
 		results = queryModel.query();
 		assertTrue(results.size() < initialCount); // Should filter out some jobs
 
 		// Check conjunction
-		assertEquals(Conjunction.AND, queryModel.condition().having().conjunction().get());
+		assertEquals(Conjunction.AND, queryModel.condition().additional().having().conjunction().get());
 
 		// Change to OR conjunction (though with single condition it doesn't matter)
-		queryModel.condition().having().conjunction().set(Conjunction.OR);
-		assertEquals(Conjunction.OR, queryModel.condition().having().conjunction().get());
+		queryModel.condition().additional().having().conjunction().set(Conjunction.OR);
+		assertEquals(Conjunction.OR, queryModel.condition().additional().having().conjunction().get());
 
 		// Add another HAVING condition using the Job.ADDITIONAL_HAVING ConditionType
-		queryModel.condition().having().set(Job.ADDITIONAL_HAVING::get);
+		queryModel.condition().additional().having().set(Job.ADDITIONAL_HAVING::get);
 		queryModel.query();
 
 		// Clear having
-		queryModel.condition().having().clear();
+		queryModel.condition().additional().having().clear();
 		results = queryModel.query();
 		assertEquals(initialCount, results.size()); // Back to original count
 
 		// Test that having is included in the Select
-		queryModel.condition().having().set(() -> Job.MIN_SALARY.greaterThan(1000.0));
+		queryModel.condition().additional().having().set(() -> Job.MIN_SALARY.greaterThan(1000.0));
 		Select select = queryModel.select();
 		assertNotNull(select.having());
 	}
@@ -378,18 +378,18 @@ public final class DefaultEntityQueryModelTest {
 		assertTrue(withDeptCondition <= allCount);
 
 		// Add additional WHERE condition (should AND with table conditions by default)
-		queryModel.condition().where().set(() -> Employee.JOB.in("CLERK", "MANAGER"));
+		queryModel.condition().additional().where().set(() -> Employee.JOB.in("CLERK", "MANAGER"));
 		int withBothConditions = queryModel.query().size();
 		assertTrue(withBothConditions <= withDeptCondition);
 
 		// Change conjunction to OR
-		queryModel.condition().where().conjunction().set(Conjunction.OR);
+		queryModel.condition().additional().where().conjunction().set(Conjunction.OR);
 		int withOrConditions = queryModel.query().size();
 		// OR should give more or equal results than AND
 		assertTrue(withOrConditions >= withBothConditions);
 
 		// Test with condition supplier that returns null
-		queryModel.condition().where().set(() -> null);
+		queryModel.condition().additional().where().set(() -> null);
 		int withNullAdditional = queryModel.query().size();
 		assertEquals(withDeptCondition, withNullAdditional); // Should be same as just dept condition
 
