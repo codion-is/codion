@@ -55,7 +55,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
-import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -120,8 +119,11 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param editModel the edit model
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
-		this(editModel, entityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
-						new SwingEntityConditionModelFactory(editModel.entityType(), editModel.connectionProvider()))));
+		this(editModel, entityQueryModel(EntityTableConditionModel.builder()
+						.entityType(editModel.entityType())
+						.connectionProvider(editModel.connectionProvider())
+						.conditionModelFactory(new SwingEntityConditionModelFactory(editModel.entityType(), editModel.connectionProvider()))
+						.build()));
 	}
 
 	/**

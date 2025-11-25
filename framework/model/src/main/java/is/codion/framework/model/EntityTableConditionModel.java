@@ -33,8 +33,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * Factory for {@link EntityTableConditionModel} instances via
- * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider)}
+ * Use {@link EntityTableConditionModel#builder()} for instance.
  */
 public interface EntityTableConditionModel extends TableConditionModel<Attribute<?>> {
 
@@ -135,24 +134,50 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	}
 
 	/**
-	 * Creates a new {@link EntityTableConditionModel}
-	 * @param entityType the underlying entity type
-	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @return a new {@link EntityTableConditionModel} instance
+	 * Builds an {@link EntityTableConditionModel}
 	 */
-	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return entityTableConditionModel(entityType, connectionProvider, new EntityConditionModelFactory(entityType, connectionProvider));
+	interface Builder {
+
+		/**
+		 * The first step in building an {@link EntityTableConditionModel}
+		 */
+		interface EntityTypeStep {
+
+			/**
+			 * @param entityType the underlying entity type
+			 * @return the {@link ConnectionProviderStep}
+			 */
+			ConnectionProviderStep entityType(EntityType entityType);
+		}
+
+		/**
+		 * The second step in building an {@link EntityTableConditionModel}
+		 */
+		interface ConnectionProviderStep {
+
+			/**
+			 * @param connectionProvider a {@link EntityConnectionProvider} instance
+			 * @return the {@link Builder}
+			 */
+			Builder connectionProvider(EntityConnectionProvider connectionProvider);
+		}
+
+		/**
+		 * @param conditionModelFactory supplies the column condition models for this table condition model
+		 * @return this builder
+		 */
+		Builder conditionModelFactory(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory);
+
+		/**
+		 * @return a new {@link EntityTableConditionModel} instance
+		 */
+		EntityTableConditionModel build();
 	}
 
 	/**
-	 * Creates a new {@link EntityTableConditionModel}
-	 * @param entityType the underlying entity type
-	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @param conditionModelFactory supplies the column condition models for this table condition model
-	 * @return a new {@link EntityTableConditionModel} instance
+	 * @return a {@link Builder.EntityTypeStep}
 	 */
-	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																														 Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory) {
-		return new DefaultEntityTableConditionModel(entityType, connectionProvider, conditionModelFactory);
+	static Builder.EntityTypeStep builder() {
+		return DefaultEntityTableConditionModel.DefaultBuilder.ENTITY_TYPE_STEP;
 	}
 }

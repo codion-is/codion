@@ -80,11 +80,10 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 	private final DefaultModified modified;
 
-	DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																	 Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModels) {
-		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType));
-		this.connectionProvider = requireNonNull(connectionProvider);
-		this.tableConditionModel = tableConditionModel(conditionModels);
+	DefaultEntityTableConditionModel(DefaultBuilder builder) {
+		this.entityDefinition = builder.connectionProvider.entities().definition(builder.entityType);
+		this.connectionProvider = builder.connectionProvider;
+		this.tableConditionModel = tableConditionModel(builder.conditionModelFactory);
 		this.modified = new DefaultModified();
 		bindEvents();
 	}
@@ -186,7 +185,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return additionalCondition.optional()
 						.map(Supplier::get)
 						.filter(Objects::nonNull)
-						.map(additional -> combination(additionalCondition.conjunction().getOrThrow(), tableCondition, additional))
+						.map(condition -> combination(additionalCondition.conjunction().getOrThrow(), tableCondition, condition))
 						.map(Condition.class::cast)
 						.orElse(tableCondition);
 	}
@@ -448,6 +447,55 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	private static boolean containsWildcards(@Nullable String value) {
 		return value != null && (value.contains("%") || value.contains("_"));
+	}
+
+	static final class DefaultBuilder implements Builder {
+
+		static final EntityTypeStep ENTITY_TYPE_STEP = new DefaultEntityTypeStep();
+
+		private final EntityType entityType;
+		private final EntityConnectionProvider connectionProvider;
+
+		private Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory;
+
+		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+			this.entityType = entityType;
+			this.connectionProvider = connectionProvider;
+			this.conditionModelFactory = new EntityConditionModelFactory(entityType, connectionProvider);
+		}
+
+		private static final class DefaultEntityTypeStep implements EntityTypeStep {
+
+			@Override
+			public ConnectionProviderStep entityType(EntityType entityType) {
+				return new DefaultConnectionProviderStep(requireNonNull(entityType));
+			}
+		}
+
+		private static final class DefaultConnectionProviderStep implements ConnectionProviderStep {
+
+			private final EntityType entityType;
+
+			private DefaultConnectionProviderStep(EntityType entityType) {
+				this.entityType = entityType;
+			}
+
+			@Override
+			public Builder connectionProvider(EntityConnectionProvider connectionProvider) {
+				return new DefaultBuilder(entityType, requireNonNull(connectionProvider));
+			}
+		}
+
+		@Override
+		public Builder conditionModelFactory(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory) {
+			this.conditionModelFactory = requireNonNull(conditionModelFactory);
+			return this;
+		}
+
+		@Override
+		public EntityTableConditionModel build() {
+			return new DefaultEntityTableConditionModel(this);
+		}
 	}
 
 	private final class AggregateColumn implements Predicate<Attribute<?>> {

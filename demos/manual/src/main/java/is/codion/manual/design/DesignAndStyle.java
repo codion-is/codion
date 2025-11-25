@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.reactive.event.Event.event;
-import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 public final class DesignAndStyle {
@@ -56,9 +55,6 @@ public final class DesignAndStyle {
 		Value<Integer> value = Value.nullable();
 
 		State state = State.state(true);
-
-		EntityTableConditionModel conditionModel =
-						entityTableConditionModel(Customer.TYPE, connectionProvider);
 		//end::factories[]
 
 		//tag::builders[]
@@ -75,6 +71,12 @@ public final class DesignAndStyle {
 										.dateTimePattern("dd.MM.yyyy")
 										.columns(12)
 										.border(createTitledBorder("Date"))
+										.build();
+
+		EntityTableConditionModel conditionModel =
+						EntityTableConditionModel.builder()
+										.entityType(Customer.TYPE)
+										.connectionProvider(connectionProvider)
 										.build();
 		//end::builders[]
 

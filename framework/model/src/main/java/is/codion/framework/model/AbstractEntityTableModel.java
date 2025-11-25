@@ -44,7 +44,6 @@ import java.util.function.Predicate;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
-import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
@@ -73,7 +72,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 * @param filterModel provides the filter model
 	 */
 	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel) {
-		this(editModel, new DefaultEntityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider())), filterModel);
+		this(editModel, new DefaultEntityQueryModel(EntityTableConditionModel.builder()
+						.entityType(editModel.entityType())
+						.connectionProvider(editModel.connectionProvider())
+						.build()), filterModel);
 	}
 
 	/**
