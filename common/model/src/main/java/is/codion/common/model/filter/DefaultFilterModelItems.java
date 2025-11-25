@@ -133,7 +133,10 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void remove(R item) {
 		requireNonNull(item);
 		synchronized (lock) {
-			if (!filtered.items.remove(item)) {
+			if (filtered.items.remove(item)) {
+				filtered.notifyChanges();
+			}
+			else {
 				int index = included.items.indexOf(item);
 				if (index >= 0) {
 					included.items.remove(index);
@@ -148,10 +151,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void remove(Collection<R> items) {
 		rejectNulls(items);
 		synchronized (lock) {
+			boolean filteredRemoved = false;
 			Set<R> toRemove = new HashSet<>(items);
 			for (R itemToRemove : items) {
 				if (filtered.items.remove(itemToRemove)) {
 					toRemove.remove(itemToRemove);
+					filteredRemoved = true;
 				}
 			}
 			boolean includedRemoved = false;
@@ -169,6 +174,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			selection.adjusting(false);
 			if (includedRemoved) {
 				included.notifyChanges();
+			}
+			if (filteredRemoved) {
+				filtered.notifyChanges();
 			}
 		}
 	}
@@ -265,6 +273,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			}
 			itemsListener.changed();
 			included.notifyChanges();
+			filtered.notifyChanges();
 		}
 		selection.items().set(selectedItems);
 	}
@@ -272,12 +281,16 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void clear() {
 		synchronized (lock) {
-			filtered.items.clear();
 			int includedSize = included.items.size();
 			included.items.clear();
 			if (includedSize > 0) {
 				itemsListener.deleted(0, includedSize - 1);
 				included.notifyChanges();
+			}
+			int filteredSize = filtered.size();
+			filtered.items.clear();
+			if (filteredSize > 0) {
+				filtered.notifyChanges();
 			}
 		}
 	}
@@ -332,6 +345,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 		if (!filteredItems.isEmpty()) {
 			filtered.items.addAll(filteredItems);
+			filtered.notifyChanges();
 		}
 
 		return !includedItems.isEmpty();
@@ -495,6 +509,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	private final class DefaultFilteredItems implements FilteredItems<R> {
 
+		private final Event<Collection<R>> changed = Event.event();
 		private final Set<R> items = new LinkedHashSet<>();
 
 		@Override
@@ -516,6 +531,15 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			synchronized (lock) {
 				return items.size();
 			}
+		}
+
+		@Override
+		public Observer<Collection<R>> observer() {
+			return changed.observer();
+		}
+
+		private void notifyChanges() {
+			changed.accept(get());
 		}
 	}
 

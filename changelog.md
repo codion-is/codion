@@ -4,9 +4,14 @@ Codion Change Log
 ## 0.18.61
 ### is.codion.common.reactive
 - State.contains(ValueSet, value) added.
+### is.codion.common.model
+- FilterModel.FilteredItems now extends Observable.
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().
+### is.codion.swing.framework.ui
+- EntityTablePanel bug fixed, status message now updated correctly when all items are filtered.
+- EntityTablePanel limit status message improved.
 
 ## 0.18.60
 ### is.codion.common.reactive

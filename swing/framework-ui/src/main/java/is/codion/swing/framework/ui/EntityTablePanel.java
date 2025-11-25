@@ -2854,7 +2854,7 @@ public class EntityTablePanel extends JPanel {
 
 	private static final class DefaultStatusMessage implements Function<SwingEntityTableModel, String> {
 
-		private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
+		private static final NumberFormat FORMAT = NumberFormat.getIntegerInstance();
 
 		@Override
 		public String apply(SwingEntityTableModel tableModel) {
@@ -2864,21 +2864,26 @@ public class EntityTablePanel extends JPanel {
 				return "";
 			}
 			int selectionCount = tableModel.selection().count();
+			int totalCount = rowCount + filteredCount;
+			boolean limited = tableModel.query().limit().is(totalCount);
 			StringBuilder builder = new StringBuilder();
-			if (tableModel.query().limit().is(rowCount)) {
+			if (limited) {
 				builder.append(MESSAGES.getString("limited_to")).append(" ");
 			}
-			builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
+			builder.append(FORMAT.format(totalCount));
 			if (selectionCount > 0 || filteredCount > 0) {
 				builder.append(" (");
-				if (selectionCount > 0) {
-					builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(selectionCount)).append(" ").append(MESSAGES.getString("selected"));
-				}
 				if (filteredCount > 0) {
-					if (selectionCount > 0) {
+					if (rowCount > 0 && limited) {
+						builder.append(FORMAT.format(rowCount)).append(" - ");
+					}
+					builder.append(FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("filtered"));
+				}
+				if (selectionCount > 0) {
+					if (filteredCount > 0) {
 						builder.append(" - ");
 					}
-					builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("filtered"));
+					builder.append(FORMAT.format(selectionCount)).append(" ").append(MESSAGES.getString("selected"));
 				}
 				builder.append(")");
 			}
@@ -3062,6 +3067,7 @@ public class EntityTablePanel extends JPanel {
 			tableModel.items().refresher().active().addConsumer(this::refresherActive);
 			tableModel.selection().indexes().addListener(this::updateStatusMessage);
 			tableModel.items().included().addListener(this::updateStatusMessage);
+			tableModel.items().filtered().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
 				setComponentPopupMenu(menu()
 								.control(Control.builder()

@@ -423,6 +423,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				cleared = items.isEmpty();
 				included.sortInternal();
 				included.notifyChanges();
+				filtered.notifyChanges();
 			}
 		}
 
@@ -440,6 +441,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				}
 				else {
 					filtered.items.add(item);
+					filtered.notifyChanges();
 				}
 			}
 		}
@@ -457,7 +459,10 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void remove(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
-				if (!filtered.items.remove(item) && included.items.remove(item)) {
+				if (filtered.items.remove(item)) {
+					filtered.notifyChanges();
+				}
+				else if (included.items.remove(item)) {
 					included.notifyChanges();
 					updateSelectedItem(item);
 				}
@@ -521,6 +526,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						selection.selected.setSelectedItem(null);
 					}
 					included.notifyChanges();
+					filtered.notifyChanges();
 				}
 			}
 		}
@@ -575,6 +581,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					}
 				}
 				included.notifyChanges();
+				filtered.notifyChanges();
 				included.sort();
 			}
 		}
@@ -765,6 +772,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final class DefaultFilteredItems implements FilteredItems<T> {
 
+			private final Event<Collection<T>> changed = Event.event();
 			private final Set<T> items = new LinkedHashSet<>();
 
 			@Override
@@ -786,6 +794,15 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				synchronized (lock) {
 					return items.size();
 				}
+			}
+
+			@Override
+			public Observer<Collection<T>> observer() {
+				return changed.observer();
+			}
+
+			private void notifyChanges() {
+				changed.accept(get());
 			}
 		}
 	}

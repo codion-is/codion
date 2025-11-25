@@ -443,11 +443,12 @@ public interface FilterModel<T> {
 	/**
 	 * @param <T> the item type
 	 */
-	interface FilteredItems<T> {
+	interface FilteredItems<T> extends Observable<Collection<T>> {
 
 		/**
 		 * @return the filtered items or an empty collection in case of no filtered items
 		 */
+		@Override
 		@NonNull Collection<T> get();
 
 		/**
