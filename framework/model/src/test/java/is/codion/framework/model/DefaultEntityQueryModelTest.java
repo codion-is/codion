@@ -83,45 +83,45 @@ public final class DefaultEntityQueryModelTest {
 
 		queryModel.limit().set(10);
 		nameCondition.operands().equal().set(null);
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 		queryModel.limit().clear();
 
 		queryModel.orderBy().set(OrderBy.descending(Employee.NAME));
 		nameCondition.operands().equal().set(null);
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 		queryModel.orderBy().clear();
 
 		queryModel.attributes().include().set(asList(Employee.NAME, Employee.JOB));
 		nameCondition.operands().equal().set(null);
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 		queryModel.attributes().include().clear();
 
 		nameCondition.operands().equal().set("Scott");
-		assertTrue(queryModel.conditionChanged().is());
+		assertTrue(queryModel.condition().modified().is());
 
 		nameCondition.clear();
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 
 		queryModel.condition().where().set(Employee.CONDITION_2_TYPE::get);
-		assertTrue(queryModel.conditionChanged().is());
+		assertTrue(queryModel.condition().modified().is());
 		queryModel.query();
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 		queryModel.condition().where().conjunction().set(Conjunction.OR);
-		assertTrue(queryModel.conditionChanged().is());
+		assertTrue(queryModel.condition().modified().is());
 		queryModel.query();
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 
 		queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Job.TYPE,
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER)));
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 		queryModel.condition().having().set(Job.ADDITIONAL_HAVING::get);
-		assertTrue(queryModel.conditionChanged().is());
+		assertTrue(queryModel.condition().modified().is());
 		queryModel.query();
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 		queryModel.condition().having().conjunction().set(Conjunction.OR);
-		assertTrue(queryModel.conditionChanged().is());
+		assertTrue(queryModel.condition().modified().is());
 		queryModel.query();
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 	}
 
 	@Test
@@ -395,14 +395,14 @@ public final class DefaultEntityQueryModelTest {
 
 		// Test conditionChanged state
 		queryModel.query(); // Reset conditionChanged
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 
 		// Change condition
 		queryModel.condition().get(Employee.NAME).set().in("SCOTT", "KING");
-		assertTrue(queryModel.conditionChanged().is());
+		assertTrue(queryModel.condition().modified().is());
 
 		// Query resets conditionChanged
 		queryModel.query();
-		assertFalse(queryModel.conditionChanged().is());
+		assertFalse(queryModel.condition().modified().is());
 	}
 }

@@ -1449,7 +1449,7 @@ public class EntityTablePanel extends JPanel {
 	private Control createConditionRefreshControl() {
 		return Control.builder()
 						.command(tableModel.items()::refresh)
-						.enabled(tableModel.query().conditionChanged())
+						.enabled(tableModel.query().condition().modified())
 						.icon(ICONS.refresh())
 						.build();
 	}

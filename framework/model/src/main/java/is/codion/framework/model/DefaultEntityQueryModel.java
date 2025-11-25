@@ -30,14 +30,10 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.condition.Condition;
-
-import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -51,14 +47,11 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final EntityDefinition entityDefinition;
 	private final Value<ObservableState> conditionEnabled;
 	private final State conditionRequired = State.state();
-	private final State conditionChanged = State.state();
 	private final DefaultSelectAttributes attributes = new DefaultSelectAttributes();
 
 	private final Value<OrderBy> orderBy;
 	private final Value<Integer> limit = Value.nullable(LIMIT.get());
 	private final Value<Function<EntityQueryModel, List<Entity>>> dataSource = Value.nonNull(new DefaultDataSource());
-
-	private @Nullable RefreshConditions refreshConditions;
 
 	DefaultEntityQueryModel(EntityTableConditionModel conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);
@@ -67,9 +60,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		this.orderBy = entityDefinition.orderBy()
 						.map(Value::nonNull)
 						.orElse(Value.nullable());
-		resetConditionChanged();
-		Runnable conditionListener = this::onConditionChanged;
-		conditionModel.changed().addListener(conditionListener);
 	}
 
 	@Override
@@ -85,13 +75,13 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	@Override
 	public List<Entity> query() {
 		if (conditionRequired.is() && !conditionEnabled.getOrThrow().is()) {
-			resetConditionChanged();
+			conditionModel.modified().reset();
 
 			return emptyList();
 		}
 
 		List<Entity> entities = dataSource.getOrThrow().apply(this);
-		resetConditionChanged();
+		conditionModel.modified().reset();
 
 		return entities;
 	}
@@ -122,11 +112,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public ObservableState conditionChanged() {
-		return conditionChanged.observable();
-	}
-
-	@Override
 	public Value<ObservableState> conditionEnabled() {
 		return conditionEnabled;
 	}
@@ -148,15 +133,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 						.build();
 	}
 
-	private void resetConditionChanged() {
-		refreshConditions = new RefreshConditions();
-		conditionChanged.set(false);
-	}
-
-	private void onConditionChanged() {
-		conditionChanged.set(!Objects.equals(refreshConditions, new RefreshConditions()));
-	}
-
 	private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
 
 		@Override
@@ -174,32 +150,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		@Override
 		public List<Entity> apply(EntityQueryModel queryModel) {
 			return queryModel.connectionProvider().connection().select(queryModel.select());
-		}
-	}
-
-	private final class RefreshConditions {
-
-		private final Condition where;
-		private final Condition having;
-
-		private RefreshConditions() {
-			this.where = conditionModel.where(Conjunction.AND);
-			this.having = conditionModel.having(Conjunction.AND);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (object == null || getClass() != object.getClass()) {
-				return false;
-			}
-			RefreshConditions that = (RefreshConditions) object;
-
-			return Objects.equals(where, that.where) && Objects.equals(having, that.having);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(where, having);
 		}
 	}
 

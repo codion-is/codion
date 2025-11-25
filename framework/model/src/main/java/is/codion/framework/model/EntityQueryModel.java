@@ -99,12 +99,6 @@ public interface EntityQueryModel {
 	State conditionRequired();
 
 	/**
-	 * This state is reset each time {@link #query()} returns successfully.
-	 * @return an {@link ObservableState} indicating if the search condition has changed since last reset
-	 */
-	ObservableState conditionChanged();
-
-	/**
 	 * @return the {@link SelectAttributes} instance
 	 */
 	SelectAttributes attributes();

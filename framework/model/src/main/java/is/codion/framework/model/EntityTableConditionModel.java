@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Conjunction;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -86,6 +87,23 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	 * @return the {@link AdditionalCondition} instance controlling the additional HAVING condition
 	 */
 	AdditionalCondition having();
+
+	/**
+	 * @return the {@link Modified} instance
+	 * @see Modified#reset()
+	 */
+	Modified modified();
+
+	/**
+	 * Indicates if the condition has changed since the last call to {@link #reset()}
+	 */
+	interface Modified extends ObservableState {
+
+		/**
+		 * Resets the modified state according to the current condition state.
+		 */
+		void reset();
+	}
 
 	/**
 	 * Specifies an additional condition supplier.

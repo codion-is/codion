@@ -24,6 +24,7 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
@@ -75,12 +76,14 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
+	private final DefaultModified modified;
 
 	DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
 																	 Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModels) {
 		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType));
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.tableConditionModel = tableConditionModel(conditionModels);
+		this.modified = new DefaultModified();
 		bindEvents();
 	}
 
@@ -154,6 +157,11 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return additionalHaving;
 	}
 
+	@Override
+	public Modified modified() {
+		return modified;
+	}
+
 	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType, AdditionalCondition additionalCondition) {
 		List<Condition> conditions = tableConditionModel.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
@@ -187,6 +195,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		additionalWhere.conjunction().addListener(changed);
 		additionalHaving.addListener(changed);
 		additionalHaving.conjunction().addListener(changed);
+		changed.addListener(modified::set);
 	}
 
 	private static Condition condition(ConditionModel<?> conditionModel, Attribute<?> identifier) {
@@ -453,6 +462,68 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		public boolean test(Attribute<?> attribute) {
 			return !(attribute instanceof Column) ||
 							!entityDefinition.columns().definition((Column<?>) attribute).aggregate();
+		}
+	}
+
+	private final class DefaultModified implements Modified {
+
+		private final State modified = State.state();
+
+		private ConditionState conditionState;
+
+		private DefaultModified() {
+			this.conditionState = new ConditionState();
+		}
+
+		@Override
+		public boolean is() {
+			return modified.is();
+		}
+
+		@Override
+		public ObservableState not() {
+			return modified.not();
+		}
+
+		@Override
+		public Observer<Boolean> observer() {
+			return modified.observer();
+		}
+
+		@Override
+		public void reset() {
+			conditionState = new ConditionState();
+			modified.set(false);
+		}
+
+		private void set() {
+			modified.set(!Objects.equals(conditionState, new ConditionState()));
+		}
+	}
+
+	private final class ConditionState {
+
+		private final Condition where;
+		private final Condition having;
+
+		private ConditionState() {
+			this.where = where(Conjunction.AND);
+			this.having = having(Conjunction.AND);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (object == null || getClass() != object.getClass()) {
+				return false;
+			}
+			ConditionState that = (ConditionState) object;
+
+			return Objects.equals(where, that.where) && Objects.equals(having, that.having);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(where, having);
 		}
 	}
 
