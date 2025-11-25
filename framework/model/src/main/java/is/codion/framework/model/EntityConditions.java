@@ -42,17 +42,17 @@ import static java.util.stream.Collectors.toMap;
 /**
  * A default {@link ConditionModel} factory for Entity based condition models.
  */
-public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
+public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
 
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
 
 	/**
-	 * Instantiates a new {@link EntityConditionModelFactory}.
+	 * Instantiates a new {@link EntityConditions}.
 	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
 	 */
-	public EntityConditionModelFactory(EntityType entityType, EntityConnectionProvider connectionProvider) {
+	public EntityConditions(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		this.entityType = requireNonNull(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
 	}

@@ -17,6 +17,9 @@ Codion Change Log
 - EntityTableConditionModel.Builder added, factory methods removed.
 - EntityTableConditionModel renamed EntityConditionModel.
 - EntityConditionModel.Builder.conditionModelFactory() renamed conditions().
+- EntityConditionModelFactory renamed EntityConditions.
+### is.codion.swing.framework.model
+- SwingEntityConditionModelFactory renamed SwingEntityConditions.
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, status message now updated correctly when all items are filtered.
 - EntityTablePanel limit status message improved.

@@ -55,7 +55,7 @@ public class DefaultEntityConditionModelTest {
 	private final EntityConditionModel conditionModel = EntityConditionModel.builder()
 					.entityType(Employee.TYPE)
 					.connectionProvider(CONNECTION_PROVIDER)
-					.conditions(new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER))
+					.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 					.build();
 
 	@Test
@@ -75,7 +75,7 @@ public class DefaultEntityConditionModelTest {
 		EntityConditionModel model = EntityConditionModel.builder()
 						.entityType(Detail.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditionModelFactory(Detail.TYPE, CONNECTION_PROVIDER))
+						.conditions(new EntityConditions(Detail.TYPE, CONNECTION_PROVIDER))
 						.build();
 		//no search columns defined for master entity
 		ForeignKeyConditionModel masterModel = model.get(Detail.MASTER_FK);
@@ -342,7 +342,7 @@ public class DefaultEntityConditionModelTest {
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(0));
 	}
 
-	private static final class TimeTestConditionModelFactory extends EntityConditionModelFactory {
+	private static final class TimeTestConditionModelFactory extends EntityConditions {
 
 		private final String timePattern;
 
@@ -364,7 +364,7 @@ public class DefaultEntityConditionModelTest {
 		}
 	}
 
-	private static final class DateTimeTestConditionModelFactory extends EntityConditionModelFactory {
+	private static final class DateTimeTestConditionModelFactory extends EntityConditions {
 
 		private final String dateTimePattern;
 

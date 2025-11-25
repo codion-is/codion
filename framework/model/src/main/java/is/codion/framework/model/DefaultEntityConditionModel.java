@@ -458,7 +458,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			this.entityType = entityType;
 			this.connectionProvider = connectionProvider;
-			this.conditionFactory = new EntityConditionModelFactory(entityType, connectionProvider);
+			this.conditionFactory = new EntityConditions(entityType, connectionProvider);
 		}
 
 		private static final class DefaultEntityTypeStep implements EntityTypeStep {

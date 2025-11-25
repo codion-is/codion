@@ -25,7 +25,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.framework.model.SwingEntityConditionModelFactory;
+import is.codion.swing.framework.model.SwingEntityConditions;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
@@ -79,7 +79,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		}
 	}
 
-	private static class TrackConditions extends SwingEntityConditionModelFactory {
+	private static class TrackConditions extends SwingEntityConditions {
 
 		private TrackConditions(EntityConnectionProvider connectionProvider) {
 			super(Track.TYPE, connectionProvider);

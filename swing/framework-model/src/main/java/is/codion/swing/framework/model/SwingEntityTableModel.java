@@ -122,7 +122,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		this(editModel, entityQueryModel(EntityConditionModel.builder()
 						.entityType(editModel.entityType())
 						.connectionProvider(editModel.connectionProvider())
-						.conditions(new SwingEntityConditionModelFactory(editModel.entityType(), editModel.connectionProvider()))
+						.conditions(new SwingEntityConditions(editModel.entityType(), editModel.connectionProvider()))
 						.build()));
 	}
 

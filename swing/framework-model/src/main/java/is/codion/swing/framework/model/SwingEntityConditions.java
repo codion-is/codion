@@ -22,7 +22,7 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.EntityConditionModelFactory;
+import is.codion.framework.model.EntityConditions;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -31,14 +31,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing {@link ConditionModel} supplier using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
-public class SwingEntityConditionModelFactory extends EntityConditionModelFactory {
+public class SwingEntityConditions extends EntityConditions {
 
 	/**
-	 * Instantiates a new {@link SwingEntityConditionModelFactory}.
+	 * Instantiates a new {@link SwingEntityConditions}.
 	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
 	 */
-	public SwingEntityConditionModelFactory(EntityType entityType, EntityConnectionProvider connectionProvider) {
+	public SwingEntityConditions(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		super(entityType, connectionProvider);
 	}
 
