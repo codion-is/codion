@@ -207,7 +207,7 @@ public final class FrameworkModelDemo {
 
 			return connection.select(and(
 							Customer.EMAIL.isNotNull(),
-							queryModel.condition().where(Conjunction.AND))
+							queryModel.condition().where())
 			);
 		});
 		// end::customDataSource[]

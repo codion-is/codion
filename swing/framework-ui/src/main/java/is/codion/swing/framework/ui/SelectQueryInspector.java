@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.utilities.Conjunction;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityQueries;
 import is.codion.framework.model.EntityQueryModel;
@@ -69,8 +68,8 @@ final class SelectQueryInspector extends JPanel {
 
 	private String createSelectQuery() {
 		return queries.select(EntityConnection.Select
-						.where(queryModel.condition().where(Conjunction.AND))
-						.having(queryModel.condition().having(Conjunction.AND))
+						.where(queryModel.condition().where())
+						.having(queryModel.condition().having())
 						.include(queryModel.attributes().defaults().get())
 						.include(queryModel.attributes().include().get())
 						.exclude(queryModel.attributes().exclude().get())

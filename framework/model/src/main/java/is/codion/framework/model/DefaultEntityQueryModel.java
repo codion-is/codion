@@ -22,7 +22,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
-import is.codion.common.utilities.Conjunction;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -123,8 +122,9 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public Select select() {
-		return Select.where(conditionModel.where(Conjunction.AND))
-						.having(conditionModel.having(Conjunction.AND))
+		return Select
+						.where(conditionModel.where())
+						.having(conditionModel.having())
 						.attributes(attributes.defaults.get())
 						.include(attributes.include.get())
 						.exclude(attributes.exclude.get())

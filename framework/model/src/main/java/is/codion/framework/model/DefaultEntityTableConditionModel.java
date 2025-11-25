@@ -71,6 +71,9 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
 	private final TableConditionModel<Attribute<?>> tableConditionModel;
+	private final Value<Conjunction> conjunction = Value.builder()
+					.nonNull(Conjunction.AND)
+					.build();
 	private final Event<?> changed = Event.event();
 	private final DefaultAdditional additional = new DefaultAdditional();
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
@@ -97,13 +100,18 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
-	public Condition where(Conjunction conjunction) {
-		return createCondition(conjunction, noneAggregateColumn, additional.where);
+	public Condition where() {
+		return createCondition(noneAggregateColumn, additional.where);
 	}
 
 	@Override
-	public Condition having(Conjunction conjunction) {
-		return createCondition(conjunction, aggregateColumn, additional.having);
+	public Condition having() {
+		return createCondition(aggregateColumn, additional.having);
+	}
+
+	@Override
+	public Value<Conjunction> conjunction() {
+		return conjunction;
 	}
 
 	@Override
@@ -156,7 +164,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return modified;
 	}
 
-	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType, ConditionValue additionalCondition) {
+	private Condition createCondition(Predicate<Attribute<?>> columnType, ConditionValue additionalCondition) {
 		List<Condition> conditions = tableConditionModel.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
 						.filter(entry -> entry.getValue().enabled().is())
@@ -171,7 +179,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 				tableCondition = conditions.get(0);
 				break;
 			default:
-				tableCondition = combination(conjunction, conditions);
+				tableCondition = combination(conjunction.getOrThrow(), conditions);
 				break;
 		}
 
@@ -189,6 +197,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		additional.where.conjunction().addListener(changed);
 		additional.having.addListener(changed);
 		additional.having.conjunction().addListener(changed);
+		conjunction.addListener(changed);
 		changed.addListener(modified::set);
 	}
 
@@ -501,8 +510,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		private final Condition having;
 
 		private ConditionState() {
-			this.where = where(Conjunction.AND);
-			this.having = having(Conjunction.AND);
+			this.where = where();
+			this.having = having();
 		}
 
 		@Override

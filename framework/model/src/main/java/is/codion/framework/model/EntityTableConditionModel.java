@@ -50,17 +50,23 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 
 	/**
 	 * Returns a WHERE condition based on enabled condition models which are based on non-aggregate function columns.
-	 * @param conjunction the conjunction to use in case of multiple enabled conditions
+	 * Uses the conjunction managed by {@link #conjunction()}
 	 * @return the current WHERE condition based on the state of the underlying condition models
 	 */
-	Condition where(Conjunction conjunction);
+	Condition where();
 
 	/**
 	 * Returns a HAVING condition based on enabled condition models which are based on aggregate function columns.
-	 * @param conjunction the conjunction to use in case of multiple enabled conditions
+	 * Uses the conjunction managed by {@link #conjunction()}
 	 * @return the current HAVING condition based on the state of the underlying condition models
 	 */
-	Condition having(Conjunction conjunction);
+	Condition having();
+
+	/**
+	 * Default {@link Conjunction#AND}
+	 * @return the {@link Value} managing the conjunction to use in case of multiple conditions
+	 */
+	Value<Conjunction> conjunction();
 
 	/**
 	 * Returns the {@link ConditionModel} associated with the given foreignKey.

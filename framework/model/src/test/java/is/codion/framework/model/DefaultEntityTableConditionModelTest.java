@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.utilities.Conjunction;
 import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -118,10 +117,10 @@ public class DefaultEntityTableConditionModelTest {
 		assertTrue(searchStateChanged);
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().is());
 		conditionModel.get(Employee.DEPARTMENT_FK).enabled().set(true);
-		assertEquals(Employee.DEPARTMENT_FK.isNull(), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.DEPARTMENT_FK.isNull(), conditionModel.where());
 		conditionModel.get(Employee.DEPARTMENT_FK).operator().set(Operator.NOT_IN);
 		conditionModel.get(Employee.DEPARTMENT_FK).enabled().set(true);
-		assertEquals(Employee.DEPARTMENT_FK.isNotNull(), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.DEPARTMENT_FK.isNotNull(), conditionModel.where());
 	}
 
 	@Test
@@ -129,29 +128,29 @@ public class DefaultEntityTableConditionModelTest {
 		ConditionModel<Double> condition = conditionModel.get(Employee.COMMISSION);
 		condition.set().between(0d, null);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.greaterThanOrEqualTo(0d), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.COMMISSION.greaterThanOrEqualTo(0d), conditionModel.where());
 		condition.set().between(null, 0d);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.lessThanOrEqualTo(0d), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.COMMISSION.lessThanOrEqualTo(0d), conditionModel.where());
 		condition.set().betweenExclusive(0d, null);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.greaterThan(0d), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.COMMISSION.greaterThan(0d), conditionModel.where());
 		condition.set().betweenExclusive(null, 0d);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where());
 
 		condition.set().notBetween(0d, null);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.lessThanOrEqualTo(0d), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.COMMISSION.lessThanOrEqualTo(0d), conditionModel.where());
 		condition.set().notBetween(null, 0d);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.greaterThanOrEqualTo(0d), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.COMMISSION.greaterThanOrEqualTo(0d), conditionModel.where());
 		condition.set().notBetweenExclusive(0d, null);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where());
 		condition.set().notBetweenExclusive(null, 0d);
 		condition.enabled().set(true);
-		assertEquals(Employee.COMMISSION.greaterThan(0d), conditionModel.where(Conjunction.AND));
+		assertEquals(Employee.COMMISSION.greaterThan(0d), conditionModel.where());
 	}
 
 	@Test
@@ -173,7 +172,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		ConditionModel<LocalTime> timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().equalTo(LocalTime.of(11, 00));
-		Condition where = tableConditionModel.where(Conjunction.AND);
+		Condition where = tableConditionModel.where();
 		assertEquals("(time >= ? AND time <= ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00), where.values().get(0));
@@ -184,7 +183,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().equalTo(LocalTime.of(11, 00, 2));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("(time >= ? AND time <= ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 2), where.values().get(0));
@@ -195,7 +194,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().equalTo(LocalTime.of(11, 00, 3, 999_000_000));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("time = ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 3, 999_000_000), where.values().get(0));
@@ -205,7 +204,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		ConditionModel<LocalDateTime> dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().equalTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("(date_time >= ? AND date_time <= ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45), where.values().get(0));
@@ -216,7 +215,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().equalTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("(date_time >= ? AND date_time <= ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15), where.values().get(0));
@@ -227,7 +226,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().equalTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("date_time = ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(0));
@@ -241,7 +240,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		ConditionModel<LocalTime> timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00));
-		Condition where = tableConditionModel.where(Conjunction.AND);
+		Condition where = tableConditionModel.where();
 		assertEquals("(time < ? OR time > ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00), where.values().get(0));
@@ -252,7 +251,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00, 2));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("(time < ? OR time > ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 2), where.values().get(0));
@@ -263,7 +262,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		timeConditionModel = tableConditionModel.get(DateTimeTest.TIME);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00, 3, 999_000_000));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("time <> ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalTime.of(11, 00, 3, 999_000_000), where.values().get(0));
@@ -273,7 +272,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		ConditionModel<LocalDateTime> dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("(date_time < ? OR date_time > ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45), where.values().get(0));
@@ -284,7 +283,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("(date_time < ? OR date_time > ?)", where.string(entityDefinition));
 		assertEquals(2, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15), where.values().get(0));
@@ -295,7 +294,7 @@ public class DefaultEntityTableConditionModelTest {
 
 		dateTimeConditionModel = tableConditionModel.get(DateTimeTest.DATE_TIME);
 		dateTimeConditionModel.set().notEqualTo(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000));
-		where = tableConditionModel.where(Conjunction.AND);
+		where = tableConditionModel.where();
 		assertEquals("date_time <> ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(0));
