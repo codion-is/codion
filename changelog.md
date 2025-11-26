@@ -12,6 +12,7 @@ Codion Change Log
 - FilterComponentFactory renamed FilterComponents, now a singleton.
 - ColumnConditionPanel.ComponentFactory renamed ConditionComponents.
 - FilterTable.Builder.cellRendererFactory(), headerRendererFactory(), cellEditorFactory() and summaryValuesFactory() renamed cellRenderers(), headerRenderers(), cellEditors() and summaryValues().
+- FilterTable.Builder.filterPanelFactory() renamed filterPanel().
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().

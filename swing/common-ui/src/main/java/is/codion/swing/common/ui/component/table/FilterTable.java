@@ -1244,10 +1244,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> summaryValues(SummaryValues.Factory<C> summaryValues);
 
 		/**
-		 * @param filterPanelFactory the table filter condition panel factory
+		 * @param filterPanel the table filter condition panel factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> filterPanelFactory(TableConditionPanel.Factory<C> filterPanelFactory);
+		Builder<R, C> filterPanel(TableConditionPanel.Factory<C> filterPanel);
 
 		/**
 		 * @param filterComponents the column filter component factory
@@ -1563,8 +1563,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterPanelFactory(TableConditionPanel.Factory<C> filterPanelFactory) {
-			this.filterPanelFactory = requireNonNull(filterPanelFactory);
+		public Builder<R, C> filterPanel(TableConditionPanel.Factory<C> filterPanel) {
+			this.filterPanelFactory = requireNonNull(filterPanel);
 			return this;
 		}
 
