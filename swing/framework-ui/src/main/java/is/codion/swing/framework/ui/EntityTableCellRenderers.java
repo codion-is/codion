@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A {@link FilterTableCellRenderer.Factory} for {@link EntityTablePanel}
  */
-public class EntityTableCellRendererFactory implements FilterTableCellRenderer.Factory<Entity, Attribute<?>> {
+public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory<Entity, Attribute<?>> {
 
 	/**
 	 * @param attribute the attribute

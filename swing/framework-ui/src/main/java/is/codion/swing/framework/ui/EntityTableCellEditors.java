@@ -32,11 +32,11 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factory<Attribute<?>> {
+final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Attribute<?>> {
 
 	private final SwingEntityEditModel editModel;
 
-	EntityTableCellEditorFactory(SwingEntityEditModel editModel) {
+	EntityTableCellEditors(SwingEntityEditModel editModel) {
 		this.editModel = requireNonNull(editModel);
 	}
 

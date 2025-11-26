@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EntityTableCellRendererFactoryFactoryTest {
+public class EntityTableCellRenderersTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -47,7 +47,7 @@ public class EntityTableCellRendererFactoryFactoryTest {
 	void test() {
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
 		tablePanel.tableModel().items().refresh();
-		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRendererFactory();
+		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRenderers();
 		FilterTableCellRenderer<Entity, Attribute<?>, ?> renderer = factory.create(Employee.NAME, tablePanel.table());
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
@@ -64,7 +64,7 @@ public class EntityTableCellRendererFactoryFactoryTest {
 
 	@Test
 	void entityMismatch() {
-		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRendererFactory();
+		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRenderers();
 		assertThrows(IllegalArgumentException.class, () -> factory.create(Department.NAME, FilterTable.builder()
 						.model(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER))
 						.build()));

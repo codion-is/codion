@@ -11,6 +11,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterComponentFactory renamed FilterComponents, now a singleton.
 - ColumnConditionPanel.ComponentFactory renamed ConditionComponents.
+- FilterTable.Builder.cellRendererFactory(), headerRendererFactory(), cellEditorFactory() and summaryValuesFactory() renamed cellRenderers(), headerRenderers(), cellEditors() and summaryValues().
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().
@@ -31,6 +32,7 @@ Codion Change Log
 - EntityTablePanel bug fixed, status message now updated correctly when all items are filtered.
 - EntityTablePanel limit status message improved.
 - EditComponentFactory renamed EditComponent, related renaming.
+- EntityTableCellRendererFactory renamed EntityTableCellRenderers.
 
 ## 0.18.60
 ### is.codion.common.reactive

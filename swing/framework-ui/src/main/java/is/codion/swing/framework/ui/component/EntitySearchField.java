@@ -55,7 +55,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityTableCellRendererFactory;
+import is.codion.swing.framework.ui.EntityTableCellRenderers;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jspecify.annotations.Nullable;
@@ -969,7 +969,7 @@ public final class EntitySearchField extends HintTextField {
 			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder()
 							.model(tableModel)
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-							.cellRendererFactory(new EntityTableCellRendererFactory())
+							.cellRenderers(new EntityTableCellRenderers())
 							.selectionMode(searchField.singleSelection() ?
 											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
 							.doubleClick(selectControl)

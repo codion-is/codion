@@ -470,7 +470,7 @@ public class FilterTableTest {
 						.model(model)
 						.cellRenderer(0, Integer.class, renderer ->
 										renderer.horizontalAlignment(SwingConstants.CENTER))
-						.cellRendererFactory((identifier, tableModel) -> oneRenderer)
+						.cellRenderers((identifier, tableModel) -> oneRenderer)
 						// Trigger the condition panel to be built right away
 						.filterView(ConditionView.SIMPLE)
 						.build();

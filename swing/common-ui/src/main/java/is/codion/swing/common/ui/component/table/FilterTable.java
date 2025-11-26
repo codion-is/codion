@@ -1238,10 +1238,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> hiddenColumns(C... hiddenColumns);
 
 		/**
-		 * @param summaryValuesFactory the column summary values factory
+		 * @param summaryValues the column summary values factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory);
+		Builder<R, C> summaryValues(SummaryValues.Factory<C> summaryValues);
 
 		/**
 		 * @param filterPanelFactory the table filter condition panel factory
@@ -1257,7 +1257,7 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterComponents(ConditionComponents filterComponents);
 
 		/**
-		 * The cell renderer for the given column, overrides {@link #cellRendererFactory(FilterTableCellRenderer.Factory)}.
+		 * The cell renderer for the given column, overrides {@link #cellRenderers(FilterTableCellRenderer.Factory)}.
 		 * @param identifier the column identifier
 		 * @param columnClass the column class
 		 * @param renderer provided with the cell renderer to for the given column
@@ -1269,20 +1269,20 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer
 		 * and is overridden by any renderer set via {@link #cellRenderer(Object, Class, Consumer)}.
-		 * @param cellRendererFactory the table cell renderer factory
+		 * @param cellRenderers the table cell renderer factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory);
+		Builder<R, C> cellRenderers(FilterTableCellRenderer.Factory<R, C> cellRenderers);
 
 		/**
 		 * Note that this factory is only used to create header renderers for columns which do not already have a header renderer
-		 * @param headerRendererFactory the header renderer factory
+		 * @param headerRenderers the header renderer factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> headerRendererFactory(FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory);
+		Builder<R, C> headerRenderers(FilterTableHeaderRenderer.Factory<R, C> headerRenderers);
 
 		/**
-		 * the cell renderer for the given column, overrides {@link #cellEditorFactory(FilterTableCellEditor.Factory)}.
+		 * the cell renderer for the given column, overrides {@link #cellEditors(FilterTableCellEditor.Factory)}.
 		 * @param identifier the column identifier
 		 * @param cellEditor the cell editor to use for the given column
 		 * @param <T> the column type
@@ -1293,10 +1293,10 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * Note that this factory is only used to create cell editors for columns which do not already have a cell editor
 		 * and is overridden by any editor set via {@link #cellEditor(Object, FilterTableCellEditor)}.
-		 * @param cellEditorFactory the table cell editor factory
+		 * @param cellEditors the table cell editor factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellEditorFactory(FilterTableCellEditor.Factory<C> cellEditorFactory);
+		Builder<R, C> cellEditors(FilterTableCellEditor.Factory<C> cellEditors);
 
 		/**
 		 * @param cellEditable called to see if the given cell in the given row is editable,
@@ -1557,8 +1557,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> summaryValuesFactory(SummaryValues.Factory<C> summaryValuesFactory) {
-			this.summaryValuesFactory = requireNonNull(summaryValuesFactory);
+		public Builder<R, C> summaryValues(SummaryValues.Factory<C> summaryValues) {
+			this.summaryValuesFactory = requireNonNull(summaryValues);
 			return this;
 		}
 
@@ -1586,14 +1586,14 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellRendererFactory(FilterTableCellRenderer.Factory<R, C> cellRendererFactory) {
-			this.cellRendererFactory = requireNonNull(cellRendererFactory);
+		public Builder<R, C> cellRenderers(FilterTableCellRenderer.Factory<R, C> cellRenderers) {
+			this.cellRendererFactory = requireNonNull(cellRenderers);
 			return this;
 		}
 
 		@Override
-		public Builder<R, C> headerRendererFactory(FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory) {
-			this.headerRendererFactory = requireNonNull(headerRendererFactory);
+		public Builder<R, C> headerRenderers(FilterTableHeaderRenderer.Factory<R, C> headerRenderers) {
+			this.headerRendererFactory = requireNonNull(headerRenderers);
 			return this;
 		}
 
@@ -1604,8 +1604,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellEditorFactory(FilterTableCellEditor.Factory<C> cellEditorFactory) {
-			this.cellEditorFactory = requireNonNull(cellEditorFactory);
+		public Builder<R, C> cellEditors(FilterTableCellEditor.Factory<C> cellEditors) {
+			this.cellEditorFactory = requireNonNull(cellEditors);
 			return this;
 		}
 

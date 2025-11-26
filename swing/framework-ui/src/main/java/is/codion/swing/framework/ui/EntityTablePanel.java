@@ -78,7 +78,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel.AttributeDefinitionComparator;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
-import is.codion.swing.framework.ui.EntityTableCellRendererFactory.ConditionIndicator;
+import is.codion.swing.framework.ui.EntityTableCellRenderers.ConditionIndicator;
 import is.codion.swing.framework.ui.component.DefaultEditComponent;
 import is.codion.swing.framework.ui.component.EditComponent;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -2208,10 +2208,10 @@ public class EntityTablePanel extends JPanel {
 			this.entityDefinition = tablePanel.tableModel.entityDefinition();
 			this.tableBuilder = FilterTable.builder()
 							.model(tablePanel.tableModel)
-							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
-							.cellRendererFactory(new EntityTableCellRendererFactory())
-							.headerRendererFactory(new EntityTableHeaderRendererFactory())
-							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))
+							.summaryValues(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
+							.cellRenderers(new EntityTableCellRenderers())
+							.headerRenderers(new EntityTableHeaderRenderers())
+							.cellEditors(new EntityTableCellEditors(tablePanel.tableModel.editModel()))
 							.cellEditable(new EntityCellEditable(tablePanel.tableModel.entities()))
 							.scrollToAddedItem(true)
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
@@ -2564,12 +2564,12 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Overridden by {@link #cellEditor(Attribute, FilterTableCellEditor)}.
-		 * @param cellEditorFactory the cell editor factory
+		 * @param cellEditors the cell editor factory
 		 * @return this Config instance
-		 * @see FilterTable.Builder#cellRendererFactory(FilterTableCellRenderer.Factory)
+		 * @see FilterTable.Builder#cellRenderers(FilterTableCellRenderer.Factory)
 		 */
-		public Config cellEditorFactory(FilterTableCellEditor.Factory<Attribute<?>> cellEditorFactory) {
-			tableBuilder.cellEditorFactory(requireNonNull(cellEditorFactory));
+		public Config cellEditors(FilterTableCellEditor.Factory<Attribute<?>> cellEditors) {
+			tableBuilder.cellEditors(requireNonNull(cellEditors));
 			return this;
 		}
 
@@ -2587,7 +2587,7 @@ public class EntityTablePanel extends JPanel {
 			AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 			requireNonNull(renderer);
 			tableBuilder.cellRenderer(attribute, attribute.type().valueClass(), builder -> {
-				EntityTableCellRendererFactory.configure(attributeDefinition, builder);
+				EntityTableCellRenderers.configure(attributeDefinition, builder);
 				renderer.accept(builder);
 			});
 			return this;
@@ -2595,12 +2595,12 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Overridden by {@link #cellRenderer(Attribute, Consumer)}.
-		 * @param cellRendererFactory the cell renderer factory
+		 * @param cellRenderers the cell renderer factory
 		 * @return this Config instance
-		 * @see FilterTable.Builder#cellRendererFactory(FilterTableCellRenderer.Factory)
+		 * @see FilterTable.Builder#cellRenderers(FilterTableCellRenderer.Factory)
 		 */
-		public Config cellRendererFactory(EntityTableCellRendererFactory cellRendererFactory) {
-			tableBuilder.cellRendererFactory(cellRendererFactory);
+		public Config cellRenderers(EntityTableCellRenderers cellRenderers) {
+			tableBuilder.cellRenderers(cellRenderers);
 			return this;
 		}
 
@@ -2747,7 +2747,7 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private static final class EntityTableHeaderRendererFactory implements FilterTableHeaderRenderer.Factory<Entity, Attribute<?>> {
+	private static final class EntityTableHeaderRenderers implements FilterTableHeaderRenderer.Factory<Entity, Attribute<?>> {
 
 		@Override
 		public FilterTableHeaderRenderer create(FilterTableColumn<Attribute<?>> column, FilterTable<Entity, Attribute<?>> table) {
