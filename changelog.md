@@ -6,6 +6,7 @@ Codion Change Log
 - State.contains(ValueSet, value) added.
 ### is.codion.common.model
 - FilterModel.FilteredItems now extends Observable.
+- TableConditionModel.optional() removed.
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().

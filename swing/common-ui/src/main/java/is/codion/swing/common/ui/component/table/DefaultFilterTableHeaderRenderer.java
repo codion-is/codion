@@ -70,7 +70,7 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 		if (component instanceof JLabel) {
 			Font defaultFont = component.getFont();
 			JLabel label = (JLabel) component;
-			ConditionModel<?> filterModel = filters.optional(tableColumn.identifier()).orElse(null);
+			ConditionModel<?> filterModel = filters.get().get(tableColumn.identifier());
 			label.setFont((filterModel != null && filterModel.enabled().is()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
 			label.setIcon(sortArrowIcon(tableColumn.identifier(), label.getFont().getSize() + SORT_ICON_SIZE));
 			label.setIconTextGap(0);

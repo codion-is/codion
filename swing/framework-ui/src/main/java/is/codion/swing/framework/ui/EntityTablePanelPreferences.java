@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.model.preferences.UserPreferences;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -193,12 +194,13 @@ final class EntityTablePanelPreferences {
 	private static Map<Attribute<?>, ConditionPreferences> createConditionPreferences(SwingEntityTableModel tableModel) {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			tableModel.query().condition().optional(attribute)
-							.ifPresent(condition ->
-											conditionPreferencesMap.put(attribute, new ConditionPreferences(attribute,
-															condition.autoEnable().is(),
-															condition.caseSensitive().is(),
-															condition.operands().wildcard().getOrThrow())));
+			ConditionModel<?> filter = tableModel.filters().get().get(attribute);
+			if (filter != null) {
+				conditionPreferencesMap.put(attribute, new ConditionPreferences(attribute,
+								filter.autoEnable().is(),
+								filter.caseSensitive().is(),
+								filter.operands().wildcard().getOrThrow()));
+			}
 		}
 
 		return conditionPreferencesMap;
@@ -404,12 +406,12 @@ final class EntityTablePanelPreferences {
 			for (Attribute<?> attribute : tableModel.columns().identifiers()) {
 				ConditionPreferences preferences = conditionPreferences.get(attribute);
 				if (preferences != null) {
-					tableModel.query().condition().optional(attribute)
-									.ifPresent(condition -> {
-										condition.caseSensitive().set(preferences.caseSensitive);
-										condition.autoEnable().set(preferences.autoEnable);
-										condition.operands().wildcard().set(preferences.wildcard);
-									});
+					ConditionModel<?> filter = tableModel.filters().get().get(attribute);
+					if (filter != null) {
+						filter.caseSensitive().set(preferences.caseSensitive);
+						filter.autoEnable().set(preferences.autoEnable);
+						filter.operands().wildcard().set(preferences.wildcard);
+					}
 				}
 			}
 		}

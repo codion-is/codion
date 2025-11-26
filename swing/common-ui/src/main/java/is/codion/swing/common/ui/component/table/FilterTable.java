@@ -983,8 +983,10 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void onColumnHidden(C columnIdentifier) {
 		//disable the filter model for the column to be hidden, to prevent confusion
-		tableModel.filters().optional(columnIdentifier)
-						.ifPresent(condition -> condition.enabled().set(false));
+		ConditionModel<?> condition = tableModel.filters().get().get(columnIdentifier);
+		if (condition != null) {
+			condition.enabled().set(false);
+		}
 	}
 
 	private CommandControl createToggleSortOrderAddControl(boolean previous) {

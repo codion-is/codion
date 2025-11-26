@@ -23,7 +23,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.ValueSet;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -48,14 +47,6 @@ public interface TableConditionModel<C> {
 	 * @throws IllegalArgumentException in case no condition model exists for the given identifier
 	 */
 	<T> ConditionModel<T> get(C identifier);
-
-	/**
-	 * The condition model associated with {@code identifier}
-	 * @param <T> the condition value type
-	 * @param identifier the identifier for which to retrieve the {@link ConditionModel}
-	 * @return the {@link ConditionModel} for the {@code identifier} or an empty Optional in case one is not available
-	 */
-	<T> Optional<ConditionModel<T>> optional(C identifier);
 
 	/**
 	 * Clears the search state of all non-persistant condition models, disables them and

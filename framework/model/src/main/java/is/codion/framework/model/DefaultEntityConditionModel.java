@@ -46,7 +46,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -118,11 +117,6 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	@Override
 	public <T> ConditionModel<T> get(Attribute<?> attribute) {
 		return conditionModel.get(attribute);
-	}
-
-	@Override
-	public <T> Optional<ConditionModel<T>> optional(Attribute<?> attribute) {
-		return conditionModel.optional(requireNonNull(attribute));
 	}
 
 	@Override

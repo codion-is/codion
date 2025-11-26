@@ -2778,9 +2778,13 @@ public class EntityTablePanel extends JPanel {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
 			Component component = wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			boolean useBoldFont = conditionIndicator &&
-							condition.optional(tableColumn.identifier())
-											.map(conditionModel -> conditionModel.enabled().is()).orElse(false);
+			boolean useBoldFont = false;
+			if (conditionIndicator) {
+				ConditionModel<?> conditionModel = condition.get().get(tableColumn.identifier());
+				if (conditionModel != null) {
+					useBoldFont = conditionModel.enabled().is();
+				}
+			}
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
