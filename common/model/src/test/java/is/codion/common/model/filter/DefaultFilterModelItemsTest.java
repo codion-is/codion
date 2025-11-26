@@ -18,8 +18,8 @@
  */
 package is.codion.common.model.filter;
 
+import is.codion.common.model.filter.FilterModel.IncludePredicate;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
-import is.codion.common.model.filter.FilterModel.IncludedPredicate;
 import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
@@ -65,19 +65,19 @@ public class DefaultFilterModelItemsTest {
 	class BasicOperationsTest {
 
 		private Items<String> items;
-		private TestIncluded includedPredicate;
+		private TestInclude includePredicate;
 		private TestMultiSelection selection;
 
 		@BeforeEach
 		void setUp() {
-			includedPredicate = new TestIncluded();
+			includePredicate = new TestInclude();
 			selection = new TestMultiSelection();
 
 			items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
 							.selection(included -> selection)
 							.sort(new TestSort())
-							.included(includedPredicate)
+							.include(includePredicate)
 							.build();
 		}
 
@@ -95,7 +95,7 @@ public class DefaultFilterModelItemsTest {
 		@Test
 		@DisplayName("Add single item to filtered")
 		void add_singleItem_shouldAddToExcluded() {
-			includedPredicate.setPredicate(item -> !item.startsWith(ITEM_PREFIX));
+			includePredicate.setPredicate(item -> !item.startsWith(ITEM_PREFIX));
 			items.add(ITEM_PREFIX + "1");
 
 			assertEquals(1, items.size());
@@ -107,7 +107,7 @@ public class DefaultFilterModelItemsTest {
 		@Test
 		@DisplayName("Add multiple items mixed inclusion")
 		void add_multipleItems_shouldSplitByVisibility() {
-			includedPredicate.setPredicate(item -> item.startsWith(INCLUDED_PREFIX));
+			includePredicate.setPredicate(item -> item.startsWith(INCLUDED_PREFIX));
 			List<String> itemsToAdd = asList(
 							INCLUDED_PREFIX + "1",
 							FILTERED_PREFIX + "1",
@@ -139,7 +139,7 @@ public class DefaultFilterModelItemsTest {
 		@Test
 		@DisplayName("Remove single item from filtered")
 		void remove_singleItem_shouldRemoveFromExcluded() {
-			includedPredicate.setPredicate(item -> false);
+			includePredicate.setPredicate(item -> false);
 			items.add(ITEM_PREFIX + "1");
 
 			items.remove(ITEM_PREFIX + "1");
@@ -174,7 +174,7 @@ public class DefaultFilterModelItemsTest {
 		@Test
 		@DisplayName("Replace item moving from included to filtered")
 		void replace_itemMovingToExcluded_shouldMoveCorrectly() {
-			includedPredicate.setPredicate(item -> !item.contains("replaced"));
+			includePredicate.setPredicate(item -> !item.contains("replaced"));
 			items.add(ITEM_PREFIX + "1");
 
 			items.replace(ITEM_PREFIX + "1", ITEM_PREFIX + "1_replaced");
@@ -189,7 +189,7 @@ public class DefaultFilterModelItemsTest {
 		@DisplayName("Clear all items")
 		void clear_shouldRemoveAll() {
 			items.add(asList("a", "b", "c"));
-			includedPredicate.setPredicate(item -> false);
+			includePredicate.setPredicate(item -> false);
 			items.add(asList("d", "e", "f")); // These go to filtered
 
 			items.clear();
@@ -233,18 +233,18 @@ public class DefaultFilterModelItemsTest {
 	class FilteringOperationsTest {
 
 		private Items<String> items;
-		private TestIncluded includePredicate;
+		private TestInclude includePredicate;
 
 		@BeforeEach
 		void setUp() {
-			includePredicate = new TestIncluded();
+			includePredicate = new TestInclude();
 			TestMultiSelection selection = new TestMultiSelection();
 
 			items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
 							.selection(included -> selection)
 							.sort(new TestSort())
-							.included(includePredicate)
+							.include(includePredicate)
 							.build();
 		}
 
@@ -289,7 +289,7 @@ public class DefaultFilterModelItemsTest {
 							.<String>refresher(i -> new TestRefresher())
 							.selection(included -> new TestMultiSelection())
 							.sort(sort)
-							.included(includePredicate)
+							.include(includePredicate)
 							.build();
 
 			items.add(asList("a", "b", "c", "d"));
@@ -575,7 +575,7 @@ public class DefaultFilterModelItemsTest {
 
 	// Test implementations
 
-	private static class TestIncluded implements IncludedPredicate<String> {
+	private static class TestInclude implements IncludePredicate<String> {
 		private final Value<Predicate<String>> predicate = Value.nullable(item -> true);
 
 		void setPredicate(Predicate<String> newPredicate) {

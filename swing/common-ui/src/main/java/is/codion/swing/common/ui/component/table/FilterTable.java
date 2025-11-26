@@ -1506,7 +1506,7 @@ public final class FilterTable<R, C> extends JTable {
 		private Consumer<FilterTableColumn.Builder<C>> columns = new EmptyConsumer<>();
 		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
-		private ComponentFactory filterComponentFactory = new FilterComponentFactory();
+		private ComponentFactory filterComponentFactory = FilterComponents.INSTANCE;
 		private FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory;
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;

@@ -86,7 +86,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						.selection(FilterListSelection::filterListSelection)
 						.sort(sort)
 						.validator(builder.validator)
-						.included(new DefaultIncluded<>(builder.columns, filters))
+						.include(new DefaultInclude<>(builder.columns, filters))
 						.listener(new TableModelAdapter())
 						.build();
 		this.items.included().predicate().set(builder.included);
@@ -288,15 +288,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private static final class DefaultIncluded<R, C>
-					extends AbstractValue<Predicate<R>> implements IncludedPredicate<R> {
+	private static final class DefaultInclude<R, C>
+					extends AbstractValue<Predicate<R>> implements IncludePredicate<R> {
 
 		private final TableColumns<R, C> tableColumns;
 		private final TableConditionModel<C> filters;
 
 		private @Nullable Predicate<R> predicate;
 
-		private DefaultIncluded(TableColumns<R, C> columns, TableConditionModel<C> filters) {
+		private DefaultInclude(TableColumns<R, C> columns, TableConditionModel<C> filters) {
 			super(SET);
 			this.tableColumns = columns;
 			this.filters = filters;
@@ -305,7 +305,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean test(R item) {
-			if (!IncludedPredicate.super.test(item)) {
+			if (!IncludePredicate.super.test(item)) {
 				return false;
 			}
 

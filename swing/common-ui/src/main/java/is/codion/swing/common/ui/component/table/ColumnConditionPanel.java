@@ -331,7 +331,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		private final ConditionModel<T> conditionModel;
 
-		private ComponentFactory componentFactory = new FilterComponentFactory();
+		private ComponentFactory componentFactory = FilterComponents.INSTANCE;
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private @Nullable TableColumn tableColumn;
 

@@ -7,6 +7,9 @@ Codion Change Log
 ### is.codion.common.model
 - FilterModel.FilteredItems now extends Observable.
 - TableConditionModel.optional() removed.
+- FilterModel.Builder.included() renamed include(), IncludedPredicate renamed IncludePredicate.
+### is.codion.swing.common.ui
+- FilterComponentFactory renamed FilterComponents, now a singleton.
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().

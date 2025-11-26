@@ -267,10 +267,10 @@ public interface FilterModel<T> {
 			Builder<T> validator(Predicate<T> validator);
 
 			/**
-			 * @param included the include predicate
+			 * @param include the include predicate
 			 * @return this builder
 			 */
-			Builder<T> included(IncludedPredicate<T> included);
+			Builder<T> include(IncludePredicate<T> include);
 
 			/**
 			 * @param itemsListener the {@link IncludedItems.ItemsListener}
@@ -289,7 +289,7 @@ public interface FilterModel<T> {
 	 * Controls which items should be included.
 	 * Tests the predicate set as its value, but subclasses may provide additional tests.
 	 */
-	interface IncludedPredicate<T> extends Value<Predicate<T>>, Predicate<T> {
+	interface IncludePredicate<T> extends Value<Predicate<T>>, Predicate<T> {
 
 		/**
 		 * @param item the item to test
@@ -314,9 +314,9 @@ public interface FilterModel<T> {
 		@NonNull List<T> get();
 
 		/**
-		 * @return the {@link IncludedPredicate} controlling which items should be included
+		 * @return the {@link IncludePredicate} controlling which items should be included
 		 */
-		IncludedPredicate<T> predicate();
+		IncludePredicate<T> predicate();
 
 		/**
 		 * @return an {@link Observer} notified when items have been added

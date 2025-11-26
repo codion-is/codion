@@ -35,12 +35,16 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.*;
 import static java.util.Objects.requireNonNull;
 
-final class FilterComponentFactory implements ComponentFactory {
+final class FilterComponents implements ComponentFactory {
+
+	static final FilterComponents INSTANCE = new FilterComponents();
 
 	private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
 					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
 					BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
 					LocalDateTime.class, OffsetDateTime.class);
+
+	private FilterComponents() {}
 
 	@Override
 	public boolean supportsType(Class<?> valueClass) {
