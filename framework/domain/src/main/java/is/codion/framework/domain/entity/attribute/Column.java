@@ -23,7 +23,7 @@ import is.codion.common.utilities.TypeReference;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
-import is.codion.framework.domain.entity.condition.ColumnConditionFactory;
+import is.codion.framework.domain.entity.condition.ColumnConditions;
 
 import org.jspecify.annotations.Nullable;
 
@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
  * access to column values and enabling query condition creation. They extend the base
  * {@link Attribute} interface with column-specific functionality for database operations.
  * <p>
- * Columns inherit from {@link ColumnConditionFactory} to provide condition creation methods:
+ * Columns inherit from {@link ColumnConditions} to provide condition creation methods:
  * {@snippet :
  * public class Store extends DefaultDomain {
  *
@@ -111,10 +111,10 @@ import static java.util.Objects.requireNonNull;
  * 						Album.TITLE.likeIgnoreCase("%live%")));
  *}
  * @param <T> the column value type
- * @see ColumnConditionFactory
+ * @see ColumnConditions
  * @see #as()
  */
-public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T> permits DefaultColumn {
+public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> permits DefaultColumn {
 
 	/**
 	 * @return a {@link ColumnDefiner} for this column

@@ -42,11 +42,11 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-final class DefaultForeignKeyConditionFactory implements ForeignKeyConditionFactory {
+final class DefaultForeignKeyConditions implements ForeignKeyConditions {
 
 	private final ForeignKey foreignKey;
 
-	DefaultForeignKeyConditionFactory(ForeignKey foreignKey) {
+	DefaultForeignKeyConditions(ForeignKey foreignKey) {
 		this.foreignKey = requireNonNull(foreignKey);
 	}
 
@@ -59,12 +59,12 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyConditionFact
 		if (references.size() == 1) {
 			Reference<Object> reference = (Reference<Object>) references.get(0);
 
-			return new DefaultColumnConditionFactory<>(reference.column()).equalTo(value.get(reference.foreign()));
+			return new DefaultColumnConditions<>(reference.column()).equalTo(value.get(reference.foreign()));
 		}
 
 		List<Condition> conditions = references.stream()
 						.map(reference -> (Reference<Object>) reference)
-						.map(reference -> new DefaultColumnConditionFactory<>(reference.column()).equalTo(value.get(reference.foreign())))
+						.map(reference -> new DefaultColumnConditions<>(reference.column()).equalTo(value.get(reference.foreign())))
 						.collect(toList());
 
 		return new DefaultConditionCombination(AND, conditions);
@@ -80,12 +80,12 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyConditionFact
 		if (references.size() == 1) {
 			Reference<Object> reference = (Reference<Object>) references.get(0);
 
-			return new DefaultColumnConditionFactory<>(reference.column()).notEqualTo(value.get(reference.foreign()));
+			return new DefaultColumnConditions<>(reference.column()).notEqualTo(value.get(reference.foreign()));
 		}
 
 		List<Condition> conditions = references.stream()
 						.map(reference -> (Reference<Object>) reference)
-						.map(reference -> new DefaultColumnConditionFactory<>(reference.column()).notEqualTo(value.get(reference.foreign())))
+						.map(reference -> new DefaultColumnConditions<>(reference.column()).notEqualTo(value.get(reference.foreign())))
 						.collect(toList());
 
 		return new DefaultConditionCombination(AND, conditions);
@@ -119,12 +119,12 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyConditionFact
 		if (columns.size() == 1) {
 			Column<Object> column = (Column<Object>) columns.get(0);
 
-			return new DefaultColumnConditionFactory<>(column).isNull();
+			return new DefaultColumnConditions<>(column).isNull();
 		}
 
 		List<Condition> conditions = columns.stream()
 						.map(column -> (Column<Object>) column)
-						.map(column -> new DefaultColumnConditionFactory<>(column).isNull())
+						.map(column -> new DefaultColumnConditions<>(column).isNull())
 						.collect(toList());
 
 		return new DefaultConditionCombination(AND, conditions);
@@ -138,12 +138,12 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyConditionFact
 		if (columns.size() == 1) {
 			Column<Object> column = (Column<Object>) columns.get(0);
 
-			return new DefaultColumnConditionFactory<>(column).isNotNull();
+			return new DefaultColumnConditions<>(column).isNotNull();
 		}
 
 		List<Condition> conditions = columns.stream()
 						.map(column -> (Column<Object>) column)
-						.map(column -> new DefaultColumnConditionFactory<>(column).isNotNull())
+						.map(column -> new DefaultColumnConditions<>(column).isNotNull())
 						.collect(toList());
 
 		return new DefaultConditionCombination(AND, conditions);

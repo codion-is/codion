@@ -86,11 +86,11 @@ import java.util.Collection;
  *     Album.ARTIST_FK.equalTo(specificArtist),
  *     Album.ARTIST_FK.isNull()));
  *}
- * @see #factory(ForeignKey)
+ * @see #conditions(ForeignKey)
  * @see ForeignKey
  * @see Entity
  */
-public sealed interface ForeignKeyConditionFactory permits ForeignKey, DefaultForeignKeyConditionFactory {
+public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignKeyConditions {
 
 	/**
 	 * Returns a 'equalTo' {@link Condition} or 'isNull' in case {@code value} is null.
@@ -151,11 +151,11 @@ public sealed interface ForeignKeyConditionFactory permits ForeignKey, DefaultFo
 	Condition isNotNull();
 
 	/**
-	 * Instantiates a new {@link ForeignKeyConditionFactory} instance
+	 * Instantiates a new {@link ForeignKeyConditions} instance
 	 * @param foreignKey the foreign key
-	 * @return a new {@link ForeignKeyConditionFactory} instance
+	 * @return a new {@link ForeignKeyConditions} instance
 	 */
-	static ForeignKeyConditionFactory factory(ForeignKey foreignKey) {
-		return new DefaultForeignKeyConditionFactory(foreignKey);
+	static ForeignKeyConditions conditions(ForeignKey foreignKey) {
+		return new DefaultForeignKeyConditions(foreignKey);
 	}
 }

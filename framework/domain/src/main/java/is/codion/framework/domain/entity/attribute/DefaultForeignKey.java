@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.framework.domain.entity.condition.ForeignKeyConditionFactory.factory;
+import static is.codion.framework.domain.entity.condition.ForeignKeyConditions.conditions;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKey implements ForeignKey, Serializable {
@@ -116,42 +116,42 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
 	@Override
 	public Condition equalTo(@Nullable Entity value) {
-		return factory(this).equalTo(value);
+		return conditions(this).equalTo(value);
 	}
 
 	@Override
 	public Condition notEqualTo(@Nullable Entity value) {
-		return factory(this).notEqualTo(value);
+		return conditions(this).notEqualTo(value);
 	}
 
 	@Override
 	public Condition in(Entity... values) {
-		return factory(this).in(values);
+		return conditions(this).in(values);
 	}
 
 	@Override
 	public Condition notIn(Entity... values) {
-		return factory(this).notIn(values);
+		return conditions(this).notIn(values);
 	}
 
 	@Override
 	public Condition in(Collection<Entity> values) {
-		return factory(this).in(values);
+		return conditions(this).in(values);
 	}
 
 	@Override
 	public Condition notIn(Collection<Entity> values) {
-		return factory(this).notIn(values);
+		return conditions(this).notIn(values);
 	}
 
 	@Override
 	public Condition isNull() {
-		return factory(this).isNull();
+		return conditions(this).isNull();
 	}
 
 	@Override
 	public Condition isNotNull() {
-		return factory(this).isNotNull();
+		return conditions(this).isNotNull();
 	}
 
 	private List<Reference<?>> validate(List<Reference<?>> references) {

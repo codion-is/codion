@@ -28,7 +28,7 @@ import java.util.Collection;
  * Creates {@link ColumnCondition}s.
  * @param <T> the attribute value type
  */
-public sealed interface ColumnConditionFactory<T> permits DefaultColumnConditionFactory, Column {
+public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Column {
 
 	/**
 	 * Returns a 'equalTo' {@link ColumnCondition} or 'isNull' in case {@code value} is null.
@@ -245,12 +245,12 @@ public sealed interface ColumnConditionFactory<T> permits DefaultColumnCondition
 	ColumnCondition<T> isNotNull();
 
 	/**
-	 * Instantiates a new {@link ColumnConditionFactory} instance
+	 * Instantiates a new {@link ColumnConditions} instance
 	 * @param column the column
 	 * @param <T> the column type
-	 * @return a new {@link ColumnConditionFactory} instance
+	 * @return a new {@link ColumnConditions} instance
 	 */
-	static <T> ColumnConditionFactory<T> factory(Column<T> column) {
-		return new DefaultColumnConditionFactory<>(column);
+	static <T> ColumnConditions<T> conditions(Column<T> column) {
+		return new DefaultColumnConditions<>(column);
 	}
 }

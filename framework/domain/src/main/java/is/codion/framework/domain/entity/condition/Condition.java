@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Operator.EQUAL;
-import static is.codion.framework.domain.entity.condition.DefaultForeignKeyConditionFactory.compositeEqualCondition;
+import static is.codion.framework.domain.entity.condition.DefaultForeignKeyConditions.compositeEqualCondition;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -104,8 +104,8 @@ import static java.util.stream.Collectors.toMap;
  * @see #and(Condition...)
  * @see #or(Condition...)
  * @see #combination(Conjunction, Condition...)
- * @see ColumnConditionFactory
- * @see ForeignKeyConditionFactory
+ * @see ColumnConditions
+ * @see ForeignKeyConditions
  */
 public sealed interface Condition permits Condition.All, Condition.Combination, ColumnCondition, CustomCondition, AbstractCondition {
 

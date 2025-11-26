@@ -28,7 +28,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 
-import static is.codion.framework.domain.entity.condition.ColumnConditionFactory.factory;
+import static is.codion.framework.domain.entity.condition.ColumnConditions.conditions;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultColumn<T> implements Column<T>, Serializable {
@@ -87,142 +87,142 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 
 	@Override
 	public ColumnCondition<T> equalTo(@Nullable T value) {
-		return factory(this).equalTo(value);
+		return conditions(this).equalTo(value);
 	}
 
 	@Override
 	public ColumnCondition<T> notEqualTo(@Nullable T value) {
-		return factory(this).notEqualTo(value);
+		return conditions(this).notEqualTo(value);
 	}
 
 	@Override
 	public ColumnCondition<String> equalToIgnoreCase(@Nullable String value) {
-		return factory(this).equalToIgnoreCase(value);
+		return conditions(this).equalToIgnoreCase(value);
 	}
 
 	@Override
 	public ColumnCondition<Character> equalToIgnoreCase(@Nullable Character value) {
-		return factory(this).equalToIgnoreCase(value);
+		return conditions(this).equalToIgnoreCase(value);
 	}
 
 	@Override
 	public ColumnCondition<String> notEqualToIgnoreCase(@Nullable String value) {
-		return factory(this).notEqualToIgnoreCase(value);
+		return conditions(this).notEqualToIgnoreCase(value);
 	}
 
 	@Override
 	public ColumnCondition<Character> notEqualToIgnoreCase(@Nullable Character value) {
-		return factory(this).notEqualToIgnoreCase(value);
+		return conditions(this).notEqualToIgnoreCase(value);
 	}
 
 	@Override
 	public ColumnCondition<String> like(@Nullable String value) {
-		return factory(this).like(value);
+		return conditions(this).like(value);
 	}
 
 	@Override
 	public ColumnCondition<String> notLike(@Nullable String value) {
-		return factory(this).notLike(value);
+		return conditions(this).notLike(value);
 	}
 
 	@Override
 	public ColumnCondition<String> likeIgnoreCase(@Nullable String value) {
-		return factory(this).likeIgnoreCase(value);
+		return conditions(this).likeIgnoreCase(value);
 	}
 
 	@Override
 	public ColumnCondition<String> notLikeIgnoreCase(@Nullable String value) {
-		return factory(this).notLikeIgnoreCase(value);
+		return conditions(this).notLikeIgnoreCase(value);
 	}
 
 	@Override
 	public ColumnCondition<T> in(T... values) {
-		return factory(this).in(values);
+		return conditions(this).in(values);
 	}
 
 	@Override
 	public ColumnCondition<T> notIn(T... values) {
-		return factory(this).notIn(values);
+		return conditions(this).notIn(values);
 	}
 
 	@Override
 	public ColumnCondition<T> in(Collection<? extends T> values) {
-		return factory(this).in(values);
+		return conditions(this).in(values);
 	}
 
 	@Override
 	public ColumnCondition<T> notIn(Collection<? extends T> values) {
-		return factory(this).notIn(values);
+		return conditions(this).notIn(values);
 	}
 
 	@Override
 	public ColumnCondition<String> inIgnoreCase(String... values) {
-		return factory(this).inIgnoreCase(values);
+		return conditions(this).inIgnoreCase(values);
 	}
 
 	@Override
 	public ColumnCondition<String> notInIgnoreCase(String... values) {
-		return factory(this).notInIgnoreCase(values);
+		return conditions(this).notInIgnoreCase(values);
 	}
 
 	@Override
 	public ColumnCondition<String> inIgnoreCase(Collection<String> values) {
-		return factory(this).inIgnoreCase(values);
+		return conditions(this).inIgnoreCase(values);
 	}
 
 	@Override
 	public ColumnCondition<String> notInIgnoreCase(Collection<String> values) {
-		return factory(this).notInIgnoreCase(values);
+		return conditions(this).notInIgnoreCase(values);
 	}
 
 	@Override
 	public ColumnCondition<T> lessThan(T upper) {
-		return factory(this).lessThan(upper);
+		return conditions(this).lessThan(upper);
 	}
 
 	@Override
 	public ColumnCondition<T> lessThanOrEqualTo(T upper) {
-		return factory(this).lessThanOrEqualTo(upper);
+		return conditions(this).lessThanOrEqualTo(upper);
 	}
 
 	@Override
 	public ColumnCondition<T> greaterThan(T lower) {
-		return factory(this).greaterThan(lower);
+		return conditions(this).greaterThan(lower);
 	}
 
 	@Override
 	public ColumnCondition<T> greaterThanOrEqualTo(T lower) {
-		return factory(this).greaterThanOrEqualTo(lower);
+		return conditions(this).greaterThanOrEqualTo(lower);
 	}
 
 	@Override
 	public ColumnCondition<T> betweenExclusive(T lower, T upper) {
-		return factory(this).betweenExclusive(lower, upper);
+		return conditions(this).betweenExclusive(lower, upper);
 	}
 
 	@Override
 	public ColumnCondition<T> between(T lower, T upper) {
-		return factory(this).between(lower, upper);
+		return conditions(this).between(lower, upper);
 	}
 
 	@Override
 	public ColumnCondition<T> notBetweenExclusive(T lower, T upper) {
-		return factory(this).notBetweenExclusive(lower, upper);
+		return conditions(this).notBetweenExclusive(lower, upper);
 	}
 
 	@Override
 	public ColumnCondition<T> notBetween(T lower, T upper) {
-		return factory(this).notBetween(lower, upper);
+		return conditions(this).notBetween(lower, upper);
 	}
 
 	@Override
 	public ColumnCondition<T> isNull() {
-		return factory(this).isNull();
+		return conditions(this).isNull();
 	}
 
 	@Override
 	public ColumnCondition<T> isNotNull() {
-		return factory(this).isNotNull();
+		return conditions(this).isNotNull();
 	}
 
 	final class DefaultColumnDefiner<T> extends DefaultAttributeDefiner<T> implements ColumnDefiner<T> {

@@ -86,7 +86,7 @@ import is.codion.framework.domain.entity.attribute.Column;
  *     Track.DURATION.lessThan(300000))); // Less than 5 minutes
  *}
  * @param <T> the attribute type
- * @see ColumnConditionFactory
+ * @see ColumnConditions
  * @see Column
  * @see Operator
  */

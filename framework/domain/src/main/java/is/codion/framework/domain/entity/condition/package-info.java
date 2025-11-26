@@ -28,9 +28,9 @@
  *
  * <h3>Condition Types</h3>
  * <ul>
- *   <li><strong>{@link is.codion.framework.domain.entity.condition.ColumnConditionFactory}</strong> -
+ *   <li><strong>{@link is.codion.framework.domain.entity.condition.ColumnConditions}</strong> -
  *       Conditions based on column values (equality, comparison, patterns, nullity)</li>
- *   <li><strong>{@link is.codion.framework.domain.entity.condition.ForeignKeyConditionFactory}</strong> -
+ *   <li><strong>{@link is.codion.framework.domain.entity.condition.ForeignKeyConditions}</strong> -
  *       Conditions based on foreign key relationships</li>
  *   <li><strong>{@link is.codion.framework.domain.entity.condition.CustomCondition}</strong> -
  *       Complex conditions that cannot be expressed with standard operators</li>
@@ -171,8 +171,8 @@
  * </ul>
  * @see is.codion.framework.domain.entity.condition.Condition
  * @see is.codion.framework.domain.entity.condition.ColumnCondition
- * @see is.codion.framework.domain.entity.condition.ColumnConditionFactory
- * @see is.codion.framework.domain.entity.condition.ForeignKeyConditionFactory
+ * @see is.codion.framework.domain.entity.condition.ColumnConditions
+ * @see is.codion.framework.domain.entity.condition.ForeignKeyConditions
  * @see is.codion.framework.domain.entity.condition.CustomCondition
  * @see is.codion.framework.domain.entity.condition.ConditionType
  */

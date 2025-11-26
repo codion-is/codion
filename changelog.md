@@ -14,6 +14,8 @@ Codion Change Log
 - FilterTable.Builder.cellRendererFactory(), headerRendererFactory(), cellEditorFactory() and summaryValuesFactory() renamed cellRenderers(), headerRenderers(), cellEditors() and summaryValues().
 - FilterTable.Builder.filterPanelFactory() renamed filterPanel().
 - ComponentValueBuilder.validIndicatorFactory() and modifiedIndicatorFactory() renamed validIndicator() and modifiedIndicator().
+### is.codion.framework.domain
+- ColumnConditionFactory and ForeignKeyConditionFactory renamed ColumnConditions and ForeignKeyConditions.
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().

@@ -497,30 +497,30 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private void bindEvents() {
 		model().operator().addConsumer(this::onOperatorChanged);
-		Collection<JComponent> components = components();
-		enabled(model().locked().not(), components.toArray(new JComponent[0]));
+		Collection<JComponent> conditionComponents = components();
+		enabled(model().locked().not(), conditionComponents.toArray(new JComponent[0]));
 		FocusGained focusGained = new FocusGained();
-		components.forEach(component -> component.addFocusListener(focusGained));
+		conditionComponents.forEach(component -> component.addFocusListener(focusGained));
 		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
 										.keyStroke(keyStroke)
 										.action(command(this::toggleEnabled))
-										.enable(components));
+										.enable(conditionComponents));
 		CLEAR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
 										.keyStroke(keyStroke)
 										.action(command(model()::clear))
-										.enable(components));
+										.enable(conditionComponents));
 		PREVIOUS_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
 										.keyStroke(keyStroke)
 										.action(command(this::selectPreviousOperator))
-										.enable(components));
+										.enable(conditionComponents));
 		NEXT_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
 										.keyStroke(keyStroke)
 										.action(command(this::selectNextOperator))
-										.enable(components));
+										.enable(conditionComponents));
 	}
 
 	private void onOperatorChanged(Operator operator) {

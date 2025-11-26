@@ -28,11 +28,11 @@ import static is.codion.common.utilities.Operator.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultColumnConditionFactory<T> implements ColumnConditionFactory<T> {
+final class DefaultColumnConditions<T> implements ColumnConditions<T> {
 
 	private final Column<T> column;
 
-	DefaultColumnConditionFactory(Column<T> column) {
+	DefaultColumnConditions(Column<T> column) {
 		this.column = requireNonNull(column);
 	}
 
