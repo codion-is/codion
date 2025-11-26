@@ -142,7 +142,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 					LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 	private static final DefaultOperatorCaptions DEFAULT_OPERATOR_CAPTIONS = new DefaultOperatorCaptions();
 
-	private final ComponentFactory componentFactory;
+	private final ConditionComponents components;
 	private final Event<JComponent> focusGained = Event.event();
 	private final @Nullable TableColumn tableColumn;
 	private final Function<Operator, String> operatorCaptions;
@@ -162,7 +162,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private ColumnConditionPanel(DefaultBuilder<T> builder) {
 		super(builder.conditionModel);
-		this.componentFactory = builder.componentFactory;
+		this.components = builder.components;
 		this.operatorCaptions = builder.operatorCaptions;
 		this.tableColumn = builder.tableColumn;
 	}
@@ -292,11 +292,11 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 
 		/**
-		 * @param componentFactory the input component factory
+		 * @param components the input component factory
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the given component factory does not support the column value type
 		 */
-		Builder<T> componentFactory(ComponentFactory componentFactory);
+		Builder<T> components(ConditionComponents components);
 
 		/**
 		 * Provides captions for operators, displayed in the operator combo box
@@ -331,7 +331,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		private final ConditionModel<T> conditionModel;
 
-		private ComponentFactory componentFactory = FilterComponents.INSTANCE;
+		private ConditionComponents components = FilterComponents.INSTANCE;
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private @Nullable TableColumn tableColumn;
 
@@ -340,12 +340,12 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 
 		@Override
-		public Builder<T> componentFactory(ComponentFactory componentFactory) {
-			if (!requireNonNull(componentFactory).supportsType(conditionModel.valueClass())) {
-				throw new IllegalArgumentException("ComponentFactory does not support the value type: " + conditionModel.valueClass());
+		public Builder<T> components(ConditionComponents components) {
+			if (!requireNonNull(components).supportsType(conditionModel.valueClass())) {
+				throw new IllegalArgumentException("ConditionComponents does not support the value type: " + conditionModel.valueClass());
 			}
 
-			this.componentFactory = requireNonNull(componentFactory);
+			this.components = requireNonNull(components);
 			return this;
 		}
 
@@ -370,7 +370,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	/**
 	 * Provides equal, in, upper and lower bound input components for a {@link ColumnConditionPanel}
 	 */
-	public interface ComponentFactory {
+	public interface ConditionComponents {
 
 		/**
 		 * @param valueClass the value class
@@ -458,16 +458,16 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		boolean modelLocked = model().locked().is();
 		model().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
 		if (equalIncluded()) {
-			equalComponent = componentFactory.equal(model());
+			equalComponent = components.equal(model());
 		}
 		if (upperIncluded()) {
-			upperComponent = componentFactory.upper(model());
+			upperComponent = components.upper(model());
 		}
 		if (lowerIncluded()) {
-			lowerComponent = componentFactory.lower(model());
+			lowerComponent = components.lower(model());
 		}
 		if (inIncluded()) {
-			inComponent = componentFactory.in(model());
+			inComponent = components.in(model());
 		}
 		operatorCombo = createOperatorComboBox(model().operators());
 		model().locked().set(modelLocked);

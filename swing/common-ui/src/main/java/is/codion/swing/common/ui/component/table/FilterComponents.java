@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 
 import javax.swing.JComponent;
 import java.math.BigDecimal;
@@ -35,7 +35,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.*;
 import static java.util.Objects.requireNonNull;
 
-final class FilterComponents implements ComponentFactory {
+final class FilterComponents implements ConditionComponents {
 
 	static final FilterComponents INSTANCE = new FilterComponents();
 

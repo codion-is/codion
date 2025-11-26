@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -48,7 +48,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default component factory implementation for attributes.
  */
-public class EntityConditionComponentFactory implements ComponentFactory {
+public class EntityConditionComponents implements ConditionComponents {
 
 	private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
 					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
@@ -62,7 +62,7 @@ public class EntityConditionComponentFactory implements ComponentFactory {
 	 * @param entityDefinition the entity definition
 	 * @param attribute the attribute
 	 */
-	public EntityConditionComponentFactory(EntityDefinition entityDefinition, Attribute<?> attribute) {
+	public EntityConditionComponents(EntityDefinition entityDefinition, Attribute<?> attribute) {
 		this.inputComponents = entityComponents(entityDefinition);
 		this.attribute = requireNonNull(attribute);
 	}

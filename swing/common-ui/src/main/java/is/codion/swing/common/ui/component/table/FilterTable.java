@@ -40,7 +40,7 @@ import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableColumn.DefaultFilterTableColumnBuilder;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
@@ -278,7 +278,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final TableSummaryModel<C> summaryModel;
 
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
-	private final ComponentFactory filterComponentFactory;
+	private final ConditionComponents filterComponents;
 	private final Event<MouseEvent> doubleClicked = Event.event();
 	private final Value<Action> doubleClick;
 	private final BiPredicate<R, C> cellEditable;
@@ -299,7 +299,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.filterPanelFactory = builder.filterPanelFactory;
-		this.filterComponentFactory = builder.filterComponentFactory;
+		this.filterComponents = builder.filterComponents;
 		this.centerOnScroll = Value.builder()
 						.nonNull(CenterOnScroll.NEITHER)
 						.value(builder.centerOnScroll)
@@ -1010,10 +1010,10 @@ public final class FilterTable<R, C> extends JTable {
 		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().get().entrySet()) {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
-			if (columnModel().contains(identifier) && filterComponentFactory.supportsType(condition.valueClass())) {
+			if (columnModel().contains(identifier) && filterComponents.supportsType(condition.valueClass())) {
 				conditionPanels.put(identifier, ColumnConditionPanel.builder()
 								.model(condition)
-								.componentFactory(filterComponentFactory)
+								.components(filterComponents)
 								.tableColumn(columnModel().column(identifier))
 								.build());
 			}
@@ -1250,11 +1250,11 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterPanelFactory(TableConditionPanel.Factory<C> filterPanelFactory);
 
 		/**
-		 * @param componentFactory the column filter component factory
+		 * @param filterComponents the column filter component factory
 		 * @return this builder instance
 		 * @see FilterTable#filters()
 		 */
-		Builder<R, C> filterComponentFactory(ComponentFactory componentFactory);
+		Builder<R, C> filterComponents(ConditionComponents filterComponents);
 
 		/**
 		 * The cell renderer for the given column, overrides {@link #cellRendererFactory(FilterTableCellRenderer.Factory)}.
@@ -1506,7 +1506,7 @@ public final class FilterTable<R, C> extends JTable {
 		private Consumer<FilterTableColumn.Builder<C>> columns = new EmptyConsumer<>();
 		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
-		private ComponentFactory filterComponentFactory = FilterComponents.INSTANCE;
+		private ConditionComponents filterComponents = FilterComponents.INSTANCE;
 		private FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory;
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
@@ -1569,8 +1569,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterComponentFactory(ComponentFactory componentFactory) {
-			this.filterComponentFactory = requireNonNull(componentFactory);
+		public Builder<R, C> filterComponents(ConditionComponents filterComponents) {
+			this.filterComponents = requireNonNull(filterComponents);
 			return this;
 		}
 

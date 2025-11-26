@@ -10,6 +10,7 @@ Codion Change Log
 - FilterModel.Builder.included() renamed include(), IncludedPredicate renamed IncludePredicate.
 ### is.codion.swing.common.ui
 - FilterComponentFactory renamed FilterComponents, now a singleton.
+- ColumnConditionPanel.ComponentFactory renamed ConditionComponents.
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().

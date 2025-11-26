@@ -53,7 +53,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -1500,10 +1500,10 @@ public class EntityTablePanel extends JPanel {
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.query().condition().get().entrySet()) {
 			Attribute<?> attribute = conditionEntry.getKey();
 			if (table.columnModel().contains(attribute)) {
-				ComponentFactory componentFactory = configuration.conditionComponentFactories.getOrDefault(attribute,
-								new EntityConditionComponentFactory(tableModel.entityDefinition(), attribute));
-				if (componentFactory.supportsType(attribute.type().valueClass())) {
-					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, componentFactory));
+				ConditionComponents conditionComponents = configuration.conditionComponents.getOrDefault(attribute,
+								new EntityConditionComponents(tableModel.entityDefinition(), attribute));
+				if (conditionComponents.supportsType(attribute.type().valueClass())) {
+					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, conditionComponents));
 				}
 			}
 		}
@@ -1512,10 +1512,10 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private <C extends Attribute<?>> ColumnConditionPanel<?> createConditionPanel(ConditionModel<?> conditionModel, C identifier,
-																																								ComponentFactory componentFactory) {
+																																								ConditionComponents conditionComponents) {
 		return ColumnConditionPanel.builder()
 						.model(conditionModel)
-						.componentFactory(componentFactory)
+						.components(conditionComponents)
 						.tableColumn(table.columnModel().column(identifier))
 						.build();
 	}
@@ -2168,7 +2168,7 @@ public class EntityTablePanel extends JPanel {
 		private final EntityDefinition entityDefinition;
 		private final ValueSet<Attribute<?>> editable;
 		private final Map<Attribute<?>, EditComponentFactory<?, ?>> editComponentFactories;
-		private final Map<Attribute<?>, ComponentFactory> conditionComponentFactories;
+		private final Map<Attribute<?>, ConditionComponents> conditionComponents;
 
 		private FilterTable.@Nullable Builder<Entity, Attribute<?>> tableBuilder;
 		private TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory = new DefaultConditionPanelFactory();
@@ -2216,7 +2216,7 @@ public class EntityTablePanel extends JPanel {
 							.scrollToAddedItem(true)
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.conditionPanelFactory = new DefaultConditionPanelFactory();
-			this.conditionComponentFactories = new HashMap<>();
+			this.conditionComponents = new HashMap<>();
 			this.controlMap = ControlMap.controlMap(ControlKeys.class);
 			this.editable = valueSet(editableAttributes());
 			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
@@ -2259,7 +2259,7 @@ public class EntityTablePanel extends JPanel {
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeToolBar = config.includeToolBar;
 			this.conditionPanelFactory = config.conditionPanelFactory;
-			this.conditionComponentFactories = new HashMap<>(config.conditionComponentFactories);
+			this.conditionComponents = new HashMap<>(config.conditionComponents);
 			this.excludeHiddenColumns = config.excludeHiddenColumns;
 		}
 
@@ -2291,12 +2291,12 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * @param attribute the attribute
-		 * @param componentFactory the component factory for the given attribute
+		 * @param conditionComponents the component factory for the given attribute
 		 * @return this Config instance
 		 * @see EntityTablePanel#condition()
 		 */
-		public Config conditionComponentFactory(Attribute<?> attribute, ComponentFactory componentFactory) {
-			this.conditionComponentFactories.put(attribute, requireNonNull(componentFactory));
+		public Config conditionComponents(Attribute<?> attribute, ConditionComponents conditionComponents) {
+			this.conditionComponents.put(attribute, requireNonNull(conditionComponents));
 			return this;
 		}
 

@@ -23,7 +23,7 @@ import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityConditionComponentFactory;
+import is.codion.swing.framework.ui.EntityConditionComponents;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
@@ -37,8 +37,8 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		// is available via the popup menu, toolbar and keyboard shortcut (INSERT)
 		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
 						// Custom condition component factory for the track condition panel
-						.conditionComponentFactory(PlaylistTrack.TRACK_FK,
-										new TrackConditionComponentFactory(tableModel.entityDefinition()))
+						.conditionComponents(PlaylistTrack.TRACK_FK,
+										new TrackConditionComponents(tableModel.entityDefinition()))
 						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE)
 						// No need to edit individual rows, we just add or delete
@@ -56,11 +56,11 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 						.build());
 	}
 
-	// A ComponentFactory, which uses the TrackSelectorFactory, displaying
+	// An ConditionComponents, which uses the TrackSelectorFactory, displaying
 	// a table instead of the default list when selecting tracks
-	private static final class TrackConditionComponentFactory extends EntityConditionComponentFactory {
+	private static final class TrackConditionComponents extends EntityConditionComponents {
 
-		private TrackConditionComponentFactory(EntityDefinition entityDefinition) {
+		private TrackConditionComponents(EntityDefinition entityDefinition) {
 			super(entityDefinition, PlaylistTrack.TRACK_FK);
 		}
 
