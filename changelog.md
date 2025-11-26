@@ -13,6 +13,7 @@ Codion Change Log
 - ColumnConditionPanel.ComponentFactory renamed ConditionComponents.
 - FilterTable.Builder.cellRendererFactory(), headerRendererFactory(), cellEditorFactory() and summaryValuesFactory() renamed cellRenderers(), headerRenderers(), cellEditors() and summaryValues().
 - FilterTable.Builder.filterPanelFactory() renamed filterPanel().
+- ComponentValueBuilder.validIndicatorFactory() and modifiedIndicatorFactory() renamed validIndicator() and modifiedIndicator().
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().

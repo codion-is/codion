@@ -60,8 +60,8 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	protected AbstractComponentValueBuilder() {}
 
 	@Override
-	public final B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory) {
-		this.validIndicatorFactory = validIndicatorFactory;
+	public final B validIndicator(@Nullable ValidIndicatorFactory validIndicator) {
+		this.validIndicatorFactory = validIndicator;
 		return (B) this;
 	}
 
@@ -78,8 +78,8 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	@Override
-	public final B modifiedIndicatorFactory(@Nullable ModifiedIndicatorFactory modifiedIndicatorFactory) {
-		this.modifiedIndicatorFactory = modifiedIndicatorFactory;
+	public final B modifiedIndicator(@Nullable ModifiedIndicatorFactory modifiedIndicator) {
+		this.modifiedIndicatorFactory = modifiedIndicator;
 		return (B) this;
 	}
 

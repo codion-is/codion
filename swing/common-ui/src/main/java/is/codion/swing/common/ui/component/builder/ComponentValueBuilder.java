@@ -71,22 +71,22 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * Enables a modified indicator based on the given modified state.
 	 * @param modified the modified state
 	 * @return this builder instance
-	 * @see #modifiedIndicatorFactory(ModifiedIndicatorFactory)
+	 * @see #modifiedIndicator(ModifiedIndicatorFactory)
 	 */
 	B modifiedIndicator(@Nullable ObservableState modified);
 
 	/**
-	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use, null for none
+	 * @param validIndicator the {@link ValidIndicatorFactory} to use, null for none
 	 * @return this builder instance
 	 * @see ValidIndicatorFactory#instance()
 	 */
-	B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory);
+	B validIndicator(@Nullable ValidIndicatorFactory validIndicator);
 
 	/**
 	 * Enables a valid indicator based on the given valid state.
 	 * @param valid the valid state
 	 * @return this builder instance
-	 * @see #validIndicatorFactory(ValidIndicatorFactory)
+	 * @see #validIndicator(ValidIndicatorFactory)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 	 */
 	B validIndicator(@Nullable ObservableState valid);
@@ -98,17 +98,17 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * should return true as long as the value is valid.
 	 * @param validator called each time the component value changes
 	 * @return this builder instance
-	 * @see #validIndicatorFactory(ValidIndicatorFactory)
+	 * @see #validIndicator(ValidIndicatorFactory)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 	 */
 	B validIndicator(@Nullable Predicate<T> validator);
 
 	/**
 	 * By default {@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory}.
-	 * @param modifiedIndicatorFactory the {@link ModifiedIndicatorFactory} to use, null for none
+	 * @param modifiedIndicator the {@link ModifiedIndicatorFactory} to use, null for none
 	 * @return this builder instance
 	 */
-	B modifiedIndicatorFactory(@Nullable ModifiedIndicatorFactory modifiedIndicatorFactory);
+	B modifiedIndicator(@Nullable ModifiedIndicatorFactory modifiedIndicator);
 
 	/**
 	 * @param validator the validator to use
