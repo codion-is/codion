@@ -26,6 +26,7 @@ import is.codion.common.utilities.Conjunction;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 
@@ -66,6 +67,15 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	 * @return the {@link Value} managing the conjunction to use in case of multiple conditions
 	 */
 	Value<Conjunction> conjunction();
+
+	/**
+	 * Returns the {@link ConditionModel} associated with the given column.
+	 * @param <T> the column value type
+	 * @param column the column for which to retrieve the {@link ConditionModel}
+	 * @return the {@link ConditionModel} associated with {@code column}
+	 * @throws IllegalArgumentException in case no condition model exists for the given column
+	 */
+	<T> ConditionModel<T> get(Column<T> column);
 
 	/**
 	 * Returns the {@link ConditionModel} associated with the given foreignKey.

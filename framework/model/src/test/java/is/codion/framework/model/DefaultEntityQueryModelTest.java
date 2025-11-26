@@ -36,9 +36,11 @@ import is.codion.framework.model.test.TestDomain.Job;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,6 +77,19 @@ public final class DefaultEntityQueryModelTest {
 		queryModel.condition().additional().where().set(null);
 		condition = queryModel.select().where();
 		assertFalse(condition instanceof Combination);
+	}
+
+	@Test
+	void typeInference() {
+		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
+						.build());
+		Collection<String> employeeNames = emptyList();
+		// breaks without EntityConditionModel.get(Column<T> column).
+		queryModel.condition().get(Employee.NAME).set().in(employeeNames);
+		queryModel.query();
 	}
 
 	@Test

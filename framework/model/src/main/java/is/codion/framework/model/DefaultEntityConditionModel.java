@@ -126,6 +126,11 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	@Override
+	public <T> ConditionModel<T> get(Column<T> column) {
+		return conditionModel.get(column);
+	}
+
+	@Override
 	public ForeignKeyConditionModel get(ForeignKey foreignKey) {
 		return (ForeignKeyConditionModel) conditionModel.<Entity>get(foreignKey);
 	}
