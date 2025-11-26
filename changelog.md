@@ -34,6 +34,7 @@ Codion Change Log
 - EntityTablePanel limit status message improved.
 - EditComponentFactory renamed EditComponent, related renaming.
 - EntityTableCellRendererFactory renamed EntityTableCellRenderers.
+- EntityTablePanel.Config.conditionPanelFactory() renamed conditionPanel().
 
 ## 0.18.60
 ### is.codion.common.reactive

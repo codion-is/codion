@@ -2281,11 +2281,11 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param conditionPanelFactory the table condition panel factory
+		 * @param conditionPanel the table condition panel factory
 		 * @return this Config instance
 		 */
-		public Config conditionPanelFactory(TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
-			this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
+		public Config conditionPanel(TableConditionPanel.Factory<Attribute<?>> conditionPanel) {
+			this.conditionPanelFactory = requireNonNull(conditionPanel);
 			return this;
 		}
 
