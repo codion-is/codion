@@ -43,7 +43,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	public AlbumTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						// A custom input component for editing Album.TAGS
-						.editComponentFactory(Album.TAGS, editModel -> new AlbumTagsValue())
+						.editComponent(Album.TAGS, editModel -> new AlbumTagsValue())
 						// Custom cell renderer for Album.RATING
 						// rendering the rating as stars, i.e. *****
 						.cellRenderer(Album.RATING, renderer -> renderer

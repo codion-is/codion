@@ -30,6 +30,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel bug fixed, status message now updated correctly when all items are filtered.
 - EntityTablePanel limit status message improved.
+- EditComponentFactory renamed EditComponent, related renaming.
 
 ## 0.18.60
 ### is.codion.common.reactive

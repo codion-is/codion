@@ -79,8 +79,8 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel.AttributeDefinitionComparator;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTableCellRendererFactory.ConditionIndicator;
-import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
-import is.codion.swing.framework.ui.component.EditComponentFactory;
+import is.codion.swing.framework.ui.component.DefaultEditComponent;
+import is.codion.swing.framework.ui.component.EditComponent;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jspecify.annotations.Nullable;
@@ -623,7 +623,7 @@ public class EntityTablePanel extends JPanel {
 	 * Displays a selection dialog for selecting an attribute to edit and
 	 * retrieves a new value via input dialog and performs an update on the selected entities
 	 * assigning the value to the attribute
-	 * @see Config#editComponentFactory(Attribute, EditComponentFactory)
+	 * @see Config#editComponent(Attribute, EditComponent)
 	 */
 	public final void editSelected() {
 		List<AttributeDefinition<?>> sortedDefinitions = configuration.editable.get().stream()
@@ -643,7 +643,7 @@ public class EntityTablePanel extends JPanel {
 	 * Retrieves a new value via input dialog and performs an update on the selected entities
 	 * assigning the value to the attribute
 	 * @param attributeToEdit the attribute which value to edit
-	 * @see Config#editComponentFactory(Attribute, EditComponentFactory)
+	 * @see Config#editComponent(Attribute, EditComponent)
 	 */
 	public final void editSelected(Attribute<?> attributeToEdit) {
 		requireNonNull(attributeToEdit);
@@ -984,8 +984,8 @@ public class EntityTablePanel extends JPanel {
 	protected <T> EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
 		return editAttributeDialog(tableModel.editModel(), attribute)
 						.owner(this)
-						.editComponentFactory((EditComponentFactory<?, T>) configuration.editComponentFactories
-										.getOrDefault(attribute, new DefaultEditComponentFactory<>(attribute)));
+						.editComponent((EditComponent<?, T>) configuration.editComponents
+										.getOrDefault(attribute, new DefaultEditComponent<>(attribute)));
 	}
 
 	/**
@@ -2167,7 +2167,7 @@ public class EntityTablePanel extends JPanel {
 		private final EntityTablePanel tablePanel;
 		private final EntityDefinition entityDefinition;
 		private final ValueSet<Attribute<?>> editable;
-		private final Map<Attribute<?>, EditComponentFactory<?, ?>> editComponentFactories;
+		private final Map<Attribute<?>, EditComponent<?, ?>> editComponents;
 		private final Map<Attribute<?>, ConditionComponents> conditionComponents;
 
 		private FilterTable.@Nullable Builder<Entity, Attribute<?>> tableBuilder;
@@ -2220,7 +2220,7 @@ public class EntityTablePanel extends JPanel {
 			this.controlMap = ControlMap.controlMap(ControlKeys.class);
 			this.editable = valueSet(editableAttributes());
 			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
-			this.editComponentFactories = new HashMap<>();
+			this.editComponents = new HashMap<>();
 			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selection());
 		}
 
@@ -2250,7 +2250,7 @@ public class EntityTablePanel extends JPanel {
 			this.columnSelection = config.columnSelection;
 			this.autoResizeModeSelection = config.autoResizeModeSelection;
 			this.editAttributeSelection = config.editAttributeSelection;
-			this.editComponentFactories = new HashMap<>(config.editComponentFactories);
+			this.editComponents = new HashMap<>(config.editComponents);
 			this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
 			this.refreshButtonVisible = config.refreshButtonVisible;
 			this.statusMessage = config.statusMessage;
@@ -2534,16 +2534,16 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Sets the component factory for the given attribute, used when editing entities via {@link EntityTablePanel#editSelected(Attribute)}.
 		 * @param attribute the attribute
-		 * @param editComponentFactory the edit component factory
+		 * @param editComponent the edit component factory
 		 * @param <C> the component type
 		 * @param <T> the value type
 		 * @param <A> the attribute type
 		 * @return this Config instance
 		 */
-		public <C extends JComponent, T, A extends Attribute<T>> Config editComponentFactory(A attribute,
-																																												 EditComponentFactory<C, T> editComponentFactory) {
+		public <C extends JComponent, T, A extends Attribute<T>> Config editComponent(A attribute,
+																																									EditComponent<C, T> editComponent) {
 			entityDefinition.attributes().definition(attribute);
-			editComponentFactories.put(attribute, requireNonNull(editComponentFactory));
+			editComponents.put(attribute, requireNonNull(editComponent));
 			return this;
 		}
 

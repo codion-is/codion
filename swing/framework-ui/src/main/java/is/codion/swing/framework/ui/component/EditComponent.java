@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
  * @param <C> the component type
  * @param <T> the value type
  */
-public interface EditComponentFactory<C extends JComponent, T> {
+public interface EditComponent<C extends JComponent, T> {
 
 	/**
 	 * Provides an input {@link ComponentValue} for editing a single attribute value for one or more entities.

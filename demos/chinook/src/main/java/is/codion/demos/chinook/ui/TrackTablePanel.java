@@ -33,7 +33,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.component.EditComponentFactory;
+import is.codion.swing.framework.ui.component.EditComponent;
 
 import javax.swing.JSpinner;
 import java.math.BigDecimal;
@@ -65,9 +65,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 	public TrackTablePanel(TrackTableModel tableModel) {
 		super(tableModel, config -> config
 						// Custom component for editing track ratings
-						.editComponentFactory(Track.RATING, new RatingEditComponentFactory())
+						.editComponent(Track.RATING, new RatingEditComponent())
 						// Custom component for editing track durations
-						.editComponentFactory(Track.MILLISECONDS, new DurationEditComponentFactory())
+						.editComponent(Track.MILLISECONDS, new DurationEditComponent())
 						// Custom cell renderer for ratings
 						.cellRenderer(Track.RATING, TrackTablePanel::ratingRenderer)
 						// Custom cell renderer for track duration (min:sec)
@@ -140,8 +140,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 		return entityComponents(entityDefinition).integerSpinner(Track.RATING);
 	}
 
-	private static final class RatingEditComponentFactory
-					implements EditComponentFactory<JSpinner, Integer> {
+	private static final class RatingEditComponent
+					implements EditComponent<JSpinner, Integer> {
 
 		@Override
 		public ComponentValue<JSpinner, Integer> component(SwingEntityEditModel editModel) {
@@ -149,8 +149,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 		}
 	}
 
-	private static final class DurationEditComponentFactory
-					implements EditComponentFactory<DurationPanel, Integer> {
+	private static final class DurationEditComponent
+					implements EditComponent<DurationPanel, Integer> {
 
 		@Override
 		public Optional<String> caption(AttributeDefinition<Integer> attributeDefinition) {

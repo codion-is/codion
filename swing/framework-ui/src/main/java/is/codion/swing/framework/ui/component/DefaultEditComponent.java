@@ -38,11 +38,11 @@ import static is.codion.swing.framework.ui.component.EntityComponents.entityComp
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link EditComponentFactory} implementation.
+ * A default {@link EditComponent} implementation.
  * @param <C> the component type
  * @param <T> the attribute type
  */
-public class DefaultEditComponentFactory<C extends JComponent, T> implements EditComponentFactory<C, T> {
+public class DefaultEditComponent<C extends JComponent, T> implements EditComponent<C, T> {
 
 	/**
 	 * Specifies the default number of text field columns
@@ -52,16 +52,16 @@ public class DefaultEditComponentFactory<C extends JComponent, T> implements Edi
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
-					integerValue(DefaultEditComponentFactory.class.getName() + ".defaultTextFieldColumns", 20);
+					integerValue(DefaultEditComponent.class.getName() + ".defaultTextFieldColumns", 20);
 
 	private static final int MAXIMUM_TEXT_FIELD_COLUMNS = 30;
 
 	private final Attribute<T> attribute;
 
 	/**
-	 * @param attribute the attribute for which this factory creates a {@link ComponentValue}
+	 * @param attribute the attribute for which this instance creates a {@link ComponentValue}
 	 */
-	public DefaultEditComponentFactory(Attribute<T> attribute) {
+	public DefaultEditComponent(Attribute<T> attribute) {
 		this.attribute = requireNonNull(attribute);
 	}
 

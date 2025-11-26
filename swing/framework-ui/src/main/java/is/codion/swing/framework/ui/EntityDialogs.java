@@ -36,8 +36,8 @@ import is.codion.swing.common.ui.dialog.DialogBuilder;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
-import is.codion.swing.framework.ui.component.EditComponentFactory;
+import is.codion.swing.framework.ui.component.DefaultEditComponent;
+import is.codion.swing.framework.ui.component.EditComponent;
 
 import org.jspecify.annotations.Nullable;
 
@@ -122,10 +122,10 @@ public final class EntityDialogs {
 	public interface EditAttributeDialogBuilder<T> extends DialogBuilder<EditAttributeDialogBuilder<T>> {
 
 		/**
-		 * @param editComponentFactory the component factory
+		 * @param editComponent the edit component factory
 		 * @return this builder
 		 */
-		EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<?, T> editComponentFactory);
+		EditAttributeDialogBuilder<T> editComponent(EditComponent<?, T> editComponent);
 
 		/**
 		 * <p>Provides the default value presented in the edit component.
@@ -263,18 +263,18 @@ public final class EntityDialogs {
 		private final SwingEntityEditModel editModel;
 		private final Attribute<T> attribute;
 
-		private EditComponentFactory<?, T> editComponentFactory;
+		private EditComponent<?, T> editComponent;
 		private Function<Collection<Entity>, T> defaultValue = new DefaultValue();
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = requireNonNull(editModel);
 			this.attribute = requireNonNull(attribute);
-			this.editComponentFactory = new DefaultEditComponentFactory<>(attribute);
+			this.editComponent = new DefaultEditComponent<>(attribute);
 		}
 
 		@Override
-		public EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<?, T> editComponentFactory) {
-			this.editComponentFactory = requireNonNull(editComponentFactory);
+		public EditAttributeDialogBuilder<T> editComponent(EditComponent<?, T> editComponent) {
+			this.editComponent = requireNonNull(editComponent);
 			return this;
 		}
 
@@ -301,11 +301,11 @@ public final class EntityDialogs {
 				throw new IllegalArgumentException("All entities must be of the same type when editing");
 			}
 
-			ComponentValue<?, T> componentValue = editComponentFactory.component(editModel);
+			ComponentValue<?, T> componentValue = editComponent.component(editModel);
 			componentValue.set(defaultValue.apply(entities));
 			EditAttributePanel<T> editPanel =
 							new EditAttributePanel<>(editModel, entities, attribute, componentValue,
-											editComponentFactory.caption(editModel.entityDefinition()
+											editComponent.caption(editModel.entityDefinition()
 															.attributes().definition(attribute)).orElse(null));
 			Dialogs.okCancel()
 							.component(editPanel)

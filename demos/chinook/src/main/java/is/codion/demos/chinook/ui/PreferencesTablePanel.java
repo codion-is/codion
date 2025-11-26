@@ -33,7 +33,7 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 
 	public PreferencesTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
-						.editComponentFactory(Preferences.NEWSLETTER_SUBSCRIBED,
+						.editComponent(Preferences.NEWSLETTER_SUBSCRIBED,
 										e -> new TriStateCheckBoxValue())
 						.surrendersFocusOnKeystroke(true)
 						.cellRenderer(Preferences.NEWSLETTER_SUBSCRIBED, renderer -> renderer

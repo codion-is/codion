@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class DefaultEditComponentFactoryTest {
+public final class DefaultEditComponentTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -43,10 +43,10 @@ public final class DefaultEditComponentFactoryTest {
 
 	@Test
 	void test() {
-		new DefaultEditComponentFactory<>(Detail.MASTER_FK).component(editModel);
-		new DefaultEditComponentFactory<>(Detail.DETAIL_FK).component(editModel);
+		new DefaultEditComponent<>(Detail.MASTER_FK).component(editModel);
+		new DefaultEditComponent<>(Detail.DETAIL_FK).component(editModel);
 
-		new DefaultEditComponentFactory<>(Detail.INT).component(editModel);
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEditComponentFactory<>(Detail.INT_DERIVED).component(editModel));
+		new DefaultEditComponent<>(Detail.INT).component(editModel);
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEditComponent<>(Detail.INT_DERIVED).component(editModel));
 	}
 }
