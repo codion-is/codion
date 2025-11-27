@@ -6,7 +6,7 @@ plugins {
 
 val documentationVersion = project.version.toString().replace("-SNAPSHOT", "")
 
-tasks.register<Copy>("copyModuleDependencyGraphs") {
+tasks.register<Copy>("generateModuleDependencyGraphs") {
     group = "documentation"
     description = "Copies the module dependency graphs to the asciidoc images folder"
 
@@ -58,7 +58,7 @@ tasks.register("generateI18nValuesPage") {
 }
 
 tasks.asciidoctor {
-    dependsOn("copyModuleDependencyGraphs", "generateI18nValuesPage")
+    dependsOn("generateModuleDependencyGraphs", "generateI18nValuesPage")
     rootProject.subprojects.filter { it.name.startsWith("demo-") }.forEach { demo ->
         inputs.files(demo.sourceSets.main.get().allSource)
         inputs.files(demo.sourceSets.test.get().allSource)
@@ -296,16 +296,22 @@ tasks.register("assembleTutorials") {
 }
 
 tasks.register<Sync>("copyToGitHubPages") {
-    dependsOn("assembleDocs")
+    dependsOn("linkcheck")
     group = "documentation"
     description = "Copies the assembled docs to the github pages project"
     from(project.layout.buildDirectory.dir(documentationVersion))
     into("../../codion-pages/doc/$documentationVersion")
 }
 
+tasks.register<Sync>("deploy") {
+    dependsOn("clean", "copyToGitHubPages")
+    group = "documentation"
+    description = "Clean, assembles and copies the docs to the github pages project"
+}
+
 tasks.register("linkcheck") {
     dependsOn("assembleDocs")
-    group = "verification"
+    group = "documentation"
     description = "Runs linkcheck on the assembled documentation"
 
     doLast {
