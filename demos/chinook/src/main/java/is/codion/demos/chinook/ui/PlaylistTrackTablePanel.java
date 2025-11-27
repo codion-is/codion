@@ -56,7 +56,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 						.build());
 	}
 
-	// An ConditionComponents, which uses the TrackSelectorFactory, displaying
+	// EntityConditionComponents, which uses the TrackSelectorFactory, displaying
 	// a table instead of the default list when selecting tracks
 	private static final class TrackConditionComponents extends EntityConditionComponents {
 

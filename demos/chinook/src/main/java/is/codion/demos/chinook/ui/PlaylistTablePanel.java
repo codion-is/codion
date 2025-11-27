@@ -21,6 +21,8 @@ package is.codion.demos.chinook.ui;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.model.PlaylistTableModel;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -68,16 +70,40 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	}
 
 	private void randomPlaylist() {
-		RandomPlaylistParametersValue playlistParametersValue = new RandomPlaylistParametersValue(tableModel().connectionProvider());
-		RandomPlaylistParameters randomPlaylistParameters = Dialogs.input()
-						.component(playlistParametersValue)
+		RandomPlaylistParametersValue parametersValue = new RandomPlaylistParametersValue(tableModel().connectionProvider());
+		RandomPlaylistParameters parameters = Dialogs.input()
+						.component(parametersValue)
 						.owner(this)
 						.title(BUNDLE.getString("random_playlist"))
-						.valid(playlistParametersValue.component().parametersValid())
+						.valid(parametersValue.component().parametersValid())
 						.show();
 
-		PlaylistTableModel playlistTableModel = (PlaylistTableModel) tableModel();
-		playlistTableModel.createRandomPlaylist(randomPlaylistParameters);
+		RandomPlaylistTask task = new RandomPlaylistTask(parameters);
+		Dialogs.progressWorker()
+						.task(task)
+						.onResult(task::handle)
+						.owner(this)
+						.title(BUNDLE.getString("random_playlist"))
+						.execute();
+	}
+
+	private final class RandomPlaylistTask implements ResultTask<Entity> {
+
+		private final RandomPlaylistParameters parameters;
+
+		private RandomPlaylistTask(RandomPlaylistParameters parameters) {
+			this.parameters = parameters;
+		}
+
+		@Override
+		public Entity execute() {
+			return ((PlaylistTableModel) tableModel()).createRandomPlaylist(parameters);
+		}
+
+		private void handle(Entity playlist) {
+			tableModel().items().included().add(0, playlist);
+			tableModel().selection().item().set(playlist);
+		}
 	}
 
 	private static final class RandomPlaylistParametersValue

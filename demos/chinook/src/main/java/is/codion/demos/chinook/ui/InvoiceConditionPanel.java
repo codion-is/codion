@@ -23,7 +23,6 @@ import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.item.Item;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
@@ -164,8 +163,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
 			EntityConditionModel condition = tableModel.query().condition();
-			ForeignKeyConditionModel customerCondition = condition.get(Invoice.CUSTOMER_FK);
-			customerConditionPanel = new CustomerConditionPanel(customerCondition, tableModel.entityDefinition());
+			customerConditionPanel = new CustomerConditionPanel(condition.get(Invoice.CUSTOMER_FK), tableModel);
 			dateConditionPanel = new DateConditionPanel(condition.get(Invoice.DATE));
 			dateConditionPanel.yearValue.addListener(tableModel.items()::refresh);
 			dateConditionPanel.monthValue.addListener(tableModel.items()::refresh);
@@ -206,10 +204,11 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			private final EntitySearchField searchField;
 
-			private CustomerConditionPanel(ForeignKeyConditionModel conditionModel, EntityDefinition definition) {
+			private CustomerConditionPanel(ForeignKeyConditionModel conditionModel, SwingEntityTableModel tableModel) {
 				super(conditionModel);
 				setLayout(new BorderLayout());
-				setBorder(createTitledBorder(createEmptyBorder(), definition.attributes().definition(Invoice.CUSTOMER_FK).caption()));
+				setBorder(createTitledBorder(createEmptyBorder(),
+								tableModel.entityDefinition().attributes().definition(Invoice.CUSTOMER_FK).caption()));
 				searchField = EntitySearchField.builder()
 								.model(conditionModel.inSearchModel())
 								.multiSelection()
