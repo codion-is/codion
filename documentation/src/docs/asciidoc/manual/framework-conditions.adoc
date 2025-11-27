@@ -16,7 +16,7 @@ Represents a query condition and contains factory methods for creating `Conditio
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnCondition.html[ColumnCondition]*::
 Represents a column based `Condition`.
 
-NOTE: {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] implement their respective condition factory interfaces ({url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnConditionFactory.html[ColumnConditionFactory] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ForeignKeyConditionFactory.html[ForeignKeyConditionFactory]), so you can create `Condition` instances directly from them using fluent methods like `.equalTo()`, `.isNull()`, `.in()`, etc.
+NOTE: {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] implement their respective condition factory interfaces ({url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnConditions.html[ColumnConditions] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ForeignKeyConditions.html[ForeignKeyConditions]), so you can create `Condition` instances directly from them using fluent methods like `.equalTo()`, `.isNull()`, `.in()`, etc.
 
 [source,java,indent=0]
 ----

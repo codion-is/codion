@@ -36,7 +36,9 @@ public final class InvoiceLineTablePanel extends EntityTablePanel {
 						.editable(attributes -> attributes.remove(InvoiceLine.INVOICE_FK))
 						// We provide a custom component to use when
 						// the track is edited via the popup menu.
+						// tag::editComponent[]
 						.editComponent(InvoiceLine.TRACK_FK, new TrackEditComponent(InvoiceLine.TRACK_FK)));
+		// end::editComponent[]
 		table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setPreferredSize(new Dimension(360, 40));
 	}

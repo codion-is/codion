@@ -116,24 +116,20 @@ A `EntitySearchField` based `ComponentValue` can be created via buildValue():
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldReactiveBinding]
 ----
 
-=== Custom Edit Component Factory
+=== Custom Edit Component
 
 Use custom search fields in edit panels:
 
 [source,java]
 .Custom factory example from Chinook demo
 ----
-class TrackEditComponentFactory extends DefaultEditComponentFactory<Entity, EntitySearchField> {
-    
-    @Override
-    protected EntitySearchField.SingleSelectionBuilder searchField(
-            ForeignKey foreignKey,
-            EntityDefinition entityDefinition,
-            EntitySearchModel searchModel) {
-        return super.searchField(foreignKey, entityDefinition, searchModel)
-                .selectorFactory(new TrackSelectorFactory());
-    }
-}
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/TrackEditComponent.java[tags=editComponent]
+----
+
+[source,java]
+.InvoiceLineTablePanel
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/InvoiceLineTablePanel.java[tags=editComponent]
 ----
 
 == Configuration Properties

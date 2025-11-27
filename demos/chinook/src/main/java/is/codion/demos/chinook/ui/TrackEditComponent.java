@@ -28,6 +28,7 @@ import is.codion.swing.framework.ui.component.EntitySearchField;
 /**
  * Provides a {@link EntitySearchField} using the {@link TrackSelector}.
  */
+// tag::editComponent[]
 final class TrackEditComponent extends DefaultEditComponent<EntitySearchField, Entity> {
 
 	TrackEditComponent(ForeignKey trackForeignKey) {
@@ -42,3 +43,4 @@ final class TrackEditComponent extends DefaultEditComponent<EntitySearchField, E
 						.selector(new TrackSelector());
 	}
 }
+// end::editComponent[]

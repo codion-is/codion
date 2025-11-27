@@ -22,9 +22,9 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.
 
 == Condition Management
 
-=== Table Condition Model
+=== Entity Condition Model
 
-The primary condition mechanism is the {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableConditionModel.html[EntityTableConditionModel], which provides a flexible way to build complex queries:
+The primary condition mechanism is the {url-javadoc}{framework-model}/is/codion/framework/model/EntityConditionModel.html[EntityConditionModel], which provides a flexible way to build complex queries:
 
 [source,java]
 ----
