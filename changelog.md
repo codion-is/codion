@@ -39,6 +39,7 @@ Codion Change Log
 - EditComponentFactory renamed EditComponent, related renaming.
 - EntityTableCellRendererFactory renamed EntityTableCellRenderers.
 - EntityTablePanel.Config.conditionPanelFactory() renamed conditionPanel().
+- EntityEditPanel.InsertCommand, UpdateCommand and DeleteCommand.Builder.execute() added.
 
 ## 0.18.60
 ### is.codion.common.reactive

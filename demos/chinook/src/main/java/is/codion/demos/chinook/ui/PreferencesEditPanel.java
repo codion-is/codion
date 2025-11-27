@@ -55,7 +55,6 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 		if (editModel().editor().exists().is()) {
 			updateCommand()
 							.confirm(false)
-							.build()
 							.execute();
 		}
 	}

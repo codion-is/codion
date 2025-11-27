@@ -73,7 +73,6 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 		if (editor.modified().attributes().is(singleton(CountryLanguage.IS_OFFICIAL))) {
 			updateCommand()
 							.confirm(false)
-							.build()
 							.execute();
 		}
 	}

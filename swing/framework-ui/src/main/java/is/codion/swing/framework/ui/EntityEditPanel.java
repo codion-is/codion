@@ -1029,6 +1029,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			Builder onInsert(Consumer<Collection<Entity>> onInsert);
 
 			/**
+			 * Builds and executes this command
+			 */
+			void execute();
+
+			/**
 			 * @return the command
 			 */
 			InsertCommand build();
@@ -1067,6 +1072,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			Builder onUpdate(Consumer<Collection<Entity>> onUpdate);
 
 			/**
+			 * Builds and executes this command
+			 */
+			void execute();
+
+			/**
 			 * @return the command
 			 */
 			UpdateCommand build();
@@ -1103,6 +1113,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			 * @return this builder instance
 			 */
 			Builder onDelete(Consumer<Collection<Entity>> onDelete);
+
+			/**
+			 * Builds and executes this command
+			 */
+			void execute();
 
 			/**
 			 * @return the command
@@ -1178,6 +1193,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 
 			@Override
+			public void execute() {
+				build().execute();
+			}
+
+			@Override
 			public InsertCommand build() {
 				return new DefaultInsertCommand(this);
 			}
@@ -1245,6 +1265,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 
 			@Override
+			public void execute() {
+				build().execute();
+			}
+
+			@Override
 			public UpdateCommand build() {
 				return new DefaultUpdateCommand(this);
 			}
@@ -1309,6 +1334,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			public Builder onDelete(Consumer<Collection<Entity>> onDelete) {
 				this.onDelete.add(requireNonNull(onDelete));
 				return this;
+			}
+
+			@Override
+			public void execute() {
+				build().execute();
 			}
 
 			@Override

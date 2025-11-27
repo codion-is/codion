@@ -159,7 +159,6 @@ public final class NotesDemo {
 			if (editor.exists().not().is() && !editor.value(Note.NOTE).isNull()) {
 				// A new note with a non-null text
 				insertCommand()
-								.build()
 								.execute();
 			}
 			else if (editor.modified().is()) {
@@ -167,14 +166,12 @@ public final class NotesDemo {
 					// An existing note with no text
 					deleteCommand()
 									.confirm(false)
-									.build()
 									.execute();
 				}
 				else {
 					// An existing note with a modified text
 					updateCommand()
 									.confirm(false)
-									.build()
 									.execute();
 				}
 			}
