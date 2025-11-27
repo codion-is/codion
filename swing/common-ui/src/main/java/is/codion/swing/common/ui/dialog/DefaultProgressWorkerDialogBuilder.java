@@ -58,8 +58,6 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	private Consumer<Exception> onException = new DisplayExceptionInDialog();
 	private int showDelay = SHOW_DELAY.getOrThrow();
 	private int hideDelay = HIDE_DELAY.getOrThrow();
-	private @Nullable DelayedAction showAction;
-	private long startTime;
 
 	DefaultProgressWorkerDialogBuilder(Task task) {
 		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder().task(task);
@@ -208,15 +206,52 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 						.icon(icon)
 						.build();
 
+		DisplayDialog dialog = new DisplayDialog(progressDialog);
+
 		return progressWorkerBuilder
-						.onStarted(() -> showDialog(progressDialog))
+						.onStarted(dialog::show)
 						.onProgress(progressDialog::setProgress)
 						.onPublish(chunks -> publish(chunks, progressDialog))
-						.onDone(() -> closeDialog(progressDialog))
+						.onDone(dialog::hide)
 						.onResult(onResult)
 						.onException(onException)
 						.build();
 	}
+
+	private final class DisplayDialog {
+
+		private final ProgressDialog progressDialog;
+
+		private @Nullable DelayedAction show;
+		private long startTime;
+
+		private DisplayDialog(ProgressDialog progressDialog) {
+			this.progressDialog = progressDialog;
+		}
+
+		private void show() {
+			startTime = currentTimeMillis();
+			show = delayedAction(showDelay, () -> progressDialog.setVisible(true));
+		}
+
+		private void hide() {
+			cancel();
+			long elapsed = currentTimeMillis() - startTime;
+			long remainingDelay = hideDelay - elapsed;
+			delayedAction((int) Math.max(0, remainingDelay), () -> {
+				progressDialog.setVisible(false);
+				progressDialog.dispose();
+			});
+		}
+
+		private void cancel() {
+			if (show != null) {
+				show.cancel();
+				show = null;
+			}
+		}
+	}
+
 
 	private static class DefaultBuilderFactory implements BuilderFactory {
 
@@ -250,28 +285,6 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	private @Nullable String message(List<V> chunks) {
 		return chunks.isEmpty() ? null : Objects.toString(chunks.get(chunks.size() - 1));
-	}
-
-	private void showDialog(ProgressDialog progressDialog) {
-		startTime = currentTimeMillis();
-		showAction = delayedAction(showDelay, () -> progressDialog.setVisible(true));
-	}
-
-	private void closeDialog(ProgressDialog progressDialog) {
-		cancelShowAction();
-		long elapsed = currentTimeMillis() - startTime;
-		long remainingDelay = hideDelay - elapsed;
-		delayedAction((int) Math.max(0, remainingDelay), () -> {
-			progressDialog.setVisible(false);
-			progressDialog.dispose();
-		});
-	}
-
-	private void cancelShowAction() {
-		if (showAction != null) {
-			showAction.cancel();
-			showAction = null;
-		}
 	}
 
 	private class DisplayExceptionInDialog implements Consumer<Exception> {

@@ -14,6 +14,7 @@ Codion Change Log
 - FilterTable.Builder.cellRendererFactory(), headerRendererFactory(), cellEditorFactory() and summaryValuesFactory() renamed cellRenderers(), headerRenderers(), cellEditors() and summaryValues().
 - FilterTable.Builder.filterPanelFactory() renamed filterPanel().
 - ComponentValueBuilder.validIndicatorFactory() and modifiedIndicatorFactory() renamed validIndicator() and modifiedIndicator().
+- DefaultProgressWorkerDialogBuilder, minor refactoring.
 ### is.codion.framework.domain
 - ColumnConditionFactory and ForeignKeyConditionFactory renamed ColumnConditions and ForeignKeyConditions.
 - DerivedValue.get() renamed from().
