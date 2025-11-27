@@ -136,7 +136,7 @@ public interface DerivedValue<T> extends Serializable {
 	 * @return the derived value
 	 */
 	@Nullable
-	T get(SourceValues values);
+	T from(SourceValues values);
 
 	/**
 	 * Provides the source values from which to derive a value.

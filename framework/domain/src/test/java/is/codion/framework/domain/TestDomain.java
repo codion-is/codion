@@ -545,7 +545,7 @@ public final class TestDomain extends DomainModel {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public String get(SourceValues values) {
+		public String from(SourceValues values) {
 			String name = values.get(Employee.NAME);
 			Entity department = values.get(Employee.DEPARTMENT_FK);
 			if (name == null || department == null) {

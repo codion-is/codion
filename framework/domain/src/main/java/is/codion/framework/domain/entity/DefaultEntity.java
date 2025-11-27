@@ -724,11 +724,11 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private @Nullable <T> T derived(DerivedAttributeDefinition<T> derivedDefinition) {
-		return derivedDefinition.value().get(sourceValues(derivedDefinition, false));
+		return derivedDefinition.value().from(sourceValues(derivedDefinition, false));
 	}
 
 	private @Nullable <T> T derivedOriginal(DerivedAttributeDefinition<T> derivedDefinition) {
-		return derivedDefinition.value().get(sourceValues(derivedDefinition, true));
+		return derivedDefinition.value().from(sourceValues(derivedDefinition, true));
 	}
 
 	private DerivedValue.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,

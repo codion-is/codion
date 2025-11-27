@@ -181,7 +181,7 @@ public interface World {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public Integer get(SourceValues values) {
+		public Integer from(SourceValues values) {
 			Double percentage = values.get(CountryLanguage.PERCENTAGE);
 			Entity country = values.get(CountryLanguage.COUNTRY_FK);
 			if (percentage != null && country != null && !country.isNull(Country.POPULATION)) {

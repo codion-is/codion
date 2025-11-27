@@ -16,6 +16,7 @@ Codion Change Log
 - ComponentValueBuilder.validIndicatorFactory() and modifiedIndicatorFactory() renamed validIndicator() and modifiedIndicator().
 ### is.codion.framework.domain
 - ColumnConditionFactory and ForeignKeyConditionFactory renamed ColumnConditions and ForeignKeyConditions.
+- DerivedValue.get() renamed from().
 ### is.codion.framework.model
 - EntityQueryModel.SelectAttributes.included() and excluded() added.
 - EntityTableModel.queryModel() renamed query().
