@@ -63,8 +63,9 @@ public interface State extends ObservableState {
 	void toggle();
 
 	/**
-	 * Returns an {@link ObservableState} notified each time the state changes
-	 * @return an {@link ObservableState} notified each time the state changes
+	 * Returns an {@link ObservableState} notified when the state changes (default) or is set, depending on the {@link Notify} policy
+	 * @return an {@link ObservableState} notified each time the state changes or is set
+	 * @see Builder#notify(Notify)
 	 */
 	ObservableState observable();
 
@@ -154,10 +155,7 @@ public interface State extends ObservableState {
 	 * has a value present, determined by {@link Observable#optional()}.
 	 */
 	static <T> ObservableState present(Observable<T> observable) {
-		State state = state(requireNonNull(observable).optional().isPresent());
-		observable.addListener(() -> state.set(observable.optional().isPresent()));
-
-		return state;
+		return new ObservableIsPresent<>(requireNonNull(observable)).observable();
 	}
 
 	/**
