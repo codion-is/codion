@@ -15,6 +15,7 @@ Codion Change Log
 - FilterTable.Builder.filterPanelFactory() renamed filterPanel().
 - ComponentValueBuilder.validIndicatorFactory() and modifiedIndicatorFactory() renamed validIndicator() and modifiedIndicator().
 - DefaultProgressWorkerDialogBuilder, minor refactoring.
+- FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR now false by default.
 ### is.codion.framework.domain
 - ColumnConditionFactory and ForeignKeyConditionFactory renamed ColumnConditions and ForeignKeyConditions.
 - DerivedValue.get() renamed from().

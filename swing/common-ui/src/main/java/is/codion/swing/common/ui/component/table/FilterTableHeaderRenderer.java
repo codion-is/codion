@@ -33,11 +33,11 @@ public interface FilterTableHeaderRenderer extends TableCellRenderer {
 	 * Specifies whether the focused column should be indicated with a darkened header.
 	 * <ul>
 	 * <li>Value type: Boolean
-	 * <li>Default value: true
+	 * <li>Default value: false
 	 * </ul>
 	 */
 	PropertyValue<Boolean> FOCUSED_COLUMN_INDICATOR =
-					booleanValue(FilterTableHeaderRenderer.class.getName() + ".focusedColumnIndicator", true);
+					booleanValue(FilterTableHeaderRenderer.class.getName() + ".focusedColumnIndicator", false);
 
 	/**
 	 * A factory for {@link FilterTableHeaderRenderer} instances.

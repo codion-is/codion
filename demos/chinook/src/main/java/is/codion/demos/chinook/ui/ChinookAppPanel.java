@@ -38,6 +38,7 @@ import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilterTableHeaderRenderer;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -263,6 +264,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
+		FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR.set(true);
 		ValidIndicatorFactory.FACTORY_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory");
 		CalendarPanel.WEEK_NUMBERS.set(true);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
