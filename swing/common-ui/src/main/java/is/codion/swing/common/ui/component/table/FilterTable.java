@@ -945,11 +945,7 @@ public final class FilterTable<R, C> extends JTable {
 		for (Item<Integer> resizeMode : AUTO_RESIZE_MODES) {
 			State state = State.state(resizeMode.getOrThrow().equals(getAutoResizeMode()));
 			group.add(state);
-			state.addConsumer(enabled -> {
-				if (enabled) {
-					setAutoResizeMode(resizeMode.getOrThrow());
-				}
-			});
+			state.when(true).run(() -> setAutoResizeMode(resizeMode.getOrThrow()));
 			controls.add(Control.builder()
 							.toggle(state)
 							.caption(resizeMode.caption())

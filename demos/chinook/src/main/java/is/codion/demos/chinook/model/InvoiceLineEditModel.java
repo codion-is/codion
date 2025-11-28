@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.Entity.distinct;
@@ -37,7 +38,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
 		super(InvoiceLine.TYPE, connectionProvider);
 		// We populate the unit price when the track is edited
-		editor().value(InvoiceLine.TRACK_FK).edited().addConsumer(this::setUnitPrice);
+		editor().value(InvoiceLine.TRACK_FK).edited()
+						.when(Objects::nonNull)
+						.accept(this::setUnitPrice)
+						.when(Objects::isNull)
+						.run(this::clearUnitPrice);
 	}
 
 	@Override
@@ -62,7 +67,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	}
 
 	private void setUnitPrice(Entity track) {
-		editor().value(InvoiceLine.UNITPRICE).set(track == null ? null : track.get(Track.UNITPRICE));
+		editor().value(InvoiceLine.UNITPRICE).set(track.get(Track.UNITPRICE));
+	}
+
+	private void clearUnitPrice() {
+		editor().value(InvoiceLine.UNITPRICE).clear();
 	}
 
 	// tag::updateTotals[]

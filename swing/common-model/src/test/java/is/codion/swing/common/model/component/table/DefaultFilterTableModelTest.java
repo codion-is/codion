@@ -230,11 +230,9 @@ public final class DefaultFilterTableModelTest {
 										.items(() -> items)
 										.build();
 
-		testModel.selection().empty().addConsumer(empty -> {
-			if (empty) {
-				emptySelectionEvents.incrementAndGet();
-			}
-		});
+		testModel.selection().empty()
+						.when(true)
+						.run(emptySelectionEvents::incrementAndGet);
 
 		testModel.selection().indexes().addListener(selectionChangeEvents::incrementAndGet);
 

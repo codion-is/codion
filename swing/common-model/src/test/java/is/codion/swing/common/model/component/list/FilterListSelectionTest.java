@@ -346,11 +346,9 @@ public class FilterListSelectionTest {
 		AtomicInteger emptyEventCount = new AtomicInteger();
 		AtomicInteger changeEventCount = new AtomicInteger();
 
-		testModel.empty().addConsumer(empty -> {
-			if (empty) {
-				emptyEventCount.incrementAndGet();
-			}
-		});
+		testModel.empty()
+						.when(true)
+						.run(emptyEventCount::incrementAndGet);
 
 		testModel.addListSelectionListener(e -> {
 			if (!e.getValueIsAdjusting()) {

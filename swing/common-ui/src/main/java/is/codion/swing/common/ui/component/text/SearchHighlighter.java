@@ -45,6 +45,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -267,11 +268,8 @@ public final class SearchHighlighter {
 	private void bindEvents() {
 		textComponent.getDocument().addDocumentListener((DocumentAdapter) e -> searchAndHighlightResults());
 		textComponent.addPropertyChangeListener(UI_PROPERTY_NAME, new UpdateHightlightColors());
-		selectedSearchTextPosition.addConsumer(selectedSearchPosition -> {
-			if (selectedSearchPosition != null) {
-				scrollToPosition(selectedSearchPosition);
-			}
-		});
+		selectedSearchTextPosition.when(Objects::nonNull)
+						.accept(this::scrollToPosition);
 	}
 
 	private void scrollToPosition(int position) {

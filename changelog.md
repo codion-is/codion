@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.61
 ### is.codion.common.reactive
 - State.contains(ValueSet, value) added.
+- Observer.when() added along with Conditional and OnCondition.
 ### is.codion.common.model
 - FilterModel.FilteredItems now extends Observable.
 - TableConditionModel.optional() removed.

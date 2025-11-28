@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -254,11 +255,7 @@ public class EventsTest {
 		AtomicInteger consumerSum = new AtomicInteger();
 
 		event.addListener(listenerCounter::incrementAndGet);
-		event.addConsumer(value -> {
-			if (value != null) {
-				consumerSum.addAndGet(value);
-			}
-		});
+		event.when(Objects::nonNull).accept(consumerSum::addAndGet);
 
 		CountDownLatch startLatch = new CountDownLatch(1);
 		CountDownLatch doneLatch = new CountDownLatch(threadCount);

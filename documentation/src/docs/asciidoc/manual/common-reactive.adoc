@@ -55,6 +55,16 @@ Events are instantiated via factory methods in the {url-javadoc}{common-reactive
 include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=event]
 ----
 
+[#_observer]
+=== Observer
+
+The *Observer* class provides a way to add conditional listeners via {url-javadoc}{common-reactive}/is/codion/common/reactive/observer/Observer.html#when(java.lang.Object)[Observer.when()].
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=observer]
+----
+
 [#_value]
 === Value
 

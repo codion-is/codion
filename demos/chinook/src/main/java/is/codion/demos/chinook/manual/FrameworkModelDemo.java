@@ -49,6 +49,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
 
@@ -124,11 +125,9 @@ public final class FrameworkModelDemo {
 		});
 
 		// Listen for selection changes
-		tableModel.selection().item().addConsumer(selectedEntity -> {
-			if (selectedEntity != null) {
-				loadDetails(selectedEntity);
-			}
-		});
+		tableModel.selection().item()
+						.when(Objects::nonNull)
+						.accept(this::loadDetails);
 		// end::eventSystem[]
 	}
 
@@ -146,11 +145,8 @@ public final class FrameworkModelDemo {
 
 		// React to value edits
 		priceValue.edited().addConsumer(newPrice -> System.out.println("Price: " + newPrice));
-		priceValid.addConsumer(valid -> {
-			if (!valid) {
-				System.out.println("Invalid price: " + priceValue.get());
-			}
-		});
+		priceValid.when(false)
+						.run(() -> System.out.println("Invalid price: " + priceValue.get()));
 		// end::valueObservers[]
 	}
 
@@ -280,7 +276,7 @@ public final class FrameworkModelDemo {
 		// Set a specific limit
 		query.limit().set(500);
 
-	  // Resets to the default limit specified by the
+		// Resets to the default limit specified by the
 		// EntityQueryModel.LIMIT configuration setting,
 		// if one is specified, otherwise clears the
 		// limit and allows fetching of all matching rows

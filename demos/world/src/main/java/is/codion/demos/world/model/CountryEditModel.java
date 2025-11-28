@@ -37,8 +37,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	CountryEditModel(EntityConnectionProvider connectionProvider) {
 		super(Country.TYPE, connectionProvider);
 		initializeComboBoxModels(Country.CAPITAL_FK);
-		editor().addConsumer(country ->
-						averageCityPopulation.set(averageCityPopulation(country)));
+		editor().addConsumer(this::setAverageCityPopulation);
 	}
 
 	@Override
@@ -55,8 +54,8 @@ public final class CountryEditModel extends SwingEntityEditModel {
 		return averageCityPopulation.observable();
 	}
 
-	private Double averageCityPopulation(Entity country) {
-		return country == null ? null :
-						connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
+	private void setAverageCityPopulation(Entity country) {
+		averageCityPopulation.set(country == null ? null :
+						connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE)));
 	}
 }

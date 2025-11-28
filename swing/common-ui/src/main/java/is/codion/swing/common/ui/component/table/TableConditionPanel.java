@@ -172,9 +172,9 @@ public abstract class TableConditionPanel<C> extends JPanel {
 
 	private void configureStates() {
 		State.group(hiddenView, simpleView, advancedView);
-		hiddenView.addConsumer(new StateConsumer(HIDDEN));
-		simpleView.addConsumer(new StateConsumer(SIMPLE));
-		advancedView.addConsumer(new StateConsumer(ADVANCED));
+		hiddenView.when(true).run(() -> view.set(HIDDEN));
+		simpleView.when(true).run(() -> view.set(SIMPLE));
+		advancedView.when(true).run(() -> view.set(ADVANCED));
 		view.addConsumer(conditionView -> {
 			hiddenView.set(conditionView == HIDDEN);
 			simpleView.set(conditionView == SIMPLE);
@@ -202,21 +202,5 @@ public abstract class TableConditionPanel<C> extends JPanel {
 																	Map<C, ConditionPanel<?>> conditionPanels,
 																	FilterTableColumnModel<C> columnModel,
 																	Consumer<TableConditionPanel<C>> onPanelInitialized);
-	}
-
-	private final class StateConsumer implements Consumer<Boolean> {
-
-		private final ConditionView view;
-
-		private StateConsumer(ConditionView view) {
-			this.view = view;
-		}
-
-		@Override
-		public void accept(Boolean enabled) {
-			if (enabled) {
-				TableConditionPanel.this.view.set(view);
-			}
-		}
 	}
 }

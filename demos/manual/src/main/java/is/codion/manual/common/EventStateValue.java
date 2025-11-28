@@ -34,6 +34,7 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public final class EventStateValue {
@@ -239,6 +240,38 @@ public final class EventStateValue {
 		valueList.clear();
 		// end::valueCollection[]
 	}
+
+	// tag::observer[]
+	private void observer() {
+		// React to a specific value or predicate
+		Value<Integer> value = Value.nullable();
+
+		value.when(1)
+						.run(() -> System.out.println("Value is one"));
+
+		value.when(2)
+						.accept(System.out::println);
+
+		value.when(Objects::isNull)
+						.run(() -> System.out.println("Value is null"));
+
+		// Chain multiple conditions
+		value.when(1)
+						.run(() -> System.out.println("one"))
+						.when(2)
+						.run(() -> System.out.println("two"))
+						.when(v -> v > 10)
+						.accept(v -> System.out.println("Large value: " + v));
+
+		// React to boolean states
+		State enabled = State.state();
+
+		enabled.when(true)
+						.run(() -> System.out.println("Enabled"))
+						.when(false)
+						.run(() -> System.out.println("Disabled"));
+	}
+	// end::observer[]
 
 	// tag::observers[]
 	private static final class IntegerValue {

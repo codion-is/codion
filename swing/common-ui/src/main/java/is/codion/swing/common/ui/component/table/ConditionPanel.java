@@ -27,7 +27,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
 import static java.util.Objects.requireNonNull;
@@ -110,29 +109,13 @@ public abstract class ConditionPanel<T> extends JPanel {
 
 	private void configureStates() {
 		State.group(hiddenView, simpleView, advancedView);
-		hiddenView.addConsumer(new ViewConsumer(HIDDEN));
-		simpleView.addConsumer(new ViewConsumer(SIMPLE));
-		advancedView.addConsumer(new ViewConsumer(ADVANCED));
+		hiddenView.when(true).run(() -> view.set(HIDDEN));
+		simpleView.when(true).run(() -> view.set(SIMPLE));
+		advancedView.when(true).run(() -> view.set(ADVANCED));
 		view.addConsumer(conditionView -> {
 			hiddenView.set(conditionView == HIDDEN);
 			simpleView.set(conditionView == SIMPLE);
 			advancedView.set(conditionView == ADVANCED);
 		});
-	}
-
-	private final class ViewConsumer implements Consumer<Boolean> {
-
-		private final ConditionView conditionView;
-
-		private ViewConsumer(ConditionView conditionView) {
-			this.conditionView = conditionView;
-		}
-
-		@Override
-		public void accept(Boolean enabled) {
-			if (enabled) {
-				ConditionPanel.this.view.set(conditionView);
-			}
-		}
 	}
 }

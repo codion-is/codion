@@ -1021,11 +1021,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		for (Object logLevel : loggerProxy.levels()) {
 			State logLevelState = State.state(Objects.equals(logLevel, currentLogLevel));
 			logLevelStateGroup.add(logLevelState);
-			logLevelState.addConsumer(enabled -> {
-				if (enabled) {
-					loggerProxy.setLogLevel(loggerProxy.rootLogger(), logLevel);
-				}
-			});
+			logLevelState.when(true)
+							.run(() -> loggerProxy.setLogLevel(loggerProxy.rootLogger(), logLevel));
 			levelStateMap.put(logLevel, logLevelState);
 		}
 

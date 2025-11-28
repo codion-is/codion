@@ -56,7 +56,7 @@ Key design decisions:
    - `Runnable` listeners for simple notifications
    - `Consumer<T>` for data propagation
 
-2. **Weak reference support**: Prevents memory leaks in long-lived UI components
+2. **Weak reference support**
 
 === Observable Interface
 
