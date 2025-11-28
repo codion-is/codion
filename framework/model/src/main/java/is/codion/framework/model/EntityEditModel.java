@@ -589,6 +589,12 @@ public interface EntityEditModel {
 	interface EditorValue<T> extends Value<T> {
 
 		/**
+		 * @return the original value, or the current one if not modified
+		 * @see #modified()
+		 */
+		@Nullable T original();
+
+		/**
 		 * Reverts to the original value if modified
 		 */
 		void revert();

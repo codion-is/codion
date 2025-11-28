@@ -500,16 +500,22 @@ public final class AbstractEntityEditModelTest {
 	void modifiedAttributes() {
 		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
+		Entity martinsManager = martin.get(Employee.MGR_FK);
 		editor.set(martin);
 
+		assertEquals(martinsManager, editor.value(Employee.MGR_FK).get());
 		editor.value(Employee.MGR_FK).clear();
+		assertEquals(martinsManager, editor.value(Employee.MGR_FK).original());
 		assertTrue(editor.modified().attributes().containsOnly(singleton(Employee.MGR_FK)));
 		editor.value(Employee.MGR_FK).revert();
+		assertEquals(martinsManager, editor.value(Employee.MGR_FK).get());
 		assertTrue(editor.modified().attributes().isEmpty());
 
 		editor.value(Employee.NAME).set("NewName");
+		assertEquals("MARTIN", editor.value(Employee.NAME).original());
 		assertTrue(editor.modified().attributes().containsOnly(singleton(Employee.NAME)));
 		editor.value(Employee.MGR_FK).set(king);
+		assertEquals(martinsManager, editor.value(Employee.MGR_FK).original());
 		assertTrue(editor.modified().attributes().containsOnly(Arrays.asList(Employee.MGR_FK, Employee.NAME)));
 		editor.value(Employee.SALARY).set(3210d);
 		assertTrue(editor.modified().attributes().containsOnly(Arrays.asList(Employee.SALARY, Employee.NAME, Employee.MGR_FK)));

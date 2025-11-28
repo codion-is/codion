@@ -456,9 +456,14 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
+		public @Nullable T original() {
+			return entity.original(attribute);
+		}
+
+		@Override
 		public void revert() {
 			if (modified().is()) {
-				super.set(entity.original(attribute));
+				super.set(original());
 			}
 		}
 
