@@ -22,7 +22,8 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportModel.MutableAttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportModel.MutableForeignKeyNode;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
@@ -68,12 +69,12 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Find the MGR_FK node (cyclical self-reference)
-		AttributeNode mgrNode = null;
+		MutableForeignKeyNode mgrNode = null;
 		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
-			AttributeNode node = (AttributeNode) children.nextElement();
-			if (node.definition().attribute().equals(Employee.MGR_FK)) {
-				mgrNode = node;
+			MutableAttributeNode node = (MutableAttributeNode) children.nextElement();
+			if (node.attribute().equals(Employee.MGR_FK)) {
+				mgrNode = (MutableForeignKeyNode) node;
 				break;
 			}
 		}
@@ -90,14 +91,14 @@ public final class EntityTableExportPanelTest {
 		assertTrue(mgrNode.getChildCount() > 0, "After expansion should have children");
 
 		// Find the nested MGR_FK (manager's manager)
-		AttributeNode nestedMgrNode = null;
+		MutableForeignKeyNode nestedMgrNode = null;
 		Enumeration<TreeNode> mgrChildren = mgrNode.children();
 		while (mgrChildren.hasMoreElements()) {
 			TreeNode child = mgrChildren.nextElement();
-			if (child instanceof AttributeNode) {
-				AttributeNode childNode = (AttributeNode) child;
-				if (childNode.definition().attribute().equals(Employee.MGR_FK)) {
-					nestedMgrNode = childNode;
+			if (child instanceof MutableAttributeNode) {
+				MutableAttributeNode childNode = (MutableAttributeNode) child;
+				if (childNode.attribute().equals(Employee.MGR_FK)) {
+					nestedMgrNode = (MutableForeignKeyNode) childNode;
 					break;
 				}
 			}

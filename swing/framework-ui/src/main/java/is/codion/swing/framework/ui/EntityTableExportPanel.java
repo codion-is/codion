@@ -28,9 +28,10 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
 import is.codion.swing.framework.ui.EntityTableExportModel.ConfigurationFile;
 import is.codion.swing.framework.ui.EntityTableExportModel.ExportTask;
+import is.codion.swing.framework.ui.EntityTableExportModel.MutableAttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportModel.MutableForeignKeyNode;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.json.JSONObject;
@@ -189,7 +190,7 @@ final class EntityTableExportPanel extends JPanel {
 						.owner(this)
 						.title(MESSAGES.getString("exporting_data"))
 						.control(createCancelControl(task.cancelled()))
-						.onResult(MESSAGES.getString("data_exported"), task.successMessage())
+						.onResult(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_file"))
 						.execute();
 	}
 
@@ -200,7 +201,7 @@ final class EntityTableExportPanel extends JPanel {
 						.owner(this)
 						.title(MESSAGES.getString("exporting_data"))
 						.control(createCancelControl(task.cancelled()))
-						.onResult(MESSAGES.getString("data_exported"), task.successMessage())
+						.onResult(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_clipboard"))
 						.execute();
 	}
 
@@ -246,7 +247,7 @@ final class EntityTableExportPanel extends JPanel {
 
 	private void moveSelectionUp() {
 		TreePath[] selectionPaths = exportTree.getSelectionPaths();
-		List<AttributeNode> selected = selectedNodes(selectionPaths);
+		List<MutableAttributeNode> selected = selectedNodes(selectionPaths);
 		if (!selected.isEmpty()) {
 			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selected.get(0).getParent();
 			List<TreeNode> children = Collections.list(parent.children());
@@ -260,7 +261,7 @@ final class EntityTableExportPanel extends JPanel {
 
 	private void moveSelectionDown() {
 		TreePath[] selectionPaths = exportTree.getSelectionPaths();
-		List<AttributeNode> selected = selectedNodes(selectionPaths);
+		List<MutableAttributeNode> selected = selectedNodes(selectionPaths);
 		if (!selected.isEmpty()) {
 			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selected.get(0).getParent();
 			List<TreeNode> children = Collections.list(parent.children());
@@ -288,11 +289,11 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
-	private List<AttributeNode> selectedNodes(TreePath[] selectionPaths) {
+	private List<MutableAttributeNode> selectedNodes(TreePath[] selectionPaths) {
 		return Stream.of(selectionPaths)
 						.filter(exportTree::isPathSelected)
 						.map(TreePath::getLastPathComponent)
-						.map(AttributeNode.class::cast)
+						.map(MutableAttributeNode.class::cast)
 						.collect(toList());
 	}
 
@@ -328,7 +329,7 @@ final class EntityTableExportPanel extends JPanel {
 			Stream.of(selectionPaths)
 							.filter(exportTree::isPathSelected)
 							.map(TreePath::getLastPathComponent)
-							.map(AttributeNode.class::cast)
+							.map(MutableAttributeNode.class::cast)
 							.forEach(node -> node.selected().toggle());
 			updateIncludedNodesSelected();
 			exportTree.repaint();
@@ -338,12 +339,12 @@ final class EntityTableExportPanel extends JPanel {
 	private void toggleChildren() {
 		TreePath[] selectionPaths = exportTree.getSelectionPaths();
 		if (selectionPaths != null) {
-			List<AttributeNode> children = Stream.of(selectionPaths)
+			List<MutableAttributeNode> children = Stream.of(selectionPaths)
 							.filter(exportTree::isPathSelected)
 							.map(TreePath::getLastPathComponent)
-							.map(AttributeNode.class::cast)
+							.map(MutableAttributeNode.class::cast)
 							.flatMap(node -> Collections.list(node.children()).stream())
-							.map(AttributeNode.class::cast)
+							.map(MutableAttributeNode.class::cast)
 							.collect(toList());
 			if (!children.isEmpty()) {
 				boolean allSelected = children.stream()
@@ -503,8 +504,8 @@ final class EntityTableExportPanel extends JPanel {
 		boolean hasSelectedDescendants = false;
 		for (int i = 0; i < node.getChildCount(); i++) {
 			TreeNode child = node.getChildAt(i);
-			if (child instanceof AttributeNode) {
-				AttributeNode attrNode = (AttributeNode) child;
+			if (child instanceof MutableAttributeNode) {
+				MutableAttributeNode attrNode = (MutableAttributeNode) child;
 				if (attrNode.selected().is()) {
 					hasSelectedDescendants = true;
 				}
@@ -521,7 +522,7 @@ final class EntityTableExportPanel extends JPanel {
 	private void updateIncludedNodesSelected() {
 		includedNodesSelected.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
 						.map(TreePath::getLastPathComponent)
-						.map(AttributeNode.class::cast)
+						.map(MutableAttributeNode.class::cast)
 						.allMatch(node -> node.selected().is()));
 	}
 
@@ -538,11 +539,11 @@ final class EntityTableExportPanel extends JPanel {
 		@Override
 		public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
 			Object node = event.getPath().getLastPathComponent();
-			if (node instanceof AttributeNode) {
-				AttributeNode attributeNode = (AttributeNode) node;
-				if (attributeNode.isCyclicalStub() && attributeNode.getChildCount() == 0) {
-					attributeNode.expand();
-					model.treeModel().nodeStructureChanged(attributeNode);
+			if (node instanceof MutableForeignKeyNode) {
+				MutableForeignKeyNode foreignKeyNode = (MutableForeignKeyNode) node;
+				if (foreignKeyNode.isCyclicalStub() && foreignKeyNode.getChildCount() == 0) {
+					foreignKeyNode.expand();
+					model.treeModel().nodeStructureChanged(foreignKeyNode);
 				}
 			}
 		}
