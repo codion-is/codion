@@ -52,6 +52,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -267,6 +268,12 @@ final class EntityTableExportModel {
 		exportModel.selectDefaults();
 		treeModel.setRoot(new MutableEntityNode(exportModel.root()));
 		configurationChanged.run();
+	}
+
+	void sortChildren(DefaultMutableTreeNode parent, List<TreeNode> children) {
+		parent.removeAllChildren();
+		children.forEach(child -> parent.add((MutableTreeNode) child));
+		((EntityNode) parent.getUserObject()).sort(new AttributeNodeComparator(children));
 	}
 
 	private static JSONObject attributesToJson(Enumeration<TreeNode> nodes) {
@@ -534,6 +541,7 @@ final class EntityTableExportModel {
 	}
 
 	private static void populate(DefaultMutableTreeNode parent, List<AttributeNode> children) {
+		parent.removeAllChildren();
 		for (AttributeNode child : children) {
 			if (child instanceof ForeignKeyNode) {
 				parent.add(new MutableForeignKeyNode((ForeignKeyNode) child));
@@ -541,6 +549,27 @@ final class EntityTableExportModel {
 			else {
 				parent.add(new MutableAttributeNode(child));
 			}
+		}
+	}
+
+	private static final class AttributeNodeComparator implements Comparator<AttributeNode> {
+
+		private final Map<AttributeNode, Integer> indexes;
+
+		private AttributeNodeComparator(List<TreeNode> children) {
+			indexes = new HashMap<>();
+			int i = 0;
+			for (TreeNode node : children) {
+				indexes.put(((MutableAttributeNode) node).node(), i++);
+			}
+		}
+
+		@Override
+		public int compare(AttributeNode node1, AttributeNode node2) {
+			Integer index1 = indexes.get(node1);
+			Integer index2 = indexes.get(node2);
+
+			return index1.compareTo(index2);
 		}
 	}
 

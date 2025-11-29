@@ -52,9 +52,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
@@ -254,7 +252,7 @@ final class EntityTableExportPanel extends JPanel {
 			moveSelectedUp(children, selected.stream()
 							.map(children::indexOf)
 							.collect(toList()));
-			refreshNodes(parent, children, selectionPaths);
+			sortChildren(parent, children, selectionPaths);
 			exportTree.scrollPathToVisible(selectionPaths[0]);
 		}
 	}
@@ -268,7 +266,7 @@ final class EntityTableExportPanel extends JPanel {
 			moveNodesDown(children, selected.stream()
 							.map(children::indexOf)
 							.collect(toList()));
-			refreshNodes(parent, children, selectionPaths);
+			sortChildren(parent, children, selectionPaths);
 			exportTree.scrollPathToVisible(selectionPaths[selectionPaths.length - 1]);
 		}
 	}
@@ -297,12 +295,11 @@ final class EntityTableExportPanel extends JPanel {
 						.collect(toList());
 	}
 
-	private void refreshNodes(DefaultMutableTreeNode parent, List<TreeNode> nodes, TreePath[] selectionPaths) {
+	private void sortChildren(DefaultMutableTreeNode parent, List<TreeNode> children, TreePath[] selectionPaths) {
 		refreshingNodes.set(true);
 		List<TreePath> expandedPaths = Collections.list(exportTree.getExpandedDescendants(new TreePath(exportTree.getModel().getRoot())));
-		parent.removeAllChildren();
-		nodes.forEach(child -> parent.add((MutableTreeNode) child));
-		((DefaultTreeModel) exportTree.getModel()).nodeStructureChanged(parent);
+		model.sortChildren(parent, children);
+		model.treeModel().nodeStructureChanged(parent);
 		expandedPaths.forEach(exportTree::expandPath);
 		exportTree.setSelectionPaths(selectionPaths);
 		refreshingNodes.set(false);

@@ -227,6 +227,11 @@ final class DefaultEntityExportModel implements EntityExportModel {
 			return unmodifiableList(children);
 		}
 
+		@Override
+		public void sort(Comparator<AttributeNode> comparator) {
+			children.sort(requireNonNull(comparator));
+		}
+
 		private void refresh() {
 			populate(this, new HashSet<>(), entityType);
 		}
@@ -284,6 +289,11 @@ final class DefaultEntityExportModel implements EntityExportModel {
 		@Override
 		public List<AttributeNode> children() {
 			return entityNode.children();
+		}
+
+		@Override
+		public void sort(Comparator<AttributeNode> comparator) {
+			entityNode.children.sort(comparator);
 		}
 
 		@Override

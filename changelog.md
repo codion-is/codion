@@ -38,6 +38,7 @@ Codion Change Log
 - EntityConditionModel bug fixed, get(Column<T> column) reintroduced, required for type inference.
 - EntityEditModel.EditorValue.original() added.
 - EntityExportModel refactored from EntityTableExportModel, related refactoring.
+- EntityExportModel.EntityNode.sort() added.
 ### is.codion.swing.framework.model
 - SwingEntityConditionModelFactory renamed SwingEntityConditions.
 ### is.codion.swing.framework.ui

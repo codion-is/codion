@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -88,6 +89,12 @@ public interface EntityExportModel {
 		 * @return the children of this root node
 		 */
 		List<AttributeNode> children();
+
+		/**
+		 * Sorts the children
+		 * @param comparator the comparator to use
+		 */
+		void sort(Comparator<AttributeNode> comparator);
 	}
 
 	/**
