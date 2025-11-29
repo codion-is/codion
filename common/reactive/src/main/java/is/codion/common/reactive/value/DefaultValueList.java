@@ -20,12 +20,23 @@ package is.codion.common.reactive.value;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 final class DefaultValueList<T> extends DefaultValueCollection<T, List<T>> implements ValueList<T> {
 
 	private DefaultValueList(DefaultBuilder<T> builder) {
 		super(builder);
+	}
+
+	@Override
+	public void sort(Comparator<? super T> comparator) {
+		requireNonNull(comparator);
+		List<T> list = new ArrayList<>(getOrThrow());
+		list.sort(comparator);
+		set(list);
 	}
 
 	@Override

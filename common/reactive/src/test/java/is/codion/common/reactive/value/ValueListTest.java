@@ -23,11 +23,12 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueListTest {
@@ -121,12 +122,12 @@ public class ValueListTest {
 		Value<Integer> singleValue = valueList.value();
 
 		AtomicInteger valueEventCounter = new AtomicInteger();
-		Consumer<Integer> consumer = integer -> valueEventCounter.incrementAndGet();
-		singleValue.addConsumer(consumer);
+		Runnable listener = valueEventCounter::incrementAndGet;
+		singleValue.addListener(listener);
 
 		AtomicInteger valueListEventCounter = new AtomicInteger();
-		Consumer<List<Integer>> setConsumer = integers -> valueListEventCounter.incrementAndGet();
-		valueList.addConsumer(setConsumer);
+		Runnable setListener = valueListEventCounter::incrementAndGet;
+		valueList.addListener(setListener);
 
 		valueList.add(1);
 
@@ -142,6 +143,30 @@ public class ValueListTest {
 
 		assertEquals(3, valueEventCounter.get());
 		assertEquals(3, valueListEventCounter.get());
+	}
+
+	@Test
+	void sort() {
+		AtomicInteger counter = new AtomicInteger();
+		Runnable listener = counter::incrementAndGet;
+		ValueList<Integer> list = ValueList.<Integer>builder()
+						.listener(listener)
+						.build();
+		list.addAll(1, 2, 3, 4);
+		assertEquals(1, counter.get());
+		Comparator<Integer> comparator = comparing(Integer::intValue);
+
+		list.sort(comparator);
+		// No change, already sorted
+		assertEquals(1, counter.get());
+		list.sort(comparator.reversed());
+		assertEquals(2, counter.get());
+		list.sort(comparator);
+		assertEquals(3, counter.get());
+		list.clear();
+		assertEquals(4, counter.get());
+		list.sort(comparator);
+		assertEquals(4, counter.get());
 	}
 
 	private static void assertUnmodifiable(ObservableValueCollection<Integer, ? extends Collection<Integer>> observer) {

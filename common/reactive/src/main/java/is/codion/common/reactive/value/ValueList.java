@@ -21,6 +21,7 @@ package is.codion.common.reactive.value;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -35,6 +36,11 @@ public interface ValueList<T> extends ValueCollection<T, List<T>> {
 
 	@Override
 	ObservableValueList<T> observable();
+
+	/**
+	 * @param comparator the comparator to use to sort
+	 */
+	void sort(Comparator<? super T> comparator);
 
 	/**
 	 * Creates a new empty {@link ValueList}, using {@link Notify#CHANGED}.
