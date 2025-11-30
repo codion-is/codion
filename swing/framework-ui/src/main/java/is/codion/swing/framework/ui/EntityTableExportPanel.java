@@ -250,8 +250,9 @@ final class EntityTableExportPanel extends JPanel {
 			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selected.get(0).getParent();
 			List<TreeNode> children = Collections.list(parent.children());
 			moveSelectedUp(children, selected.stream()
-							.map(children::indexOf)
-							.collect(toList()));
+							.mapToInt(children::indexOf)
+							.sorted()
+							.toArray());
 			sortChildren(parent, children, selectionPaths);
 			exportTree.scrollPathToVisible(selectionPaths[0]);
 		}
@@ -264,25 +265,26 @@ final class EntityTableExportPanel extends JPanel {
 			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selected.get(0).getParent();
 			List<TreeNode> children = Collections.list(parent.children());
 			moveNodesDown(children, selected.stream()
-							.map(children::indexOf)
-							.collect(toList()));
+							.mapToInt(children::indexOf)
+							.sorted()
+							.toArray());
 			sortChildren(parent, children, selectionPaths);
 			exportTree.scrollPathToVisible(selectionPaths[selectionPaths.length - 1]);
 		}
 	}
 
-	private static void moveSelectedUp(List<TreeNode> children, List<Integer> indexes) {
-		if (indexes.get(0).intValue() > 0) {
-			for (int i = 0; i < indexes.size(); i++) {
-				children.add(indexes.get(i) - 1, children.remove(indexes.get(i).intValue()));
+	private static void moveSelectedUp(List<TreeNode> children, int[] indexes) {
+		if (indexes[0] > 0) {
+			for (int i = 0; i < indexes.length; i++) {
+				children.add(indexes[i] - 1, children.remove(indexes[i]));
 			}
 		}
 	}
 
-	private static void moveNodesDown(List<TreeNode> children, List<Integer> indexes) {
-		if (indexes.get(indexes.size() - 1) < children.size() - 1) {
-			for (int i = indexes.size() - 1; i >= 0; i--) {
-				children.add(indexes.get(i) + 1, children.remove(indexes.get(i).intValue()));
+	private static void moveNodesDown(List<TreeNode> children, int[] indexes) {
+		if (indexes[indexes.length - 1] < children.size() - 1) {
+			for (int i = indexes.length - 1; i >= 0; i--) {
+				children.add(indexes[i] + 1, children.remove(indexes[i]));
 			}
 		}
 	}
