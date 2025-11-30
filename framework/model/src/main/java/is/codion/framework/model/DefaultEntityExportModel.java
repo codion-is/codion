@@ -192,10 +192,10 @@ final class DefaultEntityExportModel implements EntityExportModel {
 			if (attributeDefinition instanceof ForeignKeyDefinition) {
 				ForeignKeyDefinition foreignKeyDefinition = (ForeignKeyDefinition) attributeDefinition;
 				ForeignKey foreignKey = foreignKeyDefinition.attribute();
-				boolean isCyclical = visited.contains(foreignKey) || foreignKey.referencedType().equals(rootEntityType);
-				DefaultForeignKeyNode foreignKeyNode = new DefaultForeignKeyNode(foreignKeyDefinition, isCyclical, entityNode.entities, new HashSet<>(visited));
+				boolean cyclical = visited.contains(foreignKey) || foreignKey.referencedType().equals(rootEntityType);
+				DefaultForeignKeyNode foreignKeyNode = new DefaultForeignKeyNode(foreignKeyDefinition, cyclical, entityNode.entities, new HashSet<>(visited));
 				entityNode.children.add(foreignKeyNode);
-				if (!isCyclical) {
+				if (!cyclical) {
 					visited.add(foreignKey);
 					populate(foreignKeyNode.entityNode, visited, rootEntityType);
 				}
@@ -265,14 +265,14 @@ final class DefaultEntityExportModel implements EntityExportModel {
 	private static final class DefaultForeignKeyNode extends DefaultAttributeNode implements ForeignKeyNode {
 
 		private final DefaultEntityNode entityNode;
-		private final boolean isCyclicalStub;
+		private final boolean expandable;
 		private final Set<ForeignKey> visitedPath;
 
-		private DefaultForeignKeyNode(ForeignKeyDefinition definition, boolean isCyclicalStub,
+		private DefaultForeignKeyNode(ForeignKeyDefinition definition, boolean expandable,
 																	Entities entities, Set<ForeignKey> visitedPath) {
 			super(definition);
 			this.entityNode = new DefaultEntityNode(definition.attribute().referencedType(), entities);
-			this.isCyclicalStub = isCyclicalStub;
+			this.expandable = expandable;
 			this.visitedPath = visitedPath;
 		}
 
@@ -297,18 +297,17 @@ final class DefaultEntityExportModel implements EntityExportModel {
 		}
 
 		@Override
-		public boolean isCyclicalStub() {
-			return isCyclicalStub;
+		public boolean expandable() {
+			return expandable;
 		}
 
 		@Override
 		public void expand() {
-			if (!isCyclicalStub) {
-				return;
+			if (expandable) {
+				Set<ForeignKey> newVisited = new HashSet<>(visitedPath);
+				newVisited.add(attribute());
+				populate(entityNode, newVisited, attribute().referencedType());
 			}
-			Set<ForeignKey> newVisited = new HashSet<>(visitedPath);
-			newVisited.add(attribute());
-			populate(entityNode, newVisited, attribute().referencedType());
 		}
 	}
 

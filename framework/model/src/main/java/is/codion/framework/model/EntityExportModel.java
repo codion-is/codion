@@ -134,12 +134,13 @@ public interface EntityExportModel {
 		State selected();
 
 		/**
-		 * @return true if this is a cyclical stub that can be expanded
+		 * @return true if this is a cyclical foreign key node that can be expanded
 		 */
-		boolean isCyclicalStub();
+		boolean expandable();
 
 		/**
-		 * Expands a cyclical stub node, populating its children.
+		 * Expands a cyclical foreign key, populating its children.
+		 * @see #expandable()
 		 */
 		void expand();
 	}

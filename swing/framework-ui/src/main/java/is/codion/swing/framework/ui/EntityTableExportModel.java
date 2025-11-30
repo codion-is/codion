@@ -351,7 +351,7 @@ final class EntityTableExportModel {
 					if (processed.add(fkName)) {// Only reorder if we haven't already processed this FK as a string
 						reorderNode(node, child, insertIndex++);
 					}
-					if (child.isCyclicalStub()) {// Expand and apply children
+					if (child.expandable()) {// Expand and apply children
 						child.expand();
 						treeModel.nodeStructureChanged(child);
 					}
@@ -362,7 +362,7 @@ final class EntityTableExportModel {
 		for (MutableAttributeNode child : children.values()) {// Nodes not in JSON: deselect and leave at end in their current order
 			if (!processed.contains(child.attribute().name())) {
 				child.selected().set(false);
-				if (child.getChildCount() > 0 || (child instanceof MutableForeignKeyNode && ((MutableForeignKeyNode) child).isCyclicalStub())) {
+				if (child.getChildCount() > 0 || (child instanceof MutableForeignKeyNode && ((MutableForeignKeyNode) child).expandable())) {
 					deselectAll(child.children());
 				}
 			}
@@ -530,7 +530,7 @@ final class EntityTableExportModel {
 
 		@Override
 		public boolean isLeaf() {
-			return !node().isCyclicalStub() && super.isLeaf();
+			return !expandable() && super.isLeaf();
 		}
 
 		@Override
@@ -538,16 +538,15 @@ final class EntityTableExportModel {
 			return (ForeignKeyNode) super.node();
 		}
 
-		boolean isCyclicalStub() {
-			return node().isCyclicalStub();
+		boolean expandable() {
+			return node().expandable();
 		}
 
 		void expand() {
-			if (!node().isCyclicalStub()) {
-				return;
+			if (expandable()) {
+				node().expand();
+				populate(this, node().children());
 			}
-			node().expand();
-			populate(this, node().children());
 		}
 	}
 

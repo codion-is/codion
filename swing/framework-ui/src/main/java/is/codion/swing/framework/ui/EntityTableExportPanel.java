@@ -551,7 +551,7 @@ final class EntityTableExportPanel extends JPanel {
 			Object node = event.getPath().getLastPathComponent();
 			if (node instanceof MutableForeignKeyNode) {
 				MutableForeignKeyNode foreignKeyNode = (MutableForeignKeyNode) node;
-				if (foreignKeyNode.isCyclicalStub() && foreignKeyNode.getChildCount() == 0) {
+				if (foreignKeyNode.expandable() && foreignKeyNode.getChildCount() == 0) {
 					foreignKeyNode.expand();
 					model.treeModel().nodeStructureChanged(foreignKeyNode);
 				}

@@ -80,9 +80,9 @@ public final class EntityTableExportPanelTest {
 		}
 
 		assertNotNull(mgrNode, "MGR_FK node should exist");
-		assertTrue(mgrNode.isCyclicalStub(), "MGR_FK should be marked as cyclical stub");
-		assertEquals(0, mgrNode.getChildCount(), "Cyclical stub should have no children initially");
-		assertFalse(mgrNode.isLeaf(), "Cyclical stub should not be a leaf (to show expand icon)");
+		assertTrue(mgrNode.expandable(), "MGR_FK should be marked as expandable");
+		assertEquals(0, mgrNode.getChildCount(), "Expandable stub should have no children initially");
+		assertFalse(mgrNode.isLeaf(), "Expandable should not be a leaf (to show expand icon)");
 
 		// Expand the cyclical stub
 		mgrNode.expand();
@@ -105,8 +105,8 @@ public final class EntityTableExportPanelTest {
 		}
 
 		assertNotNull(nestedMgrNode, "Nested MGR_FK should exist after expansion");
-		assertTrue(nestedMgrNode.isCyclicalStub(), "Nested MGR_FK should also be cyclical stub");
-		assertEquals(0, nestedMgrNode.getChildCount(), "Nested cyclical stub should have no children initially");
+		assertTrue(nestedMgrNode.expandable(), "Nested MGR_FK should also be expandable");
+		assertEquals(0, nestedMgrNode.getChildCount(), "Nested expandable node should have no children initially");
 
 		// Expand again (manager's manager's manager)
 		nestedMgrNode.expand();
