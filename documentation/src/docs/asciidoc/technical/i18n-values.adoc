@@ -659,7 +659,7 @@ is/codion/swing/common/ui/dialog/DefaultFileSelectionDialogBuilder_is_IS.propert
 |===
 |key|default|is_IS
 
-|file_exists|File with the same name exists|Skrá er til
+|file_exists|File exists|Skrá er til
 |overwrite_file|Overwrite file?|Yfirskrifa skrá?
 |select_directories|Select directories|Veldu möppur
 |select_directory|Select directory|Veldu möppu

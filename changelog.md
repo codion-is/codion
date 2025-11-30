@@ -22,6 +22,7 @@ Codion Change Log
 - DefaultProgressWorkerDialogBuilder, minor refactoring.
 - FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR now false by default.
 - DefaultFileSelectionDialogBuilder.selectFileToSave() bug fixed, file extension now handled correctly in case file exists.
+- DefaultFileSelectionDialogBuilder, english file_exists i18n value too long for dialog title, shortened. 
 ### is.codion.framework.domain
 - ColumnConditionFactory and ForeignKeyConditionFactory renamed ColumnConditions and ForeignKeyConditions.
 - DerivedValue.get() renamed from().
