@@ -50,6 +50,7 @@ Codion Change Log
 - EntityTableCellRendererFactory renamed EntityTableCellRenderers.
 - EntityTablePanel.Config.conditionPanelFactory() renamed conditionPanel().
 - EntityEditPanel.InsertCommand, UpdateCommand and DeleteCommand.Builder.execute() added.
+- EntityTableExportModel bug fixed, now reloads configuration when files are saved or refreshed.
 
 ## 0.18.60
 ### is.codion.common.reactive

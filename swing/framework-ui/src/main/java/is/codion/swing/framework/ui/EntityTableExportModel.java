@@ -31,6 +31,7 @@ import is.codion.framework.model.EntityExportModel.EntityNode;
 import is.codion.framework.model.EntityExportModel.ForeignKeyNode;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ComboBoxItems;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.Utilities;
@@ -80,7 +81,7 @@ final class EntityTableExportModel {
 
 	private final EntityTableModel<?> tableModel;
 	private final EntityExportModel exportModel;
-	private final FilterComboBoxModel<ConfigurationFile> configurationFilesComboBoxModel;
+	private final FilterComboBoxModel<ConfigurationFile> configurationFiles;
 	private final ExportTreeModel treeModel;
 	private final Event<?> configurationChanged = Event.event();
 	private final State selected;
@@ -91,7 +92,7 @@ final class EntityTableExportModel {
 		this.tableModel = tableModel;
 		this.exportModel = entityExportModel(tableModel.entityDefinition().type(), tableModel.connectionProvider());
 		this.treeModel = new ExportTreeModel(exportModel);
-		this.configurationFilesComboBoxModel = FilterComboBoxModel.builder()
+		this.configurationFiles = FilterComboBoxModel.builder()
 						.items(this::refreshConfigurationFiles)
 						.nullItem(NULL_CONFIGURATION_FILE)
 						.onSelection(this::configurationFileSelected)
@@ -118,7 +119,7 @@ final class EntityTableExportModel {
 	}
 
 	FilterComboBoxModel<ConfigurationFile> configurationFiles() {
-		return configurationFilesComboBoxModel;
+		return configurationFiles;
 	}
 
 	EntityDefinition entityDefinition() {
@@ -154,12 +155,12 @@ final class EntityTableExportModel {
 			addAndSelect(files.get(0));
 		}
 		else {
-			files.forEach(file -> configurationFilesComboBoxModel.items().add(file));
+			files.forEach(this::add);
 		}
 	}
 
 	void clearConfigurationFiles() {
-		configurationFilesComboBoxModel.items().clear();
+		configurationFiles.items().clear();
 	}
 
 	void applyPreferences(JSONObject preferences) {
@@ -179,10 +180,10 @@ final class EntityTableExportModel {
 			if (preferences.has(SELECTED_CONFIGURATION_FILE_KEY)) {
 				File file = new File(preferences.getString(SELECTED_CONFIGURATION_FILE_KEY));
 				if (file.exists()) {
-					configurationFilesComboBoxModel.items().get().stream()
+					configurationFiles.items().get().stream()
 									.filter(configurationFile -> configurationFile.file().equals(file))
 									.findFirst()
-									.ifPresent(configurationFile -> configurationFilesComboBoxModel.selection().item().set(configurationFile));
+									.ifPresent(configurationFile -> configurationFiles.selection().item().set(configurationFile));
 				}
 			}
 		}
@@ -207,19 +208,29 @@ final class EntityTableExportModel {
 		}
 	}
 
-	private void addAndSelect(ConfigurationFile fileItem) {
-		configurationFilesComboBoxModel.items().add(fileItem);
-		configurationFilesComboBoxModel.selection().item().set(fileItem);
+	private void add(ConfigurationFile configurationFile) {
+		ComboBoxItems<ConfigurationFile> items = configurationFiles.items();
+		if (items.contains(configurationFile)) {
+			items.replace(configurationFile, configurationFile);
+		}
+		else {
+			items.add(configurationFile);
+		}
+	}
+
+	private void addAndSelect(ConfigurationFile configurationFile) {
+		add(configurationFile);
+		configurationFiles.selection().item().set(configurationFile);
 	}
 
 	JSONObject createPreferences() {
 		JSONObject json = new JSONObject();
-		if (!configurationFilesComboBoxModel.items().get().isEmpty()) {
+		if (!configurationFiles.items().get().isEmpty()) {
 			JSONArray recentFiles = new JSONArray();
-			configurationFilesComboBoxModel.items().get()
-							.forEach(fileItem -> recentFiles.put(fileItem.file().getAbsolutePath()));
+			configurationFiles.items().get()
+							.forEach(configurationFile -> recentFiles.put(configurationFile.file().getAbsolutePath()));
 			json.put(CONFIGURATION_FILES_KEY, recentFiles);
-			configurationFilesComboBoxModel.selection().item().optional().ifPresent(selectedConfigurationFile ->
+			configurationFiles.selection().item().optional().ifPresent(selectedConfigurationFile ->
 							json.put(SELECTED_CONFIGURATION_FILE_KEY, selectedConfigurationFile.file().getAbsolutePath()));
 		}
 		if (dialogSize != null) {
@@ -237,10 +248,10 @@ final class EntityTableExportModel {
 	}
 
 	private Collection<ConfigurationFile> refreshConfigurationFiles() {
-		return configurationFilesComboBoxModel.items().get().stream()
+		return configurationFiles.items().get().stream()
 						.filter(DefaultConfigurationFile.class::isInstance)
-						.map(DefaultConfigurationFile.class::cast)
-						.filter(configurationFile -> configurationFile.file.exists())
+						.filter(configurationFile -> configurationFile.file().exists())
+						.map(configurationFile -> new DefaultConfigurationFile(configurationFile.file()))
 						.collect(toList());
 	}
 
