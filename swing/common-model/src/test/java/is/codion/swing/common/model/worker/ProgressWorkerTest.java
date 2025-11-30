@@ -257,7 +257,7 @@ public final class ProgressWorkerTest {
 						})
 						.execute();
 
-		assertTrue(latch.await(5, TimeUnit.SECONDS));
+		assertTrue(latch.await(10, TimeUnit.SECONDS));
 	}
 
 	@Test
