@@ -73,11 +73,11 @@ public interface TableConditionModel<C> {
 
 	/**
 	 * Instantiates a new {@link TableConditionModel}
-	 * @param conditionModelFactory supplies the condition models mapped to their respective column identifiers
+	 * @param conditionModels supplies the condition models mapped to their respective column identifiers
 	 * @param <C> the condition identifier type
 	 * @return a new {@link TableConditionModel}
 	 */
-	static <C> TableConditionModel<C> tableConditionModel(Supplier<Map<C, ConditionModel<?>>> conditionModelFactory) {
-		return new DefaultTableConditionModel<>(requireNonNull(conditionModelFactory));
+	static <C> TableConditionModel<C> tableConditionModel(Supplier<Map<C, ConditionModel<?>>> conditionModels) {
+		return new DefaultTableConditionModel<>(requireNonNull(conditionModels));
 	}
 }

@@ -431,7 +431,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void add(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
-				if (included(item)) {
+				if (include(item)) {
 					if (!included.items.contains(item)) {
 						included.items.add(item);
 						included.sortInternal();
@@ -558,7 +558,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				for (T itemToReplace : items.keySet()) {
 					if (filtered.items.remove(itemToReplace)) {
 						T replacement = replacements.remove(itemToReplace);
-						if (included(replacement)) {
+						if (include(replacement)) {
 							included.items.add(replacement);
 						}
 						else {
@@ -571,7 +571,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					T item = iterator.next();
 					T replacement = replacements.remove(item);
 					if (replacement != null) {
-						if (included(replacement)) {
+						if (include(replacement)) {
 							iterator.set(replacement);
 						}
 						else {
@@ -625,7 +625,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 		}
 
-		private boolean included(T item) {
+		private boolean include(T item) {
 			return included.predicate.isNull() || included.predicate.getOrThrow().test(item);
 		}
 

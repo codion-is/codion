@@ -122,7 +122,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final EntityConnection connection() {
-		return connectionProvider().connection();
+		return connectionProvider.connection();
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		return EntitySearchModel.builder()
 						.entityType(foreignKey.referencedType())
-						.connectionProvider(connectionProvider())
+						.connectionProvider(connectionProvider)
 						.build();
 	}
 

@@ -127,7 +127,7 @@ public final class ClientMonitorPanel extends JPanel {
 		model.clientInstanceTableModel().selection().item().addConsumer(remoteClient -> {
 			clientInstancePanel.removeAll();
 			try {
-				if (model != null && remoteClient != null) {
+				if (remoteClient != null) {
 					ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.server(), remoteClient));
 					clientInstancePanel.add(clientMonitor, BorderLayout.CENTER);
 				}

@@ -102,6 +102,7 @@ public final class ProgressWorkerTest {
 
 		assertTrue(latch.await(5, TimeUnit.SECONDS));
 
+		assertTrue(onStartedCalled.get());
 		assertTrue(onDoneCalled.get());
 		assertTrue(onExceptionCalled.get());
 		assertEquals(testException, caughtException.get());
@@ -247,7 +248,7 @@ public final class ProgressWorkerTest {
 		ProgressWorker.builder()
 						.task(task)
 						.onProgress(progressValue::set)
-						.onPublish(chunks -> publishedMessages.addAll(chunks))
+						.onPublish(publishedMessages::addAll)
 						.onResult(result -> {
 							assertEquals("Task completed", result);
 							assertEquals(100, progressValue.get());

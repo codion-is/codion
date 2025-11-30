@@ -72,14 +72,14 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 					.build();
 	private final Event<?> changed = Event.event();
 	private final DefaultAdditional additional = new DefaultAdditional();
-	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
-	private final AggregateColumn aggregateColumn = new AggregateColumn();
+	private final Predicate<Attribute<?>> aggregateColumn = new AggregateColumn();
+	private final Predicate<Attribute<?>> notAggregateColumn = aggregateColumn.negate();
 	private final DefaultModified modified;
 
 	DefaultEntityConditionModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.connectionProvider.entities().definition(builder.entityType);
 		this.connectionProvider = builder.connectionProvider;
-		this.conditionModel = tableConditionModel(builder.conditionFactory);
+		this.conditionModel = tableConditionModel(builder.conditions);
 		this.modified = new DefaultModified();
 		bindEvents();
 	}
@@ -96,7 +96,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 	@Override
 	public Condition where() {
-		return createCondition(noneAggregateColumn, additional.where);
+		return createCondition(notAggregateColumn, additional.where);
 	}
 
 	@Override
@@ -452,12 +452,12 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		private final EntityType entityType;
 		private final EntityConnectionProvider connectionProvider;
 
-		private Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionFactory;
+		private Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions;
 
 		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			this.entityType = entityType;
 			this.connectionProvider = connectionProvider;
-			this.conditionFactory = new EntityConditions(entityType, connectionProvider);
+			this.conditions = new EntityConditions(entityType, connectionProvider);
 		}
 
 		private static final class DefaultEntityTypeStep implements EntityTypeStep {
@@ -484,7 +484,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 		@Override
 		public Builder conditions(Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions) {
-			this.conditionFactory = requireNonNull(conditions);
+			this.conditions = requireNonNull(conditions);
 			return this;
 		}
 
@@ -500,15 +500,6 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		public boolean test(Attribute<?> attribute) {
 			return (attribute instanceof Column) &&
 							entityDefinition.columns().definition((Column<?>) attribute).aggregate();
-		}
-	}
-
-	private final class NoneAggregateColumn implements Predicate<Attribute<?>> {
-
-		@Override
-		public boolean test(Attribute<?> attribute) {
-			return !(attribute instanceof Column) ||
-							!entityDefinition.columns().definition((Column<?>) attribute).aggregate();
 		}
 	}
 
