@@ -50,7 +50,7 @@ public final class EntityTableExportPanelTest {
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
-		exportPanel.model().selectDefaults();
+		exportPanel.model().includeDefault();
 
 		// Save preferences - should be empty JSON since it matches defaults
 		EntityTablePanelPreferences defaultPreferences = new EntityTablePanelPreferences(tablePanel);

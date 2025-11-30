@@ -851,13 +851,13 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |columns|Columns|Dálkar
 |columns_all|All|Allir
 |columns_all_mnemonic|L|I
+|columns_default|Default|Sjálfgefnir
+|columns_default_mnemonic|D|G
 |columns_none|None|Enginn
 |columns_none_mnemonic|N|E
 |configuration_file|Configuration file|Stilliskrá
 |configurations|Configurations|Stillingar
 |data_exported|Data exported|Gögn afrituð
-|default_columns|Default|Sjálfgefnir
-|default_columns_mnemonic|D|G
 |export|Export|Afrita
 |exported_to_clipboard|Exported to clipboard|Afritað á klippiborð
 |exported_to_file|Exported to file|Afritað í skrá

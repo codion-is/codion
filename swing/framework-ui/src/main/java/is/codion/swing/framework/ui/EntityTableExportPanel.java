@@ -98,18 +98,18 @@ final class EntityTableExportPanel extends JPanel {
 	private final ObservableState moveEnabled = State.or(refreshingNodes,
 					State.and(singleLevelSelection, movableNodesSelected));
 
-	private final Control selectDefault = Control.builder()
-					.command(this::selectDefaults)
-					.caption(MESSAGES.getString("default_columns"))
-					.mnemonic(MESSAGES.getString("default_columns_mnemonic").charAt(0))
+	private final Control includeDefault = Control.builder()
+					.command(this::includeDefault)
+					.caption(MESSAGES.getString("columns_default"))
+					.mnemonic(MESSAGES.getString("columns_default_mnemonic").charAt(0))
 					.build();
-	private final Control selectAll = Control.builder()
-					.command(this::selectAll)
+	private final Control includeAll = Control.builder()
+					.command(this::includeAll)
 					.caption(MESSAGES.getString("columns_all"))
 					.mnemonic(MESSAGES.getString("columns_all_mnemonic").charAt(0))
 					.build();
-	private final Control selectNone = Control.builder()
-					.command(this::selectNone)
+	private final Control includeNone = Control.builder()
+					.command(this::includeNone)
 					.caption(MESSAGES.getString("columns_none"))
 					.mnemonic(MESSAGES.getString("columns_none_mnemonic").charAt(0))
 					.build();
@@ -307,19 +307,16 @@ final class EntityTableExportPanel extends JPanel {
 		refreshingNodes.set(false);
 	}
 
-	private void selectDefaults() {
-		model.selectDefaults();
-		exportTree.repaint();
+	private void includeDefault() {
+		model.includeDefault();
 	}
 
-	private void selectAll() {
-		model.selectAll();
-		exportTree.repaint();
+	private void includeAll() {
+		model.includeAll();
 	}
 
-	private void selectNone() {
-		model.selectNone();
-		exportTree.repaint();
+	private void includeNone() {
+		model.includeNone();
 	}
 
 	private void toggleSelected() {
@@ -329,7 +326,7 @@ final class EntityTableExportPanel extends JPanel {
 							.filter(exportTree::isPathSelected)
 							.map(TreePath::getLastPathComponent)
 							.map(MutableAttributeNode.class::cast)
-							.forEach(node -> node.selected().toggle());
+							.forEach(node -> node.include().toggle());
 			updateMovableNodesSelected();
 			exportTree.repaint();
 		}
@@ -347,8 +344,8 @@ final class EntityTableExportPanel extends JPanel {
 							.collect(toList());
 			if (!children.isEmpty()) {
 				boolean allSelected = children.stream()
-								.allMatch(child -> child.selected().is());
-				children.forEach(node -> node.selected().set(!allSelected));
+								.allMatch(child -> child.include().is());
+				children.forEach(node -> node.include().set(!allSelected));
 				updateMovableNodesSelected();
 				exportTree.repaint();
 			}
@@ -395,11 +392,11 @@ final class EntityTableExportPanel extends JPanel {
 										.east(borderLayoutPanel()
 														.north(gridLayoutPanel(0, 1)
 																		.add(button()
-																						.control(selectAll))
+																						.control(includeAll))
 																		.add(button()
-																						.control(selectNone))
+																						.control(includeNone))
 																		.add(button()
-																						.control(selectDefault)))
+																						.control(includeDefault)))
 														.south(gridLayoutPanel(1, 2)
 																		.add(button()
 																						.control(moveUp))
@@ -505,7 +502,7 @@ final class EntityTableExportPanel extends JPanel {
 			TreeNode child = node.getChildAt(i);
 			if (child instanceof MutableAttributeNode) {
 				MutableAttributeNode attrNode = (MutableAttributeNode) child;
-				if (attrNode.selected().is()) {
+				if (attrNode.include().is()) {
 					hasSelectedDescendants = true;
 				}
 				if (expandNodeIfHasSelectedChildren(child)) {
@@ -533,7 +530,7 @@ final class EntityTableExportPanel extends JPanel {
 			}
 		}
 
-		return node.selected().is();
+		return node.include().is();
 	}
 
 	private final class ExportTreeMouseListener extends MouseAdapter {

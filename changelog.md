@@ -45,6 +45,7 @@ Codion Change Log
 - EntityExportModel.EntityNode.sort() added.
 - EntityExportModel.ForeignKeyNode.isCyclicalStub() renamed expandable().
 - EntityExportModel.Exporter added, DefaultEntityExportModel, minor refactoring.
+- EntityExportModel refactored into EntityExport and EntityExport.Settings.
 ### is.codion.swing.framework.model
 - SwingEntityConditionModelFactory renamed SwingEntityConditions.
 ### is.codion.swing.framework.ui
