@@ -94,9 +94,9 @@ final class EntityTableExportPanel extends JPanel {
 	private final State refreshingNodes = State.state();
 	private final State singleSelection = State.state();
 	private final State singleLevelSelection = State.state();
-	private final State includedNodesSelected = State.state();
+	private final State movableNodesSelected = State.state();
 	private final ObservableState moveEnabled = State.or(refreshingNodes,
-					State.and(singleLevelSelection, includedNodesSelected));
+					State.and(singleLevelSelection, movableNodesSelected));
 
 	private final Control selectDefault = Control.builder()
 					.command(this::selectDefaults)
@@ -328,7 +328,7 @@ final class EntityTableExportPanel extends JPanel {
 							.map(TreePath::getLastPathComponent)
 							.map(MutableAttributeNode.class::cast)
 							.forEach(node -> node.selected().toggle());
-			updateIncludedNodesSelected();
+			updateMovableNodesSelected();
 			exportTree.repaint();
 		}
 	}
@@ -347,7 +347,7 @@ final class EntityTableExportPanel extends JPanel {
 				boolean allSelected = children.stream()
 								.allMatch(child -> child.selected().is());
 				children.forEach(node -> node.selected().set(!allSelected));
-				updateIncludedNodesSelected();
+				updateMovableNodesSelected();
 				exportTree.repaint();
 			}
 		}
@@ -516,11 +516,22 @@ final class EntityTableExportPanel extends JPanel {
 		return hasSelectedDescendants;
 	}
 
-	private void updateIncludedNodesSelected() {
-		includedNodesSelected.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
+	private void updateMovableNodesSelected() {
+		movableNodesSelected.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
 						.map(TreePath::getLastPathComponent)
 						.map(MutableAttributeNode.class::cast)
-						.allMatch(node -> node.selected().is()));
+						.allMatch(EntityTableExportPanel::movableNode));
+	}
+
+	private static boolean movableNode(MutableAttributeNode node) {
+		Enumeration<? extends TreeNode> children = node.children();
+		while (children.hasMoreElements()) {
+			if (movableNode((MutableAttributeNode) children.nextElement())) {
+				return true;
+			}
+		}
+
+		return node.selected().is();
 	}
 
 	private final class ExportTreeMouseListener extends MouseAdapter {
@@ -558,7 +569,7 @@ final class EntityTableExportPanel extends JPanel {
 							.distinct()
 							.count() == 1);
 			singleSelection.set(!exportTree.isSelectionEmpty() && exportTree.getSelectionPaths().length == 1);
-			updateIncludedNodesSelected();
+			updateMovableNodesSelected();
 		}
 	}
 
