@@ -11,6 +11,8 @@ Codion Change Log
 - FilterModel.FilteredItems now extends Observable.
 - TableConditionModel.optional() removed.
 - FilterModel.Builder.included() renamed include(), IncludedPredicate renamed IncludePredicate.
+### is.codion.swing.common.model
+- DefaultFilterComboBoxModel bug fixed, selection event now triggered when the selected item gets replaced during refresh.
 ### is.codion.swing.common.ui
 - FilterComponentFactory renamed FilterComponents, now a singleton.
 - ColumnConditionPanel.ComponentFactory renamed ConditionComponents.

@@ -619,8 +619,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (selection.selected.item != null) {
 				int index = included.items.indexOf(selection.selected.item);
 				if (index != -1) {
-					//update the selected item since the underlying data could have changed
-					selection.selected.item = included.items.get(index);
+					//replace the selected item since the underlying data could have changed
+					selection.selected.replaceWith(included.items.get(index));
 				}
 			}
 		}
