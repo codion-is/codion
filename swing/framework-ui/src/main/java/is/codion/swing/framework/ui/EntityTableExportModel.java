@@ -479,15 +479,7 @@ final class EntityTableExportModel {
 		}
 	}
 
-	private static final class MutableEntityNode extends DefaultMutableTreeNode {
-
-		private MutableEntityNode(EntityNode rootNode) {
-			super(rootNode);
-			populate(this, rootNode.children());
-		}
-	}
-
-	static final class ExportTreeModel extends DefaultTreeModel {
+	final class ExportTreeModel extends DefaultTreeModel {
 
 		private ExportTreeModel(EntityExportModel exportModel) {
 			super(new MutableEntityNode(exportModel.root()));
@@ -499,37 +491,49 @@ final class EntityTableExportModel {
 		}
 	}
 
-	/**
-	 * Swing tree node wrapping an ExportNode.
-	 */
-	static class MutableAttributeNode extends DefaultMutableTreeNode {
+	private final class MutableEntityNode extends DefaultMutableTreeNode {
 
-		private final AttributeNode node;
-
-		private MutableAttributeNode(AttributeNode node) {
-			super(node);
-			this.node = node;
-		}
-
-		@Override
-		public final String toString() {
-			return node.selected().is() ? "+" + node.caption() : node.caption() + "  ";
-		}
-
-		final Attribute<?> attribute() {
-			return node.attribute();
-		}
-
-		final State selected() {
-			return node.selected();
-		}
-
-		AttributeNode node() {
-			return node;
+		private MutableEntityNode(EntityNode rootNode) {
+			super(rootNode);
+			populate(this, rootNode.children());
 		}
 	}
 
-	static final class MutableForeignKeyNode extends MutableAttributeNode {
+	class MutableAttributeNode extends DefaultMutableTreeNode {
+
+		private MutableAttributeNode(AttributeNode node) {
+			super(node);
+			node.selected().addListener(this::selectionChanged);
+		}
+
+		@Override
+		public String toString() {
+			return node().selected().is() ? "+" + node().caption() : node().caption();
+		}
+
+		final Attribute<?> attribute() {
+			return node().attribute();
+		}
+
+		final State selected() {
+			return node().selected();
+		}
+
+		AttributeNode node() {
+			return (AttributeNode) getUserObject();
+		}
+
+		private void selectionChanged() {
+			treeModel.nodeChanged(this);
+			TreeNode parent = getParent();
+			while (parent != null) {
+				treeModel.nodeChanged(parent);
+				parent = parent.getParent();
+			}
+		}
+	}
+
+	final class MutableForeignKeyNode extends MutableAttributeNode {
 
 		private MutableForeignKeyNode(ForeignKeyNode node) {
 			super(node);
@@ -539,6 +543,17 @@ final class EntityTableExportModel {
 		@Override
 		public boolean isLeaf() {
 			return !expandable() && super.isLeaf();
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder(super.toString());
+			int selectedChildrenCount = selectedChildrenCount(this);
+			if (selectedChildrenCount > 0) {
+				builder.append(" (").append(selectedChildrenCount).append(")");
+			}
+
+			return builder.toString();
 		}
 
 		@Override
@@ -556,9 +571,25 @@ final class EntityTableExportModel {
 				populate(this, node().children());
 			}
 		}
+
+		private static int selectedChildrenCount(MutableForeignKeyNode node) {
+			int counter = 0;
+			Enumeration<? extends TreeNode> children = node.children();
+			while (children.hasMoreElements()) {
+				MutableAttributeNode child = (MutableAttributeNode) children.nextElement();
+				if (child.selected().is()) {
+					counter++;
+				}
+				if (child instanceof MutableForeignKeyNode) {
+					counter += selectedChildrenCount((MutableForeignKeyNode) child);
+				}
+			}
+
+			return counter;
+		}
 	}
 
-	private static void populate(DefaultMutableTreeNode parent, List<AttributeNode> children) {
+	private void populate(DefaultMutableTreeNode parent, List<AttributeNode> children) {
 		parent.removeAllChildren();
 		for (AttributeNode child : children) {
 			if (child instanceof ForeignKeyNode) {

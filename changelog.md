@@ -57,6 +57,7 @@ Codion Change Log
 - EntityTableExportModel bug fixed, now reloads configuration when files are saved or refreshed.
 - EntityTableExportPanel bug fixed, unselected foreign key attributes with selected children can now be moved.
 - EntityTableExportPanel, intermittent index out of bounds during multiple item move bug fixed, indexes now sorted, order not guaranteed by getSelectionPaths().
+- EntityTableExportModel foreign key nodes now indicate the number of selected child attributes.
 
 ## 0.18.60
 ### is.codion.common.reactive
