@@ -402,7 +402,7 @@ final class EntityTableExportModel {
 	abstract static class ExportTask implements ProgressTask<Void> {
 
 		protected final AtomicInteger counter = new AtomicInteger();
-		protected final State cancelled = State.state(false);
+		protected final State cancel = State.state(false);
 		protected final List<Entity> entities;
 
 		protected ExportTask(List<Entity> entities) {
@@ -414,8 +414,8 @@ final class EntityTableExportModel {
 			return entities.size();
 		}
 
-		final State cancelled() {
-			return cancelled;
+		final State cancel() {
+			return cancel;
 		}
 	}
 
@@ -431,9 +431,13 @@ final class EntityTableExportModel {
 		@Override
 		public void execute(ProgressReporter<Void> progress) throws Exception {
 			try (BufferedWriter output = Files.newBufferedWriter(file)) {
-				exportModel.export(entities.iterator(), line -> write(line, output),
-								() -> progress.report(counter.incrementAndGet()), cancelled.observable());
-				if (cancelled.is()) {
+				exportModel.export()
+								.entities(entities.iterator())
+								.output(line -> write(line, output))
+								.handler(entity -> progress.report(counter.incrementAndGet()))
+								.cancel(cancel.observable())
+								.export();
+				if (cancel.is()) {
 					throw new CancelException();
 				}
 			}
@@ -462,9 +466,13 @@ final class EntityTableExportModel {
 		@Override
 		public void execute(ProgressReporter<Void> progress) {
 			StringBuilder builder = new StringBuilder();
-			exportModel.export(entities.iterator(), builder::append,
-							() -> progress.report(counter.incrementAndGet()), cancelled.observable());
-			if (cancelled.is()) {
+			exportModel.export()
+							.entities(entities.iterator())
+							.output(builder::append)
+							.handler(entity -> progress.report(counter.incrementAndGet()))
+							.cancel(cancel.observable())
+							.export();
+			if (cancel.is()) {
 				throw new CancelException();
 			}
 			Utilities.setClipboard(builder.toString());

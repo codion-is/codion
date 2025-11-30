@@ -45,7 +45,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static java.lang.String.join;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -97,80 +96,131 @@ final class DefaultEntityExportModel implements EntityExportModel {
 	}
 
 	@Override
-	public void export(Iterator<Entity> entities, Consumer<String> output, Runnable counter, ObservableState cancelled) {
-		requireNonNull(entities);
-		requireNonNull(output);
-		requireNonNull(counter);
-		requireNonNull(cancelled);
-		EntityConnection connection = connectionProvider.connection();
-		output.accept(createHeader().stream()
-						.collect(joining(TAB, "", "\n")));
-		while (entities.hasNext() && !cancelled.is()) {
-			Entity entity = entities.next();
-			output.accept(join(TAB, createRow(entity, connection)));
-			output.accept("\n");
-			counter.run();
+	public ExportEntities export() {
+		return new DefaultExportEntities();
+	}
+
+	private final class DefaultExportEntities implements ExportEntities {
+
+		@Override
+		public ExportOutput entities(Iterator<Entity> entities) {
+			return new DefaultExportOutput(requireNonNull(entities));
 		}
 	}
 
-	private List<String> createHeader() {
-		return addToHeader(entityNode.children(), new ArrayList<>(), "");
-	}
+	private final class DefaultExportOutput implements ExportOutput {
 
-	private List<String> createRow(Entity entity, EntityConnection connection) {
-		return addToRow(entityNode.children(), entity.primaryKey(), null,
-						new ArrayList<>(), new HashMap<>(), connection);
-	}
+		private final Iterator<Entity> entities;
 
-	private static List<String> addToHeader(List<AttributeNode> nodes, List<String> header, String prefix) {
-		for (AttributeNode node : nodes) {
-			String caption = node.caption();
-			String columnHeader = prefix.isEmpty() ? caption : (prefix + SPACE + caption);
-			if (node.selected().is()) {
-				header.add(columnHeader);
-			}
-			if (node instanceof ForeignKeyNode) {
-				addToHeader(((ForeignKeyNode) node).children(), header, columnHeader);
-			}
+		private DefaultExportOutput(Iterator<Entity> entities) {
+			this.entities = entities;
 		}
 
-		return header;
+		@Override
+		public Exporter output(Consumer<String> output) {
+			return new DefaultExporter(entities, requireNonNull(output));
+		}
 	}
 
-	private static List<String> addToRow(List<AttributeNode> nodes, Entity.Key key, @Nullable ForeignKey foreignKey,
-																			 List<String> row, Map<Entity.Key, Entity> cache, EntityConnection connection) {
-		Entity entity = selectEntity(key, foreignKey, cache, connection);
-		for (AttributeNode node : nodes) {
-			Attribute<?> attribute = node.attribute();
-			if (node.selected().is()) {
-				row.add(replaceNewlinesAndTabs(entity.formatted(attribute)));
-			}
-			if (node instanceof ForeignKeyNode) {
-				Entity.Key referencedKey = entity.key((ForeignKey) attribute);
-				if (referencedKey != null) {
-					addToRow(((ForeignKeyNode) node).children(), referencedKey, (ForeignKey) attribute, row, cache, connection);
+	private final class DefaultExporter implements Exporter {
+
+		private final Iterator<Entity> entities;
+		private final Consumer<String> output;
+
+		private @Nullable Consumer<Entity> handler;
+		private @Nullable ObservableState cancel;
+
+		private DefaultExporter(Iterator<Entity> entities, Consumer<String> output) {
+			this.entities = entities;
+			this.output = output;
+		}
+
+		@Override
+		public Exporter handler(Consumer<Entity> handler) {
+			this.handler = requireNonNull(handler);
+			return this;
+		}
+
+		@Override
+		public Exporter cancel(ObservableState cancel) {
+			this.cancel = requireNonNull(cancel);
+			return this;
+		}
+
+		@Override
+		public void export() {
+			EntityConnection connection = connectionProvider.connection();
+			output.accept(createHeader());
+			while (entities.hasNext() && (cancel == null || !cancel.is())) {
+				Entity entity = entities.next();
+				output.accept(createRow(entity, connection));
+				if (handler != null) {
+					handler.accept(entity);
 				}
 			}
 		}
 
-		return row;
-	}
-
-	private static Entity selectEntity(Entity.Key key, @Nullable ForeignKey foreignKey,
-																		 Map<Entity.Key, Entity> cache, EntityConnection connection) {
-		try {
-			return cache.computeIfAbsent(key, k -> connection.select(key));
+		private String createHeader() {
+			return addToHeader(entityNode.children(), new ArrayList<>(), "")
+							.stream().collect(joining(TAB, "", "\n"));
 		}
-		catch (RecordNotFoundException e) {
-			throw new RuntimeException("Record not found: " + key + (foreignKey == null ? "" : ", foreignKey: " + foreignKey), e);
-		}
-	}
 
-	private static String replaceNewlinesAndTabs(String string) {
-		return string.replace("\r\n", SPACE)
-						.replace("\n", SPACE)
-						.replace("\r", SPACE)
-						.replace(TAB, SPACE);
+		private String createRow(Entity entity, EntityConnection connection) {
+			return addToRow(entityNode.children(), entity.primaryKey(), null,
+							new ArrayList<>(), new HashMap<>(), connection)
+							.stream().collect(joining(TAB, "", "\n"));
+		}
+
+		private static List<String> addToHeader(List<AttributeNode> nodes, List<String> header, String prefix) {
+			for (AttributeNode node : nodes) {
+				String caption = node.caption();
+				String columnHeader = prefix.isEmpty() ? caption : (prefix + SPACE + caption);
+				if (node.selected().is()) {
+					header.add(columnHeader);
+				}
+				if (node instanceof ForeignKeyNode) {
+					addToHeader(((ForeignKeyNode) node).children(), header, columnHeader);
+				}
+			}
+
+			return header;
+		}
+
+		private static List<String> addToRow(List<AttributeNode> nodes, Entity.Key key, @Nullable ForeignKey foreignKey,
+																				 List<String> row, Map<Entity.Key, Entity> cache, EntityConnection connection) {
+			Entity entity = selectEntity(key, foreignKey, cache, connection);
+			for (AttributeNode node : nodes) {
+				Attribute<?> attribute = node.attribute();
+				if (node.selected().is()) {
+					row.add(replaceNewlinesAndTabs(entity.formatted(attribute)));
+				}
+				if (node instanceof ForeignKeyNode) {
+					Entity.Key referencedKey = entity.key((ForeignKey) attribute);
+					if (referencedKey != null) {
+						addToRow(((ForeignKeyNode) node).children(), referencedKey, (ForeignKey) attribute, row, cache, connection);
+					}
+				}
+			}
+
+			return row;
+		}
+
+		private static Entity selectEntity(Entity.Key key, @Nullable ForeignKey foreignKey,
+																			 Map<Entity.Key, Entity> cache, EntityConnection connection) {
+			try {
+				return cache.computeIfAbsent(key, k -> connection.select(key));
+			}
+			catch (RecordNotFoundException e) {
+				throw new RuntimeException("Record not found: " + key + (foreignKey == null ? "" : ", foreignKey: " + foreignKey), e);
+			}
+		}
+
+		private static String replaceNewlinesAndTabs(String string) {
+			return string.replace("\r\n", SPACE)
+							.replace("\n", SPACE)
+							.replace("\r", SPACE)
+							.replace(TAB, SPACE);
+		}
 	}
 
 	private static void select(List<AttributeNode> nodes, boolean select) {

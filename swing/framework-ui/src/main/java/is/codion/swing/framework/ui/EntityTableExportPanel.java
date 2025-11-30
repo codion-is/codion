@@ -187,7 +187,7 @@ final class EntityTableExportPanel extends JPanel {
 						.task(task)
 						.owner(this)
 						.title(MESSAGES.getString("exporting_data"))
-						.control(createCancelControl(task.cancelled()))
+						.control(createCancelControl(task.cancel()))
 						.onResult(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_file"))
 						.execute();
 	}
@@ -198,17 +198,17 @@ final class EntityTableExportPanel extends JPanel {
 						.task(task)
 						.owner(this)
 						.title(MESSAGES.getString("exporting_data"))
-						.control(createCancelControl(task.cancelled()))
+						.control(createCancelControl(task.cancel()))
 						.onResult(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_clipboard"))
 						.execute();
 	}
 
-	private static Control createCancelControl(State cancelled) {
+	private static Control createCancelControl(State cancel) {
 		return Control.builder()
-						.toggle(cancelled)
+						.toggle(cancel)
 						.caption(Messages.cancel())
 						.mnemonic(Messages.cancelMnemonic())
-						.enabled(cancelled.not())
+						.enabled(cancel.not())
 						.build();
 	}
 

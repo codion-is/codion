@@ -67,13 +67,56 @@ public interface EntityExportModel {
 	void selectDefaults();
 
 	/**
-	 * Exports the given entities, stops and returns if {@code cancelled.is()} returns true.
-	 * @param entities the entities to export
-	 * @param output the output to write to
-	 * @param counter counts the entities that have been written
-	 * @param cancelled indicates whether the export should be cancelled
+	 * @return a new {@link ExportEntities} instance
 	 */
-	void export(Iterator<Entity> entities, Consumer<String> output, Runnable counter, ObservableState cancelled);
+	ExportEntities export();
+
+	/**
+	 * Specifies the entities to export
+	 */
+	interface ExportEntities {
+
+		/**
+		 * @param entities the entities to export
+		 * @return a new {@link ExportOutput}
+		 */
+		ExportOutput entities(Iterator<Entity> entities);
+	}
+
+	/**
+	 * Specifies the export output
+	 */
+	interface ExportOutput {
+
+		/**
+		 * @param output the output to write the exported lines to
+		 * @return a new {@link Exporter}
+		 */
+		Exporter output(Consumer<String> output);
+	}
+
+	/**
+	 * Performs the export
+	 */
+	interface Exporter {
+
+		/**
+		 * @param handler receives each entity that has been processed
+		 * @return this {@link Exporter}
+		 */
+		Exporter handler(Consumer<Entity> handler);
+
+		/**
+		 * @param cancel indicates whether the export should be cancelled
+		 * @return this {@link Exporter}
+		 */
+		Exporter cancel(ObservableState cancel);
+
+		/**
+		 * Performs the export
+		 */
+		void export();
+	}
 
 	/**
 	 * The root node of the export tree.
