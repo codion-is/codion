@@ -21,6 +21,7 @@ Codion Change Log
 - ComponentValueBuilder.validIndicatorFactory() and modifiedIndicatorFactory() renamed validIndicator() and modifiedIndicator().
 - DefaultProgressWorkerDialogBuilder, minor refactoring.
 - FilterTableHeaderRenderer.FOCUSED_COLUMN_INDICATOR now false by default.
+- DefaultFileSelectionDialogBuilder.selectFileToSave() bug fixed, file extension now handled correctly in case file exists.
 ### is.codion.framework.domain
 - ColumnConditionFactory and ForeignKeyConditionFactory renamed ColumnConditions and ForeignKeyConditions.
 - DerivedValue.get() renamed from().

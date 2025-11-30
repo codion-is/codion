@@ -167,11 +167,12 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 				}
 				int option = fileChooserSave.showSaveDialog(owner);
 				if (option == JFileChooser.APPROVE_OPTION) {
-					selectedFile = addFileExtension(fileChooserSave.getSelectedFile(), fileChooserSave.getFileFilter());
-					if (selectedFile.exists() && confirmOverwrite) {
+					File withExtension = addFileExtension(fileChooserSave.getSelectedFile(), fileChooserSave.getFileFilter());
+					if (withExtension.exists() && confirmOverwrite) {
 						option = JOptionPane.showConfirmDialog(owner, MESSAGES.getString("overwrite_file"),
 										MESSAGES.getString("file_exists"), JOptionPane.YES_NO_CANCEL_OPTION);
 						if (option == JOptionPane.YES_OPTION) {
+							selectedFile = withExtension;
 							fileChosen = true;
 						}
 						else if (option == JOptionPane.CANCEL_OPTION) {
@@ -179,6 +180,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 						}
 					}
 					else {
+						selectedFile = withExtension;
 						fileChosen = true;
 					}
 				}
