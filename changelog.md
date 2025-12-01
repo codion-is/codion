@@ -48,6 +48,7 @@ Codion Change Log
 - EntityExportModel refactored into EntityExport and EntityExport.Settings.
 - EntityExport.Settings.Attributes added.
 - DefaultEntityExport.addToHeader() bug fixed, now uses correct entity definition when looking up the caption, DefaultEntityExportTest added.
+- DefaultEntityExport logger added, record not found exception handling improved.
 ### is.codion.swing.framework.model
 - SwingEntityConditionModelFactory renamed SwingEntityConditions.
 ### is.codion.swing.framework.ui

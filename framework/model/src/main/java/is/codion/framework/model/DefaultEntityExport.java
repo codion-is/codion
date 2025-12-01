@@ -40,6 +40,8 @@ import is.codion.framework.model.EntityExport.Settings.AttributeExport;
 import is.codion.framework.model.EntityExport.Settings.ForeignKeyExport;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -57,6 +59,8 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityExport implements EntityExport {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityExport.class);
 
 	static final EntitiesStep EXPORT_ENTITIES = new DefaultEntitiesStep();
 
@@ -147,7 +151,9 @@ final class DefaultEntityExport implements EntityExport {
 			return cache.computeIfAbsent(key, k -> connection.select(key));
 		}
 		catch (RecordNotFoundException e) {
-			throw new RuntimeException("Record not found: " + key + (foreignKey == null ? "" : ", foreignKey: " + foreignKey), e);
+			String message = "Record not found: " + key + (foreignKey == null ? "" : ", foreignKey: " + foreignKey);
+			LOG.error(message, e);
+			throw new RecordNotFoundException(message);
 		}
 	}
 
