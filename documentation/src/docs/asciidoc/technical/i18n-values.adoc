@@ -863,9 +863,9 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |exported_to_file|Exported to file|Afritað í skrá
 |exporting_data|Exporting data|Afrita gögn
 |help|Help|Hjálp
-|help_text|Use ALT-click or space to toggle selected columns, SHIFT-space to toggle subcolumns.
+|help_text|Use ALT-click or space to toggle included columns, SHIFT-space to toggle subcolumns.
 
-Use ALT-Up/Down arrows to move the selected columns.|Notið ALT-smella eða stafabil til að velja/afvelja valda dálka, SHIFT-stafabil til að velja/afvelja undirdálka.
+Use ALT-Up/Down arrows to move the included columns.|Notið ALT-smella eða stafabil til að velja/afvelja dílka, SHIFT-stafabil til að velja/afvelja undirdálka.
 
 Notið ALT-Upp/Niður örvar til að færa valda dílka.
 |rows_all|All rows|Allar færslur

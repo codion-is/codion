@@ -63,16 +63,18 @@ final class DefaultEntityExport implements EntityExport {
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
 
-	private final Iterator<Entity> entities;
+	private final Iterator<Entity> iterator;
 	private final EntityConnectionProvider connectionProvider;
+	private final Entities entities;
 	private final Consumer<String> output;
 	private final Settings settings;
 	private final @Nullable Consumer<Entity> handler;
 	private final @Nullable ObservableState cancel;
 
 	private DefaultEntityExport(DefaultBuilder builder) {
-		this.entities = builder.entities;
+		this.iterator = builder.entities;
 		this.connectionProvider = builder.connectionProvider;
+		this.entities = connectionProvider.entities();
 		this.output = builder.output;
 		this.settings = builder.settings;
 		this.handler = builder.handler;
@@ -82,8 +84,8 @@ final class DefaultEntityExport implements EntityExport {
 	private void export() {
 		EntityConnection connection = connectionProvider.connection();
 		output.accept(createHeader());
-		while (entities.hasNext() && (cancel == null || !cancel.is())) {
-			Entity entity = entities.next();
+		while (iterator.hasNext() && (cancel == null || !cancel.is())) {
+			Entity entity = iterator.next();
 			if (!entity.type().equals(settings.definition().type())) {
 				throw new IllegalArgumentException("Invalid entity type: " + entity.type());
 			}
@@ -107,7 +109,7 @@ final class DefaultEntityExport implements EntityExport {
 
 	private List<String> addToHeader(List<AttributeExport> nodes, List<String> header, String prefix) {
 		for (AttributeExport node : nodes) {
-			String caption = settings.definition().attributes().definition(node.attribute()).caption();
+			String caption = entities.definition(node.attribute().entityType()).attributes().definition(node.attribute()).caption();
 			String columnHeader = prefix.isEmpty() ? caption : (prefix + SPACE + caption);
 			if (node.include().is()) {
 				header.add(columnHeader);
