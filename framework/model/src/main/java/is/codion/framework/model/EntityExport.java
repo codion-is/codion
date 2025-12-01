@@ -145,15 +145,26 @@ public interface EntityExport {
 		EntityDefinition definition();
 
 		/**
-		 * @return the attributes of the export entity
+		 * @return the entity attributes
 		 */
-		List<AttributeExport> attributes();
+		Attributes attributes();
 
 		/**
-		 * Sorts the attributes
-		 * @param comparator the comparator to use
+		 * Indicates an export element with sortable children attributes
 		 */
-		void sort(Comparator<AttributeExport> comparator);
+		interface Attributes {
+
+			/**
+			 * @return the attributes
+			 */
+			List<AttributeExport> get();
+
+			/**
+			 * Sorts the attributes
+			 * @param comparator the comparator to use
+			 */
+			void sort(Comparator<AttributeExport> comparator);
+		}
 
 		/**
 		 * An exportable attribute.
@@ -182,15 +193,9 @@ public interface EntityExport {
 			ForeignKey attribute();
 
 			/**
-			 * @return the attributes of the entity represented by the foreign key
+			 * @return the attributes of the referenced entity
 			 */
-			List<AttributeExport> attributes();
-
-			/**
-			 * Sorts the attributes
-			 * @param comparator the comparator to use
-			 */
-			void sort(Comparator<AttributeExport> comparator);
+			Attributes attributes();
 
 			/**
 			 * @return true if this is a cyclical foreign key that can be expanded

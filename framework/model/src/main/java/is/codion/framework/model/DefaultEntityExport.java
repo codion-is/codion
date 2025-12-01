@@ -95,12 +95,12 @@ final class DefaultEntityExport implements EntityExport {
 	}
 
 	private String createHeader() {
-		return addToHeader(settings.attributes(), new ArrayList<>(), "")
+		return addToHeader(settings.attributes().get(), new ArrayList<>(), "")
 						.stream().collect(joining(TAB, "", "\n"));
 	}
 
 	private String createRow(Entity entity, EntityConnection connection) {
-		return addToRow(settings.attributes(), entity.primaryKey(), null,
+		return addToRow(settings.attributes().get(), entity.primaryKey(), null,
 						new ArrayList<>(), new HashMap<>(), connection)
 						.stream().collect(joining(TAB, "", "\n"));
 	}
@@ -113,7 +113,7 @@ final class DefaultEntityExport implements EntityExport {
 				header.add(columnHeader);
 			}
 			if (node instanceof ForeignKeyExport) {
-				addToHeader(((ForeignKeyExport) node).attributes(), header, columnHeader);
+				addToHeader(((ForeignKeyExport) node).attributes().get(), header, columnHeader);
 			}
 		}
 
@@ -131,7 +131,7 @@ final class DefaultEntityExport implements EntityExport {
 			if (node instanceof ForeignKeyExport) {
 				Entity.Key referencedKey = entity.key((ForeignKey) attribute);
 				if (referencedKey != null) {
-					addToRow(((ForeignKeyExport) node).attributes(), referencedKey, (ForeignKey) attribute, row, cache, connection);
+					addToRow(((ForeignKeyExport) node).attributes().get(), referencedKey, (ForeignKey) attribute, row, cache, connection);
 				}
 			}
 		}
@@ -252,12 +252,12 @@ final class DefaultEntityExport implements EntityExport {
 
 		private static final AttributeDefinitionComparator ATTRIBUTE_COMPARATOR = new AttributeDefinitionComparator();
 
-		private final List<AttributeExport> attributes = new ArrayList<>();
+		private final DefaultAttributes attributes = new DefaultAttributes();
 		private final EntityDefinition definition;
 
 		DefaultSettings(EntityType entityType, Entities entities) {
 			this.definition = entities.definition(entityType);
-			populate(attributes, entities.definition(entityType), entities, new HashSet<>(), entityType);
+			populate(attributes.attributes, entities.definition(entityType), entities, new HashSet<>(), entityType);
 		}
 
 		@Override
@@ -266,13 +266,8 @@ final class DefaultEntityExport implements EntityExport {
 		}
 
 		@Override
-		public List<AttributeExport> attributes() {
-			return unmodifiableList(attributes);
-		}
-
-		@Override
-		public void sort(Comparator<AttributeExport> comparator) {
-			attributes.sort(requireNonNull(comparator));
+		public Attributes attributes() {
+			return attributes;
 		}
 
 		private static void populate(List<AttributeExport> attributes, EntityDefinition definition, Entities entities,
@@ -289,13 +284,28 @@ final class DefaultEntityExport implements EntityExport {
 					attributes.add(foreignKeyNode);
 					if (!cyclical) {
 						visited.add(foreignKey);
-						populate(foreignKeyNode.attributes, entities.definition(foreignKeyNode.attribute()
+						populate(foreignKeyNode.attributes.attributes, entities.definition(foreignKeyNode.attribute()
 										.referencedType()), entities, visited, rootEntityType);
 					}
 				}
 				else if (!attributeDefinition.hidden()) {
 					attributes.add(new DefaultAttributeExport(attributeDefinition.attribute()));
 				}
+			}
+		}
+
+		private static class DefaultAttributes implements Attributes {
+
+			private final List<AttributeExport> attributes = new ArrayList<>();
+
+			@Override
+			public List<AttributeExport> get() {
+				return unmodifiableList(attributes);
+			}
+
+			@Override
+			public void sort(Comparator<AttributeExport> comparator) {
+				attributes.sort(requireNonNull(comparator));
 			}
 		}
 
@@ -321,7 +331,7 @@ final class DefaultEntityExport implements EntityExport {
 
 		private static final class DefaultForeignKeyExport extends DefaultAttributeExport implements ForeignKeyExport {
 
-			private final List<AttributeExport> attributes = new ArrayList<>();
+			private final DefaultAttributes attributes = new DefaultAttributes();
 			private final EntityType entityType;
 			private final Entities entities;
 			private final boolean expandable;
@@ -342,13 +352,8 @@ final class DefaultEntityExport implements EntityExport {
 			}
 
 			@Override
-			public List<AttributeExport> attributes() {
-				return unmodifiableList(attributes);
-			}
-
-			@Override
-			public void sort(Comparator<AttributeExport> comparator) {
-				attributes.sort(comparator);
+			public Attributes attributes() {
+				return attributes;
 			}
 
 			@Override
@@ -361,7 +366,7 @@ final class DefaultEntityExport implements EntityExport {
 				if (expandable) {
 					Set<ForeignKey> newVisited = new HashSet<>(visitedPath);
 					newVisited.add(attribute());
-					populate(attributes, entities.definition(entityType), entities, newVisited, attribute().referencedType());
+					populate(attributes.attributes, entities.definition(entityType), entities, newVisited, attribute().referencedType());
 				}
 			}
 		}

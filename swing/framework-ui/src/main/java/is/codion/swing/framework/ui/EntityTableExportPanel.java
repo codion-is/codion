@@ -253,7 +253,7 @@ final class EntityTableExportPanel extends JPanel {
 							.mapToInt(children::indexOf)
 							.sorted()
 							.toArray());
-			sortChildren(parent, children, selectionPaths);
+			sortAttributes(parent, children, selectionPaths);
 			exportTree.scrollPathToVisible(selectionPaths[0]);
 		}
 	}
@@ -268,7 +268,7 @@ final class EntityTableExportPanel extends JPanel {
 							.mapToInt(children::indexOf)
 							.sorted()
 							.toArray());
-			sortChildren(parent, children, selectionPaths);
+			sortAttributes(parent, children, selectionPaths);
 			exportTree.scrollPathToVisible(selectionPaths[selectionPaths.length - 1]);
 		}
 	}
@@ -297,10 +297,10 @@ final class EntityTableExportPanel extends JPanel {
 						.collect(toList());
 	}
 
-	private void sortChildren(DefaultMutableTreeNode parent, List<TreeNode> children, TreePath[] selectionPaths) {
+	private void sortAttributes(DefaultMutableTreeNode parent, List<TreeNode> children, TreePath[] selectionPaths) {
 		refreshingNodes.set(true);
 		List<TreePath> expandedPaths = Collections.list(exportTree.getExpandedDescendants(new TreePath(exportTree.getModel().getRoot())));
-		model.sortChildren(parent, children);
+		model.sortAttributes(parent, children);
 		model.treeModel().nodeStructureChanged(parent);
 		expandedPaths.forEach(exportTree::expandPath);
 		exportTree.setSelectionPaths(selectionPaths);

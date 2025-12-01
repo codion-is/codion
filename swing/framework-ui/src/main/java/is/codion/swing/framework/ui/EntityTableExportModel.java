@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityExport;
 import is.codion.framework.model.EntityExport.Settings;
 import is.codion.framework.model.EntityExport.Settings.AttributeExport;
+import is.codion.framework.model.EntityExport.Settings.Attributes;
 import is.codion.framework.model.EntityExport.Settings.ForeignKeyExport;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
@@ -268,32 +269,33 @@ final class EntityTableExportModel {
 	}
 
 	void includeAll() {
-		include(settings.attributes(), true);
+		include(settings.attributes().get(), true);
 		configurationChanged.run();
 	}
 
 	void includeNone() {
-		include(settings.attributes(), false);
+		include(settings.attributes().get(), false);
 		configurationChanged.run();
 	}
 
 	void includeDefault() {
 		includeNone();
-		settings.attributes().forEach(node -> node.include().set(true));
+		settings.attributes().get().forEach(node -> node.include().set(true));
 		configurationChanged.run();
 	}
 
-	void sortChildren(DefaultMutableTreeNode parent, List<TreeNode> children) {
+	void sortAttributes(DefaultMutableTreeNode parent, List<TreeNode> children) {
 		parent.removeAllChildren();
 		children.forEach(child -> parent.add((MutableTreeNode) child));
-		((Settings) parent.getUserObject()).sort(new AttributeExportComparator(children));
+		Attributes attributes = (Attributes) parent.getUserObject();
+		attributes.sort(new AttributeExportComparator(children));
 	}
 
 	private static void include(List<AttributeExport> nodes, boolean include) {
 		for (AttributeExport node : nodes) {
 			node.include().set(include);
 			if (node instanceof ForeignKeyExport) {
-				include(((ForeignKeyExport) node).attributes(), include);
+				include(((ForeignKeyExport) node).attributes().get(), include);
 			}
 		}
 	}
@@ -509,17 +511,18 @@ final class EntityTableExportModel {
 	private final class MutableEntityNode extends DefaultMutableTreeNode {
 
 		private MutableEntityNode(Settings settings) {
-			super(settings);
-			populate(this, settings.attributes());
+			super(settings.attributes());
+			populate(this, settings.attributes().get());
 		}
 	}
 
 	class MutableAttributeNode extends DefaultMutableTreeNode {
 
+		private final AttributeExport node;
 		private final String caption;
 
 		private MutableAttributeNode(AttributeExport node) {
-			super(node);
+			this.node = node;
 			this.caption = connectionProvider.entities()
 							.definition(node.attribute().entityType())
 							.attributes().definition(node.attribute()).caption();
@@ -540,7 +543,7 @@ final class EntityTableExportModel {
 		}
 
 		AttributeExport node() {
-			return (AttributeExport) getUserObject();
+			return node;
 		}
 
 		private void includeChanged() {
@@ -557,7 +560,8 @@ final class EntityTableExportModel {
 
 		private MutableForeignKeyNode(ForeignKeyExport node) {
 			super(node);
-			populate(this, node.attributes());
+			setUserObject(node.attributes());
+			populate(this, node.attributes().get());
 		}
 
 		@Override
@@ -588,11 +592,11 @@ final class EntityTableExportModel {
 		void expand() {
 			if (expandable()) {
 				node().expand();
-				populate(this, node().attributes());
+				populate(this, node().attributes().get());
 			}
 		}
 
-		private static int includedChildrenCount(MutableForeignKeyNode node) {
+		private int includedChildrenCount(MutableForeignKeyNode node) {
 			int counter = 0;
 			Enumeration<? extends TreeNode> children = node.children();
 			while (children.hasMoreElements()) {
