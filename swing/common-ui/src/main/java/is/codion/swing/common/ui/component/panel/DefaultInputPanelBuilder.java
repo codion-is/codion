@@ -23,10 +23,12 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 final class DefaultInputPanelBuilder extends AbstractComponentBuilder<JPanel, InputPanelBuilder> implements InputPanelBuilder {
 
@@ -67,10 +69,14 @@ final class DefaultInputPanelBuilder extends AbstractComponentBuilder<JPanel, In
 
 	@Override
 	protected JPanel createComponent() {
-		if (label == null || component == null) {
-			throw new IllegalStateException("You must set both label and component before building");
+		JLabel componentLabel = label();
+		if (componentLabel == null && label == null) {
+			throw new IllegalStateException("You must specify a label component before building an input panel");
+		}
+		if (component == null) {
+			throw new IllegalStateException("You must specify a input component before building an input panel	");
 		}
 
-		return layout.layout(label, component);
+		return layout.layout(requireNonNullElse(label, componentLabel), component);
 	}
 }

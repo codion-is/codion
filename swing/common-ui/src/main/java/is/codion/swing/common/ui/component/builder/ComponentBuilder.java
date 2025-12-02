@@ -73,7 +73,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B name(@Nullable String name);
 
 	/**
-	 * Clears any label builder previously configured via {@link #label(Consumer)}.
+	 * Is overridden by subsequent calls to {@link #label(Consumer)}.
 	 * @param label the label for the component
 	 * @return this builder instance
 	 * @see JLabel#setLabelFor(Component)
@@ -81,7 +81,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B label(@Nullable JLabel label);
 
 	/**
-	 * Is overridden by {@link #label(JLabel)}.
+	 * Is overridden by subsequent calls to {@link #label(JLabel)}.
 	 * @param label configures the component label builder
 	 * @return this builder instance
 	 * @see JLabel#setLabelFor(Component)

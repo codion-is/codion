@@ -85,7 +85,6 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	private @Nullable String name;
 	private @Nullable JLabel label;
-	private @Nullable LabelBuilder<String> labelBuilder;
 	private @Nullable Boolean focusable;
 	private @Nullable Integer preferredHeight;
 	private @Nullable Integer preferredWidth;
@@ -123,19 +122,16 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	@Override
 	public final B label(@Nullable JLabel label) {
-		this.labelBuilder = null;
 		this.label = label;
 		return self();
 	}
 
 	@Override
 	public final B label(Consumer<LabelBuilder<String>> label) {
-		requireNonNull(label);
-		if (labelBuilder == null) {
-			labelBuilder = LabelBuilder.builder();
-		}
-		label.accept(labelBuilder);
-		return self();
+		LabelBuilder<String> labelBuilder = LabelBuilder.builder();
+		requireNonNull(label).accept(labelBuilder);
+
+		return label(labelBuilder.build());
 	}
 
 	@Override
@@ -484,13 +480,16 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		return (B) this;
 	}
 
+	/**
+	 * @return the label set via {@link #label(JLabel)} or {@link #label(Consumer)}, or null if none has been set
+	 */
+	protected final @Nullable JLabel label() {
+		return label;
+	}
+
 	protected C configureComponent(C component) {
 		if (label != null) {
 			label.setLabelFor(component);
-		}
-		else if (labelBuilder != null) {
-			labelBuilder.build()
-							.setLabelFor(component);
 		}
 		if (focusable != null) {
 			component.setFocusable(focusable);

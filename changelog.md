@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.62
+### is.codion.swing.common.ui
+- AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
+- DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.
 
 ## 0.18.61
 ### is.codion.common.reactive
