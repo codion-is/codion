@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.62
+
 ## 0.18.61
 ### is.codion.common.reactive
 - State.contains(ValueSet, value) added.
