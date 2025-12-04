@@ -445,6 +445,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		controlPanel = new JPanel(new BorderLayout());
 		inputPanel = new JPanel(new BorderLayout());
 		rangePanel = new JPanel(new GridLayout(1, 2));
+		boolean modelLocked = model().locked().is();
+		model().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
 		toggleEnabledButton = radioButton()
 						.link(model().enabled())
 						.horizontalAlignment(CENTER)
@@ -455,8 +457,6 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 																		.caption(MESSAGES.getString("auto_enable"))))
 										.buildPopupMenu())
 						.build();
-		boolean modelLocked = model().locked().is();
-		model().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
 		if (equalIncluded()) {
 			equalComponent = components.equal(model());
 		}
