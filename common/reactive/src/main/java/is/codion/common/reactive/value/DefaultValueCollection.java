@@ -20,8 +20,11 @@ package is.codion.common.reactive.value;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -193,6 +196,14 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 	@Override
 	public final boolean isNull() {
 		return false;
+	}
+
+	@Override
+	public final void sort(Comparator<? super T> comparator) {
+		requireNonNull(comparator);
+		List<T> list = new ArrayList<>(getOrThrow());
+		list.sort(comparator);
+		set(list);
 	}
 
 	@Override

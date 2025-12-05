@@ -20,13 +20,16 @@ package is.codion.common.reactive.value;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueSetTest {
@@ -141,6 +144,28 @@ public class ValueSetTest {
 
 		assertEquals(3, valueEventCounter.get());
 		assertEquals(3, valueSetEventCounter.get());
+	}
+
+	@Test
+	void sort() {
+		AtomicInteger counter = new AtomicInteger();
+		Runnable listener = counter::incrementAndGet;
+		ValueSet<Integer> set = ValueSet.<Integer>builder()
+						.listener(listener)
+						.build();
+		set.addAll(1, 2, 3, 4);
+		assertEquals(1, counter.get());
+		Comparator<Integer> comparator = comparing(Integer::intValue);
+
+		set.sort(comparator);
+		// No change events when sorting
+		assertEquals(1, counter.get());
+		set.sort(comparator.reversed());
+		assertEquals(asList(4, 3, 2, 1), new ArrayList<>(set.get()));
+		assertEquals(1, counter.get());
+		set.sort(comparator);
+		assertEquals(asList(1, 2, 3, 4), new ArrayList<>(set.get()));
+		assertEquals(1, counter.get());
 	}
 
 	private static void assertUnmodifiable(ObservableValueCollection<Integer, Set<Integer>> observer) {

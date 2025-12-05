@@ -22,6 +22,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 
 /**
@@ -117,6 +118,13 @@ public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, O
 	 */
 	@Override
 	ObservableValueCollection<T, C> observable();
+
+	/**
+	 * Note that the underlying collection may not preserve the item order.
+	 * Refer to the implementation javadocs for details.
+	 * @param comparator the comparator to use to sort
+	 */
+	void sort(Comparator<? super T> comparator);
 
 	/**
 	 * Builds a {@link ValueCollection} instance.

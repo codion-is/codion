@@ -20,15 +20,19 @@ package is.codion.common.reactive.value;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * <p>An observable wrapper for a Set of values.
+ * <p>An observable wrapper for an orderered Set of values.
  * <p>A factory for {@link ValueSet} instances.
  * <p>All implementations are thread-safe and support concurrent access.
+ * <p>This set maintains item ordering and can be sorted via {@link #sort(Comparator)},
+ * but note that sorting does not trigger change events, since item
+ * ordering does not factor into Set equality.</p>
  * @param <T> the value type
  */
 public interface ValueSet<T> extends ValueCollection<T, Set<T>> {

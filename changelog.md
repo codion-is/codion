@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.62
+### is.codion.common.reactive
+- ValueList.sort() moved up to ValueCollection.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
 - DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.
