@@ -167,6 +167,13 @@ public interface State extends ObservableState {
 	 *   <li>When the state is set to {@code false}, the value is removed from the set (if present)</li>
 	 * </ul>
 	 * The initial state reflects whether the value is currently contained in the set.
+	 * <p>
+	 * The synchronization is maintained via a weak listener on the {@link ValueSet}, meaning:
+	 * <ul>
+	 *   <li>As long as the returned {@link State} is reachable, the synchronization remains active</li>
+	 *   <li>Once the returned {@link State} is no longer reachable and is garbage collected,
+	 *       the synchronization is automatically cleaned up</li>
+	 * </ul>
 	 * <pre>
 	 * ValueSet&lt;String&gt; tags = ValueSet.valueSet();
 	 * State containsImportant = State.contains(tags, "important");

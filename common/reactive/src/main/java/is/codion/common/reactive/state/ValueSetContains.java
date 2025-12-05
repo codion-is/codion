@@ -32,7 +32,7 @@ final class ValueSetContains<T> implements Runnable, Consumer<Boolean> {
 		this.valueSet = valueSet;
 		this.state = State.state(valueSet.contains(value));
 		this.value = value;
-		this.valueSet.addListener(this);
+		this.valueSet.addWeakListener(this);
 		this.state.addConsumer(this);
 	}
 
