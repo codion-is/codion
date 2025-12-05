@@ -22,7 +22,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableExportModel.MutableAttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
 import is.codion.swing.framework.ui.EntityTableExportModel.MutableForeignKeyNode;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
@@ -72,7 +72,7 @@ public final class EntityTableExportPanelTest {
 		MutableForeignKeyNode mgrNode = null;
 		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
-			MutableAttributeNode node = (MutableAttributeNode) children.nextElement();
+			AttributeNode node = (AttributeNode) children.nextElement();
 			if (node.attribute().equals(Employee.MGR_FK)) {
 				mgrNode = (MutableForeignKeyNode) node;
 				break;
@@ -80,12 +80,11 @@ public final class EntityTableExportPanelTest {
 		}
 
 		assertNotNull(mgrNode, "MGR_FK node should exist");
-		assertTrue(mgrNode.expandable(), "MGR_FK should be marked as expandable");
 		assertEquals(0, mgrNode.getChildCount(), "Expandable stub should have no children initially");
 		assertFalse(mgrNode.isLeaf(), "Expandable should not be a leaf (to show expand icon)");
 
 		// Expand the cyclical stub
-		mgrNode.expand();
+		mgrNode.populate();
 
 		// After expansion, should have children
 		assertTrue(mgrNode.getChildCount() > 0, "After expansion should have children");
@@ -94,22 +93,18 @@ public final class EntityTableExportPanelTest {
 		MutableForeignKeyNode nestedMgrNode = null;
 		Enumeration<TreeNode> mgrChildren = mgrNode.children();
 		while (mgrChildren.hasMoreElements()) {
-			TreeNode child = mgrChildren.nextElement();
-			if (child instanceof MutableAttributeNode) {
-				MutableAttributeNode childNode = (MutableAttributeNode) child;
-				if (childNode.attribute().equals(Employee.MGR_FK)) {
-					nestedMgrNode = (MutableForeignKeyNode) childNode;
-					break;
-				}
+			AttributeNode child = (AttributeNode) mgrChildren.nextElement();
+			if (child instanceof MutableForeignKeyNode && child.attribute().equals(Employee.MGR_FK)) {
+				nestedMgrNode = (MutableForeignKeyNode) child;
+				break;
 			}
 		}
 
 		assertNotNull(nestedMgrNode, "Nested MGR_FK should exist after expansion");
-		assertTrue(nestedMgrNode.expandable(), "Nested MGR_FK should also be expandable");
 		assertEquals(0, nestedMgrNode.getChildCount(), "Nested expandable node should have no children initially");
 
 		// Expand again (manager's manager's manager)
-		nestedMgrNode.expand();
+		nestedMgrNode.populate();
 		assertTrue(nestedMgrNode.getChildCount() > 0, "After second expansion should have children");
 	}
 }

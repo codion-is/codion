@@ -19,9 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.ObservableState;
-import is.codion.common.reactive.state.State;
-import is.codion.common.utilities.Text;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -29,31 +28,30 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.model.EntityExport.Builder.ConnectionProviderStep;
 import is.codion.framework.model.EntityExport.Builder.EntitiesStep;
+import is.codion.framework.model.EntityExport.Builder.ExportAttributesStep;
 import is.codion.framework.model.EntityExport.Builder.OutputStep;
-import is.codion.framework.model.EntityExport.Builder.SettingsStep;
-import is.codion.framework.model.EntityExport.Settings.AttributeExport;
-import is.codion.framework.model.EntityExport.Settings.ForeignKeyExport;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static java.util.Collections.unmodifiableList;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -62,8 +60,6 @@ final class DefaultEntityExport implements EntityExport {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityExport.class);
 
-	static final EntitiesStep EXPORT_ENTITIES = new DefaultEntitiesStep();
-
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
 
@@ -71,76 +67,96 @@ final class DefaultEntityExport implements EntityExport {
 	private final EntityConnectionProvider connectionProvider;
 	private final Entities entities;
 	private final Consumer<String> output;
-	private final Settings settings;
-	private final @Nullable Consumer<Entity> handler;
+	private final ExportAttributes attributes;
+	private final @Nullable Consumer<Entity> processed;
 	private final @Nullable ObservableState cancel;
 
+	private final Map<ExportAttributes, List<Attribute<?>>> ordered = new HashMap<>();
+
 	private DefaultEntityExport(DefaultBuilder builder) {
-		this.iterator = builder.entities;
+		this.iterator = builder.iterator;
 		this.connectionProvider = builder.connectionProvider;
 		this.entities = connectionProvider.entities();
 		this.output = builder.output;
-		this.settings = builder.settings;
-		this.handler = builder.handler;
+		this.attributes = builder.attributes;
+		this.processed = builder.processed;
 		this.cancel = builder.cancel;
 	}
 
 	private void export() {
 		EntityConnection connection = connectionProvider.connection();
-		output.accept(createHeader());
-		while (iterator.hasNext() && (cancel == null || !cancel.is())) {
+		String header = createHeader();
+		if (header.isEmpty()) {
+			return;
+		}
+		output.accept(header);
+		while (iterator.hasNext()) {
+			if (cancel != null && cancel.is()) {
+				throw new CancelException();
+			}
 			Entity entity = iterator.next();
-			if (!entity.type().equals(settings.definition().type())) {
-				throw new IllegalArgumentException("Invalid entity type: " + entity.type());
+			if (!entity.type().equals(attributes.entityType())) {
+				throw new IllegalArgumentException("Only entities of type: " + attributes.entityType() + " are being exported, encountered: " + entity.type());
 			}
 			output.accept(createRow(entity, connection));
-			if (handler != null) {
-				handler.accept(entity);
+			if (processed != null) {
+				processed.accept(entity);
 			}
 		}
 	}
 
 	private String createHeader() {
-		return addToHeader(settings.attributes().get(), new ArrayList<>(), "")
-						.stream().collect(joining(TAB, "", "\n"));
+		List<String> columnHeaders = addToHeader(attributes, new ArrayList<>(), "");
+		if (columnHeaders.isEmpty()) {
+			return "";
+		}
+		return columnHeaders.stream().collect(joining(TAB, "", "\n"));
 	}
 
 	private String createRow(Entity entity, EntityConnection connection) {
-		return addToRow(settings.attributes().get(), entity.primaryKey(), null,
+		return addToRow(attributes, entity.primaryKey(), null,
 						new ArrayList<>(), new HashMap<>(), connection)
 						.stream().collect(joining(TAB, "", "\n"));
 	}
 
-	private List<String> addToHeader(List<AttributeExport> nodes, List<String> header, String prefix) {
-		for (AttributeExport node : nodes) {
-			String caption = entities.definition(node.attribute().entityType()).attributes().definition(node.attribute()).caption();
+	private List<String> addToHeader(ExportAttributes attributes, List<String> header, String prefix) {
+		for (Attribute<?> node : orderered(attributes)) {
+			String caption = entities.definition(node.entityType()).attributes().definition(node).caption();
 			String columnHeader = prefix.isEmpty() ? caption : (prefix + SPACE + caption);
-			if (node.include().is()) {
+			if (attributes.include().contains(node)) {
 				header.add(columnHeader);
 			}
-			if (node instanceof ForeignKeyExport) {
-				addToHeader(((ForeignKeyExport) node).attributes().get(), header, columnHeader);
+			if (node instanceof ForeignKey) {
+				attributes.attributes((ForeignKey) node).ifPresent(foreignKeyAttributes ->
+								addToHeader(foreignKeyAttributes, header, columnHeader));
 			}
 		}
 
 		return header;
 	}
 
-	private static List<String> addToRow(List<AttributeExport> nodes, Entity.@Nullable Key key, @Nullable ForeignKey foreignKey,
-																			 List<String> row, Map<Entity.Key, Entity> cache, EntityConnection connection) {
+	private List<String> addToRow(ExportAttributes attributes, Entity.@Nullable Key key, @Nullable ForeignKey foreignKey,
+																List<String> row, Map<Entity.Key, Entity> cache, EntityConnection connection) {
 		Entity entity = key == null ? null : selectEntity(key, foreignKey, cache, connection);
-		for (AttributeExport node : nodes) {
-			Attribute<?> attribute = node.attribute();
-			if (node.include().is()) {
+		for (Attribute<?> attribute : orderered(attributes)) {
+			if (attributes.include().contains(attribute)) {
 				row.add(entity == null ? "" : replaceNewlinesAndTabs(entity.formatted(attribute)));
 			}
-			if (node instanceof ForeignKeyExport) {
+			if (attribute instanceof ForeignKey) {
 				Entity.Key referencedKey = entity == null ? null : entity.key((ForeignKey) attribute);
-				addToRow(((ForeignKeyExport) node).attributes().get(), referencedKey, (ForeignKey) attribute, row, cache, connection);
+				attributes.attributes((ForeignKey) attribute).ifPresent(foreignKeyAttributes ->
+								addToRow(foreignKeyAttributes, referencedKey, (ForeignKey) attribute, row, cache, connection));
 			}
 		}
 
 		return row;
+	}
+
+	private List<Attribute<?>> orderered(ExportAttributes attributes) {
+		return ordered.computeIfAbsent(attributes, k ->
+						entities.definition(attributes.entityType()).attributes().get().stream()
+										.sorted(attributes.comparator())
+										.collect(toList()));
 	}
 
 	private static Entity selectEntity(Entity.Key key, @Nullable ForeignKey foreignKey,
@@ -162,83 +178,94 @@ final class DefaultEntityExport implements EntityExport {
 						.replace(TAB, SPACE);
 	}
 
-	private static final class DefaultEntitiesStep implements EntitiesStep {
+	static final class DefaultEntityTypeStep implements Builder.EntityTypeStep {
+
+		private final EntityConnectionProvider connectionProvider;
+
+		DefaultEntityTypeStep(EntityConnectionProvider connectionProvider) {
+			this.connectionProvider = connectionProvider;
+		}
 
 		@Override
-		public ConnectionProviderStep entities(Iterator<Entity> entities) {
-			return new DefaultConnectionProviderStep(entities);
+		public ExportAttributesStep entityType(EntityType entityType) {
+			return new DefaultExportAttributesStep(connectionProvider, requireNonNull(entityType));
 		}
 	}
 
-	private static final class DefaultConnectionProviderStep implements ConnectionProviderStep {
+	private static final class DefaultExportAttributesStep implements ExportAttributesStep {
 
-		private final Iterator<Entity> entities;
+		private final EntityConnectionProvider connectionProvider;
+		private final EntityType entityType;
 
-		private DefaultConnectionProviderStep(Iterator<Entity> entities) {
-			this.entities = entities;
+		private DefaultExportAttributesStep(EntityConnectionProvider connectionProvider, EntityType entityType) {
+			this.connectionProvider = connectionProvider;
+			this.entityType = entityType;
 		}
 
 		@Override
-		public OutputStep connectionProvider(EntityConnectionProvider connectionProvider) {
-			return new DefaultOutputStep(entities, requireNonNull(connectionProvider));
+		public EntitiesStep attributes(Consumer<ExportAttributes.Builder> attributes) {
+			ExportAttributes.Builder builder = new DefaultExportAttributesBuilder(connectionProvider.entities(), entityType);
+			requireNonNull(attributes).accept(builder);
+
+			return new DefaultEntitiesStep(connectionProvider, builder.build());
+		}
+	}
+
+	private static final class DefaultEntitiesStep implements EntitiesStep {
+
+		private final EntityConnectionProvider connectionProvider;
+		private final ExportAttributes attributes;
+
+		private DefaultEntitiesStep(EntityConnectionProvider connectionProvider, ExportAttributes attributes) {
+			this.connectionProvider = connectionProvider;
+			this.attributes = attributes;
+		}
+
+		@Override
+		public OutputStep entities(Iterator<Entity> iterator) {
+			return new DefaultOutputStep(requireNonNull(iterator), attributes, connectionProvider);
 		}
 	}
 
 	private static final class DefaultOutputStep implements OutputStep {
 
+		private final Iterator<Entity> iterator;
+		private final ExportAttributes attributes;
 		private final EntityConnectionProvider connectionProvider;
-		private final Iterator<Entity> entities;
 
-		private DefaultOutputStep(Iterator<Entity> entities, EntityConnectionProvider connectionProvider) {
+		private DefaultOutputStep(Iterator<Entity> iterator, ExportAttributes attributes, EntityConnectionProvider connectionProvider) {
+			this.iterator = iterator;
+			this.attributes = attributes;
 			this.connectionProvider = connectionProvider;
-			this.entities = entities;
 		}
 
 		@Override
-		public SettingsStep output(Consumer<String> output) {
-			return new DefaultSettingsStep(entities, connectionProvider, requireNonNull(output));
-		}
-	}
-
-	private static final class DefaultSettingsStep implements SettingsStep {
-
-		private final Iterator<Entity> entities;
-		private final EntityConnectionProvider connectionProvider;
-		private final Consumer<String> output;
-
-		private DefaultSettingsStep(Iterator<Entity> entities, EntityConnectionProvider connectionProvider, Consumer<String> output) {
-			this.entities = entities;
-			this.connectionProvider = connectionProvider;
-			this.output = output;
-		}
-
-		@Override
-		public Builder settings(Settings settings) {
-			return new DefaultBuilder(entities, connectionProvider, output, requireNonNull(settings));
+		public Builder output(Consumer<String> output) {
+			return new DefaultBuilder(iterator, attributes, connectionProvider, requireNonNull(output));
 		}
 	}
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final Iterator<Entity> entities;
+		private final Iterator<Entity> iterator;
+		private final ExportAttributes attributes;
 		private final EntityConnectionProvider connectionProvider;
 		private final Consumer<String> output;
-		private final Settings settings;
 
-		private @Nullable Consumer<Entity> handler;
+		private @Nullable Consumer<Entity> processed;
 		private @Nullable ObservableState cancel;
 
-		private DefaultBuilder(Iterator<Entity> entities, EntityConnectionProvider connectionProvider,
-													 Consumer<String> output, Settings settings) {
-			this.entities = entities;
+		private DefaultBuilder(Iterator<Entity> iterator, ExportAttributes attributes,
+													 EntityConnectionProvider connectionProvider, Consumer<String> output) {
+			this.iterator = iterator;
+			this.attributes = attributes;
 			this.connectionProvider = connectionProvider;
 			this.output = output;
-			this.settings = settings;
 		}
 
 		@Override
-		public Builder handler(Consumer<Entity> handler) {
-			this.handler = requireNonNull(handler);
+		public Builder processed(Consumer<Entity> processed) {
+			this.processed = requireNonNull(processed);
 			return this;
 		}
 
@@ -254,137 +281,137 @@ final class DefaultEntityExport implements EntityExport {
 		}
 	}
 
-	static final class DefaultSettings implements Settings {
+	static final class DefaultExportAttributes implements ExportAttributes {
 
-		private static final AttributeDefinitionComparator ATTRIBUTE_COMPARATOR = new AttributeDefinitionComparator();
+		private final Entities entities;
+		private final EntityDefinition definition;
+		private final Set<Attribute<?>> include;
+		private final Comparator<Attribute<?>> comparator;
+		private final Map<ForeignKey, ExportAttributes> foreignKeyAttributes = new HashMap<>();
 
-		private final DefaultAttributes attributes = new DefaultAttributes();
+		DefaultExportAttributes(DefaultExportAttributesBuilder builder) {
+			this.entities = builder.entities;
+			this.definition = entities.definition(builder.entityType);
+			this.include = unmodifiableSet(new HashSet<>(builder.include));
+			this.comparator = builder.comparator;
+			this.foreignKeyAttributes.putAll(builder.foreignKeyAttributes);
+		}
+
+		@Override
+		public EntityType entityType() {
+			return definition.type();
+		}
+
+		@Override
+		public Collection<Attribute<?>> include() {
+			return include;
+		}
+
+		@Override
+		public Comparator<Attribute<?>> comparator() {
+			return comparator;
+		}
+
+		@Override
+		public Optional<ExportAttributes> attributes(ForeignKey foreignKey) {
+			definition.attributes().definition(foreignKey);
+			return Optional.ofNullable(foreignKeyAttributes.get(foreignKey));
+		}
+	}
+
+	private static final class DefaultExportAttributesBuilder implements ExportAttributes.Builder {
+
+		private final Entities entities;
+		private final EntityType entityType;
+		private final Map<ForeignKey, ExportAttributes> foreignKeyAttributes = new HashMap<>();
+
+		private Collection<Attribute<?>> include = Collections.emptyList();
+		private Comparator<Attribute<?>> comparator;
+
+		private DefaultExportAttributesBuilder(Entities entities, EntityType entityType) {
+			this.entities = entities;
+			this.entityType = entityType;
+			this.comparator = new AttributeComparator(entities.definition(entityType));
+		}
+
+		@Override
+		public ExportAttributes.Builder include(Attribute<?>... attributes) {
+			return include(asList(attributes));
+		}
+
+		@Override
+		public ExportAttributes.Builder include(Collection<Attribute<?>> attributes) {
+			requireNonNull(attributes).forEach(this::validate);
+			this.include = requireNonNull(attributes);
+			return this;
+		}
+
+		@Override
+		public ExportAttributes.Builder order(Attribute<?>... attributes) {
+			return order(asList(attributes));
+		}
+
+		@Override
+		public ExportAttributes.Builder order(List<Attribute<?>> attributes) {
+			requireNonNull(attributes).forEach(this::validate);
+			return order(new IndexedOrder(attributes));
+		}
+
+		@Override
+		public ExportAttributes.Builder order(Comparator<Attribute<?>> comparator) {
+			this.comparator = requireNonNull(comparator);
+			return this;
+		}
+
+		@Override
+		public ExportAttributes.Builder attributes(ForeignKey foreignKey, Consumer<ExportAttributes.Builder> attributes) {
+			ExportAttributes.Builder builder = new DefaultExportAttributesBuilder(entities, foreignKey.referencedType());
+			attributes.accept(builder);
+			foreignKeyAttributes.put(foreignKey, builder.build());
+			return this;
+		}
+
+		@Override
+		public ExportAttributes build() {
+			return new DefaultExportAttributes(this);
+		}
+
+		private void validate(Attribute<?> attribute) {
+			entities.definition(entityType).attributes().definition(attribute);
+		}
+	}
+
+	private static final class IndexedOrder implements Comparator<Attribute<?>> {
+
+		private final List<Attribute<?>> order;
+
+		private IndexedOrder(List<Attribute<?>> order) {
+			this.order = order;
+		}
+
+		@Override
+		public int compare(Attribute<?> attribute1, Attribute<?> attribute2) {
+			int index1 = order.indexOf(attribute1);
+			int index2 = order.indexOf(attribute2);
+			if (index1 == -1 || index2 == -1) {
+				return 0;
+			}
+
+			return Integer.compare(index1, index2);
+		}
+	}
+
+	private static final class AttributeComparator implements Comparator<Attribute<?>> {
+
 		private final EntityDefinition definition;
 
-		DefaultSettings(EntityType entityType, Entities entities) {
-			this.definition = entities.definition(entityType);
-			populate(attributes.attributes, entities.definition(entityType), entities, new HashSet<>(), entityType);
+		private AttributeComparator(EntityDefinition definition) {
+			this.definition = definition;
 		}
 
 		@Override
-		public EntityDefinition definition() {
-			return definition;
-		}
-
-		@Override
-		public Attributes attributes() {
-			return attributes;
-		}
-
-		private static void populate(List<AttributeExport> attributes, EntityDefinition definition, Entities entities,
-																 Set<ForeignKey> visited, EntityType rootEntityType) {
-			attributes.clear();
-			for (AttributeDefinition<?> attributeDefinition : definition.attributes().definitions()
-							.stream()
-							.sorted(ATTRIBUTE_COMPARATOR)
-							.collect(toList())) {
-				if (attributeDefinition instanceof ForeignKeyDefinition) {
-					ForeignKey foreignKey = (ForeignKey) attributeDefinition.attribute();
-					boolean cyclical = visited.contains(foreignKey) || foreignKey.referencedType().equals(rootEntityType);
-					DefaultForeignKeyExport foreignKeyNode = new DefaultForeignKeyExport(foreignKey, cyclical, entities, new HashSet<>(visited));
-					attributes.add(foreignKeyNode);
-					if (!cyclical) {
-						visited.add(foreignKey);
-						populate(foreignKeyNode.attributes.attributes, entities.definition(foreignKeyNode.attribute()
-										.referencedType()), entities, visited, rootEntityType);
-					}
-				}
-				else if (!attributeDefinition.hidden()) {
-					attributes.add(new DefaultAttributeExport(attributeDefinition.attribute()));
-				}
-			}
-		}
-
-		private static class DefaultAttributes implements Attributes {
-
-			private final List<AttributeExport> attributes = new ArrayList<>();
-
-			@Override
-			public List<AttributeExport> get() {
-				return unmodifiableList(attributes);
-			}
-
-			@Override
-			public void sort(Comparator<AttributeExport> comparator) {
-				attributes.sort(requireNonNull(comparator));
-			}
-		}
-
-		private static class DefaultAttributeExport implements AttributeExport {
-
-			private final Attribute<?> attribute;
-			private final State include = State.state();
-
-			private DefaultAttributeExport(Attribute<?> attribute) {
-				this.attribute = attribute;
-			}
-
-			@Override
-			public Attribute<?> attribute() {
-				return attribute;
-			}
-
-			@Override
-			public final State include() {
-				return include;
-			}
-		}
-
-		private static final class DefaultForeignKeyExport extends DefaultAttributeExport implements ForeignKeyExport {
-
-			private final DefaultAttributes attributes = new DefaultAttributes();
-			private final EntityType entityType;
-			private final Entities entities;
-			private final boolean expandable;
-			private final Set<ForeignKey> visitedPath;
-
-			private DefaultForeignKeyExport(ForeignKey foreignKey, boolean expandable,
-																			Entities entities, Set<ForeignKey> visitedPath) {
-				super(foreignKey);
-				this.entityType = foreignKey.entityType();
-				this.entities = entities;
-				this.expandable = expandable;
-				this.visitedPath = visitedPath;
-			}
-
-			@Override
-			public ForeignKey attribute() {
-				return (ForeignKey) super.attribute();
-			}
-
-			@Override
-			public Attributes attributes() {
-				return attributes;
-			}
-
-			@Override
-			public boolean expandable() {
-				return expandable;
-			}
-
-			@Override
-			public void expand() {
-				if (expandable) {
-					Set<ForeignKey> newVisited = new HashSet<>(visitedPath);
-					newVisited.add(attribute());
-					populate(attributes.attributes, entities.definition(entityType), entities, newVisited, attribute().referencedType());
-				}
-			}
-		}
-
-		private static final class AttributeDefinitionComparator implements Comparator<AttributeDefinition<?>> {
-
-			private final Comparator<String> collator = Text.collator();
-
-			@Override
-			public int compare(AttributeDefinition<?> definition1, AttributeDefinition<?> definition2) {
-				return collator.compare(definition1.caption().toLowerCase(), definition2.caption().toLowerCase());
-			}
+		public int compare(Attribute<?> a1, Attribute<?> a2) {
+			return definition.attributes().definition(a1).caption().compareTo(definition.attributes().definition(a2).caption());
 		}
 	}
 }

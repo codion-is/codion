@@ -18,58 +18,52 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.ObservableState;
-import is.codion.common.reactive.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.DefaultEntityExport.DefaultSettings;
+import is.codion.framework.model.DefaultEntityExport.DefaultEntityTypeStep;
 import is.codion.framework.model.EntityExport.Builder.EntitiesStep;
+import is.codion.framework.model.EntityExport.Builder.EntityTypeStep;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * @see #builder()
+ * @see #builder(EntityConnectionProvider)
  */
 public interface EntityExport {
 
 	/**
+	 * @param connectionProvider the connection provider
 	 * @return a new {@link EntitiesStep}
 	 */
-	static EntitiesStep builder() {
-		return DefaultEntityExport.EXPORT_ENTITIES;
+	static EntityTypeStep builder(EntityConnectionProvider connectionProvider) {
+		return new DefaultEntityTypeStep(requireNonNull(connectionProvider));
 	}
 
 	/**
-	 * @param entityType the entity type to export
-	 * @param entities the domain {@link Entities} instance
-	 * @return a new {@link Settings} instance
-	 */
-	static Settings settings(EntityType entityType, Entities entities) {
-		return new DefaultSettings(requireNonNull(entityType), requireNonNull(entities));
-	}
-
-	/**
-	 * @see #export()
+	 * Builds a {@link EntityExport}
 	 */
 	interface Builder {
 
 		/**
-		 * @param handler receives each entity after it's been processed
+		 * @param processed receives each entity after it's been processed
 		 * @return this {@link Builder}
 		 */
-		Builder handler(Consumer<Entity> handler);
+		Builder processed(Consumer<Entity> processed);
 
 		/**
+		 * {@link #export()} throws a {@link CancelException} in case this state is activated
 		 * @param cancel indicates whether the export should be cancelled
 		 * @return this {@link Builder}
 		 */
@@ -77,8 +71,33 @@ public interface EntityExport {
 
 		/**
 		 * Performs the export
+		 * @throws CancelException in case {@link #cancel(ObservableState)} is activated
 		 */
 		void export();
+
+		/**
+		 * Specifies the entity type
+		 */
+		interface EntityTypeStep {
+
+			/**
+			 * @param entityType the entity type
+			 * @return the {@link EntitiesStep}
+			 */
+			ExportAttributesStep entityType(EntityType entityType);
+		}
+
+		/**
+		 * Specifies the export attributes
+		 */
+		interface ExportAttributesStep {
+
+			/**
+			 * @param attributes receives the export attributes builder
+			 * @return a new {@link EntitiesStep}
+			 */
+			EntitiesStep attributes(Consumer<ExportAttributes.Builder> attributes);
+		}
 
 		/**
 		 * Specifies the entities to export
@@ -86,22 +105,10 @@ public interface EntityExport {
 		interface EntitiesStep {
 
 			/**
-			 * @param entities the entities to export
-			 * @return a new {@link ConnectionProviderStep}
+			 * @param iterator the entities to export
+			 * @return a new {@link OutputStep}
 			 */
-			ConnectionProviderStep entities(Iterator<Entity> entities);
-		}
-
-		/**
-		 * Specifies the connection provider
-		 */
-		interface ConnectionProviderStep {
-
-			/**
-			 * @param connectionProvider the connection provider
-			 * @return an {@link OutputStep} instance
-			 */
-			OutputStep connectionProvider(EntityConnectionProvider connectionProvider);
+			OutputStep entities(Iterator<Entity> iterator);
 		}
 
 		/**
@@ -111,102 +118,89 @@ public interface EntityExport {
 
 			/**
 			 * @param output the output to write the exported lines to
-			 * @return a new {@link SettingsStep}
-			 */
-			SettingsStep output(Consumer<String> output);
-		}
-
-		/**
-		 * Specifies the export settings
-		 */
-		interface SettingsStep {
-
-			/**
-			 * @param settings the settings
 			 * @return a new {@link Builder}
 			 */
-			Builder settings(Settings settings);
+			Builder output(Consumer<String> output);
 		}
 	}
 
 	/**
-	 * Settings for exporting entity data with denormalized foreign key references.
-	 * <p>
-	 * This class manages a tree structure of attribute nodes representing the export configuration.
-	 * Each node can be selected/deselected to include/exclude it from the export.
-	 * Foreign key nodes can be expanded to include referenced entity attributes.
-	 * @see EntityExport#settings(EntityType, Entities)
+	 * Attribute settings for exporting entity data with denormalized foreign key references.
 	 */
-	interface Settings {
+	interface ExportAttributes {
 
 		/**
-		 * @return the entity definition
+		 * @return the entity type
 		 */
-		EntityDefinition definition();
+		EntityType entityType();
 
 		/**
-		 * @return the entity attributes
+		 * @return the attributes to include in the export
 		 */
-		Attributes attributes();
+		Collection<Attribute<?>> include();
 
 		/**
-		 * Indicates an export element with sortable children attributes
+		 * @return the comparator used to order exported attributes
 		 */
-		interface Attributes {
-
-			/**
-			 * @return the attributes
-			 */
-			List<AttributeExport> get();
-
-			/**
-			 * Sorts the attributes
-			 * @param comparator the comparator to use
-			 */
-			void sort(Comparator<AttributeExport> comparator);
-		}
+		Comparator<Attribute<?>> comparator();
 
 		/**
-		 * An exportable attribute.
+		 * Returns an {@link ExportAttributes} instance for the given foreign key,
+		 * or an empty optional if this foreign key should not be traversed
+		 * @param foreignKey the foreign key
+		 * @return an {@link ExportAttributes} instance for the given foreign key
 		 */
-		interface AttributeExport {
-
-			/**
-			 * @return the underlying attribute
-			 */
-			Attribute<?> attribute();
-
-			/**
-			 * @return the state controlling whether this node is included in the export
-			 */
-			State include();
-		}
+		Optional<ExportAttributes> attributes(ForeignKey foreignKey);
 
 		/**
-		 * An exportable foreign key.
+		 * Builds {@link ExportAttributes}
 		 */
-		interface ForeignKeyExport extends AttributeExport {
+		interface Builder {
 
 			/**
-			 * @return the underlying foreign key
+			 * @param attributes the attributes to include
+			 * @return this builder
 			 */
-			ForeignKey attribute();
+			Builder include(Attribute<?>... attributes);
 
 			/**
-			 * @return the attributes of the referenced entity
+			 * @param attributes the attributes to include
+			 * @return this builder
 			 */
-			Attributes attributes();
+			Builder include(Collection<Attribute<?>> attributes);
 
 			/**
-			 * @return true if this is a cyclical foreign key that can be expanded
+			 * Any attributes not in this list appear last, in alphabetical order by caption
+			 * @param attributes the attribute order
+			 * @return this builder
 			 */
-			boolean expandable();
+			Builder order(Attribute<?>... attributes);
 
 			/**
-			 * Expands a cyclical foreign key, populating its attributes.
-			 * @see #expandable()
+			 * Any attributes not in this list appear last, in alphabetical order by caption
+			 * @param attributes the attribute order
+			 * @return this builder
 			 */
-			void expand();
+			Builder order(List<Attribute<?>> attributes);
+
+			/**
+			 * @param comparator the comparator to use when ordering the export attributes
+			 * @return this builder
+			 */
+			Builder order(Comparator<Attribute<?>> comparator);
+
+			/**
+			 * Configures the {@link ExportAttributes} for the given foreign key
+			 * @param foreignKey the foreign key
+			 * @param attributes receives the {@link ExportAttributes.Builder} instance
+			 * @return this builder
+			 */
+			Builder attributes(ForeignKey foreignKey, Consumer<Builder> attributes);
+
+			/**
+			 * @return a new {@link ExportAttributes} instance
+			 */
+			ExportAttributes build();
 		}
 	}
 }

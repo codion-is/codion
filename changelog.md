@@ -11,6 +11,10 @@ Codion Change Log
 - ColumnConditionPanel.createComponents() bug fixed, locked state validation was disabled a bit too late.
 ### is.codion.framework.model
 - DefaultEntityExport.addToRow() bug fixed, did not include empty values for null foreign keys.
+- EntityExport.Settings replaced with ExportAttributes, related refactoring.
+- EntityExport.Builder steps reordered.
+### is.codion.swing.framework.model
+- EntityTableExportModel refactored.
 
 ## 0.18.61
 ### is.codion.common.reactive
