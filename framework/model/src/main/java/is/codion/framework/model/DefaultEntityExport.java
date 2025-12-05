@@ -126,19 +126,17 @@ final class DefaultEntityExport implements EntityExport {
 		return header;
 	}
 
-	private static List<String> addToRow(List<AttributeExport> nodes, Entity.Key key, @Nullable ForeignKey foreignKey,
+	private static List<String> addToRow(List<AttributeExport> nodes, Entity.@Nullable Key key, @Nullable ForeignKey foreignKey,
 																			 List<String> row, Map<Entity.Key, Entity> cache, EntityConnection connection) {
-		Entity entity = selectEntity(key, foreignKey, cache, connection);
+		Entity entity = key == null ? null : selectEntity(key, foreignKey, cache, connection);
 		for (AttributeExport node : nodes) {
 			Attribute<?> attribute = node.attribute();
 			if (node.include().is()) {
-				row.add(replaceNewlinesAndTabs(entity.formatted(attribute)));
+				row.add(entity == null ? "" : replaceNewlinesAndTabs(entity.formatted(attribute)));
 			}
 			if (node instanceof ForeignKeyExport) {
-				Entity.Key referencedKey = entity.key((ForeignKey) attribute);
-				if (referencedKey != null) {
-					addToRow(((ForeignKeyExport) node).attributes().get(), referencedKey, (ForeignKey) attribute, row, cache, connection);
-				}
+				Entity.Key referencedKey = entity == null ? null : entity.key((ForeignKey) attribute);
+				addToRow(((ForeignKeyExport) node).attributes().get(), referencedKey, (ForeignKey) attribute, row, cache, connection);
 			}
 		}
 

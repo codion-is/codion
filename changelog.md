@@ -6,6 +6,8 @@ Codion Change Log
 - AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
 - DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.
 - ColumnConditionPanel.createComponents() bug fixed, locked state validation was disabled a bit too late.
+### is.codion.framework.model
+- DefaultEntityExport.addToRow() bug fixed, did not include empty values for null foreign keys.
 
 ## 0.18.61
 ### is.codion.common.reactive
