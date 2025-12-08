@@ -16,6 +16,7 @@ Codion Change Log
 - EntityExport.Settings replaced with ExportAttributes, related refactoring.
 - EntityExport.Builder steps reordered.
 - DefaultEntityExport now restricts selected attributes to those included in the export, caching improved, related refactoring.
+- EntityExport, entities provided by iterator used directly, Builder.EntitiesStep.keys() added, entities queried.
 ### is.codion.swing.framework.model
 - EntityTableExportModel refactored.
 

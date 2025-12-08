@@ -65,7 +65,8 @@ final class DefaultEntityExport implements EntityExport {
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
 
-	private final Iterator<Entity> iterator;
+	private final @Nullable Iterator<Entity> entityIterator;
+	private final @Nullable Iterator<Entity.Key> keyIterator;
 	private final EntityConnectionProvider connectionProvider;
 	private final Entities entities;
 	private final Consumer<String> output;
@@ -78,7 +79,8 @@ final class DefaultEntityExport implements EntityExport {
 	private final Map<ExportAttributes, Collection<Attribute<?>>> attributesCache = new HashMap<>();
 
 	private DefaultEntityExport(DefaultBuilder builder) {
-		this.iterator = builder.iterator;
+		this.entityIterator = builder.entities;
+		this.keyIterator = builder.keys;
 		this.connectionProvider = builder.connectionProvider;
 		this.entities = connectionProvider.entities();
 		this.output = builder.output;
@@ -89,6 +91,7 @@ final class DefaultEntityExport implements EntityExport {
 
 	private void export() {
 		EntityConnection connection = connectionProvider.connection();
+		Iterator<Entity> iterator = iterator(connection);
 		String header = createHeader();
 		if (header.isEmpty()) {
 			return;
@@ -99,11 +102,10 @@ final class DefaultEntityExport implements EntityExport {
 				if (cancel != null && cancel.is()) {
 					throw new CancelException();
 				}
-				Entity.Key key = iterator.next().primaryKey();
-				if (!key.type().equals(attributes.entityType())) {
-					throw new IllegalArgumentException("Only entities of type: " + attributes.entityType() + " are being exported, encountered: " + key.type());
+				Entity entity = iterator.next();
+				if (!entity.type().equals(attributes.entityType())) {
+					throw new IllegalArgumentException("Only entities of type: " + attributes.entityType() + " are being exported, encountered: " + entity.type());
 				}
-				Entity entity = select(key, attributes, connection);
 				output.accept(createRow(entity, connection));
 				if (processed != null) {
 					processed.accept(entity);
@@ -115,6 +117,17 @@ final class DefaultEntityExport implements EntityExport {
 			foreignKeyCache.clear();
 			attributesCache.clear();
 		}
+	}
+
+	private Iterator<Entity> iterator(EntityConnection connection) {
+		if (entityIterator != null) {
+			return entityIterator;
+		}
+		if (keyIterator != null) {
+			return new QueriedIterator(keyIterator, connection);
+		}
+
+		throw new IllegalStateException("Entity or Key iterator must be provided");
 	}
 
 	private String createHeader() {
@@ -173,19 +186,6 @@ final class DefaultEntityExport implements EntityExport {
 										.collect(toList()));
 	}
 
-	private Entity select(Entity.Key key, ExportAttributes attributes, EntityConnection connection) {
-		try {
-			return connection.selectSingle(where(key(key))
-							.attributes(selectAttributes(key.definition(), attributes))
-							.build());
-		}
-		catch (RecordNotFoundException e) {
-			String message = "Record not found: " + key;
-			LOG.error(message, e);
-			throw new RecordNotFoundException(message);
-		}
-	}
-
 	private Entity select(ForeignKey foreignKey, Entity.Key referencedKey,
 												ExportAttributes attributes, EntityConnection connection) {
 		try {
@@ -217,6 +217,37 @@ final class DefaultEntityExport implements EntityExport {
 						.replace("\n", SPACE)
 						.replace("\r", SPACE)
 						.replace(TAB, SPACE);
+	}
+
+	private class QueriedIterator implements Iterator<Entity> {
+
+		private final Iterator<Entity.Key> keys;
+		private final EntityConnection connection;
+
+		private QueriedIterator(Iterator<Entity.Key> keys, EntityConnection connection) {
+			this.keys = keys;
+			this.connection = connection;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return keys.hasNext();
+		}
+
+		@Override
+		public Entity next() {
+			Entity.Key key = keys.next();
+			try {
+				return connection.selectSingle(where(key(key))
+								.attributes(selectAttributes(key.definition(), attributes))
+								.build());
+			}
+			catch (RecordNotFoundException e) {
+				String message = "Record not found: " + key;
+				LOG.error(message, e);
+				throw new RecordNotFoundException(message);
+			}
+		}
 	}
 
 	static final class DefaultEntityTypeStep implements Builder.EntityTypeStep {
@@ -264,31 +295,40 @@ final class DefaultEntityExport implements EntityExport {
 
 		@Override
 		public OutputStep entities(Iterator<Entity> iterator) {
-			return new DefaultOutputStep(requireNonNull(iterator), attributes, connectionProvider);
+			return new DefaultOutputStep(requireNonNull(iterator), null, attributes, connectionProvider);
+		}
+
+		@Override
+		public OutputStep keys(Iterator<Entity.Key> iterator) {
+			return new DefaultOutputStep(null, requireNonNull(iterator), attributes, connectionProvider);
 		}
 	}
 
 	private static final class DefaultOutputStep implements OutputStep {
 
-		private final Iterator<Entity> iterator;
+		private final @Nullable Iterator<Entity> entities;
+		private final @Nullable Iterator<Entity.Key> keys;
 		private final ExportAttributes attributes;
 		private final EntityConnectionProvider connectionProvider;
 
-		private DefaultOutputStep(Iterator<Entity> iterator, ExportAttributes attributes, EntityConnectionProvider connectionProvider) {
-			this.iterator = iterator;
+		private DefaultOutputStep(@Nullable Iterator<Entity> entities, @Nullable Iterator<Entity.Key> keys,
+															ExportAttributes attributes, EntityConnectionProvider connectionProvider) {
+			this.entities = entities;
+			this.keys = keys;
 			this.attributes = attributes;
 			this.connectionProvider = connectionProvider;
 		}
 
 		@Override
 		public Builder output(Consumer<String> output) {
-			return new DefaultBuilder(iterator, attributes, connectionProvider, requireNonNull(output));
+			return new DefaultBuilder(entities, keys, attributes, connectionProvider, requireNonNull(output));
 		}
 	}
 
 	private static final class DefaultBuilder implements Builder {
 
-		private final Iterator<Entity> iterator;
+		private final @Nullable Iterator<Entity> entities;
+		private final @Nullable Iterator<Entity.Key> keys;
 		private final ExportAttributes attributes;
 		private final EntityConnectionProvider connectionProvider;
 		private final Consumer<String> output;
@@ -296,9 +336,10 @@ final class DefaultEntityExport implements EntityExport {
 		private @Nullable Consumer<Entity> processed;
 		private @Nullable ObservableState cancel;
 
-		private DefaultBuilder(Iterator<Entity> iterator, ExportAttributes attributes,
+		private DefaultBuilder(@Nullable Iterator<Entity> entities, @Nullable Iterator<Entity.Key> keys, ExportAttributes attributes,
 													 EntityConnectionProvider connectionProvider, Consumer<String> output) {
-			this.iterator = iterator;
+			this.entities = entities;
+			this.keys = keys;
 			this.attributes = attributes;
 			this.connectionProvider = connectionProvider;
 			this.output = output;

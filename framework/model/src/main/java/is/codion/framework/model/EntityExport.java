@@ -109,6 +109,12 @@ public interface EntityExport {
 			 * @return a new {@link OutputStep}
 			 */
 			OutputStep entities(Iterator<Entity> iterator);
+
+			/**
+			 * @param iterator the keys of the entities to export
+			 * @return a new {@link OutputStep}
+			 */
+			OutputStep keys(Iterator<Entity.Key> iterator);
 		}
 
 		/**

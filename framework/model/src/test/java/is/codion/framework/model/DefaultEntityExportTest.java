@@ -83,13 +83,13 @@ public final class DefaultEntityExportTest {
 						.entityType(Employee.TYPE)
 						.attributes(attributes -> attributes.order(Department.NAME)));
 
-		Set<Entity> jones = singleton(connection.selectSingle(Employee.NAME.equalTo("JONES")));
+		Set<Entity.Key> jones = singleton(connection.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
 
 		output = new StringBuilder();
 		EntityExport.builder(CONNECTION_PROVIDER)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee.include(Employee.NAME))
-						.entities(jones.iterator())
+						.keys(jones.iterator())
 						.output(output::append)
 						.export();
 		assertEquals("Name\nJONES\n", output.toString());
@@ -98,7 +98,7 @@ public final class DefaultEntityExportTest {
 		EntityExport.builder(CONNECTION_PROVIDER)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee.include(Employee.NAME, Employee.JOB))
-						.entities(jones.iterator())
+						.keys(jones.iterator())
 						.output(output::append)
 						.export();
 		assertEquals("Job	Name\nMANAGER	JONES\n", output.toString());
@@ -109,7 +109,7 @@ public final class DefaultEntityExportTest {
 						.attributes(employee -> employee
 										.include(Employee.NAME, Employee.JOB, Employee.HIREDATE, Employee.COMMISSION)
 										.order(Employee.NAME, Employee.JOB))
-						.entities(jones.iterator())
+						.keys(jones.iterator())
 						.output(output::append)
 						.export();
 		assertEquals("Name	Job	Commission	Hiredate\nJONES	MANAGER		04-02-1981\n", output.toString());
@@ -120,7 +120,7 @@ public final class DefaultEntityExportTest {
 						.attributes(employee -> employee
 										.include(Employee.NAME, Employee.JOB, Employee.DEPARTMENT, Employee.MGR)
 										.order(Employee.DEPARTMENT, Employee.NAME, Employee.JOB))
-						.entities(jones.iterator())
+						.keys(jones.iterator())
 						.output(output::append)
 						.export();
 		assertEquals("deptno	Name	Job	mgr\n20	JONES	MANAGER	8\n", output.toString());
@@ -216,9 +216,10 @@ public final class DefaultEntityExportTest {
 														manager.include(employeeAttributes)
 																		.attributes(Employee.MGR_FK, managersManager ->
 																						managersManager.include(employeeAttributes))))
-						.entities(connection.iterator(Select.all(Employee.TYPE)
-										.orderBy(ascending(Employee.NAME))
-										.build()))
+						.entities(connection.select(Select.all(Employee.TYPE)
+														.orderBy(ascending(Employee.NAME))
+														.build())
+										.iterator())
 						.output(output::append)
 						.processed(entity -> count.getAndIncrement())
 						.cancel(State.state())
@@ -230,12 +231,12 @@ public final class DefaultEntityExportTest {
 		Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("JONES"));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.ID.equalTo(10));
 
-		List<Entity> entities = asList(jones, accounting);
+		List<Entity.Key> keys = asList(jones.primaryKey(), accounting.primaryKey());
 
 		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION_PROVIDER)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee.include(employeeAttributes))
-						.entities(entities.iterator())
+						.keys(keys.iterator())
 						.output(line -> {})
 						.export());
 	}
