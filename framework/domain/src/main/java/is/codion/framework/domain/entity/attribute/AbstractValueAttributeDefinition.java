@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.exception.ItemValidationException;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
+import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -35,6 +36,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +44,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toMap;
@@ -60,6 +61,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	private static final String INVALID_ITEM_SUFFIX = MESSAGES.getString("invalid_item_suffix");
 	private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
+	private final Collection<AttributeValidator<T>> validators;
 	private final boolean nullable;
 	private final int maximumLength;
 	private final boolean trim;
@@ -80,6 +82,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		this.itemMap = items == null ? null : items.stream()
 						.collect(toMap(Item::get, Function.identity()));
 		this.defaultValueSupplier = builder.defaultValueSupplier;
+		this.validators = initializeValidators(builder);
 	}
 
 	@Override
@@ -133,11 +136,8 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 			validateItem(value);
 		}
 		if (value != null) {
-			if (attribute().type().isNumeric()) {
-				validateRange((Number) value);
-			}
-			else if (attribute().type().isString()) {
-				validateLength((String) value);
+			for (AttributeValidator<T> validator : validators) {
+				validate(validator, value);
 			}
 		}
 	}
@@ -188,6 +188,19 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 	}
 
+	private <T> Collection<AttributeValidator<T>> initializeValidators(AbstractValueAttributeDefinitionBuilder<T, ?> builder) {
+		List<AttributeValidator<T>> list = new ArrayList<>();
+		if (attribute().type().isNumeric() && (minimum != null || maximum != null)) {
+			list.add((AttributeValidator<T>) new RangeValidator());
+		}
+		if (attribute().type().isString() && maximumLength != -1) {
+			list.add((AttributeValidator<T>) new MaximumLengthValidator());
+		}
+		list.addAll(builder.validators);
+
+		return unmodifiableCollection(new ArrayList<>(list));
+	}
+
 	static NullValidationException createNullValidationException(Attribute<?> attribute, String caption) {
 		return new NullValidationException(attribute,
 						MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
@@ -215,23 +228,15 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 	}
 
-	private <N extends Number> void validateRange(N value) {
-		Optional<Number> min = minimum();
-		Optional<Number> max = maximum();
-		if (min.isPresent() && value.doubleValue() < min.get().doubleValue()) {
-			throw new RangeValidationException(attribute(), value,
-							"'" + caption() + "' " + MESSAGES.getString("value_too_small") + " " + min.get());
+	private void validate(AttributeValidator<T> validator, T value) {
+		try {
+			validator.validate(value);
 		}
-		if (max.isPresent() && value.doubleValue() > max.get().doubleValue()) {
-			throw new RangeValidationException(attribute(), value,
-							"'" + caption() + "' " + MESSAGES.getString("value_too_large") + " " + max.get());
+		catch (ValidationException e) {
+			throw e;
 		}
-	}
-
-	private void validateLength(String value) {
-		if (maximumLength() != -1 && value.length() > maximumLength()) {
-			throw new LengthValidationException(attribute(), value,
-							"'" + caption() + "' " + MESSAGES.getString("value_too_long") + " " + maximumLength() + "\n:'" + value + "'");
+		catch (IllegalArgumentException e) {
+			throw new ValidationException(attribute(), value, e.getMessage());
 		}
 	}
 
@@ -262,6 +267,40 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 	}
 
+	private final class RangeValidator implements AttributeValidator<T> {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		@Override
+		public void validate(T value) {
+			Number number = (Number) value;
+			if (minimum != null && number.doubleValue() < minimum.doubleValue()) {
+				throw new RangeValidationException(attribute(), number,
+								"'" + caption() + "' " + MESSAGES.getString("value_too_small") + " " + minimum);
+			}
+			if (maximum != null && number.doubleValue() > maximum.doubleValue()) {
+				throw new RangeValidationException(attribute(), number,
+								"'" + caption() + "' " + MESSAGES.getString("value_too_large") + " " + maximum);
+			}
+		}
+	}
+
+	private final class MaximumLengthValidator implements AttributeValidator<T> {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		@Override
+		public void validate(T value) {
+			String string = (String) value;
+			if (maximumLength != -1 && string.length() > maximumLength) {
+				throw new LengthValidationException(attribute(), string,
+								"'" + caption() + "' " + MESSAGES.getString("value_too_long") + " " + maximumLength + "\n:'" + string + "'");
+			}
+		}
+	}
+
 	private static final class NullDefaultValueSupplier extends DefaultValueSupplier<Object> {
 
 		@Serial
@@ -275,6 +314,8 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	abstract static sealed class AbstractValueAttributeDefinitionBuilder<T, B extends ValueAttributeDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements ValueAttributeDefinition.Builder<T, B>
 					permits DefaultColumnDefinitionBuilder, DefaultTransientAttributeDefinitionBuilder {
+
+		private final List<AttributeValidator<T>> validators = new ArrayList<>();
 
 		private boolean nullable;
 		private int maximumLength;
@@ -345,6 +386,12 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 
 		@Override
+		public final B validator(AttributeValidator<T> validator) {
+			validators.add(requireNonNull(validator));
+			return self();
+		}
+
+		@Override
 		public final B items(List<Item<T>> items) {
 			this.items = validateItems(items);
 			return self();
@@ -356,7 +403,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 
 		@Override
-		public B defaultValue(ValueSupplier<T> supplier) {
+		public final B defaultValue(ValueSupplier<T> supplier) {
 			if (supplier != null) {
 				attribute().type().validateType(supplier.get());
 			}

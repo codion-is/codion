@@ -633,7 +633,7 @@ include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=customerForm
 
 == Validation
 
-Custom validation of Entities is performed by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator].
+Custom validation of Entities is performed by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator] or by adding a validator to an attribute via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ValueAttributeDefinition.Builder.html#validator(is.codion.framework.domain.entity.attribute.ValueAttributeDefinition.Validator)[ValueAttributeDefinition.Builder.validator(Validator)].
 
 The *EntityValidator* interface provides range, string length and null validation and can be extended to provide further validations.
 
@@ -647,6 +647,16 @@ include::{dir-world-source}/is/codion/demos/world/domain/api/World.java[tags=val
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=validator]
+----
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/demos/world/domain/api/World.java[tags=attributeValidator]
+----
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=attributeValidator]
 ----
 
 == Examples

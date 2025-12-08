@@ -24,6 +24,7 @@
  * <li>{@link is.codion.framework.domain.entity.EntityDefinition}
  * <li>{@link is.codion.framework.domain.entity.attribute.Attribute}
  * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition}
+ * <li>{@link is.codion.framework.domain.entity.attribute.ValueAttributeDefinition}
  * <li>{@link is.codion.framework.domain.entity.attribute.Column}
  * <li>{@link is.codion.framework.domain.entity.attribute.ColumnDefinition}
  * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKey}

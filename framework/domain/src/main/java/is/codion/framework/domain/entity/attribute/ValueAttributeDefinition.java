@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -124,6 +126,9 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 	 * @param nullable true if null values are allowed in this validation context,
 	 * false if null should trigger a {@link NullValidationException}
 	 * @throws ValidationException in case of an invalid value
+	 * @see EntityDefinition.Builder#validator(EntityValidator)
+	 * @see Builder#validator(AttributeValidator)
+	 * @see AttributeValidator
 	 */
 	void validate(Entity entity, boolean nullable);
 
@@ -175,6 +180,14 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 		 * @throws IllegalStateException in case this is not a String attribute
 		 */
 		B maximumLength(int maximumLength);
+
+		/**
+		 * Define a validator for this attribute, this validator is called by
+		 * the {@link EntityValidator} and is only called for non-null values.
+		 * @param validator a {@link AttributeValidator} to use for this attribute
+		 * @return this builder instance
+		 */
+		B validator(AttributeValidator<T> validator);
 
 		/**
 		 * Specifies whether string values should be trimmed, this applies to String (varchar) based attributes.

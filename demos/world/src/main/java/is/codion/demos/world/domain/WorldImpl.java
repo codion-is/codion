@@ -95,7 +95,10 @@ public final class WorldImpl extends DomainModel {
 														.column()
 														.caption("Location")
 														.converter(String.class, new LocationConverter())
-														.comparator(new LocationComparator()))
+														.comparator(new LocationComparator())
+														// tag::attributeValidator[]
+														.validator(new LocationValidator()))
+						// end::attributeValidator[]
 						// end::columnClass[]
 						// tag::validator[]
 						.validator(new CityValidator())
