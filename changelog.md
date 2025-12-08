@@ -15,6 +15,7 @@ Codion Change Log
 - DefaultEntityExport.addToRow() bug fixed, did not include empty values for null foreign keys.
 - EntityExport.Settings replaced with ExportAttributes, related refactoring.
 - EntityExport.Builder steps reordered.
+- DefaultEntityExport now restricts selected attributes to those included in the export, caching improved, related refactoring.
 ### is.codion.swing.framework.model
 - EntityTableExportModel refactored.
 

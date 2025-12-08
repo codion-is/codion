@@ -50,6 +50,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
@@ -71,7 +73,9 @@ final class DefaultEntityExport implements EntityExport {
 	private final @Nullable Consumer<Entity> processed;
 	private final @Nullable ObservableState cancel;
 
-	private final Map<ExportAttributes, List<Attribute<?>>> ordered = new HashMap<>();
+	private final Map<ExportAttributes, List<Attribute<?>>> orderedAttributes = new HashMap<>();
+	private final Map<ExportAttributes, Map<Entity.Key, Entity>> foreignKeyCache = new HashMap<>();
+	private final Map<ExportAttributes, Collection<Attribute<?>>> attributesCache = new HashMap<>();
 
 	private DefaultEntityExport(DefaultBuilder builder) {
 		this.iterator = builder.iterator;
@@ -89,19 +93,27 @@ final class DefaultEntityExport implements EntityExport {
 		if (header.isEmpty()) {
 			return;
 		}
-		output.accept(header);
-		while (iterator.hasNext()) {
-			if (cancel != null && cancel.is()) {
-				throw new CancelException();
+		try {
+			output.accept(header);
+			while (iterator.hasNext()) {
+				if (cancel != null && cancel.is()) {
+					throw new CancelException();
+				}
+				Entity.Key key = iterator.next().primaryKey();
+				if (!key.type().equals(attributes.entityType())) {
+					throw new IllegalArgumentException("Only entities of type: " + attributes.entityType() + " are being exported, encountered: " + key.type());
+				}
+				Entity entity = select(key, attributes, connection);
+				output.accept(createRow(entity, connection));
+				if (processed != null) {
+					processed.accept(entity);
+				}
 			}
-			Entity entity = iterator.next();
-			if (!entity.type().equals(attributes.entityType())) {
-				throw new IllegalArgumentException("Only entities of type: " + attributes.entityType() + " are being exported, encountered: " + entity.type());
-			}
-			output.accept(createRow(entity, connection));
-			if (processed != null) {
-				processed.accept(entity);
-			}
+		}
+		finally {
+			orderedAttributes.clear();
+			foreignKeyCache.clear();
+			attributesCache.clear();
 		}
 	}
 
@@ -114,8 +126,7 @@ final class DefaultEntityExport implements EntityExport {
 	}
 
 	private String createRow(Entity entity, EntityConnection connection) {
-		return addToRow(attributes, entity.primaryKey(), null,
-						new ArrayList<>(), new HashMap<>(), connection)
+		return addToRow(new ArrayList<>(), entity, attributes, connection)
 						.stream().collect(joining(TAB, "", "\n"));
 	}
 
@@ -135,40 +146,70 @@ final class DefaultEntityExport implements EntityExport {
 		return header;
 	}
 
-	private List<String> addToRow(ExportAttributes attributes, Entity.@Nullable Key key, @Nullable ForeignKey foreignKey,
-																List<String> row, Map<Entity.Key, Entity> cache, EntityConnection connection) {
-		Entity entity = key == null ? null : selectEntity(key, foreignKey, cache, connection);
+	private List<String> addToRow(List<String> row, @Nullable Entity entity,
+																ExportAttributes attributes, EntityConnection connection) {
 		for (Attribute<?> attribute : orderered(attributes)) {
 			if (attributes.include().contains(attribute)) {
 				row.add(entity == null ? "" : replaceNewlinesAndTabs(entity.formatted(attribute)));
 			}
 			if (attribute instanceof ForeignKey) {
-				Entity.Key referencedKey = entity == null ? null : entity.key((ForeignKey) attribute);
 				attributes.attributes((ForeignKey) attribute).ifPresent(foreignKeyAttributes ->
-								addToRow(foreignKeyAttributes, referencedKey, (ForeignKey) attribute, row, cache, connection));
+								addToRow(row, (ForeignKey) attribute, entity == null ? null : entity.key((ForeignKey) attribute), foreignKeyAttributes, connection));
 			}
 		}
 
 		return row;
 	}
 
+	private List<String> addToRow(List<String> row, ForeignKey foreignKey, Entity.@Nullable Key referencedKey,
+																ExportAttributes attributes, EntityConnection connection) {
+		return addToRow(row, referencedKey == null ? null : select(foreignKey, referencedKey, attributes, connection), attributes, connection);
+	}
+
 	private List<Attribute<?>> orderered(ExportAttributes attributes) {
-		return ordered.computeIfAbsent(attributes, k ->
+		return orderedAttributes.computeIfAbsent(attributes, k ->
 						entities.definition(attributes.entityType()).attributes().get().stream()
 										.sorted(attributes.comparator())
 										.collect(toList()));
 	}
 
-	private static Entity selectEntity(Entity.Key key, @Nullable ForeignKey foreignKey,
-																		 Map<Entity.Key, Entity> cache, EntityConnection connection) {
+	private Entity select(Entity.Key key, ExportAttributes attributes, EntityConnection connection) {
 		try {
-			return cache.computeIfAbsent(key, k -> connection.select(key));
+			return connection.selectSingle(where(key(key))
+							.attributes(selectAttributes(key.definition(), attributes))
+							.build());
 		}
 		catch (RecordNotFoundException e) {
-			String message = "Record not found: " + key + (foreignKey == null ? "" : ", foreignKey: " + foreignKey);
+			String message = "Record not found: " + key;
 			LOG.error(message, e);
 			throw new RecordNotFoundException(message);
 		}
+	}
+
+	private Entity select(ForeignKey foreignKey, Entity.Key referencedKey,
+												ExportAttributes attributes, EntityConnection connection) {
+		try {
+			Map<Entity.Key, Entity> entityCache = foreignKeyCache.computeIfAbsent(attributes, k -> new HashMap<>());
+
+			return entityCache.computeIfAbsent(referencedKey, k -> connection.selectSingle(where(key(referencedKey))
+							.attributes(selectAttributes(referencedKey.definition(), attributes))
+							.build()));
+		}
+		catch (RecordNotFoundException e) {
+			String message = "Record not found: " + referencedKey + ", foreignKey: " + foreignKey;
+			LOG.error(message, e);
+			throw new RecordNotFoundException(message);
+		}
+	}
+
+	private Collection<Attribute<?>> selectAttributes(EntityDefinition definition, ExportAttributes attributes) {
+		return attributesCache.computeIfAbsent(attributes, k -> {
+			Collection<Attribute<?>> included = new HashSet<>(attributes.include());
+			definition.foreignKeys().get().forEach(foreignKey ->
+							attributes.attributes(foreignKey).ifPresent(attr -> included.add(foreignKey)));
+
+			return included;
+		});
 	}
 
 	private static String replaceNewlinesAndTabs(String string) {
