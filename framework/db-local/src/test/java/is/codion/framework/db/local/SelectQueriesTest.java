@@ -34,12 +34,14 @@ import is.codion.framework.db.local.TestDomain.QueryWithMultipleCtes;
 import is.codion.framework.db.local.TestDomain.QueryWithRecursiveCte;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
@@ -426,7 +428,6 @@ public final class SelectQueriesTest {
 		assertTrue(query.contains("min(sal) < ?"));
 	}
 
-
 	@Test
 	void testEntityWithNoSelectableColumns() {
 		// Test entity with no primary key - should still work
@@ -546,5 +547,33 @@ public final class SelectQueriesTest {
 		// Both queries should be identical
 		assertEquals(query1, query2);
 		assertTrue(query1.contains("WITH high_earners AS"));
+	}
+
+	@Test
+	void includeExclude() {
+		EntityDefinition employee = testDomain.entities().definition(Employee.TYPE);
+		Select select = Select.all(Employee.TYPE).build();
+		Collection<Attribute<?>> attributes = SelectQueries.attributes(select, employee);
+		assertTrue(attributes.contains(Employee.ID));
+		assertTrue(attributes.contains(Employee.MGR));
+		assertFalse(attributes.contains(Employee.DATA_LAZY));
+		select = Select.all(Employee.TYPE)
+						.include(Employee.DATA_LAZY)
+						.exclude(Employee.MGR_FK)
+						.build();
+		attributes = SelectQueries.attributes(select, employee);
+		assertTrue(attributes.contains(Employee.ID));
+		assertFalse(attributes.contains(Employee.MGR));
+		assertFalse(attributes.contains(Employee.MGR_FK));
+		assertTrue(attributes.contains(Employee.DATA_LAZY));
+		select = Select.all(Employee.TYPE)
+						.include(Employee.DATA_LAZY)
+						.exclude(Employee.MGR_FK, Employee.DATA_LAZY)
+						.build();
+		attributes = SelectQueries.attributes(select, employee);
+		assertTrue(attributes.contains(Employee.ID));
+		assertFalse(attributes.contains(Employee.MGR));
+		assertFalse(attributes.contains(Employee.MGR_FK));
+		assertFalse(attributes.contains(Employee.DATA_LAZY));
 	}
 }

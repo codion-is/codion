@@ -11,6 +11,8 @@ Codion Change Log
 - ColumnConditionPanel.createComponents() bug fixed, locked state validation was disabled a bit too late.
 ### is.codion.framework.domain
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
+### is.codion.framework.db.local
+- SelectQueries.defaultAttributesCache removed, redundant, now uses EntityDefinition.Attributes.selected().
 ### is.codion.framework.model
 - DefaultEntityExport.addToRow() bug fixed, did not include empty values for null foreign keys.
 - EntityExport.Settings replaced with ExportAttributes, related refactoring.
