@@ -35,7 +35,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -70,12 +69,6 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @return the underlying {@link EntityDefinition}
 	 */
 	EntityDefinition entityDefinition();
-
-	/**
-	 * @param primaryKey the primary key of the entity to fetch from this model
-	 * @return the entity with the given key if found in the model, an empty Optional otherwise
-	 */
-	Optional<Entity> find(Entity.Key primaryKey);
 
 	/**
 	 * Selects the entity with the given primary key, whether included or filtered.
@@ -196,6 +189,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param editEvents controls whether this combo box model should handle entity edit events, by adding inserted items,
 		 * updating any updated items and removing deleted ones
 		 * @return this builder instance
+		 * @see #EDIT_EVENTS
 		 * @see is.codion.framework.model.EntityEditModel.EditEvents
 		 */
 		Builder editEvents(boolean editEvents);

@@ -106,17 +106,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public Optional<Entity> find(Entity.Key primaryKey) {
-		requireNonNull(primaryKey);
-		return items().get().stream()
-						.filter(Objects::nonNull)
-						.filter(entity -> entity.primaryKey().equals(primaryKey))
-						.findFirst();
-	}
-
-	@Override
 	public void select(Entity.Key primaryKey) {
-		requireNonNull(primaryKey);
+		validateType(requireNonNull(primaryKey), entityItems.entityDefinition.type());
 		Optional<Entity> entity = find(primaryKey);
 		if (entity.isPresent()) {
 			setSelectedItem(entity.get());
@@ -197,6 +188,13 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	@Override
 	public void removeListDataListener(ListDataListener listener) {
 		comboBoxModel.removeListDataListener(listener);
+	}
+
+	private Optional<Entity> find(Entity.Key primaryKey) {
+		return items().get().stream()
+						.filter(Objects::nonNull)
+						.filter(entity -> entity.primaryKey().equals(primaryKey))
+						.findFirst();
 	}
 
 	private Optional<Entity> filteredEntity(Entity.Key primaryKey) {
@@ -356,14 +354,17 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		private Collection<Entity.Key> validateKeys(Collection<Entity.Key> keys) {
-			requireNonNull(keys);
-			for (Entity.Key key : keys) {
-				if (!key.type().equals(foreignKey.referencedType())) {
-					throw new IllegalArgumentException("Key " + key + " is not of the correct type (" + foreignKey.referencedType() + ")");
-				}
+			for (Entity.Key key : requireNonNull(keys)) {
+				validateType(key, foreignKey.referencedType());
 			}
 
 			return keys;
+		}
+	}
+
+	private static void validateType(Entity.Key key, EntityType entityType) {
+		if (!key.type().equals(entityType)) {
+			throw new IllegalArgumentException("Key " + key + " is not of the correct type (" + entityType + ")");
 		}
 	}
 

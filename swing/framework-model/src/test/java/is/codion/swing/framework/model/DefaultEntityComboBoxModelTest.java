@@ -81,7 +81,8 @@ public final class DefaultEntityComboBoxModelTest {
 		updated.put(temp, tempUpdated);
 
 		EntityEditModel.events(Employee.TYPE).updated().accept(updated);
-		assertEquals("Newname", comboBoxModel.find(temp.primaryKey()).orElseThrow().get(Employee.NAME));
+		comboBoxModel.select(temp.primaryKey());
+		assertEquals("Newname", comboBoxModel.selection().item().getOrThrow().get(Employee.NAME));
 
 		EntityEditModel.events(Employee.TYPE).deleted().accept(singletonList(temp));
 		assertFalse(comboBoxModel.items().included().contains(temp));
@@ -416,18 +417,6 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(1, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("RESEARCH"))));
 		assertEquals(2, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("SALES"))));
 		assertEquals(3, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("OPERATIONS"))));
-	}
-
-	@Test
-	void entity() {
-		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
-						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
-		comboBoxModel.items().refresh();
-		Entity.Key allenPK = ENTITIES.primaryKey(Employee.TYPE, 1);
-		assertNotNull(comboBoxModel.find(allenPK));
-		Entity.Key nobodyPK = ENTITIES.primaryKey(Employee.TYPE, -1);
-		assertFalse(comboBoxModel.find(nobodyPK).isPresent());
 	}
 
 	@Test

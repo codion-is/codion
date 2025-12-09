@@ -101,7 +101,8 @@ public final class SwingEntityModelTest
 		departmentModel.tableModel().selection().item().set(inserted);
 		departmentModel.editModel().editor().value(Department.NAME).set("nameitagain");
 		departmentModel.editModel().update();
-		assertEquals("nameitagain", departmentsComboBoxModel.find(inserted.primaryKey()).orElse(null).get(Department.NAME));
+		departmentsComboBoxModel.select(inserted.primaryKey());
+		assertEquals("nameitagain", departmentsComboBoxModel.selection().item().getOrThrow().get(Department.NAME));
 
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey.copy().with(Department.ID, 20).build()));
 		departmentModel.editModel().editor().value(Department.NAME).set("NewName");

@@ -19,6 +19,7 @@ Codion Change Log
 - EntityExport, entities provided by iterator used directly, Builder.EntitiesStep.keys() added, entities queried.
 ### is.codion.swing.framework.model
 - EntityTableExportModel refactored.
+- EntityComboBoxModel.find(key) removed, select(key) validates type.
 
 ## 0.18.61
 ### is.codion.common.reactive
