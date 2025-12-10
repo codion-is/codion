@@ -54,7 +54,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	 * Replace with an empty list in order to disable unwrapping altogether.
 	 * <ul>
 	 * <li>Value type: String list
-	 * <li>Default value: RuntimeException, InvocationTargetException, ExceptionInInitializerError, UndeclaredThrowableException
+	 * <li>Default value: InvocationTargetException, ExceptionInInitializerError, UndeclaredThrowableException
 	 * </ul>
 	 */
 	PropertyValue<List<Class<? extends Throwable>>> WRAPPER_EXCEPTIONS = listValue(ExceptionDialogBuilder.class.getName() + ".wrapperExceptions",
@@ -65,8 +65,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 						catch (ClassNotFoundException e) {
 							throw new RuntimeException(e);
 						}
-					}, asList(RuntimeException.class, InvocationTargetException.class,
-									ExceptionInInitializerError.class, UndeclaredThrowableException.class));
+					}, asList(InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
 
 	/**
 	 * @param message the message to display
