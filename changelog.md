@@ -13,6 +13,8 @@ Codion Change Log
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
 ### is.codion.framework.db.local
 - SelectQueries.defaultAttributesCache removed, redundant, now uses EntityDefinition.Attributes.selected().
+- LocalEntityConnection.limitForeignKeyReferenceDepth() renamed limitReferenceDepth(), related renaming.
+- LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH renamed to LIMIT_REFERENCE_DEPTH.
 ### is.codion.framework.model
 - DefaultEntityExport.addToRow() bug fixed, did not include empty values for null foreign keys.
 - EntityExport.Settings replaced with ExportAttributes, related refactoring.

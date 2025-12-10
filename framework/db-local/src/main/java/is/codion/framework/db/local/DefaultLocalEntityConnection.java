@@ -122,7 +122,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private MethodTracer tracer = MethodTracer.NO_OP;
 
 	private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
-	private boolean limitForeignKeyReferenceDepth = LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.getOrThrow();
+	private boolean limitReferenceDepth = LIMIT_REFERENCE_DEPTH.getOrThrow();
 	private int queryTimeout = QUERY_TIMEOUT.getOrThrow();
 	private boolean queryCacheEnabled = false;
 
@@ -738,16 +738,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public boolean limitForeignKeyReferenceDepth() {
+	public boolean limitReferenceDepth() {
 		synchronized (database) {
-			return limitForeignKeyReferenceDepth;
+			return limitReferenceDepth;
 		}
 	}
 
 	@Override
-	public void limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth) {
+	public void limitReferenceDepth(boolean limitReferenceDepth) {
 		synchronized (database) {
-			this.limitForeignKeyReferenceDepth = limitForeignKeyReferenceDepth;
+			this.limitReferenceDepth = limitReferenceDepth;
 		}
 	}
 
@@ -993,13 +993,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		return cacheResult(select, query(select, 0));
 	}
 
-	private List<Entity> query(Select select, int currentForeignKeyReferenceDepth) throws SQLException {
+	private List<Entity> query(Select select, int referenceDepth) throws SQLException {
 		List<Entity> result;
 		try (EntityResultIterator iterator = resultIterator(select)) {
 			result = packResult(iterator);
 		}
 		if (!result.isEmpty()) {
-			populateForeignKeys(result, select, currentForeignKeyReferenceDepth);
+			populateForeignKeys(result, select, referenceDepth);
 		}
 
 		return result;
@@ -1011,20 +1011,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	 * by the foreign keys as well, until we reach the select reference depth limit.
 	 * @param entities the entities for which to set the foreign key entity values
 	 * @param select the select
-	 * @param currentForeignKeyReferenceDepth the current foreign key reference depth
+	 * @param referenceDepth the current foreign key reference depth
 	 * @throws SQLException in case of a database exception
-	 * @see #limitForeignKeyReferenceDepth(boolean)
+	 * @see #limitReferenceDepth(boolean)
 	 * @see Select.Builder#referenceDepth(int)
 	 */
-	private void populateForeignKeys(List<Entity> entities, Select select,
-																	 int currentForeignKeyReferenceDepth) throws SQLException {
+	private void populateForeignKeys(List<Entity> entities, Select select, int referenceDepth) throws SQLException {
 		Collection<ForeignKeyDefinition> foreignKeysToSet =
 						foreignKeysToPopulate(entities.get(0).type(), select.attributes());
 		for (ForeignKeyDefinition foreignKeyDefinition : foreignKeysToSet) {
 			ForeignKey foreignKey = foreignKeyDefinition.attribute();
-			int conditionOrForeignKeyReferenceDepthLimit = select.referenceDepth(foreignKey)
+			int referenceDepthLimit = select.referenceDepth(foreignKey)
 							.orElse(foreignKeyDefinition.referenceDepth());
-			if (withinReferenceDepthLimit(currentForeignKeyReferenceDepth, conditionOrForeignKeyReferenceDepthLimit)
+			if (withinReferenceDepthLimit(referenceDepth, referenceDepthLimit)
 							&& containsReferencedColumns(entities.get(0), foreignKey.references())) {
 				try {
 					tracer.enter("populateForeignKeys", foreignKeyDefinition);
@@ -1034,7 +1033,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					}
 					else {
 						Map<Key, Entity> referencedEntitiesMappedByKey = queryReferencedEntities(foreignKeyDefinition,
-										new ArrayList<>(referencedKeys), currentForeignKeyReferenceDepth, conditionOrForeignKeyReferenceDepthLimit);
+										new ArrayList<>(referencedKeys), referenceDepth, referenceDepthLimit);
 						entities.forEach(entity -> entity.set(foreignKey,
 										entity(entity.key(foreignKey), referencedEntitiesMappedByKey)));
 					}
@@ -1060,12 +1059,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						.collect(toList());
 	}
 
-	private boolean withinReferenceDepthLimit(int currentForeignKeyReferenceDepth, int conditionReferenceDepthLimit) {
-		return !limitForeignKeyReferenceDepth || conditionReferenceDepthLimit == -1 || currentForeignKeyReferenceDepth < conditionReferenceDepthLimit;
+	private boolean withinReferenceDepthLimit(int currentReferenceDepth, int referenceDepthLimit) {
+		return !limitReferenceDepth || referenceDepthLimit == -1 || currentReferenceDepth < referenceDepthLimit;
 	}
 
 	private Map<Key, Entity> queryReferencedEntities(ForeignKeyDefinition foreignKeyDefinition, List<Key> referencedKeys,
-																									 int currentForeignKeyReferenceDepth, int conditionReferenceDepthLimit) throws SQLException {
+																									 int referenceDepth, int referenceDepthLimit) throws SQLException {
 		Key referencedKey = referencedKeys.get(0);
 		Collection<Column<?>> keyColumns = referencedKey.columns();
 		List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
@@ -1073,10 +1072,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		for (int i = 0; i < referencedKeys.size(); i += keysPerStatement) {
 			List<Key> keys = referencedKeys.subList(i, Math.min(i + keysPerStatement, referencedKeys.size()));
 			Select referencedEntitiesCondition = where(keys(keys))
-							.referenceDepth(conditionReferenceDepthLimit)
+							.referenceDepth(referenceDepthLimit)
 							.attributes(attributesToSelect(foreignKeyDefinition, keyColumns))
 							.build();
-			referencedEntities.addAll(query(referencedEntitiesCondition, currentForeignKeyReferenceDepth + 1).stream()
+			referencedEntities.addAll(query(referencedEntitiesCondition, referenceDepth + 1).stream()
 							.map(IMMUTABLE)
 							.collect(toList()));
 		}

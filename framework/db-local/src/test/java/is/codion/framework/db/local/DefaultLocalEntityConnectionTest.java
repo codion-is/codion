@@ -1790,15 +1790,15 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void foreignKeyReferenceDepth() {
 		try (LocalEntityConnection conn = createConnection()) {
-			conn.limitForeignKeyReferenceDepth(false);
-			assertFalse(conn.limitForeignKeyReferenceDepth());
+			conn.limitReferenceDepth(false);
+			assertFalse(conn.limitReferenceDepth());
 			Entity employee = conn.selectSingle(Employee.ID.equalTo(10));
 			Entity manager = employee.get(Employee.MGR_FK);
 			assertNotNull(manager);
 			Entity managersManager = manager.get(Employee.MGR_FK);
 			assertNotNull(managersManager);
-			conn.limitForeignKeyReferenceDepth(true);
-			assertTrue(conn.limitForeignKeyReferenceDepth());
+			conn.limitReferenceDepth(true);
+			assertTrue(conn.limitReferenceDepth());
 			employee = conn.selectSingle(Employee.ID.equalTo(10));
 			manager = employee.get(Employee.MGR_FK);
 			assertNotNull(manager);
