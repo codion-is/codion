@@ -30,6 +30,7 @@ import javax.swing.JComponent;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -325,7 +326,7 @@ public final class SwingMcpPlugin {
 			return operation.execute();
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Failed to encode screenshot: " + e.getMessage(), e);
+			throw new UncheckedIOException("Failed to encode screenshot: " + e.getMessage(), e);
 		}
 	}
 

@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -260,7 +261,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 								CLASSPATH_KEYSTORE.name(), file, JAVAX_NET_KEYSTORE);
 			}
 			catch (IOException e) {
-				throw new RuntimeException(e);
+				throw new UncheckedIOException(e);
 			}
 		}
 

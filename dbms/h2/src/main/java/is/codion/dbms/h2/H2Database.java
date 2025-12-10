@@ -19,6 +19,7 @@
 package is.codion.dbms.h2;
 
 import is.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.utilities.resource.MessageBundle;
 
 import java.nio.file.Files;
@@ -242,7 +243,7 @@ final class H2Database extends AbstractDatabase {
 			DriverManager.getConnection(url() + appendToUrl, properties).close();
 		}
 		catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new DatabaseException(e);
 		}
 	}
 }

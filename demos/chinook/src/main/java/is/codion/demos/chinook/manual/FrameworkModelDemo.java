@@ -18,7 +18,6 @@
  */
 package is.codion.demos.chinook.manual;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
@@ -544,30 +543,15 @@ public final class FrameworkModelDemo {
 	private void displayAlbumDetails(Entity album) {}
 
 	private Entity getCustomer(EntityConnectionProvider connectionProvider) {
-		try {
-			return connectionProvider.connection().selectSingle(Customer.ID.equalTo(1L));
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return connectionProvider.connection().selectSingle(Customer.ID.equalTo(1L));
 	}
 
 	private Entity getAlbum(EntityConnectionProvider connectionProvider) {
-		try {
-			return connectionProvider.connection().selectSingle(Album.ID.equalTo(1L));
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return connectionProvider.connection().selectSingle(Album.ID.equalTo(1L));
 	}
 
 	private Entity getTrack(EntityConnectionProvider connectionProvider) {
-		try {
-			return connectionProvider.connection().selectSingle(Track.ID.equalTo(1L));
-		}
-		catch (DatabaseException e) {
-			throw new RuntimeException(e);
-		}
+		return connectionProvider.connection().selectSingle(Track.ID.equalTo(1L));
 	}
 
 	private Condition customComplexCondition() {

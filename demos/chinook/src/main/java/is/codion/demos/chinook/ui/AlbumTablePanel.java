@@ -31,6 +31,7 @@ import javax.swing.JDialog;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import static is.codion.demos.chinook.ui.TrackTablePanel.RATINGS;
 import static is.codion.swing.common.ui.component.image.ImagePane.ZoomDevice.MOUSE_WHEEL;
@@ -95,7 +96,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 			return ImageIO.read(new ByteArrayInputStream(bytes));
 		}
 		catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 }

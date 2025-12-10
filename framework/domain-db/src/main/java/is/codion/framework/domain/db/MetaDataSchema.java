@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.db;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.domain.db.MetaDataTable.TablePacker;
 
 import java.sql.DatabaseMetaData;
@@ -74,7 +75,7 @@ final class MetaDataSchema {
 				populatedSchemas.add(name);
 			}
 			catch (SQLException e) {
-				throw new RuntimeException(e);
+				throw new DatabaseException(e);
 			}
 		}
 	}

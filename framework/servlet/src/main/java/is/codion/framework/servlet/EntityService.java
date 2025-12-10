@@ -64,6 +64,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.Base64;
@@ -1167,7 +1168,7 @@ public final class EntityService implements AuxiliaryServer {
 							CLASSPATH_KEYSTORE.name(), file, KEYSTORE_PATH.name());
 		}
 		catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 

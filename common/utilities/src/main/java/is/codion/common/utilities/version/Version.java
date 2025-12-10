@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -214,7 +215,7 @@ public interface Version extends Comparable<Version> {
 			return Version.parse(version);
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Unable to parse version information", e);
+			throw new UncheckedIOException("Unable to parse version information", e);
 		}
 	}
 }

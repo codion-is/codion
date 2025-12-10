@@ -23,6 +23,7 @@ import is.codion.common.utilities.property.PropertyValue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -298,7 +299,7 @@ public final class Configuration {
 			return PropertyStore.propertyStore(configurationFileStream);
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Unable to load configuration from classpath: " + filePath, e);
+			throw new UncheckedIOException("Unable to load configuration from classpath: " + filePath, e);
 		}
 	}
 
@@ -316,7 +317,7 @@ public final class Configuration {
 			return PropertyStore.propertyStore(file);
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Unable to load configuration from file: " + filePath, e);
+			throw new UncheckedIOException("Unable to load configuration from file: " + filePath, e);
 		}
 	}
 

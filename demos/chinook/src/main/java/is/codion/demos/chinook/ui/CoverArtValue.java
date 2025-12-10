@@ -41,6 +41,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -205,7 +206,7 @@ final class CoverArtValue extends AbstractComponentValue<CoverArtValue.CoverArtP
 					return false;
 				}
 				catch (IOException e) {
-					throw new RuntimeException(e);
+					throw new UncheckedIOException(e);
 				}
 			}
 

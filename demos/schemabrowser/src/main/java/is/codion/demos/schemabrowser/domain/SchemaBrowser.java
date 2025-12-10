@@ -19,6 +19,7 @@
 package is.codion.demos.schemabrowser.domain;
 
 import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -49,7 +50,7 @@ public final class SchemaBrowser extends DomainModel {
 							new Locale(databaseFactoryClassName.substring(databaseFactoryClassName.lastIndexOf('.') + 1)));
 		}
 		catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new DatabaseException(e);
 		}
 	}
 

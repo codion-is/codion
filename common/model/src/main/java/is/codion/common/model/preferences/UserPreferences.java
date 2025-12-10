@@ -23,6 +23,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.BackingStoreException;
@@ -108,7 +109,7 @@ public final class UserPreferences {
 				return new FilePreferences(filename);
 			}
 			catch (IOException e) {
-				throw new RuntimeException(e);
+				throw new UncheckedIOException(e);
 			}
 		});
 	}

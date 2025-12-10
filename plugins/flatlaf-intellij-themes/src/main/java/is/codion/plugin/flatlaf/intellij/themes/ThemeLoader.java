@@ -22,6 +22,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -35,7 +36,7 @@ public final class ThemeLoader {
 			return new IntelliJTheme(inputStream);
 		}
 		catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 }

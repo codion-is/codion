@@ -52,6 +52,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Iterator;
@@ -266,7 +267,7 @@ final class SwingMcpServer {
 			return OBJECT_MAPPER.writeValueAsString(new WindowListResponse(getApplicationWindows()));
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Failed to serialize window information", e);
+			throw new UncheckedIOException("Failed to serialize window information", e);
 		}
 	}
 

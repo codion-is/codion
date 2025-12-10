@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.db;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -87,7 +88,7 @@ public final class SchemaDomain extends DomainModel {
 			return new SchemaDomain(requireNonNull(metaData), requireNonNull(schemaName), requireNonNull(settings));
 		}
 		catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new DatabaseException(e);
 		}
 	}
 
