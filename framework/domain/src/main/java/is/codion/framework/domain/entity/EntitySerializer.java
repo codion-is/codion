@@ -90,7 +90,7 @@ final class EntitySerializer {
 
 	void deserialize(SingleColumnKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		key.definition = entities.definition((String) stream.readObject());
-		key.column = (Column<Object>) attributeByName(key.definition, (String) stream.readObject());
+		key.column = (Column<Object>) key.definition.attributes().getOrThrow((String) stream.readObject());
 		key.value = stream.readObject();
 		key.primaryKey = stream.readBoolean();
 		key.hashCode = stream.readInt();

@@ -11,6 +11,7 @@ Codion Change Log
 - ColumnConditionPanel.createComponents() bug fixed, locked state validation was disabled a bit too late.
 ### is.codion.framework.domain
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
+- EntitySerializer bug fixed, key deserialization now fails if attribute is not found.
 ### is.codion.framework.db.local
 - SelectQueries.defaultAttributesCache removed, redundant, now uses EntityDefinition.Attributes.selected().
 - LocalEntityConnection.limitForeignKeyReferenceDepth() renamed limitReferenceDepth(), related renaming.
