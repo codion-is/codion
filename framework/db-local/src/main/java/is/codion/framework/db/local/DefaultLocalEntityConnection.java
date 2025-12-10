@@ -123,6 +123,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
 	private boolean limitReferenceDepth = LIMIT_REFERENCE_DEPTH.getOrThrow();
+	private int iteratorBufferSize = ITERATOR_BUFFER_SIZE.getOrThrow();
 	private int queryTimeout = QUERY_TIMEOUT.getOrThrow();
 	private boolean queryCacheEnabled = false;
 
@@ -700,7 +701,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	public EntityResultIterator iterator(Select select) {
 		synchronized (database) {
 			try {
-				return resultIterator(select);
+				EntityResultIterator iterator = resultIterator(select);
+				if (noForeignKeysToPopulate(select)) {
+					return iterator;
+				}
+
+				return new BufferedEntityResultIterator(this, iterator, select, iteratorBufferSize);
 			}
 			catch (SQLException e) {
 				throw database.exception(e, SELECT);
@@ -734,6 +740,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	public void optimisticLocking(boolean optimisticLocking) {
 		synchronized (database) {
 			this.optimisticLocking = optimisticLocking;
+		}
+	}
+
+	@Override
+	public int iteratorBufferSize() {
+		synchronized (database) {
+			return iteratorBufferSize;
+		}
+	}
+
+	@Override
+	public void iteratorBufferSize(int iteratorBufferSize) {
+		synchronized (database) {
+			this.iteratorBufferSize = iteratorBufferSize;
 		}
 	}
 
@@ -1016,9 +1036,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	 * @see #limitReferenceDepth(boolean)
 	 * @see Select.Builder#referenceDepth(int)
 	 */
-	private void populateForeignKeys(List<Entity> entities, Select select, int referenceDepth) throws SQLException {
+	void populateForeignKeys(List<Entity> entities, Select select, int referenceDepth) throws SQLException {
 		Collection<ForeignKeyDefinition> foreignKeysToSet =
-						foreignKeysToPopulate(entities.get(0).type(), select.attributes());
+						foreignKeysToPopulate(select, definition(entities.get(0).type()));
 		for (ForeignKeyDefinition foreignKeyDefinition : foreignKeysToSet) {
 			ForeignKey foreignKey = foreignKeyDefinition.attribute();
 			int referenceDepthLimit = select.referenceDepth(foreignKey)
@@ -1045,18 +1065,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 	}
 
-	private Collection<ForeignKeyDefinition> foreignKeysToPopulate(EntityType entityType,
-																																 Collection<Attribute<?>> conditionAttributes) {
-		Collection<ForeignKeyDefinition> foreignKeyDefinitions = definition(entityType).foreignKeys().definitions();
-		if (conditionAttributes.isEmpty()) {
-			return foreignKeyDefinitions;
-		}
+	private boolean noForeignKeysToPopulate(Select select) {
+		EntityDefinition entityDefinition = domain.entities().definition(select.where().entityType());
+		Set<Attribute<?>> attributes = new HashSet<>(SelectQueries.attributes(select, entityDefinition));
+		Set<ForeignKeyDefinition> foreignKeys = new HashSet<>(foreignKeysToPopulate(select, entityDefinition));
+		foreignKeys.removeIf(foreignKeyDefinition ->
+						referenceDepthZero(foreignKeyDefinition, select) ||
+										missingReferenceColumn(foreignKeyDefinition, attributes));
 
-		Set<Attribute<?>> selectAttributes = new HashSet<>(conditionAttributes);
-
-		return foreignKeyDefinitions.stream()
-						.filter(foreignKeyDefinition -> selectAttributes.contains(foreignKeyDefinition.attribute()))
-						.collect(toList());
+		return foreignKeys.isEmpty();
 	}
 
 	private boolean withinReferenceDepthLimit(int currentReferenceDepth, int referenceDepthLimit) {
@@ -1647,6 +1664,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						.allMatch(entity::contains);
 	}
 
+	private static boolean referenceDepthZero(ForeignKeyDefinition foreignKeyDefinition, Select select) {
+		return select.referenceDepth(foreignKeyDefinition.attribute()).orElse(foreignKeyDefinition.referenceDepth()) == 0;
+	}
+
+	private static boolean missingReferenceColumn(ForeignKeyDefinition foreignKeyDefinition, Set<Attribute<?>> attributes) {
+		return !foreignKeyDefinition.attribute().references().stream()
+						.map(Reference::column)
+						.allMatch(attributes::contains);
+	}
+
 	private static Collection<Attribute<?>> attributesToSelect(ForeignKeyDefinition foreignKeyDefinition,
 																														 Collection<? extends Attribute<?>> referencedAttributes) {
 		if (foreignKeyDefinition.attributes().isEmpty()) {
@@ -1657,6 +1684,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		selectAttributes.addAll(referencedAttributes);
 
 		return selectAttributes;
+	}
+
+	private static Collection<ForeignKeyDefinition> foreignKeysToPopulate(Select select, EntityDefinition entityDefinition) {
+		Collection<ForeignKeyDefinition> foreignKeyDefinitions = entityDefinition.foreignKeys().definitions();
+		if (select.attributes().isEmpty()) {
+			return foreignKeyDefinitions;
+		}
+
+		Set<Attribute<?>> selectAttributes = new HashSet<>(select.attributes());
+
+		return foreignKeyDefinitions.stream()
+						.filter(foreignKeyDefinition -> selectAttributes.contains(foreignKeyDefinition.attribute()))
+						.collect(toList());
 	}
 
 	private static String createValueString(List<?> values, List<ColumnDefinition<?>> columnDefinitions) {

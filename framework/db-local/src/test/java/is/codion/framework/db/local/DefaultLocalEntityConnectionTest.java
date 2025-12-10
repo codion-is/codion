@@ -41,6 +41,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
@@ -60,10 +61,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -1029,10 +1032,94 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void iterator() {
+	void iteratorForeignKeys() {
 		try (LocalEntityConnection connection = createConnection()) {
-			Condition condition = all(Employee.TYPE);
-			EntityResultIterator iterator = connection.iterator(condition);
+			connection.iteratorBufferSize(2);
+			try (EntityResultIterator iterator = connection.iterator(Condition.all(Employee.TYPE))) {
+				assertInstanceOf(BufferedEntityResultIterator.class, iterator);
+				while (iterator.hasNext()) {
+					Entity next = iterator.next();
+					assertTrue(next.contains(Employee.DEPARTMENT_FK));
+					assertTrue(next.contains(Employee.MGR_FK));
+				}
+			}
+			connection.iteratorBufferSize(3);
+			try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+							.exclude(Employee.DEPARTMENT_FK)
+							.build())) {
+				assertInstanceOf(BufferedEntityResultIterator.class, iterator);
+				while (iterator.hasNext()) {
+					Entity next = iterator.next();
+					assertFalse(next.contains(Employee.DEPARTMENT_FK));
+					assertTrue(next.contains(Employee.MGR_FK));
+				}
+			}
+			try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+							.exclude(Employee.DEPARTMENT_FK, Employee.MGR_FK)
+							.build())) {
+				while (iterator.hasNext()) {
+					Entity next = iterator.next();
+					assertFalse(next.contains(Employee.DEPARTMENT_FK));
+					assertFalse(next.contains(Employee.MGR_FK));
+				}
+			}
+			connection.iteratorBufferSize(5);
+			try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+							.referenceDepth(Employee.DEPARTMENT_FK, 0)
+							.referenceDepth(Employee.MGR_FK, 2)
+							.build())) {
+				assertInstanceOf(BufferedEntityResultIterator.class, iterator);
+				while (iterator.hasNext()) {
+					Entity next = iterator.next();
+					assertFalse(next.contains(Employee.DEPARTMENT_FK));
+					assertTrue(next.contains(Employee.MGR_FK));
+					if (!next.isNull(Employee.MGR_FK)) {// President has no mgr
+						assertTrue(next.get(Employee.MGR_FK).contains(Employee.MGR_FK));
+					}
+				}
+			}
+			try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+							.referenceDepth(0)
+							.build())) {
+				assertFalse(iterator instanceof BufferedEntityResultIterator);
+				while (iterator.hasNext()) {
+					Entity next = iterator.next();
+					assertFalse(next.contains(Employee.DEPARTMENT_FK));
+					assertFalse(next.contains(Employee.MGR_FK));
+				}
+			}
+			try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+							.referenceDepth(Employee.DEPARTMENT_FK, 0)
+							.referenceDepth(Employee.MGR_FK, 0)
+							.build())) {
+				assertFalse(iterator instanceof BufferedEntityResultIterator);
+				while (iterator.hasNext()) {
+					Entity next = iterator.next();
+					assertFalse(next.contains(Employee.DEPARTMENT_FK));
+					assertFalse(next.contains(Employee.MGR_FK));
+				}
+			}
+			Set<Attribute<?>> attributes = new HashSet<>(ENTITIES.definition(Employee.TYPE).attributes().selected());
+			attributes.remove(Employee.MGR);
+			attributes.remove(Employee.DEPARTMENT);
+			try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+							.attributes(attributes)
+							.build())) {
+				assertFalse(iterator instanceof BufferedEntityResultIterator);
+				while (iterator.hasNext()) {
+					Entity next = iterator.next();
+					assertFalse(next.contains(Employee.DEPARTMENT_FK));
+					assertFalse(next.contains(Employee.MGR_FK));
+				}
+			}
+		}
+	}
+
+	@Test
+	void iterator() {
+		Condition condition = all(Employee.TYPE);
+		int rowCount = connection.count(Count.where(condition));
+		try (EntityResultIterator iterator = connection.iterator(condition)) {
 			//calling hasNext() should be idempotent and not lose rows
 			assertTrue(iterator.hasNext());
 			assertTrue(iterator.hasNext());
@@ -1044,14 +1131,15 @@ public class DefaultLocalEntityConnectionTest {
 				counter++;
 			}
 			assertThrows(NoSuchElementException.class, iterator::next);
-			int rowCount = connection.count(Count.where(condition));
 			assertEquals(rowCount, counter);
-			iterator.close();
-			iterator = connection.iterator(condition);
-			counter = 0;
+		}
+		try (EntityResultIterator iterator = connection.iterator(condition)) {
+			int counter = 0;
 			try {
 				while (true) {
-					iterator.next();
+					Entity employee = iterator.next();
+					assertTrue(employee.contains(Employee.DEPARTMENT_FK));
+					assertTrue(employee.contains(Employee.MGR_FK));
 					counter++;
 				}
 			}

@@ -15,6 +15,9 @@ Codion Change Log
 - SelectQueries.defaultAttributesCache removed, redundant, now uses EntityDefinition.Attributes.selected().
 - LocalEntityConnection.limitForeignKeyReferenceDepth() renamed limitReferenceDepth(), related renaming.
 - LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH renamed to LIMIT_REFERENCE_DEPTH.
+- BufferedEntityResultIterator added, populates foreign keys in batches when iterating.
+- DefaultLocalEntityConnection.iterator() now uses buffered iterator when select includes foreign keys.
+- LocalEntityConnection.iteratorBufferSize() added along with ITERATOR_BUFFER_SIZE configuration value.
 ### is.codion.framework.model
 - DefaultEntityExport.addToRow() bug fixed, did not include empty values for null foreign keys.
 - EntityExport.Settings replaced with ExportAttributes, related refactoring.

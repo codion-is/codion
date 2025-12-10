@@ -23,7 +23,9 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
 
@@ -66,6 +68,27 @@ public interface LocalEntityConnection extends EntityConnection {
 	PropertyValue<Integer> QUERY_TIMEOUT = integerValue("codion.db.queryTimeout", 120);
 
 	/**
+	 * Specifies the buffer size to use when iterating over entities.
+	 * <p>
+	 * When iterating, entities are fetched in batches of this size to allow for
+	 * efficient population of foreign key references. Each batch has its foreign
+	 * keys populated before the entities are returned via {@link EntityResultIterator#next()}.
+	 * <p>
+	 * Note that buffering is only performed when there are foreign keys to populate.
+	 * If the select does not include any foreign keys (or all have reference depth 0),
+	 * the iterator returns entities directly without buffering, minimizing memory overhead.
+	 * @see EntityConnection#iterator(Select)
+	 * @see EntityConnection#iterator(Condition)
+	 * @see #iteratorBufferSize()
+	 * @see #iteratorBufferSize(int)
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 200
+	 * </ul>
+	 */
+	PropertyValue<Integer> ITERATOR_BUFFER_SIZE = integerValue("codion.db.iteratorBufferSize", 200);
+
+	/**
 	 * Specifies whether optimistic locking should be performed, that is, if entities should
 	 * be selected for update and checked for modification before being updated
 	 * <ul>
@@ -105,6 +128,24 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @param optimisticLocking true if optimistic locking should be enabled
 	 */
 	void optimisticLocking(boolean optimisticLocking);
+
+	/**
+	 * Returns the buffer size used when iterating over entities with foreign keys to populate.
+	 * @return the iterator buffer size
+	 * @see #ITERATOR_BUFFER_SIZE
+	 * @see EntityConnection#iterator(Select)
+	 * @see EntityConnection#iterator(Condition)
+	 */
+	int iteratorBufferSize();
+
+	/**
+	 * Sets the buffer size to use when iterating over entities with foreign keys to populate.
+	 * @param iteratorBufferSize the buffer size
+	 * @see #ITERATOR_BUFFER_SIZE
+	 * @see EntityConnection#iterator(Select)
+	 * @see EntityConnection#iterator(Condition)
+	 */
+	void iteratorBufferSize(int iteratorBufferSize);
 
 	/**
 	 * @return true if foreign key reference depths are being limited

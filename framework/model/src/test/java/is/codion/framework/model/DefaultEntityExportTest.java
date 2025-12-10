@@ -23,6 +23,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -135,15 +136,16 @@ public final class DefaultEntityExportTest {
 
 		StringBuilder output = new StringBuilder();
 		EntityConnection connection = CONNECTION_PROVIDER.connection();
-		EntityExport.builder(CONNECTION_PROVIDER)
-						.entityType(Employee.TYPE)
-						.attributes(employee -> employee.include(employeeAttributes))
-						.entities(connection.select(Select.all(Employee.TYPE)
-														.orderBy(ascending(Employee.NAME))
-														.build())
-										.iterator())
-						.output(output::append)
-						.export();
+		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+						.orderBy(ascending(Employee.NAME))
+						.build())) {
+			EntityExport.builder(CONNECTION_PROVIDER)
+							.entityType(Employee.TYPE)
+							.attributes(employee -> employee.include(employeeAttributes))
+							.entities(iterator)
+							.output(output::append)
+							.export();
+		}
 
 		String exportResult = textFileContents(DefaultEntityExportTest.class, "employee.tsv");
 		assertEquals(exportResult, output.toString());
@@ -153,17 +155,18 @@ public final class DefaultEntityExportTest {
 	void employeeDepartment() throws IOException {
 		StringBuilder output = new StringBuilder();
 		EntityConnection connection = CONNECTION_PROVIDER.connection();
-		EntityExport.builder(CONNECTION_PROVIDER)
-						.entityType(Employee.TYPE)
-						.attributes(employee -> employee.include(Employee.NAME)
-										.attributes(Employee.DEPARTMENT_FK, department ->
-														department.include(Department.NAME, Department.LOCATION)))
-						.entities(connection.select(Select.all(Employee.TYPE)
-														.orderBy(ascending(Employee.NAME))
-														.build())
-										.iterator())
-						.output(output::append)
-						.export();
+		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+						.orderBy(ascending(Employee.NAME))
+						.build())) {
+			EntityExport.builder(CONNECTION_PROVIDER)
+							.entityType(Employee.TYPE)
+							.attributes(employee -> employee.include(Employee.NAME)
+											.attributes(Employee.DEPARTMENT_FK, department ->
+															department.include(Department.NAME, Department.LOCATION)))
+							.entities(iterator)
+							.output(output::append)
+							.export();
+		}
 
 		String exportResult = textFileContents(DefaultEntityExportTest.class, "employee_department.tsv");
 		assertEquals(exportResult, output.toString());
@@ -173,20 +176,21 @@ public final class DefaultEntityExportTest {
 	void employeeManagerDepartmentLevel() throws IOException {
 		StringBuilder output = new StringBuilder();
 		EntityConnection connection = CONNECTION_PROVIDER.connection();
-		EntityExport.builder(CONNECTION_PROVIDER)
-						.entityType(Employee.TYPE)
-						.attributes(employee -> employee
-										.include(Employee.NAME)
-										.attributes(Employee.MGR_FK, manager ->
-														manager.include(Employee.NAME)
-																		.attributes(Employee.DEPARTMENT_FK, managerDepartment ->
-																						managerDepartment.include(Department.NAME, Department.LOCATION))))
-						.entities(connection.select(Select.all(Employee.TYPE)
-														.orderBy(ascending(Employee.NAME))
-														.build())
-										.iterator())
-						.output(output::append)
-						.export();
+		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+						.orderBy(ascending(Employee.NAME))
+						.build())) {
+			EntityExport.builder(CONNECTION_PROVIDER)
+							.entityType(Employee.TYPE)
+							.attributes(employee -> employee
+											.include(Employee.NAME)
+											.attributes(Employee.MGR_FK, manager ->
+															manager.include(Employee.NAME)
+																			.attributes(Employee.DEPARTMENT_FK, managerDepartment ->
+																							managerDepartment.include(Department.NAME, Department.LOCATION))))
+							.entities(iterator)
+							.output(output::append)
+							.export();
+		}
 
 		String exportResult = textFileContents(DefaultEntityExportTest.class, "employee_manager_department.tsv");
 		assertEquals(exportResult, output.toString());
@@ -206,24 +210,25 @@ public final class DefaultEntityExportTest {
 		StringBuilder output = new StringBuilder();
 		AtomicInteger count = new AtomicInteger();
 		EntityConnection connection = CONNECTION_PROVIDER.connection();
-		EntityExport.builder(CONNECTION_PROVIDER)
-						.entityType(Employee.TYPE)
-						.attributes(employee -> employee
-										.include(employeeAttributes)
-										.attributes(Employee.DEPARTMENT_FK, department ->
-														department.include(departmentAttributes))
-										.attributes(Employee.MGR_FK, manager ->
-														manager.include(employeeAttributes)
-																		.attributes(Employee.MGR_FK, managersManager ->
-																						managersManager.include(employeeAttributes))))
-						.entities(connection.select(Select.all(Employee.TYPE)
-														.orderBy(ascending(Employee.NAME))
-														.build())
-										.iterator())
-						.output(output::append)
-						.processed(entity -> count.getAndIncrement())
-						.cancel(State.state())
-						.export();
+		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
+						.orderBy(ascending(Employee.NAME))
+						.build())) {
+			EntityExport.builder(CONNECTION_PROVIDER)
+							.entityType(Employee.TYPE)
+							.attributes(employee -> employee
+											.include(employeeAttributes)
+											.attributes(Employee.DEPARTMENT_FK, department ->
+															department.include(departmentAttributes))
+											.attributes(Employee.MGR_FK, manager ->
+															manager.include(employeeAttributes)
+																			.attributes(Employee.MGR_FK, managersManager ->
+																							managersManager.include(employeeAttributes))))
+							.entities(iterator)
+							.output(output::append)
+							.processed(entity -> count.getAndIncrement())
+							.cancel(State.state())
+							.export();
+		}
 
 		String exportResult = textFileContents(DefaultEntityExportTest.class, "employee_export.tsv");
 		assertEquals(exportResult, output.toString());
