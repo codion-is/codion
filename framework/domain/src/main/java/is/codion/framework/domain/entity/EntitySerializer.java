@@ -117,13 +117,13 @@ final class EntitySerializer {
 		return map;
 	}
 
-	private void deserializeValues(CompositeColumnKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+	private static void deserializeValues(CompositeColumnKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		key.primary = stream.readBoolean();
 		int valueCount = stream.readInt();
 		key.columns = new ArrayList<>(valueCount);
 		key.values = new HashMap<>(valueCount);
 		for (int i = 0; i < valueCount; i++) {
-			Column<Object> attribute = (Column<Object>) attributeByName(key.definition, (String) stream.readObject());
+			Column<Object> attribute = (Column<Object>) key.definition.attributes().getOrThrow((String) stream.readObject());
 			Object value = stream.readObject();
 			if (attribute != null) {
 				key.columns.add(attribute);
