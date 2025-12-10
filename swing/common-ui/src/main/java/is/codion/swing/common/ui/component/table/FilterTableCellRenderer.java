@@ -148,9 +148,9 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	Border cellBorder();
 
 	/**
-	 * @return the cell renderer configurers
+	 * @return the cell renderer customizers
 	 */
-	Collection<Configurer<R, C>> configurers();
+	Collection<Customizer<R, C>> customizers();
 
 	/**
 	 * @param <R> the row type
@@ -180,14 +180,14 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	}
 
 	/**
-	 * Configures a renderer component for a given cell
+	 * Customizes a renderer component for a given cell
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
-	interface Configurer<R, C> {
+	interface Customizer<R, C> {
 
 		/**
-		 * @return true if this configurer is enabled
+		 * @return true if this customizer is enabled
 		 */
 		boolean enabled();
 
@@ -196,7 +196,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 		 * @param identifier the column identifier
 		 * @param component the renderer component
 		 */
-		void configure(FilterTable<R, C> table, C identifier, JComponent component);
+		void customize(FilterTable<R, C> table, C identifier, JComponent component);
 	}
 
 	/**
@@ -285,10 +285,10 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 		Builder<R, C, T> foreground(CellColor<R, C, T> foreground);
 
 		/**
-		 * @param configurer configures the renderer component for a given cell
+		 * @param customizer customizes the renderer component for a given cell
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> configurer(Configurer<R, C> configurer);
+		Builder<R, C, T> customizer(Customizer<R, C> customizer);
 
 		/**
 		 * Wraps the given renderer, using it as the base renderer before

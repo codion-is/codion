@@ -103,8 +103,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	}
 
 	@Override
-	public Collection<Configurer<R, C>> configurers() {
-		return settings.configurers;
+	public Collection<Customizer<R, C>> customizers() {
+		return settings.customizers;
 	}
 
 	@Override
@@ -175,8 +175,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Collection<Configurer<R, C>> configurers() {
-			return settings.configurers;
+		public Collection<Customizer<R, C>> customizers() {
+			return settings.customizers;
 		}
 
 		@Override
@@ -200,7 +200,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final boolean setBorder;
 		private final CellColor<R, C, T> backgroundColor;
 		private final CellColor<R, C, T> foregroundColor;
-		private final Collection<Configurer<R, C>> configurers = new ArrayList<>();
+		private final Collection<Customizer<R, C>> customizers = new ArrayList<>();
 		private final int horizontalAlignment;
 		private final @Nullable Function<T, String> toolTip;
 		private final Function<T, String> formatter;
@@ -212,9 +212,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.alternateRowColoring = builder.alternateRowColoring;
 			this.filterIndicator = builder.filterIndicator;
 			if (filterIndicator) {
-				configurers.add(new FilterIndicator<>());
+				customizers.add(new FilterIndicator<>());
 			}
-			this.configurers.addAll(builder.configurers);
+			this.customizers.addAll(builder.customizers);
 			this.backgroundColor = builder.backgroundColor;
 			this.focusedCellIndicator = builder.focusedCellIndicator;
 			this.setBorder = builder.setBorder;
@@ -246,9 +246,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 			component.setBackground(background);
 			setComponentBorder(component, isSearchResult(filterTable.search(), rowIndex, columnIndex), hasFocus);
-			for (Configurer configurer : configurers) {
-				if (configurer.enabled()) {
-					configurer.configure(filterTable, identifier, component);
+			for (Customizer<R, C> customizer : customizers) {
+				if (customizer.enabled()) {
+					customizer.customize(filterTable, identifier, component);
 				}
 			}
 		}
@@ -350,7 +350,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
-	private static final class FilterIndicator<R, C> implements Configurer<R, C> {
+	private static final class FilterIndicator<R, C> implements Customizer<R, C> {
 
 		private @Nullable ObservableState filterEnabled;
 		private boolean filterEnabledSet = false;
@@ -361,7 +361,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public void configure(FilterTable<R, C> table, C identifier, JComponent component) {
+		public void customize(FilterTable<R, C> table, C identifier, JComponent component) {
 			if (filterEnabled(identifier, table.model())) {
 				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
 			}
@@ -390,7 +390,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private static final OffsetDateTimeFormatter OFFSET_DATE_TIME_FORMATTER = new OffsetDateTimeFormatter();
 		private static final DefaultFormatter<Object> FORMATTER = new DefaultFormatter<>();
 
-		private final Collection<Configurer<R, C>> configurers = new ArrayList<>();
+		private final Collection<Customizer<R, C>> customizers = new ArrayList<>();
 
 		private int leftPadding = TABLE_CELL_LEFT_PADDING.getOrThrow();
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
@@ -449,8 +449,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> configurer(Configurer<R, C> configurer) {
-			configurers.add(requireNonNull(configurer));
+		SettingsBuilder<R, C, T> customizer(Customizer<R, C> customizer) {
+			customizers.add(requireNonNull(customizer));
 			return this;
 		}
 
@@ -652,8 +652,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Builder<R, C, T> configurer(Configurer configurer) {
-			this.settings.configurer(configurer);
+		public Builder<R, C, T> customizer(Customizer<R, C> customizer) {
+			this.settings.customizer(customizer);
 			return this;
 		}
 

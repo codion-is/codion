@@ -9,6 +9,7 @@ Codion Change Log
 - AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
 - DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.
 - ColumnConditionPanel.createComponents() bug fixed, locked state validation was disabled a bit too late.
+- FilterTableCellRenderer.Configurer renamed Customizer.
 ### is.codion.framework.domain
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
 - EntitySerializer bug fixed, key deserialization now fails if attribute is not found.

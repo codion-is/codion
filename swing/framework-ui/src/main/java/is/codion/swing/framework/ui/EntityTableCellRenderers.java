@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Configurer;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.Customizer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jspecify.annotations.Nullable;
@@ -75,7 +75,7 @@ public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory
 	static <T> FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> configure(AttributeDefinition<T> attributeDefinition,
 																																								FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> renderer) {
 		renderer.formatter(attributeDefinition::format)
-						.configurer(new ConditionIndicator());
+						.customizer(new ConditionIndicator());
 		if (itemBased(attributeDefinition)) {
 			// Otherwise the horizontal aligment is based on the Item value type
 			renderer.horizontalAlignment(FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.getOrThrow());
@@ -88,7 +88,7 @@ public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory
 		return definition instanceof ValueAttributeDefinition<?> && !((ValueAttributeDefinition<?>) definition).items().isEmpty();
 	}
 
-	static final class ConditionIndicator implements Configurer<Entity, Attribute<?>> {
+	static final class ConditionIndicator implements Customizer<Entity, Attribute<?>> {
 
 		private static final double DARKENING_FACTOR = 0.9;
 
@@ -98,7 +98,7 @@ public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory
 		boolean enabled;
 
 		@Override
-		public void configure(FilterTable<Entity, Attribute<?>> table, Attribute<?> attribute, JComponent component) {
+		public void customize(FilterTable<Entity, Attribute<?>> table, Attribute<?> attribute, JComponent component) {
 			if (conditionEnabled(attribute, (SwingEntityTableModel) table.model())) {
 				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
 			}

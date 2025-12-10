@@ -2690,10 +2690,10 @@ public class EntityTablePanel extends JPanel {
 							.map(TableColumn::getCellRenderer)
 							.filter(FilterTableCellRenderer.class::isInstance)
 							.map(renderer -> (FilterTableCellRenderer<?, ?, ?>) renderer)
-							.flatMap(renderer -> renderer.configurers().stream())
+							.flatMap(renderer -> renderer.customizers().stream())
 							.filter(ConditionIndicator.class::isInstance)
 							.map(ConditionIndicator.class::cast)
-							.forEach(configurer -> configurer.enabled = conditionIndicator);
+							.forEach(customizer -> customizer.enabled = conditionIndicator);
 			filterTable.columnModel().columns().stream()
 							.map(TableColumn::getHeaderRenderer)
 							.filter(EntityTableHeaderRenderer.class::isInstance)
