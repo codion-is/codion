@@ -624,12 +624,13 @@ public final class FilterTable<R, C> extends JTable {
 	 * <p>Copies the table data as a TAB delimited string, with header, to the clipboard.
 	 * <p>If the selection is empty, all rows are included, otherwise only selected ones.
 	 * <p>If column selection is enabled, only selected columns are included, otherwise all visible columns.
+	 * @see #getColumnSelectionAllowed()
 	 */
 	public void copyToClipboard() {
 		Utilities.setClipboard(tableModel.export()
 						.columns(getColumnSelectionAllowed() ?
-										columnModel().visible().get() :
-										columnModel().selection().identifiers().getOrThrow())
+										columnModel().selection().identifiers().getOrThrow() :
+										columnModel().visible().get())
 						.delimiter('\t')
 						.selected(!selectionModel.isSelectionEmpty())
 						.get());

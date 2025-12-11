@@ -12,6 +12,7 @@ Codion Change Log
 - ColumnConditionPanel.createComponents() bug fixed, locked state validation was disabled a bit too late.
 - FilterTableCellRenderer.Configurer renamed Customizer.
 - ExceptionDialogBuilder, RuntimeException no longer a wrapping exception by default.
+- FilterTable.copyToClipboard() bug fixed, only included selected columns, even when column selection was not enabled.
 ### is.codion.framework.domain
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
 - EntitySerializer bug fixed, key deserialization now fails if attribute is not found.
