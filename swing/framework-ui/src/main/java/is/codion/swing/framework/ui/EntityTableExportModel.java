@@ -63,7 +63,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Comparator.comparing;
@@ -617,29 +616,20 @@ final class EntityTableExportModel {
 		State include();
 	}
 
-	static final class MutableAttributeNode extends DefaultMutableTreeNode implements AttributeNode, Consumer<Boolean> {
+	static final class MutableAttributeNode extends DefaultMutableTreeNode implements AttributeNode {
 
-		private final DefaultTreeModel treeModel;
-		private final State include = State.state();
+		private final Attribute<?> attribute;
+		private final State include;
 
 		private MutableAttributeNode(DefaultTreeModel treeModel, Attribute<?> attribute) {
-			super(attribute);
-			this.treeModel = treeModel;
-			this.include.addConsumer(this);
-		}
-
-		@Override
-		public void accept(Boolean included) {
-			treeModel.nodeChanged(this);
-			TreeNode parent = getParent();
-			while (parent != null) {
-				treeModel.nodeChanged(parent);
-				parent = parent.getParent();
-			}
+			this.attribute = attribute;
+			this.include = State.builder()
+							.listener(new NodeChanged(treeModel, this))
+							.build();
 		}
 
 		public Attribute<?> attribute() {
-			return (Attribute<?>) getUserObject();
+			return attribute;
 		}
 
 		public State include() {
@@ -650,11 +640,14 @@ final class EntityTableExportModel {
 	static final class MutableForeignKeyNode extends EntityNode implements AttributeNode {
 
 		private final ForeignKey foreignKey;
-		private final State include = State.state();
+		private final State include;
 
 		private MutableForeignKeyNode(ExportTreeModel treeModel, ForeignKey foreignKey) {
 			super(foreignKey.referencedType(), treeModel);
 			this.foreignKey = foreignKey;
+			this.include = State.builder()
+							.listener(new NodeChanged(treeModel, this))
+							.build();
 		}
 
 		@Override
@@ -697,6 +690,27 @@ final class EntityTableExportModel {
 			}
 
 			return counter;
+		}
+	}
+
+	private static final class NodeChanged implements Runnable {
+
+		private final DefaultTreeModel model;
+		private final DefaultMutableTreeNode node;
+
+		private NodeChanged(DefaultTreeModel model, DefaultMutableTreeNode node) {
+			this.model = model;
+			this.node = node;
+		}
+
+		@Override
+		public void run() {
+			model.nodeChanged(node);
+			TreeNode parent = node.getParent();
+			while (parent != null) {
+				model.nodeChanged(parent);
+				parent = parent.getParent();
+			}
 		}
 	}
 

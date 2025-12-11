@@ -35,6 +35,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityTableExportModel refactored.
 - EntityComboBoxModel.find(key) removed, select(key) validates type.
+- EntityTableExportModel bug fixed, foreign key node not changed when included.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, search can no longer be triggered while search is ongoing.
 - EntitySearchField, ESC key now cancels current search and all typed keys are consumed while search is ongoing.
