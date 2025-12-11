@@ -26,7 +26,7 @@ import java.util.function.Predicate;
  * {@snippet :
  * selection.item()
  *     .when(Objects::nonNull)
- *     .accept(this::onSelection);
+ *     .consume(this::onSelection);
  *
  * state.when(true)
  *     .run(this::onEnabled);
@@ -49,5 +49,5 @@ public interface Conditional<T> {
 	 * @param consumer the consumer to call with the observed value
 	 * @return the {@link Observer} for further configuration
 	 */
-	Observer<T> accept(Consumer<? super T> consumer);
+	Observer<T> consume(Consumer<? super T> consumer);
 }

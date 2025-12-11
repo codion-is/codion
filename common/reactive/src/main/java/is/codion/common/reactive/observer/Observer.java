@@ -125,7 +125,7 @@ public interface Observer<T> {
 	 * value
 	 *     .when(1).run(() -> System.out.println("one"))
 	 *     .when(2).run(() -> System.out.println("two"))
-	 *     .when(v -> v > 10).accept(this::handleLarge);
+	 *     .when(v -> v > 10).consume(this::handleLarge);
 	 *}
 	 * @return a new {@link Conditional}
 	 */
@@ -139,7 +139,7 @@ public interface Observer<T> {
 	 * {@snippet :
 	 * selection.item()
 	 *     .when(Objects::nonNull)
-	 *     .accept(this::handleSelectedItem)
+	 *     .consume(this::handleSelectedItem)
 	 *     .when(Objects::isNull)
 	 *     .run(this::onEmptySelection);
 	 *}

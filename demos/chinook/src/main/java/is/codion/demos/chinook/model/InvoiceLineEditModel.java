@@ -40,7 +40,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		// We populate the unit price when the track is edited
 		editor().value(InvoiceLine.TRACK_FK).edited()
 						.when(Objects::nonNull)
-						.accept(this::setUnitPrice)
+						.consume(this::setUnitPrice)
 						.when(Objects::isNull)
 						.run(this::clearUnitPrice);
 	}

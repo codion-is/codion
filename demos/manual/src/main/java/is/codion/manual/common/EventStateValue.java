@@ -250,7 +250,7 @@ public final class EventStateValue {
 						.run(() -> System.out.println("Value is one"));
 
 		value.when(2)
-						.accept(System.out::println);
+						.consume(System.out::println);
 
 		value.when(Objects::isNull)
 						.run(() -> System.out.println("Value is null"));
@@ -261,7 +261,7 @@ public final class EventStateValue {
 						.when(2)
 						.run(() -> System.out.println("two"))
 						.when(v -> v > 10)
-						.accept(v -> System.out.println("Large value: " + v));
+						.consume(v -> System.out.println("Large value: " + v));
 
 		// React to boolean states
 		State enabled = State.state();

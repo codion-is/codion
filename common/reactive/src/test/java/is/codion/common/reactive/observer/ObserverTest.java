@@ -43,13 +43,13 @@ public final class ObserverTest {
 		value.when(1)
 						.run(oneCounter::incrementAndGet)
 						.when(1)
-						.accept(intValue::set)
+						.consume(intValue::set)
 						.when(2)
 						.run(twoCounter::incrementAndGet)
 						.when(Objects::isNull)
 						.run(nullCounter::incrementAndGet)
 						.when(Objects::isNull)
-						.accept(intValue::set);
+						.consume(intValue::set);
 
 		value.set(1);
 		assertEquals(1, intValue.get());

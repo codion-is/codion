@@ -126,7 +126,7 @@ public final class FrameworkModelDemo {
 		// Listen for selection changes
 		tableModel.selection().item()
 						.when(Objects::nonNull)
-						.accept(this::loadDetails);
+						.consume(this::loadDetails);
 		// end::eventSystem[]
 	}
 

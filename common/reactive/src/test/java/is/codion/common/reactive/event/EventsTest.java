@@ -255,7 +255,7 @@ public class EventsTest {
 		AtomicInteger consumerSum = new AtomicInteger();
 
 		event.addListener(listenerCounter::incrementAndGet);
-		event.when(Objects::nonNull).accept(consumerSum::addAndGet);
+		event.when(Objects::nonNull).consume(consumerSum::addAndGet);
 
 		CountDownLatch startLatch = new CountDownLatch(1);
 		CountDownLatch doneLatch = new CountDownLatch(threadCount);

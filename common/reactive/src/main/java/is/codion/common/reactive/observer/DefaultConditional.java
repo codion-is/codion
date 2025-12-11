@@ -42,14 +42,14 @@ final class DefaultConditional<T> implements Conditional<T> {
 
 	@Override
 	public Observer<T> run(Runnable runnable) {
-		new Runner<>(observer, predicate, requireNonNull(runnable));
+		new ConditionalRunner<>(observer, predicate, requireNonNull(runnable));
 
 		return observer;
 	}
 
 	@Override
-	public Observer<T> accept(Consumer<? super T> consumer) {
-		new Acceptor<>(observer, predicate, requireNonNull(consumer));
+	public Observer<T> consume(Consumer<? super T> consumer) {
+		new ConditionalConsumer<>(observer, predicate, requireNonNull(consumer));
 
 		return observer;
 	}
@@ -68,12 +68,12 @@ final class DefaultConditional<T> implements Conditional<T> {
 		}
 	}
 
-	private static final class Runner<T> implements Consumer<T> {
+	private static final class ConditionalRunner<T> implements Consumer<T> {
 
 		private final Predicate<? super T> predicate;
 		private final Runnable listener;
 
-		private Runner(Observer<T> observer, Predicate<? super T> predicate, Runnable listener) {
+		private ConditionalRunner(Observer<T> observer, Predicate<? super T> predicate, Runnable listener) {
 			this.predicate = predicate;
 			this.listener = listener;
 			observer.addConsumer(this);
@@ -87,12 +87,12 @@ final class DefaultConditional<T> implements Conditional<T> {
 		}
 	}
 
-	private static final class Acceptor<T> implements Consumer<T> {
+	private static final class ConditionalConsumer<T> implements Consumer<T> {
 
 		private final Predicate<? super T> predicate;
 		private final Consumer<? super T> consumer;
 
-		private Acceptor(Observer<T> observer, Predicate<? super T> predicate, Consumer<? super T> consumer) {
+		private ConditionalConsumer(Observer<T> observer, Predicate<? super T> predicate, Consumer<? super T> consumer) {
 			this.predicate = predicate;
 			this.consumer = consumer;
 			observer.addConsumer(this);
