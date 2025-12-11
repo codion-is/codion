@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
@@ -205,15 +206,16 @@ public final class EntitySearchField extends HintTextField {
 	private static final String DEFAULT_SEPARATOR = ", ";
 
 	private final EntitySearchModel model;
-	private final State searchEnabled = State.builder()
-					.listener(this::updateColors)
-					.build();
 	private final Function<Entity, String> formatter;
 	private final String separator;
 	private final boolean searchOnFocusLost;
 	private final boolean selectionToolTip;
 	private final boolean singleSelection;
+	private final State searchReady = State.builder()
+					.listener(this::updateColors)
+					.build();
 	private final State searching = State.state();
+	private final ObservableState searchEnabled = State.and(searchReady, searching.not());
 	private final Consumer<Boolean> searchIndicator;
 	private final int searchRefreshProgressBarDelay;
 	private final Function<EntitySearchField, Selector> selector;
@@ -508,7 +510,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void bindEvents() {
 		getDocument().addDocumentListener((DocumentAdapter) e -> updateSearchStrings());
-		model.search().strings().addListener(this::updateSearchEnabled);
+		model.search().strings().addListener(this::updateSearchReady);
 		model.selection().entities().addListener(this::onSelectionChanged);
 		addFocusListener(new FocusListener());
 		addKeyListener(new EnterEscapeListener());
@@ -524,8 +526,8 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private void updateSearchEnabled() {
-		searchEnabled.set(getText().isEmpty() && model.selection().empty().not().is() || !getText().equals(selectionString()));
+	private void updateSearchReady() {
+		searchReady.set(getText().isEmpty() && model.selection().empty().not().is() || !getText().equals(selectionString()));
 	}
 
 	private void onSelectionChanged() {
@@ -536,7 +538,7 @@ public final class EntitySearchField extends HintTextField {
 		setText(text);
 		setCaretPosition(text.length());
 		moveCaretPosition(0);
-		searchEnabled.set(false);
+		searchReady.set(false);
 	}
 
 	private Consumer<Boolean> createSearchIndicator(SearchIndicator indicator) {
@@ -558,7 +560,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void updateColors() {
 		if (isEnabled()) {
-			setBackground(searchEnabled.is() ? searchBackgroundColor : backgroundColor);
+			setBackground(searchReady.is() ? searchBackgroundColor : backgroundColor);
 		}
 	}
 
@@ -586,11 +588,11 @@ public final class EntitySearchField extends HintTextField {
 		if (model.search().strings().isEmpty()) {
 			model.selection().clear();
 		}
-		else if (searchEnabled.is()) {
+		else {
 			cancelCurrentSearch();
-			searching.set(true);
 			searchWorker = ProgressWorker.builder()
 							.task(model.search()::result)
+							.onStarted(this::handleStart)
 							.onResult(searchResult -> handleResult(searchResult, promptUser))
 							.onException(this::handleException)
 							.onCancelled(this::handleCancel)
@@ -604,6 +606,10 @@ public final class EntitySearchField extends HintTextField {
 		if (currentWorker != null) {
 			currentWorker.cancel(true);
 		}
+	}
+
+	private void handleStart() {
+		searching.set(true);
 	}
 
 	private void handleResult(List<Entity> searchResult, boolean promptUser) {
@@ -1079,22 +1085,44 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private boolean shouldPerformSearch() {
-			return searchOnFocusLost && !searching.is() && searchEnabled.is();
+			return searchOnFocusLost && searchEnabled.is();
 		}
 	}
 
 	private final class EnterEscapeListener extends KeyAdapter {
+
 		@Override
 		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == VK_ENTER) {
+				onEnter(e);
+			}
+			else if (e.getKeyCode() == VK_ESCAPE) {
+				onEscape(e);
+			}
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			if (searching.is()) {
+				e.consume();
+			}
+		}
+
+		private void onEnter(KeyEvent e) {
 			if (searchEnabled.is()) {
-				if (e.getKeyCode() == VK_ENTER) {
-					e.consume();
-					performSearch(true);
-				}
-				else if (e.getKeyCode() == VK_ESCAPE) {
-					e.consume();
-					onSelectionChanged();
-				}
+				e.consume();
+				performSearch(true);
+			}
+		}
+
+		private void onEscape(KeyEvent e) {
+			if (searchEnabled.is()) {
+				e.consume();
+				onSelectionChanged();
+			}
+			else if (searching.is()) {
+				e.consume();
+				cancelCurrentSearch();
 			}
 		}
 	}
