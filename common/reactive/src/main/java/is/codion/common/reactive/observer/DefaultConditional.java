@@ -29,44 +29,29 @@ import static java.util.Objects.requireNonNull;
 final class DefaultConditional<T> implements Conditional<T> {
 
 	private final Observer<T> observer;
+	private final Predicate<? super T> predicate;
 
-	DefaultConditional(Observer<T> observer) {
+	DefaultConditional(Observer<T> observer, @Nullable T value) {
+		this(observer, new Equals<>(value));
+	}
+
+	DefaultConditional(Observer<T> observer, Predicate<? super T> predicate) {
 		this.observer = observer;
+		this.predicate = predicate;
 	}
 
 	@Override
-	public OnCondition<T> when(@Nullable T value) {
-		return when(new Equals<>(value));
+	public Observer<T> run(Runnable runnable) {
+		new Runner<>(observer, predicate, requireNonNull(runnable));
+
+		return observer;
 	}
 
 	@Override
-	public OnCondition<T> when(Predicate<? super T> predicate) {
-		return new DefaultOnCondition<>(observer, requireNonNull(predicate));
-	}
+	public Observer<T> accept(Consumer<? super T> consumer) {
+		new Acceptor<>(observer, predicate, requireNonNull(consumer));
 
-	private static final class DefaultOnCondition<T> implements OnCondition<T> {
-
-		private final Observer<T> observer;
-		private final Predicate<? super T> predicate;
-
-		private DefaultOnCondition(Observer<T> observer, Predicate<? super T> predicate) {
-			this.observer = observer;
-			this.predicate = predicate;
-		}
-
-		@Override
-		public Conditional<T> run(Runnable runnable) {
-			new Runner<>(observer, predicate, requireNonNull(runnable));
-
-			return new DefaultConditional<>(observer);
-		}
-
-		@Override
-		public Conditional<T> accept(Consumer<? super T> consumer) {
-			new Acceptor<>(observer, predicate, requireNonNull(consumer));
-
-			return new DefaultConditional<>(observer);
-		}
+		return observer;
 	}
 
 	private static final class Equals<T> implements Predicate<T> {

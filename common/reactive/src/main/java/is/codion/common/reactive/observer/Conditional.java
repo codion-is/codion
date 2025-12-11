@@ -38,38 +38,16 @@ import java.util.function.Predicate;
 public interface Conditional<T> {
 
 	/**
-	 * Specifies a value to trigger the action. The action is triggered
-	 * when the observed value equals the given value (using {@link java.util.Objects#equals(Object, Object)}).
-	 * @param value the value to react to (may be null)
-	 * @return an {@link OnCondition} instance
+	 * Adds a {@link Runnable} to run when the condition is met.
+	 * @param runnable the runnable to run
+	 * @return the {@link Observer} for further configuration
 	 */
-	OnCondition<T> when(T value);
+	Observer<T> run(Runnable runnable);
 
 	/**
-	 * Specifies a predicate to determine when the action should be triggered.
-	 * @param predicate the predicate to test observed values against
-	 * @return an {@link OnCondition} instance
+	 * Adds a {@link Consumer} to call when the condition is met.
+	 * @param consumer the consumer to call with the observed value
+	 * @return the {@link Observer} for further configuration
 	 */
-	OnCondition<T> when(Predicate<? super T> predicate);
-
-	/**
-	 * Specifies what action to take on a given condition.
-	 * @param <T> the observed value type
-	 */
-	interface OnCondition<T> {
-
-		/**
-		 * Adds a {@link Runnable} to run when the condition is met.
-		 * @param runnable the runnable to run
-		 * @return the {@link Conditional} for further configuration
-		 */
-		Conditional<T> run(Runnable runnable);
-
-		/**
-		 * Adds a {@link Consumer} to call when the condition is met.
-		 * @param consumer the consumer to call with the observed value
-		 * @return the {@link Conditional} for further configuration
-		 */
-		Conditional<T> accept(Consumer<? super T> consumer);
-	}
+	Observer<T> accept(Consumer<? super T> consumer);
 }

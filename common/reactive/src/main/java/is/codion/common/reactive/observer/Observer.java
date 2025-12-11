@@ -18,7 +18,7 @@
  */
 package is.codion.common.reactive.observer;
 
-import is.codion.common.reactive.observer.Conditional.OnCondition;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -113,7 +113,7 @@ public interface Observer<T> {
 	boolean removeWeakConsumer(Consumer<? super T> consumer);
 
 	/**
-	 * Returns an {@link OnCondition} instance for adding conditional listeners to this observer.
+	 * Returns an {@link Conditional} instance for adding conditional actions to this observer.
 	 * This provides a fluent API for reacting to specific values or conditions.
 	 * {@snippet :
 	 * // React to a specific value
@@ -127,14 +127,14 @@ public interface Observer<T> {
 	 *     .when(2).run(() -> System.out.println("two"))
 	 *     .when(v -> v > 10).accept(this::handleLarge);
 	 *}
-	 * @return a new {@link OnCondition}
+	 * @return a new {@link Conditional}
 	 */
-	default OnCondition<T> when(T value) {
-		return new DefaultConditional<>(this).when(value);
+	default Conditional<T> when(@Nullable T value) {
+		return new DefaultConditional<>(this, value);
 	}
 
 	/**
-	 * Returns an {@link OnCondition} for adding conditional listeners to the given observer.
+	 * Returns a {@link Conditional} for adding conditional actions to the given observer.
 	 * This provides a fluent API for reacting to specific conditions.
 	 * {@snippet :
 	 * selection.item()
@@ -145,7 +145,7 @@ public interface Observer<T> {
 	 *}
 	 * @return a new {@link Conditional}
 	 */
-	default OnCondition<T> when(Predicate<? super T> predicate) {
-		return new DefaultConditional<>(this).when(requireNonNull(predicate));
+	default Conditional<T> when(Predicate<? super T> predicate) {
+		return new DefaultConditional<>(this, requireNonNull(predicate));
 	}
 }
