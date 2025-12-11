@@ -597,7 +597,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * Copies the contents of the selected cell to the clipboard.
 	 */
-	public void copySelectedCell() {
+	public void copyCell() {
 		int selectedRow = getSelectedRow();
 		int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
 		if (selectedRow >= 0 && selectedColumn >= 0) {
@@ -608,14 +608,15 @@ public final class FilterTable<R, C> extends JTable {
 
 	/**
 	 * Copies the contents of the selected column cells to the clipboard.
+	 * <p>If the selection is empty, values from all rows are included, otherwise only selected ones.
 	 */
-	public void copySelectedColumn() {
+	public void copyColumn() {
 		int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
 		if (selectedColumn >= 0) {
 			Utilities.setClipboard(tableModel.export()
 							.columns(singletonList(columnModel().getColumn(selectedColumn).identifier()))
 							.header(false)
-							.selected(true)
+							.selected(!selectionModel.isSelectionEmpty())
 							.get());
 		}
 	}
@@ -626,7 +627,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * <p>If column selection is enabled, only selected columns are included, otherwise all visible columns.
 	 * @see #getColumnSelectionAllowed()
 	 */
-	public void copyToClipboard() {
+	public void copyRows() {
 		Utilities.setClipboard(tableModel.export()
 						.columns(getColumnSelectionAllowed() ?
 										columnModel().selection().identifiers().getOrThrow() :
@@ -709,7 +710,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public CommandControl createCopyCellControl() {
 		return Control.builder()
-						.command(this::copySelectedCell)
+						.command(this::copyCell)
 						.caption(MESSAGES.getString("copy_cell"))
 						.enabled(State.and(tableModel.selection().empty().not(), columnModel().selection().lead().present()))
 						.build();
@@ -720,7 +721,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public CommandControl createCopyColumn() {
 		return Control.builder()
-						.command(this::copySelectedColumn)
+						.command(this::copyColumn)
 						.caption(MESSAGES.getString("copy_column"))
 						.enabled(State.and(tableModel.selection().empty().not(), columnModel().selection().lead().present()))
 						.build();

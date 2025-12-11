@@ -1389,7 +1389,7 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createCopyRowsControl() {
 		return Control.builder()
-						.command(table::copyToClipboard)
+						.command(table::copyRows)
 						.caption(FrameworkMessages.copyTableWithHeader())
 						.build();
 	}
