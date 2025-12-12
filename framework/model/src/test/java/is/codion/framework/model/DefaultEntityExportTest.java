@@ -45,6 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -125,6 +126,21 @@ public final class DefaultEntityExportTest {
 						.output(output::append)
 						.export();
 		assertEquals("deptno	Name	Job	mgr\n20	JONES	MANAGER	8\n", output.toString());
+	}
+
+	@Test
+	void derived() {
+		StringBuilder output = new StringBuilder();
+		EntityExport.builder(CONNECTION_PROVIDER)
+						.entityType(Employee.TYPE)
+						.attributes(attributes ->
+										attributes.include(Employee.DEPARTMENT_LOCATION, Employee.INITIAL, Employee.INITIAL_LOWER))
+						.keys(singletonList(ENTITIES.key(Employee.TYPE)
+										.with(Employee.ID, 3)// Jones
+										.build()).iterator())
+						.output(output::append)
+						.export();
+		assertEquals("Location\tinitial\tinitial_lower\nDALLAS\tJ\tj\n", output.toString());
 	}
 
 	@Test

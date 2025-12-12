@@ -28,6 +28,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityExport.Builder.EntitiesStep;
 import is.codion.framework.model.EntityExport.Builder.ExportAttributesStep;
@@ -205,11 +207,26 @@ final class DefaultEntityExport implements EntityExport {
 	private Collection<Attribute<?>> selectAttributes(EntityDefinition definition, ExportAttributes attributes) {
 		return attributesCache.computeIfAbsent(attributes, k -> {
 			Collection<Attribute<?>> included = new HashSet<>(attributes.include());
+			included.addAll(sourceAttributes(definition, included));
 			definition.foreignKeys().get().forEach(foreignKey ->
 							attributes.attributes(foreignKey).ifPresent(attr -> included.add(foreignKey)));
 
 			return included;
 		});
+	}
+
+	private static Collection<Attribute<?>> sourceAttributes(EntityDefinition entityDefinition, Collection<Attribute<?>> included) {
+		Set<Attribute<?>> sourceAttributes = new HashSet<>();
+		included.stream()
+						.map(attribute -> entityDefinition.attributes().definition(attribute))
+						.filter(AttributeDefinition::derived)
+						.map(DerivedAttributeDefinition.class::cast)
+						.forEach(definition -> sourceAttributes.addAll(definition.attributes()));
+		if (!sourceAttributes.isEmpty() && !included.containsAll(sourceAttributes)) {
+			sourceAttributes.addAll(sourceAttributes(entityDefinition, sourceAttributes));
+		}
+
+		return sourceAttributes;
 	}
 
 	private static String replaceNewlinesAndTabs(String string) {

@@ -87,6 +87,8 @@ public final class ExportDomain extends DomainModel {
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 		Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 		Column<String> DATA = TYPE.stringColumn("data");
+		Attribute<Character> INITIAL = TYPE.characterAttribute("initial");
+		Attribute<Character> INITIAL_LOWER = TYPE.characterAttribute("initial_lower");
 
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
 		ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
@@ -142,7 +144,15 @@ public final class ExportDomain extends DomainModel {
 														.caption("Location"),
 										Employee.DATA.as()
 														.column()
-														.selected(false))
+														.selected(false),
+										Employee.INITIAL.as()
+														.derived()
+														.from(Employee.NAME)
+														.with(values -> values.get(Employee.NAME).charAt(0)),
+										Employee.INITIAL_LOWER.as()
+														.derived()
+														.from(Employee.INITIAL)
+														.with(values -> String.valueOf(values.get(Employee.INITIAL)).toLowerCase().charAt(0)))
 						.formatter(Employee.NAME)
 						.caption("Employee")
 						.build();
