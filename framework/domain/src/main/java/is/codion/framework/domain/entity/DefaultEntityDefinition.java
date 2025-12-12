@@ -633,6 +633,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		private Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes() {
 			Map<Attribute<?>, Set<Attribute<?>>> derivedAttributeMap = new HashMap<>();
+			preventDerivedAttributeCycle(attributeMap);
 			attributeDefinitions.stream()
 							.filter(DerivedAttributeDefinition.class::isInstance)
 							.map(DerivedAttributeDefinition.class::cast)
@@ -678,6 +679,28 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 				}
 				attributeNames.add(attributeDefinition.attribute().name());
 			}
+		}
+
+		private static void preventDerivedAttributeCycle(Map<Attribute<?>, AttributeDefinition<?>> attributes) {
+			attributes.values().stream()
+							.filter(DerivedAttributeDefinition.class::isInstance)
+							.map(DerivedAttributeDefinition.class::cast)
+							.forEach(derivedDefinition -> checkForCycle(derivedDefinition, attributes, new LinkedHashSet<>()));
+		}
+
+		private static void checkForCycle(DerivedAttributeDefinition<?> derivedDefinition,
+																			Map<Attribute<?>, AttributeDefinition<?>> attributes,
+																			Set<Attribute<?>> path) {
+			Attribute<?> attribute = derivedDefinition.attribute();
+			if (!path.add(attribute)) {
+				throw new IllegalStateException("Derived attribute cycle detected: " + path);
+			}
+			derivedDefinition.attributes().stream()
+							.map(attributes::get)
+							.filter(DerivedAttributeDefinition.class::isInstance)
+							.map(DerivedAttributeDefinition.class::cast)
+							.forEach(sourceDefinition -> checkForCycle(sourceDefinition, attributes, path));
+			path.remove(attribute);
 		}
 
 		private static Map<String, Attribute<?>> attributeNameMap(Map<Attribute<?>, AttributeDefinition<?>> attributeDefinitions) {

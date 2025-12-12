@@ -631,44 +631,34 @@ public final class DerivedAttributeEnhancementTest {
 		}
 
 		@Test
-		@DisplayName("circular dependency causes StackOverflowError")
-		void circularDependency_causesStackOverflowError() {
-			// Circular dependencies should cause StackOverflowError when accessed
+		@DisplayName("should not be able to create a derived attribute cycle")
+		void circularDependency_causesIllegalStateException() {
 			class CircularDomain extends DomainModel {
 				CircularDomain() {
 					super(domainType("circular"));
 					EntityType type = type().entityType("circular_entity");
 					Attribute<Integer> attr1 = type.integerAttribute("attr1");
 					Attribute<Integer> attr2 = type.integerAttribute("attr2");
+					Attribute<Integer> attr3 = type.integerAttribute("attr3");
 
 					add(type.as(
 									attr1.as()
 													.derived()
-													.from(attr2)
-													.with(values -> values.get(attr2)),
+													.from(attr3)
+													.with(values -> values.get(attr3)),
 									attr2.as()
 													.derived()
 													.from(attr1)
-													.with(values -> values.get(attr1))
-					).build());
+													.with(values -> values.get(attr1)),
+									attr3.as()
+													.derived()
+													.from(attr2)
+													.with(values -> values.get(attr2)))
+									.build());
 				}
 			}
 
-			Entities circularEntities = new CircularDomain().entities();
-
-			// Create entity successfully
-			EntityDefinition entityDef = circularEntities.definitions().iterator().next();
-			Entity entity = circularEntities.entity(entityDef.type()).build();
-
-			// Access to circular derived attribute should cause StackOverflowError
-			assertThrows(StackOverflowError.class, () -> {
-				for (AttributeDefinition<?> attrDef : entity.definition().attributes().definitions()) {
-					if (attrDef.derived()) {
-						entity.get(attrDef.attribute());
-						break;
-					}
-				}
-			});
+			assertThrows(IllegalStateException.class, CircularDomain::new);
 		}
 
 		@Test

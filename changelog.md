@@ -19,6 +19,7 @@ Codion Change Log
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
 - EntitySerializer bug fixed, key deserialization now fails if attribute is not found.
 - EntitySerializer bug fixed, composite key deserialization now fails if attribute is not found.
+- DefaultEntityDefinition now throws exception in case a derived attribute cycle is detected.
 ### is.codion.framework.db.local
 - SelectQueries.defaultAttributesCache removed, redundant, now uses EntityDefinition.Attributes.selected().
 - LocalEntityConnection.limitForeignKeyReferenceDepth() renamed limitReferenceDepth(), related renaming.

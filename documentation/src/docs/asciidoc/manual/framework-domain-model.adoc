@@ -246,6 +246,8 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=den
 A derived attribute is used to represent a value which is derived from one or more attributes in the same entity.
 The value of a derived attribute is provided via a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/DerivedValue.html[DerivedValue] implementation as shown below.
 
+A derived attribute can serve as a source attribute for another derived attribute, but an exception is thrown during enitity definition if a cycle is detected.
+
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=derivedAttribute]
