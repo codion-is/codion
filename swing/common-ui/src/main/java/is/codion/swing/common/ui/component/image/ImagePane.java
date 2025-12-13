@@ -569,6 +569,9 @@ public final class ImagePane extends JPanel {
 		 */
 		public Point2D.Double toImage(Point paneCoordinate) {
 			requireNonNull(paneCoordinate);
+			if (Double.compare(scale, 0) == 0) {
+				throw new IllegalStateException("Cannot translate coordinates before image is displayed");
+			}
 			return new Point2D.Double((paneCoordinate.x - origin.x) / scale, (paneCoordinate.y - origin.y) / scale);
 		}
 
@@ -579,6 +582,9 @@ public final class ImagePane extends JPanel {
 		 */
 		public Point2D.Double toPane(Point2D.Double imageCoordinate) {
 			requireNonNull(imageCoordinate);
+			if (Double.compare(scale, 0) == 0) {
+				throw new IllegalStateException("Cannot translate coordinates before image is displayed");
+			}
 			return new Point2D.Double((imageCoordinate.x * scale) + origin.x, (imageCoordinate.y * scale) + origin.y);
 		}
 
@@ -789,14 +795,16 @@ public final class ImagePane extends JPanel {
 	 * @param g the graphics
 	 */
 	private void drawZoomAreaOutline(Graphics g) {
-		if (isFullImageInPane()) {
+		int screenImageWidth = getScreenImageWidth();
+		int screenImageHeight = getScreenImageHeight();
+		if (isFullImageInPane() || screenImageHeight == 0 || screenImageWidth == 0) {
 			return;
 		}
 
-		int x = -origin.x * getScreenNavImageWidth() / getScreenImageWidth();
-		int y = -origin.y * getScreenNavImageHeight() / getScreenImageHeight();
-		int width = getWidth() * getScreenNavImageWidth() / getScreenImageWidth();
-		int height = getHeight() * getScreenNavImageHeight() / getScreenImageHeight();
+		int x = -origin.x * getScreenNavImageWidth() / screenImageWidth;
+		int y = -origin.y * getScreenNavImageHeight() / screenImageHeight;
+		int width = getWidth() * getScreenNavImageWidth() / screenImageWidth;
+		int height = getHeight() * getScreenNavImageHeight() / screenImageHeight;
 		g.setColor(Color.white);
 		g.drawRect(x, y, width, height);
 	}

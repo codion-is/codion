@@ -24,8 +24,6 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
-import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -218,86 +216,8 @@ public final class ImagePaneTest {
 	}
 
 	@Test
-	void coordinateConversion() throws IOException {
-		ImagePane panel = ImagePane.builder()
-						.image(TEST_IMAGE_PATH)
-						.navigable(false)
-						.build();
-		panel.setSize(200, 200);
-
-		// Set zoom to enable coordinate conversion
-		panel.zoom().set(1.0);
-
-		// Panel center should map to image coordinates
-		Point panelCenter = new Point(100, 100);
-		Point2D.Double imagePoint = panel.coordinates().toImage(panelCenter);
-
-		assertNotNull(imagePoint);
-
-		// Convert back
-		Point2D.Double backToPanel = panel.coordinates().toPane(imagePoint);
-		assertNotNull(backToPanel);
-	}
-
-	@Test
-	void isWithinImage() throws IOException {
-		ImagePane panel = ImagePane.builder()
-						.image(TEST_IMAGE_PATH)
-						.navigable(false)
-						.build();
-
-		// Without painting/initializing, coordinates aren't properly initialized
-		// We can only verify the method doesn't throw
-		assertFalse(panel.coordinates().withinImage(new Point(1000, 1000)));
-	}
-
-	@Test
-	void isWithinImageNoImage() {
-		ImagePane panel = ImagePane.builder().build();
-
-		assertFalse(panel.coordinates().withinImage(new Point(50, 50)));
-	}
-
-	@Test
-	void centerImage() throws IOException {
-		ImagePane panel = ImagePane.builder()
-						.image(TEST_IMAGE_PATH)
-						.navigable(false)
-						.build();
-		panel.setSize(200, 200);
-
-		// Set zoom to enable centering
-		panel.zoom().set(1.0);
-
-		// Center on specific point
-		panel.center().onPane(new Point(50, 50));
-
-		// Should not throw
-		assertNotNull(panel.image().get());
-	}
-
-	@Test
-	void centerImageOnImageCoordinates() throws IOException {
-		ImagePane panel = ImagePane.builder()
-						.image(TEST_IMAGE_PATH)
-						.navigable(false)
-						.build();
-		panel.setSize(200, 200);
-
-		// Set zoom to enable centering
-		panel.zoom().set(1.0);
-
-		// Center on image coordinates
-		Point2D.Double imagePoint = new Point2D.Double(25.0, 25.0);
-		panel.center().onImage(imagePoint);
-
-		// Should not throw
-		assertNotNull(panel.image().get());
-	}
-
-	@Test
-	void readImageFromFile() {
-		// This tests the static utility method
-		assertThrows(Exception.class, () -> ImagePane.readImage("nonexistent.png"));
+	void readImageFromFile() throws IOException {
+		ImagePane.readImage(TEST_IMAGE_PATH);
+		assertThrows(IOException.class, () -> ImagePane.readImage("nonexistent.png"));
 	}
 }

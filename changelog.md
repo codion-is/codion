@@ -22,6 +22,7 @@ Codion Change Log
 - ExceptionDialogBuilder, RuntimeException no longer a wrapping exception by default.
 - FilterTable.copyToClipboard() bug fixed, only included selected columns, even when column selection was not enabled.
 - FilterTable.copySelectedCell(), copySelectedColumn() and copyToClipboard() renamed copyCell(), copyColumn() and copyRows().
+- ImagePane, a few potential divide by zero errors prevented.
 ### is.codion.framework.domain
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
 - EntitySerializer bug fixed, key deserialization now fails if attribute is not found.
