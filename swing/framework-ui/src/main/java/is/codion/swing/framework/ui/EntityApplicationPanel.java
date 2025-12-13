@@ -1019,11 +1019,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Map<Object, State> levelStateMap = new LinkedHashMap<>();
 		State.Group logLevelStateGroup = State.group();
 		for (Object logLevel : loggerProxy.levels()) {
-			State logLevelState = State.state(Objects.equals(logLevel, currentLogLevel));
-			logLevelStateGroup.add(logLevelState);
-			logLevelState.when(true)
-							.addListener(() -> loggerProxy.setLogLevel(loggerProxy.rootLogger(), logLevel));
-			levelStateMap.put(logLevel, logLevelState);
+			levelStateMap.put(logLevel, State.builder()
+							.value(Objects.equals(logLevel, currentLogLevel))
+							.when(true, () -> loggerProxy.setLogLevel(loggerProxy.rootLogger(), logLevel))
+							.group(logLevelStateGroup)
+							.build());
 		}
 
 		return Collections.unmodifiableMap(levelStateMap);

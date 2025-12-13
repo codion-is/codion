@@ -19,12 +19,16 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -47,6 +51,18 @@ class DefaultValue<T> extends AbstractValue<T> {
 		builder.linkedValues.forEach(this::link);
 		builder.linkedObservables.forEach(this::link);
 		builder.listeners.forEach(this::addListener);
+		builder.valueListeners.forEach((val, listeners) -> {
+			Observer<T> conditional = observer().when(val);
+			listeners.forEach(conditional::addListener);
+		});
+		builder.predicateListeners.forEach((predicate, runnable) ->
+						observer().when(predicate).addListener(runnable));
+		builder.valueConsumers.forEach((val, consumers) -> {
+			Observer<T> conditional = observer().when(val);
+			consumers.forEach(conditional::addConsumer);
+		});
+		builder.predicateConsumers.forEach((predicate, consumer) ->
+						observer().when(predicate).addConsumer(consumer));
 	}
 
 	@Override
@@ -100,6 +116,10 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final List<Value<T>> linkedValues = new ArrayList<>();
 		private final List<Observable<T>> linkedObservables = new ArrayList<>();
 		private final List<Listener> listeners = new ArrayList<>();
+		private final Map<T, List<Runnable>> valueListeners = new LinkedHashMap<>();
+		private final Map<T, List<Consumer<? super T>>> valueConsumers = new LinkedHashMap<>();
+		private final Map<Predicate<T>, Runnable> predicateListeners = new LinkedHashMap<>();
+		private final Map<Predicate<T>, Consumer<? super T>> predicateConsumers = new LinkedHashMap<>();
 
 		private @Nullable T value;
 		private Notify notify = Notify.CHANGED;
@@ -164,6 +184,30 @@ class DefaultValue<T> extends AbstractValue<T> {
 		@Override
 		public final B weakConsumer(Consumer<? super T> weakConsumer) {
 			this.listeners.add(new WeakConsumerListener<>(requireNonNull(weakConsumer)));
+			return self();
+		}
+
+		@Override
+		public final B when(T value, Runnable listener) {
+			valueListeners.computeIfAbsent(value, k -> new ArrayList<>()).add(requireNonNull(listener));
+			return self();
+		}
+
+		@Override
+		public final B when(T value, Consumer<? super T> consumer) {
+			valueConsumers.computeIfAbsent(value, k -> new ArrayList<>()).add(requireNonNull(consumer));
+			return self();
+		}
+
+		@Override
+		public final B when(Predicate<T> predicate, Runnable listener) {
+			predicateListeners.put(requireNonNull(predicate), requireNonNull(listener));
+			return self();
+		}
+
+		@Override
+		public final B when(Predicate<T> predicate, Consumer<? super T> consumer) {
+			predicateConsumers.put(requireNonNull(predicate), requireNonNull(consumer));
 			return self();
 		}
 

@@ -39,17 +39,14 @@ public final class ObserverTest {
 		AtomicInteger twoCounter = new AtomicInteger();
 		AtomicInteger nullCounter = new AtomicInteger();
 		AtomicReference<Integer> intValue = new AtomicReference<>();
-		Value<Integer> value = Value.nullable();
-		value.when(1)
-						.addListener(oneCounter::incrementAndGet);
-		value.when(1)
-						.addConsumer(intValue::set);
-		value.when(2)
-						.addListener(twoCounter::incrementAndGet);
-		value.when(Objects::isNull)
-						.addListener(nullCounter::incrementAndGet);
-		value.when(Objects::isNull)
-						.addConsumer(intValue::set);
+		Value<Integer> value = Value.builder()
+						.<Integer>nullable()
+						.when(1, oneCounter::incrementAndGet)
+						.when(1, intValue::set)
+						.when(2, twoCounter::incrementAndGet)
+						.when(Objects::isNull, nullCounter::incrementAndGet)
+						.when(Objects::isNull, intValue::set)
+						.build();
 
 		value.set(1);
 		assertEquals(1, intValue.get());
@@ -80,12 +77,10 @@ public final class ObserverTest {
 		AtomicInteger trueCounter = new AtomicInteger();
 		AtomicInteger falseCounter = new AtomicInteger();
 
-		State state = State.state();
-
-		state.when(true)
-						.addListener(trueCounter::incrementAndGet);
-		state.when(false)
-						.addListener(falseCounter::incrementAndGet);
+		State state = State.builder()
+						.when(true, trueCounter::incrementAndGet)
+						.when(false, falseCounter::incrementAndGet)
+						.build();
 
 		state.set(true);
 		state.set(true);

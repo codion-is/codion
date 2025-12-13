@@ -945,11 +945,12 @@ public final class FilterTable<R, C> extends JTable {
 		List<ToggleControl> controls = new ArrayList<>();
 		State.Group group = State.group();
 		for (Item<Integer> resizeMode : AUTO_RESIZE_MODES) {
-			State state = State.state(resizeMode.getOrThrow().equals(getAutoResizeMode()));
-			group.add(state);
-			state.when(true).addListener(() -> setAutoResizeMode(resizeMode.getOrThrow()));
 			controls.add(Control.builder()
-							.toggle(state)
+							.toggle(State.builder()
+											.value(resizeMode.getOrThrow().equals(getAutoResizeMode()))
+											.when(true, () -> setAutoResizeMode(resizeMode.getOrThrow()))
+											.group(group)
+											.build())
 							.caption(resizeMode.caption())
 							.build());
 		}

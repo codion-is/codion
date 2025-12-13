@@ -26,6 +26,7 @@ import is.codion.common.reactive.value.ValueSet;
 
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -286,6 +287,12 @@ public interface State extends ObservableState {
 		Builder link(State originalState);
 
 		/**
+		 * @param group the {@link Group} to add the state to
+		 * @return this builder instance
+		 */
+		Builder group(Group group);
+
+		/**
 		 * @param listener a listener to add
 		 * @return this builder instance
 		 */
@@ -308,6 +315,38 @@ public interface State extends ObservableState {
 		 * @return this builder instance
 		 */
 		Builder weakConsumer(Consumer<? super Boolean> weakConsumer);
+
+		/**
+		 * Adds a conditional listener
+		 * @param value the value on which to run
+		 * @param runnable the runnable to run
+		 * @return this builder instance
+		 */
+		Builder when(boolean value, Runnable runnable);
+
+		/**
+		 * Adds a conditional consumer
+		 * @param value the value to consume
+		 * @param consumer the consumer to use
+		 * @return this builder instance
+		 */
+		Builder when(boolean value, Consumer<? super Boolean> consumer);
+
+		/**
+		 * Adds a conditional listener
+		 * @param predicate the predicate on which to run
+		 * @param runnable the runnable to run
+		 * @return this builder instance
+		 */
+		Builder when(Predicate<Boolean> predicate, Runnable runnable);
+
+		/**
+		 * Adds a conditional consumer
+		 * @param predicate the predicate on which to consume the state
+		 * @param consumer the consumer to use
+		 * @return this builder instance
+		 */
+		Builder when(Predicate<Boolean> predicate, Consumer<? super Boolean> consumer);
 
 		/**
 		 * @return a new {@link State} instance based on this builder

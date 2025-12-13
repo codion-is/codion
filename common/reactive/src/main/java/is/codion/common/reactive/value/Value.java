@@ -23,6 +23,7 @@ import is.codion.common.reactive.observer.Observable;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import static java.util.Objects.requireNonNull;
@@ -304,6 +305,38 @@ public interface Value<T> extends Observable<T> {
 		 * @return this builder instance
 		 */
 		B weakConsumer(Consumer<? super T> weakConsumer);
+
+		/**
+		 * Adds a conditional listener
+		 * @param value the value on which to run
+		 * @param listener the listener
+		 * @return this builder instance
+		 */
+		B when(T value, Runnable listener);
+
+		/**
+		 * Adds a conditional consumer
+		 * @param value the value to consume
+		 * @param consumer the consumer
+		 * @return this builder instance
+		 */
+		B when(T value, Consumer<? super T> consumer);
+
+		/**
+		 * Adds a conditional listener
+		 * @param predicate the predicate on which to run
+		 * @param listener the runnable
+		 * @return this builder instance
+		 */
+		B when(Predicate<T> predicate, Runnable listener);
+
+		/**
+		 * Adds a conditional consumer
+		 * @param predicate the predicate on which to consume the value
+		 * @param consumer the consumer to use
+		 * @return this builder instance
+		 */
+		B when(Predicate<T> predicate, Consumer<? super T> consumer);
 
 		/**
 		 * @return a new {@link Value} instance based on this builder

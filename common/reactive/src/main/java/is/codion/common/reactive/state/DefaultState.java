@@ -26,6 +26,7 @@ import is.codion.common.reactive.value.Value.Validator;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,8 +40,11 @@ final class DefaultState implements State {
 
 	private @Nullable DefaultObservableState observableState;
 
-	private DefaultState(Value.Builder<Boolean, ?> valueBuilder) {
-		this.value = valueBuilder.consumer(new Notifier()).build();
+	private DefaultState(DefaultBuilder builder) {
+		this.value = builder.valueBuilder.consumer(new Notifier()).build();
+		if (builder.group != null) {
+			builder.group.add(this);
+		}
 	}
 
 	@Override
@@ -131,6 +135,8 @@ final class DefaultState implements State {
 
 		private final Value.Builder<Boolean, ?> valueBuilder = Value.builder().nonNull(false);
 
+		private @Nullable Group group;
+
 		DefaultBuilder() {}
 
 		@Override
@@ -154,6 +160,12 @@ final class DefaultState implements State {
 		@Override
 		public Builder link(State originalState) {
 			valueBuilder.link(requireNonNull(originalState).value());
+			return this;
+		}
+
+		@Override
+		public Builder group(Group group) {
+			this.group = requireNonNull(group);
 			return this;
 		}
 
@@ -182,8 +194,32 @@ final class DefaultState implements State {
 		}
 
 		@Override
+		public Builder when(boolean value, Runnable runnable) {
+			valueBuilder.when(value, runnable);
+			return this;
+		}
+
+		@Override
+		public Builder when(boolean value, Consumer<? super Boolean> consumer) {
+			valueBuilder.when(value, consumer);
+			return this;
+		}
+
+		@Override
+		public Builder when(Predicate<Boolean> predicate, Runnable runnable) {
+			valueBuilder.when(predicate, runnable);
+			return this;
+		}
+
+		@Override
+		public Builder when(Predicate<Boolean> predicate, Consumer<? super Boolean> consumer) {
+			valueBuilder.when(predicate, consumer);
+			return this;
+		}
+
+		@Override
 		public State build() {
-			return new DefaultState(valueBuilder);
+			return new DefaultState(this);
 		}
 	}
 }

@@ -263,12 +263,10 @@ public final class EventStateValue {
 						.addConsumer(v -> System.out.println("Large value: " + v));
 
 		// React to boolean states
-		State enabled = State.state();
-
-		enabled.when(true)
-						.addListener(() -> System.out.println("Enabled"));
-		enabled.when(false)
-						.addListener(() -> System.out.println("Disabled"));
+		State enabled = State.builder()
+						.when(true, () -> System.out.println("Enabled"))
+						.when(false, () -> System.out.println("Disabled"))
+						.build();
 	}
 	// end::observer[]
 
