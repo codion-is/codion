@@ -7,6 +7,7 @@ Codion Change Log
 - State.contains(), resulting state now serves as GC anchor for the link.
 - Conditional.OnCondition removed, related refactoring.
 - Conditional.accept() renamed consume().
+- DefaultObserver moved to observer package, public with protected notifyListeners().
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
 - DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.

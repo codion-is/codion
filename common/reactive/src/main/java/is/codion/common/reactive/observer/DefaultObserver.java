@@ -16,9 +16,7 @@
  *
  * Copyright (c) 2019 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.common.reactive.event;
-
-import is.codion.common.reactive.observer.Observer;
+package is.codion.common.reactive.observer;
 
 import org.jspecify.annotations.Nullable;
 
@@ -36,53 +34,62 @@ import static java.util.Objects.requireNonNull;
  * All listener management operations are synchronized using an internal lock.
  * Dead weak references are cleaned up during add/remove operations.
  */
-final class DefaultObserver<T> implements Observer<T> {
+public class DefaultObserver<T> implements Observer<T> {
 
 	private final Lock lock = new Lock() {};
 
 	private @Nullable ArrayList<Listener<?>> listeners;
 
+	/**
+	 * Instantiates a new {@link DefaultObserver}
+	 */
+	protected DefaultObserver() {}
+
 	@Override
-	public boolean addListener(Runnable runnable) {
+	public final boolean addListener(Runnable runnable) {
 		return add(new RunnableListener(requireNonNull(runnable)));
 	}
 
 	@Override
-	public boolean removeListener(Runnable runnable) {
+	public final boolean removeListener(Runnable runnable) {
 		return remove(runnable);
 	}
 
 	@Override
-	public boolean addConsumer(Consumer<? super T> consumer) {
+	public final boolean addConsumer(Consumer<? super T> consumer) {
 		return add(new ConsumerListener<>(requireNonNull(consumer)));
 	}
 
 	@Override
-	public boolean removeConsumer(Consumer<? super T> consumer) {
+	public final boolean removeConsumer(Consumer<? super T> consumer) {
 		return remove(consumer);
 	}
 
 	@Override
-	public boolean addWeakListener(Runnable runnable) {
+	public final boolean addWeakListener(Runnable runnable) {
 		return add(new WeakRunnableListener(requireNonNull(runnable)));
 	}
 
 	@Override
-	public boolean removeWeakListener(Runnable runnable) {
+	public final boolean removeWeakListener(Runnable runnable) {
 		return remove(runnable);
 	}
 
 	@Override
-	public boolean addWeakConsumer(Consumer<? super T> consumer) {
+	public final boolean addWeakConsumer(Consumer<? super T> consumer) {
 		return add(new WeakConsumerListener<>(requireNonNull(consumer)));
 	}
 
 	@Override
-	public boolean removeWeakConsumer(Consumer<? super T> consumer) {
+	public final boolean removeWeakConsumer(Consumer<? super T> consumer) {
 		return remove(consumer);
 	}
 
-	void notifyListeners(@Nullable T data) {
+	/**
+	 * Notifies all consumers and listeners
+	 * @param data the data to propagate to consumers
+	 */
+	protected final void notifyListeners(@Nullable T data) {
 		for (Listener<?> listener : listeners()) {
 			notifyListener(listener, data);
 		}

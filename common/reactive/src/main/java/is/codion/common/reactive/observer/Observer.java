@@ -26,9 +26,10 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Manages event listeners. Implemented by {@link is.codion.common.reactive.event.Event}.
+ * Manages event listeners.
  * <p>All implementations are thread-safe and support concurrent access.</p>
  * @param <T> the type of data propagated to listeners.
+ * @see DefaultObserver
  * @see #when(Object)
  * @see #when(Predicate)
  */

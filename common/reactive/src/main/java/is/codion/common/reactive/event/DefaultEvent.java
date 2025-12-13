@@ -18,6 +18,7 @@
  */
 package is.codion.common.reactive.event;
 
+import is.codion.common.reactive.observer.DefaultObserver;
 import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
@@ -28,7 +29,7 @@ final class DefaultEvent<T> implements Event<T> {
 
 	private final Lock lock = new Lock() {};
 
-	private volatile @Nullable DefaultObserver<T> observer;
+	private volatile @Nullable EventObserver<T> observer;
 
 	@Override
 	public void run() {
@@ -38,7 +39,7 @@ final class DefaultEvent<T> implements Event<T> {
 	@Override
 	public void accept(@Nullable T data) {
 		if (observer != null) {
-			observer.notifyListeners(data);
+			observer.accept(data);
 		}
 	}
 
@@ -46,7 +47,7 @@ final class DefaultEvent<T> implements Event<T> {
 	public Observer<T> observer() {
 		synchronized (lock) {
 			if (observer == null) {
-				observer = new DefaultObserver<>();
+				observer = new EventObserver<>();
 			}
 
 			return observer;
@@ -94,4 +95,11 @@ final class DefaultEvent<T> implements Event<T> {
 	}
 
 	private interface Lock {}
+
+	private static final class EventObserver<T> extends DefaultObserver<T> {
+
+		private void accept(@Nullable T data) {
+			notifyListeners(data);
+		}
+	}
 }
