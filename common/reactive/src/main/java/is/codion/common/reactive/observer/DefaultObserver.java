@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -83,6 +84,16 @@ public class DefaultObserver<T> implements Observer<T> {
 	@Override
 	public final boolean removeWeakConsumer(Consumer<? super T> consumer) {
 		return remove(consumer);
+	}
+
+	@Override
+	public final Observer<T> when(@Nullable T value) {
+		return new Conditional<>(this, value);
+	}
+
+	@Override
+	public final Observer<T> when(Predicate<? super T> predicate) {
+		return new Conditional<>(this, requireNonNull(predicate));
 	}
 
 	/**

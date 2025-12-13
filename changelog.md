@@ -11,6 +11,7 @@ Codion Change Log
 - Observer.when() now returns a new conditional Observer.
 - Value.Builder.when() and State.Builder.when() added.
 - State.Builder.group() added.
+- Observer.when() default implementations removed.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
 - DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.

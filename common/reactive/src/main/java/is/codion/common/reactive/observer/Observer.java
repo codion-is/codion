@@ -23,8 +23,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Manages event listeners.
  * <p>All implementations are thread-safe and support concurrent access.</p>
@@ -118,16 +116,12 @@ public interface Observer<T> {
 	 * @param value the value on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
-	default Observer<T> when(@Nullable T value) {
-		return new Conditional<>(this, value);
-	}
+	Observer<T> when(@Nullable T value);
 
 	/**
 	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with a value satisfying the given predicate
 	 * @param predicate the predicate on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
-	default Observer<T> when(Predicate<? super T> predicate) {
-		return new Conditional<>(this, requireNonNull(predicate));
-	}
+	Observer<T> when(Predicate<? super T> predicate);
 }

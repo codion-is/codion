@@ -21,6 +21,7 @@ package is.codion.common.reactive.state;
 import is.codion.common.reactive.observer.Observer;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Specifies an observable for a {@link State} instance.
@@ -80,5 +81,15 @@ public interface ObservableState extends Observer<Boolean> {
 	@Override
 	default boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
 		return observer().removeWeakConsumer(consumer);
+	}
+
+	@Override
+	default Observer<Boolean> when(Boolean value) {
+		return observer().when(value);
+	}
+
+	@Override
+	default Observer<Boolean> when(Predicate<? super Boolean> predicate) {
+		return observer().when(predicate);
 	}
 }

@@ -23,6 +23,7 @@ import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
+import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -728,40 +729,7 @@ public class DefaultFilterModelItemsTest {
 
 		@Override
 		public Observer<Boolean> observer() {
-			return new Observer<Boolean>() {
-				@Override
-				public boolean addListener(Runnable listener) {
-					listeners.add(listener);
-					return true;
-				}
-
-				@Override
-				public boolean addConsumer(Consumer<? super Boolean> consumer) {return true;}
-
-				@Override
-				public boolean addWeakListener(Runnable listener) {
-					return addListener(listener);
-				}
-
-				@Override
-				public boolean addWeakConsumer(Consumer<? super Boolean> consumer) {return true;}
-
-				@Override
-				public boolean removeListener(Runnable listener) {
-					return listeners.remove(listener);
-				}
-
-				@Override
-				public boolean removeConsumer(Consumer<? super Boolean> consumer) {return true;}
-
-				@Override
-				public boolean removeWeakListener(Runnable listener) {
-					return removeListener(listener);
-				}
-
-				@Override
-				public boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {return true;}
-			};
+			return Event.event();
 		}
 	}
 

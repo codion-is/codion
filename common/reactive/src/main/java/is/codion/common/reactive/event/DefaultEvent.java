@@ -24,6 +24,7 @@ import is.codion.common.reactive.observer.Observer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 final class DefaultEvent<T> implements Event<T> {
 
@@ -92,6 +93,16 @@ final class DefaultEvent<T> implements Event<T> {
 	@Override
 	public boolean removeWeakConsumer(Consumer<? super T> consumer) {
 		return observer().removeWeakConsumer(consumer);
+	}
+
+	@Override
+	public Observer<T> when(@Nullable T value) {
+		return observer().when(value);
+	}
+
+	@Override
+	public Observer<T> when(Predicate<? super T> predicate) {
+		return observer().when(predicate);
 	}
 
 	private interface Lock {}

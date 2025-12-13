@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -187,5 +188,15 @@ public interface Observable<T> extends Observer<T> {
 	@Override
 	default boolean removeWeakConsumer(Consumer<? super T> consumer) {
 		return observer().removeWeakConsumer(consumer);
+	}
+
+	@Override
+	default Observer<T> when(@Nullable T value) {
+		return observer().when(value);
+	}
+
+	@Override
+	default Observer<T> when(Predicate<? super T> predicate) {
+		return observer().when(predicate);
 	}
 }

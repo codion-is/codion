@@ -19,6 +19,7 @@
 package is.codion.common.model.summary;
 
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
+import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.utilities.Text;
 
@@ -384,31 +385,7 @@ public class DefaultTableSummaryModelTest {
 		@Override
 		public Observer<?> valuesChanged() {
 			// Return a simple observer for test purposes
-			return new Observer<Object>() {
-				@Override
-				public boolean addListener(Runnable listener) {return true;}
-
-				@Override
-				public boolean addConsumer(java.util.function.Consumer<? super Object> consumer) {return true;}
-
-				@Override
-				public boolean addWeakListener(Runnable listener) {return true;}
-
-				@Override
-				public boolean addWeakConsumer(java.util.function.Consumer<? super Object> consumer) {return true;}
-
-				@Override
-				public boolean removeListener(Runnable listener) {return true;}
-
-				@Override
-				public boolean removeConsumer(java.util.function.Consumer<? super Object> consumer) {return true;}
-
-				@Override
-				public boolean removeWeakListener(Runnable listener) {return true;}
-
-				@Override
-				public boolean removeWeakConsumer(java.util.function.Consumer<? super Object> consumer) {return true;}
-			};
+			return Event.event();
 		}
 	}
 }
