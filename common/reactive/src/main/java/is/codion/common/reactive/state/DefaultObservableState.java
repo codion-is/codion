@@ -18,7 +18,7 @@
  */
 package is.codion.common.reactive.state;
 
-import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.DefaultObserver;
 import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
@@ -31,7 +31,7 @@ final class DefaultObservableState implements ObservableState {
 	private final ObservableState state;
 	private final boolean not;
 
-	private @Nullable Event<Boolean> stateChangedEvent;
+	private @Nullable StateObserver observer;
 	private @Nullable DefaultObservableState notObserver;
 
 	DefaultObservableState(ObservableState state, boolean not) {
@@ -68,19 +68,19 @@ final class DefaultObservableState implements ObservableState {
 	@Override
 	public Observer<Boolean> observer() {
 		synchronized (lock) {
-			if (stateChangedEvent == null) {
-				stateChangedEvent = Event.event();
+			if (observer == null) {
+				observer = new StateObserver();
 			}
 
-			return stateChangedEvent.observer();
+			return observer;
 		}
 	}
 
 	void notifyObservers(boolean newValue, boolean previousValue) {
 		synchronized (lock) {
 			if (previousValue != newValue) {
-				if (stateChangedEvent != null) {
-					stateChangedEvent.accept(newValue);
+				if (observer != null) {
+					observer.accept(newValue);
 				}
 				if (notObserver != null) {
 					notObserver.notifyObservers(previousValue, newValue);
@@ -90,4 +90,11 @@ final class DefaultObservableState implements ObservableState {
 	}
 
 	private interface Lock {}
+
+	private static final class StateObserver extends DefaultObserver<Boolean> {
+
+		private void accept(Boolean data) {
+			notifyListeners(data);
+		}
+	}
 }

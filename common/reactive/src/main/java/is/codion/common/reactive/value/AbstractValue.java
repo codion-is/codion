@@ -18,7 +18,7 @@
  */
 package is.codion.common.reactive.value;
 
-import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.DefaultObserver;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 
@@ -51,7 +51,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private final @Nullable T nullValue;
 	private final @Nullable Notify notify;
 
-	private @Nullable Event<T> observer;
+	private @Nullable ValueObserver<T> observer;
 	private @Nullable Set<Validator<? super T>> validators;
 	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
 	private @Nullable Map<Observable<T>, ObservableLink> linkedObservables;
@@ -139,7 +139,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	@Override
 	public final synchronized Observer<T> observer() {
 		if (observer == null) {
-			observer = Event.event();
+			observer = new ValueObserver<>();
 		}
 
 		return observer;
@@ -311,6 +311,13 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 		protected final V value() {
 			return value;
+		}
+	}
+
+	private static final class ValueObserver<T> extends DefaultObserver<T> {
+
+		private void accept(@Nullable T data) {
+			notifyListeners(data);
 		}
 	}
 }

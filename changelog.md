@@ -12,6 +12,8 @@ Codion Change Log
 - Value.Builder.when() and State.Builder.when() added.
 - State.Builder.group() added.
 - Observer.when() default implementations removed.
+- AbstractValue, ValueObserver added, no longer depends on Event.
+- DefaultObservableState, StateObserver added, no longer depends on Event.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
 - DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.
