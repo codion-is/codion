@@ -247,29 +247,28 @@ public final class EventStateValue {
 		Value<Integer> value = Value.nullable();
 
 		value.when(1)
-						.run(() -> System.out.println("Value is one"));
+						.addListener(() -> System.out.println("Value is one"));
 
 		value.when(2)
-						.consume(System.out::println);
+						.addConsumer(System.out::println);
 
 		value.when(Objects::isNull)
-						.run(() -> System.out.println("Value is null"));
+						.addListener(() -> System.out.println("Value is null"));
 
-		// Chain multiple conditions
 		value.when(1)
-						.run(() -> System.out.println("one"))
-						.when(2)
-						.run(() -> System.out.println("two"))
-						.when(v -> v > 10)
-						.consume(v -> System.out.println("Large value: " + v));
+						.addListener(() -> System.out.println("one"));
+		value.when(2)
+						.addListener(() -> System.out.println("two"));
+		value.when(v -> v > 10)
+						.addConsumer(v -> System.out.println("Large value: " + v));
 
 		// React to boolean states
 		State enabled = State.state();
 
 		enabled.when(true)
-						.run(() -> System.out.println("Enabled"))
-						.when(false)
-						.run(() -> System.out.println("Disabled"));
+						.addListener(() -> System.out.println("Enabled"));
+		enabled.when(false)
+						.addListener(() -> System.out.println("Disabled"));
 	}
 	// end::observer[]
 

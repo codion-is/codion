@@ -232,7 +232,7 @@ public final class DefaultFilterTableModelTest {
 
 		testModel.selection().empty()
 						.when(true)
-						.run(emptySelectionEvents::incrementAndGet);
+						.addListener(emptySelectionEvents::incrementAndGet);
 
 		testModel.selection().indexes().addListener(selectionChangeEvents::incrementAndGet);
 

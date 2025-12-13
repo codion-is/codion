@@ -268,7 +268,7 @@ public final class SearchHighlighter {
 	private void bindEvents() {
 		textComponent.getDocument().addDocumentListener((DocumentAdapter) e -> searchAndHighlightResults());
 		textComponent.addPropertyChangeListener(UI_PROPERTY_NAME, new UpdateHightlightColors());
-		selectedSearchTextPosition.when(Objects::nonNull).consume(this::scrollToPosition);
+		selectedSearchTextPosition.when(Objects::nonNull).addConsumer(this::scrollToPosition);
 	}
 
 	private void scrollToPosition(int position) {

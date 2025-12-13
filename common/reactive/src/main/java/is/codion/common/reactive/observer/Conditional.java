@@ -18,36 +18,43 @@
  */
 package is.codion.common.reactive.observer;
 
+import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-/**
- * Provides conditional listeners for an {@link Observer}.
- * {@snippet :
- * selection.item()
- *     .when(Objects::nonNull)
- *     .consume(this::onSelection);
- *
- * state.when(true)
- *     .run(this::onEnabled);
- *}
- * @param <T> the observed value type
- * @see Observer#when(Object)
- * @see Observer#when(Predicate)
- */
-public interface Conditional<T> {
+final class Conditional<T> extends DefaultObserver<T> implements Consumer<T> {
 
-	/**
-	 * Adds a {@link Runnable} to run when the condition is met.
-	 * @param runnable the runnable to run
-	 * @return the {@link Observer} for further configuration
-	 */
-	Observer<T> run(Runnable runnable);
+	private final Predicate<? super T> predicate;
 
-	/**
-	 * Adds a {@link Consumer} to call when the condition is met.
-	 * @param consumer the consumer to call with the observed value
-	 * @return the {@link Observer} for further configuration
-	 */
-	Observer<T> consume(Consumer<? super T> consumer);
+	Conditional(Observer<T> observer, @Nullable T value) {
+		this(observer, new Equals<>(value));
+	}
+
+	Conditional(Observer<T> observer, Predicate<? super T> predicate) {
+		this.predicate = predicate;
+		observer.addConsumer(this);
+	}
+
+	@Override
+	public void accept(@Nullable T value) {
+		if (predicate.test(value)) {
+			notifyListeners(value);
+		}
+	}
+
+	private static final class Equals<T> implements Predicate<T> {
+
+		private final @Nullable T value;
+
+		private Equals(@Nullable T value) {
+			this.value = value;
+		}
+
+		@Override
+		public boolean test(T value) {
+			return Objects.equals(this.value, value);
+		}
+	}
 }

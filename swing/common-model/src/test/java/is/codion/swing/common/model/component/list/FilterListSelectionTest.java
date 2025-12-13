@@ -348,7 +348,7 @@ public class FilterListSelectionTest {
 
 		testModel.empty()
 						.when(true)
-						.run(emptyEventCount::incrementAndGet);
+						.addListener(emptyEventCount::incrementAndGet);
 
 		testModel.addListSelectionListener(e -> {
 			if (!e.getValueIsAdjusting()) {

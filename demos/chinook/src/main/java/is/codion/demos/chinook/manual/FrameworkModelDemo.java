@@ -126,7 +126,7 @@ public final class FrameworkModelDemo {
 		// Listen for selection changes
 		tableModel.selection().item()
 						.when(Objects::nonNull)
-						.consume(this::loadDetails);
+						.addConsumer(this::loadDetails);
 		// end::eventSystem[]
 	}
 
@@ -145,7 +145,7 @@ public final class FrameworkModelDemo {
 		// React to value edits
 		priceValue.edited().addConsumer(newPrice -> System.out.println("Price: " + newPrice));
 		priceValid.when(false)
-						.run(() -> System.out.println("Invalid price: " + priceValue.get()));
+						.addListener(() -> System.out.println("Invalid price: " + priceValue.get()));
 		// end::valueObservers[]
 	}
 

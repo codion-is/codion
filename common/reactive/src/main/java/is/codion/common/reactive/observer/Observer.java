@@ -114,39 +114,20 @@ public interface Observer<T> {
 	boolean removeWeakConsumer(Consumer<? super T> consumer);
 
 	/**
-	 * Returns an {@link Conditional} instance for adding conditional actions to this observer.
-	 * This provides a fluent API for reacting to specific values or conditions.
-	 * {@snippet :
-	 * // React to a specific value
-	 * viewState
-	 *     .when(View.VISIBLE)
-	 *     .run(this::onVisible);
-	 *
-	 * // Chain multiple conditions
-	 * value
-	 *     .when(1).run(() -> System.out.println("one"))
-	 *     .when(2).run(() -> System.out.println("two"))
-	 *     .when(v -> v > 10).consume(this::handleLarge);
-	 *}
-	 * @return a new {@link Conditional}
+	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with the given value
+	 * @param value the value on which to trigger the observer
+	 * @return a new conditional {@link Observer}
 	 */
-	default Conditional<T> when(@Nullable T value) {
-		return new DefaultConditional<>(this, value);
+	default Observer<T> when(@Nullable T value) {
+		return new Conditional<>(this, value);
 	}
 
 	/**
-	 * Returns a {@link Conditional} for adding conditional actions to the given observer.
-	 * This provides a fluent API for reacting to specific conditions.
-	 * {@snippet :
-	 * selection.item()
-	 *     .when(Objects::nonNull)
-	 *     .consume(this::handleSelectedItem)
-	 *     .when(Objects::isNull)
-	 *     .run(this::onEmptySelection);
-	 *}
-	 * @return a new {@link Conditional}
+	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with a value satisfying the given predicate
+	 * @param predicate the predicate on which to trigger the observer
+	 * @return a new conditional {@link Observer}
 	 */
-	default Conditional<T> when(Predicate<? super T> predicate) {
-		return new DefaultConditional<>(this, requireNonNull(predicate));
+	default Observer<T> when(Predicate<? super T> predicate) {
+		return new Conditional<>(this, requireNonNull(predicate));
 	}
 }

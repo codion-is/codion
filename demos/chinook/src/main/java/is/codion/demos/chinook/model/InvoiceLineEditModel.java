@@ -18,6 +18,7 @@
  */
 package is.codion.demos.chinook.model;
 
+import is.codion.common.reactive.observer.Observer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
@@ -38,11 +39,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
 		super(InvoiceLine.TYPE, connectionProvider);
 		// We populate the unit price when the track is edited
-		editor().value(InvoiceLine.TRACK_FK).edited()
-						.when(Objects::nonNull)
-						.consume(this::setUnitPrice)
-						.when(Objects::isNull)
-						.run(this::clearUnitPrice);
+		Observer<Entity> trackEdited = editor().value(InvoiceLine.TRACK_FK).edited();
+		trackEdited.when(Objects::nonNull)
+						.addConsumer(this::setUnitPrice);
+		trackEdited.when(Objects::isNull)
+						.addListener(this::clearUnitPrice);
 	}
 
 	@Override

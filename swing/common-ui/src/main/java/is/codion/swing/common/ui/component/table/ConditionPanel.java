@@ -109,9 +109,9 @@ public abstract class ConditionPanel<T> extends JPanel {
 
 	private void configureStates() {
 		State.group(hiddenView, simpleView, advancedView);
-		hiddenView.when(true).run(() -> view.set(HIDDEN));
-		simpleView.when(true).run(() -> view.set(SIMPLE));
-		advancedView.when(true).run(() -> view.set(ADVANCED));
+		hiddenView.when(true).addListener(() -> view.set(HIDDEN));
+		simpleView.when(true).addListener(() -> view.set(SIMPLE));
+		advancedView.when(true).addListener(() -> view.set(ADVANCED));
 		view.addConsumer(conditionView -> {
 			hiddenView.set(conditionView == HIDDEN);
 			simpleView.set(conditionView == SIMPLE);

@@ -8,6 +8,7 @@ Codion Change Log
 - Conditional.OnCondition removed, related refactoring.
 - Conditional.accept() renamed consume().
 - DefaultObserver moved to observer package, public with protected notifyListeners().
+- Observer.when() now returns a new conditional Observer.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
 - DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.
