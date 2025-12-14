@@ -426,7 +426,7 @@ public final class ImagePane extends JPanel {
 		/**
 		 * @param imageBytes the image bytes
 		 */
-		void set(byte[] imageBytes);
+		void set(byte @Nullable [] imageBytes);
 
 		/**
 		 * @param imagePath the path from which to load the image
@@ -553,6 +553,15 @@ public final class ImagePane extends JPanel {
 		 * @return this builder
 		 */
 		Builder movable(boolean movable);
+
+		/**
+		 * Default true.
+		 * <p>If false, the component value returns an empty byte array instead of null, when no image is present.
+		 * @param nullable if true null is used to indicate no image, if false an empty byte array is used
+		 * @return this builder
+		 * @see #buildValue()
+		 */
+		Builder nullable(boolean nullable);
 	}
 
 	/**
@@ -1284,6 +1293,7 @@ public final class ImagePane extends JPanel {
 		private boolean autoResize = AUTO_RESIZE.getOrThrow();
 		private boolean navigable = false;
 		private boolean movable = false;
+		private boolean nullable = true;
 
 		@Override
 		public Builder image(String imagePath) throws IOException {
@@ -1334,13 +1344,19 @@ public final class ImagePane extends JPanel {
 		}
 
 		@Override
+		public Builder nullable(boolean nullable) {
+			this.nullable = nullable;
+			return this;
+		}
+
+		@Override
 		protected ImagePane createComponent() {
 			return new ImagePane(this);
 		}
 
 		@Override
 		protected ComponentValue<ImagePane, byte[]> createComponentValue(ImagePane component) {
-			return new ByteArrayComponentValue(requireNonNull(component));
+			return new ByteArrayComponentValue(requireNonNull(component), nullable);
 		}
 	}
 
@@ -1355,28 +1371,34 @@ public final class ImagePane extends JPanel {
 
 	private static final class ByteArrayComponentValue extends AbstractComponentValue<ImagePane, byte[]> {
 
-		private ByteArrayComponentValue(ImagePane component) {
-			super(component, EMPTY_BYTES);
+		private final boolean nullable;
+
+		private ByteArrayComponentValue(ImagePane component, boolean nullable) {
+			super(component);
+			this.nullable = nullable;
 			component.image.bytes.addListener(this::notifyObserver);
 		}
 
 		@Override
 		public Optional<byte[]> optional() {
-			byte[] bytes = getOrThrow();
+			byte[] bytes = component().image.bytes.getOrThrow();
 
 			return bytes.length > 0 ? Optional.of(bytes) : Optional.empty();
 		}
 
 		@Override
-		protected byte[] getComponentValue() {
+		protected byte @Nullable [] getComponentValue() {
 			byte[] bytes = component().image.bytes.getOrThrow();
+			if (bytes.length > 0) {
+				return copyOf(bytes, bytes.length);
+			}
 
-			return copyOf(bytes, bytes.length);
+			return nullable ? null : EMPTY_BYTES;
 		}
 
 		@Override
-		protected void setComponentValue(byte[] value) {
-			component().image.bytes.set(copyOf(value, value.length));
+		protected void setComponentValue(byte @Nullable [] value) {
+			component().image.bytes.set(value == null ? null : copyOf(value, value.length));
 		}
 	}
 }

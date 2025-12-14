@@ -41,7 +41,9 @@ public final class ImagePaneTest {
 		AtomicInteger bytesEventCounter = new AtomicInteger();
 		AtomicInteger imageEventCounter = new AtomicInteger();
 
-		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder().buildValue();
+		ComponentValue<ImagePane, byte[]> bytesValue = ImagePane.builder()
+						.nullable(false)
+						.buildValue();
 		bytesValue.addListener(bytesEventCounter::incrementAndGet);
 		assertFalse(bytesValue.optional().isPresent());
 
@@ -106,6 +108,19 @@ public final class ImagePaneTest {
 		assertTrue(bytesValue.getOrThrow().length > 0);
 		assertEquals(10, bytesEventCounter.get());
 		assertEquals(10, imageEventCounter.get());
+
+		bytesValue = ImagePane.builder().buildValue();
+		assertNull(bytesValue.get());
+		imagePane = bytesValue.component();
+		imagePane.image().set(image, "png");
+		assertNotNull(bytesValue.get());
+		assertTrue(bytesValue.optional().isPresent());
+		imagePane.image().set((byte[]) null);
+		assertNull(bytesValue.get());
+		imagePane.image().set(image, "png");
+		imagePane.image().set(new byte[0]);
+		assertNull(bytesValue.get());
+		assertFalse(bytesValue.optional().isPresent());
 	}
 
 	@Test
