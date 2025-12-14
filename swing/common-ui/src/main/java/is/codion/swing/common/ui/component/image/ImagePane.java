@@ -214,6 +214,16 @@ public final class ImagePane extends JPanel {
 	public static final PropertyValue<ZoomDevice> ZOOM_DEVICE = enumValue(ImagePane.class.getName() + ".zoomDevice", ZoomDevice.class, ZoomDevice.NONE);
 
 	/**
+	 * Specifies the default {@link NavigationCorner} for {@link ImagePane}s.
+	 * <ul>
+	 * <li>Value type: {@link NavigationCorner}
+	 * <li>Default value: {@link NavigationCorner#UPPER_LEFT}
+	 * </ul>
+	 */
+	public static final PropertyValue<NavigationCorner> NAVIGATION_CORNER = enumValue(ImagePane.class.getName() + ".navigationCorner",
+					NavigationCorner.class, NavigationCorner.UPPER_LEFT);
+
+	/**
 	 * Specifies the default auto-resize behaviour for {@link ImagePane}s.
 	 * <ul>
 	 * <li>Value type: Boolean
@@ -243,6 +253,7 @@ public final class ImagePane extends JPanel {
 	private final State autoResize;
 	private final State movable;
 	private final State navigable;
+	private final NavigationCorner navigationCorner;
 	private final Value<Double> zoomIncrement = Value.builder()
 					.nonNull(DEFAULT_ZOOM_INCREMENT)
 					.validator(POSITIVE_NUMBER)
@@ -272,6 +283,7 @@ public final class ImagePane extends JPanel {
 		autoResize = State.state(builder.autoResize);
 		movable = State.state(builder.movable);
 		navigable = State.state(builder.navigable);
+		navigationCorner = builder.navigationCorner;
 		zoom = new ZoomValue();
 		origin = new ImageOriginValue();
 		if (navigable.is() && !image.isNull()) {
@@ -548,6 +560,13 @@ public final class ImagePane extends JPanel {
 		Builder navigable(boolean navigable);
 
 		/**
+		 * @param navigationCorner the location of the navigation image
+		 * @return this builder
+		 * @see #NAVIGATION_CORNER
+		 */
+		Builder navigationCorner(NavigationCorner navigationCorner);
+
+		/**
 		 * Default false
 		 * @param movable true if the image should be movable within the pane
 		 * @return this builder
@@ -689,7 +708,27 @@ public final class ImagePane extends JPanel {
 	 * @return true if the given point is within the navigation image
 	 */
 	private boolean isInNavigationImage(Point panePoint) {
-		return navigable.is() && panePoint.x < getScreenNavImageWidth() && panePoint.y < getScreenNavImageHeight();
+		if (!navigable.is()) {
+			return false;
+		}
+		Point navOrigin = navigationImageOrigin();
+		int navWidth = getScreenNavImageWidth();
+		int navHeight = getScreenNavImageHeight();
+
+		return panePoint.x >= navOrigin.x && panePoint.x < navOrigin.x + navWidth &&
+						panePoint.y >= navOrigin.y && panePoint.y < navOrigin.y + navHeight;
+	}
+
+	private Point navigationImageOrigin() {
+		int navWidth = getScreenNavImageWidth();
+		int navHeight = getScreenNavImageHeight();
+
+		return switch (navigationCorner) {
+			case UPPER_LEFT -> new Point(0, 0);
+			case LOWER_LEFT -> new Point(0, getHeight() - navHeight);
+			case UPPER_RIGHT -> new Point(getWidth() - navWidth, 0);
+			case LOWER_RIGHT -> new Point(getWidth() - navWidth, getHeight() - navHeight);
+		};
 	}
 
 	/**
@@ -793,29 +832,31 @@ public final class ImagePane extends JPanel {
 		}
 
 		if (navigable.is()) {
-			g.drawImage(navigationImage, 0, 0, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
-			drawZoomAreaOutline(g);
+			Point navOrigin = navigationImageOrigin();
+			g.drawImage(navigationImage, navOrigin.x, navOrigin.y, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
+			drawZoomAreaOutline(g, navOrigin);
 		}
 	}
 
 	/**
 	 * Paints a white outline over the navigation image indicating
 	 * the area of the image currently displayed in the pane.
-	 * @param g the graphics
+	 * @param graphics the graphics
+	 * @param navOrigin the navigation image origin
 	 */
-	private void drawZoomAreaOutline(Graphics g) {
+	private void drawZoomAreaOutline(Graphics graphics, Point navOrigin) {
 		int screenImageWidth = getScreenImageWidth();
 		int screenImageHeight = getScreenImageHeight();
 		if (isFullImageInPane() || screenImageHeight == 0 || screenImageWidth == 0) {
 			return;
 		}
 
-		int x = -origin.x * getScreenNavImageWidth() / screenImageWidth;
-		int y = -origin.y * getScreenNavImageHeight() / screenImageHeight;
+		int x = navOrigin.x + (-origin.x * getScreenNavImageWidth() / screenImageWidth);
+		int y = navOrigin.y + (-origin.y * getScreenNavImageHeight() / screenImageHeight);
 		int width = getWidth() * getScreenNavImageWidth() / screenImageWidth;
 		int height = getHeight() * getScreenNavImageHeight() / screenImageHeight;
-		g.setColor(Color.white);
-		g.drawRect(x, y, width, height);
+		graphics.setColor(Color.white);
+		graphics.drawRect(x, y, width, height);
 	}
 
 	private int getScreenImageWidth() {
@@ -868,6 +909,28 @@ public final class ImagePane extends JPanel {
 		 * <p>Identifies the mouse scroll wheel as the zooming device.</p>
 		 */
 		MOUSE_WHEEL
+	}
+
+	/**
+	 * Specifies the location of the navigation image within the pane.
+	 */
+	public enum NavigationCorner {
+		/**
+		 * Navigation image in the upper left corner.
+		 */
+		UPPER_LEFT,
+		/**
+		 * Navigation image in the lower left corner.
+		 */
+		LOWER_LEFT,
+		/**
+		 * Navigation image in the upper right corner.
+		 */
+		UPPER_RIGHT,
+		/**
+		 * Navigation image in the lower right corner.
+		 */
+		LOWER_RIGHT
 	}
 
 	private final class WheelZoomDevice implements MouseWheelListener {
@@ -1233,8 +1296,9 @@ public final class ImagePane extends JPanel {
 		}
 
 		private Point navigationToZoomedImagePoint(Point panePoint) {
-			int x = panePoint.x * getScreenImageWidth() / getScreenNavImageWidth();
-			int y = panePoint.y * getScreenImageHeight() / getScreenNavImageHeight();
+			Point navOrigin = navigationImageOrigin();
+			int x = (panePoint.x - navOrigin.x) * getScreenImageWidth() / getScreenNavImageWidth();
+			int y = (panePoint.y - navOrigin.y) * getScreenImageHeight() / getScreenNavImageHeight();
 
 			return new Point(x, y);
 		}
@@ -1292,6 +1356,7 @@ public final class ImagePane extends JPanel {
 		private ZoomDevice zoomDevice = ZOOM_DEVICE.getOrThrow();
 		private boolean autoResize = AUTO_RESIZE.getOrThrow();
 		private boolean navigable = false;
+		private NavigationCorner navigationCorner = NAVIGATION_CORNER.getOrThrow();
 		private boolean movable = false;
 		private boolean nullable = true;
 
@@ -1334,6 +1399,12 @@ public final class ImagePane extends JPanel {
 		@Override
 		public Builder navigable(boolean navigable) {
 			this.navigable = navigable;
+			return this;
+		}
+
+		@Override
+		public Builder navigationCorner(NavigationCorner navigationCorner) {
+			this.navigationCorner = requireNonNull(navigationCorner);
 			return this;
 		}
 

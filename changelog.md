@@ -24,6 +24,7 @@ Codion Change Log
 - FilterTable.copySelectedCell(), copySelectedColumn() and copyToClipboard() renamed copyCell(), copyColumn() and copyRows().
 - ImagePane, a few potential divide by zero errors prevented.
 - ImagePane.Builder.nullable() added, default true.
+- ImagePane.Builder.navigationCorner() added along with NavigationCorner enum and NAVIGATION_CORNER configuration value.
 ### is.codion.framework.domain
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
 - EntitySerializer bug fixed, key deserialization now fails if attribute is not found.
