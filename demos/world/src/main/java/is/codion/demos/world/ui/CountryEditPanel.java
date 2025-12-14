@@ -34,9 +34,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static is.codion.common.reactive.state.State.present;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -141,23 +143,36 @@ final class CountryEditPanel extends EntityEditPanel {
 										.component(borderLayoutPanel()
 														.layout(new BorderLayout())
 														.center(component(Country.FLAG).get())
-														.east(button()
-																		.control(createSelectFlagControl())
-																		.transferFocusOnEnter(true))))
+														.east(panel()
+																		.layout(new GridLayout(1, 2))
+																		.add(button()
+																						.control(createAddFlagControl())
+																						.transferFocusOnEnter(true))
+																		.add(button()
+																						.control(createRemoveFlagControl())
+																						.transferFocusOnEnter(true)))))
 						.center(borderLayoutPanel()
 										.north(label("Avg. city pop.")
 														.horizontalAlignment(SwingConstants.CENTER))
 										.center(averageCityPopulationField)));
 	}
 
-	private Control createSelectFlagControl() {
+	private Control createAddFlagControl() {
 		return Control.builder()
-						.command(this::selectFlag)
-						.caption("...")
+						.command(this::addFlag)
+						.caption("+")
 						.build();
 	}
 
-	private void selectFlag() throws IOException {
+	private Control createRemoveFlagControl() {
+		return Control.builder()
+						.command(this::removeFlag)
+						.enabled(present(editModel().editor().value(Country.FLAG)))
+						.caption("-")
+						.build();
+	}
+
+	private void addFlag() throws IOException {
 		editModel().editor().value(Country.FLAG).set(Files.readAllBytes(Dialogs.select()
 						.files()
 						.owner(this)
@@ -165,6 +180,10 @@ final class CountryEditPanel extends EntityEditPanel {
 						.filter(new FileNameExtensionFilter("PNG image files", "png"))
 						.selectFile()
 						.toPath()));
+	}
+
+	private void removeFlag() {
+		editModel().editor().value(Country.FLAG).clear();
 	}
 
 	private EntityEditPanel createCapitalEditPanel() {
