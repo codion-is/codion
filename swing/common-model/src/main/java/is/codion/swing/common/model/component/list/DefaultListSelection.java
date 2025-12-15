@@ -405,6 +405,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		protected List<R> getValue() {
 			return unmodifiableList(selectedIndexes.getOrThrow().stream()
 							.mapToInt(Integer::intValue)
+							.filter(index -> index < items.size())
 							.mapToObj(items::get)
 							.collect(toList()));
 		}
