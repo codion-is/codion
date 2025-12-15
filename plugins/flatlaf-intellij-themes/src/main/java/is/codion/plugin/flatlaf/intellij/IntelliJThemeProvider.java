@@ -18,6 +18,7 @@
  */
 package is.codion.plugin.flatlaf.intellij;
 
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.plugin.flatlaf.intellij.themes.akusan.AkusanDark;
 import is.codion.plugin.flatlaf.intellij.themes.akusan.AkusanGray;
 import is.codion.plugin.flatlaf.intellij.themes.akusan.AkusanLight;
@@ -307,7 +308,7 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 				Utilities.updateComponentTreeForAllWindows();
 			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e);
 			}
 		}
 	}

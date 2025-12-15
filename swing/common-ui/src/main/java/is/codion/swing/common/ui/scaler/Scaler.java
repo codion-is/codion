@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.scaler;
 
 import is.codion.common.utilities.Configuration;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 
 import java.util.Optional;
@@ -77,11 +78,7 @@ public interface Scaler {
 							.findFirst();
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 }

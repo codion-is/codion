@@ -23,6 +23,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
@@ -32,7 +33,6 @@ import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.ExceptionDialogBuilder;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.scaler.Scaler;
 import is.codion.swing.common.ui.window.Windows;
@@ -57,6 +57,7 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -574,8 +575,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private static void displayExceptionAndExit(Throwable exception, @Nullable JFrame applicationFrame) {
-		Throwable unwrapped = ExceptionDialogBuilder.unwrap(exception);
-		if (unwrapped instanceof CancelException) {
+		if (exception instanceof CancelException) {
 			System.exit(0);
 		}
 		else {
@@ -644,11 +644,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 			try {
 				return applicationModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
 			}
-			catch (RuntimeException e) {
-				throw e;
-			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e, InvocationTargetException.class);
 			}
 		}
 	}
@@ -660,11 +657,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 			try {
 				return applicationPanelClass.getConstructor(model.getClass()).newInstance(model);
 			}
-			catch (RuntimeException e) {
-				throw e;
-			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e, InvocationTargetException.class);
 			}
 		}
 	}

@@ -19,6 +19,7 @@
 package is.codion.manual.notes;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.dbms.h2.H2DatabaseFactory;
@@ -307,7 +308,7 @@ public final class NotesDemo {
 			return database;
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 }

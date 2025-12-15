@@ -18,6 +18,7 @@
  */
 package is.codion.framework.json.domain;
 
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
@@ -65,11 +66,7 @@ public interface EntityObjectMapperFactory {
 							.orElse(mapperDomainType -> true);
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 }

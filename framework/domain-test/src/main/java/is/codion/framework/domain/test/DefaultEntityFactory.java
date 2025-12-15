@@ -19,6 +19,7 @@
 package is.codion.framework.domain.test;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.item.Item;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entities;
@@ -196,11 +197,7 @@ public class DefaultEntityFactory implements EntityFactory {
 		}
 		catch (Exception e) {
 			LOG.error("Exception while fetching a value for: {}", attribute, e);
-			if (e instanceof RuntimeException) {
-				throw e;
-			}
-
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 

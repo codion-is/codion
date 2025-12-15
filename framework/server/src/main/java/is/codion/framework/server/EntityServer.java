@@ -31,6 +31,7 @@ import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.local.LocalEntityConnection;
@@ -454,12 +455,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 			return server;
 		}
-		catch (RuntimeException e) {
-			throw e;
-		}
 		catch (Exception e) {
 			LOG.error("Exception when starting server", e);
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 

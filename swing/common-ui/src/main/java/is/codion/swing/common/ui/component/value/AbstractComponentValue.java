@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.value;
 
 import is.codion.common.reactive.value.AbstractValue;
+import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
 
@@ -104,10 +105,6 @@ public abstract class AbstractComponentValue<C extends JComponent, T> extends Ab
 		if (cause instanceof InterruptedException) {
 			Thread.currentThread().interrupt();
 		}
-		if (cause instanceof RuntimeException) {
-			throw (RuntimeException) cause;
-		}
-
-		throw new RuntimeException(cause);
+		throw Exceptions.runtime(cause);
 	}
 }

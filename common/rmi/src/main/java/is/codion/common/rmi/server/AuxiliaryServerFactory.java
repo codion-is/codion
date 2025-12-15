@@ -18,6 +18,8 @@
  */
 package is.codion.common.rmi.server;
 
+import is.codion.common.utilities.exceptions.Exceptions;
+
 import java.rmi.Remote;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -58,11 +60,7 @@ public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin,
 							.orElseThrow(() -> new IllegalStateException("No auxiliary server factory of type: " + classname + " available"));
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 }

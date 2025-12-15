@@ -18,6 +18,8 @@
  */
 package is.codion.common.db.database;
 
+import is.codion.common.utilities.exceptions.Exceptions;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ServiceConfigurationError;
@@ -71,11 +73,7 @@ public interface DatabaseFactory {
 							.orElseThrow(() -> new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver));
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 

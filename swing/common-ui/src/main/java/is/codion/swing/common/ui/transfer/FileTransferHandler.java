@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.transfer;
 
+import is.codion.common.utilities.exceptions.Exceptions;
+
 import javax.swing.TransferHandler;
 import javax.swing.text.JTextComponent;
 import java.awt.Component;
@@ -122,7 +124,7 @@ public abstract class FileTransferHandler extends TransferHandler {
 			return files;
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 

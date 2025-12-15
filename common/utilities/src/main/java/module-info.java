@@ -29,6 +29,7 @@ module is.codion.common.utilities {
 	requires transitive is.codion.common.reactive;
 
 	exports is.codion.common.utilities;
+	exports is.codion.common.utilities.exceptions;
 	exports is.codion.common.utilities.format;
 	exports is.codion.common.utilities.item;
 	exports is.codion.common.utilities.logging;

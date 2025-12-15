@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.resource.MessageBundle;
 
 import org.jspecify.annotations.Nullable;
@@ -27,7 +28,6 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import java.io.FileNotFoundException;
-import java.util.Collection;
 import java.util.function.Consumer;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
@@ -43,26 +43,12 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 
 	private static final int MAXIMUM_MESSAGE_LENGTH = 50;
 
-	private Collection<Class<? extends Throwable>> unwrapExceptions = WRAPPER_EXCEPTIONS.getOrThrow();
 	private @Nullable String message;
-	private boolean unwrap = true;
 	private boolean systemProperties = SYSTEM_PROPERTIES.getOrThrow();
 
 	@Override
 	public ExceptionDialogBuilder message(@Nullable String message) {
 		this.message = message;
-		return this;
-	}
-
-	@Override
-	public ExceptionDialogBuilder unwrap(boolean unwrap) {
-		this.unwrap = unwrap;
-		return this;
-	}
-
-	@Override
-	public ExceptionDialogBuilder unwrap(Collection<Class<? extends Throwable>> exceptions) {
-		this.unwrapExceptions = requireNonNull(exceptions);
 		return this;
 	}
 
@@ -75,22 +61,21 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 	@Override
 	public void show(Throwable exception) {
 		requireNonNull(exception);
-		Throwable rootCause = unwrap ? ExceptionDialogBuilder.unwrap(exception, unwrapExceptions) : exception;
-		setTitle(rootCause);
-		setMessage(rootCause);
+		setTitle(exception);
+		setMessage(exception);
 		try {
 			if (SwingUtilities.isEventDispatchThread()) {
-				displayException(rootCause);
+				displayException(exception);
 			}
 			else {
-				SwingUtilities.invokeAndWait(() -> displayException(rootCause));
+				SwingUtilities.invokeAndWait(() -> displayException(exception));
 			}
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 

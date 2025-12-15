@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -371,7 +372,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 				}
 			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e);
 			}
 		}
 	}

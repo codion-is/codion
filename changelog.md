@@ -14,6 +14,8 @@ Codion Change Log
 - Observer.when() default implementations removed.
 - AbstractValue, ValueObserver added, no longer depends on Event.
 - DefaultObservableState, StateObserver added, no longer depends on Event.
+### is.codion.common.utilities
+- Exceptions added, with runtime wrapping and unwrapping.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.label(Consumer) now builds and sets label right away.
 - DefaultInputPanelBuilder now uses the label from AbstractComponentBuilder if specified.
@@ -25,6 +27,7 @@ Codion Change Log
 - ImagePane, a few potential divide by zero errors prevented.
 - ImagePane.Builder.nullable() added, default true.
 - ImagePane.Builder.navigationCorner() added along with NavigationCorner enum and NAVIGATION_CORNER configuration value.
+- ExceptionDialogBuilder unwrapping functionality removed.
 ### is.codion.framework.domain
 - AttributeValidator added along with ValueAttributeDefinition.Builder.validator().
 - EntitySerializer bug fixed, key deserialization now fails if attribute is not found.

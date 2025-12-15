@@ -19,7 +19,7 @@
 package is.codion.plugin.jasperreports;
 
 import is.codion.common.db.report.AbstractReport;
-import is.codion.common.db.report.ReportException;
+import is.codion.common.utilities.exceptions.Exceptions;
 
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -44,7 +44,7 @@ abstract class AbstractJRReport extends AbstractReport<JasperReport, JasperPrint
 			return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : parameters, connection);
 		}
 		catch (Exception e) {
-			throw new ReportException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 }

@@ -19,6 +19,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.reactive.observer.Observer;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
@@ -239,11 +240,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 							.orElseThrow(() -> new IllegalStateException("No connection provider builder available for requested client connection type: " + clientConnectionType));
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 

@@ -16,9 +16,7 @@
  *
  * Copyright (c) 2014 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui.dialog;
-
-import is.codion.common.model.CancelException;
+package is.codion.common.utilities.exceptions;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,9 +24,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-public class ExceptionDialogBuilderTest {
+public class ExceptionsTest {
 
 	@Test
 	void unwrap() {
@@ -36,37 +34,37 @@ public class ExceptionDialogBuilderTest {
 		Exception wrapper = new RuntimeException(rootException);
 		List<Class<? extends Throwable>> toUnwrap = new ArrayList<>();
 		toUnwrap.add(RuntimeException.class);
-		Throwable unwrapped = ExceptionDialogBuilder.unwrap(wrapper, toUnwrap);
-		assertEquals(rootException, unwrapped);
+		Throwable unwrapped = Exceptions.unwrap(wrapper, toUnwrap);
+		assertSame(rootException, unwrapped);
 
 		rootException = new Exception();
 		wrapper = new RuntimeException(new RuntimeException(rootException));
-		unwrapped = ExceptionDialogBuilder.unwrap(wrapper, toUnwrap);
-		assertEquals(rootException, unwrapped);
+		unwrapped = Exceptions.unwrap(wrapper, toUnwrap);
+		assertSame(rootException, unwrapped);
 
-		rootException = new CancelException();
+		rootException = new IllegalArgumentException();
 		wrapper = new RuntimeException(rootException);
-		unwrapped = ExceptionDialogBuilder.unwrap(wrapper, toUnwrap);
-		assertEquals(rootException, unwrapped);
+		unwrapped = Exceptions.unwrap(wrapper, toUnwrap);
+		assertSame(rootException, unwrapped);
 
 		rootException = new Exception();
-		unwrapped = ExceptionDialogBuilder.unwrap(rootException, toUnwrap);
-		assertEquals(rootException, unwrapped);
+		unwrapped = Exceptions.unwrap(rootException, toUnwrap);
+		assertSame(rootException, unwrapped);
 
 		rootException = new RuntimeException();
-		unwrapped = ExceptionDialogBuilder.unwrap(rootException, toUnwrap);
-		assertEquals(rootException, unwrapped);
+		unwrapped = Exceptions.unwrap(rootException, toUnwrap);
+		assertSame(rootException, unwrapped);
 
 		rootException = new TestRuntimeException();
 		toUnwrap.add(InvocationTargetException.class);
 
-		unwrapped = ExceptionDialogBuilder.unwrap(new RuntimeException(new InvocationTargetException(rootException)), toUnwrap);
-		assertEquals(rootException, unwrapped);
+		unwrapped = Exceptions.unwrap(new RuntimeException(new InvocationTargetException(rootException)), toUnwrap);
+		assertSame(rootException, unwrapped);
 
 		rootException = new TestRuntimeException();
 
-		unwrapped = ExceptionDialogBuilder.unwrap(new InvocationTargetException(new RuntimeException(rootException)), toUnwrap);
-		assertEquals(rootException, unwrapped);
+		unwrapped = Exceptions.unwrap(new InvocationTargetException(new InvocationTargetException(new RuntimeException(rootException))), toUnwrap);
+		assertSame(rootException, unwrapped);
 	}
 
 	private static final class TestRuntimeException extends RuntimeException {

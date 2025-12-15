@@ -18,6 +18,8 @@
  */
 package is.codion.common.utilities.resource;
 
+import is.codion.common.utilities.exceptions.Exceptions;
+
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.ServiceConfigurationError;
@@ -81,11 +83,7 @@ public final class MessageBundle extends ResourceBundle {
 							.orElse(DEFAULT);
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 

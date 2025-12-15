@@ -20,6 +20,7 @@ package is.codion.common.db.pool;
 
 import is.codion.common.db.database.ConnectionFactory;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.user.User;
 
 import java.util.ServiceConfigurationError;
@@ -58,11 +59,7 @@ public interface ConnectionPoolFactory {
 							.orElseThrow(() -> new IllegalStateException("No connection pool factory of type: " + classname + " available"));
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 
@@ -78,11 +75,7 @@ public interface ConnectionPoolFactory {
 							.orElseThrow(() -> new IllegalStateException("No connection pool factory available"));
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 }

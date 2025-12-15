@@ -29,6 +29,7 @@ import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -425,7 +426,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, DELETE);
-				throw runtimeException(exception);
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}
@@ -472,7 +473,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
 				throwDatabaseException(exception, SELECT);
-				throw runtimeException(exception);
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}
@@ -497,7 +498,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
 				throwDatabaseException(exception, SELECT);
-				throw runtimeException(exception);
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}
@@ -548,7 +549,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, SELECT);
-				throw runtimeException(exception);
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}
@@ -576,7 +577,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(selectQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, SELECT);
-				throw runtimeException(exception);
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}
@@ -607,7 +608,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
 				throwDatabaseException(exception, SELECT);
-				throw runtimeException(exception);
+				throw Exceptions.runtime(exception);
 			}
 		}
 
@@ -633,7 +634,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			exception = e;
 			LOG.error(createLogMessage(functionType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
 			throwDatabaseException(e, OTHER);
-			throw runtimeException(e);
+			throw Exceptions.runtime(e);
 		}
 		finally {
 			tracer.exit(EXECUTE, exception);
@@ -660,7 +661,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			rollbackQuietlyIfTransactionIsNotOpen();
 			LOG.error(createLogMessage(procedureType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
 			throwDatabaseException(e, OTHER);
-			throw runtimeException(e);
+			throw Exceptions.runtime(e);
 		}
 		finally {
 			tracer.exit(EXECUTE, exception);
@@ -684,7 +685,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(null, singletonList(reportType), emptyList(), e), e);
 				throwDatabaseException(e, SELECT);
-				throw runtimeException(e);
+				throw Exceptions.runtime(e);
 			}
 			finally {
 				tracer.exit(REPORT, exception);
@@ -859,7 +860,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				rollbackQuietlyIfTransactionIsNotOpen();
 				LOG.error(createLogMessage(insertQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, INSERT);
-				throw runtimeException(exception);
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}
@@ -938,7 +939,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				}
 				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, UPDATE);
-				throw runtimeException(exception);
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}
@@ -1504,14 +1505,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		if (exception instanceof SQLException) {
 			throw database.exception((SQLException) exception, operation);
 		}
-	}
-
-	private RuntimeException runtimeException(Exception exception) {
-		if (exception instanceof RuntimeException) {
-			return (RuntimeException) exception;
-		}
-
-		return new RuntimeException(exception);
 	}
 
 	private EntityDefinition definition(EntityType entityType) {

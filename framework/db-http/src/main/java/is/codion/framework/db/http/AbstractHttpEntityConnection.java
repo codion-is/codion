@@ -23,6 +23,7 @@ import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
@@ -360,11 +361,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			throw new RuntimeException(e);
 		}
 		LOG.error(e.getMessage(), e);
-		if (e instanceof RuntimeException) {
-			throw (RuntimeException) e;
-		}
-
-		return new RuntimeException(e);
+		throw Exceptions.runtime(e);
 	}
 
 	private static String createBaseUrl(DefaultBuilder builder, String path) {

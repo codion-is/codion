@@ -18,6 +18,7 @@
  */
 package is.codion.manual.keybinding;
 
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.item.Item;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -191,7 +192,7 @@ final class KeyBindingModel {
 								.toList();
 			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e);
 			}
 		}
 

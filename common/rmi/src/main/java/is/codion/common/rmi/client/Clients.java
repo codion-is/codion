@@ -18,6 +18,7 @@
  */
 package is.codion.common.rmi.client;
 
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 
 import nl.altindag.ssl.SSLFactory;
@@ -125,7 +126,7 @@ public final class Clients {
 			System.setProperty(JAVAX_NET_TRUSTSTORE_PASSWORD, password);
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 }

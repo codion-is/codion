@@ -196,7 +196,6 @@ final class DialogsDemo {
 		Dialogs.exception()
 						.owner(window)
 						.title("Exception")
-						.unwrap(List.of(RuntimeException.class))
 						// Don't include system properties
 						.systemProperties(false)
 						.show(exception);

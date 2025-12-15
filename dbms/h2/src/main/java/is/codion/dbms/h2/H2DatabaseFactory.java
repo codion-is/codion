@@ -22,6 +22,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.utilities.Text;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.user.User;
 
 import java.lang.reflect.InvocationTargetException;
@@ -142,7 +143,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 				throw new RuntimeException(ite.getCause());
 			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e);
 			}
 		}
 	}

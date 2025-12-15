@@ -20,6 +20,7 @@ package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.AbstractRefresher;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import org.jspecify.annotations.Nullable;
@@ -110,11 +111,7 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 
 		@Override
 		public void accept(Exception exception) {
-			if (exception instanceof RuntimeException) {
-				throw (RuntimeException) exception;
-			}
-
-			throw new RuntimeException(exception);
+			throw Exceptions.runtime(exception);
 		}
 	}
 }

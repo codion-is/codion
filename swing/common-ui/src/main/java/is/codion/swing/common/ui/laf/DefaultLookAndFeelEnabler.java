@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.laf;
 
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.scaler.Scaler;
 
@@ -80,7 +81,7 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 			return (LookAndFeel) Class.forName(lookAndFeelInfo.getClassName()).getDeclaredConstructor().newInstance();
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 
@@ -118,7 +119,7 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 				Utilities.updateComponentTreeForAllWindows();
 			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e);
 			}
 		}
 	}

@@ -19,6 +19,7 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.rmi.server.exception.LoginException;
+import is.codion.common.utilities.exceptions.Exceptions;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,11 +77,7 @@ public interface Authenticator {
 			return stream(ServiceLoader.load(Authenticator.class).spliterator(), false).collect(toList());
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 }

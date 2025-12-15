@@ -23,6 +23,7 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
 
@@ -431,7 +432,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 		catch (Exception e) {
 			LOG.error("Starting auxiliary server", e);
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 

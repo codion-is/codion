@@ -25,6 +25,7 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.user.User;
 
 import org.jspecify.annotations.Nullable;
@@ -288,11 +289,8 @@ public abstract class AbstractDatabase implements Database {
 				return AbstractDatabase.instance;
 			}
 		}
-		catch (RuntimeException e) {
-			throw e;
-		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 

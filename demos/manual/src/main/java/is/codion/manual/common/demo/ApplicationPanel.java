@@ -20,6 +20,7 @@ package is.codion.manual.common.demo;
 
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.plugin.flatlaf.intellij.themes.dracula.Dracula;
@@ -413,7 +414,7 @@ public final class ApplicationPanel extends JPanel {
 				return true;
 			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e);
 			}
 		}
 	}

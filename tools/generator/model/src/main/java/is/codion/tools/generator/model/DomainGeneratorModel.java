@@ -25,6 +25,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.domain.db.SchemaDomain;
@@ -315,7 +316,7 @@ public final class DomainGeneratorModel {
 			return SchemaDomain.schemaDomain(connection.getMetaData(), schema.name(), schema.schemaSettings());
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 
@@ -482,7 +483,7 @@ public final class DomainGeneratorModel {
 				return schemaRows(resultSet);
 			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e);
 			}
 		}
 

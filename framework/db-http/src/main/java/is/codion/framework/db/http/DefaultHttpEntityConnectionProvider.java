@@ -18,6 +18,7 @@
  */
 package is.codion.framework.db.http;
 
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
 
@@ -87,7 +88,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 							.build();
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Exceptions.runtime(e);
 		}
 	}
 

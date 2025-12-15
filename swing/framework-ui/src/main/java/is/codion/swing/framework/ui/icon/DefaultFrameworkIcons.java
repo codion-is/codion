@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui.icon;
 
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon.IconPainter;
@@ -238,11 +239,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 							.orElseThrow(() -> new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found"));
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 

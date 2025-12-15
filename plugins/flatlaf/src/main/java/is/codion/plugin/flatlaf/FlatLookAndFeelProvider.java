@@ -18,6 +18,7 @@
  */
 package is.codion.plugin.flatlaf;
 
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -74,7 +75,7 @@ public final class FlatLookAndFeelProvider implements LookAndFeelProvider {
 				Utilities.updateComponentTreeForAllWindows();
 			}
 			catch (Exception e) {
-				throw new RuntimeException(e);
+				throw Exceptions.runtime(e);
 			}
 		}
 	}

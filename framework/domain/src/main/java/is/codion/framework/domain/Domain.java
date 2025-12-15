@@ -26,6 +26,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.domain.entity.Entities;
 
 import java.sql.Connection;
@@ -123,11 +124,7 @@ public interface Domain {
 			return unmodifiableList(stream(ServiceLoader.load(Domain.class).spliterator(), false).collect(toList()));
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 }

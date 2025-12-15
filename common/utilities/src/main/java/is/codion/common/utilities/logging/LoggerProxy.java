@@ -18,6 +18,8 @@
  */
 package is.codion.common.utilities.logging;
 
+import is.codion.common.utilities.exceptions.Exceptions;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -86,11 +88,7 @@ public interface LoggerProxy {
 			return NONE;
 		}
 		catch (ServiceConfigurationError e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
+			throw Exceptions.runtime(e.getCause());
 		}
 	}
 }

@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
 
@@ -115,11 +116,7 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 			if (exception instanceof CancelException) {
 				return; // Operation cancelled
 			}
-			if (exception instanceof RuntimeException) {
-				throw (RuntimeException) exception;
-			}
-
-			throw new RuntimeException(exception);
+			throw Exceptions.runtime(exception);
 		}
 	}
 }
