@@ -30,6 +30,7 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionC
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
 import javax.swing.JComponent;
@@ -123,7 +124,7 @@ public class EntityConditionComponents implements ConditionComponents {
 
 			return inputComponents.comboBox((ForeignKey) attribute, comboBoxModel)
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
-							.onSetVisible(comboBox -> comboBoxModel.items().refresh())
+							.onSetVisible(EntityConditionComponents::refreshIfCleared)
 							.build();
 		}
 		if (conditionModel instanceof ForeignKeyConditionModel) {
@@ -157,5 +158,12 @@ public class EntityConditionComponents implements ConditionComponents {
 		}
 
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + conditionModel);
+	}
+
+	private static void refreshIfCleared(EntityComboBox comboBox) {
+		EntityComboBoxModel model = comboBox.model();
+		if (model.items().cleared()) {
+			model.items().refresh();
+		}
 	}
 }

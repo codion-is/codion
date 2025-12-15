@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.63
+### is.codion.swing.framework.ui
+- EntityConditionComponents.createEqualForeignKeyField(), combo box model only populated if it hasn't been already.
 
 ## 0.18.62
 ### is.codion.common.reactive
