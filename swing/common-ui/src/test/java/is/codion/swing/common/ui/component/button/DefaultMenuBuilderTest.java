@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,5 +70,42 @@ public class DefaultMenuBuilderTest {
 						.build());
 		menu = builder.build();
 		assertEquals(3, menu.getItemCount());
+	}
+
+	@Test
+	void popupMenu() {
+		AbstractAction action1 = new AbstractAction("One") {
+			@Override
+			public void actionPerformed(ActionEvent e) {}
+		};
+		AbstractAction action2 = new AbstractAction("Two") {
+			@Override
+			public void actionPerformed(ActionEvent e) {}
+		};
+		AbstractAction action3 = new AbstractAction("Three") {
+			@Override
+			public void actionPerformed(ActionEvent e) {}
+		};
+		DefaultMenuBuilder builder = new DefaultMenuBuilder(Controls.builder()
+						.caption("Test")
+						.action(action1)
+						.action(action2)
+						.controls(Controls.builder()
+										.caption("Test2")
+										.action(action3)
+										.build())
+						.build());
+		JPopupMenu popupMenu = builder.buildPopupMenu();
+		Component[] components = popupMenu.getComponents();
+		assertEquals(3, components.length);
+		JMenuItem item = (JMenuItem) components[0];
+		assertEquals("One", item.getText());
+		item = (JMenuItem) components[1];
+		assertEquals("Two", item.getText());
+		JMenu submenu = (JMenu) components[2];
+		assertEquals("Test2", submenu.getText());
+		assertEquals(1, submenu.getItemCount());
+		item = submenu.getItem(0);
+		assertEquals("Three", item.getText());
 	}
 }

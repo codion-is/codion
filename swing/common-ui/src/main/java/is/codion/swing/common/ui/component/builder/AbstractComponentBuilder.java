@@ -244,18 +244,12 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	@Override
 	public final B popupControl(Function<C, Control> popupMenuControl) {
-		requireNonNull(popupMenuControl);
-
-		return popupControls((component, controls) ->
-						controls.control(popupMenuControl.apply(component)));
+		return popupControls(new ProcessPopupMenuControl(requireNonNull(popupMenuControl)));
 	}
 
 	@Override
 	public final B popupControls(Function<C, Controls> popupMenuControls) {
-		requireNonNull(popupMenuControls);
-
-		return popupControls((component, controls) ->
-						controls.controls(popupMenuControls.apply(component)));
+		return popupControls(new ProcessPopupMenuControls(requireNonNull(popupMenuControls)));
 	}
 
 	@Override
@@ -517,8 +511,8 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 			ControlsBuilder controlsBuilder = Controls.builder();
 			popupControls.forEach(controls -> controls.accept(component, controlsBuilder));
 			component.setComponentPopupMenu(MenuBuilder.builder()
-						.controls(controlsBuilder.build())
-						.buildPopupMenu());
+							.controls(controlsBuilder.build())
+							.buildPopupMenu());
 		}
 		if (toolTipTextObservable != null) {
 			component.setToolTipText(toolTipTextObservable.get());
@@ -606,6 +600,40 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		}
 
 		return value;
+	}
+
+	private final class ProcessPopupMenuControl implements BiConsumer<C, ControlsBuilder> {
+
+		private final Function<C, Control> controlFactory;
+
+		private ProcessPopupMenuControl(Function<C, Control> controlFactory) {
+			this.controlFactory = controlFactory;
+		}
+
+		@Override
+		public void accept(C component, ControlsBuilder controls) {
+			controls.control(controlFactory.apply(component));
+		}
+	}
+
+	private final class ProcessPopupMenuControls implements BiConsumer<C, ControlsBuilder> {
+
+		private final Function<C, Controls> controlsFactory;
+
+		private ProcessPopupMenuControls(Function<C, Controls> controlsFactory) {
+			this.controlsFactory = controlsFactory;
+		}
+
+		@Override
+		public void accept(C component, ControlsBuilder controlsBuilder) {
+			Controls controls = controlsFactory.apply(component);
+			if (controls.caption().isPresent()) {
+				controlsBuilder.controls(controls);
+			}
+			else {
+				controlsBuilder.actions(controls.actions());
+			}
+		}
 	}
 
 	private static final class SetToolTipText implements Consumer<String> {

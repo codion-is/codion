@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.63
 ### is.codion.swing.common.model
 - DefaultListSelection.DefaultItems.getValue() bug fixed, now excludes invalid indexes.
+### is.codion.swing.common.ui
+- AbstractComponentBuilder.popupControls() bug fixed, on longer creates submenu for Controls without a caption.
 ### is.codion.swing.framework.ui
 - EntityConditionComponents.createEqualForeignKeyField(), combo box model only populated if it hasn't been already.
 
