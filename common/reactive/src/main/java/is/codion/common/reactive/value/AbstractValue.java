@@ -259,7 +259,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	private void setAndNotify(@Nullable T newValue) {
 		if (notify == Notify.CHANGED) {
-			T previousValue = getValue();
+			T previousValue = get();
 			setValue(newValue);
 			if (!Objects.deepEquals(previousValue, newValue)) {
 				notifyObserver();

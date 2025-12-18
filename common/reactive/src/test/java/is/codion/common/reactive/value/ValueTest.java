@@ -75,6 +75,32 @@ public class ValueTest {
 	}
 
 	@Test
+	void setNullValue() {
+		Value<Integer> value = new AbstractValue<>(0, Notify.CHANGED) {
+			private Integer value;
+			@Override
+			protected Integer getValue() {
+				return value;
+			}
+			@Override
+			protected void setValue(Integer value) {
+				this.value = value;
+			}
+		};
+		AtomicInteger counter = new AtomicInteger();
+		value.addListener(counter::incrementAndGet);
+		assertEquals(0, value.get());
+		value.set(0);// Should not trigger a change event
+		assertEquals(0, counter.get());
+		value.set(1);
+		assertEquals(1, counter.get());
+		value.clear();
+		assertEquals(2, counter.get());
+		value.set(0);// Should not trigger a change event
+		assertEquals(2, counter.get());
+	}
+
+	@Test
 	void valueNonNullBehavior() {
 		AtomicInteger eventCounter = new AtomicInteger();
 		Value<Integer> intValue = Value.builder()
