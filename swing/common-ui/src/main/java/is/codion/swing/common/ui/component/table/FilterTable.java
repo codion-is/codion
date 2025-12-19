@@ -286,6 +286,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
 	private final boolean scrollToAddedItem;
+	private final boolean columnToolTips;
 
 	private final ControlMap controlMap;
 
@@ -308,6 +309,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.cellEditable = builder.cellEditable;
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.scrollToAddedItem = builder.scrollToAddedItem;
+		this.columnToolTips = builder.columnToolTips;
 		this.sortable = State.state(builder.sortable);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
@@ -764,7 +766,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	@Override
 	protected JTableHeader createDefaultTableHeader() {
-		return new FilterTableHeader(columnModel);
+		return new FilterTableHeader(columnModel, columnToolTips);
 	}
 
 	/**
@@ -1352,6 +1354,16 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> scrollToAddedItem(boolean scrollToAddedItem);
 
 		/**
+		 * <p>Specifies whether the table should display the column tooltips when the mouse hovers over the table header
+		 * <p>Default: true.
+		 * @param columnToolTips true if column tool tips should be shown
+		 * @return this builder instance
+		 * @see FilterTableColumn#toolTipText()
+		 * @see TableColumns#description(Object)
+		 */
+		Builder<R, C> columnToolTips(boolean columnToolTips);
+
+		/**
 		 * @param sortable true if sorting via clicking the header should be enbled
 		 * @return this builder instance
 		 */
@@ -1516,6 +1528,7 @@ public final class FilterTable<R, C> extends JTable {
 		private @Nullable Action doubleClick;
 		private boolean scrollToSelectedItem = true;
 		private boolean scrollToAddedItem = false;
+		private boolean columnToolTips = true;
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private @Nullable Boolean rowSelection;
@@ -1653,6 +1666,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> scrollToAddedItem(boolean scrollToAddedItem) {
 			this.scrollToAddedItem = scrollToAddedItem;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> columnToolTips(boolean columnToolTips) {
+			this.columnToolTips = columnToolTips;
 			return this;
 		}
 
@@ -1951,15 +1970,20 @@ public final class FilterTable<R, C> extends JTable {
 
 	private static final class FilterTableHeader extends JTableHeader {
 
-		private FilterTableHeader(TableColumnModel columnModel) {
+		private final boolean toolTips;
+
+		private FilterTableHeader(TableColumnModel columnModel, boolean toolTips) {
 			super(columnModel);
+			this.toolTips = toolTips;
 		}
 
 		@Override
 		public @Nullable String getToolTipText(MouseEvent event) {
-			int index = columnModel.getColumnIndexAtX(event.getPoint().x);
-			if (index != -1) {
-				return ((FilterTableColumn<?>) columnModel.getColumn(index)).toolTipText().orElse(null);
+			if (toolTips) {
+				int index = columnModel.getColumnIndexAtX(event.getPoint().x);
+				if (index != -1) {
+					return ((FilterTableColumn<?>) columnModel.getColumn(index)).toolTipText().orElse(null);
+				}
 			}
 
 			return null;
