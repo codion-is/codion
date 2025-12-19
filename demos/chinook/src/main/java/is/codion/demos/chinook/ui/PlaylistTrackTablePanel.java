@@ -61,7 +61,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 	private static final class TrackConditionComponents extends EntityConditionComponents {
 
 		private TrackConditionComponents(EntityDefinition entityDefinition) {
-			super(entityDefinition, PlaylistTrack.TRACK_FK);
+			super(entityDefinition);
 		}
 
 		@Override

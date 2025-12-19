@@ -19,10 +19,13 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.utilities.Operator;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.DefaultSwingForeignKeyConditionModel.DefaultBuilder;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A condition model using a {@link EntityComboBoxModel} for the {@link Operator#EQUAL} operand
@@ -38,10 +41,11 @@ public interface SwingForeignKeyConditionModel extends ForeignKeyConditionModel 
 	EntityComboBoxModel equalComboBoxModel();
 
 	/**
+	 * @param foreignKey the foreign key
 	 * @return a new {@link Builder}
 	 */
-	static Builder builder() {
-		return new DefaultBuilder();
+	static Builder builder(ForeignKey foreignKey) {
+		return new DefaultBuilder(requireNonNull(foreignKey));
 	}
 
 	/**

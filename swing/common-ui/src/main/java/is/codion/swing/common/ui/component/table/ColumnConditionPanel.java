@@ -30,6 +30,7 @@ import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -66,6 +67,12 @@ import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -81,6 +88,7 @@ import static is.codion.swing.common.ui.Utilities.enabled;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
+import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -134,6 +142,14 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		private ControlKeys() {}
 	}
+
+	/**
+	 * The default supported types
+	 */
+	private static final List<Class<?>> SUPPORTED_COMPONENT_TYPES = Arrays.asList(
+					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
+					BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
+					LocalDateTime.class, OffsetDateTime.class);
 
 	private static final String UNKNOWN_OPERATOR = "Unknown operator: ";
 	private static final List<Operator> LOWER_BOUND_OPERATORS = asList(
@@ -331,7 +347,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		private final ConditionModel<T> conditionModel;
 
-		private ConditionComponents components = FilterComponents.INSTANCE;
+		private ConditionComponents components = new ConditionComponents() {};
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private @Nullable TableColumn tableColumn;
 
@@ -377,7 +393,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * @return true if the type is supported
 		 */
 		default boolean supportsType(Class<?> valueClass) {
-			return true;
+			return SUPPORTED_COMPONENT_TYPES.contains(requireNonNull(valueClass));
 		}
 
 		/**
@@ -385,28 +401,45 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * @param <T> the operand type
 		 * @return a component linked to the equal operand
 		 */
-		<T> JComponent equal(ConditionModel<T> conditionModel);
+		default <T> JComponent equal(ConditionModel<T> conditionModel) {
+			return createField(conditionModel)
+							.link(conditionModel.operands().equal())
+							.build();
+		}
 
 		/**
 		 * @param conditionModel the condition model
 		 * @param <T> the operand type
 		 * @return a component linked to the lower bound operand
 		 */
-		<T> JComponent lower(ConditionModel<T> conditionModel);
+		default <T> JComponent lower(ConditionModel<T> conditionModel) {
+			return createField(conditionModel)
+							.link(conditionModel.operands().lower())
+							.build();
+		}
 
 		/**
 		 * @param conditionModel the condition model
 		 * @param <T> the operand type
 		 * @return a component linked to the upper bound operand
 		 */
-		<T> JComponent upper(ConditionModel<T> conditionModel);
+		default <T> JComponent upper(ConditionModel<T> conditionModel) {
+			return createField(conditionModel)
+							.link(conditionModel.operands().upper())
+							.build();
+		}
 
 		/**
 		 * @param conditionModel the condition model
 		 * @param <T> the operand type
 		 * @return a component linked to the in operands
 		 */
-		<T> JComponent in(ConditionModel<T> conditionModel);
+		default <T> JComponent in(ConditionModel<T> conditionModel) {
+			return listBox()
+							.itemValue(createField(conditionModel).buildValue())
+							.linkedValue(conditionModel.operands().in())
+							.build();
+		}
 	}
 
 	private boolean equalIncluded() {
@@ -812,6 +845,67 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 
 		return false;
+	}
+
+	private static <T> ComponentValueBuilder<? extends JComponent, T, ?> createField(ConditionModel<T> conditionModel) {
+		Class<T> columnClass = conditionModel.valueClass();
+		if (columnClass.equals(Boolean.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) nullableCheckBox()
+							.horizontalAlignment(BOOLEAN_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		if (columnClass.equals(Short.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) shortField()
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		if (columnClass.equals(Integer.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) integerField()
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		else if (columnClass.equals(Double.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) doubleField()
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		else if (columnClass.equals(BigDecimal.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) bigDecimalField()
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		else if (columnClass.equals(Long.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) longField()
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		else if (columnClass.equals(LocalTime.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) localTimeField()
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
+							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		else if (columnClass.equals(LocalDate.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) localDateField()
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
+							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		else if (columnClass.equals(LocalDateTime.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) localDateTimeField()
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
+							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		else if (columnClass.equals(OffsetDateTime.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) offsetDateTimeField()
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
+							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
+		}
+		else if (columnClass.equals(String.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) stringField();
+		}
+		else if (columnClass.equals(Character.class)) {
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) characterField();
+		}
+
+		throw new IllegalArgumentException("Unsupported type: " + columnClass);
 	}
 
 	private final class EnableWildcard implements Consumer<Boolean> {

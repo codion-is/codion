@@ -45,7 +45,7 @@ public class SwingEntityConditions extends EntityConditions {
 	@Override
 	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
 		if (definition(requireNonNull(foreignKey).referencedType()).smallDataset()) {
-			return SwingForeignKeyConditionModel.builder()
+			return SwingForeignKeyConditionModel.builder(foreignKey)
 							.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
 							.inSearchModel(createInSearchModel(foreignKey))
 							.build();

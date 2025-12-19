@@ -88,7 +88,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		@Override
 		protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
 			if (foreignKey.equals(Track.MEDIATYPE_FK)) {
-				return SwingForeignKeyConditionModel.builder()
+				return SwingForeignKeyConditionModel.builder(foreignKey)
 								.equalComboBoxModel(createEqualComboBoxModel(Track.MEDIATYPE_FK))
 								.build();
 			}

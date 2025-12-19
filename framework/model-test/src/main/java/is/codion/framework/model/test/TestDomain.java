@@ -382,18 +382,36 @@ public final class TestDomain extends DomainModel {
 		EntityType TYPE = DOMAIN.entityType("domain.date_time_test");
 
 		Column<Integer> ID = TYPE.integerColumn("id");
-		Column<LocalTime> TIME = TYPE.localTimeColumn("time");
-		Column<LocalDateTime> DATE_TIME = TYPE.localDateTimeColumn("date_time");
+		Column<LocalTime> TIME_HH_MM = TYPE.localTimeColumn("time_hh_mm");
+		Column<LocalTime> TIME_HH_MM_SS = TYPE.localTimeColumn("time_hh_mm_ss");
+		Column<LocalTime> TIME_HH_MM_SS_SSS = TYPE.localTimeColumn("time_hh_mm_ss_sss");
+		Column<LocalDateTime> DATE_TIME_HH_MM = TYPE.localDateTimeColumn("date_time_hh_mm");
+		Column<LocalDateTime> DATE_TIME_HH_MM_SS = TYPE.localDateTimeColumn("date_time_hh_mm_ss");
+		Column<LocalDateTime> DATE_TIME_HH_MM_SS_SSS = TYPE.localDateTimeColumn("date_time_hh_mm_ss_sss");
 	}
 
 	EntityDefinition dateTimeTest() {
 		return DateTimeTest.TYPE.as(
 										DateTimeTest.ID.as()
 														.primaryKey(),
-										DateTimeTest.TIME.as()
-														.column(),
-										DateTimeTest.DATE_TIME.as()
-														.column())
+										DateTimeTest.TIME_HH_MM.as()
+														.column()
+														.dateTimePattern("HH:mm"),
+										DateTimeTest.TIME_HH_MM_SS.as()
+														.column()
+														.dateTimePattern("HH:mm.ss"),
+										DateTimeTest.TIME_HH_MM_SS_SSS.as()
+														.column()
+														.dateTimePattern("HH:mm.ss.SSS"),
+										DateTimeTest.DATE_TIME_HH_MM.as()
+														.column()
+														.dateTimePattern("dd-MM-yyyy HH:mm"),
+										DateTimeTest.DATE_TIME_HH_MM_SS.as()
+														.column()
+														.dateTimePattern("dd-MM-yyyy HH:mm.ss"),
+										DateTimeTest.DATE_TIME_HH_MM_SS_SSS.as()
+														.column()
+														.dateTimePattern("dd-MM-yyyy HH:mm.ss.SSS"))
 						.build();
 	}
 

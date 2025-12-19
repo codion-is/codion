@@ -21,13 +21,11 @@ package is.codion.swing.framework.ui;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.model.ColumnConditionModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
@@ -57,15 +55,12 @@ public class EntityConditionComponents implements ConditionComponents {
 					LocalDateTime.class, OffsetDateTime.class, Entity.class);
 
 	private final EntityComponents inputComponents;
-	private final Attribute<?> attribute;
 
 	/**
 	 * @param entityDefinition the entity definition
-	 * @param attribute the attribute
 	 */
-	public EntityConditionComponents(EntityDefinition entityDefinition, Attribute<?> attribute) {
+	public EntityConditionComponents(EntityDefinition entityDefinition) {
 		this.inputComponents = entityComponents(entityDefinition);
-		this.attribute = requireNonNull(attribute);
 	}
 
 	@Override
@@ -75,62 +70,62 @@ public class EntityConditionComponents implements ConditionComponents {
 
 	@Override
 	public <T> JComponent equal(ConditionModel<T> conditionModel) {
-		if (attribute instanceof ForeignKey) {
-			return createEqualForeignKeyField((ConditionModel<Entity>) conditionModel);
+		if (conditionModel instanceof ForeignKeyConditionModel) {
+			return createEqualForeignKeyField((ForeignKeyConditionModel) conditionModel);
 		}
 
-		return inputComponents.component((Attribute<T>) attribute)
+		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
 						.link(conditionModel.operands().equal())
 						.build();
 	}
 
 	@Override
 	public <T> JComponent lower(ConditionModel<T> conditionModel) {
-		if (attribute instanceof ForeignKey) {
+		if (conditionModel instanceof ForeignKeyConditionModel) {
 			throw new IllegalArgumentException("Lower bound not supported for foreign key conditions");
 		}
 
-		return inputComponents.component((Attribute<T>) attribute)
+		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
 						.link(conditionModel.operands().lower())
 						.build();
 	}
 
 	@Override
 	public <T> JComponent upper(ConditionModel<T> conditionModel) {
-		if (attribute instanceof ForeignKey) {
+		if (conditionModel instanceof ForeignKeyConditionModel) {
 			throw new IllegalArgumentException("Upper bound not supported for foreign key conditions");
 		}
 
-		return inputComponents.component((Attribute<T>) attribute)
+		return inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute())
 						.link(conditionModel.operands().upper())
 						.build();
 	}
 
 	@Override
 	public <T> JComponent in(ConditionModel<T> conditionModel) {
-		if (attribute instanceof ForeignKey) {
-			return createInForeignKeyField((ConditionModel<Entity>) conditionModel);
+		if (conditionModel instanceof ForeignKeyConditionModel) {
+			return createInForeignKeyField((ForeignKeyConditionModel) conditionModel);
 		}
 
 		return listBox()
-						.itemValue((ComponentValue<JComponent, T>) inputComponents.component(attribute).buildValue())
+						.itemValue(inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute()).buildValue())
 						.linkedValue(conditionModel.operands().in())
 						.build();
 	}
 
-	private JComponent createEqualForeignKeyField(ConditionModel<Entity> conditionModel) {
+	private JComponent createEqualForeignKeyField(ForeignKeyConditionModel conditionModel) {
 		if (conditionModel instanceof SwingForeignKeyConditionModel) {
 			EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) conditionModel).equalComboBoxModel();
 
-			return inputComponents.comboBox((ForeignKey) attribute, comboBoxModel)
+			return inputComponents.comboBox(conditionModel.attribute(), comboBoxModel)
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
 							.onSetVisible(EntityConditionComponents::refreshIfCleared)
 							.build();
 		}
 		if (conditionModel instanceof ForeignKeyConditionModel) {
-			EntitySearchModel searchModel = ((ForeignKeyConditionModel) conditionModel).equalSearchModel();
+			EntitySearchModel searchModel = conditionModel.equalSearchModel();
 
-			return inputComponents.searchField((ForeignKey) attribute, searchModel)
+			return inputComponents.searchField(conditionModel.attribute(), searchModel)
 							.singleSelection()
 							.build();
 		}
@@ -138,13 +133,12 @@ public class EntityConditionComponents implements ConditionComponents {
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + conditionModel);
 	}
 
-	private JComponent createInForeignKeyField(ConditionModel<Entity> conditionModel) {
-		ForeignKey foreignKey = (ForeignKey) attribute;
+	private JComponent createInForeignKeyField(ForeignKeyConditionModel conditionModel) {
 		EntitySearchModel searchModel = searchModel(conditionModel);
 
 		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
 
-		return inputComponents.searchField(foreignKey, searchModel)
+		return inputComponents.searchField(conditionModel.attribute(), searchModel)
 						.multiSelection()
 						.editable(searchable)
 						.searchHintEnabled(searchable)

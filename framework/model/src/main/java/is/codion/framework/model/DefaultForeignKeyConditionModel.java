@@ -20,28 +20,28 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.observer.Observer;
-import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import org.jspecify.annotations.Nullable;
 
-import java.text.Format;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel {
 
+	private final ForeignKey foreignKey;
 	private final ConditionModel<Entity> condition;
 	private final @Nullable EntitySearchModel equalSearchModel;
 	private final @Nullable EntitySearchModel inSearchModel;
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
+		foreignKey = builder.foreignKey;
 		equalSearchModel = builder.equalSearchModel;
 		inSearchModel = builder.inSearchModel;
 		condition = ConditionModel.builder()
@@ -53,68 +53,13 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	}
 
 	@Override
-	public State caseSensitive() {
-		return condition.caseSensitive();
+	public ForeignKey attribute() {
+		return foreignKey;
 	}
 
 	@Override
-	public Optional<Format> format() {
-		return condition.format();
-	}
-
-	@Override
-	public Optional<String> dateTimePattern() {
-		return condition.dateTimePattern();
-	}
-
-	@Override
-	public State autoEnable() {
-		return condition.autoEnable();
-	}
-
-	@Override
-	public State locked() {
-		return condition.locked();
-	}
-
-	@Override
-	public Class<Entity> valueClass() {
-		return condition.valueClass();
-	}
-
-	@Override
-	public List<Operator> operators() {
-		return condition.operators();
-	}
-
-	@Override
-	public State enabled() {
-		return condition.enabled();
-	}
-
-	@Override
-	public void clear() {
-		condition.clear();
-	}
-
-	@Override
-	public Value<Operator> operator() {
-		return condition.operator();
-	}
-
-	@Override
-	public Operands<Entity> operands() {
-		return condition.operands();
-	}
-
-	@Override
-	public SetCondition<Entity> set() {
-		return condition.set();
-	}
-
-	@Override
-	public boolean accepts(Comparable<Entity> value) {
-		return condition.accepts(value);
+	public ConditionModel<Entity> condition() {
+		return condition;
 	}
 
 	@Override
@@ -142,8 +87,14 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 
 	static final class DefaultBuilder implements Builder {
 
+		private final ForeignKey foreignKey;
+
 		private @Nullable EntitySearchModel equalSearchModel;
 		private @Nullable EntitySearchModel inSearchModel;
+
+		DefaultBuilder(ForeignKey foreignKey) {
+			this.foreignKey = foreignKey;
+		}
 
 		@Override
 		public Builder equalSearchModel(EntitySearchModel equalSearchModel) {

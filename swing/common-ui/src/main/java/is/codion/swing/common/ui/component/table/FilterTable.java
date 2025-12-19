@@ -272,13 +272,14 @@ public final class FilterTable<R, C> extends JTable {
 					item(AUTO_RESIZE_ALL_COLUMNS, MESSAGES.getString("resize_all_columns")));
 	private static final int SEARCH_FIELD_MINIMUM_WIDTH = 100;
 	private static final int COLUMN_RESIZE_AMOUNT = 10;
+	private static final ConditionComponents FILTER_COMPONENTS = new ConditionComponents() {};
 
 	private final FilterTableModel<R, C> tableModel;
 	private final FilterTableSearchModel searchModel;
 	private final TableSummaryModel<C> summaryModel;
 
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
-	private final ConditionComponents filterComponents;
+	private final Map<C, ConditionComponents> filterComponents;
 	private final Event<MouseEvent> doubleClicked = Event.event();
 	private final Value<Action> doubleClick;
 	private final BiPredicate<R, C> cellEditable;
@@ -1011,10 +1012,11 @@ public final class FilterTable<R, C> extends JTable {
 		for (Map.Entry<C, ConditionModel<?>> entry : tableModel.filters().get().entrySet()) {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
-			if (columnModel().contains(identifier) && filterComponents.supportsType(condition.valueClass())) {
+			ConditionComponents components = filterComponents.getOrDefault(identifier, FILTER_COMPONENTS);
+			if (columnModel().contains(identifier) && components.supportsType(condition.valueClass())) {
 				conditionPanels.put(identifier, ColumnConditionPanel.builder()
 								.model(condition)
-								.components(filterComponents)
+								.components(components)
 								.tableColumn(columnModel().column(identifier))
 								.build());
 			}
@@ -1251,11 +1253,12 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> filterPanel(TableConditionPanel.Factory<C> filterPanel);
 
 		/**
-		 * @param filterComponents the column filter component factory
+		 * @param identifier the column identifier
+		 * @param filterComponents the column filter component factory for the given column
 		 * @return this builder instance
 		 * @see FilterTable#filters()
 		 */
-		Builder<R, C> filterComponents(ConditionComponents filterComponents);
+		Builder<R, C> filterComponents(C identifier, ConditionComponents filterComponents);
 
 		/**
 		 * The cell renderer for the given column, overrides {@link #cellRenderers(FilterTableCellRenderer.Factory)}.
@@ -1511,13 +1514,13 @@ public final class FilterTable<R, C> extends JTable {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 		private final Map<C, FilterTableCellRenderer<R, C, ?>> cellRenderers = new HashMap<>();
 		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
+		private final Map<C, ConditionComponents> filterComponents = new HashMap<>();
 		private final Collection<KeyStroke> startEditKeyStrokes = new ArrayList<>();
 		private final Set<C> hiddenColumns = new HashSet<>();
 
 		private Consumer<FilterTableColumn.Builder<C>> columns = new EmptyConsumer<>();
 		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
-		private ConditionComponents filterComponents = FilterComponents.INSTANCE;
 		private FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory;
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
@@ -1581,8 +1584,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> filterComponents(ConditionComponents filterComponents) {
-			this.filterComponents = requireNonNull(filterComponents);
+		public Builder<R, C> filterComponents(C identifier, ConditionComponents filterComponents) {
+			this.filterComponents.put(requireNonNull(identifier), requireNonNull(filterComponents));
 			return this;
 		}
 

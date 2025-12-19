@@ -18,13 +18,19 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.reactive.value.Value;
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityConditionComponents;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import com.formdev.flatlaf.extras.components.FlatTriStateCheckBox;
 
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
@@ -41,7 +47,9 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 						.cellEditor(Preferences.NEWSLETTER_SUBSCRIBED, FilterTableCellEditor.builder()
 										.component(TriStateCheckBoxValue::new)
 										.clickCountToStart(1)
-										.build()));
+										.build())
+						.filterComponents(Preferences.NEWSLETTER_SUBSCRIBED, new NewsletterSubscribedFilterComponents())
+						.conditionComponents(Preferences.NEWSLETTER_SUBSCRIBED, new NewsletterSubscribedConditionComponents(tableModel.entityDefinition())));
 	}
 
 	private static final class FlatTriStateRenderer
@@ -57,6 +65,32 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 			setChecked((Boolean) value);
 
 			return this;
+		}
+	}
+
+	private static final class NewsletterSubscribedFilterComponents implements ConditionComponents {
+
+		@Override
+		public <T> JComponent equal(ConditionModel<T> conditionModel) {
+			TriStateCheckBoxValue value = new TriStateCheckBoxValue();
+			value.link((Value<Boolean>) conditionModel.operands().equal());
+
+			return value.component();
+		}
+	}
+
+	private static final class NewsletterSubscribedConditionComponents extends EntityConditionComponents {
+
+		private NewsletterSubscribedConditionComponents(EntityDefinition entityDefinition) {
+			super(entityDefinition);
+		}
+
+		@Override
+		public <T> JComponent equal(ConditionModel<T> conditionModel) {
+			TriStateCheckBoxValue value = new TriStateCheckBoxValue();
+			value.link((Value<Boolean>) conditionModel.operands().equal());
+
+			return value.component();
 		}
 	}
 }

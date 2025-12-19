@@ -18,17 +18,22 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.DefaultForeignKeyConditionModel.DefaultBuilder;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default foreign key condition model using {@link EntitySearchModel} for
  * both the {@link Operator#EQUAL} and {@link Operator#IN} operands.
  * @see ForeignKeyConditionModel#builder()
  */
-public interface ForeignKeyConditionModel extends ConditionModel<Entity> {
+public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity> {
+
+	@Override
+	ForeignKey attribute();
 
 	/**
 	 * @return a {@link EntitySearchModel} to use for the EQUAL operand
@@ -43,10 +48,11 @@ public interface ForeignKeyConditionModel extends ConditionModel<Entity> {
 	EntitySearchModel inSearchModel();
 
 	/**
+	 * @param foreignKey the foreign key
 	 * @return a new {@link Builder}
 	 */
-	static Builder builder() {
-		return new DefaultBuilder();
+	static Builder builder(ForeignKey foreignKey) {
+		return new DefaultBuilder(requireNonNull(foreignKey));
 	}
 
 	/**

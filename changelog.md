@@ -9,8 +9,15 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.popupControls() bug fixed, on longer creates submenu for Controls without a caption.
 - FilterTable.Builder.columnToolTips() added.
+- FilterTable.Builder.filterComponents() identifier parameter added.
+- ColumnConditionPanel.ConditionComponents method now have default implementations.
+### is.codion.framework.model
+- AttributeConditionModel and ColumnConditionModel added.
 ### is.codion.swing.framework.ui
 - EntityConditionComponents.createEqualForeignKeyField(), combo box model only populated if it hasn't been already.
+- EntityConditionComponents, attribute constructor parameter removed.
+- EntityTablePanel.Config.conditionComponents() attribute parameter removed.
+- EntityTablePanel.Config.filterComponents() added.
 
 ## 0.18.62
 ### is.codion.common.reactive

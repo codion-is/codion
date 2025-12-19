@@ -19,15 +19,11 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.ConditionModel.Operands;
-import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.Value.Notify;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.HashMap;
@@ -90,17 +86,10 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	 * Only called if {@link #include(Column)} returns true
 	 * @param column the column
 	 * @param <T> the column type
-	 * @return a {@link ConditionModel} based on the given column
+	 * @return a {@link ColumnConditionModel} based on the given column
 	 */
-	protected <T> ConditionModel<T> condition(Column<T> column) {
-		ColumnDefinition<T> definition = definition().columns().definition(column);
-
-		return ConditionModel.builder()
-						.valueClass(column.type().valueClass())
-						.format(definition.format().orElse(null))
-						.dateTimePattern(definition.dateTimePattern().orElse(null))
-						.operands(new ColumnOperands<>(definition))
-						.build();
+	protected <T> ColumnConditionModel<T> condition(Column<T> column) {
+		return ColumnConditionModel.builder(definition().columns().definition(column)).build();
 	}
 
 	/**
@@ -109,7 +98,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	 * @return a {@link ForeignKeyConditionModel} based on the given foreign key
 	 */
 	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
-		return ForeignKeyConditionModel.builder()
+		return ForeignKeyConditionModel.builder(foreignKey)
 						.equalSearchModel(createEqualSearchModel(foreignKey))
 						.inSearchModel(createInSearchModel(foreignKey))
 						.build();
@@ -157,26 +146,5 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	 */
 	protected final EntityDefinition definition(EntityType entityType) {
 		return connectionProvider.entities().definition(entityType);
-	}
-
-	private static final class ColumnOperands<T> implements Operands<T> {
-
-		private final ColumnDefinition<T> definition;
-
-		private ColumnOperands(ColumnDefinition<T> definition) {
-			this.definition = definition;
-		}
-
-		@Override
-		public Value<T> equal() {
-			if (definition.attribute().type().isBoolean() && !definition.nullable()) {
-				return (Value<T>) Value.builder()
-								.nonNull(false)
-								.notify(Notify.SET)
-								.build();
-			}
-
-			return Operands.super.equal();
-		}
 	}
 }

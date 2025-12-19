@@ -1497,13 +1497,13 @@ public class EntityTablePanel extends JPanel {
 
 	private Map<Attribute<?>, ConditionPanel<?>> createConditionPanels() {
 		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = new HashMap<>();
+		EntityConditionComponents defaultComponents = new EntityConditionComponents(tableModel.entityDefinition());
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.query().condition().get().entrySet()) {
 			Attribute<?> attribute = conditionEntry.getKey();
 			if (table.columnModel().contains(attribute)) {
-				ConditionComponents conditionComponents = configuration.conditionComponents.getOrDefault(attribute,
-								new EntityConditionComponents(tableModel.entityDefinition(), attribute));
-				if (conditionComponents.supportsType(attribute.type().valueClass())) {
-					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, conditionComponents));
+				ConditionComponents components = configuration.conditionComponents.getOrDefault(attribute, defaultComponents);
+				if (components.supportsType(attribute.type().valueClass())) {
+					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, components));
 				}
 			}
 		}
@@ -2296,7 +2296,7 @@ public class EntityTablePanel extends JPanel {
 		 * @see EntityTablePanel#condition()
 		 */
 		public Config conditionComponents(Attribute<?> attribute, ConditionComponents conditionComponents) {
-			this.conditionComponents.put(attribute, requireNonNull(conditionComponents));
+			this.conditionComponents.put(requireNonNull(attribute), requireNonNull(conditionComponents));
 			return this;
 		}
 
@@ -2610,6 +2610,17 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public Config columns(Consumer<FilterTableColumn.Builder<Attribute<?>>> columns) {
 			tableBuilder.columns(columns);
+			return this;
+		}
+
+		/**
+		 * @param attribute the attribute
+		 * @param filterComponents the filter component factory to use for the given attribute
+		 * @return this Config instance
+		 * @see FilterTable#filters()
+		 */
+		public Config filterComponents(Attribute<?> attribute, ConditionComponents filterComponents) {
+			tableBuilder.filterComponents(attribute, filterComponents);
 			return this;
 		}
 
