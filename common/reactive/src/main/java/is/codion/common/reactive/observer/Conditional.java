@@ -21,10 +21,9 @@ package is.codion.common.reactive.observer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-final class Conditional<T> extends DefaultObserver<T> implements Consumer<T> {
+final class Conditional<T> extends DefaultObserver<T> {
 
 	private final Predicate<? super T> predicate;
 
@@ -34,11 +33,10 @@ final class Conditional<T> extends DefaultObserver<T> implements Consumer<T> {
 
 	Conditional(Observer<T> observer, Predicate<? super T> predicate) {
 		this.predicate = predicate;
-		observer.addConsumer(this);
+		observer.addConsumer(this::notify);
 	}
 
-	@Override
-	public void accept(@Nullable T value) {
+	private void notify(@Nullable T value) {
 		if (predicate.test(value)) {
 			notifyListeners(value);
 		}
