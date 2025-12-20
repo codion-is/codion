@@ -40,6 +40,7 @@ import java.util.EventObject;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static java.awt.event.InputEvent.*;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implements FilterTableCellEditor<T> {
@@ -215,6 +216,8 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 	private static final class DefaultCellEditable implements Function<EventObject, Boolean> {
 
+		private static final int MODIFIERS = CTRL_DOWN_MASK | SHIFT_DOWN_MASK | ALT_DOWN_MASK | META_DOWN_MASK;
+
 		private final int clickCountToStart;
 
 		private DefaultCellEditable(int clickCountToStart) {
@@ -224,7 +227,12 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		@Override
 		public Boolean apply(EventObject event) {
 			if (event instanceof MouseEvent) {
-				return ((MouseEvent) event).getClickCount() >= clickCountToStart;
+				MouseEvent mouseEvent = (MouseEvent) event;
+				if ((mouseEvent.getModifiersEx() & MODIFIERS) != 0) {
+					return false;
+				}
+
+				return mouseEvent.getClickCount() >= clickCountToStart;
 			}
 
 			return true;

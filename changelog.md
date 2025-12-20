@@ -15,6 +15,7 @@ Codion Change Log
 - FilterTable.Builder.columnToolTips() added.
 - FilterTable.Builder.filterComponents() identifier parameter added.
 - ColumnConditionPanel.ConditionComponents method now have default implementations.
+- DefaultFilterTableCellEditor.DefaultCellEditable, edit no longer started if modifier buttons are present.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 ### is.codion.swing.framework.ui
