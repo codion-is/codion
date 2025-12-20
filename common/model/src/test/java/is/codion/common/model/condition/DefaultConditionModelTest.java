@@ -195,6 +195,7 @@ public class DefaultConditionModelTest {
 		assertThrows(IllegalStateException.class, () -> model.operands().in().set(Collections.singletonList("test")));
 		assertThrows(IllegalStateException.class, () -> model.enabled().set(true));
 		assertThrows(IllegalStateException.class, () -> model.operator().set(Operator.NOT_EQUAL));
+		assertThrows(IllegalStateException.class, () -> model.caseSensitive().set(true));
 	}
 
 	@Test

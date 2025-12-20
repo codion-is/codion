@@ -293,6 +293,12 @@ public interface State extends ObservableState {
 		Builder group(Group group);
 
 		/**
+		 * @param locked true if the state should be locked
+		 * @return this builder instance
+		 */
+		Builder locked(boolean locked);
+
+		/**
 		 * @param listener a listener to add
 		 * @return this builder instance
 		 */

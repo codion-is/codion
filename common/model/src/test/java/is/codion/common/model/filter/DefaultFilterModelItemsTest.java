@@ -655,6 +655,11 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
+		public Locked locked() {
+			return predicate.locked();
+		}
+
+		@Override
 		public boolean addValidator(Validator<? super Predicate<String>> validator) {
 			return predicate.addValidator(validator);
 		}
@@ -934,6 +939,11 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
+			public Locked locked() {
+				return indexes.locked();
+			}
+
+			@Override
 			public boolean addValidator(Validator<? super List<Integer>> validator) {
 				return indexes.addValidator(validator);
 			}
@@ -1087,6 +1097,11 @@ public class DefaultFilterModelItemsTest {
 			@Override
 			public void validate(List<String> value) {
 				selectedItems.validate(value);
+			}
+
+			@Override
+			public Locked locked() {
+				return selectedItems.locked();
 			}
 
 			@Override

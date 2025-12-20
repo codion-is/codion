@@ -51,6 +51,24 @@ public class ValueTest {
 						.value("Testing")
 						.build();
 		assertThrows(NullPointerException.class, () -> Value.nonNull(null));
+		Value<Integer> value = Value.builder()
+						.nonNull(0)
+						.locked(true)
+						.build();
+		value.set(null);
+		value.set(0);
+		assertThrows(IllegalStateException.class, () -> value.set(1));
+		value.locked().set(false);
+		value.set(1);
+
+		Value<Integer> value2 = Value.builder()
+						.nonNull(1)
+						.build();
+		value2.link(value);
+		assertEquals(1, value2.get());
+		value.locked().set(true);
+		assertThrows(IllegalStateException.class, () -> value2.set(2));
+		assertEquals(1, value.get());
 	}
 
 	@Test

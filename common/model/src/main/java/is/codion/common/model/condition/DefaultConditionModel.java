@@ -52,8 +52,10 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private final Runnable autoEnableListener = new AutoEnableListener();
 	private final Event<?> conditionChanged = Event.event();
-	private final State locked = State.state();
-	private final Value.Validator<Object> lockValidator = value -> checkLock();
+	private final State locked = State.builder()
+					.consumer(this::locked)
+					.build();
+
 	private final Value.Validator<Set<T>> inOperandsValidator = new InOperandsValidator();
 
 	private final Value<Operator> operator;
@@ -63,7 +65,6 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private final State autoEnable;
 	private final State enabled = State.builder()
-					.validator(lockValidator)
 					.listener(conditionChanged)
 					.build();
 
@@ -76,24 +77,19 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		this.operators = unmodifiableList(builder.operators);
 		this.operator = Value.builder()
 						.nonNull(builder.operator)
-						.validator(lockValidator)
 						.validator(this::validateOperator)
 						.listener(autoEnableListener)
 						.listener(conditionChanged)
 						.build();
 		this.operands = new DefaultOperands<>(builder.operands);
-		this.operands.equal.addValidator(lockValidator);
 		this.operands.equal.addListener(autoEnableListener);
 		this.operands.equal.addListener(conditionChanged);
 		this.operands.wildcard.addListener(conditionChanged);
-		this.operands.in.addValidator(lockValidator);
 		this.operands.in.addValidator(inOperandsValidator);
 		this.operands.in.addListener(autoEnableListener);
 		this.operands.in.addListener(conditionChanged);
-		this.operands.upper.addValidator(lockValidator);
 		this.operands.upper.addListener(autoEnableListener);
 		this.operands.upper.addListener(conditionChanged);
-		this.operands.lower.addValidator(lockValidator);
 		this.operands.lower.addListener(autoEnableListener);
 		this.operands.lower.addListener(conditionChanged);
 		this.valueClass = builder.valueClass;
@@ -461,10 +457,14 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return !isIn(comparable);
 	}
 
-	private void checkLock() {
-		if (locked.is()) {
-			throw new IllegalStateException("Condition model is locked");
-		}
+	private void locked(boolean locked) {
+		enabled.value().locked().set(locked);
+		operator.locked().set(locked);
+		operands.equal.locked().set(locked);
+		operands.in.locked().set(locked);
+		operands.upper.locked().set(locked);
+		operands.lower.locked().set(locked);
+		caseSensitive.value().locked().set(locked);
 	}
 
 	private void validateOperator(@Nullable Operator operator) {

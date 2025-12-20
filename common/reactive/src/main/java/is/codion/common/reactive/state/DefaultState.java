@@ -170,6 +170,12 @@ final class DefaultState implements State {
 		}
 
 		@Override
+		public Builder locked(boolean locked) {
+			valueBuilder.locked(locked);
+			return this;
+		}
+
+		@Override
 		public Builder listener(Runnable listener) {
 			valueBuilder.listener(listener);
 			return this;

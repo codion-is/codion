@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static is.codion.common.reactive.value.Value.Notify.CHANGED;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -63,6 +64,9 @@ class DefaultValue<T> extends AbstractValue<T> {
 		});
 		builder.predicateConsumers.forEach((predicate, consumer) ->
 						observer().when(predicate).addConsumer(consumer));
+		if (builder.locked) {
+			locked().set(true);
+		}
 	}
 
 	@Override
@@ -122,7 +126,8 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final Map<Predicate<T>, Consumer<? super T>> predicateConsumers = new LinkedHashMap<>();
 
 		private @Nullable T value;
-		private Notify notify = Notify.CHANGED;
+		private Notify notify = CHANGED;
+		private boolean locked = false;
 
 		DefaultBuilder() {
 			this.nullValue = null;
@@ -148,6 +153,12 @@ class DefaultValue<T> extends AbstractValue<T> {
 		@Override
 		public final B validator(Validator<? super T> validator) {
 			this.validators.add(requireNonNull(validator));
+			return self();
+		}
+
+		@Override
+		public final B locked(boolean locked) {
+			this.locked = locked;
 			return self();
 		}
 

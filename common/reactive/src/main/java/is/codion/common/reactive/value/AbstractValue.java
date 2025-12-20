@@ -28,13 +28,13 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
+import static java.util.Objects.deepEquals;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -51,6 +51,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	private final @Nullable T nullValue;
 	private final @Nullable Notify notify;
 
+	private @Nullable Locked locked;
 	private @Nullable ValueObserver<T> observer;
 	private @Nullable Set<Validator<? super T>> validators;
 	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
@@ -143,6 +144,15 @@ public abstract class AbstractValue<T> implements Value<T> {
 		}
 
 		return observer;
+	}
+
+	@Override
+	public final synchronized Locked locked() {
+		if (locked == null) {
+			locked = new DefaultLocked();
+		}
+
+		return locked;
 	}
 
 	@Override
@@ -258,20 +268,22 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	private void setAndNotify(@Nullable T newValue) {
-		if (notify == Notify.CHANGED) {
-			T previousValue = get();
-			setValue(newValue);
-			if (!Objects.deepEquals(previousValue, newValue)) {
-				notifyObserver();
-			}
+		T previousValue = get();
+		boolean changing = !deepEquals(previousValue, newValue);
+		if (changing && isLocked()) {
+			throw new IllegalStateException("Value is locked and can not be changed");
 		}
-		else if (notify == Notify.SET) {
-			setValue(newValue);
+		setValue(newValue);
+		if (notify == Notify.CHANGED && changing) {
 			notifyObserver();
 		}
-		else {
-			setValue(newValue);
+		if (notify == Notify.SET) {
+			notifyObserver();
 		}
+	}
+
+	private boolean isLocked() {
+		return locked != null && locked.is();
 	}
 
 	private final class ObservableLink implements Consumer<T> {
@@ -318,6 +330,21 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 		private void accept(@Nullable T data) {
 			notifyListeners(data);
+		}
+	}
+
+	private static final class DefaultLocked implements Locked {
+
+		private boolean locked = false;
+
+		@Override
+		public boolean is() {
+			return locked;
+		}
+
+		@Override
+		public void set(boolean locked) {
+			this.locked = locked;
 		}
 	}
 }

@@ -120,6 +120,15 @@ public interface Value<T> extends Observable<T> {
 	Observable<T> observable();
 
 	/**
+	 * <p>Locking a value prevents it from being changed, it does not prevent it from being set.
+	 * <p>Note that locking a value does not prevent linked values from being changed.
+	 * <p>A locked value in a linked value chain, may cause it to go out of sync,
+	 * since any subsequent linked values will not be updated after a locked value is encountered.
+	 * @return the {@link Locked} instance controlling whether this value is locked
+	 */
+	Locked locked();
+
+	/**
 	 * Creates a bidirectional link between this and the given original value,
 	 * so that changes in one are reflected in the other.
 	 * Note that after a call to this method this value is the same as {@code originalValue}.
@@ -267,6 +276,13 @@ public interface Value<T> extends Observable<T> {
 		B validator(Validator<? super T> validator);
 
 		/**
+		 * @param locked true if the value should be locked
+		 * @return this builder instance
+		 * @see Value#locked()
+		 */
+		B locked(boolean locked);
+
+		/**
 		 * Links the given value to the resulting value
 		 * @param originalValue the original value to link
 		 * @return this builder instance
@@ -342,6 +358,23 @@ public interface Value<T> extends Observable<T> {
 		 * @return a new {@link Value} instance based on this builder
 		 */
 		Value<T> build();
+	}
+
+	/**
+	 * <p>Controls whether a {@link Value} instance is locked.
+	 * <p>Locking a value prevents it from being changed, it does not prevent it from being set.
+	 */
+	interface Locked {
+
+		/**
+		 * @return true if the value is locked
+		 */
+		boolean is();
+
+		/**
+		 * @param locked the locked status
+		 */
+		void set(boolean locked);
 	}
 
 	/**

@@ -478,8 +478,6 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		controlPanel = new JPanel(new BorderLayout());
 		inputPanel = new JPanel(new BorderLayout());
 		rangePanel = new JPanel(new GridLayout(1, 2));
-		boolean modelLocked = model().locked().is();
-		model().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
 		toggleEnabledButton = radioButton()
 						.link(model().enabled())
 						.horizontalAlignment(CENTER)
@@ -503,7 +501,6 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			inComponent = components.in(model());
 		}
 		operatorCombo = createOperatorComboBox(model().operators());
-		model().locked().set(modelLocked);
 		components().forEach(this::configureHorizontalAlignment);
 	}
 
