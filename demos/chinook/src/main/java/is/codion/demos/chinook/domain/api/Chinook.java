@@ -143,7 +143,7 @@ public interface Chinook {
 
 		Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
 		Column<Long> PREFERRED_GENRE_ID = TYPE.longColumn("preferred_genre_id");
-		Column<Boolean> NEWSLETTER_SUBSCRIBED = TYPE.booleanColumn("newsletter_subscribed");
+		Column<Boolean> NEWSLETTER = TYPE.booleanColumn("newsletter");
 
 		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
 		ForeignKey PREFERRED_GENRE_FK = TYPE.foreignKey("preferred_genre_fk", PREFERRED_GENRE_ID, Genre.ID);

@@ -285,7 +285,7 @@ public final class ChinookImpl extends DomainModel {
 														.column(),
 										Preferences.PREFERRED_GENRE_FK.as()
 														.foreignKey(),
-										Preferences.NEWSLETTER_SUBSCRIBED.as()
+										Preferences.NEWSLETTER.as()
 														.column())
 						.caption("Preferences")
 						.build();

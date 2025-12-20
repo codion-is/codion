@@ -39,17 +39,17 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 
 	public PreferencesTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
-						.editComponent(Preferences.NEWSLETTER_SUBSCRIBED,
+						.editComponent(Preferences.NEWSLETTER,
 										e -> new TriStateCheckBoxValue())
 						.surrendersFocusOnKeystroke(true)
-						.cellRenderer(Preferences.NEWSLETTER_SUBSCRIBED, renderer -> renderer
+						.cellRenderer(Preferences.NEWSLETTER, renderer -> renderer
 										.renderer(new FlatTriStateRenderer()))
-						.cellEditor(Preferences.NEWSLETTER_SUBSCRIBED, FilterTableCellEditor.builder()
+						.cellEditor(Preferences.NEWSLETTER, FilterTableCellEditor.builder()
 										.component(TriStateCheckBoxValue::new)
 										.clickCountToStart(1)
 										.build())
-						.filterComponents(Preferences.NEWSLETTER_SUBSCRIBED, new NewsletterSubscribedFilterComponents())
-						.conditionComponents(Preferences.NEWSLETTER_SUBSCRIBED, new NewsletterSubscribedConditionComponents(tableModel.entityDefinition())));
+						.filterComponents(Preferences.NEWSLETTER, new NewsletterFilterComponents())
+						.conditionComponents(Preferences.NEWSLETTER, new NewsletterConditionComponents(tableModel.entityDefinition())));
 	}
 
 	private static final class FlatTriStateRenderer
@@ -68,7 +68,7 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 		}
 	}
 
-	private static final class NewsletterSubscribedFilterComponents implements ConditionComponents {
+	private static final class NewsletterFilterComponents implements ConditionComponents {
 
 		@Override
 		public <T> JComponent equal(ConditionModel<T> conditionModel) {
@@ -79,9 +79,9 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 		}
 	}
 
-	private static final class NewsletterSubscribedConditionComponents extends EntityConditionComponents {
+	private static final class NewsletterConditionComponents extends EntityConditionComponents {
 
-		private NewsletterSubscribedConditionComponents(EntityDefinition entityDefinition) {
+		private NewsletterConditionComponents(EntityDefinition entityDefinition) {
 			super(entityDefinition);
 		}
 

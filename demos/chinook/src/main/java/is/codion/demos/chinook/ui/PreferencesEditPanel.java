@@ -38,19 +38,19 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 						.columns(14);
 		createComboBox(Preferences.PREFERRED_GENRE_FK)
 						.preferredWidth(160);
-		component(Preferences.NEWSLETTER_SUBSCRIBED).set(new TriStateCheckBoxValue());
+		component(Preferences.NEWSLETTER).set(new TriStateCheckBoxValue());
 
 		// Automatically update without confirmation when subscription is toggled
-		editModel().editor().value(Preferences.NEWSLETTER_SUBSCRIBED)
-						.edited().addListener(this::updateSubscribed);
+		editModel().editor().value(Preferences.NEWSLETTER)
+						.edited().addListener(this::updateNewsletter);
 
 		setLayout(flexibleGridLayout(3, 1));
 		addInputPanel(Preferences.CUSTOMER_FK);
 		addInputPanel(Preferences.PREFERRED_GENRE_FK);
-		addInputPanel(Preferences.NEWSLETTER_SUBSCRIBED);
+		addInputPanel(Preferences.NEWSLETTER);
 	}
 
-	private void updateSubscribed() {
+	private void updateNewsletter() {
 		// Only when we're editing an existing record
 		if (editModel().editor().exists().is()) {
 			updateCommand()
