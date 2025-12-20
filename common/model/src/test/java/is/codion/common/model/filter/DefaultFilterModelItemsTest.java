@@ -660,6 +660,11 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
+		public Observer<Change<Predicate<String>>> changed() {
+			return predicate.changed();
+		}
+
+		@Override
 		public boolean addValidator(Validator<? super Predicate<String>> validator) {
 			return predicate.addValidator(validator);
 		}
@@ -944,6 +949,11 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
+			public Observer<Change<List<Integer>>> changed() {
+				return indexes.changed();
+			}
+
+			@Override
 			public boolean addValidator(Validator<? super List<Integer>> validator) {
 				return indexes.addValidator(validator);
 			}
@@ -1102,6 +1112,11 @@ public class DefaultFilterModelItemsTest {
 			@Override
 			public Locked locked() {
 				return selectedItems.locked();
+			}
+
+			@Override
+			public Observer<Change<List<String>>> changed() {
+				return selectedItems.changed();
 			}
 
 			@Override

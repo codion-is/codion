@@ -92,6 +92,18 @@ class DefaultValue<T> extends AbstractValue<T> {
 		else if (listener instanceof WeakConsumerListener) {
 			addWeakConsumer(((WeakConsumerListener<T>) listener).consumer);
 		}
+		else if (listener instanceof RunnableChangeListener) {
+			changed().addListener(((RunnableChangeListener) listener).runnable);
+		}
+		else if (listener instanceof ChangeConsumerListener) {
+			changed().addConsumer(((ChangeConsumerListener<Change<T>>) listener).consumer);
+		}
+		else if (listener instanceof WeakRunnableChangeListener) {
+			changed().addWeakListener(((WeakRunnableChangeListener) listener).runnable);
+		}
+		else if (listener instanceof WeakChangeConsumerListener) {
+			changed().addWeakConsumer(((WeakChangeConsumerListener<Change<T>>) listener).consumer);
+		}
 	}
 
 	private static final class DefaultBuilderFactory implements BuilderFactory {
@@ -199,6 +211,30 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
+		public final B changeListener(Runnable listener) {
+			this.listeners.add(new RunnableChangeListener(requireNonNull(listener)));
+			return self();
+		}
+
+		@Override
+		public final B changeConsumer(Consumer<Change<? super T>> consumer) {
+			this.listeners.add(new ChangeConsumerListener<>(requireNonNull(consumer)));
+			return self();
+		}
+
+		@Override
+		public final B weakChangeListener(Runnable weakListener) {
+			this.listeners.add(new WeakRunnableChangeListener(requireNonNull(weakListener)));
+			return self();
+		}
+
+		@Override
+		public final B weakChangeConsumer(Consumer<Change<? super T>> weakConsumer) {
+			this.listeners.add(new WeakChangeConsumerListener<>(requireNonNull(weakConsumer)));
+			return self();
+		}
+
+		@Override
 		public final B when(T value, Runnable listener) {
 			valueListeners.computeIfAbsent(value, k -> new ArrayList<>()).add(requireNonNull(listener));
 			return self();
@@ -273,6 +309,42 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final Consumer<T> consumer;
 
 		private WeakConsumerListener(Consumer<T> consumer) {
+			this.consumer = consumer;
+		}
+	}
+
+	private static final class RunnableChangeListener implements Listener {
+
+		private final Runnable runnable;
+
+		private RunnableChangeListener(Runnable runnable) {
+			this.runnable = runnable;
+		}
+	}
+
+	private static final class WeakRunnableChangeListener implements Listener {
+
+		private final Runnable runnable;
+
+		private WeakRunnableChangeListener(Runnable runnable) {
+			this.runnable = runnable;
+		}
+	}
+
+	private static final class ChangeConsumerListener<T> implements Listener {
+
+		private final Consumer<T> consumer;
+
+		private ChangeConsumerListener(Consumer<T> consumer) {
+			this.consumer = consumer;
+		}
+	}
+
+	private static final class WeakChangeConsumerListener<T> implements Listener {
+
+		private final Consumer<T> consumer;
+
+		private WeakChangeConsumerListener(Consumer<T> consumer) {
 			this.consumer = consumer;
 		}
 	}

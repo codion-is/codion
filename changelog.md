@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.reactive
 - AbstractValue.setAndNotify() bug fixed, change event no longer triggered when nullValue set.
 - Value.locked() added.
+- Value.changed() added, along with Value.Change.
 ### is.codion.common.model
 - DefaultConditionModel, caseSensitive now included in locked state.
 ### is.codion.swing.common.model

@@ -19,6 +19,7 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
@@ -118,6 +119,11 @@ public interface Value<T> extends Observable<T> {
 	 * @return a read-only {@link Observable} instance for this value
 	 */
 	Observable<T> observable();
+
+	/**
+	 * @return an {@link Observer} notified when this value has changed
+	 */
+	Observer<Change<T>> changed();
 
 	/**
 	 * <p>Locking a value prevents it from being changed, it does not prevent it from being set.
@@ -323,6 +329,34 @@ public interface Value<T> extends Observable<T> {
 		B weakConsumer(Consumer<? super T> weakConsumer);
 
 		/**
+		 * @param listener a change listener to add
+		 * @return this builder instance
+		 * @see Value#changed()
+		 */
+		B changeListener(Runnable listener);
+
+		/**
+		 * @param consumer a change consumer to add
+		 * @return this builder instance
+		 * @see Value#changed()
+		 */
+		B changeConsumer(Consumer<Change<? super T>> consumer);
+
+		/**
+		 * @param weakListener a weak change listener to add
+		 * @return this builder instance
+		 * @see Value#changed()
+		 */
+		B weakChangeListener(Runnable weakListener);
+
+		/**
+		 * @param weakConsumer a weak change consumer to add
+		 * @return this builder instance
+		 * @see Value#changed()
+		 */
+		B weakChangeConsumer(Consumer<Change<? super T>> weakConsumer);
+
+		/**
 		 * Adds a conditional listener
 		 * @param value the value on which to run
 		 * @param listener the listener
@@ -389,5 +423,22 @@ public interface Value<T> extends Observable<T> {
 		 * @throws IllegalArgumentException in case of an invalid value
 		 */
 		void validate(@Nullable T value);
+	}
+
+	/**
+	 * Represents a value change
+	 * @param <T> the value type
+	 */
+	interface Change<T> {
+
+		/**
+		 * @return the previous value
+		 */
+		@Nullable T previous();
+
+		/**
+		 * @return the current value
+		 */
+		@Nullable T current();
 	}
 }

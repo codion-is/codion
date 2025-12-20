@@ -19,6 +19,8 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.observer.Observer;
+import is.codion.common.reactive.value.Value.Change;
 import is.codion.common.reactive.value.Value.Notify;
 
 import org.junit.jupiter.api.Test;
@@ -69,6 +71,27 @@ public class ValueTest {
 		value.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> value2.set(2));
 		assertEquals(1, value.get());
+	}
+
+	@Test
+	void previous() {
+		AtomicInteger previousChanged = new AtomicInteger();
+		Value<Integer> value = Value.nonNull(0);
+		value.set(1);
+		Observer<Change<Integer>> changed = value.changed();
+		changed.addListener(previousChanged::incrementAndGet);
+		value.set(2);
+		assertEquals(1, previousChanged.get());
+		value.set(2);
+		assertEquals(1, previousChanged.get());
+		value.clear();
+		assertEquals(2, previousChanged.get());
+		value.clear();
+		assertEquals(2, previousChanged.get());
+		value.set(4);
+		assertEquals(3, previousChanged.get());
+		value.set(4);
+		assertEquals(3, previousChanged.get());
 	}
 
 	@Test

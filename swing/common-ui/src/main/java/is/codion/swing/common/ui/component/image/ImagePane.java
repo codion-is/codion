@@ -662,7 +662,7 @@ public final class ImagePane extends JPanel {
 				Point currentCenter = new Point(getWidth() / 2, getHeight() / 2);
 				origin.x += (int) (currentCenter.getX() - coordinate.getX());
 				origin.y += (int) (currentCenter.getY() - coordinate.getY());
-				origin.changed();
+				origin.notifyChanged();
 			}
 		}
 	}
@@ -685,7 +685,7 @@ public final class ImagePane extends JPanel {
 	private void centerImage() {
 		origin.x = (getWidth() - getScreenImageWidth()) / 2;
 		origin.y = (getHeight() - getScreenImageHeight()) / 2;
-		origin.changed();
+		origin.notifyChanged();
 	}
 
 	private void createNavigationImage() {
@@ -758,7 +758,7 @@ public final class ImagePane extends JPanel {
 
 			origin.x += (mousePosition.x - (int) panePoint.x);
 			origin.y += (mousePosition.y - (int) panePoint.y);
-			origin.changed();
+			origin.notifyChanged();
 
 			zoom.set(scale / initialScale);
 		}
@@ -1141,7 +1141,7 @@ public final class ImagePane extends JPanel {
 
 			origin.x += (int) (Math.round(correctedP.getX()) - (int) paneP.x);
 			origin.y += (int) (Math.round(correctedP.getY()) - (int) paneP.y);
-			origin.changed();
+			origin.notifyChanged();
 
 			notifyObserver();
 		}
@@ -1172,7 +1172,7 @@ public final class ImagePane extends JPanel {
 			repaint();
 		}
 
-		private void changed() {
+		private void notifyChanged() {
 			notifyObserver();
 			repaint();
 		}
@@ -1275,7 +1275,7 @@ public final class ImagePane extends JPanel {
 		private void scaleOrigin() {
 			origin.x = origin.x * getWidth() / previousPaneSize.width;
 			origin.y = origin.y * getHeight() / previousPaneSize.height;
-			origin.changed();
+			origin.notifyChanged();
 		}
 	}
 
@@ -1292,7 +1292,7 @@ public final class ImagePane extends JPanel {
 			Point scrImagePoint = navigationToZoomedImagePoint(panePoint);
 			origin.x = -(scrImagePoint.x - getWidth() / 2);
 			origin.y = -(scrImagePoint.y - getHeight() / 2);
-			origin.changed();
+			origin.notifyChanged();
 		}
 
 		private Point navigationToZoomedImagePoint(Point panePoint) {
@@ -1333,7 +1333,7 @@ public final class ImagePane extends JPanel {
 				mousePosition = panePoint;
 				origin.x += xDelta;
 				origin.y += yDelta;
-				origin.changed();
+				origin.notifyChanged();
 			}
 		}
 	}

@@ -53,6 +53,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	private @Nullable Locked locked;
 	private @Nullable ValueObserver<T> observer;
+	private @Nullable Observer<Change<T>> changeObserver;
 	private @Nullable Set<Validator<? super T>> validators;
 	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
 	private @Nullable Map<Observable<T>, ObservableLink> linkedObservables;
@@ -144,6 +145,15 @@ public abstract class AbstractValue<T> implements Value<T> {
 		}
 
 		return observer;
+	}
+
+	@Override
+	public final synchronized Observer<Change<T>> changed() {
+		if (changeObserver == null) {
+			changeObserver = new ChangeObserver<>(this);
+		}
+
+		return changeObserver;
 	}
 
 	@Override
