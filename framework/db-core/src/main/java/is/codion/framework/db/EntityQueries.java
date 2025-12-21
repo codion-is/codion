@@ -64,7 +64,7 @@ public interface EntityQueries {
 			return stream(ServiceLoader.load(Factory.class).spliterator(), false).findFirst();
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 

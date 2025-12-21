@@ -240,7 +240,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 							.orElseThrow(() -> new IllegalStateException("No connection provider builder available for requested client connection type: " + clientConnectionType));
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 

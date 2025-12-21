@@ -124,7 +124,7 @@ public interface Domain {
 			return unmodifiableList(stream(ServiceLoader.load(Domain.class).spliterator(), false).collect(toList()));
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 }

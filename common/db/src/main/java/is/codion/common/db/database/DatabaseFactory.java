@@ -73,7 +73,7 @@ public interface DatabaseFactory {
 							.orElseThrow(() -> new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver));
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 

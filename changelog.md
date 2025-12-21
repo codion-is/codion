@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.63
+## is.codion
+- Service configuration error handling bug fixed, ServiceConfigurationError does not always have a cause.
 ### is.codion.common.reactive
 - AbstractValue.setAndNotify() bug fixed, change event no longer triggered when nullValue set.
 - Value.locked() added.

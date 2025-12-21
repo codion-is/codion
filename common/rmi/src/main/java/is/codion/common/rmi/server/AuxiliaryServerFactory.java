@@ -60,7 +60,7 @@ public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin,
 							.orElseThrow(() -> new IllegalStateException("No auxiliary server factory of type: " + classname + " available"));
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 }

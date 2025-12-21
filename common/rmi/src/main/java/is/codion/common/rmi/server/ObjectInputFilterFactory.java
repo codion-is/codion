@@ -52,7 +52,7 @@ public interface ObjectInputFilterFactory {
 							.orElseThrow(() -> new IllegalStateException("No object input filter factory of type: " + classname + " available"));
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 }

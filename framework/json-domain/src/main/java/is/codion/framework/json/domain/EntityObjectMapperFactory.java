@@ -66,7 +66,7 @@ public interface EntityObjectMapperFactory {
 							.orElse(mapperDomainType -> true);
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 }

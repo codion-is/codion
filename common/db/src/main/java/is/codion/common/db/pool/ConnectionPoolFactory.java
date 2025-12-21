@@ -59,7 +59,7 @@ public interface ConnectionPoolFactory {
 							.orElseThrow(() -> new IllegalStateException("No connection pool factory of type: " + classname + " available"));
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 
@@ -75,7 +75,7 @@ public interface ConnectionPoolFactory {
 							.orElseThrow(() -> new IllegalStateException("No connection pool factory available"));
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 }

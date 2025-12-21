@@ -239,7 +239,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 							.orElseThrow(() -> new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found"));
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 

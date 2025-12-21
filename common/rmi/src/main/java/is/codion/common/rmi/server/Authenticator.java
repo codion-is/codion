@@ -77,7 +77,7 @@ public interface Authenticator {
 			return stream(ServiceLoader.load(Authenticator.class).spliterator(), false).collect(toList());
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 }

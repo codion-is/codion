@@ -83,7 +83,7 @@ public final class MessageBundle extends ResourceBundle {
 							.orElse(DEFAULT);
 		}
 		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e.getCause());
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
 	}
 
