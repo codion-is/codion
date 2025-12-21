@@ -19,17 +19,17 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.DefaultObserver;
-import is.codion.common.reactive.value.Value.Change;
 
 import org.jspecify.annotations.Nullable;
 
+import static is.codion.common.reactive.value.ValueChange.valueChange;
 import static java.util.Objects.deepEquals;
 
-final class ChangeObserver<T> extends DefaultObserver<Change<T>> {
+final class ValueChangeObserver<T> extends DefaultObserver<ValueChange<T>> {
 
 	private @Nullable T current;
 
-	ChangeObserver(Value<T> value) {
+	ValueChangeObserver(Value<T> value) {
 		current = value.get();
 		value.addConsumer(this::notify);
 	}
@@ -38,28 +38,7 @@ final class ChangeObserver<T> extends DefaultObserver<Change<T>> {
 		if (!deepEquals(current, newValue)) {
 			T previous = current;
 			current = newValue;
-			notifyListeners(new DefaultChange<>(previous, newValue));
-		}
-	}
-
-	private static final class DefaultChange<T> implements Change<T> {
-
-		private final @Nullable T previous;
-		private final @Nullable T current;
-
-		private DefaultChange(@Nullable T previous, @Nullable T current) {
-			this.previous = previous;
-			this.current = current;
-		}
-
-		@Override
-		public @Nullable T previous() {
-			return previous;
-		}
-
-		@Override
-		public @Nullable T current() {
-			return current;
+			notifyListeners(valueChange(previous, newValue));
 		}
 	}
 }

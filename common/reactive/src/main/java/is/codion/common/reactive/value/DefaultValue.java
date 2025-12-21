@@ -96,13 +96,13 @@ class DefaultValue<T> extends AbstractValue<T> {
 			changed().addListener(((RunnableChangeListener) listener).runnable);
 		}
 		else if (listener instanceof ChangeConsumerListener) {
-			changed().addConsumer(((ChangeConsumerListener<Change<T>>) listener).consumer);
+			changed().addConsumer(((ChangeConsumerListener<ValueChange<T>>) listener).consumer);
 		}
 		else if (listener instanceof WeakRunnableChangeListener) {
 			changed().addWeakListener(((WeakRunnableChangeListener) listener).runnable);
 		}
 		else if (listener instanceof WeakChangeConsumerListener) {
-			changed().addWeakConsumer(((WeakChangeConsumerListener<Change<T>>) listener).consumer);
+			changed().addWeakConsumer(((WeakChangeConsumerListener<ValueChange<T>>) listener).consumer);
 		}
 	}
 
@@ -217,7 +217,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public final B changeConsumer(Consumer<Change<? super T>> consumer) {
+		public final B changeConsumer(Consumer<ValueChange<? super T>> consumer) {
 			this.listeners.add(new ChangeConsumerListener<>(requireNonNull(consumer)));
 			return self();
 		}
@@ -229,7 +229,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 
 		@Override
-		public final B weakChangeConsumer(Consumer<Change<? super T>> weakConsumer) {
+		public final B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer) {
 			this.listeners.add(new WeakChangeConsumerListener<>(requireNonNull(weakConsumer)));
 			return self();
 		}

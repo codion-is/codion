@@ -19,17 +19,18 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.Observable;
-import is.codion.common.reactive.observer.Observer;
-import is.codion.common.reactive.value.Value.Change;
 import is.codion.common.reactive.value.Value.Notify;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+import static is.codion.common.reactive.value.ValueChange.valueChange;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueTest {
@@ -44,14 +45,12 @@ public class ValueTest {
 
 	@Test
 	void test() {
-		Value.builder()
-						.nullable(1)
-						.notify(Notify.SET)
-						.build();
-		Value.builder()
+		Value<String> nonNull = Value.builder()
 						.nonNull("NullString")
 						.value("Testing")
 						.build();
+		nonNull.clear();
+		assertEquals("NullString", nonNull.get());
 		assertThrows(NullPointerException.class, () -> Value.nonNull(null));
 		Value<Integer> value = Value.builder()
 						.nonNull(0)
@@ -74,24 +73,45 @@ public class ValueTest {
 	}
 
 	@Test
-	void previous() {
-		AtomicInteger previousChanged = new AtomicInteger();
+	void changeListener() {
+		AtomicInteger counter = new AtomicInteger();
 		Value<Integer> value = Value.nonNull(0);
 		value.set(1);
-		Observer<Change<Integer>> changed = value.changed();
-		changed.addListener(previousChanged::incrementAndGet);
+		value.changed().addListener(counter::incrementAndGet);
 		value.set(2);
-		assertEquals(1, previousChanged.get());
+		assertEquals(1, counter.get());
 		value.set(2);
-		assertEquals(1, previousChanged.get());
+		assertEquals(1, counter.get());
 		value.clear();
-		assertEquals(2, previousChanged.get());
+		assertEquals(2, counter.get());
 		value.clear();
-		assertEquals(2, previousChanged.get());
+		assertEquals(2, counter.get());
 		value.set(4);
-		assertEquals(3, previousChanged.get());
+		assertEquals(3, counter.get());
 		value.set(4);
-		assertEquals(3, previousChanged.get());
+		assertEquals(3, counter.get());
+	}
+
+	@Test
+	void changeConsumer() {
+		List<ValueChange<Integer>> changes = asList(
+						valueChange(null, 0),
+						valueChange(0, 1),
+						valueChange(1, 3),
+						valueChange(3, 5),
+						valueChange(5, null));
+		AtomicInteger counter = new AtomicInteger();
+		Value<Integer> value = Value.nullable();
+		value.changed().addConsumer(change ->
+						assertEquals(changes.get(counter.getAndIncrement()), change));
+		value.set(0);
+		value.set(1);
+		value.set(3);
+		value.set(3);
+		value.set(5);
+		value.clear();
+		value.set(null);
+		assertEquals(5, counter.get());
 	}
 
 	@Test

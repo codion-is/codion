@@ -29,6 +29,7 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueChange;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -660,7 +661,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public Observer<Change<Predicate<String>>> changed() {
+		public Observer<ValueChange<Predicate<String>>> changed() {
 			return predicate.changed();
 		}
 
@@ -949,7 +950,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public Observer<Change<List<Integer>>> changed() {
+			public Observer<ValueChange<List<Integer>>> changed() {
 				return indexes.changed();
 			}
 
@@ -1115,7 +1116,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public Observer<Change<List<String>>> changed() {
+			public Observer<ValueChange<List<String>>> changed() {
 				return selectedItems.changed();
 			}
 

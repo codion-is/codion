@@ -7,6 +7,8 @@ Codion Change Log
 - Value.locked() added.
 - Value.changed() added, along with Value.Change.
 - Conditional no longer implements Consumer.
+- Value.Change renamed ValueChange and moved up to package level, factory method added.
+- DefaultValueChange moved up to package level, implements equals() and hashCode().
 ### is.codion.common.model
 - DefaultConditionModel, caseSensitive now included in locked state.
 ### is.codion.swing.common.model

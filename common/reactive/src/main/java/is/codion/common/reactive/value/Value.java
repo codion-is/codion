@@ -123,7 +123,7 @@ public interface Value<T> extends Observable<T> {
 	/**
 	 * @return an {@link Observer} notified when this value has changed
 	 */
-	Observer<Change<T>> changed();
+	Observer<ValueChange<T>> changed();
 
 	/**
 	 * <p>Locking a value prevents it from being changed, it does not prevent it from being set.
@@ -340,7 +340,7 @@ public interface Value<T> extends Observable<T> {
 		 * @return this builder instance
 		 * @see Value#changed()
 		 */
-		B changeConsumer(Consumer<Change<? super T>> consumer);
+		B changeConsumer(Consumer<ValueChange<? super T>> consumer);
 
 		/**
 		 * @param weakListener a weak change listener to add
@@ -354,7 +354,7 @@ public interface Value<T> extends Observable<T> {
 		 * @return this builder instance
 		 * @see Value#changed()
 		 */
-		B weakChangeConsumer(Consumer<Change<? super T>> weakConsumer);
+		B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer);
 
 		/**
 		 * Adds a conditional listener
@@ -423,22 +423,5 @@ public interface Value<T> extends Observable<T> {
 		 * @throws IllegalArgumentException in case of an invalid value
 		 */
 		void validate(@Nullable T value);
-	}
-
-	/**
-	 * Represents a value change
-	 * @param <T> the value type
-	 */
-	interface Change<T> {
-
-		/**
-		 * @return the previous value
-		 */
-		@Nullable T previous();
-
-		/**
-		 * @return the current value
-		 */
-		@Nullable T current();
 	}
 }
