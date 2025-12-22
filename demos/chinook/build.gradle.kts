@@ -20,7 +20,10 @@ dependencies {
 
     implementation(project(":codion-plugin-flatlaf"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
-    implementation("com.formdev:flatlaf-extras:3.7")
+    implementation("com.formdev:flatlaf-extras:3.7") {
+        // https://github.com/weisJ/jsvg/issues/134
+        exclude(group = "com.github.weisj", module = "jsvg")
+    }
 
     implementation(project(":codion-tools-swing-mcp"))
 
