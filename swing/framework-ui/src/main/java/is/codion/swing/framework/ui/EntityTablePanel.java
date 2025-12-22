@@ -1391,7 +1391,7 @@ public class EntityTablePanel extends JPanel {
 	private CommandControl createCopyRowsControl() {
 		return Control.builder()
 						.command(table::copyRows)
-						.caption(FrameworkMessages.copyTableWithHeader())
+						.caption(MESSAGES.getString("copy_table_with_header"))
 						.build();
 	}
 
@@ -1625,7 +1625,7 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(DECREMENT_SELECTION).set(createDecrementSelectionControl());
 		controlMap.control(INCREMENT_SELECTION).set(createIncrementSelectionControl());
 		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
-		controlMap.control(COPY_COLUMN).set(table.createCopyColumn());
+		controlMap.control(COPY_COLUMN).set(table.createCopyColumnControl());
 		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
 		if (configuration.includeExport) {
 			controlMap.control(EXPORT).set(createExportControl());

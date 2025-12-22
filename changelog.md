@@ -24,6 +24,7 @@ Codion Change Log
 - ColumnConditionPanel.ConditionComponents method now have default implementations.
 - DefaultFilterTableCellEditor.DefaultCellEditable, edit no longer started if modifier buttons are present.
 - SVGIcon added, replaces Ikonli dependency, icon handling simplified.
+- FilterTable.createCopyColumn() renamed createCopyColumnControl().
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 ### is.codion.swing.framework.ui
@@ -33,6 +34,7 @@ Codion Change Log
 - EntityTablePanel.Config.filterComponents() added.
 - EntityTablePanel bug fixed, ControlKeys.COPY_CONTROLS did not contain COPY_COLUMN.
 - EntityTablePanel, export control moved out of popup copy submenu, icon added.
+- FrameworkMessages.copyTableWithHeader() removed, moved to EntityTablePanel i18n messages.
 
 ## 0.18.62
 ### is.codion.common.reactive

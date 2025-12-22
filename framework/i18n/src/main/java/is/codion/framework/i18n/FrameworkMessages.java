@@ -74,7 +74,6 @@ public final class FrameworkMessages {
 	private static final String SEARCH_VERB = "search_verb";
 	private static final String FILTER_NOUN = "filter_noun";
 	private static final String SEARCH_MNEMONIC = "search_mnemonic";
-	private static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
 	private static final String SETTINGS = "settings";
 	private static final String SELECT_INPUT_FIELD = "select_input_field";
@@ -374,13 +373,6 @@ public final class FrameworkMessages {
 	 */
 	public static char searchMnemonic() {
 		return get(SEARCH_MNEMONIC).charAt(0);
-	}
-
-	/**
-	 * @return copy table with header
-	 */
-	public static String copyTableWithHeader() {
-		return get(COPY_TABLE_WITH_HEADER);
 	}
 
 	/**

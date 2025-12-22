@@ -314,7 +314,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.sortable = State.state(builder.sortable);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
-		this.controlMap.control(COPY_COLUMN).set(createCopyColumn());
+		this.controlMap.control(COPY_COLUMN).set(createCopyColumnControl());
 		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER).set(createToggleSortOrderControl(true));
 		this.controlMap.control(TOGGLE_NEXT_SORT_ORDER).set(createToggleSortOrderControl(false));
 		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER_ADD).set(createToggleSortOrderAddControl(true));
@@ -722,7 +722,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return a Control for copying the contents of the selected column
 	 */
-	public CommandControl createCopyColumn() {
+	public CommandControl createCopyColumnControl() {
 		return Control.builder()
 						.command(this::copyColumn)
 						.caption(MESSAGES.getString("copy_column"))

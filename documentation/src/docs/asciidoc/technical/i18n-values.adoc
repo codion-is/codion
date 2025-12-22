@@ -285,7 +285,6 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |confirm_exit_title|Exit?|Hætta?
 |confirm_insert|Insert record?|Vista færslu?
 |confirm_update|Update record?|Uppfæra færslu?
-|copy_table_with_header|Copy Table With Header|Afrita Töflu Með Dálkaheitum
 |delete|Delete|Eyða
 |delete_current_tip|Delete current record|Eyða færslu
 |delete_mnemonic|D|A
@@ -894,6 +893,7 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 |columns|Columns|Dálkar
 |condition_required|Condition Required|Krefjast Leitarskilyrðis
 |condition_required_description|One or more active search conditions required for displaying data|Eins eða fleiri virkra leitarskilyrða krafist til að sækja gögn
+|copy_table_with_header|Copy Table With Header|Afrita Töflu Með Dálkaheitum
 |decrement_selection_tip|Move selection up|Færa val upp
 |delete_dependent_records|Delete these dependent records first|Eyddu þessum tengdu færslum fyrst
 |export|Export|Flytja út
