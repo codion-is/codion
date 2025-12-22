@@ -651,7 +651,21 @@ public class EntityEditComponentPanel extends JPanel {
 		JLabel label();
 	}
 
-	private <T, B extends ComponentValueBuilder<?, T, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
+	/**
+	 * Associates the given component builder with the given attribute, configuring it
+	 * with standard defaults (caption, mnemonic, enabled state, focus transfer, tooltips,
+	 * and valid/modified indicators) and linking it to the underlying editor value.
+	 * <p>
+	 * This method enables integration of custom or third-party components by extending
+	 * {@link is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder}.
+	 * @param attribute the attribute
+	 * @param componentBuilder the component builder providing the component for the given attribute
+	 * @param <T> the value type
+	 * @param <B> the component builder type
+	 * @return the component builder
+	 * @throws IllegalStateException in case a component or a component builder has already been associated with the attribute
+	 */
+	protected final <T, B extends ComponentValueBuilder<?, T, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
 		requireNonNull(attribute);
 		requireNonNull(componentBuilder);
 		if (componentBuilders.containsKey(attribute) || component(attribute).optional().isPresent()) {

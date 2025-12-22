@@ -37,6 +37,7 @@ Codion Change Log
 - FrameworkMessages.copyTableWithHeader() removed, moved to EntityTablePanel i18n messages.
 - EntityApplicationPanel, modified warning improved, message now includes modified attributes, panel activated and modified input field focused.
 - EntityEditPanel, modified warning improved, message now includes modified attributes, modified input field focused.
+- EntityEditComponentPanel.setComponentBuilder() now protected and final, providing an entry point for custom component integration.
 
 ## 0.18.62
 ### is.codion.common.reactive
