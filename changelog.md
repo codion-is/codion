@@ -35,6 +35,7 @@ Codion Change Log
 - EntityTablePanel bug fixed, ControlKeys.COPY_CONTROLS did not contain COPY_COLUMN.
 - EntityTablePanel, export control moved out of popup copy submenu, icon added.
 - FrameworkMessages.copyTableWithHeader() removed, moved to EntityTablePanel i18n messages.
+- EntityApplicationPanel, modified warning improved, message now includes modified attributes, panel activated and modified input field focused.
 
 ## 0.18.62
 ### is.codion.common.reactive

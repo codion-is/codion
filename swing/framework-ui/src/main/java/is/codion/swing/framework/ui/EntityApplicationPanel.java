@@ -35,6 +35,8 @@ import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
@@ -106,6 +108,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -966,11 +969,21 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void handleUnsavedModifications() {
-		Collection<EntityPanel> modified = modified(entityPanels);
+		Map<EntityPanel, Collection<Attribute<?>>> modified = modified(entityPanels);
 		if (modifiedWarning && !modified.isEmpty() && showConfirmDialog(this,
-						createModifiedMessage(modified), FrameworkMessages.modifiedWarningTitle(),
+						createModifiedMessage(modified, applicationModel.entities()), FrameworkMessages.modifiedWarningTitle(),
 						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
-			modified.iterator().next().activate();
+			EntityPanel modifiedPanel = modified.keySet().stream()
+							.filter(entityPanel -> entityPanel.editPanel().active().is())
+							.findFirst()
+							.orElse(modified.keySet().iterator().next());
+			if (!modifiedPanel.isShowing()) {
+				modifiedPanel.activate();
+			}
+			Collection<Attribute<?>> attributes = modified.get(modifiedPanel);
+			if (!attributes.isEmpty()) {// modified can be predicate based
+				modifiedPanel.editPanel().focus().request(attributes.iterator().next());
+			}
 
 			throw new CancelException();
 		}
@@ -991,23 +1004,26 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
 	}
 
-	private static Collection<EntityPanel> modified(Collection<EntityPanel> panels) {
-		Collection<EntityPanel> modifiedPanels = new ArrayList<>();
+	private static Map<EntityPanel, Collection<Attribute<?>>> modified(Collection<EntityPanel> panels) {
+		Map<EntityPanel, Collection<Attribute<?>>> modifiedPanels = new LinkedHashMap<>();
 		for (EntityPanel panel : panels) {
 			EntityEditModel editModel = panel.editModel();
 			if (editModel.editor().modified().is()) {
-				modifiedPanels.add(panel);
+				modifiedPanels.put(panel, editModel.editor().modified().attributes().get());
 			}
-			modifiedPanels.addAll(modified(panel.detailPanels().get()));
+			modifiedPanels.putAll(modified(panel.detailPanels().get()));
 		}
 
 		return modifiedPanels;
 	}
 
-	private static String createModifiedMessage(Collection<EntityPanel> modified) {
-		return modified.stream()
-						.map(EntityPanel::caption)
-						.collect(joining(", ")) + "\n" + FrameworkMessages.modifiedWarning();
+	private static String createModifiedMessage(Map<EntityPanel, Collection<Attribute<?>>> modified, Entities entities) {
+		return modified.entrySet().stream()
+						.map(entry -> entry.getKey().caption() + ": " + entry.getValue().stream()
+										.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
+										.map(AttributeDefinition::caption)
+										.collect(Collectors.joining(", ")))
+						.collect(joining("\n", "", "\n\n")) + FrameworkMessages.modifiedWarning();
 	}
 
 	private static Map<Object, State> createLogLevelStateMap() {
