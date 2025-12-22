@@ -68,11 +68,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -645,14 +645,27 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void beforeEntity(Entity entity) {
-		if (configuration.modifiedWarning
-						&& editModel().editor().modified().is()
-						&& !Objects.equals(editModel().editor(), entity)
-						&& showConfirmDialog(this,
-						FrameworkMessages.modifiedWarning(), FrameworkMessages.modifiedWarningTitle(),
-						JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
-			throw new CancelException();
+		if (configuration.modifiedWarning && editModel().editor().modified().is()) {
+			Set<Attribute<?>> modified = editModel().editor().modified().attributes().get();
+			if (showConfirmDialog(this, createModifiedMessage(modified),
+							FrameworkMessages.modifiedWarningTitle(), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+				if (!modified.isEmpty()) {
+					focus().request(modified.iterator().next());
+				}
+				throw new CancelException();
+			}
 		}
+	}
+
+	private String createModifiedMessage(Set<Attribute<?>> modified) {
+		if (modified.isEmpty()) {
+			return FrameworkMessages.modifiedWarning();
+		}
+
+		return modified.stream()
+						.map(attribute -> editModel().entityDefinition().attributes().definition(attribute))
+						.map(AttributeDefinition::caption)
+						.collect(Collectors.joining(", ", "", "\n\n" + FrameworkMessages.modifiedWarning()));
 	}
 
 	private void setupFocusActivation() {
