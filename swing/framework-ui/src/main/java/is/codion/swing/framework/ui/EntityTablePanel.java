@@ -387,14 +387,16 @@ public class EntityTablePanel extends JPanel {
 		 * A {@link Controls} instance containing controls for copying either cell or table data.
 		 * <ul>
 		 * <li>{@link ControlKeys#COPY_CELL ControlKeys#COPY_CELL}
+		 * <li>{@link ControlKeys#COPY_COLUMN ControlKeys#COPY_COLUMN}
 		 * <li>{@link ControlKeys#COPY_ROWS ControlKeys#COPY_ROWS}
 		 * <li>{@link ControlKeys#EXPORT_DATA ControlKeys#EXPORT_DATA}
 		 * </ul>
 		 * @see #COPY_CELL
+		 * @see #COPY_COLUMN
 		 * @see #COPY_ROWS
 		 * @see #EXPORT_DATA
 		 */
-		public static final ControlsKey COPY_CONTROLS = Controls.key("copyControls", Controls.layout(asList(COPY_CELL, COPY_ROWS, EXPORT_DATA)));
+		public static final ControlsKey COPY_CONTROLS = Controls.key("copyControls", Controls.layout(asList(COPY_CELL, COPY_COLUMN, COPY_ROWS)));
 		/**
 		 * A {@link Controls} instance containing controls for configuring columns.
 		 * <ul>
