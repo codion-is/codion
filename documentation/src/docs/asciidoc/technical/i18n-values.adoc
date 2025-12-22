@@ -858,10 +858,10 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |configuration_file|Configuration file|Stilliskrá
 |configurations|Configurations|Stillingar
 |data_exported|Data exported|Gögn afrituð
-|export|Export|Afrita
+|export|Export|Flytja út
 |exported_to_clipboard|Exported to clipboard|Afritað á klippiborð
 |exported_to_file|Exported to file|Afritað í skrá
-|exporting_data|Exporting data|Afrita gögn
+|exporting_data|Exporting data|Flyt út gögn
 |help|Help|Hjálp
 |help_text|Use ALT-click or space to toggle included columns, SHIFT-space to toggle subcolumns.
 
@@ -896,7 +896,7 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 |condition_required_description|One or more active search conditions required for displaying data|Eins eða fleiri virkra leitarskilyrða krafist til að sækja gögn
 |decrement_selection_tip|Move selection up|Færa val upp
 |delete_dependent_records|Delete these dependent records first|Eyddu þessum tengdu færslum fyrst
-|export_data|Export Data|Afrita Gögn
+|export|Export|Flytja út
 |filtered|filtered|sýjaðar
 |increment_selection_tip|Move selection down|Færa val niður
 |limited_to|Limited to|Takmarkað við

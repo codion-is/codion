@@ -162,6 +162,11 @@ public interface FrameworkIcons extends Logos {
 	String COLUMNS = "columns";
 
 	/**
+	 * Identifies the export icon.
+	 */
+	String EXPORT = "export";
+
+	/**
 	 * Identifies the logo icon.
 	 */
 	String LOGO = "logo";
@@ -293,6 +298,11 @@ public interface FrameworkIcons extends Logos {
 	 * @return icon for a 'columns' action
 	 */
 	ControlIcon columns();
+
+	/**
+	 * @return the export icon.
+	 */
+	ControlIcon export();
 
 	/**
 	 * @return the logo icon.

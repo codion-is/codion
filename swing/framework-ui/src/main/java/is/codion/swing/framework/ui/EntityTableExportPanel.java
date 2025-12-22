@@ -168,6 +168,7 @@ final class EntityTableExportPanel extends JPanel {
 							.owner(dialogOwner)
 							.modal(false)
 							.title(MESSAGES.getString("export"))
+							.icon(FrameworkIcons.instance().export().small())
 							.size(model.getDialogSize())
 							.onClosed(event ->
 											model.setDialogSize(event.getWindow().getSize()))

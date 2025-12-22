@@ -71,6 +71,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		addIcon(CALENDAR);
 		addIcon(EDIT_TEXT);
 		addIcon(COLUMNS);
+		addIcon(EXPORT);
 		addIcon(LOGO);
 		largeIcons.color().link(smallIcons.color());
 		smallIcons.color().addConsumer(this::onColorChanged);
@@ -201,6 +202,11 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	@Override
 	public ControlIcon columns() {
 		return get(COLUMNS);
+	}
+
+	@Override
+	public ControlIcon export() {
+		return get(EXPORT);
 	}
 
 	@Override

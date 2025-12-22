@@ -30,6 +30,7 @@ Codion Change Log
 - EntityTablePanel.Config.conditionComponents() attribute parameter removed.
 - EntityTablePanel.Config.filterComponents() added.
 - EntityTablePanel bug fixed, ControlKeys.COPY_CONTROLS did not contain COPY_COLUMN.
+- EntityTablePanel, export control moved out of popup copy submenu, icon added.
 
 ## 0.18.62
 ### is.codion.common.reactive
