@@ -13,7 +13,6 @@ dependencies {
     implementation(libs.jfreechart)
     implementation(libs.json)
     implementation("org.jxmapviewer:jxmapviewer2:2.8")
-    implementation(libs.ikonli.foundation.pack)
 
     testImplementation(project(":codion-framework-domain-test"))
     testImplementation(project(":codion-framework-db-local"))

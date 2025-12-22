@@ -36,8 +36,6 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import org.kordamp.ikonli.foundation.Foundation;
-
 import javax.swing.SwingConstants;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +45,11 @@ import static java.util.Collections.emptyList;
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
 	static {
-		FrameworkIcons.instance().add(Foundation.MAP, Foundation.PAGE_EXPORT, Foundation.PAGE_ADD, Foundation.CHECK);
+		FrameworkIcons icons = FrameworkIcons.instance();
+		icons.put("map", WorldAppPanel.class.getResource("map.svg"));
+		icons.put("page-export", WorldAppPanel.class.getResource("page-export.svg"));
+		icons.put("page-add", WorldAppPanel.class.getResource("page-add.svg"));
+		icons.put("check", WorldAppPanel.class.getResource("check.svg"));
 	}
 
 	public WorldAppPanel(WorldAppModel applicationModel) {

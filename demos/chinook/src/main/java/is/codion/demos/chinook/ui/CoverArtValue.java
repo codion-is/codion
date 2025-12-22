@@ -28,8 +28,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.transfer.FileTransferHandler;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import org.kordamp.ikonli.foundation.Foundation;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -92,13 +90,13 @@ final class CoverArtValue extends AbstractComponentValue<CoverArtValue.CoverArtP
 		private final JButton addButton = button()
 						.control(Control.builder()
 										.command(this::addCover)
-										.smallIcon(ICONS.get(Foundation.PLUS).small()))
+										.smallIcon(ICONS.get("plus").small()))
 						.transferFocusOnEnter(true)
 						.build();
 		private final JButton removeButton = button()
 						.control(Control.builder()
 										.command(this::removeCover)
-										.smallIcon(ICONS.get(Foundation.MINUS).small()))
+										.smallIcon(ICONS.get("minus").small()))
 						.transferFocusOnEnter(true)
 						.enabled(present(value))
 						.build();

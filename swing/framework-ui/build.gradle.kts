@@ -3,7 +3,6 @@ dependencies {
     api(project(":codion-swing-common-ui"))
     api(project(":codion-swing-framework-model"))
 
-    implementation(libs.ikonli.swing)
     implementation(libs.json)
     implementation(libs.slf4j.api)
 

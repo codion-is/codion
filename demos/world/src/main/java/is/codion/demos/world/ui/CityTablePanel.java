@@ -26,8 +26,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import org.kordamp.ikonli.foundation.Foundation;
-
 import java.awt.Color;
 import java.util.Objects;
 
@@ -55,7 +53,7 @@ final class CityTablePanel extends ChartTablePanel {
 						.command(this::populateLocation)
 						.caption("Populate location")
 						.enabled(cityTableModel.cityWithoutLocationSelected())
-						.icon(FrameworkIcons.instance().get(Foundation.MAP))
+						.icon(FrameworkIcons.instance().get("map"))
 						.build();
 	}
 

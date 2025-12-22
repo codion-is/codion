@@ -23,10 +23,9 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.icon.Logos;
 
-import org.kordamp.ikonli.Ikon;
-
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.net.URL;
 
 import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.common.utilities.Configuration.stringValue;
@@ -34,7 +33,7 @@ import static is.codion.common.utilities.Configuration.stringValue;
 /**
  * Provides icons for framework ui components.
  * The icon color follows the 'Button.foreground' color of the current Look and feel.
- * Add custom icons via {@link #add(Ikon...)} and retrieve them via {@link #get(Ikon)}.
+ * Add custom icons via {@link #put(String, URL)} and retrieve them via {@link #get(String)}.
  * @see #instance()
  */
 public interface FrameworkIcons extends Logos {
@@ -63,26 +62,132 @@ public interface FrameworkIcons extends Logos {
 	PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = stringValue(FrameworkIcons.class.getName() + ".frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
 	/**
+	 * Identifies the filter icon.
+	 */
+	String FILTER = "filter";
+
+	/**
+	 * Identifies the search icon.
+	 */
+	String SEARCH = "search";
+
+	/**
+	 * Identifies the add icon.
+	 */
+	String ADD = "add";
+
+	/**
+	 * Identifies the delete icon.
+	 */
+	String DELETE = "delete";
+
+	/**
+	 * Identifies the update icon.
+	 */
+	String UPDATE = "update";
+
+	/**
+	 * Identifies the copy icon.
+	 */
+	String COPY = "copy";
+
+	/**
+	 * Identifies the refresh icon.
+	 */
+	String REFRESH = "refresh";
+
+	/**
+	 * Identifies the clear icon.
+	 */
+	String CLEAR = "clear";
+
+	/**
+	 * Identifies the up icon.
+	 */
+	String UP = "up";
+
+	/**
+	 * Identifies the down icon.
+	 */
+	String DOWN = "down";
+
+	/**
+	 * Identifies the detail icon.
+	 */
+	String DETAIL = "detail";
+
+	/**
+	 * Identifies the print icon.
+	 */
+	String PRINT = "print";
+
+	/**
+	 * Identifies the edit icon.
+	 */
+	String EDIT = "edit";
+
+	/**
+	 * Identifies the summary icon.
+	 */
+	String SUMMARY = "summary";
+
+	/**
+	 * Identifies the edit-panel icon.
+	 */
+	String EDIT_PANEL = "edit-panel";
+
+	/**
+	 * Identifies the dependencies icon.
+	 */
+	String DEPENDENCIES = "dependencies";
+
+	/**
+	 * Identifies the settings icon.
+	 */
+	String SETTINGS = "settings";
+
+	/**
+	 * Identifies the calendar icon.
+	 */
+	String CALENDAR = "calendar";
+
+	/**
+	 * Identifies the edit-text icon.
+	 */
+	String EDIT_TEXT = "edit-text";
+
+	/**
+	 * Identifies the columns icon.
+	 */
+	String COLUMNS = "columns";
+
+	/**
+	 * Identifies the logo icon.
+	 */
+	String LOGO = "logo";
+
+	/**
 	 * Follows the 'Button.foreground' color of the current Look and feel.
 	 * @return the {@link Value} controlling the icon color
 	 */
 	Value<Color> color();
 
 	/**
-	 * Adds the given ikons. Retrieve an icon via {@link #get(Ikon)}.
-	 * @param ikons the ikons to add
-	 * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
+	 * Adds the given icon. Retrieve an icon via {@link #get(String)}.
+	 * @param identifier the identifier
+	 * @param svgUrl the icon svg resource url
+	 * @throws IllegalArgumentException in case an icon has already been associated with the given identifier
 	 */
-	void add(Ikon... ikons);
+	void put(String identifier, URL svgUrl);
 
 	/**
-	 * Retrieves the {@link ControlIcon} associated with the given ikon.
-	 * @param ikon the ikon
-	 * @return the {@link ControlIcon} associated with the given ikon
-	 * @throws IllegalArgumentException in case no icon has been associated with the given ikon
-	 * @see #add(Ikon...)
+	 * Retrieves the {@link ControlIcon} associated with the given identifier.
+	 * @param identifier the identifier
+	 * @return the {@link ControlIcon} associated with the given identifier
+	 * @throws IllegalArgumentException in case no icon has been associated with the given identifier
+	 * @see #put(String, URL)
 	 */
-	ControlIcon get(Ikon ikon);
+	ControlIcon get(String identifier);
 
 	/**
 	 * @return icon for the 'filter' action.

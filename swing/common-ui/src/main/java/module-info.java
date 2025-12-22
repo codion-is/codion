@@ -39,9 +39,8 @@
 @org.jspecify.annotations.NullMarked
 module is.codion.swing.common.ui {
 	requires java.rmi;
+	requires com.github.weisj.jsvg;
 	requires transitive is.codion.swing.common.model;
-	requires transitive org.kordamp.ikonli.core;
-	requires transitive org.kordamp.ikonli.swing;
 
 	exports is.codion.swing.common.ui;
 	exports is.codion.swing.common.ui.component;

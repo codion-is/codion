@@ -21,13 +21,12 @@ package is.codion.swing.common.ui.icon;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.scaler.Scaler;
 
-import org.kordamp.ikonli.Ikon;
-
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ import static javax.swing.UIManager.getColor;
 
 final class DefaultIcons implements Icons {
 
-	private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
+	private final Map<String, SVGIcon> icons = new HashMap<>();
 
 	private final OnLookAndFeelChanged onLookAndFeelChanged = new OnLookAndFeelChanged();
 	private final OnScalingChanged onScalingChanged = new OnScalingChanged();
@@ -64,33 +63,21 @@ final class DefaultIcons implements Icons {
 	}
 
 	@Override
-	public void add(Ikon... ikons) {
-		int iconSize = Scaler.scale(size);
-		Color iconColor = color.getOrThrow();
-		synchronized (icons) {
-			for (Ikon ikon : requireNonNull(ikons)) {
-				if (icons.containsKey(requireNonNull(ikon))) {
-					throw new IllegalArgumentException("Icon has already been added: " + ikon);
-				}
-			}
-			for (Ikon ikon : ikons) {
-				icons.put(ikon, FontImageIcon.builder()
-								.ikon(ikon)
-								.size(iconSize)
-								.color(iconColor)
-								.build());
-			}
+	public void put(String identifier, URL svgUrl) {
+		if (icons.containsKey(requireNonNull(identifier))) {
+			throw new IllegalArgumentException("Icon has already been added: " + identifier);
 		}
+		icons.put(identifier, SVGIcon.icon(svgUrl, Scaler.scale(size), color.getOrThrow()));
 	}
 
 	@Override
-	public ImageIcon get(Ikon ikon) {
+	public ImageIcon get(String identifier) {
 		synchronized (icons) {
-			if (!icons.containsKey(requireNonNull(ikon))) {
-				throw new IllegalArgumentException("No icon has been added for key: " + ikon);
+			if (!icons.containsKey(requireNonNull(identifier))) {
+				throw new IllegalArgumentException("No icon found with identifier: " + identifier);
 			}
 
-			return icons.get(ikon).imageIcon();
+			return icons.get(identifier).imageIcon();
 		}
 	}
 
@@ -107,11 +94,7 @@ final class DefaultIcons implements Icons {
 			int iconSize = Scaler.scale(size);
 			Color iconColor = color.getOrThrow();
 			synchronized (icons) {
-				icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder()
-								.ikon(ikon)
-								.size(iconSize)
-								.color(iconColor)
-								.build());
+				icons.replaceAll((identifier, svgIcon) -> svgIcon.copy(iconSize, iconColor));
 			}
 		}
 	}

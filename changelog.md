@@ -21,6 +21,7 @@ Codion Change Log
 - FilterTable.Builder.filterComponents() identifier parameter added.
 - ColumnConditionPanel.ConditionComponents method now have default implementations.
 - DefaultFilterTableCellEditor.DefaultCellEditable, edit no longer started if modifier buttons are present.
+- SVGIcon added, replaces Ikonli dependency, icon handling simplified.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 ### is.codion.swing.framework.ui

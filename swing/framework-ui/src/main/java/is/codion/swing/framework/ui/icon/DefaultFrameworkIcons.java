@@ -21,24 +21,19 @@ package is.codion.swing.framework.ui.icon;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.ui.control.ControlIcon;
-import is.codion.swing.common.ui.icon.FontImageIcon;
-import is.codion.swing.common.ui.icon.FontImageIcon.IconPainter;
-import is.codion.swing.common.ui.icon.FontImageIcon.ImageIconFactory;
 import is.codion.swing.common.ui.icon.Icons;
+import is.codion.swing.common.ui.icon.SVGIcon;
 import is.codion.swing.common.ui.scaler.Scaler;
 
 import org.jspecify.annotations.Nullable;
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.ImageIcon;
 import java.awt.Color;
-import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static is.codion.swing.common.ui.control.ControlIcon.controlIcon;
-import static is.codion.swing.framework.ui.icon.FrameworkIkon.*;
 import static java.util.stream.StreamSupport.stream;
 
 /**
@@ -48,42 +43,43 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private static final int LOGO_SIZE = 68;
 
-	private static final IconPainter LOGO_ICON_PAINTER = new IconPainter() {
-
-		@Override
-		public void paintIcon(FontIcon fontIcon, ImageIcon imageIcon) {
-			//center on y-axis
-			int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
-
-			fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, -yOffset);
-		}
-	};
-
-	private static final ImageIconFactory LOGO_ICON_FACTORY = new ImageIconFactory() {
-		@Override
-		public ImageIcon createImageIcon(FontIcon fontIcon) {
-			int yCorrection = (fontIcon.getIconHeight() - fontIcon.getIconWidth());
-
-			return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconHeight() - yCorrection, BufferedImage.TYPE_INT_ARGB));
-		}
-	};
-
 	private static @Nullable FrameworkIcons instance;
 
 	private final Icons smallIcons = Icons.icons(SMALL_SIZE.getOrThrow());
 	private final Icons largeIcons = Icons.icons(LARGE_SIZE.getOrThrow());
 
-	private FontImageIcon logo = createLogo();
+	private SVGIcon logo = createLogo();
 
-	/**
-	 * Instantiates a new {@link DefaultFrameworkIcons} instance
-	 */
 	public DefaultFrameworkIcons() {
-		add(FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
-						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
+		addIcon(FILTER);
+		addIcon(SEARCH);
+		addIcon(ADD);
+		addIcon(DELETE);
+		addIcon(UPDATE);
+		addIcon(COPY);
+		addIcon(REFRESH);
+		addIcon(CLEAR);
+		addIcon(UP);
+		addIcon(DOWN);
+		addIcon(DETAIL);
+		addIcon(PRINT);
+		addIcon(EDIT);
+		addIcon(SUMMARY);
+		addIcon(EDIT_PANEL);
+		addIcon(DEPENDENCIES);
+		addIcon(SETTINGS);
+		addIcon(CALENDAR);
+		addIcon(EDIT_TEXT);
+		addIcon(COLUMNS);
+		addIcon(LOGO);
 		largeIcons.color().link(smallIcons.color());
 		smallIcons.color().addConsumer(this::onColorChanged);
 		Scaler.SCALING.addWeakListener(this::onScalingChanged);
+	}
+
+	private void addIcon(String identifier) {
+		smallIcons.put(identifier, DefaultFrameworkIcons.class.getResource(identifier + ".svg"));
+		largeIcons.put(identifier, DefaultFrameworkIcons.class.getResource(identifier + ".svg"));
 	}
 
 	@Override
@@ -92,14 +88,14 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	}
 
 	@Override
-	public void add(Ikon... ikons) {
-		smallIcons.add(ikons);
-		largeIcons.add(ikons);
+	public void put(String identifier, URL svgUrl) {
+		smallIcons.put(identifier, svgUrl);
+		largeIcons.put(identifier, svgUrl);
 	}
 
 	@Override
-	public ControlIcon get(Ikon ikon) {
-		return controlIcon(smallIcons.get(ikon), largeIcons.get(ikon));
+	public ControlIcon get(String identifier) {
+		return controlIcon(smallIcons.get(identifier), largeIcons.get(identifier));
 	}
 
 	@Override
@@ -220,18 +216,20 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		return instance;
 	}
 
-	private FontImageIcon createLogo() {
-		return FontImageIcon.builder()
-						.ikon(LOGO)
-						.size(Scaler.scale(LOGO_SIZE))
-						.color(smallIcons.color().getOrThrow())
-						.iconPainter(LOGO_ICON_PAINTER)
-						.imageIconFactory(LOGO_ICON_FACTORY)
-						.build();
+	private SVGIcon createLogo() {
+		return SVGIcon.icon(DefaultFrameworkIcons.class.getResource("logo.svg"), Scaler.scale(LOGO_SIZE), smallIcons.color().getOrThrow());
+	}
+
+	private void onColorChanged(Color color) {
+		logo.color(color);
+	}
+
+	private void onScalingChanged() {
+		logo = createLogo();
 	}
 
 	private static FrameworkIcons createInstance() {
-		String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
+		String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.getOrThrow();
 		try {
 			return stream(ServiceLoader.load(FrameworkIcons.class).spliterator(), false)
 							.filter(icons -> icons.getClass().getName().equals(iconsClassName))
@@ -241,13 +239,5 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		catch (ServiceConfigurationError e) {
 			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
-	}
-
-	private void onColorChanged(Color color) {
-		logo.color(color);
-	}
-
-	private void onScalingChanged() {
-		logo = createLogo();
 	}
 }

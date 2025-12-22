@@ -32,7 +32,7 @@ This document honors the creators of components, patterns, or tools that have in
 
 ### Foundation Icons
 
-A subset of the Foundation Icons set by Zurb (https://get.foundation) is included in Codion as part of a custom font file.
+A subset of the Foundation Icons set by Zurb (https://get.foundation) is included in Codion as svg resource files.
 
 Licensed under the MIT License.
 

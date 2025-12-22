@@ -29,7 +29,6 @@
  * </ul>
  * @uses is.codion.swing.framework.ui.icon.FrameworkIcons
  * @provides is.codion.swing.framework.ui.icon.FrameworkIcons
- * @provides org.kordamp.ikonli.IkonHandler
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.swing.framework.ui {
@@ -49,6 +48,4 @@ module is.codion.swing.framework.ui {
 
 	provides is.codion.swing.framework.ui.icon.FrameworkIcons
 					with is.codion.swing.framework.ui.icon.DefaultFrameworkIcons;
-	provides org.kordamp.ikonli.IkonHandler
-					with is.codion.swing.framework.ui.icon.FrameworkIkonHandler;
 }

@@ -34,7 +34,6 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jxmapviewer.JXMapKit;
-import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -93,7 +92,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private final Control toggleMapControl = Control.builder()
 					.toggle(mapDialogVisible)
-					.icon(ICONS.get(Foundation.MAP))
+					.icon(ICONS.get("map"))
 					.caption("Show map")
 					.build();
 	private final JScrollPane columnSelectionScrollPane = scrollPane()
@@ -144,7 +143,7 @@ final class LookupTablePanel extends EntityTablePanel {
 						.separator()
 						.control(Controls.builder()
 										.caption("Export")
-										.icon(ICONS.get(Foundation.PAGE_EXPORT))
+										.icon(ICONS.get("page-export"))
 										.control(Control.builder()
 														.command(this::exportCSV)
 														.caption("CSV..."))
@@ -153,7 +152,7 @@ final class LookupTablePanel extends EntityTablePanel {
 														.caption("JSON...")))
 						.control(Controls.builder()
 										.caption("Import")
-										.icon(ICONS.get(Foundation.PAGE_ADD))
+										.icon(ICONS.get("page-add"))
 										.control(Control.builder()
 														.command(this::importJSON)
 														.caption("JSON...")))
@@ -308,7 +307,7 @@ final class LookupTablePanel extends EntityTablePanel {
 										.map(ToggleControl.class::cast)
 										.forEach(toggleControl -> toggleControl.value().set(true)))
 						.caption("Select all")
-						.icon(ICONS.get(Foundation.CHECK))
+						.icon(ICONS.get("check"))
 						.build();
 	}
 }

@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.icon;
 
 import org.junit.jupiter.api.Test;
-import org.kordamp.ikonli.foundation.Foundation;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,10 +28,11 @@ public final class IconsTest {
 	@Test
 	void test() {
 		Icons icons = Icons.icons(16);
-		assertThrows(IllegalArgumentException.class, () -> icons.get(Foundation.ALERT));
-		icons.add(Foundation.ALERT, Foundation.FOUNDATION);
-		assertThrows(IllegalArgumentException.class, () -> icons.add(Foundation.FOUNDATION));
-		assertNotNull(icons.get(Foundation.ALERT));
-		assertNotNull(icons.get(Foundation.FOUNDATION));
+		assertThrows(IllegalArgumentException.class, () -> icons.get("alert.svg"));
+		icons.put("alert", IconsTest.class.getResource("alert.svg"));
+		icons.put("foundation", IconsTest.class.getResource("foundation.svg"));
+		assertThrows(IllegalArgumentException.class, () -> icons.put("foundation", IconsTest.class.getResource("alert.svg")));
+		assertNotNull(icons.get("alert"));
+		assertNotNull(icons.get("foundation"));
 	}
 }

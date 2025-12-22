@@ -32,7 +32,6 @@ module is.codion.framework.demos.chinook {
 	requires org.jfree.jfreechart;
 	requires com.formdev.flatlaf.extras;
 	requires is.codion.plugin.flatlaf.intellij.themes;
-	requires org.kordamp.ikonli.foundation;
 	requires is.codion.tools.swing.mcp;
 
 	exports is.codion.demos.chinook.model

@@ -29,7 +29,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jxmapviewer.JXMapKit;
-import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -62,7 +61,7 @@ public final class CityEditPanel extends EntityEditPanel {
 										.enabled(State.and(active(),
 														editModel().editor().value(City.LOCATION).present().not(),
 														editModel().editor().exists()))
-										.icon(FrameworkIcons.instance().get(Foundation.MAP))));
+										.icon(FrameworkIcons.instance().get("map"))));
 	}
 
 	@Override

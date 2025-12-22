@@ -23,7 +23,6 @@ module is.codion.demos.world {
 	requires is.codion.swing.framework.ui;
 	requires is.codion.plugin.jasperreports;
 	requires is.codion.framework.json.domain;
-	requires org.kordamp.ikonli.foundation;
 	requires net.sf.jasperreports.core;
 	requires org.jfree.jfreechart;
 	requires org.jxmapviewer.jxmapviewer2;

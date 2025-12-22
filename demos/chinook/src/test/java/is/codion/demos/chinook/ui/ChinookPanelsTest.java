@@ -41,14 +41,15 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.junit.jupiter.api.Test;
-import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JTextField;
 
 public final class ChinookPanelsTest {
 
 	static {
-		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);
+		FrameworkIcons icons = FrameworkIcons.instance();
+		icons.put("plus", ChinookAppPanel.class.getResource("plus.svg"));
+		icons.put("minus", ChinookAppPanel.class.getResource("minus.svg"));
 	}
 
 	private final EntityConnectionProvider connectionProvider =

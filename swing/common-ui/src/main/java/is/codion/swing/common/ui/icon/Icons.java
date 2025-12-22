@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2020 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
 package is.codion.swing.common.ui.icon;
 
@@ -22,17 +22,16 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Configuration;
 import is.codion.common.utilities.property.PropertyValue;
 
-import org.kordamp.ikonli.Ikon;
-
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.net.URL;
 
 import static javax.swing.UIManager.getColor;
 
 /**
  * Provides icons for ui components.
  * {@link #color()} follows the 'Button.foreground' color of the current Look and feel.
- * Add icons via {@link #add(Ikon...)} and retrieve them via {@link #get(Ikon)}.
+ * Add icons via {@link #put(String, URL)} and retrieve them via {@link #get(String)}.
  * @see #icons(int)
  */
 public interface Icons {
@@ -58,20 +57,20 @@ public interface Icons {
 	int size();
 
 	/**
-	 * Adds the given ikons to this Icons instance. Retrieve an icon via {@link #get(Ikon)}.
-	 * @param ikons the ikons to add
-	 * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
+	 * Adds the given icons to this SVGIcons instance. Retrieve an icon via {@link #get(String)}.
+	 * @param identifier the icon identifier
+	 * @param svgUrl the svg resource url
+	 * @throws IllegalArgumentException in case an icon has already been associated with the given identifier
 	 */
-	void add(Ikon... ikons);
+	void put(String identifier, URL svgUrl);
 
 	/**
 	 * Retrieves the ImageIcon associated with the given ikon from this Icons instance.
-	 * @param ikon the ikon
-	 * @return the ImageIcon associated with the given ikon
-	 * @throws IllegalArgumentException in case no icon has been associated with the given ikon
-	 * @see #add(Ikon...)
+	 * @param identifier the icon identifier
+	 * @return the ImageIcon associated with the given identifier
+	 * @throws IllegalArgumentException in case no icon has been associated with the given identifier
 	 */
-	ImageIcon get(Ikon ikon);
+	ImageIcon get(String identifier);
 
 	/**
 	 * @param size the icon size

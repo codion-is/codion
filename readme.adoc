@@ -1,6 +1,6 @@
 = Codion Application Framework
-:version: 0.18.62
-:version-dev: 0.18.63
+:version: 0.18.63
+:version-dev: 0.18.64
 :url-help: https://codion.is/doc/{version}/help
 :url-manual: https://codion.is/doc/{version}/manual
 :url-technical: https://codion.is/doc/{version}/technical
@@ -68,7 +68,7 @@ repositories {
 The core Codion framework components use a limited set of third-party libraries, a Swing client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
 * *https://www.json.org[org.json:json]* for persisting application preferences
-* *https://github.com/kordamp/ikonli[org.kordamp.ikonli:ikonli-swing]* for application icon handling
+* *https://github.com/weisJ/jsvg[com.github.weisj:jsvg]* for application icon handling
 * *https://github.com/Hakky54/ayza[io.github.hakky54:ayza]* for RMI truststore handling
 * *https://github.com/qos-ch/slf4j[org.slf4j:slf4j-api]* for your logging framework of choice
 * *JDBC driver*

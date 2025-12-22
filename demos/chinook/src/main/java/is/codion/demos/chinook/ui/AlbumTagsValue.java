@@ -29,8 +29,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import org.kordamp.ikonli.foundation.Foundation;
-
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
@@ -76,11 +74,11 @@ final class AlbumTagsValue extends AbstractComponentValue<AlbumTagsValue.AlbumTa
 		private final FilterList<String> list = value.component();
 		private final Control addTagControl = Control.builder()
 						.command(this::addTag)
-						.smallIcon(ICONS.get(Foundation.PLUS).small())
+						.smallIcon(ICONS.get("plus").small())
 						.build();
 		private final Control removeTagControl = Control.builder()
 						.command(this::removeTags)
-						.smallIcon(ICONS.get(Foundation.MINUS).small())
+						.smallIcon(ICONS.get("minus").small())
 						.enabled(model.selection().empty().not())
 						.build();
 		private final Control moveSelectionUpControl = Control.builder()

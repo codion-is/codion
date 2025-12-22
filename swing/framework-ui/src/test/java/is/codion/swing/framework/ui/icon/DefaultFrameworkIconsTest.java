@@ -19,10 +19,8 @@
 package is.codion.swing.framework.ui.icon;
 
 import org.junit.jupiter.api.Test;
-import org.kordamp.ikonli.Ikon;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class DefaultFrameworkIconsTest {
 
@@ -51,8 +49,5 @@ public final class DefaultFrameworkIconsTest {
 		assertNotNull(icons.calendar());
 		assertNotNull(icons.editText());
 		assertNotNull(icons.logo());
-		assertThrows(NullPointerException.class, () -> icons.add((Ikon[]) null));
-		assertThrows(NullPointerException.class, () -> icons.add(null, FrameworkIkon.SETTINGS));
-		assertThrows(IllegalArgumentException.class, () -> icons.add(FrameworkIkon.SETTINGS));
 	}
 }

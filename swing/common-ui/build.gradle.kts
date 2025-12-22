@@ -1,9 +1,7 @@
 dependencies {
     api(project(":codion-swing-common-model"))
 
-    api(libs.ikonli.core)
-    api(libs.ikonli.swing)
+    implementation(libs.jsvg)
 
-    testImplementation(libs.ikonli.foundation.pack)
     testImplementation(libs.assertj.swing)
 }
