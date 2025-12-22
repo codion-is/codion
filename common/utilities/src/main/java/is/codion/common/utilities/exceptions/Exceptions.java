@@ -42,7 +42,10 @@ public final class Exceptions {
 			return (RuntimeException) cause;
 		}
 
-		return new RuntimeException(cause.getMessage(), cause);
+		RuntimeException exception = new RuntimeException(cause.getMessage(), cause);
+		exception.setStackTrace(cause.getStackTrace());
+
+		return exception;
 	}
 
 	/**
