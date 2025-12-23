@@ -36,7 +36,7 @@ final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox,
 	}
 
 	@Override
-	protected ComponentValue<JCheckBox, Boolean> createComponentValue(JToggleButton component) {
+	protected ComponentValue<JCheckBox, Boolean> createValue(JToggleButton component) {
 		ComponentValue<JCheckBox, Boolean> componentValue = new CheckBoxValue((JCheckBox) component);
 		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
 

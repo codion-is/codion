@@ -1223,7 +1223,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<EntitySearchField, Set<Entity>> createComponentValue(EntitySearchField component) {
+		protected ComponentValue<EntitySearchField, Set<Entity>> createValue(EntitySearchField component) {
 			return new MultiSelectionValue(component);
 		}
 	}
@@ -1236,7 +1236,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<EntitySearchField, Entity> createComponentValue(EntitySearchField component) {
+		protected ComponentValue<EntitySearchField, Entity> createValue(EntitySearchField component) {
 			return new SingleSelectionValue(component);
 		}
 	}

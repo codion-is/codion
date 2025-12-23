@@ -83,7 +83,7 @@ final class DefaultListBoxBuilder<T>
 	}
 
 	@Override
-	protected ComponentValue<JComboBox<T>, Set<T>> createComponentValue(JComboBox<T> comboBox) {
+	protected ComponentValue<JComboBox<T>, Set<T>> createValue(JComboBox<T> comboBox) {
 		return new ListBoxComponentValue<>((ListComboBox<T>) comboBox);
 	}
 

@@ -190,7 +190,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	}
 
 	@Override
-	protected ComponentValue<JComboBox<Item<T>>, T> createComponentValue(JComboBox<Item<T>> component) {
+	protected ComponentValue<JComboBox<Item<T>>, T> createValue(JComboBox<Item<T>> component) {
 		return new SelectedItemValue<>(component);
 	}
 

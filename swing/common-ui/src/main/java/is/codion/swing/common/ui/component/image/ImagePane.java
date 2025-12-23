@@ -1426,7 +1426,7 @@ public final class ImagePane extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<ImagePane, byte[]> createComponentValue(ImagePane component) {
+		protected ComponentValue<ImagePane, byte[]> createValue(ImagePane component) {
 			return new ByteArrayComponentValue(requireNonNull(component), nullable);
 		}
 	}

@@ -364,7 +364,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<EntitySearchFieldPanel, Set<Entity>> createComponentValue(EntitySearchFieldPanel component) {
+		protected ComponentValue<EntitySearchFieldPanel, Set<Entity>> createValue(EntitySearchFieldPanel component) {
 			return new MultiSelectionValue(component);
 		}
 	}
@@ -379,7 +379,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<EntitySearchFieldPanel, Entity> createComponentValue(EntitySearchFieldPanel component) {
+		protected ComponentValue<EntitySearchFieldPanel, Entity> createValue(EntitySearchFieldPanel component) {
 			return new SingleSelectionValue(component);
 		}
 	}

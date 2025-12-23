@@ -441,7 +441,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<NumberField<BigDecimal>, BigDecimal> createComponentValue(NumberField<BigDecimal> component) {
+		protected ComponentValue<NumberField<BigDecimal>, BigDecimal> createValue(NumberField<BigDecimal> component) {
 			return new BigDecimalFieldValue(component, nullable, updateOn());
 		}
 	}
@@ -458,7 +458,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<NumberField<Double>, Double> createComponentValue(NumberField<Double> component) {
+		protected ComponentValue<NumberField<Double>, Double> createValue(NumberField<Double> component) {
 			return new DoubleFieldValue(component, nullable, updateOn());
 		}
 	}
@@ -475,7 +475,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<NumberField<Short>, Short> createComponentValue(NumberField<Short> component) {
+		protected ComponentValue<NumberField<Short>, Short> createValue(NumberField<Short> component) {
 			return new ShortFieldValue(component, nullable, updateOn());
 		}
 	}
@@ -492,7 +492,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<NumberField<Integer>, Integer> createComponentValue(NumberField<Integer> component) {
+		protected ComponentValue<NumberField<Integer>, Integer> createValue(NumberField<Integer> component) {
 			return new IntegerFieldValue(component, nullable, updateOn());
 		}
 	}
@@ -509,7 +509,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<NumberField<Long>, Long> createComponentValue(NumberField<Long> component) {
+		protected ComponentValue<NumberField<Long>, Long> createValue(NumberField<Long> component) {
 			return new LongFieldValue(component, nullable, updateOn());
 		}
 	}

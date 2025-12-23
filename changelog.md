@@ -25,6 +25,7 @@ Codion Change Log
 - DefaultFilterTableCellEditor.DefaultCellEditable, edit no longer started if modifier buttons are present.
 - SVGIcon added, replaces Ikonli dependency, icon handling simplified.
 - FilterTable.createCopyColumn() renamed createCopyColumnControl().
+- AbstractComponentValueBuilder.createComponentValue() renamed createValue().
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 ### is.codion.swing.framework.ui

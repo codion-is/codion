@@ -263,7 +263,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<EntityComboBoxPanel, Entity> createComponentValue(EntityComboBoxPanel component) {
+		protected ComponentValue<EntityComboBoxPanel, Entity> createValue(EntityComboBoxPanel component) {
 			return new EntityComboBoxPanelValue(component);
 		}
 

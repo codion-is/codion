@@ -140,7 +140,7 @@ final class DefaultSliderBuilder extends AbstractComponentValueBuilder<JSlider, 
 	}
 
 	@Override
-	protected ComponentValue<JSlider, Integer> createComponentValue(JSlider component) {
+	protected ComponentValue<JSlider, Integer> createValue(JSlider component) {
 		return new IntegerSliderValue(component);
 	}
 

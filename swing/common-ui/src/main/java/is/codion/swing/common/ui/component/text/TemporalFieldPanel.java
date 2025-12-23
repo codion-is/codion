@@ -285,7 +285,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<TemporalFieldPanel<T>, T> createComponentValue(TemporalFieldPanel<T> component) {
+		protected ComponentValue<TemporalFieldPanel<T>, T> createValue(TemporalFieldPanel<T> component) {
 			return new TemporalFieldPanelValue<>(component);
 		}
 

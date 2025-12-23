@@ -157,7 +157,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 
 	@Override
 	protected final C configureComponent(C component) {
-		configureValue(createComponentValue(component));
+		configureValue(createValue(component));
 
 		return super.configureComponent(component);
 	}
@@ -167,7 +167,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	 * @param component the component
 	 * @return a component value based on the component
 	 */
-	protected abstract ComponentValue<C, T> createComponentValue(C component);
+	protected abstract ComponentValue<C, T> createValue(C component);
 
 	private void configureValue(ComponentValue<C, T> componentValue) {
 		C component = componentValue.component();

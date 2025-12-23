@@ -37,7 +37,7 @@ final class DefaultNullableCheckBoxBuilder extends DefaultToggleButtonBuilder<Nu
 	}
 
 	@Override
-	protected ComponentValue<NullableCheckBox, Boolean> createComponentValue(JToggleButton component) {
+	protected ComponentValue<NullableCheckBox, Boolean> createValue(JToggleButton component) {
 		ComponentValue<NullableCheckBox, Boolean> componentValue = new NullableCheckBoxValue((NullableCheckBox) component);
 		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
 

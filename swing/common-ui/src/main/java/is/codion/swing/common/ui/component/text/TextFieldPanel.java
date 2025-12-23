@@ -395,7 +395,7 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<TextFieldPanel, String> createComponentValue(TextFieldPanel component) {
+		protected ComponentValue<TextFieldPanel, String> createValue(TextFieldPanel component) {
 			return new TextFieldPanelValue(component);
 		}
 

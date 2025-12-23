@@ -53,7 +53,7 @@ final class DefaultFilterListSelectedItemsBuilder<T> extends AbstractFilterListB
 	}
 
 	@Override
-	protected ComponentValue<FilterList<T>, List<T>> createComponentValue(FilterList<T> component) {
+	protected ComponentValue<FilterList<T>, List<T>> createValue(FilterList<T> component) {
 		return new SelectedItemsValue<>(component, nullable);
 	}
 

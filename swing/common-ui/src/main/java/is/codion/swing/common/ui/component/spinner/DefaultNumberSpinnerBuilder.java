@@ -96,7 +96,7 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 	}
 
 	@Override
-	protected ComponentValue<JSpinner, T> createComponentValue(JSpinner component) {
+	protected ComponentValue<JSpinner, T> createValue(JSpinner component) {
 		if (valueClass.equals(Integer.class) || valueClass.equals(Double.class)) {
 			return new SpinnerNumberValue<>(component, valueClass);
 		}

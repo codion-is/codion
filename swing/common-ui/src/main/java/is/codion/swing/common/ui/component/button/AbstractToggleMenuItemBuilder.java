@@ -83,7 +83,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	}
 
 	@Override
-	protected final ComponentValue<C, Boolean> createComponentValue(C component) {
+	protected final ComponentValue<C, Boolean> createValue(C component) {
 		ToggleButtonValue<C> componentValue = new ToggleButtonValue<>(component);
 		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
 

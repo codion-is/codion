@@ -110,7 +110,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<JLabel,
 	}
 
 	@Override
-	protected ComponentValue<JLabel, T> createComponentValue(JLabel component) {
+	protected ComponentValue<JLabel, T> createValue(JLabel component) {
 		return new LabelComponentValue<>(component);
 	}
 }
