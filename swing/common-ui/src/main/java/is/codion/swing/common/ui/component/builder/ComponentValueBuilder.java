@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.builder;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueChange;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -140,7 +141,79 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * @param consumer a consumer to add to the resulting component value
 	 * @return this builder instance
 	 */
-	B consumer(Consumer<T> consumer);
+	B consumer(Consumer<? super T> consumer);
+
+	/**
+	 * @param weakListener a weak listener to add
+	 * @return this builder instance
+	 */
+	B weakListener(Runnable weakListener);
+
+	/**
+	 * @param weakConsumer a weak consumer to add
+	 * @return this builder instance
+	 */
+	B weakConsumer(Consumer<? super T> weakConsumer);
+
+	/**
+	 * @param listener a change listener to add
+	 * @return this builder instance
+	 * @see Value#changed()
+	 */
+	B changeListener(Runnable listener);
+
+	/**
+	 * @param consumer a change consumer to add
+	 * @return this builder instance
+	 * @see Value#changed()
+	 */
+	B changeConsumer(Consumer<ValueChange<? super T>> consumer);
+
+	/**
+	 * @param weakListener a weak change listener to add
+	 * @return this builder instance
+	 * @see Value#changed()
+	 */
+	B weakChangeListener(Runnable weakListener);
+
+	/**
+	 * @param weakConsumer a weak change consumer to add
+	 * @return this builder instance
+	 * @see Value#changed()
+	 */
+	B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer);
+
+	/**
+	 * Adds a conditional listener
+	 * @param value the value on which to run
+	 * @param listener the listener
+	 * @return this builder instance
+	 */
+	B when(T value, Runnable listener);
+
+	/**
+	 * Adds a conditional consumer
+	 * @param value the value to consume
+	 * @param consumer the consumer
+	 * @return this builder instance
+	 */
+	B when(T value, Consumer<? super T> consumer);
+
+	/**
+	 * Adds a conditional listener
+	 * @param predicate the predicate on which to run
+	 * @param listener the runnable
+	 * @return this builder instance
+	 */
+	B when(Predicate<T> predicate, Runnable listener);
+
+	/**
+	 * Adds a conditional consumer
+	 * @param predicate the predicate on which to consume the value
+	 * @param consumer the consumer to use
+	 * @return this builder instance
+	 */
+	B when(Predicate<T> predicate, Consumer<? super T> consumer);
 
 	/**
 	 * @param onBuildValue called when the component value has been built.

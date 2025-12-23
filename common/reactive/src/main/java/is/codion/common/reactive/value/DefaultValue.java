@@ -19,14 +19,11 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.Observable;
-import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -51,19 +48,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		builder.validators.forEach(this::addValidator);
 		builder.linkedValues.forEach(this::link);
 		builder.linkedObservables.forEach(this::link);
-		builder.listeners.forEach(this::addListener);
-		builder.valueListeners.forEach((val, listeners) -> {
-			Observer<T> conditional = observer().when(val);
-			listeners.forEach(conditional::addListener);
-		});
-		builder.predicateListeners.forEach((predicate, runnable) ->
-						observer().when(predicate).addListener(runnable));
-		builder.valueConsumers.forEach((val, consumers) -> {
-			Observer<T> conditional = observer().when(val);
-			consumers.forEach(conditional::addConsumer);
-		});
-		builder.predicateConsumers.forEach((predicate, consumer) ->
-						observer().when(predicate).addConsumer(consumer));
+		builder.listeners.addListeners(this);
 		if (builder.locked) {
 			locked().set(true);
 		}
@@ -77,33 +62,6 @@ class DefaultValue<T> extends AbstractValue<T> {
 	@Override
 	protected final void setValue(@Nullable T value) {
 		this.value = value;
-	}
-
-	private void addListener(Listener listener) {
-		if (listener instanceof RunnableListener) {
-			addListener(((RunnableListener) listener).runnable);
-		}
-		else if (listener instanceof ConsumerListener) {
-			addConsumer(((ConsumerListener<T>) listener).consumer);
-		}
-		else if (listener instanceof WeakRunnableListener) {
-			addWeakListener(((WeakRunnableListener) listener).runnable);
-		}
-		else if (listener instanceof WeakConsumerListener) {
-			addWeakConsumer(((WeakConsumerListener<T>) listener).consumer);
-		}
-		else if (listener instanceof RunnableChangeListener) {
-			changed().addListener(((RunnableChangeListener) listener).runnable);
-		}
-		else if (listener instanceof ChangeConsumerListener) {
-			changed().addConsumer(((ChangeConsumerListener<ValueChange<T>>) listener).consumer);
-		}
-		else if (listener instanceof WeakRunnableChangeListener) {
-			changed().addWeakListener(((WeakRunnableChangeListener) listener).runnable);
-		}
-		else if (listener instanceof WeakChangeConsumerListener) {
-			changed().addWeakConsumer(((WeakChangeConsumerListener<ValueChange<T>>) listener).consumer);
-		}
 	}
 
 	private static final class DefaultBuilderFactory implements BuilderFactory {
@@ -131,12 +89,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final List<Validator<? super T>> validators = new ArrayList<>();
 		private final List<Value<T>> linkedValues = new ArrayList<>();
 		private final List<Observable<T>> linkedObservables = new ArrayList<>();
-		private final List<Listener> listeners = new ArrayList<>();
-		private final Map<T, List<Runnable>> valueListeners = new LinkedHashMap<>();
-		private final Map<T, List<Consumer<? super T>>> valueConsumers = new LinkedHashMap<>();
-		private final Map<Predicate<T>, Runnable> predicateListeners = new LinkedHashMap<>();
-		private final Map<Predicate<T>, Consumer<? super T>> predicateConsumers = new LinkedHashMap<>();
-
+		private final ValueListeners<T> listeners = new ValueListeners<>();
 		private @Nullable T value;
 		private Notify notify = CHANGED;
 		private boolean locked = false;
@@ -188,73 +141,73 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 		@Override
 		public final B listener(Runnable listener) {
-			this.listeners.add(new RunnableListener(requireNonNull(listener)));
+			this.listeners.listener(listener);
 			return self();
 		}
 
 		@Override
 		public final B consumer(Consumer<? super T> consumer) {
-			this.listeners.add(new ConsumerListener<>(requireNonNull(consumer)));
+			this.listeners.consumer(consumer);
 			return self();
 		}
 
 		@Override
 		public final B weakListener(Runnable weakListener) {
-			this.listeners.add(new WeakRunnableListener(requireNonNull(weakListener)));
+			this.listeners.weakListener(weakListener);
 			return self();
 		}
 
 		@Override
 		public final B weakConsumer(Consumer<? super T> weakConsumer) {
-			this.listeners.add(new WeakConsumerListener<>(requireNonNull(weakConsumer)));
+			this.listeners.weakConsumer(weakConsumer);
 			return self();
 		}
 
 		@Override
 		public final B changeListener(Runnable listener) {
-			this.listeners.add(new RunnableChangeListener(requireNonNull(listener)));
+			this.listeners.changeListener(listener);
 			return self();
 		}
 
 		@Override
 		public final B changeConsumer(Consumer<ValueChange<? super T>> consumer) {
-			this.listeners.add(new ChangeConsumerListener<>(requireNonNull(consumer)));
+			this.listeners.changeConsumer(consumer);
 			return self();
 		}
 
 		@Override
 		public final B weakChangeListener(Runnable weakListener) {
-			this.listeners.add(new WeakRunnableChangeListener(requireNonNull(weakListener)));
+			this.listeners.weakChangeListener(weakListener);
 			return self();
 		}
 
 		@Override
 		public final B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer) {
-			this.listeners.add(new WeakChangeConsumerListener<>(requireNonNull(weakConsumer)));
+			this.listeners.weakChangeConsumer(weakConsumer);
 			return self();
 		}
 
 		@Override
 		public final B when(T value, Runnable listener) {
-			valueListeners.computeIfAbsent(value, k -> new ArrayList<>()).add(requireNonNull(listener));
+			listeners.when(value, listener);
 			return self();
 		}
 
 		@Override
 		public final B when(T value, Consumer<? super T> consumer) {
-			valueConsumers.computeIfAbsent(value, k -> new ArrayList<>()).add(requireNonNull(consumer));
+			listeners.when(value, consumer);
 			return self();
 		}
 
 		@Override
 		public final B when(Predicate<T> predicate, Runnable listener) {
-			predicateListeners.put(requireNonNull(predicate), requireNonNull(listener));
+			listeners.when(predicate, listener);
 			return self();
 		}
 
 		@Override
 		public final B when(Predicate<T> predicate, Consumer<? super T> consumer) {
-			predicateConsumers.put(requireNonNull(predicate), requireNonNull(consumer));
+			listeners.when(predicate, consumer);
 			return self();
 		}
 
@@ -272,80 +225,6 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 		private B self() {
 			return (B) this;
-		}
-	}
-
-	private interface Listener {}
-
-	private static final class RunnableListener implements Listener {
-
-		private final Runnable runnable;
-
-		private RunnableListener(Runnable runnable) {
-			this.runnable = runnable;
-		}
-	}
-
-	private static final class WeakRunnableListener implements Listener {
-
-		private final Runnable runnable;
-
-		private WeakRunnableListener(Runnable runnable) {
-			this.runnable = runnable;
-		}
-	}
-
-	private static final class ConsumerListener<T> implements Listener {
-
-		private final Consumer<T> consumer;
-
-		private ConsumerListener(Consumer<T> consumer) {
-			this.consumer = consumer;
-		}
-	}
-
-	private static final class WeakConsumerListener<T> implements Listener {
-
-		private final Consumer<T> consumer;
-
-		private WeakConsumerListener(Consumer<T> consumer) {
-			this.consumer = consumer;
-		}
-	}
-
-	private static final class RunnableChangeListener implements Listener {
-
-		private final Runnable runnable;
-
-		private RunnableChangeListener(Runnable runnable) {
-			this.runnable = runnable;
-		}
-	}
-
-	private static final class WeakRunnableChangeListener implements Listener {
-
-		private final Runnable runnable;
-
-		private WeakRunnableChangeListener(Runnable runnable) {
-			this.runnable = runnable;
-		}
-	}
-
-	private static final class ChangeConsumerListener<T> implements Listener {
-
-		private final Consumer<T> consumer;
-
-		private ChangeConsumerListener(Consumer<T> consumer) {
-			this.consumer = consumer;
-		}
-	}
-
-	private static final class WeakChangeConsumerListener<T> implements Listener {
-
-		private final Consumer<T> consumer;
-
-		private WeakChangeConsumerListener(Consumer<T> consumer) {
-			this.consumer = consumer;
 		}
 	}
 

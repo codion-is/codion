@@ -22,6 +22,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueChange;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
@@ -44,8 +45,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	private final List<Value<T>> linkedValues = new ArrayList<>(1);
 	private final List<Observable<T>> linkedObservables = new ArrayList<>(1);
 	private final List<Value.Validator<T>> validators = new ArrayList<>();
-	private final List<Runnable> listeners = new ArrayList<>();
-	private final List<Consumer<T>> consumers = new ArrayList<>();
+	private final ValueListeners<T> listeners = new ValueListeners<>();
 
 	private @Nullable ValidIndicatorFactory validIndicatorFactory =
 					ValidIndicatorFactory.instance().orElse(null);
@@ -62,37 +62,37 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	@Override
 	public final B validIndicator(@Nullable ValidIndicatorFactory validIndicator) {
 		this.validIndicatorFactory = validIndicator;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B validIndicator(@Nullable ObservableState valid) {
 		this.validObservable = valid;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B validIndicator(@Nullable Predicate<T> validator) {
 		this.validator = validator;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B modifiedIndicator(@Nullable ModifiedIndicatorFactory modifiedIndicator) {
 		this.modifiedIndicatorFactory = modifiedIndicator;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B modifiedIndicator(@Nullable ObservableState modified) {
 		this.modifiedObservable = modified;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B validator(Value.Validator<T> validator) {
 		this.validators.add(requireNonNull(validator));
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
 		this.linkedValues.add(linkedValue);
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -110,32 +110,92 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 			throw new IllegalArgumentException("Component does not support a nullable value");
 		}
 		this.linkedObservables.add(linkedObservable);
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B listener(Runnable listener) {
-		this.listeners.add(requireNonNull(listener));
-		return (B) this;
+		this.listeners.listener(listener);
+		return self();
 	}
 
 	@Override
-	public final B consumer(Consumer<T> consumer) {
-		this.consumers.add(requireNonNull(consumer));
-		return (B) this;
+	public final B consumer(Consumer<? super T> consumer) {
+		this.listeners.consumer(consumer);
+		return self();
+	}
+
+	@Override
+	public final B weakListener(Runnable weakListener) {
+		this.listeners.weakListener(weakListener);
+		return self();
+	}
+
+	@Override
+	public final B weakConsumer(Consumer<? super T> weakConsumer) {
+		this.listeners.weakConsumer(weakConsumer);
+		return self();
+	}
+
+	@Override
+	public final B changeListener(Runnable listener) {
+		this.listeners.changeListener(listener);
+		return self();
+	}
+
+	@Override
+	public final B changeConsumer(Consumer<ValueChange<? super T>> consumer) {
+		this.listeners.changeConsumer(consumer);
+		return self();
+	}
+
+	@Override
+	public final B weakChangeListener(Runnable weakListener) {
+		this.listeners.weakChangeListener(weakListener);
+		return self();
+	}
+
+	@Override
+	public final B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer) {
+		this.listeners.weakChangeConsumer(weakConsumer);
+		return self();
+	}
+
+	@Override
+	public final B when(T value, Runnable listener) {
+		listeners.when(value, listener);
+		return self();
+	}
+
+	@Override
+	public final B when(T value, Consumer<? super T> consumer) {
+		listeners.when(value, consumer);
+		return self();
+	}
+
+	@Override
+	public final B when(Predicate<T> predicate, Runnable listener) {
+		listeners.when(predicate, listener);
+		return self();
+	}
+
+	@Override
+	public final B when(Predicate<T> predicate, Consumer<? super T> consumer) {
+		listeners.when(predicate, consumer);
+		return self();
 	}
 
 	@Override
 	public final B value(@Nullable T value) {
 		this.valueSet = true;
 		this.value = value;
-		return (B) this;
+		return self();
 	}
 
 	@Override
 	public final B onBuildValue(Consumer<ComponentValue<C, T>> onBuildValue) {
 		buildConsumers.add(requireNonNull(onBuildValue));
-		return (B) this;
+		return self();
 	}
 
 	@Override
@@ -178,8 +238,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 		}
 		linkedValues.forEach(componentValue::link);
 		linkedObservables.forEach(componentValue::link);
-		listeners.forEach(componentValue::addListener);
-		consumers.forEach(componentValue::addConsumer);
+		listeners.addListeners(componentValue);
 		configureValidIndicator(componentValue);
 		configureModifiedIndicator(component);
 	}

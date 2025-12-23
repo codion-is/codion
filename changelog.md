@@ -11,6 +11,7 @@ Codion Change Log
 - Conditional no longer implements Consumer.
 - Value.Change renamed ValueChange and moved up to package level, factory method added.
 - DefaultValueChange moved up to package level, implements equals() and hashCode().
+- DefaultValue.DefaultBuilder listener management improved, conditional listeners included.
 ### is.codion.common.utilities
 - Exceptions.runtime() resulting RuntimeException now uses the stacktrace from the cause.
 ### is.codion.common.model
@@ -26,6 +27,8 @@ Codion Change Log
 - SVGIcon added, replaces Ikonli dependency, icon handling simplified.
 - FilterTable.createCopyColumn() renamed createCopyColumnControl().
 - AbstractComponentValueBuilder.createComponentValue() renamed createValue().
+- ComponentValueBuilder, a few missing listener and consumer methods added.
+- AbstractComponentValueBuilder, listener management now consistent with DefaultValue.DefaultBuilder.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 ### is.codion.swing.framework.ui

@@ -23,6 +23,7 @@ import is.codion.common.reactive.value.Value.Notify;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -139,10 +140,12 @@ public class ValueTest {
 	void setNullValue() {
 		Value<Integer> value = new AbstractValue<>(0, Notify.CHANGED) {
 			private Integer value;
+
 			@Override
 			protected Integer getValue() {
 				return value;
 			}
+
 			@Override
 			protected void setValue(Integer value) {
 				this.value = value;
@@ -558,5 +561,31 @@ public class ValueTest {
 
 		alwaysNotifyValue.set(new byte[] {1, 2, 3});
 		assertEquals(2, setCounter.get(), "Notify.SET should notify every time");
+	}
+
+	@Test
+	void builderListenerOrder() {
+		List<Object> notified = new ArrayList<>();
+		Runnable firstListener = () -> notified.add(1);
+		Consumer<Integer> firstConsumer = value -> notified.add(2);
+		Runnable weakListener = () -> notified.add(3);
+		Runnable oneListener = () -> notified.add(4);
+		Consumer<Integer> weakConsumer = value -> notified.add(5);
+		Runnable secondListener = () -> notified.add(6);
+		Consumer<Integer> oneConsumer = value -> notified.add(7);
+		Consumer<Integer> secondConsumer = value -> notified.add(8);
+		Value.builder()
+						.nonNull(0)
+						.listener(firstListener)
+						.consumer(firstConsumer)
+						.weakListener(weakListener)
+						.when(1, oneListener)
+						.weakConsumer(weakConsumer)
+						.listener(secondListener)
+						.when(1, oneConsumer)
+						.consumer(secondConsumer)
+						.build()
+						.set(1);
+		assertEquals(asList(1, 2, 3, 4, 5, 6, 7, 8), notified);
 	}
 }
