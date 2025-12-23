@@ -31,6 +31,7 @@ Codion Change Log
 - AbstractComponentValueBuilder, listener management now consistent with DefaultValue.DefaultBuilder.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
+- DefaultEntityConditionModel, temporal equal precision adjustment now half-open interval based.
 ### is.codion.swing.framework.ui
 - EntityConditionComponents.createEqualForeignKeyField(), combo box model only populated if it hasn't been already.
 - EntityConditionComponents, attribute constructor parameter removed.

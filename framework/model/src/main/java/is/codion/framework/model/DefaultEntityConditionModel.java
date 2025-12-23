@@ -38,6 +38,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ColumnCondition;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.entity.condition.Condition.Combination;
 
 import org.jspecify.annotations.Nullable;
 
@@ -53,14 +54,11 @@ import java.util.function.Supplier;
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
-import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.ChronoUnit.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityConditionModel implements EntityConditionModel {
-
-	private static final int MAX_MILLIS = 999;
-	private static final int MAX_SECONDS_MINUTES = 59;
 
 	private static final Supplier<@Nullable Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
@@ -221,7 +219,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 	}
 
-	private static <T> ColumnCondition<T> columnCondition(ConditionModel<T> conditionModel, Attribute<?> identifier) {
+	private static <T> Condition columnCondition(ConditionModel<T> conditionModel, Attribute<?> identifier) {
 		Column<T> column = (Column<T>) identifier;
 		Operands<T> operands = conditionModel.operands();
 		switch (conditionModel.operator().getOrThrow()) {
@@ -254,8 +252,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 	}
 
-	private static <T> ColumnCondition<T> equalCondition(ConditionModel<T> conditionModel,
-																											 Column<T> column) {
+	private static <T> Condition equalCondition(ConditionModel<T> conditionModel, Column<T> column) {
 		T equalOperand = conditionModel.operands().equal().get();
 		if (equalOperand == null) {
 			return column.isNull();
@@ -273,8 +270,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return column.equalTo(equalOperand);
 	}
 
-	private static <T> ColumnCondition<T> notEqualCondition(ConditionModel<T> conditionModel,
-																													Column<T> column) {
+	private static <T> Condition notEqualCondition(ConditionModel<T> conditionModel, Column<T> column) {
 		T equalOperand = conditionModel.operands().equal().get();
 		if (equalOperand == null) {
 			return column.isNotNull();
@@ -322,38 +318,38 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return conditionModel.caseSensitive().is() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
 	}
 
-	private static <T> ColumnCondition<T> temporalEqualCondition(ConditionModel<T> conditionModel, Column<T> column,
-																															 Temporal value, boolean notEqual) {
+	private static <T> Condition temporalEqualCondition(ConditionModel<T> conditionModel, Column<T> column,
+																											Temporal value, boolean notEqual) {
 		String dateTimePattern = conditionModel.dateTimePattern().orElse(null);
 		if (dateTimePattern != null && containsTime(column.type())) {
 			// we assume the Temporal value is the result of parsing with the given dateTimePattern
 			Temporal upperBound = createTemporalUpperBound(value, dateTimePattern);
 			if (upperBound != null) {
-				return notEqual ? notBetweenExclusiveCondition((T) value, (T) upperBound, column) : betweenCondition((T) value, (T) upperBound, column);
+				return temporalEqualIntervalCondition(column, (T) value, notEqual, (T) upperBound);
 			}
 		}
 
 		return notEqual ? column.notEqualTo((T) value) : column.equalTo((T) value);
 	}
 
+	private static <T> Combination temporalEqualIntervalCondition(Column<T> column, T value, boolean notEqual, T upperBound) {
+		return notEqual ?
+						Condition.or(column.lessThan(value), column.greaterThanOrEqualTo(upperBound)) :
+						Condition.and(column.greaterThanOrEqualTo(value), column.lessThan(upperBound));
+	}
+
 	private static @Nullable Temporal createTemporalUpperBound(Temporal value, String dateTimePattern) {
 		if (dateTimePattern.contains("SSS")) {//millisecond
 			return null;// no need, same precision as column
 		}
-		else if (dateTimePattern.contains("ss")) {//second
-			// between second.000 and second.999
-			return value.with(MILLI_OF_SECOND, MAX_MILLIS);
+		else if (dateTimePattern.contains("ss")) {
+			return value.plus(1, SECONDS);
 		}
-		else if (dateTimePattern.contains("mm")) {//minute
-			// between minute.00 and minute.59.999
-			return value.with(SECOND_OF_MINUTE, MAX_SECONDS_MINUTES)
-							.with(MILLI_OF_SECOND, MAX_MILLIS);
+		else if (dateTimePattern.contains("mm")) {
+			return value.plus(1, MINUTES);
 		}
-		else if (dateTimePattern.contains("HH")) {//hour
-			// between hour.00 and hour.59.59.999
-			return value.with(MINUTE_OF_HOUR, MAX_SECONDS_MINUTES)
-							.with(SECOND_OF_MINUTE, MAX_SECONDS_MINUTES)
-							.with(MILLI_OF_SECOND, MAX_MILLIS);
+		else if (dateTimePattern.contains("HH")) {
+			return value.plus(1, HOURS);
 		}
 
 		return null;
