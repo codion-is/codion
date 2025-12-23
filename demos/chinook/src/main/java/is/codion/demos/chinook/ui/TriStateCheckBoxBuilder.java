@@ -18,28 +18,30 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.swing.common.ui.component.value.AbstractComponentValue;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import com.formdev.flatlaf.extras.components.FlatTriStateCheckBox;
 
-final class TriStateCheckBoxValue extends AbstractComponentValue<FlatTriStateCheckBox, Boolean> {
+final class TriStateCheckBoxBuilder extends AbstractComponentValueBuilder<FlatTriStateCheckBox, Boolean, TriStateCheckBoxBuilder> {
 
-	TriStateCheckBoxValue() {
-		this(new FlatTriStateCheckBox());
-	}
+	private boolean altStateCycleOrder = false;
 
-	TriStateCheckBoxValue(FlatTriStateCheckBox checkBox) {
-		super(checkBox);
-		component().addItemListener(e -> notifyObserver());
-	}
-
-	@Override
-	protected Boolean getComponentValue() {
-		return component().getChecked();
+	TriStateCheckBoxBuilder altStateCycleOrder(boolean altStateCycleOrder) {
+		this.altStateCycleOrder = altStateCycleOrder;
+		return this;
 	}
 
 	@Override
-	protected void setComponentValue(Boolean value) {
-		component().setChecked(value);
+	protected FlatTriStateCheckBox createComponent() {
+		FlatTriStateCheckBox checkBox = new FlatTriStateCheckBox();
+		checkBox.setAltStateCycleOrder(altStateCycleOrder);
+
+		return checkBox;
+	}
+
+	@Override
+	protected ComponentValue<FlatTriStateCheckBox, Boolean> createValue(FlatTriStateCheckBox component) {
+		return new TriStateCheckBoxValue(component);
 	}
 }

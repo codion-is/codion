@@ -21,12 +21,13 @@ package is.codion.demos.chinook.ui;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.value.Value;
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
+import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityConditionComponents;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.component.EditComponent;
 
 import com.formdev.flatlaf.extras.components.FlatTriStateCheckBox;
 
@@ -39,23 +40,24 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 
 	public PreferencesTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
-						.editComponent(Preferences.NEWSLETTER,
-										e -> new TriStateCheckBoxValue())
+						.editComponent(Preferences.NEWSLETTER, new NewsletterEditor())
 						.surrendersFocusOnKeystroke(true)
 						.cellRenderer(Preferences.NEWSLETTER, renderer -> renderer
-										.renderer(new FlatTriStateRenderer()))
+										.renderer(new NewsletterRenderer()))
 						.cellEditor(Preferences.NEWSLETTER, FilterTableCellEditor.builder()
-										.component(TriStateCheckBoxValue::new)
+										.component(new TriStateCheckBoxBuilder()
+														.altStateCycleOrder(true)
+														::buildValue)
 										.clickCountToStart(1)
 										.build())
-						.filterComponents(Preferences.NEWSLETTER, new NewsletterFilterComponents())
-						.conditionComponents(Preferences.NEWSLETTER, new NewsletterConditionComponents(tableModel.entityDefinition())));
+						.filterComponents(Preferences.NEWSLETTER, new NewsletterConditionComponents())
+						.conditionComponents(Preferences.NEWSLETTER, new NewsletterConditionComponents()));
 	}
 
-	private static final class FlatTriStateRenderer
+	private static final class NewsletterRenderer
 					extends FlatTriStateCheckBox implements TableCellRenderer {
 
-		private FlatTriStateRenderer() {
+		private NewsletterRenderer() {
 			setHorizontalAlignment(CENTER);
 		}
 
@@ -68,29 +70,21 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 		}
 	}
 
-	private static final class NewsletterFilterComponents implements ConditionComponents {
+	private static final class NewsletterEditor implements EditComponent<FlatTriStateCheckBox, Boolean> {
 
 		@Override
-		public <T> JComponent equal(ConditionModel<T> conditionModel) {
-			TriStateCheckBoxValue value = new TriStateCheckBoxValue();
-			value.link((Value<Boolean>) conditionModel.operands().equal());
-
-			return value.component();
+		public ComponentValue<FlatTriStateCheckBox, Boolean> component(SwingEntityEditModel editModel) {
+			return new TriStateCheckBoxValue();
 		}
 	}
 
-	private static final class NewsletterConditionComponents extends EntityConditionComponents {
-
-		private NewsletterConditionComponents(EntityDefinition entityDefinition) {
-			super(entityDefinition);
-		}
+	private static final class NewsletterConditionComponents implements ConditionComponents {
 
 		@Override
 		public <T> JComponent equal(ConditionModel<T> conditionModel) {
-			TriStateCheckBoxValue value = new TriStateCheckBoxValue();
-			value.link((Value<Boolean>) conditionModel.operands().equal());
-
-			return value.component();
+			return new TriStateCheckBoxBuilder()
+							.link(((Value<Boolean>) conditionModel.operands().equal()))
+							.build();
 		}
 	}
 }
