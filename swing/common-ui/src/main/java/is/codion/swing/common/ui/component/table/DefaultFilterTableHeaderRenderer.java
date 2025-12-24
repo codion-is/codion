@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SortOrder;
@@ -52,6 +53,7 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 	private final ColumnSort<C> columnSort;
 	private final FilterTableColumn<C> tableColumn;
 	private final TableCellRenderer columnCellRenderer;
+	private final boolean columnToolTips;
 	private final boolean focusedColumnIndicator = FOCUSED_COLUMN_INDICATOR.getOrThrow();
 
 	private DefaultFilterTableHeaderRenderer(FilterTable<R, C> table, FilterTableColumn<C> column) {
@@ -59,6 +61,7 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 		this.columnSort = table.model().sort().columns();
 		this.tableColumn = column;
 		this.columnCellRenderer = column.getCellRenderer();
+		this.columnToolTips = table.columnToolTips;
 	}
 
 	@Override
@@ -67,6 +70,9 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 		Component component = table.getTableHeader()
 						.getDefaultRenderer()
 						.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		if (component instanceof JComponent && columnToolTips) {
+			tableColumn.toolTipText().ifPresent(((JComponent) component)::setToolTipText);
+		}
 		if (component instanceof JLabel) {
 			Font defaultFont = component.getFont();
 			JLabel label = (JLabel) component;

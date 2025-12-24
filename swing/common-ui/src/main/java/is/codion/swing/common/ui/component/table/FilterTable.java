@@ -166,6 +166,16 @@ public final class FilterTable<R, C> extends JTable {
 					booleanValue(FilterTable.class.getName() + ".columnResizing", true);
 
 	/**
+	 * Specifies whether column tooltips should be enabled
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> COLUMN_TOOL_TIPS =
+					booleanValue(FilterTable.class.getName() + ".columnToolTips", true);
+
+	/**
 	 * Specifies whether the table resizes the row being edited to fit the editor component. Only applicable to {@link FilterTableCellEditor}.
 	 * <ul>
 	 * <li>Value type: Boolean
@@ -287,7 +297,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
 	private final boolean scrollToAddedItem;
-	private final boolean columnToolTips;
+	final boolean columnToolTips;
 
 	private final ControlMap controlMap;
 
@@ -763,11 +773,6 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public static Builder.ModelStep builder() {
 		return DefaultBuilder.MODEL;
-	}
-
-	@Override
-	protected JTableHeader createDefaultTableHeader() {
-		return new FilterTableHeader(columnModel, columnToolTips);
 	}
 
 	/**
@@ -1531,7 +1536,7 @@ public final class FilterTable<R, C> extends JTable {
 		private @Nullable Action doubleClick;
 		private boolean scrollToSelectedItem = true;
 		private boolean scrollToAddedItem = false;
-		private boolean columnToolTips = true;
+		private boolean columnToolTips = COLUMN_TOOL_TIPS.getOrThrow();
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private @Nullable Boolean rowSelection;
@@ -1968,28 +1973,6 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public boolean test(R row, C column) {
 			return true;
-		}
-	}
-
-	private static final class FilterTableHeader extends JTableHeader {
-
-		private final boolean toolTips;
-
-		private FilterTableHeader(TableColumnModel columnModel, boolean toolTips) {
-			super(columnModel);
-			this.toolTips = toolTips;
-		}
-
-		@Override
-		public @Nullable String getToolTipText(MouseEvent event) {
-			if (toolTips) {
-				int index = columnModel.getColumnIndexAtX(event.getPoint().x);
-				if (index != -1) {
-					return ((FilterTableColumn<?>) columnModel.getColumn(index)).toolTipText().orElse(null);
-				}
-			}
-
-			return null;
 		}
 	}
 }
