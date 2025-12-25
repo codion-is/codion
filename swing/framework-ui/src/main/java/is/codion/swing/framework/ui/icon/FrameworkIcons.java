@@ -23,7 +23,6 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.icon.Logos;
 
-import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.net.URL;
 
@@ -307,7 +306,7 @@ public interface FrameworkIcons extends Logos {
 	/**
 	 * @return the logo icon.
 	 */
-	ImageIcon logo();
+	ControlIcon logo();
 
 	/**
 	 * @return a {@link FrameworkIcons} implementation of the type specified by

@@ -35,18 +35,22 @@ public interface SVGIcon {
 	ImageIcon imageIcon();
 
 	/**
+	 * @return the size
+	 */
+	int size();
+
+	/**
 	 * Sets the icon color
 	 * @param color the color
 	 */
 	void color(Color color);
 
 	/**
-	 * Creates a copy of this icon
+	 * Creates a derived copy of this icon using given size
 	 * @param size the size
-	 * @param color the color
 	 * @return a new icon
 	 */
-	SVGIcon copy(int size, Color color);
+	SVGIcon derive(int size);
 
 	/**
 	 * Instantiates a new {@link SVGIcon}

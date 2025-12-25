@@ -64,10 +64,15 @@ final class DefaultIcons implements Icons {
 
 	@Override
 	public void put(String identifier, URL svgUrl) {
+		put(identifier, SVGIcon.icon(svgUrl, Scaler.scale(size), color.getOrThrow()));
+	}
+
+	@Override
+	public void put(String identifier, SVGIcon icon) {
 		if (icons.containsKey(requireNonNull(identifier))) {
 			throw new IllegalArgumentException("Icon has already been added: " + identifier);
 		}
-		icons.put(identifier, SVGIcon.icon(svgUrl, Scaler.scale(size), color.getOrThrow()));
+		icons.put(identifier, requireNonNull(icon));
 	}
 
 	@Override
@@ -91,10 +96,8 @@ final class DefaultIcons implements Icons {
 
 		@Override
 		public void run() {
-			int iconSize = Scaler.scale(size);
-			Color iconColor = color.getOrThrow();
 			synchronized (icons) {
-				icons.replaceAll((identifier, svgIcon) -> svgIcon.copy(iconSize, iconColor));
+				icons.replaceAll((identifier, svgIcon) -> svgIcon.derive(Scaler.scale(svgIcon.size())));
 			}
 		}
 	}

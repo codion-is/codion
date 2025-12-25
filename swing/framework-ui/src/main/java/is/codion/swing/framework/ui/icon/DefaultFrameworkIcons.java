@@ -27,7 +27,6 @@ import is.codion.swing.common.ui.scaler.Scaler;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.net.URL;
 import java.util.ServiceConfigurationError;
@@ -47,8 +46,6 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private final Icons smallIcons = Icons.icons(SMALL_SIZE.getOrThrow());
 	private final Icons largeIcons = Icons.icons(LARGE_SIZE.getOrThrow());
-
-	private SVGIcon logo = createLogo();
 
 	public DefaultFrameworkIcons() {
 		addIcon(FILTER);
@@ -72,15 +69,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		addIcon(EDIT_TEXT);
 		addIcon(COLUMNS);
 		addIcon(EXPORT);
-		addIcon(LOGO);
-		largeIcons.color().link(smallIcons.color());
-		smallIcons.color().addConsumer(this::onColorChanged);
-		Scaler.SCALING.addWeakListener(this::onScalingChanged);
-	}
-
-	private void addIcon(String identifier) {
-		smallIcons.put(identifier, DefaultFrameworkIcons.class.getResource(identifier + ".svg"));
-		largeIcons.put(identifier, DefaultFrameworkIcons.class.getResource(identifier + ".svg"));
+		addLogo();
 	}
 
 	@Override
@@ -210,8 +199,20 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	}
 
 	@Override
-	public ImageIcon logo() {
-		return logo.imageIcon();
+	public ControlIcon logo() {
+		return get(LOGO);
+	}
+
+	private void addIcon(String identifier) {
+		URL resource = DefaultFrameworkIcons.class.getResource(identifier + ".svg");
+		smallIcons.put(identifier, resource);
+		largeIcons.put(identifier, resource);
+	}
+
+	private void addLogo() {
+		URL resource = DefaultFrameworkIcons.class.getResource("logo.svg");
+		smallIcons.put(LOGO, resource);
+		largeIcons.put(LOGO, SVGIcon.icon(resource, Scaler.scale(LOGO_SIZE), largeIcons.color().getOrThrow()));
 	}
 
 	static FrameworkIcons instance() {
@@ -220,18 +221,6 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		}
 
 		return instance;
-	}
-
-	private SVGIcon createLogo() {
-		return SVGIcon.icon(DefaultFrameworkIcons.class.getResource("logo.svg"), Scaler.scale(LOGO_SIZE), smallIcons.color().getOrThrow());
-	}
-
-	private void onColorChanged(Color color) {
-		logo.color(color);
-	}
-
-	private void onScalingChanged() {
-		logo = createLogo();
 	}
 
 	private static FrameworkIcons createInstance() {

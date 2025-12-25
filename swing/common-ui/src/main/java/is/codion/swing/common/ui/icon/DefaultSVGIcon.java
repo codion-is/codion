@@ -40,12 +40,14 @@ final class DefaultSVGIcon implements SVGIcon {
 	private final ImageIcon imageIcon;
 	private final URL svgUrl;
 	private final SVGDocument svgDocument;
+	private final int size;
 
 	private Color color;
 
 	DefaultSVGIcon(URL svgUrl, int size, Color color) {
 		this.svgUrl = svgUrl;
 		this.svgDocument = loadSvgDocument(svgUrl);
+		this.size = size;
 		this.color = color;
 		this.imageIcon = createImageIcon(size);
 		paintIcon();
@@ -57,13 +59,18 @@ final class DefaultSVGIcon implements SVGIcon {
 	}
 
 	@Override
+	public int size() {
+		return size;
+	}
+
+	@Override
 	public void color(Color color) {
 		this.color = requireNonNull(color);
 		paintIcon();
 	}
 
 	@Override
-	public SVGIcon copy(int size, Color color) {
+	public SVGIcon derive(int size) {
 		return new DefaultSVGIcon(svgUrl, size, color);
 	}
 

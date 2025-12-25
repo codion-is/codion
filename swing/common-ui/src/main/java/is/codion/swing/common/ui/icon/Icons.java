@@ -57,12 +57,22 @@ public interface Icons {
 	int size();
 
 	/**
-	 * Adds the given icons to this SVGIcons instance. Retrieve an icon via {@link #get(String)}.
+	 * Adds the given icon to this SVGIcons instance, using {@link #size()} and {@link #color()}.
+	 * Retrieve an icon via {@link #get(String)}.
 	 * @param identifier the icon identifier
 	 * @param svgUrl the svg resource url
 	 * @throws IllegalArgumentException in case an icon has already been associated with the given identifier
 	 */
 	void put(String identifier, URL svgUrl);
+
+	/**
+	 * Adds the given icon to this SVGIcons instance.
+	 * Retrieve an icon via {@link #get(String)}.
+	 * @param identifier the icon identifier
+	 * @param icon the icon
+	 * @throws IllegalArgumentException in case an icon has already been associated with the given identifier
+	 */
+	void put(String identifier, SVGIcon icon);
 
 	/**
 	 * Retrieves the ImageIcon associated with the given ikon from this Icons instance.

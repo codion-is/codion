@@ -746,7 +746,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		return borderLayoutPanel()
 						.border(emptyBorder())
-						.west(new JLabel(FrameworkIcons.instance().logo()))
+						.west(new JLabel(FrameworkIcons.instance().logo().large()))
 						.center(versionMemoryPanel)
 						.build();
 	}

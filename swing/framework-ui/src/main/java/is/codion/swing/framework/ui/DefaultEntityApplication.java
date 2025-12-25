@@ -415,7 +415,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private void configureIcons() {
 		if (icon == null) {
-			icon = FrameworkIcons.instance().logo();
+			icon = FrameworkIcons.instance().logo().large();
 		}
 	}
 
