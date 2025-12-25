@@ -30,6 +30,7 @@ Codion Change Log
 - ComponentValueBuilder, a few missing listener and consumer methods added.
 - AbstractComponentValueBuilder, listener management now consistent with DefaultValue.DefaultBuilder.
 - FilterTable.FilterTableHeader removed, now uses default JTableHeader toolTip functionality, COLUMN_TOOL_TIPS configuration value added.
+- FilterTable.Builder.paintRemainingRows() added along with PAINT_REMAINING_ROWS configuration value.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 - DefaultEntityConditionModel, temporal equal precision adjustment now half-open interval based.

@@ -74,6 +74,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -105,6 +106,7 @@ import static is.codion.common.utilities.item.Item.item;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
+import static is.codion.swing.common.ui.component.table.DefaultFilterTableCellRenderer.paintBackground;
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -174,6 +176,16 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public static final PropertyValue<Boolean> COLUMN_TOOL_TIPS =
 					booleanValue(FilterTable.class.getName() + ".columnToolTips", true);
+
+	/**
+	 * Specifies whether alternating row backgrounds are painted below the table data to fill the viewport
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> PAINT_REMAINING_ROWS =
+					booleanValue(FilterTable.class.getName() + ".paintRemainingRows", true);
 
 	/**
 	 * Specifies whether the table resizes the row being edited to fit the editor component. Only applicable to {@link FilterTableCellEditor}.
@@ -297,6 +309,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
 	private final boolean scrollToAddedItem;
+	private final boolean paintRemainingRows;
 	final boolean columnToolTips;
 
 	private final ControlMap controlMap;
@@ -321,6 +334,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.scrollToAddedItem = builder.scrollToAddedItem;
 		this.columnToolTips = builder.columnToolTips;
+		this.paintRemainingRows = builder.paintRemainingRows;
 		this.sortable = State.state(builder.sortable);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
@@ -340,6 +354,7 @@ public final class FilterTable<R, C> extends JTable {
 		if (builder.surrendersFocusOnKeystroke != null) {
 			setSurrendersFocusOnKeystroke(builder.surrendersFocusOnKeystroke);
 		}
+		setFillsViewportHeight(paintRemainingRows);// necessary for paintRemainingRows
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder);
@@ -773,6 +788,29 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public static Builder.ModelStep builder() {
 		return DefaultBuilder.MODEL;
+	}
+
+	@Override
+	protected void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
+		if (paintRemainingRows) {
+			paintRemainingRows(graphics);
+		}
+	}
+
+	/**
+	 * Paints the remaining rows, below the rows available in the table model
+	 * @param graphics the graphics
+	 */
+	private void paintRemainingRows(Graphics graphics) {
+		int rowCount = getRowCount();
+		int remainingRows = (getHeight() - (rowCount * getRowHeight())) / getRowHeight();
+		for (int i = 0; i <= remainingRows; i++) {
+			int row = rowCount + i;
+			for (int column = 0; column < columnModel.getColumnCount(); column++) {
+				paintBackground(this, row, column, graphics, getCellRenderer(row, column));
+			}
+		}
 	}
 
 	/**
@@ -1372,6 +1410,16 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> columnToolTips(boolean columnToolTips);
 
 		/**
+		 * Specifies whether the remaining rows below the ones available in the table model are painted.
+		 * <p>Note that this causes {@link JTable#setFillsViewportHeight(boolean)} to be set to true,
+		 * and relies on that remaining so.
+		 * @param paintRemainingRows true if the remaining rows should be painted
+		 * @return this builder instance
+		 * @see #PAINT_REMAINING_ROWS
+		 */
+		Builder<R, C> paintRemainingRows(boolean paintRemainingRows);
+
+		/**
 		 * @param sortable true if sorting via clicking the header should be enbled
 		 * @return this builder instance
 		 */
@@ -1537,6 +1585,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean scrollToSelectedItem = true;
 		private boolean scrollToAddedItem = false;
 		private boolean columnToolTips = COLUMN_TOOL_TIPS.getOrThrow();
+		private boolean paintRemainingRows = PAINT_REMAINING_ROWS.getOrThrow();
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private @Nullable Boolean rowSelection;
@@ -1680,6 +1729,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> columnToolTips(boolean columnToolTips) {
 			this.columnToolTips = columnToolTips;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> paintRemainingRows(boolean paintRemainingRows) {
+			this.paintRemainingRows = paintRemainingRows;
 			return this;
 		}
 

@@ -37,6 +37,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -136,10 +138,37 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		return (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}
 
+	private void paintBackground(FilterTable<R, C> filterTable, int row, int column, Graphics graphics) {
+		paintBackground(filterTable, row, column, graphics,
+						settings.backgroundColor(filterTable, row, filterTable.columnModel().getColumn(column).identifier(),
+										component(filterTable, null, false, false, row, column)));
+	}
+
+	static <R, C> void paintBackground(FilterTable<R, C> filterTable, int row, int column, Graphics graphics, TableCellRenderer renderer) {
+		if (renderer instanceof DefaultFilterTableCellRenderer) {
+			((DefaultFilterTableCellRenderer<R, C, ?>) renderer).paintBackground(filterTable, row, column, graphics);
+		}
+		else if (renderer instanceof DefaultFilterTableCellRenderer.BooleanRenderer) {
+			((DefaultFilterTableCellRenderer.BooleanRenderer<R, C>) renderer).paintBackground(filterTable, row, column, graphics);
+		}
+		else {
+			Color color = renderer.getTableCellRendererComponent(filterTable, null, false, false, row, column).getBackground();
+			paintBackground(filterTable, row, column, graphics, color);
+		}
+	}
+
+	static void paintBackground(FilterTable<?, ?> filterTable, int row, int column, Graphics graphics, Color color) {
+		Rectangle cellRect = filterTable.getCellRect(row, column, false);
+		// cellRect for non-existing rows doesnt have height
+		Rectangle rectToPaint = new Rectangle(cellRect.x, row * filterTable.getRowHeight(), cellRect.width, filterTable.getRowHeight());
+		graphics.setColor(color);
+		graphics.fillRect(rectToPaint.x, rectToPaint.y, rectToPaint.width, rectToPaint.height);
+	}
+
 	/**
 	 * A default {@link FilterTableCellRenderer} implementation for Boolean values
 	 */
-	private static final class BooleanRenderer<R, C> extends NullableCheckBox
+	static final class BooleanRenderer<R, C> extends NullableCheckBox
 					implements TableCellRenderer, javax.swing.plaf.UIResource, FilterTableCellRenderer<R, C, Boolean> {
 
 		private final Settings<R, C, Boolean> settings;
@@ -189,6 +218,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 
 			return this;
+		}
+
+		private void paintBackground(FilterTable<R, C> filterTable, int row, int column, Graphics graphics) {
+			DefaultFilterTableCellRenderer.paintBackground(filterTable, row, column, graphics,
+							settings.backgroundColor(filterTable, row, filterTable.columnModel().getColumn(column).identifier(), this));
 		}
 	}
 
@@ -262,6 +296,31 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return selected ? uiSettings.selectionForeground() : uiSettings.foreground();
 		}
 
+		private Color backgroundColor(FilterTable<R, C> filterTable, int row, C identifier, JComponent component) {
+			component.setBackground(backgroundColor(row));
+			for (Customizer<R, C> customizer : customizers) {
+				if (customizer.enabled()) {
+					customizer.customize(filterTable, identifier, component);
+				}
+			}
+
+			return component.getBackground();
+		}
+
+		private Color backgroundColor(int row) {
+			boolean alternateRow = alternateRow(row);
+			if (alternateRowColoring) {
+				return alternateRow ? uiSettings.alternateBackground() : uiSettings.background();
+			}
+			else {
+				if (uiSettings.alternateRowColor() == null) {
+					return uiSettings.background();
+				}
+				// If UIManager's Table.alternateRowColor is set, respect it
+				return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
+			}
+		}
+
 		private Color backgroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
 			return alternateRowColoring ?
 							backgroundAlternating(filterTable, row, identifier, value, selected, alternateRow) :
@@ -287,7 +346,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			if (uiSettings.alternateRowColor() == null) {
 				return uiSettings.background();
 			}
-			// If alternate row coloring is enabled, respect it
+			// If UIManager's Table.alternateRowColor is set, respect it
 			return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
 		}
 
