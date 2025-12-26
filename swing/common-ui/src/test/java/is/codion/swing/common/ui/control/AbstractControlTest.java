@@ -19,8 +19,7 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.reactive.state.State;
-import is.codion.swing.common.ui.icon.IconsTest;
-import is.codion.swing.common.ui.icon.SVGIcon;
+import is.codion.swing.common.ui.icon.SVGIconsTest;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,9 +35,6 @@ import static javax.swing.Action.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class AbstractControlTest {
-
-	private static final SVGIcon SMALL_ICON = SVGIcon.svgIcon(IconsTest.class.getResource("alert.svg"), 10, Color.BLACK);
-	private static final SVGIcon LARGE_ICON = SVGIcon.svgIcon(IconsTest.class.getResource("alert.svg"), 16, Color.BLACK);
 
 	@Test
 	void immutableAfterConstruction() {
@@ -87,8 +83,8 @@ public final class AbstractControlTest {
 						.command(() -> {})
 						.caption("Caption")
 						.description("Description")
-						.smallIcon(SMALL_ICON)
-						.largeIcon(LARGE_ICON)
+						.smallIcon(SVGIconsTest.SMALL_ICON)
+						.largeIcon(SVGIconsTest.LARGE_ICON)
 						.mnemonic('C')
 						.keyStroke(KeyStroke.getKeyStroke("ctrl C"))
 						.build();
@@ -136,7 +132,7 @@ public final class AbstractControlTest {
 						.command(() -> {})
 						.caption("Caption")
 						.description("Description")
-						.smallIcon(SMALL_ICON)
+						.smallIcon(SVGIconsTest.SMALL_ICON)
 						.build();
 
 		assertTrue(control.keys().contains(NAME));

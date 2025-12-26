@@ -32,7 +32,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.UIManager.getColor;
 
-final class DefaultIcons implements Icons {
+final class DefaultSVGIcons implements SVGIcons {
 
 	private final Map<String, SVGIcon> icons = new HashMap<>();
 
@@ -45,7 +45,7 @@ final class DefaultIcons implements Icons {
 					.consumer(this::onColorChanged)
 					.build();
 
-	DefaultIcons(int size) {
+	DefaultSVGIcons(int size) {
 		this.size = size;
 		UIManager.addPropertyChangeListener(onLookAndFeelChanged);
 		Scaler.SCALING.addWeakListener(onScalingChanged);

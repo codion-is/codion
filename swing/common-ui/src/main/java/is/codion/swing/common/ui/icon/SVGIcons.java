@@ -28,12 +28,12 @@ import java.net.URL;
 import static javax.swing.UIManager.getColor;
 
 /**
- * Provides icons for ui components.
+ * Manages SVG icons for ui components.
  * {@link #color()} follows the 'Button.foreground' color of the current Look and feel.
- * Add icons via {@link #put(String, URL)} and retrieve them via {@link #get(String)}.
- * @see #icons(int)
+ * Add icons via {@link #put(String, URL)} or {@link #put(String, SVGIcon)} and retrieve them via {@link #get(String)}.
+ * @see #svgIcons(int)
  */
-public interface Icons {
+public interface SVGIcons {
 
 	/**
 	 * The default icon color.
@@ -42,7 +42,7 @@ public interface Icons {
 	 * <li>Default value: UIManager.getColor("Button.foreground")
 	 * </ul>
 	 */
-	PropertyValue<Color> COLOR = Configuration.value(Icons.class.getName() + ".color", Color::decode, getColor("Button.foreground"));
+	PropertyValue<Color> COLOR = Configuration.value(SVGIcons.class.getName() + ".color", Color::decode, getColor("Button.foreground"));
 
 	/**
 	 * Follows the 'Button.foreground' color of the current Look and feel.
@@ -83,9 +83,9 @@ public interface Icons {
 
 	/**
 	 * @param size the icon size
-	 * @return a new {@link Icons} instance
+	 * @return a new {@link SVGIcons} instance
 	 */
-	static Icons icons(int size) {
-		return new DefaultIcons(size);
+	static SVGIcons svgIcons(int size) {
+		return new DefaultSVGIcons(size);
 	}
 }

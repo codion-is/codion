@@ -21,8 +21,8 @@ package is.codion.swing.framework.ui.icon;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.ui.control.ControlIcon;
-import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.icon.SVGIcon;
+import is.codion.swing.common.ui.icon.SVGIcons;
 import is.codion.swing.common.ui.scaler.Scaler;
 
 import org.jspecify.annotations.Nullable;
@@ -33,6 +33,7 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import static is.codion.swing.common.ui.control.ControlIcon.controlIcon;
+import static is.codion.swing.common.ui.icon.SVGIcons.svgIcons;
 import static java.util.stream.StreamSupport.stream;
 
 /**
@@ -44,8 +45,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private static @Nullable FrameworkIcons instance;
 
-	private final Icons smallIcons = Icons.icons(SMALL_SIZE.getOrThrow());
-	private final Icons largeIcons = Icons.icons(LARGE_SIZE.getOrThrow());
+	private final SVGIcons smallIcons = svgIcons(SMALL_SIZE.getOrThrow());
+	private final SVGIcons largeIcons = svgIcons(LARGE_SIZE.getOrThrow());
 
 	public DefaultFrameworkIcons() {
 		addIcon(FILTER);

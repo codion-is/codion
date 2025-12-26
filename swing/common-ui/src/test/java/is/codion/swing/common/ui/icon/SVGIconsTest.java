@@ -20,18 +20,24 @@ package is.codion.swing.common.ui.icon;
 
 import org.junit.jupiter.api.Test;
 
+import java.awt.Color;
+
+import static is.codion.swing.common.ui.icon.SVGIcon.svgIcon;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class IconsTest {
+public final class SVGIconsTest {
+
+	public static final SVGIcon SMALL_ICON = svgIcon(SVGIconsTest.class.getResource("alert.svg"), 10, Color.BLACK);
+	public static final SVGIcon LARGE_ICON = svgIcon(SVGIconsTest.class.getResource("alert.svg"), 16, Color.BLACK);
 
 	@Test
 	void test() {
-		Icons icons = Icons.icons(16);
+		SVGIcons icons = SVGIcons.svgIcons(16);
 		assertThrows(IllegalArgumentException.class, () -> icons.get("alert.svg"));
-		icons.put("alert", IconsTest.class.getResource("alert.svg"));
-		icons.put("foundation", IconsTest.class.getResource("foundation.svg"));
-		assertThrows(IllegalArgumentException.class, () -> icons.put("foundation", IconsTest.class.getResource("alert.svg")));
+		icons.put("alert", SVGIconsTest.class.getResource("alert.svg"));
+		icons.put("foundation", SVGIconsTest.class.getResource("foundation.svg"));
+		assertThrows(IllegalArgumentException.class, () -> icons.put("foundation", SVGIconsTest.class.getResource("alert.svg")));
 		assertNotNull(icons.get("alert"));
 		assertNotNull(icons.get("foundation"));
 	}

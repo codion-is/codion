@@ -23,8 +23,8 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.user.User;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.icon.IconsTest;
 import is.codion.swing.common.ui.icon.SVGIcon;
+import is.codion.swing.common.ui.icon.SVGIconsTest;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class DialogsTest {
 
-	private static final SVGIcon ICON = SVGIcon.svgIcon(IconsTest.class.getResource("alert.svg"), 10, Color.BLACK);
+	private static final SVGIcon ICON = SVGIcon.svgIcon(SVGIconsTest.class.getResource("alert.svg"), 10, Color.BLACK);
 
 	@Test
 	void dialog() {

@@ -19,7 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.swing.common.ui.icon.Icons#COLOR}
+ * <li>{@link is.codion.swing.common.ui.icon.SVGIcons#COLOR}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

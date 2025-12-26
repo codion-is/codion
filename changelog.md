@@ -36,6 +36,7 @@ Codion Change Log
 - SVGIcon now concrete class, extends ImageIcon.
 - Logos removed.
 - AbstractDialogBuilder icon now defaults to JFrame owner icon.
+- Icons renamed SVGIcons.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 - DefaultEntityConditionModel, temporal equal precision adjustment now half-open interval based.
