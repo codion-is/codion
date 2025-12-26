@@ -51,6 +51,7 @@ Codion Change Log
 - EntityApplicationPanel, modified warning improved, message now includes modified attributes, panel activated and modified input field focused.
 - EntityEditPanel, modified warning improved, message now includes modified attributes, modified input field focused.
 - EntityEditComponentPanel.setComponentBuilder() now protected and final, providing an entry point for custom component integration.
+- FrameworksIcons.FRAMEWORKS_ICON_CLASSNAME renamed FRAMEWORK_ICONS.
 
 ## 0.18.62
 ### is.codion.common.reactive

@@ -21,7 +21,7 @@
  * <ul>
  * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#SMALL_SIZE}
  * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#LARGE_SIZE}
- * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}
+ * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#FRAMEWORK_ICONS}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked
