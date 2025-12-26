@@ -34,7 +34,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.frame.Frames;
-import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.icon.SVGIcon;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.window.Windows;
@@ -53,6 +53,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +72,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityServerMonitorPanel.class);
 
+	private static final SVGIcon LOGO = SVGIcon.svgIcon(EntityServerMonitorPanel.class.getResource("logo.svg"), 68, Color.RED);
 	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
 	private static final double SCREEN_SIZE_RATIO = 0.75;
 	private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
@@ -129,7 +131,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	public void showFrame() {
 		monitorFrame = Frames.builder()
 						.component(this)
-						.icon(Logos.logoRed())
+						.icon(LOGO)
 						.menuBar(menu()
 										.controls(createMainMenuControls())
 										.buildMenuBar())

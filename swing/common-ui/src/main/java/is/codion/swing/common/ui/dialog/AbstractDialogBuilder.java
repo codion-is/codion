@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
@@ -57,6 +58,10 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 		if (locationRelativeTo == null) {
 			locationRelativeTo = owner;
 		}
+		if (icon == null && owner instanceof JFrame) {
+			icon = new ImageIcon(((JFrame) owner).getIconImage());
+		}
+
 		return self();
 	}
 

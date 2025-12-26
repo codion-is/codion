@@ -21,7 +21,6 @@ package is.codion.swing.framework.ui.icon;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.control.ControlIcon;
-import is.codion.swing.common.ui.icon.Logos;
 
 import java.awt.Color;
 import java.net.URL;
@@ -35,7 +34,7 @@ import static is.codion.common.utilities.Configuration.stringValue;
  * Add custom icons via {@link #put(String, URL)} and retrieve them via {@link #get(String)}.
  * @see #instance()
  */
-public interface FrameworkIcons extends Logos {
+public interface FrameworkIcons {
 
 	/**
 	 * The default small icon size, note that this will affect the size of buttons

@@ -33,6 +33,9 @@ Codion Change Log
 - FilterTable.Builder.paintRemainingRows() added along with PAINT_REMAINING_ROWS configuration value.
 - SVGIcon.size() added.
 - DefaultIcons, logo special handling removed, refactoring.
+- SVGIcon now concrete class, extends ImageIcon.
+- Logos removed.
+- AbstractDialogBuilder icon now defaults to JFrame owner icon.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 - DefaultEntityConditionModel, temporal equal precision adjustment now half-open interval based.

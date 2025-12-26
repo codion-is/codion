@@ -210,9 +210,9 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	}
 
 	private void addLogo() {
-		URL resource = DefaultFrameworkIcons.class.getResource("logo.svg");
+		URL resource = FrameworkIcons.class.getResource("logo.svg");
 		smallIcons.put(LOGO, resource);
-		largeIcons.put(LOGO, SVGIcon.icon(resource, Scaler.scale(LOGO_SIZE), largeIcons.color().getOrThrow()));
+		largeIcons.put(LOGO, SVGIcon.svgIcon(resource, Scaler.scale(LOGO_SIZE), largeIcons.color().getOrThrow()));
 	}
 
 	static FrameworkIcons instance() {

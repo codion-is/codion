@@ -39,7 +39,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.frame.Frames;
-import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.icon.SVGIcon;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -66,6 +66,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.text.DefaultCaret;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -124,6 +125,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	public static final PropertyValue<Boolean> USER_REQUIRED =
 					booleanValue("codion.domain.generator.userRequired", true);
 
+
+	private static final SVGIcon LOGO = SVGIcon.svgIcon(DomainGeneratorPanel.class.getResource("logo.svg"), 68, Color.BLACK);
 	private static final double RESIZE_WEIGHT = 0.2;
 	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
 	private static final String USER_DIR = "user.dir";
@@ -532,7 +535,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.border(createEmptyBorder())
 										.build())
 						.title("Codion Domain Generator")
-						.icon(Logos.logoTransparent())
+						.icon(LOGO)
 						.menuBar(menu()
 										.controls(createMainMenuControls())
 										.buildMenuBar())
@@ -682,7 +685,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		return USER.optional()
 						.map(User::parse)
 						.orElseGet(Dialogs.login()
-										.icon(Logos.logoTransparent())
+										.icon(LOGO)
 										.defaultUser(DEFAULT_USER.optional()
 														.map(User::parse)
 														.orElse(null))

@@ -33,7 +33,6 @@ import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
@@ -462,7 +461,6 @@ public final class ApplicationPanel extends JPanel {
 		Dialogs.builder()
 						.component(applicationPanel)
 						.title("Codion Input Components Demo")
-						.icon(Logos.logoTransparent())
 						.show();
 	}
 }

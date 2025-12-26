@@ -23,13 +23,15 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.user.User;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.icon.IconsTest;
+import is.codion.swing.common.ui.icon.SVGIcon;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 
@@ -38,13 +40,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class DialogsTest {
 
+	private static final SVGIcon ICON = SVGIcon.svgIcon(IconsTest.class.getResource("alert.svg"), 10, Color.BLACK);
+
 	@Test
 	void dialog() {
 		Dialogs.builder()
 						.component(new JLabel())
 						.owner(new JLabel())
 						.title("title")
-						.icon(Logos.logoTransparent())
+						.icon(ICON)
 						.modal(false)
 						.resizable(false)
 						.enterAction(command(() -> {}))
@@ -65,7 +69,7 @@ public final class DialogsTest {
 						.task(() -> {})
 						.owner(new JLabel())
 						.title("title")
-						.icon(Logos.logoTransparent())
+						.icon(ICON)
 						.northComponent(new JPanel())
 						.westComponent(new JPanel())
 						.onException("Fail")
@@ -80,7 +84,7 @@ public final class DialogsTest {
 		Dialogs.exception()
 						.owner(new JLabel())
 						.title("title")
-						.icon(Logos.logoTransparent())
+						.icon(ICON)
 						.message("message");
 	}
 
@@ -99,7 +103,7 @@ public final class DialogsTest {
 		Dialogs.login()
 						.owner(new JLabel())
 						.title("title")
-						.icon(Logos.logoTransparent())
+						.icon(ICON)
 						.validator(user -> {})
 						.southComponent(new JLabel())
 						.defaultUser(User.user("scott"));
@@ -114,7 +118,7 @@ public final class DialogsTest {
 						.owner(label)
 						.title("title")
 						.modal(false)
-						.icon(Logos.logoTransparent())
+						.icon(ICON)
 						.onOk(runnable)
 						.onCancel(runnable)
 						.build();

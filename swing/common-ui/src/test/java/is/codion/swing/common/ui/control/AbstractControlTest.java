@@ -19,10 +19,12 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.reactive.state.State;
-import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.icon.IconsTest;
+import is.codion.swing.common.ui.icon.SVGIcon;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.Action;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
@@ -35,6 +37,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class AbstractControlTest {
 
+	private static final SVGIcon SMALL_ICON = SVGIcon.svgIcon(IconsTest.class.getResource("alert.svg"), 10, Color.BLACK);
+	private static final SVGIcon LARGE_ICON = SVGIcon.svgIcon(IconsTest.class.getResource("alert.svg"), 16, Color.BLACK);
+
 	@Test
 	void immutableAfterConstruction() {
 		Control control = Control.builder()
@@ -45,7 +50,7 @@ public final class AbstractControlTest {
 		// These should throw UnsupportedOperationException
 		assertThrows(UnsupportedOperationException.class, () -> control.setEnabled(false));
 		assertThrows(UnsupportedOperationException.class, () -> control.putValue(NAME, "New Name"));
-		assertThrows(UnsupportedOperationException.class, () -> control.putValue(SMALL_ICON, null));
+		assertThrows(UnsupportedOperationException.class, () -> control.putValue(Action.SMALL_ICON, null));
 	}
 
 	@Test
@@ -82,15 +87,16 @@ public final class AbstractControlTest {
 						.command(() -> {})
 						.caption("Caption")
 						.description("Description")
-						.smallIcon(Logos.logoTransparent())
-						.largeIcon(Logos.logoRed())
+						.smallIcon(SMALL_ICON)
+						.largeIcon(LARGE_ICON)
 						.mnemonic('C')
 						.keyStroke(KeyStroke.getKeyStroke("ctrl C"))
 						.build();
 
 		assertEquals("Caption", control.getValue(NAME));
 		assertEquals("Description", control.getValue(SHORT_DESCRIPTION));
-		assertNotNull(control.getValue(SMALL_ICON));
+		assertNotNull(control.getValue(Action.SMALL_ICON));
+		assertNotNull(control.getValue(LARGE_ICON_KEY));
 		assertTrue(control.largeIcon().isPresent());
 		assertEquals(67, control.getValue(MNEMONIC_KEY)); // 'C' as int
 		assertEquals(KeyStroke.getKeyStroke("ctrl C"), control.getValue(ACCELERATOR_KEY));
@@ -130,12 +136,12 @@ public final class AbstractControlTest {
 						.command(() -> {})
 						.caption("Caption")
 						.description("Description")
-						.smallIcon(Logos.logoTransparent())
+						.smallIcon(SMALL_ICON)
 						.build();
 
 		assertTrue(control.keys().contains(NAME));
 		assertTrue(control.keys().contains(SHORT_DESCRIPTION));
-		assertTrue(control.keys().contains(SMALL_ICON));
+		assertTrue(control.keys().contains(Action.SMALL_ICON));
 
 		// Should only contain String keys
 		control.keys().forEach(key -> assertInstanceOf(String.class, key));

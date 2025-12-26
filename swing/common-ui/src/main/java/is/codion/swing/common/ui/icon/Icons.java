@@ -22,7 +22,6 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Configuration;
 import is.codion.common.utilities.property.PropertyValue;
 
-import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.net.URL;
 
@@ -57,7 +56,7 @@ public interface Icons {
 	int size();
 
 	/**
-	 * Adds the given icon to this SVGIcons instance, using {@link #size()} and {@link #color()}.
+	 * Adds the given icon to this Icons instance, using {@link #size()} and {@link #color()}.
 	 * Retrieve an icon via {@link #get(String)}.
 	 * @param identifier the icon identifier
 	 * @param svgUrl the svg resource url
@@ -75,12 +74,12 @@ public interface Icons {
 	void put(String identifier, SVGIcon icon);
 
 	/**
-	 * Retrieves the ImageIcon associated with the given ikon from this Icons instance.
+	 * Retrieves the icon associated with the given ikon from this Icons instance.
 	 * @param identifier the icon identifier
-	 * @return the ImageIcon associated with the given identifier
+	 * @return the {@link SVGIcon} associated with the given identifier
 	 * @throws IllegalArgumentException in case no icon has been associated with the given identifier
 	 */
-	ImageIcon get(String identifier);
+	SVGIcon get(String identifier);
 
 	/**
 	 * @param size the icon size

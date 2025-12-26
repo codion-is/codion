@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.icon;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.scaler.Scaler;
 
-import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
@@ -64,7 +63,7 @@ final class DefaultIcons implements Icons {
 
 	@Override
 	public void put(String identifier, URL svgUrl) {
-		put(identifier, SVGIcon.icon(svgUrl, Scaler.scale(size), color.getOrThrow()));
+		put(identifier, SVGIcon.svgIcon(svgUrl, Scaler.scale(size), color.getOrThrow()));
 	}
 
 	@Override
@@ -76,13 +75,13 @@ final class DefaultIcons implements Icons {
 	}
 
 	@Override
-	public ImageIcon get(String identifier) {
+	public SVGIcon get(String identifier) {
 		synchronized (icons) {
 			if (!icons.containsKey(requireNonNull(identifier))) {
 				throw new IllegalArgumentException("No icon found with identifier: " + identifier);
 			}
 
-			return icons.get(identifier).imageIcon();
+			return icons.get(identifier);
 		}
 	}
 

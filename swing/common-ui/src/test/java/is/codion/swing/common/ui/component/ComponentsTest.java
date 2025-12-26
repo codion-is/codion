@@ -43,7 +43,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.icon.Logos;
 
 import org.junit.jupiter.api.Test;
 
@@ -856,7 +855,6 @@ public final class ComponentsTest {
 		Value<String> textValue = Value.nullable("label");
 		ComponentValue<JLabel, String> componentValue = Components.<String>label()
 						.text(textValue)
-						.icon(Logos.logoTransparent())
 						.iconTextGap(5)
 						.displayedMnemonic('l')
 						.labelFor(new JButton())

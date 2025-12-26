@@ -33,6 +33,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.frame.Frames;
+import is.codion.swing.common.ui.icon.SVGIcon;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.loadtest.LoadTest;
@@ -60,6 +61,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
@@ -78,7 +80,6 @@ import java.util.concurrent.TimeUnit;
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
-import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
@@ -96,6 +97,7 @@ import static org.jfree.chart.ChartFactory.createXYStepChart;
  */
 public final class LoadTestPanel<T> extends JPanel {
 
+	private static final SVGIcon LOGO = SVGIcon.svgIcon(LoadTestPanel.class.getResource("logo.svg"), 68, Color.BLACK);
 	private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
 	private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
 	private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
@@ -170,7 +172,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private JFrame showFrame() {
 		return Frames.builder()
 						.component(this)
-						.icon(logoTransparent())
+						.icon(LOGO)
 						.menuBar(menu()
 										.controls(createMainMenuControls())
 										.buildMenuBar())
