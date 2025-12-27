@@ -18,11 +18,9 @@
  */
 package is.codion.swing.framework.ui.icon;
 
-import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.control.ControlIcon;
 
-import java.awt.Color;
 import java.net.URL;
 
 import static is.codion.common.utilities.Configuration.integerValue;
@@ -168,12 +166,6 @@ public interface FrameworkIcons {
 	 * Identifies the logo icon.
 	 */
 	String LOGO = "logo";
-
-	/**
-	 * Follows the 'Button.foreground' color of the current Look and feel.
-	 * @return the {@link Value} controlling the icon color
-	 */
-	Value<Color> color();
 
 	/**
 	 * Adds the given icon. Retrieve an icon via {@link #get(String)}.

@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui.icon;
 
-import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.icon.SVGIcon;
@@ -27,7 +26,6 @@ import is.codion.swing.common.ui.scaler.Scaler;
 
 import org.jspecify.annotations.Nullable;
 
-import java.awt.Color;
 import java.net.URL;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -71,11 +69,6 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		addIcon(COLUMNS);
 		addIcon(EXPORT);
 		addLogo();
-	}
-
-	@Override
-	public Value<Color> color() {
-		return smallIcons.color();
 	}
 
 	@Override
