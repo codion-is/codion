@@ -347,17 +347,19 @@ final class EntityTableExportModel {
 		for (Object jsonAttribute : json.getJSONArray(ATTRIBUTES_KEY)) {
 			String attributeName = attributeName(jsonAttribute);
 			DefaultMutableTreeNode child = children.get(attributeName);
-			int index = node.getIndex(child);
-			if (index >= 0) {
-				node.remove(child);
-			}
-			node.add(child);
-			treeModel.nodeStructureChanged(node);
-			if (jsonAttribute instanceof String) {
-				((AttributeNode) child).include().set(true);
-			}
-			else {
-				populate(child, ((JSONObject) jsonAttribute).getJSONObject(attributeName));
+			if (child != null) {// missing attribute, removed or hidden f.ex.
+				int index = node.getIndex(child);
+				if (index >= 0) {
+					node.remove(child);
+				}
+				node.add(child);
+				treeModel.nodeStructureChanged(node);
+				if (jsonAttribute instanceof String) {
+					((AttributeNode) child).include().set(true);
+				}
+				else {
+					populate(child, ((JSONObject) jsonAttribute).getJSONObject(attributeName));
+				}
 			}
 		}
 		List<DefaultMutableTreeNode> sorted = Collections.list(node.children()).stream()
