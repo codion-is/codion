@@ -86,6 +86,7 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 	}
 
 	void includeAll() {
+		getRoot().populate();
 		include(Collections.list(getRoot().children()), true);
 		configuration.run();
 	}
@@ -95,16 +96,11 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 		configuration.run();
 	}
 
-	void includeDefault() {
-		refresh();
-		include(Collections.list(getRoot().children()), true);
-		configuration.run();
-	}
-
 	void applyConfiguration(JSONObject json) {
 		showHidden.set(json.has(SHOW_HIDDEN_KEY) && json.getBoolean(SHOW_HIDDEN_KEY));
 		refresh();
 		getRoot().apply(json);
+		hideExcluded();
 		configuration.run();
 	}
 
@@ -122,14 +118,27 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 		return attributes.build();
 	}
 
+	void hideExcluded() {
+		getRoot().reload(true);
+		nodeStructureChanged(getRoot());
+		configuration.run();
+	}
+
+	void showExcluded() {
+		getRoot().populate();
+		getRoot().reload(false);
+		nodeStructureChanged(getRoot());
+		configuration.run();
+	}
+
 	private void showHiddenChanged() {
-		getRoot().reload();
+		getRoot().reload(false);
 		nodeStructureChanged(getRoot());
 		configuration.run();
 	}
 
 	private void refresh() {
-		getRoot().populated = false;
+		getRoot().removeAllChildren();
 		getRoot().populate();
 		nodeStructureChanged(getRoot());
 	}
@@ -160,19 +169,15 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 		private final EntityType entityType;
 		private final EntityTableExportTreeModel treeModel;
 
-		protected boolean populated;
-
 		private EntityNode(EntityType entityType, EntityTableExportTreeModel treeModel) {
 			this.entityType = entityType;
 			this.treeModel = treeModel;
 		}
 
 		final void populate() {
-			if (!populated) {
-				removeAllChildren();
+			if (getChildCount() == 0) {
 				attributeNodes().forEach(this::add);
 				treeModel.nodeStructureChanged(this);
-				populated = true;
 			}
 		}
 
@@ -261,17 +266,16 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 					}
 				}
 			}
-			List<DefaultMutableTreeNode> sorted = Collections.list(children()).stream()
+			List<AttributeNode> sorted = Collections.list(children()).stream()
 							.map(AttributeNode.class::cast)
 							.sorted(NODE_COMPARATOR)
-							.map(DefaultMutableTreeNode.class::cast)
 							.collect(toList());
 			removeAllChildren();
 			sorted.forEach(this::add);
 			treeModel.nodeStructureChanged(this);
 		}
 
-		private void reload() {
+		private void reload(boolean hideExcluded) {
 			if (getChildCount() > 0) {
 				List<AttributeNode> nodes = Collections.list(children()).stream()
 								.map(AttributeNode.class::cast)
@@ -283,6 +287,7 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 				attributeNodes().stream()
 								.map(node -> nodeMap.getOrDefault(node.definition(), node))
 								.sorted(NODE_COMPARATOR)
+								.filter(node -> displayNode(node, hideExcluded))
 								.sorted((node1, node2) -> {
 									int index1 = nodes.indexOf(node1);
 									int index2 = nodes.indexOf(node2);
@@ -296,8 +301,16 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 				Collections.list(children()).stream()
 								.filter(EntityNode.class::isInstance)
 								.map(EntityNode.class::cast)
-								.forEach(EntityNode::reload);
+								.forEach(node -> node.reload(hideExcluded));
 			}
+		}
+
+		private static boolean displayNode(AttributeNode node, boolean hideExcluded) {
+			if (node.include().is() || (node instanceof MutableForeignKeyNode && ((MutableForeignKeyNode) node).includedCount() > 0)) {
+				return true;
+			}
+
+			return !hideExcluded;
 		}
 
 		private List<AttributeNode> attributeNodes() {

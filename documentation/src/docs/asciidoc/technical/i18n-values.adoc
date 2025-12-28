@@ -846,17 +846,18 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |key|default|is_IS
 
 |close|Close|Loka
-|close_mnemonic|C|L
+|close_mnemonic|C|K
 |columns|Columns|Dálkar
-|columns_all|All|Allir
-|columns_all_mnemonic|L|I
+|columns_all|All|Alla
+|columns_all_mnemonic|L|L
 |columns_default|Default|Sjálfgefnir
 |columns_default_mnemonic|D|G
-|columns_none|None|Enginn
+|columns_none|None|Enga
 |columns_none_mnemonic|N|E
 |configuration_file|Configuration file|Stilliskrá
 |configurations|Configurations|Stillingar
 |data_exported|Data exported|Gögn afrituð
+|excluded|Excluded|Ónotaðir
 |export|Export|Flytja út
 |exported_to_clipboard|Exported to clipboard|Afritað á klippiborð
 |exported_to_file|Exported to file|Afritað í skrá
@@ -867,12 +868,20 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 Use ALT-Up/Down arrows to move the included columns.|Notið ALT-smella eða stafabil til að velja/afvelja dílka, SHIFT-stafabil til að velja/afvelja undirdálka.
 
 Notið ALT-Upp/Niður örvar til að færa valda dílka.
+|hide_excluded|Hide|Fela
+|hide_excluded_mnemonic|D|F
+|include|Include|Velja
+|move|Move|Færa
 |rows_all|All rows|Allar færslur
 |rows_all_mnemonic|A|A
 |rows_selected|Selected rows|Valdar færslur
 |rows_selected_mnemonic|E|R
+|show_excluded|Show|Sýna
+|show_excluded_mnemonic|W|N
+|show_hidden|Show hidden columns|Birta falda dálka
+|show_hidden_mnemonic|H|B
 |to_clipboard|To clipboard|Á klippiborð
-|to_clipboard_mnemonic|P|K
+|to_clipboard_mnemonic|P|P
 |to_file|To file|Í skrá
 |to_file_mnemonic|F|S
 |===

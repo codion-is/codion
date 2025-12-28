@@ -58,6 +58,7 @@ Codion Change Log
 - EntityTableExportModel.ExportTreeModel.showHidden() added, related refactoring.
 - ExportTreeModel refactored from EntityTableExportModel and renamed EntityTableExportTreeModel.
 - EntityTableExportTreeModel, showHidden no longer resets tree model.
+- EntityTableExportTreeModel.hideExcluded() and showExcluded() added, related refactoring.
 
 ## 0.18.62
 ### is.codion.common.reactive

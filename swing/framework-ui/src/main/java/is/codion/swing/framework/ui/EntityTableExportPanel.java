@@ -59,6 +59,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
@@ -101,21 +102,6 @@ final class EntityTableExportPanel extends JPanel {
 	private final ObservableState moveEnabled = State.or(refreshingNodes,
 					State.and(singleLevelSelection, movableNodesSelected));
 
-	private final Control includeDefault = Control.builder()
-					.command(this::includeDefault)
-					.caption(MESSAGES.getString("columns_default"))
-					.mnemonic(MESSAGES.getString("columns_default_mnemonic").charAt(0))
-					.build();
-	private final Control includeAll = Control.builder()
-					.command(this::includeAll)
-					.caption(MESSAGES.getString("columns_all"))
-					.mnemonic(MESSAGES.getString("columns_all_mnemonic").charAt(0))
-					.build();
-	private final Control includeNone = Control.builder()
-					.command(this::includeNone)
-					.caption(MESSAGES.getString("columns_none"))
-					.mnemonic(MESSAGES.getString("columns_none_mnemonic").charAt(0))
-					.build();
 	private final Control saveConfiguration = Control.builder()
 					.command(this::saveConfiguration)
 					.caption(Messages.save())
@@ -136,6 +122,10 @@ final class EntityTableExportPanel extends JPanel {
 					.enabled(moveEnabled)
 					.icon(FrameworkIcons.instance().down())
 					.build();
+	private final Control includeAll;
+	private final Control includeNone;
+	private final Control hideExcluded;
+	private final Control showExcluded;
 	private final ToggleControl showHidden;
 	private final ToggleControl allRows;
 	private final ToggleControl selectedRows;
@@ -144,6 +134,26 @@ final class EntityTableExportPanel extends JPanel {
 		super(borderLayout());
 		this.model = model;
 		this.exportTree = createTree();
+		this.includeAll = Control.builder()
+						.command(model.treeModel()::includeAll)
+						.caption(MESSAGES.getString("columns_all"))
+						.mnemonic(MESSAGES.getString("columns_all_mnemonic").charAt(0))
+						.build();
+		this.includeNone = Control.builder()
+						.command(model.treeModel()::includeNone)
+						.caption(MESSAGES.getString("columns_none"))
+						.mnemonic(MESSAGES.getString("columns_none_mnemonic").charAt(0))
+						.build();
+		this.hideExcluded = Control.builder()
+						.command(model.treeModel()::hideExcluded)
+						.caption(MESSAGES.getString("hide_excluded"))
+						.mnemonic(MESSAGES.getString("hide_excluded_mnemonic").charAt(0))
+						.build();
+		this.showExcluded = Control.builder()
+						.command(model.treeModel()::showExcluded)
+						.caption(MESSAGES.getString("show_excluded"))
+						.mnemonic(MESSAGES.getString("show_excluded_mnemonic").charAt(0))
+						.build();
 		this.showHidden = Control.builder()
 						.toggle(model.treeModel().showHidden())
 						.caption(MESSAGES.getString("show_hidden"))
@@ -284,18 +294,6 @@ final class EntityTableExportPanel extends JPanel {
 						.collect(toList());
 	}
 
-	private void includeDefault() {
-		model.treeModel().includeDefault();
-	}
-
-	private void includeAll() {
-		model.treeModel().includeAll();
-	}
-
-	private void includeNone() {
-		model.treeModel().includeNone();
-	}
-
 	private void toggleSelected() {
 		TreePath[] selectionPaths = exportTree.getSelectionPaths();
 		if (selectionPaths != null) {
@@ -360,6 +358,7 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void initializeUI() {
+		GridLayout buttonLayout = new GridLayout(1, 0, 0, 0);
 		add(borderLayoutPanel()
 						.border(emptyBorder())
 						.center(borderLayoutPanel()
@@ -368,13 +367,23 @@ final class EntityTableExportPanel extends JPanel {
 														.view(exportTree))
 										.east(borderLayoutPanel()
 														.north(flexibleGridLayoutPanel(0, 1)
-																		.add(button()
-																						.control(includeAll))
-																		.add(button()
-																						.control(includeNone))
-																		.add(button()
-																						.control(includeDefault))
-																		.add(gridLayoutPanel(1, 2)
+																		.add(panel()
+																						.layout(buttonLayout)
+																						.border(createTitledBorder(MESSAGES.getString("include")))
+																						.add(button()
+																										.control(includeAll))
+																						.add(button()
+																										.control(includeNone)))
+																		.add(panel()
+																						.layout(buttonLayout)
+																						.border(createTitledBorder(MESSAGES.getString("excluded")))
+																						.add(button()
+																										.control(showExcluded))
+																						.add(button()
+																										.control(hideExcluded)))
+																		.add(panel()
+																						.layout(buttonLayout)
+																						.border(createTitledBorder(MESSAGES.getString("move")))
 																						.add(button()
 																										.control(moveUp))
 																						.add(button()

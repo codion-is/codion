@@ -82,7 +82,8 @@ final class EntityTableExportModel {
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
 		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
-		this.treeModel.includeDefault();
+		this.treeModel.includeNone();
+		this.treeModel.includeAll();
 	}
 
 	ExportTask exportToClipboard() {
@@ -229,7 +230,8 @@ final class EntityTableExportModel {
 	private void configurationFileSelected(@Nullable ConfigurationFile configurationFile) {
 		if (configurationFile == null) {
 			treeModel.showHidden().set(false);
-			treeModel.includeDefault();
+			treeModel.includeNone();
+			treeModel.includeAll();
 		}
 		else {
 			treeModel.applyConfiguration(configurationFile.json());
