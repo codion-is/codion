@@ -44,7 +44,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 final class EntityTableExportTreeModel extends DefaultTreeModel {
 
@@ -121,7 +123,9 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 	}
 
 	private void showHiddenChanged() {
-		includeDefault();
+		getRoot().reload();
+		nodeStructureChanged(getRoot());
+		configuration.run();
 	}
 
 	private void refresh() {
@@ -265,6 +269,35 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 			removeAllChildren();
 			sorted.forEach(this::add);
 			treeModel.nodeStructureChanged(this);
+		}
+
+		private void reload() {
+			if (getChildCount() > 0) {
+				List<AttributeNode> nodes = Collections.list(children()).stream()
+								.map(AttributeNode.class::cast)
+								.collect(toList());
+				Map<AttributeDefinition<?>, AttributeNode> nodeMap = Collections.list(children()).stream()
+								.map(AttributeNode.class::cast)
+								.collect(toMap(AttributeNode::definition, identity()));
+				removeAllChildren();
+				attributeNodes().stream()
+								.map(node -> nodeMap.getOrDefault(node.definition(), node))
+								.sorted(NODE_COMPARATOR)
+								.sorted((node1, node2) -> {
+									int index1 = nodes.indexOf(node1);
+									int index2 = nodes.indexOf(node2);
+									if (index1 == -1 || index2 == -1) {
+										return 0;
+									}
+
+									return Integer.compare(index1, index2);
+								})
+								.forEach(this::add);
+				Collections.list(children()).stream()
+								.filter(EntityNode.class::isInstance)
+								.map(EntityNode.class::cast)
+								.forEach(EntityNode::reload);
+			}
 		}
 
 		private List<AttributeNode> attributeNodes() {
