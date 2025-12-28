@@ -108,6 +108,7 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 			}
 
 			adjustFixedSizes(rowHeights, colWidths);
+			distributeExtraSpace(parent, insets, rowHeights, colWidths);
 
 			int x = insets.left;
 			for (int col = 0; col < effectiveCols; col++) {
@@ -132,6 +133,28 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 		if (fixColumnWidths || fixedColumnWidth != null) {
 			int width = (fixedColumnWidth != null) ? fixedColumnWidth : Arrays.stream(colWidths).max().orElse(0);
 			Arrays.fill(colWidths, width);
+		}
+	}
+
+	private void distributeExtraSpace(Container parent, Insets insets, int[] rowHeights, int[] colWidths) {
+		if (fixedColumnWidth == null) {
+			distributeExtraSpace(colWidths, parent.getWidth() - insets.left - insets.right, horizontalGap);
+		}
+		if (fixedRowHeight == null) {
+			distributeExtraSpace(rowHeights, parent.getHeight() - insets.top - insets.bottom, verticalGap);
+		}
+	}
+
+	private static void distributeExtraSpace(int[] sizes, int availableSpace, int gap) {
+		int totalPreferredSize = Arrays.stream(sizes).sum() + (sizes.length - 1) * gap;
+		int additionalSpace = availableSpace - totalPreferredSize;
+		if (additionalSpace != 0) {
+			int extra = additionalSpace / sizes.length;
+			int remainder = Math.abs(additionalSpace % sizes.length);
+			int sign = additionalSpace > 0 ? 1 : -1;
+			for (int i = 0; i < sizes.length; i++) {
+				sizes[i] += extra + (i < remainder ? sign : 0);
+			}
 		}
 	}
 

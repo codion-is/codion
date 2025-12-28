@@ -37,6 +37,7 @@ Codion Change Log
 - Logos removed.
 - AbstractDialogBuilder icon now defaults to JFrame owner icon.
 - Icons renamed SVGIcons.
+- FlexibleGridLayout bug fixed, now behaves the same as GridLayout when distributing extra space.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 - DefaultEntityConditionModel, temporal equal precision adjustment now half-open interval based.
