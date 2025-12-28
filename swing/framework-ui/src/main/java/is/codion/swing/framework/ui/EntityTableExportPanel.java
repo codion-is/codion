@@ -28,11 +28,11 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
 import is.codion.swing.framework.ui.EntityTableExportModel.ConfigurationFile;
-import is.codion.swing.framework.ui.EntityTableExportModel.EntityNode;
 import is.codion.swing.framework.ui.EntityTableExportModel.ExportTask;
-import is.codion.swing.framework.ui.EntityTableExportModel.MutableForeignKeyNode;
+import is.codion.swing.framework.ui.EntityTableExportTreeModel.AttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportTreeModel.EntityNode;
+import is.codion.swing.framework.ui.EntityTableExportTreeModel.MutableForeignKeyNode;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.json.JSONObject;
@@ -159,9 +159,9 @@ final class EntityTableExportPanel extends JPanel {
 						.caption(MESSAGES.getString("rows_all"))
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
-		model.treeModel().configuration().addListener(this::expandSelectedNodes);
+		model.treeModel().configuration().addListener(this::expandIncludedNodes);
 		initializeUI();
-		expandSelectedNodes();
+		expandIncludedNodes();
 	}
 
 	void show(JComponent dialogOwner) {
@@ -452,7 +452,7 @@ final class EntityTableExportPanel extends JPanel {
 						.show();
 	}
 
-	private void expandSelectedNodes() {
+	private void expandIncludedNodes() {
 		collapseAll();
 		expandNodeIfHasSelectedChildren(model.treeModel().getRoot());
 		exportTree.repaint();

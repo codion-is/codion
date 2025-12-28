@@ -22,8 +22,8 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
-import is.codion.swing.framework.ui.EntityTableExportModel.MutableForeignKeyNode;
+import is.codion.swing.framework.ui.EntityTableExportTreeModel.AttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportTreeModel.MutableForeignKeyNode;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
