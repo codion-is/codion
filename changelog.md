@@ -55,6 +55,7 @@ Codion Change Log
 - FrameworksIcons.FRAMEWORKS_ICON_CLASSNAME renamed FRAMEWORK_ICONS.
 - FrameworkIcons.color() removed.
 - EntityTableExportModel.populate() bug fixed, now handles missing attributes.
+- EntityTableExportModel.ExportTreeModel.showHidden() added, related refactoring.
 
 ## 0.18.62
 ### is.codion.common.reactive

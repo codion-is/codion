@@ -22,7 +22,6 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -89,6 +88,7 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final String TSV = "tsv";
 	private static final String JSON = "json";
+	private static final AttributeRenderer ATTRIBUTE_RENDERER = new AttributeRenderer();
 	private static final FileNameExtensionFilter CONFIGURATION_FILE =
 					new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON);
 
@@ -136,6 +136,7 @@ final class EntityTableExportPanel extends JPanel {
 					.enabled(moveEnabled)
 					.icon(FrameworkIcons.instance().down())
 					.build();
+	private final ToggleControl showHidden;
 	private final ToggleControl allRows;
 	private final ToggleControl selectedRows;
 
@@ -143,6 +144,11 @@ final class EntityTableExportPanel extends JPanel {
 		super(borderLayout());
 		this.model = model;
 		this.exportTree = createTree();
+		this.showHidden = Control.builder()
+						.toggle(model.treeModel().showHidden())
+						.caption(MESSAGES.getString("show_hidden"))
+						.mnemonic(MESSAGES.getString("show_hidden_mnemonic").charAt(0))
+						.build();
 		this.selectedRows = Control.builder()
 						.toggle(model.selected())
 						.caption(MESSAGES.getString("rows_selected"))
@@ -153,7 +159,7 @@ final class EntityTableExportPanel extends JPanel {
 						.caption(MESSAGES.getString("rows_all"))
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
-		model.configurationChanged().addListener(this::expandSelectedNodes);
+		model.treeModel().configuration().addListener(this::expandSelectedNodes);
 		initializeUI();
 		expandSelectedNodes();
 	}
@@ -218,7 +224,7 @@ final class EntityTableExportPanel extends JPanel {
 
 	private JTree createTree() {
 		JTree tree = new JTree(model.treeModel());
-		tree.setCellRenderer(new AttributeRenderer(model.entities()));
+		tree.setCellRenderer(ATTRIBUTE_RENDERER);
 		tree.setShowsRootHandles(true);
 		tree.setRootVisible(false);
 		tree.addTreeWillExpandListener(new ExpandListener());
@@ -279,15 +285,15 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void includeDefault() {
-		model.includeDefault();
+		model.treeModel().includeDefault();
 	}
 
 	private void includeAll() {
-		model.includeAll();
+		model.treeModel().includeAll();
 	}
 
 	private void includeNone() {
-		model.includeNone();
+		model.treeModel().includeNone();
 	}
 
 	private void toggleSelected() {
@@ -361,18 +367,20 @@ final class EntityTableExportPanel extends JPanel {
 										.center(scrollPane()
 														.view(exportTree))
 										.east(borderLayoutPanel()
-														.north(gridLayoutPanel(0, 1)
+														.north(flexibleGridLayoutPanel(0, 1)
 																		.add(button()
 																						.control(includeAll))
 																		.add(button()
 																						.control(includeNone))
 																		.add(button()
-																						.control(includeDefault)))
-														.south(gridLayoutPanel(1, 2)
-																		.add(button()
-																						.control(moveUp))
-																		.add(button()
-																						.control(moveDown)))))
+																						.control(includeDefault))
+																		.add(gridLayoutPanel(1, 2)
+																						.add(button()
+																										.control(moveUp))
+																						.add(button()
+																										.control(moveDown)))))
+										.south(checkBox()
+														.toggle(showHidden)))
 						.south(borderLayoutPanel()
 										.border(createTitledBorder(MESSAGES.getString("configurations")))
 										.center(comboBox()
@@ -594,19 +602,12 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static class AttributeRenderer extends DefaultTreeCellRenderer {
 
-		private final Entities entities;
-
-		private AttributeRenderer(Entities entities) {
-			this.entities = entities;
-		}
-
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 			Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 			if (value instanceof AttributeNode) {
 				AttributeNode treeNode = (AttributeNode) value;
-				StringBuilder builder = new StringBuilder(entities.definition(treeNode.attribute().entityType())
-								.attributes().definition(treeNode.attribute()).caption());
+				StringBuilder builder = new StringBuilder(treeNode.definition().caption());
 				if (treeNode.include().is()) {
 					builder.insert(0, "+");
 				}

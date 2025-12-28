@@ -50,7 +50,7 @@ public final class EntityTableExportPanelTest {
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
-		exportPanel.model().includeDefault();
+		exportPanel.model().treeModel().includeDefault();
 
 		// Save preferences - should be empty JSON since it matches defaults
 		EntityTablePanelPreferences defaultPreferences = new EntityTablePanelPreferences(tablePanel);
@@ -73,7 +73,7 @@ public final class EntityTableExportPanelTest {
 		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
-			if (node.attribute().equals(Employee.MGR_FK)) {
+			if (node.definition().attribute().equals(Employee.MGR_FK)) {
 				mgrNode = (MutableForeignKeyNode) node;
 				break;
 			}
@@ -94,7 +94,7 @@ public final class EntityTableExportPanelTest {
 		Enumeration<TreeNode> mgrChildren = mgrNode.children();
 		while (mgrChildren.hasMoreElements()) {
 			AttributeNode child = (AttributeNode) mgrChildren.nextElement();
-			if (child instanceof MutableForeignKeyNode && child.attribute().equals(Employee.MGR_FK)) {
+			if (child instanceof MutableForeignKeyNode && child.definition().attribute().equals(Employee.MGR_FK)) {
 				nestedMgrNode = (MutableForeignKeyNode) child;
 				break;
 			}

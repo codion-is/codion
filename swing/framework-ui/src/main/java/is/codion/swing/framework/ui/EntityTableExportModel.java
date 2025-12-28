@@ -29,7 +29,9 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityExport;
 import is.codion.framework.model.EntityExport.ExportAttributes;
 import is.codion.framework.model.EntityTableModel;
@@ -45,6 +47,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import java.awt.Dimension;
 import java.io.BufferedWriter;
@@ -65,7 +68,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -73,26 +75,28 @@ final class EntityTableExportModel {
 
 	private static final String ENTITY_TYPE_KEY = "entityType";
 	private static final String ATTRIBUTES_KEY = "attributes";
+	private static final String SHOW_HIDDEN_KEY = "showHidden";
 	private static final String DIALOG_SIZE_KEY = "dialogSize";
 	private static final String CONFIGURATION_FILES_KEY = "configurationFiles";
 	private static final String SELECTED_CONFIGURATION_FILE_KEY = "selectedConfigurationFile";
+
+	private static final AttributeCaptionComparator CAPTION_COMPARATOR = new AttributeCaptionComparator();
+	private static final AttributeNodeComparator NODE_COMPARATOR = new AttributeNodeComparator();
 
 	static final NullConfigurationFile NULL_CONFIGURATION_FILE = new NullConfigurationFile();
 	static final String JSON = "json";
 
 	private final EntityTableModel<?> tableModel;
+
 	private final EntityConnectionProvider connectionProvider;
-	private final AttributeNodeComparator attributeComparator;
 	private final FilterComboBoxModel<ConfigurationFile> configurationFiles;
 	private final ExportTreeModel treeModel;
-	private final Event<?> configurationChanged = Event.event();
 	private final State selected;
 
 	private @Nullable Dimension dialogSize;
 
 	EntityTableExportModel(EntityTableModel<?> tableModel) {
 		this.tableModel = tableModel;
-		this.attributeComparator = new AttributeNodeComparator(tableModel.entities());
 		this.connectionProvider = tableModel.connectionProvider();
 		this.treeModel = new ExportTreeModel(tableModel.entityDefinition().type(), tableModel.connectionProvider().entities());
 		this.configurationFiles = FilterComboBoxModel.builder()
@@ -102,7 +106,7 @@ final class EntityTableExportModel {
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
 		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
-		includeDefault();
+		this.treeModel.includeDefault();
 	}
 
 	ExportTask exportToClipboard() {
@@ -121,10 +125,6 @@ final class EntityTableExportModel {
 		return treeModel;
 	}
 
-	Entities entities() {
-		return connectionProvider.entities();
-	}
-
 	FilterComboBoxModel<ConfigurationFile> configurationFiles() {
 		return configurationFiles;
 	}
@@ -139,10 +139,6 @@ final class EntityTableExportModel {
 
 	String defaultExportFileName() {
 		return tableModel.entityDefinition().caption();
-	}
-
-	Observer<?> configurationChanged() {
-		return configurationChanged.observer();
 	}
 
 	void setDialogSize(Dimension dialogSize) {
@@ -171,7 +167,6 @@ final class EntityTableExportModel {
 	}
 
 	void applyPreferences(JSONObject preferences) {
-		includeDefault();
 		if (preferences.has(CONFIGURATION_FILES_KEY)) {
 			JSONArray fileArray = preferences.getJSONArray(CONFIGURATION_FILES_KEY);
 			List<File> files = new ArrayList<>(fileArray.length());
@@ -250,6 +245,7 @@ final class EntityTableExportModel {
 	private JSONObject createExportPreferences() {
 		JSONObject jsonObject = attributesToJson(treeModel.getRoot().children());
 		jsonObject.put(ENTITY_TYPE_KEY, entityDefinition().type().name());
+		jsonObject.put(SHOW_HIDDEN_KEY, treeModel.showHidden.is());
 
 		return jsonObject;
 	}
@@ -263,32 +259,13 @@ final class EntityTableExportModel {
 	}
 
 	private void configurationFileSelected(@Nullable ConfigurationFile configurationFile) {
-		if (configurationFile == null || configurationFile.file() == null) {
-			includeDefault();
-			configurationChanged.run();
+		if (configurationFile == null) {
+			treeModel.showHidden.set(false);
+			treeModel.includeDefault();
 		}
 		else {
-			treeModel.refresh();
-			populate(treeModel.getRoot(), ((DefaultConfigurationFile) configurationFile).json);
-			configurationChanged.run();
+			treeModel.applyConfiguration(configurationFile.json());
 		}
-	}
-
-	void includeAll() {
-		include(Collections.list(treeModel.getRoot().children()), true);
-		configurationChanged.run();
-	}
-
-	void includeNone() {
-		treeModel.refresh();
-		configurationChanged.run();
-	}
-
-	void includeDefault() {
-		treeModel.refresh();
-		Collections.list(treeModel.getRoot().children()).forEach(node ->
-						((AttributeNode) node).include().set(true));
-		configurationChanged.run();
 	}
 
 	private static void include(List<TreeNode> nodes, boolean include) {
@@ -306,7 +283,7 @@ final class EntityTableExportModel {
 		while (nodes.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) nodes.nextElement();
 			String attributeName = node.attribute().name();
-			if (((DefaultMutableTreeNode) node).getChildCount() > 0) {
+			if (node.getChildCount() > 0) {
 				JSONObject fkChildren = attributesToJson(((DefaultMutableTreeNode) node).children());
 				if (!node.include().is() && fkChildren.isEmpty()) {
 					continue;
@@ -331,53 +308,6 @@ final class EntityTableExportModel {
 		}
 
 		return result;
-	}
-
-	private void populate(DefaultMutableTreeNode node, JSONObject json) {
-		if (!json.has(ATTRIBUTES_KEY)) {
-			return;
-		}
-		((EntityNode) node).populate();
-		Enumeration<TreeNode> childNodes = node.children();
-		Map<String, DefaultMutableTreeNode> children = new HashMap<>();
-		while (childNodes.hasMoreElements()) {
-			DefaultMutableTreeNode child = (DefaultMutableTreeNode) childNodes.nextElement();
-			children.put(((AttributeNode) child).attribute().name(), child);
-		}
-		for (Object jsonAttribute : json.getJSONArray(ATTRIBUTES_KEY)) {
-			String attributeName = attributeName(jsonAttribute);
-			DefaultMutableTreeNode child = children.get(attributeName);
-			if (child != null) {// missing attribute, removed or hidden f.ex.
-				int index = node.getIndex(child);
-				if (index >= 0) {
-					node.remove(child);
-				}
-				node.add(child);
-				treeModel.nodeStructureChanged(node);
-				if (jsonAttribute instanceof String) {
-					((AttributeNode) child).include().set(true);
-				}
-				else {
-					populate(child, ((JSONObject) jsonAttribute).getJSONObject(attributeName));
-				}
-			}
-		}
-		List<DefaultMutableTreeNode> sorted = Collections.list(node.children()).stream()
-						.map(AttributeNode.class::cast)
-						.sorted(attributeComparator)
-						.map(DefaultMutableTreeNode.class::cast)
-						.collect(toList());
-		node.removeAllChildren();
-		sorted.forEach(node::add);
-		treeModel.nodeStructureChanged(node);
-	}
-
-	private static String attributeName(Object item) {
-		if (item instanceof String) {
-			return (String) item;
-		}
-
-		return ((JSONObject) item).keys().next();
 	}
 
 	private void validateEntityType(List<DefaultConfigurationFile> files) {
@@ -471,41 +401,128 @@ final class EntityTableExportModel {
 	static final class ExportTreeModel extends DefaultTreeModel {
 
 		private final Entities entities;
+		private final State showHidden = State.builder()
+						.listener(this::showHiddenChanged)
+						.build();
+		private final Event<?> configuration = Event.event();
 
 		private ExportTreeModel(EntityType entityType, Entities entities) {
 			super(null);
 			this.entities = entities;
-			RootNode rootNode = new RootNode(this, entityType);
+			EntityNode rootNode = new EntityNode(entityType, this);
 			rootNode.populate();
 			setRoot(rootNode);
 		}
 
 		@Override
-		public DefaultMutableTreeNode getRoot() {
-			return (DefaultMutableTreeNode) super.getRoot();
+		public EntityNode getRoot() {
+			return (EntityNode) super.getRoot();
+		}
+
+		Observer<?> configuration() {
+			return configuration.observer();
+		}
+
+		State showHidden() {
+			return showHidden;
+		}
+
+		void includeAll() {
+			include(Collections.list(getRoot().children()), true);
+			configuration.run();
+		}
+
+		void includeNone() {
+			refresh();
+			configuration.run();
+		}
+
+		void includeDefault() {
+			refresh();
+			Collections.list(getRoot().children()).forEach(node ->
+							((AttributeNode) node).include().set(true));
+			configuration.run();
+		}
+
+		private void showHiddenChanged() {
+			includeDefault();
 		}
 
 		private ExportAttributes attributes(ExportAttributes.Builder attributes) {
-			RootNode rootNode = (RootNode) getRoot();
-			rootNode.populate(attributes);
+			getRoot().populate(attributes);
 
 			return attributes.build();
 		}
 
 		private void refresh() {
-			((RootNode) getRoot()).refresh();
-			reload();
+			getRoot().populated = false;
+			getRoot().populate();
+			nodeStructureChanged(getRoot());
+		}
+
+		private void applyConfiguration(JSONObject json) {
+			showHidden.set(json.has(SHOW_HIDDEN_KEY) && json.getBoolean(SHOW_HIDDEN_KEY));
+			refresh();
+			populate(getRoot(), json);
+			configuration.run();
+		}
+
+		private void populate(EntityNode node, JSONObject json) {
+			if (!json.has(ATTRIBUTES_KEY)) {
+				return;
+			}
+			node.populate();
+			Enumeration<TreeNode> childNodes = node.children();
+			Map<String, DefaultMutableTreeNode> children = new HashMap<>();
+			while (childNodes.hasMoreElements()) {
+				DefaultMutableTreeNode child = (DefaultMutableTreeNode) childNodes.nextElement();
+				children.put(((AttributeNode) child).attribute().name(), child);
+			}
+			for (Object jsonAttribute : json.getJSONArray(ATTRIBUTES_KEY)) {
+				String attributeName = attributeName(jsonAttribute);
+				DefaultMutableTreeNode child = children.get(attributeName);
+				if (child != null) {// missing attribute, removed or hidden f.ex.
+					int index = node.getIndex(child);
+					if (index >= 0) {
+						node.remove(child);
+					}
+					node.add(child);
+					nodeStructureChanged(node);
+					if (jsonAttribute instanceof String) {
+						((AttributeNode) child).include().set(true);
+					}
+					else {
+						populate((EntityNode) child, ((JSONObject) jsonAttribute).getJSONObject(attributeName));
+					}
+				}
+			}
+			List<DefaultMutableTreeNode> sorted = Collections.list(node.children()).stream()
+							.map(AttributeNode.class::cast)
+							.sorted(NODE_COMPARATOR)
+							.map(DefaultMutableTreeNode.class::cast)
+							.collect(toList());
+			node.removeAllChildren();
+			sorted.forEach(node::add);
+			nodeStructureChanged(node);
+		}
+
+		private static String attributeName(Object item) {
+			if (item instanceof String) {
+				return (String) item;
+			}
+
+			return ((JSONObject) item).keys().next();
 		}
 	}
 
-	abstract static class EntityNode extends DefaultMutableTreeNode {
+	static class EntityNode extends DefaultMutableTreeNode {
 
 		private final EntityType entityType;
 		private final ExportTreeModel treeModel;
 
 		protected boolean populated;
 
-		protected EntityNode(EntityType entityType, ExportTreeModel treeModel) {
+		private EntityNode(EntityType entityType, ExportTreeModel treeModel) {
 			this.entityType = entityType;
 			this.treeModel = treeModel;
 		}
@@ -513,11 +530,7 @@ final class EntityTableExportModel {
 		final void populate() {
 			if (!populated) {
 				removeAllChildren();
-				treeModel.entities.definition(entityType).attributes().definitions().stream()
-								.filter(attributeDefinition -> !attributeDefinition.hidden())
-								.sorted(comparing(AttributeDefinition::caption))
-								.map(AttributeDefinition::attribute)
-								.forEach(this::addNode);
+				nodes().forEach(this::add);
 				treeModel.nodeStructureChanged(this);
 				populated = true;
 			}
@@ -546,12 +559,21 @@ final class EntityTableExportModel {
 											attributes.attributes(foreignKeyNode.attribute(), foreignKeyNode::populate));
 		}
 
-		private void addNode(Attribute<?> attribute) {
-			if (attribute instanceof ForeignKey) {
-				super.add(new MutableForeignKeyNode(treeModel, (ForeignKey) attribute));
+		private List<AttributeNode> nodes() {
+			return treeModel.entities.definition(entityType).attributes().definitions().stream()
+							.filter(EntityNode::selectedColumnOrAttribute)
+							.filter(attributeDefinition -> treeModel.showHidden.is() || !attributeDefinition.hidden())
+							.sorted(CAPTION_COMPARATOR)
+							.map(this::createNode)
+							.collect(toList());
+		}
+
+		private AttributeNode createNode(AttributeDefinition<?> attributeDefinition) {
+			if (attributeDefinition instanceof ForeignKeyDefinition) {
+				return new MutableForeignKeyNode(treeModel, (ForeignKeyDefinition) attributeDefinition);
 			}
 			else {
-				super.add(new MutableAttributeNode(treeModel, attribute));
+				return new MutableAttributeNode(treeModel, attributeDefinition);
 			}
 		}
 
@@ -582,6 +604,14 @@ final class EntityTableExportModel {
 			return false;
 		}
 
+		private static boolean selectedColumnOrAttribute(AttributeDefinition<?> definition) {
+			if (definition instanceof ColumnDefinition) {
+				return ((ColumnDefinition<?>) definition).selected();
+			}
+
+			return true;
+		}
+
 		private void moveDown(int[] indexes) {
 			if (indexes[indexes.length - 1] < children.size() - 1) {
 				for (int i = indexes.length - 1; i >= 0; i--) {
@@ -599,39 +629,41 @@ final class EntityTableExportModel {
 		}
 	}
 
-	private static class RootNode extends EntityNode {
+	interface AttributeNode extends MutableTreeNode {
 
-		private RootNode(ExportTreeModel treeModel, EntityType entityType) {
-			super(entityType, treeModel);
-		}
-
-		private void refresh() {
-			populated = false;
-			super.populate();
-		}
-	}
-
-	interface AttributeNode {
+		AttributeDefinition<?> definition();
 
 		Attribute<?> attribute();
+
+		boolean hidden();
 
 		State include();
 	}
 
 	static final class MutableAttributeNode extends DefaultMutableTreeNode implements AttributeNode {
 
-		private final Attribute<?> attribute;
+		private final AttributeDefinition<?> definition;
 		private final State include;
 
-		private MutableAttributeNode(DefaultTreeModel treeModel, Attribute<?> attribute) {
-			this.attribute = attribute;
+		private MutableAttributeNode(DefaultTreeModel treeModel, AttributeDefinition<?> definition) {
+			this.definition = definition;
 			this.include = State.builder()
 							.listener(new NodeChanged(treeModel, this))
 							.build();
 		}
 
+		@Override
+		public AttributeDefinition<?> definition() {
+			return definition;
+		}
+
 		public Attribute<?> attribute() {
-			return attribute;
+			return definition.attribute();
+		}
+
+		@Override
+		public boolean hidden() {
+			return definition.hidden();
 		}
 
 		public State include() {
@@ -641,12 +673,12 @@ final class EntityTableExportModel {
 
 	static final class MutableForeignKeyNode extends EntityNode implements AttributeNode {
 
-		private final ForeignKey foreignKey;
+		private final ForeignKeyDefinition definition;
 		private final State include;
 
-		private MutableForeignKeyNode(ExportTreeModel treeModel, ForeignKey foreignKey) {
-			super(foreignKey.referencedType(), treeModel);
-			this.foreignKey = foreignKey;
+		private MutableForeignKeyNode(ExportTreeModel treeModel, ForeignKeyDefinition definition) {
+			super(definition.attribute().referencedType(), treeModel);
+			this.definition = definition;
 			this.include = State.builder()
 							.listener(new NodeChanged(treeModel, this))
 							.build();
@@ -658,8 +690,18 @@ final class EntityTableExportModel {
 		}
 
 		@Override
+		public AttributeDefinition<?> definition() {
+			return definition;
+		}
+
+		@Override
 		public ForeignKey attribute() {
-			return foreignKey;
+			return definition.attribute();
+		}
+
+		@Override
+		public boolean hidden() {
+			return definition.hidden();
 		}
 
 		@Override
@@ -716,13 +758,15 @@ final class EntityTableExportModel {
 		}
 	}
 
-	private static class AttributeNodeComparator implements Comparator<AttributeNode> {
+	private static final class AttributeCaptionComparator implements Comparator<AttributeDefinition<?>> {
 
-		private final Entities entities;
-
-		private AttributeNodeComparator(Entities entities) {
-			this.entities = entities;
+		@Override
+		public int compare(AttributeDefinition<?> d1, AttributeDefinition<?> d2) {
+			return d1.caption().compareToIgnoreCase(d2.caption());
 		}
+	}
+
+	private static class AttributeNodeComparator implements Comparator<AttributeNode> {
 
 		@Override
 		public int compare(AttributeNode o1, AttributeNode o2) {
@@ -738,8 +782,7 @@ final class EntityTableExportModel {
 				return 1;
 			}
 
-			return entities.definition(o1.attribute().entityType()).attributes().definition(o1.attribute()).caption()
-							.compareTo(entities.definition(o2.attribute().entityType()).attributes().definition(o2.attribute()).caption());
+			return CAPTION_COMPARATOR.compare(o1.definition(), o2.definition());
 		}
 
 		private static boolean included(AttributeNode node) {
@@ -756,6 +799,8 @@ final class EntityTableExportModel {
 		File file();
 
 		String filename();
+
+		JSONObject json();
 	}
 
 	private static final class NullConfigurationFile implements ConfigurationFile {
@@ -773,6 +818,11 @@ final class EntityTableExportModel {
 		@Override
 		public String toString() {
 			return "-";
+		}
+
+		@Override
+		public JSONObject json() {
+			throw new IllegalStateException();
 		}
 	}
 
@@ -806,6 +856,11 @@ final class EntityTableExportModel {
 		@Override
 		public String filename() {
 			return file.getName().substring(0, file.getName().length() - JSON.length() - 1);
+		}
+
+		@Override
+		public JSONObject json() {
+			return json;
 		}
 
 		@Override
