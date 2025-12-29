@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.DropMode;
 import javax.swing.JList;
 import javax.swing.JViewport;
 import javax.swing.ListCellRenderer;
@@ -130,6 +131,20 @@ public final class FilterList<T> extends JList<T> {
 		 * @see JList#setCellRenderer(ListCellRenderer)
 		 */
 		B cellRenderer(@Nullable ListCellRenderer<T> cellRenderer);
+
+		/**
+		 * @param dragEnabled the drag enabled value
+		 * @return this builder instance
+		 * @see JList#setDragEnabled(boolean)
+		 */
+		B dragEnabled(boolean dragEnabled);
+
+		/**
+		 * @param dropMode the drop mode
+		 * @return this builder instance
+		 * @see JList#setDropMode(DropMode)
+		 */
+		B dropMode(DropMode dropMode);
 
 		/**
 		 * @param listSelectionListener the list selection listener

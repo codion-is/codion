@@ -23,6 +23,7 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.DropMode;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListSelectionListener;
@@ -41,6 +42,8 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	private @Nullable ListCellRenderer<T> cellRenderer;
 
 	private @Nullable Integer visibleRowCount;
+	private @Nullable Boolean dragEnabled;
+	private @Nullable DropMode dropMode;
 	private int layoutOrientation = JList.VERTICAL;
 	private int fixedCellHeight = -1;
 	private int fixedCellWidth = -1;
@@ -80,6 +83,18 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	}
 
 	@Override
+	public final B dragEnabled(boolean dragEnabled) {
+		this.dragEnabled = dragEnabled;
+		return self();
+	}
+
+	@Override
+	public final B dropMode(DropMode dropMode) {
+		this.dropMode = requireNonNull(dropMode);
+		return self();
+	}
+
+	@Override
 	public final B listSelectionListener(ListSelectionListener listSelectionListener) {
 		listSelectionListeners.add(requireNonNull(listSelectionListener));
 		return self();
@@ -93,6 +108,12 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 		listSelectionListeners.forEach(new AddListSelectionListener(list));
 		if (visibleRowCount != null) {
 			list.setVisibleRowCount(visibleRowCount);
+		}
+		if (dragEnabled != null) {
+			list.setDragEnabled(dragEnabled);
+		}
+		if (dropMode != null) {
+			list.setDropMode(dropMode);
 		}
 		list.setLayoutOrientation(layoutOrientation);
 		list.setFixedCellHeight(fixedCellHeight);

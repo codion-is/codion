@@ -39,6 +39,8 @@ Codion Change Log
 - Icons renamed SVGIcons.
 - FlexibleGridLayout bug fixed, now behaves the same as GridLayout when distributing extra space.
 - TreeBuilder added.
+- FilterList.Builder.dropMode() and dragEnabled() added
+- FilterTable.Builder.dropMode() added.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 - DefaultEntityConditionModel, temporal equal precision adjustment now half-open interval based.

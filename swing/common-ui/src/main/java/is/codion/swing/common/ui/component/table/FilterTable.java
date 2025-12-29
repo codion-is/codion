@@ -59,6 +59,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DropMode;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -396,6 +397,9 @@ public final class FilterTable<R, C> extends JTable {
 		}
 		if (builder.dragEnabled != null) {
 			setDragEnabled(builder.dragEnabled);
+		}
+		if (builder.dropMode != null) {
+			setDropMode(builder.dropMode);
 		}
 	}
 
@@ -1546,6 +1550,13 @@ public final class FilterTable<R, C> extends JTable {
 		 * @see JTable#setDragEnabled(boolean)
 		 */
 		Builder<R, C> dragEnabled(boolean dragEnabled);
+
+		/**
+		 * @param dropMode the drop mode
+		 * @return this builder instance
+		 * @see JTable#setDropMode(DropMode)
+		 */
+		Builder<R, C> dropMode(DropMode dropMode);
 	}
 
 	private static class DefaultModelStep implements Builder.ModelStep {
@@ -1604,6 +1615,7 @@ public final class FilterTable<R, C> extends JTable {
 		private @Nullable Boolean showHorizontalLines;
 		private @Nullable Boolean showVerticalLines;
 		private @Nullable Boolean dragEnabled;
+		private @Nullable DropMode dropMode;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel) {
 			this.tableModel = tableModel;
@@ -1849,6 +1861,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> dragEnabled(boolean dragEnabled) {
 			this.dragEnabled = dragEnabled;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> dropMode(DropMode dropMode) {
+			this.dropMode = requireNonNull(dropMode);
 			return this;
 		}
 
