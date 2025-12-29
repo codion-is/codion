@@ -62,6 +62,7 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.component.tabbedpane;
 	exports is.codion.swing.common.ui.component.table;
 	exports is.codion.swing.common.ui.component.text;
+	exports is.codion.swing.common.ui.component.tree;
 	exports is.codion.swing.common.ui.component.indicator;
 	exports is.codion.swing.common.ui.component.value;
 	exports is.codion.swing.common.ui.ancestor;

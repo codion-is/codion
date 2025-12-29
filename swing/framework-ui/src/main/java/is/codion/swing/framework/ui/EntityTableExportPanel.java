@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -233,35 +234,33 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private JTree createTree() {
-		JTree tree = new JTree(model.treeModel());
-		tree.setCellRenderer(ATTRIBUTE_RENDERER);
-		tree.setShowsRootHandles(true);
-		tree.setRootVisible(false);
-		tree.addTreeWillExpandListener(new ExpandListener());
-		tree.addTreeSelectionListener(new SingleLevelSelectionListener());
-		tree.addMouseListener(new ExportTreeMouseListener());
-		KeyEvents.builder()
-						.keyCode(VK_SPACE)
-						.action(command(this::toggleSelected))
-						.enable(tree);
-		KeyEvents.builder()
-						.modifiers(SHIFT_DOWN_MASK)
-						.keyCode(VK_SPACE)
-						.action(Control.builder()
-										.command(this::toggleChildren)
-										.enabled(singleSelection)
-										.build())
-						.enable(tree);
-		KeyEvents.builder()
-						.modifiers(ALT_DOWN_MASK)
-						.keyCode(VK_UP)
-						.action(moveUp)
-						.enable(tree)
-						.keyCode(VK_DOWN)
-						.action(moveDown)
-						.enable(tree);
-
-		return tree;
+		return Components.tree()
+						.model(model.treeModel())
+						.cellRenderer(ATTRIBUTE_RENDERER)
+						.showsRootHandles(true)
+						.rootVisible(false)
+						.treeWillExpandListener(new ExpandListener())
+						.treeSelectionListener(new SingleLevelSelectionListener())
+						.mouseListener(new ExportTreeMouseListener())
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_SPACE)
+										.action(command(this::toggleSelected)))
+						.keyEvent(KeyEvents.builder()
+										.modifiers(SHIFT_DOWN_MASK)
+										.keyCode(VK_SPACE)
+										.action(Control.builder()
+														.command(this::toggleChildren)
+														.enabled(singleSelection)
+														.build()))
+						.keyEvent(KeyEvents.builder()
+										.modifiers(ALT_DOWN_MASK)
+										.keyCode(VK_UP)
+										.action(moveUp))
+						.keyEvent(KeyEvents.builder()
+										.modifiers(ALT_DOWN_MASK)
+										.keyCode(VK_DOWN)
+										.action(moveDown))
+						.build();
 	}
 
 	private void moveSelectionUp() {

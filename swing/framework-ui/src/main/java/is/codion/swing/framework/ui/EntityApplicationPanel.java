@@ -1206,10 +1206,12 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private static JScrollPane createTree(TreeModel treeModel) {
-		JTree tree = new JTree(treeModel);
-		tree.setShowsRootHandles(true);
-		tree.setToggleClickCount(1);
-		tree.setRootVisible(false);
+		JTree tree = Components.tree()
+						.model(treeModel)
+						.showsRootHandles(true)
+						.toggleClickCount(1)
+						.rootVisible(false)
+						.build();
 		expandAll(tree, new TreePath(tree.getModel().getRoot()));
 
 		return new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);

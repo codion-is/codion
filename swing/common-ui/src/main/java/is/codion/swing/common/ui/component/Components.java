@@ -60,6 +60,7 @@ import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.text.TextPaneBuilder;
+import is.codion.swing.common.ui.component.tree.TreeBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -377,6 +378,13 @@ public final class Components {
 	 */
 	public static SliderBuilder.ModelStep slider() {
 		return SliderBuilder.builder();
+	}
+
+	/**
+	 * @return a JTree builder
+	 */
+	public static TreeBuilder.ModelStep tree() {
+		return TreeBuilder.builder();
 	}
 
 	/**
