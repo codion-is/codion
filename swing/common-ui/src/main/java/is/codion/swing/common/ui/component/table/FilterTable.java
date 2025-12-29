@@ -182,11 +182,11 @@ public final class FilterTable<R, C> extends JTable {
 	 * Specifies whether alternating row backgrounds are painted below the table data to fill the viewport
 	 * <ul>
 	 * <li>Value type: Boolean
-	 * <li>Default value: true
+	 * <li>Default value: false
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> PAINT_REMAINING_ROWS =
-					booleanValue(FilterTable.class.getName() + ".paintRemainingRows", true);
+					booleanValue(FilterTable.class.getName() + ".paintRemainingRows", false);
 
 	/**
 	 * Specifies whether the table resizes the row being edited to fit the editor component. Only applicable to {@link FilterTableCellEditor}.

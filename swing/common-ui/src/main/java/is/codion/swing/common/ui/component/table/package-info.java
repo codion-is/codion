@@ -32,6 +32,7 @@
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#COLUMN_REORDERING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#AUTO_RESIZE_MODE}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#COLUMN_RESIZING}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#PAINT_REMAINING_ROWS}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

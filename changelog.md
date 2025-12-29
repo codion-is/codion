@@ -41,6 +41,7 @@ Codion Change Log
 - TreeBuilder added.
 - FilterList.Builder.dropMode() and dragEnabled() added
 - FilterTable.Builder.dropMode() added.
+- FilterTable.PAINT_REMAINING_ROWS now false by default.
 ### is.codion.framework.model
 - AttributeConditionModel and ColumnConditionModel added.
 - DefaultEntityConditionModel, temporal equal precision adjustment now half-open interval based.
