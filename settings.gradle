@@ -209,9 +209,9 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             version("slf4j.api", "2.0.17")
-            version("logback", "1.5.22")
+            version("logback", "1.5.23")
             version("h2", "2.3.232")
-            version("json", "20250517")
+            version("json", "20251224")
 
             version("jfreechart", "1.5.6")
             version("junit", "6.0.1")
