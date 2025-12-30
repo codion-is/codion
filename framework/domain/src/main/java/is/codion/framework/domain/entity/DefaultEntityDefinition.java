@@ -526,7 +526,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 							.distinct()
 							.collect(toList());
 			if (attributeEntityTypes.size() > 1) {
-				throw new IllegalArgumentException("Multiple entityTypes found among attribute definitions: " + attributeEntityTypes);
+				throw new IllegalArgumentException("Multiple entity types found among attribute definitions: " +
+								attributeEntityTypes + " when defining entity: " + entityType);
 			}
 			if (!entityType.equals(attributeEntityTypes.get(0))) {
 				throw new IllegalArgumentException("Entity definition: " + entityType + ", " + attributeEntityTypes.get(0) + " found in attribute definitions");
@@ -675,7 +676,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			Set<String> attributeNames = new HashSet<>();
 			for (AttributeDefinition<?> attributeDefinition : attributeDefinitions) {
 				if (attributeNames.contains(attributeDefinition.attribute().name())) {
-					throw new IllegalArgumentException("Duplicate attribute name: " + attributeDefinition.attribute().name());
+					throw new IllegalArgumentException("Duplicate attribute name: " + attributeDefinition.attribute());
 				}
 				attributeNames.add(attributeDefinition.attribute().name());
 			}

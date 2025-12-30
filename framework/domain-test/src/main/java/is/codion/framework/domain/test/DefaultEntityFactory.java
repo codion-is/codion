@@ -151,7 +151,7 @@ public class DefaultEntityFactory implements EntityFactory {
 				return (T) Boolean.valueOf(RANDOM.nextBoolean());
 			}
 			if (attribute.type().isCharacter()) {
-				return (T) Character.valueOf((char) RANDOM.nextInt());
+				return (T) Character.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length())));
 			}
 			if (attribute.type().isLocalDate()) {
 				return (T) LocalDate.now();
