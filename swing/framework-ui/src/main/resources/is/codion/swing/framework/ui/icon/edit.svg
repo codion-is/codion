@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="-10 0 448 512">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 448 512">
    <path fill="currentColor"
 d="M301 402q9 0 9 9v45v13q0 8 -9 8h-8h-276h-8q-9 0 -9 -8v-13v-271v-5v-13l133 -132h9h147h12q9 0 9 8v21v84v0v1q0 8 -9 8h-33q-9 0 -9 -8v-63h-108v90q0 9 -9 9h-91v241h208v-15q0 -9 9 -9h33zM425 200q6 6 0 12l-163 163v0l-82 22q-5 4 -10 -1q-4 -4 -2 -9l22 -84l1 1
 l-1 -1l163 -163q7 -6 13 0zM195 370l49 -13l-36 -36z" />
