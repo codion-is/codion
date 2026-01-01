@@ -29,6 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Window;
 import java.util.ArrayList;
@@ -59,7 +60,10 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 			locationRelativeTo = owner;
 		}
 		if (icon == null && owner instanceof JFrame) {
-			icon = new ImageIcon(((JFrame) owner).getIconImage());
+			Image iconImage = ((JFrame) owner).getIconImage();
+			if (iconImage != null) {
+				icon = new ImageIcon(iconImage);
+			}
 		}
 
 		return self();
