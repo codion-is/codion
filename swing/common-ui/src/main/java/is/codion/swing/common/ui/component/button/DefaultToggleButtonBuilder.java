@@ -26,7 +26,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.JToggleButton;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -79,7 +78,7 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 	}
 
 	protected final void linkObservableStates(ComponentValue<C, Boolean> componentValue) {
-		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
+		linkedObservableStates.forEach(state -> new ObservableStateLink(state, componentValue));
 	}
 
 	@Override
@@ -87,17 +86,11 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 		return false;
 	}
 
-	static final class SetComponentValue implements Consumer<Boolean> {
+	static final class ObservableStateLink {
 
-		private final ComponentValue<?, Boolean> componentValue;
-
-		SetComponentValue(ComponentValue<?, Boolean> componentValue) {
-			this.componentValue = componentValue;
-		}
-
-		@Override
-		public void accept(Boolean value) {
-			componentValue.set(value);
+		ObservableStateLink(ObservableState state, ComponentValue<?, Boolean> componentValue) {
+			componentValue.set(state.is());
+			state.addConsumer(componentValue::set);
 		}
 	}
 }

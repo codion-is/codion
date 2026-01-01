@@ -334,6 +334,14 @@ public final class ComponentsTest {
 						.build();
 		assertTrue(state.is());
 		assertTrue(checkBox.isSelected());
+
+		checkBox = Components.checkBox()
+						.link(state.observable())
+						.build();
+		assertTrue(state.is());
+		assertTrue(checkBox.isSelected());
+		state.set(false);
+		assertFalse(checkBox.isSelected());
 	}
 
 	@Test
@@ -381,6 +389,16 @@ public final class ComponentsTest {
 			enabledState.set(true);
 			assertTrue(toggleButton.isEnabled());
 		});
+
+		state.set(true);
+		JToggleButton toggleButton2 = Components.toggleButton()
+						.link(state.observable())
+						.buildValue()
+						.component();
+		assertTrue(state.is());
+		assertTrue(toggleButton2.isSelected());
+		state.set(false);
+		assertFalse(toggleButton2.isSelected());
 	}
 
 	@Test
@@ -465,6 +483,13 @@ public final class ComponentsTest {
 			enabledState.set(true);
 			assertTrue(checkBox.isEnabled());
 		});
+
+		JCheckBoxMenuItem menuItem = Components.checkBoxMenuItem()
+						.link(state.observable())
+						.build();
+		assertTrue(menuItem.isSelected());
+		state.set(false);
+		assertFalse(menuItem.isSelected());
 	}
 
 	@Test

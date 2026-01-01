@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
-import is.codion.swing.common.ui.component.button.DefaultToggleButtonBuilder.SetComponentValue;
+import is.codion.swing.common.ui.component.button.DefaultToggleButtonBuilder.ObservableStateLink;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.ToggleControl;
 
@@ -85,7 +85,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	@Override
 	protected final ComponentValue<C, Boolean> createValue(C component) {
 		ToggleButtonValue<C> componentValue = new ToggleButtonValue<>(component);
-		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
+		linkedObservableStates.forEach(state -> new ObservableStateLink(state, componentValue));
 
 		return componentValue;
 	}
