@@ -222,6 +222,18 @@ public class ValueTest {
 	}
 
 	@Test
+	void arrayValueChange() {
+		AtomicInteger counter = new AtomicInteger();
+		int[] one = new int[] {1};
+		int[] two = new int[] {2};
+		ValueChange<int[]> oneTwo = valueChange(one, two);
+		Value<int[]> value = Value.nonNull(new int[] {1});
+		value.changed().when(oneTwo).addListener(counter::incrementAndGet);
+		value.set(new int[] {2});
+		assertEquals(1, counter.get());
+	}
+
+	@Test
 	void valueStringNonNull() {
 		Value<String> stringValue = Value.nonNull(NULL_STRING);
 		assertFalse(stringValue.isNullable());

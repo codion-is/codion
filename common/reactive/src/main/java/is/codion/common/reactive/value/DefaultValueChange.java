@@ -49,7 +49,7 @@ final class DefaultValueChange<T> implements ValueChange<T> {
 		}
 		ValueChange<?> that = (ValueChange<?>) object;
 
-		return Objects.equals(previous, that.previous()) && Objects.equals(current, that.current());
+		return Objects.deepEquals(previous, that.previous()) && Objects.deepEquals(current, that.current());
 	}
 
 	@Override
