@@ -133,7 +133,7 @@ public interface Observable<T> extends Observer<T> {
 	 * @return true if the underlying value is equal to the given one
 	 */
 	default boolean is(@Nullable T value) {
-		return Objects.equals(get(), value);
+		return Objects.deepEquals(get(), value);
 	}
 
 	/**

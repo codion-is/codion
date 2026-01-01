@@ -212,6 +212,16 @@ public class ValueTest {
 	}
 
 	@Test
+	void arrayValue() {
+		int[] one = new int[] {1};
+		Value<int[]> value = Value.builder()
+						.nonNull(new int[0])
+						.build();
+		value.set(new int[] {1});
+		assertTrue(value.is(one));
+	}
+
+	@Test
 	void valueStringNonNull() {
 		Value<String> stringValue = Value.nonNull(NULL_STRING);
 		assertFalse(stringValue.isNullable());
