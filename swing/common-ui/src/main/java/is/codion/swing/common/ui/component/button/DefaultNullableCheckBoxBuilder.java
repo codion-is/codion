@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import static is.codion.swing.common.ui.component.button.NullableCheckBox.nullableCheckBox;
@@ -37,9 +36,9 @@ final class DefaultNullableCheckBoxBuilder extends DefaultToggleButtonBuilder<Nu
 	}
 
 	@Override
-	protected ComponentValue<NullableCheckBox, Boolean> createValue(JToggleButton component) {
-		ComponentValue<NullableCheckBox, Boolean> componentValue = new NullableCheckBoxValue((NullableCheckBox) component);
-		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
+	protected ComponentValue<NullableCheckBox, Boolean> createValue(NullableCheckBox component) {
+		ComponentValue<NullableCheckBox, Boolean> componentValue = new NullableCheckBoxValue(component);
+		linkObservableStates(componentValue);
 
 		return componentValue;
 	}

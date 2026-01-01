@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.64
+### is.codion.swing.common.ui
+- CheckBoxValue removed, related refactoring.
 
 ## 0.18.63
 ## is.codion

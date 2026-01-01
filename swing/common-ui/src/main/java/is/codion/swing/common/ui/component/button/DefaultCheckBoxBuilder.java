@@ -18,10 +18,7 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.value.ComponentValue;
-
 import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox, CheckBoxBuilder> implements CheckBoxBuilder {
@@ -33,13 +30,5 @@ final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox,
 	@Override
 	protected JCheckBox createButton() {
 		return new JCheckBox();
-	}
-
-	@Override
-	protected ComponentValue<JCheckBox, Boolean> createValue(JToggleButton component) {
-		ComponentValue<JCheckBox, Boolean> componentValue = new CheckBoxValue((JCheckBox) component);
-		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
-
-		return componentValue;
 	}
 }
