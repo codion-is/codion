@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - CheckBoxValue removed, related refactoring.
 - DefaultToggleButtonBuilder, AbstractToggleMenuItemBuilder bug fixed, ObservableStateLink added, now sets initial value.
+### is.codion.swing.framework.ui
+- EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
 
 ## 0.18.63
 ## is.codion

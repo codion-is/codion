@@ -68,6 +68,7 @@ final class EntityTableExportModel {
 	private final FilterComboBoxModel<ConfigurationFile> configurationFiles;
 	private final EntityTableExportTreeModel treeModel;
 	private final State selected;
+	private final State all;
 
 	private @Nullable Dimension dialogSize;
 
@@ -81,6 +82,8 @@ final class EntityTableExportModel {
 						.onSelection(this::configurationFileSelected)
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
+		this.all = State.state(!selected.is());
+		State.group(selected, all);
 		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
 		this.treeModel.includeNone();
 		this.treeModel.includeAll();
@@ -112,6 +115,10 @@ final class EntityTableExportModel {
 
 	State selected() {
 		return selected;
+	}
+
+	State all() {
+		return all;
 	}
 
 	String defaultExportFileName() {

@@ -171,7 +171,7 @@ final class EntityTableExportPanel extends JPanel {
 						.mnemonic(MESSAGES.getString("rows_selected_mnemonic").charAt(0))
 						.build();
 		this.allRows = Control.builder()
-						.toggle(State.state(!model.selected().is()))
+						.toggle(model.all())
 						.caption(MESSAGES.getString("rows_all"))
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
