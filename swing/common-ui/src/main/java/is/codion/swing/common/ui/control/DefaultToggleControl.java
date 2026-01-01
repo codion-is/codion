@@ -53,7 +53,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 	@Override
 	public ToggleControlBuilder copy(Value<Boolean> value) {
 		ToggleControlBuilder builder = new DefaultToggleControlBuilder(requireNonNull(value))
-						.enabled(enabled());
+						.enabled(enabled().orElse(null));
 		keys().forEach(key -> builder.value(key, getValue(key)));
 
 		return builder;

@@ -164,6 +164,6 @@ public final class AbstractControlTest {
 						.command(() -> {})
 						.build();
 		assertTrue(control.isEnabled());
-		assertTrue(control.enabled().is());
+		assertFalse(control.enabled().isPresent());
 	}
 }

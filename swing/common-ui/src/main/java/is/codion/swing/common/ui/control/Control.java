@@ -55,9 +55,10 @@ public interface Control extends Action {
 	Optional<String> caption();
 
 	/**
+	 * If this method returns an empty Optional this Control is always enabled.
 	 * @return an {@link ObservableState} indicating whether this Control is enabled
 	 */
-	ObservableState enabled();
+	Optional<ObservableState> enabled();
 
 	/**
 	 * @return the mnemonic or an empty Optional if none is available

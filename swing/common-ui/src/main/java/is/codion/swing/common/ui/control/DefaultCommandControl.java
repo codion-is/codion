@@ -75,7 +75,7 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 
 	private CommandControlBuilder copyBuilder(@Nullable Command command, @Nullable ActionCommand actionCommand) {
 		CommandControlBuilder builder = new DefaultCommandControlBuilder(command, actionCommand)
-						.enabled(enabled())
+						.enabled(enabled().orElse(null))
 						.onException(onException);
 		keys().forEach(key -> builder.value(key, getValue(key)));
 

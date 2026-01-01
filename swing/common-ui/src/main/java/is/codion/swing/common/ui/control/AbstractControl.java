@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.reactive.state.ObservableState;
-import is.codion.common.reactive.state.State;
 
 import org.jspecify.annotations.Nullable;
 
@@ -51,18 +50,20 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	static final String BACKGROUND = "Background";
 	static final String FOREGROUND = "Foreground";
 
-	private final ObservableState enabledObservable;
-
-	// Keep this in a field since it's added as a weak listener
-	private final Enabler enabler = new Enabler();
+	private final @Nullable ObservableState enabledObservable;
 	private final boolean initialized;
+	// Keep this in a field since it's added as a weak listener
+	private @Nullable Enabler enabler;
 
 	AbstractControl(AbstractControlBuilder<?, ?> builder) {
 		super((String) builder.values.get(NAME));
 		initialized = true;
-		enabledObservable = builder.enabled == null ? State.state(true).observable() : builder.enabled;
-		enabledObservable.addWeakConsumer(enabler);
-		super.setEnabled(enabledObservable.is());
+		enabledObservable = builder.enabled;
+		if (enabledObservable != null) {
+			enabler = new Enabler();
+			enabledObservable.addWeakConsumer(enabler);
+			super.setEnabled(enabledObservable.is());
+		}
 		builder.values.forEach(super::putValue);
 	}
 
@@ -82,15 +83,6 @@ abstract class AbstractControl extends AbstractAction implements Control {
 			throw new UnsupportedOperationException();
 		}
 		super.putValue(key, newValue);
-	}
-
-	@Override
-	public final @Nullable Object getValue(String key) {
-		if (ENABLED.equals(key)) {
-			return enabledObservable.is();
-		}
-
-		return super.getValue(key);
 	}
 
 	@Override
@@ -114,8 +106,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	}
 
 	@Override
-	public final ObservableState enabled() {
-		return enabledObservable;
+	public final Optional<ObservableState> enabled() {
+		return Optional.ofNullable(enabledObservable);
 	}
 
 	@Override
