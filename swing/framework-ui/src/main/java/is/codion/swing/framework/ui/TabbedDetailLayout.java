@@ -467,11 +467,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 			EntityPanel selectedDetailPanel = selectedDetailPanel();
 			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1 &&
 							detailController.panelStates.containsAll(asList(WINDOW, EMBEDDED))) {
-				detailController.panelState(selectedDetailPanel).map(state -> state == WINDOW ? EMBEDDED : WINDOW);
+				detailController.panelState(selectedDetailPanel).update(state -> state == WINDOW ? EMBEDDED : WINDOW);
 			}
 			else if (e.getButton() == MouseEvent.BUTTON2 &&
 							detailController.panelStates.containsAll(asList(HIDDEN, EMBEDDED))) {
-				detailController.panelState(selectedDetailPanel).map(state -> state == EMBEDDED ? HIDDEN : EMBEDDED);
+				detailController.panelState(selectedDetailPanel).update(state -> state == EMBEDDED ? HIDDEN : EMBEDDED);
 			}
 		}
 	}
@@ -573,7 +573,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private void toggleDetailState() {
-			panelState.map(panelStateMapper);
+			panelState.update(panelStateMapper);
 		}
 
 		private void displayDetailWindow() {

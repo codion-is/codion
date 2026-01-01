@@ -827,7 +827,7 @@ public final class CalendarPanel extends JPanel {
 	private void updateDateTime() {
 		//prevent illegal day values
 		YearMonth yearMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow());
-		dayValue.map(day -> day > yearMonth.lengthOfMonth() ? yearMonth.lengthOfMonth() : day);
+		dayValue.update(day -> day > yearMonth.lengthOfMonth() ? yearMonth.lengthOfMonth() : day);
 		LocalDateTime localDateTime = createLocalDateTime();
 		date.localDate.set(localDateTime.toLocalDate());
 		dateTime.localDateTime.set(localDateTime);

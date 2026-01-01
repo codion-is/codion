@@ -51,7 +51,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 	@Override
 	protected void setupControls() {
 		// Modify the ADD control so that it is only enabled when a playlist is selected
-		control(ControlKeys.ADD).map(control -> control.copy()
+		control(ControlKeys.ADD).update(control -> control.copy()
 						.enabled(tableModel().editModel().editor().value(PlaylistTrack.PLAYLIST_FK).present())
 						.build());
 	}

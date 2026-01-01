@@ -1647,13 +1647,13 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void setupStandardControls() {
-		control(ADDITIONAL_POPUP_MENU_CONTROLS).map(new ReplaceIfNull(this::createAdditionalPopupControls));
-		control(ADDITIONAL_TOOLBAR_CONTROLS).map(new ReplaceIfNull(this::createAdditionalToolbarControls));
-		control(PRINT_CONTROLS).map(new ReplaceIfNull(this::createPrintControls));
-		control(CONDITION_CONTROLS).map(new ReplaceIfNull(this::createConditionControls));
-		control(FILTER_CONTROLS).map(new ReplaceIfNull(this::createFilterControls));
-		control(COLUMN_CONTROLS).map(new ReplaceIfNull(this::createColumnControls));
-		control(COPY_CONTROLS).map(new ReplaceIfNull(this::createCopyControls));
+		control(ADDITIONAL_POPUP_MENU_CONTROLS).update(new ReplaceIfNull(this::createAdditionalPopupControls));
+		control(ADDITIONAL_TOOLBAR_CONTROLS).update(new ReplaceIfNull(this::createAdditionalToolbarControls));
+		control(PRINT_CONTROLS).update(new ReplaceIfNull(this::createPrintControls));
+		control(CONDITION_CONTROLS).update(new ReplaceIfNull(this::createConditionControls));
+		control(FILTER_CONTROLS).update(new ReplaceIfNull(this::createFilterControls));
+		control(COLUMN_CONTROLS).update(new ReplaceIfNull(this::createColumnControls));
+		control(COPY_CONTROLS).update(new ReplaceIfNull(this::createCopyControls));
 	}
 
 	private void addTablePopupMenu() {

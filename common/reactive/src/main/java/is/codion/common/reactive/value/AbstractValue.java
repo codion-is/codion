@@ -125,8 +125,8 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final void map(UnaryOperator<@Nullable T> mapper) {
-		Value.super.map(mapper);
+	public final void update(UnaryOperator<@Nullable T> updateFunction) {
+		Value.super.update(updateFunction);
 	}
 
 	@Override

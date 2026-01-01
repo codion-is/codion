@@ -283,14 +283,14 @@ public final class EventStateValue {
 		 * Increment the value by one
 		 */
 		public void increment() {
-			integer.map(value -> value + 1);
+			integer.update(value -> value + 1);
 		}
 
 		/**
 		 * Decrement the value by one
 		 */
 		public void decrement() {
-			integer.map(value -> value - 1);
+			integer.update(value -> value - 1);
 		}
 
 		/**

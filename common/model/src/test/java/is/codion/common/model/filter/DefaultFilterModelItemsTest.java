@@ -646,8 +646,8 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public void map(UnaryOperator<Predicate<String>> mapper) {
-			predicate.map(mapper);
+		public void update(UnaryOperator<Predicate<String>> updateFunction) {
+			predicate.update(updateFunction);
 		}
 
 		@Override
@@ -935,8 +935,8 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public void map(UnaryOperator<List<Integer>> mapper) {
-				indexes.map(mapper);
+			public void update(UnaryOperator<List<Integer>> updateFunction) {
+				indexes.update(updateFunction);
 			}
 
 			@Override
@@ -1101,8 +1101,8 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public void map(UnaryOperator<List<String>> mapper) {
-				selectedItems.map(mapper);
+			public void update(UnaryOperator<List<String>> updateFunction) {
+				selectedItems.update(updateFunction);
 			}
 
 			@Override

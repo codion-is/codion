@@ -927,7 +927,7 @@ public class EntityPanel extends JPanel {
 											.build()));
 		}
 		if (containsEditPanel()) {
-			editPanel.control(SELECT_INPUT_FIELD).map(control ->
+			editPanel.control(SELECT_INPUT_FIELD).update(control ->
 							control.copy(this::selectInputComponent).build());
 		}
 	}
@@ -938,14 +938,14 @@ public class EntityPanel extends JPanel {
 
 	private void requestEditPanelFocus() {
 		if (editPanelState.is(HIDDEN)) {
-			editPanelState.map(editPanelStateMapper);
+			editPanelState.update(editPanelStateMapper);
 		}
 		editPanel().focus().initial().request();
 	}
 
 	private void selectInputComponent() {
 		if (editPanelState.is(HIDDEN)) {
-			editPanelState.map(editPanelStateMapper);
+			editPanelState.update(editPanelStateMapper);
 		}
 		editPanel().selectInputComponent();
 	}
@@ -1014,7 +1014,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	private void toggleEditPanelState() {
-		editPanelState.map(editPanelStateMapper);
+		editPanelState.update(editPanelStateMapper);
 	}
 
 	private Config configure(Consumer<Config> configuration) {
@@ -1052,7 +1052,7 @@ public class EntityPanel extends JPanel {
 		@Override
 		public void execute() {
 			if (containsEditPanel() && editPanelState.is(HIDDEN)) {
-				editPanelState.map(editPanelStateMapper);
+				editPanelState.update(editPanelStateMapper);
 			}
 			Ancestor.window().of(editControlPanel).toFront();
 		}

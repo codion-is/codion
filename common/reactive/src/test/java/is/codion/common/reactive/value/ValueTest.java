@@ -486,14 +486,14 @@ public class ValueTest {
 	}
 
 	@Test
-	void map() {
+	void update() {
 		Value<Integer> value = Value.nullable(0);
 		UnaryOperator<Integer> increment = currentValue -> currentValue + 1;
-		value.map(increment);
+		value.update(increment);
 		assertEquals(1, value.get());
-		value.map(currentValue -> null);
+		value.update(currentValue -> null);
 		assertTrue(value.isNull());
-		value.map(currentValue -> VALUE_42);
+		value.update(currentValue -> VALUE_42);
 		assertFalse(value.isNull());
 	}
 

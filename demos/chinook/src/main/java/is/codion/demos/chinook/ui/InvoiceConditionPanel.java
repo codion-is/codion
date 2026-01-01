@@ -285,11 +285,11 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			}
 
 			private void incrementYear() {
-				yearValue.map(year -> year + 1);
+				yearValue.update(year -> year + 1);
 			}
 
 			private void decrementYear() {
-				yearValue.map(year -> year - 1);
+				yearValue.update(year -> year - 1);
 			}
 
 			@Override

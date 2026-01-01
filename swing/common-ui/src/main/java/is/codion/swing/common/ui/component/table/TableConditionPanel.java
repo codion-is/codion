@@ -146,7 +146,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 						.sorted(Text.collator())
 						.collect(toList());
 		if (panelItems.size() == 1) {
-			view().map(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);
+			view().update(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);
 			panelItems.get(0).getOrThrow().requestInputFocus();
 		}
 		else if (!panelItems.isEmpty()) {
@@ -158,7 +158,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 							.single()
 							.map(Item::get)
 							.ifPresent(conditionPanel -> {
-								view().map(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);
+								view().update(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);
 								conditionPanel.requestInputFocus();
 							});
 		}

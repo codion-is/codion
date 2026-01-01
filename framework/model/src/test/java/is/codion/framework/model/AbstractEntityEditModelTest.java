@@ -739,7 +739,7 @@ public final class AbstractEntityEditModelTest {
 		State extraModified = State.builder()
 						.listener(editor.modified()::update)
 						.build();
-		editor.modified().predicate().map(modified -> modified.or(entity -> extraModified.is()));
+		editor.modified().predicate().update(modified -> modified.or(entity -> extraModified.is()));
 
 		editor.set(employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN")));
 		extraModified.set(true);

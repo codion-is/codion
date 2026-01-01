@@ -39,39 +39,39 @@ public class DefaultItemRandomizerTest {
 		));
 		assertEquals(3, model.items().size());
 
-		model.weight(three).map(value -> value + 1);
+		model.weight(three).update(value -> value + 1);
 		assertEquals(three, model.get().orElse(null));
 
-		model.weight(three).map(value -> value - 1);
+		model.weight(three).update(value -> value - 1);
 
-		model.weight(one).map(value -> value + 1);
+		model.weight(one).update(value -> value + 1);
 		assertTrue(model.weight(one).is(1));
-		model.weight(two).map(value -> value + 1);
+		model.weight(two).update(value -> value + 1);
 		assertTrue(model.weight(two).is(1));
-		model.weight(three).map(value -> value + 1);
+		model.weight(three).update(value -> value + 1);
 		assertTrue(model.weight(three).is(1));
 
-		model.weight(three).map(value -> value + 1);
+		model.weight(three).update(value -> value + 1);
 		assertTrue(model.weight(three).is(2));
-		model.weight(three).map(value -> value + 1);
+		model.weight(three).update(value -> value + 1);
 		assertTrue(model.weight(three).is(3));
-		model.weight(three).map(value -> value + 1);
+		model.weight(three).update(value -> value + 1);
 		assertTrue(model.weight(three).is(4));
 
-		model.weight(one).map(value -> value + 1);
+		model.weight(one).update(value -> value + 1);
 		assertTrue(model.weight(one).is(2));
 
-		model.weight(two).map(value -> value + 1);
+		model.weight(two).update(value -> value + 1);
 		assertTrue(model.weight(two).is(2));
 
-		model.weight(one).map(value -> value - 1);
+		model.weight(one).update(value -> value - 1);
 		assertTrue(model.weight(one).is(1));
-		model.weight(two).map(value -> value - 1);
+		model.weight(two).update(value -> value - 1);
 		assertTrue(model.weight(two).is(1));
 
-		model.weight(one).map(value -> value - 1);
+		model.weight(one).update(value -> value - 1);
 		assertTrue(model.weight(one).is(0));
-		model.weight(two).map(value -> value - 1);
+		model.weight(two).update(value -> value - 1);
 		assertTrue(model.weight(two).is(0));
 
 		model.enabled(one).set(false);
@@ -79,7 +79,7 @@ public class DefaultItemRandomizerTest {
 		model.enabled(one).set(true);
 
 		try {
-			model.weight(one).map(value -> value - 1);
+			model.weight(one).update(value -> value - 1);
 			fail();
 		}
 		catch (IllegalStateException ignored) {/*ignored*/}

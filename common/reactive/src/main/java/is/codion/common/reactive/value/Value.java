@@ -101,18 +101,18 @@ public interface Value<T> extends Observable<T> {
 	void clear();
 
 	/**
-	 * Sets a new value mapped from the current value.
+	 * Updates the value with the result of applying the given function to the current value.
 	 * {@snippet :
 	 * Value<Integer> value = Value.value(0);
 	 *
 	 * // increment the value by one
-	 * value.map(currentValue -> currentValue + 1);
+	 * value.update(currentValue -> currentValue + 1);
 	 *}
-	 * @param mapper maps from the current value to a new value
-	 * @throws NullPointerException in case {@code mapper} is null
+	 * @param updateFunction a function mapping from the current value to the new value
+	 * @throws NullPointerException in case {@code updateFunction} is null
 	 */
-	default void map(UnaryOperator<@Nullable T> mapper) {
-		set(requireNonNull(mapper).apply(get()));
+	default void update(UnaryOperator<@Nullable T> updateFunction) {
+		set(requireNonNull(updateFunction).apply(get()));
 	}
 
 	/**
