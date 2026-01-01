@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2010 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2010 - 2026, Björn Darri Sigurðsson.
  */
 package is.codion.framework.domain.entity.exception;
 

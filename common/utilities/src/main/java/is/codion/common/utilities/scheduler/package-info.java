@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
  * <p>Task scheduling related classes.
