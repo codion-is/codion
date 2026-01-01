@@ -18,7 +18,7 @@
  */
 package is.codion.common.reactive.event;
 
-import is.codion.common.reactive.observer.DefaultObserver;
+import is.codion.common.reactive.observer.AbstractObserver;
 import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
@@ -107,7 +107,7 @@ final class DefaultEvent<T> implements Event<T> {
 
 	private interface Lock {}
 
-	private static final class EventObserver<T> extends DefaultObserver<T> {
+	private static final class EventObserver<T> extends AbstractObserver<T> {
 
 		private void accept(@Nullable T data) {
 			notifyListeners(data);

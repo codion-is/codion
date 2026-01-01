@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-final class Conditional<T> extends DefaultObserver<T> {
+final class Conditional<T> extends AbstractObserver<T> {
 
 	private final Predicate<? super T> predicate;
 

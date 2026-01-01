@@ -18,14 +18,14 @@
  */
 package is.codion.common.reactive.value;
 
-import is.codion.common.reactive.observer.DefaultObserver;
+import is.codion.common.reactive.observer.AbstractObserver;
 
 import org.jspecify.annotations.Nullable;
 
 import static is.codion.common.reactive.value.ValueChange.valueChange;
 import static java.util.Objects.deepEquals;
 
-final class ValueChangeObserver<T> extends DefaultObserver<ValueChange<T>> {
+final class ValueChangeObserver<T> extends AbstractObserver<ValueChange<T>> {
 
 	private @Nullable T current;
 

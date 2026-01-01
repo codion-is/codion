@@ -18,7 +18,7 @@
  */
 package is.codion.common.reactive.state;
 
-import is.codion.common.reactive.observer.DefaultObserver;
+import is.codion.common.reactive.observer.AbstractObserver;
 import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
@@ -91,7 +91,7 @@ final class DefaultObservableState implements ObservableState {
 
 	private interface Lock {}
 
-	private static final class StateObserver extends DefaultObserver<Boolean> {
+	private static final class StateObserver extends AbstractObserver<Boolean> {
 
 		private void accept(Boolean data) {
 			notifyListeners(data);

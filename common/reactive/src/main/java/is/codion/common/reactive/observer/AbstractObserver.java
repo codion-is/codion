@@ -35,16 +35,16 @@ import static java.util.Objects.requireNonNull;
  * All listener management operations are synchronized using an internal lock.
  * Dead weak references are cleaned up during add/remove operations.
  */
-public class DefaultObserver<T> implements Observer<T> {
+public abstract class AbstractObserver<T> implements Observer<T> {
 
 	private final Lock lock = new Lock() {};
 
 	private @Nullable ArrayList<Listener<?>> listeners;
 
 	/**
-	 * Instantiates a new {@link DefaultObserver}
+	 * Instantiates a new {@link AbstractObserver}
 	 */
-	protected DefaultObserver() {}
+	protected AbstractObserver() {}
 
 	@Override
 	public final boolean addListener(Runnable runnable) {

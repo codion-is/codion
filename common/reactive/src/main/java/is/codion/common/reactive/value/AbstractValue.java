@@ -18,7 +18,7 @@
  */
 package is.codion.common.reactive.value;
 
-import is.codion.common.reactive.observer.DefaultObserver;
+import is.codion.common.reactive.observer.AbstractObserver;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 
@@ -336,7 +336,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 		}
 	}
 
-	private static final class ValueObserver<T> extends DefaultObserver<T> {
+	private static final class ValueObserver<T> extends AbstractObserver<T> {
 
 		private void accept(@Nullable T data) {
 			notifyListeners(data);

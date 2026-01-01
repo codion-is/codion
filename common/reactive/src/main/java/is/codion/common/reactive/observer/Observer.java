@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  * Manages event listeners.
  * <p>All implementations are thread-safe and support concurrent access.</p>
  * @param <T> the type of data propagated to listeners.
- * @see DefaultObserver
+ * @see AbstractObserver
  * @see #when(Object)
  * @see #when(Predicate)
  */
