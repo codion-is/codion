@@ -52,7 +52,7 @@ final class Conditional<T> extends AbstractObserver<T> {
 
 		@Override
 		public boolean test(T value) {
-			return Objects.equals(this.value, value);
+			return Objects.deepEquals(this.value, value);
 		}
 	}
 }

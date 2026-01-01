@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.64
 ### is.codion.common.reactive
 - DefaultObserver now abstract, renamed AbstractObserver.
+- Conditional bug fixed, now works with arrays using deepEquals().
 ### is.codion.swing.common.ui
 - CheckBoxValue removed, related refactoring.
 - DefaultToggleButtonBuilder, AbstractToggleMenuItemBuilder bug fixed, ObservableStateLink added, now sets initial value.

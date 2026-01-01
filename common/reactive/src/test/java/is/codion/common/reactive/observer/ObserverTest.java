@@ -73,6 +73,18 @@ public final class ObserverTest {
 	}
 
 	@Test
+	void conditionalArray() {
+		AtomicInteger counter = new AtomicInteger();
+		int[] one = new int[] {1};
+		Value<int[]> value = Value.builder()
+						.nonNull(new int[0])
+						.when(one, counter::incrementAndGet)
+						.build();
+		value.set(new int[] {1});
+		assertEquals(1, counter.get());
+	}
+
+	@Test
 	void observeState() {
 		AtomicInteger trueCounter = new AtomicInteger();
 		AtomicInteger falseCounter = new AtomicInteger();
