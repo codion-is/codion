@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Sizes;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
+import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
@@ -451,7 +452,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	/**
-	 * Enables focus transfer on Enter, override for special handling
+	 * Enables focus transfer on Enter, override for composite components or special handling
 	 * @param component the component
 	 * @param transferFocusOnEnter the transfer focus on enter to enable
 	 */
@@ -461,13 +462,24 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	/**
 	 * Enables a valid indicator on the given component, based on the given valid state instance
-	 * using the given {@link ValidIndicatorFactory}, override for special handling.
+	 * using the given {@link ValidIndicatorFactory}, override for composite components or special handling.
 	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use
 	 * @param component the component
 	 * @param valid the valid state to indicate
 	 */
 	protected void enableValidIndicator(ValidIndicatorFactory validIndicatorFactory, C component, ObservableState valid) {
 		validIndicatorFactory.enable(component, valid);
+	}
+
+	/**
+	 * Enables a modified indicator on the given component, based on the given modified state instance
+	 * using the given {@link ModifiedIndicatorFactory}, override for composite components or special handling.
+	 * @param modifiedIndicatorFactory the {@link ModifiedIndicatorFactory} to use
+	 * @param component the component
+	 * @param modified the modified state to indicate
+	 */
+	protected void enableModifiedIndicator(ModifiedIndicatorFactory modifiedIndicatorFactory, C component, ObservableState modified) {
+		modifiedIndicatorFactory.enable(component, modified);
 	}
 
 	protected final B self() {

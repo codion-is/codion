@@ -257,7 +257,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 
 	private void configureModifiedIndicator(C component) {
 		if (modifiedIndicatorFactory != null && modifiedObservable != null) {
-			modifiedIndicatorFactory.enable(component, modifiedObservable);
+			enableModifiedIndicator(modifiedIndicatorFactory, component, modifiedObservable);
 		}
 	}
 
