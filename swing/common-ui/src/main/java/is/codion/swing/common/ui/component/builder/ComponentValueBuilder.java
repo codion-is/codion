@@ -105,9 +105,9 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	B validIndicator(@Nullable Predicate<T> validator);
 
 	/**
-	 * By default {@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory}.
 	 * @param modifiedIndicator the {@link ModifiedIndicatorFactory} to use, null for none
 	 * @return this builder instance
+	 * @see ModifiedIndicatorFactory#instance()
 	 */
 	B modifiedIndicator(@Nullable ModifiedIndicatorFactory modifiedIndicator);
 

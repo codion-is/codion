@@ -19,8 +19,15 @@
 package is.codion.swing.common.ui.component.indicator;
 
 import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.utilities.property.PropertyValue;
 
 import javax.swing.JComponent;
+import java.util.Optional;
+import java.util.ServiceLoader;
+
+import static is.codion.common.utilities.Configuration.stringValue;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Provides a modified indicator for a component.
@@ -28,9 +35,38 @@ import javax.swing.JComponent;
 public interface ModifiedIndicatorFactory {
 
 	/**
+	 * Specifies the {@link ValidIndicatorFactory} to use
+	 * <p>By default {@link UnderlineModifiedIndicatorFactory}.
+	 * @see SwapColorsModifiedIndicatorFactory
+	 * @see UnderlineModifiedIndicatorFactory
+	 */
+	PropertyValue<String> FACTORY_CLASS =
+					stringValue(ModifiedIndicatorFactory.class.getName() + ".factoryClass", UnderlineModifiedIndicatorFactory.class.getName());
+
+	/**
 	 * Enables the modified indicator for the given component, based on the given modified state
 	 * @param component the component
 	 * @param modified the modified state observer
 	 */
 	void enable(JComponent component, ObservableState modified);
+
+	/**
+	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #FACTORY_CLASS}
+	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
+	 */
+	static Optional<ModifiedIndicatorFactory> instance() {
+		return instance(FACTORY_CLASS.getOrThrow());
+	}
+
+	/**
+	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@code factoryClassName}
+	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
+	 */
+	static Optional<ModifiedIndicatorFactory> instance(String factoryClassName) {
+		requireNonNull(factoryClassName);
+
+		return stream(ServiceLoader.load(ModifiedIndicatorFactory.class).spliterator(), false)
+						.filter(factory -> factory.getClass().getName().equals(factoryClassName))
+						.findFirst();
+	}
 }

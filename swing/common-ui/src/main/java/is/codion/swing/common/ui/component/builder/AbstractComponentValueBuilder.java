@@ -24,7 +24,6 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueChange;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
-import is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -50,7 +49,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	private @Nullable ValidIndicatorFactory validIndicatorFactory =
 					ValidIndicatorFactory.instance().orElse(null);
 	private @Nullable ModifiedIndicatorFactory modifiedIndicatorFactory =
-					new UnderlineModifiedIndicatorFactory();
+					ModifiedIndicatorFactory.instance().orElse(null);
 	private @Nullable ObservableState modifiedObservable;
 	private @Nullable ObservableState validObservable;
 	private @Nullable Predicate<T> validator;

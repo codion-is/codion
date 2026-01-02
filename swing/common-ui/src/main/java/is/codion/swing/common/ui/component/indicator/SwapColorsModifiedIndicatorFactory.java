@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.indicator;
 
 import is.codion.common.reactive.state.ObservableState;
-import is.codion.common.utilities.property.PropertyValue;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -31,37 +29,23 @@ import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.util.Map;
 
-import static is.codion.common.utilities.Configuration.integerValue;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Indicates modification by underlining the assocated label text.
+ * Indicates modification by swapping the colors of the assocated label text.
  * Relies on {@link JLabel#setLabelFor(Component)}.
- * @see #UNDERLINE_STYLE
+ * @see TextAttribute#SWAP_COLORS
  */
-public final class UnderlineModifiedIndicatorFactory implements ModifiedIndicatorFactory {
-
-	/**
-	 * The type of underline to use to indicate a modified value
-	 * <ul>
-	 * <li>Value type: Integer
-	 * <li>Default value: {@link TextAttribute#UNDERLINE_LOW_DOTTED}
-	 * <li>Valid values: {@link TextAttribute}.UNDERLINE_*
-	 * </ul>
-	 */
-	public static final PropertyValue<Integer> UNDERLINE_STYLE =
-					integerValue(ComponentBuilder.class.getName() + ".underlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
+public final class SwapColorsModifiedIndicatorFactory implements ModifiedIndicatorFactory {
 
 	@Override
 	public void enable(JComponent component, ObservableState modified) {
-		requireNonNull(modified).addConsumer(new UnderlineIndicator(requireNonNull(component)));
+		requireNonNull(modified).addConsumer(new SwapColorsIndicator(requireNonNull(component)));
 	}
 
-	private static final class UnderlineIndicator extends AbstractModifiedIndicator {
+	private static final class SwapColorsIndicator extends AbstractModifiedIndicator {
 
-		private static final int UNDERLINE_STYLE = UnderlineModifiedIndicatorFactory.UNDERLINE_STYLE.getOrThrow();
-
-		private UnderlineIndicator(JComponent component) {
+		private SwapColorsIndicator(JComponent component) {
 			super(component);
 		}
 
@@ -69,7 +53,7 @@ public final class UnderlineModifiedIndicatorFactory implements ModifiedIndicato
 		protected void update(JLabel label, boolean modified) {
 			Font font = label.getFont();
 			Map<TextAttribute, @Nullable Object> attributes = (Map<TextAttribute, Object>) font.getAttributes();
-			attributes.put(TextAttribute.INPUT_METHOD_UNDERLINE, modified ? UNDERLINE_STYLE : null);
+			attributes.put(TextAttribute.SWAP_COLORS, modified ? TextAttribute.SWAP_COLORS_ON : null);
 			label.setFont(font.deriveFont(attributes));
 		}
 	}

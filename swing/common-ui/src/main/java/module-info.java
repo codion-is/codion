@@ -80,11 +80,15 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.window;
 
 	uses is.codion.swing.common.ui.laf.LookAndFeelProvider;
+	uses is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
 	uses is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 	uses is.codion.swing.common.ui.scaler.Scaler;
 
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
 					with is.codion.swing.common.ui.laf.InstalledLookAndFeelProvider;
+	provides is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory
+					with is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory,
+									is.codion.swing.common.ui.component.indicator.SwapColorsModifiedIndicatorFactory;
 	provides is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 					with is.codion.swing.common.ui.component.indicator.BackgroundColorValidIndicatorFactory;
 	provides is.codion.swing.common.ui.scaler.Scaler
