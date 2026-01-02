@@ -16,6 +16,7 @@ Codion Change Log
 - FilterTableCellEditor.Builder.resizeRow() added for overriding the default table setting.
 - AbstractComponentBuilder.enableModifiedIndicator() added.
 - DefaultFilterTableCellRenderer no longer sets JComboBox.isTableCellEditor, not required due to Enter key handling, value changes now visible when using arrow keys.
+- DefaultValidIndicatorFactory renamed BackgroundColorValidIndicatorFactory, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
 ### is.codion.plugin.flatlaf.intellij

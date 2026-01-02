@@ -86,7 +86,7 @@ module is.codion.swing.common.ui {
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
 					with is.codion.swing.common.ui.laf.InstalledLookAndFeelProvider;
 	provides is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
-					with is.codion.swing.common.ui.component.indicator.DefaultValidIndicatorFactory;
+					with is.codion.swing.common.ui.component.indicator.BackgroundColorValidIndicatorFactory;
 	provides is.codion.swing.common.ui.scaler.Scaler
 					with is.codion.swing.common.ui.scaler.FontSizeScaler;
 }

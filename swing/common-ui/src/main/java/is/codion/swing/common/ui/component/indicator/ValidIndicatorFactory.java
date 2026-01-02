@@ -35,10 +35,11 @@ import static java.util.stream.StreamSupport.stream;
 public interface ValidIndicatorFactory {
 
 	/**
-	 * Specified the {@link ValidIndicatorFactory} to use
+	 * Specified the {@link ValidIndicatorFactory} to use.
+	 * <p>Default {@link BackgroundColorValidIndicatorFactory}
 	 */
 	PropertyValue<String> FACTORY_CLASS =
-					stringValue(ValidIndicatorFactory.class.getName() + ".factoryClass", DefaultValidIndicatorFactory.class.getName());
+					stringValue(ValidIndicatorFactory.class.getName() + ".factoryClass", BackgroundColorValidIndicatorFactory.class.getName());
 
 	/**
 	 * Enables the valid indicator for the given component, based on the given valid state
