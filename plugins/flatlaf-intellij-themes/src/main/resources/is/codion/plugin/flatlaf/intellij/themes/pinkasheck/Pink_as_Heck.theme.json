@@ -1,0 +1,45 @@
+{
+  "name": "Pink as Heck",
+  "dark": true,
+  "author": "Shoobah",
+  "editorScheme": "/Pink_as_Heck.xml",
+  "ui": {
+    "*": {
+      "background": "darkBG"
+    },
+    "Menu.foreground": "basicPink",
+    "DefaultTabs.background": "basicBG",
+    "DefaultTabs.borderColor": "basicBG",
+    "DefaultTabs.hoverBackground": "lighterBG",
+    "DefaultTabs.underlineColor": "lighterBG",
+    "DefaultTabs.inactiveUnderlineColor": "basicPink",
+    "Window.border": "1,1,1,1,lighterBG",
+    "Borders.color": "lighterBG",
+    "ToolWindow.Header.inactiveBackground": "basicBG",
+    "ToolWindow.Header.background": "lighterBG",
+    "ToolWindow.Button.selectedBackground": "lighterBG",
+    "ToolWindow.Header.borderColor": "basicBG",
+    "ComboBox.background":"basicBG",
+    "ComboBox.ArrowButton.background": "basicBG",
+    "Menu.borderColor": "basicBG",
+    "Menu.background": "lighterBG",
+    "Menu.separatorColor": "lighterBG",
+    "MenuItem.selectionBackground": "#641F49",
+    "EditorTabs.underlinedTabBackground": "basicBG",
+    "EditorTabs.underlinedTabForeground": "basicPink"
+  },
+  "icons": {
+    "ColorPalette": {
+      "Actions.Blue": "#ea7599",
+      "Objects.Blue": "#ea7599",
+      "Actions.Grey": "#ea7599",
+      "Objects.Grey": "#ea7599"
+    }
+  },
+  "colors": {
+    "basicBG": "#2b111b",
+    "darkBG": "#150a0b",
+    "lighterBG": "#5b1943",
+    "basicPink": "#ff5c8d"
+  }
+}

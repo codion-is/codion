@@ -36,6 +36,7 @@ import is.codion.plugin.flatlaf.intellij.themes.codely.Codely;
 import is.codion.plugin.flatlaf.intellij.themes.codely.CodelyBlue;
 import is.codion.plugin.flatlaf.intellij.themes.codely.CodelyDark;
 import is.codion.plugin.flatlaf.intellij.themes.codely.CodelyLight;
+import is.codion.plugin.flatlaf.intellij.themes.copilot.Copilot;
 import is.codion.plugin.flatlaf.intellij.themes.cutepink.CutePinkDark;
 import is.codion.plugin.flatlaf.intellij.themes.cutepink.CutePinkLight;
 import is.codion.plugin.flatlaf.intellij.themes.cyberpunk.Cyberpunk;
@@ -43,6 +44,7 @@ import is.codion.plugin.flatlaf.intellij.themes.darculasolid.DarculaSolid;
 import is.codion.plugin.flatlaf.intellij.themes.darkflat.DarkFlat;
 import is.codion.plugin.flatlaf.intellij.themes.darkhorizon.DarkHorizon;
 import is.codion.plugin.flatlaf.intellij.themes.darkpurple.DarkPurple;
+import is.codion.plugin.flatlaf.intellij.themes.darkubuntu.DarkUbuntu;
 import is.codion.plugin.flatlaf.intellij.themes.dracula.Dracula;
 import is.codion.plugin.flatlaf.intellij.themes.elegant.ElegantDark;
 import is.codion.plugin.flatlaf.intellij.themes.elegant.ElegantLight;
@@ -74,8 +76,11 @@ import is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxMaterialLightHard
 import is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxMaterialLightMedium;
 import is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxMaterialLightSoft;
 import is.codion.plugin.flatlaf.intellij.themes.halcyon.Halcyon;
+import is.codion.plugin.flatlaf.intellij.themes.hardhacker.HardHackerDarker;
+import is.codion.plugin.flatlaf.intellij.themes.hardhacker.HardHackerNormal;
 import is.codion.plugin.flatlaf.intellij.themes.hiberbee.HiberbeeDark;
 import is.codion.plugin.flatlaf.intellij.themes.highcontrast.HighContrast;
+import is.codion.plugin.flatlaf.intellij.themes.iceberg.Iceberg;
 import is.codion.plugin.flatlaf.intellij.themes.lightflat.LightFlat;
 import is.codion.plugin.flatlaf.intellij.themes.lotus.LotusDark;
 import is.codion.plugin.flatlaf.intellij.themes.lotus.LotusLight;
@@ -113,10 +118,12 @@ import is.codion.plugin.flatlaf.intellij.themes.onepauintxi.OnePauintxiAllBlue;
 import is.codion.plugin.flatlaf.intellij.themes.onepauintxi.OnePauintxiAllOrange;
 import is.codion.plugin.flatlaf.intellij.themes.onepauintxi.OnePauintxiBlue;
 import is.codion.plugin.flatlaf.intellij.themes.onepauintxi.OnePauintxiOrange;
+import is.codion.plugin.flatlaf.intellij.themes.pinkasheck.PinkAsHeck;
 import is.codion.plugin.flatlaf.intellij.themes.rider.RiderDark;
 import is.codion.plugin.flatlaf.intellij.themes.rider.RiderDay;
 import is.codion.plugin.flatlaf.intellij.themes.rider.RiderLight;
 import is.codion.plugin.flatlaf.intellij.themes.rider.RiderNight;
+import is.codion.plugin.flatlaf.intellij.themes.solidcherry.SolidCherry;
 import is.codion.plugin.flatlaf.intellij.themes.srcery.Srcery;
 import is.codion.plugin.flatlaf.intellij.themes.tayviscon.TeyvisconDark;
 import is.codion.plugin.flatlaf.intellij.themes.trashpanda.TrashPanda;
@@ -239,6 +246,14 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 						lookAndFeelEnabler(new LookAndFeelInfo("VSCode Dark Modern", VSCodeDarkModern.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("VSCode Light", VSCodeLight.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("Halcyon", Halcyon.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Solid Cherry", SolidCherry.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Hard Hacker Darker", HardHackerDarker.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Hard Hacker Normal", HardHackerNormal.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Dark Ubuntu", DarkUbuntu.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Autumn", Autumn.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Iceberg", Iceberg.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Copilot", Copilot.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Pink As Heck", PinkAsHeck.class.getName()), ENABLER),
 
 						// From FlatLaf
 						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark (Material)", ArcDarkMaterial.class.getName()), ENABLER),

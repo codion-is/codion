@@ -28,10 +28,12 @@ module is.codion.plugin.flatlaf.intellij.themes {
 	exports is.codion.plugin.flatlaf.intellij;
 	exports is.codion.plugin.flatlaf.intellij.themes.akusan;
 	exports is.codion.plugin.flatlaf.intellij.themes.arc;
+	exports is.codion.plugin.flatlaf.intellij.themes.autumn;
 	exports is.codion.plugin.flatlaf.intellij.themes.carbon;
 	exports is.codion.plugin.flatlaf.intellij.themes.catppuccin;
 	exports is.codion.plugin.flatlaf.intellij.themes.cobalt2;
 	exports is.codion.plugin.flatlaf.intellij.themes.codely;
+	exports is.codion.plugin.flatlaf.intellij.themes.copilot;
 	exports is.codion.plugin.flatlaf.intellij.themes.cutepink;
 	exports is.codion.plugin.flatlaf.intellij.themes.cyan;
 	exports is.codion.plugin.flatlaf.intellij.themes.cyberpunk;
@@ -39,6 +41,7 @@ module is.codion.plugin.flatlaf.intellij.themes {
 	exports is.codion.plugin.flatlaf.intellij.themes.darkflat;
 	exports is.codion.plugin.flatlaf.intellij.themes.darkhorizon;
 	exports is.codion.plugin.flatlaf.intellij.themes.darkpurple;
+	exports is.codion.plugin.flatlaf.intellij.themes.darkubuntu;
 	exports is.codion.plugin.flatlaf.intellij.themes.dracula;
 	exports is.codion.plugin.flatlaf.intellij.themes.elegant;
 	exports is.codion.plugin.flatlaf.intellij.themes.espresso;
@@ -49,8 +52,10 @@ module is.codion.plugin.flatlaf.intellij.themes {
 	exports is.codion.plugin.flatlaf.intellij.themes.gray;
 	exports is.codion.plugin.flatlaf.intellij.themes.gruvbox;
 	exports is.codion.plugin.flatlaf.intellij.themes.halcyon;
+	exports is.codion.plugin.flatlaf.intellij.themes.hardhacker;
 	exports is.codion.plugin.flatlaf.intellij.themes.hiberbee;
 	exports is.codion.plugin.flatlaf.intellij.themes.highcontrast;
+	exports is.codion.plugin.flatlaf.intellij.themes.iceberg;
 	exports is.codion.plugin.flatlaf.intellij.themes.lightflat;
 	exports is.codion.plugin.flatlaf.intellij.themes.lotus;
 	exports is.codion.plugin.flatlaf.intellij.themes.material;
@@ -63,8 +68,10 @@ module is.codion.plugin.flatlaf.intellij.themes {
 	exports is.codion.plugin.flatlaf.intellij.themes.obsidiansunset;
 	exports is.codion.plugin.flatlaf.intellij.themes.onedark;
 	exports is.codion.plugin.flatlaf.intellij.themes.onepauintxi;
+	exports is.codion.plugin.flatlaf.intellij.themes.pinkasheck;
 	exports is.codion.plugin.flatlaf.intellij.themes.rider;
 	exports is.codion.plugin.flatlaf.intellij.themes.solarized;
+	exports is.codion.plugin.flatlaf.intellij.themes.solidcherry;
 	exports is.codion.plugin.flatlaf.intellij.themes.spacegray;
 	exports is.codion.plugin.flatlaf.intellij.themes.srcery;
 	exports is.codion.plugin.flatlaf.intellij.themes.tayviscon;

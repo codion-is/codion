@@ -18,6 +18,8 @@ Codion Change Log
 - DefaultFilterTableCellRenderer no longer sets JComboBox.isTableCellEditor, not required due to Enter key handling, value changes now visible when using arrow keys.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
+### is.codion.plugin.flatlaf.intellij
+- Solid Cherry, Hard Hacker, Dark Ubuntu, Autumn, Iceberg, Copilot and Pink As Heck IntelliJ themes added.
 
 ## 0.18.63
 ## is.codion
