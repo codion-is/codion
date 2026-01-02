@@ -362,9 +362,7 @@ public final class FilterTable<R, C> extends JTable {
 		configureTableHeader(builder.columnReordering, builder.columnResizing);
 		filters().view().set(builder.filterView);
 		bindEvents(builder.columnReordering, builder.columnResizing);
-		if (builder.resizeRowToFitEditor) {
-			addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor());
-		}
+		addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor(builder.resizeRowToFitEditor));
 		if (builder.rowSelection != null) {
 			setRowSelectionAllowed(builder.rowSelection);
 		}
@@ -1936,17 +1934,25 @@ public final class FilterTable<R, C> extends JTable {
 
 	private class ResizeRowToFitEditor implements PropertyChangeListener {
 
+		private final boolean resizeRowToFitEditor;
+
 		private int editedRow = -1;
+
+		private ResizeRowToFitEditor(boolean resizeRowToFitEditor) {
+			this.resizeRowToFitEditor = resizeRowToFitEditor;
+		}
 
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			TableCellEditor editor = (TableCellEditor) event.getNewValue();
 			if (editor instanceof DefaultFilterTableCellEditor<?>) {
 				DefaultFilterTableCellEditor<?> filterTableCellEditor = (DefaultFilterTableCellEditor<?>) editor;
-				editedRow = filterTableCellEditor.editedRow;
-				setRowHeight(editedRow, filterTableCellEditor.componentValue().component().getPreferredSize().height);
+				if (filterTableCellEditor.resizeRow(resizeRowToFitEditor)) {
+					editedRow = filterTableCellEditor.editedRow;
+					setRowHeight(editedRow, filterTableCellEditor.componentValue().component().getPreferredSize().height);
+				}
 			}
-			else if (event.getNewValue() == null && editedRow != -1) {
+			else if (editor == null && editedRow != -1) {
 				setRowHeight(editedRow, getRowHeight());
 				editedRow = -1;
 			}

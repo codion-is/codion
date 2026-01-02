@@ -49,6 +49,7 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 														.altStateCycleOrder(true)
 														::buildValue)
 										.clickCountToStart(1)
+										.resizeRow(false)
 										.build())
 						.filterComponents(Preferences.NEWSLETTER, new NewsletterConditionComponents())
 						.conditionComponents(Preferences.NEWSLETTER, new NewsletterConditionComponents()));

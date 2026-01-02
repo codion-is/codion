@@ -95,6 +95,15 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 		Builder<T> clickCountToStart(int clickCountToStart);
 
 		/**
+		 * <p>Configures whether this editor should request the row to be resized to accommodate the editor compoent size.
+		 * <p>Note that this setting is for overriding the default one, set via the global
+		 * {@link FilterTable#RESIZE_ROW_TO_FIT_EDITOR} configuration setting or
+		 * {@link FilterTable.Builder#resizeRowToFitEditor(boolean)} for a specific table instance.
+		 * @return this builder
+		 */
+		Builder<T> resizeRow(boolean resizeRow);
+
+		/**
 		 * @return a new {@link FilterTableCellEditor} based on this builder
 		 */
 		FilterTableCellEditor<T> build();

@@ -47,6 +47,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 	private final Supplier<ComponentValue<? extends JComponent, T>> inputComponent;
 	private final Function<EventObject, Boolean> cellEditable;
+	private final @Nullable Boolean resizeRow;
 
 	private @Nullable ComponentValue<? extends JComponent, T> componentValue;
 
@@ -55,6 +56,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	DefaultFilterTableCellEditor(DefaultBuilder<T> builder) {
 		this.inputComponent = builder.component;
 		this.cellEditable = builder.cellEditable();
+		this.resizeRow = builder.resizeRow;
 	}
 
 	@Override
@@ -120,6 +122,10 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		}
 	}
 
+	boolean resizeRow(boolean resizeRowToFitEditor) {
+		return resizeRow == null ? resizeRowToFitEditor : resizeRow;
+	}
+
 	private ComponentValue<? extends JComponent, T> initializeComponentValue() {
 		ComponentValue<? extends JComponent, T> value = inputComponent.get();
 		JComponent editorComponent = value.component();
@@ -155,6 +161,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 		private @Nullable Function<EventObject, Boolean> cellEditable;
 		private int clickCountToStart = 2;
+		private @Nullable Boolean resizeRow;
 
 		private DefaultBuilder(Supplier<ComponentValue<? extends JComponent, T>> component) {
 			this.component = component;
@@ -169,6 +176,12 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		@Override
 		public Builder<T> clickCountToStart(int clickCountToStart) {
 			this.clickCountToStart = clickCountToStart;
+			return this;
+		}
+
+		@Override
+		public Builder<T> resizeRow(boolean resizeRow) {
+			this.resizeRow = resizeRow;
 			return this;
 		}
 
