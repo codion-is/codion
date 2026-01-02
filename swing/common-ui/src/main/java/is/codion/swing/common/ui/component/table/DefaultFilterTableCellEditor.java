@@ -137,9 +137,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 			((JCheckBox) editorComponent).addActionListener(new StopEditingActionListener());
 		}
 		else if (editorComponent instanceof JComboBox) {
-			JComboBox<?> comboBox = (JComboBox<?>) editorComponent;
-			comboBox.putClientProperty("JComboBox.isTableCellEditor", true);
-			new ComboBoxEnterPressedAction(comboBox, new StopEditingActionListener());
+			new ComboBoxEnterPressedAction((JComboBox<?>) editorComponent, new StopEditingActionListener());
 		}
 
 		return value;
