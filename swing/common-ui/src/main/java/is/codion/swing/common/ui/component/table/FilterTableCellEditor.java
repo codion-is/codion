@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor.Builder.ComponentStep;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -29,6 +30,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static is.codion.common.utilities.Configuration.integerValue;
+
 /**
  * A {@link TableCellEditor} implementation for {@link FilterTable}.
  * @param <C> the component type
@@ -36,6 +39,17 @@ import java.util.function.Supplier;
  * @see #builder()
  */
 public interface FilterTableCellEditor<C extends JComponent, T> extends TableCellEditor {
+
+	/**
+	 * The default click count to start editing in tables.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 2
+	 * </ul>
+	 * @see javax.swing.DefaultCellEditor#setClickCountToStart(int)
+	 */
+	PropertyValue<Integer> CLICK_COUNT_TO_START =
+					integerValue(FilterTableCellEditor.class.getName() + ".clickCountToStart", 2);
 
 	/**
 	 * @return the underlying component value
@@ -91,10 +105,11 @@ public interface FilterTableCellEditor<C extends JComponent, T> extends TableCel
 		Builder<C, T> cellEditable(Function<EventObject, Boolean> cellEditable);
 
 		/**
-		 * Default 2, note that when using {@link javax.swing.JCheckBox} based editors
-		 * setting this to 1 is usually preferred.
+		 * Default specified by {@link #CLICK_COUNT_TO_START}.
+		 * <p>Mote that when using {@link javax.swing.JCheckBox} based editors setting this to 1 is usually preferred.
 		 * @param clickCountToStart specifies the number of clicks needed to start editing
 		 * @return this builder
+		 * @see #CLICK_COUNT_TO_START
 		 */
 		Builder<C, T> clickCountToStart(int clickCountToStart);
 

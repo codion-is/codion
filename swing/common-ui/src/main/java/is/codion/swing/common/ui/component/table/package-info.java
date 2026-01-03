@@ -19,6 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellEditor#CLICK_COUNT_TO_START}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TABLE_CELL_LEFT_PADDING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#TABLE_CELL_RIGHT_PADDING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTableCellRenderer#NUMERICAL_HORIZONTAL_ALIGNMENT}

@@ -182,7 +182,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		private final Supplier<ComponentValue<C, T>> component;
 
 		private @Nullable Function<EventObject, Boolean> cellEditable;
-		private int clickCountToStart = 2;
+		private int clickCountToStart = CLICK_COUNT_TO_START.getOrThrow();
 		private @Nullable Boolean resizeRow;
 		private @Nullable Consumer<FilterTableCellEditor<C, T>> configuration;
 

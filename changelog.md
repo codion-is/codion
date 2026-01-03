@@ -20,6 +20,7 @@ Codion Change Log
 - ModifiedIndicatorFactory now service based, SwapColorsModifiedIndicatorFactory added, related refactoring.
 - FilterTableCellEditor.Builder.configure() added, for configuring custom components, related refactoring.
 - DefaultFilterTableCellEditor bug fixed, now consumes the Enter key event after stopping editing.
+- FilterTableCellEditor.CLICK_COUNT_TO_START configuration value added.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
 ### is.codion.plugin.flatlaf.intellij
