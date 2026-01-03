@@ -18,6 +18,8 @@ Codion Change Log
 - DefaultFilterTableCellRenderer no longer sets JComboBox.isTableCellEditor, not required due to Enter key handling, value changes now visible when using arrow keys.
 - DefaultValidIndicatorFactory renamed BackgroundColorValidIndicatorFactory, related refactoring.
 - ModifiedIndicatorFactory now service based, SwapColorsModifiedIndicatorFactory added, related refactoring.
+- FilterTableCellEditor.Builder.configure() added, for configuring custom components, related refactoring.
+- DefaultFilterTableCellEditor bug fixed, now consumes the Enter key event after stopping editing.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
 ### is.codion.plugin.flatlaf.intellij

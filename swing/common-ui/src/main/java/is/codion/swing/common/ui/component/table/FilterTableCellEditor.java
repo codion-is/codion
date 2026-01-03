@@ -25,26 +25,28 @@ import javax.swing.JComponent;
 import javax.swing.table.TableCellEditor;
 import java.util.EventObject;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * A {@link TableCellEditor} implementation for {@link FilterTable}.
+ * @param <C> the component type
  * @param <T> the value type
  * @see #builder()
  */
-public interface FilterTableCellEditor<T> extends TableCellEditor {
+public interface FilterTableCellEditor<C extends JComponent, T> extends TableCellEditor {
 
 	/**
 	 * @return the underlying component value
 	 */
-	ComponentValue<? extends JComponent, T> componentValue();
+	ComponentValue<C, T> componentValue();
 
 	/**
 	 * @return a {@link Builder.ComponentStep} instance.
 	 */
 	static ComponentStep builder() {
-		return DefaultFilterTableCellEditor.DefaultBuilder.COMPONENT;
+		return DefaultFilterTableCellEditor.DefaultBuilder.COMPONENT_STEP;
 	}
 
 	/**
@@ -60,9 +62,10 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 	}
 
 	/**
+	 * @param <C> the component type
 	 * @param <T> the cell type
 	 */
-	interface Builder<T> {
+	interface Builder<C extends JComponent, T> {
 
 		/**
 		 * Provides a {@link FilterTableCellEditor.Builder}
@@ -72,10 +75,11 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 			/**
 			 * Creates a new default {@link FilterTableCellEditor.Builder} instance.
 			 * @param component supplies the input component
+			 * @param <C> the component type
 			 * @param <T> the cell value type
 			 * @return a new {@link FilterTableCellEditor.Builder} instance
 			 */
-			<T> Builder<T> component(Supplier<ComponentValue<? extends JComponent, T>> component);
+			<C extends JComponent, T> Builder<C, T> component(Supplier<ComponentValue<C, T>> component);
 		}
 
 		/**
@@ -84,7 +88,7 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 		 * @return this builder
 		 * @see TableCellEditor#isCellEditable(EventObject)
 		 */
-		Builder<T> cellEditable(Function<EventObject, Boolean> cellEditable);
+		Builder<C, T> cellEditable(Function<EventObject, Boolean> cellEditable);
 
 		/**
 		 * Default 2, note that when using {@link javax.swing.JCheckBox} based editors
@@ -92,7 +96,7 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 		 * @param clickCountToStart specifies the number of clicks needed to start editing
 		 * @return this builder
 		 */
-		Builder<T> clickCountToStart(int clickCountToStart);
+		Builder<C, T> clickCountToStart(int clickCountToStart);
 
 		/**
 		 * <p>Configures whether this editor should request the row to be resized to accommodate the editor compoent size.
@@ -101,11 +105,20 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 		 * {@link FilterTable.Builder#resizeRowToFitEditor(boolean)} for a specific table instance.
 		 * @return this builder
 		 */
-		Builder<T> resizeRow(boolean resizeRow);
+		Builder<C, T> resizeRow(boolean resizeRow);
+
+		/**
+		 * For custom or composite components, this method can be used to configure the component,
+		 * for example to stop editing, which may not work properly if the component isn't
+		 * a direct descendant of the typical Swing components ({@link javax.swing.JTextField}, {@link javax.swing.JComboBox}, etc.).
+		 * @param cellEditor receives the cell editor for configuring
+		 * @return this builder
+		 */
+		Builder<C, T> configure(Consumer<FilterTableCellEditor<C, T>> cellEditor);
 
 		/**
 		 * @return a new {@link FilterTableCellEditor} based on this builder
 		 */
-		FilterTableCellEditor<T> build();
+		FilterTableCellEditor<C, T> build();
 	}
 }

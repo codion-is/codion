@@ -18,16 +18,19 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -35,34 +38,41 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implements FilterTableCellEditor<T> {
+final class DefaultFilterTableCellEditor<C extends JComponent, T> extends AbstractCellEditor implements FilterTableCellEditor<C, T> {
 
-	private final Supplier<ComponentValue<? extends JComponent, T>> inputComponent;
+	private final Supplier<ComponentValue<C, T>> inputComponent;
 	private final Function<EventObject, Boolean> cellEditable;
 	private final @Nullable Boolean resizeRow;
+	private final Consumer<FilterTableCellEditor<C, T>> configuration;
 
-	private @Nullable ComponentValue<? extends JComponent, T> componentValue;
+	private @Nullable ComponentValue<C, T> componentValue;
 
 	int editedRow = -1;
 
-	DefaultFilterTableCellEditor(DefaultBuilder<T> builder) {
+	DefaultFilterTableCellEditor(DefaultBuilder<C, T> builder) {
 		this.inputComponent = builder.component;
 		this.cellEditable = builder.cellEditable();
 		this.resizeRow = builder.resizeRow;
+		this.configuration = builder.configuration == null ? new DefaultCellEditorConfiguration<>() : builder.configuration;
 	}
 
 	@Override
-	public ComponentValue<? extends JComponent, T> componentValue() {
+	public ComponentValue<C, T> componentValue() {
 		if (componentValue == null) {
-			componentValue = initializeComponentValue();
+			componentValue = inputComponent.get();
+			configuration.accept(this);
 		}
 
 		return componentValue;
@@ -83,6 +93,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		TableCellRenderer renderer = table.getCellRenderer(row, column);
 		if (component instanceof JCheckBox) {
 			JComponent rendererComponent = (JComponent) renderer.getTableCellRendererComponent(table, value, isSelected, true, row, column);
+			((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
 			component.setBackground(rendererComponent.getBackground());
 			component.setBorder(rendererComponent.getBorder());
 			component.setOpaque(true);
@@ -126,65 +137,85 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		return resizeRow == null ? resizeRowToFitEditor : resizeRow;
 	}
 
-	private ComponentValue<? extends JComponent, T> initializeComponentValue() {
-		ComponentValue<? extends JComponent, T> value = inputComponent.get();
-		JComponent editorComponent = value.component();
-		if (editorComponent instanceof JTextField) {
-			((JTextField) editorComponent).addActionListener(new StopEditingActionListener());
-		}
-		else if (editorComponent instanceof JCheckBox) {
-			((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
-			((JCheckBox) editorComponent).addActionListener(new StopEditingActionListener());
-		}
-		else if (editorComponent instanceof JComboBox) {
-			new ComboBoxEnterPressedAction((JComboBox<?>) editorComponent, new StopEditingActionListener());
-		}
+	private static final class DefaultCellEditorConfiguration<C extends JComponent, T> implements Consumer<FilterTableCellEditor<C, T>> {
 
-		return value;
+		@Override
+		public void accept(FilterTableCellEditor<C, T> cellEditor) {
+			C editorComponent = cellEditor.componentValue().component();
+			ActionListener stopEditing = e -> cellEditor.stopCellEditing();
+			if (editorComponent instanceof JTextField) {
+				((JTextField) editorComponent).addActionListener(stopEditing);
+			}
+			else if (editorComponent instanceof JCheckBox) {
+				((JCheckBox) editorComponent).addActionListener(stopEditing);
+			}
+			else if (editorComponent instanceof TextFieldPanel) {
+				((TextFieldPanel) editorComponent).textField().addActionListener(stopEditing);
+			}
+			else if (editorComponent instanceof TemporalFieldPanel<?>) {
+				((TemporalFieldPanel<?>) editorComponent).temporalField().addActionListener(stopEditing);
+			}
+			else if (editorComponent instanceof JComboBox) {
+				new ComboBoxEnterHandler(cellEditor::stopCellEditing, (JComboBox<?>) editorComponent);
+			}
+			else if (editorComponent instanceof JSpinner) {
+				new SpinnerEnterHandler(cellEditor::stopCellEditing, (JSpinner) editorComponent);
+			}
+			else if (editorComponent instanceof JSlider) {
+				new SliderEnterHandler(cellEditor::stopCellEditing, (JSlider) editorComponent);
+			}
+		}
 	}
 
 	private static final class DefaultComponentStep implements Builder.ComponentStep {
 
 		@Override
-		public <T> Builder<T> component(Supplier<ComponentValue<? extends JComponent, T>> component) {
+		public <C extends JComponent, T> Builder<C, T> component(Supplier<ComponentValue<C, T>> component) {
 			return new DefaultBuilder<>(requireNonNull(component));
 		}
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<C extends JComponent, T> implements Builder<C, T> {
 
-		static final ComponentStep COMPONENT = new DefaultComponentStep();
+		static final ComponentStep COMPONENT_STEP = new DefaultComponentStep();
 
-		private final Supplier<ComponentValue<? extends JComponent, T>> component;
+		private final Supplier<ComponentValue<C, T>> component;
 
 		private @Nullable Function<EventObject, Boolean> cellEditable;
 		private int clickCountToStart = 2;
 		private @Nullable Boolean resizeRow;
+		private @Nullable Consumer<FilterTableCellEditor<C, T>> configuration;
 
-		private DefaultBuilder(Supplier<ComponentValue<? extends JComponent, T>> component) {
+		private DefaultBuilder(Supplier<ComponentValue<C, T>> component) {
 			this.component = component;
 		}
 
 		@Override
-		public Builder<T> cellEditable(Function<EventObject, Boolean> cellEditable) {
+		public Builder<C, T> cellEditable(Function<EventObject, Boolean> cellEditable) {
 			this.cellEditable = requireNonNull(cellEditable);
 			return this;
 		}
 
 		@Override
-		public Builder<T> clickCountToStart(int clickCountToStart) {
+		public Builder<C, T> clickCountToStart(int clickCountToStart) {
 			this.clickCountToStart = clickCountToStart;
 			return this;
 		}
 
 		@Override
-		public Builder<T> resizeRow(boolean resizeRow) {
+		public Builder<C, T> resizeRow(boolean resizeRow) {
 			this.resizeRow = resizeRow;
 			return this;
 		}
 
 		@Override
-		public FilterTableCellEditor<T> build() {
+		public Builder<C, T> configure(Consumer<FilterTableCellEditor<C, T>> cellEditor) {
+			this.configuration = requireNonNull(cellEditor);
+			return this;
+		}
+
+		@Override
+		public FilterTableCellEditor<C, T> build() {
 			return new DefaultFilterTableCellEditor<>(this);
 		}
 
@@ -193,35 +224,70 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		}
 	}
 
-	private final class StopEditingActionListener implements ActionListener {
+	private abstract static class StopEditingOnEnter extends KeyAdapter {
+
+		private final Runnable stopEditing;
+
+		private StopEditingOnEnter(Runnable stopEditing) {
+			this.stopEditing = stopEditing;
+		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			stopCellEditing();
+		public final void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == VK_ENTER) {
+				onEnter();
+				e.consume();
+			}
+			else {
+				super.keyPressed(e);
+			}
+		}
+
+		protected void onEnter() {
+			stopEditing.run();
 		}
 	}
 
-	private static final class ComboBoxEnterPressedAction extends AbstractAction {
+	private static final class SpinnerEnterHandler extends StopEditingOnEnter {
+
+		private SpinnerEnterHandler(Runnable stopEditing, JSpinner spinner) {
+			super(stopEditing);
+			spinner.getEditor().addKeyListener(this);
+		}
+	}
+
+	private static final class SliderEnterHandler extends StopEditingOnEnter {
+
+		private SliderEnterHandler(Runnable stopEditing, JSlider slider) {
+			super(stopEditing);
+			slider.addKeyListener(this);
+		}
+	}
+
+	private static final class ComboBoxEnterHandler extends StopEditingOnEnter {
 
 		private static final String ENTER_PRESSED = "enterPressed";
 
 		private final JComboBox<?> comboBox;
-		private final ActionListener actionListener;
-		private final Action enterPressedAction;
 
-		private ComboBoxEnterPressedAction(JComboBox<?> comboBox, ActionListener actionListener) {
+		private ComboBoxEnterHandler(Runnable stopEditing, JComboBox<?> comboBox) {
+			super(stopEditing);
 			this.comboBox = comboBox;
-			this.actionListener = actionListener;
-			this.enterPressedAction = comboBox.getActionMap().get(ENTER_PRESSED);
-			this.comboBox.getActionMap().put(ENTER_PRESSED, this);
+			comboBox.addKeyListener(this);
+			if (comboBox.isEditable()) {
+				comboBox.getEditor().getEditorComponent().addKeyListener(this);
+			}
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		protected void onEnter() {
 			if (comboBox.isPopupVisible()) {
-				enterPressedAction.actionPerformed(e);
+				Action action = comboBox.getActionMap().get(ENTER_PRESSED);
+				if (action != null) {
+					action.actionPerformed(new ActionEvent(comboBox, 0, ""));
+				}
 			}
-			actionListener.actionPerformed(e);
+			super.onEnter();
 		}
 	}
 

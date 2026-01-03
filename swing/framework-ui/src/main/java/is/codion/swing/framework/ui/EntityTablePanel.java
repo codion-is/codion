@@ -2560,7 +2560,7 @@ public class EntityTablePanel extends JPanel {
 		 * @return this Config instance
 		 * @see FilterTable.Builder#cellEditor(Object, FilterTableCellEditor)
 		 */
-		public <T, A extends Attribute<T>> Config cellEditor(A attribute, FilterTableCellEditor<T> cellEditor) {
+		public <T, A extends Attribute<T>> Config cellEditor(A attribute, FilterTableCellEditor<?, T> cellEditor) {
 			entityDefinition.attributes().definition(attribute);
 			tableBuilder.cellEditor(attribute, requireNonNull(cellEditor));
 			return this;

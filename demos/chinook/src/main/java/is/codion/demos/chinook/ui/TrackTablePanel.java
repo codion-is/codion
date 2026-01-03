@@ -119,9 +119,10 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.toolTip(milliseconds -> milliseconds + " ms");
 	}
 
-	private static FilterTableCellEditor<Integer> durationEditor() {
+	private static FilterTableCellEditor<DurationPanel, Integer> durationEditor() {
 		return FilterTableCellEditor.builder()
 						.component(() -> new DurationComponentValue(true))
+						.configure(DurationPanel::configureCellEditor)
 						.build();
 	}
 
@@ -130,7 +131,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.toolTip(Object::toString);
 	}
 
-	private static FilterTableCellEditor<Integer> ratingEditor(EntityDefinition entityDefinition) {
+	private static FilterTableCellEditor<JSpinner, Integer> ratingEditor(EntityDefinition entityDefinition) {
 		return FilterTableCellEditor.builder()
 						.component(() -> ratingSpinner(entityDefinition).buildValue())
 						.build();

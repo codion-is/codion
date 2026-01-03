@@ -969,7 +969,7 @@ public final class FilterTable<R, C> extends JTable {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellEditor() == null)
 						.forEach(column -> {
-							FilterTableCellEditor<?> cellEditor = builder.cellEditors.get(column.identifier());
+							FilterTableCellEditor<?, ?> cellEditor = builder.cellEditors.get(column.identifier());
 							if (cellEditor != null) {
 								column.setCellEditor(cellEditor);
 							}
@@ -1083,7 +1083,7 @@ public final class FilterTable<R, C> extends JTable {
 		columnModel().columns().forEach(column -> {
 			TableCellEditor columnCellEditor = column.getCellEditor();
 			if (columnCellEditor instanceof DefaultFilterTableCellEditor) {
-				((DefaultFilterTableCellEditor<?>) columnCellEditor).updateUI();
+				((DefaultFilterTableCellEditor<?, ?>) columnCellEditor).updateUI();
 			}
 			else if (columnCellEditor instanceof DefaultCellEditor) {
 				((JComponent) ((DefaultCellEditor) columnCellEditor).getComponent()).updateUI();
@@ -1337,7 +1337,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param <T> the column type
 		 * @return this builder instance
 		 */
-		<T> Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<T> cellEditor);
+		<T> Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<?, T> cellEditor);
 
 		/**
 		 * Note that this factory is only used to create cell editors for columns which do not already have a cell editor
@@ -1575,7 +1575,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final FilterTableModel<R, C> tableModel;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 		private final Map<C, FilterTableCellRenderer<R, C, ?>> cellRenderers = new HashMap<>();
-		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
+		private final Map<C, FilterTableCellEditor<?, ?>> cellEditors = new HashMap<>();
 		private final Map<C, ConditionComponents> filterComponents = new HashMap<>();
 		private final Collection<KeyStroke> startEditKeyStrokes = new ArrayList<>();
 		private final Set<C> hiddenColumns = new HashSet<>();
@@ -1677,7 +1677,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public <T> Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<T> cellEditor) {
+		public <T> Builder<R, C> cellEditor(C identifier, FilterTableCellEditor<?, T> cellEditor) {
 			this.cellEditors.put(requireNonNull(identifier), requireNonNull(cellEditor));
 			return this;
 		}
@@ -1945,8 +1945,8 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			TableCellEditor editor = (TableCellEditor) event.getNewValue();
-			if (editor instanceof DefaultFilterTableCellEditor<?>) {
-				DefaultFilterTableCellEditor<?> filterTableCellEditor = (DefaultFilterTableCellEditor<?>) editor;
+			if (editor instanceof DefaultFilterTableCellEditor<?, ?>) {
+				DefaultFilterTableCellEditor<?, ?> filterTableCellEditor = (DefaultFilterTableCellEditor<?, ?>) editor;
 				if (filterTableCellEditor.resizeRow(resizeRowToFitEditor)) {
 					editedRow = filterTableCellEditor.editedRow;
 					setRowHeight(editedRow, filterTableCellEditor.componentValue().component().getPreferredSize().height);

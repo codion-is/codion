@@ -20,6 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.framework.model.EntityEditModel.EditorValue;
+import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
@@ -161,6 +162,10 @@ final class DurationComponentValue extends AbstractComponentValue<DurationCompon
 					minutesField.requestFocusInWindow();
 				}
 			});
+		}
+
+		static void configureCellEditor(FilterTableCellEditor<DurationPanel, Integer> cellEditor) {
+			cellEditor.componentValue().component().millisecondsField.addActionListener(e -> cellEditor.stopCellEditing());
 		}
 
 		private void initializeCellEditor() {
