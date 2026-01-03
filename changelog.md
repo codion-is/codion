@@ -21,6 +21,8 @@ Codion Change Log
 - FilterTableCellEditor.Builder.configure() added, for configuring custom components, related refactoring.
 - DefaultFilterTableCellEditor bug fixed, now consumes the Enter key event after stopping editing.
 - FilterTableCellEditor.CLICK_COUNT_TO_START configuration value added.
+- FilterTableCellEditor.Builder.shouldSelectCell() added, default consistent with DefaultCellEditor.
+- DefaultFilterTableCellEditor.componentValue() now synchronizes on the inputComponent.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
 ### is.codion.plugin.flatlaf.intellij

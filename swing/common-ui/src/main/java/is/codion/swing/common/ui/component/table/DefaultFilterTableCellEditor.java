@@ -48,12 +48,14 @@ import java.util.function.Supplier;
 
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.awt.event.MouseEvent.MOUSE_DRAGGED;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellEditor<C extends JComponent, T> extends AbstractCellEditor implements FilterTableCellEditor<C, T> {
 
 	private final Supplier<ComponentValue<C, T>> inputComponent;
 	private final Function<EventObject, Boolean> cellEditable;
+	private final Function<EventObject, Boolean> shouldSelectCell;
 	private final @Nullable Boolean resizeRow;
 	private final Consumer<FilterTableCellEditor<C, T>> configuration;
 
@@ -64,18 +66,21 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 	DefaultFilterTableCellEditor(DefaultBuilder<C, T> builder) {
 		this.inputComponent = builder.component;
 		this.cellEditable = builder.cellEditable();
+		this.shouldSelectCell = builder.shouldSelectCell == null ? new DefaultShouldSelectCell() : builder.shouldSelectCell;
 		this.resizeRow = builder.resizeRow;
 		this.configuration = builder.configuration == null ? new DefaultCellEditorConfiguration<>() : builder.configuration;
 	}
 
 	@Override
 	public ComponentValue<C, T> componentValue() {
-		if (componentValue == null) {
-			componentValue = inputComponent.get();
-			configuration.accept(this);
-		}
+		synchronized (inputComponent) {
+			if (componentValue == null) {
+				componentValue = inputComponent.get();
+				configuration.accept(this);
+			}
 
-		return componentValue;
+			return componentValue;
+		}
 	}
 
 	@Override
@@ -118,13 +123,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 	@Override
 	public boolean shouldSelectCell(EventObject event) {
-		if (event instanceof MouseEvent) {
-			MouseEvent e = (MouseEvent) event;
-
-			return e.getID() != MouseEvent.MOUSE_DRAGGED;
-		}
-
-		return true;
+		return shouldSelectCell.apply(event);
 	}
 
 	void updateUI() {
@@ -135,6 +134,18 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 	boolean resizeRow(boolean resizeRowToFitEditor) {
 		return resizeRow == null ? resizeRowToFitEditor : resizeRow;
+	}
+
+	private final class DefaultShouldSelectCell implements Function<EventObject, Boolean> {
+
+		@Override
+		public Boolean apply(EventObject event) {
+			if (componentValue().component() instanceof JComboBox<?> && event instanceof MouseEvent) {
+				return ((MouseEvent) event).getID() != MOUSE_DRAGGED;
+			}
+
+			return true;
+		}
 	}
 
 	private static final class DefaultCellEditorConfiguration<C extends JComponent, T> implements Consumer<FilterTableCellEditor<C, T>> {
@@ -182,6 +193,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		private final Supplier<ComponentValue<C, T>> component;
 
 		private @Nullable Function<EventObject, Boolean> cellEditable;
+		private @Nullable Function<EventObject, Boolean> shouldSelectCell;
 		private int clickCountToStart = CLICK_COUNT_TO_START.getOrThrow();
 		private @Nullable Boolean resizeRow;
 		private @Nullable Consumer<FilterTableCellEditor<C, T>> configuration;
@@ -193,6 +205,12 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		@Override
 		public Builder<C, T> cellEditable(Function<EventObject, Boolean> cellEditable) {
 			this.cellEditable = requireNonNull(cellEditable);
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> shouldSelectCell(Function<EventObject, Boolean> shouldSelectCell) {
+			this.shouldSelectCell = requireNonNull(shouldSelectCell);
 			return this;
 		}
 

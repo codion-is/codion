@@ -105,6 +105,13 @@ public interface FilterTableCellEditor<C extends JComponent, T> extends TableCel
 		Builder<C, T> cellEditable(Function<EventObject, Boolean> cellEditable);
 
 		/**
+		 * @param shouldSelectCell a function specifying if the editing cell should be selected
+		 * @return this builder
+		 * @see TableCellEditor#shouldSelectCell(EventObject)
+		 */
+		Builder<C, T> shouldSelectCell(Function<EventObject, Boolean> shouldSelectCell);
+
+		/**
 		 * Default specified by {@link #CLICK_COUNT_TO_START}.
 		 * <p>Mote that when using {@link javax.swing.JCheckBox} based editors setting this to 1 is usually preferred.
 		 * @param clickCountToStart specifies the number of clicks needed to start editing
