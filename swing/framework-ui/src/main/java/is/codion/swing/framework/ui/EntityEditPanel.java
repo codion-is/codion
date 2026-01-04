@@ -268,6 +268,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	public final EntityEditPanel initialize() {
 		if (!initialized) {
+			LOG.debug("{} - initializing", this);
 			try {
 				setupControls();
 				bindEvents();

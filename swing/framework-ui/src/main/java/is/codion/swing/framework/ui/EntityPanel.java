@@ -46,6 +46,8 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -115,6 +117,8 @@ import static javax.swing.SwingConstants.VERTICAL;
  *}
  */
 public class EntityPanel extends JPanel {
+
+	private static final Logger LOG = LoggerFactory.getLogger(EntityPanel.class);
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityPanel.class, getBundle(EntityPanel.class.getName()));
@@ -396,6 +400,7 @@ public class EntityPanel extends JPanel {
 	 */
 	public final EntityPanel initialize() {
 		if (!initialized) {
+			LOG.debug("{} - initializing", this);
 			try {
 				setupControls();
 				setFocusCycleRoot(true);

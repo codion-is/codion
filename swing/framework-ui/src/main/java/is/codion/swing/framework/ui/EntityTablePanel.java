@@ -726,6 +726,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final EntityTablePanel initialize() {
 		if (!initialized) {
+			LOG.debug("{} - initializing", this);
 			try {
 				setupComponents();
 				setupControls();

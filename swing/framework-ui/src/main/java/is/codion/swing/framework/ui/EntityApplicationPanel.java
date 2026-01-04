@@ -459,6 +459,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public final EntityApplicationPanel<M> initialize() {
 		if (!initialized) {
+			LOG.debug("{} - initializing", this);
 			try {
 				applyPreferences();
 				setLayout(new BorderLayout());

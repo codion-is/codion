@@ -35,6 +35,7 @@ Codion Change Log
 - DefaultEntityComboBoxModel, minor logging improvements.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
+- EntityApplicationPanel, EntityPanel, EntityEditPanel, EntityTablePanel initialization logging added.
 ### is.codion.plugin.flatlaf.intellij
 - Solid Cherry, Hard Hacker, Dark Ubuntu, Autumn, Iceberg, Copilot and Pink As Heck IntelliJ themes added.
 
