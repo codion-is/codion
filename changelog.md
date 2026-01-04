@@ -8,6 +8,8 @@ Codion Change Log
 - Observable.is() bug fixed, now works with arrays using deepEquals().
 - DefaultValueChange.equals() bug fixed, now works with arrays using deepEquals().
 - Value.map() renamed update().
+### is.codion.common.utilities
+- Exceptions.runtime() without unwrap added.
 ### is.codion.swing.common.ui
 - CheckBoxValue removed, related refactoring.
 - DefaultToggleButtonBuilder, AbstractToggleMenuItemBuilder bug fixed, ObservableStateLink added, now sets initial value.

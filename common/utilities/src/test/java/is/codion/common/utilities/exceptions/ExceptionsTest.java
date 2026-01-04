@@ -23,8 +23,9 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExceptionsTest {
 
@@ -65,6 +66,15 @@ public class ExceptionsTest {
 
 		unwrapped = Exceptions.unwrap(new InvocationTargetException(new InvocationTargetException(new RuntimeException(rootException))), toUnwrap);
 		assertSame(rootException, unwrapped);
+	}
+
+	@Test
+	void runtime() {
+		Exception exception = new Exception("Testing");
+		RuntimeException runtime = Exceptions.runtime(exception);
+		assertSame(exception, runtime.getCause());
+		assertEquals(exception.getMessage(), runtime.getMessage());
+		assertTrue(Objects.deepEquals(exception.getStackTrace(), runtime.getStackTrace()));
 	}
 
 	private static final class TestRuntimeException extends RuntimeException {

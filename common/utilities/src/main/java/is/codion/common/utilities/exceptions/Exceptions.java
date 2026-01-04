@@ -31,21 +31,31 @@ public final class Exceptions {
 	private Exceptions() {}
 
 	/**
-	 * Returns the given {@link Throwable} in case it is a RuntimeException or else a RuntimeException wrapping it.
+	 * <p>Returns the given {@link Throwable} in case it is a RuntimeException or else a RuntimeException wrapping it.
+	 * <p>Note that if a new wrapper RuntimeException is created, it has the stacktrace of the original throwable,
+	 * as well as its message, while keeping the original throwable as its cause.
+	 * @param throwable the throwable
+	 */
+	public static RuntimeException runtime(Throwable throwable) {
+		if (requireNonNull(throwable) instanceof RuntimeException) {
+			return (RuntimeException) throwable;
+		}
+
+		RuntimeException exception = new RuntimeException(throwable.getMessage(), throwable);
+		exception.setStackTrace(throwable.getStackTrace());
+
+		return exception;
+	}
+
+	/**
+	 * <p>Returns the given {@link Throwable} in case it is a RuntimeException or else a RuntimeException wrapping it.
+	 * <p>Note that if a new wrapper RuntimeException is created, it has the stacktrace of the unwrapped throwable,
+	 * as well as its message, while keeping the unwrapped throwable as its cause.
 	 * @param throwable the throwable
 	 * @param unwrap unwraps these exceptions
 	 */
 	public static RuntimeException runtime(Throwable throwable, Class<? extends Throwable>... unwrap) {
-		requireNonNull(throwable);
-		Throwable cause = unwrap(throwable, asList(requireNonNull(unwrap)));
-		if (cause instanceof RuntimeException) {
-			return (RuntimeException) cause;
-		}
-
-		RuntimeException exception = new RuntimeException(cause.getMessage(), cause);
-		exception.setStackTrace(cause.getStackTrace());
-
-		return exception;
+		return runtime(unwrap(throwable, asList(requireNonNull(unwrap))));
 	}
 
 	/**
@@ -55,8 +65,9 @@ public final class Exceptions {
 	 * @return the unwrapped exception
 	 */
 	public static Throwable unwrap(Throwable throwable, Collection<Class<? extends Throwable>> unwrap) {
+		requireNonNull(throwable);
 		requireNonNull(unwrap);
-		Throwable cause = requireNonNull(throwable);
+		Throwable cause = throwable;
 		while (unwrap.contains(cause.getClass())) {
 			Throwable parent = cause;
 			cause = cause.getCause();
