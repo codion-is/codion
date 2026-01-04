@@ -19,7 +19,7 @@ dependencies {
     }
     implementation(project(":codion-framework-json-domain"))
 
-    implementation(project(":codion-plugin-flatlaf"))
+    implementation(project(":codion-plugin-flatlaf-lookandfeels"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     implementation(project(":codion-tools-swing-robot"))

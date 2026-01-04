@@ -14,27 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.plugin.flatlaf.intellij.scaler;
+/**
+ * Flat Look and Feels
+ */
+module is.codion.plugin.flatlaf.lookandfeels {
+	requires transitive is.codion.plugin.flatlaf;
 
-import is.codion.swing.common.ui.scaler.Scaler;
-
-import static java.util.Objects.requireNonNull;
-
-public final class UIScaler implements Scaler {
-
-	public UIScaler() {}
-
-	@Override
-	public void apply() {
-		if (SCALING.isNot(100)) {
-			System.setProperty("flatlaf.uiScale", String.valueOf(SCALING.getOrThrow() / 100f));
-		}
-	}
-
-	@Override
-	public boolean supports(String lookAndFeelClassName) {
-		return requireNonNull(lookAndFeelClassName).startsWith("is.codion.plugin.flatlaf.intellij");
-	}
+	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
+					with is.codion.plugin.flatlaf.lookandfeels.FlatLookAndFeelProvider;
 }

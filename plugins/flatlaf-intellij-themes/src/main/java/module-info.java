@@ -17,13 +17,11 @@
  * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * IntelliJ themes
+ * Flat Look and Feel IntelliJ themes
  */
 module is.codion.plugin.flatlaf.intellij.themes {
 	requires java.logging;
-	requires java.desktop;
-	requires is.codion.swing.common.ui;
-	requires transitive com.formdev.flatlaf;
+	requires transitive is.codion.plugin.flatlaf;
 
 	exports is.codion.plugin.flatlaf.intellij;
 	exports is.codion.plugin.flatlaf.intellij.themes.akusan;
@@ -82,6 +80,4 @@ module is.codion.plugin.flatlaf.intellij.themes {
 
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
 					with is.codion.plugin.flatlaf.intellij.IntelliJThemeProvider;
-	provides is.codion.swing.common.ui.scaler.Scaler
-					with is.codion.plugin.flatlaf.intellij.scaler.UIScaler;
 }

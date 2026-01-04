@@ -17,7 +17,7 @@ dependencies {
     implementation(project(":codion-framework-servlet"))
     implementation(project(":codion-dbms-h2"))
 
-    implementation(project(":codion-plugin-flatlaf"))
+    implementation(project(":codion-plugin-flatlaf-lookandfeels"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     implementation(libs.jasperreports) {

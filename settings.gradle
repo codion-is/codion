@@ -169,6 +169,9 @@ project(":codion-plugin-tomcat-pool").projectDir = file("plugins/tomcat-pool")
 include "codion-plugin-flatlaf"
 project(":codion-plugin-flatlaf").projectDir = file("plugins/flatlaf")
 
+include "codion-plugin-flatlaf-lookandfeels"
+project(":codion-plugin-flatlaf-lookandfeels").projectDir = file("plugins/flatlaf-lookandfeels")
+
 include "codion-plugin-flatlaf-intellij-themes"
 project(":codion-plugin-flatlaf-intellij-themes").projectDir = file("plugins/flatlaf-intellij-themes")
 

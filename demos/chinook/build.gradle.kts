@@ -18,7 +18,7 @@ dependencies {
 
     runtimeOnly(project(":codion-plugin-logback-proxy"))
 
-    implementation(project(":codion-plugin-flatlaf"))
+    implementation(project(":codion-plugin-flatlaf-lookandfeels"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
     implementation("com.formdev:flatlaf-extras:3.7") {
         // https://github.com/weisJ/jsvg/issues/134

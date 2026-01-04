@@ -28,6 +28,7 @@ dependencies.constraints {
     api(project(":codion-dbms-hsqldb"))
 
     api(project(":codion-plugin-flatlaf"))
+    api(project(":codion-plugin-flatlaf-lookandfeels"))
     api(project(":codion-plugin-flatlaf-intellij-themes"))
     api(project(":codion-plugin-jasperreports"))
     api(project(":codion-plugin-jul-proxy"))

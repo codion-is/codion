@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":codion-swing-common-ui"))
     implementation(project(":codion-tools-monitor-model"))
-    implementation(project(":codion-plugin-flatlaf"))
+    implementation(project(":codion-plugin-flatlaf-lookandfeels"))
 
     implementation(libs.slf4j.api)
     implementation(libs.jfreechart)

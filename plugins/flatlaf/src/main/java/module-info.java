@@ -17,15 +17,12 @@
  * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * Flat Look and Feel
+ * Flat Look and Feel service utilities, valid indicator and scaler
  */
 module is.codion.plugin.flatlaf {
-	requires java.desktop;
-	requires is.codion.swing.common.ui;
+	requires transitive is.codion.swing.common.ui;
 	requires transitive com.formdev.flatlaf;
 
-	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
-					with is.codion.plugin.flatlaf.FlatLookAndFeelProvider;
 	provides is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 					with is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory;
 	provides is.codion.swing.common.ui.scaler.Scaler
