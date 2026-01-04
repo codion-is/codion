@@ -31,6 +31,7 @@ import javax.swing.text.Document;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Optional;
@@ -277,6 +278,9 @@ public final class NumberField<T extends Number> extends HintTextField {
 			if (numberClass.equals(Integer.class)) {
 				return (Builder<T>) new DefaultIntegerFieldBuilder();
 			}
+			if (numberClass.equals(BigInteger.class)) {
+				return (Builder<T>) new DefaultBigIntegerFieldBuilder();
+			}
 			if (numberClass.equals(Long.class)) {
 				return (Builder<T>) new DefaultLongFieldBuilder();
 			}
@@ -429,6 +433,23 @@ public final class NumberField<T extends Number> extends HintTextField {
 		return decimalFormat;
 	}
 
+	private static final class DefaultBigIntegerFieldBuilder extends AbstractNumberFieldBuilder<BigInteger> {
+
+		private DefaultBigIntegerFieldBuilder() {
+			super(BigInteger.class);
+		}
+
+		@Override
+		protected NumberDocument<BigInteger> createDocument() {
+			return new NumberDocument<>(initializeFormat(nonGroupingIntegerFormat()), BigInteger.class);
+		}
+
+		@Override
+		protected ComponentValue<NumberField<BigInteger>, BigInteger> createValue(NumberField<BigInteger> component) {
+			return new BigIntegerFieldValue(component, nullable, updateOn());
+		}
+	}
+
 	private static final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal> {
 
 		private DefaultBigDecimalFieldBuilder() {
@@ -576,6 +597,28 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		protected void setComponentValue(Integer value) {
+			component().set(value);
+		}
+	}
+
+	private static final class BigIntegerFieldValue extends AbstractTextComponentValue<NumberField<BigInteger>, BigInteger> {
+
+		private BigIntegerFieldValue(NumberField<BigInteger> integerField, boolean nullable, UpdateOn updateOn) {
+			super(integerField, nullable ? null : BigInteger.ZERO, updateOn);
+		}
+
+		@Override
+		protected BigInteger getComponentValue() {
+			BigInteger number = component().get();
+			if (number == null) {
+				return isNullable() ? null : BigInteger.ZERO;
+			}
+
+			return number;
+		}
+
+		@Override
+		protected void setComponentValue(BigInteger value) {
 			component().set(value);
 		}
 	}

@@ -28,6 +28,7 @@ Codion Change Log
 - FilterTableCellEditor.Factory.create() return type now FilterTableCellEditor.
 - FilterTableHeaderRenderer.Factory.create() FilterTableColumn parameter replaced with column identifier.
 - FilterTableCellEditor.Factory.create() table parameter added, related refactoring.
+- NumberField now handles BigInteger, Components.bigIntegerField() added.
 ### is.codion.framework.db
 - EntityConnection.queryCache() renamed cacheQueries().
 ### is.codion.framework.db.local

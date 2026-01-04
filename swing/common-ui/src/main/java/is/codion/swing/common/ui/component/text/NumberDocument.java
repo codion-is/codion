@@ -32,6 +32,7 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -213,6 +214,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			if (clazz.equals(Integer.class)) {
 				return toInteger(number);
 			}
+			else if (clazz.equals(BigInteger.class)) {
+				return toBigInteger(number);
+			}
 			else if (clazz.equals(Long.class)) {
 				return toLong(number);
 			}
@@ -256,6 +260,14 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			}
 
 			return Double.valueOf(number.doubleValue());
+		}
+
+		private static Number toBigInteger(Number number) {
+			if (number instanceof BigInteger) {
+				return number;
+			}
+
+			return BigInteger.valueOf(number.intValue());
 		}
 
 		private static Number toBigDecimal(Number number) {

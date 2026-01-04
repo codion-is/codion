@@ -30,6 +30,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -100,6 +101,25 @@ public class NumericalValuesTest {
 		assertEquals(42, integerPropertyValue.get());
 		integerField.setText("");
 		assertEquals(0, integerPropertyValue.get());
+	}
+
+	@Test
+	void testBigInteger() {
+		NumberFormat format = NumberFormat.getIntegerInstance();
+
+		NumberField<BigInteger> bigIntegerField = Components.bigIntegerField()
+						.format(format)
+						.grouping(true)
+						.groupingSeparator('.')
+						.build();
+
+		bigIntegerField.set(BigInteger.valueOf(3));
+		assertEquals("3", bigIntegerField.getText());
+
+		bigIntegerField.setText("424.242");
+		assertEquals(BigInteger.valueOf(424242), bigIntegerField.get());
+		bigIntegerField.set(BigInteger.valueOf(123123));
+		assertEquals("123.123", bigIntegerField.getText());
 	}
 
 	@Test

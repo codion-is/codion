@@ -78,6 +78,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -170,6 +171,18 @@ public final class ComponentsTest {
 						.groupingSeparator('.')
 						.decimalSeparator(',')
 						.minimumSize(new Dimension(10, 10))
+						.maximumSize(new Dimension(10, 10))
+						.link(value)
+						.buildValue();
+		assertEquals(componentValue.component().get(), value.get());
+	}
+
+	@Test
+	void bigIntegerField() {
+		Value<BigInteger> value = Value.nullable(BigInteger.valueOf(42));
+		ComponentValue<NumberField<BigInteger>, BigInteger> componentValue = Components.bigIntegerField()
+						.fractionDigits(2)
+						.groupingSeparator('.')
 						.maximumSize(new Dimension(10, 10))
 						.link(value)
 						.buildValue();

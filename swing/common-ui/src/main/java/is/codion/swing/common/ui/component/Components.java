@@ -73,6 +73,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -304,6 +305,13 @@ public final class Components {
 	 */
 	public static NumberField.Builder<Integer> integerField() {
 		return NumberField.builder().numberClass(Integer.class);
+	}
+
+	/**
+	 * @return a BigInteger based {@link NumberField} builder
+	 */
+	public static NumberField.Builder<BigInteger> bigIntegerField() {
+		return NumberField.builder().numberClass(BigInteger.class);
 	}
 
 	/**
