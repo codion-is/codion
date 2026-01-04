@@ -416,12 +416,12 @@ public class RemoteEntityConnectionTest {
 	}
 
 	@Test
-	void queryCache() {
+	void cacheQueries() {
 		EntityConnection connection = connection();
-		connection.queryCache(true);
-		assertTrue(connection.queryCache());
-		connection.queryCache(false);
-		assertFalse(connection.queryCache());
+		connection.cacheQueries(true);
+		assertTrue(connection.cacheQueries());
+		connection.cacheQueries(false);
+		assertFalse(connection.cacheQueries());
 	}
 
 	@Test

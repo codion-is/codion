@@ -126,7 +126,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private boolean limitReferenceDepth = LIMIT_REFERENCE_DEPTH.getOrThrow();
 	private int iteratorBufferSize = ITERATOR_BUFFER_SIZE.getOrThrow();
 	private int queryTimeout = QUERY_TIMEOUT.getOrThrow();
-	private boolean queryCacheEnabled = false;
+	private boolean cacheQueries = false;
 
 	private @Nullable Connection connection;
 	private boolean transactionOpen = false;
@@ -263,19 +263,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public void queryCache(boolean queryCache) {
+	public void cacheQueries(boolean cacheQueries) {
 		synchronized (database) {
-			this.queryCacheEnabled = queryCache;
-			if (!queryCache) {
-				this.queryCache.clear();
+			this.cacheQueries = cacheQueries;
+			if (!cacheQueries) {
+				queryCache.clear();
 			}
 		}
 	}
 
 	@Override
-	public boolean queryCache() {
+	public boolean cacheQueries() {
 		synchronized (database) {
-			return queryCacheEnabled;
+			return cacheQueries;
 		}
 	}
 
@@ -1515,7 +1515,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private @Nullable List<Entity> cachedResult(Select select) {
-		if (queryCacheEnabled && !select.forUpdate()) {
+		if (cacheQueries && !select.forUpdate()) {
 			return queryCache.get(select);
 		}
 
@@ -1523,7 +1523,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private List<Entity> cacheResult(Select select, List<Entity> result) {
-		if (queryCacheEnabled && !select.forUpdate()) {
+		if (cacheQueries && !select.forUpdate()) {
 			LOG.debug("Caching result for select {}, size {}", select, result.size());
 			queryCache.put(select, result);
 		}

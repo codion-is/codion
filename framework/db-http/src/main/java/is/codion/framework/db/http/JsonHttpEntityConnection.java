@@ -78,7 +78,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void queryCache(boolean queryCache) {
+	public void cacheQueries(boolean queryCache) {
 		synchronized (httpClient) {
 			try {
 				handleResponse(execute(createJsonRequest("setQueryCacheEnabled",
@@ -91,7 +91,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public boolean queryCache() {
+	public boolean cacheQueries() {
 		synchronized (httpClient) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("isQueryCacheEnabled")),

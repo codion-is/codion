@@ -128,17 +128,17 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Queries are cached on a {@link Select}
 	 * basis, but never when selecting for update.
 	 * The cache is cleared when disabled.
-	 * @param queryCache true to turn on the query cache, false to clear and disable the cache
+	 * @param cacheQueries true to turn on the query cache, false to clear and disable the cache
 	 * @throws RemoteException in case of a remote exception
 	 */
-	void queryCache(boolean queryCache) throws RemoteException;
+	void cacheQueries(boolean cacheQueries) throws RemoteException;
 
 	/**
 	 * @return true if the query cache is enabled
 	 * @throws RemoteException in case of a remote exception
-	 * @see #queryCache(boolean)
+	 * @see #cacheQueries(boolean)
 	 */
-	boolean queryCache() throws RemoteException;
+	boolean cacheQueries() throws RemoteException;
 
 	/**
 	 * Executes the function with the given type with no parameter

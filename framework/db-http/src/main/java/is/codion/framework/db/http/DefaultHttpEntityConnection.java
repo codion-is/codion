@@ -54,7 +54,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void queryCache(boolean queryCache) {
+	public void cacheQueries(boolean queryCache) {
 		synchronized (httpClient) {
 			try {
 				handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCache))));
@@ -66,7 +66,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public boolean queryCache() {
+	public boolean cacheQueries() {
 		synchronized (httpClient) {
 			try {
 				return handleResponse(execute(createRequest("isQueryCacheEnabled")));

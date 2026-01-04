@@ -425,7 +425,7 @@ public final class EntityService implements AuxiliaryServer {
 				RemoteEntityConnection connection = authenticate(context);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(serialize(connection.queryCache()));
+								.result(serialize(connection.cacheQueries()));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -438,7 +438,7 @@ public final class EntityService implements AuxiliaryServer {
 				ObjectMapper objectMapper = objectMapper(connection.entities());
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_JSON)
-								.result(objectMapper.writeValueAsString(connection.queryCache()));
+								.result(objectMapper.writeValueAsString(connection.cacheQueries()));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -451,7 +451,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				connection.queryCache(deserialize(context.req()));
+				connection.cacheQueries(deserialize(context.req()));
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {
@@ -463,7 +463,7 @@ public final class EntityService implements AuxiliaryServer {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				ObjectMapper objectMapper = objectMapper(connection.entities());
-				connection.queryCache(objectMapper.readValue(context.req().getInputStream(), Boolean.class));
+				connection.cacheQueries(objectMapper.readValue(context.req().getInputStream(), Boolean.class));
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {

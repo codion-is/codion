@@ -1519,9 +1519,9 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void queryCache() {
-		connection.queryCache(true);
-		assertTrue(connection.queryCache());
+	void cacheQueries() {
+		connection.cacheQueries(true);
+		assertTrue(connection.cacheQueries());
 
 		List<Entity> result = connection.select(Department.DEPTNO
 						.greaterThanOrEqualTo(20));
@@ -1560,8 +1560,8 @@ public class DefaultLocalEntityConnectionTest {
 		result2 = connection.select(Department.DEPTNO.equalTo(20));
 		assertSame(result, result2);
 
-		connection.queryCache(false);
-		assertFalse(connection.queryCache());
+		connection.cacheQueries(false);
+		assertFalse(connection.cacheQueries());
 
 		result = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
 		result2 = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));

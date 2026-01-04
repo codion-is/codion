@@ -359,11 +359,11 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
-	void queryCache() {
-		connection.queryCache(true);
-		assertTrue(connection.queryCache());
-		connection.queryCache(false);
-		assertFalse(connection.queryCache());
+	void cacheQueries() {
+		connection.cacheQueries(true);
+		assertTrue(connection.cacheQueries());
+		connection.cacheQueries(false);
+		assertFalse(connection.cacheQueries());
 	}
 
 	@Test

@@ -195,13 +195,13 @@ public interface EntityConnection extends AutoCloseable {
 	 * The cache is cleared when disabled.
 	 * @param queryCache true to turn on the query cache, false to clear and disable the cache
 	 */
-	void queryCache(boolean queryCache);
+	void cacheQueries(boolean queryCache);
 
 	/**
 	 * @return true if the query cache is enabled
-	 * @see #queryCache(boolean)
+	 * @see #cacheQueries(boolean)
 	 */
-	boolean queryCache();
+	boolean cacheQueries();
 
 	/**
 	 * Executes the function with the given type with no parameter

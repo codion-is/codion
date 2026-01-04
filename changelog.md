@@ -25,6 +25,8 @@ Codion Change Log
 - FilterTableCellEditor.CLICK_COUNT_TO_START configuration value added.
 - FilterTableCellEditor.Builder.shouldSelectCell() added, default consistent with DefaultCellEditor.
 - DefaultFilterTableCellEditor.componentValue() now synchronizes on the inputComponent.
+### is.codion.framework.db
+- EntityConnection.queryCache() renamed cacheQueries().
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection, DefaultLocalEntityConnectionProvider, minor logging improvements.
 ### is.codion.swing.framework.ui
