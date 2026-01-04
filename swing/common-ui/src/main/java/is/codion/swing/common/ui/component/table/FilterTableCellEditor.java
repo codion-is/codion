@@ -65,6 +65,7 @@ public interface FilterTableCellEditor<C extends JComponent, T> extends TableCel
 
 	/**
 	 * A factory for {@link TableCellEditor} instances.
+	 * @param <C> the column identifier type
 	 */
 	interface Factory<C> {
 
@@ -72,7 +73,7 @@ public interface FilterTableCellEditor<C extends JComponent, T> extends TableCel
 		 * @param identifier the column identifier
 		 * @return a {@link TableCellEditor} instance for the given column or an empty optional if the column should not be editable
 		 */
-		Optional<TableCellEditor> create(C identifier);
+		Optional<FilterTableCellEditor<?, ?>> create(C identifier);
 	}
 
 	/**

@@ -41,7 +41,7 @@ final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Attr
 	}
 
 	@Override
-	public Optional<TableCellEditor> create(Attribute<?> attribute) {
+	public Optional<FilterTableCellEditor<?, ?>> create(Attribute<?> attribute) {
 		if (nonUpdatableForeignKey(attribute)) {
 			return Optional.empty();
 		}
