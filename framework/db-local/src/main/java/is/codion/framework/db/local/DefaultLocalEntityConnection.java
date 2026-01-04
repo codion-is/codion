@@ -1007,7 +1007,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private List<Entity> query(Select select) throws SQLException {
 		List<Entity> result = cachedResult(select);
 		if (result != null) {
-			LOG.debug("Returning cached result: {}", select.where().entityType());
+			LOG.debug("Returning cached result for select {}", select);
 			return result;
 		}
 
@@ -1150,16 +1150,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 														List<ColumnDefinition<?>> statementColumns, List<?> statementValues,
 														Operation operation) throws SQLException {
 		SQLException exception = null;
+		int affectedRows = 0;
 		tracer.enter(EXECUTE_UPDATE, statementValues);
 		try {
-			return setParameterValues(statement, statementColumns, statementValues).executeUpdate();
+			affectedRows = setParameterValues(statement, statementColumns, statementValues).executeUpdate();
+
+			return affectedRows;
 		}
 		catch (SQLException e) {
 			exception = e;
 			throw e;
 		}
 		finally {
-			tracer.exit(EXECUTE_UPDATE, exception);
+			tracer.exit(EXECUTE_UPDATE, exception, "affected rows: " + affectedRows);
 			countQuery(operation);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
@@ -1345,7 +1348,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 		catch (SQLException e) {
 			exception = e;
-			LOG.error("Exception while performing a quiet rollback", e);
+			LOG.warn("Exception while performing a quiet rollback", e);
 		}
 		finally {
 			tracer.exit("rollback", exception);
@@ -1521,7 +1524,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private List<Entity> cacheResult(Select select, List<Entity> result) {
 		if (queryCacheEnabled && !select.forUpdate()) {
-			LOG.debug("Caching result: {}", select.where().entityType());
+			LOG.debug("Caching result for select {}, size {}", select, result.size());
 			queryCache.put(select, result);
 		}
 

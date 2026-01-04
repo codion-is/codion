@@ -108,16 +108,19 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 			setMethodTracer(createMethodTracer(), (Traceable) connection);
 		}
 		connection.queryTimeout(queryTimeout);
+		LOG.info("Connection established to {} for user {}", database.name(), user());
 
 		return connection;
 	}
 
 	@Override
 	protected void close(EntityConnection connection) {
+		LOG.info("Connection closed for user {}", user());
 		connection.close();
 	}
 
 	private void tracingChanged(boolean trace) {
+		LOG.debug("Method tracing {} for {}", trace ? "enabled" : "disabled", user());
 		setMethodTracer(trace ? createMethodTracer() : MethodTracer.NO_OP, (Traceable) connection());
 	}
 
