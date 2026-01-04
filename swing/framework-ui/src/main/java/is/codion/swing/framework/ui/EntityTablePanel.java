@@ -2766,11 +2766,11 @@ public class EntityTablePanel extends JPanel {
 	private static final class EntityTableHeaderRenderers implements FilterTableHeaderRenderer.Factory<Entity, Attribute<?>> {
 
 		@Override
-		public FilterTableHeaderRenderer create(FilterTableColumn<Attribute<?>> column, FilterTable<Entity, Attribute<?>> table) {
-			requireNonNull(column);
+		public FilterTableHeaderRenderer create(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
+			requireNonNull(attribute);
 			requireNonNull(table);
 
-			return new EntityTableHeaderRenderer(column, table);
+			return new EntityTableHeaderRenderer(attribute, table);
 		}
 	}
 
@@ -2784,9 +2784,9 @@ public class EntityTablePanel extends JPanel {
 
 		private boolean conditionIndicator;
 
-		private EntityTableHeaderRenderer(FilterTableColumn<Attribute<?>> column, FilterTable<Entity, Attribute<?>> table) {
-			this.wrappedRenderer = DEFAULT_FACTORY.create(column, table);
-			this.tableColumn = column;
+		private EntityTableHeaderRenderer(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
+			this.wrappedRenderer = DEFAULT_FACTORY.create(attribute, table);
+			this.tableColumn = table.columnModel().column(attribute);
 			this.condition = ((SwingEntityTableModel) table.model()).query().condition();
 		}
 

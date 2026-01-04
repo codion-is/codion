@@ -965,7 +965,7 @@ public final class FilterTable<R, C> extends JTable {
 										builder.cellRendererFactory.create(column.identifier(), this))));
 		columnModel().columns().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
-						.forEach(column -> column.setHeaderRenderer(builder.headerRendererFactory.create(column, this)));
+						.forEach(column -> column.setHeaderRenderer(builder.headerRendererFactory.create(column.identifier(), this)));
 		columnModel().columns().stream()
 						.filter(column -> column.getCellEditor() == null)
 						.forEach(column -> {

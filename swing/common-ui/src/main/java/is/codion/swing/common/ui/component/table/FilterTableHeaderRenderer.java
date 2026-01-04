@@ -47,11 +47,11 @@ public interface FilterTableHeaderRenderer extends TableCellRenderer {
 	interface Factory<R, C> {
 
 		/**
-		 * @param column the column
+		 * @param column the column identifier
 		 * @param table the table
 		 * @return a {@link FilterTableHeaderRenderer} instance for the given column
 		 */
-		FilterTableHeaderRenderer create(FilterTableColumn<C> column, FilterTable<R, C> table);
+		FilterTableHeaderRenderer create(C identifier, FilterTable<R, C> table);
 	}
 
 	/**

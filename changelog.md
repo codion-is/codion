@@ -26,6 +26,7 @@ Codion Change Log
 - FilterTableCellEditor.Builder.shouldSelectCell() added, default consistent with DefaultCellEditor.
 - DefaultFilterTableCellEditor.componentValue() now synchronizes on the inputComponent.
 - FilterTableCellEditor.Factory.create() return type now FilterTableCellEditor.
+- FilterTableHeaderRenderer.Factory.create() FilterTableColumn parameter replaced with column identifier.
 ### is.codion.framework.db
 - EntityConnection.queryCache() renamed cacheQueries().
 ### is.codion.framework.db.local

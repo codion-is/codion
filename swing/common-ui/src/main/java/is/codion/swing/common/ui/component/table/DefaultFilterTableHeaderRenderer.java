@@ -56,11 +56,11 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 	private final boolean columnToolTips;
 	private final boolean focusedColumnIndicator = FOCUSED_COLUMN_INDICATOR.getOrThrow();
 
-	private DefaultFilterTableHeaderRenderer(FilterTable<R, C> table, FilterTableColumn<C> column) {
+	private DefaultFilterTableHeaderRenderer(FilterTable<R, C> table, C identifier) {
 		this.filters = table.model().filters();
 		this.columnSort = table.model().sort().columns();
-		this.tableColumn = column;
-		this.columnCellRenderer = column.getCellRenderer();
+		this.tableColumn = table.columnModel().column(identifier);
+		this.columnCellRenderer = tableColumn.getCellRenderer();
 		this.columnToolTips = table.columnToolTips;
 	}
 
@@ -172,8 +172,8 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 	private static class DefaultFactory<R, C> implements Factory<R, C> {
 
 		@Override
-		public FilterTableHeaderRenderer create(FilterTableColumn<C> column, FilterTable<R, C> table) {
-			return new DefaultFilterTableHeaderRenderer<>(requireNonNull(table), requireNonNull(column));
+		public FilterTableHeaderRenderer create(C identifier, FilterTable<R, C> table) {
+			return new DefaultFilterTableHeaderRenderer<>(requireNonNull(table), requireNonNull(identifier));
 		}
 	}
 }
