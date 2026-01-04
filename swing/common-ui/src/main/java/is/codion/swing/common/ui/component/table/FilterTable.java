@@ -974,7 +974,7 @@ public final class FilterTable<R, C> extends JTable {
 								column.setCellEditor(cellEditor);
 							}
 							else if (builder.cellEditorFactory != null) {
-								builder.cellEditorFactory.create(column.identifier()).ifPresent(column::setCellEditor);
+								builder.cellEditorFactory.create(column.identifier(), this).ifPresent(column::setCellEditor);
 							}
 						});
 	}
@@ -1345,7 +1345,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param cellEditors the table cell editor factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> cellEditors(FilterTableCellEditor.Factory<C> cellEditors);
+		Builder<R, C> cellEditors(FilterTableCellEditor.Factory<R, C> cellEditors);
 
 		/**
 		 * @param cellEditable called to see if the given cell in the given row is editable,
@@ -1585,7 +1585,7 @@ public final class FilterTable<R, C> extends JTable {
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory;
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
-		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
+		private FilterTableCellEditor.@Nullable Factory<R, C> cellEditorFactory;
 		private BiPredicate<R, C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
 		private @Nullable Boolean autoStartsEdit;
 		private @Nullable Boolean surrendersFocusOnKeystroke;
@@ -1683,7 +1683,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellEditors(FilterTableCellEditor.Factory<C> cellEditors) {
+		public Builder<R, C> cellEditors(FilterTableCellEditor.Factory<R, C> cellEditors) {
 			this.cellEditorFactory = requireNonNull(cellEditors);
 			return this;
 		}

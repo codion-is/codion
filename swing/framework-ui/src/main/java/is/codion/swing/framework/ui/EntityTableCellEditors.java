@@ -18,31 +18,26 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.DefaultEditComponent;
 import is.codion.swing.framework.ui.component.EditComponent;
 
 import javax.swing.JComponent;
-import javax.swing.table.TableCellEditor;
 import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
-
-final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Attribute<?>> {
-
-	private final SwingEntityEditModel editModel;
-
-	EntityTableCellEditors(SwingEntityEditModel editModel) {
-		this.editModel = requireNonNull(editModel);
-	}
+final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Entity, Attribute<?>> {
 
 	@Override
-	public Optional<FilterTableCellEditor<?, ?>> create(Attribute<?> attribute) {
-		if (nonUpdatableForeignKey(attribute)) {
+	public Optional<FilterTableCellEditor<?, ?>> create(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
+		SwingEntityEditModel editModel = ((SwingEntityTableModel) table.model()).editModel();
+		if (nonUpdatableForeignKey(attribute, editModel)) {
 			return Optional.empty();
 		}
 
@@ -54,7 +49,7 @@ final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Attr
 						.build());
 	}
 
-	private boolean nonUpdatableForeignKey(Attribute<?> attribute) {
+	private static boolean nonUpdatableForeignKey(Attribute<?> attribute, SwingEntityEditModel editModel) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 

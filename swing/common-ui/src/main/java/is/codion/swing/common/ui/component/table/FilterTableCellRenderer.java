@@ -323,6 +323,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 
 	/**
 	 * A factory for {@link FilterTableCellRenderer} instances.
+	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
 	interface Factory<R, C> {

@@ -2216,7 +2216,7 @@ public class EntityTablePanel extends JPanel {
 							.summaryValues(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
 							.cellRenderers(new EntityTableCellRenderers())
 							.headerRenderers(new EntityTableHeaderRenderers())
-							.cellEditors(new EntityTableCellEditors(tablePanel.tableModel.editModel()))
+							.cellEditors(new EntityTableCellEditors())
 							.cellEditable(new EntityCellEditable(tablePanel.tableModel.entities()))
 							.scrollToAddedItem(true)
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
@@ -2573,7 +2573,7 @@ public class EntityTablePanel extends JPanel {
 		 * @return this Config instance
 		 * @see FilterTable.Builder#cellRenderers(FilterTableCellRenderer.Factory)
 		 */
-		public Config cellEditors(FilterTableCellEditor.Factory<Attribute<?>> cellEditors) {
+		public Config cellEditors(FilterTableCellEditor.Factory<Entity, Attribute<?>> cellEditors) {
 			tableBuilder.cellEditors(requireNonNull(cellEditors));
 			return this;
 		}
