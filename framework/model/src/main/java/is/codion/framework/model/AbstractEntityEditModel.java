@@ -332,6 +332,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		if (currentForeignKeyValue != null && entities.containsKey(currentForeignKeyValue.primaryKey())) {
 			editor.value(foreignKey).clear();
 			editor.value(foreignKey).set(entities.get(currentForeignKeyValue.primaryKey()));
+			LOG.debug("{} - updated FK {}", this, foreignKey);
 		}
 	}
 
@@ -348,6 +349,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		Entity currentForeignKeyValue = editor.value(foreignKey).get();
 		if (currentForeignKeyValue != null && entities.contains(currentForeignKeyValue)) {
 			editor.value(foreignKey).clear();
+			LOG.debug("{} - cleared FK {} (referenced entity deleted)", this, foreignKey);
 		}
 	}
 

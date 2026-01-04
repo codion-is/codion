@@ -35,6 +35,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,6 +58,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntitySearchModel.class);
 
 	private static final Supplier<@Nullable Condition> NULL_CONDITION = () -> null;
 	private static final String WILDCARD_MULTIPLE = "%";
@@ -273,6 +277,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			if (!toRemove.isEmpty()) {
 				selection.entities.removeAll(toRemove);
 				selection.entities.addAll(toAdd);
+				LOG.debug("{} - reconciled {} updated entities", DefaultEntitySearchModel.this, toRemove.size());
 			}
 		}
 	}
@@ -281,7 +286,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public void accept(Collection<Entity> deleted) {
+			int sizeBefore = selection.entities.size();
 			selection.entities.removeAll(deleted);
+			int removed = sizeBefore - selection.entities.size();
+			if (removed > 0) {
+				LOG.debug("{} - removed {} deleted entities", DefaultEntitySearchModel.this, removed);
+			}
 		}
 	}
 
