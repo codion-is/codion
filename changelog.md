@@ -31,6 +31,8 @@ Codion Change Log
 - DefaultLocalEntityConnection, DefaultLocalEntityConnectionProvider, minor logging improvements.
 ### is.codion.framework.model
 - AbstractEntityEditModel, DefaultEntitySearchModel, minor logging improvements.
+### is.codion.swing.framework.model
+- DefaultEntityComboBoxModel, minor logging improvements.
 ### is.codion.swing.framework.ui
 - EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
 ### is.codion.plugin.flatlaf.intellij

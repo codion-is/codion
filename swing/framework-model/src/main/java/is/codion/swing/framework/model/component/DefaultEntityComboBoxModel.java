@@ -32,6 +32,8 @@ import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.event.ListDataListener;
 import java.util.Collection;
@@ -55,6 +57,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityComboBoxModel.class);
 
 	private final FilterComboBoxModel<Entity> comboBoxModel;
 
@@ -208,6 +212,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public void accept(Collection<Entity> inserted) {
 			inserted.forEach(items()::add);
+			if (!inserted.isEmpty()) {
+				LOG.debug("{} - added {} inserted entities", DefaultEntityComboBoxModel.this, inserted.size());
+			}
 		}
 	}
 
@@ -219,6 +226,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 							.collect(toMap(entry -> entry.getKey().copy().builder()
 											.originalPrimaryKey()
 											.build(), Map.Entry::getValue)));
+			if (!updated.isEmpty()) {
+				LOG.debug("{} - replaced {} updated entities", DefaultEntityComboBoxModel.this, updated.size());
+			}
 		}
 	}
 
@@ -226,7 +236,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public void accept(Collection<Entity> deleted) {
+			int sizeBefore = items().included().size();
 			items().remove(deleted);
+			int removed = sizeBefore - items().included().size();
+			if (removed > 0) {
+				LOG.debug("{} - removed {} deleted entities", DefaultEntityComboBoxModel.this, removed);
+			}
 		}
 	}
 
