@@ -29,6 +29,8 @@ Codion Change Log
 - FilterTableHeaderRenderer.Factory.create() FilterTableColumn parameter replaced with column identifier.
 - FilterTableCellEditor.Factory.create() table parameter added, related refactoring.
 - NumberField now handles BigInteger, Components.bigIntegerField() added.
+### is.codion.framework.domain
+- Attribute.Type.isBigInteger(), EntityType.bigIntegerAttribute() and bigIntegerColumn() added.
 ### is.codion.framework.db
 - EntityConnection.queryCache() renamed cacheQueries().
 ### is.codion.framework.db.local
@@ -40,6 +42,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTableExportModel.all() added, EntityTableExportPanel all/selected radio button setup improved.
 - EntityApplicationPanel, EntityPanel, EntityEditPanel, EntityTablePanel initialization logging added.
+- EntityComponents.bigIntegerField() and EntityEditComponentPanel.createBigIntegerField() added.
 ### is.codion.plugin.flatlaf
 - is.codion.plugin.flatlaf module now service only, look and feels moved to a new is.codion.plugin.flatlaf.lookandfeels module.
 ### is.codion.plugin.flatlaf.intellij.themes

@@ -63,12 +63,14 @@ import javax.swing.JToggleButton;
 import javax.swing.SpinnerListModel;
 import java.io.Serial;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.time.temporal.Temporal;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.ui.component.Components.bigIntegerField;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -148,6 +150,9 @@ public final class EntityComponents {
 		}
 		if (type.isBigDecimal()) {
 			return (ComponentValueBuilder<C, T, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
+		}
+		if (type.isBigInteger()) {
+			return (ComponentValueBuilder<C, T, B>) bigIntegerField((Attribute<BigInteger>) attribute);
 		}
 		if (type.isEnum()) {
 			return (ComponentValueBuilder<C, T, B>) comboBox(attribute, createEnumComboBoxModel(attribute, nullable(attributeDefinition)));
@@ -469,6 +474,19 @@ public final class EntityComponents {
 		AttributeDefinition<Long> attributeDefinition = definition(attribute);
 
 		return Components.longField()
+						.format(attributeDefinition.format().orElse(null))
+						.toolTipText(attributeDefinition.description().orElse(null));
+	}
+
+	/**
+	 * Creates a {@link NumberField} builder based on the given attribute.
+	 * @param attribute the attribute
+	 * @return a {@link NumberField} builder
+	 */
+	public NumberField.Builder<BigInteger> bigIntegerField(Attribute<BigInteger> attribute) {
+		AttributeDefinition<BigInteger> attributeDefinition = definition(attribute);
+
+		return Components.bigIntegerField()
 						.format(attributeDefinition.format().orElse(null))
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}

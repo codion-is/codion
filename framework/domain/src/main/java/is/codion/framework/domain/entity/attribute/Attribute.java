@@ -235,6 +235,11 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 		boolean isInteger();
 
 		/**
+		 * @return true if this attribute represents a {@link java.math.BigInteger} value.
+		 */
+		boolean isBigInteger();
+
+		/**
 		 * @return true if this attribute represents a {@link Short} value.
 		 */
 		boolean isShort();

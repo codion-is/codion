@@ -559,7 +559,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 		private static NumberFormat defaultNumberFormat(Attribute<?> attribute) {
 			boolean grouping = NUMBER_GROUPING.getOrThrow();
-			if (attribute.type().isInteger() || attribute.type().isLong()) {
+			if (attribute.type().isInteger() || attribute.type().isLong() || attribute.type().isBigInteger()) {
 				return setSeparators(grouping ? NumberFormat.getIntegerInstance() : nonGroupingIntegerFormat());
 			}
 

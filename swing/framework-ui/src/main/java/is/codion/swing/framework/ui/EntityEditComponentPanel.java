@@ -78,6 +78,7 @@ import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.Collator;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
@@ -420,6 +421,16 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Long> createLongField(Attribute<Long> attribute) {
 		return setComponentBuilder(attribute, entityComponents.longField(attribute)
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+	}
+
+	/**
+	 * Creates a builder for big integer fields.
+	 * @param attribute the attribute for which to build a text field
+	 * @return a big integer field builder
+	 */
+	protected final NumberField.Builder<BigInteger> createBigIntegerField(Attribute<BigInteger> attribute) {
+		return setComponentBuilder(attribute, entityComponents.bigIntegerField(attribute)
 						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
 	}
 

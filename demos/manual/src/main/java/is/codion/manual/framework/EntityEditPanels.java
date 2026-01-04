@@ -44,6 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -67,6 +68,7 @@ public final class EntityEditPanels {
 		Column<Long> LONG = TYPE.longColumn("long");
 		Column<Double> DOUBLE = TYPE.doubleColumn("double");
 		Column<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalColumn("big_decimal");
+		Column<BigInteger> BIG_INTEGER = TYPE.bigIntegerColumn("big_integer");
 		Column<String> TEXT = TYPE.stringColumn("text");
 		Column<String> LONG_TEXT = TYPE.stringColumn("long_text");
 		Column<String> FORMATTED_TEXT = TYPE.stringColumn("formatted_text");
@@ -174,6 +176,14 @@ public final class EntityEditPanels {
 
 			bigDecimalField =
 							createBigDecimalField(Demo.BIG_DECIMAL)
+											.build();
+
+			NumberField<BigInteger> bigIntegerField =
+							(NumberField<BigInteger>) createTextField(Demo.BIG_DECIMAL)
+											.build();
+
+			bigIntegerField =
+							createBigIntegerField(Demo.BIG_INTEGER)
 											.build();
 			// end::numericalValue[]
 		}

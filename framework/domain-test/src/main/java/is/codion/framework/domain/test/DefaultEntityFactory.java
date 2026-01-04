@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -173,6 +174,9 @@ public class DefaultEntityFactory implements EntityFactory {
 			}
 			if (attribute.type().isInteger()) {
 				return (T) Integer.valueOf(randomInteger(attributeDefinition));
+			}
+			if (attribute.type().isBigInteger()) {
+				return (T) BigInteger.valueOf(randomInteger(attributeDefinition));
 			}
 			if (attribute.type().isLong()) {
 				return (T) Long.valueOf(randomLong(attributeDefinition));

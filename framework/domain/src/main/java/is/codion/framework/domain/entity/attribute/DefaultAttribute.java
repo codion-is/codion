@@ -33,6 +33,7 @@ import org.jspecify.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -180,6 +181,11 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		@Override
 		public boolean isInteger() {
 			return isType(Integer.class);
+		}
+
+		@Override
+		public boolean isBigInteger() {
+			return isType(BigInteger.class);
 		}
 
 		@Override

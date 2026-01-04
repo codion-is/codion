@@ -31,6 +31,7 @@ import org.jspecify.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -119,6 +120,11 @@ final class DefaultEntityType implements EntityType, Serializable {
 	}
 
 	@Override
+	public Attribute<BigInteger> bigIntegerAttribute(String name) {
+		return attribute(name, BigInteger.class);
+	}
+
+	@Override
 	public Attribute<Short> shortAttribute(String name) {
 		return attribute(name, Short.class);
 	}
@@ -196,6 +202,11 @@ final class DefaultEntityType implements EntityType, Serializable {
 	@Override
 	public Column<Integer> integerColumn(String name) {
 		return column(name, Integer.class);
+	}
+
+	@Override
+	public Column<BigInteger> bigIntegerColumn(String name) {
+		return column(name, BigInteger.class);
 	}
 
 	@Override

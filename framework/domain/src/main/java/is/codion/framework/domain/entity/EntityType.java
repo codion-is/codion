@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -184,6 +185,13 @@ public sealed interface EntityType permits DefaultEntityType {
 	Attribute<Integer> integerAttribute(String name);
 
 	/**
+	 * Creates a new BigInteger based attribute, associated with this EntityType.
+	 * @param name the attribute name.
+	 * @return a new BigInteger based attribute.
+	 */
+	Attribute<BigInteger> bigIntegerAttribute(String name);
+
+	/**
 	 * Creates a new Short based attribute, associated with this EntityType.
 	 * @param name the attribute name.
 	 * @return a new Short based attribute.
@@ -312,6 +320,13 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * @return a new Double based column.
 	 */
 	Column<Double> doubleColumn(String name);
+
+	/**
+	 * Creates a new BigInteger based column, associated with this EntityType.
+	 * @param name the column name.
+	 * @return a new BigInteger based column.
+	 */
+	Column<BigInteger> bigIntegerColumn(String name);
 
 	/**
 	 * Creates a new BigDecimal based column, associated with this EntityType.
