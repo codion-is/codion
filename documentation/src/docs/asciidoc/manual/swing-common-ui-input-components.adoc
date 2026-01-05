@@ -47,6 +47,13 @@ include::{dir-source}/is/codion/manual/common/InputControls.java[tags=integerFie
 include::{dir-source}/is/codion/manual/common/InputControls.java[tags=longField]
 ----
 
+=== BigInteger
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/InputControls.java[tags=bigIntegerField]
+----
+
 === Double
 
 [source,java,indent=0]

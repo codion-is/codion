@@ -196,9 +196,17 @@ tasks.register("combinedJavadoc") {
         val execResult = providers.exec {
             executable = javadocTool.get().executablePath.asFile.absolutePath
             args = javadocArgs
+            isIgnoreExitValue = true
         }
 
-        execResult.result.get()
+        val exitValue = execResult.result.get().exitValue
+        if (exitValue != 0) {
+            println("STDOUT:")
+            println(execResult.standardOutput.asText.get())
+            println("STDERR:")
+            println(execResult.standardError.asText.get())
+            throw GradleException("Javadoc failed with exit code $exitValue")
+        }
 
         // Clean up temporary directory
         delete(tempDir)
@@ -256,6 +264,33 @@ tasks.register("assembleDocs") {
         copy {
             from(project.projectDir.resolve("src/docs/utilities"))
             into(docFolder.dir("utilities"))
+        }
+    }
+}
+
+tasks.register("upgradeDemoApps") {
+    group = "documentation"
+    description = "Updates the Codion version in all demo project libs.versions.toml files"
+
+    doLast {
+        val demoProjects = listOf("sdkboy", "llemmy", "petclinic", "world", "chinook")
+        val versionPattern = Regex("""codion\s*=\s*"[^"]+"""")
+        val newVersionLine = """codion = "$documentationVersion""""
+
+        demoProjects.forEach { project ->
+            val tomlFile = file("../../$project/gradle/libs.versions.toml")
+            if (tomlFile.exists()) {
+                val content = tomlFile.readText()
+                val updatedContent = content.replace(versionPattern, newVersionLine)
+                if (content != updatedContent) {
+                    tomlFile.writeText(updatedContent)
+                    println("Updated $project to Codion $documentationVersion")
+                } else {
+                    println("$project already at Codion $documentationVersion")
+                }
+            } else {
+                println("Warning: $tomlFile not found")
+            }
         }
     }
 }

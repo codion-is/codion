@@ -50,6 +50,7 @@ import javax.swing.SwingConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -312,6 +313,20 @@ public final class InputControls {
 										.grouping(true)
 										.build();
 		// end::longField[]
+	}
+
+	static void bigIntegerField() {
+		// tag::bigIntegerField[]
+		Value<BigInteger> bigIntegerValue = Value.nullable();
+
+		NumberField<BigInteger> bigIntegerField =
+						Components.bigIntegerField()
+										.link(bigIntegerValue)
+										.fractionDigits(2)
+										.groupingSeparator('.')
+										.decimalSeparator(',')
+										.build();
+		// end::bigIntegerField[]
 	}
 
 	static void doubleField() {
