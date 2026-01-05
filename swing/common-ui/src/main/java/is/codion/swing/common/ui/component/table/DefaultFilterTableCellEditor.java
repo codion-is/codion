@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -26,10 +27,10 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
+import javax.swing.CellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -37,21 +38,32 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.EventObject;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.table.DefaultFilterTableCellEditor.DefaultBuilder.COMPONENT_STEP;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.MouseEvent.MOUSE_DRAGGED;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellEditor<C extends JComponent, T> extends AbstractCellEditor implements FilterTableCellEditor<C, T> {
+
+	static final Factory<Object, Object> DEFAULT_FACTORY = new DefaultFactory<>();
 
 	private final Supplier<ComponentValue<C, T>> inputComponent;
 	private final Function<EventObject, Boolean> cellEditable;
@@ -153,27 +165,23 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		@Override
 		public void accept(FilterTableCellEditor<C, T> cellEditor) {
 			C editorComponent = cellEditor.componentValue().component();
-			ActionListener stopEditing = e -> cellEditor.stopCellEditing();
-			if (editorComponent instanceof JTextField) {
-				((JTextField) editorComponent).addActionListener(stopEditing);
-			}
-			else if (editorComponent instanceof JCheckBox) {
-				((JCheckBox) editorComponent).addActionListener(stopEditing);
-			}
-			else if (editorComponent instanceof TextFieldPanel) {
-				((TextFieldPanel) editorComponent).textField().addActionListener(stopEditing);
-			}
-			else if (editorComponent instanceof TemporalFieldPanel<?>) {
-				((TemporalFieldPanel<?>) editorComponent).temporalField().addActionListener(stopEditing);
+			if (editorComponent instanceof JCheckBox) {
+				((JCheckBox) editorComponent).addActionListener(e -> cellEditor.stopCellEditing());
 			}
 			else if (editorComponent instanceof JComboBox) {
-				new ComboBoxEnterHandler(cellEditor::stopCellEditing, (JComboBox<?>) editorComponent);
+				new ComboBoxStopEditingOnEnter(cellEditor, (JComboBox<?>) editorComponent);
+			}
+			else if (editorComponent instanceof TextFieldPanel) {
+				((TextFieldPanel) editorComponent).textField().addKeyListener(new StopEditingOnEnter(cellEditor));
+			}
+			else if (editorComponent instanceof TemporalFieldPanel<?>) {
+				((TemporalFieldPanel<?>) editorComponent).temporalField().addKeyListener(new StopEditingOnEnter(cellEditor));
 			}
 			else if (editorComponent instanceof JSpinner) {
-				new SpinnerEnterHandler(cellEditor::stopCellEditing, (JSpinner) editorComponent);
+				((JSpinner) editorComponent).getEditor().addKeyListener(new StopEditingOnEnter(cellEditor));
 			}
-			else if (editorComponent instanceof JSlider) {
-				new SliderEnterHandler(cellEditor::stopCellEditing, (JSlider) editorComponent);
+			else {
+				editorComponent.addKeyListener(new StopEditingOnEnter(cellEditor));
 			}
 		}
 	}
@@ -242,12 +250,12 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		}
 	}
 
-	private abstract static class StopEditingOnEnter extends KeyAdapter {
+	private static class StopEditingOnEnter extends KeyAdapter {
 
-		private final Runnable stopEditing;
+		private final CellEditor editor;
 
-		private StopEditingOnEnter(Runnable stopEditing) {
-			this.stopEditing = stopEditing;
+		private StopEditingOnEnter(CellEditor editor) {
+			this.editor = editor;
 		}
 
 		@Override
@@ -262,34 +270,18 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		}
 
 		protected void onEnter() {
-			stopEditing.run();
+			editor.stopCellEditing();
 		}
 	}
 
-	private static final class SpinnerEnterHandler extends StopEditingOnEnter {
-
-		private SpinnerEnterHandler(Runnable stopEditing, JSpinner spinner) {
-			super(stopEditing);
-			spinner.getEditor().addKeyListener(this);
-		}
-	}
-
-	private static final class SliderEnterHandler extends StopEditingOnEnter {
-
-		private SliderEnterHandler(Runnable stopEditing, JSlider slider) {
-			super(stopEditing);
-			slider.addKeyListener(this);
-		}
-	}
-
-	private static final class ComboBoxEnterHandler extends StopEditingOnEnter {
+	private static final class ComboBoxStopEditingOnEnter extends StopEditingOnEnter {
 
 		private static final String ENTER_PRESSED = "enterPressed";
 
 		private final JComboBox<?> comboBox;
 
-		private ComboBoxEnterHandler(Runnable stopEditing, JComboBox<?> comboBox) {
-			super(stopEditing);
+		private ComboBoxStopEditingOnEnter(CellEditor editor, JComboBox<?> comboBox) {
+			super(editor);
 			this.comboBox = comboBox;
 			comboBox.addKeyListener(this);
 			if (comboBox.isEditable()) {
@@ -331,6 +323,61 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 			}
 
 			return true;
+		}
+	}
+
+	private static final class DefaultFactory<R, C> implements Factory<R, C> {
+
+		@Override
+		public Optional<FilterTableCellEditor<?, ?>> create(C identifier, FilterTable<R, C> table) {
+			Class<?> columnClass = table.model().columns().columnClass(identifier);
+			FilterTableCellEditor<?, ?> cellEditor = null;
+			if (columnClass.equals(LocalTime.class)) {
+				cellEditor = COMPONENT_STEP.component(localTimeField()::buildValue).build();
+			}
+			else if (columnClass.equals(LocalDate.class)) {
+				cellEditor = COMPONENT_STEP.component(localDateField()::buildValue).build();
+			}
+			else if (columnClass.equals(LocalDateTime.class)) {
+				cellEditor = COMPONENT_STEP.component(localDateTimeField()::buildValue).build();
+			}
+			else if (columnClass.equals(OffsetDateTime.class)) {
+				cellEditor = COMPONENT_STEP.component(offsetDateTimeField()::buildValue).build();
+			}
+			else if (columnClass.equals(String.class)) {
+				cellEditor = COMPONENT_STEP.component(stringField()::buildValue).build();
+			}
+			else if (columnClass.equals(Character.class)) {
+				cellEditor = COMPONENT_STEP.component(characterField()::buildValue).build();
+			}
+			else if (columnClass.equals(Short.class)) {
+				cellEditor = COMPONENT_STEP.component(shortField()::buildValue).build();
+			}
+			else if (columnClass.equals(Integer.class)) {
+				cellEditor = COMPONENT_STEP.component(integerField()::buildValue).build();
+			}
+			else if (columnClass.equals(Long.class)) {
+				cellEditor = COMPONENT_STEP.component(longField()::buildValue).build();
+			}
+			else if (columnClass.equals(BigInteger.class)) {
+				cellEditor = COMPONENT_STEP.component(bigIntegerField()::buildValue).build();
+			}
+			else if (columnClass.equals(Double.class)) {
+				cellEditor = COMPONENT_STEP.component(doubleField()::buildValue).build();
+			}
+			else if (columnClass.equals(BigDecimal.class)) {
+				cellEditor = COMPONENT_STEP.component(bigDecimalField()::buildValue).build();
+			}
+			else if (columnClass.equals(Boolean.class)) {
+				cellEditor = COMPONENT_STEP.component(checkBox()::buildValue).build();
+			}
+			else if (columnClass.isEnum()) {
+				cellEditor = COMPONENT_STEP.component(comboBox().model(FilterComboBoxModel.builder()
+								.items(asList(columnClass.getEnumConstants()))
+								.build())::buildValue).build();
+			}
+
+			return Optional.ofNullable(cellEditor);
 		}
 	}
 }

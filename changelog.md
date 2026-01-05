@@ -29,6 +29,7 @@ Codion Change Log
 - FilterTableHeaderRenderer.Factory.create() FilterTableColumn parameter replaced with column identifier.
 - FilterTableCellEditor.Factory.create() table parameter added, related refactoring.
 - NumberField now handles BigInteger, Components.bigIntegerField() added.
+- FilterTableCellEditor.factory() added along with DefaultFilterTableCellEditor.DefaultFactory, FilterTable now provides default editors for a bunch of column types.
 ### is.codion.framework.domain
 - Attribute.Type.isBigInteger(), EntityType.bigIntegerAttribute() and bigIntegerColumn() added.
 ### is.codion.framework.db

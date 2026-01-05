@@ -973,7 +973,7 @@ public final class FilterTable<R, C> extends JTable {
 							if (cellEditor != null) {
 								column.setCellEditor(cellEditor);
 							}
-							else if (builder.cellEditorFactory != null) {
+							else {
 								builder.cellEditorFactory.create(column.identifier(), this).ifPresent(column::setCellEditor);
 							}
 						});
@@ -1585,7 +1585,7 @@ public final class FilterTable<R, C> extends JTable {
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private FilterTableHeaderRenderer.Factory<R, C> headerRendererFactory;
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
-		private FilterTableCellEditor.@Nullable Factory<R, C> cellEditorFactory;
+		private FilterTableCellEditor.Factory<R, C> cellEditorFactory;
 		private BiPredicate<R, C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
 		private @Nullable Boolean autoStartsEdit;
 		private @Nullable Boolean surrendersFocusOnKeystroke;
@@ -1619,6 +1619,7 @@ public final class FilterTable<R, C> extends JTable {
 			this.tableModel = tableModel;
 			this.cellRendererFactory = FilterTableCellRenderer.factory();
 			this.headerRendererFactory = FilterTableHeaderRenderer.factory();
+			this.cellEditorFactory = FilterTableCellEditor.factory();
 		}
 
 		@Override

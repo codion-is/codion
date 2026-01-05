@@ -35,17 +35,23 @@ import javax.swing.JViewport;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import java.awt.Dimension;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilterTableTest {
@@ -497,7 +503,7 @@ public class FilterTableTest {
 		FilterTableModel<TestRow, Integer> model = table.model();
 		List<TestRow> rows = IntStream.range(0, 100)
 						.mapToObj(i -> new TestRow("" + i))
-						.collect(Collectors.toList());
+						.collect(toList());
 
 		model.items().add(rows);
 		model.sort().ascending(0);
@@ -510,7 +516,7 @@ public class FilterTableTest {
 
 		rows = IntStream.range(301, 350)
 						.mapToObj(i -> new TestRow("" + i))
-						.collect(Collectors.toList());
+						.collect(toList());
 
 		model.items().add(rows);
 		row = table.rowAtPoint(viewport.getViewPosition());
@@ -530,6 +536,200 @@ public class FilterTableTest {
 		testRow = model.items().included().get(row);
 		assertEquals(20, row);
 		assertEquals("401", testRow.value);
+	}
+
+	/**
+	 * Note that this method be made static and called from a main() method, in order to play with table editing
+	 */
+	@Test
+	void tableEditTest() {
+
+		enum TestEnum {
+			ONE, TWO, THREE;
+		}
+
+		class Row {
+			private static final List<Class<?>> COLUMN_CLASSES = asList(
+							LocalTime.class, LocalDate.class, LocalDateTime.class, OffsetDateTime.class,
+							String.class, Short.class, Integer.class, Long.class, Double.class, BigInteger.class,
+							BigDecimal.class, Boolean.class, TestEnum.class, Character.class);
+
+			private LocalTime localTime;
+			private LocalDate localDate;
+			private LocalDateTime localDateTime;
+			private OffsetDateTime offsetDateTime;
+			private String string;
+			private Short shortValue;
+			private Integer integer;
+			private Long longValue;
+			private Double doubleValue;
+			private BigInteger bigInteger;
+			private BigDecimal bigDecimal;
+			private Boolean booleanValue;
+			private TestEnum enumValue;
+			private Character character;
+
+			private Row(LocalTime localTime, LocalDate localDate, LocalDateTime localDateTime, OffsetDateTime offsetDateTime,
+									String string, Short shortValue, Integer integer, Long longValue, Double doubleValue, BigInteger bigInteger,
+									BigDecimal bigDecimal, Boolean booleanValue, TestEnum enumValue, Character character) {
+				this.localTime = localTime;
+				this.localDate = localDate;
+				this.localDateTime = localDateTime;
+				this.offsetDateTime = offsetDateTime;
+				this.string = string;
+				this.shortValue = shortValue;
+				this.integer = integer;
+				this.longValue = longValue;
+				this.doubleValue = doubleValue;
+				this.bigInteger = bigInteger;
+				this.bigDecimal = bigDecimal;
+				this.booleanValue = booleanValue;
+				this.enumValue = enumValue;
+				this.character = character;
+			}
+		}
+
+		FilterTableModel.TableColumns<Row, Integer> columns = new FilterTableModel.TableColumns<Row, Integer>() {
+
+			private static final List<Integer> IDENTIFIERS = IntStream.range(0, 14).boxed().collect(toList());
+
+			@Override
+			public List<Integer> identifiers() {
+				return IDENTIFIERS;
+			}
+
+			@Override
+			public Class<?> columnClass(Integer identifier) {
+				return Row.COLUMN_CLASSES.get(identifier);
+			}
+
+			@Override
+			public String caption(Integer identifier) {
+				return Row.COLUMN_CLASSES.get(identifier).getSimpleName();
+			}
+
+			@Override
+			public Object value(Row row, Integer identifier) {
+				switch (identifier) {
+					case 0:
+						return row.localTime;
+					case 1:
+						return row.localDate;
+					case 2:
+						return row.localDateTime;
+					case 3:
+						return row.offsetDateTime;
+					case 4:
+						return row.string;
+					case 5:
+						return row.shortValue;
+					case 6:
+						return row.integer;
+					case 7:
+						return row.longValue;
+					case 8:
+						return row.doubleValue;
+					case 9:
+						return row.bigInteger;
+					case 10:
+						return row.bigDecimal;
+					case 11:
+						return row.booleanValue;
+					case 12:
+						return row.enumValue;
+					case 13:
+						return row.character;
+					default:
+						throw new IllegalArgumentException();
+				}
+			}
+		};
+		FilterTableModel.Editor<Row, Integer> editor = new FilterTableModel.Editor<Row, Integer>() {
+
+			@Override
+			public boolean editable(Row row, Integer identifier) {
+				return true;
+			}
+
+			@Override
+			public void set(Object value, int rowIndex, Row row, Integer identifier) {
+				switch (identifier) {
+					case 0:
+						row.localTime = (LocalTime) value;
+						break;
+					case 1:
+						row.localDate = (LocalDate) value;
+						break;
+					case 2:
+						row.localDateTime = (LocalDateTime) value;
+						break;
+					case 3:
+						row.offsetDateTime = (OffsetDateTime) value;
+						break;
+					case 4:
+						row.string = (String) value;
+						break;
+					case 5:
+						row.shortValue = (Short) value;
+						break;
+					case 6:
+						row.integer = (Integer) value;
+						break;
+					case 7:
+						row.longValue = (Long) value;
+						break;
+					case 8:
+						row.doubleValue = (Double) value;
+						break;
+					case 9:
+						row.bigInteger = (BigInteger) value;
+						break;
+					case 10:
+						row.bigDecimal = (BigDecimal) value;
+						break;
+					case 11:
+						row.booleanValue = (Boolean) value;
+						break;
+					case 12:
+						row.enumValue = (TestEnum) value;
+						break;
+					case 13:
+						row.character = (Character) value;
+						break;
+					default:
+						throw new IllegalArgumentException();
+				}
+			}
+		};
+
+		FilterTableModel<Row, Integer> model = FilterTableModel.builder()
+						.columns(columns)
+						.editor(m -> editor)
+						.items(() -> asList(
+										new Row(LocalTime.now(), LocalDate.now(), LocalDateTime.now(), OffsetDateTime.now(), "Test",
+														(short) 10, 42, 24345L, 12.456, BigInteger.valueOf(1200),
+														BigDecimal.valueOf(499.999), false, TestEnum.ONE, 'a'),
+										new Row(LocalTime.now(), LocalDate.now(), LocalDateTime.now(), OffsetDateTime.now(), "Best",
+														(short) 11, 43, 2345L, 2124.456, BigInteger.valueOf(1202000),
+														BigDecimal.valueOf(49900.999), true, TestEnum.TWO, 'B')
+						))
+						.build();
+
+		FilterTable<Row, Integer> table = FilterTable.builder()
+						.model(model)
+						.surrendersFocusOnKeystroke(true)
+						.build();
+
+		model.items().refresh();
+
+		for (int i = 0; i < columns.identifiers().size(); i++) {
+			table.editCellAt(0, i);
+			table.getCellEditor().stopCellEditing();
+		}
+
+//		Dialogs.builder()
+//						.component(new JScrollPane(table))
+//						.show();
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,

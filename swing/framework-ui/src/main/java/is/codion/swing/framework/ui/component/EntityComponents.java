@@ -70,7 +70,6 @@ import java.text.ParsePosition;
 import java.time.temporal.Temporal;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.component.Components.bigIntegerField;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 

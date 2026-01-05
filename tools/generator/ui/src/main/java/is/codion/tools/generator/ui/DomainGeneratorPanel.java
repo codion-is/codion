@@ -31,7 +31,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -237,9 +236,6 @@ public final class DomainGeneratorPanel extends JPanel {
 							}
 						})
 						.columnReordering(false)
-						.cellEditor(EntityColumns.DTO, FilterTableCellEditor.builder()
-										.component(checkBox()::buildValue)
-										.build())
 						.hiddenColumns(EntityColumns.DTO)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.popupControl(FilterTable::createToggleAutoResizeModeControls)

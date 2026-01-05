@@ -64,6 +64,15 @@ public interface FilterTableCellEditor<C extends JComponent, T> extends TableCel
 	}
 
 	/**
+	 * @param <R> the row type
+	 * @param <C> the column identifier type
+	 * @return a new default {@link FilterTableCellEditor.Factory} instance
+	 */
+	static <R, C> FilterTableCellEditor.Factory<R, C> factory() {
+		return (Factory<R, C>) DefaultFilterTableCellEditor.DEFAULT_FACTORY;
+	}
+
+	/**
 	 * A factory for {@link FilterTableCellEditor} instances.
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
