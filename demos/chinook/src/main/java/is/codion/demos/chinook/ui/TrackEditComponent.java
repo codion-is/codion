@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.ui.component.DefaultEditComponent;
 import is.codion.swing.framework.ui.component.EntitySearchField;
+import is.codion.swing.framework.ui.component.EntitySearchField.SingleSelectionBuilder;
 
 /**
  * Provides a {@link EntitySearchField} using the {@link TrackSelector}.
@@ -36,9 +37,9 @@ final class TrackEditComponent extends DefaultEditComponent<EntitySearchField, E
 	}
 
 	@Override
-	protected EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey,
-																																 EntityDefinition entityDefinition,
-																																 EntitySearchModel searchModel) {
+	protected SingleSelectionBuilder searchField(ForeignKey foreignKey,
+																							 EntityDefinition entityDefinition,
+																							 EntitySearchModel searchModel) {
 		return super.searchField(foreignKey, entityDefinition, searchModel)
 						.selector(new TrackSelector());
 	}

@@ -19,8 +19,8 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.model.TrackEditModel;
-import is.codion.demos.chinook.ui.DurationComponentValue.DurationPanel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -73,7 +73,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 		createTextFieldPanel(Track.COMPOSER)
 						.columns(12);
 
-		component(Track.MILLISECONDS).set(createDurationPanel());
+		createDurationPanel(Track.MILLISECONDS);
 
 		createIntegerField(Track.BYTES)
 						.columns(6);
@@ -117,8 +117,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 		return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
 	}
 
-	private DurationPanel createDurationPanel() {
-		return new DurationComponentValue(editModel().editor().value(Track.MILLISECONDS)).component();
+	private DurationPanelBuilder createDurationPanel(Attribute<Integer> attribute) {
+		return setComponentBuilder(attribute, new DurationPanelBuilder());
 	}
 
 	private void addKeyEvents() {

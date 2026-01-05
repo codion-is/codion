@@ -20,7 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.model.TrackTableModel;
-import is.codion.demos.chinook.ui.DurationComponentValue.DurationPanel;
+import is.codion.demos.chinook.ui.DurationPanelBuilder.DurationPanel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -42,8 +42,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.common.utilities.Text.rightPad;
-import static is.codion.demos.chinook.ui.DurationComponentValue.minutes;
-import static is.codion.demos.chinook.ui.DurationComponentValue.seconds;
+import static is.codion.demos.chinook.ui.DurationPanelBuilder.minutes;
+import static is.codion.demos.chinook.ui.DurationPanelBuilder.seconds;
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
@@ -121,7 +121,10 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	private static FilterTableCellEditor<DurationPanel, Integer> durationEditor() {
 		return FilterTableCellEditor.builder()
-						.component(() -> new DurationComponentValue(true))
+						.component(() -> new DurationPanelBuilder()
+										.cellEditor(true)
+										.transferFocusOnEnter(true)
+										.buildValue())
 						.configure(DurationPanel::configureCellEditor)
 						.build();
 	}
@@ -160,7 +163,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 		@Override
 		public ComponentValue<DurationPanel, Integer> component(SwingEntityEditModel editModel) {
-			return new DurationComponentValue(false);
+			return new DurationPanelBuilder().buildValue();
 		}
 	}
 }
