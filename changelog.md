@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.65
+### is.codion.swing.framework.ui
+- EntityApplicationPanel.exiting() and initialized() observer types improved.
 
 ## 0.18.64
 ### is.codion.common.reactive

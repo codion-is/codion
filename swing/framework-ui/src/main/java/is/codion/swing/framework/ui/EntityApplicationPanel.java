@@ -239,8 +239,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 					.consumer(alwaysOnTop -> Ancestor.window().of(this).optional()
 									.ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
 					.build();
-	private final Event<?> exiting = Event.event();
-	private final Event<EntityApplicationPanel<?>> initializedEvent = Event.event();
+	private final Event<EntityApplicationPanel<M>> exiting = Event.event();
+	private final Event<EntityApplicationPanel<M>> initializedEvent = Event.event();
 	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.getOrThrow();
 	private final boolean userPreferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow();
 	private final boolean restoreDefaultPreferences = EntityApplicationModel.RESTORE_DEFAULT_PREFERENCES.getOrThrow();
@@ -368,7 +368,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @return an observer notified when this application panel is initialized
 	 * @see #initialize()
 	 */
-	public final Observer<EntityApplicationPanel<?>> initialized() {
+	public final Observer<EntityApplicationPanel<M>> initialized() {
 		return initializedEvent.observer();
 	}
 
@@ -839,7 +839,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * To cancel the exit add a listener throwing a {@link CancelException}.
 	 * @return an observer notified when the application is about to exit.
 	 */
-	protected final Observer<?> exiting() {
+	protected final Observer<EntityApplicationPanel<M>> exiting() {
 		return exiting.observer();
 	}
 
