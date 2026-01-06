@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.plugin.flatlaf.lookandfeels;
+package is.codion.plugin.flatlaf.themes;
 
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.ui.Utilities;

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.65
+### is.codion.plugin.flatlaf.themes
+- Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.exiting() and initialized() observer types improved.
 

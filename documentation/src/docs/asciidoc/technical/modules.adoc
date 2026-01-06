@@ -610,7 +610,7 @@ image::modules/plugins/flatlaf/build/reports/dependency-graph/dependency-graph.s
 Provides all available https://github.com/JFormDesigner/FlatLaf[Flat Look & Feels].
 
 [discrete]
-==== codion-plugin-flatlaf-lookandfeels
+==== codion-plugin-flatlaf-themes
 
 .Dependency graph
 [%collapsible]

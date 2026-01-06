@@ -19,9 +19,9 @@
 /**
  * Flat Look and Feels
  */
-module is.codion.plugin.flatlaf.lookandfeels {
+module is.codion.plugin.flatlaf.themes {
 	requires transitive is.codion.plugin.flatlaf;
 
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
-					with is.codion.plugin.flatlaf.lookandfeels.FlatLookAndFeelProvider;
+					with is.codion.plugin.flatlaf.themes.FlatLookAndFeelProvider;
 }
