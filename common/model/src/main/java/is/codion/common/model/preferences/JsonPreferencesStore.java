@@ -204,10 +204,16 @@ final class JsonPreferencesStore {
 
 	/**
 	 * Saves the preferences to disk using atomic write with file locking.
+	 * If the preferences are empty, the file is deleted instead of written.
 	 * @throws IOException if an I/O error occurs
 	 */
 	void save() throws IOException {
 		synchronized (inMemoryLock) {
+			if (isEmpty(data)) {
+				LOG.debug("Preferences empty, deleting file if exists: {}", filePath);
+				delete();
+				return;
+			}
 			LOG.debug("Saving preferences to {}", filePath);
 			long startTime = currentTimeMillis();
 			Files.createDirectories(filePath.getParent());
@@ -516,6 +522,29 @@ final class JsonPreferencesStore {
 
 		// A node is marked with the special ".node" property
 		return obj.optBoolean(NODE, false);
+	}
+
+	/**
+	 * Recursively checks if a node is empty (contains no actual preference values,
+	 * only node markers or empty child nodes).
+	 */
+	private static boolean isEmpty(JSONObject node) {
+		for (String key : node.keySet()) {
+			if (NODE.equals(key)) {
+				continue;
+			}
+			Object value = node.get(key);
+			if (value instanceof JSONObject) {
+				if (!isEmpty((JSONObject) value)) {
+					return false; // Found a non-empty child
+				}
+			}
+			else {
+				return false; // Found an actual value
+			}
+		}
+
+		return true;
 	}
 
 	/**

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.65
+### is.codion.common.model
+- JsonPreferencesStore no longer writes empty preferences files, and deletes empty ones.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.ui

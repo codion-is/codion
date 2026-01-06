@@ -59,8 +59,8 @@ final class FilePreferences extends AbstractPreferences {
 		this.path = parent == null ? "" : (parent.path.isEmpty() ? name : parent.path + PATH_SEPARATOR + name);
 	}
 
-	private static JsonPreferencesStore createDefaultStore(String applicationId) throws IOException {
-		return new JsonPreferencesStore(PreferencesPath.userPreferencesPath(applicationId));
+	private static JsonPreferencesStore createDefaultStore(String filename) throws IOException {
+		return new JsonPreferencesStore(PreferencesPath.userPreferencesPath(filename));
 	}
 
 	@Override

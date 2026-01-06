@@ -130,6 +130,27 @@ public final class FilePreferencesTest {
 		assertEquals("", prefs.get("empty.key", null));
 	}
 
+	@Test
+	void testEmptyPreferencesNotWritten() throws Exception {
+		Path testFile = tempDir.resolve("empty-test-" + System.nanoTime() + ".json");
+		JsonPreferencesStore store = new JsonPreferencesStore(testFile);
+		Preferences prefs = new FilePreferences(store);
+
+		// Flush empty preferences - file should not be created
+		prefs.flush();
+		assertFalse(testFile.toFile().exists(), "Empty preferences should not create file");
+
+		// Add a value, flush - file should be created
+		prefs.put("key", "value");
+		prefs.flush();
+		assertTrue(testFile.toFile().exists(), "Non-empty preferences should create file");
+
+		// Remove all values, flush - file should be deleted
+		prefs.remove("key");
+		prefs.flush();
+		assertFalse(testFile.toFile().exists(), "Empty preferences should delete existing file");
+	}
+
 	private static boolean containsKey(String[] keys, String key) {
 		for (String k : keys) {
 			if (k.equals(key)) {
