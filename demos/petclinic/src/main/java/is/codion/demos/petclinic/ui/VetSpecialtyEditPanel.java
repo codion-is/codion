@@ -33,8 +33,6 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(VetSpecialty.VET_FK);
-
 		createComboBox(VetSpecialty.VET_FK)
 						.preferredWidth(200);
 		createComboBoxPanel(VetSpecialty.SPECIALTY_FK, this::createSpecialtyEditPanel)

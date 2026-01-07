@@ -408,7 +408,6 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      focus().initial().set(Customer.FIRST_NAME);
       createTextField(Customer.FIRST_NAME);
       createTextField(Customer.LAST_NAME);
       createTextField(Customer.EMAIL);
@@ -429,7 +428,6 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      focus().initial().set(Address.STREET);
       createComboBox(Address.CUSTOMER_FK);
       createTextField(Address.STREET);
       createTextField(Address.CITY);

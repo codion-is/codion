@@ -31,8 +31,6 @@ public class TagEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Tag.TAG);
-
 		createTextField(Tag.TAG)
 						.columns(16);
 

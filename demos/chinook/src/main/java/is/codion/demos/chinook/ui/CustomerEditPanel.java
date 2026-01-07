@@ -43,8 +43,6 @@ public final class CustomerEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Customer.FIRSTNAME);
-
 		createTextField(Customer.FIRSTNAME)
 						.columns(6);
 		createTextField(Customer.LASTNAME)

@@ -57,8 +57,6 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Track.ALBUM_FK);
-
 		createSearchField(Track.ALBUM_FK);
 		createTextField(Track.NAME)
 						.columns(12);

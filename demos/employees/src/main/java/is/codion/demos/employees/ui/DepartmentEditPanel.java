@@ -38,8 +38,6 @@ public class DepartmentEditPanel extends EntityEditPanel {
 	// tag::initializeUI[]
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Department.DEPARTMENT_NO);
-
 		createTextField(Department.DEPARTMENT_NO)
 						.columns(3)
 						//don't allow editing of existing department numbers

@@ -8,10 +8,13 @@ Codion Change Log
 - DefaultFilterTableHeaderRenderer bug fixed, tooltip from previous column persisted, now cleared.
 - FilterTable.Builder.fillsViewportHeight() added along with FILLS_VIEWPORT_HEIGHT configuration parameter, true by default, clicking an empty table now focuses it.
 - ValidationDocumentFilter removed, CaseDocumentFilter and SizedDocument no longer public, related refactoring.
+- Utilities.printFocusOwner() formatter parameter added.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.exiting() and initialized() observer types improved.
+- EntityEditComponentPanel.InputFocus.Initial.get() added, falls back to the default focus traversal component, making most usages of Initial.set() redundant.
+- EntityPanel.EntityPanelFocusTraversal policy added, to prevent JTabbedPane from messing with the focus when navigating using the keyboard.
 
 ## 0.18.64
 ### is.codion.common.reactive

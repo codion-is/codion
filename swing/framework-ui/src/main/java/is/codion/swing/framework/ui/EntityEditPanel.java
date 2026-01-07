@@ -449,8 +449,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * required for editing the underlying entity type.
 	 * {@snippet :
 	 *   protected void initializeUI() {
-	 *      focus().initial().set(DomainModel.USER_NAME);
-	 *
 	 *      createTextField(DomainModel.USER_NAME);
 	 *      createTextField(DomainModel.USER_ADDRESS);
 	 *

@@ -32,8 +32,6 @@ public final class GenreEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Genre.NAME);
-
 		createTextField(Genre.NAME);
 
 		setLayout(gridLayout(1, 1));

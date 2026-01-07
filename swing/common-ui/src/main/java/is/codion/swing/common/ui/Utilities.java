@@ -39,11 +39,10 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
-import static java.lang.Integer.toHexString;
-import static java.lang.System.identityHashCode;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -215,30 +214,39 @@ public final class Utilities {
 	/**
 	 * For focus debug purposes, prints the new and old values to the standard output
 	 * when the 'focusOwner' value changes in the current keyboard focus manager.
+	 * <p>Note that calling this method for a second time has no effect.
+	 * @param formatter formats the component in the output, only called for non-null components
 	 */
-	public static void printFocusOwner() {
+	public static void printFocusOwner(Function<JComponent, String> formatter) {
+		requireNonNull(formatter);
 		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
 		if (Stream.of(focusManager.getPropertyChangeListeners())
 						.noneMatch(PrintFocusOwnerPropertyChangeListener.class::isInstance)) {
-			focusManager.addPropertyChangeListener("focusOwner", new PrintFocusOwnerPropertyChangeListener());
+			focusManager.addPropertyChangeListener("focusOwner", new PrintFocusOwnerPropertyChangeListener(formatter));
 		}
 	}
 
 	private static final class PrintFocusOwnerPropertyChangeListener implements PropertyChangeListener {
 
+		private final Function<JComponent, String> formatter;
+
+		private PrintFocusOwnerPropertyChangeListener(Function<JComponent, String> formatter) {
+			this.formatter = formatter;
+		}
+
 		@Override
 		public void propertyChange(PropertyChangeEvent changeEvent) {
-			Component oldValue = (Component) changeEvent.getOldValue();
-			Component newValue = (Component) changeEvent.getNewValue();
+			JComponent oldValue = (JComponent) changeEvent.getOldValue();
+			JComponent newValue = (JComponent) changeEvent.getNewValue();
 			System.out.println(toString(oldValue) + " -> " + toString(newValue));
 		}
 
-		private static String toString(Component component) {
+		private String toString(JComponent component) {
 			if (component == null) {
 				return "null";
 			}
 
-			return component.getClass().getSimpleName() + "@" + toHexString(identityHashCode(component));
+			return formatter.apply(component);
 		}
 	}
 

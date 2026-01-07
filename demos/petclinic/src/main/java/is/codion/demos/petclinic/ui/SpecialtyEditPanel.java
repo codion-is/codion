@@ -32,8 +32,6 @@ public final class SpecialtyEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Specialty.NAME);
-
 		createTextField(Specialty.NAME);
 
 		setLayout(gridLayout(1, 1));

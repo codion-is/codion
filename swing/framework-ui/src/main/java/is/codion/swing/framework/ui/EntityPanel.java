@@ -54,11 +54,13 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
@@ -84,6 +86,7 @@ import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.framework.ui.EntityEditComponentPanel.LAYOUT_FOCUS_TRAVERSAL_POLICY;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.SELECT_INPUT_FIELD;
 import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.*;
 import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.REFRESH;
@@ -404,6 +407,7 @@ public class EntityPanel extends JPanel {
 			try {
 				setupControls();
 				setFocusCycleRoot(true);
+				setFocusTraversalPolicy(new EntityPanelFocusTraversalPolicy());
 				setupEditAndTablePanelControls();
 				initializeEditPanel();
 				initializeUI();
@@ -574,11 +578,14 @@ public class EntityPanel extends JPanel {
 		else if (tablePanel != null) {
 			tablePanel.table().requestFocusInWindow();
 		}
-		else if (getComponentCount() > 0) {
-			getComponents()[0].requestFocusInWindow();
-		}
 		else {
-			requestFocusInWindow();
+			Component defaultComponent = LAYOUT_FOCUS_TRAVERSAL_POLICY.getDefaultComponent(this);
+			if (defaultComponent != null) {
+				defaultComponent.requestFocusInWindow();
+			}
+			else {
+				requestFocusInWindow();
+			}
 		}
 	}
 
@@ -1825,6 +1832,21 @@ public class EntityPanel extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			editPanel.focus().afterUpdate().request();
+		}
+	}
+
+	private final class EntityPanelFocusTraversalPolicy extends LayoutFocusTraversalPolicy {
+
+		@Override
+		public @Nullable Component getDefaultComponent(Container container) {
+			if (editPanel != null && editPanel.isShowing()) {
+				return editPanel.focus().initial().get();
+			}
+			else if (tablePanel != null) {
+				return tablePanel.table();
+			}
+
+			return super.getDefaultComponent(container);
 		}
 	}
 

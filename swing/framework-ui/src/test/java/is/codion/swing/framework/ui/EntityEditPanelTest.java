@@ -81,8 +81,6 @@ public final class EntityEditPanelTest {
 
 		@Override
 		protected void initializeUI() {
-			focus().initial().set(Employee.NAME);
-
 			setLayout(Layouts.flexibleGridLayout(3, 3));
 
 			addInputPanel(Employee.NAME);

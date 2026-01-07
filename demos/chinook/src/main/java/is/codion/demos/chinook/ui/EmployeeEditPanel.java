@@ -37,8 +37,6 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Employee.FIRSTNAME);
-
 		createTextField(Employee.FIRSTNAME)
 						.columns(6);
 		createTextField(Employee.LASTNAME)

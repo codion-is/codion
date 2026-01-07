@@ -53,8 +53,6 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Invoice.CUSTOMER_FK);
-
 		createSearchField(Invoice.CUSTOMER_FK)
 						.columns(14)
 						// We add a custom selector factory, creating a selector which

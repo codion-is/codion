@@ -66,8 +66,6 @@ public final class CityEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(City.COUNTRY_FK);
-
 		createComboBox(City.COUNTRY_FK)
 						.preferredWidth(120);
 		createTextField(City.NAME);

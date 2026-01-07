@@ -32,8 +32,6 @@ public final class ArtistEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Artist.NAME);
-
 		createTextField(Artist.NAME)
 						.columns(18);
 

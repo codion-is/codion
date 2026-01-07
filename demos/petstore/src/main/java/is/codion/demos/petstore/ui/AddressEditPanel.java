@@ -34,8 +34,6 @@ public class AddressEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Address.CITY);
-
 		createTextField(Address.CITY);
 		createTextField(Address.STATE);
 		createTextField(Address.ZIP);

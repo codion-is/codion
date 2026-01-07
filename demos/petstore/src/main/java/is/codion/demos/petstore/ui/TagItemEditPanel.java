@@ -33,8 +33,6 @@ public class TagItemEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(TagItem.ITEM_FK);
-
 		createComboBox(TagItem.ITEM_FK)
 						.preferredWidth(180);
 		createComboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)

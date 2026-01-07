@@ -72,6 +72,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.SpinnerListModel;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
@@ -100,6 +101,8 @@ import static java.util.Objects.requireNonNull;
  * A base class for entity edit panels, managing the components used for editing entities.
  */
 public class EntityEditComponentPanel extends JPanel {
+
+	static final LayoutFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new LayoutFocusTraversalPolicy();
 
 	/**
 	 * Specifies whether components should indicate the validity of their current value
@@ -812,6 +815,27 @@ public class EntityEditComponentPanel extends JPanel {
 			private Initial() {}
 
 			/**
+			 * Returns the component which should receive the initial focus, which by default is
+			 * the one specified via {@link #set(Supplier)} or {@link #set(JComponent)}.
+			 * The fallback is the default component as defined by the focus traversal policy,
+			 * or if this panel contains no fousable components, the panel itself.
+			 * @return the initial focus component
+			 */
+			public JComponent get() {
+				JComponent initial = component.get();
+				if (initial == null) {
+					Component defaultComponent = LAYOUT_FOCUS_TRAVERSAL_POLICY.getDefaultComponent(editComponentPanel);
+					if (defaultComponent instanceof JComponent) {
+						return (JComponent) defaultComponent;
+					}
+
+					return editComponentPanel;
+				}
+
+				return initial;
+			}
+
+			/**
 			 * <p>Sets the component that should receive the focus when this edit panel is cleared or activated.
 			 * @param component the component that should receive the focus when this edit panel is cleared or activated
 			 */
@@ -839,14 +863,13 @@ public class EntityEditComponentPanel extends JPanel {
 			}
 
 			/**
-			 * <p>Requests the initial focus, if an initial focus component or component attribute
-			 * has been set, that component receives the focus, if not, or if that component
-			 * is not focusable, this panel receives the focus.
+			 * <p>Requests the initial focus, using the component returned by {@link #get()}.
 			 * <p>Note that if this panel is not visible then calling this method has no effect.
+			 * @see #get()
 			 */
 			public void request() {
 				if (editComponentPanel.isVisible()) {
-					requestFocus(component.get());
+					requestFocus(get());
 				}
 			}
 		}
@@ -856,7 +879,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		public final class AfterInsert {
 
-			private Supplier<@Nullable JComponent> component = () -> initial.component.get();
+			private Supplier<@Nullable JComponent> component = () -> null;
 
 			private AfterInsert() {}
 
@@ -891,7 +914,13 @@ public class EntityEditComponentPanel extends JPanel {
 			 * Request focus after an insert operation
 			 */
 			public void request() {
-				requestFocus(component.get());
+				requestFocus(get());
+			}
+
+			private JComponent get() {
+				JComponent afterInsert = component.get();
+
+				return afterInsert == null ? initial.get() : afterInsert;
 			}
 		}
 
@@ -908,7 +937,7 @@ public class EntityEditComponentPanel extends JPanel {
 			 * Request focus after an update operation
 			 */
 			public void request() {
-				requestFocus(focusedInputComponent == null ? initial.component.get() : focusedInputComponent);
+				requestFocus(focusedInputComponent == null ? initial.get() : focusedInputComponent);
 			}
 		}
 	}

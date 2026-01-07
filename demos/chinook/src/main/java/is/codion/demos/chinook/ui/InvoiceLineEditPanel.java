@@ -46,8 +46,6 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(InvoiceLine.TRACK_FK);
-
 		createSearchField(InvoiceLine.TRACK_FK)
 						.selector(new TrackSelector())
 						.columns(15);

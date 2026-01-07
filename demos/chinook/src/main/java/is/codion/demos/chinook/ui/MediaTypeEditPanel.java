@@ -32,8 +32,6 @@ public final class MediaTypeEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(MediaType.NAME);
-
 		createTextField(MediaType.NAME);
 
 		setLayout(gridLayout(1, 1));

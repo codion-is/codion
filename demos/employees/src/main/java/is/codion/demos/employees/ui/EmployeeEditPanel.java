@@ -42,8 +42,6 @@ public class EmployeeEditPanel extends EntityEditPanel {
 	// tag::initializeUI[]
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Employee.NAME);
-
 		createTextField(Employee.NAME)
 						.columns(8);
 		createComboBox(Employee.DEPARTMENT_FK);

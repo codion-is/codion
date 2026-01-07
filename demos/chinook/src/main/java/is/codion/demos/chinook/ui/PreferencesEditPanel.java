@@ -33,8 +33,6 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Preferences.CUSTOMER_FK);
-
 		createSearchField(Preferences.CUSTOMER_FK)
 						.columns(14);
 		createComboBox(Preferences.PREFERRED_GENRE_FK)

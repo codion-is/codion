@@ -39,8 +39,6 @@ final class PlaylistEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		focus().initial().set(Playlist.NAME);
-
 		createTextField(Playlist.NAME)
 						.transferFocusOnEnter(false)
 						.columns(20);

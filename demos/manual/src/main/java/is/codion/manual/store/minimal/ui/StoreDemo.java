@@ -50,7 +50,6 @@ public class StoreDemo {
 
 		@Override
 		protected void initializeUI() {
-			focus().initial().set(Customer.FIRST_NAME);
 			createTextField(Customer.FIRST_NAME);
 			createTextField(Customer.LAST_NAME);
 			createTextField(Customer.EMAIL);
