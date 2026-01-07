@@ -25,48 +25,25 @@ import static java.util.Objects.requireNonNull;
 /**
  * A DocumentFilter implementation with automatic conversion to upper or lower case.
  */
-public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
+final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
 
 	/**
 	 * Specifies possible case conversions for document text.
 	 */
-	public enum DocumentCase {
+	enum DocumentCase {
 		NONE, UPPERCASE, LOWERCASE;
 	}
 
 	private DocumentCase documentCase = DocumentCase.NONE;
 
-	/**
-	 * Instantiates a new CaseDocumentFilter
-	 * @param documentCase the document case setting
-	 */
-	private CaseDocumentFilter(DocumentCase documentCase) {
+	CaseDocumentFilter(DocumentCase documentCase) {
 		super(STRING_PARSER);
 		setDocumentCase(documentCase);
 	}
 
-	/**
-	 * @param documentCase the document case setting
-	 * @return this CaseDocumentFilter instance
-	 */
-	public CaseDocumentFilter setDocumentCase(DocumentCase documentCase) {
+	CaseDocumentFilter setDocumentCase(DocumentCase documentCase) {
 		this.documentCase = requireNonNull(documentCase);
 		return this;
-	}
-
-	/**
-	 * @return the document case setting
-	 */
-	public DocumentCase getDocumentCase() {
-		return documentCase;
-	}
-
-	/**
-	 * Creates a new CaseDocumentFilter instance, configured with {@link DocumentCase#NONE}
-	 * @return a new CaseDocumentFilter instance
-	 */
-	public static CaseDocumentFilter caseDocumentFilter() {
-		return new CaseDocumentFilter(DocumentCase.NONE);
 	}
 
 	@Override

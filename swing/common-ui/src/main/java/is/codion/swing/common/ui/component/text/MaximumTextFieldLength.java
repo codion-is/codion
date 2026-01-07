@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
+
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
@@ -35,7 +37,7 @@ final class MaximumTextFieldLength {
 		else if (document instanceof AbstractDocument) {
 			DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
 			if (documentFilter == null) {
-				CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
+				CaseDocumentFilter caseDocumentFilter = new CaseDocumentFilter(DocumentCase.NONE);
 				caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
 				((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
 			}

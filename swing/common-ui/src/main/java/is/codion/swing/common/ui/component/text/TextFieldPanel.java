@@ -53,7 +53,6 @@ import java.awt.event.FocusEvent;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.panel;
-import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlKeys.DISPLAY_TEXT_AREA;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -284,7 +283,7 @@ public final class TextFieldPanel extends JPanel {
 
 	private void inputFromUser() {
 		JTextArea textArea = TextAreaBuilder.builder()
-						.document(sizedDocument(maximumLength))
+						.document(new SizedDocument(maximumLength))
 						.value(textField.getText())
 						.preferredSize(textAreaSize)
 						.lineWrap(true)

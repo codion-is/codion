@@ -33,7 +33,7 @@ public class SizedDocumentTest {
 	@Test
 	void test() throws BadLocationException {
 		JTextField textField = new JTextField();
-		SizedDocument document = SizedDocument.sizedDocument();
+		SizedDocument document = new SizedDocument(-1);
 		textField.setDocument(document);
 		textField.setText("hello");
 		assertEquals("hello", textField.getText());
@@ -47,19 +47,18 @@ public class SizedDocumentTest {
 		assertThrows(IllegalArgumentException.class, () -> textField.setText("hellohellohello"));//invalid
 		assertEquals("hellohello", textField.getText());
 
-		document.getDocumentFilter().setDocumentCase(DocumentCase.UPPERCASE);
-		assertEquals(DocumentCase.UPPERCASE, document.getDocumentFilter().getDocumentCase());
+		CaseDocumentFilter documentFilter = (CaseDocumentFilter) document.getDocumentFilter();
+		documentFilter.setDocumentCase(DocumentCase.UPPERCASE);
 
 		textField.setText("hello");
 		assertEquals("HELLO", textField.getText());
 
-		document.getDocumentFilter().setDocumentCase(DocumentCase.LOWERCASE);
-		assertEquals(DocumentCase.LOWERCASE, document.getDocumentFilter().getDocumentCase());
+		documentFilter.setDocumentCase(DocumentCase.LOWERCASE);
 
 		textField.setText("HELLO");
 		assertEquals("hello", textField.getText());
 
-		document.getDocumentFilter().setDocumentCase(DocumentCase.NONE);
+		documentFilter.setDocumentCase(DocumentCase.NONE);
 
 		document.insertString(2, "HOLA", null);
 		assertEquals("heHOLAllo", textField.getText());

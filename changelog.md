@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - DefaultFilterTableHeaderRenderer bug fixed, tooltip from previous column persisted, now cleared.
 - FilterTable.Builder.fillsViewportHeight() added along with FILLS_VIEWPORT_HEIGHT configuration parameter, true by default, clicking an empty table now focuses it.
+- ValidationDocumentFilter removed, CaseDocumentFilter and SizedDocument no longer public, related refactoring.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.ui

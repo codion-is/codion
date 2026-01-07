@@ -70,8 +70,8 @@ public abstract class AbstractTextComponentValue<C extends JTextComponent, T> ex
 	protected AbstractTextComponentValue(C component, @Nullable T nullValue, UpdateOn updateOn) {
 		super(component, nullValue);
 		DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
-		if (documentFilter instanceof ValidationDocumentFilter) {
-			((ValidationDocumentFilter<T>) documentFilter).addValidator(AbstractTextComponentValue.this::validate);
+		if (documentFilter instanceof ParsingDocumentFilter<?>) {
+			((ParsingDocumentFilter<T>) documentFilter).addValidator(AbstractTextComponentValue.this::validate);
 		}
 		if (updateOn == UpdateOn.VALUE_CHANGE) {
 			Document document = component.getDocument();

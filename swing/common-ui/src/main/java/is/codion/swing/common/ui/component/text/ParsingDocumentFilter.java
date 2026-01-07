@@ -18,9 +18,17 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.reactive.value.Value.Validator;
+
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,13 +36,14 @@ import static java.util.Objects.requireNonNull;
  * A DocumentFilter which parses a value from the document text and allows for validation of the parsed value.
  * @param <T> the value type
  */
-public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
+class ParsingDocumentFilter<T> extends DocumentFilter {
 
 	static final Parser<String> STRING_PARSER = new StringParser();
 
 	private final Parser<T> parser;
+	private final Set<Validator<T>> validators = new LinkedHashSet<>();
 
-	public ParsingDocumentFilter(Parser<T> parser) {
+	ParsingDocumentFilter(Parser<T> parser) {
 		this.parser = requireNonNull(parser);
 	}
 
@@ -95,6 +104,18 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
 	 */
 	protected String transform(String string) {
 		return string;
+	}
+
+	final void addValidator(Validator<T> validator) {
+		validators.add(requireNonNull(validator));
+	}
+
+	final Collection<Validator<T>> validators() {
+		return validators;
+	}
+
+	private void validate(@Nullable T value) {
+		validators.forEach(validator -> validator.validate(value));
 	}
 
 	private static final class StringParser implements Parser<String> {

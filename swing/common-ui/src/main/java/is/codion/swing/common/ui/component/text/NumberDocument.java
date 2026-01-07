@@ -337,7 +337,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		}
 	}
 
-	static final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocumentFilter<T> {
+	static final class NumberParsingDocumentFilter<T extends Number> extends DocumentFilter {
 
 		private static final MessageBundle MESSAGES =
 						messageBundle(NumberParsingDocumentFilter.class, getBundle(NumberParsingDocumentFilter.class.getName()));
@@ -353,7 +353,6 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		NumberParsingDocumentFilter(NumberParser<T> parser) {
 			this.parser = requireNonNull(parser);
 			this.rangeValidator = new NumberRangeValidator<>();
-			addValidator(rangeValidator);
 		}
 
 		@Override
@@ -431,7 +430,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 																 @Nullable AttributeSet attributeSet, int dotLocation) throws BadLocationException {
 			if (parseResult.value() != null) {
 				try {
-					validate(parseResult.value());
+					rangeValidator.validate(parseResult.value());
 				}
 				catch (IllegalArgumentException e) {
 					if (silentValidation) {
@@ -453,13 +452,13 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			private @Nullable Number maximumValue;
 
 			@Override
-			public void validate(T value) {
+			public void validate(@Nullable T value) {
 				if (!withinRange(value)) {
 					throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + value + " [" + minimumValue + " - " + maximumValue + "]");
 				}
 			}
 
-			private boolean withinRange(T value) {
+			private boolean withinRange(@Nullable T value) {
 				return value == null || (greaterThanMinimum(value) && lessThanMaximum(value));
 			}
 

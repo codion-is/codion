@@ -33,14 +33,13 @@ public class TextComponentsTest {
 	@Test
 	void maximumLengthTextField() {
 		JTextField textField = new JTextField();
-		SizedDocument document = SizedDocument.sizedDocument();
+		SizedDocument document = new SizedDocument(-1);
 		textField.setDocument(document);
 		TextComponents.maximumLength(document, 5);
 		assertThrows(IllegalArgumentException.class, () -> textField.setText("123456"));
 		TextComponents.maximumLength(document, 3);
 		textField.setText("123");
 		assertThrows(IllegalArgumentException.class, () -> textField.setText("1234"));
-		assertEquals(1, document.getDocumentFilter().validators().size());
 		TextComponents.maximumLength(document, -1);
 		textField.setText("123456789");
 	}
@@ -69,7 +68,7 @@ public class TextComponentsTest {
 		assertEquals("HELLO", textField.getText());
 
 		textField = new JTextField();
-		textField.setDocument(SizedDocument.sizedDocument());
+		textField.setDocument(new SizedDocument(-1));
 		TextComponents.upperCase(textField.getDocument());
 		textField.setText("hello");
 		assertEquals("HELLO", textField.getText());
@@ -83,7 +82,7 @@ public class TextComponentsTest {
 		assertEquals("hello", textField.getText());
 
 		textField = new JTextField();
-		textField.setDocument(SizedDocument.sizedDocument());
+		textField.setDocument(new SizedDocument(-1));
 		TextComponents.lowerCase(textField.getDocument());
 		textField.setText("HELLO");
 		assertEquals("hello", textField.getText());
