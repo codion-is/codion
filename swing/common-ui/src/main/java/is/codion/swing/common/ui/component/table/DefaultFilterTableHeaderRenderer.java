@@ -71,7 +71,7 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 						.getDefaultRenderer()
 						.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		if (component instanceof JComponent && columnToolTips) {
-			tableColumn.toolTipText().ifPresent(((JComponent) component)::setToolTipText);
+			((JComponent) component).setToolTipText(tableColumn.toolTipText().orElse(null));
 		}
 		if (component instanceof JLabel) {
 			Font defaultFont = component.getFont();
