@@ -179,11 +179,23 @@ public final class FilterTable<R, C> extends JTable {
 					booleanValue(FilterTable.class.getName() + ".columnToolTips", true);
 
 	/**
-	 * Specifies whether alternating row backgrounds are painted below the table data to fill the viewport
+	 * Specifies whether or not tables are always made large enough to fill the height of an enclosing viewport
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> FILLS_VIEWPORT_HEIGHT =
+					booleanValue(FilterTable.class.getName() + ".fillsViewportHeight", true);
+
+	/**
+	 * Specifies whether alternating row backgrounds are painted below the table data to fill the viewport.
+	 * Note that this relies on tables filling their viewport height, see {@link #FILLS_VIEWPORT_HEIGHT}
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
+	 * @see Builder#fillsViewportHeight(boolean)
 	 */
 	public static final PropertyValue<Boolean> PAINT_REMAINING_ROWS =
 					booleanValue(FilterTable.class.getName() + ".paintRemainingRows", false);
@@ -355,7 +367,7 @@ public final class FilterTable<R, C> extends JTable {
 		if (builder.surrendersFocusOnKeystroke != null) {
 			setSurrendersFocusOnKeystroke(builder.surrendersFocusOnKeystroke);
 		}
-		setFillsViewportHeight(paintRemainingRows);// necessary for paintRemainingRows
+		setFillsViewportHeight(builder.fillsViewportHeight);
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder);
@@ -1412,12 +1424,22 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> columnToolTips(boolean columnToolTips);
 
 		/**
+		 * Specifies whether the table fills the viewport height, default true.
+		 * @param fillsViewportHeight whether or not this table is always made large enough to fill the height of an enclosing viewport
+		 * @return this builder instance
+		 * @see #FILLS_VIEWPORT_HEIGHT
+		 * @see JTable#setFillsViewportHeight(boolean)
+		 */
+		Builder<R, C> fillsViewportHeight(boolean fillsViewportHeight);
+
+		/**
 		 * Specifies whether the remaining rows below the ones available in the table model are painted.
-		 * <p>Note that this causes {@link JTable#setFillsViewportHeight(boolean)} to be set to true,
-		 * and relies on that remaining so.
+		 * <p>Note that this requires {@link JTable#setFillsViewportHeight(boolean)} to be enabled,
+		 * and relies on that remaining so. This is true by default, see {@link #fillsViewportHeight(boolean)}.
 		 * @param paintRemainingRows true if the remaining rows should be painted
 		 * @return this builder instance
 		 * @see #PAINT_REMAINING_ROWS
+		 * @see #fillsViewportHeight(boolean)
 		 */
 		Builder<R, C> paintRemainingRows(boolean paintRemainingRows);
 
@@ -1594,6 +1616,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean scrollToSelectedItem = true;
 		private boolean scrollToAddedItem = false;
 		private boolean columnToolTips = COLUMN_TOOL_TIPS.getOrThrow();
+		private boolean fillsViewportHeight = FILLS_VIEWPORT_HEIGHT.getOrThrow();
 		private boolean paintRemainingRows = PAINT_REMAINING_ROWS.getOrThrow();
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
@@ -1740,6 +1763,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> columnToolTips(boolean columnToolTips) {
 			this.columnToolTips = columnToolTips;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> fillsViewportHeight(boolean fillsViewportHeight) {
+			this.fillsViewportHeight = fillsViewportHeight;
 			return this;
 		}
 
