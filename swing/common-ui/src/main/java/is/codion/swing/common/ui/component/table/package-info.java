@@ -34,6 +34,10 @@
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#AUTO_RESIZE_MODE}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#COLUMN_RESIZING}
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#PAINT_REMAINING_ROWS}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#COLUMN_TOOL_TIPS}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#FILLS_VIEWPORT_HEIGHT}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#RESIZE_ROW_TO_FIT_EDITOR}
+ * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#STOP_EDIT_ON_FOCUS_LOST}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

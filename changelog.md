@@ -10,6 +10,7 @@ Codion Change Log
 - ValidationDocumentFilter removed, CaseDocumentFilter and SizedDocument no longer public, related refactoring.
 - Utilities.printFocusOwner() formatter parameter added.
 - FilterTable.Builder.stopEditOnFocusLost() added along with STOP_EDIT_ON_FOCUS_LOST configuration value, default true.
+- FilterTableCellEditor.Builder.stopCellEditing() added.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.ui

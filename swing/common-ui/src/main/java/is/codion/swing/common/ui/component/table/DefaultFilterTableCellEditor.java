@@ -68,6 +68,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 	private final Supplier<ComponentValue<C, T>> inputComponent;
 	private final Function<EventObject, Boolean> cellEditable;
 	private final Function<EventObject, Boolean> shouldSelectCell;
+	private final @Nullable Function<@Nullable T, Boolean> stopCellEditing;
 	private final @Nullable Boolean resizeRow;
 	private final Consumer<FilterTableCellEditor<C, T>> configuration;
 
@@ -79,6 +80,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		this.inputComponent = builder.component;
 		this.cellEditable = builder.cellEditable();
 		this.shouldSelectCell = builder.shouldSelectCell == null ? new DefaultShouldSelectCell() : builder.shouldSelectCell;
+		this.stopCellEditing = builder.stopCellEditing;
 		this.resizeRow = builder.resizeRow;
 		this.configuration = builder.configuration == null ? new DefaultCellEditorConfiguration<>() : builder.configuration;
 	}
@@ -136,6 +138,18 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 	@Override
 	public boolean shouldSelectCell(EventObject event) {
 		return shouldSelectCell.apply(event);
+	}
+
+	@Override
+	public boolean stopCellEditing() {
+		if (stopCellEditing == null || componentValue == null) {
+			return super.stopCellEditing();
+		}
+		if (stopCellEditing.apply(componentValue.get())) {
+			return super.stopCellEditing();
+		}
+
+		return false;
 	}
 
 	void updateUI() {
@@ -202,6 +216,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 		private @Nullable Function<EventObject, Boolean> cellEditable;
 		private @Nullable Function<EventObject, Boolean> shouldSelectCell;
+		private @Nullable Function<@Nullable T, Boolean> stopCellEditing;
 		private int clickCountToStart = CLICK_COUNT_TO_START.getOrThrow();
 		private @Nullable Boolean resizeRow;
 		private @Nullable Consumer<FilterTableCellEditor<C, T>> configuration;
@@ -219,6 +234,12 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		@Override
 		public Builder<C, T> shouldSelectCell(Function<EventObject, Boolean> shouldSelectCell) {
 			this.shouldSelectCell = requireNonNull(shouldSelectCell);
+			return this;
+		}
+
+		@Override
+		public Builder<C, T> stopCellEditing(Function<@Nullable T, Boolean> stopCellEditing) {
+			this.stopCellEditing = requireNonNull(stopCellEditing);
 			return this;
 		}
 

@@ -22,6 +22,8 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor.Builder.ComponentStep;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.table.TableCellEditor;
 import java.util.EventObject;
@@ -122,6 +124,13 @@ public interface FilterTableCellEditor<C extends JComponent, T> extends TableCel
 		 * @see TableCellEditor#shouldSelectCell(EventObject)
 		 */
 		Builder<C, T> shouldSelectCell(Function<EventObject, Boolean> shouldSelectCell);
+
+		/**
+		 * @param stopCellEditing a function specifying whether cell editing can be stopped, receives the current editor value
+		 * @return this builder
+		 * @see TableCellEditor#stopCellEditing()
+		 */
+		Builder<C, T> stopCellEditing(Function<@Nullable T, Boolean> stopCellEditing);
 
 		/**
 		 * Default specified by {@link #CLICK_COUNT_TO_START}.
