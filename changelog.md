@@ -17,6 +17,7 @@ Codion Change Log
 - EntityApplicationPanel.exiting() and initialized() observer types improved.
 - EntityEditComponentPanel.InputFocus.Initial.get() added, falls back to the default focus traversal component, making most usages of Initial.set() redundant.
 - EntityPanel.EntityPanelFocusTraversal policy added, to prevent JTabbedPane from messing with the focus when navigating using the keyboard.
+- EntityApplicationPanel.LEGACY_PREFERENCES now false by default and deprecated for removal.
 
 ## 0.18.64
 ### is.codion.common.reactive

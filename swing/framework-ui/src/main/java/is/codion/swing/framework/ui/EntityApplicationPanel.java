@@ -221,10 +221,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * Specifies whether legacy preferences are used along with file based preferences
 	 * <ul>
 	 * <li>Value type: Boolean
-	 * <li>Default value: true
+	 * <li>Default value: false
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", true);
+	@Deprecated(forRemoval = true)
+	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", false);
 
 	// Non-static so that Locale.setDefault(...) can be called in the main method of a subclass
 	private final MessageBundle resourceBundle =
