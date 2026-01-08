@@ -9,6 +9,7 @@ Codion Change Log
 - FilterTable.Builder.fillsViewportHeight() added along with FILLS_VIEWPORT_HEIGHT configuration parameter, true by default, clicking an empty table now focuses it.
 - ValidationDocumentFilter removed, CaseDocumentFilter and SizedDocument no longer public, related refactoring.
 - Utilities.printFocusOwner() formatter parameter added.
+- FilterTable.Builder.stopEditOnFocusLost() added along with STOP_EDIT_ON_FOCUS_LOST configuration value, default true.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.ui

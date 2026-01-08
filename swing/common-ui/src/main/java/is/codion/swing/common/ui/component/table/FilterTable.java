@@ -211,6 +211,16 @@ public final class FilterTable<R, C> extends JTable {
 					booleanValue(FilterTable.class.getName() + ".resizeRowToFitEditor", true);
 
 	/**
+	 * Specifies whether the table should stop and commit editing when it loses focus.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> STOP_EDIT_ON_FOCUS_LOST =
+					booleanValue(FilterTable.class.getName() + ".stopEditOnFocusLost", true);
+
+	/**
 	 * The controls.
 	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
@@ -366,6 +376,9 @@ public final class FilterTable<R, C> extends JTable {
 		}
 		if (builder.surrendersFocusOnKeystroke != null) {
 			setSurrendersFocusOnKeystroke(builder.surrendersFocusOnKeystroke);
+		}
+		if (builder.stopEditOnFocusLost) {
+			putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		}
 		setFillsViewportHeight(builder.fillsViewportHeight);
 		setSelectionMode(builder.selectionMode);
@@ -1388,6 +1401,13 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> surrendersFocusOnKeystroke(boolean surrendersFocusOnKeystroke);
 
 		/**
+		 * @param stopEditOnFocusLost whether the table should stop and commit editing when it loses focus
+		 * @return this builder instance
+		 * @see #STOP_EDIT_ON_FOCUS_LOST
+		 */
+		Builder<R, C> stopEditOnFocusLost(boolean stopEditOnFocusLost);
+
+		/**
 		 * @param centerOnScroll the center on scroll behavious
 		 * @return this builder instance
 		 */
@@ -1611,6 +1631,7 @@ public final class FilterTable<R, C> extends JTable {
 		private BiPredicate<R, C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
 		private @Nullable Boolean autoStartsEdit;
 		private @Nullable Boolean surrendersFocusOnKeystroke;
+		private boolean stopEditOnFocusLost = STOP_EDIT_ON_FOCUS_LOST.getOrThrow();
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 		private @Nullable Action doubleClick;
 		private boolean scrollToSelectedItem = true;
@@ -1733,6 +1754,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> surrendersFocusOnKeystroke(boolean surrendersFocusOnKeystroke) {
 			this.surrendersFocusOnKeystroke = surrendersFocusOnKeystroke;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> stopEditOnFocusLost(boolean stopEditOnFocusLost) {
+			this.stopEditOnFocusLost = stopEditOnFocusLost;
 			return this;
 		}
 
