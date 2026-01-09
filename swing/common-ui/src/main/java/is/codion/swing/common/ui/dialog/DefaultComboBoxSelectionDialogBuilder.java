@@ -93,6 +93,6 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 	}
 
 	private @Nullable String createTitle() {
-		return title == null ? MESSAGES.getString("select_values") : title.get();
+		return title == null ? MESSAGES.getString("select_value") : title.get();
 	}
 }
