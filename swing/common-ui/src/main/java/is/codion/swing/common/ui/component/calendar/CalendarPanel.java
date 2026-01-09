@@ -34,6 +34,7 @@ import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
 import org.jspecify.annotations.Nullable;
 
@@ -59,8 +60,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.OffsetDateTime;
 import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -88,8 +93,10 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
+import static java.time.ZoneId.getAvailableZoneIds;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
@@ -212,16 +219,19 @@ public final class CalendarPanel extends JPanel {
 	private final DayOfWeek firstDayOfWeek;
 	private final int minimalDaysInFirstWeek;
 	private final DateTimeFormatter dateFormatter;
-	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+	private final DateTimeFormatter timeFormatter;
 
 	private final DefaultCalendarDate date;
 	private final DefaultCalendarDateTime dateTime;
+	private final DefaultCalendarOffsetDateTime offsetDateTime;
+	private final DefaultCalendarZonedDateTime zonedDateTime;
 
 	private final Value<Integer> yearValue;
 	private final Value<Month> monthValue;
 	private final Value<Integer> dayValue;
 	private final Value<Integer> hourValue;
 	private final Value<Integer> minuteValue;
+	private final Value<ZoneId> zoneIdValue;
 	private final State todaySelected;
 
 	private final UpdateDateTime updateDateTime = new UpdateDateTime();
@@ -233,6 +243,7 @@ public final class CalendarPanel extends JPanel {
 	private final JPanel dayGridPanel;
 	private final JLabel formattedDateLabel;
 	private final boolean includeTime;
+	private final boolean includeTimeZone;
 	private final boolean includeTodayButton;
 	private final boolean includeWeekNumbers;
 	private final ObservableState enabledState;
@@ -241,6 +252,7 @@ public final class CalendarPanel extends JPanel {
 
 	CalendarPanel(DefaultBuilder builder) {
 		this.includeTime = builder.includeTime;
+		this.includeTimeZone = builder.includeTimeZone;
 		this.includeTodayButton = builder.includeTodayButton;
 		this.controlMap = builder.controlMap;
 		this.selectedLocale = builder.locale;
@@ -248,32 +260,42 @@ public final class CalendarPanel extends JPanel {
 		this.minimalDaysInFirstWeek = builder.minimalDaysInFirstWeek;
 		this.includeWeekNumbers = builder.includeWeekNumbers;
 		this.dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(selectedLocale);
+		this.timeFormatter = includeTimeZone ? new DateTimeFormatterBuilder()
+						.append(DateTimeFormatter.ofPattern("HH:mm, "))
+						.appendZoneId()
+						.toFormatter() : DateTimeFormatter.ofPattern("HH:mm");
 		this.enabledState = builder.enabled;
-		LocalDateTime localDateTime = builder.value == null ? LocalDateTime.now() : builder.value;
+		ZonedDateTime initialValue = builder.value == null ? ZonedDateTime.now() : builder.value;
 		yearValue = Value.builder()
-						.nonNull(localDateTime.getYear())
+						.nonNull(initialValue.getYear())
 						.listener(updateDateTime)
 						.listener(layoutDayPanel)
 						.build();
 		monthValue = Value.builder()
-						.nonNull(localDateTime.getMonth())
+						.nonNull(initialValue.getMonth())
 						.listener(updateDateTime)
 						.listener(layoutDayPanel)
 						.build();
 		dayValue = Value.builder()
-						.nonNull(localDateTime.getDayOfMonth())
+						.nonNull(initialValue.getDayOfMonth())
 						.listener(updateDateTime)
 						.build();
 		hourValue = Value.builder()
-						.nonNull(localDateTime.getHour())
+						.nonNull(initialValue.getHour())
 						.listener(updateDateTime)
 						.build();
 		minuteValue = Value.builder()
-						.nonNull(localDateTime.getMinute())
+						.nonNull(initialValue.getMinute())
 						.listener(updateDateTime)
+						.build();
+		zoneIdValue = Value.builder()
+						.nonNull(initialValue.getZone())
+						.listener(this::updateDateTime)
 						.build();
 		date = new DefaultCalendarDate();
 		dateTime = new DefaultCalendarDateTime();
+		offsetDateTime = new DefaultCalendarOffsetDateTime();
+		zonedDateTime = new DefaultCalendarZonedDateTime();
 		todaySelected = State.state(todaySelected());
 		dayColumns = IntStream.range(0, DAYS_IN_WEEK)
 						.mapToObj(firstDayOfWeek::plus)
@@ -305,6 +327,20 @@ public final class CalendarPanel extends JPanel {
 	 */
 	public CalendarDateTime dateTime() {
 		return dateTime;
+	}
+
+	/**
+	 * @return the calendar zoned date time
+	 */
+	public CalendarZonedDateTime zonedDateTime() {
+		return zonedDateTime;
+	}
+
+	/**
+	 * @return the calendar offset date time
+	 */
+	public Observable<OffsetDateTime> offsetDateTime() {
+		return offsetDateTime;
 	}
 
 	/**
@@ -362,6 +398,18 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	/**
+	 * Provides access to the zoned date and time.
+	 */
+	public interface CalendarZonedDateTime extends Observable<ZonedDateTime> {
+
+		/**
+		 * Sets the date and time to present in this calendar
+		 * @param zonedDateTime the date and time to set
+		 */
+		void set(ZonedDateTime zonedDateTime);
+	}
+
+	/**
 	 * Builds a {@link CalendarPanel} instance.
 	 */
 	public interface Builder {
@@ -405,10 +453,25 @@ public final class CalendarPanel extends JPanel {
 		Builder value(@Nullable LocalDateTime value);
 
 		/**
+		 * Note that calling this method also sets {@link #includeTime(boolean)}
+		 * and {@link #includeTimeZone(boolean)} to true.
+		 * In case of a null value {@link ZonedDateTime#now()} is used.
+		 * @param value the initial value
+		 * @return this builder instance
+		 */
+		Builder value(@Nullable ZonedDateTime value);
+
+		/**
 		 * @param includeTime if true then time fields are included (hours, minutes)
 		 * @return this builder instance
 		 */
 		Builder includeTime(boolean includeTime);
+
+		/**
+		 * @param includeTimeZone if true then a button for selecting a time zone is included
+		 * @return this builder insteance
+		 */
+		Builder includeTimeZone(boolean includeTimeZone);
 
 		/**
 		 * @param includeTodayButton true if a 'Today' button for selecting the current date should be included
@@ -443,10 +506,10 @@ public final class CalendarPanel extends JPanel {
 
 	private final class DefaultCalendarDate implements CalendarDate {
 
-		private final Value<LocalDate> localDate;
+		private final Value<LocalDate> value;
 
 		private DefaultCalendarDate() {
-			localDate = Value.nullable(createLocalDateTime().toLocalDate());
+			value = Value.nullable(createLocalDateTime().toLocalDate());
 		}
 
 		@Override
@@ -456,21 +519,21 @@ public final class CalendarPanel extends JPanel {
 
 		@Override
 		public @Nullable LocalDate get() {
-			return localDate.get();
+			return value.get();
 		}
 
 		@Override
 		public Observer<LocalDate> observer() {
-			return localDate.observer();
+			return value.observer();
 		}
 	}
 
 	private final class DefaultCalendarDateTime implements CalendarDateTime {
 
-		private final Value<LocalDateTime> localDateTime;
+		private final Value<LocalDateTime> value;
 
 		private DefaultCalendarDateTime() {
-			localDateTime = Value.nullable(createLocalDateTime());
+			value = Value.nullable(createLocalDateTime());
 		}
 
 		@Override
@@ -486,12 +549,66 @@ public final class CalendarPanel extends JPanel {
 
 		@Override
 		public @Nullable LocalDateTime get() {
-			return localDateTime.get();
+			return value.get();
 		}
 
 		@Override
 		public Observer<LocalDateTime> observer() {
-			return localDateTime.observer();
+			return value.observer();
+		}
+	}
+
+	private final class DefaultCalendarZonedDateTime implements CalendarZonedDateTime {
+
+		private final Value<ZonedDateTime> value;
+
+		private DefaultCalendarZonedDateTime() {
+			value = Value.nullable(createZonedDateTime());
+		}
+
+		@Override
+		public void set(ZonedDateTime zonedDateTime) {
+			requireNonNull(zonedDateTime);
+			if (includeTime) {
+				setYearMonthDayHourMinuteZoned(zonedDateTime);
+			}
+			else {
+				setYearMonthDay(zonedDateTime.toLocalDate());
+			}
+		}
+
+		@Override
+		public ZonedDateTime get() {
+			return value.getOrThrow();
+		}
+
+		@Override
+		public Observer<ZonedDateTime> observer() {
+			return value.observer();
+		}
+
+		private void setYearMonthDayHourMinuteZoned(ZonedDateTime zonedDateTime) {
+			setYearMonthDayHourMinute(zonedDateTime.toLocalDateTime());
+			zoneIdValue.set(zonedDateTime.getZone());
+		}
+	}
+
+	private final class DefaultCalendarOffsetDateTime implements Observable<OffsetDateTime> {
+
+		private final Value<OffsetDateTime> value;
+
+		private DefaultCalendarOffsetDateTime() {
+			value = Value.nullable(createZonedDateTime().toOffsetDateTime());
+		}
+
+		@Override
+		public OffsetDateTime get() {
+			return value.getOrThrow();
+		}
+
+		@Override
+		public Observer<OffsetDateTime> observer() {
+			return value.observer();
 		}
 	}
 
@@ -502,8 +619,9 @@ public final class CalendarPanel extends JPanel {
 		private Locale locale = Locale.getDefault();
 		private DayOfWeek firstDayOfWeek = WeekFields.of(locale).getFirstDayOfWeek();
 		private int minimalDaysInFirstWeek = WeekFields.of(locale).getMinimalDaysInFirstWeek();
-		private @Nullable LocalDateTime value;
+		private @Nullable ZonedDateTime value;
 		private boolean includeTime = false;
+		private boolean includeTimeZone = false;
 		private boolean includeTodayButton = false;
 		private boolean includeWeekNumbers = WEEK_NUMBERS.getOrThrow();
 		private ObservableState enabled = State.state(true);
@@ -534,19 +652,30 @@ public final class CalendarPanel extends JPanel {
 
 		@Override
 		public Builder value(@Nullable LocalDate value) {
-			this.value = value == null ? LocalDate.now().atStartOfDay() : value.atStartOfDay();
-			return includeTime(false);
+			return value(value == null ? null : value.atStartOfDay());
 		}
 
 		@Override
 		public Builder value(@Nullable LocalDateTime value) {
-			this.value = value == null ? LocalDateTime.now() : value;
+			this.value = value == null ? null : ZonedDateTime.of(value, ZoneId.systemDefault());
 			return includeTime(true);
+		}
+
+		@Override
+		public Builder value(@Nullable ZonedDateTime value) {
+			this.value = value;
+			return includeTime(true).includeTimeZone(true);
 		}
 
 		@Override
 		public Builder includeTime(boolean includeTime) {
 			this.includeTime = includeTime;
+			return this;
+		}
+
+		@Override
+		public Builder includeTimeZone(boolean includeTimeZone) {
+			this.includeTimeZone = includeTimeZone;
 			return this;
 		}
 
@@ -681,6 +810,9 @@ public final class CalendarPanel extends JPanel {
 						.add(yearSpinner);
 		if (includeTime) {
 			yearMonthHourMinutePanel.addAll(hourSpinner, new JLabel(":", SwingConstants.CENTER), minuteSpinner);
+			if (includeTimeZone) {
+				yearMonthHourMinutePanel.add(createTimeZoneButton());
+			}
 		}
 		if (includeTodayButton) {
 			yearMonthHourMinutePanel.add(createSelectTodayButton());
@@ -820,13 +952,20 @@ public final class CalendarPanel extends JPanel {
 		return LocalDateTime.of(yearValue.getOrThrow(), monthValue.getOrThrow(), dayValue.getOrThrow(), hourValue.getOrThrow(), minuteValue.getOrThrow());
 	}
 
+	private ZonedDateTime createZonedDateTime() {
+		return ZonedDateTime.of(createLocalDateTime(), zoneIdValue.getOrThrow());
+	}
+
 	private void updateDateTime() {
 		//prevent illegal day values
 		YearMonth yearMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow());
 		dayValue.update(day -> day > yearMonth.lengthOfMonth() ? yearMonth.lengthOfMonth() : day);
 		LocalDateTime localDateTime = createLocalDateTime();
-		date.localDate.set(localDateTime.toLocalDate());
-		dateTime.localDateTime.set(localDateTime);
+		date.value.set(localDateTime.toLocalDate());
+		dateTime.value.set(localDateTime);
+		ZonedDateTime zoned = createZonedDateTime();
+		zonedDateTime.value.set(zoned);
+		offsetDateTime.value.set(zoned.toOffsetDateTime());
 		todaySelected.set(todaySelected());
 		updateDayLabelBorders();
 		requestInputFocus();
@@ -855,7 +994,8 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private void updateFormattedDate() {
-		formattedDateLabel.setText(dateFormatter.format(dateTime.getOrThrow()) + (includeTime ? ", " + timeFormatter.format(dateTime.getOrThrow()) : ""));
+		ZonedDateTime zoned = zonedDateTime.getOrThrow();
+		formattedDateLabel.setText(dateFormatter.format(zoned) + (includeTime ? ", " + timeFormatter.format(zoned) : ""));
 	}
 
 	private void createControls() {
@@ -1013,6 +1153,28 @@ public final class CalendarPanel extends JPanel {
 						.enabled(enabledState)
 						.onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
 						.build();
+	}
+
+	private JButton createTimeZoneButton() {
+		return Components.button()
+						.control(Control.builder()
+										.command(this::selectTimeZone)
+										.caption("Z")
+										.mnemonic('Z'))
+						.focusable(false)
+						.build();
+	}
+
+	private void selectTimeZone() {
+		Dialogs.select()
+						.comboBox(getAvailableZoneIds().stream()
+										.map(ZoneId::of)
+										.sorted(comparing(zoneId -> zoneId.getDisplayName(TextStyle.FULL, selectedLocale)))
+										.collect(toList()))
+						.defaultSelection(zoneIdValue.getOrThrow())
+						.owner(this)
+						.select()
+						.ifPresent(zoneIdValue::set);
 	}
 
 	private void enabledChanged(boolean enabled) {

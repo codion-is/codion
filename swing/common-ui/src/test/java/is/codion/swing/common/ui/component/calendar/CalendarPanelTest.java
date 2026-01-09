@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -146,5 +148,31 @@ public final class CalendarPanelTest {
 						.build();
 
 		assertEquals(startDate, panel.dateTime().get());
+	}
+
+	@Test
+	void timeZones() {
+		LocalDateTime localDateTime = LocalDateTime.of(2022, 1, 1, 0, 0);
+		ZoneId america = ZoneId.of("America/Los_Angeles");
+		ZonedDateTime americanDateTime = ZonedDateTime.of(localDateTime, america);
+
+		CalendarPanel panel = CalendarPanel.builder()
+						.includeTime(true)
+						.build();
+
+		panel.dateTime().set(localDateTime);
+		assertEquals(localDateTime, panel.dateTime().get());
+		assertEquals(ZonedDateTime.of(localDateTime, ZoneId.systemDefault()), panel.zonedDateTime().get());
+
+		panel.zonedDateTime().set(americanDateTime);
+
+		LocalDateTime anotherDateTime = LocalDateTime.of(2025, 6, 3, 13, 40);
+		panel.dateTime().set(anotherDateTime);
+
+		assertEquals(ZonedDateTime.of(anotherDateTime, america), panel.zonedDateTime().get());
+
+		panel.zonedDateTime().set(americanDateTime);
+		assertEquals(americanDateTime.toLocalDate(), panel.date().get());
+		assertEquals(americanDateTime.toLocalDateTime(), panel.dateTime().get());
 	}
 }

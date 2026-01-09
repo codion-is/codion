@@ -13,6 +13,7 @@ Codion Change Log
 - FilterTableCellEditor.Builder.stopCellEditing() added.
 - CalendarPanel, not including time no longer disables the time element of the component dateTime value, only excludes the input fields.
 - DefaultComboBoxSelectionDialogBuilder bug fixed, now uses singular selection dialog title.
+- CalendarPanel.Builder.includeTimeZone() added.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.ui
