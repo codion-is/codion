@@ -224,6 +224,8 @@ public final class CalendarPanel extends JPanel {
 	private final Value<Integer> minuteValue;
 	private final State todaySelected;
 
+	private final UpdateDateTime updateDateTime = new UpdateDateTime();
+	private final LayoutDayPanel layoutDayPanel = new LayoutDayPanel();
 	private final DayMouseListener dayMouseListener = new DayMouseListener();
 	private final ControlMap controlMap;
 	private final List<DayOfWeek> dayColumns;
@@ -250,32 +252,26 @@ public final class CalendarPanel extends JPanel {
 		LocalDateTime localDateTime = builder.value == null ? LocalDateTime.now() : builder.value;
 		yearValue = Value.builder()
 						.nonNull(localDateTime.getYear())
-						.listener(this::updateDateTime)
-						.listener(new LayoutDayPanelListener())
+						.listener(updateDateTime)
+						.listener(layoutDayPanel)
 						.build();
 		monthValue = Value.builder()
 						.nonNull(localDateTime.getMonth())
-						.listener(this::updateDateTime)
-						.listener(new LayoutDayPanelListener())
+						.listener(updateDateTime)
+						.listener(layoutDayPanel)
 						.build();
 		dayValue = Value.builder()
 						.nonNull(localDateTime.getDayOfMonth())
-						.listener(this::updateDateTime)
+						.listener(updateDateTime)
 						.build();
-		if (includeTime) {
-			hourValue = Value.builder()
-							.nonNull(localDateTime.getHour())
-							.listener(this::updateDateTime)
-							.build();
-			minuteValue = Value.builder()
-							.nonNull(localDateTime.getMinute())
-							.listener(this::updateDateTime)
-							.build();
-		}
-		else {
-			hourValue = Value.nonNull(0);
-			minuteValue = Value.nonNull(0);
-		}
+		hourValue = Value.builder()
+						.nonNull(localDateTime.getHour())
+						.listener(updateDateTime)
+						.build();
+		minuteValue = Value.builder()
+						.nonNull(localDateTime.getMinute())
+						.listener(updateDateTime)
+						.build();
 		date = new DefaultCalendarDate();
 		dateTime = new DefaultCalendarDateTime();
 		todaySelected = State.state(todaySelected());
@@ -1104,7 +1100,15 @@ public final class CalendarPanel extends JPanel {
 		}
 	}
 
-	private final class LayoutDayPanelListener implements Runnable {
+	private final class UpdateDateTime implements Runnable {
+
+		@Override
+		public void run() {
+			updateDateTime();
+		}
+	}
+
+	private final class LayoutDayPanel implements Runnable {
 
 		@Override
 		public void run() {

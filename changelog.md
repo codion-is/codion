@@ -11,6 +11,7 @@ Codion Change Log
 - Utilities.printFocusOwner() formatter parameter added.
 - FilterTable.Builder.stopEditOnFocusLost() added along with STOP_EDIT_ON_FOCUS_LOST configuration value, default true.
 - FilterTableCellEditor.Builder.stopCellEditing() added.
+- CalendarPanel, not including time no longer disables the time element of the component dateTime value, only excludes the input fields.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.ui

@@ -119,19 +119,6 @@ public final class CalendarPanelTest {
 	}
 
 	@Test
-	void dateOnly() {
-		LocalDateTime startDate = LocalDateTime.of(2021, 8, 21, 16, 30);
-
-		CalendarPanel panel = CalendarPanel.builder()
-						.value(startDate)
-						.includeTime(false)
-						.build();
-		panel.dateTime().set(startDate);
-
-		assertEquals(startDate.withHour(0).withMinute(0), panel.dateTime().get());
-	}
-
-	@Test
 	void weekNumbers() {
 		LocalDateTime startDate = LocalDateTime.of(2022, 6, 14, 0, 0);
 
