@@ -40,6 +40,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static is.codion.swing.common.ui.window.Windows.resizeToFitScreen;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.singletonList;
@@ -141,6 +142,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 			if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
 				dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
 			}
+			resizeToFitScreen(dialog);
 			dialog.setVisible(true);
 			if (cancelledState.is()) {
 				throw new CancelException();

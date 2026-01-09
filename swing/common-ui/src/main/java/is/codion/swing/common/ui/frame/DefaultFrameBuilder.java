@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.frame;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.window.Windows;
 
 import org.jspecify.annotations.Nullable;
 
@@ -45,6 +44,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.window.Windows.resizeToFitScreen;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFrameBuilder implements FrameBuilder {
@@ -225,8 +225,8 @@ final class DefaultFrameBuilder implements FrameBuilder {
 		}
 		else {
 			frame.pack();
-			Windows.resizeToFitScreen(frame);
 		}
+		resizeToFitScreen(frame);
 		if (menuBar != null) {
 			frame.setJMenuBar(menuBar);
 		}

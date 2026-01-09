@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.ui.window.Windows.resizeToFitScreen;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Objects.requireNonNull;
@@ -201,6 +202,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		else {
 			dialog.pack();
 		}
+		resizeToFitScreen(dialog);
 		if (location != null) {
 			dialog.setLocation(location);
 		}

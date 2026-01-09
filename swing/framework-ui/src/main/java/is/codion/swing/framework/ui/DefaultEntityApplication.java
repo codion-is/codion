@@ -472,6 +472,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		else {
 			frame.setSize(screenSizeRatio(0.5));
 		}
+		Windows.resizeToFitScreen(frame);
 		frame.setLocationRelativeTo(null);
 		if (maximizeFrame) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -504,9 +505,9 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
 		if (frameSize == null && defaultFrameSize == null) {
 			frame.pack();
-			Windows.resizeToFitScreen(frame);
 			frame.setLocationRelativeTo(null);
 		}
+		Windows.resizeToFitScreen(frame);
 	}
 
 	private String createDefaultFrameTitle(M applicationModel) {

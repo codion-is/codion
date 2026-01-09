@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.Components.comboBox;
+import static is.codion.swing.common.ui.window.Windows.resizeToFitScreen;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ComboBoxSelectionDialogBuilder<T>>
@@ -84,6 +85,7 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 		if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
 			dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
 		}
+		resizeToFitScreen(dialog);
 		dialog.setVisible(true);
 		if (cancelledState.is()) {
 			throw new CancelException();
