@@ -60,6 +60,8 @@ final class ScenarioPanel<T> extends JPanel {
 						.columns(new ScenarioColumns())
 						.editor(ScenarioEditor::new)
 						.items(() -> scenarioRows)
+						.onItemsSelected(this::onSelectionChanged)
+						.refresh(true)
 						.build();
 		FilterTable<RandomItem<Scenario<T>>, String> table = FilterTable.builder()
 						.model(scenarioTableModel)
@@ -79,8 +81,6 @@ final class ScenarioPanel<T> extends JPanel {
 						.columnResizing(false)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();
-		this.scenarioTableModel.selection().items().addConsumer(this::onSelectionChanged);
-		this.scenarioTableModel.items().refresh();
 		setLayout(borderLayout());
 		add(new JScrollPane(table), BorderLayout.CENTER);
 	}

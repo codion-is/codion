@@ -198,10 +198,10 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		Builder<T> filterSelected(boolean filterSelected);
 
 		/**
-		 * @param onSelection called when an item is selected, note that this item may be null
+		 * @param item receives the selected item, note that this item may be null
 		 * @return this builder instance
 		 */
-		Builder<T> onSelection(Consumer<@Nullable T> onSelection);
+		Builder<T> onItemSelected(Consumer<@Nullable T> item);
 
 		/**
 		 * @param async true if async refresh should be enabled

@@ -74,8 +74,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
 		selection = new DefaultComboBoxSelection(builder.translator);
-		builder.onSelection.forEach(onSelection ->
-						selection.item().addConsumer(onSelection));
+		builder.onItemSelected.forEach(selection.item()::addConsumer);
 		sort = new DefaultComboBoxSort<>(builder.comparator);
 		modelItems = new DefaultComboBoxItems(builder);
 		selection.item().set(builder.selectItem);
@@ -171,7 +170,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final @Nullable Collection<T> items;
 		private final @Nullable Supplier<Collection<T>> supplier;
-		private final Collection<Consumer<T>> onSelection = new ArrayList<>(1);
+		private final Collection<Consumer<T>> onItemSelected = new ArrayList<>(1);
 
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
@@ -226,8 +225,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Builder<T> onSelection(Consumer<@Nullable T> onSelection) {
-			this.onSelection.add(requireNonNull(onSelection));
+		public Builder<T> onItemSelected(Consumer<@Nullable T> item) {
+			this.onItemSelected.add(requireNonNull(item));
 			return this;
 		}
 

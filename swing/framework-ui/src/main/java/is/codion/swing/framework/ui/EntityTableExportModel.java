@@ -79,7 +79,7 @@ final class EntityTableExportModel {
 		this.configurationFiles = FilterComboBoxModel.builder()
 						.items(this::refreshConfigurationFiles)
 						.nullItem(NULL_CONFIGURATION_FILE)
-						.onSelection(this::configurationFileSelected)
+						.onItemSelected(this::configurationFileSelected)
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
 		this.all = State.state(!selected.is());

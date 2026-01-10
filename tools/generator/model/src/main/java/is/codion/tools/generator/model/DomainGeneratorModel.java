@@ -112,12 +112,14 @@ public final class DomainGeneratorModel {
 					FilterTableModel.builder()
 									.columns(new SchemaColumns())
 									.items(new SchemaItems())
+									.onSelectionChanged(this::schemaSelectionChanged)
 									.build();
 	private final State populatedSchemaSelected = State.state();
 	private final FilterTableModel<EntityRow, String> entityTableModel =
 					FilterTableModel.builder()
 									.columns(new EntityColumns())
 									.items(new EntityItems())
+									.onItemSelected(this::search)
 									.editor(EntityEditor::new)
 									.build();
 	private final Database database;
@@ -183,7 +185,6 @@ public final class DomainGeneratorModel {
 		schemaTableModel.sort().ascending(SchemaColumns.SCHEMA);
 		entityTableModel.sort().ascending(EntityColumns.ENTITY);
 		schemaTableModel.items().refresh();
-		bindEvents();
 	}
 
 	public FilterTableModel<SchemaRow, String> schemaModel() {
@@ -304,11 +305,6 @@ public final class DomainGeneratorModel {
 
 	public ObservableState apiImplSaveEnabled() {
 		return State.and(domainPackageSpecified, apiSourceDirectorySpecified, implSourceDirectorySpecified, populatedSchemaSelected);
-	}
-
-	private void bindEvents() {
-		schemaTableModel.selection().indexes().addListener(this::schemaSelectionChanged);
-		entityModel().selection().item().addConsumer(this::search);
 	}
 
 	private SchemaDomain schemaDomain(SchemaRow schema) {

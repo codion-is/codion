@@ -92,6 +92,13 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.items.included().predicate().set(builder.included);
 		this.selection = (FilterListSelection<R>) items.included().selection();
 		this.removeSelectionListener = new RemoveSelectionListener();
+		builder.selectionListeners.forEach(selection.indexes()::addListener);
+		builder.itemSelectedListeners.forEach(selection.item()::addConsumer);
+		builder.itemsSelectedListeners.forEach(selection.items()::addConsumer);
+		builder.indexSelectedListeners.forEach(selection.index()::addConsumer);
+		builder.indexesSelectedListeners.forEach(selection.indexes()::addConsumer);
+		builder.selectionConsumers.forEach(selectionConsumer ->
+						selectionConsumer.accept(selection));
 		if (builder.refresh) {
 			items.refresh();
 		}
@@ -367,6 +374,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		static final Builder.ColumnsStep COLUMNS = new DefaultColumnsStep();
 
 		private final TableColumns<R, C> columns;
+		private final List<Runnable> selectionListeners = new ArrayList<>();
+		private final List<Consumer<R>> itemSelectedListeners = new ArrayList<>();
+		private final List<Consumer<List<R>>> itemsSelectedListeners = new ArrayList<>();
+		private final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
+		private final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
+		private final List<Consumer<FilterListSelection<R>>> selectionConsumers = new ArrayList<>();
 
 		private @Nullable Supplier<? extends Collection<R>> itemSupplier;
 		private Predicate<R> validator = new ValidPredicate<>();
@@ -430,6 +443,42 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public Builder<R, C> refresh(boolean refresh) {
 			this.refresh = refresh;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> onSelectionChanged(Runnable listener) {
+			selectionListeners.add(requireNonNull(listener));
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> onItemSelected(Consumer<R> item) {
+			itemSelectedListeners.add(requireNonNull(item));
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> onItemsSelected(Consumer<List<R>> items) {
+			itemsSelectedListeners.add(requireNonNull(items));
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> onIndexSelected(Consumer<Integer> index) {
+			indexSelectedListeners.add(requireNonNull(index));
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> onIndexesSelected(Consumer<List<Integer>> indexes) {
+			indexesSelectedListeners.add(requireNonNull(indexes));
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> selection(Consumer<FilterListSelection<R>> selection) {
+			selectionConsumers.add(requireNonNull(selection));
 			return this;
 		}
 

@@ -4,6 +4,9 @@ Codion Change Log
 ## 0.18.65
 ### is.codion.common.model
 - JsonPreferencesStore no longer writes empty preferences files, and deletes empty ones.
+### is.codion.swing.common.model
+- FilterTableModel.Builder, selection listener methods added.
+- FilterComboBoxModel.Builder.onSelection() renamed onItemSelected().
 ### is.codion.swing.common.ui
 - DefaultFilterTableHeaderRenderer bug fixed, tooltip from previous column persisted, now cleared.
 - FilterTable.Builder.fillsViewportHeight() added along with FILLS_VIEWPORT_HEIGHT configuration parameter, true by default, clicking an empty table now focuses it.
@@ -18,6 +21,8 @@ Codion Change Log
 - DefaultComponentDialogBuilder, DefaultListSelectionDialogBuilder and DefaultComboBoxSelectionDialogBuilder bug fixed, now always make sure the dialog fits the screen.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
+### is.codion.swing.framework.model
+- EntityComboBoxModel.Builder.onSelection() renamed onItemSelected().
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.exiting() and initialized() observer types improved.
 - EntityEditComponentPanel.InputFocus.Initial.get() added, falls back to the default focus traversal component, making most usages of Initial.set() redundant.

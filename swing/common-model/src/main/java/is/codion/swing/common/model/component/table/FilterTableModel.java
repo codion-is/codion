@@ -229,6 +229,42 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> refresh(boolean refresh);
 
 		/**
+		 * @param listener the selection listener
+		 * @return this builder instance
+		 */
+		Builder<R, C> onSelectionChanged(Runnable listener);
+
+		/**
+		 * @param item receives the selected item
+		 * @return this builder instance
+		 */
+		Builder<R, C> onItemSelected(Consumer<R> item);
+
+		/**
+		 * @param items receives the selected items
+		 * @return this builder instance
+		 */
+		Builder<R, C> onItemsSelected(Consumer<List<R>> items);
+
+		/**
+		 * @param index receives the selected index
+		 * @return this builder instance
+		 */
+		Builder<R, C> onIndexSelected(Consumer<Integer> index);
+
+		/**
+		 * @param indexes receives the selected indexes
+		 * @return this builder instance
+		 */
+		Builder<R, C> onIndexesSelected(Consumer<List<Integer>> indexes);
+
+		/**
+		 * @param selection receives the table model selection instance
+		 * @return this builder instance
+		 */
+		Builder<R, C> selection(Consumer<FilterListSelection<R>> selection);
+
+		/**
 		 * @return a new {@link FilterTableModel} instance.
 		 */
 		FilterTableModel<R, C> build();

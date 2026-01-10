@@ -217,10 +217,10 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder filter(ForeignKey foreignKey, EntityComboBoxModel filterModel);
 
 		/**
-		 * @param onSelection called when an item is selected, note that this item may be null
+		 * @param item receives the selected item, note that this item may be null
 		 * @return this builder instance
 		 */
-		Builder onSelection(Consumer<@Nullable Entity> onSelection);
+		Builder onItemSelected(Consumer<@Nullable Entity> item);
 
 		/**
 		 * Default false.
