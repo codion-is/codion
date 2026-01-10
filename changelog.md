@@ -20,6 +20,7 @@ Codion Change Log
 - CalendarPanel.Builder.includeTimeZone() added.
 - DefaultFrameBuilder bug fixed, now always makes sure the frame fits the screen.
 - DefaultComponentDialogBuilder, DefaultListSelectionDialogBuilder and DefaultComboBoxSelectionDialogBuilder bug fixed, now always make sure the dialog fits the screen.
+- DefaultFilterTableCellRenderer bug fixed, no longer sets tooltips for null column values.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.swing.framework.model

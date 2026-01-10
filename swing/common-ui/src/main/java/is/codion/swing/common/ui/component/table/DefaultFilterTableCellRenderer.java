@@ -113,8 +113,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		JComponent component = component(table, value, isSelected, hasFocus, row, column);
 		settings.configure((FilterTable<R, C>) table, component, (T) value, isSelected, hasFocus, row, column);
-		if (settings.toolTip != null) {
+		if (settings.toolTip != null && value != null) {
 			setToolTipText(settings.toolTip.apply((T) value));
+		}
+		else {
+			setToolTipText(null);
 		}
 
 		return component;
@@ -213,8 +216,11 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 																									 boolean hasFocus, int row, int column) {
 			set((Boolean) value);
 			settings.configure((FilterTable<R, C>) table, this, (Boolean) value, isSelected, hasFocus, row, column);
-			if (settings.toolTip != null) {
+			if (settings.toolTip != null && value != null) {
 				setToolTipText(settings.toolTip.apply((Boolean) value));
+			}
+			else {
+				setToolTipText(null);
 			}
 
 			return this;
