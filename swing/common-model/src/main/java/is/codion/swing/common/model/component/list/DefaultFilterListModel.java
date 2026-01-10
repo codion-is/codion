@@ -27,8 +27,10 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.AbstractListModel;
 import javax.swing.SortOrder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -53,6 +55,13 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 						.build();
 		this.items.included().predicate().set(builder.included);
 		this.selection = (FilterListSelection<T>) items.included().selection();
+		builder.selectionListeners.forEach(selection.indexes()::addListener);
+		builder.itemSelectedListeners.forEach(selection.item()::addConsumer);
+		builder.itemsSelectedListeners.forEach(selection.items()::addConsumer);
+		builder.indexSelectedListeners.forEach(selection.index()::addConsumer);
+		builder.indexesSelectedListeners.forEach(selection.indexes()::addConsumer);
+		builder.selectionConsumers.forEach(selectionConsumer ->
+						selectionConsumer.accept(selection));
 		this.items.set(builder.items);
 		this.items.included().sort();
 	}
@@ -184,6 +193,12 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 		private final Collection<T> items;
 		private final @Nullable Supplier<? extends Collection<T>> supplier;
+		private final List<Runnable> selectionListeners = new ArrayList<>();
+		private final List<Consumer<T>> itemSelectedListeners = new ArrayList<>();
+		private final List<Consumer<List<T>>> itemsSelectedListeners = new ArrayList<>();
+		private final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
+		private final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
+		private final List<Consumer<FilterListSelection<T>>> selectionConsumers = new ArrayList<>();
 
 		private @Nullable Comparator<T> comparator;
 		private boolean async = ASYNC.getOrThrow();
@@ -216,6 +231,42 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		@Override
 		public Builder<T> included(Predicate<T> included) {
 			this.included = requireNonNull(included);
+			return this;
+		}
+
+		@Override
+		public Builder<T> onSelectionChanged(Runnable listener) {
+			selectionListeners.add(requireNonNull(listener));
+			return this;
+		}
+
+		@Override
+		public Builder<T> onItemSelected(Consumer<T> item) {
+			itemSelectedListeners.add(requireNonNull(item));
+			return this;
+		}
+
+		@Override
+		public Builder<T> onItemsSelected(Consumer<List<T>> items) {
+			itemsSelectedListeners.add(requireNonNull(items));
+			return this;
+		}
+
+		@Override
+		public Builder<T> onIndexSelected(Consumer<Integer> index) {
+			indexSelectedListeners.add(requireNonNull(index));
+			return this;
+		}
+
+		@Override
+		public Builder<T> onIndexesSelected(Consumer<List<Integer>> indexes) {
+			indexesSelectedListeners.add(requireNonNull(indexes));
+			return this;
+		}
+
+		@Override
+		public Builder<T> selection(Consumer<FilterListSelection<T>> selection) {
+			selectionConsumers.add(requireNonNull(selection));
 			return this;
 		}
 

@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - FilterTableModel.Builder, selection listener methods added.
 - FilterComboBoxModel.Builder.onSelection() renamed onItemSelected().
+- FilterListModel.Builder, selection listener methods added.
 ### is.codion.swing.common.ui
 - DefaultFilterTableHeaderRenderer bug fixed, tooltip from previous column persisted, now cleared.
 - FilterTable.Builder.fillsViewportHeight() added along with FILLS_VIEWPORT_HEIGHT configuration parameter, true by default, clicking an empty table now focuses it.

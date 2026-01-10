@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.ListModel;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -107,6 +108,42 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 		 * @return this builder instance
 		 */
 		Builder<T> included(Predicate<T> included);
+
+		/**
+		 * @param listener the selection listener
+		 * @return this builder instance
+		 */
+		Builder<T> onSelectionChanged(Runnable listener);
+
+		/**
+		 * @param item receives the selected item
+		 * @return this builder instance
+		 */
+		Builder<T> onItemSelected(Consumer<T> item);
+
+		/**
+		 * @param items receives the selected items
+		 * @return this builder instance
+		 */
+		Builder<T> onItemsSelected(Consumer<List<T>> items);
+
+		/**
+		 * @param index receives the selected index
+		 * @return this builder instance
+		 */
+		Builder<T> onIndexSelected(Consumer<Integer> index);
+
+		/**
+		 * @param indexes receives the selected indexes
+		 * @return this builder instance
+		 */
+		Builder<T> onIndexesSelected(Consumer<List<Integer>> indexes);
+
+		/**
+		 * @param selection receives the list model selection instance
+		 * @return this builder instance
+		 */
+		Builder<T> selection(Consumer<FilterListSelection<T>> selection);
 
 		/**
 		 * @return a new {@link FilterListModel} instance
