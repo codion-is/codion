@@ -24,7 +24,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityConditionComponents;
-import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
@@ -40,7 +39,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 						.conditionComponents(PlaylistTrack.TRACK_FK,
 										new TrackConditionComponents(tableModel.entityDefinition()))
 						// Skip confirmation when deleting
-						.deleteConfirmer(Confirmer.NONE)
+						.confirmDelete(false)
 						// No need to edit individual rows, we just add or delete
 						.includeEditAttributeControl(false)
 						.includeEditControl(false));

@@ -34,7 +34,7 @@ final class PlaylistTrackEditPanel extends EntityEditPanel {
 	PlaylistTrackEditPanel(SwingEntityEditModel editModel) {
 		super(editModel, config -> config
 						// Skip confirmation when deleting
-						.deleteConfirmer(Confirmer.NONE));
+						.confirmDelete(false));
 	}
 
 	@Override

@@ -34,7 +34,7 @@ final class PlaylistEditPanel extends EntityEditPanel {
 	PlaylistEditPanel(SwingEntityEditModel editModel) {
 		super(editModel, config -> config
 						// Skip confirmation when updating
-						.updateConfirmer(Confirmer.NONE));
+						.confirmUpdate(false));
 	}
 
 	@Override

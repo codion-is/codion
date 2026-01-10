@@ -161,10 +161,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = (Consumer<Config>) EMPTY_CONSUMER;
 
-	private final InsertCommand insertCommand = insertCommand().build();
-	private final UpdateCommand updateCommand = updateCommand().build();
-	private final DeleteCommand deleteCommand = deleteCommand().build();
-
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final Controls.Layout controlsLayout;
@@ -304,32 +300,36 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * <p>Performs insert on the active entity after asking for confirmation using the {@link Confirmer}
-	 * specified via {@link Config#insertConfirmer(Confirmer)}.
-	 * <p>Note that the default insert {@link Confirmer} simply returns true, so in order to implement
-	 * an insert confirmation you must set the {@link Confirmer} via {@link Config#insertConfirmer(Confirmer)}.
+	 * <p>Performs insert on the active entity.
+	 * <p>If insert confirmation is enabled, confirmation is requested first using
+	 * the {@link Confirmer} specified via {@link Config#insertConfirmer(Confirmer)}.
+	 * @see Config#confirmInsert(boolean)
 	 * @see Config#insertConfirmer(Confirmer)
 	 */
 	public final void insert() {
-		insertCommand.execute();
+		insertCommand().execute();
 	}
 
 	/**
-	 * <p>Performs delete on the active entity after asking for confirmation using the {@link Confirmer}
-	 * specified via {@link Config#deleteConfirmer(Confirmer)}.
+	 * <p>Performs delete on the active entity.
+	 * <p>If delete confirmation is enabled, confirmation is requested first using
+	 * the {@link Confirmer} specified via {@link Config#deleteConfirmer(Confirmer)}.
+	 * @see Config#confirmDelete()
 	 * @see Config#deleteConfirmer(Confirmer)
 	 */
 	public final void delete() {
-		deleteCommand.execute();
+		deleteCommand().execute();
 	}
 
 	/**
-	 * <p>Performs update on the active entity after asking for confirmation using the {@link Confirmer}
-	 * specified via {@link Config#updateConfirmer(Confirmer)}.
+	 * <p>Performs update on the active entity.
+	 * <p>If update confirmation is enabled, confirmation is requested first using
+	 * the {@link Confirmer} specified via {@link Config#updateConfirmer(Confirmer)}.
+	 * @see Config#confirmUpdate(boolean)
 	 * @see Config#updateConfirmer(Confirmer)
 	 */
 	public final void update() {
-		updateCommand.execute();
+		updateCommand().execute();
 	}
 
 	/**
@@ -555,7 +555,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private CommandControl createDeleteControl() {
 		return Control.builder()
-						.command(deleteCommand)
+						.command(this::delete)
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(active,
 										editModel().settings().deleteEnabled(),
@@ -605,7 +605,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private CommandControl createUpdateControl() {
 		return Control.builder()
-						.command(updateCommand)
+						.command(this::update)
 						.caption(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editModel().settings().updateEnabled(),
@@ -622,7 +622,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.insertMnemonic();
 		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
 		return Control.builder()
-						.command(insertCommand)
+						.command(this::insert)
 						.caption(caption)
 						.enabled(State.and(active, editModel().settings().insertEnabled()))
 						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
@@ -786,7 +786,37 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		public static final PropertyValue<Boolean> MODIFIED_WARNING =
 						booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
 
-		private static final Confirmer DEFAULT_INSERT_CONFIRMER = Confirmer.NONE;
+		/**
+		 * Indicates whether the panel should ask for confirmation before inserting
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> CONFIRM_INSERT =
+						booleanValue(EntityEditPanel.class.getName() + ".confirmInsert", false);
+
+		/**
+		 * Indicates whether the panel should ask for confirmation before updating
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> CONFIRM_UPDATE =
+						booleanValue(EntityEditPanel.class.getName() + ".confirmUpdate", true);
+
+		/**
+		 * Indicates whether the panel should ask for confirmation before deleting
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> CONFIRM_DELETE =
+						booleanValue(EntityEditPanel.class.getName() + ".confirmDelete", true);
+
+		private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
@@ -802,6 +832,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
 						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.getOrThrow();
+		private boolean confirmInsert = CONFIRM_INSERT.getOrThrow();
+		private boolean confirmUpdate = CONFIRM_UPDATE.getOrThrow();
+		private boolean confirmDelete = CONFIRM_DELETE.getOrThrow();
 		private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;
 		private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
@@ -821,6 +854,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			this.requestFocusAfterInsert = config.requestFocusAfterInsert;
 			this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
 			this.focusActivation = config.focusActivation;
+			this.confirmInsert = config.confirmInsert;
+			this.confirmUpdate = config.confirmUpdate;
+			this.confirmDelete = config.confirmDelete;
 			this.insertConfirmer = config.insertConfirmer;
 			this.updateConfirmer = config.updateConfirmer;
 			this.deleteConfirmer = config.deleteConfirmer;
@@ -938,8 +974,42 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		/**
+		 * @param confirmInsert whether to confirm before inserting
+		 * @return this Config instance
+		 * @see #insertConfirmer(Confirmer)
+		 * @see #CONFIRM_INSERT
+		 */
+		public Config confirmInsert(boolean confirmInsert) {
+			this.confirmInsert = confirmInsert;
+			return this;
+		}
+
+		/**
+		 * @param confirmUpdate whether to confirm before updating
+		 * @return this Config instance
+		 * @see #updateConfirmer(Confirmer)
+		 * @see #CONFIRM_UPDATE
+		 */
+		public Config confirmUpdate(boolean confirmUpdate) {
+			this.confirmUpdate = confirmUpdate;
+			return this;
+		}
+
+		/**
+		 * @param confirmDelete whether to confirm before deleting
+		 * @return this Config instance
+		 * @see #deleteConfirmer(Confirmer)
+		 * @see #CONFIRM_DELETE
+		 */
+		public Config confirmDelete(boolean confirmDelete) {
+			this.confirmDelete = confirmDelete;
+			return this;
+		}
+
+		/**
 		 * @param insertConfirmer the insert confirmer
 		 * @return this Config instance
+		 * @see #confirmInsert(boolean)
 		 */
 		public Config insertConfirmer(Confirmer insertConfirmer) {
 			this.insertConfirmer = requireNonNull(insertConfirmer);
@@ -949,6 +1019,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * @param deleteConfirmer the delete confirmer
 		 * @return this Config instance
+		 * @see #confirmDelete(boolean)
 		 */
 		public Config deleteConfirmer(Confirmer deleteConfirmer) {
 			this.deleteConfirmer = requireNonNull(deleteConfirmer);
@@ -958,6 +1029,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * @param updateConfirmer the update confirmer
 		 * @return this Config instance
+		 * @see #confirmUpdate(boolean)
 		 */
 		public Config updateConfirmer(Confirmer updateConfirmer) {
 			this.updateConfirmer = requireNonNull(updateConfirmer);
@@ -979,14 +1051,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Handles displaying confirmation messages for common actions to the user.
-	 * @see #NONE
 	 */
 	public interface Confirmer {
-
-		/**
-		 * A convenience instance indicating no confirmation is needed.
-		 */
-		Confirmer NONE = dialogOwner -> true;
 
 		/**
 		 * Returns true if the action is confirmed, presents a confirmation dialog to the user if required.
@@ -1021,9 +1087,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		interface Builder {
 
 			/**
-			 * <p>Note that the default insert {@link Confirmer} simply returns true, so in order to implement
-			 * an insert confirmation you must set the {@link Confirmer} via {@link Config#insertConfirmer(Confirmer)}.
-			 * @param confirm specifies whether confirmation should be requested, default true
+			 * @param confirm specifies whether confirmation should be requested, default false
 			 * @return this builder instance
 			 */
 			Builder confirm(boolean confirm);
@@ -1179,10 +1243,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			private final EntityEditPanel editPanel;
 			private final Collection<Consumer<Collection<Entity>>> onInsert = new ArrayList<>(1);
 
-			private boolean confirm = true;
+			private boolean confirm;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
 				this.editPanel = editPanel;
+				this.confirm = editPanel.configuration.confirmInsert;
 			}
 
 			@Override
@@ -1251,10 +1316,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 			private final EntityEditPanel editPanel;
 			private final Collection<Consumer<Collection<Entity>>> onUpdate = new ArrayList<>(1);
-			private boolean confirm = true;
+			private boolean confirm;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
 				this.editPanel = editPanel;
+				this.confirm = editPanel.configuration.confirmUpdate;
 			}
 
 			@Override
@@ -1323,10 +1389,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 			private final EntityEditPanel editPanel;
 			private final Collection<Consumer<Collection<Entity>>> onDelete = new ArrayList<>(1);
-			private boolean confirm = true;
+			private boolean confirm;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
 				this.editPanel = editPanel;
+				this.confirm = editPanel.configuration.confirmDelete;
 			}
 
 			@Override
@@ -1391,6 +1458,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 
 			return Ancestor.ofType(EntityPanel.class).of(focusedComponent).get();
+		}
+	}
+
+	private static final class InsertConfirmer implements Confirmer {
+
+		@Override
+		public boolean confirm(JComponent dialogOwner) {
+			return confirm(dialogOwner, FrameworkMessages.confirmInsert(), FrameworkMessages.insert());
 		}
 	}
 

@@ -663,13 +663,15 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Deletes the entities selected in the underlying table model after asking for confirmation using
-	 * the confirmer specified via {@link Config#deleteConfirmer(Confirmer)}
+	 * <p>Performs delete on the selected entities.
+	 * <p>If delete confirmation is enabled, confirmation is requested first using
+	 * the {@link Confirmer} specified via {@link Config#deleteConfirmer(Confirmer)}.
 	 * @return true if the delete operation was successful
+	 * @see Config#confirmDelete(boolean)
 	 * @see Config#deleteConfirmer(Confirmer)
 	 */
 	public final boolean deleteSelectedWithConfirmation() {
-		if (confirmDelete()) {
+		if (!configuration.confirmDelete || confirmDelete()) {
 			return deleteSelected();
 		}
 
@@ -1825,7 +1827,7 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public void execute() {
-			if (confirmDelete()) {
+			if (!configuration.confirmDelete || confirmDelete()) {
 				List<Entity> selectedItems = tableModel().selection().items().get();
 				Dialogs.progressWorker()
 								.task(tableModel().editModel().deleteTask(selectedItems).prepare()::perform)
@@ -2167,6 +2169,16 @@ public class EntityTablePanel extends JPanel {
 							throw new UnsupportedOperationException("Parsing the toolbar layout from a system property is not supported");
 						});
 
+		/**
+		 * Indicates whether the panel should ask for confirmation before deleting
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> CONFIRM_DELETE =
+						booleanValue(EntityTablePanel.class.getName() + ".confirmDelete", true);
+
 		private static final Function<SwingEntityTableModel, String> DEFAULT_STATUS_MESSAGE = new DefaultStatusMessage();
 
 		private final EntityTablePanel tablePanel;
@@ -2204,6 +2216,7 @@ public class EntityTablePanel extends JPanel {
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
 		private boolean refreshProgressBar = REFRESH_PROGRESS_BAR.getOrThrow();
 		private int refreshProgressBarDelay = REFRESH_PROGRESS_BAR_DELAY.getOrThrow();
+		private boolean confirmDelete = CONFIRM_DELETE.getOrThrow();
 		private Confirmer deleteConfirmer;
 
 		final ControlMap controlMap;
@@ -2261,6 +2274,7 @@ public class EntityTablePanel extends JPanel {
 			this.statusMessage = config.statusMessage;
 			this.refreshProgressBar = config.refreshProgressBar;
 			this.refreshProgressBarDelay = config.refreshProgressBarDelay;
+			this.confirmDelete = config.confirmDelete;
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeToolBar = config.includeToolBar;
 			this.conditionPanelFactory = config.conditionPanelFactory;
@@ -2518,8 +2532,20 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * @param confirmDelete whether to confirm before deleting
+		 * @return this Config instance
+		 * @see #deleteConfirmer(Confirmer)
+		 * @see #CONFIRM_DELETE
+		 */
+		public Config confirmDelete(boolean confirmDelete) {
+			this.confirmDelete = confirmDelete;
+			return this;
+		}
+
+		/**
 		 * @param deleteConfirmer the delete confirmer
 		 * @return this Config instance
+		 * @see #confirmDelete(boolean)
 		 */
 		public Config deleteConfirmer(Confirmer deleteConfirmer) {
 			this.deleteConfirmer = requireNonNull(deleteConfirmer);

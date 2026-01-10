@@ -30,6 +30,8 @@ Codion Change Log
 - EntityEditComponentPanel.InputFocus.Initial.get() added, falls back to the default focus traversal component, making most usages of Initial.set() redundant.
 - EntityPanel.EntityPanelFocusTraversal policy added, to prevent JTabbedPane from messing with the focus when navigating using the keyboard.
 - EntityApplicationPanel.LEGACY_PREFERENCES now false by default and deprecated for removal.
+- EntityEditPanel.Config.confirmInsert(), confirmUpdate() and confirmDelete() added along with CONFIRM_INSERT, CONFIRM_UPDATE and CONFIRM_DELETE configuration properties, related refactoring.
+- EntityTablePanel.Config.confirmDelete() added along with CONFIRM_DELETE configuration property.
 
 ## 0.18.64
 ### is.codion.common.reactive
