@@ -35,6 +35,9 @@ public final class UIScaler implements Scaler {
 
 	@Override
 	public boolean supports(String lookAndFeelClassName) {
-		return requireNonNull(lookAndFeelClassName).startsWith("com.formdev.flatlaf");
+		requireNonNull(lookAndFeelClassName);
+
+		return lookAndFeelClassName.startsWith("com.formdev.flatlaf") ||
+						lookAndFeelClassName.startsWith("is.codion.plugin.flatlaf.intellij.themes");
 	}
 }
