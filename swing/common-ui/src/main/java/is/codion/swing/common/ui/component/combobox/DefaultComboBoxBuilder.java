@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.systemLookAndFeelClassName;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
@@ -64,7 +63,6 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 	protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel) {
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		value((T) comboBoxModel.getSelectedItem());
-		preferredHeight(preferredTextFieldHeight());
 		if (comboBoxModel instanceof FilterComboBoxModel) {
 			popupControls((comboBox, controls) ->
 							controls.control(Control.builder()

@@ -18,19 +18,13 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import org.jspecify.annotations.Nullable;
-
-import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
-import java.awt.Dimension;
 
 /**
  * A utility class for JTextComponents.
  */
 public final class TextComponents {
-
-	private static @Nullable Dimension preferredTextFieldSize;
 
 	private TextComponents() {}
 
@@ -59,23 +53,5 @@ public final class TextComponents {
 	 */
 	public static void lowerCase(Document document) {
 		new TextFieldDocumentCase(document, CaseDocumentFilter.DocumentCase.LOWERCASE);
-	}
-
-	/**
-	 * @return the preferred size of a JTextField
-	 */
-	public static synchronized Dimension preferredTextFieldSize() {
-		if (preferredTextFieldSize == null) {
-			preferredTextFieldSize = new JTextField().getPreferredSize();
-		}
-
-		return preferredTextFieldSize;
-	}
-
-	/**
-	 * @return the preferred height of a JTextField
-	 */
-	public static int preferredTextFieldHeight() {
-		return preferredTextFieldSize().height;
 	}
 }

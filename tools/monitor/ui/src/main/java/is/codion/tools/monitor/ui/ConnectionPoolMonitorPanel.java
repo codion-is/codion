@@ -43,7 +43,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldSize;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
@@ -231,7 +230,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 	}
 
 	private JPanel southPanel() {
-		JPanel chartConfig = flexibleGridLayoutPanel(1, 4)
+		JPanel chartConfig = flexibleGridLayoutPanel(1, 0)
 						.border(createTitledBorder("Charts"))
 						.add(new JLabel("Update interval (s)"))
 						.add(integerSpinner()
@@ -241,16 +240,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 										.editable(false))
 						.add(checkBox()
 										.link(model.collectSnapshotStatistics())
-										.text("Snapshot")
-										.maximumSize(preferredTextFieldSize()))
+										.text("Snapshot"))
 						.add(checkBox()
 										.link(model.collectCheckOutTimes())
-										.text("Check out times")
-										.maximumSize(preferredTextFieldSize()))
+										.text("Check out times"))
 						.add(button()
 										.control(command(model::clearStatistics))
-										.text("Clear")
-										.maximumSize(preferredTextFieldSize()))
+										.text("Clear"))
 						.build();
 
 		return borderLayoutPanel()

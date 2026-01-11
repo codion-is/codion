@@ -35,7 +35,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<JComboBox<Item<T>>, T, ItemComboBoxBuilder<T>>
@@ -61,14 +60,12 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 
 	DefaultItemComboBoxBuilder(List<Item<T>> items) {
 		this.items = new ArrayList<>(requireNonNull(items));
-		preferredHeight(preferredTextFieldHeight());
 	}
 
 	DefaultItemComboBoxBuilder(FilterComboBoxModel<Item<T>> comboBoxModel) {
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		this.items = Collections.emptyList();
 		value(comboBoxModel.getSelectedItem() == null ? null : comboBoxModel.getSelectedItem().get());
-		preferredHeight(preferredTextFieldHeight());
 	}
 
 	@Override
