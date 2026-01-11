@@ -35,6 +35,7 @@ Codion Change Log
 - EntityApplicationPanel.LEGACY_PREFERENCES now false by default and deprecated for removal.
 - EntityEditPanel.Config.confirmInsert(), confirmUpdate() and confirmDelete() added along with CONFIRM_INSERT, CONFIRM_UPDATE and CONFIRM_DELETE configuration properties, related refactoring.
 - EntityTablePanel.Config.confirmDelete() added along with CONFIRM_DELETE configuration property.
+- EntityTablePanel.onValidationException() removed, unused, onException() only called on delete.
 
 ## 0.18.64
 ### is.codion.common.reactive

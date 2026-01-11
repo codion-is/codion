@@ -93,7 +93,6 @@ import javax.swing.BoundedRangeModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
@@ -939,10 +938,7 @@ public class EntityTablePanel extends JPanel {
 	 * @see #displayException(Exception)
 	 */
 	protected void onException(Exception exception) {
-		if (exception instanceof ValidationException) {
-			onValidationException((ValidationException) exception);
-		}
-		else if (exception instanceof ReferentialIntegrityException) {
+		if (exception instanceof ReferentialIntegrityException) {
 			onReferentialIntegrityException((ReferentialIntegrityException) exception);
 		}
 		else {
@@ -965,19 +961,6 @@ public class EntityTablePanel extends JPanel {
 		else {
 			displayException(exception);
 		}
-	}
-
-	/**
-	 * Displays the exception message.
-	 * @param exception the exception
-	 */
-	protected void onValidationException(ValidationException exception) {
-		requireNonNull(exception);
-		String title = tableModel.entities()
-						.definition(exception.attribute().entityType())
-						.attributes().definition(exception.attribute())
-						.caption();
-		JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**
