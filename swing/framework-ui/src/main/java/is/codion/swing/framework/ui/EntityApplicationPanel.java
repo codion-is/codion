@@ -223,6 +223,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
+	 * @deprecated replaced with file based user preferences, will be removed
 	 */
 	@Deprecated(forRemoval = true)
 	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", false);

@@ -60,7 +60,7 @@ final class ScenarioPanel<T> extends JPanel {
 						.columns(new ScenarioColumns())
 						.editor(ScenarioEditor::new)
 						.items(() -> scenarioRows)
-						.onItemsSelected(this::onSelectionChanged)
+						.onItemsSelected(this::onScenariosSelected)
 						.refresh(true)
 						.build();
 		FilterTable<RandomItem<Scenario<T>>, String> table = FilterTable.builder()
@@ -106,7 +106,7 @@ final class ScenarioPanel<T> extends JPanel {
 						.collect(toList());
 	}
 
-	private void onSelectionChanged(List<RandomItem<Scenario<T>>> scenarioRows) {
+	private void onScenariosSelected(List<RandomItem<Scenario<T>>> scenarioRows) {
 		selected.set(scenarioRows.stream()
 						.map(RandomItem::item)
 						.collect(toList()));

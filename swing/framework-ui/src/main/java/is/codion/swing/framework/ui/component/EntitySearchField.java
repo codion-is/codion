@@ -230,7 +230,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private EntitySearchField(AbstractBuilder<?, ?> builder) {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
-		model = requireNonNull(builder.searchModel);
+		model = builder.searchModel;
 		controlMap = builder.controlMap;
 		controlMap.control(ADD).set(createAddControl(builder.editPanel,
 						controlMap.keyStroke(ADD).get(), builder.confirmAdd));
