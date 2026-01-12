@@ -1070,7 +1070,7 @@ public class EntityTablePanel extends JPanel {
 						.caption(FrameworkMessages.edit())
 						.enabled(createEditAttributeEnabledState())
 						.icon(ICONS.edit())
-						.description(FrameworkMessages.editValueTip())
+						.description(FrameworkMessages.editAttributeTip())
 						.build();
 	}
 
@@ -1088,7 +1088,7 @@ public class EntityTablePanel extends JPanel {
 						.caption(FrameworkMessages.edit())
 						.enabled(enabled)
 						.icon(ICONS.edit())
-						.description(FrameworkMessages.editValueTip());
+						.description(FrameworkMessages.editAttributeTip());
 		configuration.editable.get().stream()
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
 						.sorted(new AttributeDefinitionComparator())

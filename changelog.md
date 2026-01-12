@@ -26,6 +26,8 @@ Codion Change Log
 - UIScaler bug fixed, now supports the codion intellij themes.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
+### is.codion.framework.i18n
+- FrameworkMessages.EDIT_VALUE rename EDIT_ATTRIBUTE for consistency.
 ### is.codion.framework.domain
 - ValidationException now handles multiple invalid attributes, subclasses removed, related refactoring.
 ### is.codion.swing.framework.model

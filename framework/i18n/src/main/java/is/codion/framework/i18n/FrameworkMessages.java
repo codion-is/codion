@@ -46,7 +46,7 @@ public final class FrameworkMessages {
 	private static final String UPDATE_TIP = "update_tip";
 	private static final String EDIT = "edit";
 	private static final String EDIT_MNEMONIC = "edit_mnemonic";
-	private static final String EDIT_VALUE_TIP = "edit_value_tip";
+	private static final String EDIT_ATTRIBUTE_TIP = "edit_attribute_tip";
 	private static final String EDIT_SELECTED_TIP = "edit_selected_tip";
 	private static final String DELETE = "delete";
 	private static final String DELETE_MNEMONIC = "delete_mnemonic";
@@ -186,10 +186,10 @@ public final class FrameworkMessages {
 	}
 
 	/**
-	 * @return edit value tip
+	 * @return edit attribute tip
 	 */
-	public static String editValueTip() {
-		return get(EDIT_VALUE_TIP);
+	public static String editAttributeTip() {
+		return get(EDIT_ATTRIBUTE_TIP);
 	}
 
 	/**

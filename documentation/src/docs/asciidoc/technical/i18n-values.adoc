@@ -292,9 +292,9 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |dependencies|Dependencies|Tengdar Færslur
 |dependencies_tip|View records depending on the selected record|Skoða færslur sem byggja á völdu færslunni
 |edit|Edit|Breyta
+|edit_attribute_tip|Edit value|Breyta gildi
 |edit_mnemonic|E|B
 |edit_selected_tip|Edit selected record|Breyta valinni færslu
-|edit_value_tip|Edit value|Breyta gildi
 |exit|Exit|Hætta
 |exit_mnemonic|X|Æ
 |exit_tip|Exit the application|Hætta í forritinu
