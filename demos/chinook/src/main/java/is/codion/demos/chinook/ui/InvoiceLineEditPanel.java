@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.key.TransferFocusOnEnter.BACKWARD;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.INSERT;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.UPDATE;
@@ -55,7 +56,12 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 						.columns(2)
 						// Set the INSERT control as the quantity field
 						// action, triggering insert on Enter
-						.action(control(INSERT).get());
+						.action(control(INSERT).get())
+						// Focus transfer on Enter is disabled when the action is set,
+						// since that relies on the Enter key being available.
+						// We can enable it for backwards traversal, which won't
+						// interfere with the action, since SHIFT is used
+						.transferFocusOnEnter(BACKWARD);
 
 		JButton updateButton = button()
 						.control(control(UPDATE).get())
