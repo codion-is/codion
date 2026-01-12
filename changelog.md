@@ -27,7 +27,7 @@ Codion Change Log
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
 ### is.codion.framework.i18n
-- FrameworkMessages.EDIT_VALUE rename EDIT_ATTRIBUTE for consistency.
+- FrameworkMessages.EDIT_VALUE renamed EDIT_ATTRIBUTE for consistency.
 ### is.codion.framework.domain
 - ValidationException now handles multiple invalid attributes, subclasses removed, related refactoring.
 - ValidationException.invalidAttributes() renamed invalid().
@@ -771,7 +771,7 @@ Codion Change Log
 - EntityTablePanel.Config.editableAttributes() added.
 ### is.codion.plugin.swing.mcp
 - SwingMcpServer keyboard input simplified.
-
+### is.codion.tools.generator.domain
 - DomainSource refactored and improved concerning read-only entities and columns, tests improved.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel.DOMAIN_PACKAGE now with default 'no.package' instead of empty string.
