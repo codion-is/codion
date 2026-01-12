@@ -24,10 +24,6 @@ import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
-import is.codion.framework.domain.entity.exception.ItemValidationException;
-import is.codion.framework.domain.entity.exception.LengthValidationException;
-import is.codion.framework.domain.entity.exception.NullValidationException;
-import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.jspecify.annotations.Nullable;
@@ -172,7 +168,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		return value + " <" + INVALID_ITEM_SUFFIX + ">";
 	}
 
-	private void validateNull(Entity entity, boolean nullable) throws NullValidationException {
+	private void validateNull(Entity entity, boolean nullable) {
 		if (!nullable && entity.isNull(attribute())) {
 			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attribute() instanceof ForeignKey)) {
 				//a new entity being inserted, allow null for columns with default values and generated primary key values
@@ -201,9 +197,8 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		return unmodifiableCollection(new ArrayList<>(list));
 	}
 
-	static NullValidationException createNullValidationException(Attribute<?> attribute, String caption) {
-		return new NullValidationException(attribute,
-						MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
+	static ValidationException createNullValidationException(Attribute<?> attribute, String caption) {
+		return new ValidationException(attribute, null, MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
 	}
 
 	private boolean isNonGeneratedPrimaryKeyColumn() {
@@ -223,7 +218,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 			return;
 		}
 		if (!validItem(value)) {
-			throw new ItemValidationException(attribute(), value,
+			throw new ValidationException(attribute(), value,
 							MESSAGES.getString("invalid_item_value") + ": " + value);
 		}
 	}
@@ -276,11 +271,11 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		public void validate(T value) {
 			Number number = (Number) value;
 			if (minimum != null && number.doubleValue() < minimum.doubleValue()) {
-				throw new RangeValidationException(attribute(), number,
+				throw new ValidationException(attribute(), number,
 								"'" + caption() + "' " + MESSAGES.getString("value_too_small") + " " + minimum);
 			}
 			if (maximum != null && number.doubleValue() > maximum.doubleValue()) {
-				throw new RangeValidationException(attribute(), number,
+				throw new ValidationException(attribute(), number,
 								"'" + caption() + "' " + MESSAGES.getString("value_too_large") + " " + maximum);
 			}
 		}
@@ -295,7 +290,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		public void validate(T value) {
 			String string = (String) value;
 			if (maximumLength != -1 && string.length() > maximumLength) {
-				throw new LengthValidationException(attribute(), string,
+				throw new ValidationException(attribute(), string,
 								"'" + caption() + "' " + MESSAGES.getString("value_too_long") + " " + maximumLength + "\n:'" + string + "'");
 			}
 		}

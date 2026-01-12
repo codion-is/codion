@@ -22,7 +22,6 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
-import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import java.util.Comparator;
@@ -187,7 +186,7 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	 * Validates the value of this attribute as found in the given entity.
 	 * @param entity the entity containing the value to validate
 	 * @param nullable true if null values are allowed in this validation context,
-	 * false if null should trigger a {@link NullValidationException}
+	 * false if null should trigger a null validation exception
 	 * @throws ValidationException in case of an invalid value
 	 */
 	void validate(Entity entity, boolean nullable);

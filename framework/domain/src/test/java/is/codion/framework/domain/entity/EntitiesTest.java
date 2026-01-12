@@ -28,10 +28,6 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.exception.ItemValidationException;
-import is.codion.framework.domain.entity.exception.LengthValidationException;
-import is.codion.framework.domain.entity.exception.NullValidationException;
-import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -457,8 +453,7 @@ public final class EntitiesTest {
 			// Missing required foreign key
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(emp));
-			assertInstanceOf(NullValidationException.class, exception);
-			assertEquals(Employee.DEPARTMENT_FK, exception.attribute());
+			assertEquals(Employee.DEPARTMENT_FK, exception.invalidAttributes().iterator().next().attribute());
 
 			// Fix foreign key
 			emp.set(Employee.DEPARTMENT_NO, 1);
@@ -468,8 +463,7 @@ public final class EntitiesTest {
 			emp.set(Employee.SALARY, null);
 			exception = assertThrows(ValidationException.class,
 							() -> validator.validate(emp));
-			assertInstanceOf(NullValidationException.class, exception);
-			assertEquals(Employee.SALARY, exception.attribute());
+			assertEquals(Employee.SALARY, exception.invalidAttributes().iterator().next().attribute());
 		}
 
 		@Test
@@ -487,8 +481,9 @@ public final class EntitiesTest {
 
 			// Exceed max length
 			emp.set(Employee.NAME, "LooooongName");
-			assertThrows(LengthValidationException.class,
+			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(emp));
+			assertEquals(Employee.NAME, exception.invalidAttributes().iterator().next().attribute());
 		}
 
 		@Test
@@ -507,13 +502,11 @@ public final class EntitiesTest {
 
 			// Below minimum
 			emp.set(Employee.COMMISSION, 10d);
-			assertThrows(RangeValidationException.class,
-							() -> validator.validate(emp));
+			assertThrows(ValidationException.class, () -> validator.validate(emp));
 
 			// Above maximum
 			emp.set(Employee.COMMISSION, 2100d);
-			assertThrows(RangeValidationException.class,
-							() -> validator.validate(emp));
+			assertThrows(ValidationException.class, () -> validator.validate(emp));
 		}
 
 		@Test
@@ -527,8 +520,7 @@ public final class EntitiesTest {
 			Entity emp = entities.definition(Employee.TYPE).entity(values);
 			EntityValidator validator = new EntityValidator() {};
 
-			assertThrows(ItemValidationException.class,
-							() -> validator.validate(emp));
+			assertThrows(ValidationException.class, () -> validator.validate(emp));
 		}
 
 		@Test
@@ -544,7 +536,7 @@ public final class EntitiesTest {
 
 			// Non-strict validation
 			EntityValidator validator = new EntityValidator() {};
-			assertThrows(LengthValidationException.class, () -> validator.validate(emp));
+			assertThrows(ValidationException.class, () -> validator.validate(emp));
 
 			emp.set(Employee.NAME, "Name");
 			emp.save();
@@ -552,7 +544,7 @@ public final class EntitiesTest {
 			// Simulate existing entity
 			emp.set(Employee.ID, 10);
 			emp.set(Employee.NAME, "1234567891000");
-			assertThrows(LengthValidationException.class, () -> validator.validate(emp));
+			assertThrows(ValidationException.class, () -> validator.validate(emp));
 
 			emp.save(); // Not modified
 			assertDoesNotThrow(() -> validator.validate(emp)); // Non-strict passes
@@ -564,18 +556,17 @@ public final class EntitiesTest {
 					return true;
 				}
 			};
-			assertThrows(LengthValidationException.class, () -> strictValidator.validate(emp));
+			assertThrows(ValidationException.class, () -> strictValidator.validate(emp));
 
 			emp.set(Employee.NAME, "Name");
 			emp.save();
 
 			emp.set(Employee.ID, 10);
 			emp.set(Employee.NAME, "1234567891000");
-			assertThrows(LengthValidationException.class, () -> strictValidator.validate(emp));
+			assertThrows(ValidationException.class, () -> validator.validate(emp));
 
 			emp.save(); // Not modified
-			assertThrows(LengthValidationException.class,
-							() -> strictValidator.validate(emp)); // Strict still validates
+			assertThrows(ValidationException.class, () -> strictValidator.validate(emp));
 		}
 	}
 

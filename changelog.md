@@ -26,6 +26,8 @@ Codion Change Log
 - UIScaler bug fixed, now supports the codion intellij themes.
 ### is.codion.plugin.flatlaf.themes
 - Module is.codion.plugin.flatlaf.lookandfeels renamed is.codion.plugin.flatlaf.themes.
+### is.codion.framework.domain
+- ValidationException now handles multiple invalid attributes, subclasses removed, related refactoring.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.onSelection() renamed onItemSelected().
 ### is.codion.swing.framework.ui
@@ -36,6 +38,7 @@ Codion Change Log
 - EntityEditPanel.Config.confirmInsert(), confirmUpdate() and confirmDelete() added along with CONFIRM_INSERT, CONFIRM_UPDATE and CONFIRM_DELETE configuration properties, related refactoring.
 - EntityTablePanel.Config.confirmDelete() added along with CONFIRM_DELETE configuration property.
 - EntityTablePanel.onValidationException() removed, unused, onException() only called on delete.
+- EntityEditPanel now focuses the first invalid attribute field on validation exception.
 
 ## 0.18.64
 ### is.codion.common.reactive

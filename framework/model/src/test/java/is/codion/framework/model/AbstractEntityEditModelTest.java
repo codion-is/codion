@@ -305,10 +305,11 @@ public final class AbstractEntityEditModelTest {
 			fail("Validation should fail on invalid commission value");
 		}
 		catch (ValidationException e) {
-			assertEquals(Employee.COMMISSION, e.attribute());
-			assertEquals(50d, e.value());
+			ValidationException.InvalidAttribute invalidAttribute = e.invalidAttributes().iterator().next();
+			assertEquals(Employee.COMMISSION, invalidAttribute.attribute());
+			assertEquals(50d, invalidAttribute.value());
 			ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>)
-							ENTITIES.definition(Employee.TYPE).attributes().definition(e.attribute());
+							ENTITIES.definition(Employee.TYPE).attributes().definition(invalidAttribute.attribute());
 			assertTrue(e.getMessage().contains(attributeDefinition.toString()));
 			assertTrue(e.getMessage().contains(attributeDefinition.minimum().map(Objects::toString).get()));
 		}
@@ -757,7 +758,7 @@ public final class AbstractEntityEditModelTest {
 		assertTrue(editor.value(Employee.SALARY).valid().is());
 		editor.validator().set(new EntityValidator() {
 			@Override
-			public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
+			public void validate(Entity entity, Attribute<?> attribute) {
 				if (attribute.equals(Employee.NAME) || attribute.equals(Employee.SALARY)) {
 					throw new ValidationException(attribute, entity.get(attribute), "invalid");
 				}

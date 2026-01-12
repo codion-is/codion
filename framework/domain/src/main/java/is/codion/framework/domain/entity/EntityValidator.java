@@ -26,7 +26,10 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.ValidationException.InvalidAttribute;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +57,7 @@ import static java.util.Objects.requireNonNull;
  *             String email = customer.get(Customer.EMAIL);
  *             // Email is non-null, since super.validate() checks that
  *             if (!isValidEmail(email)) {
- *                 throw new ValidationException(Customer.EMAIL, email, "Invalid email format");
+ *                 throw new AttributeValidationException(Customer.EMAIL, email, "Invalid email format");
  *             }
  *         }
  *     }
@@ -188,16 +191,25 @@ public interface EntityValidator {
 	 * }
 	 *}
 	 * @param entity the entity
-	 * @throws ValidationException in case of an invalid value
+	 * @throws ValidationException in case of one or more invalid values
 	 * @see #strict()
 	 */
-	default void validate(Entity entity) throws ValidationException {
+	default void validate(Entity entity) {
 		List<Attribute<?>> attributes = requireNonNull(entity).definition().attributes().definitions().stream()
 						.filter(definition -> validated(entity, definition))
 						.map(AttributeDefinition::attribute)
 						.collect(Collectors.toList());
+		Collection<InvalidAttribute> invalidAttributes = new ArrayList<>();
 		for (Attribute<?> attribute : attributes) {
-			validate(entity, attribute);
+			try {
+				validate(entity, attribute);
+			}
+			catch (ValidationException e) {
+				invalidAttributes.addAll(e.invalidAttributes());
+			}
+		}
+		if (!invalidAttributes.isEmpty()) {
+			throw new ValidationException(invalidAttributes);
 		}
 	}
 
@@ -207,7 +219,7 @@ public interface EntityValidator {
 	 * @param attribute the attribute the value is associated with
 	 * @throws ValidationException if the given value is not valid for the given attribute
 	 */
-	default void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
+	default void validate(Entity entity, Attribute<?> attribute) {
 		AttributeDefinition<?> definition = requireNonNull(entity).definition().attributes().definition(attribute);
 		if (definition instanceof ValueAttributeDefinition<?>) {
 			((ValueAttributeDefinition<?>) definition).validate(entity, nullable(entity, attribute));

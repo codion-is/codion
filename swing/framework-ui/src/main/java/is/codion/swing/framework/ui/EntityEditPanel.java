@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.ValidationException.InvalidAttribute;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditTask;
@@ -87,8 +88,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 import static javax.swing.JOptionPane.showConfirmDialog;
 
 /**
@@ -423,18 +423,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Displays the exception message after which the component involved receives the focus.
-	 * @param exception the exception
+	 * Displays the exception message after which the first component involved receives the focus.
+	 * @param exception the validation exception
 	 */
 	protected void onValidationException(ValidationException exception) {
 		requireNonNull(exception);
-		String title = editModel().entities()
-						.definition(exception.attribute().entityType())
-						.attributes()
-						.definition(exception.attribute())
-						.caption();
-		JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
-		focus().request(exception.attribute());
+		Attribute<?> firstAttribute = firstAttribute(exception.invalidAttributes());
+		InvalidAttribute invalidAttribute = exception.invalidAttributes().stream()
+						.filter(invalid -> invalid.attribute().equals(firstAttribute))
+						.findFirst()
+						.orElseThrow(IllegalStateException::new);
+		JOptionPane.showMessageDialog(this, invalidAttribute.message(), Messages.error(), JOptionPane.ERROR_MESSAGE);
+		focus().request(invalidAttribute.attribute());
 	}
 
 	/**
@@ -697,13 +697,30 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void handleException(Exception exception) {
-		if (exception instanceof ValidationException || exception instanceof ReferentialIntegrityException) {
+		if (exception instanceof ValidationException ||
+						exception instanceof ReferentialIntegrityException) {
 			LOG.debug(exception.getMessage(), exception);
 		}
 		else {
 			LOG.error(exception.getMessage(), exception);
 		}
 		onException(exception);
+	}
+
+	private Attribute<?> firstAttribute(Collection<InvalidAttribute> invalidAttributes) {
+		Set<Attribute<?>> attributes = invalidAttributes.stream()
+						.map(InvalidAttribute::attribute)
+						.collect(toSet());
+		return components().entrySet().stream()
+						.filter(entry -> attributes.contains(entry.getKey()))
+						.min(EntityEditPanel::compareFocusOrder)
+						.map(Map.Entry::getKey)
+						// Fallback to the first one, in case no component exists
+						.orElse(invalidAttributes.iterator().next().attribute());
+	}
+
+	private static int compareFocusOrder(Map.Entry<Attribute<?>, EditorComponent<?>> entry1, Map.Entry<Attribute<?>, EditorComponent<?>> entry2) {
+		return LAYOUT_FOCUS_TRAVERSAL_POLICY.getComparator().compare(entry1.getValue().get(), entry2.getValue().get());
 	}
 
 	private static boolean componentSelectable(@Nullable JComponent component) {

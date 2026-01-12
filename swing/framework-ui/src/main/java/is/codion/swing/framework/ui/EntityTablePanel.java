@@ -40,7 +40,6 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditModel;
@@ -931,8 +930,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Propagates the exception to {@link #onValidationException(ValidationException)} or
-	 * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
+	 * Propagates a {@link ReferentialIntegrityException} to
+	 * {@link #onReferentialIntegrityException(ReferentialIntegrityException)},
 	 * otherwise displays the exception.
 	 * @param exception the exception to handle
 	 * @see #displayException(Exception)

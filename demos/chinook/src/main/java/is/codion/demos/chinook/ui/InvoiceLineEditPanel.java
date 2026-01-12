@@ -22,13 +22,12 @@ import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.INSERT;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.UPDATE;
@@ -38,7 +37,9 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 	private final JTextField tableSearchField;
 
 	public InvoiceLineEditPanel(SwingEntityEditModel editModel, JTextField tableSearchField) {
-		super(editModel);
+		super(editModel, config ->
+						// Update without confirmation
+						config.confirmUpdate(false));
 		this.tableSearchField = tableSearchField;
 		// We do not want the track to persist when the model is cleared.
 		editModel.editor().value(InvoiceLine.TRACK_FK).persist().set(false);
@@ -56,10 +57,10 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 						// action, triggering insert on Enter
 						.action(control(INSERT).get());
 
-		JToolBar updateToolBar = toolBar()
-						.action(control(UPDATE).get())
-						.floatable(false)
-						.preferredHeight(preferredTextFieldHeight())
+		JButton updateButton = button()
+						.control(control(UPDATE).get())
+						.includeText(false)
+						.focusable(false)
 						.build();
 
 		JPanel centerPanel = flexibleGridLayoutPanel(1, 0)
@@ -67,7 +68,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 						.add(createInputPanel(InvoiceLine.QUANTITY))
 						.add(borderLayoutPanel()
 										.north(label(" "))
-										.center(updateToolBar))
+										.center(updateButton))
 						.add(borderLayoutPanel()
 										.north(label(" "))
 										.center(tableSearchField))

@@ -102,7 +102,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class EntityEditComponentPanel extends JPanel {
 
-	static final LayoutFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new LayoutFocusTraversalPolicy();
+	static final EditComponentFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new EditComponentFocusTraversalPolicy();
 
 	/**
 	 * Specifies whether components should indicate the validity of their current value
@@ -1091,6 +1091,14 @@ public class EntityEditComponentPanel extends JPanel {
 		@Override
 		public int compare(AttributeDefinition<?> definition1, AttributeDefinition<?> definition2) {
 			return collator.compare(definition1.toString().toLowerCase(), definition2.toString().toLowerCase());
+		}
+	}
+
+	static final class EditComponentFocusTraversalPolicy extends LayoutFocusTraversalPolicy {
+
+		@Override
+		public Comparator<? super Component> getComparator() {
+			return super.getComparator();
 		}
 	}
 }

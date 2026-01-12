@@ -177,10 +177,7 @@ final class EditAttributePanel<T> extends JPanel {
 	}
 
 	private void handleValidationException(ValidationException exception) {
-		String title = editModel.entityDefinition().attributes()
-						.definition(exception.attribute())
-						.caption();
-		showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
+		showMessageDialog(this, exception.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void handleException(Exception exception) {
