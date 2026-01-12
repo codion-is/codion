@@ -39,6 +39,7 @@ Codion Change Log
 - EntityTablePanel.Config.confirmDelete() added along with CONFIRM_DELETE configuration property.
 - EntityTablePanel.onValidationException() removed, unused, onException() only called on delete.
 - EntityEditPanel now focuses the first invalid attribute field on validation exception.
+- EntityTablePanel, mnemonics removed from EDIT and ADD toolbar controls, accessible via shortcut keys.
 
 ## 0.18.64
 ### is.codion.common.reactive

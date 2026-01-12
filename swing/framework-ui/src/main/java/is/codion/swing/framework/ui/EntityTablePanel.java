@@ -1037,7 +1037,6 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(new AddCommand())
 						.caption(FrameworkMessages.add())
-						.mnemonic(FrameworkMessages.addMnemonic())
 						.icon(ICONS.add())
 						.description(FrameworkMessages.addTip())
 						.build();
@@ -1052,7 +1051,6 @@ public class EntityTablePanel extends JPanel {
 						.command(new EditCommand())
 						.caption(FrameworkMessages.edit())
 						.enabled(tableModel().selection().single())
-						.mnemonic(FrameworkMessages.editMnemonic())
 						.icon(ICONS.edit())
 						.description(FrameworkMessages.editSelectedTip())
 						.build();
@@ -1071,7 +1069,6 @@ public class EntityTablePanel extends JPanel {
 						.command(this::editSelected)
 						.caption(FrameworkMessages.edit())
 						.enabled(createEditAttributeEnabledState())
-						.mnemonic(FrameworkMessages.editMnemonic())
 						.icon(ICONS.edit())
 						.description(FrameworkMessages.editValueTip())
 						.build();
