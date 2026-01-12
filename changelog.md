@@ -30,6 +30,7 @@ Codion Change Log
 - FrameworkMessages.EDIT_VALUE rename EDIT_ATTRIBUTE for consistency.
 ### is.codion.framework.domain
 - ValidationException now handles multiple invalid attributes, subclasses removed, related refactoring.
+- ValidationException.invalidAttributes() renamed invalid().
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.onSelection() renamed onItemSelected().
 ### is.codion.swing.framework.ui

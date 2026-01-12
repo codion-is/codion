@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toSet;
  */
 public final class ValidationException extends RuntimeException {
 
-	private final Collection<InvalidAttribute> invalidAttributes;
+	private final Collection<InvalidAttribute> invalid;
 
 	/**
 	 * @param attribute the attribute
@@ -50,25 +50,25 @@ public final class ValidationException extends RuntimeException {
 	}
 
 	/**
-	 * @param invalidAttributes the invalid attributes
+	 * @param invalid the invalid attributes
 	 * @throws IllegalArgumentException in case the invalid attributes are not all from the same entity
 	 */
-	public ValidationException(Collection<InvalidAttribute> invalidAttributes) {
-		super(createMessage(invalidAttributes));
-		Set<EntityType> entityTypes = invalidAttributes.stream()
+	public ValidationException(Collection<InvalidAttribute> invalid) {
+		super(createMessage(invalid));
+		Set<EntityType> entityTypes = invalid.stream()
 						.map(invalidAttribute -> invalidAttribute.attribute().entityType())
 						.collect(toSet());
 		if (entityTypes.size() > 1) {
 			throw new IllegalArgumentException("All invalid attributes must be from the same entity: " + entityTypes);
 		}
-		this.invalidAttributes = unmodifiableList(new ArrayList<>(requireNonNull(invalidAttributes)));
+		this.invalid = unmodifiableList(new ArrayList<>(requireNonNull(invalid)));
 	}
 
 	/**
 	 * @return the invalid attributes
 	 */
-	public Collection<InvalidAttribute> invalidAttributes() {
-		return invalidAttributes;
+	public Collection<InvalidAttribute> invalid() {
+		return invalid;
 	}
 
 	private static String createMessage(Collection<InvalidAttribute> invalidAttributes) {

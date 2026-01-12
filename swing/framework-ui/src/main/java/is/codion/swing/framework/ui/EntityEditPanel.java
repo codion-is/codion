@@ -428,8 +428,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	protected void onValidationException(ValidationException exception) {
 		requireNonNull(exception);
-		Attribute<?> firstAttribute = firstAttribute(exception.invalidAttributes());
-		InvalidAttribute invalidAttribute = exception.invalidAttributes().stream()
+		Attribute<?> firstAttribute = firstAttribute(exception.invalid());
+		InvalidAttribute invalidAttribute = exception.invalid().stream()
 						.filter(invalid -> invalid.attribute().equals(firstAttribute))
 						.findFirst()
 						.orElseThrow(IllegalStateException::new);

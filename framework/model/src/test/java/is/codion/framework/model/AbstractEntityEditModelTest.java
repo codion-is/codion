@@ -305,11 +305,11 @@ public final class AbstractEntityEditModelTest {
 			fail("Validation should fail on invalid commission value");
 		}
 		catch (ValidationException e) {
-			ValidationException.InvalidAttribute invalidAttribute = e.invalidAttributes().iterator().next();
-			assertEquals(Employee.COMMISSION, invalidAttribute.attribute());
-			assertEquals(50d, invalidAttribute.value());
+			ValidationException.InvalidAttribute invalid = e.invalid().iterator().next();
+			assertEquals(Employee.COMMISSION, invalid.attribute());
+			assertEquals(50d, invalid.value());
 			ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>)
-							ENTITIES.definition(Employee.TYPE).attributes().definition(invalidAttribute.attribute());
+							ENTITIES.definition(Employee.TYPE).attributes().definition(invalid.attribute());
 			assertTrue(e.getMessage().contains(attributeDefinition.toString()));
 			assertTrue(e.getMessage().contains(attributeDefinition.minimum().map(Objects::toString).get()));
 		}

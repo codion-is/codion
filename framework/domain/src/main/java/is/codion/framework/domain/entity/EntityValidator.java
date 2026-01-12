@@ -199,17 +199,17 @@ public interface EntityValidator {
 						.filter(definition -> validated(entity, definition))
 						.map(AttributeDefinition::attribute)
 						.collect(Collectors.toList());
-		Collection<InvalidAttribute> invalidAttributes = new ArrayList<>();
+		Collection<InvalidAttribute> invalid = new ArrayList<>();
 		for (Attribute<?> attribute : attributes) {
 			try {
 				validate(entity, attribute);
 			}
 			catch (ValidationException e) {
-				invalidAttributes.addAll(e.invalidAttributes());
+				invalid.addAll(e.invalid());
 			}
 		}
-		if (!invalidAttributes.isEmpty()) {
-			throw new ValidationException(invalidAttributes);
+		if (!invalid.isEmpty()) {
+			throw new ValidationException(invalid);
 		}
 	}
 

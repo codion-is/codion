@@ -445,7 +445,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.NAME, null);
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.NAME, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.NAME, exception.invalid().iterator().next().attribute());
 		}
 
 		@Test
@@ -468,7 +468,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.NAME, Text.leftPad("", 101, 'A')); // Exceeds 100 char limit
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.NAME, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.NAME, exception.invalid().iterator().next().attribute());
 		}
 
 		@Test
@@ -491,7 +491,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.CREDIT_LIMIT, new BigDecimal("2000000")); // Exceeds max
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.CREDIT_LIMIT, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.CREDIT_LIMIT, exception.invalid().iterator().next().attribute());
 		}
 
 		@Test
@@ -510,7 +510,7 @@ public final class EntityValidationEnhancementTest {
 			EntityValidator validator = new EntityValidator() {};
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer, Customer.STATUS));
-			assertEquals(Customer.STATUS, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.STATUS, exception.invalid().iterator().next().attribute());
 		}
 	}
 
@@ -538,7 +538,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.EMAIL, "invalid-email"); // Invalid format
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.EMAIL, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.EMAIL, exception.invalid().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("Invalid email format"));
 		}
 
@@ -582,7 +582,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.PHONE, phone);
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.PHONE, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.PHONE, exception.invalid().iterator().next().attribute());
 		}
 
 		@Test
@@ -606,7 +606,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.BIRTH_DATE, LocalDate.now().plusDays(1));
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.BIRTH_DATE, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.BIRTH_DATE, exception.invalid().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("future"));
 		}
 
@@ -630,7 +630,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.COUNTRY_CODE, "usa"); // Should be uppercase
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.COUNTRY_CODE, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.COUNTRY_CODE, exception.invalid().iterator().next().attribute());
 		}
 	}
 
@@ -671,7 +671,7 @@ public final class EntityValidationEnhancementTest {
 			TestDomain.OrderItemValidator validator = new TestDomain.OrderItemValidator();
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(orderItem, OrderItem.QUANTITY));
-			assertEquals(OrderItem.QUANTITY, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(OrderItem.QUANTITY, exception.invalid().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("exceeds available stock"));
 		}
 
@@ -700,7 +700,7 @@ public final class EntityValidationEnhancementTest {
 			TestDomain.OrderItemValidator validator = new TestDomain.OrderItemValidator();
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(orderItem, OrderItem.QUANTITY));
-			assertEquals(OrderItem.PRODUCT_FK, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(OrderItem.PRODUCT_FK, exception.invalid().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("inactive product"));
 		}
 
@@ -719,7 +719,7 @@ public final class EntityValidationEnhancementTest {
 			TestDomain.OrderItemValidator validator = new TestDomain.OrderItemValidator();
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(orderItem, OrderItem.DISCOUNT));
-			assertEquals(OrderItem.DISCOUNT, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(OrderItem.DISCOUNT, exception.invalid().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("cannot exceed 50%"));
 		}
 
@@ -765,7 +765,7 @@ public final class EntityValidationEnhancementTest {
 			product.set(Product.CATEGORY, "FOOD");
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(product, Product.EXPIRY_DATE));
-			assertEquals(Product.EXPIRY_DATE, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Product.EXPIRY_DATE, exception.invalid().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("Food products must have an expiry date"));
 		}
 
@@ -812,7 +812,7 @@ public final class EntityValidationEnhancementTest {
 			TestDomain.OrderValidator validator = new TestDomain.OrderValidator();
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(order));
-			assertEquals(Order.STATUS, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Order.STATUS, exception.invalid().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("Delivered orders can only be cancelled"));
 		}
 
@@ -836,7 +836,7 @@ public final class EntityValidationEnhancementTest {
 			TestDomain.OrderValidator validator = new TestDomain.OrderValidator();
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(order));
-			assertEquals(Order.STATUS, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Order.STATUS, exception.invalid().iterator().next().attribute());
 			assertTrue(exception.getMessage().contains("Cancelled orders cannot be modified"));
 		}
 
@@ -993,7 +993,7 @@ public final class EntityValidationEnhancementTest {
 			customer.set(Customer.NAME, null); // Required field
 			ValidationException exception = assertThrows(ValidationException.class,
 							() -> validator.validate(customer));
-			assertEquals(Customer.NAME, exception.invalidAttributes().iterator().next().attribute());
+			assertEquals(Customer.NAME, exception.invalid().iterator().next().attribute());
 		}
 	}
 
