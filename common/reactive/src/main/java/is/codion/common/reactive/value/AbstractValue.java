@@ -24,14 +24,18 @@ import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import static is.codion.common.reactive.value.Value.Notify.CHANGED;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.deepEquals;
@@ -101,6 +105,23 @@ public abstract class AbstractValue<T> implements Value<T> {
 	protected AbstractValue(@Nullable T nullValue, Notify notify) {
 		this.nullValue = nullValue;
 		this.notify = requireNonNull(notify);
+	}
+
+	/**
+	 * @param builder the builder
+	 */
+	protected AbstractValue(AbstractBuilder<T, ?> builder) {
+		requireNonNull(builder);
+		nullValue = builder.nullValue;
+		notify = builder.notify;
+		builder.validators.forEach(this::addValidator);
+		set(builder.prepareInitialValue());
+		builder.linkedValues.forEach(this::link);
+		builder.linkedObservables.forEach(this::link);
+		builder.listeners.addListeners(this);
+		if (builder.locked) {
+			locked().set(true);
+		}
 	}
 
 	@Override
@@ -305,6 +326,159 @@ public abstract class AbstractValue<T> implements Value<T> {
 		@Override
 		public void accept(T value) {
 			set(value);
+		}
+	}
+
+	/**
+	 * An abstract base class for a value builder
+	 * @param <T> the value type
+	 * @param <B> the builder type
+	 */
+	public abstract static class AbstractBuilder<T, B extends Builder<T, B>> implements Builder<T, B> {
+
+		private final @Nullable T nullValue;
+		private final List<Validator<? super T>> validators = new ArrayList<>();
+		private final List<Value<T>> linkedValues = new ArrayList<>();
+		private final List<Observable<T>> linkedObservables = new ArrayList<>();
+		private final ValueListeners<T> listeners = new ValueListeners<>();
+		private @Nullable T value;
+		private Notify notify = CHANGED;
+		private boolean locked = false;
+
+		/**
+		 * Instantiates a new builder
+		 */
+		protected AbstractBuilder() {
+			this.nullValue = null;
+		}
+
+		/**
+		 * Instantiates a new builder
+		 * @param nullValue the null value, also used as the initial value
+		 * @throws NullPointerException in case {@code nullValue} is null
+		 */
+		protected AbstractBuilder(T nullValue) {
+			this.nullValue = requireNonNull(nullValue);
+			this.value = nullValue;
+		}
+
+		@Override
+		public final B value(@Nullable T value) {
+			this.value = value;
+			return self();
+		}
+
+		@Override
+		public final B notify(Notify notify) {
+			this.notify = requireNonNull(notify);
+			return self();
+		}
+
+		@Override
+		public final B validator(Validator<? super T> validator) {
+			this.validators.add(requireNonNull(validator));
+			return self();
+		}
+
+		@Override
+		public final B locked(boolean locked) {
+			this.locked = locked;
+			return self();
+		}
+
+		@Override
+		public final B link(Value<T> originalValue) {
+			this.linkedValues.add(requireNonNull(originalValue));
+			return self();
+		}
+
+		@Override
+		public final B link(Observable<T> observable) {
+			this.linkedObservables.add(requireNonNull(observable));
+			return self();
+		}
+
+		@Override
+		public final B listener(Runnable listener) {
+			this.listeners.listener(listener);
+			return self();
+		}
+
+		@Override
+		public final B consumer(Consumer<? super T> consumer) {
+			this.listeners.consumer(consumer);
+			return self();
+		}
+
+		@Override
+		public final B weakListener(Runnable weakListener) {
+			this.listeners.weakListener(weakListener);
+			return self();
+		}
+
+		@Override
+		public final B weakConsumer(Consumer<? super T> weakConsumer) {
+			this.listeners.weakConsumer(weakConsumer);
+			return self();
+		}
+
+		@Override
+		public final B changeListener(Runnable listener) {
+			this.listeners.changeListener(listener);
+			return self();
+		}
+
+		@Override
+		public final B changeConsumer(Consumer<ValueChange<? super T>> consumer) {
+			this.listeners.changeConsumer(consumer);
+			return self();
+		}
+
+		@Override
+		public final B weakChangeListener(Runnable weakListener) {
+			this.listeners.weakChangeListener(weakListener);
+			return self();
+		}
+
+		@Override
+		public final B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer) {
+			this.listeners.weakChangeConsumer(weakConsumer);
+			return self();
+		}
+
+		@Override
+		public final B when(T value, Runnable listener) {
+			listeners.when(value, listener);
+			return self();
+		}
+
+		@Override
+		public final B when(T value, Consumer<? super T> consumer) {
+			listeners.when(value, consumer);
+			return self();
+		}
+
+		@Override
+		public final B when(Predicate<T> predicate, Runnable listener) {
+			listeners.when(predicate, listener);
+			return self();
+		}
+
+		@Override
+		public final B when(Predicate<T> predicate, Consumer<? super T> consumer) {
+			listeners.when(predicate, consumer);
+			return self();
+		}
+
+		/**
+		 * @return the initial value
+		 */
+		protected @Nullable T prepareInitialValue() {
+			return value == null ? nullValue : value;
+		}
+
+		private B self() {
+			return (B) this;
 		}
 	}
 

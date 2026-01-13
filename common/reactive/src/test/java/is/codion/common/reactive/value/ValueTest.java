@@ -134,6 +134,15 @@ public class ValueTest {
 		value.set(2);
 		assertEquals(2, value.get());
 		assertThrows(IllegalArgumentException.class, () -> value.set(12));
+
+		assertThrows(IllegalArgumentException.class, () -> Value.builder()
+						.nonNull(3)
+						.validator(integer -> {
+							if (integer > 2) {
+								throw new IllegalArgumentException();
+							}
+						})
+						.build());
 	}
 
 	@Test
