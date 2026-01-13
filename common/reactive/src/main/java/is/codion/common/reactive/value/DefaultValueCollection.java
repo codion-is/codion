@@ -33,12 +33,14 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
-class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C> implements ValueCollection<T, C> {
+class DefaultValueCollection<T, C extends Collection<T>> extends AbstractValue<C> implements ValueCollection<T, C> {
 
 	private final Object lock = new Lock() {};
 
 	private final Supplier<? extends C> create;
 	private final UnaryOperator<C> unmodifiable;
+
+	private C value;
 
 	private @Nullable Value<T> singleValue;
 
@@ -211,6 +213,16 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 	}
 
 	@Override
+	protected final C getValue() {
+		return value;
+	}
+
+	@Override
+	protected final void setValue(C value) {
+		this.value = value;
+	}
+
+	@Override
 	public synchronized ObservableValueCollection<T, C> observable() {
 		return (ObservableValueCollection<T, C>) super.observable();
 	}
@@ -240,7 +252,7 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 	}
 
 	static class DefaultBuilder<C extends Collection<T>, T, B extends ValueCollection.Builder<T, C, B>>
-					extends DefaultValue.DefaultBuilder<C, B> implements ValueCollection.Builder<T, C, B> {
+					extends AbstractValue.AbstractBuilder<C, B> implements ValueCollection.Builder<T, C, B> {
 
 		private final Supplier<C> create;
 		private final UnaryOperator<C> unmodifiable;

@@ -20,23 +20,23 @@ package is.codion.common.reactive.value;
 
 import org.jspecify.annotations.Nullable;
 
-class DefaultValue<T> extends AbstractValue<T> {
+final class DefaultValue<T> extends AbstractValue<T> {
 
 	static final BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
 
 	private @Nullable T value;
 
-	protected DefaultValue(DefaultBuilder<T, ?> builder) {
+	private DefaultValue(DefaultBuilder<T, ?> builder) {
 		super(builder);
 	}
 
 	@Override
-	protected final @Nullable T getValue() {
+	protected @Nullable T getValue() {
 		return value;
 	}
 
 	@Override
-	protected final void setValue(@Nullable T value) {
+	protected void setValue(@Nullable T value) {
 		this.value = value;
 	}
 
@@ -59,11 +59,11 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 	}
 
-	static class DefaultBuilder<T, B extends Builder<T, B>> extends AbstractBuilder<T, B> implements Builder<T, B> {
+	private static final class DefaultBuilder<T, B extends Builder<T, B>> extends AbstractBuilder<T, B> implements Builder<T, B> {
 
-		DefaultBuilder() {}
+		private DefaultBuilder() {}
 
-		DefaultBuilder(T nullValue) {
+		private DefaultBuilder(T nullValue) {
 			super(nullValue);
 		}
 
