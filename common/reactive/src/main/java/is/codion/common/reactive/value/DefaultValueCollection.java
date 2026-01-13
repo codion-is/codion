@@ -201,9 +201,11 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 	@Override
 	public final void sort(Comparator<? super T> comparator) {
 		requireNonNull(comparator);
-		List<T> list = new ArrayList<>(getOrThrow());
-		list.sort(comparator);
-		set(list);
+		synchronized (lock) {
+			List<T> list = new ArrayList<>(getOrThrow());
+			list.sort(comparator);
+			set(list);
+		}
 	}
 
 	@Override
