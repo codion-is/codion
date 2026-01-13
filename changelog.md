@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.66
+
 ## 0.18.65
 ### is.codion.common.model
 - JsonPreferencesStore no longer writes empty preferences files, and deletes empty ones.
