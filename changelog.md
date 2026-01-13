@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.66
 ### is.codion.common.reactive
 - DefaultValueCollection.sort() bug fixed, now correctly synchronized.
+- DefaultValue.lock moved to DefaultValueCollection.
 
 ## 0.18.65
 ### is.codion.common.model

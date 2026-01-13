@@ -30,15 +30,9 @@ import java.util.function.Predicate;
 import static is.codion.common.reactive.value.Value.Notify.CHANGED;
 import static java.util.Objects.requireNonNull;
 
-/**
- * Thread-safe implementation providing a custom Lock interface for synchronization.
- * Subclasses should synchronize on the {@link #lock} field for thread safety.
- */
 class DefaultValue<T> extends AbstractValue<T> {
 
 	static final BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
-
-	protected final Object lock = new Lock() {};
 
 	private @Nullable T value;
 
@@ -227,6 +221,4 @@ class DefaultValue<T> extends AbstractValue<T> {
 			return (B) this;
 		}
 	}
-
-	private interface Lock {}
 }

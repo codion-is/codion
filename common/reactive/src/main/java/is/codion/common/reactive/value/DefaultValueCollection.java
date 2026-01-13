@@ -35,6 +35,8 @@ import static java.util.Objects.requireNonNull;
 
 class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C> implements ValueCollection<T, C> {
 
+	private final Object lock = new Lock() {};
+
 	private final Supplier<? extends C> create;
 	private final UnaryOperator<C> unmodifiable;
 
@@ -308,4 +310,6 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 			return super.value().optional();
 		}
 	}
+
+	private interface Lock {}
 }
