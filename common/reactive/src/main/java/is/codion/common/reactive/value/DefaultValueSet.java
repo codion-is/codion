@@ -22,8 +22,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-final class DefaultValueSet<T> extends DefaultValueCollection<T, Set<T>>
-				implements ValueSet<T> {
+final class DefaultValueSet<T> extends AbstractValueCollection<T, Set<T>> implements ValueSet<T> {
 
 	private DefaultValueSet(DefaultBuilder<T> builder) {
 		super(builder);
@@ -40,7 +39,7 @@ final class DefaultValueSet<T> extends DefaultValueCollection<T, Set<T>>
 	}
 
 	static final class DefaultBuilder<T>
-					extends DefaultValueCollection.DefaultBuilder<Set<T>, T, ValueSet.Builder<T>>
+					extends AbstractValueCollectionBuilder<Set<T>, T, ValueSet.Builder<T>>
 					implements ValueSet.Builder<T> {
 
 		DefaultBuilder() {
@@ -53,7 +52,8 @@ final class DefaultValueSet<T> extends DefaultValueCollection<T, Set<T>>
 		}
 	}
 
-	private static final class DefaultObservableValueSet<T> extends DefaultObservableValueCollection<T, Set<T>>
+	private static final class DefaultObservableValueSet<T>
+					extends AbstractObservableValueCollection<T, Set<T>>
 					implements ObservableValueSet<T> {
 
 		private DefaultObservableValueSet(ValueSet<T> valueSet) {

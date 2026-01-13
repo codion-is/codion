@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-final class DefaultValueList<T> extends DefaultValueCollection<T, List<T>> implements ValueList<T> {
+final class DefaultValueList<T> extends AbstractValueCollection<T, List<T>> implements ValueList<T> {
 
 	private DefaultValueList(DefaultBuilder<T> builder) {
 		super(builder);
@@ -39,7 +39,7 @@ final class DefaultValueList<T> extends DefaultValueCollection<T, List<T>> imple
 	}
 
 	static final class DefaultBuilder<T>
-					extends DefaultValueCollection.DefaultBuilder<List<T>, T, ValueList.Builder<T>>
+					extends AbstractValueCollectionBuilder<List<T>, T, ValueList.Builder<T>>
 					implements ValueList.Builder<T> {
 
 		DefaultBuilder() {
@@ -53,7 +53,7 @@ final class DefaultValueList<T> extends DefaultValueCollection<T, List<T>> imple
 	}
 
 	private static final class DefaultObservableValueList<T>
-					extends DefaultObservableValueCollection<T, List<T>>
+					extends AbstractObservableValueCollection<T, List<T>>
 					implements ObservableValueList<T> {
 
 		private DefaultObservableValueList(ValueList<T> valueList) {

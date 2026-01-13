@@ -33,7 +33,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
-class DefaultValueCollection<T, C extends Collection<T>> extends AbstractValue<C> implements ValueCollection<T, C> {
+abstract class AbstractValueCollection<T, C extends Collection<T>> extends AbstractValue<C> implements ValueCollection<T, C> {
 
 	private final Object lock = new Lock() {};
 
@@ -44,7 +44,7 @@ class DefaultValueCollection<T, C extends Collection<T>> extends AbstractValue<C
 
 	private @Nullable Value<T> singleValue;
 
-	DefaultValueCollection(DefaultBuilder<C, T, ?> builder) {
+	AbstractValueCollection(AbstractValueCollectionBuilder<C, T, ?> builder) {
 		super(builder);
 		this.create = builder.create;
 		this.unmodifiable = builder.unmodifiable;
@@ -227,58 +227,48 @@ class DefaultValueCollection<T, C extends Collection<T>> extends AbstractValue<C
 		return (ObservableValueCollection<T, C>) super.observable();
 	}
 
-	@Override
-	protected ObservableValueCollection<T, C> createObservable() {
-		return new DefaultObservableValueCollection<>(this);
-	}
-
 	private final class SingleValue extends AbstractValue<T> {
 
 		private SingleValue() {
-			DefaultValueCollection.this.addListener(this::notifyObserver);
+			AbstractValueCollection.this.addListener(this::notifyObserver);
 		}
 
 		@Override
 		protected synchronized @Nullable T getValue() {
-			C collection = DefaultValueCollection.this.getOrThrow();
+			C collection = AbstractValueCollection.this.getOrThrow();
 
 			return collection.isEmpty() ? null : collection.iterator().next();
 		}
 
 		@Override
 		protected synchronized void setValue(@Nullable T value) {
-			DefaultValueCollection.this.set(value == null ? emptyList() : singleton(value));
+			AbstractValueCollection.this.set(value == null ? emptyList() : singleton(value));
 		}
 	}
 
-	static class DefaultBuilder<C extends Collection<T>, T, B extends ValueCollection.Builder<T, C, B>>
+	abstract static class AbstractValueCollectionBuilder<C extends Collection<T>, T, B extends ValueCollection.Builder<T, C, B>>
 					extends AbstractValue.AbstractBuilder<C, B> implements ValueCollection.Builder<T, C, B> {
 
 		private final Supplier<C> create;
 		private final UnaryOperator<C> unmodifiable;
 
-		DefaultBuilder(Supplier<C> create, UnaryOperator<C> unmodifiable) {
+		AbstractValueCollectionBuilder(Supplier<C> create, UnaryOperator<C> unmodifiable) {
 			super(requireNonNull(unmodifiable).apply(requireNonNull(create).get()));
 			this.create = create;
 			this.unmodifiable = unmodifiable;
 		}
 
 		@Override
-		public ValueCollection<T, C> build() {
-			return new DefaultValueCollection<>(this);
-		}
-
-		@Override
-		protected C prepareInitialValue() {
+		protected final C prepareInitialValue() {
 			return unmodifiable.apply(super.prepareInitialValue());
 		}
 	}
 
-	protected static class DefaultObservableValueCollection<T, C extends Collection<T>>
+	protected abstract static class AbstractObservableValueCollection<T, C extends Collection<T>>
 					extends ObservableValue<C, ValueCollection<T, C>>
 					implements ObservableValueCollection<T, C> {
 
-		protected DefaultObservableValueCollection(ValueCollection<T, C> values) {
+		protected AbstractObservableValueCollection(ValueCollection<T, C> values) {
 			super(values);
 		}
 
