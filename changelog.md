@@ -7,7 +7,8 @@ Codion Change Log
 - DefaultValue.lock moved to DefaultValueCollection.
 - AbstractValue.AbstractBuilder refactored from DefaultValue.DefaultBuilder.
 - DefaultValueCollection now extends AbstractValue instead of DefaultValue, DefaultValue now final.
-- DefaultValueCollection, DefaultObservableValueCollection and DefaultBuilder now abstract, renamed AbstractValueCollection, AbstractObservableValueCollection and AbstractValueCollectionBuilder respectively. 
+- DefaultValueCollection, DefaultObservableValueCollection and DefaultBuilder now abstract, renamed AbstractValueCollection, AbstractObservableValueCollection and AbstractValueCollectionBuilder respectively.
+- BaseValue extracted from AbstractValue, AbstractValueCollection extends it, now properly synchronized.
 
 ## 0.18.65
 ### is.codion.common.model

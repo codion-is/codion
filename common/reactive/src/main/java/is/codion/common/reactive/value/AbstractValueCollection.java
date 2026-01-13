@@ -33,9 +33,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractValueCollection<T, C extends Collection<T>> extends AbstractValue<C> implements ValueCollection<T, C> {
-
-	private final Object lock = new Lock() {};
+abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseValue<C> implements ValueCollection<T, C> {
 
 	private final Supplier<? extends C> create;
 	private final UnaryOperator<C> unmodifiable;
@@ -48,6 +46,20 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends Abstr
 		super(builder);
 		this.create = builder.create;
 		this.unmodifiable = builder.unmodifiable;
+	}
+
+	@Override
+	public final C get() {
+		synchronized (lock) {
+			return super.get();
+		}
+	}
+
+	@Override
+	public final void clear() {
+		synchronized (lock) {
+			super.clear();
+		}
 	}
 
 	@Override
@@ -75,7 +87,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends Abstr
 				newValues.addAll(values);
 			}
 
-			set(unmodifiable.apply(newValues));
+			super.set(unmodifiable.apply(newValues));
 		}
 	}
 
@@ -85,7 +97,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends Abstr
 			C newValues = create.get();
 			newValues.addAll(getOrThrow());
 			boolean added = newValues.add(value);
-			set(unmodifiable.apply(newValues));
+			super.set(unmodifiable.apply(newValues));
 
 			return added;
 		}
@@ -103,7 +115,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends Abstr
 			C newValues = create.get();
 			newValues.addAll(getOrThrow());
 			boolean added = newValues.addAll(values);
-			set(unmodifiable.apply(newValues));
+			super.set(unmodifiable.apply(newValues));
 
 			return added;
 		}
@@ -115,7 +127,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends Abstr
 			C newValues = create.get();
 			newValues.addAll(getOrThrow());
 			boolean removed = newValues.remove(value);
-			set(unmodifiable.apply(newValues));
+			super.set(unmodifiable.apply(newValues));
 
 			return removed;
 		}
@@ -133,7 +145,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends Abstr
 			C newValues = create.get();
 			newValues.addAll(getOrThrow());
 			boolean removed = newValues.removeAll(values);
-			set(unmodifiable.apply(newValues));
+			super.set(unmodifiable.apply(newValues));
 
 			return removed;
 		}
@@ -247,7 +259,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends Abstr
 	}
 
 	abstract static class AbstractValueCollectionBuilder<C extends Collection<T>, T, B extends ValueCollection.Builder<T, C, B>>
-					extends AbstractValue.AbstractBuilder<C, B> implements ValueCollection.Builder<T, C, B> {
+					extends BaseValue.BaseBuilder<C, B> implements ValueCollection.Builder<T, C, B> {
 
 		private final Supplier<C> create;
 		private final UnaryOperator<C> unmodifiable;
@@ -312,6 +324,4 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends Abstr
 			return super.value().optional();
 		}
 	}
-
-	private interface Lock {}
 }
