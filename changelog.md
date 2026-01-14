@@ -11,6 +11,7 @@ Codion Change Log
 - BaseValue extracted from AbstractValue, AbstractValueCollection extends it, now properly synchronized.
 ### is.codion.swing.framework.ui
 - EntityTablePanelPreferences bug fixed, column width preferences got lost for panels that were never initialized, now sets the column width as well as preferred width when applying preferences.
+- EntityTablePanelPreferences, auto-resize-mode preference added.
 
 ## 0.18.65
 ### is.codion.common.model

@@ -51,50 +51,66 @@ final class EntityTablePanelPreferences {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanelPreferences.class);
 
+	private static final String TABLE_PREFERENCES = "-table";
 	private static final String COLUMN_PREFERENCES = "-columns";
 	private static final String CONDITIONS_PREFERENCES = "-conditions";
 	private static final String EXPORT_PREFERENCES = "-export";
 	private static final String EMPTY_JSON_OBJECT = "{}";
 
+	private final TablePreferences tablePreferences;
 	private final Map<Attribute<?>, ColumnPreferences> columnPreferences;
 	private final Map<Attribute<?>, ConditionPreferences> conditionPreferences;
 	private final @Nullable ExportPreferences exportPreferences;
+	private final String tableKey;
 	private final String columnsKey;
 	private final String conditionsKey;
 	private final String exportKey;
 
 	EntityTablePanelPreferences(EntityTablePanel tablePanel, Preferences preferences) {
+		this.tableKey = tablePanel.preferencesKey() + TABLE_PREFERENCES;
 		this.columnsKey = tablePanel.preferencesKey() + COLUMN_PREFERENCES;
 		this.conditionsKey = tablePanel.preferencesKey() + CONDITIONS_PREFERENCES;
 		this.exportKey = tablePanel.preferencesKey() + EXPORT_PREFERENCES;
 		Collection<Attribute<?>> identifiers = tablePanel.table().columnModel().identifiers();
+		this.tablePreferences = new TablePreferences(preferences.get(tableKey, EMPTY_JSON_OBJECT));
 		this.columnPreferences = ColumnPreferences.fromString(identifiers, preferences.get(columnsKey, EMPTY_JSON_OBJECT));
 		this.conditionPreferences = ConditionPreferences.fromString(identifiers, preferences.get(conditionsKey, EMPTY_JSON_OBJECT));
 		this.exportPreferences = new ExportPreferences(preferences.get(exportKey, EMPTY_JSON_OBJECT));
 	}
 
 	EntityTablePanelPreferences(EntityTablePanel tablePanel) {
-		this(createColumnPreferences(tablePanel.table().columnModel()),
+		this(new TablePreferences(tablePanel),
+						createColumnPreferences(tablePanel.table().columnModel()),
 						createConditionPreferences(tablePanel.tableModel()),
 						new ExportPreferences(tablePanel.exportModel()),
+						tablePanel.preferencesKey() + TABLE_PREFERENCES,
 						tablePanel.preferencesKey() + COLUMN_PREFERENCES,
 						tablePanel.preferencesKey() + CONDITIONS_PREFERENCES,
 						tablePanel.preferencesKey() + EXPORT_PREFERENCES);
 	}
 
-	private EntityTablePanelPreferences(Map<Attribute<?>, ColumnPreferences> columnPreferences,
+	private EntityTablePanelPreferences(TablePreferences tablePreferences,
+																			Map<Attribute<?>, ColumnPreferences> columnPreferences,
 																			Map<Attribute<?>, ConditionPreferences> conditionPreferences,
-																			@Nullable ExportPreferences exportPreferences,
+																			@Nullable ExportPreferences exportPreferences, String tableKey,
 																			String columnKey, String conditionKey, String exportKey) {
+		this.tableKey = tableKey;
 		this.columnsKey = columnKey;
 		this.conditionsKey = conditionKey;
 		this.exportKey = exportKey;
+		this.tablePreferences = tablePreferences;
 		this.columnPreferences = columnPreferences;
 		this.conditionPreferences = conditionPreferences;
 		this.exportPreferences = exportPreferences;
 	}
 
 	void apply(EntityTablePanel tablePanel) {
+		try {
+			tablePreferences.apply(tablePanel);
+		}
+		catch (Exception e) {
+			LOG.error("Error while applying table preferences: {}", tablePreferences, e);
+		}
 		if (!columnPreferences.isEmpty()) {
 			try {
 				ColumnPreferences.apply(tablePanel, columnPreferences);
@@ -138,6 +154,12 @@ final class EntityTablePanelPreferences {
 
 	void save(Preferences preferences) {
 		try {
+			preferences.put(tableKey, tablePreferences.toJson());
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving table preferences", e);
+		}
+		try {
 			preferences.put(columnsKey, ColumnPreferences.toJson(columnPreferences).toString());
 		}
 		catch (Exception e) {
@@ -160,6 +182,7 @@ final class EntityTablePanelPreferences {
 	}
 
 	static void applyLegacy(EntityTablePanel tablePanel) {
+		String tableKey = tablePanel.preferencesKey() + TABLE_PREFERENCES;
 		String columnsKey = tablePanel.preferencesKey() + COLUMN_PREFERENCES;
 		String conditionsKey = tablePanel.preferencesKey() + CONDITIONS_PREFERENCES;
 
@@ -169,8 +192,8 @@ final class EntityTablePanelPreferences {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferences =
 						ConditionPreferences.fromStringLegacy(identifiers, UserPreferences.get(conditionsKey, EMPTY_JSON_OBJECT));
 
-		new EntityTablePanelPreferences(columnPreferences, conditionPreferences,
-						/* No legacy export preferences*/ null, columnsKey, conditionsKey,
+		new EntityTablePanelPreferences(new TablePreferences(EMPTY_JSON_OBJECT), columnPreferences, conditionPreferences,
+						/* No legacy export preferences*/ null, tableKey, columnsKey, conditionsKey,
 						/* No legacy export preferences*/"no-export-prefs").apply(tablePanel);
 	}
 
@@ -204,6 +227,37 @@ final class EntityTablePanelPreferences {
 		}
 
 		return conditionPreferencesMap;
+	}
+
+	private static final class TablePreferences {
+
+		private static final String AUTO_RESIZE_MODE = "auto-resize-mode";
+
+		private final @Nullable Integer autoResizeMode;
+
+		private TablePreferences(String preferencesString) {
+			JSONObject json = new JSONObject(preferencesString);
+			autoResizeMode = json.has(AUTO_RESIZE_MODE) ? json.getInt(AUTO_RESIZE_MODE) : null;
+		}
+
+		private TablePreferences(EntityTablePanel tablePanel) {
+			autoResizeMode = tablePanel.table().getAutoResizeMode();
+		}
+
+		private String toJson() {
+			JSONObject json = new JSONObject();
+			if (autoResizeMode != null) {
+				json.put(AUTO_RESIZE_MODE, autoResizeMode);
+			}
+
+			return json.toString();
+		}
+
+		private void apply(EntityTablePanel tablePanel) {
+			if (autoResizeMode != null) {
+				tablePanel.table().setAutoResizeMode(autoResizeMode);
+			}
+		}
 	}
 
 	private static final class ColumnPreferences {
