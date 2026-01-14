@@ -293,7 +293,9 @@ final class EntityTablePanelPreferences {
 					columnAttributesWithoutPreferences.add(attribute);
 				}
 				else {
-					tablePanel.table().columnModel().column(attribute).setPreferredWidth(preferences.width);
+					FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(attribute);
+					column.setPreferredWidth(preferences.width);
+					column.setWidth(preferences.width);
 				}
 			}
 			List<Attribute<?>> visibleColumnAttributes = columnPreferences.values().stream()
