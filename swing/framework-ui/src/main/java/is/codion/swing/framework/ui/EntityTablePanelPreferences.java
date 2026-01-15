@@ -217,12 +217,12 @@ final class EntityTablePanelPreferences {
 	private static Map<Attribute<?>, ConditionPreferences> createConditionPreferences(SwingEntityTableModel tableModel) {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			ConditionModel<?> filter = tableModel.filters().get().get(attribute);
-			if (filter != null) {
+			ConditionModel<?> condition = tableModel.query().condition().get().get(attribute);
+			if (condition != null) {
 				conditionPreferencesMap.put(attribute, new ConditionPreferences(attribute,
-								filter.autoEnable().is(),
-								filter.caseSensitive().is(),
-								filter.operands().wildcard().getOrThrow()));
+								condition.autoEnable().is(),
+								condition.caseSensitive().is(),
+								condition.operands().wildcard().getOrThrow()));
 			}
 		}
 
@@ -462,11 +462,11 @@ final class EntityTablePanelPreferences {
 			for (Attribute<?> attribute : tableModel.columns().identifiers()) {
 				ConditionPreferences preferences = conditionPreferences.get(attribute);
 				if (preferences != null) {
-					ConditionModel<?> filter = tableModel.filters().get().get(attribute);
-					if (filter != null) {
-						filter.caseSensitive().set(preferences.caseSensitive);
-						filter.autoEnable().set(preferences.autoEnable);
-						filter.operands().wildcard().set(preferences.wildcard);
+					ConditionModel<?> condition = tableModel.query().condition().get().get(attribute);
+					if (condition != null) {
+						condition.caseSensitive().set(preferences.caseSensitive);
+						condition.autoEnable().set(preferences.autoEnable);
+						condition.operands().wildcard().set(preferences.wildcard);
 					}
 				}
 			}
