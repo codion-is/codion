@@ -13,6 +13,7 @@ Codion Change Log
 - EntityTablePanelPreferences bug fixed, column width preferences got lost for panels that were never initialized, now sets the column width as well as preferred width when applying preferences.
 - EntityTablePanelPreferences, auto-resize-mode preference added.
 - EntityTablePanelPreferences bug fixed, filter settings used instead of condition settings.
+- EntityTablePanelPreferences simplified, internal java representation classes removed, json used directly instead, tests improved.
 
 ## 0.18.65
 ### is.codion.common.model

@@ -18,30 +18,16 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.ConditionModel.Wildcard;
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
-import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import javax.swing.table.TableColumn;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,11 +40,6 @@ public class EntityTablePanelTest {
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
-
-	@AfterAll
-	static void cleanUp() throws IOException {
-		UserPreferences.delete("is.codion.swing.framework.ui.EntityTablePanelTest");
-	}
 
 	@Test
 	void excludeHiddenColumns() {
@@ -116,51 +97,6 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
-	void preferences() throws BackingStoreException {
-		List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
-		SwingEntityTableModel testModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(testModel);
-		EntityTablePanelPreferences.clearLegacyPreferences(tablePanel);
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
-		assertTrue(columnModel.visible(Detail.STRING).is());
-
-		columnModel.visible(Detail.STRING).set(false);
-		columnModel.moveColumn(1, 0);//double to 0, int to 1
-		TableColumn column = columnModel.getColumn(3);
-		column.setWidth(150);//timestamp
-		column = columnModel.getColumn(5);
-		column.setWidth(170);//entity_ref
-		ConditionModel<String> condition =
-						testModel.query().condition().get(Detail.STRING);
-		condition.autoEnable().set(false);
-		condition.operands().wildcard().set(Wildcard.PREFIX);
-		condition.caseSensitive().set(false);
-
-		Preferences preferences = UserPreferences.file(EntityTablePanelTest.class.getName());
-		tablePanel.writePreferences(preferences);
-
-		tablePanel = new EntityTablePanel(testModel);
-		tablePanel.applyPreferences(preferences);
-
-		columnModel = tablePanel.table().columnModel();
-		assertFalse(columnModel.visible(Detail.STRING).is());
-		assertEquals(0, columnModel.getColumnIndex(Detail.DOUBLE));
-		assertEquals(1, columnModel.getColumnIndex(Detail.INT));
-		column = columnModel.getColumn(3);
-		assertEquals(150, column.getPreferredWidth());
-
-		column = columnModel.getColumn(5);
-		assertEquals(170, column.getPreferredWidth());
-		condition = testModel.query().condition().get(Detail.STRING);
-		assertFalse(condition.autoEnable().is());
-		assertEquals(Wildcard.PREFIX, condition.operands().wildcard().get());
-		assertFalse(condition.caseSensitive().is());
-
-		EntityTablePanelPreferences.clearLegacyPreferences(tablePanel);
-		UserPreferences.flush();
-	}
-
-	@Test
 	void editableAttributesExcludesDerivedAndDenormalizedAttributes() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
 		new EntityTablePanel(tableModel, config -> config.editable(attributes -> {
@@ -169,19 +105,5 @@ public class EntityTablePanelTest {
 			assertFalse(attributes.contains(Detail.MASTER_CODE));
 			assertFalse(attributes.contains(Detail.INT_DERIVED));
 		}));
-	}
-
-	private static List<Entity> initTestEntities(Entities entities) {
-		List<Entity> testEntities = new ArrayList<>(5);
-		String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
-		for (int i = 0; i < 5; i++) {
-			testEntities.add(entities.entity(Detail.TYPE)
-							.with(Detail.ID, (long) i + 1)
-							.with(Detail.INT, i + 1)
-							.with(Detail.STRING, stringValues[i])
-							.build());
-		}
-
-		return testEntities;
 	}
 }
