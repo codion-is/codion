@@ -55,7 +55,6 @@ tasks.processResources {
 
 tasks.withType<Test>().configureEach {
     systemProperty("codion.db.initScripts", "src/main/sql/create_schema.sql")
-    systemProperty("codion.client.domainType", "Petclinic")
 }
 
 tasks.register<JavaExec>("runClientLocal") {

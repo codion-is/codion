@@ -11,6 +11,8 @@ Codion Change Log
 - BaseValue extracted from AbstractValue, AbstractValueCollection extends it, now properly synchronized.
 ### is.codion.common.model
 - JsonPreferencesStore bug fixed, lock file now cleanup up on save.
+### is.codion.framework.db.core
+- EntityConnectionProvider.CLIENT_DOMAIN_TYPE removed.
 ### is.codion.framework.model
 - EntityApplicationModel.version() removed.
 - DefaultEntityApplicationModel, Preferences constructor parameter added.
@@ -22,6 +24,8 @@ Codion Change Log
 - EntityPanel now throws exception if it's added as its own detail panel.
 - EntityApplicationPanel, preferences now stored in a single json node, related refactoring.
 - EntityApplicationPanel.applyPreferences() and storePreferences() now public.
+- EntityApplication.DomainStep added.
+- DefaultEntityApplication preferences handling improved.
 
 ## 0.18.65
 ### is.codion.common.model

@@ -81,7 +81,6 @@ sourceSets.main.get().resources.srcDir(tasks.compileAllReports)
 
 tasks.withType<Test>().configureEach {
     systemProperty("codion.db.initScripts", "src/main/sql/create_schema.sql")
-    systemProperty("codion.client.domainType", "Employees")
 }
 
 tasks.register<JavaExec>("runClientLocal") {

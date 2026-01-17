@@ -35,7 +35,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static is.codion.common.utilities.Configuration.stringValue;
-import static is.codion.common.utilities.Configuration.value;
 import static java.util.stream.StreamSupport.stream;
 
 /**
@@ -80,7 +79,6 @@ import static java.util.stream.StreamSupport.stream;
  * {@snippet :
  * // Configure via system properties
  * System.setProperty("codion.client.connectionType", "remote");
- * System.setProperty("codion.client.domainType", "chinook:Chinook");
  *
  * // Create provider based on configuration
  * EntityConnectionProvider provider = EntityConnectionProvider.builder()
@@ -109,15 +107,6 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * @see #CLIENT_CONNECTION_TYPE
 	 */
 	String CONNECTION_TYPE_HTTP = "http";
-
-	/**
-	 * Specifies the domain type required for a client connection
-	 * <ul>
-	 * <li>Value type: is.codion.framework.domain.DomainType
-	 * <li>Default value: null
-	 * </ul>
-	 */
-	PropertyValue<DomainType> CLIENT_DOMAIN_TYPE = value("codion.client.domainType", DomainType::domainType);
 
 	/**
 	 * Specifies whether the client should connect locally, via rmi or http,
@@ -212,17 +201,17 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	/**
 	 * Creates a connection provider builder based on system configuration.
 	 * {@snippet :
-	 * // Configure connection type and domain
+	 * // Configure connection type
 	 * System.setProperty("codion.client.connectionType", "remote");
-	 * System.setProperty("codion.client.domainType", "Chinook");
 	 *
 	 * // Create builder based on configuration
 	 * EntityConnectionProvider provider = EntityConnectionProvider.builder()
+	 *     .domain(DomainModel.DOMAIN)
 	 *     .user(User.parse("scott:tiger"))
 	 *     .build();
 	 *}
 	 * @return an unconfigured {@link Builder} instance, based on the
-	 * {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} and {@link EntityConnectionProvider#CLIENT_DOMAIN_TYPE} configuration values
+	 * {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} configuration value
 	 * @throws IllegalStateException in case the required connection provider builder is not available on the classpath
 	 * @see EntityConnectionProvider#CLIENT_CONNECTION_TYPE
 	 */
@@ -231,11 +220,6 @@ public interface EntityConnectionProvider extends AutoCloseable {
 		try {
 			return stream(ServiceLoader.load(Builder.class).spliterator(), false)
 							.filter(builder -> builder.connectionType().equalsIgnoreCase(clientConnectionType))
-							.map(builder -> {
-								CLIENT_DOMAIN_TYPE.optional().ifPresent(builder::domain);
-
-								return builder;
-							})
 							.findFirst()
 							.orElseThrow(() -> new IllegalStateException("No connection provider builder available for requested client connection type: " + clientConnectionType));
 		}

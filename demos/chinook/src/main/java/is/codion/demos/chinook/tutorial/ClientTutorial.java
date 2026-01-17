@@ -195,6 +195,7 @@ public final class ClientTutorial {
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityApplication.builder(ApplicationModel.class, ApplicationPanel.class)
+						.domain(Chinook.DOMAIN)
 						.model(ApplicationModel::new)
 						.panel(ApplicationPanel::new)
 						.connectionProvider(LocalEntityConnectionProvider.builder()

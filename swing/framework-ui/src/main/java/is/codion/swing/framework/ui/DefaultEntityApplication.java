@@ -98,6 +98,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private final Class<M> applicationModelClass;
 	private final Class<P> applicationPanelClass;
+	private final DomainType domain;
 	private final @Nullable String preferencesLookAndFeel;
 
 	private @Nullable Function<User, EntityConnectionProvider> connectionProviderFunction;
@@ -108,7 +109,6 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	private @Nullable Observable<String> frameTitle;
 	private boolean connectionInfoUpperCase = CONNECTION_INFO_UPPER_CASE.getOrThrow();
 
-	private @Nullable DomainType domain = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
 	private Supplier<User> userSupplier = new DefaultUserSupplier();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
 	private boolean startupDialog = STARTUP_DIALOG.getOrThrow();
@@ -132,23 +132,18 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 					.map(User::parse)
 					.orElse(null);
 
-	DefaultEntityApplication(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
-		this.applicationModelClass = requireNonNull(applicationModelClass);
-		this.applicationPanelClass = requireNonNull(applicationPanelClass);
+	DefaultEntityApplication(Class<M> applicationModelClass, Class<P> applicationPanelClass, DomainType domain) {
+		this.applicationModelClass = applicationModelClass;
+		this.applicationPanelClass = applicationPanelClass;
+		this.domain = domain;
 		ApplicationPreferences preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow() ?
-						ApplicationPreferences.load(applicationModelClass, applicationPanelClass) :
+						ApplicationPreferences.load(applicationModelClass, domain) :
 						ApplicationPreferences.fromString(EMPTY_JSON_OBJECT);
 		this.defaultUser = preferences.defaultLoginUser();
 		this.frameSize = preferences.frameSize();
 		this.maximizeFrame = preferences.frameMaximized();
 		this.preferencesLookAndFeel = preferences.lookAndFeel();
 		Scaler.SCALING.set(preferences.scaling());
-	}
-
-	@Override
-	public EntityApplication<M, P> domain(DomainType domain) {
-		this.domain = requireNonNull(domain);
-		return this;
 	}
 
 	@Override
@@ -400,6 +395,23 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		String userPreference = fromFlatLaf(preferencesLookAndFeel);
 
 		return userPreference == null ? defaultLookAndFeelClassName : userPreference;
+	}
+
+	static final class DefaultDomainStep<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>>
+					implements DomainStep<M, P> {
+
+		private final Class<M> modelClass;
+		private final Class<P> panelClass;
+
+		DefaultDomainStep(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
+			modelClass = applicationModelClass;
+			panelClass = applicationPanelClass;
+		}
+
+		@Override
+		public EntityApplication<M, P> domain(DomainType domain) {
+			return new DefaultEntityApplication<>(modelClass, panelClass, requireNonNull(domain));
+		}
 	}
 
 	private static @Nullable String fromFlatLaf(@Nullable String lookAndFeelClassName) {

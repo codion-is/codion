@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.model.EntityApplicationModel;
+import is.codion.framework.domain.DomainType;
 
 import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
@@ -29,11 +29,10 @@ import org.jspecify.annotations.Nullable;
 import java.awt.Dimension;
 import java.util.prefs.Preferences;
 
+import static is.codion.framework.model.EntityApplicationModel.PREFERENCES_KEY;
 import static java.lang.Integer.parseInt;
 
 final class ApplicationPreferences {
-
-	private static final String PREFERENCES_KEY = "#preferences";
 
 	private static final String DEFAULT_USERNAME_KEY = "defaultUsername";
 	private static final String LOOK_AND_FEEL_KEY = "lookAndFeel";
@@ -96,15 +95,13 @@ final class ApplicationPreferences {
 		return preferences;
 	}
 
-	static ApplicationPreferences load(Class<?> applicationModelClass, Class<?> applicationPanelClass) {
-		String applicationModelPrefs = UserPreferences.file(EntityApplicationModel.PREFERENCES_KEY.optional()
-						.orElse(applicationModelClass.getName())).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
-		if (!applicationModelPrefs.equals(EMPTY_JSON_OBJECT)) {
-			// File based preferences take precedence
-			return fromString(applicationModelPrefs);
+	static ApplicationPreferences load(Class<?> applicationModelClass, DomainType domain) {
+		String preferences = UserPreferences.file(PREFERENCES_KEY.optional().orElse(domain.name())).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
+		if (preferences.equals(EMPTY_JSON_OBJECT)) {
+			preferences = UserPreferences.file(applicationModelClass.getName()).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
 		}
 
-		return fromString(UserPreferences.get(applicationPanelClass.getName() + PREFERENCES_KEY, EMPTY_JSON_OBJECT));
+		return fromString(preferences);
 	}
 
 	static ApplicationPreferences fromString(String preferences) {

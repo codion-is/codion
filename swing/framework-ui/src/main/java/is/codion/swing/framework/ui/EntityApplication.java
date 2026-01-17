@@ -42,6 +42,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a and starts an application.
@@ -100,36 +101,44 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	PropertyValue<Boolean> CONNECTION_INFO_UPPER_CASE = booleanValue("codion.client.connectionInfoUpperCase", true);
 
 	/**
-	 * @param domain the domain type
-	 * @return this Builder instance
+	 * Specifies the application domain model type.
+	 * @param <M> the application model class
+	 * @param <P> the application panel class
 	 */
-	EntityApplication<M, P> domain(DomainType domain);
+	interface DomainStep<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> {
+
+		/**
+		 * @param domain the domain type
+		 * @return a {@link EntityApplication} instance
+		 */
+		EntityApplication<M, P> domain(DomainType domain);
+	}
 
 	/**
 	 * <p>Sets the application name, used as frame title and client type identifier when using remote connnections.
 	 * <p>If no application name is set, {@link DomainType#name()} is used or
 	 * {@code applicationPanelClass.getSimpleName()} in case of no domain model.
 	 * @param name the application name
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> name(String name);
 
 	/**
 	 * @param icon the application icon
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> icon(ImageIcon icon);
 
 	/**
 	 * @param version the application version
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> version(Version version);
 
 	/**
 	 * Sets the default look and feel class, used in case no look and feel settings are found in user preferences.
 	 * @param defaultLookAndFeelClass the default look and feel class
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 * @see LookAndFeelProvider
 	 */
 	EntityApplication<M, P> defaultLookAndFeel(Class<? extends LookAndFeel> defaultLookAndFeelClass);
@@ -137,7 +146,7 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	/**
 	 * Sets the default look and feel classname, used in case no look and feel settings are found in user preferences.
 	 * @param defaultLookAndFeelClassName the default look and feel classname
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 * @see LookAndFeelProvider
 	 */
 	EntityApplication<M, P> defaultLookAndFeel(String defaultLookAndFeelClassName);
@@ -145,7 +154,7 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	/**
 	 * Sets the look and feel class, overrides any look and feel settings found in user preferences.
 	 * @param lookAndFeelClass the look and feel class
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 * @see LookAndFeelProvider
 	 */
 	EntityApplication<M, P> lookAndFeel(Class<? extends LookAndFeel> lookAndFeelClass);
@@ -153,7 +162,7 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	/**
 	 * Sets the look and feel classname, overrides any look and feel settings found in user preferences.
 	 * @param lookAndFeelClassName the look and feel classname
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 * @see LookAndFeelProvider
 	 */
 	EntityApplication<M, P> lookAndFeel(String lookAndFeelClassName);
@@ -161,25 +170,25 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	/**
 	 * Overrides {@link #connectionProvider(Function)}
 	 * @param connectionProvider the connection provider
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> connectionProvider(EntityConnectionProvider connectionProvider);
 
 	/**
 	 * @param connectionProvider initializes the connection provider, receives the user provided by {@link #user(Supplier)}
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> connectionProvider(Function<User, EntityConnectionProvider> connectionProvider);
 
 	/**
 	 * @param model the application model factory
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> model(Function<EntityConnectionProvider, M> model);
 
 	/**
 	 * @param panel the application panel factory
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> panel(Function<M, P> panel);
 
@@ -187,7 +196,7 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connectionProvider(Function)}.
 	 * <p>If this user is null, {@link #user(Supplier)} is used to fetch a user.
 	 * @param user the application user
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 * @see #USER
 	 */
 	EntityApplication<M, P> user(@Nullable User user);
@@ -197,19 +206,19 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	 * <p>This may be via a login dialog or simply by returning a hardcoded instance.
 	 * <p>Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
 	 * @param userSupplier supplies the application user, for example via a login dialog
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> user(Supplier<User> userSupplier);
 
 	/**
 	 * @param defaultUser the default user credentials to display in a login dialog
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> defaultUser(@Nullable User defaultUser);
 
 	/**
 	 * @param saveDefaultUsername true if the username should be saved in user preferences after a successful login
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> saveDefaultUsername(boolean saveDefaultUsername);
 
@@ -217,7 +226,7 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	 * Note that this does not apply when a custom {@link #user(Supplier)} has been specified.
 	 * @param loginPanelSouthComponentSupplier supplies the component to add to the
 	 * {@link BorderLayout#SOUTH} position of the default login panel
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> loginPanelSouthComponent(Supplier<JComponent> loginPanelSouthComponentSupplier);
 
@@ -225,83 +234,83 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	 * Runs as the application is starting, but after Look and Feel initialization.
 	 * Throw {@link CancelException} in order to cancel the application startup.
 	 * @param onStarting run before the application is started
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> onStarting(@Nullable Runnable onStarting);
 
 	/**
 	 * @param onStarted called after a successful application start
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> onStarted(@Nullable Consumer<P> onStarted);
 
 	/**
 	 * @param frame the supplies the frame to use
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> frame(Supplier<JFrame> frame);
 
 	/**
 	 * @param frameTitle the frame title
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> frameTitle(String frameTitle);
 
 	/**
 	 * For a dynamic frame title.
 	 * @param frameTitle the observable controlling the frame title
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> frameTitle(Observable<String> frameTitle);
 
 	/**
 	 * @param connectionInfoUpperCase specifies whether the connection information displayed in the frame title is automatically converted to upper case
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 * @see #CONNECTION_INFO_UPPER_CASE
 	 */
 	EntityApplication<M, P> connectionInfoUpperCase(boolean connectionInfoUpperCase);
 
 	/**
 	 * @param mainMenu if true then a main menu is included
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> mainMenu(boolean mainMenu);
 
 	/**
 	 * @param maximizeFrame specifies whether the frame should be maximized or use its preferred size
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> maximizeFrame(boolean maximizeFrame);
 
 	/**
 	 * @param displayFrame specifies whether the frame should be displayed or left invisible
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> displayFrame(boolean displayFrame);
 
 	/**
 	 * Specifies whether to set the default uncaught exception handler when starting the application, true by default.
 	 * @param uncaughtExceptionHandler if true the default uncaught exception handler is set on application start
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 * @see Thread#setDefaultUncaughtExceptionHandler(Thread.UncaughtExceptionHandler)
 	 */
 	EntityApplication<M, P> uncaughtExceptionHandler(boolean uncaughtExceptionHandler);
 
 	/**
 	 * @param startupDialog if true then a progress dialog is displayed while the application is being initialized
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> startupDialog(boolean startupDialog);
 
 	/**
 	 * @param frameSize the frame size when not maximized
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> frameSize(@Nullable Dimension frameSize);
 
 	/**
 	 * @param defaultFrameSize the default frame size when no previous size is available in user preferences
-	 * @return this Builder instance
+	 * @return this {@link EntityApplication} instance
 	 */
 	EntityApplication<M, P> defaultFrameSize(@Nullable Dimension defaultFrameSize);
 
@@ -323,8 +332,8 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	 * @param applicationPanelClass the application panel class
 	 * @return a {@link EntityApplication}
 	 */
-	static <M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> EntityApplication<M, P> builder(
+	static <M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> EntityApplication.DomainStep<M, P> builder(
 					Class<M> applicationModelClass, Class<P> applicationPanelClass) {
-		return new DefaultEntityApplication<>(applicationModelClass, applicationPanelClass);
+		return new DefaultEntityApplication.DefaultDomainStep<>(requireNonNull(applicationModelClass), requireNonNull(applicationPanelClass));
 	}
 }

@@ -80,8 +80,8 @@ public class EntityApplicationPanelTest {
 	void test() {
 		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
-						.user(UNIT_TEST_USER)
 						.domain(TestDomain.DOMAIN)
+						.user(UNIT_TEST_USER)
 						.uncaughtExceptionHandler(false)
 						.saveDefaultUsername(false)
 						.displayFrame(false)

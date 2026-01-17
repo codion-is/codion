@@ -255,6 +255,7 @@ public final class NotesDemo {
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 
 		EntityApplication.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
+						.domain(DOMAIN)
 						.frameTitle("Notes")
 						.frameSize(new Dimension(600, 500))
 						.version(NotesApplicationModel.VERSION)

@@ -43,22 +43,23 @@ public final class DefaultEntityApplicationTest {
 	void connection() {
 		User user = User.user("Test");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
-						.onStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
 						.domain(TestDomain.DOMAIN)
+						.onStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
 						.user(user)
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
 		User user2 = User.user("Test2");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
-						.onStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
 						.domain(TestDomain.DOMAIN)
+						.onStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
 						.user(() -> user2)
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
 		User user3 = User.user("Test3");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.domain(TestDomain.DOMAIN)
 						.onStarted(panel -> assertSame(user3, panel.applicationModel().connectionProvider().user()))
 						.user(user3)
 						.connectionProvider(usr -> LocalEntityConnectionProvider.builder()
@@ -74,6 +75,7 @@ public final class DefaultEntityApplicationTest {
 						.user(user4)
 						.build();
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.domain(TestDomain.DOMAIN)
 						.onStarted(panel -> {
 							assertSame(connectionProvider, panel.applicationModel().connectionProvider());
 							assertSame(user4, panel.applicationModel().connectionProvider().user());
