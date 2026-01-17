@@ -20,14 +20,12 @@ package is.codion.framework.model;
 
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
-import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -77,11 +75,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	 * @return the connection used by this application model
 	 */
 	EntityConnection connection();
-
-	/**
-	 * @return the application version, an empty Optional in case no version information is available
-	 */
-	Optional<Version> version();
 
 	/**
 	 * @return the underlying domain entities

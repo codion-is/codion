@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.utilities.user.User;
-import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -30,7 +29,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import static java.util.Collections.unmodifiableList;
@@ -46,7 +44,6 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 				E extends EntityEditModel, T extends EntityTableModel<E>> implements EntityApplicationModel<M, E, T> {
 
 	private final EntityConnectionProvider connectionProvider;
-	private final @Nullable Version version;
 	private final DefaultEntityModels<M, E, T> models;
 
 	private @Nullable Preferences preferences;
@@ -58,22 +55,10 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	 * @param entityModels the entity models
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
-	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider, Collection<? extends M> entityModels) {
-		this(connectionProvider, entityModels, null);
-	}
-
-	/**
-	 * Instantiates a new DefaultEntityApplicationModel
-	 * @param connectionProvider the EntityConnectionProvider instance
-	 * @param entityModels the entity models
-	 * @param version the application version
-	 * @throws NullPointerException in case connectionProvider is null
-	 */
 	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider,
-																			 Collection<? extends M> entityModels, @Nullable Version version) {
+																			 Collection<? extends M> entityModels) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.models = new DefaultEntityModels<>(requireNonNull(entityModels));
-		this.version = version;
 	}
 
 	@Override
@@ -89,11 +74,6 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	@Override
 	public final EntityConnection connection() {
 		return connectionProvider.connection();
-	}
-
-	@Override
-	public final Optional<Version> version() {
-		return Optional.ofNullable(version);
 	}
 
 	@Override

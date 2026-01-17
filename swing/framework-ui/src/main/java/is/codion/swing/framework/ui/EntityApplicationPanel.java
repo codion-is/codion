@@ -737,7 +737,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	protected JPanel createAboutPanel() {
 		PanelBuilder<GridLayout, ?> versionMemoryPanel = gridLayoutPanel(0, 2)
 						.border(emptyBorder());
-		applicationModel().version().ifPresent(version -> versionMemoryPanel
+		applicationModel().connectionProvider().clientVersion().ifPresent(version -> versionMemoryPanel
 						.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
 						.add(new JLabel(version.toString())));
 		versionMemoryPanel

@@ -18,13 +18,10 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.DefaultEntityApplicationModel;
 
 import java.util.Collection;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A Swing implementation of {@link is.codion.framework.model.EntityApplicationModel}
@@ -38,16 +35,6 @@ public class SwingEntityApplicationModel
 	 * @param entityModels the entity models
 	 */
 	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Collection<SwingEntityModel> entityModels) {
-		super(connectionProvider, entityModels, null);
-	}
-
-	/**
-	 * Instantiates a new {@link SwingEntityApplicationModel}
-	 * @param connectionProvider the connection provider
-	 * @param entityModels the entity models
-	 * @param version the application version
-	 */
-	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Collection<SwingEntityModel> entityModels, Version version) {
-		super(connectionProvider, entityModels, requireNonNull(version));
+		super(connectionProvider, entityModels);
 	}
 }

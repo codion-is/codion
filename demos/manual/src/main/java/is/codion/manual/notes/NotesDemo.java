@@ -229,7 +229,7 @@ public final class NotesDemo {
 		private static final Version VERSION = Version.builder().major(1).build();
 
 		public NotesApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, List.of(new NoteModel(connectionProvider)), VERSION);
+			super(connectionProvider, List.of(new NoteModel(connectionProvider)));
 			// Refresh the table model to populate it
 			entityModels().get(Note.TYPE).tableModel().items().refresh();
 		}

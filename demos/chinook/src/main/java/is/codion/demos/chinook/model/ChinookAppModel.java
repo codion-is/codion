@@ -35,7 +35,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 		super(connectionProvider, List.of(
 						createAlbumModel(connectionProvider),
 						createPlaylistModel(connectionProvider),
-						createCustomerModel(connectionProvider)), VERSION);
+						createCustomerModel(connectionProvider)));
 		this.analytics = new AnalyticsModel(connectionProvider);
 	}
 
