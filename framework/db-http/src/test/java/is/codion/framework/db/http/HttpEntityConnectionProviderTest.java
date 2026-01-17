@@ -23,7 +23,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class HttpEntityConnectionProviderTest {
@@ -38,7 +37,6 @@ public class HttpEntityConnectionProviderTest {
 							.user(User.parse("scott:tiger"))
 							.build();
 			assertInstanceOf(HttpEntityConnectionProvider.class, connectionProvider);
-			assertEquals(EntityConnectionProvider.CONNECTION_TYPE_HTTP, connectionProvider.connectionType());
 		}
 		finally {
 			EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(null);

@@ -55,7 +55,6 @@ public final class AbstractEntityConnectionProviderTest {
 
 			// Test initial state
 			assertEquals("description", provider.description().get());
-			assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());
 			assertEquals(ENTITIES, provider.entities());
 			assertEquals(UNIT_TEST_USER, provider.user());
 			assertEquals(TestDomain.DOMAIN, provider.domainType());
@@ -317,11 +316,6 @@ public final class AbstractEntityConnectionProviderTest {
 		@Override
 		protected void close(EntityConnection connection) {
 			connection.close();
-		}
-
-		@Override
-		public String connectionType() {
-			return EntityConnectionProvider.CONNECTION_TYPE_LOCAL;
 		}
 
 		@Override

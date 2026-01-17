@@ -58,11 +58,6 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 	}
 
 	@Override
-	public String connectionType() {
-		return CONNECTION_TYPE_HTTP;
-	}
-
-	@Override
 	public Optional<String> description() {
 		return Optional.of(DESCRIPTION.optional().orElse(hostname));
 	}

@@ -146,12 +146,6 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	EntityConnection connection();
 
 	/**
-	 * Returns a String specifying the type of connection provided by this connection provider
-	 * @return a String specifying the type of connection, e.g. "local" or "remote"
-	 */
-	String connectionType();
-
-	/**
 	 * @return a description of the database provider or an empty Optional in case no description is provided
 	 * @see #DESCRIPTION
 	 */
@@ -175,26 +169,31 @@ public interface EntityConnectionProvider extends AutoCloseable {
 
 	/**
 	 * @return the user used by this connection provider
+	 * @see EntityConnectionProvider.Builder#user(User)
 	 */
 	User user();
 
 	/**
 	 * @return the domain type
+	 * @see EntityConnectionProvider.Builder#domain(DomainType)
 	 */
 	DomainType domainType();
 
 	/**
 	 * @return the UUID identifying this client connection
+	 * @see EntityConnectionProvider.Builder#clientId(UUID)
 	 */
 	UUID clientId();
 
 	/**
 	 * @return the String identifying the client type for this connection provider
+	 * @see EntityConnectionProvider.Builder#clientType(String)
 	 */
 	Optional<String> clientType();
 
 	/**
 	 * @return the client version
+	 * @see EntityConnectionProvider.Builder#clientVersion(Version)
 	 */
 	Optional<Version> clientVersion();
 

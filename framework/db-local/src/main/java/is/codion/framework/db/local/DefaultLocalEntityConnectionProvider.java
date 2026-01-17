@@ -66,11 +66,6 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	}
 
 	@Override
-	public String connectionType() {
-		return CONNECTION_TYPE_LOCAL;
-	}
-
-	@Override
 	public Optional<String> description() {
 		return Optional.of(DESCRIPTION.optional().orElse(database().name()));
 	}

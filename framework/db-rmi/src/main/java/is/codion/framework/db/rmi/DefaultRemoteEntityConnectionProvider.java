@@ -73,11 +73,6 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		this.namePrefix = builder.namePrefix;
 	}
 
-	@Override
-	public String connectionType() {
-		return CONNECTION_TYPE_REMOTE;
-	}
-
 	/**
 	 * @return a string describing the server connection
 	 */

@@ -33,6 +33,7 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
 
 	/**
 	 * @return the name of the host of the server providing the connection
+	 * @see RemoteEntityConnectionProvider.Builder#hostname(String)
 	 */
 	String hostname();
 

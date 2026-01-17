@@ -13,6 +13,7 @@ Codion Change Log
 - JsonPreferencesStore bug fixed, lock file now cleanup up on save.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.CLIENT_DOMAIN_TYPE removed.
+- EntityConnectionProvider.connectionType() removed.
 ### is.codion.framework.model
 - EntityApplicationModel.version() removed.
 - DefaultEntityApplicationModel, Preferences constructor parameter added.

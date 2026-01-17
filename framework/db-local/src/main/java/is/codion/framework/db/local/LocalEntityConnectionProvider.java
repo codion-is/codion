@@ -43,11 +43,13 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider,
 
 	/**
 	 * @return the underlying domain model
+	 * @see LocalEntityConnectionProvider.Builder#domain(Domain)
 	 */
 	Domain domain();
 
 	/**
 	 * @return the underlying {@link Database} instance
+	 * @see LocalEntityConnectionProvider.Builder#database(Database)
 	 */
 	Database database();
 

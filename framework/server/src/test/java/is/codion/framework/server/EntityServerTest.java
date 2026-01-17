@@ -32,7 +32,6 @@ import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DomainModel;
@@ -274,8 +273,6 @@ public class EntityServerTest {
 										.clientType("TestClient")
 										.user(UNIT_TEST_USER)
 										.build();
-
-		assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.connectionType());
 
 		EntityConnection db = provider.connection();
 		assertNotNull(db);
