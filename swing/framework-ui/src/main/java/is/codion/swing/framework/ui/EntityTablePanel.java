@@ -473,6 +473,7 @@ public class EntityTablePanel extends JPanel {
 	private @Nullable FilterTableColumnComponentPanel<Attribute<?>> summaryPanel;
 	private @Nullable JScrollPane summaryPanelScrollPane;
 	private @Nullable SelectQueryInspector queryInspector;
+	private @Nullable Preferences preferences;
 
 	final Config configuration;
 
@@ -699,11 +700,13 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Writes user preferences.
-	 * <p>Remember to call {@code super.writePreferences(preferences)} when overriding.
+	 * Writes user preferences using the legacy flat format.
+	 * <p>Remember to call {@code super.writeLegacyPreferences(preferences)} when overriding.
 	 * @param preferences the preferences instance to write to
 	 * @see #preferencesKey()
+	 * @deprecated replaced with hierarchical preferences
 	 */
+	@Deprecated
 	public void writePreferences(Preferences preferences) {
 		requireNonNull(preferences);
 		new EntityTablePanelPreferences(this).save(preferences);
@@ -711,12 +714,49 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Applies any user preferences previously written via {@link #writePreferences(Preferences)}
-	 * <p>Remember to call {@code super.applyPreferences(preferences)} when overriding.
+	 * using the legacy flat format.
+	 * <p>Remember to call {@code super.applyLegacyPreferences(preferences)} when overriding.
 	 * @param preferences the preferences instance containing the preferences to apply
+	 * @deprecated replaced with hierarchical preferences
 	 */
+	@Deprecated
 	public void applyPreferences(Preferences preferences) {
 		requireNonNull(preferences);
 		new EntityTablePanelPreferences(this, preferences).apply(this);
+	}
+
+	/**
+	 * @param preferences the preferences to use when applying and storing preferences
+	 * @see #applyPreferences()
+	 * @see #storePreferences()
+	 */
+	public final void setPreferences(Preferences preferences) {
+		this.preferences = requireNonNull(preferences);
+	}
+
+	/**
+	 * Applies the preferences set via {@link #setPreferences(Preferences)} to this panel.
+	 * Override to apply panel specific preferences.
+	 * <p>Remember to call {@code super.applyPreferences()} when overriding.
+	 * @see #preferences()
+	 */
+	public void applyPreferences() {
+		if (preferences != null) {
+			EntityTablePanelPreferences.apply(preferences, this);
+		}
+	}
+
+	/**
+	 * Stores this table panel's preferences to the Preferences node
+	 * previously set via {@link #setPreferences(Preferences)}.
+	 * Override to store panel specific preferences.
+	 * <p>Remember to call {@code super.storePreferences()} when overriding.
+	 * @see #preferences()
+	 */
+	public void storePreferences() {
+		if (preferences != null) {
+			EntityTablePanelPreferences.store(preferences, this);
+		}
 	}
 
 	/**
@@ -986,6 +1026,13 @@ public class EntityTablePanel extends JPanel {
 	 */
 	protected String preferencesKey() {
 		return tableModel.getClass().getSimpleName() + "-" + tableModel.entityType();
+	}
+
+	/**
+	 * @return the Preferences node for this panel, or an empty Optional if not available
+	 */
+	protected final Optional<Preferences> preferences() {
+		return Optional.ofNullable(preferences);
 	}
 
 	/**

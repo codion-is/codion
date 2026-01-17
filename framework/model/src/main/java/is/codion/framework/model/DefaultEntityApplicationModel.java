@@ -50,6 +50,7 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	private final DefaultEntityModels<M, E, T> models;
 
 	private @Nullable Preferences preferences;
+	private @Nullable Preferences legacyPreferences;
 
 	/**
 	 * Instantiates a new DefaultEntityApplicationModel
@@ -109,10 +110,22 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	public final Preferences preferences() {
 		synchronized (connectionProvider) {
 			if (preferences == null) {
-				preferences = UserPreferences.file(PREFERENCES_KEY.optional().orElse(getClass().getName()));
+				preferences = UserPreferences.file(PREFERENCES_KEY.optional()
+								.orElse(connectionProvider.domainType().name()));
 			}
 
 			return preferences;
+		}
+	}
+
+	@Override
+	public final Preferences legacyPreferences() {
+		synchronized (connectionProvider) {
+			if (legacyPreferences == null) {
+				legacyPreferences = UserPreferences.file(getClass().getName());
+			}
+
+			return legacyPreferences;
 		}
 	}
 

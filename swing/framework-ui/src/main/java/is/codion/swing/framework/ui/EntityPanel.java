@@ -127,6 +127,10 @@ public class EntityPanel extends JPanel {
 					messageBundle(EntityPanel.class, getBundle(EntityPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
+	private static final String EDIT_PANEL_KEY = "editPanel";
+	private static final String TABLE_PANEL_KEY = "tablePanel";
+	private static final String DETAIL_PANELS_KEY = "detailPanels";
+
 	/**
 	 * The possible states of a detail or edit panel.
 	 */
@@ -250,6 +254,7 @@ public class EntityPanel extends JPanel {
 	private @Nullable EntityPanel previousPanel;
 	private @Nullable EntityPanel nextPanel;
 	private @Nullable Window editWindow;
+	private @Nullable Preferences preferences;
 
 	private boolean initialized = false;
 	private boolean defaultPanelInitialized = false;
@@ -590,18 +595,16 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Saves user preferences for this entity panel and its detail panels.
-	 * <p>Remember to call {@code super.writePreferences(preferences)} when overriding.
+	 * Saves user preferences for this entity panel and its detail panels using the legacy flat format.
+	 * <p>Remember to call {@code super.writeLegacyPreferences(preferences)} when overriding.
 	 * @param preferences the Preferences instance into which to save the preferences
 	 * @see #preferencesKey()
-	 * @see EntityEditPanel#writePreferences(Preferences)
 	 * @see EntityTablePanel#writePreferences(Preferences)
+	 * @deprecated replaced with hierarchical preferences
 	 */
+	@Deprecated
 	public void writePreferences(Preferences preferences) {
 		requireNonNull(preferences);
-		if (containsEditPanel()) {
-			editPanel.writePreferences(preferences);
-		}
 		if (containsTablePanel()) {
 			tablePanel.writePreferences(preferences);
 		}
@@ -610,22 +613,110 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Applies any user preferences previously written via {@link #writePreferences(Preferences)}
-	 * for this panel and its detail panels.
+	 * for this panel and its detail panels using the legacy flat format.
 	 * <p>Remember to call {@code super.applyPreferences(preferences)} when overriding.
 	 * @param preferences the Preferences instance containing the preferences to apply
 	 * @see #preferencesKey()
-	 * @see EntityEditPanel#applyPreferences(Preferences)
 	 * @see EntityTablePanel#applyPreferences(Preferences)
+	 * @deprecated replaced with hierarchical preferences
 	 */
+	@Deprecated
 	public void applyPreferences(Preferences preferences) {
 		requireNonNull(preferences);
-		if (containsEditPanel()) {
-			editPanel.applyPreferences(preferences);
-		}
 		if (containsTablePanel()) {
 			tablePanel.applyPreferences(preferences);
 		}
 		detailPanels.get().forEach(detailPanel -> detailPanel.applyPreferences(preferences));
+	}
+
+	/**
+	 * @param preferences the preferences to use when applying and storing preferences
+	 * @see #applyPreferences()
+	 * @see #storePreferences()
+	 */
+	public final void setPreferences(Preferences preferences) {
+		this.preferences = requireNonNull(preferences);
+		if (containsEditPanel()) {
+			editPanel.setPreferences(preferences.node(EDIT_PANEL_KEY));
+		}
+		if (containsTablePanel()) {
+			tablePanel.setPreferences(preferences.node(TABLE_PANEL_KEY));
+		}
+		if (!detailPanels.get().isEmpty()) {
+			Preferences detailsNode = preferences.node(DETAIL_PANELS_KEY);
+			detailPanels.get().forEach(detailPanel -> detailPanel.setPreferences(detailsNode.node(detailPanel.preferencesKey())));
+		}
+	}
+
+	/**
+	 * Applies preferences the preferences set via {@link #setPreferences(Preferences)}
+	 * to this panel and its sub-panels. Override to apply panel specific preferences.
+	 * <p>Remember to call {@code super.applyPreferences()} when overriding.
+	 * @see #setPreferences(Preferences)
+	 * @see #preferences()
+	 */
+	public void applyPreferences() {
+		if (containsEditPanel()) {
+			try {
+				editPanel.applyPreferences();
+			}
+			catch (Exception e) {
+				LOG.error("Error applying editPanel preferences for {}", preferencesKey(), e);
+			}
+		}
+		if (containsTablePanel()) {
+			try {
+				tablePanel.applyPreferences();
+			}
+			catch (Exception e) {
+				LOG.error("Error applying tablePanel preferences for {}", preferencesKey(), e);
+			}
+		}
+		if (!detailPanels.get().isEmpty()) {
+			for (EntityPanel detail : detailPanels.get()) {
+				try {
+					detail.applyPreferences();
+				}
+				catch (Exception e) {
+					LOG.error("Error applying detail preferences for {}", detail.preferencesKey(), e);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Stores this panel's preferences and its sub-panels to the Preferences node
+	 * previously set via {@link #applyPreferences(Preferences)}.
+	 * Override to store panel specific preferences.
+	 * <p>Remember to call {@code super.storePreferences()} when overriding.
+	 * @see #setPreferences(Preferences)
+	 * @see #preferences()
+	 */
+	public void storePreferences() {
+		if (containsEditPanel()) {
+			try {
+				editPanel.storePreferences();
+			}
+			catch (Exception e) {
+				LOG.error("Error storing edit panel preferences for panel: {}", preferencesKey(), e);
+			}
+		}
+		if (containsTablePanel()) {
+			try {
+				tablePanel.storePreferences();
+			}
+			catch (Exception e) {
+				LOG.error("Error storing table panel preferences for panel: {}", preferencesKey(), e);
+			}
+		}
+		for (EntityPanel detail : detailPanels.get()) {
+			try {
+				detail.storePreferences();
+			}
+			catch (Exception e) {
+				LOG.error("Error storing preferences for detail panel: {}", detail.preferencesKey(), e);
+			}
+		}
 	}
 
 	/**
@@ -658,16 +749,25 @@ public class EntityPanel extends JPanel {
 	protected void setupControls() {}
 
 	/**
-	 * Returns the key used to identify user preferences for this panel
+	 * Returns the key used to identify user preferences for this panel.
 	 * The default implementation is:
 	 * {@snippet :
-	 * return model().getClass().getSimpleName() + "-" + model().entityType();
+	 * return model().entityType().name();
 	 *}
-	 * Override in case this key is not unique within the application.
+	 * Override in case this key is not unique within the application,
+	 * for example when the same entity type appears multiple times
+	 * in different contexts.
 	 * @return the key used to identify user preferences for this panel
 	 */
-	protected String preferencesKey() {
-		return model().getClass().getSimpleName() + "-" + model().entityType();
+	public String preferencesKey() {
+		return model().entityType().name();
+	}
+
+	/**
+	 * @return the Preferences node for this panel, or an empty Optional if not available
+	 */
+	protected final Optional<Preferences> preferences() {
+		return Optional.ofNullable(preferences);
 	}
 
 	/**

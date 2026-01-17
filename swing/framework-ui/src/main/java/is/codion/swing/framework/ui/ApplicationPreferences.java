@@ -75,18 +75,17 @@ final class ApplicationPreferences {
 	}
 
 	void save(Preferences preferences) {
-		preferences.put(APPLICATION_PANEL, toJSONObject().toString());
-	}
-
-	void saveLegacyPreferences(Class<?> applicationClassName) {
-		UserPreferences.set(applicationClassName.getName() + PREFERENCES_KEY, toJSONObject().toString());
+		preferences.put(APPLICATION_PANEL, preferences().toString());
 	}
 
 	@Nullable User defaultLoginUser() {
 		return defaultUsername == null || defaultUsername.isEmpty() ? null : User.user(defaultUsername);
 	}
 
-	private JSONObject toJSONObject() {
+	/**
+	 * @return a JSONObject containing the application preferences
+	 */
+	JSONObject preferences() {
 		JSONObject preferences = new JSONObject();
 		preferences.put(DEFAULT_USERNAME_KEY, defaultUsername);
 		preferences.put(LOOK_AND_FEEL_KEY, lookAndFeel);

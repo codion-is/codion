@@ -50,6 +50,9 @@ final class EntityTablePanelPreferences {
 	private static final String AUTO_RESIZE_MODE = "auto-resize-mode";
 	private static final String EMPTY_JSON_OBJECT = "{}";
 
+	private static final String TABLE_KEY = "table";
+	private static final String EXPORT_KEY = "export";
+
 	private static final String LEGACY_COLUMN_INDEX = "index";
 	private static final String LEGACY_COLUMN_WIDTH = "width";
 	private static final String COLUMNS_KEY = "columns";
@@ -200,10 +203,79 @@ final class EntityTablePanelPreferences {
 						/* No legacy export preferences*/"no-export-prefs").apply(tablePanel);
 	}
 
-	static void clearLegacyPreferences(EntityTablePanel tablePanel) {
-		String preferencesKey = tablePanel.preferencesKey();
-		UserPreferences.remove(preferencesKey + COLUMN_PREFERENCES);
-		UserPreferences.remove(preferencesKey + CONDITIONS_PREFERENCES);
+	/**
+	 * Stores all preferences for the given table panel to the given Preferences node.
+	 * Uses JSONObject internally to store preferences as JSON strings.
+	 * @param preferences the preferences node to store to
+	 * @param tablePanel the table panel
+	 */
+	static void store(Preferences preferences, EntityTablePanel tablePanel) {
+		try {
+			preferences.put(TABLE_KEY, createTablePreferences(tablePanel).toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while storing table preferences", e);
+		}
+		try {
+			preferences.put(COLUMNS_KEY, createColumnPreferences(tablePanel.table().columnModel()).toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while storing column preferences", e);
+		}
+		try {
+			preferences.put(CONDITIONS_KEY, createConditionPreferences(tablePanel.tableModel()).toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while storing condition preferences", e);
+		}
+		try {
+			preferences.put(EXPORT_KEY, new ExportPreferences(tablePanel.exportModel()).preferences().toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while storing export preferences", e);
+		}
+	}
+
+	/**
+	 * Applies preferences from a Preferences node to the given table panel.
+	 * Reads JSON strings from the node and applies using JSONObject internally.
+	 * @param preferences the preferences node to read from
+	 * @param tablePanel the table panel
+	 */
+	static void apply(Preferences preferences, EntityTablePanel tablePanel) {
+		try {
+			applyTablePreferences(new JSONObject(preferences.get(TABLE_KEY, EMPTY_JSON_OBJECT)), tablePanel);
+		}
+		catch (Exception e) {
+			LOG.error("Error while applying table preferences", e);
+		}
+		try {
+			JSONObject columnPrefs = new JSONObject(preferences.get(COLUMNS_KEY, EMPTY_JSON_OBJECT));
+			if (!columnPrefs.isEmpty()) {
+				applyColumnPreferences(columnPrefs, tablePanel);
+			}
+		}
+		catch (Exception e) {
+			LOG.error("Error while applying column preferences", e);
+		}
+		try {
+			JSONObject conditionPrefs = new JSONObject(preferences.get(CONDITIONS_KEY, EMPTY_JSON_OBJECT));
+			if (!conditionPrefs.isEmpty()) {
+				applyConditionPreferences(conditionPrefs, tablePanel.tableModel());
+			}
+		}
+		catch (Exception e) {
+			LOG.error("Error while applying condition preferences", e);
+		}
+		try {
+			String exportJson = preferences.get(EXPORT_KEY, EMPTY_JSON_OBJECT);
+			if (!EMPTY_JSON_OBJECT.equals(exportJson)) {
+				new ExportPreferences(exportJson).apply(tablePanel.exportModel());
+			}
+		}
+		catch (Exception e) {
+			LOG.error("Error while applying export preferences", e);
+		}
 	}
 
 	private static JSONObject createColumnPreferences(FilterTableColumnModel<Attribute<?>> columnModel) {

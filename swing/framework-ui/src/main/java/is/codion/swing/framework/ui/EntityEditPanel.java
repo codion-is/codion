@@ -69,6 +69,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -167,6 +168,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private final State active;
 
 	private @Nullable InsertUpdateQueryInspector queryInspector;
+	private @Nullable Preferences preferences;
 
 	final Config configuration;
 
@@ -279,25 +281,30 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Writes user preferences associated with this edit panel.
-	 * Override to write application specific preferences.
-	 * <p>Remember to call {@code super.writePreferences(preferences)} when overriding.
-	 * @param preferences the preferences instance to write to
-	 * @see #preferencesKey()
+	 * @param preferences the preferences to use when applying and storing preferences
+	 * @see #applyPreferences()
+	 * @see #storePreferences()
 	 */
-	public void writePreferences(Preferences preferences) {
-		requireNonNull(preferences);
+	public final void setPreferences(Preferences preferences) {
+		this.preferences = requireNonNull(preferences);
 	}
 
 	/**
-	 * Applies any user preferences previously written via {@link #writePreferences(Preferences)}
-	 * Override to apply application specific preferences.
-	 * <p>Remember to call {@code super.applyPreferences(preferences)} when overriding.
-	 * @param preferences the preferences instance containing the preferences to apply
+	 * Applies preferences the preferences set via {@link #setPreferences(Preferences)}
+ 	 * to this panel and its sub-panels. Override to apply panel specific preferences.
+	 * <p>Remember to call {@code super.applyPreferences()} when overriding.
+	 * @see #preferences()
 	 */
-	public void applyPreferences(Preferences preferences) {
-		requireNonNull(preferences);
-	}
+	public void applyPreferences() {}
+
+	/**
+	 * Stores this edit panel's preferences to the Preferences node
+	 * previously set via {@link #setPreferences(Preferences)}.
+	 * Override to store panel specific preferences.
+	 * <p>Remember to call {@code super.storePreferences()} when overriding.
+	 * @see #preferences()
+	 */
+	public void storePreferences() {}
 
 	/**
 	 * <p>Performs insert on the active entity.
@@ -512,16 +519,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Returns the key used to identify user preferences for this edit panel
-	 * The default implementation is:
-	 * {@snippet :
-	 * return editModel().getClass().getSimpleName() + "-" + editModel().entityType();
-	 *}
-	 * Override in case this key is not unique within the application.
-	 * @return the key used to identify user preferences for this edit panel
+	 * @return the Preferences node for this panel, or an empty Optional if not available
 	 */
-	protected String preferencesKey() {
-		return editModel().getClass().getSimpleName() + "-" + editModel().entityType();
+	protected final Optional<Preferences> preferences() {
+		return Optional.ofNullable(preferences);
 	}
 
 	private void createControls() {
