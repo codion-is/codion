@@ -24,7 +24,6 @@ import is.codion.common.model.preferences.UserPreferences;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableExportPanel.ExportPreferences;
 
 import org.json.JSONObject;
@@ -35,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
 import static java.util.stream.Collectors.toList;
@@ -59,6 +59,7 @@ final class EntityTablePanelPreferences {
 	private static final String WIDTH_KEY = "w";
 	private static final String INDEX_KEY = "i";
 	private static final String CONDITIONS_KEY = "conditions";
+	private static final String FILTERS_KEY = "filters";
 	private static final String AUTO_ENABLE_KEY = "ae";
 	private static final String CASE_SENSITIVE_KEY = "cs";
 	private static final String WILDCARD_KEY = "w";
@@ -86,7 +87,7 @@ final class EntityTablePanelPreferences {
 	EntityTablePanelPreferences(EntityTablePanel tablePanel) {
 		this(createTablePreferences(tablePanel),
 						createColumnPreferences(tablePanel.table().columnModel()),
-						createConditionPreferences(tablePanel.tableModel()),
+						createConditionPreferences(tablePanel.tableModel().query().condition().get()),
 						new ExportPreferences(tablePanel.exportModel()),
 						tablePanel.preferencesKey() + TABLE_PREFERENCES,
 						tablePanel.preferencesKey() + COLUMN_PREFERENCES,
@@ -126,7 +127,7 @@ final class EntityTablePanelPreferences {
 		}
 		if (!conditionPreferences.isEmpty()) {
 			try {
-				applyConditionPreferences(conditionPreferences, tablePanel.tableModel());
+				applyConditionPreferences(conditionPreferences, tablePanel.tableModel().query().condition().get());
 			}
 			catch (Exception e) {
 				LOG.error("Error while applying condition preferences: {}", conditionPreferences, e);
@@ -223,10 +224,20 @@ final class EntityTablePanelPreferences {
 			LOG.error("Error while storing column preferences", e);
 		}
 		try {
-			preferences.put(CONDITIONS_KEY, createConditionPreferences(tablePanel.tableModel()).toString());
+			if (tablePanel.configuration.includeConditions) {
+				preferences.put(CONDITIONS_KEY, createConditionPreferences(tablePanel.tableModel().query().condition().get()).toString());
+			}
 		}
 		catch (Exception e) {
 			LOG.error("Error while storing condition preferences", e);
+		}
+		try {
+			if (tablePanel.configuration.includeFilters) {
+				preferences.put(FILTERS_KEY, createConditionPreferences(tablePanel.tableModel().filters().get()).toString());
+			}
+		}
+		catch (Exception e) {
+			LOG.error("Error while storing filter preferences", e);
 		}
 		try {
 			preferences.put(EXPORT_KEY, new ExportPreferences(tablePanel.exportModel()).preferences().toString());
@@ -261,11 +272,20 @@ final class EntityTablePanelPreferences {
 		try {
 			JSONObject conditionPrefs = new JSONObject(preferences.get(CONDITIONS_KEY, EMPTY_JSON_OBJECT));
 			if (!conditionPrefs.isEmpty()) {
-				applyConditionPreferences(conditionPrefs, tablePanel.tableModel());
+				applyConditionPreferences(conditionPrefs, tablePanel.tableModel().query().condition().get());
 			}
 		}
 		catch (Exception e) {
 			LOG.error("Error while applying condition preferences", e);
+		}
+		try {
+			JSONObject filterPrefs = new JSONObject(preferences.get(FILTERS_KEY, EMPTY_JSON_OBJECT));
+			if (!filterPrefs.isEmpty()) {
+				applyConditionPreferences(filterPrefs, tablePanel.tableModel().filters().get());
+			}
+		}
+		catch (Exception e) {
+			LOG.error("Error while applying filter preferences", e);
 		}
 		try {
 			String exportJson = preferences.get(EXPORT_KEY, EMPTY_JSON_OBJECT);
@@ -292,17 +312,15 @@ final class EntityTablePanelPreferences {
 		return columnPreferences;
 	}
 
-	private static JSONObject createConditionPreferences(SwingEntityTableModel tableModel) {
+	private static JSONObject createConditionPreferences(Map<Attribute<?>, ConditionModel<?>> conditions) {
 		JSONObject conditionPreferences = new JSONObject();
-		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			ConditionModel<?> condition = tableModel.query().condition().get().get(attribute);
-			if (condition != null) {
-				JSONObject conditionJson = new JSONObject();
-				conditionJson.put(AUTO_ENABLE_KEY, condition.autoEnable().is() ? 1 : 0);
-				conditionJson.put(CASE_SENSITIVE_KEY, condition.caseSensitive().is() ? 1 : 0);
-				conditionJson.put(WILDCARD_KEY, condition.operands().wildcard().getOrThrow().name());
-				conditionPreferences.put(attribute.name(), conditionJson);
-			}
+		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
+			ConditionModel<?> condition = entry.getValue();
+			JSONObject conditionJson = new JSONObject();
+			conditionJson.put(AUTO_ENABLE_KEY, condition.autoEnable().is() ? 1 : 0);
+			conditionJson.put(CASE_SENSITIVE_KEY, condition.caseSensitive().is() ? 1 : 0);
+			conditionJson.put(WILDCARD_KEY, condition.operands().wildcard().getOrThrow().name());
+			conditionPreferences.put(entry.getKey().name(), conditionJson);
 		}
 
 		return conditionPreferences;
@@ -360,20 +378,19 @@ final class EntityTablePanelPreferences {
 		return new JSONObject();
 	}
 
-	private static void applyConditionPreferences(JSONObject conditionPreferences, SwingEntityTableModel tableModel) {
-		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
+	private static void applyConditionPreferences(JSONObject conditionPreferences, Map<Attribute<?>, ConditionModel<?>> conditions) {
+		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
+			Attribute<?> attribute = entry.getKey();
 			if (conditionPreferences.has(attribute.name())) {
-				ConditionModel<?> condition = tableModel.query().condition().get().get(attribute);
-				if (condition != null) {
-					try {
-						JSONObject conditionJson = conditionPreferences.getJSONObject(attribute.name());
-						condition.autoEnable().set(conditionJson.getInt(AUTO_ENABLE_KEY) == 1);
-						condition.caseSensitive().set(conditionJson.getInt(CASE_SENSITIVE_KEY) == 1);
-						condition.operands().wildcard().set(Wildcard.valueOf(conditionJson.getString(WILDCARD_KEY)));
-					}
-					catch (Exception e) {
-						LOG.error("Error parsing condition preferences for attribute: {}", attribute, e);
-					}
+				ConditionModel<?> condition = entry.getValue();
+				try {
+					JSONObject conditionJson = conditionPreferences.getJSONObject(attribute.name());
+					condition.autoEnable().set(conditionJson.getInt(AUTO_ENABLE_KEY) == 1);
+					condition.caseSensitive().set(conditionJson.getInt(CASE_SENSITIVE_KEY) == 1);
+					condition.operands().wildcard().set(Wildcard.valueOf(conditionJson.getString(WILDCARD_KEY)));
+				}
+				catch (Exception e) {
+					LOG.error("Error parsing condition/filter preferences for attribute: {}", attribute, e);
 				}
 			}
 		}

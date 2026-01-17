@@ -29,6 +29,7 @@ Codion Change Log
 - EntityApplicationPanel.applyPreferences() and storePreferences() now public.
 - EntityApplication.DomainStep added.
 - DefaultEntityApplication preferences handling improved.
+- EntityTablePanelPreferences, filter preferences added.
 
 ## 0.18.65
 ### is.codion.common.model

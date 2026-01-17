@@ -2217,9 +2217,9 @@ public class EntityTablePanel extends JPanel {
 		private TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory = new DefaultConditionPanelFactory();
 		private boolean includeSouthPanel = true;
 		private boolean includeExport = INCLUDE_EXPORT.getOrThrow();
-		private boolean includeConditions = INCLUDE_CONDITIONS.getOrThrow();
+		boolean includeConditions = INCLUDE_CONDITIONS.getOrThrow();
 		private ConditionView conditionView = CONDITION_VIEW.getOrThrow();
-		private boolean includeFilters = INCLUDE_FILTERS.getOrThrow();
+		boolean includeFilters = INCLUDE_FILTERS.getOrThrow();
 		private ConditionView filterView = FILTER_VIEW.getOrThrow();
 		private boolean conditionIndicator = CONDITION_INDICATOR.getOrThrow();
 		private boolean includeSummaries = INCLUDE_SUMMARY.getOrThrow();
