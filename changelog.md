@@ -9,6 +9,8 @@ Codion Change Log
 - DefaultValueCollection now extends AbstractValue instead of DefaultValue, DefaultValue now final.
 - DefaultValueCollection, DefaultObservableValueCollection and DefaultBuilder now abstract, renamed AbstractValueCollection, AbstractObservableValueCollection and AbstractValueCollectionBuilder respectively.
 - BaseValue extracted from AbstractValue, AbstractValueCollection extends it, now properly synchronized.
+### is.codion.common.model
+- JsonPreferencesStore bug fixed, lock file now cleanup up on save.
 ### is.codion.swing.framework.ui
 - EntityTablePanelPreferences bug fixed, column width preferences got lost for panels that were never initialized, now sets the column width as well as preferred width when applying preferences.
 - EntityTablePanelPreferences, auto-resize-mode preference added.
