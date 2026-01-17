@@ -210,8 +210,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		}
 
 		@Override
-		public final String connectionType() {
-			return connectionType;
+		public final boolean supports(String connectionType) {
+			return this.connectionType.equalsIgnoreCase(requireNonNull(connectionType));
 		}
 
 		@Override

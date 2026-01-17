@@ -211,14 +211,14 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 *}
 	 * @return an unconfigured {@link Builder} instance, based on the
 	 * {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} configuration value
-	 * @throws IllegalStateException in case the required connection provider builder is not available on the classpath
+	 * @throws IllegalStateException in case no connection provider builder supporting the configured connection type is available on the classpath
 	 * @see EntityConnectionProvider#CLIENT_CONNECTION_TYPE
 	 */
 	static Builder<?, ?> builder() {
 		String clientConnectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
 		try {
 			return stream(ServiceLoader.load(Builder.class).spliterator(), false)
-							.filter(builder -> builder.connectionType().equalsIgnoreCase(clientConnectionType))
+							.filter(builder -> builder.supports(clientConnectionType))
 							.findFirst()
 							.orElseThrow(() -> new IllegalStateException("No connection provider builder available for requested client connection type: " + clientConnectionType));
 		}
@@ -255,10 +255,10 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	interface Builder<T extends EntityConnectionProvider, B extends Builder<T, B>> {
 
 		/**
-		 * Returns a String specifying the type of connection provided by this connection provider builder
-		 * @return a String specifying the type of connection, e.g. "local" or "remote"
+		 * @param connectionType the connection type
+		 * @return true if this builder supports the given connection type, e.g. "local", "remote" or "http"
 		 */
-		String connectionType();
+		boolean supports(String connectionType);
 
 		/**
 		 * @param user the user
