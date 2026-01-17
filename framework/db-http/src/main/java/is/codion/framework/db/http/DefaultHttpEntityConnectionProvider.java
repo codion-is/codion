@@ -72,8 +72,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 							.port(port)
 							.securePort(securePort)
 							.user(user())
-							.clientType(clientType().orElseThrow(() ->
-											new IllegalStateException("clientType must be specified")))
+							.clientType(clientType())
 							.clientId(clientId())
 							.clientVersion(clientVersion().orElse(null))
 							.json(json)

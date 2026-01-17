@@ -15,6 +15,7 @@ Codion Change Log
 - EntityConnectionProvider.CLIENT_DOMAIN_TYPE removed.
 - EntityConnectionProvider.connectionType() removed.
 - EntityConnectionProvider.Builder.connectionType() replaced by supports(connectionType).
+- EntityConnectionProvider.clientType() no longer returns Optional.
 ### is.codion.framework.model
 - EntityApplicationModel.version() removed.
 - DefaultEntityApplicationModel, Preferences constructor parameter added.

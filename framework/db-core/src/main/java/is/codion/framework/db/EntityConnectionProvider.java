@@ -189,7 +189,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * @return the String identifying the client type for this connection provider
 	 * @see EntityConnectionProvider.Builder#clientType(String)
 	 */
-	Optional<String> clientType();
+	String clientType();
 
 	/**
 	 * @return the client version

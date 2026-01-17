@@ -48,8 +48,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private final User user;
 	private final DomainType domain;
 	private final UUID clientId;
+	private final String clientType;
 	private final @Nullable Version clientVersion;
-	private final @Nullable String clientType;
 	private final @Nullable Consumer<EntityConnectionProvider> onClose;
 
 	private @Nullable EntityConnection entityConnection;
@@ -95,8 +95,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	@Override
-	public final Optional<String> clientType() {
-		return Optional.ofNullable(clientType);
+	public final String clientType() {
+		return clientType;
 	}
 
 	@Override
