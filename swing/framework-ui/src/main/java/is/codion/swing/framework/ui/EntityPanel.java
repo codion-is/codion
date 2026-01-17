@@ -1129,9 +1129,13 @@ public class EntityPanel extends JPanel {
 		 * @param detailPanels the detail panels
 		 * @throws IllegalStateException if the panel has already been initialized
 		 * @throws IllegalArgumentException if this panel already contains a given detail panel
+		 * or if a panel is being added as its own detail panel
 		 */
 		public void add(EntityPanel... detailPanels) {
 			for (EntityPanel detailPanel : requireNonNull(detailPanels)) {
+				if (detailPanel == EntityPanel.this) {
+					throw new IllegalArgumentException("A EntityPanel can not be its own detail panel");
+				}
 				add(detailPanel);
 			}
 		}

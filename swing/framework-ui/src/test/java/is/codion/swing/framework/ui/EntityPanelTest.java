@@ -66,6 +66,9 @@ public final class EntityPanelTest {
 		deptPanel.initialize();
 		assertNotNull(deptPanel.editPanel());
 		assertThrows(IllegalStateException.class, deptPanel::tablePanel);
+
+		EntityPanel testPanel = deptPanel;
+		assertThrows(IllegalArgumentException.class, () -> testPanel.detailPanels().add(testPanel));
 	}
 
 	@Test

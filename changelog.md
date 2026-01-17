@@ -16,6 +16,7 @@ Codion Change Log
 - EntityTablePanelPreferences, auto-resize-mode preference added.
 - EntityTablePanelPreferences bug fixed, filter settings used instead of condition settings.
 - EntityTablePanelPreferences simplified, internal java representation classes removed, json used directly instead, tests improved.
+- EntityPanel now throws exception if it's added as its own detail panel.
 
 ## 0.18.65
 ### is.codion.common.model
