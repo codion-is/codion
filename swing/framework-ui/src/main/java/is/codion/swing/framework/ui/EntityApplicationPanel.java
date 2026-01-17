@@ -486,6 +486,61 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
+	 * Applies preferences from the application model preferences to this application panel and its sub-panels.
+	 * Override to apply any custom preferences.
+	 * <p>Remember to call {@code super.applyPreferences()} when overriding.
+	 * @see EntityApplicationModel#preferences()
+	 */
+	public void applyPreferences() {
+		LOG.debug("Applying user preferences");
+		if (LEGACY_PREFERENCES.getOrThrow()) {
+			LOG.debug("Applying legacy preferences");
+			applyPreferences(applicationModel.legacyPreferences());
+		}
+		LOG.debug("Applying node-based preferences");
+		if (!entityPanels.isEmpty()) {
+			for (EntityPanel panel : entityPanels) {
+				try {
+					panel.applyPreferences();
+				}
+				catch (Exception e) {
+					LOG.error("Error applying preferences for entity panel: {}", panel.preferencesKey(), e);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Stores application preferences. Override to store custom preferences.
+	 * <p>Remember to call {@code super.storePreferences()} when overriding.
+	 * @see EntityApplicationModel#preferences()
+	 */
+	public void storePreferences() {
+		try {
+			applicationModel.preferences().put(APPLICATION_PANEL_KEY, createApplicationPreferences().preferences().toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while writing application preferences", e);
+		}
+		for (EntityPanel panel : entityPanels) {
+			try {
+				panel.storePreferences();
+			}
+			catch (Exception e) {
+				LOG.error("Error storing preferences for entity panel: {}", panel.preferencesKey(), e);
+			}
+		}
+		for (Map.Entry<EntityPanel.Builder, EntityPanel> entry : cachedEntityPanels.entrySet()) {
+			try {
+				entry.getValue().storePreferences();
+			}
+			catch (Exception e) {
+				LOG.error("Error storing preferences for auxiliary panel: {}", entry.getValue().preferencesKey(), e);
+			}
+		}
+	}
+
+	/**
 	 * <p>Requests the initial application focus by calling {@link EntityPanel#requestInitialFocus()}
 	 * on the main entity panel.
 	 * <p>By default, the main entity panel is the first one returned by {@link #entityPanels()}.
@@ -896,61 +951,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		requireNonNull(preferences);
 		if (LEGACY_PREFERENCES.getOrThrow()) {
 			entityPanels.forEach(panel -> panel.applyPreferences(preferences));
-		}
-	}
-
-	/**
-	 * Applies preferences from the application model preferences to this application panel and its sub-panels.
-	 * Override to apply any custom preferences.
-	 * <p>Remember to call {@code super.applyPreferences()} when overriding.
-	 * @see EntityApplicationModel#preferences()
-	 */
-	protected void applyPreferences() {
-		LOG.debug("Applying user preferences");
-		if (LEGACY_PREFERENCES.getOrThrow()) {
-			LOG.debug("Applying legacy preferences");
-			applyPreferences(applicationModel.legacyPreferences());
-		}
-		LOG.debug("Applying node-based preferences");
-		if (!entityPanels.isEmpty()) {
-			for (EntityPanel panel : entityPanels) {
-				try {
-					panel.applyPreferences();
-				}
-				catch (Exception e) {
-					LOG.error("Error applying preferences for entity panel: {}", panel.preferencesKey(), e);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Stores application preferences. Override to store custom preferences.
-	 * <p>Remember to call {@code super.storePreferences()} when overriding.
-	 * @see EntityApplicationModel#preferences()
-	 */
-	protected void storePreferences() {
-		try {
-			applicationModel.preferences().put(APPLICATION_PANEL_KEY, createApplicationPreferences().preferences().toString());
-		}
-		catch (Exception e) {
-			LOG.error("Error while writing application preferences", e);
-		}
-		for (EntityPanel panel : entityPanels) {
-			try {
-				panel.storePreferences();
-			}
-			catch (Exception e) {
-				LOG.error("Error storing preferences for entity panel: {}", panel.preferencesKey(), e);
-			}
-		}
-		for (Map.Entry<EntityPanel.Builder, EntityPanel> entry : cachedEntityPanels.entrySet()) {
-			try {
-				entry.getValue().storePreferences();
-			}
-			catch (Exception e) {
-				LOG.error("Error storing preferences for auxiliary panel: {}", entry.getValue().preferencesKey(), e);
-			}
 		}
 	}
 

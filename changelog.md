@@ -21,6 +21,7 @@ Codion Change Log
 - EntityTablePanelPreferences simplified, internal java representation classes removed, json used directly instead, tests improved.
 - EntityPanel now throws exception if it's added as its own detail panel.
 - EntityApplicationPanel, preferences now stored in a single json node, related refactoring.
+- EntityApplicationPanel.applyPreferences() and storePreferences() now public.
 
 ## 0.18.65
 ### is.codion.common.model
