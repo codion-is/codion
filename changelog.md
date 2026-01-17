@@ -30,6 +30,7 @@ Codion Change Log
 - EntityApplication.DomainStep added.
 - DefaultEntityApplication preferences handling improved.
 - EntityTablePanelPreferences, filter preferences added.
+- EntityApplicationPanel, EntityPanel, EntityEditPanel, EntityTablePanel, applyPreferences() and storePreferences() renamed restore() and store(), preferences re-added as parameter, setPreferences() removed.
 
 ## 0.18.65
 ### is.codion.common.model

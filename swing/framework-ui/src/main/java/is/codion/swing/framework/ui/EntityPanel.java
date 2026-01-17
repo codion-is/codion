@@ -254,7 +254,6 @@ public class EntityPanel extends JPanel {
 	private @Nullable EntityPanel previousPanel;
 	private @Nullable EntityPanel nextPanel;
 	private @Nullable Window editWindow;
-	private @Nullable Preferences preferences;
 
 	private boolean initialized = false;
 	private boolean defaultPanelInitialized = false;
@@ -630,93 +629,28 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @param preferences the preferences to use when applying and storing preferences
-	 * @see #applyPreferences()
-	 * @see #storePreferences()
+	 * Restores preferences for this panel and its detail panels. Override to restore panel specific preferences.
+	 * <p>Remember to call {@code super.restorePreferences()} when overriding.
+	 * @param preferences the preferences instance from which to restore
 	 */
-	public final void setPreferences(Preferences preferences) {
-		this.preferences = requireNonNull(preferences);
-		if (containsEditPanel()) {
-			editPanel.setPreferences(preferences.node(EDIT_PANEL_KEY));
-		}
-		if (containsTablePanel()) {
-			tablePanel.setPreferences(preferences.node(TABLE_PANEL_KEY));
-		}
-		if (!detailPanels.get().isEmpty()) {
-			Preferences detailsNode = preferences.node(DETAIL_PANELS_KEY);
-			detailPanels.get().forEach(detailPanel -> detailPanel.setPreferences(detailsNode.node(detailPanel.preferencesKey())));
-		}
+	public void restore(Preferences preferences) {
+		requireNonNull(preferences);
+		restoreEditPanelPreferences(preferences);
+		restoreTablePanelPreferences(preferences);
+		restoreDetailPanelPreferences(preferences);
 	}
 
 	/**
-	 * Applies preferences the preferences set via {@link #setPreferences(Preferences)}
-	 * to this panel and its sub-panels. Override to apply panel specific preferences.
-	 * <p>Remember to call {@code super.applyPreferences()} when overriding.
-	 * @see #setPreferences(Preferences)
-	 * @see #preferences()
-	 */
-	public void applyPreferences() {
-		if (containsEditPanel()) {
-			try {
-				editPanel.applyPreferences();
-			}
-			catch (Exception e) {
-				LOG.error("Error applying editPanel preferences for {}", preferencesKey(), e);
-			}
-		}
-		if (containsTablePanel()) {
-			try {
-				tablePanel.applyPreferences();
-			}
-			catch (Exception e) {
-				LOG.error("Error applying tablePanel preferences for {}", preferencesKey(), e);
-			}
-		}
-		if (!detailPanels.get().isEmpty()) {
-			for (EntityPanel detail : detailPanels.get()) {
-				try {
-					detail.applyPreferences();
-				}
-				catch (Exception e) {
-					LOG.error("Error applying detail preferences for {}", detail.preferencesKey(), e);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Stores this panel's preferences and its sub-panels to the Preferences node
-	 * previously set via {@link #applyPreferences(Preferences)}.
+	 * Stores preferences for this panel and its detail panels.
 	 * Override to store panel specific preferences.
 	 * <p>Remember to call {@code super.storePreferences()} when overriding.
-	 * @see #setPreferences(Preferences)
-	 * @see #preferences()
+	 * @param preferences the preferences instance to write to
 	 */
-	public void storePreferences() {
-		if (containsEditPanel()) {
-			try {
-				editPanel.storePreferences();
-			}
-			catch (Exception e) {
-				LOG.error("Error storing edit panel preferences for panel: {}", preferencesKey(), e);
-			}
-		}
-		if (containsTablePanel()) {
-			try {
-				tablePanel.storePreferences();
-			}
-			catch (Exception e) {
-				LOG.error("Error storing table panel preferences for panel: {}", preferencesKey(), e);
-			}
-		}
-		for (EntityPanel detail : detailPanels.get()) {
-			try {
-				detail.storePreferences();
-			}
-			catch (Exception e) {
-				LOG.error("Error storing preferences for detail panel: {}", detail.preferencesKey(), e);
-			}
-		}
+	public void store(Preferences preferences) {
+		requireNonNull(preferences);
+		storeEditPanelPreferences(preferences);
+		storeTablePanelPreferences(preferences);
+		storeDetailPanelPreferences(preferences);
 	}
 
 	/**
@@ -761,13 +695,6 @@ public class EntityPanel extends JPanel {
 	 */
 	public String preferencesKey() {
 		return model().entityType().name();
-	}
-
-	/**
-	 * @return the Preferences node for this panel, or an empty Optional if not available
-	 */
-	protected final Optional<Preferences> preferences() {
-		return Optional.ofNullable(preferences);
 	}
 
 	/**
@@ -1134,6 +1061,78 @@ public class EntityPanel extends JPanel {
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
+	}
+
+	private void storeEditPanelPreferences(Preferences preferences) {
+		if (containsEditPanel()) {
+			try {
+				editPanel.store(preferences.node(EDIT_PANEL_KEY));
+			}
+			catch (Exception e) {
+				LOG.error("Error storing edit panel preferences for panel: {}", preferencesKey(), e);
+			}
+		}
+	}
+
+	private void restoreEditPanelPreferences(Preferences preferences) {
+		if (containsEditPanel()) {
+			try {
+				editPanel.restore(preferences.node(EDIT_PANEL_KEY));
+			}
+			catch (Exception e) {
+				LOG.error("Error restoring editPanel preferences for {}", preferencesKey(), e);
+			}
+		}
+	}
+
+	private void storeTablePanelPreferences(Preferences preferences) {
+		if (containsTablePanel()) {
+			try {
+				tablePanel.store(preferences.node(TABLE_PANEL_KEY));
+			}
+			catch (Exception e) {
+				LOG.error("Error storing table panel preferences for panel: {}", preferencesKey(), e);
+			}
+		}
+	}
+
+	private void restoreTablePanelPreferences(Preferences preferences) {
+		if (containsTablePanel()) {
+			try {
+				tablePanel.restore(preferences.node(TABLE_PANEL_KEY));
+			}
+			catch (Exception e) {
+				LOG.error("Error restoring tablePanel preferences for {}", preferencesKey(), e);
+			}
+		}
+	}
+
+	private void storeDetailPanelPreferences(Preferences preferences) {
+		if (!detailPanels.get().isEmpty()) {
+			Preferences detailsNode = preferences.node(DETAIL_PANELS_KEY);
+			for (EntityPanel detail : detailPanels.get()) {
+				try {
+					detail.store(detailsNode.node(detail.preferencesKey()));
+				}
+				catch (Exception e) {
+					LOG.error("Error storing preferences for detail panel: {}", detail.preferencesKey(), e);
+				}
+			}
+		}
+	}
+
+	private void restoreDetailPanelPreferences(Preferences preferences) {
+		if (!detailPanels.get().isEmpty()) {
+			Preferences detailsNode = preferences.node(DETAIL_PANELS_KEY);
+			for (EntityPanel detail : detailPanels.get()) {
+				try {
+					detail.restore(detailsNode.node(detail.preferencesKey()));
+				}
+				catch (Exception e) {
+					LOG.error("Error restoring detail preferences for {}", detail.preferencesKey(), e);
+				}
+			}
+		}
 	}
 
 	private static Controls.Layout createControlsLayout() {

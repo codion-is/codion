@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2026, Bjorn Darri Sigurdsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 package is.codion.swing.framework.ui;
 

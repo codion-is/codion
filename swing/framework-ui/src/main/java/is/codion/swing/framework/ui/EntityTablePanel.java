@@ -473,7 +473,6 @@ public class EntityTablePanel extends JPanel {
 	private @Nullable FilterTableColumnComponentPanel<Attribute<?>> summaryPanel;
 	private @Nullable JScrollPane summaryPanelScrollPane;
 	private @Nullable SelectQueryInspector queryInspector;
-	private @Nullable Preferences preferences;
 
 	final Config configuration;
 
@@ -726,37 +725,23 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * @param preferences the preferences to use when applying and storing preferences
-	 * @see #applyPreferences()
-	 * @see #storePreferences()
-	 */
-	public final void setPreferences(Preferences preferences) {
-		this.preferences = requireNonNull(preferences);
-	}
-
-	/**
-	 * Applies the preferences set via {@link #setPreferences(Preferences)} to this panel.
+	 * Restores the preferences for this panel.
 	 * Override to apply panel specific preferences.
 	 * <p>Remember to call {@code super.applyPreferences()} when overriding.
-	 * @see #preferences()
+	 * @param preferences the preferences instance containing the preferences to restore
 	 */
-	public void applyPreferences() {
-		if (preferences != null) {
-			EntityTablePanelPreferences.apply(preferences, this);
-		}
+	public void restore(Preferences preferences) {
+		EntityTablePanelPreferences.apply(preferences, this);
 	}
 
 	/**
-	 * Stores this table panel's preferences to the Preferences node
-	 * previously set via {@link #setPreferences(Preferences)}.
+	 * Stores preferences for this panel.
 	 * Override to store panel specific preferences.
 	 * <p>Remember to call {@code super.storePreferences()} when overriding.
-	 * @see #preferences()
+	 * @param preferences the preferences instance to write to
 	 */
-	public void storePreferences() {
-		if (preferences != null) {
-			EntityTablePanelPreferences.store(preferences, this);
-		}
+	public void store(Preferences preferences) {
+		EntityTablePanelPreferences.store(preferences, this);
 	}
 
 	/**
@@ -1026,13 +1011,6 @@ public class EntityTablePanel extends JPanel {
 	 */
 	protected String preferencesKey() {
 		return tableModel.getClass().getSimpleName() + "-" + tableModel.entityType();
-	}
-
-	/**
-	 * @return the Preferences node for this panel, or an empty Optional if not available
-	 */
-	protected final Optional<Preferences> preferences() {
-		return Optional.ofNullable(preferences);
 	}
 
 	/**
