@@ -45,20 +45,34 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 
 	private final EntityConnectionProvider connectionProvider;
 	private final DefaultEntityModels<M, E, T> models;
+	private final Preferences preferences;
 
-	private @Nullable Preferences preferences;
 	private @Nullable Preferences legacyPreferences;
 
 	/**
-	 * Instantiates a new DefaultEntityApplicationModel
+	 * Instantiates a new DefaultEntityApplicationModel, using the default file based preferences.
 	 * @param connectionProvider the EntityConnectionProvider instance
 	 * @param entityModels the entity models
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
 	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider,
 																			 Collection<? extends M> entityModels) {
+		this(connectionProvider, entityModels, UserPreferences.file(PREFERENCES_KEY.optional()
+						.orElse(connectionProvider.domainType().name())));
+	}
+
+	/**
+	 * Instantiates a new DefaultEntityApplicationModel
+	 * @param connectionProvider the EntityConnectionProvider instance
+	 * @param entityModels the entity models
+	 * @param preferences the {@link Preferences} instance to use
+	 * @throws NullPointerException in case connectionProvider is null
+	 */
+	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider,
+																			 Collection<? extends M> entityModels, Preferences preferences) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.models = new DefaultEntityModels<>(requireNonNull(entityModels));
+		this.preferences = requireNonNull(preferences);
 	}
 
 	@Override
@@ -88,14 +102,7 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 
 	@Override
 	public final Preferences preferences() {
-		synchronized (connectionProvider) {
-			if (preferences == null) {
-				preferences = UserPreferences.file(PREFERENCES_KEY.optional()
-								.orElse(connectionProvider.domainType().name()));
-			}
-
-			return preferences;
-		}
+		return preferences;
 	}
 
 	@Override
