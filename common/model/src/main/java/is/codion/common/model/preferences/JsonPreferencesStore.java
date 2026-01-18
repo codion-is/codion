@@ -37,6 +37,7 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -221,6 +222,10 @@ final class JsonPreferencesStore {
 			Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
 			try {
 				Files.write(tempFile.toAbsolutePath(), data.toString(2).getBytes()); // Pretty print
+				// Force sync to disk before atomic move (helps on Windows/VirtualBox)
+				try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
+					channel.force(true);
+				}
 				// Atomic move with lock
 				try (FileLock lock = acquireExclusiveLock()) {
 					atomicMove(tempFile, filePath);

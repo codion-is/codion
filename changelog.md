@@ -11,6 +11,7 @@ Codion Change Log
 - BaseValue extracted from AbstractValue, AbstractValueCollection extends it, now properly synchronized.
 ### is.codion.common.model
 - JsonPreferencesStore bug fixed, lock file now cleanup up on save.
+- JsonPreferencesStore, now calls channel.force(true) before atomic move, preventing null-byte corruption in VirtualBox/Windows environments.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.CLIENT_DOMAIN_TYPE removed.
 - EntityConnectionProvider.connectionType() removed.

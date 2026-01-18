@@ -44,7 +44,7 @@ final class FilePreferences extends AbstractPreferences {
 
 	FilePreferences(String filename) throws IOException {
 		this(null, "", createDefaultStore(requireNonNull(filename)));
-		LOG.info("Created file preferences: " + filename);
+		LOG.info("Created file preferences: {}", filename);
 	}
 
 	// Package-private constructor for testing
