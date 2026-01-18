@@ -323,7 +323,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		AbstractValueAttributeDefinitionBuilder(Attribute<T> attribute, boolean nullable) {
 			super(attribute);
 			this.nullable = nullable;
-			maximumLength = attribute.type().isCharacter() ? 1 : -1;
+			maximumLength = -1;
 			trim = TRIM_STRINGS.getOrThrow();
 			minimum = defaultMinimum();
 			maximum = defaultMaximum();

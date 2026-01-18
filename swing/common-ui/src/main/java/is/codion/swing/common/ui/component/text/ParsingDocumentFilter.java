@@ -41,6 +41,7 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 	static final Parser<String> STRING_PARSER = new StringParser();
 
 	private final Parser<T> parser;
+	private final Set<SilentValidator<T>> silentValidators = new LinkedHashSet<>();
 	private final Set<Validator<T>> validators = new LinkedHashSet<>();
 
 	ParsingDocumentFilter(Parser<T> parser) {
@@ -57,8 +58,8 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		builder.insert(offset, transformedString);
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
 		if (parseResult.successful()) {
-			if (parseResult.value() != null) {
-				validate(parseResult.value());
+			if (!validate(parseResult.value())) {
+				return;
 			}
 			super.insertString(filterBypass, offset, transformedString, attributeSet);
 		}
@@ -71,8 +72,8 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		builder.replace(offset, offset + length, "");
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
 		if (parseResult.successful()) {
-			if (parseResult.value() != null) {
-				validate(parseResult.value());
+			if (!validate(parseResult.value())) {
+				return;
 			}
 			super.remove(filterBypass, offset, length);
 		}
@@ -88,8 +89,8 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 		builder.replace(offset, offset + length, transformedString);
 		Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
 		if (parseResult.successful()) {
-			if (parseResult.value() != null) {
-				validate(parseResult.value());
+			if (!validate(parseResult.value())) {
+				return;
 			}
 			super.replace(filterBypass, offset, length, transformedString, attributeSet);
 		}
@@ -107,16 +108,41 @@ class ParsingDocumentFilter<T> extends DocumentFilter {
 	}
 
 	final void addValidator(Validator<T> validator) {
-		validators.add(requireNonNull(validator));
+		if (requireNonNull(validator) instanceof SilentValidator<T>) {
+			silentValidators.add((SilentValidator<T>) validator);
+		}
+		else {
+			validators.add(requireNonNull(validator));
+		}
 	}
 
 	final Collection<Validator<T>> validators() {
 		return validators;
 	}
 
-	private void validate(@Nullable T value) {
+	/**
+	 * @param value the value to validate
+	 * @return true if the value is valid, false if the value fails silent validation
+	 * @throws IllegalArgumentException in case validation fails
+	 */
+	private boolean validate(@Nullable T value) {
+		if (value == null) {
+			return true;
+		}
+		for (SilentValidator<T> validator : silentValidators) {
+			try {
+				validator.validate(value);
+			}
+			catch (IllegalArgumentException e) {
+				return false;
+			}
+		}
 		validators.forEach(validator -> validator.validate(value));
+
+		return true;
 	}
+
+	interface SilentValidator<T> extends Validator<T> {}
 
 	private static final class StringParser implements Parser<String> {
 		@Override

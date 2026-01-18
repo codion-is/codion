@@ -16,6 +16,10 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable.Builder.paintRemainingRows() and FilterTable.PAINT_REMAINING_ROWS renamed rowsFillViewport() and ROWS_FILL_VIEWPORT.
 - FilterTable.Builder.hiddenColumns() renamed hideColumns().
+- DefaultTextFieldBuilder no longer sets maximum length for character based fields.
+- ParsingDocumentFilter.SilentValidator and CharacterDocument added, Character text field length validation now silent.
+### is.codion.framework.domain
+- AbstractValueAttributeDefinitionBuilder no longer sets maximum length for character attributes.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.CLIENT_DOMAIN_TYPE removed.
 - EntityConnectionProvider.connectionType() removed.

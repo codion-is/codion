@@ -157,11 +157,6 @@ public final class AttributeDefinitionTest {
 	}
 
 	@Test
-	void characterMaximumLength() {
-		assertEquals(1, ENTITY_TYPE.characterColumn("attribute").as().column().build().maximumLength());
-	}
-
-	@Test
 	void minimumMaximum() {
 		ColumnDefinition.Builder<Double, ?> builder = ENTITY_TYPE.doubleColumn("attribute").as().column();
 		assertThrows(IllegalArgumentException.class, () -> builder.range(5, 4));

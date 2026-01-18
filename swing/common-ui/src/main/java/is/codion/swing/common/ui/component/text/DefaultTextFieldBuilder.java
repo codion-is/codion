@@ -47,9 +47,6 @@ class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilde
 
 	DefaultTextFieldBuilder(Class<T> valueClass) {
 		this.valueClass = requireNonNull(valueClass);
-		if (valueClass.equals(Character.class)) {
-			maximumLength(1);
-		}
 		selectAllOnFocusGained(SELECT_ALL_ON_FOCUS_GAINED.getOrThrow());
 	}
 
@@ -118,6 +115,10 @@ class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilde
 	 * @return the {@link javax.swing.text.JTextField} built by this builder.
 	 */
 	protected C createTextField() {
+		if (valueClass.equals(Character.class)) {
+			return (C) new HintTextField(new CharacterDocument());
+		}
+
 		return (C) new HintTextField(new SizedDocument(-1));
 	}
 
