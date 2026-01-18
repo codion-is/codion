@@ -111,39 +111,47 @@ abstract class BaseValue<T> implements Value<T> {
 	}
 
 	@Override
-	public synchronized Observable<T> observable() {
-		if (observable == null) {
-			observable = createObservable();
-		}
+	public Observable<T> observable() {
+		synchronized (lock) {
+			if (observable == null) {
+				observable = createObservable();
+			}
 
-		return observable;
+			return observable;
+		}
 	}
 
 	@Override
-	public final synchronized Observer<T> observer() {
-		if (observer == null) {
-			observer = new ValueObserver<>();
-		}
+	public final Observer<T> observer() {
+		synchronized (lock) {
+			if (observer == null) {
+				observer = new ValueObserver<>();
+			}
 
-		return observer;
+			return observer;
+		}
 	}
 
 	@Override
-	public final synchronized Observer<ValueChange<T>> changed() {
-		if (changeObserver == null) {
-			changeObserver = new ValueChangeObserver<>(this);
-		}
+	public final Observer<ValueChange<T>> changed() {
+		synchronized (lock) {
+			if (changeObserver == null) {
+				changeObserver = new ValueChangeObserver<>(this);
+			}
 
-		return changeObserver;
+			return changeObserver;
+		}
 	}
 
 	@Override
-	public final synchronized Locked locked() {
-		if (locked == null) {
-			locked = new DefaultLocked();
-		}
+	public final Locked locked() {
+		synchronized (lock) {
+			if (locked == null) {
+				locked = new DefaultLocked();
+			}
 
-		return locked;
+			return locked;
+		}
 	}
 
 	@Override

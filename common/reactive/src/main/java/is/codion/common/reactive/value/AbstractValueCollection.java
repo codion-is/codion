@@ -235,7 +235,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public synchronized ObservableValueCollection<T, C> observable() {
+	public ObservableValueCollection<T, C> observable() {
 		return (ObservableValueCollection<T, C>) super.observable();
 	}
 

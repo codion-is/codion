@@ -29,7 +29,7 @@ final class DefaultValueList<T> extends AbstractValueCollection<T, List<T>> impl
 	}
 
 	@Override
-	public synchronized ObservableValueList<T> observable() {
+	public ObservableValueList<T> observable() {
 		return (ObservableValueList<T>) super.observable();
 	}
 

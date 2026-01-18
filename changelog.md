@@ -9,6 +9,7 @@ Codion Change Log
 - DefaultValueCollection now extends AbstractValue instead of DefaultValue, DefaultValue now final.
 - DefaultValueCollection, DefaultObservableValueCollection and DefaultBuilder now abstract, renamed AbstractValueCollection, AbstractObservableValueCollection and AbstractValueCollectionBuilder respectively.
 - BaseValue extracted from AbstractValue, AbstractValueCollection extends it, now properly synchronized.
+- BaseValue.observer(), observable(), changed() and locked() now synchronizes on internal lock.
 ### is.codion.common.model
 - JsonPreferencesStore bug fixed, lock file now cleanup up on save.
 - JsonPreferencesStore, now calls channel.force(true) before atomic move, preventing null-byte corruption in VirtualBox/Windows environments.
