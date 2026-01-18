@@ -630,7 +630,7 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Restores preferences for this panel and its detail panels. Override to restore panel specific preferences.
-	 * <p>Remember to call {@code super.restorePreferences()} when overriding.
+	 * <p>Remember to call {@code super.restore(preferences)} when overriding.
 	 * @param preferences the preferences instance from which to restore
 	 */
 	public void restore(Preferences preferences) {
@@ -643,7 +643,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Stores preferences for this panel and its detail panels.
 	 * Override to store panel specific preferences.
-	 * <p>Remember to call {@code super.storePreferences()} when overriding.
+	 * <p>Remember to call {@code super.store(preferences)} when overriding.
 	 * @param preferences the preferences instance to write to
 	 */
 	public void store(Preferences preferences) {
@@ -1080,7 +1080,7 @@ public class EntityPanel extends JPanel {
 				editPanel.restore(preferences.node(EDIT_PANEL_KEY));
 			}
 			catch (Exception e) {
-				LOG.error("Error restoring editPanel preferences for {}", preferencesKey(), e);
+				LOG.error("Error restoring edit panel preferences for {}", preferencesKey(), e);
 			}
 		}
 	}
@@ -1102,20 +1102,20 @@ public class EntityPanel extends JPanel {
 				tablePanel.restore(preferences.node(TABLE_PANEL_KEY));
 			}
 			catch (Exception e) {
-				LOG.error("Error restoring tablePanel preferences for {}", preferencesKey(), e);
+				LOG.error("Error restoring table panel preferences for {}", preferencesKey(), e);
 			}
 		}
 	}
 
 	private void storeDetailPanelPreferences(Preferences preferences) {
 		if (!detailPanels.get().isEmpty()) {
-			Preferences detailsNode = preferences.node(DETAIL_PANELS_KEY);
-			for (EntityPanel detail : detailPanels.get()) {
+			Preferences node = preferences.node(DETAIL_PANELS_KEY);
+			for (EntityPanel detailPanel : detailPanels.get()) {
 				try {
-					detail.store(detailsNode.node(detail.preferencesKey()));
+					detailPanel.store(node.node(detailPanel.preferencesKey()));
 				}
 				catch (Exception e) {
-					LOG.error("Error storing preferences for detail panel: {}", detail.preferencesKey(), e);
+					LOG.error("Error storing preferences for detail panel: {}", detailPanel.preferencesKey(), e);
 				}
 			}
 		}
@@ -1123,13 +1123,13 @@ public class EntityPanel extends JPanel {
 
 	private void restoreDetailPanelPreferences(Preferences preferences) {
 		if (!detailPanels.get().isEmpty()) {
-			Preferences detailsNode = preferences.node(DETAIL_PANELS_KEY);
-			for (EntityPanel detail : detailPanels.get()) {
+			Preferences node = preferences.node(DETAIL_PANELS_KEY);
+			for (EntityPanel detailPanel : detailPanels.get()) {
 				try {
-					detail.restore(detailsNode.node(detail.preferencesKey()));
+					detailPanel.restore(node.node(detailPanel.preferencesKey()));
 				}
 				catch (Exception e) {
-					LOG.error("Error restoring detail preferences for {}", detail.preferencesKey(), e);
+					LOG.error("Error restoring detail panel preferences for {}", detailPanel, e);
 				}
 			}
 		}

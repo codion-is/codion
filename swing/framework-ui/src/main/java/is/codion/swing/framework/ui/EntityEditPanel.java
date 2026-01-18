@@ -280,7 +280,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * Restores preferences for this panel. Override to restore panel specific preferences.
-	 * <p>Remember to call {@code super.restorePreferences()} when overriding.
+	 * <p>Remember to call {@code super.restore(preferences)} when overriding.
 	 * @param preferences the preferences instance from which to restore
 	 */
 	public void restore(Preferences preferences) {
@@ -290,7 +290,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * Stores preferences for this panel.
 	 * Override to store panel specific preferences.
-	 * <p>Remember to call {@code super.storePreferences()} when overriding.
+	 * <p>Remember to call {@code super.store(preferences)} when overriding.
 	 * @param preferences the preferences instance to write to
 	 */
 	public void store(Preferences preferences) {

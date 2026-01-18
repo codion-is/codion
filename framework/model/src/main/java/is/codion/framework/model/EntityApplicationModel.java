@@ -87,19 +87,12 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	EntityModels<M, E, T> entityModels();
 
 	/**
-	 * Returns file-based preferences using the domain name as identifier.
+	 * Returns file-based preferences using the domain name as identifier or {@link #PREFERENCES_KEY} if specified.
 	 * This is used for the hierarchical JSON preferences format.
 	 * @return the application preferences instance
 	 * @see #PREFERENCES_KEY
 	 */
 	Preferences preferences();
-
-	/**
-	 * Returns file-based preferences using the application model class name as identifier.
-	 * This is used for the legacy flat preferences format for backward compatibility.
-	 * @return the legacy preferences instance
-	 */
-	Preferences legacyPreferences();
 
 	/**
 	 * Manages the {@link EntityModel}s for a {@link EntityApplicationModel}

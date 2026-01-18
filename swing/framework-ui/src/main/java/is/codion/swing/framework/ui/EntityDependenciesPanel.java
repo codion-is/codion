@@ -162,7 +162,7 @@ final class EntityDependenciesPanel extends JPanel {
 			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) -> {
 				EntityTablePanelPreferences panelPreferences = preferences.get(entityType);
 				if (panelPreferences != null) {
-					panelPreferences.apply(dependencyTablePanel);
+					panelPreferences.restore(dependencyTablePanel);
 				}
 			});
 			int gap = Layouts.GAP.getOrThrow();

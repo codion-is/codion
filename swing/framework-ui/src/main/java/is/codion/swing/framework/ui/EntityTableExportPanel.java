@@ -554,8 +554,8 @@ final class EntityTableExportPanel extends JPanel {
 			preferences = exportModel.createPreferences();
 		}
 
-		void apply(EntityTableExportModel exportModel) {
-			exportModel.applyPreferences(preferences);
+		void restore(EntityTableExportModel exportModel) {
+			exportModel.restore(preferences);
 		}
 
 		JSONObject preferences() {

@@ -25,8 +25,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.prefs.Preferences;
@@ -46,8 +44,6 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	private final EntityConnectionProvider connectionProvider;
 	private final DefaultEntityModels<M, E, T> models;
 	private final Preferences preferences;
-
-	private @Nullable Preferences legacyPreferences;
 
 	/**
 	 * Instantiates a new DefaultEntityApplicationModel, using the default file based preferences.
@@ -103,17 +99,6 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	@Override
 	public final Preferences preferences() {
 		return preferences;
-	}
-
-	@Override
-	public final Preferences legacyPreferences() {
-		synchronized (connectionProvider) {
-			if (legacyPreferences == null) {
-				legacyPreferences = UserPreferences.file(getClass().getName());
-			}
-
-			return legacyPreferences;
-		}
 	}
 
 	private final class DefaultEntityModels<M extends EntityModel<M, E, T>,

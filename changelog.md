@@ -28,6 +28,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityApplicationModel.version() removed.
 - DefaultEntityApplicationModel, Preferences constructor parameter added.
+- EntityApplicationModel.legacyPreferences() removed.
 ### is.codion.swing.framework.ui
 - EntityTablePanelPreferences bug fixed, column width preferences got lost for panels that were never initialized, now sets the column width as well as preferred width when applying preferences.
 - EntityTablePanelPreferences, auto-resize-mode preference added.
@@ -40,6 +41,7 @@ Codion Change Log
 - DefaultEntityApplication preferences handling improved.
 - EntityTablePanelPreferences, filter preferences added.
 - EntityApplicationPanel, EntityPanel, EntityEditPanel, EntityTablePanel, applyPreferences() and storePreferences() renamed restore() and store(), preferences re-added as parameter, setPreferences() removed.
+- EntityApplicationPanel, preferences handling cleanup up.
 
 ## 0.18.65
 ### is.codion.common.model

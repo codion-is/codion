@@ -721,23 +721,23 @@ public class EntityTablePanel extends JPanel {
 	@Deprecated
 	public void applyPreferences(Preferences preferences) {
 		requireNonNull(preferences);
-		new EntityTablePanelPreferences(this, preferences).apply(this);
+		new EntityTablePanelPreferences(this, preferences).restore(this);
 	}
 
 	/**
 	 * Restores the preferences for this panel.
 	 * Override to apply panel specific preferences.
-	 * <p>Remember to call {@code super.applyPreferences()} when overriding.
+	 * <p>Remember to call {@code super.restore(preferences)} when overriding.
 	 * @param preferences the preferences instance containing the preferences to restore
 	 */
 	public void restore(Preferences preferences) {
-		EntityTablePanelPreferences.apply(preferences, this);
+		EntityTablePanelPreferences.restore(preferences, this);
 	}
 
 	/**
 	 * Stores preferences for this panel.
 	 * Override to store panel specific preferences.
-	 * <p>Remember to call {@code super.storePreferences()} when overriding.
+	 * <p>Remember to call {@code super.store(preferences)} when overriding.
 	 * @param preferences the preferences instance to write to
 	 */
 	public void store(Preferences preferences) {

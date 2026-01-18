@@ -70,7 +70,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	/**
 	 * @param editModel the edit model
-	 * @param filterModel provides the filter model
+	 * @param filterModel the filter model
 	 */
 	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel) {
 		this(editModel, new DefaultEntityQueryModel(EntityConditionModel.builder()
@@ -81,7 +81,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	/**
 	 * @param editModel the edit model
-	 * @param filterModel provides the filter model
+	 * @param filterModel the filter model
 	 * @param queryModel the table query model
 	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
 	 */

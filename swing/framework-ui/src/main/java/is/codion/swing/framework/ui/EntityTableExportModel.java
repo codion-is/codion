@@ -150,7 +150,7 @@ final class EntityTableExportModel {
 		configurationFiles.items().clear();
 	}
 
-	void applyPreferences(JSONObject preferences) {
+	void restore(JSONObject preferences) {
 		if (preferences.has(CONFIGURATION_FILES_KEY)) {
 			JSONArray fileArray = preferences.getJSONArray(CONFIGURATION_FILES_KEY);
 			List<File> files = new ArrayList<>(fileArray.length());

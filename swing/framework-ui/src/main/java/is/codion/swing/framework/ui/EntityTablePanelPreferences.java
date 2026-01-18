@@ -110,35 +110,35 @@ final class EntityTablePanelPreferences {
 		this.exportPreferences = exportPreferences;
 	}
 
-	void apply(EntityTablePanel tablePanel) {
+	void restore(EntityTablePanel tablePanel) {
 		try {
-			applyTablePreferences(tablePreferences, tablePanel);
+			restoreTablePreferences(tablePreferences, tablePanel);
 		}
 		catch (Exception e) {
-			LOG.error("Error while applying table preferences: {}", tablePreferences, e);
+			LOG.error("Error while restoring table preferences: {}", tablePreferences, e);
 		}
 		if (!columnPreferences.isEmpty()) {
 			try {
-				applyColumnPreferences(columnPreferences, tablePanel);
+				restoreColumnPreferences(columnPreferences, tablePanel);
 			}
 			catch (Exception e) {
-				LOG.error("Error while applying column preferences: {}", columnPreferences, e);
+				LOG.error("Error while restoring column preferences: {}", columnPreferences, e);
 			}
 		}
 		if (!conditionPreferences.isEmpty()) {
 			try {
-				applyConditionPreferences(conditionPreferences, tablePanel.tableModel().query().condition().get());
+				restoreConditionPreferences(conditionPreferences, tablePanel.tableModel().query().condition().get());
 			}
 			catch (Exception e) {
-				LOG.error("Error while applying condition preferences: {}", conditionPreferences, e);
+				LOG.error("Error while restoring condition preferences: {}", conditionPreferences, e);
 			}
 		}
 		if (exportPreferences != null) {// not strictly necessary, but prevents null warning
 			try {
-				exportPreferences.apply(tablePanel.exportModel());
+				exportPreferences.restore(tablePanel.exportModel());
 			}
 			catch (Exception e) {
-				LOG.error("Error while applying export preferences: {}", exportPreferences, e);
+				LOG.error("Error while restoring export preferences: {}", exportPreferences, e);
 			}
 		}
 	}
@@ -201,7 +201,7 @@ final class EntityTablePanelPreferences {
 
 		new EntityTablePanelPreferences(new JSONObject(), columnPreferences, conditionPreferences,
 						/* No legacy export preferences*/ null, tableKey, columnsKey, conditionsKey,
-						/* No legacy export preferences*/"no-export-prefs").apply(tablePanel);
+						/* No legacy export preferences*/"no-export-prefs").restore(tablePanel);
 	}
 
 	/**
@@ -253,48 +253,48 @@ final class EntityTablePanelPreferences {
 	 * @param preferences the preferences node to read from
 	 * @param tablePanel the table panel
 	 */
-	static void apply(Preferences preferences, EntityTablePanel tablePanel) {
+	static void restore(Preferences preferences, EntityTablePanel tablePanel) {
 		try {
-			applyTablePreferences(new JSONObject(preferences.get(TABLE_KEY, EMPTY_JSON_OBJECT)), tablePanel);
+			restoreTablePreferences(new JSONObject(preferences.get(TABLE_KEY, EMPTY_JSON_OBJECT)), tablePanel);
 		}
 		catch (Exception e) {
-			LOG.error("Error while applying table preferences", e);
+			LOG.error("Error while restoring table preferences", e);
 		}
 		try {
 			JSONObject columnPrefs = new JSONObject(preferences.get(COLUMNS_KEY, EMPTY_JSON_OBJECT));
 			if (!columnPrefs.isEmpty()) {
-				applyColumnPreferences(columnPrefs, tablePanel);
+				restoreColumnPreferences(columnPrefs, tablePanel);
 			}
 		}
 		catch (Exception e) {
-			LOG.error("Error while applying column preferences", e);
+			LOG.error("Error while restoring column preferences", e);
 		}
 		try {
 			JSONObject conditionPrefs = new JSONObject(preferences.get(CONDITIONS_KEY, EMPTY_JSON_OBJECT));
 			if (!conditionPrefs.isEmpty()) {
-				applyConditionPreferences(conditionPrefs, tablePanel.tableModel().query().condition().get());
+				restoreConditionPreferences(conditionPrefs, tablePanel.tableModel().query().condition().get());
 			}
 		}
 		catch (Exception e) {
-			LOG.error("Error while applying condition preferences", e);
+			LOG.error("Error while restoring condition preferences", e);
 		}
 		try {
 			JSONObject filterPrefs = new JSONObject(preferences.get(FILTERS_KEY, EMPTY_JSON_OBJECT));
 			if (!filterPrefs.isEmpty()) {
-				applyConditionPreferences(filterPrefs, tablePanel.tableModel().filters().get());
+				restoreConditionPreferences(filterPrefs, tablePanel.tableModel().filters().get());
 			}
 		}
 		catch (Exception e) {
-			LOG.error("Error while applying filter preferences", e);
+			LOG.error("Error while restoring filter preferences", e);
 		}
 		try {
 			String exportJson = preferences.get(EXPORT_KEY, EMPTY_JSON_OBJECT);
 			if (!EMPTY_JSON_OBJECT.equals(exportJson)) {
-				new ExportPreferences(exportJson).apply(tablePanel.exportModel());
+				new ExportPreferences(exportJson).restore(tablePanel.exportModel());
 			}
 		}
 		catch (Exception e) {
-			LOG.error("Error while applying export preferences", e);
+			LOG.error("Error while restoring export preferences", e);
 		}
 	}
 
@@ -333,13 +333,13 @@ final class EntityTablePanelPreferences {
 		return json;
 	}
 
-	private static void applyTablePreferences(JSONObject tablePreferences, EntityTablePanel tablePanel) {
+	private static void restoreTablePreferences(JSONObject tablePreferences, EntityTablePanel tablePanel) {
 		if (tablePreferences.has(AUTO_RESIZE_MODE)) {
 			tablePanel.table().setAutoResizeMode(tablePreferences.getInt(AUTO_RESIZE_MODE));
 		}
 	}
 
-	private static void applyColumnPreferences(JSONObject columnPreferences, EntityTablePanel tablePanel) {
+	private static void restoreColumnPreferences(JSONObject columnPreferences, EntityTablePanel tablePanel) {
 		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
 		List<Attribute<?>> attributesWithoutPreferences = new ArrayList<>();
 		List<AttributeIndex> attributesWithPreferences = new ArrayList<>();
@@ -378,7 +378,7 @@ final class EntityTablePanelPreferences {
 		return new JSONObject();
 	}
 
-	private static void applyConditionPreferences(JSONObject conditionPreferences, Map<Attribute<?>, ConditionModel<?>> conditions) {
+	private static void restoreConditionPreferences(JSONObject conditionPreferences, Map<Attribute<?>, ConditionModel<?>> conditions) {
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
 			Attribute<?> attribute = entry.getKey();
 			if (conditionPreferences.has(attribute.name())) {
