@@ -197,8 +197,8 @@ public final class FilterTable<R, C> extends JTable {
 	 * </ul>
 	 * @see Builder#fillsViewportHeight(boolean)
 	 */
-	public static final PropertyValue<Boolean> PAINT_REMAINING_ROWS =
-					booleanValue(FilterTable.class.getName() + ".paintRemainingRows", false);
+	public static final PropertyValue<Boolean> ROWS_FILL_VIEWPORT =
+					booleanValue(FilterTable.class.getName() + ".rowsFillViewport", false);
 
 	/**
 	 * Specifies whether the table resizes the row being edited to fit the editor component. Only applicable to {@link FilterTableCellEditor}.
@@ -332,7 +332,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
 	private final boolean scrollToAddedItem;
-	private final boolean paintRemainingRows;
+	private final boolean rowsFillViewport;
 	final boolean columnToolTips;
 
 	private final ControlMap controlMap;
@@ -357,7 +357,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.scrollToAddedItem = builder.scrollToAddedItem;
 		this.columnToolTips = builder.columnToolTips;
-		this.paintRemainingRows = builder.paintRemainingRows;
+		this.rowsFillViewport = builder.rowsFillViewport;
 		this.sortable = State.state(builder.sortable);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
@@ -820,16 +820,16 @@ public final class FilterTable<R, C> extends JTable {
 	@Override
 	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
-		if (paintRemainingRows) {
-			paintRemainingRows(graphics);
+		if (rowsFillViewport) {
+			fillViewportRows(graphics);
 		}
 	}
 
 	/**
-	 * Paints the remaining rows, below the rows available in the table model
+	 * Paints the remaining rows, below the rows available in the table model, filling the viewport
 	 * @param graphics the graphics
 	 */
-	private void paintRemainingRows(Graphics graphics) {
+	private void fillViewportRows(Graphics graphics) {
 		int rowCount = getRowCount();
 		int remainingRows = (getHeight() - (rowCount * getRowHeight())) / getRowHeight();
 		for (int i = 0; i <= remainingRows; i++) {
@@ -1445,7 +1445,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		/**
 		 * Specifies whether the table fills the viewport height, default true.
-		 * @param fillsViewportHeight whether or not this table is always made large enough to fill the height of an enclosing viewport
+		 * @param fillsViewportHeight whether this table is always made large enough to fill the height of an enclosing viewport
 		 * @return this builder instance
 		 * @see #FILLS_VIEWPORT_HEIGHT
 		 * @see JTable#setFillsViewportHeight(boolean)
@@ -1456,12 +1456,12 @@ public final class FilterTable<R, C> extends JTable {
 		 * Specifies whether the remaining rows below the ones available in the table model are painted.
 		 * <p>Note that this requires {@link JTable#setFillsViewportHeight(boolean)} to be enabled,
 		 * and relies on that remaining so. This is true by default, see {@link #fillsViewportHeight(boolean)}.
-		 * @param paintRemainingRows true if the remaining rows should be painted
+		 * @param rowsFillViewport true if the remaining rows should be painted to fill the viewport
 		 * @return this builder instance
-		 * @see #PAINT_REMAINING_ROWS
+		 * @see #ROWS_FILL_VIEWPORT
 		 * @see #fillsViewportHeight(boolean)
 		 */
-		Builder<R, C> paintRemainingRows(boolean paintRemainingRows);
+		Builder<R, C> rowsFillViewport(boolean rowsFillViewport);
 
 		/**
 		 * @param sortable true if sorting via clicking the header should be enbled
@@ -1638,7 +1638,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean scrollToAddedItem = false;
 		private boolean columnToolTips = COLUMN_TOOL_TIPS.getOrThrow();
 		private boolean fillsViewportHeight = FILLS_VIEWPORT_HEIGHT.getOrThrow();
-		private boolean paintRemainingRows = PAINT_REMAINING_ROWS.getOrThrow();
+		private boolean rowsFillViewport = ROWS_FILL_VIEWPORT.getOrThrow();
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private @Nullable Boolean rowSelection;
@@ -1800,8 +1800,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> paintRemainingRows(boolean paintRemainingRows) {
-			this.paintRemainingRows = paintRemainingRows;
+		public Builder<R, C> rowsFillViewport(boolean rowsFillViewport) {
+			this.rowsFillViewport = rowsFillViewport;
 			return this;
 		}
 
