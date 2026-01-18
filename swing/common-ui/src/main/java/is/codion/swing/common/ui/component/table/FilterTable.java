@@ -1305,10 +1305,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> columns(Consumer<FilterTableColumn.Builder<C>> columns);
 
 		/**
-		 * @param hiddenColumns the initially hidden columns
+		 * @param columns the columns to hide initially
 		 * @return this builder instance
 		 */
-		Builder<R, C> hiddenColumns(C... hiddenColumns);
+		Builder<R, C> hideColumns(C... columns);
 
 		/**
 		 * @param summaryValues the column summary values factory
@@ -1673,10 +1673,10 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> hiddenColumns(C... hiddenColumns) {
-			requireNonNull(hiddenColumns);
+		public Builder<R, C> hideColumns(C... columns) {
+			requireNonNull(columns);
 			this.hiddenColumns.clear();
-			this.hiddenColumns.addAll(asList(hiddenColumns));
+			this.hiddenColumns.addAll(asList(columns));
 			return this;
 		}
 

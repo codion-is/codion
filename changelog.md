@@ -15,6 +15,7 @@ Codion Change Log
 - JsonPreferencesStore, now calls channel.force(true) before atomic move, preventing null-byte corruption in VirtualBox/Windows environments.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.paintRemainingRows() and FilterTable.PAINT_REMAINING_ROWS renamed rowsFillViewport() and ROWS_FILL_VIEWPORT.
+- FilterTable.Builder.hiddenColumns() renamed hideColumns().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.CLIENT_DOMAIN_TYPE removed.
 - EntityConnectionProvider.connectionType() removed.

@@ -236,7 +236,7 @@ public final class DomainGeneratorPanel extends JPanel {
 							}
 						})
 						.columnReordering(false)
-						.hiddenColumns(EntityColumns.DTO)
+						.hideColumns(EntityColumns.DTO)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.popupControl(FilterTable::createToggleAutoResizeModeControls)
 						.build();
