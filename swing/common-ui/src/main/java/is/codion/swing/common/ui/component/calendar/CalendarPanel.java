@@ -437,7 +437,8 @@ public final class CalendarPanel extends JPanel {
 		Builder minimalDaysInFirstWeek(int minimalDaysInFirstWeek);
 
 		/**
-		 * Note that calling this method also sets {@link #includeTime(boolean)} to false.
+		 * Note that calling this method also sets {@link #includeTime(boolean)}
+		 * and {@link #includeTimeZone(boolean)} to false.
 		 * In case of a null value {@link LocalDate#now()} is used.
 		 * @param value the initial value
 		 * @return this builder instance
@@ -445,7 +446,8 @@ public final class CalendarPanel extends JPanel {
 		Builder value(@Nullable LocalDate value);
 
 		/**
-		 * Note that calling this method also sets {@link #includeTime(boolean)} to true.
+		 * Note that calling this method also sets {@link #includeTime(boolean)} to true
+		 * and {@link #includeTimeZone(boolean)} to false.
 		 * In case of a null value {@link LocalDateTime#now()} is used.
 		 * @param value the initial value
 		 * @return this builder instance
@@ -652,13 +654,14 @@ public final class CalendarPanel extends JPanel {
 
 		@Override
 		public Builder value(@Nullable LocalDate value) {
-			return value(value == null ? null : value.atStartOfDay());
+			this.value = value == null ? null : ZonedDateTime.of(value.atStartOfDay(), ZoneId.systemDefault());
+			return includeTime(false).includeTimeZone(false);
 		}
 
 		@Override
 		public Builder value(@Nullable LocalDateTime value) {
 			this.value = value == null ? null : ZonedDateTime.of(value, ZoneId.systemDefault());
-			return includeTime(true);
+			return includeTime(true).includeTimeZone(false);
 		}
 
 		@Override

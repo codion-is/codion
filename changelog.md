@@ -18,6 +18,7 @@ Codion Change Log
 - FilterTable.Builder.hiddenColumns() renamed hideColumns().
 - DefaultTextFieldBuilder no longer sets maximum length for character based fields.
 - ParsingDocumentFilter.SilentValidator and CharacterDocument added, Character text field length validation now silent.
+- CalendarPanel bug fixed, time fields no longer included for LocalDate.
 ### is.codion.framework.domain
 - AbstractValueAttributeDefinitionBuilder no longer sets maximum length for character attributes.
 ### is.codion.framework.db.core
