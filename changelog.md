@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.67
+
 ## 0.18.66
 ### is.codion.common.reactive
 - DefaultValueCollection.sort() bug fixed, now correctly synchronized.
