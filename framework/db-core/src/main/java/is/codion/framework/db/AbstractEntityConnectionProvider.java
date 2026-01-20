@@ -62,7 +62,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		requireNonNull(builder);
 		this.user = requireNonNull(builder.user, "A user must be specified");
 		this.domain = requireNonNull(builder.domain, "A domain must be specified");
-		this.clientId = requireNonNull(builder.clientId, "A clientId must be specified");
+		this.clientId = builder.clientId;
 		this.clientType = builder.clientType == null ? domain.name() : builder.clientType;
 		this.clientVersion = builder.clientVersion;
 		this.onClose = builder.onClose;
