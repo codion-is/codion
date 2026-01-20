@@ -532,7 +532,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 		@Override
 		public void run() {
-			database.closeConnectionPools();
+			database.close();
 		}
 	}
 

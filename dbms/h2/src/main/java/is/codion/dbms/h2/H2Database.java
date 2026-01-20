@@ -24,8 +24,10 @@ import is.codion.common.utilities.resource.MessageBundle;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
+import static is.codion.common.utilities.user.User.user;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -69,6 +72,7 @@ final class H2Database extends AbstractDatabase {
 
 	private static final String FILE_SUFFIX_PAGESTORE = ".h2.db";
 	private static final String FILE_SUFFIX_MVSTORE = ".mv.db";
+	private static final String SHUTDOWN = "SHUTDOWN";
 
 	static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
 	static final String SEQUENCE_VALUE_QUERY = "select next value for ";
@@ -170,6 +174,19 @@ final class H2Database extends AbstractDatabase {
 		}
 
 		return exception.getMessage();
+	}
+
+	@Override
+	protected void closeDatabase() throws SQLException {
+		synchronized (INITIALIZED_DATABASES) {
+			try (Connection connection = createConnection(user(SYSADMIN_USERNAME));
+					 Statement statement = connection.createStatement()) {
+				statement.execute(SHUTDOWN);
+			}
+			finally {
+				INITIALIZED_DATABASES.remove(url());
+			}
+		}
 	}
 
 	static String databaseName(String url) {

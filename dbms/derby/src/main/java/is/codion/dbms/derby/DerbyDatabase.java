@@ -20,6 +20,7 @@ package is.codion.dbms.derby;
 
 import is.codion.common.db.database.AbstractDatabase;
 
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static java.util.Objects.requireNonNull;
@@ -30,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 final class DerbyDatabase extends AbstractDatabase {
 
 	private static final String TIMEOUT_ERROR_CODE = "XCL52";
+	private static final String SHUTDOWN = "08006";
 	private static final int FOREIGN_KEY_ERROR = 23503;
 
 	private static final String JDBC_URL_PREFIX_TCP = "jdbc:derby://";
@@ -76,5 +78,17 @@ final class DerbyDatabase extends AbstractDatabase {
 	@Override
 	public boolean isTimeoutException(SQLException exception) {
 		return TIMEOUT_ERROR_CODE.equals(requireNonNull(exception).getSQLState());
+	}
+
+	@Override
+	protected void closeDatabase() throws SQLException {
+		try {
+			DriverManager.getConnection(url() + ";shutdown=true");
+		}
+		catch (SQLException e) {
+			if (!e.getSQLState().equals(SHUTDOWN)) {
+				throw e;
+			}
+		}
 	}
 }

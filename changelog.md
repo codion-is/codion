@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.67
+### is.codion.common.db
+- Database.close() and AbstractDatabase.closeDatabase() added, for closing embedded databases.
 
 ## 0.18.66
 ### is.codion.common.reactive

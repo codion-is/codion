@@ -29,6 +29,8 @@ import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.user.User;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -48,6 +50,8 @@ import static java.util.Objects.requireNonNull;
  * A default abstract implementation of the Database interface.
  */
 public abstract class AbstractDatabase implements Database {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractDatabase.class);
 
 	/**
 	 * {@code FOR UPDATE}
@@ -271,6 +275,33 @@ public abstract class AbstractDatabase implements Database {
 		return new DatabaseException(exception, errorMessage(exception, operation));
 	}
 
+	@Override
+	public final void close() {
+		synchronized (AbstractDatabase.class) {
+			if (AbstractDatabase.instance == this) {
+				AbstractDatabase.instance = null;
+			}
+			try {
+				closeConnectionPools();
+			}
+			catch (Exception e) {
+				LOG.error("Error closing connection pools", e);
+			}
+			try {
+				closeDatabase();
+			}
+			catch (Exception e) {
+				LOG.error("Error closing database", e);
+			}
+		}
+	}
+
+	/**
+	 * Closes the database, releasing any in memory storage or other resources.
+	 * @throws SQLException in case of an exception
+	 */
+	protected void closeDatabase() throws SQLException {}
+
 	static Database instance() {
 		String databaseUrl = URL.getOrThrow();
 		try {
@@ -361,7 +392,7 @@ public abstract class AbstractDatabase implements Database {
 	private static Database cleanupAndCreateInstance(String databaseUrl, Database previousInstance) throws SQLException {
 		Database instance = DatabaseFactory.instance().create(databaseUrl);
 		if (previousInstance != null) {
-			previousInstance.closeConnectionPools(); //cleanup
+			previousInstance.close();
 		}
 
 		return instance;

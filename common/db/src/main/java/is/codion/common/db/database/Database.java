@@ -307,6 +307,12 @@ public interface Database extends ConnectionFactory {
 	void connectionProvider(ConnectionProvider connectionProvider);
 
 	/**
+	 * Closes this database, releasing any local resources, like connection pools or in memory storage.
+	 * @see #closeConnectionPools()
+	 */
+	void close();
+
+	/**
 	 * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#URL}).
 	 * Subsequent changes to {@link Database#URL} will cause an exception to be thrown
 	 * unless {@link #URL_SCOPED_INSTANCE} is enabled, then a new instance is created and returned.

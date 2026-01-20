@@ -20,6 +20,11 @@ package is.codion.dbms.hsqldb;
 
 import is.codion.common.db.database.AbstractDatabase;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import static is.codion.common.utilities.user.User.user;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -31,6 +36,8 @@ final class HSQLDatabase extends AbstractDatabase {
 	private static final String JDBC_URL_PREFIX_MEM = "jdbc:hsqldb:mem:";
 	private static final String JDBC_URL_PREFIX_FILE = "jdbc:hsqldb:file:";
 	private static final String JDBC_URL_PREFIX_RES = "jdbc:hsqldb:res:";
+	private static final String SHUTDOWN = "SHUTDOWN";
+	private static final String SYSADMIN_USERNAME = "sa";
 
 	static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
 	static final String SEQUENCE_VALUE_QUERY = "SELECT NEXT VALUE FOR ";
@@ -76,5 +83,13 @@ final class HSQLDatabase extends AbstractDatabase {
 	@Override
 	public String sequenceQuery(String sequenceName) {
 		return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName);
+	}
+
+	@Override
+	protected void closeDatabase() throws SQLException {
+		try (Connection connection = createConnection(user(SYSADMIN_USERNAME));
+				 Statement statement = connection.createStatement()) {
+			statement.execute(SHUTDOWN);
+		}
 	}
 }
