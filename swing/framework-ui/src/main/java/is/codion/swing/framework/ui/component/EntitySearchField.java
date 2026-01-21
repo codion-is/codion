@@ -86,6 +86,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +115,6 @@ import static is.codion.swing.framework.ui.component.EntitySearchField.SearchInd
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.event.FocusEvent.Cause.ACTIVATION;
 import static java.awt.event.KeyEvent.*;
-import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
@@ -1019,7 +1019,7 @@ public final class EntitySearchField extends HintTextField {
 	private static void initializeResultLimitMessage(JLabel label, int limit, int resultSize) {
 		boolean resultLimitReached = limit == resultSize;
 		if (resultLimitReached) {
-			label.setText(format(MESSAGES.getString("result_limited"), limit));
+			label.setText(MessageFormat.format(MESSAGES.getString("result_limited"), limit));
 			label.setVisible(true);
 		}
 		label.setVisible(resultLimitReached);

@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.67
 ### is.codion.common.db
 - Database.close() and AbstractDatabase.closeDatabase() added, for closing embedded databases.
+### is.codion.swing.framework.ui
+- EntitySearchField bug fixed, now uses MessageFormat.format() when formatting result limit message.
 
 ## 0.18.66
 ### is.codion.common.reactive
