@@ -133,11 +133,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		public static final ControlKey<CommandControl> SELECT_INPUT_FIELD = CommandControl.key("selectInputField", keyStroke(VK_I, MENU_SHORTCUT_MASK));
 		/**
-		 * Displays the entity menu, if available.<br>
+		 * Displays the entity viewer, if available.<br>
 		 * Default key stroke: CTRL-ALT-V
-		 * @see Config#INCLUDE_ENTITY_MENU
+		 * @see Config#INCLUDE_ENTITY_VIEWER
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key("displayEntityMenu", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_ENTITY_VIEWER = CommandControl.key("displayEntityViewer", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays the query inspector, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-Q
@@ -533,8 +533,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		if (configuration.includeQueryInspector) {
 			controlMap.control(DISPLAY_QUERY_INSPECTOR).set(command(this::showQueryInspector));
 		}
-		if (configuration.includeEntityMenu) {
-			controlMap.control(DISPLAY_ENTITY_MENU).set(createShowEntityMenuControl());
+		if (configuration.includeEntityViewer) {
+			controlMap.control(DISPLAY_ENTITY_VIEWER).set(command(this::viewEntity));
 		}
 	}
 
@@ -582,10 +582,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 							.modal(false)
 							.show();
 		}
-	}
-
-	private CommandControl createShowEntityMenuControl() {
-		return command(this::showEntityMenu);
 	}
 
 	private CommandControl createUpdateControl() {
@@ -659,7 +655,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void setupKeyboardActions() {
-		configuration.controlMap.keyEvent(DISPLAY_ENTITY_MENU).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(DISPLAY_ENTITY_VIEWER).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
 		configuration.controlMap.keyEvent(DISPLAY_QUERY_INSPECTOR).ifPresent(keyEvent ->
@@ -670,8 +666,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 										.enable(this));
 	}
 
-	private void showEntityMenu() {
-		new EntityPopupMenu(editModel().editor().get(), editModel().connection()).show(this, 0, 0);
+	private void viewEntity() {
+		EntityViewer.view(editModel().editor().get(), editModel().connectionProvider(), this);
 	}
 
 	private Config configure(Consumer<Config> configuration) {
@@ -749,14 +745,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						booleanValue(EntityEditPanel.class.getName() + ".useSaveCaption", false);
 
 		/**
-		 * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V by default.
+		 * Specifies whether to include a {@link EntityViewer} action on this edit panel, triggered with CTRL-ALT-V by default.
 		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
-						booleanValue(EntityEditPanel.class.getName() + ".includeEntityMenu", true);
+		public static final PropertyValue<Boolean> INCLUDE_ENTITY_VIEWER =
+						booleanValue(EntityEditPanel.class.getName() + ".includeEntityViewer", true);
 
 		/**
 		 * Specifies whether to include a Query Inspector on this edit panel, triggered with CTRL-ALT-Q.
@@ -827,7 +823,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private boolean clearAfterInsert = true;
 		private boolean requestFocusAfterInsert = true;
 		private boolean focusActivation = USE_FOCUS_ACTIVATION.getOrThrow();
-		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.getOrThrow();
+		private boolean includeEntityViewer = INCLUDE_ENTITY_VIEWER.getOrThrow();
 		private boolean includeQueryInspector = INCLUDE_QUERY_INSPECTOR.getOrThrow();
 		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
 		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
@@ -862,7 +858,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			this.insertConfirmer = config.insertConfirmer;
 			this.updateConfirmer = config.updateConfirmer;
 			this.deleteConfirmer = config.deleteConfirmer;
-			this.includeEntityMenu = config.includeEntityMenu;
+			this.includeEntityViewer = config.includeEntityViewer;
 			this.includeQueryInspector = config.includeQueryInspector;
 			this.modifiedWarning = config.modifiedWarning;
 			this.validIndicator = config.validIndicator;
@@ -926,12 +922,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		/**
-		 * @param includeEntityMenu true if an entity menu should be included
+		 * @param includeEntityViewer true if a {@link EntityViewer} action should be available in this panel, triggered with CTRL-ALT-V.
 		 * @return this Config instance
-		 * @see #INCLUDE_ENTITY_MENU
+		 * @see #INCLUDE_ENTITY_VIEWER
 		 */
-		public Config includeEntityMenu(boolean includeEntityMenu) {
-			this.includeEntityMenu = includeEntityMenu;
+		public Config includeEntityViewer(boolean includeEntityViewer) {
+			this.includeEntityViewer = includeEntityViewer;
 			return this;
 		}
 

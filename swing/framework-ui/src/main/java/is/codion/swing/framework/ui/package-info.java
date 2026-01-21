@@ -33,7 +33,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityEditComponentPanel#DEFAULT_TEXT_FIELD_COLUMNS}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_SAVE_CAPTION}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_FOCUS_ACTIVATION}
- * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_ENTITY_MENU}
+ * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_ENTITY_VIEWER}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MODIFIED_WARNING}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#KEYBOARD_NAVIGATION}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#DISPOSE_EDIT_DIALOG_ON_ESCAPE}
@@ -48,7 +48,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#FILTER_VIEW}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#SUMMARY_PANEL_VISIBLE}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_POPUP_MENU}
- * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_ENTITY_MENU}
+ * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_ENTITY_VIEWER}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_QUERY_INSPECTOR}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_CLEAR_CONTROL}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_LIMIT_MENU}
