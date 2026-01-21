@@ -275,18 +275,18 @@ public class EntityTablePanel extends JPanel {
 		 * Displays the table popup menu, if one is available.<br>
 		 * Default key stroke: CTRL-G
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_POPUP_MENU = CommandControl.key("displayPopupMenu", keyStroke(VK_G, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> POPUP_MENU = CommandControl.key("popupMenu", keyStroke(VK_G, MENU_SHORTCUT_MASK));
 		/**
 		 * Displays the query inspector, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-Q
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_QUERY_INSPECTOR = CommandControl.key("displayQueryInspector", keyStroke(VK_Q, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> INSPECT_QUERY = CommandControl.key("inspectQuery", keyStroke(VK_Q, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays the entity viewer, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_VIEWER
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_ENTITY_VIEWER = CommandControl.key("displayEntityViewer", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> VIEW_ENTITY = CommandControl.key("viewEntity", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Controls} instance containing controls for printing.
 		 */
@@ -805,8 +805,8 @@ public class EntityTablePanel extends JPanel {
 	 * @see ControlKeys#DELETE
 	 * @see ControlKeys#DECREMENT_SELECTION
 	 * @see ControlKeys#INCREMENT_SELECTION
-	 * @see ControlKeys#DISPLAY_ENTITY_VIEWER
-	 * @see ControlKeys#DISPLAY_POPUP_MENU
+	 * @see ControlKeys#VIEW_ENTITY
+	 * @see ControlKeys#POPUP_MENU
 	 */
 	protected void setupKeyboardActions() {
 		configuration.controlMap.keyEvent(REFRESH).ifPresent(keyEvent ->
@@ -836,9 +836,9 @@ public class EntityTablePanel extends JPanel {
 		configuration.controlMap.keyEvent(DELETE).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DECREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(INCREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(DISPLAY_QUERY_INSPECTOR).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(DISPLAY_ENTITY_VIEWER).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(DISPLAY_POPUP_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(INSPECT_QUERY).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(VIEW_ENTITY).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(POPUP_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
 	}
 
 	/**
@@ -1639,13 +1639,13 @@ public class EntityTablePanel extends JPanel {
 			controlMap.control(EXPORT).set(createExportControl());
 		}
 		if (configuration.includeEntityViewer) {
-			controlMap.control(DISPLAY_ENTITY_VIEWER).set(command(this::viewEntity));
+			controlMap.control(VIEW_ENTITY).set(command(this::viewEntity));
 		}
 		if (configuration.includeQueryInspector) {
-			controlMap.control(DISPLAY_QUERY_INSPECTOR).set(command(this::showQueryInspector));
+			controlMap.control(INSPECT_QUERY).set(command(this::inspectQuery));
 		}
 		if (configuration.includePopupMenu) {
-			controlMap.control(DISPLAY_POPUP_MENU).set(command(this::showPopupMenu));
+			controlMap.control(POPUP_MENU).set(command(this::showPopupMenu));
 		}
 		if (configuration.includeSingleSelectionControl) {
 			controlMap.control(SINGLE_SELECTION).set(table.createSingleSelectionControl());
@@ -1690,7 +1690,7 @@ public class EntityTablePanel extends JPanel {
 						EntityViewer.view(selected.primaryKey(), tableModel.connectionProvider(), this));
 	}
 
-	private void showQueryInspector() {
+	private void inspectQuery() {
 		if (queryInspector == null) {
 			queryInspector = new SelectQueryInspector(tableModel.query());
 		}

@@ -137,12 +137,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * Default key stroke: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_VIEWER
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_ENTITY_VIEWER = CommandControl.key("displayEntityViewer", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> VIEW_ENTITY = CommandControl.key("viewEntity", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays the query inspector, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-Q
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_QUERY_INSPECTOR = CommandControl.key("displayQueryInspector", keyStroke(VK_Q, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> INSPECT_QUERY = CommandControl.key("inspectQuery", keyStroke(VK_Q, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
@@ -531,10 +531,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		controlMap.control(CLEAR).set(createClearControl());
 		controlMap.control(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
 		if (configuration.includeQueryInspector) {
-			controlMap.control(DISPLAY_QUERY_INSPECTOR).set(command(this::showQueryInspector));
+			controlMap.control(INSPECT_QUERY).set(command(this::inspectQuery));
 		}
 		if (configuration.includeEntityViewer) {
-			controlMap.control(DISPLAY_ENTITY_VIEWER).set(command(this::viewEntity));
+			controlMap.control(VIEW_ENTITY).set(command(this::viewEntity));
 		}
 	}
 
@@ -567,7 +567,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		return command(this::selectInputComponent);
 	}
 
-	private void showQueryInspector() {
+	private void inspectQuery() {
 		if (queryInspector == null) {
 			queryInspector = new InsertUpdateQueryInspector(editModel());
 		}
@@ -655,10 +655,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	private void setupKeyboardActions() {
-		configuration.controlMap.keyEvent(DISPLAY_ENTITY_VIEWER).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(VIEW_ENTITY).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
-		configuration.controlMap.keyEvent(DISPLAY_QUERY_INSPECTOR).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(INSPECT_QUERY).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
 		configuration.controlMap.keyEvent(SELECT_INPUT_FIELD).ifPresent(keyEvent ->
