@@ -172,62 +172,6 @@ public class EntityTablePanelPreferencesTest {
 	}
 
 	@Test
-	void legacyColumnPreferences() {
-		// Simulate legacy preferences with "columns" wrapper key
-		String columnsKey = "is.codion.swing.framework.ui.EntityTablePanelPreferencesTest$Detail-columns";
-		String legacyJson = "{\"columns\":{\"int\":{\"index\":0,\"width\":180},\"double\":{\"index\":1,\"width\":190},\"string\":{\"index\":-1,\"width\":75}}}";
-		UserPreferences.put(columnsKey, legacyJson);
-
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
-			@Override
-			public String preferencesKey() {
-				return PREFERENCES_KEY + "$Detail";
-			}
-		};
-
-		// Apply legacy preferences
-		EntityTablePanelPreferences.applyLegacy(tablePanel);
-
-		// Verify legacy preferences were applied
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
-		assertFalse(columnModel.visible(Detail.STRING).is()); // index -1 means hidden
-		assertEquals(180, columnModel.column(Detail.INT).getPreferredWidth());
-		assertEquals(190, columnModel.column(Detail.DOUBLE).getPreferredWidth());
-
-		// Clean up
-		UserPreferences.remove(columnsKey);
-	}
-
-	@Test
-	void legacyConditionPreferences() {
-		// Simulate legacy preferences with "conditions" wrapper key
-		String conditionsKey = "is.codion.swing.framework.ui.EntityTablePanelPreferencesTest$Detail-conditions";
-		String legacyJson = "{\"conditions\":{\"string\":{\"ae\":0,\"cs\":1,\"w\":\"PREFIX\"}}}";
-		UserPreferences.put(conditionsKey, legacyJson);
-
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
-			@Override
-			public String preferencesKey() {
-				return PREFERENCES_KEY + "$Detail";
-			}
-		};
-
-		// Apply legacy preferences
-		EntityTablePanelPreferences.applyLegacy(tablePanel);
-
-		// Verify legacy condition preferences were applied
-		ConditionModel<?> stringCondition = tableModel.query().condition().get().get(Detail.STRING);
-		assertFalse(stringCondition.autoEnable().is());
-		assertTrue(stringCondition.caseSensitive().is());
-		assertEquals(Wildcard.PREFIX, stringCondition.operands().wildcard().get());
-
-		// Clean up
-		UserPreferences.remove(conditionsKey);
-	}
-
-	@Test
 	void emptyPreferences() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);

@@ -1047,14 +1047,6 @@ public class EntityTablePanel extends JPanel {
 		return exportModel;
 	}
 
-	final void writeLegacyPreferences() {
-		new EntityTablePanelPreferences(this).saveLegacy();
-	}
-
-	final void applyLegacyPreferences() {
-		EntityTablePanelPreferences.applyLegacy(this);
-	}
-
 	/**
 	 * Creates a {@link Control} for adding a new entity via the available edit panel.
 	 * @return the add control

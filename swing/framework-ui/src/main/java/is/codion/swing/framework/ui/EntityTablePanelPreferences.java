@@ -20,7 +20,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
@@ -143,25 +142,6 @@ final class EntityTablePanelPreferences {
 		}
 	}
 
-	void saveLegacy() {
-		try {
-			JSONObject legacyColumns = new JSONObject();
-			legacyColumns.put(COLUMNS_KEY, columnPreferences);
-			UserPreferences.put(columnsKey, legacyColumns.toString());
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving legacy column preferences", e);
-		}
-		try {
-			JSONObject legacyConditions = new JSONObject();
-			legacyConditions.put(CONDITIONS_KEY, conditionPreferences);
-			UserPreferences.put(conditionsKey, legacyConditions.toString());
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving legacy condition preferences", e);
-		}
-	}
-
 	void save(Preferences preferences) {
 		try {
 			preferences.put(tableKey, tablePreferences.toString());
@@ -189,19 +169,6 @@ final class EntityTablePanelPreferences {
 				LOG.error("Error while saving export preferences", e);
 			}
 		}
-	}
-
-	static void applyLegacy(EntityTablePanel tablePanel) {
-		String tableKey = tablePanel.preferencesKey() + TABLE_PREFERENCES;
-		String columnsKey = tablePanel.preferencesKey() + COLUMN_PREFERENCES;
-		String conditionsKey = tablePanel.preferencesKey() + CONDITIONS_PREFERENCES;
-
-		JSONObject columnPreferences = readColumnPreferencesLegacy(UserPreferences.get(columnsKey, EMPTY_JSON_OBJECT));
-		JSONObject conditionPreferences = readConditionPreferencesLegacy(UserPreferences.get(conditionsKey, EMPTY_JSON_OBJECT));
-
-		new EntityTablePanelPreferences(new JSONObject(), columnPreferences, conditionPreferences,
-						/* No legacy export preferences*/ null, tableKey, columnsKey, conditionsKey,
-						/* No legacy export preferences*/"no-export-prefs").restore(tablePanel);
 	}
 
 	/**
@@ -369,15 +336,6 @@ final class EntityTablePanelPreferences {
 		columnModel.visible().set(visibleAttributes);
 	}
 
-	private static JSONObject readColumnPreferencesLegacy(String preferencesString) {
-		JSONObject json = new JSONObject(preferencesString);
-		if (json.has(COLUMNS_KEY)) {
-			return json.getJSONObject(COLUMNS_KEY);
-		}
-
-		return new JSONObject();
-	}
-
 	private static void restoreConditionPreferences(JSONObject conditionPreferences, Map<Attribute<?>, ConditionModel<?>> conditions) {
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
 			Attribute<?> attribute = entry.getKey();
@@ -394,15 +352,6 @@ final class EntityTablePanelPreferences {
 				}
 			}
 		}
-	}
-
-	private static JSONObject readConditionPreferencesLegacy(String preferencesString) {
-		JSONObject json = new JSONObject(preferencesString);
-		if (json.has(CONDITIONS_KEY)) {
-			return json.getJSONObject(CONDITIONS_KEY);
-		}
-
-		return new JSONObject();
 	}
 
 	private static final class AttributeIndex {

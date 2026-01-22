@@ -910,20 +910,6 @@ public class EntityPanel extends JPanel {
 		return detailController;
 	}
 
-	final void writeLegacyPreferences() {
-		if (containsTablePanel()) {
-			tablePanel.writeLegacyPreferences();
-		}
-		detailPanels.get().forEach(EntityPanel::writeLegacyPreferences);
-	}
-
-	final void applyLegacyPreferences() {
-		if (containsTablePanel()) {
-			tablePanel.applyLegacyPreferences();
-		}
-		detailPanels.get().forEach(EntityPanel::applyLegacyPreferences);
-	}
-
 	private @Nullable JPanel createEditControlPanel() {
 		if (editPanel == null) {
 			return null;
