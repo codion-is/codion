@@ -641,7 +641,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler lookAndFeelEnabler) {
-		UserPreferences.set(DomainGeneratorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
+		UserPreferences.put(DomainGeneratorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						lookAndFeelEnabler.lookAndFeelInfo().getClassName());
 	}
 

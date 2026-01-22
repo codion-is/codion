@@ -573,7 +573,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler selectedLookAndFeel) {
-		UserPreferences.set(LoadTestPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
+		UserPreferences.put(LoadTestPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
 

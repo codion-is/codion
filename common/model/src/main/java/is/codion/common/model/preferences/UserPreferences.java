@@ -75,7 +75,7 @@ public final class UserPreferences {
 	 * @param key the key to use to identify the preference
 	 * @param value the preference value to associate with the given key
 	 */
-	public static void set(String key, String value) {
+	public static void put(String key, String value) {
 		userPreferences().put(requireNonNull(key), value);
 	}
 

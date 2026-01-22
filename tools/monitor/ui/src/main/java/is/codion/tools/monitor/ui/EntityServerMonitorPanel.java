@@ -297,7 +297,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler selectedLookAndFeel) {
-		UserPreferences.set(EntityServerMonitorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
+		UserPreferences.put(EntityServerMonitorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
 

@@ -235,7 +235,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		showMessageDialog(this, languagePanel, bundle.getString("language_title"), JOptionPane.QUESTION_MESSAGE);
 		String selectedLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
 		if (!currentLanguage.equals(selectedLanguage)) {
-			UserPreferences.set(LANGUAGE_PREFERENCES_KEY, selectedLanguage);
+			UserPreferences.put(LANGUAGE_PREFERENCES_KEY, selectedLanguage);
 			showMessageDialog(this, bundle.getString("language_has_been_changed"));
 		}
 	}

@@ -106,9 +106,9 @@ public class UserPreferencesTest {
 		}
 
 		@Test
-		@DisplayName("Set and get value works correctly")
-		void set_andGet_worksCorrectly() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+		@DisplayName("Put and get value works correctly")
+		void put_andGet_worksCorrectly() {
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 
 			String result = UserPreferences.get(TEST_KEY);
 
@@ -116,9 +116,9 @@ public class UserPreferencesTest {
 		}
 
 		@Test
-		@DisplayName("Set and get with default returns stored value")
-		void set_andGetWithDefault_returnsStoredValue() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+		@DisplayName("Put and get with default returns stored value")
+		void put_andGetWithDefault_returnsStoredValue() {
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 
 			String result = UserPreferences.get(TEST_KEY, DEFAULT_VALUE);
 
@@ -128,7 +128,7 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("Remove key removes stored value")
 		void remove_removesStoredValue() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 			assertEquals(TEST_VALUE, UserPreferences.get(TEST_KEY));
 
 			UserPreferences.remove(TEST_KEY);
@@ -149,10 +149,10 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("Update existing value works")
 		void update_existingValue_works() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 			assertEquals(TEST_VALUE, UserPreferences.get(TEST_KEY));
 
-			UserPreferences.set(TEST_KEY, TEST_VALUE_2);
+			UserPreferences.put(TEST_KEY, TEST_VALUE_2);
 
 			assertEquals(TEST_VALUE_2, UserPreferences.get(TEST_KEY));
 		}
@@ -165,8 +165,8 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("Multiple keys can be stored independently")
 		void multipleKeys_storedIndependently() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
-			UserPreferences.set(TEST_KEY_2, TEST_VALUE_2);
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
+			UserPreferences.put(TEST_KEY_2, TEST_VALUE_2);
 
 			assertEquals(TEST_VALUE, UserPreferences.get(TEST_KEY));
 			assertEquals(TEST_VALUE_2, UserPreferences.get(TEST_KEY_2));
@@ -175,8 +175,8 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("Removing one key does not affect others")
 		void remove_oneKey_doesNotAffectOthers() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
-			UserPreferences.set(TEST_KEY_2, TEST_VALUE_2);
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
+			UserPreferences.put(TEST_KEY_2, TEST_VALUE_2);
 
 			UserPreferences.remove(TEST_KEY);
 
@@ -208,15 +208,15 @@ public class UserPreferencesTest {
 		}
 
 		@Test
-		@DisplayName("Set with null key throws NPE")
-		void set_nullKey_throwsNPE() {
-			assertThrows(NullPointerException.class, () -> UserPreferences.set(null, TEST_VALUE));
+		@DisplayName("Put with null key throws NPE")
+		void put_nullKey_throwsNPE() {
+			assertThrows(NullPointerException.class, () -> UserPreferences.put(null, TEST_VALUE));
 		}
 
 		@Test
-		@DisplayName("Set with null value throws NPE")
-		void set_nullValue_throwsNPE() {
-			assertThrows(NullPointerException.class, () -> UserPreferences.set(TEST_KEY, null));
+		@DisplayName("Put with null value throws NPE")
+		void put_nullValue_throwsNPE() {
+			assertThrows(NullPointerException.class, () -> UserPreferences.put(TEST_KEY, null));
 		}
 
 		@Test
@@ -234,7 +234,7 @@ public class UserPreferencesTest {
 		@DisplayName("Empty string key works")
 		void emptyStringKey_works() {
 			String emptyKey = "";
-			UserPreferences.set(emptyKey, TEST_VALUE);
+			UserPreferences.put(emptyKey, TEST_VALUE);
 
 			assertEquals(TEST_VALUE, UserPreferences.get(emptyKey));
 		}
@@ -243,7 +243,7 @@ public class UserPreferencesTest {
 		@DisplayName("Empty string value works")
 		void emptyStringValue_works() {
 			String emptyValue = "";
-			UserPreferences.set(TEST_KEY, emptyValue);
+			UserPreferences.put(TEST_KEY, emptyValue);
 
 			assertEquals(emptyValue, UserPreferences.get(TEST_KEY));
 		}
@@ -253,7 +253,7 @@ public class UserPreferencesTest {
 		void longKeyWithinLimits_works() {
 			// Java Preferences typically has 80 character limit for keys
 			String longKey = "very.long.key." + Text.leftPad("", 60, 'a');
-			UserPreferences.set(longKey, TEST_VALUE);
+			UserPreferences.put(longKey, TEST_VALUE);
 
 			assertEquals(TEST_VALUE, UserPreferences.get(longKey));
 
@@ -265,7 +265,7 @@ public class UserPreferencesTest {
 		@DisplayName("Very long value works")
 		void veryLongValue_works() {
 			String longValue = "very.long.value." + Text.leftPad("", 1000, 'b');
-			UserPreferences.set(TEST_KEY, longValue);
+			UserPreferences.put(TEST_KEY, longValue);
 
 			assertEquals(longValue, UserPreferences.get(TEST_KEY));
 		}
@@ -274,7 +274,7 @@ public class UserPreferencesTest {
 		@DisplayName("Special characters in key work")
 		void specialCharactersInKey_work() {
 			String specialKey = "test.key.with-special_chars@#$%";
-			UserPreferences.set(specialKey, TEST_VALUE);
+			UserPreferences.put(specialKey, TEST_VALUE);
 
 			assertEquals(TEST_VALUE, UserPreferences.get(specialKey));
 
@@ -286,7 +286,7 @@ public class UserPreferencesTest {
 		@DisplayName("Special characters in value work")
 		void specialCharactersInValue_work() {
 			String specialValue = "test.value.with-special_chars@#$%^&*()[]{}";
-			UserPreferences.set(TEST_KEY, specialValue);
+			UserPreferences.put(TEST_KEY, specialValue);
 
 			assertEquals(specialValue, UserPreferences.get(TEST_KEY));
 		}
@@ -297,7 +297,7 @@ public class UserPreferencesTest {
 			String unicodeKey = "test.unicode.key.こんにちは.ñ.ü";
 			String unicodeValue = "test.unicode.value.世界.ñoñó.ümlaut";
 
-			UserPreferences.set(unicodeKey, unicodeValue);
+			UserPreferences.put(unicodeKey, unicodeValue);
 
 			assertEquals(unicodeValue, UserPreferences.get(unicodeKey));
 
@@ -313,15 +313,15 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("Flush does not throw exception")
 		void flush_doesNotThrowException() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 
 			assertDoesNotThrow(() -> UserPreferences.flush());
 		}
 
 		@Test
-		@DisplayName("Flush after set persists data")
-		void flush_afterSet_persistsData() throws BackingStoreException {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+		@DisplayName("Flush after put persists data")
+		void flush_afterPut_persistsData() throws BackingStoreException {
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 			UserPreferences.flush();
 
 			// Data should still be there after flush
@@ -331,7 +331,7 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("Multiple flush calls work")
 		void multipleFlusCalls_work() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 
 			assertDoesNotThrow(() -> {
 				UserPreferences.flush();
@@ -355,8 +355,8 @@ public class UserPreferencesTest {
 		private static final int OPERATIONS_PER_THREAD = 100;
 
 		@Test
-		@DisplayName("Concurrent set operations are thread-safe")
-		void concurrentSet_isThreadSafe() throws InterruptedException {
+		@DisplayName("Concurrent put operations are thread-safe")
+		void concurrentPut_isThreadSafe() throws InterruptedException {
 			ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
 			CountDownLatch startLatch = new CountDownLatch(1);
 			CountDownLatch doneLatch = new CountDownLatch(THREAD_COUNT);
@@ -369,7 +369,7 @@ public class UserPreferencesTest {
 						for (int j = 0; j < OPERATIONS_PER_THREAD; j++) {
 							String key = "thread." + threadId + ".key." + j;
 							String value = "thread." + threadId + ".value." + j;
-							UserPreferences.set(key, value);
+							UserPreferences.put(key, value);
 						}
 					}
 					catch (InterruptedException e) {
@@ -411,7 +411,7 @@ public class UserPreferencesTest {
 		void concurrentGet_isThreadSafe() throws InterruptedException {
 			// Set up some test data
 			for (int i = 0; i < THREAD_COUNT; i++) {
-				UserPreferences.set("concurrent.key." + i, "concurrent.value." + i);
+				UserPreferences.put("concurrent.key." + i, "concurrent.value." + i);
 			}
 
 			ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
@@ -476,7 +476,7 @@ public class UserPreferencesTest {
 							String key = "mixed.key." + threadId;
 							String value = "mixed.value." + threadId + "." + j;
 
-							UserPreferences.set(key, value);
+							UserPreferences.put(key, value);
 							String retrieved = UserPreferences.get(key);
 
 							if (j % 2 == 0) {
@@ -519,7 +519,7 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("UserPreferences integrates with Java Preferences")
 		void integrationWithJavaPreferences() {
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 
 			// Verify through direct Java Preferences API
 			Preferences prefs = Preferences.userRoot();
@@ -545,10 +545,10 @@ public class UserPreferencesTest {
 		@DisplayName("Singleton behavior maintains same preferences instance")
 		void singletonBehavior_maintainsSameInstance() {
 			// This test verifies that multiple accesses use the same underlying preferences
-			UserPreferences.set(TEST_KEY, TEST_VALUE);
+			UserPreferences.put(TEST_KEY, TEST_VALUE);
 			String value1 = UserPreferences.get(TEST_KEY);
 
-			UserPreferences.set(TEST_KEY_2, TEST_VALUE_2);
+			UserPreferences.put(TEST_KEY_2, TEST_VALUE_2);
 			String value2 = UserPreferences.get(TEST_KEY);
 			String value3 = UserPreferences.get(TEST_KEY_2);
 

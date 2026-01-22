@@ -147,7 +147,7 @@ final class EntityTablePanelPreferences {
 		try {
 			JSONObject legacyColumns = new JSONObject();
 			legacyColumns.put(COLUMNS_KEY, columnPreferences);
-			UserPreferences.set(columnsKey, legacyColumns.toString());
+			UserPreferences.put(columnsKey, legacyColumns.toString());
 		}
 		catch (Exception e) {
 			LOG.error("Error while saving legacy column preferences", e);
@@ -155,7 +155,7 @@ final class EntityTablePanelPreferences {
 		try {
 			JSONObject legacyConditions = new JSONObject();
 			legacyConditions.put(CONDITIONS_KEY, conditionPreferences);
-			UserPreferences.set(conditionsKey, legacyConditions.toString());
+			UserPreferences.put(conditionsKey, legacyConditions.toString());
 		}
 		catch (Exception e) {
 			LOG.error("Error while saving legacy condition preferences", e);

@@ -176,7 +176,7 @@ public class EntityTablePanelPreferencesTest {
 		// Simulate legacy preferences with "columns" wrapper key
 		String columnsKey = "is.codion.swing.framework.ui.EntityTablePanelPreferencesTest$Detail-columns";
 		String legacyJson = "{\"columns\":{\"int\":{\"index\":0,\"width\":180},\"double\":{\"index\":1,\"width\":190},\"string\":{\"index\":-1,\"width\":75}}}";
-		UserPreferences.set(columnsKey, legacyJson);
+		UserPreferences.put(columnsKey, legacyJson);
 
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
@@ -204,7 +204,7 @@ public class EntityTablePanelPreferencesTest {
 		// Simulate legacy preferences with "conditions" wrapper key
 		String conditionsKey = "is.codion.swing.framework.ui.EntityTablePanelPreferencesTest$Detail-conditions";
 		String legacyJson = "{\"conditions\":{\"string\":{\"ae\":0,\"cs\":1,\"w\":\"PREFIX\"}}}";
-		UserPreferences.set(conditionsKey, legacyJson);
+		UserPreferences.put(conditionsKey, legacyJson);
 
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
