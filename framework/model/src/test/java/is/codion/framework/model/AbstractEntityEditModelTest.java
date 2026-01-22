@@ -90,6 +90,7 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger insertEvents = new AtomicInteger();
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
+		AtomicBoolean managerInserted = new AtomicBoolean();
 
 		Consumer<Collection<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
 		Consumer<Map<Entity, Entity>> updateListener = updated -> updateEvents.incrementAndGet();
@@ -98,13 +99,17 @@ public final class AbstractEntityEditModelTest {
 		AbstractEntityEditModel.editEvents(Employee.TYPE).inserted().addWeakConsumer(insertListener);
 		AbstractEntityEditModel.editEvents(Employee.TYPE).updated().addWeakConsumer(updateListener);
 		AbstractEntityEditModel.editEvents(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
+		AbstractEntityEditModel.editEvents(Employee.TYPE).inserted()
+						.when(inserted -> inserted.stream()
+										.anyMatch(entity -> "MANAGER".equals(entity.get(Employee.JOB))))
+						.addListener(() -> managerInserted.set(true));
 
 		employeeEditModel.settings().editEvents().set(true);
 
 		EntityConnection connection = employeeEditModel.connection();
+		Entity jones = connection.selectSingle(Employee.NAME.equalTo("JONES"));
 		connection.startTransaction();
 		try {
-			Entity jones = connection.selectSingle(Employee.NAME.equalTo("JONES"));
 			editor.set(jones);
 			editor.value(Employee.NAME).set("Noname");
 			employeeEditModel.insert();
@@ -114,10 +119,21 @@ public final class AbstractEntityEditModelTest {
 			assertEquals(1, updateEvents.get());
 			assertNotNull(employeeEditModel.delete());
 			assertEquals(1, deleteEvents.get());
+			assertTrue(managerInserted.get());
 		}
 		finally {
 			connection.rollbackTransaction();
 		}
+
+		assertThrows(IllegalArgumentException.class, () -> AbstractEntityEditModel.editEvents(Department.TYPE)
+						.inserted()
+						.accept(singleton(jones)));
+		assertThrows(IllegalArgumentException.class, () -> AbstractEntityEditModel.editEvents(Department.TYPE)
+						.updated()
+						.accept(singletonMap(jones, jones)));
+		assertThrows(IllegalArgumentException.class, () -> AbstractEntityEditModel.editEvents(Department.TYPE)
+						.deleted()
+						.accept(singleton(jones)));
 
 		AbstractEntityEditModel.editEvents(Employee.TYPE).inserted().removeWeakConsumer(insertListener);
 		AbstractEntityEditModel.editEvents(Employee.TYPE).updated().removeWeakConsumer(updateListener);

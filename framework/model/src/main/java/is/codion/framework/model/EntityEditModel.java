@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -43,6 +42,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -713,21 +713,60 @@ public interface EntityEditModel {
 	interface EditEvents {
 
 		/**
-		 * Returns an insert {@link Event}, notified each time entities are inserted.
-		 * @return the insert {@link Event}
+		 * Returns an {@link Inserted}, notified each time entities are inserted.
+		 * @return the {@link Inserted} instance
 		 */
-		Event<Collection<Entity>> inserted();
+		Inserted inserted();
 
 		/**
-		 * Returns an update {@link Event}, notified each time entities are updated.
-		 * @return the update {@link Event}
+		 * Returns an {@link Updated}, notified each time entities are updated.
+		 * @return the {@link Updated} instance
 		 */
-		Event<Map<Entity, Entity>> updated();
+		Updated updated();
 
 		/**
-		 * Returns delete {@link Event}, notified each time entities are deleted.
-		 * @return the delete {@link Event}
+		 * Returns a {@link Deleted}, notified each time entities are deleted.
+		 * @return the {@link Deleted} instance
 		 */
-		Event<Collection<Entity>> deleted();
+		Deleted deleted();
+
+		/**
+		 * Notified on insert.
+		 */
+		interface Inserted extends Observer<Collection<Entity>>, Consumer<Collection<Entity>> {
+
+			/**
+			 * Notifies that the given entities have been inserted.
+			 * @param inserted the inserted entities
+			 * @throws IllegalArgumentException in case any of the entities is of the incorrect type
+			 */
+			void accept(Collection<Entity> inserted);
+		}
+
+		/**
+		 * Notified on update.
+		 */
+		interface Updated extends Observer<Map<Entity, Entity>>, Consumer<Map<Entity, Entity>> {
+
+			/**
+			 * Notifies that the given entities have been updated.
+			 * @param updated tne updated entities, mapped to their original state
+			 * @throws IllegalArgumentException in case any of the entities is of the incorrect type
+			 */
+			void accept(Map<Entity, Entity> updated);
+		}
+
+		/**
+		 * Notified on delete.
+		 */
+		interface Deleted extends Observer<Collection<Entity>>, Consumer<Collection<Entity>> {
+
+			/**
+			 * Notifies that the given entities have been deleted.
+			 * @param deleted the deleted entities
+			 * @throws IllegalArgumentException in case any of the entities is of the incorrect type
+			 */
+			void accept(Collection<Entity> deleted);
+		}
 	}
 }

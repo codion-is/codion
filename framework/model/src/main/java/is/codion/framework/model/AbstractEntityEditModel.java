@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.AbstractObserver;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
@@ -408,7 +409,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	static EditEvents editEvents(EntityType entityType) {
-		return EVENTS.computeIfAbsent(requireNonNull(entityType), k -> new DefaultEditEvents());
+		return EVENTS.computeIfAbsent(requireNonNull(entityType), DefaultEditEvents::new);
 	}
 
 	/**
@@ -807,26 +808,30 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	static final class DefaultEditEvents implements EditEvents {
+	private static final class DefaultEditEvents implements EditEvents {
 
-		private final Event<Collection<Entity>> inserted = Event.event();
-		private final Event<Map<Entity, Entity>> updated = Event.event();
-		private final Event<Collection<Entity>> deleted = Event.event();
+		private final EntityType entityType;
 
-		private DefaultEditEvents() {}
+		private final Inserted inserted = new DefaultInsertEvent();
+		private final Updated updated = new DefaultUpdated();
+		private final Deleted deleted = new DefaultDeleted();
+
+		private DefaultEditEvents(EntityType entityType) {
+			this.entityType = entityType;
+		}
 
 		@Override
-		public Event<Collection<Entity>> inserted() {
+		public Inserted inserted() {
 			return inserted;
 		}
 
 		@Override
-		public Event<Map<Entity, Entity>> updated() {
+		public Updated updated() {
 			return updated;
 		}
 
 		@Override
-		public Event<Collection<Entity>> deleted() {
+		public Deleted deleted() {
 			return deleted;
 		}
 
@@ -847,6 +852,42 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private static void notifyDeleted(Collection<Entity> deleted) {
 			groupByType(deleted).forEach((entityType, entities) ->
 							editEvents(entityType).deleted().accept(entities));
+		}
+
+		private void validate(Collection<Entity> entities) {
+			for (Entity entity : requireNonNull(entities)) {
+				if (!entity.type().equals(entityType)) {
+					throw new IllegalArgumentException("Invalid entity type for edit notification: " + entity.type() + ", expected " + entityType);
+				}
+			}
+		}
+
+		private final class DefaultInsertEvent extends AbstractObserver<Collection<Entity>> implements Inserted {
+
+			@Override
+			public void accept(Collection<Entity> inserted) {
+				validate(inserted);
+				notifyListeners(inserted);
+			}
+		}
+
+		private final class DefaultUpdated extends AbstractObserver<Map<Entity, Entity>> implements Updated {
+
+			@Override
+			public void accept(Map<Entity, Entity> updated) {
+				validate(requireNonNull(updated).keySet());
+				validate(updated.values());
+				notifyListeners(updated);
+			}
+		}
+
+		private final class DefaultDeleted extends AbstractObserver<Collection<Entity>> implements Deleted {
+
+			@Override
+			public void accept(Collection<Entity> deleted) {
+				validate(deleted);
+				notifyListeners(deleted);
+			}
 		}
 	}
 }
