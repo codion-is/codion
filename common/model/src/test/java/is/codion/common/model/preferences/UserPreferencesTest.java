@@ -315,7 +315,7 @@ public class UserPreferencesTest {
 		void flush_doesNotThrowException() {
 			UserPreferences.put(TEST_KEY, TEST_VALUE);
 
-			assertDoesNotThrow(() -> UserPreferences.flush());
+			assertDoesNotThrow(UserPreferences::flush);
 		}
 
 		@Test
@@ -343,7 +343,7 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("Flush on empty preferences works")
 		void flush_onEmptyPreferences_works() {
-			assertDoesNotThrow(() -> UserPreferences.flush());
+			assertDoesNotThrow(UserPreferences::flush);
 		}
 	}
 

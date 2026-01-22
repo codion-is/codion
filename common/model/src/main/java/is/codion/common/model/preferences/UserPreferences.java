@@ -88,14 +88,11 @@ public final class UserPreferences {
 	}
 
 	/**
-	 * Flushes the preferences to disk, including all file based preferences initialized via {@link #file(String)}.
+	 * Flushes user preferences to disk
 	 * @throws BackingStoreException in case of a backing store failure
 	 */
 	public static void flush() throws BackingStoreException {
 		userPreferences().flush();
-		for (Preferences preferences : FILE_PREFERENCES.values()) {
-			preferences.flush();
-		}
 	}
 
 	/**

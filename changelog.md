@@ -6,6 +6,7 @@ Codion Change Log
 - Database.close() and AbstractDatabase.closeDatabase() added, for closing embedded databases.
 ### is.codion.common.model
 - UserPreferences.set() renamed put().
+- UserPreferences.flush() no longer flushes file based preferences.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, now uses MessageFormat.format() when formatting result limit message.
 - EntityPopupMenu removed, EntityViewer added.

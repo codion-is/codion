@@ -931,7 +931,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 				LOG.debug("Writing user preferences");
 				store(applicationModel.preferences());
 				storeLegacyPreferences();
-				UserPreferences.flush();
+				applicationModel.preferences().flush();
+				if (legacyPreferences != null) {
+					legacyPreferences.flush();
+				}
 			}
 		}
 		catch (Throwable e) {

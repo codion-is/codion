@@ -68,7 +68,7 @@ public class EntityTablePanelPreferencesTest {
 	@AfterEach
 	void tearDown() throws BackingStoreException {
 		preferences.clear();
-		UserPreferences.flush();
+		preferences.flush();
 	}
 
 	@Test
