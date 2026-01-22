@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.RandomAccessFile;
+import java.io.UncheckedIOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
@@ -75,11 +76,16 @@ final class JsonPreferencesStore {
 
 	private long lastModified;
 
-	JsonPreferencesStore(Path filePath) throws IOException {
+	JsonPreferencesStore(Path filePath) {
 		this.filePath = requireNonNull(filePath);
 		this.lockFilePath = filePath.resolveSibling(filePath.getFileName() + ".lock");
 		LOG.debug("Initializing preferences store at {}", filePath);
-		loadData();
+		try {
+			loadData();
+		}
+		catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
 	}
 
 	void put(String path, String key, String value) {

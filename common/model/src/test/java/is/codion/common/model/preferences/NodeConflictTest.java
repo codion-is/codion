@@ -21,6 +21,7 @@ package is.codion.common.model.preferences;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,7 +35,7 @@ public final class NodeConflictTest {
 	Path tempDir;
 
 	@Test
-	void testCreatingNodeWhereValueExists() throws Exception {
+	void testCreatingNodeWhereValueExists() {
 		Path prefsFile = tempDir.resolve("conflict.json");
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
 
@@ -54,7 +55,7 @@ public final class NodeConflictTest {
 	}
 
 	@Test
-	void testCreatingNestedPathThroughValue() throws Exception {
+	void testCreatingNestedPathThroughValue() {
 		Path prefsFile = tempDir.resolve("nested-conflict.json");
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
 
@@ -73,7 +74,7 @@ public final class NodeConflictTest {
 	}
 
 	@Test
-	void testValidNodeCreation() throws Exception {
+	void testValidNodeCreation() {
 		Path prefsFile = tempDir.resolve("valid-nodes.json");
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
 
@@ -96,7 +97,7 @@ public final class NodeConflictTest {
 	}
 
 	@Test
-	void testRemovingValueAllowsNodeCreation() throws Exception {
+	void testRemovingValueAllowsNodeCreation() {
 		Path prefsFile = tempDir.resolve("remove-then-create.json");
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
 
@@ -114,7 +115,7 @@ public final class NodeConflictTest {
 	}
 
 	@Test
-	void testMultipleLevelConflicts() throws Exception {
+	void testMultipleLevelConflicts() {
 		Path prefsFile = tempDir.resolve("multi-level.json");
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
 
@@ -135,7 +136,7 @@ public final class NodeConflictTest {
 	}
 
 	@Test
-	void testSaveAndReloadPreservesStructure() throws Exception {
+	void testSaveAndReloadPreservesStructure() throws IOException {
 		Path prefsFile = tempDir.resolve("save-reload.json");
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
 

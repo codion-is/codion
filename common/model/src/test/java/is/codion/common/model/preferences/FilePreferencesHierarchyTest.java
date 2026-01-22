@@ -23,7 +23,6 @@ import is.codion.common.utilities.Text;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +36,7 @@ public final class FilePreferencesHierarchyTest {
 	@TempDir
 	Path tempDir;
 
-	private Preferences createTestPreferences() throws IOException {
+	private Preferences createTestPreferences() {
 		Path testFile = tempDir.resolve("test-" + System.nanoTime() + ".json");
 		JsonPreferencesStore store = new JsonPreferencesStore(testFile);
 

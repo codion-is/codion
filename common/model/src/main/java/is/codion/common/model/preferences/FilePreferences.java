@@ -25,19 +25,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.PreferencesPath.userPreferencesPath;
 import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A file-based preferences implementation without length restrictions.
- * Supports hierarchical preferences through nested JSON structure.
+ * <p>A file-based preferences implementation without length restrictions.
+ * <p>Supports hierarchical preferences through nested JSON structure.
+ * <p>Clearing the preferences instance and flushing deletes the underlying file.
+ * @see #filePreferences(String)
+ * @see #PREFERENCES_LOCATION
  */
 public final class FilePreferences extends AbstractPreferences {
 
@@ -45,6 +49,7 @@ public final class FilePreferences extends AbstractPreferences {
 
 	/**
 	 * Provides a way to override the default (OS dependent) directory used to store the user preferences file.
+	 * <p>Note that changing this value after a file based preferences instance has been created has no effect on subsequent instances.
 	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null
@@ -53,7 +58,7 @@ public final class FilePreferences extends AbstractPreferences {
 	 */
 	public static final PropertyValue<String> PREFERENCES_LOCATION = stringValue("codion.preferences.location");
 
-	private static final Map<String, FilePreferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
+	private static final Map<Path, FilePreferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
 
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final String PATH_SEPARATOR = "/";
@@ -61,9 +66,9 @@ public final class FilePreferences extends AbstractPreferences {
 	private final JsonPreferencesStore store;
 	private final String path;
 
-	private FilePreferences(String filename) throws IOException {
-		this(null, "", createDefaultStore(requireNonNull(filename)));
-		LOG.info("Created file preferences: {}", filename);
+	private FilePreferences(Path path) {
+		this(null, "", new JsonPreferencesStore(path));
+		LOG.info("Created file preferences: {}", path);
 	}
 
 	FilePreferences(JsonPreferencesStore store) {
@@ -75,10 +80,6 @@ public final class FilePreferences extends AbstractPreferences {
 		super(parent, name);
 		this.store = store;
 		this.path = parent == null ? "" : (parent.path.isEmpty() ? name : parent.path + PATH_SEPARATOR + name);
-	}
-
-	private static JsonPreferencesStore createDefaultStore(String filename) throws IOException {
-		return new JsonPreferencesStore(PreferencesPath.userPreferencesPath(filename));
 	}
 
 	@Override
@@ -95,15 +96,7 @@ public final class FilePreferences extends AbstractPreferences {
 	 * @return a file based Preferences instance based on the given filename
 	 */
 	public static Preferences filePreferences(String filename) {
-		validateFilename(filename);
-		return FILE_PREFERENCES.computeIfAbsent(filename, k -> {
-			try {
-				return new FilePreferences(filename);
-			}
-			catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		});
+		return FILE_PREFERENCES.computeIfAbsent(userPreferencesPath(filename), FilePreferences::new);
 	}
 
 	@Override
@@ -172,12 +165,6 @@ public final class FilePreferences extends AbstractPreferences {
 		catch (IOException e) {
 			LOG.error("Failed to remove preference node", e);
 			throw new BackingStoreException(e);
-		}
-	}
-
-	private static void validateFilename(String filename) {
-		if (requireNonNull(filename).trim().isEmpty()) {
-			throw new IllegalArgumentException("Filename must not be empty");
 		}
 	}
 }

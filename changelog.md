@@ -8,6 +8,7 @@ Codion Change Log
 - UserPreferences.set() renamed put().
 - UserPreferences.flush() no longer flushes file based preferences.
 - UserPreferences.file() moved to FilePreferences.filePreferences().
+- FilePreferences now caches preferences using a Path instead of filename.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, now uses MessageFormat.format() when formatting result limit message.
 - EntityPopupMenu removed, EntityViewer added.

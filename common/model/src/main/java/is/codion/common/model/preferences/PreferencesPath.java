@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.preferences;
 
+import org.jspecify.annotations.Nullable;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -27,6 +29,10 @@ import static java.util.Objects.requireNonNull;
  * Provides platform-specific paths for storing preferences.
  */
 final class PreferencesPath {
+
+	private static final class PreferencesLocationHolder {
+		private static final @Nullable String LOCATION = FilePreferences.PREFERENCES_LOCATION.get();
+	}
 
 	private static final String CODION_DIR = "Codion";
 	private static final String USER_HOME = "user.home";
@@ -47,10 +53,9 @@ final class PreferencesPath {
 	 * @return the platform-specific preferences path
 	 */
 	static Path userPreferencesPath(String filename) {
-		requireNonNull(filename);
-		String preferencesFileLocation = FilePreferences.PREFERENCES_LOCATION.get();
-		if (preferencesFileLocation != null) {
-			return Paths.get(preferencesFileLocation, filename + JSON);
+		validateFilename(filename);
+		if (PreferencesLocationHolder.LOCATION != null) {
+			return Paths.get(PreferencesLocationHolder.LOCATION, filename + JSON);
 		}
 		String osName = System.getProperty("os.name", "").toLowerCase();
 		if (osName.contains("win")) {
@@ -102,5 +107,11 @@ final class PreferencesPath {
 		String home = System.getProperty(USER_HOME);
 
 		return Paths.get(home, "." + CODION_DIR.toLowerCase(), filename);
+	}
+
+	private static void validateFilename(String filename) {
+		if (requireNonNull(filename).trim().isEmpty()) {
+			throw new IllegalArgumentException("Filename must not be empty");
+		}
 	}
 }
