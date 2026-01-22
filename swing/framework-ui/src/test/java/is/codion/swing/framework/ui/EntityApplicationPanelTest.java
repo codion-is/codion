@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -34,10 +33,12 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,8 +55,10 @@ public class EntityApplicationPanelTest {
 					.build();
 
 	@AfterAll
-	static void cleanUp() throws IOException {
-		UserPreferences.delete("is.codion.swing.framework.ui.EntityApplicationPanelTest$TestApplicationModel");
+	static void cleanUp() throws BackingStoreException {
+		Preferences preferences = filePreferences("is.codion.swing.framework.ui.EntityApplicationPanelTest$TestApplicationModel");
+		preferences.clear();
+		preferences.flush();
 	}
 
 	@AfterEach

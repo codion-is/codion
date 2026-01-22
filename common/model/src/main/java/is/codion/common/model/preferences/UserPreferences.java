@@ -18,36 +18,17 @@
  */
 package is.codion.common.model.preferences;
 
-import is.codion.common.utilities.property.PropertyValue;
-
 import org.jspecify.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A utility class for working with user preferences
+ * A utility class for working with {@code Preferences.userRoot()}.
  */
 public final class UserPreferences {
-
-	private static final Map<String, FilePreferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
-
-	/**
-	 * Provides a way to override the default (OS dependent) directory used to store the user preferences file.
-	 * <ul>
-	 * <li>Value type: String
-	 * <li>Default value: null
-	 * </ul>
-	 * @see #file(String)
-	 */
-	public static final PropertyValue<String> PREFERENCES_LOCATION = stringValue("codion.preferences.location");
 
 	private static @Nullable Preferences preferences;
 
@@ -58,7 +39,7 @@ public final class UserPreferences {
 	 * @return the user preference associated with the given key
 	 */
 	public static @Nullable String get(String key) {
-		return userPreferences().get(requireNonNull(key), null);
+		return preferences().get(requireNonNull(key), null);
 	}
 
 	/**
@@ -68,7 +49,7 @@ public final class UserPreferences {
 	 * @throws NullPointerException in case {@code defaultValue} is null
 	 */
 	public static String get(String key, String defaultValue) {
-		return userPreferences().get(requireNonNull(key), requireNonNull(defaultValue));
+		return preferences().get(requireNonNull(key), requireNonNull(defaultValue));
 	}
 
 	/**
@@ -76,7 +57,7 @@ public final class UserPreferences {
 	 * @param value the preference value to associate with the given key
 	 */
 	public static void put(String key, String value) {
-		userPreferences().put(requireNonNull(key), value);
+		preferences().put(requireNonNull(key), value);
 	}
 
 	/**
@@ -84,7 +65,7 @@ public final class UserPreferences {
 	 * @param key the key to use to identify the preference to remove
 	 */
 	public static void remove(String key) {
-		userPreferences().remove(requireNonNull(key));
+		preferences().remove(requireNonNull(key));
 	}
 
 	/**
@@ -92,51 +73,14 @@ public final class UserPreferences {
 	 * @throws BackingStoreException in case of a backing store failure
 	 */
 	public static void flush() throws BackingStoreException {
-		userPreferences().flush();
+		preferences().flush();
 	}
 
-	/**
-	 * @param filename the preferences filename
-	 * @return a file based Preferences instance using the given filename
-	 */
-	public static Preferences file(String filename) {
-		validateFilename(filename);
-		return FILE_PREFERENCES.computeIfAbsent(filename, k -> {
-			try {
-				return new FilePreferences(filename);
-			}
-			catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		});
-	}
-
-	/**
-	 * Deletes the preferences file with the given name.
-	 * @param filename the name of the preferences file to delete
-	 * @throws IOException in case of an exception
-	 * @throws IllegalArgumentException in case the given preferences file does not exist
-	 */
-	public static void delete(String filename) throws IOException {
-		validateFilename(filename);
-		FilePreferences filePreferences = FILE_PREFERENCES.remove(filename);
-		if (filePreferences == null) {
-			throw new IllegalArgumentException("Preferences file with name '" + filename + "' not found");
-		}
-		filePreferences.delete();
-	}
-
-	private static synchronized Preferences userPreferences() {
+	private static synchronized Preferences preferences() {
 		if (preferences == null) {
 			preferences = Preferences.userRoot();
 		}
 
 		return preferences;
-	}
-
-	private static void validateFilename(String filename) {
-		if (requireNonNull(filename).trim().isEmpty()) {
-			throw new IllegalArgumentException("Filename must not be empty");
-		}
 	}
 }

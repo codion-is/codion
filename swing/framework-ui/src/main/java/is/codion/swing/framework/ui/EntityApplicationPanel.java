@@ -20,7 +20,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
@@ -111,6 +110,7 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -908,7 +908,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	protected Preferences legacyPreferences() {
 		synchronized (applicationModel) {
 			if (legacyPreferences == null) {
-				legacyPreferences = UserPreferences.file(applicationModel.getClass().getName());
+				legacyPreferences = filePreferences(applicationModel.getClass().getName());
 			}
 
 			return legacyPreferences;

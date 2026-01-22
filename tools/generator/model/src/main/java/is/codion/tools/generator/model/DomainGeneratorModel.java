@@ -20,7 +20,6 @@ package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
@@ -57,6 +56,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static is.codion.common.utilities.Configuration.stringValue;
 import static is.codion.common.utilities.Text.nullOrEmpty;
@@ -97,7 +97,7 @@ public final class DomainGeneratorModel {
 	public static final PropertyValue<String> IMPL_SOURCE_DIRECTORY =
 					stringValue("codion.domain.generator.implSourceDirectory", "impl");
 
-	private static final Preferences PREFERENCES = UserPreferences.file(DomainGeneratorModel.class.getName());
+	private static final Preferences PREFERENCES = filePreferences(DomainGeneratorModel.class.getName());
 	private static final Pattern PACKAGE_PATTERN =
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
 	private static final SchemaSettings DEFAULT_SCHEMA_SETTINGS = SchemaSettings.builder().build();

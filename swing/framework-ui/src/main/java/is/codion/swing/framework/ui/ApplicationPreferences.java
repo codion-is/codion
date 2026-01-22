@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.domain.DomainType;
@@ -29,6 +28,7 @@ import org.jspecify.annotations.Nullable;
 import java.awt.Dimension;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static is.codion.framework.model.EntityApplicationModel.PREFERENCES_KEY;
 import static java.lang.Integer.parseInt;
 
@@ -96,9 +96,10 @@ final class ApplicationPreferences {
 	}
 
 	static ApplicationPreferences load(Class<?> applicationModelClass, DomainType domain) {
-		String preferences = UserPreferences.file(PREFERENCES_KEY.optional().orElse(domain.name())).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
+		String preferences = filePreferences(PREFERENCES_KEY.optional().orElse(domain.name()))
+						.get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
 		if (preferences.equals(EMPTY_JSON_OBJECT)) {
-			preferences = UserPreferences.file(applicationModelClass.getName()).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
+			preferences = filePreferences(applicationModelClass.getName()).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
 		}
 
 		return fromString(preferences);

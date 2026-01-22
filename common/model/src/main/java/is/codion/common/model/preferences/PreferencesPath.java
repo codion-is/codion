@@ -36,7 +36,7 @@ final class PreferencesPath {
 
 	/**
 	 * Returns the platform-specific path for storing user preferences.
-	 * Uses {@link UserPreferences#PREFERENCES_LOCATION} in case it is specified.
+	 * Uses {@link FilePreferences#PREFERENCES_LOCATION} in case it is specified.
 	 * <ul>
 	 * <li>Windows: {@code %LOCALAPPDATA%/Codion/{filename}.json}
 	 * <li>macOS: {@code ~/Library/Preferences/Codion/{filename}.json}
@@ -48,7 +48,7 @@ final class PreferencesPath {
 	 */
 	static Path userPreferencesPath(String filename) {
 		requireNonNull(filename);
-		String preferencesFileLocation = UserPreferences.PREFERENCES_LOCATION.get();
+		String preferencesFileLocation = FilePreferences.PREFERENCES_LOCATION.get();
 		if (preferencesFileLocation != null) {
 			return Paths.get(preferencesFileLocation, filename + JSON);
 		}

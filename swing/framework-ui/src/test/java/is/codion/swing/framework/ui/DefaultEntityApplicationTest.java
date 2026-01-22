@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -27,16 +26,20 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 public final class DefaultEntityApplicationTest {
 
 	@AfterAll
-	static void cleanUp() throws IOException {
-		UserPreferences.delete("is.codion.swing.framework.ui.DefaultEntityApplicationTest$TestApplicationModel");
+	static void cleanUp() throws BackingStoreException {
+		Preferences preferences = filePreferences("is.codion.swing.framework.ui.DefaultEntityApplicationTest$TestApplicationModel");
+		preferences.clear();
+		preferences.flush();
 	}
 
 	@Test

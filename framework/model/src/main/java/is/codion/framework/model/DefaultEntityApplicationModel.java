@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -53,7 +53,7 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	 */
 	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider,
 																			 Collection<? extends M> entityModels) {
-		this(connectionProvider, entityModels, UserPreferences.file(PREFERENCES_KEY.optional()
+		this(connectionProvider, entityModels, filePreferences(PREFERENCES_KEY.optional()
 						.orElse(connectionProvider.domainType().name())));
 	}
 

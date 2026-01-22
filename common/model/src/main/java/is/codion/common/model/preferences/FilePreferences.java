@@ -18,23 +18,42 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.utilities.property.PropertyValue;
+
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
+import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A file-based preferences implementation without length restrictions.
  * Supports hierarchical preferences through nested JSON structure.
  */
-final class FilePreferences extends AbstractPreferences {
+public final class FilePreferences extends AbstractPreferences {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FilePreferences.class);
+
+	/**
+	 * Provides a way to override the default (OS dependent) directory used to store the user preferences file.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
+	 * @see #filePreferences(String)
+	 */
+	public static final PropertyValue<String> PREFERENCES_LOCATION = stringValue("codion.preferences.location");
+
+	private static final Map<String, FilePreferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
 
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final String PATH_SEPARATOR = "/";
@@ -42,12 +61,11 @@ final class FilePreferences extends AbstractPreferences {
 	private final JsonPreferencesStore store;
 	private final String path;
 
-	FilePreferences(String filename) throws IOException {
+	private FilePreferences(String filename) throws IOException {
 		this(null, "", createDefaultStore(requireNonNull(filename)));
 		LOG.info("Created file preferences: {}", filename);
 	}
 
-	// Package-private constructor for testing
 	FilePreferences(JsonPreferencesStore store) {
 		this(null, "", store);
 		LOG.debug("Created file preferences with custom store");
@@ -65,16 +83,27 @@ final class FilePreferences extends AbstractPreferences {
 
 	@Override
 	public void put(String key, String value) {
-		// Override to bypass AbstractPreferences validation
+		requireNonNull(key, "key cannot be null");
+		requireNonNull(value, "value cannot be null");
 		synchronized (lock) {
-			if (key == null) {
-				throw new NullPointerException("key cannot be null");
-			}
-			if (value == null) {
-				throw new NullPointerException("value cannot be null");
-			}
 			putSpi(key, value);
 		}
+	}
+
+	/**
+	 * @param filename the preferences filename
+	 * @return a file based Preferences instance based on the given filename
+	 */
+	public static Preferences filePreferences(String filename) {
+		validateFilename(filename);
+		return FILE_PREFERENCES.computeIfAbsent(filename, k -> {
+			try {
+				return new FilePreferences(filename);
+			}
+			catch (IOException e) {
+				throw new UncheckedIOException(e);
+			}
+		});
 	}
 
 	@Override
@@ -146,7 +175,9 @@ final class FilePreferences extends AbstractPreferences {
 		}
 	}
 
-	void delete() throws IOException {
-		store.delete();
+	private static void validateFilename(String filename) {
+		if (requireNonNull(filename).trim().isEmpty()) {
+			throw new IllegalArgumentException("Filename must not be empty");
+		}
 	}
 }

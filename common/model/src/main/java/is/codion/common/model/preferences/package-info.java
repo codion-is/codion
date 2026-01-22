@@ -20,7 +20,7 @@
  * <p>Preferences related classes.
  * <p>Package configuration values:
  * <ul>
- * <li>{@link is.codion.common.model.preferences.UserPreferences#PREFERENCES_LOCATION}
+ * <li>{@link is.codion.common.model.preferences.FilePreferences#PREFERENCES_LOCATION}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

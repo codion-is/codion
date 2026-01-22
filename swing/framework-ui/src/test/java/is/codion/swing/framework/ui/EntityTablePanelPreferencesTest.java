@@ -20,7 +20,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -42,6 +41,7 @@ import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityTablePanelPreferencesTest {
@@ -62,7 +62,7 @@ public class EntityTablePanelPreferencesTest {
 	@BeforeEach
 	void setUp() {
 		testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
-		preferences = UserPreferences.file(PREFERENCES_KEY);
+		preferences = filePreferences(PREFERENCES_KEY);
 	}
 
 	@AfterEach
