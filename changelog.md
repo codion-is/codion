@@ -9,6 +9,10 @@ Codion Change Log
 - UserPreferences.flush() no longer flushes file based preferences.
 - UserPreferences.file() moved to FilePreferences.filePreferences().
 - FilePreferences now caches preferences using a Path instead of filename.
+### is.codion.swing.common.ui
+- ComponentValueBuilder.validIndicator(ValidIndicatorFactory) renamed validIndicatorFactory().
+### is.codion.plugin.flatlaf
+- is.codion.plugin.flatlaf module now exports indicator package, so FlatLafValidIndicatorFactory can be instantiated directly.
 ### is.codion.framework.model
 - EntityEditModel.EditEvents.Inserted, Updated and Deleted added, entity type validated.
 ### is.codion.swing.framework.ui

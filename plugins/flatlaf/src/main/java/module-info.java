@@ -23,6 +23,8 @@ module is.codion.plugin.flatlaf {
 	requires transitive is.codion.swing.common.ui;
 	requires transitive com.formdev.flatlaf;
 
+	exports is.codion.plugin.flatlaf.indicator;
+
 	provides is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 					with is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory;
 	provides is.codion.swing.common.ui.scaler.Scaler

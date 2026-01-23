@@ -77,17 +77,17 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	B modifiedIndicator(@Nullable ObservableState modified);
 
 	/**
-	 * @param validIndicator the {@link ValidIndicatorFactory} to use, null for none
+	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use, null for none
 	 * @return this builder instance
 	 * @see ValidIndicatorFactory#instance()
 	 */
-	B validIndicator(@Nullable ValidIndicatorFactory validIndicator);
+	B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory);
 
 	/**
 	 * Enables a valid indicator based on the given valid state.
 	 * @param valid the valid state
 	 * @return this builder instance
-	 * @see #validIndicator(ValidIndicatorFactory)
+	 * @see #validIndicatorFactory(ValidIndicatorFactory)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 	 */
 	B validIndicator(@Nullable ObservableState valid);
@@ -99,7 +99,7 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * should return true as long as the value is valid.
 	 * @param validator called each time the component value changes
 	 * @return this builder instance
-	 * @see #validIndicator(ValidIndicatorFactory)
+	 * @see #validIndicatorFactory(ValidIndicatorFactory)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 	 */
 	B validIndicator(@Nullable Predicate<T> validator);
