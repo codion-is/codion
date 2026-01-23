@@ -137,8 +137,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private void logEntry(String methodName, Object[] args) {
 		MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
 		REQUEST_COUNTER.incrementRequestsPerSecondCounter();
-		if (ENTITIES.equals(methodName)) {
-			// Just to prevent the null argument output
+		if (args == null || args.length == 0) {
 			tracer.enter(methodName);
 		}
 		else {
@@ -280,7 +279,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 				entityConnection.rollbackTransaction();
 			}
 			catch (DatabaseException e) {
-				LOG.error("Rollback on disconnect failed: " + remoteClient, e);
+				LOG.error("Rollback on disconnect failed: {}", remoteClient, e);
 			}
 		}
 	}
