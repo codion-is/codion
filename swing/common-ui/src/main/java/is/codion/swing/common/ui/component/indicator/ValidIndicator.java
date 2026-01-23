@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 package is.codion.swing.common.ui.component.indicator;
 
@@ -32,14 +32,14 @@ import static java.util.stream.StreamSupport.stream;
 /**
  * Provides a validity indicator for a component.
  */
-public interface ValidIndicatorFactory {
+public interface ValidIndicator {
 
 	/**
-	 * Specified the {@link ValidIndicatorFactory} to use.
-	 * <p>Default {@link BackgroundColorValidIndicatorFactory}
+	 * Specified the {@link ValidIndicator} to use.
+	 * <p>Default {@link BackgroundColorValidIndicator}
 	 */
-	PropertyValue<String> FACTORY_CLASS =
-					stringValue(ValidIndicatorFactory.class.getName() + ".factoryClass", BackgroundColorValidIndicatorFactory.class.getName());
+	PropertyValue<String> INDICATOR_CLASS =
+					stringValue(ValidIndicator.class.getName() + ".indicatorClass", BackgroundColorValidIndicator.class.getName());
 
 	/**
 	 * Enables the valid indicator for the given component, based on the given valid state
@@ -49,22 +49,22 @@ public interface ValidIndicatorFactory {
 	void enable(JComponent component, ObservableState valid);
 
 	/**
-	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #FACTORY_CLASS}
+	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #INDICATOR_CLASS}
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
-	static Optional<ValidIndicatorFactory> instance() {
-		return instance(FACTORY_CLASS.getOrThrow());
+	static Optional<ValidIndicator> instance() {
+		return instance(INDICATOR_CLASS.getOrThrow());
 	}
 
 	/**
-	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@code factoryClassName}
+	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@code indicatorClassName}
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
-	static Optional<ValidIndicatorFactory> instance(String factoryClassName) {
-		requireNonNull(factoryClassName);
+	static Optional<ValidIndicator> instance(String indicatorClassName) {
+		requireNonNull(indicatorClassName);
 
-		return stream(ServiceLoader.load(ValidIndicatorFactory.class).spliterator(), false)
-						.filter(factory -> factory.getClass().getName().equals(factoryClassName))
+		return stream(ServiceLoader.load(ValidIndicator.class).spliterator(), false)
+						.filter(factory -> factory.getClass().getName().equals(indicatorClassName))
 						.findFirst();
 	}
 }

@@ -23,7 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueChange;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
-import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -77,32 +77,32 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	B modifiedIndicator(@Nullable ObservableState modified);
 
 	/**
-	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use, null for none
+	 * @param validIndicator the {@link ValidIndicator} to use, null for none
 	 * @return this builder instance
-	 * @see ValidIndicatorFactory#instance()
 	 */
-	B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory);
+	B validIndicator(@Nullable ValidIndicator validIndicator);
 
 	/**
 	 * Enables a valid indicator based on the given valid state.
+	 * Takes precedence over {@link #valid(Predicate)}.
 	 * @param valid the valid state
 	 * @return this builder instance
-	 * @see #validIndicatorFactory(ValidIndicatorFactory)
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+	 * @see #validIndicator(ValidIndicator)
+	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
 	 */
-	B validIndicator(@Nullable ObservableState valid);
+	B valid(@Nullable ObservableState valid);
 
 	/**
 	 * <p>Enables a valid indicator based on the given validator. Note that this
-	 * is overridden by {@link #validIndicator(ObservableState)}.
+	 * is overridden by {@link #valid(ObservableState)}.
 	 * <p>The validator gets called each time the value changes and
 	 * should return true as long as the value is valid.
-	 * @param validator called each time the component value changes
+	 * @param valid called each time the component value changes
 	 * @return this builder instance
-	 * @see #validIndicatorFactory(ValidIndicatorFactory)
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+	 * @see #validIndicator(ValidIndicator)
+	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
 	 */
-	B validIndicator(@Nullable Predicate<T> validator);
+	B valid(@Nullable Predicate<T> valid);
 
 	/**
 	 * @param modifiedIndicator the {@link ModifiedIndicatorFactory} to use, null for none

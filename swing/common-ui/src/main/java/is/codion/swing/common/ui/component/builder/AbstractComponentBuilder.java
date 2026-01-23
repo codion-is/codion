@@ -24,7 +24,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Sizes;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
-import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -462,13 +462,13 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	/**
 	 * Enables a valid indicator on the given component, based on the given valid state instance
-	 * using the given {@link ValidIndicatorFactory}, override for composite components or special handling.
-	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use
+	 * using the given {@link ValidIndicator}, override for composite components or special handling.
+	 * @param validIndicator the {@link ValidIndicator} to use
 	 * @param component the component
 	 * @param valid the valid state to indicate
 	 */
-	protected void enableValidIndicator(ValidIndicatorFactory validIndicatorFactory, C component, ObservableState valid) {
-		validIndicatorFactory.enable(component, valid);
+	protected void enableValidIndicator(ValidIndicator validIndicator, C component, ObservableState valid) {
+		validIndicator.enable(component, valid);
 	}
 
 	/**

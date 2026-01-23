@@ -24,7 +24,7 @@ import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
-import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -405,9 +405,9 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected void enableValidIndicator(ValidIndicatorFactory validIndicatorFactory,
+		protected void enableValidIndicator(ValidIndicator validIndicator,
 																				TextFieldPanel component, ObservableState valid) {
-			validIndicatorFactory.enable(component.textField, valid);
+			validIndicator.enable(component.textField, valid);
 		}
 	}
 

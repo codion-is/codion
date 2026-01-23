@@ -24,7 +24,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueChange;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
-import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -46,33 +46,32 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	private final List<Value.Validator<T>> validators = new ArrayList<>();
 	private final ValueListeners<T> listeners = new ValueListeners<>();
 
-	private @Nullable ValidIndicatorFactory validIndicatorFactory =
-					ValidIndicatorFactory.instance().orElse(null);
+	private @Nullable ValidIndicator validIndicator = ValidIndicator.instance().orElse(null);
 	private @Nullable ModifiedIndicatorFactory modifiedIndicatorFactory =
 					ModifiedIndicatorFactory.instance().orElse(null);
 	private @Nullable ObservableState modifiedObservable;
 	private @Nullable ObservableState validObservable;
-	private @Nullable Predicate<T> validator;
+	private @Nullable Predicate<T> validPredicate;
 	private @Nullable T value;
 	private boolean valueSet = false;
 
 	protected AbstractComponentValueBuilder() {}
 
 	@Override
-	public final B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory) {
-		this.validIndicatorFactory = validIndicatorFactory;
+	public final B validIndicator(@Nullable ValidIndicator validIndicator) {
+		this.validIndicator = validIndicator;
 		return self();
 	}
 
 	@Override
-	public final B validIndicator(@Nullable ObservableState valid) {
+	public final B valid(@Nullable ObservableState valid) {
 		this.validObservable = valid;
 		return self();
 	}
 
 	@Override
-	public final B validIndicator(@Nullable Predicate<T> validator) {
-		this.validator = validator;
+	public final B valid(@Nullable Predicate<T> valid) {
+		this.validPredicate = valid;
 		return self();
 	}
 
@@ -243,14 +242,14 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	private void configureValidIndicator(ComponentValue<C, T> componentValue) {
-		if (validIndicatorFactory == null) {
+		if (validIndicator == null) {
 			return;
 		}
 		if (validObservable != null) {
-			enableValidIndicator(validIndicatorFactory, componentValue.component(), validObservable);
+			enableValidIndicator(validIndicator, componentValue.component(), validObservable);
 		}
-		else if (validator != null) {
-			enableValidIndicator(validIndicatorFactory, componentValue.component(), createValidState(componentValue, validator));
+		else if (validPredicate != null) {
+			enableValidIndicator(validIndicator, componentValue.component(), createValidState(componentValue, validPredicate));
 		}
 	}
 

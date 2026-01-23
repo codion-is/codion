@@ -28,7 +28,7 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
-import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
@@ -106,7 +106,7 @@ public final class ApplicationPanel extends JPanel {
 						.maximumLength(20)
 						.selectAllOnFocusGained(true)
 						.transferFocusOnEnter(true)
-						.validIndicator(new PGValidator())
+						.valid(new PGValidator())
 						// CTRL-SPACE displays a dialog for selecting a value
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_SPACE)
@@ -188,7 +188,7 @@ public final class ApplicationPanel extends JPanel {
 										.build()
 										.dateTimePattern())
 						.transferFocusOnEnter(true)
-						.validIndicator(new LocalDateValidator())
+						.valid(new LocalDateValidator())
 						.label(label("Date (6)")
 										.displayedMnemonic('6')
 										.build(inputPanel::add))
@@ -452,7 +452,7 @@ public final class ApplicationPanel extends JPanel {
 		findLookAndFeel(Dracula.class)
 						.ifPresent(LookAndFeelEnabler::enable);
 
-		ValidIndicatorFactory.FACTORY_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory");
+		ValidIndicator.INDICATOR_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidIndicator");
 
 		ApplicationModel applicationModel = new ApplicationModel();
 

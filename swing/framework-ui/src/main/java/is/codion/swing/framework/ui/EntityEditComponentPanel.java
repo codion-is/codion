@@ -110,7 +110,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
 	 */
 	public static final PropertyValue<Boolean> VALID_INDICATOR =
 					booleanValue(EntityEditComponentPanel.class.getName() + ".validIndicator", true);
@@ -257,7 +257,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * Note that changing this has no effect on components that have already been created.
 	 * @return the {@link State} controlling whether components indicate if the current value is valid
 	 * @see #VALID_INDICATOR
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
 	 */
 	protected final State validIndicator() {
 		return validIndicator;
@@ -696,7 +696,7 @@ public class EntityEditComponentPanel extends JPanel {
 										.displayedMnemonic(attributeDefinition.mnemonic()))
 						.transferFocusOnEnter(inputFocus.transferOnEnter.is())
 						.toolTipText(editorValue.message())
-						.validIndicator(validIndicator.is() ? editorValue.valid() : null)
+						.valid(validIndicator.is() ? editorValue.valid() : null)
 						.modifiedIndicator(modifiedIndicator.is() ? editorValue.modified() : null)
 						.link(editorValue)
 						.onBuild(new SetComponent<>(attribute)));

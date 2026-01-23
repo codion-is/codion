@@ -18,7 +18,7 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory;
+import is.codion.plugin.flatlaf.indicator.FlatLafValidIndicator;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
@@ -90,9 +90,9 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.add(label("Last maintenance"))
 						.add(stringField()
 										.columns(11)
-										.validIndicatorFactory(new FlatLafValidIndicatorFactory())
+										.validIndicator(new FlatLafValidIndicator())
 										// causes a red border when maintenance is delayed
-										.validIndicator(model.maintenanceOnTime())
+										.valid(model.maintenanceOnTime())
 										.link(model.maintenanceTimeFormatted())
 										.editable(false))
 						.add(label("Idle connection timeout (s)"))

@@ -19,24 +19,35 @@
 package is.codion.plugin.flatlaf.indicator;
 
 import is.codion.common.reactive.state.ObservableState;
+import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-final class FlatLafValidIndicator {
+import static java.util.Objects.requireNonNull;
 
-	private final JComponent component;
+public final class FlatLafValidIndicator implements ValidIndicator {
 
-	FlatLafValidIndicator(JComponent component, ObservableState valid) {
-		this.component = component;
-		valid.addConsumer(this::update);
-		update(valid.is());
+	@Override
+	public void enable(JComponent component, ObservableState validState) {
+		new Indicator(requireNonNull(component), requireNonNull(validState));
 	}
 
-	private void update(boolean valid) {
-		SwingUtilities.invokeLater(() ->
-						component.putClientProperty(FlatClientProperties.OUTLINE, valid ? null : FlatClientProperties.OUTLINE_ERROR));
+	private static final class Indicator {
+
+		private final JComponent component;
+
+		private Indicator(JComponent component, ObservableState valid) {
+			this.component = component;
+			valid.addConsumer(this::update);
+			update(valid.is());
+		}
+
+		private void update(boolean valid) {
+			SwingUtilities.invokeLater(() ->
+							component.putClientProperty(FlatClientProperties.OUTLINE, valid ? null : FlatClientProperties.OUTLINE_ERROR));
+		}
 	}
 }

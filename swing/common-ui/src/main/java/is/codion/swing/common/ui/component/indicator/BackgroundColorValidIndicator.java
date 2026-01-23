@@ -25,20 +25,19 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
 import java.awt.Color;
 
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static java.util.Objects.requireNonNull;
 
-public final class BackgroundColorValidIndicatorFactory implements ValidIndicatorFactory {
+public final class BackgroundColorValidIndicator implements ValidIndicator {
 
 	@Override
 	public void enable(JComponent component, ObservableState valid) {
-		new BackgroundColorIndicator(requireNonNull(component), requireNonNull(valid));
+		new Indicator(requireNonNull(component), requireNonNull(valid));
 	}
 
-	private static final class BackgroundColorIndicator {
+	private static final class Indicator {
 
 		private final JComponent component;
 		private final String uiComponentKey;
@@ -47,8 +46,9 @@ public final class BackgroundColorValidIndicatorFactory implements ValidIndicato
 		private @Nullable Color inactiveBackgroundColor;
 		private @Nullable Color invalidBackgroundColor;
 
-		private BackgroundColorIndicator(JComponent component, ObservableState valid) {
-			this.component = component;
+		private Indicator(JComponent component, ObservableState valid) {
+			requireNonNull(valid);
+			this.component = requireNonNull(component);
 			this.uiComponentKey = initializeUiComponentKey();
 			if (componentSupported(uiComponentKey)) {
 				component.addPropertyChangeListener("UI", event -> configureColors(valid.is()));
