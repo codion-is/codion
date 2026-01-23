@@ -22,7 +22,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.demos.chinook.ui.DurationPanelBuilder.DurationPanel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
-import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
 import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -81,10 +81,10 @@ final class DurationPanelBuilder extends AbstractComponentValueBuilder<DurationP
 	}
 
 	@Override
-	protected void enableModifiedIndicator(ModifiedIndicatorFactory modifiedIndicatorFactory, DurationPanel component, ObservableState modified) {
-		modifiedIndicatorFactory.enable(component.minutesField, modified);
-		modifiedIndicatorFactory.enable(component.secondsField, modified);
-		modifiedIndicatorFactory.enable(component.millisecondsField, modified);
+	protected void enableModifiedIndicator(ModifiedIndicator modifiedIndicator, DurationPanel component, ObservableState modified) {
+		modifiedIndicator.enable(component.minutesField, modified);
+		modifiedIndicator.enable(component.secondsField, modified);
+		modifiedIndicator.enable(component.millisecondsField, modified);
 	}
 
 	static Integer minutes(Integer milliseconds) {

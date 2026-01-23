@@ -23,7 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueChange;
-import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
 import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -47,8 +47,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	private final ValueListeners<T> listeners = new ValueListeners<>();
 
 	private @Nullable ValidIndicator validIndicator = ValidIndicator.instance().orElse(null);
-	private @Nullable ModifiedIndicatorFactory modifiedIndicatorFactory =
-					ModifiedIndicatorFactory.instance().orElse(null);
+	private @Nullable ModifiedIndicator modifiedIndicator = ModifiedIndicator.instance().orElse(null);
 	private @Nullable ObservableState modifiedObservable;
 	private @Nullable ObservableState validObservable;
 	private @Nullable Predicate<T> validPredicate;
@@ -76,13 +75,13 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	@Override
-	public final B modifiedIndicator(@Nullable ModifiedIndicatorFactory modifiedIndicator) {
-		this.modifiedIndicatorFactory = modifiedIndicator;
+	public final B modifiedIndicator(@Nullable ModifiedIndicator modifiedIndicator) {
+		this.modifiedIndicator = modifiedIndicator;
 		return self();
 	}
 
 	@Override
-	public final B modifiedIndicator(@Nullable ObservableState modified) {
+	public final B modified(@Nullable ObservableState modified) {
 		this.modifiedObservable = modified;
 		return self();
 	}
@@ -254,8 +253,8 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	private void configureModifiedIndicator(C component) {
-		if (modifiedIndicatorFactory != null && modifiedObservable != null) {
-			enableModifiedIndicator(modifiedIndicatorFactory, component, modifiedObservable);
+		if (modifiedIndicator != null && modifiedObservable != null) {
+			enableModifiedIndicator(modifiedIndicator, component, modifiedObservable);
 		}
 	}
 

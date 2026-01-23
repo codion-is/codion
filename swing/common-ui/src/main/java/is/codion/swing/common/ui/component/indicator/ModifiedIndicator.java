@@ -32,16 +32,16 @@ import static java.util.stream.StreamSupport.stream;
 /**
  * Provides a modified indicator for a component.
  */
-public interface ModifiedIndicatorFactory {
+public interface ModifiedIndicator {
 
 	/**
-	 * Specifies the {@link ValidIndicatorFactory} to use
-	 * <p>By default {@link UnderlineModifiedIndicatorFactory}.
-	 * @see SwapColorsModifiedIndicatorFactory
-	 * @see UnderlineModifiedIndicatorFactory
+	 * Specifies the {@link ModifiedIndicator} to use
+	 * <p>By default {@link UnderlineModifiedIndicator}.
+	 * @see SwapColorsModifiedIndicator
+	 * @see UnderlineModifiedIndicator
 	 */
-	PropertyValue<String> FACTORY_CLASS =
-					stringValue(ModifiedIndicatorFactory.class.getName() + ".factoryClass", UnderlineModifiedIndicatorFactory.class.getName());
+	PropertyValue<String> INDICATOR_CLASS =
+					stringValue(ModifiedIndicator.class.getName() + ".indicatorClass", UnderlineModifiedIndicator.class.getName());
 
 	/**
 	 * Enables the modified indicator for the given component, based on the given modified state
@@ -51,21 +51,21 @@ public interface ModifiedIndicatorFactory {
 	void enable(JComponent component, ObservableState modified);
 
 	/**
-	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #FACTORY_CLASS}
+	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #INDICATOR_CLASS}
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
-	static Optional<ModifiedIndicatorFactory> instance() {
-		return instance(FACTORY_CLASS.getOrThrow());
+	static Optional<ModifiedIndicator> instance() {
+		return instance(INDICATOR_CLASS.getOrThrow());
 	}
 
 	/**
 	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@code factoryClassName}
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
-	static Optional<ModifiedIndicatorFactory> instance(String factoryClassName) {
+	static Optional<ModifiedIndicator> instance(String factoryClassName) {
 		requireNonNull(factoryClassName);
 
-		return stream(ServiceLoader.load(ModifiedIndicatorFactory.class).spliterator(), false)
+		return stream(ServiceLoader.load(ModifiedIndicator.class).spliterator(), false)
 						.filter(factory -> factory.getClass().getName().equals(factoryClassName))
 						.findFirst();
 	}

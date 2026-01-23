@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  * Relies on {@link JLabel#setLabelFor(Component)}.
  * @see TextAttribute#SWAP_COLORS
  */
-public final class SwapColorsModifiedIndicatorFactory implements ModifiedIndicatorFactory {
+public final class SwapColorsModifiedIndicator implements ModifiedIndicator {
 
 	@Override
 	public void enable(JComponent component, ObservableState modified) {

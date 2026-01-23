@@ -121,7 +121,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory
+	 * @see is.codion.swing.common.ui.component.indicator.ModifiedIndicator
 	 */
 	public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
 					booleanValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicator", true);
@@ -697,7 +697,7 @@ public class EntityEditComponentPanel extends JPanel {
 						.transferFocusOnEnter(inputFocus.transferOnEnter.is())
 						.toolTipText(editorValue.message())
 						.valid(validIndicator.is() ? editorValue.valid() : null)
-						.modifiedIndicator(modifiedIndicator.is() ? editorValue.modified() : null)
+						.modified(modifiedIndicator.is() ? editorValue.modified() : null)
 						.link(editorValue)
 						.onBuild(new SetComponent<>(attribute)));
 

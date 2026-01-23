@@ -19,7 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory#UNDERLINE_STYLE}
+ * <li>{@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicator#UNDERLINE_STYLE}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

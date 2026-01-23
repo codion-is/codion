@@ -23,7 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Sizes;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
-import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
 import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
@@ -473,13 +473,13 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	/**
 	 * Enables a modified indicator on the given component, based on the given modified state instance
-	 * using the given {@link ModifiedIndicatorFactory}, override for composite components or special handling.
-	 * @param modifiedIndicatorFactory the {@link ModifiedIndicatorFactory} to use
+	 * using the given {@link ModifiedIndicator}, override for composite components or special handling.
+	 * @param modifiedIndicator the {@link ModifiedIndicator} to use
 	 * @param component the component
 	 * @param modified the modified state to indicate
 	 */
-	protected void enableModifiedIndicator(ModifiedIndicatorFactory modifiedIndicatorFactory, C component, ObservableState modified) {
-		modifiedIndicatorFactory.enable(component, modified);
+	protected void enableModifiedIndicator(ModifiedIndicator modifiedIndicator, C component, ObservableState modified) {
+		modifiedIndicator.enable(component, modified);
 	}
 
 	protected final B self() {

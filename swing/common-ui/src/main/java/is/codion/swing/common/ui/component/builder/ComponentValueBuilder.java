@@ -22,7 +22,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueChange;
-import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
 import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -72,9 +72,9 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * Enables a modified indicator based on the given modified state.
 	 * @param modified the modified state
 	 * @return this builder instance
-	 * @see #modifiedIndicator(ModifiedIndicatorFactory)
+	 * @see #modifiedIndicator(ModifiedIndicator)
 	 */
-	B modifiedIndicator(@Nullable ObservableState modified);
+	B modified(@Nullable ObservableState modified);
 
 	/**
 	 * @param validIndicator the {@link ValidIndicator} to use, null for none
@@ -105,11 +105,11 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	B valid(@Nullable Predicate<T> valid);
 
 	/**
-	 * @param modifiedIndicator the {@link ModifiedIndicatorFactory} to use, null for none
+	 * @param modifiedIndicator the {@link ModifiedIndicator} to use, null for none
 	 * @return this builder instance
-	 * @see ModifiedIndicatorFactory#instance()
+	 * @see ModifiedIndicator#instance()
 	 */
-	B modifiedIndicator(@Nullable ModifiedIndicatorFactory modifiedIndicator);
+	B modifiedIndicator(@Nullable ModifiedIndicator modifiedIndicator);
 
 	/**
 	 * @param validator the validator to use

@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * Relies on {@link JLabel#setLabelFor(Component)}.
  * @see #UNDERLINE_STYLE
  */
-public final class UnderlineModifiedIndicatorFactory implements ModifiedIndicatorFactory {
+public final class UnderlineModifiedIndicator implements ModifiedIndicator {
 
 	/**
 	 * The type of underline to use to indicate a modified value
@@ -59,7 +59,7 @@ public final class UnderlineModifiedIndicatorFactory implements ModifiedIndicato
 
 	private static final class UnderlineIndicator extends AbstractModifiedIndicator {
 
-		private static final int UNDERLINE_STYLE = UnderlineModifiedIndicatorFactory.UNDERLINE_STYLE.getOrThrow();
+		private static final int UNDERLINE_STYLE = UnderlineModifiedIndicator.UNDERLINE_STYLE.getOrThrow();
 
 		private UnderlineIndicator(JComponent component) {
 			super(component);
