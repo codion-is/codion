@@ -70,6 +70,12 @@ public interface ServerAdmin extends Remote {
 	int connectionCount() throws RemoteException;
 
 	/**
+	 * @return the timestamp of the last maintenance run
+	 * @throws RemoteException in case of a communication error
+	 */
+	long lastMaintenance() throws RemoteException;
+
+	/**
 	 * @return the maximum number of concurrent connections this server accepts
 	 * @throws RemoteException in case of a communication error
 	 */

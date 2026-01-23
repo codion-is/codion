@@ -53,6 +53,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Runtime.getRuntime;
+import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -79,6 +80,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private final Event<?> shutdownEvent = Event.event();
 	private volatile int connectionLimit = -1;
 	private volatile boolean shuttingDown = false;
+	private volatile long lastMaintenance;
 
 	private @Nullable Registry registry;
 	private @Nullable A admin;
@@ -391,6 +393,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 	}
 
+	long lastMaintenance() {
+		return lastMaintenance;
+	}
+
 	private boolean maximumNumberOfConnectionsReached() {
 		return connectionLimit > -1 && connectionCount() >= connectionLimit;
 	}
@@ -559,6 +565,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 		@Override
 		public void run() {
+			lastMaintenance = currentTimeMillis();
 			try {
 				if (connectionCount() > 0) {
 					maintainConnections(new ArrayList<>(connections.values()));

@@ -18,8 +18,12 @@
  */
 package is.codion.tools.monitor.model;
 
+import is.codion.common.reactive.observer.Observable;
+import is.codion.common.reactive.state.ObservableState;
+import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
@@ -32,6 +36,9 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,6 +48,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import static java.time.Instant.ofEpochMilli;
+import static java.time.LocalDateTime.ofInstant;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -53,10 +62,19 @@ public final class ClientUserMonitor {
 	private static final Logger LOG = LoggerFactory.getLogger(ClientUserMonitor.class);
 
 	private static final int THOUSAND = 1000;
+	private static final DateTimeFormatter MAINTENANCE_TIME_FORMATTER =
+					LocaleDateTimePattern.builder()
+									.delimiterDash()
+									.hoursMinutesSeconds()
+									.build()
+									.formatter();
 
 	private final EntityServerAdmin server;
+	private final ZoneId serverTimeZone;
 	private final Value<Integer> idleConnectionTimeoutValue;
 	private final ClientMonitor clientMonitor;
+	private final Value<String> maintenanceTimeFormatted = Value.nonNull("");
+	private final State maintenanceOnTime = State.state(true);
 	private final FilterTableModel<UserInfo, String> userHistoryTableModel =
 					FilterTableModel.builder()
 									.columns(new UserHistoryColumns())
@@ -70,8 +88,9 @@ public final class ClientUserMonitor {
 	 * @param server the server
 	 * @param updateRate the initial statistics update rate in seconds
 	 */
-	public ClientUserMonitor(EntityServerAdmin server, int updateRate) {
+	public ClientUserMonitor(EntityServerAdmin server, ZoneId serverTimeZone, int updateRate) {
 		this.server = requireNonNull(server);
+		this.serverTimeZone = serverTimeZone;
 		this.clientMonitor = new ClientMonitor(server);
 		this.idleConnectionTimeoutValue = Value.builder()
 						.nonNull(0)
@@ -152,6 +171,20 @@ public final class ClientUserMonitor {
 	}
 
 	/**
+	 * @return an Observable indicating when the last connection maintenance was started
+	 */
+	public Observable<String> maintenanceTimeFormatted() {
+		return maintenanceTimeFormatted;
+	}
+
+	/**
+	 * @return an observable state indicating that maintenance is on time
+	 */
+	public ObservableState maintenanceOnTime() {
+		return maintenanceOnTime;
+	}
+
+	/**
 	 * @return the {@link Value} controlling the update interval
 	 */
 	public Value<Integer> updateInterval() {
@@ -186,6 +219,15 @@ public final class ClientUserMonitor {
 	private void refreshUserHistoryTableModel() {
 		try {
 			userHistoryTableModel.items().refresh();
+			long lastMaintenanceTime = server.lastMaintenance();
+			if (lastMaintenanceTime > 0L) {
+				LocalDateTime maintenanceTime = ofInstant(ofEpochMilli(lastMaintenanceTime), serverTimeZone);
+				maintenanceTimeFormatted.set(maintenanceTime.format(MAINTENANCE_TIME_FORMATTER));
+				// Maintenance is not on time if the last maintenance was started more than two intervals ago
+				maintenanceOnTime.set(ZonedDateTime.now(serverTimeZone)
+								.minusSeconds(getMaintenanceInterval() * 2L)
+								.isBefore(maintenanceTime.atZone(serverTimeZone)));
+			}
 		}
 		catch (Exception e) {
 			LOG.error("Error while refreshing user history table model", e);

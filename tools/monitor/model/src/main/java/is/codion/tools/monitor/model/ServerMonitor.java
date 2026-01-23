@@ -170,7 +170,7 @@ public final class ServerMonitor {
 		this.systemLoadCollection.addSeries(systemLoadSeries);
 		this.systemLoadCollection.addSeries(processLoadSeries);
 		this.databaseMonitor = new DatabaseMonitor(server, updateRate);
-		this.clientMonitor = new ClientUserMonitor(server, updateRate);
+		this.clientMonitor = new ClientUserMonitor(server, serverInformation.timeZone(), updateRate);
 		this.updateScheduler = TaskScheduler.builder()
 						.task(this::updateStatistics)
 						.interval(updateRate, TimeUnit.SECONDS)

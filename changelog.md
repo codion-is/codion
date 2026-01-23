@@ -9,6 +9,8 @@ Codion Change Log
 - UserPreferences.flush() no longer flushes file based preferences.
 - UserPreferences.file() moved to FilePreferences.filePreferences().
 - FilePreferences now caches preferences using a Path instead of filename.
+### is.codion.common.rmi
+- ServerAdmin.lastMaintenance() added.
 ### is.codion.swing.common.ui
 - ComponentValueBuilder.validIndicator(ValidIndicatorFactory) renamed validIndicatorFactory().
 ### is.codion.plugin.flatlaf
@@ -21,6 +23,10 @@ Codion Change Log
 - EntityEditPanel.ControlKeys.DISPLAY_ENTITY_VIEWER and DISPLAY_QUERY_INSPECTOR renamed VIEW_ENTITY and INSPECT_QUERY.
 - EntityTablePanel.ControlKeys.DISPLAY_ENTITY_VIEWER, DISPLAY_QUERY_INSPECTOR and DISPLAY_POPUP_MENU renamed VIEW_ENTITY, INSPECT_QUERY and POPUP_MENU.
 - EntityPanel, EntityTablePanel.writeLegacyPreferences() and applyLegacyPreferences() removed.
+### is.codion.tools.monitor.model
+- ClientUserMonitor monitors the connection maintenance task timestamp and whether the task is delayed.
+### is.codion.tools.monitor.ui
+- ClientUserMonitorPanel displays the connection maintenance timestamp and indicates whether the task is delayed.
 
 ## 0.18.66
 ### is.codion.common.reactive

@@ -131,6 +131,11 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	}
 
 	@Override
+	public long lastMaintenance() {
+		return server.lastMaintenance();
+	}
+
+	@Override
 	public final int getConnectionLimit() {
 		return server.getConnectionLimit();
 	}

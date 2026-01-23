@@ -18,12 +18,13 @@
  */
 package is.codion.tools.monitor.ui;
 
+import is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.tools.monitor.model.ClientUserMonitor;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,9 +35,11 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -47,7 +50,7 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 public final class ClientUserMonitorPanel extends JPanel {
 
 	private static final int SPINNER_COLUMNS = 3;
-	private static final Integer[] MAINTENANCE_INTERVAL_VALUES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000};
+	private static final List<Integer> MAINTENANCE_INTERVAL_VALUES = asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000);
 
 	private final ClientUserMonitor model;
 
@@ -82,8 +85,16 @@ public final class ClientUserMonitorPanel extends JPanel {
 	private JPanel createCurrentConnectionsPanel() throws RemoteException {
 		JPanel actionBase = flowLayoutPanel(FlowLayout.LEFT)
 						.border(createTitledBorder("Remote connection controls"))
-						.add(label("Reaper interval (s)"))
+						.add(label("Maintenance interval (s)"))
 						.add(createMaintenanceIntervalComponent())
+						.add(label("Last maintenance"))
+						.add(stringField()
+										.columns(11)
+										.validIndicatorFactory(new FlatLafValidIndicatorFactory())
+										// causes a red border when maintenance is delayed
+										.validIndicator(model.maintenanceOnTime())
+										.link(model.maintenanceTimeFormatted())
+										.editable(false))
 						.add(label("Idle connection timeout (s)"))
 						.add(integerSpinner()
 										.model(new SpinnerNumberModel())
@@ -142,16 +153,21 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 	private JComponent createMaintenanceIntervalComponent() throws RemoteException {
 		return comboBox()
-						.model(new DefaultComboBoxModel<>(MAINTENANCE_INTERVAL_VALUES))
-						.value(model.getMaintenanceInterval())
-						.itemListener(e -> {
-							try {
-								model.setMaintenanceInterval((Integer) e.getItem());
-							}
-							catch (RemoteException ex) {
-								onException(ex);
-							}
-						}).build();
+						.model(FilterComboBoxModel.builder()
+										.items(MAINTENANCE_INTERVAL_VALUES)
+										.select(model.getMaintenanceInterval())
+										.onItemSelected(this::setMaintenanceInterval)
+										.build())
+						.build();
+	}
+
+	private void setMaintenanceInterval(Integer interval) {
+		try {
+			model.setMaintenanceInterval(interval);
+		}
+		catch (RemoteException ex) {
+			onException(ex);
+		}
 	}
 
 	private void onException(Exception exception) {
