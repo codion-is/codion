@@ -30,6 +30,7 @@ Codion Change Log
 - ClientUserMonitor monitors the connection maintenance task timestamp and whether the task is delayed.
 ### is.codion.tools.monitor.ui
 - ClientUserMonitorPanel displays the connection maintenance timestamp and indicates whether the task is delayed.
+- ClientInstanceMonitorPanel.FilenameSupplier no longer includes file extension in suggested file name.
 
 ## 0.18.66
 ### is.codion.common.reactive

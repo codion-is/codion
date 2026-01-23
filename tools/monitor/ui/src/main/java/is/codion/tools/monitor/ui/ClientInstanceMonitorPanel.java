@@ -144,7 +144,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 			User user = model.remoteClient().user();
 			LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
 
-			return user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
+			return user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate);
 		}
 	}
 }
