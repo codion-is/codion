@@ -13,6 +13,7 @@ Codion Change Log
 - ServerAdmin.lastMaintenance() added.
 ### is.codion.swing.common.ui
 - ComponentValueBuilder.validIndicator(ValidIndicatorFactory) renamed validIndicatorFactory().
+- SearchHighlighter.scrollToPosition() now ignores BadLocationException, contents may be changing, best effort scrolling.
 ### is.codion.plugin.flatlaf
 - is.codion.plugin.flatlaf module now exports indicator package, so FlatLafValidIndicatorFactory can be instantiated directly.
 ### is.codion.framework.model

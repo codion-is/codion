@@ -279,9 +279,7 @@ public final class SearchHighlighter {
 					viewport.setViewPosition(viewPosition(viewport, view));
 				}
 			}
-			catch (BadLocationException e) {
-				throw new RuntimeException(e);
-			}
+			catch (BadLocationException ignored) {/*Ignored*/}
 		});
 	}
 
