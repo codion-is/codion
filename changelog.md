@@ -18,6 +18,7 @@ Codion Change Log
 - ComponentValueBuilder.validIndicatorFactory() renamed validIndicator(), validIndicator(ObservableState) and validIndicator(Predicate) renamed valid().
 - ModifiedIndicatorFactory renamed ModifiedIndicator.
 - ComponentValueBuilder.modifiedIndicator(ObservableState) renamed modified().
+- LogViewer, clear control moved to popup menu, minor refactoring.
 ### is.codion.plugin.flatlaf
 - is.codion.plugin.flatlaf module now exports indicator package, so FlatLafValidIndicatorFactory can be instantiated directly.
 ### is.codion.framework.model

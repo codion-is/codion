@@ -30,7 +30,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -81,15 +80,10 @@ public final class LogViewer extends JPanel {
 						.enable(logArea);
 		logArea.getDocument().addDocumentListener((DocumentAdapter) e ->
 						logArea.setCaretPosition(e.getDocument().getLength()));
-		add(new JScrollPane(logArea), BorderLayout.CENTER);
-		add(borderLayoutPanel()
-						.center(searchField)
-						.east(button()
-										.control(Control.builder()
-														.command(() -> logArea.setText(""))
-														.caption(Messages.clear())
-														.mnemonic(Messages.clearMnemonic())))
-						.build(), BorderLayout.SOUTH);
+		add(scrollPane()
+						.view(logArea)
+						.build(), BorderLayout.CENTER);
+		add(searchField, BorderLayout.SOUTH);
 	}
 
 	/**
@@ -112,29 +106,30 @@ public final class LogViewer extends JPanel {
 	}
 
 	private JTextArea createLogArea() {
-		JTextArea textArea = textArea()
+		return textArea()
 						.document(new DefaultStyledDocument())
 						.editable(false)
 						.wrapStyleWord(true)
 						.caretUpdatePolicy(DefaultCaret.NEVER_UPDATE)
+						.font(font -> new Font(Font.MONOSPACED, font.getStyle(), font.getSize()))
+						.popupMenu(textArea -> menu()
+										.controls(Controls.builder()
+														.control(Control.builder()
+																		.command(this::saveToFile)
+																		.caption(MESSAGES.getString("save_to_file") + "..."))
+														.separator()
+														.control(Control.builder()
+																		.toggle(State.builder()
+																						.consumer(textArea::setLineWrap)
+																						.build())
+																		.caption(MESSAGES.getString("line_wrap")))
+														.separator()
+														.control(Control.builder()
+																		.command(() -> textArea.setText(""))
+																		.caption(Messages.clear())
+																		.mnemonic(Messages.clearMnemonic())))
+										.buildPopupMenu())
 						.build();
-		Font font = textArea.getFont();
-		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
-		State lineWrapState = State.builder()
-						.consumer(textArea::setLineWrap)
-						.build();
-		textArea.setComponentPopupMenu(menu()
-						.controls(Controls.builder()
-										.control(Control.builder()
-														.command(this::saveToFile)
-														.caption(MESSAGES.getString("save_to_file") + "..."))
-										.separator()
-										.control(Control.builder()
-														.toggle(lineWrapState)
-														.caption(MESSAGES.getString("line_wrap"))))
-						.buildPopupMenu());
-
-		return textArea;
 	}
 
 	private void saveToFile() throws IOException {
