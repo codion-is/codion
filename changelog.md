@@ -9,6 +9,7 @@ Codion Change Log
 - UserPreferences.flush() no longer flushes file based preferences.
 - UserPreferences.file() moved to FilePreferences.filePreferences().
 - FilePreferences now caches preferences using a Path instead of filename.
+- JsonPreferencesStore bug fixed, no longer removes lock files on save, problematic on Windows.
 ### is.codion.common.rmi
 - ServerAdmin.lastMaintenance() added.
 ### is.codion.swing.common.ui

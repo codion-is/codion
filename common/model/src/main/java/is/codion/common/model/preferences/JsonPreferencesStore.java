@@ -238,7 +238,6 @@ final class JsonPreferencesStore {
 					lastModified = Files.getLastModifiedTime(filePath).toMillis();
 					LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
 				}
-				Files.deleteIfExists(lockFilePath);
 			}
 			finally {
 				Files.deleteIfExists(tempFile);
