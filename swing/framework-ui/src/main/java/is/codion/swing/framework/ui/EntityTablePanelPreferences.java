@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.model.condition.ConditionModel.CASE_SENSITIVE;
+import static is.codion.common.model.condition.ConditionModel.WILDCARD;
 import static java.util.stream.Collectors.toList;
 
 final class EntityTablePanelPreferences {
@@ -52,8 +54,6 @@ final class EntityTablePanelPreferences {
 	private static final String TABLE_KEY = "table";
 	private static final String EXPORT_KEY = "export";
 
-	private static final String LEGACY_COLUMN_INDEX = "index";
-	private static final String LEGACY_COLUMN_WIDTH = "width";
 	private static final String COLUMNS_KEY = "columns";
 	private static final String WIDTH_KEY = "w";
 	private static final String INDEX_KEY = "i";
@@ -281,13 +281,27 @@ final class EntityTablePanelPreferences {
 
 	private static JSONObject createConditionPreferences(Map<Attribute<?>, ConditionModel<?>> conditions) {
 		JSONObject conditionPreferences = new JSONObject();
+		boolean defaultAutoEnable = true;
+		boolean defaultCaseSensitive = CASE_SENSITIVE.getOrThrow();
+		Wildcard defaultWildcard = WILDCARD.getOrThrow();
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
 			ConditionModel<?> condition = entry.getValue();
 			JSONObject conditionJson = new JSONObject();
-			conditionJson.put(AUTO_ENABLE_KEY, condition.autoEnable().is() ? 1 : 0);
-			conditionJson.put(CASE_SENSITIVE_KEY, condition.caseSensitive().is() ? 1 : 0);
-			conditionJson.put(WILDCARD_KEY, condition.operands().wildcard().getOrThrow().name());
-			conditionPreferences.put(entry.getKey().name(), conditionJson);
+			boolean autoEnable = condition.autoEnable().is();
+			boolean caseSensitive = condition.caseSensitive().is();
+			Wildcard wildcard = condition.operands().wildcard().getOrThrow();
+			if (autoEnable != defaultAutoEnable) {
+				conditionJson.put(AUTO_ENABLE_KEY, autoEnable ? 1 : 0);
+			}
+			if (caseSensitive != defaultCaseSensitive) {
+				conditionJson.put(CASE_SENSITIVE_KEY, caseSensitive ? 1 : 0);
+			}
+			if (wildcard != defaultWildcard) {
+				conditionJson.put(WILDCARD_KEY, wildcard.name());
+			}
+			if (!conditionJson.isEmpty()) {
+				conditionPreferences.put(entry.getKey().name(), conditionJson);
+			}
 		}
 
 		return conditionPreferences;
@@ -313,8 +327,8 @@ final class EntityTablePanelPreferences {
 		for (Attribute<?> attribute : columnModel.identifiers()) {
 			if (columnPreferences.has(attribute.name())) {
 				JSONObject json = columnPreferences.getJSONObject(attribute.name());
-				int width = json.has(WIDTH_KEY) ? json.getInt(WIDTH_KEY) : json.has(LEGACY_COLUMN_WIDTH) ? json.getInt(LEGACY_COLUMN_WIDTH) : -1;
-				int index = json.has(INDEX_KEY) ? json.getInt(INDEX_KEY) : json.has(LEGACY_COLUMN_INDEX) ? json.getInt(LEGACY_COLUMN_INDEX) : -1;
+				int width = json.optInt(WIDTH_KEY, -1);
+				int index = json.optInt(INDEX_KEY, -1);
 				if (width > 0) {
 					FilterTableColumn<Attribute<?>> column = columnModel.column(attribute);
 					column.setPreferredWidth(width);
@@ -343,9 +357,15 @@ final class EntityTablePanelPreferences {
 				ConditionModel<?> condition = entry.getValue();
 				try {
 					JSONObject conditionJson = conditionPreferences.getJSONObject(attribute.name());
-					condition.autoEnable().set(conditionJson.getInt(AUTO_ENABLE_KEY) == 1);
-					condition.caseSensitive().set(conditionJson.getInt(CASE_SENSITIVE_KEY) == 1);
-					condition.operands().wildcard().set(Wildcard.valueOf(conditionJson.getString(WILDCARD_KEY)));
+					if (conditionJson.has(AUTO_ENABLE_KEY)) {
+						condition.autoEnable().set(conditionJson.getInt(AUTO_ENABLE_KEY) == 1);
+					}
+					if (conditionJson.has(CASE_SENSITIVE_KEY)) {
+						condition.caseSensitive().set(conditionJson.getInt(CASE_SENSITIVE_KEY) == 1);
+					}
+					if (conditionJson.has(WILDCARD_KEY)) {
+						condition.operands().wildcard().set(Wildcard.valueOf(conditionJson.getString(WILDCARD_KEY)));
+					}
 				}
 				catch (Exception e) {
 					LOG.error("Error parsing condition/filter preferences for attribute: {}", attribute, e);

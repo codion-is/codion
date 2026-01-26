@@ -30,6 +30,7 @@ Codion Change Log
 - EntityEditPanel.ControlKeys.DISPLAY_ENTITY_VIEWER and DISPLAY_QUERY_INSPECTOR renamed VIEW_ENTITY and INSPECT_QUERY.
 - EntityTablePanel.ControlKeys.DISPLAY_ENTITY_VIEWER, DISPLAY_QUERY_INSPECTOR and DISPLAY_POPUP_MENU renamed VIEW_ENTITY, INSPECT_QUERY and POPUP_MENU.
 - EntityPanel, EntityTablePanel.writeLegacyPreferences() and applyLegacyPreferences() removed.
+- EntityTablePanelPreferences, condition preferences only include values that differ from defaults.
 ### is.codion.framework.server
 - LocalConnectionHandler.logEntry(), null message eliminated.
 ### is.codion.tools.monitor.model
