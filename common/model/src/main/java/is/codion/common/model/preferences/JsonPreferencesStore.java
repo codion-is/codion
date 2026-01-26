@@ -70,6 +70,7 @@ final class JsonPreferencesStore {
 
 	private final Path filePath;
 	private final Path lockFilePath;
+	private final boolean prettyPrint;
 	private final Lock inMemoryLock = new Lock() {};
 
 	private final JSONObject data = new JSONObject();
@@ -77,8 +78,13 @@ final class JsonPreferencesStore {
 	private long lastModified;
 
 	JsonPreferencesStore(Path filePath) {
+		this(filePath, false);
+	}
+
+	JsonPreferencesStore(Path filePath, boolean prettyPrint) {
 		this.filePath = requireNonNull(filePath);
 		this.lockFilePath = filePath.resolveSibling(filePath.getFileName() + ".lock");
+		this.prettyPrint = prettyPrint;
 		LOG.debug("Initializing preferences store at {}", filePath);
 		try {
 			loadData();
@@ -227,7 +233,7 @@ final class JsonPreferencesStore {
 			// Write to temp file first
 			Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
 			try {
-				Files.write(tempFile.toAbsolutePath(), data.toString(2).getBytes()); // Pretty print
+				Files.write(tempFile.toAbsolutePath(), data.toString(prettyPrint ? 2 : 0).getBytes());
 				// Force sync to disk before atomic move (helps on Windows/VirtualBox)
 				try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
 					channel.force(true);

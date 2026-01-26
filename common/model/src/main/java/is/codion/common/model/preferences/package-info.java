@@ -21,6 +21,7 @@
  * <p>Package configuration values:
  * <ul>
  * <li>{@link is.codion.common.model.preferences.FilePreferences#PREFERENCES_LOCATION}
+ * <li>{@link is.codion.common.model.preferences.FilePreferences#PRETTY_PRINT}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

@@ -33,6 +33,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import static is.codion.common.model.preferences.PreferencesPath.userPreferencesPath;
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
@@ -42,6 +43,7 @@ import static java.util.Objects.requireNonNull;
  * <p>Clearing the preferences instance and flushing deletes the underlying file.
  * @see #filePreferences(String)
  * @see #PREFERENCES_LOCATION
+ * @see #PRETTY_PRINT
  */
 public final class FilePreferences extends AbstractPreferences {
 
@@ -58,6 +60,15 @@ public final class FilePreferences extends AbstractPreferences {
 	 */
 	public static final PropertyValue<String> PREFERENCES_LOCATION = stringValue("codion.preferences.location");
 
+	/**
+	 * Specifies whether JSON preference files are pretty-printed, causes significant size increase.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> PRETTY_PRINT = booleanValue("codion.preferences.prettyPrint", false);
+
 	private static final Map<Path, FilePreferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
 
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -67,7 +78,7 @@ public final class FilePreferences extends AbstractPreferences {
 	private final String path;
 
 	private FilePreferences(Path path) {
-		this(null, "", new JsonPreferencesStore(path));
+		this(null, "", new JsonPreferencesStore(path, PRETTY_PRINT.getOrThrow()));
 		LOG.info("Created file preferences: {}", path);
 	}
 

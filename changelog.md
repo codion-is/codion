@@ -10,6 +10,7 @@ Codion Change Log
 - UserPreferences.file() moved to FilePreferences.filePreferences().
 - FilePreferences now caches preferences using a Path instead of filename.
 - JsonPreferencesStore bug fixed, no longer removes lock files on save, problematic on Windows.
+- FilePreferences.PRETTY_PRINT configuration value added, default false.
 ### is.codion.common.rmi
 - ServerAdmin.lastMaintenance() added.
 ### is.codion.swing.common.ui

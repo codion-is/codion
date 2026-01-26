@@ -185,7 +185,7 @@ public final class FilePreferencesHierarchyTest {
 	@Test
 	void testJsonStructure() throws Exception {
 		Path testFile = tempDir.resolve("hierarchy-test.json");
-		JsonPreferencesStore store = new JsonPreferencesStore(testFile);
+		JsonPreferencesStore store = new JsonPreferencesStore(testFile, true);
 		Preferences root = new FilePreferences(store);
 
 		// Create structure
