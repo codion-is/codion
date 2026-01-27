@@ -39,6 +39,8 @@ Codion Change Log
 ### is.codion.tools.monitor.ui
 - ClientUserMonitorPanel displays the connection maintenance timestamp and indicates whether the task is delayed.
 - ClientInstanceMonitorPanel.FilenameSupplier no longer includes file extension in suggested file name.
+### is.codion.tools.swing.robot
+- Controller, now stops automation if JVM windows lose focus.
 
 ## 0.18.66
 ### is.codion.common.reactive

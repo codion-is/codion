@@ -93,6 +93,7 @@ public final class Controller {
 	 * Processes the given keystroke.
 	 * @param keyStroke the AWT formatted keystroke
 	 * @see java.awt.AWTKeyStroke#getAWTKeyStroke(String)
+	 * @throws FocusLostException in case application input focus is lost
 	 */
 	public void key(String keyStroke) {
 		key(keyStroke, 1);
@@ -103,6 +104,7 @@ public final class Controller {
 	 * @param keyStroke the AWT formatted keystroke
 	 * @param repeat the number of times to repeat the keystroke
 	 * @see java.awt.AWTKeyStroke#getAWTKeyStroke(String)
+	 * @throws FocusLostException in case application input focus is lost
 	 */
 	public void key(String keyStroke, int repeat) {
 		key(keyStroke, repeat, null);
@@ -113,6 +115,7 @@ public final class Controller {
 	 * @param keyStroke the AWT formatted keystroke
 	 * @param description the description
 	 * @see java.awt.AWTKeyStroke#getAWTKeyStroke(String)
+	 * @throws FocusLostException in case application input focus is lost
 	 */
 	public void key(String keyStroke, @Nullable String description) {
 		key(keyStroke, 1, description);
@@ -124,6 +127,7 @@ public final class Controller {
 	 * @param repeat the number of times to repeat the keystroke
 	 * @param description the description
 	 * @see java.awt.AWTKeyStroke#getAWTKeyStroke(String)
+	 * @throws FocusLostException in case application input focus is lost
 	 */
 	public void key(String keyStroke, int repeat, @Nullable String description) {
 		KeyStroke parsed = getKeyStroke(requireNonNull(keyStroke));
@@ -169,6 +173,14 @@ public final class Controller {
 		catch (AWTException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Thrown when an input action is attempted when no application window is focused.
+	 */
+	public static final class FocusLostException extends RuntimeException {
+
+		private FocusLostException() {}
 	}
 
 	interface KeyStrokeDescription {
@@ -245,9 +257,7 @@ public final class Controller {
 		}
 	}
 
-	private final class FocusedRobot extends Robot {
-
-		private static final int FOCUS_WAIT_DELAY = 1000;
+	private static final class FocusedRobot extends Robot {
 
 		private FocusedRobot(GraphicsDevice device) throws AWTException {
 			super(device);
@@ -261,25 +271,18 @@ public final class Controller {
 
 		@Override
 		public synchronized void keyRelease(int keycode) {
+			super.keyRelease(keycode);// Make sure we don't leave a key pressed, in case we terminate due to focus loss
 			ensureFocused();
-			super.keyRelease(keycode);
 		}
 
-		private void ensureFocused() {
-			while (!isJvmWindowFocused()) {
-				LOG.debug("Waiting for JVM window focus");
-				pause(FOCUS_WAIT_DELAY);
-			}
-		}
-
-		private static boolean isJvmWindowFocused() {
+		private static void ensureFocused() {
 			for (Window window : getWindows()) {
 				if (window.isFocused()) {
-					return true;
+					return;
 				}
 			}
 
-			return false;
+			throw new FocusLostException();
 		}
 	}
 

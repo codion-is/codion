@@ -20,6 +20,9 @@ package is.codion.tools.swing.robot;
 
 import is.codion.swing.common.model.worker.ProgressWorker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.GraphicsDevice;
 import java.awt.Window;
 import java.util.Optional;
@@ -29,6 +32,8 @@ import static java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultAutomation implements Automation {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultAutomation.class);
 
 	private final Controller controller;
 	private final Narrator narrator;
@@ -66,6 +71,15 @@ final class DefaultAutomation implements Automation {
 	public void close() {
 		if (narrator != null) {
 			narrator.close();
+		}
+	}
+
+	private static void handleException(Exception exception) {
+		if (exception instanceof Controller.FocusLostException) {
+			LOG.debug("Automation terminated due to losing input focus");
+		}
+		else {
+			LOG.error(exception.getMessage(), exception);
 		}
 	}
 
