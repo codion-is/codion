@@ -118,7 +118,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private final Map<EntityType, List<ColumnDefinition<?>>> updatableColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<Column<?>>> lazyColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ForeignKeyDefinition>> hardForeignKeyReferenceCache = new HashMap<>();
-	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
+	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableSelectedColumnsCache = new HashMap<>();
 	private final Map<Select, List<Entity>> queryCache = new HashMap<>();
 
 	private MethodTracer tracer = MethodTracer.NO_OP;
@@ -966,7 +966,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
 		Collection<Key> originalKeys = originalPrimaryKeys(entities);
 		Select selectForUpdate = where(keys(originalKeys))
-						.attributes(primaryKeyAndWritableColumns(entityType))
+						.attributes(primaryKeyAndWritableSelectedColumns(entityType))
+						.include(lazyColumns(entities, entities().definition(entityType)))
 						.forUpdate()
 						.build();
 		Map<Key, Entity> currentEntitiesByKey = primaryKeyMap(query(selectForUpdate));
@@ -1320,12 +1321,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						writableColumnDefinitions(entityDefinition, true, false));
 	}
 
-	private List<Attribute<?>> primaryKeyAndWritableColumns(EntityType entityType) {
-		return primaryKeyAndWritableColumnsCache.computeIfAbsent(entityType, k ->
-						collectPrimaryKeyAndWritableColumns(entityType));
+	private List<Attribute<?>> primaryKeyAndWritableSelectedColumns(EntityType entityType) {
+		return primaryKeyAndWritableSelectedColumnsCache.computeIfAbsent(entityType, k ->
+						collectPrimaryKeyAndWritableSelectedColumns(entityType));
 	}
 
-	private List<Attribute<?>> collectPrimaryKeyAndWritableColumns(EntityType entityType) {
+	private List<Attribute<?>> collectPrimaryKeyAndWritableSelectedColumns(EntityType entityType) {
 		EntityDefinition entityDefinition = definition(entityType);
 		List<ColumnDefinition<?>> writableAndPrimaryKeyColumns =
 						new ArrayList<>(writableColumnDefinitions(entityDefinition, true, true));
@@ -1336,6 +1337,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		});
 
 		return writableAndPrimaryKeyColumns.stream()
+						.filter(ColumnDefinition::selected)
 						.map(ColumnDefinition::attribute)
 						.collect(toList());
 	}
@@ -1607,7 +1609,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	/**
 	 * Returns all updatable {@link Column}s which original value differs from the one in the comparison entity,
 	 * returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
-	 * Note that only populated values are included in this comparison.
+	 * Note that for non-selected columns, only values populated in both entities are included in this comparison.
 	 * @param entity the entity instance to check
 	 * @param comparison the entity instance to compare with
 	 * @return the updatable columns which values differ from the ones in the comparison entity
@@ -1619,7 +1621,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						.filter(ColumnDefinition.class::isInstance)
 						.map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
 						.filter(columnDefinition -> columnDefinition.updatable()
-										&& columnDefinition.selected()
+										&& (columnDefinition.selected() || (entity.contains(columnDefinition.attribute()) && comparison.contains(columnDefinition.attribute())))
 										&& valueMissingOrModified(entity, comparison, columnDefinition.attribute()))
 						.map(ColumnDefinition::attribute)
 						.collect(toList());

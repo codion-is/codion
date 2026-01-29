@@ -997,6 +997,37 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void optimisticLockingLazy() {
+		Random random = new Random();
+		byte[] bytes = new byte[1024];
+		random.nextBytes(bytes);
+		Entity emp1 = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.NAME, "namea")
+						.with(Employee.DEPARTMENT, 10)
+						.with(Employee.SALARY, 1300d)
+						.with(Employee.DATA_LAZY, bytes)
+						.build();
+		Entity emp2 = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.NAME, "nameb")
+						.with(Employee.DEPARTMENT, 10)
+						.with(Employee.SALARY, 1300d)
+						.build();
+		connection.startTransaction();
+		try {
+			emp1 = connection.insertSelect(emp1);
+			emp2 = connection.insertSelect(emp2);
+
+			emp1.set(Employee.SALARY, 1400d);
+			emp2.set(Employee.SALARY, 1400d);
+
+			connection.update(asList(emp1, emp2));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void optimisticLockingBlob() {
 		LocalEntityConnection baseConnection = createConnection();
 		LocalEntityConnection optimisticConnection = createConnection();
@@ -1007,14 +1038,49 @@ public class DefaultLocalEntityConnectionTest {
 			byte[] bytes = new byte[1024];
 			random.nextBytes(bytes);
 
-			Entity employee = baseConnection.selectSingle(Select.where(Employee.NAME.equalTo("BLAKE"))
-							.include(Employee.DATA_LAZY)
-							.build());
+			Entity employee = baseConnection.selectSingle(Employee.NAME.equalTo("BLAKE"));
 			employee.set(Employee.DATA, bytes);
 			updatedEmployee = baseConnection.updateSelect(employee);
 
 			random.nextBytes(bytes);
 			employee.set(Employee.DATA, bytes);
+
+			try {
+				optimisticConnection.update(employee);
+				fail("RecordModifiedException should have been thrown");
+			}
+			catch (RecordModifiedException e) {
+				//use columns here since the modified row entity contains no foreign key values
+				Collection<Column<?>> columns = updatedEmployee.definition().columns().get();
+				assertTrue(((Entity) e.modifiedRow()).equalValues(updatedEmployee, columns));
+				assertTrue(((Entity) e.row()).equalValues(employee, columns));
+			}
+		}
+		finally {
+			baseConnection.close();
+			optimisticConnection.close();
+		}
+	}
+
+	@Test
+	void optimisticLockingLazyBlob() {
+		LocalEntityConnection baseConnection = createConnection();
+		LocalEntityConnection optimisticConnection = createConnection();
+		optimisticConnection.optimisticLocking(true);
+		Entity updatedEmployee = null;
+		try {
+			Random random = new Random();
+			byte[] bytes = new byte[1024];
+			random.nextBytes(bytes);
+
+			Entity employee = baseConnection.selectSingle(Select.where(Employee.NAME.equalTo("JONES"))
+							.include(Employee.DATA_LAZY)
+							.build());
+			employee.set(Employee.DATA_LAZY, bytes);
+			updatedEmployee = baseConnection.updateSelect(employee);
+
+			random.nextBytes(bytes);
+			employee.set(Employee.DATA_LAZY, bytes);
 
 			try {
 				optimisticConnection.update(employee);

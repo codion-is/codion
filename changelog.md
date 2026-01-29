@@ -26,6 +26,7 @@ Codion Change Log
 ### is.codion.framework.db.local
 - EntityResultPacker no longer initializes non-selected columns with null values, Entity.contains() now returns false for non-loaded lazy columns.
 - DefaultLocalEntityConnection.insertSelect() and updateSelect(), all returned entities now include any lazy loaded columns encountered in any of the entities being inserted or updated.
+- DefaultLocalEntityConnection optimistic locking, lazy loaded value handling improved.
 ### is.codion.framework.model
 - EntityEditModel.EditEvents.Inserted, Updated and Deleted added, entity type validated.
 - EntityEditModel.refresh() moved to EntityEditor.
