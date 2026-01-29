@@ -16,20 +16,22 @@
  *
  * Copyright (c) 2015 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.exception;
+package is.codion.framework.db.exception;
+
+import is.codion.common.db.exception.DatabaseException;
 
 import org.jspecify.annotations.Nullable;
 
 /**
  * An exception indicating a failed delete operation
  */
-public final class DeleteException extends DatabaseException {
+public final class DeleteEntityException extends DatabaseException {
 
 	/**
-	 * Instantiates a new {@link DeleteException}
+	 * Instantiates a new {@link DeleteEntityException}
 	 * @param message the message
 	 */
-	public DeleteException(@Nullable String message) {
+	public DeleteEntityException(@Nullable String message) {
 		super(message);
 	}
 }

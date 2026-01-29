@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2015 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2008 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.exception;
+package is.codion.framework.db.exception;
 
-import org.jspecify.annotations.Nullable;
+import is.codion.common.db.exception.DatabaseException;
 
 /**
- * An exception indicating a failed update operation
+ * Exception used when an expected entity was not found.
  */
-public class UpdateException extends DatabaseException {
+public class EntityNotFoundException extends DatabaseException {
 
 	/**
-	 * Instantiates a new {@link UpdateException}
-	 * @param message the message
+	 * Instantiates a new EntityNotFoundException
+	 * @param message the exception message
 	 */
-	public UpdateException(@Nullable String message) {
+	public EntityNotFoundException(String message) {
 		super(message);
 	}
 }

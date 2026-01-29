@@ -28,6 +28,8 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.exception.EntityModifiedException;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -160,10 +162,10 @@ public interface EntityEditModel {
 	 * Performs an update on the active entity
 	 * @return the updated entity
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified since it was loaded
+	 * @throws EntityModifiedException in case the entity has been modified since it was loaded
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
-	 * @throws is.codion.common.db.exception.UpdateException in case the active entity is not modified
+	 * @throws UpdateEntityException in case the active entity is not modified
 	 * @see #beforeUpdate()
 	 * @see #afterUpdate()
 	 * @see Settings#updateEnabled()
@@ -177,10 +179,10 @@ public interface EntityEditModel {
 	 * @param entities the entities to update
 	 * @return the updated entities
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified since it was loaded
+	 * @throws EntityModifiedException in case an entity has been modified since it was loaded
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
-	 * @throws is.codion.common.db.exception.UpdateException in case any of the given entities are not modified
+	 * @throws UpdateEntityException in case any of the given entities are not modified
 	 * @see #beforeUpdate()
 	 * @see #afterUpdate()
 	 * @see Settings#updateEnabled()

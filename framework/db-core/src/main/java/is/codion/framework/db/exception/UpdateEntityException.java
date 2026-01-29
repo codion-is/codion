@@ -14,22 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2008 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2015 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.exception;
+package is.codion.framework.db.exception;
+
+import is.codion.common.db.exception.DatabaseException;
 
 import org.jspecify.annotations.Nullable;
 
 /**
- * Exception used when one record was expected but many were found.
+ * An exception indicating a failed update operation
  */
-public class MultipleRecordsFoundException extends DatabaseException {
+public class UpdateEntityException extends DatabaseException {
 
 	/**
-	 * Instantiates a new MultipleRecordsFoundException
-	 * @param message the exception message
+	 * Instantiates a new {@link UpdateEntityException}
+	 * @param message the message
 	 */
-	public MultipleRecordsFoundException(@Nullable String message) {
+	public UpdateEntityException(@Nullable String message) {
 		super(message);
 	}
 }

@@ -18,11 +18,11 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -197,10 +197,10 @@ final class DefaultEntityExport implements EntityExport {
 							.attributes(selectAttributes(referencedKey.definition(), attributes))
 							.build()));
 		}
-		catch (RecordNotFoundException e) {
-			String message = "Record not found: " + referencedKey + ", foreignKey: " + foreignKey;
+		catch (EntityNotFoundException e) {
+			String message = "Entity not found: " + referencedKey + ", foreignKey: " + foreignKey;
 			LOG.error(message, e);
-			throw new RecordNotFoundException(message);
+			throw new EntityNotFoundException(message);
 		}
 	}
 
@@ -259,10 +259,10 @@ final class DefaultEntityExport implements EntityExport {
 								.attributes(selectAttributes(key.definition(), attributes))
 								.build());
 			}
-			catch (RecordNotFoundException e) {
-				String message = "Record not found: " + key;
+			catch (EntityNotFoundException e) {
+				String message = "Entity not found: " + key;
 				LOG.error(message, e);
-				throw new RecordNotFoundException(message);
+				throw new EntityNotFoundException(message);
 			}
 		}
 	}

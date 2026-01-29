@@ -21,11 +21,6 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.exception.DeleteException;
-import is.codion.common.db.exception.MultipleRecordsFoundException;
-import is.codion.common.db.exception.RecordModifiedException;
-import is.codion.common.db.exception.RecordNotFoundException;
-import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
@@ -34,6 +29,11 @@ import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityResultIterator;
+import is.codion.framework.db.exception.DeleteEntityException;
+import is.codion.framework.db.exception.EntityModifiedException;
+import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
@@ -419,7 +419,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					}
 				}
 				if (keys.size() != deleteCount) {
-					throw new DeleteException(deleteCount + " rows deleted, expected " + keys.size());
+					throw new DeleteEntityException(deleteCount + " rows deleted, expected " + keys.size());
 				}
 				commitIfTransactionIsNotOpen();
 			}
@@ -446,10 +446,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	public Entity selectSingle(Select select) {
 		List<Entity> entities = select(select);
 		if (entities.isEmpty()) {
-			throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
+			throw new EntityNotFoundException(MESSAGES.getString("record_not_found"));
 		}
 		if (entities.size() > 1) {
-			throw new MultipleRecordsFoundException(MESSAGES.getString("multiple_records_found"));
+			throw new MultipleEntitiesFoundException(MESSAGES.getString("multiple_records_found"));
 		}
 
 		return entities.get(0);
@@ -901,7 +901,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						populateColumnsAndValues(entity, updatableColumns, statementColumns, statementValues,
 										columnDefinition -> entity.modified(columnDefinition.attribute()));
 						if (statementColumns.isEmpty()) {
-							throw new UpdateException("Unable to update entity " + entity.type() + ", no modified values found");
+							throw new UpdateEntityException("Unable to update entity " + entity.type() + ", no modified values found");
 						}
 
 						Condition condition = key(entity.originalPrimaryKey());
@@ -911,7 +911,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 							statementValues.addAll(condition.values());
 							int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
 							if (updatedRows == 0) {
-								throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
+								throw new UpdateEntityException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
 							}
 						}
 
@@ -923,7 +923,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 										.include(lazyColumns(entitiesToUpdate, entityDefinition))
 										.build(), 0);//bypass caching
 						if (selected.size() != entitiesToUpdate.size()) {
-							throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
+							throw new UpdateEntityException(entitiesToUpdate.size() + " updated rows expected, query returned " +
 											selected.size() + ", entityType: " + entityTypeEntities.getKey());
 						}
 						updatedEntities.addAll(selected);
@@ -933,9 +933,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();//releases the select for update lock
-				if (exception instanceof RecordModifiedException) {
+				if (exception instanceof EntityModifiedException) {
 					LOG.debug(exception.getMessage(), exception);
-					throw (RecordModifiedException) exception;
+					throw (EntityModifiedException) exception;
 				}
 				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, UPDATE);
@@ -951,10 +951,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	 * The calling method is responsible for releasing the select for update lock.
 	 * @param entitiesByEntityType the entities to check, mapped to entityType
 	 * @throws SQLException in case of exception
-	 * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
+	 * @throws EntityModifiedException in case an entity has been modified or deleted,
 	 * the {@code modifiedRow} provided by the exception is null
 	 */
-	private void performOptimisticLocking(Map<EntityType, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
+	private void performOptimisticLocking(Map<EntityType, List<Entity>> entitiesByEntityType) throws SQLException, EntityModifiedException {
 		for (Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
 			EntityDefinition definition = definition(entitiesByEntityTypeEntry.getKey());
 			if (definition.optimisticLocking()) {
@@ -963,7 +963,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 	}
 
-	private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
+	private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, EntityModifiedException {
 		Collection<Key> originalKeys = originalPrimaryKeys(entities);
 		Select selectForUpdate = where(keys(originalKeys))
 						.attributes(primaryKeyAndWritableSelectedColumns(entityType))
@@ -977,23 +977,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				Entity original = entity.copy().mutable();
 				original.revert();
 
-				throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
+				throw new EntityModifiedException(entity, null, emptyList(), MESSAGES.getString(RECORD_MODIFIED)
 								+ ", " + original + " " + MESSAGES.getString("has_been_deleted"));
 			}
 			Collection<Column<?>> modifiedColumns = modifiedColumns(entity, current);
 			if (!modifiedColumns.isEmpty()) {
-				throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modifiedColumns));
+				throw new EntityModifiedException(entity, current, modifiedColumns, createModifiedExceptionMessage(entity, current, modifiedColumns));
 			}
 		}
 	}
 
 	private String createUpdateQuery(Update update, List<ColumnDefinition<?>> statementColumns,
-																	 List<@Nullable Object> statementValues) throws UpdateException {
+																	 List<@Nullable Object> statementValues) throws UpdateEntityException {
 		EntityDefinition entityDefinition = definition(update.where().entityType());
 		for (Map.Entry<Column<?>, Object> columnValue : update.values().entrySet()) {
 			ColumnDefinition<Object> columnDefinition = entityDefinition.columns().definition((Column<Object>) columnValue.getKey());
 			if (!columnDefinition.updatable()) {
-				throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());
+				throw new UpdateEntityException("Column is not updatable: " + columnDefinition.attribute());
 			}
 			statementColumns.add(columnDefinition);
 			statementValues.add(columnDefinition.attribute().type().validateType(columnValue.getValue()));

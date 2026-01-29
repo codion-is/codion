@@ -19,13 +19,13 @@
 package is.codion.framework.domain.test;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
@@ -191,7 +191,7 @@ public class DomainTest {
 
 			return insertedEntity;
 		}
-		catch (RecordNotFoundException e) {
+		catch (EntityNotFoundException e) {
 			fail("Inserted entity of type " + entity.type() + " not returned by select after insert");
 			throw e;
 		}
@@ -251,7 +251,7 @@ public class DomainTest {
 		try {
 			connection.select(entity.primaryKey());
 		}
-		catch (RecordNotFoundException e) {
+		catch (EntityNotFoundException e) {
 			caught = true;
 		}
 		assertTrue(caught, "Entity of type " + entity.type() + " failed delete test");

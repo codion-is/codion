@@ -18,8 +18,6 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.exception.MultipleRecordsFoundException;
-import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
@@ -29,6 +27,8 @@ import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityResultIterator;
+import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -185,10 +185,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	public final Entity selectSingle(Select select) {
 		List<Entity> selected = select(select);
 		if (selected.isEmpty()) {
-			throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
+			throw new EntityNotFoundException(MESSAGES.getString("record_not_found"));
 		}
 		if (selected.size() > 1) {
-			throw new MultipleRecordsFoundException(MESSAGES.getString("many_records_found"));
+			throw new MultipleEntitiesFoundException(MESSAGES.getString("many_records_found"));
 		}
 
 		return selected.get(0);

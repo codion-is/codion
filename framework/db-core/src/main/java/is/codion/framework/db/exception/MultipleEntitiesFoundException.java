@@ -16,18 +16,22 @@
  *
  * Copyright (c) 2008 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.exception;
+package is.codion.framework.db.exception;
+
+import is.codion.common.db.exception.DatabaseException;
+
+import org.jspecify.annotations.Nullable;
 
 /**
- * Exception used when an expected record was not found.
+ * Exception used when one entity was expected but many were found.
  */
-public class RecordNotFoundException extends DatabaseException {
+public class MultipleEntitiesFoundException extends DatabaseException {
 
 	/**
-	 * Instantiates a new RecordNotFoundException
+	 * Instantiates a new MultipleFoundException
 	 * @param message the exception message
 	 */
-	public RecordNotFoundException(String message) {
+	public MultipleEntitiesFoundException(@Nullable String message) {
 		super(message);
 	}
 }

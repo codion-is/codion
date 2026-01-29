@@ -26,6 +26,11 @@ import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.DefaultSelect.DefaultBuilder;
+import is.codion.framework.db.exception.DeleteEntityException;
+import is.codion.framework.db.exception.EntityModifiedException;
+import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -316,8 +321,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * @param entity the entity to update
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+	 * @throws UpdateEntityException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
+	 * @throws EntityModifiedException in case the entity has been modified or deleted by another user
 	 */
 	void update(Entity entity);
 
@@ -332,8 +337,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param entity the entity to update
 	 * @return the updated entity
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+	 * @throws UpdateEntityException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
+	 * @throws EntityModifiedException in case the entity has been modified or deleted by another user
 	 */
 	Entity updateSelect(Entity entity);
 
@@ -343,8 +348,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * @param entities the entities to update
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
+	 * @throws UpdateEntityException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
+	 * @throws EntityModifiedException in case an entity has been modified or deleted by another user
 	 */
 	void update(Collection<Entity> entities);
 
@@ -363,8 +368,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param entities the entities to update
 	 * @return the updated entities, in no particular order
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.UpdateException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
+	 * @throws UpdateEntityException in case of an unmodified entity or if there is a mismatch between expected and actual number of updated rows
+	 * @throws EntityModifiedException in case an entity has been modified or deleted by another user
 	 */
 	Collection<Entity> updateSelect(Collection<Entity> entities);
 
@@ -398,7 +403,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * @param key the primary key of the entity to delete
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.DeleteException in case no row or multiple rows were deleted
+	 * @throws DeleteEntityException in case no row or multiple rows were deleted
 	 */
 	void delete(Entity.Key key);
 
@@ -411,7 +416,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * @param keys the primary keys of the entities to delete
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.DeleteException in case the number of deleted rows does not match the number of keys
+	 * @throws DeleteEntityException in case the number of deleted rows does not match the number of keys
 	 */
 	void delete(Collection<Entity.Key> keys);
 
@@ -465,8 +470,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param key the key of the entity to select
 	 * @return an entity having the key {@code key}
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+	 * @throws EntityNotFoundException in case the entity was not found
+	 * @throws MultipleEntitiesFoundException in case multiple entities were found
 	 */
 	Entity select(Entity.Key key);
 
@@ -475,8 +480,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param condition the condition specifying the entity to select
 	 * @return the entities based on the given condition
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+	 * @throws EntityNotFoundException in case the entity was not found
+	 * @throws MultipleEntitiesFoundException in case multiple entities were found
 	 */
 	Entity selectSingle(Condition condition);
 
@@ -485,8 +490,8 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param select the select to perform
 	 * @return the entities based on the given select
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+	 * @throws EntityNotFoundException in case the entity was not found
+	 * @throws MultipleEntitiesFoundException in case multiple entities were found
 	 */
 	Entity selectSingle(Select select);
 

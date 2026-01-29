@@ -22,13 +22,8 @@ import is.codion.common.db.database.ConnectionProvider;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.exception.DeleteException;
-import is.codion.common.db.exception.MultipleRecordsFoundException;
-import is.codion.common.db.exception.RecordModifiedException;
-import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
-import is.codion.common.db.exception.UpdateException;
 import is.codion.common.utilities.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
@@ -36,6 +31,11 @@ import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.EntityResultIterator;
+import is.codion.framework.db.exception.DeleteEntityException;
+import is.codion.framework.db.exception.EntityModifiedException;
+import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.local.ConfigureDb.Configured;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -245,9 +245,9 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void deleteRowNumberMismatch() {
 		Entity.Key key400 = ENTITIES.primaryKey(Department.TYPE, 400);
-		assertThrows(DeleteException.class, () -> connection.delete(key400));
+		assertThrows(DeleteEntityException.class, () -> connection.delete(key400));
 		Entity.Key key40 = ENTITIES.primaryKey(Department.TYPE, 40);
-		assertThrows(DeleteException.class, () -> connection.delete(asList(key40, key400)));
+		assertThrows(DeleteEntityException.class, () -> connection.delete(asList(key40, key400)));
 	}
 
 	@Test
@@ -653,12 +653,12 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void selectSingleNotFound() {
-		assertThrows(RecordNotFoundException.class, () -> connection.selectSingle(Department.DNAME.equalTo("NO_NAME")));
+		assertThrows(EntityNotFoundException.class, () -> connection.selectSingle(Department.DNAME.equalTo("NO_NAME")));
 	}
 
 	@Test
 	void selectSingleManyFound() {
-		assertThrows(MultipleRecordsFoundException.class, () -> connection.selectSingle(Employee.JOB.equalTo("MANAGER")));
+		assertThrows(MultipleEntitiesFoundException.class, () -> connection.selectSingle(Employee.JOB.equalTo("MANAGER")));
 	}
 
 	@Test
@@ -676,7 +676,7 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void updateNoModifiedValues() {
 		Entity department = connection.selectSingle(Department.DEPTNO.equalTo(10));
-		assertThrows(UpdateException.class, () -> connection.update(department));
+		assertThrows(UpdateEntityException.class, () -> connection.update(department));
 	}
 
 	@Test
@@ -770,7 +770,7 @@ public class DefaultLocalEntityConnectionTest {
 		employee.set(EmployeeNonOpt.ID, -888);//non existing
 		employee.save();
 		employee.set(EmployeeNonOpt.NAME, "New name");
-		assertThrows(UpdateException.class, () -> connection.update(employee));
+		assertThrows(UpdateEntityException.class, () -> connection.update(employee));
 	}
 
 	@Test
@@ -780,7 +780,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void updateNonUpdatable() {
-		assertThrows(UpdateException.class, () -> connection.update(Update.where(Employee.ID.equalTo(1))
+		assertThrows(UpdateEntityException.class, () -> connection.update(Update.where(Employee.ID.equalTo(1))
 						.set(Employee.ID, 999)
 						.build()));
 	}
@@ -942,9 +942,9 @@ public class DefaultLocalEntityConnectionTest {
 				connection.update(allen);
 				fail("Should not be able to update row deleted by another connection");
 			}
-			catch (RecordModifiedException e) {
-				assertNotNull(e.row());
-				assertNull(e.modifiedRow());
+			catch (EntityModifiedException e) {
+				assertNotNull(e.entity());
+				assertFalse(e.modified().isPresent());
 			}
 
 			try {
@@ -976,9 +976,12 @@ public class DefaultLocalEntityConnectionTest {
 				optimisticConnection.update(department);
 				fail("RecordModifiedException should have been thrown");
 			}
-			catch (RecordModifiedException e) {
-				assertTrue(((Entity) e.modifiedRow()).equalValues(updatedDepartment));
-				assertTrue(((Entity) e.row()).equalValues(department));
+			catch (EntityModifiedException e) {
+				Collection<Column<?>> columns = e.columns();
+				assertEquals(1, columns.size());
+				assertTrue(columns.contains(Department.LOC));
+				assertTrue(e.modified().orElseThrow(IllegalStateException::new).equalValues(updatedDepartment));
+				assertTrue(e.entity().equalValues(department));
 			}
 		}
 		finally {
@@ -1049,11 +1052,14 @@ public class DefaultLocalEntityConnectionTest {
 				optimisticConnection.update(employee);
 				fail("RecordModifiedException should have been thrown");
 			}
-			catch (RecordModifiedException e) {
+			catch (EntityModifiedException e) {
+				Collection<Column<?>> modified = e.columns();
+				assertEquals(1, modified.size());
+				assertTrue(modified.contains(Employee.DATA));
 				//use columns here since the modified row entity contains no foreign key values
 				Collection<Column<?>> columns = updatedEmployee.definition().columns().get();
-				assertTrue(((Entity) e.modifiedRow()).equalValues(updatedEmployee, columns));
-				assertTrue(((Entity) e.row()).equalValues(employee, columns));
+				assertTrue(e.modified().orElseThrow(IllegalStateException::new).equalValues(updatedEmployee, columns));
+				assertTrue(e.entity().equalValues(employee, columns));
 			}
 		}
 		finally {
@@ -1086,11 +1092,14 @@ public class DefaultLocalEntityConnectionTest {
 				optimisticConnection.update(employee);
 				fail("RecordModifiedException should have been thrown");
 			}
-			catch (RecordModifiedException e) {
+			catch (EntityModifiedException e) {
+				Collection<Column<?>> modified = e.columns();
+				assertEquals(1, modified.size());
+				assertTrue(modified.contains(Employee.DATA_LAZY));
 				//use columns here since the modified row entity contains no foreign key values
 				Collection<Column<?>> columns = updatedEmployee.definition().columns().get();
-				assertTrue(((Entity) e.modifiedRow()).equalValues(updatedEmployee, columns));
-				assertTrue(((Entity) e.row()).equalValues(employee, columns));
+				assertTrue(e.modified().orElseThrow(IllegalStateException::new).equalValues(updatedEmployee, columns));
+				assertTrue(e.entity().equalValues(employee, columns));
 			}
 		}
 		finally {
@@ -2215,7 +2224,7 @@ public class DefaultLocalEntityConnectionTest {
 
 		// Deleting by pseudo PK will throw exception because it matches multiple rows
 		// This demonstrates the limitation of pseudo PKs
-		assertThrows(DeleteException.class, () -> connection.delete(finalEntity1.primaryKey()));
+		assertThrows(DeleteEntityException.class, () -> connection.delete(finalEntity1.primaryKey()));
 
 		// Clean up using condition-based delete instead
 		int deleted = connection.delete(NoPkIdentical.DATA.equalTo("Identical"));

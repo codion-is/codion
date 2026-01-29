@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.UpdateException;
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
@@ -26,6 +25,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -762,7 +762,7 @@ public final class AbstractEntityEditModelTest {
 		editor.set(employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN")));
 		extraModified.set(true);
 		// UpdateException from the EntityConnection since the entity isn't really modified
-		assertThrows(UpdateException.class, () -> employeeEditModel.update());
+		assertThrows(UpdateEntityException.class, () -> employeeEditModel.update());
 	}
 
 	@Test

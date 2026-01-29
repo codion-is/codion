@@ -29,6 +29,11 @@ import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.EntityResultIterator;
+import is.codion.framework.db.exception.DeleteEntityException;
+import is.codion.framework.db.exception.EntityModifiedException;
+import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -252,8 +257,8 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * @param entity the entity to update
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+	 * @throws UpdateEntityException in case there is a mismatch between expected and actual number of updated rows
+	 * @throws EntityModifiedException in case the entity has been modified or deleted by another user
 	 * @throws RemoteException in case of a remote exception
 	 */
 	void update(Entity entity) throws RemoteException;
@@ -269,8 +274,8 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @param entity the entity to update
 	 * @return the updated entity
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+	 * @throws UpdateEntityException in case there is a mismatch between expected and actual number of updated rows
+	 * @throws EntityModifiedException in case the entity has been modified or deleted by another user
 	 * @throws RemoteException in case of a remote exception
 	 */
 	Entity updateSelect(Entity entity) throws RemoteException;
@@ -280,7 +285,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * @param entities the entities to update
 	 * @throws DatabaseException in case of a db exception
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
+	 * @throws EntityModifiedException in case an entity has been modified or deleted by another user
 	 * @throws RemoteException in case of a remote exception
 	 */
 	void update(Collection<Entity> entities) throws RemoteException;
@@ -300,7 +305,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @param entities the entities to update
 	 * @return the updated entities, in no particular order
 	 * @throws DatabaseException in case of a db exception
-	 * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
+	 * @throws EntityModifiedException in case an entity has been modified or deleted by another user
 	 * @throws RemoteException in case of a remote exception
 	 */
 	Collection<Entity> updateSelect(Collection<Entity> entities) throws RemoteException;
@@ -320,7 +325,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * @param key the primary key of the entity to delete
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.DeleteException in case no row or multiple rows were deleted
+	 * @throws DeleteEntityException in case no row or multiple rows were deleted
 	 * @throws RemoteException in case of a remote exception
 	 */
 	void delete(Entity.Key key) throws RemoteException;
@@ -334,7 +339,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * @param keys the primary keys of the entities to delete
 	 * @throws DatabaseException in case of a db exception
-	 * @throws is.codion.common.db.exception.DeleteException in case the number of deleted rows does not match the number of keys
+	 * @throws DeleteEntityException in case the number of deleted rows does not match the number of keys
 	 * @throws RemoteException in case of a remote exception
 	 */
 	void delete(Collection<Entity.Key> keys) throws RemoteException;
@@ -393,8 +398,8 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @param key the key of the entity to select
 	 * @return an entity having the key {@code key}
 	 * @throws DatabaseException in case of a db exception
-	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+	 * @throws EntityNotFoundException in case the entity was not found
+	 * @throws MultipleEntitiesFoundException in case multiple entities were found
 	 * @throws RemoteException in case of a remote exception
 	 */
 	Entity select(Entity.Key key) throws RemoteException;
@@ -404,8 +409,8 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @param condition the condition specifying the entity to select
 	 * @return the entities based on the given condition
 	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+	 * @throws EntityNotFoundException in case the entity was not found
+	 * @throws MultipleEntitiesFoundException in case multiple entities were found
 	 * @throws RemoteException in case of a remote exception
 	 */
 	Entity selectSingle(Condition condition) throws RemoteException;
@@ -415,8 +420,8 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @param select the select to perform
 	 * @return the entities according to the given select
 	 * @throws DatabaseException if an exception occurs
-	 * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-	 * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+	 * @throws EntityNotFoundException in case the entity was not found
+	 * @throws MultipleEntitiesFoundException in case multiple entities were found
 	 * @throws RemoteException in case of a remote exception
 	 */
 	Entity selectSingle(Select select) throws RemoteException;

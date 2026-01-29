@@ -30,6 +30,7 @@ module is.codion.framework.db.core {
 	requires transitive is.codion.framework.domain;
 
 	exports is.codion.framework.db;
+	exports is.codion.framework.db.exception;
 
 	uses is.codion.framework.db.EntityConnectionProvider.Builder;
 	uses is.codion.framework.db.EntityQueries.Factory;
