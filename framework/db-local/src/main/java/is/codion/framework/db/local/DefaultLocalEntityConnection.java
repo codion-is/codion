@@ -116,6 +116,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private final Map<EntityType, List<ColumnDefinition<?>>> generatedColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> insertableColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> updatableColumnsCache = new HashMap<>();
+	private final Map<EntityType, List<Column<?>>> lazyColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ForeignKeyDefinition>> hardForeignKeyReferenceCache = new HashMap<>();
 	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
 	private final Map<Select, List<Entity>> queryCache = new HashMap<>();
@@ -817,7 +818,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<Key> insertedKeys = new ArrayList<>(entities.size());
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
-		Map<EntityType, Set<Column<?>>> lazyInsertedColumns = new HashMap<>();
+		Map<EntityType, Set<Column<?>>> lazyColumns = new HashMap<>();
 		String insertQuery = null;
 		synchronized (database) {
 			try {
@@ -828,8 +829,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						generateBeforeInsert(entity, column);
 					}
 					populateColumnsAndValues(entity, insertableColumns(entityDefinition),
-									statementColumns, statementValues, column -> entity.contains(column.attribute()),
-									lazyInsertedColumns.computeIfAbsent(entity.type(), k -> new HashSet<>()));
+									statementColumns, statementValues, column -> entity.contains(column.attribute()));
+					lazyColumns.computeIfAbsent(entity.type(), k -> new HashSet<>()).addAll(lazyColumns(entity));
 					if (generatedColumns.isEmpty() && statementColumns.isEmpty()) {
 						throw new SQLException("Unable to insert entity " + entity.type() + ", no values to insert");
 					}
@@ -848,7 +849,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				if (insertedEntities != null) {
 					for (Map.Entry<EntityType, List<Key>> entry : groupByType(insertedKeys).entrySet()) {
 						insertedEntities.addAll(query(where(keys(entry.getValue()))
-										.include(lazyInsertedColumns.get(entry.getKey()))
+										.include(lazyColumns.get(entry.getKey()))
 										.build(), 0));
 					}
 				}
@@ -896,10 +897,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					List<ColumnDefinition<?>> updatableColumns = updatableColumns(entityDefinition);
 
 					List<Entity> entitiesToUpdate = entityTypeEntities.getValue();
-					Set<Column<?>> lazyUpdatedColumns = new HashSet<>();
 					for (Entity entity : entitiesToUpdate) {
 						populateColumnsAndValues(entity, updatableColumns, statementColumns, statementValues,
-										columnDefinition -> entity.modified(columnDefinition.attribute()), lazyUpdatedColumns);
+										columnDefinition -> entity.modified(columnDefinition.attribute()));
 						if (statementColumns.isEmpty()) {
 							throw new UpdateException("Unable to update entity " + entity.type() + ", no modified values found");
 						}
@@ -920,7 +920,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					}
 					if (updatedEntities != null) {
 						List<Entity> selected = query(where(keys(primaryKeys(entitiesToUpdate)))
-										.include(lazyUpdatedColumns)
+										.include(lazyColumns(entitiesToUpdate, entityDefinition))
 										.build(), 0);//bypass caching
 						if (selected.size() != entitiesToUpdate.size()) {
 							throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
@@ -1486,6 +1486,37 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 	}
 
+	private Set<Column<?>> lazyColumns(Entity entity) {
+		return lazyColumns(singletonList(entity), entity.definition());
+	}
+
+	private Set<Column<?>> lazyColumns(List<Entity> entities, EntityDefinition entityDefinition) {
+		List<Column<?>> lazyColumns = lazyColumnsCache.computeIfAbsent(entityDefinition.type(), k ->
+						entityDefinition.columns().definitions().stream()
+										.filter(definition -> !definition.selected())
+										.map(ColumnDefinition::attribute)
+										.collect(toList()));
+		if (lazyColumns.isEmpty()) {
+			return emptySet();
+		}
+		Set<Column<?>> included = new HashSet<>();
+		lazyColumns = new ArrayList<>(lazyColumns);
+		for (Entity entity : entities) {
+			if (lazyColumns.isEmpty()) {
+				break;
+			}
+			for (Column<?> column : lazyColumns) {
+				if (entity.contains(column)) {
+					included.add(column);
+					lazyColumns.remove(column);
+					break;
+				}
+			}
+		}
+
+		return included;
+	}
+
 	private void throwIfReadOnly(Collection<Entity> entities) {
 		for (Entity entity : entities) {
 			throwIfReadOnly(entity.type());
@@ -1622,22 +1653,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	 * @param statementColumns the list to populate with the columns to use in the statement
 	 * @param statementValues the list to populate with the values to be used in the statement
 	 * @param includeIf the Predicate to apply when checking to see if the column should be included
-	 * @param lazy populated with the lazy columns included in the operation
 	 */
 	private static void populateColumnsAndValues(Entity entity,
 																							 List<ColumnDefinition<?>> columnDefinitions,
 																							 List<ColumnDefinition<?>> statementColumns,
 																							 List<@Nullable Object> statementValues,
-																							 Predicate<ColumnDefinition<?>> includeIf,
-																							 Set<Column<?>> lazy) {
+																							 Predicate<ColumnDefinition<?>> includeIf) {
 		for (int i = 0; i < columnDefinitions.size(); i++) {
 			ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
 			if (includeIf.test(columnDefinition)) {
 				statementColumns.add(columnDefinition);
 				statementValues.add(entity.get(columnDefinition.attribute()));
-				if (!columnDefinition.selected()) {
-					lazy.add(columnDefinition.attribute());
-				}
 			}
 		}
 	}

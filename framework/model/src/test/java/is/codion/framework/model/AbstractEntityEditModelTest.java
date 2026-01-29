@@ -58,6 +58,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static is.codion.framework.db.EntityConnection.Select.where;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -796,6 +797,26 @@ public final class AbstractEntityEditModelTest {
 		manual.set(NonGeneratedPK.ID, UUID.randomUUID());// non generated pk column initialized to null in entity builder, exists = false
 		manual.set(NonGeneratedPK.NAME, "123456");
 		assertThrows(ValidationException.class, () -> editModel.insert(singleton(manual)));
+	}
+
+	@Test
+	void refreshLazy() {
+		EntityConnection connection = employeeEditModel.connection();
+		Entity jones = connection.selectSingle(where(Employee.NAME.equalTo("JONES")).build());
+
+		TestEntityEditModel editModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		editModel.editor().set(jones);
+		assertFalse(editModel.editor().getOrThrow().contains(Employee.DATA));
+		editModel.editor().refresh();
+		assertFalse(editModel.editor().getOrThrow().contains(Employee.DATA));
+
+		jones = connection.selectSingle(where(Employee.NAME.equalTo("JONES"))
+						.include(Employee.DATA)
+						.build());
+		editModel.editor().set(jones);
+		assertTrue(editModel.editor().getOrThrow().contains(Employee.DATA));
+		editModel.editor().refresh();
+		assertTrue(editModel.editor().getOrThrow().contains(Employee.DATA));
 	}
 
 	private static final class TestEntityEditModel extends AbstractEntityEditModel {

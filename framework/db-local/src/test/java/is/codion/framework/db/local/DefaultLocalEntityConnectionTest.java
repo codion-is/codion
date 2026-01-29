@@ -1007,7 +1007,9 @@ public class DefaultLocalEntityConnectionTest {
 			byte[] bytes = new byte[1024];
 			random.nextBytes(bytes);
 
-			Entity employee = baseConnection.selectSingle(Employee.NAME.equalTo("BLAKE"));
+			Entity employee = baseConnection.selectSingle(Select.where(Employee.NAME.equalTo("BLAKE"))
+							.include(Employee.DATA_LAZY)
+							.build());
 			employee.set(Employee.DATA, bytes);
 			updatedEmployee = baseConnection.updateSelect(employee);
 
@@ -1249,7 +1251,9 @@ public class DefaultLocalEntityConnectionTest {
 		random.nextBytes(lazyBytes);
 		random.nextBytes(bytes);
 
-		Entity scott = connection.selectSingle(Employee.ID.equalTo(7));
+		Entity scott = connection.selectSingle(Select.where(Employee.ID.equalTo(7))
+						.include(Employee.DATA_LAZY)
+						.build());
 		scott.set(Employee.DATA_LAZY, lazyBytes);
 		scott.set(Employee.DATA, bytes);
 		connection.update(scott);
@@ -2317,7 +2321,7 @@ public class DefaultLocalEntityConnectionTest {
 		assertNotNull(employee.get(Employee.SALARY));
 
 		// Should NOT have lazy column
-		assertNull(employee.get(Employee.DATA_LAZY));
+		assertFalse(employee.contains(Employee.DATA_LAZY));
 
 		// Test 2: Include lazy column
 		List<Entity> withLazy = connection.select(Select.all(Employee.TYPE)
@@ -2463,7 +2467,7 @@ public class DefaultLocalEntityConnectionTest {
 							.with(Employee.SALARY, (double) 1500)
 							.build();
 			Collection<Entity> inserted = connection.insertSelect(asList(ari, bjorn));
-			// Lazy inserted for one, selected for both
+			// Lazy included for one, selected for both
 			inserted.forEach(entity -> assertTrue(entity.contains(Employee.DATA_LAZY)));
 
 			ari = inserted.stream().filter(entity -> "ari".equals(entity.get(Employee.NAME))).findFirst().orElse(null);
@@ -2473,7 +2477,7 @@ public class DefaultLocalEntityConnectionTest {
 			bjorn.set(Employee.DATA_LAZY, lazyBytes);
 
 			Collection<Entity> updated = connection.updateSelect(asList(ari, bjorn));
-			// Lazy updated for one, selected for both
+			// Lazy included for one, selected for both
 			updated.forEach(entity -> assertTrue(entity.contains(Employee.DATA_LAZY)));
 		}
 		finally {

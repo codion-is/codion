@@ -55,6 +55,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
+import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
@@ -133,8 +135,14 @@ final class DefaultEntityEditor implements EntityEditor {
 
 	@Override
 	public void refresh() {
-		if (exists().is()) {
-			set(connectionProvider.connection().select(entity.originalPrimaryKey()));
+		if (exists.is()) {
+			set(connectionProvider.connection().selectSingle(where(key(entity.originalPrimaryKey()))
+							.include(entityDefinition.columns().definitions().stream()
+											.filter(definition -> !definition.selected())
+											.map(ColumnDefinition::attribute)
+											.filter(entity::contains)
+											.collect(toSet()))
+							.build()));
 		}
 	}
 

@@ -23,6 +23,9 @@ Codion Change Log
 - LogViewer, clear control moved to popup menu, minor refactoring.
 ### is.codion.plugin.flatlaf
 - is.codion.plugin.flatlaf module now exports indicator package, so FlatLafValidIndicatorFactory can be instantiated directly.
+### is.codion.framework.db.local
+- EntityResultPacker no longer initializes non-selected columns with null values, Entity.contains() now returns false for non-loaded lazy columns.
+- DefaultLocalEntityConnection.insertSelect() and updateSelect(), all returned entities now include any lazy loaded columns encountered in any of the entities being inserted or updated.
 ### is.codion.framework.model
 - EntityEditModel.EditEvents.Inserted, Updated and Deleted added, entity type validated.
 - EntityEditModel.refresh() moved to EntityEditor.

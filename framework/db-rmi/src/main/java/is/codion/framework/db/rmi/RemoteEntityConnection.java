@@ -201,7 +201,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * <p>
 	 * The returned entity includes any lazy-loaded attributes (defined with
-	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were populated in the inserted entity.
+	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were contained in the entity being inserted.
 	 * {@snippet :
 	 * Entity album = entities.entity(Album.TYPE)
 	 *     .with(Album.ARTIST_FK, artist)
@@ -234,11 +234,11 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * <p>
 	 * The returned entities include any lazy-loaded attributes (defined with
-	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were populated in the inserted entities.
+	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were contained in the entities being inserted.
 	 * <p>
-	 * <b>Note:</b> When inserting multiple entities, if a lazy attribute is populated in <i>any</i> of the entities,
+	 * <b>Note:</b> When inserting multiple entities, if a lazy attribute is contained in <i>any</i> of the entities,
 	 * it will be included in the select for <i>all</i> of them. This means that if one entity has a lazy attribute
-	 * with a value, that attribute will be loaded for all entities in the batch, even those where it wasn't populated.
+	 * with a value, that attribute will be loaded for all entities in the batch, even those where it wasn't contained.
 	 * @param entities the entities to insert
 	 * @return the inserted entities
 	 * @throws DatabaseException in case of a database exception
@@ -263,8 +263,9 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Throws an exception if the given entity is unmodified.
 	 * Performs a commit unless a transaction is open.
 	 * <p>
-	 * The returned entity includes all modified attributes in the select, including any lazy-loaded
-	 * attributes (defined with {@link ColumnDefinition.Builder#selected(boolean)})
+	 * The returned entity includes any lazy-loaded attributes (defined with
+	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were contained in the entity being updated,
+	 * preventing lazy-loaded values from being lost during updates.
 	 * @param entity the entity to update
 	 * @return the updated entity
 	 * @throws DatabaseException in case of a database exception
@@ -289,12 +290,13 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Throws an exception if any of the given entities is unmodified.
 	 * Performs a commit unless a transaction is open.
 	 * <p>
-	 * The returned entities include all modified attributes in the select, including any lazy-loaded
-	 * attributes (defined with {@link ColumnDefinition.Builder#selected(boolean)})
+	 * The returned entities include any lazy-loaded attributes (defined with
+	 * {@link ColumnDefinition.Builder#selected(boolean)}) that were contained in the entities being updated,
+	 * preventing lazy-loaded values from being lost during updates.
 	 * <p>
-	 * <b>Note:</b> When updating multiple entities, if an attribute is modified in <i>any</i> of the entities,
-	 * it will be included in the select for <i>all</i> of them. This means that if one entity has a modified
-	 * lazy attribute, that attribute will be loaded for all entities in the batch, even those where it wasn't modified.
+	 * <b>Note:</b> When updating multiple entities, if a lazy attribute is contained in <i>any</i> of the entities,
+	 * it will be included in the select for <i>all</i> of them. This means that if one entity has a lazy attribute
+	 * loaded, that attribute will be loaded for all entities in the batch, even those where it wasn't originally loaded.
 	 * @param entities the entities to update
 	 * @return the updated entities, in no particular order
 	 * @throws DatabaseException in case of a db exception

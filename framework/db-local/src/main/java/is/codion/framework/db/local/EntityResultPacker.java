@@ -45,15 +45,11 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
 	private static final Function<EntityDefinition, List<AttributeDefinition<?>>> INIT_TRANSIENT_ATTRIBUTES =
 					EntityResultPacker::initializeTransientAttributes;
-	private static final Function<EntityDefinition, List<ColumnDefinition<?>>> INIT_NON_SELECTED_COLUMNS =
-					EntityResultPacker::initializeNonSelectedColumns;
 	private static final Map<EntityDefinition, List<AttributeDefinition<?>>> TRANSIENT_ATTRIBUTES = new ConcurrentHashMap<>();
-	private static final Map<EntityDefinition, List<ColumnDefinition<?>>> NON_SELECTED_COLUMNS = new ConcurrentHashMap<>();
 
 	private final EntityDefinition entityDefinition;
 	private final List<ColumnDefinition<?>> columnDefinitions;
 	private final List<AttributeDefinition<?>> transientAttributes;
-	private final List<ColumnDefinition<?>> nonSelectedColumns;
 	private final boolean customSelectColumns;
 
 	/**
@@ -64,7 +60,6 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		this.entityDefinition = entityDefinition;
 		this.columnDefinitions = columnDefinitions;
 		this.transientAttributes = TRANSIENT_ATTRIBUTES.computeIfAbsent(entityDefinition, INIT_TRANSIENT_ATTRIBUTES);
-		this.nonSelectedColumns = NON_SELECTED_COLUMNS.computeIfAbsent(entityDefinition, INIT_NON_SELECTED_COLUMNS);
 		this.customSelectColumns = entityDefinition.selectQuery()
 						.map(query -> query.columns() != null)
 						.orElse(false);
@@ -72,11 +67,10 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
 	@Override
 	public Entity get(ResultSet resultSet) throws SQLException {
-		int attributeCount = columnDefinitions.size() + transientAttributes.size() + nonSelectedColumns.size();
+		int attributeCount = columnDefinitions.size() + transientAttributes.size();
 		Map<Attribute<?>, Object> values = new HashMap<>((int) (attributeCount / 0.75f) + 1);
 		addResultSetValues(resultSet, values);
 		addTransientNullValues(values);
-		addNonSelectedNullValues(values);
 
 		return entityDefinition.entity(values);
 	}
@@ -102,21 +96,9 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		}
 	}
 
-	private void addNonSelectedNullValues(Map<Attribute<?>, @Nullable Object> values) {
-		for (int i = 0; i < nonSelectedColumns.size(); i++) {
-			values.putIfAbsent(nonSelectedColumns.get(i).attribute(), null);
-		}
-	}
-
 	private static List<AttributeDefinition<?>> initializeTransientAttributes(EntityDefinition entityDefinition) {
 		return entityDefinition.attributes().definitions().stream()
 						.filter(TransientAttributeDefinition.class::isInstance)
-						.collect(toList());
-	}
-
-	private static List<ColumnDefinition<?>> initializeNonSelectedColumns(EntityDefinition entityDefinition) {
-		return entityDefinition.columns().definitions().stream()
-						.filter(columnDefinition -> !columnDefinition.selected())
 						.collect(toList());
 	}
 }
