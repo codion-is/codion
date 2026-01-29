@@ -85,7 +85,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(requireNonNull(entityType));
 		this.connectionProvider = connectionProvider;
-		this.editor = new DefaultEntityEditor(entityDefinition);
+		this.editor = new DefaultEntityEditor(entityDefinition, connectionProvider);
 		this.settings = new DefaultSettings(entityDefinition.readOnly());
 		this.events = new Events(settings.editEvents);
 		addEditListeners();
@@ -129,13 +129,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final EntityEditor editor() {
 		return editor;
-	}
-
-	@Override
-	public final void refresh() {
-		if (editor.exists().is()) {
-			editor.set(connectionProvider.connection().select(editor.getOrThrow().originalPrimaryKey()));
-		}
 	}
 
 	@Override

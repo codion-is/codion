@@ -25,6 +25,7 @@ Codion Change Log
 - is.codion.plugin.flatlaf module now exports indicator package, so FlatLafValidIndicatorFactory can be instantiated directly.
 ### is.codion.framework.model
 - EntityEditModel.EditEvents.Inserted, Updated and Deleted added, entity type validated.
+- EntityEditModel.refresh() moved to EntityEditor.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, now uses MessageFormat.format() when formatting result limit message.
 - EntityPopupMenu removed, EntityViewer added.

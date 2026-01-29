@@ -160,11 +160,11 @@ public final class AbstractEntityEditModelTest {
 		connection.startTransaction();
 		try {
 			Entity employee = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
-			employeeEditModel.refresh();
+			editor.refresh();
 			editor.set(employee);
 			employee.set(Employee.NAME, "NOONE");
 			connection.update(employee);
-			employeeEditModel.refresh();
+			editor.refresh();
 			assertEquals("NOONE", editor.value(Employee.NAME).get());
 
 			EntityEditModel departmentEditModel = new TestEntityEditModel(Department.TYPE, employeeEditModel.connectionProvider());
@@ -175,7 +175,7 @@ public final class AbstractEntityEditModelTest {
 
 			accounting.set(Department.NAME, "Accounting");
 			connection.update(accounting);
-			departmentEditModel.refresh();
+			departmentEditModel.editor().refresh();
 			assertEquals(10, departmentEditor.value(Department.ID).get());
 			assertEquals("Accounting", departmentEditor.value(Department.NAME).get());
 		}

@@ -27,6 +27,7 @@ import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -77,6 +78,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	private final Map<Attribute<?>, Observable<String>> messages = new HashMap<>();
 
 	private final EntityDefinition entityDefinition;
+	private final EntityConnectionProvider connectionProvider;
 	private final State primaryKeyNull = State.state(true);
 	private final State entityValid = State.state();
 	private final DefaultExists exists;
@@ -85,8 +87,9 @@ final class DefaultEntityEditor implements EntityEditor {
 
 	private final Entity entity;
 
-	DefaultEntityEditor(EntityDefinition entityDefinition) {
+	DefaultEntityEditor(EntityDefinition entityDefinition, EntityConnectionProvider connectionProvider) {
 		this.entityDefinition = requireNonNull(entityDefinition);
+		this.connectionProvider = requireNonNull(connectionProvider);
 		this.entity = createEntity(INITIAL_VALUE);
 		this.exists = new DefaultExists(entityDefinition);
 		this.modified = new DefaultModified();
@@ -126,6 +129,13 @@ final class DefaultEntityEditor implements EntityEditor {
 	@Override
 	public void revert() {
 		entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
+	}
+
+	@Override
+	public void refresh() {
+		if (exists().is()) {
+			set(connectionProvider.connection().select(entity.originalPrimaryKey()));
+		}
 	}
 
 	@Override
