@@ -51,6 +51,7 @@ Codion Change Log
 - DefaultAutomation, now logs FocusLostException instead of rethrowing, which could otherwise cancel application exiting.
 ### is.codion.tools.swing.mcp
 - SwingMcpPlugin now handles FocusLostException from controller, related refactoring.
+- SwingMcpBridge added, replacing python bridge.
 
 ## 0.18.66
 ### is.codion.common.reactive

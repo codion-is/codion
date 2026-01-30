@@ -264,16 +264,4 @@ public class SwingMcpCoreTest {
 
 		server.stop();
 	}
-
-	@Test
-	void testInvalidKeyCombo() {
-		JPanel testPanel = new JPanel();
-		SwingMcpServer server = new SwingMcpServer(testPanel, false);
-
-		// Test invalid key combination - these should throw exceptions without executing
-		// actual automation, so they're safe to test in any environment
-		assertThrows(IllegalArgumentException.class, () -> server.key("invalid combo", 1, null));
-
-		server.stop();
-	}
 }

@@ -172,15 +172,15 @@ final class SwingMcpHttpServer {
 			}
 
 			ObjectNode response = objectMapper.createObjectNode();
-			response.put("protocolVersion", "1.0.0");
+			response.put("protocolVersion", "2024-11-05");
 
 			ObjectNode serverInfo = response.putObject("serverInfo");
 			serverInfo.put("name", serverName);
 			serverInfo.put("version", serverVersion);
 
 			ObjectNode capabilities = response.putObject("capabilities");
-			capabilities.put("tools", true);
-			capabilities.put("logging", true);
+			capabilities.putObject("tools"); // Empty object indicates capability is supported
+			capabilities.putObject("logging");
 
 			sendResponse(exchange, 200, objectMapper.writeValueAsString(response));
 		}
@@ -222,6 +222,8 @@ final class SwingMcpHttpServer {
 
 	private class CallToolHandler implements HttpHandler {
 
+		private static final String IMAGE = "image";
+
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
 			if (handleCorsPreflightRequest(exchange)) {
@@ -256,11 +258,34 @@ final class SwingMcpHttpServer {
 				Object result = tool.handler.handle(arguments);
 
 				ObjectNode response = objectMapper.createObjectNode();
+				ArrayNode contentArray = response.putArray("content");
 				if (result instanceof String) {
-					response.put("content", (String) result);
+					ObjectNode textContent = contentArray.addObject();
+					textContent.put("type", "text");
+					textContent.put("text", (String) result);
+				}
+				else if (result instanceof Map) {
+					@SuppressWarnings("unchecked")
+					Map<String, Object> resultMap = (Map<String, Object>) result;
+					// Check if this is an image response
+					if (resultMap.containsKey(IMAGE)) {
+						ObjectNode imageContent = contentArray.addObject();
+						imageContent.put("type", IMAGE);
+						imageContent.put("data", (String) resultMap.get(IMAGE));
+						String format = (String) resultMap.getOrDefault("format", "png");
+						imageContent.put("mimeType", "image/" + format);
+					}
+					else {
+						// For other map results, serialize as JSON text
+						ObjectNode textContent = contentArray.addObject();
+						textContent.put("type", "text");
+						textContent.put("text", objectMapper.writeValueAsString(result));
+					}
 				}
 				else {
-					response.set("content", objectMapper.valueToTree(result));
+					ObjectNode textContent = contentArray.addObject();
+					textContent.put("type", "text");
+					textContent.put("text", objectMapper.writeValueAsString(result));
 				}
 				response.put("isError", false);
 

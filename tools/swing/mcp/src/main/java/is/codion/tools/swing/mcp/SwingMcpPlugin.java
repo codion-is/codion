@@ -45,8 +45,11 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * Plugin that integrates MCP server directly into a Swing application.
  * This allows AI tools to control the application via the Model Context Protocol over HTTP.
  * <p>
+ * The HTTP server runs in-process and can be toggled on/off at runtime.
+ * Claude Desktop connects via a Java bridge that translates STDIO to HTTP.
+ * <p>
  * Configure with system properties:
- * -Dcodion.swing.mcp.http.port=8080     (sets HTTP port, default 8080)
+ * -Dcodion.swing.mcp.http.port=8080      (HTTP server port, default 8080)
  */
 public final class SwingMcpPlugin {
 
@@ -56,7 +59,7 @@ public final class SwingMcpPlugin {
 	 * System property to set the HTTP server port (default: 8080).
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: null
+	 * <li>Default value: 8080
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> HTTP_PORT = integerValue("codion.swing.mcp.http.port", 8080);

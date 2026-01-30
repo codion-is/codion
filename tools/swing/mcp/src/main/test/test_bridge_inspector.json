@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "codion-bridge": {
+      "command": "../../../build/install/codion-tools-swing-mcp/bin/codion-tools-swing-mcp",
+      "args": ["8080"]
+    }
+  }
+}

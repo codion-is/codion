@@ -437,25 +437,18 @@
     function pressKeyCombo() {
         const combo = document.getElementById('keyCombo').value;
         if (combo) {
-            callTool('key_combo', {combo});
-        }
-    }
-
-    function pressKeyCombo() {
-        const combo = document.getElementById('keyCombo').value;
-        if (combo) {
-            callTool('key_combo', {combo});
+            callTool('key', {combo});
         }
     }
 
     function pressPresetCombo(combo) {
         document.getElementById('keyCombo').value = combo;
-        callTool('key_combo', {combo});
+        callTool('key', {combo});
     }
 
     // Simple function for direct key combo buttons (arrows, enter, etc.)
     function pressSimpleKey(combo) {
-        callTool('key_combo', {combo});
+        callTool('key', {combo});
     }
 
     async function listTools() {
@@ -493,11 +486,11 @@
         await sleep(200);
         await callTool('type_text', {text: 'John Doe'});
         await sleep(200);
-        await callTool('key_combo', {combo: 'TAB'});
+        await callTool('key', {combo: 'TAB'});
         await sleep(200);
         await callTool('type_text', {text: 'john.doe@example.com'});
         await sleep(200);
-        await callTool('key_combo', {combo: 'TAB'});
+        await callTool('key', {combo: 'TAB'});
         await sleep(200);
         await callTool('type_text', {text: '2024-01-15'});
         displayResult('test_sequence', {message: 'Form fill test completed'});
@@ -506,38 +499,38 @@
     async function runNavigationTest() {
         // Press down arrow 3 times
         for (let i = 0; i < 3; i++) {
-            await callTool('key_combo', {combo: 'DOWN'});
+            await callTool('key', {combo: 'DOWN'});
             await sleep(100);
         }
         await sleep(200);
         // Press up arrow 2 times
         for (let i = 0; i < 2; i++) {
-            await callTool('key_combo', {combo: 'UP'});
+            await callTool('key', {combo: 'UP'});
             await sleep(100);
         }
         await sleep(200);
         // Press right arrow 5 times
         for (let i = 0; i < 5; i++) {
-            await callTool('key_combo', {combo: 'RIGHT'});
+            await callTool('key', {combo: 'RIGHT'});
             await sleep(60);
         }
         await sleep(200);
         // Press left arrow 3 times
         for (let i = 0; i < 3; i++) {
-            await callTool('key_combo', {combo: 'LEFT'});
+            await callTool('key', {combo: 'LEFT'});
             await sleep(60);
         }
         displayResult('test_sequence', {message: 'Navigation test completed'});
     }
 
     async function runCopyPasteTest() {
-        await callTool('key_combo', {combo: 'control a'});
+        await callTool('key', {combo: 'control a'});
         await sleep(200);
-        await callTool('key_combo', {combo: 'control c'});
+        await callTool('key', {combo: 'control c'});
         await sleep(200);
-        await callTool('key_combo', {combo: 'TAB'});
+        await callTool('key', {combo: 'TAB'});
         await sleep(200);
-        await callTool('key_combo', {combo: 'control v'});
+        await callTool('key', {combo: 'control v'});
         displayResult('test_sequence', {message: 'Copy/paste test completed'});
     }
 

@@ -32,10 +32,10 @@ The swing-mcp module allows:
    - Handles MCP protocol over HTTP
    - Maps HTTP endpoints to MCP operations
 
-4. **Python Bridge** (`src/main/python/mcp_bridge.py`)
-   - Bridges Claude Desktop MCP to HTTP server
-   - Handles stdio ↔ HTTP translation
-   - Required because Claude Desktop expects stdio communication
+4. **SwingMcpBridge** (`SwingMcpBridge.java`)
+   - STDIO-to-HTTP bridge for Claude Desktop integration
+   - Translates JSON-RPC requests from stdin to HTTP and responses back to stdout
+   - Built as a runnable distribution via Gradle application plugin
 
 ## Available MCP Tools
 
@@ -124,13 +124,34 @@ State mcpServerController = SwingMcpPlugin.mcpServer(this);
 mcpServerController.set(true);
 ```
 
+### Building the Bridge Distribution
+```bash
+# Build the runnable distribution
+./gradlew :codion-tools-swing-mcp:installDist
+
+# Or create a distributable zip
+./gradlew :codion-tools-swing-mcp:distZip
+```
+
 ### Configuring Claude Desktop
 ```bash
-# Add the MCP server
-claude mcp add codion python3 /path/to/codion/tools/swing/mcp/src/main/python/mcp_bridge.py
+# Add the MCP server (pointing to built distribution)
+claude mcp add codion /path/to/codion-tools-swing-mcp/bin/codion-tools-swing-mcp 8080
 
 # Verify configuration
 claude mcp list
+```
+
+Or in Claude Desktop's config JSON:
+```json
+{
+  "mcpServers": {
+    "codion": {
+      "command": "/path/to/codion-tools-swing-mcp/bin/codion-tools-swing-mcp",
+      "args": ["8080"]
+    }
+  }
+}
 ```
 
 ### Direct HTTP Testing
@@ -242,8 +263,8 @@ All JSON responses use Jackson ObjectMapper with record classes:
 - Java 17+
 - Jackson for JSON (provided by MCP SDK)
 - JDK HttpServer (built-in)
-- Python 3 for bridge script
 - SLF4J for logging
+- Logback (runtime, for bridge distribution)
 
 ## Troubleshooting
 
