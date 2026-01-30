@@ -33,6 +33,7 @@ import is.codion.framework.domain.entity.attribute.Column.Generator.Identity;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.tools.generator.domain.PostProcessing.EntityNames;
 
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
@@ -56,7 +57,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
@@ -342,7 +342,7 @@ public final class DomainSource {
 
 		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, dtos, i18n)));
 
-		return removeInterfaceLineBreaks(JavaFile.builder(sourcePackage.isEmpty() ? "" : sourcePackage, classBuilder.build())
+		return PostProcessing.removeInterfaceLineBreaks(JavaFile.builder(sourcePackage.isEmpty() ? "" : sourcePackage, classBuilder.build())
 						.addStaticImport(DomainType.class, "domainType")
 						.skipJavaLangImports(true)
 						.indent(INDENT)
@@ -415,7 +415,14 @@ public final class DomainSource {
 							fileBuilder.addStaticImport(parentInterface, interfaceName(definition, true)));
 		}
 
-		return removeInterfaceLineBreaks(fileBuilder.build().toString());
+		List<EntityNames> entityNames = sortedDefinitions.stream()
+						.map(definition -> new EntityNames(
+										interfaceName(definition, true),
+										interfaceName(definition, false)))
+						.toList();
+
+		return PostProcessing.interleaveInterfacesAndMethods(
+						PostProcessing.removeInterfaceLineBreaks(fileBuilder.build().toString()), entityNames);
 	}
 
 	private static MethodSpec createDomainConstructor(Map<EntityDefinition, String> definitionMethods) {
@@ -815,42 +822,6 @@ public final class DomainSource {
 		}
 
 		return name;
-	}
-
-	/**
-	 * Removes blank lines between field declarations in generated interfaces.
-	 * JavaPoet does not provide control over field spacing, so we use post-processing
-	 * to achieve compact field declarations without empty lines between them.
-	 */
-	private static String removeInterfaceLineBreaks(String sourceString) {
-		String[] lines = sourceString.split("\n");
-		for (int i = 1; i < lines.length - 1; i++) {
-			String line = lines[i];
-			if (line != null && line.trim().isEmpty() && betweenColumnsOrForeignKeys(lines, i)) {
-				lines[i] = null;
-			}
-		}
-
-		return Arrays.stream(lines)
-						.filter(Objects::nonNull)
-						.collect(joining("\n"));
-	}
-
-	private static boolean betweenColumnsOrForeignKeys(String[] lines, int lineIndex) {
-		return betweenLinesStartingWith(lines, lineIndex, "Column")
-						|| betweenLinesStartingWith(lines, lineIndex, "ForeignKey");
-	}
-
-	private static boolean betweenLinesStartingWith(String[] lines, int lineIndex, String prefix) {
-		String previousLine = lines[lineIndex - 1];
-		String nextLine = lines[lineIndex + 1];
-
-		return lineStartsWith(previousLine, prefix)
-						&& lineStartsWith(nextLine, prefix);
-	}
-
-	private static boolean lineStartsWith(String line, String prefix) {
-		return line != null && line.trim().startsWith(prefix);
 	}
 
 	public static String apiSearchString(EntityDefinition definition) {

@@ -37,6 +37,28 @@ public final class Chinook extends DomainModel {
 				track(), invoiceline(), playlisttrack());
 	}
 
+	public interface Artist {
+		EntityType TYPE = DOMAIN.entityType("chinook.artist");
+
+		Column<Long> ARTISTID = TYPE.longColumn("artistid");
+		Column<String> NAME = TYPE.stringColumn("name");
+
+		static Dto dto(Entity artist) {
+			return artist == null ? null :
+				new Dto(artist.get(ARTISTID),
+					artist.get(NAME));
+		}
+
+		record Dto(Long artistid, String name) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(ARTISTID, artistid)
+					.with(NAME, name)
+					.build();
+			}
+		}
+	}
+
 	static EntityDefinition artist() {
 		return Artist.TYPE.as(
 				Artist.ARTISTID.as()
@@ -49,6 +71,71 @@ public final class Chinook extends DomainModel {
 					.maximumLength(120))
 			.caption("Artist")
 			.build();
+	}
+
+	public interface Employee {
+		EntityType TYPE = DOMAIN.entityType("chinook.employee");
+
+		Column<Long> EMPLOYEEID = TYPE.longColumn("employeeid");
+		Column<String> LASTNAME = TYPE.stringColumn("lastname");
+		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+		Column<String> TITLE = TYPE.stringColumn("title");
+		Column<Long> REPORTSTO = TYPE.longColumn("reportsto");
+		Column<LocalDate> BIRTHDATE = TYPE.localDateColumn("birthdate");
+		Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
+		Column<String> ADDRESS = TYPE.stringColumn("address");
+		Column<String> CITY = TYPE.stringColumn("city");
+		Column<String> STATE = TYPE.stringColumn("state");
+		Column<String> COUNTRY = TYPE.stringColumn("country");
+		Column<String> POSTALCODE = TYPE.stringColumn("postalcode");
+		Column<String> PHONE = TYPE.stringColumn("phone");
+		Column<String> FAX = TYPE.stringColumn("fax");
+		Column<String> EMAIL = TYPE.stringColumn("email");
+
+		ForeignKey REPORTSTO_FK = TYPE.foreignKey("reportsto_fk", REPORTSTO, Employee.EMPLOYEEID);
+
+		static Dto dto(Entity employee) {
+			return employee == null ? null :
+				new Dto(employee.get(EMPLOYEEID),
+					employee.get(LASTNAME),
+					employee.get(FIRSTNAME),
+					employee.get(TITLE),
+					Employee.dto(employee.get(REPORTSTO_FK)),
+					employee.get(BIRTHDATE),
+					employee.get(HIREDATE),
+					employee.get(ADDRESS),
+					employee.get(CITY),
+					employee.get(STATE),
+					employee.get(COUNTRY),
+					employee.get(POSTALCODE),
+					employee.get(PHONE),
+					employee.get(FAX),
+					employee.get(EMAIL));
+		}
+
+		record Dto(Long employeeid, String lastname, String firstname, String title,
+				Employee.Dto reportsto, LocalDate birthdate, LocalDate hiredate, String address, String city,
+				String state, String country, String postalcode, String phone, String fax, String email) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(EMPLOYEEID, employeeid)
+					.with(LASTNAME, lastname)
+					.with(FIRSTNAME, firstname)
+					.with(TITLE, title)
+					.with(REPORTSTO_FK, reportsto.entity(entities))
+					.with(BIRTHDATE, birthdate)
+					.with(HIREDATE, hiredate)
+					.with(ADDRESS, address)
+					.with(CITY, city)
+					.with(STATE, state)
+					.with(COUNTRY, country)
+					.with(POSTALCODE, postalcode)
+					.with(PHONE, phone)
+					.with(FAX, fax)
+					.with(EMAIL, email)
+					.build();
+			}
+		}
 	}
 
 	static EntityDefinition employee() {
@@ -118,6 +205,28 @@ public final class Chinook extends DomainModel {
 			.build();
 	}
 
+	public interface Genre {
+		EntityType TYPE = DOMAIN.entityType("chinook.genre");
+
+		Column<Long> GENREID = TYPE.longColumn("genreid");
+		Column<String> NAME = TYPE.stringColumn("name");
+
+		static Dto dto(Entity genre) {
+			return genre == null ? null :
+				new Dto(genre.get(GENREID),
+					genre.get(NAME));
+		}
+
+		record Dto(Long genreid, String name) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(GENREID, genreid)
+					.with(NAME, name)
+					.build();
+			}
+		}
+	}
+
 	static EntityDefinition genre() {
 		return Genre.TYPE.as(
 				Genre.GENREID.as()
@@ -130,6 +239,28 @@ public final class Chinook extends DomainModel {
 					.maximumLength(120))
 			.caption("Genre")
 			.build();
+	}
+
+	public interface Mediatype {
+		EntityType TYPE = DOMAIN.entityType("chinook.mediatype");
+
+		Column<Long> MEDIATYPEID = TYPE.longColumn("mediatypeid");
+		Column<String> NAME = TYPE.stringColumn("name");
+
+		static Dto dto(Entity mediatype) {
+			return mediatype == null ? null :
+				new Dto(mediatype.get(MEDIATYPEID),
+					mediatype.get(NAME));
+		}
+
+		record Dto(Long mediatypeid, String name) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(MEDIATYPEID, mediatypeid)
+					.with(NAME, name)
+					.build();
+			}
+		}
 	}
 
 	static EntityDefinition mediatype() {
@@ -146,6 +277,28 @@ public final class Chinook extends DomainModel {
 			.build();
 	}
 
+	public interface Playlist {
+		EntityType TYPE = DOMAIN.entityType("chinook.playlist");
+
+		Column<Long> PLAYLISTID = TYPE.longColumn("playlistid");
+		Column<String> NAME = TYPE.stringColumn("name");
+
+		static Dto dto(Entity playlist) {
+			return playlist == null ? null :
+				new Dto(playlist.get(PLAYLISTID),
+					playlist.get(NAME));
+		}
+
+		record Dto(Long playlistid, String name) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(PLAYLISTID, playlistid)
+					.with(NAME, name)
+					.build();
+			}
+		}
+	}
+
 	static EntityDefinition playlist() {
 		return Playlist.TYPE.as(
 				Playlist.PLAYLISTID.as()
@@ -158,6 +311,31 @@ public final class Chinook extends DomainModel {
 					.maximumLength(120))
 			.caption("Playlist")
 			.build();
+	}
+
+	public interface Users {
+		EntityType TYPE = DOMAIN.entityType("chinook.users");
+
+		Column<Long> USERID = TYPE.longColumn("userid");
+		Column<String> USERNAME = TYPE.stringColumn("username");
+		Column<Integer> PASSWORDHASH = TYPE.integerColumn("passwordhash");
+
+		static Dto dto(Entity users) {
+			return users == null ? null :
+				new Dto(users.get(USERID),
+					users.get(USERNAME),
+					users.get(PASSWORDHASH));
+		}
+
+		record Dto(Long userid, String username, Integer passwordhash) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(USERID, userid)
+					.with(USERNAME, username)
+					.with(PASSWORDHASH, passwordhash)
+					.build();
+			}
+		}
 	}
 
 	static EntityDefinition users() {
@@ -176,6 +354,39 @@ public final class Chinook extends DomainModel {
 					.nullable(false))
 			.caption("Users")
 			.build();
+	}
+
+	public interface Album {
+		EntityType TYPE = DOMAIN.entityType("chinook.album");
+
+		Column<Long> ALBUMID = TYPE.longColumn("albumid");
+		Column<String> TITLE = TYPE.stringColumn("title");
+		Column<Long> ARTISTID = TYPE.longColumn("artistid");
+		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
+		Column<Object> TAGS = TYPE.column("tags", Object.class);
+
+		ForeignKey ARTISTID_FK = TYPE.foreignKey("artistid_fk", ARTISTID, Artist.ARTISTID);
+
+		static Dto dto(Entity album) {
+			return album == null ? null :
+				new Dto(album.get(ALBUMID),
+					album.get(TITLE),
+					Artist.dto(album.get(ARTISTID_FK)),
+					album.get(COVER),
+					album.get(TAGS));
+		}
+
+		record Dto(Long albumid, String title, Artist.Dto artistid, byte[] cover, Object tags) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(ALBUMID, albumid)
+					.with(TITLE, title)
+					.with(ARTISTID_FK, artistid.entity(entities))
+					.with(COVER, cover)
+					.with(TAGS, tags)
+					.build();
+			}
+		}
 	}
 
 	static EntityDefinition album() {
@@ -202,6 +413,65 @@ public final class Chinook extends DomainModel {
 					.caption("Tags"))
 			.caption("Album")
 			.build();
+	}
+
+	public interface Customer {
+		EntityType TYPE = DOMAIN.entityType("chinook.customer");
+
+		Column<Long> CUSTOMERID = TYPE.longColumn("customerid");
+		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
+		Column<String> LASTNAME = TYPE.stringColumn("lastname");
+		Column<String> COMPANY = TYPE.stringColumn("company");
+		Column<String> ADDRESS = TYPE.stringColumn("address");
+		Column<String> CITY = TYPE.stringColumn("city");
+		Column<String> STATE = TYPE.stringColumn("state");
+		Column<String> COUNTRY = TYPE.stringColumn("country");
+		Column<String> POSTALCODE = TYPE.stringColumn("postalcode");
+		Column<String> PHONE = TYPE.stringColumn("phone");
+		Column<String> FAX = TYPE.stringColumn("fax");
+		Column<String> EMAIL = TYPE.stringColumn("email");
+		Column<Long> SUPPORTREPID = TYPE.longColumn("supportrepid");
+
+		ForeignKey SUPPORTREPID_FK = TYPE.foreignKey("supportrepid_fk", SUPPORTREPID, Employee.EMPLOYEEID);
+
+		static Dto dto(Entity customer) {
+			return customer == null ? null :
+				new Dto(customer.get(CUSTOMERID),
+					customer.get(FIRSTNAME),
+					customer.get(LASTNAME),
+					customer.get(COMPANY),
+					customer.get(ADDRESS),
+					customer.get(CITY),
+					customer.get(STATE),
+					customer.get(COUNTRY),
+					customer.get(POSTALCODE),
+					customer.get(PHONE),
+					customer.get(FAX),
+					customer.get(EMAIL),
+					Employee.dto(customer.get(SUPPORTREPID_FK)));
+		}
+
+		record Dto(Long customerid, String firstname, String lastname, String company, String address,
+				String city, String state, String country, String postalcode, String phone, String fax,
+				String email, Employee.Dto supportrepid) {
+			public Entity entity(Entities entities) {
+				return entities.entity(TYPE)
+					.with(CUSTOMERID, customerid)
+					.with(FIRSTNAME, firstname)
+					.with(LASTNAME, lastname)
+					.with(COMPANY, company)
+					.with(ADDRESS, address)
+					.with(CITY, city)
+					.with(STATE, state)
+					.with(COUNTRY, country)
+					.with(POSTALCODE, postalcode)
+					.with(PHONE, phone)
+					.with(FAX, fax)
+					.with(EMAIL, email)
+					.with(SUPPORTREPID_FK, supportrepid.entity(entities))
+					.build();
+			}
+		}
 	}
 
 	static EntityDefinition customer() {
@@ -265,419 +535,6 @@ public final class Chinook extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition invoice() {
-		return Invoice.TYPE.as(
-				Invoice.INVOICEID.as()
-					.primaryKey()
-					.generator(identity()),
-				Invoice.CUSTOMERID.as()
-					.column()
-					.nullable(false),
-				Invoice.CUSTOMERID_FK.as()
-					.foreignKey()
-					.caption("Customer"),
-				Invoice.INVOICEDATE.as()
-					.column()
-					.caption("Invoicedate")
-					.nullable(false),
-				Invoice.BILLINGADDRESS.as()
-					.column()
-					.caption("Billingaddress")
-					.maximumLength(70),
-				Invoice.BILLINGCITY.as()
-					.column()
-					.caption("Billingcity")
-					.maximumLength(40),
-				Invoice.BILLINGSTATE.as()
-					.column()
-					.caption("Billingstate")
-					.maximumLength(40),
-				Invoice.BILLINGCOUNTRY.as()
-					.column()
-					.caption("Billingcountry")
-					.maximumLength(40),
-				Invoice.BILLINGPOSTALCODE.as()
-					.column()
-					.caption("Billingpostalcode")
-					.maximumLength(10),
-				Invoice.TOTAL.as()
-					.column()
-					.caption("Total")
-					.fractionDigits(2))
-			.caption("Invoice")
-			.build();
-	}
-
-	static EntityDefinition track() {
-		return Track.TYPE.as(
-				Track.TRACKID.as()
-					.primaryKey()
-					.generator(identity()),
-				Track.NAME.as()
-					.column()
-					.caption("Name")
-					.nullable(false)
-					.maximumLength(200),
-				Track.ALBUMID.as()
-					.column()
-					.nullable(false),
-				Track.ALBUMID_FK.as()
-					.foreignKey()
-					.caption("Album"),
-				Track.MEDIATYPEID.as()
-					.column()
-					.nullable(false),
-				Track.MEDIATYPEID_FK.as()
-					.foreignKey()
-					.caption("Mediatype"),
-				Track.GENREID.as()
-					.column(),
-				Track.GENREID_FK.as()
-					.foreignKey()
-					.caption("Genre"),
-				Track.COMPOSER.as()
-					.column()
-					.caption("Composer")
-					.maximumLength(220),
-				Track.MILLISECONDS.as()
-					.column()
-					.caption("Milliseconds")
-					.nullable(false),
-				Track.BYTES.as()
-					.column()
-					.caption("Bytes"),
-				Track.RATING.as()
-					.column()
-					.caption("Rating")
-					.nullable(false),
-				Track.UNITPRICE.as()
-					.column()
-					.caption("Unitprice")
-					.nullable(false))
-			.caption("Track")
-			.build();
-	}
-
-	static EntityDefinition invoiceline() {
-		return Invoiceline.TYPE.as(
-				Invoiceline.INVOICELINEID.as()
-					.primaryKey()
-					.generator(identity()),
-				Invoiceline.INVOICEID.as()
-					.column()
-					.nullable(false),
-				Invoiceline.INVOICEID_FK.as()
-					.foreignKey()
-					.caption("Invoice"),
-				Invoiceline.TRACKID.as()
-					.column()
-					.nullable(false),
-				Invoiceline.TRACKID_FK.as()
-					.foreignKey()
-					.caption("Track"),
-				Invoiceline.UNITPRICE.as()
-					.column()
-					.caption("Unitprice")
-					.nullable(false),
-				Invoiceline.QUANTITY.as()
-					.column()
-					.caption("Quantity")
-					.nullable(false))
-			.caption("Invoiceline")
-			.build();
-	}
-
-	static EntityDefinition playlisttrack() {
-		return Playlisttrack.TYPE.as(
-				Playlisttrack.PLAYLISTTRACKID.as()
-					.primaryKey()
-					.generator(identity()),
-				Playlisttrack.PLAYLISTID.as()
-					.column()
-					.nullable(false),
-				Playlisttrack.PLAYLISTID_FK.as()
-					.foreignKey()
-					.caption("Playlist"),
-				Playlisttrack.TRACKID.as()
-					.column()
-					.nullable(false),
-				Playlisttrack.TRACKID_FK.as()
-					.foreignKey()
-					.caption("Track"))
-			.caption("Playlisttrack")
-			.build();
-	}
-
-	public interface Artist {
-		EntityType TYPE = DOMAIN.entityType("chinook.artist");
-
-		Column<Long> ARTISTID = TYPE.longColumn("artistid");
-		Column<String> NAME = TYPE.stringColumn("name");
-
-		static Dto dto(Entity artist) {
-			return artist == null ? null :
-				new Dto(artist.get(ARTISTID),
-					artist.get(NAME));
-		}
-
-		record Dto(Long artistid, String name) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(ARTISTID, artistid)
-					.with(NAME, name)
-					.build();
-			}
-		}
-	}
-
-	public interface Employee {
-		EntityType TYPE = DOMAIN.entityType("chinook.employee");
-
-		Column<Long> EMPLOYEEID = TYPE.longColumn("employeeid");
-		Column<String> LASTNAME = TYPE.stringColumn("lastname");
-		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
-		Column<String> TITLE = TYPE.stringColumn("title");
-		Column<Long> REPORTSTO = TYPE.longColumn("reportsto");
-		Column<LocalDate> BIRTHDATE = TYPE.localDateColumn("birthdate");
-		Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
-		Column<String> ADDRESS = TYPE.stringColumn("address");
-		Column<String> CITY = TYPE.stringColumn("city");
-		Column<String> STATE = TYPE.stringColumn("state");
-		Column<String> COUNTRY = TYPE.stringColumn("country");
-		Column<String> POSTALCODE = TYPE.stringColumn("postalcode");
-		Column<String> PHONE = TYPE.stringColumn("phone");
-		Column<String> FAX = TYPE.stringColumn("fax");
-		Column<String> EMAIL = TYPE.stringColumn("email");
-
-		ForeignKey REPORTSTO_FK = TYPE.foreignKey("reportsto_fk", REPORTSTO, Employee.EMPLOYEEID);
-
-		static Dto dto(Entity employee) {
-			return employee == null ? null :
-				new Dto(employee.get(EMPLOYEEID),
-					employee.get(LASTNAME),
-					employee.get(FIRSTNAME),
-					employee.get(TITLE),
-					Employee.dto(employee.get(REPORTSTO_FK)),
-					employee.get(BIRTHDATE),
-					employee.get(HIREDATE),
-					employee.get(ADDRESS),
-					employee.get(CITY),
-					employee.get(STATE),
-					employee.get(COUNTRY),
-					employee.get(POSTALCODE),
-					employee.get(PHONE),
-					employee.get(FAX),
-					employee.get(EMAIL));
-		}
-
-		record Dto(Long employeeid, String lastname, String firstname, String title,
-				Employee.Dto reportsto, LocalDate birthdate, LocalDate hiredate, String address, String city,
-				String state, String country, String postalcode, String phone, String fax, String email) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(EMPLOYEEID, employeeid)
-					.with(LASTNAME, lastname)
-					.with(FIRSTNAME, firstname)
-					.with(TITLE, title)
-					.with(REPORTSTO_FK, reportsto.entity(entities))
-					.with(BIRTHDATE, birthdate)
-					.with(HIREDATE, hiredate)
-					.with(ADDRESS, address)
-					.with(CITY, city)
-					.with(STATE, state)
-					.with(COUNTRY, country)
-					.with(POSTALCODE, postalcode)
-					.with(PHONE, phone)
-					.with(FAX, fax)
-					.with(EMAIL, email)
-					.build();
-			}
-		}
-	}
-
-	public interface Genre {
-		EntityType TYPE = DOMAIN.entityType("chinook.genre");
-
-		Column<Long> GENREID = TYPE.longColumn("genreid");
-		Column<String> NAME = TYPE.stringColumn("name");
-
-		static Dto dto(Entity genre) {
-			return genre == null ? null :
-				new Dto(genre.get(GENREID),
-					genre.get(NAME));
-		}
-
-		record Dto(Long genreid, String name) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(GENREID, genreid)
-					.with(NAME, name)
-					.build();
-			}
-		}
-	}
-
-	public interface Mediatype {
-		EntityType TYPE = DOMAIN.entityType("chinook.mediatype");
-
-		Column<Long> MEDIATYPEID = TYPE.longColumn("mediatypeid");
-		Column<String> NAME = TYPE.stringColumn("name");
-
-		static Dto dto(Entity mediatype) {
-			return mediatype == null ? null :
-				new Dto(mediatype.get(MEDIATYPEID),
-					mediatype.get(NAME));
-		}
-
-		record Dto(Long mediatypeid, String name) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(MEDIATYPEID, mediatypeid)
-					.with(NAME, name)
-					.build();
-			}
-		}
-	}
-
-	public interface Playlist {
-		EntityType TYPE = DOMAIN.entityType("chinook.playlist");
-
-		Column<Long> PLAYLISTID = TYPE.longColumn("playlistid");
-		Column<String> NAME = TYPE.stringColumn("name");
-
-		static Dto dto(Entity playlist) {
-			return playlist == null ? null :
-				new Dto(playlist.get(PLAYLISTID),
-					playlist.get(NAME));
-		}
-
-		record Dto(Long playlistid, String name) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(PLAYLISTID, playlistid)
-					.with(NAME, name)
-					.build();
-			}
-		}
-	}
-
-	public interface Users {
-		EntityType TYPE = DOMAIN.entityType("chinook.users");
-
-		Column<Long> USERID = TYPE.longColumn("userid");
-		Column<String> USERNAME = TYPE.stringColumn("username");
-		Column<Integer> PASSWORDHASH = TYPE.integerColumn("passwordhash");
-
-		static Dto dto(Entity users) {
-			return users == null ? null :
-				new Dto(users.get(USERID),
-					users.get(USERNAME),
-					users.get(PASSWORDHASH));
-		}
-
-		record Dto(Long userid, String username, Integer passwordhash) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(USERID, userid)
-					.with(USERNAME, username)
-					.with(PASSWORDHASH, passwordhash)
-					.build();
-			}
-		}
-	}
-
-	public interface Album {
-		EntityType TYPE = DOMAIN.entityType("chinook.album");
-
-		Column<Long> ALBUMID = TYPE.longColumn("albumid");
-		Column<String> TITLE = TYPE.stringColumn("title");
-		Column<Long> ARTISTID = TYPE.longColumn("artistid");
-		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
-		Column<Object> TAGS = TYPE.column("tags", Object.class);
-
-		ForeignKey ARTISTID_FK = TYPE.foreignKey("artistid_fk", ARTISTID, Artist.ARTISTID);
-
-		static Dto dto(Entity album) {
-			return album == null ? null :
-				new Dto(album.get(ALBUMID),
-					album.get(TITLE),
-					Artist.dto(album.get(ARTISTID_FK)),
-					album.get(COVER),
-					album.get(TAGS));
-		}
-
-		record Dto(Long albumid, String title, Artist.Dto artistid, byte[] cover, Object tags) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(ALBUMID, albumid)
-					.with(TITLE, title)
-					.with(ARTISTID_FK, artistid.entity(entities))
-					.with(COVER, cover)
-					.with(TAGS, tags)
-					.build();
-			}
-		}
-	}
-
-	public interface Customer {
-		EntityType TYPE = DOMAIN.entityType("chinook.customer");
-
-		Column<Long> CUSTOMERID = TYPE.longColumn("customerid");
-		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
-		Column<String> LASTNAME = TYPE.stringColumn("lastname");
-		Column<String> COMPANY = TYPE.stringColumn("company");
-		Column<String> ADDRESS = TYPE.stringColumn("address");
-		Column<String> CITY = TYPE.stringColumn("city");
-		Column<String> STATE = TYPE.stringColumn("state");
-		Column<String> COUNTRY = TYPE.stringColumn("country");
-		Column<String> POSTALCODE = TYPE.stringColumn("postalcode");
-		Column<String> PHONE = TYPE.stringColumn("phone");
-		Column<String> FAX = TYPE.stringColumn("fax");
-		Column<String> EMAIL = TYPE.stringColumn("email");
-		Column<Long> SUPPORTREPID = TYPE.longColumn("supportrepid");
-
-		ForeignKey SUPPORTREPID_FK = TYPE.foreignKey("supportrepid_fk", SUPPORTREPID, Employee.EMPLOYEEID);
-
-		static Dto dto(Entity customer) {
-			return customer == null ? null :
-				new Dto(customer.get(CUSTOMERID),
-					customer.get(FIRSTNAME),
-					customer.get(LASTNAME),
-					customer.get(COMPANY),
-					customer.get(ADDRESS),
-					customer.get(CITY),
-					customer.get(STATE),
-					customer.get(COUNTRY),
-					customer.get(POSTALCODE),
-					customer.get(PHONE),
-					customer.get(FAX),
-					customer.get(EMAIL),
-					Employee.dto(customer.get(SUPPORTREPID_FK)));
-		}
-
-		record Dto(Long customerid, String firstname, String lastname, String company, String address,
-				String city, String state, String country, String postalcode, String phone, String fax,
-				String email, Employee.Dto supportrepid) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(CUSTOMERID, customerid)
-					.with(FIRSTNAME, firstname)
-					.with(LASTNAME, lastname)
-					.with(COMPANY, company)
-					.with(ADDRESS, address)
-					.with(CITY, city)
-					.with(STATE, state)
-					.with(COUNTRY, country)
-					.with(POSTALCODE, postalcode)
-					.with(PHONE, phone)
-					.with(FAX, fax)
-					.with(EMAIL, email)
-					.with(SUPPORTREPID_FK, supportrepid.entity(entities))
-					.build();
-			}
-		}
-	}
-
 	public interface Invoice {
 		EntityType TYPE = DOMAIN.entityType("chinook.invoice");
 
@@ -723,6 +580,49 @@ public final class Chinook extends DomainModel {
 					.build();
 			}
 		}
+	}
+
+	static EntityDefinition invoice() {
+		return Invoice.TYPE.as(
+				Invoice.INVOICEID.as()
+					.primaryKey()
+					.generator(identity()),
+				Invoice.CUSTOMERID.as()
+					.column()
+					.nullable(false),
+				Invoice.CUSTOMERID_FK.as()
+					.foreignKey()
+					.caption("Customer"),
+				Invoice.INVOICEDATE.as()
+					.column()
+					.caption("Invoicedate")
+					.nullable(false),
+				Invoice.BILLINGADDRESS.as()
+					.column()
+					.caption("Billingaddress")
+					.maximumLength(70),
+				Invoice.BILLINGCITY.as()
+					.column()
+					.caption("Billingcity")
+					.maximumLength(40),
+				Invoice.BILLINGSTATE.as()
+					.column()
+					.caption("Billingstate")
+					.maximumLength(40),
+				Invoice.BILLINGCOUNTRY.as()
+					.column()
+					.caption("Billingcountry")
+					.maximumLength(40),
+				Invoice.BILLINGPOSTALCODE.as()
+					.column()
+					.caption("Billingpostalcode")
+					.maximumLength(10),
+				Invoice.TOTAL.as()
+					.column()
+					.caption("Total")
+					.fractionDigits(2))
+			.caption("Invoice")
+			.build();
 	}
 
 	public interface Track {
@@ -777,6 +677,56 @@ public final class Chinook extends DomainModel {
 		}
 	}
 
+	static EntityDefinition track() {
+		return Track.TYPE.as(
+				Track.TRACKID.as()
+					.primaryKey()
+					.generator(identity()),
+				Track.NAME.as()
+					.column()
+					.caption("Name")
+					.nullable(false)
+					.maximumLength(200),
+				Track.ALBUMID.as()
+					.column()
+					.nullable(false),
+				Track.ALBUMID_FK.as()
+					.foreignKey()
+					.caption("Album"),
+				Track.MEDIATYPEID.as()
+					.column()
+					.nullable(false),
+				Track.MEDIATYPEID_FK.as()
+					.foreignKey()
+					.caption("Mediatype"),
+				Track.GENREID.as()
+					.column(),
+				Track.GENREID_FK.as()
+					.foreignKey()
+					.caption("Genre"),
+				Track.COMPOSER.as()
+					.column()
+					.caption("Composer")
+					.maximumLength(220),
+				Track.MILLISECONDS.as()
+					.column()
+					.caption("Milliseconds")
+					.nullable(false),
+				Track.BYTES.as()
+					.column()
+					.caption("Bytes"),
+				Track.RATING.as()
+					.column()
+					.caption("Rating")
+					.nullable(false),
+				Track.UNITPRICE.as()
+					.column()
+					.caption("Unitprice")
+					.nullable(false))
+			.caption("Track")
+			.build();
+	}
+
 	public interface Invoiceline {
 		EntityType TYPE = DOMAIN.entityType("chinook.invoiceline");
 
@@ -812,6 +762,35 @@ public final class Chinook extends DomainModel {
 		}
 	}
 
+	static EntityDefinition invoiceline() {
+		return Invoiceline.TYPE.as(
+				Invoiceline.INVOICELINEID.as()
+					.primaryKey()
+					.generator(identity()),
+				Invoiceline.INVOICEID.as()
+					.column()
+					.nullable(false),
+				Invoiceline.INVOICEID_FK.as()
+					.foreignKey()
+					.caption("Invoice"),
+				Invoiceline.TRACKID.as()
+					.column()
+					.nullable(false),
+				Invoiceline.TRACKID_FK.as()
+					.foreignKey()
+					.caption("Track"),
+				Invoiceline.UNITPRICE.as()
+					.column()
+					.caption("Unitprice")
+					.nullable(false),
+				Invoiceline.QUANTITY.as()
+					.column()
+					.caption("Quantity")
+					.nullable(false))
+			.caption("Invoiceline")
+			.build();
+	}
+
 	public interface Playlisttrack {
 		EntityType TYPE = DOMAIN.entityType("chinook.playlisttrack");
 
@@ -838,5 +817,26 @@ public final class Chinook extends DomainModel {
 					.build();
 			}
 		}
+	}
+
+	static EntityDefinition playlisttrack() {
+		return Playlisttrack.TYPE.as(
+				Playlisttrack.PLAYLISTTRACKID.as()
+					.primaryKey()
+					.generator(identity()),
+				Playlisttrack.PLAYLISTID.as()
+					.column()
+					.nullable(false),
+				Playlisttrack.PLAYLISTID_FK.as()
+					.foreignKey()
+					.caption("Playlist"),
+				Playlisttrack.TRACKID.as()
+					.column()
+					.nullable(false),
+				Playlisttrack.TRACKID_FK.as()
+					.foreignKey()
+					.caption("Track"))
+			.caption("Playlisttrack")
+			.build();
 	}
 }

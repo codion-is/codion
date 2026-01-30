@@ -41,6 +41,8 @@ Codion Change Log
 - EntityTablePanelPreferences, condition preferences only include values that differ from defaults.
 ### is.codion.framework.server
 - LocalConnectionHandler.logEntry(), null message eliminated.
+### is.codion.tools.generator.domain
+- DomainSource now interleaves entity interfaces and implementation methods in combined domain source files.
 ### is.codion.tools.monitor.model
 - ClientUserMonitor monitors the connection maintenance task timestamp and whether the task is delayed.
 ### is.codion.tools.monitor.ui
