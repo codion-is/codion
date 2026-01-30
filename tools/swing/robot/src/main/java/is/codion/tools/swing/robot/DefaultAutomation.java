@@ -19,6 +19,7 @@
 package is.codion.tools.swing.robot;
 
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.tools.swing.robot.Controller.FocusLostException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,7 @@ final class DefaultAutomation implements Automation {
 		ProgressWorker.builder()
 						.task(() -> script.accept(this))
 						.onDone(this::close)
+						.onException(DefaultAutomation::handleException)
 						.execute();
 	}
 
@@ -75,7 +77,7 @@ final class DefaultAutomation implements Automation {
 	}
 
 	private static void handleException(Exception exception) {
-		if (exception instanceof Controller.FocusLostException) {
+		if (exception instanceof FocusLostException) {
 			LOG.debug("Automation terminated due to losing input focus");
 		}
 		else {

@@ -48,6 +48,7 @@ Codion Change Log
 - ClientInstanceMonitorPanel.FilenameSupplier no longer includes file extension in suggested file name.
 ### is.codion.tools.swing.robot
 - Controller, now stops automation if JVM windows lose focus.
+- DefaultAutomation, now logs FocusLostException instead of rethrowing, which could otherwise cancel application exiting.
 
 ## 0.18.66
 ### is.codion.common.reactive
