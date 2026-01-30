@@ -162,7 +162,7 @@ public class SwingMcpCoreTest {
 	}
 
 	@Test
-	void testHttpToolCreation() throws Exception {
+	void testHttpToolCreation() {
 		// Test HttpTool creation and basic functionality
 		HttpTool tool = new HttpTool(
 						"test_tool",

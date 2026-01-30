@@ -164,18 +164,6 @@ public final class SwingMcpPlugin {
 		LOG.info(SERVER_STARTUP_INFO);
 	}
 
-
-	private static SwingMcpHttpServer.ToolHandler wrapWithErrorHandling(SwingMcpHttpServer.ToolHandler handler, String errorMessage) {
-		return arguments -> {
-			try {
-				return handler.handle(arguments);
-			}
-			catch (Exception e) {
-				throw new RuntimeException(errorMessage + ": " + e.getMessage(), e);
-			}
-		};
-	}
-
 	private static void registerHttpTools(SwingMcpHttpServer httpServer, SwingMcpServer swingMcpServer) {
 		// Type text tool
 		httpServer.addTool(new HttpTool(
@@ -228,7 +216,7 @@ public final class SwingMcpPlugin {
 		httpServer.addTool(new HttpTool(
 						APP_WINDOW_BOUNDS, "Get the application window bounds (x, y, width, height)",
 						INPUT_SCHEMA,
-						wrapWithErrorHandling(arguments -> {
+						arguments -> {
 							Rectangle bounds = swingMcpServer.getApplicationWindowBounds();
 
 							return Map.of(
@@ -236,7 +224,7 @@ public final class SwingMcpPlugin {
 											"y", bounds.y,
 											WIDTH, bounds.width,
 											HEIGHT, bounds.height);
-						}, "Failed to get application window bounds")
+						}
 		));
 
 		// Focus application window tool

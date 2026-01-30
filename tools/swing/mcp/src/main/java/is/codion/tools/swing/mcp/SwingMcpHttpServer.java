@@ -18,6 +18,8 @@
  */
 package is.codion.tools.swing.mcp;
 
+import is.codion.tools.swing.robot.Controller.FocusLostException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -63,9 +65,8 @@ final class SwingMcpHttpServer {
 		 * Handle a tool invocation.
 		 * @param arguments the tool arguments
 		 * @return the result object (typically a string or structured data)
-		 * @throws Exception if the tool execution fails
 		 */
-		Object handle(Map<String, Object> arguments) throws Exception;
+		Object handle(Map<String, Object> arguments);
 	}
 
 	private final int port;
@@ -267,10 +268,19 @@ final class SwingMcpHttpServer {
 			}
 			catch (Exception e) {
 				ObjectNode error = objectMapper.createObjectNode();
-				error.put("error", "Tool execution failed: " + e.getMessage());
+				error.put("error", "Tool execution failed: " + errorMessage(e));
 				error.put("isError", true);
 				sendResponse(exchange, 500, objectMapper.writeValueAsString(error));
 			}
+		}
+
+		private static String errorMessage(Exception exception) {
+			if (exception instanceof FocusLostException) {
+				return "Application lost input focus - the key event was not sent. "
+								+ "Focus the application window and retry.";
+			}
+
+			return exception.getMessage();
 		}
 	}
 

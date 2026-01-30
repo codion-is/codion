@@ -20,6 +20,7 @@ package is.codion.tools.swing.mcp;
 
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.tools.swing.robot.Controller;
+import is.codion.tools.swing.robot.Controller.FocusLostException;
 import is.codion.tools.swing.robot.Narrator;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -114,6 +115,7 @@ final class SwingMcpServer {
 	/**
 	 * Type text into the currently focused field
 	 * @param text the text to type
+	 * @throws FocusLostException in case the application has lost the input focus
 	 */
 	void type(String text) {
 		LOG.debug("Typing text: {}", text);
@@ -127,6 +129,7 @@ final class SwingMcpServer {
 	 * @param keystroke the key combination in AWT KeyStroke format
 	 * @param repeat the number of times to repeat the keystroke
 	 * @param description a description of the action associated with the keystroke
+	 * @throws FocusLostException in case the application has lost the input focus
 	 */
 	void key(String keystroke, int repeat, @Nullable String description) {
 		LOG.debug("Key combo: {}", keystroke);
@@ -136,6 +139,7 @@ final class SwingMcpServer {
 
 	/**
 	 * Clear the current field by selecting all and deleting
+	 * @throws FocusLostException in case the application has lost the input focus
 	 */
 	void clearField() {
 		focusActiveWindow();

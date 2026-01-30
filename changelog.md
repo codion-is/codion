@@ -49,6 +49,8 @@ Codion Change Log
 ### is.codion.tools.swing.robot
 - Controller, now stops automation if JVM windows lose focus.
 - DefaultAutomation, now logs FocusLostException instead of rethrowing, which could otherwise cancel application exiting.
+### is.codion.tools.swing.mcp
+- SwingMcpPlugin now handles FocusLostException from controller, related refactoring.
 
 ## 0.18.66
 ### is.codion.common.reactive
