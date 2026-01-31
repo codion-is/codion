@@ -20,11 +20,11 @@ package is.codion.common.reactive.state;
 
 import is.codion.common.reactive.observer.Observer;
 
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
 /**
- * Specifies an observable for a {@link State} instance.
+ * An observable boolean state, extending {@link Observer} to provide listener capabilities.
+ * <p>
+ * Listener methods are inherited from {@link Observer} and delegate to {@link #observer()}.
+ * @see State
  */
 public interface ObservableState extends Observer<Boolean> {
 
@@ -42,54 +42,4 @@ public interface ObservableState extends Observer<Boolean> {
 	 * @return an {@link Observer} notified each time the observed value may have changed
 	 */
 	Observer<Boolean> observer();
-
-	@Override
-	default boolean addListener(Runnable listener) {
-		return observer().addListener(listener);
-	}
-
-	@Override
-	default boolean removeListener(Runnable listener) {
-		return observer().removeListener(listener);
-	}
-
-	@Override
-	default boolean addConsumer(Consumer<? super Boolean> consumer) {
-		return observer().addConsumer(consumer);
-	}
-
-	@Override
-	default boolean removeConsumer(Consumer<? super Boolean> consumer) {
-		return observer().removeConsumer(consumer);
-	}
-
-	@Override
-	default boolean addWeakListener(Runnable listener) {
-		return observer().addWeakListener(listener);
-	}
-
-	@Override
-	default boolean removeWeakListener(Runnable listener) {
-		return observer().removeWeakListener(listener);
-	}
-
-	@Override
-	default boolean addWeakConsumer(Consumer<? super Boolean> consumer) {
-		return observer().addWeakConsumer(consumer);
-	}
-
-	@Override
-	default boolean removeWeakConsumer(Consumer<? super Boolean> consumer) {
-		return observer().removeWeakConsumer(consumer);
-	}
-
-	@Override
-	default Observer<Boolean> when(Boolean value) {
-		return observer().when(value);
-	}
-
-	@Override
-	default Observer<Boolean> when(Predicate<? super Boolean> predicate) {
-		return observer().when(predicate);
-	}
 }

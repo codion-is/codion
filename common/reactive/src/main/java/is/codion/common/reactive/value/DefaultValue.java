@@ -43,23 +43,24 @@ final class DefaultValue<T> extends AbstractValue<T> {
 	private static final class DefaultBuilderFactory implements BuilderFactory {
 
 		@Override
-		public <T> Builder<T, ?> nonNull(T nullValue) {
+		public <T> Value.Builder<T, ?> nonNull(T nullValue) {
 			return new DefaultBuilder<>(nullValue);
 		}
 
 		@Override
-		public <T> Builder<T, ?> nullable() {
+		public <T> Value.Builder<T, ?> nullable() {
 			return new DefaultBuilder<>();
 		}
 
 		@Override
-		public <T> Builder<T, ?> nullable(@Nullable T value) {
-			return (Builder<T, ?>) new DefaultBuilder<>()
+		public <T> Value.Builder<T, ?> nullable(@Nullable T value) {
+			return (Value.Builder<T, ?>) new DefaultBuilder<>()
 							.value(value);
 		}
 	}
 
-	private static final class DefaultBuilder<T, B extends Builder<T, B>> extends AbstractBuilder<T, B> implements Builder<T, B> {
+	private static final class DefaultBuilder<T, B extends Value.Builder<T, B>>
+					extends AbstractBuilder<T, B> implements Value.Builder<T, B> {
 
 		private DefaultBuilder() {}
 

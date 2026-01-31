@@ -19,19 +19,17 @@
 package is.codion.common.reactive.state;
 
 import is.codion.common.reactive.observer.AbstractObserver;
-import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultObservableState implements ObservableState {
+final class DefaultObservableState extends AbstractObserver<Boolean> implements ObservableState {
 
 	private final Lock lock = new Lock() {};
 	private final ObservableState state;
 	private final boolean not;
 
-	private @Nullable StateObserver observer;
 	private @Nullable DefaultObservableState notObserver;
 
 	DefaultObservableState(ObservableState state, boolean not) {
@@ -65,23 +63,10 @@ final class DefaultObservableState implements ObservableState {
 		}
 	}
 
-	@Override
-	public Observer<Boolean> observer() {
-		synchronized (lock) {
-			if (observer == null) {
-				observer = new StateObserver();
-			}
-
-			return observer;
-		}
-	}
-
 	void notifyObservers(boolean newValue, boolean previousValue) {
 		synchronized (lock) {
 			if (previousValue != newValue) {
-				if (observer != null) {
-					observer.accept(newValue);
-				}
+				notifyListeners(newValue);
 				if (notObserver != null) {
 					notObserver.notifyObservers(previousValue, newValue);
 				}
@@ -90,11 +75,4 @@ final class DefaultObservableState implements ObservableState {
 	}
 
 	private interface Lock {}
-
-	private static final class StateObserver extends AbstractObserver<Boolean> {
-
-		private void accept(Boolean data) {
-			notifyListeners(data);
-		}
-	}
 }

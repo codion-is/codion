@@ -19,15 +19,16 @@ The Observable pattern is the foundation of Codion's reactive architecture. It p
 
 [source]
 ----
-Observer<T>                   (root reactive primitive)
-├── Observable<T>             (adds get() method)
-│   └── Value<T>              (mutable observable)
-├── ObservableState           (Observer<Boolean>)
-│   └── State                 (mutable boolean state)
-└── Event<T>                  (implements Observer<T>)
+Observer<T>                       (root reactive interface)
+├── AbstractObserver<T>           (canonical implementation)
+│   ├── Value<T>                  (mutable observable)
+│   ├── State                     (mutable boolean state)
+│   └── Event<T>                  (push-only notifications)
+├── Observable<T>                 (read-only value wrapper)
+└── ObservableState               (read-only boolean state)
 ----
 
-This hierarchy enables type-based discovery: any type that extends or implements `Observer` is reactive by definition.
+This hierarchy enables type-based discovery: any type that extends or implements `Observer` is reactive by definition. The concrete types (`Value`, `State`, `Event`) extend `AbstractObserver` for their implementation, while the read-only interfaces (`Observable`, `ObservableState`) delegate to an underlying observer.
 
 === Observer Interface
 
@@ -39,24 +40,53 @@ public interface Observer<T> {
     // Strong references - prevent garbage collection
     boolean addListener(Runnable listener);
     boolean addConsumer(Consumer<? super T> consumer);
-    
+
     // Weak references - allow garbage collection
     boolean addWeakListener(Runnable listener);
     boolean addWeakConsumer(Consumer<? super T> consumer);
-    
-    // Removal methods
-    boolean removeListener(Runnable listener);
-    boolean removeConsumer(Consumer<? super T> consumer);
+
+    // Conditional observers
+    Observer<T> when(@Nullable T value);
+    Observer<T> when(Predicate<? super T> predicate);
+
+    // The underlying observer for delegation
+    Observer<T> observer();
 }
 ----
 
 Key design decisions:
 
-1. **Two notification types**: 
+1. **Two notification types**:
    - `Runnable` listeners for simple notifications
    - `Consumer<T>` for data propagation
 
-2. **Weak reference support**
+2. **Weak reference support** for memory-safe UI bindings
+
+3. **Conditional observers** via `when()` for value-specific or predicate-based filtering
+
+4. **Delegation pattern** via `observer()` - all listener methods are default implementations that delegate to `observer()`, enabling two implementation strategies:
+   - Extend {url-javadoc}{common-reactive}/is/codion/common/reactive/observer/AbstractObserver.html[AbstractObserver] where `observer()` returns `this`
+   - Implement `observer()` to return a delegate (useful for wrapper types)
+
+=== AbstractObserver
+
+{url-javadoc}{common-reactive}/is/codion/common/reactive/observer/AbstractObserver.html[AbstractObserver] is the canonical implementation of Observer. It provides thread-safe listener management and is the base class for `Value`, `State`, and `Event`.
+
+[source,java]
+----
+public abstract class AbstractObserver<T> implements Observer<T> {
+
+    @Override
+    public final Observer<T> observer() {
+        return this;  // Default methods resolve to concrete implementations
+    }
+
+    // Subclasses trigger notifications by calling:
+    protected final void notifyListeners(@Nullable T data) { ... }
+}
+----
+
+Since `observer()` returns `this`, the default methods in `Observer` delegate back to the concrete implementations in `AbstractObserver`, avoiding any recursion.
 
 === Observable Interface
 
@@ -67,7 +97,7 @@ Key design decisions:
 public interface Observable<T> extends Observer<T> {
 
     @Nullable T get();
-    
+
     default T getOrThrow() {
         T value = get();
         if (value == null) {
@@ -75,12 +105,13 @@ public interface Observable<T> extends Observer<T> {
         }
         return value;
     }
-    
-    Observer<T> observer();  // For notification access only
+
+    // Inherited from Observer:
+    // Observer<T> observer();
 }
 ----
 
-This separation allows exposing read-only observables while keeping mutation control private.
+Observable inherits all listener methods from Observer. This allows exposing read-only observables while keeping mutation control private. For example, a class can expose an `Observable<T>` publicly while keeping the underlying `Value<T>` private.
 
 == Value Implementation
 

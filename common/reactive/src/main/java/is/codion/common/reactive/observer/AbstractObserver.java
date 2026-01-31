@@ -31,9 +31,18 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Thread-safe implementation of Observer.
+ * Thread-safe base implementation of {@link Observer}.
+ * <p>
+ * This class provides the canonical way to implement {@link Observer}. Subclasses
+ * trigger notifications by calling {@link #notifyListeners(Object)}.
+ * <p>
+ * The {@link #observer()} method returns {@code this}, so the default methods
+ * in {@link Observer} resolve directly to the concrete implementations here.
+ * <p>
  * All listener management operations are synchronized using an internal lock.
  * Dead weak references are cleaned up during add/remove operations.
+ * @param <T> the type of data propagated to listeners
+ * @see Observer
  */
 public abstract class AbstractObserver<T> implements Observer<T> {
 
@@ -45,6 +54,14 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 	 * Instantiates a new {@link AbstractObserver}
 	 */
 	protected AbstractObserver() {}
+
+	/**
+	 * Instantiates a new {@link AbstractObserver}
+	 * @param builder the builder which listeners to add
+	 */
+	protected AbstractObserver(AbstractBuilder<T, ?> builder) {
+		requireNonNull(builder).listeners.forEach(consumer -> consumer.accept(this));
+	}
 
 	@Override
 	public final boolean addListener(Runnable runnable) {
@@ -94,6 +111,11 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 	@Override
 	public final Observer<T> when(Predicate<? super T> predicate) {
 		return new Conditional<>(this, requireNonNull(predicate));
+	}
+
+	@Override
+	public final Observer<T> observer() {
+		return this;
 	}
 
 	/**
@@ -207,7 +229,6 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 	 * An abstract base class for an {@link Observer} builder
 	 * @param <T> the observed type
 	 * @param <B> the builder type
-	 * @see #listeners()
 	 */
 	public abstract static class AbstractBuilder<T, B extends Builder<T, B>> implements Builder<T, B> {
 
@@ -271,16 +292,6 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 			requireNonNull(consumer);
 			listeners.add(observer -> observer.when(predicate).addConsumer(consumer));
 			return self();
-		}
-
-		/**
-		 * Adds the listeners to the given {@link Observer} instance.
-		 * <p>Subclasses must call this method in order to populate the observer
-		 * with the listeners added via this builder instance.
-		 */
-		protected void addListeners(Observer<T> observer) {
-			requireNonNull(observer);
-			listeners.forEach(consumer -> consumer.accept(observer));
 		}
 
 		protected final B self() {

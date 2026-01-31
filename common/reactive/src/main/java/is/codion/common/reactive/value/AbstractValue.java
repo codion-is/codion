@@ -103,7 +103,7 @@ public abstract class AbstractValue<T> extends BaseValue<T> {
 	 * @param <T> the value type
 	 * @param <B> the builder type
 	 */
-	public abstract static class AbstractBuilder<T, B extends Builder<T, B>> extends BaseBuilder<T, B> {
+	public abstract static class AbstractBuilder<T, B extends Value.Builder<T, B>> extends BaseBuilder<T, B> {
 
 		/**
 		 * Instantiates a new builder

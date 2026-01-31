@@ -23,8 +23,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -143,60 +141,5 @@ public interface Observable<T> extends Observer<T> {
 	 */
 	default boolean isNot(@Nullable T value) {
 		return !is(value);
-	}
-
-	/**
-	 * @return an {@link Observer} notified each time the observed value may have changed
-	 */
-	Observer<T> observer();
-
-	@Override
-	default boolean addListener(Runnable listener) {
-		return observer().addListener(listener);
-	}
-
-	@Override
-	default boolean removeListener(Runnable listener) {
-		return observer().removeListener(listener);
-	}
-
-	@Override
-	default boolean addConsumer(Consumer<? super T> consumer) {
-		return observer().addConsumer(consumer);
-	}
-
-	@Override
-	default boolean removeConsumer(Consumer<? super T> consumer) {
-		return observer().removeConsumer(consumer);
-	}
-
-	@Override
-	default boolean addWeakListener(Runnable listener) {
-		return observer().addWeakListener(listener);
-	}
-
-	@Override
-	default boolean removeWeakListener(Runnable listener) {
-		return observer().removeWeakListener(listener);
-	}
-
-	@Override
-	default boolean addWeakConsumer(Consumer<? super T> consumer) {
-		return observer().addWeakConsumer(consumer);
-	}
-
-	@Override
-	default boolean removeWeakConsumer(Consumer<? super T> consumer) {
-		return observer().removeWeakConsumer(consumer);
-	}
-
-	@Override
-	default Observer<T> when(@Nullable T value) {
-		return observer().when(value);
-	}
-
-	@Override
-	default Observer<T> when(Predicate<? super T> predicate) {
-		return observer().when(predicate);
 	}
 }

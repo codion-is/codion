@@ -19,18 +19,10 @@
 package is.codion.common.reactive.event;
 
 import is.codion.common.reactive.observer.AbstractObserver;
-import is.codion.common.reactive.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-final class DefaultEvent<T> implements Event<T> {
-
-	private final Lock lock = new Lock() {};
-
-	private volatile @Nullable EventObserver<T> observer;
+final class DefaultEvent<T> extends AbstractObserver<T> implements Event<T> {
 
 	@Override
 	public void run() {
@@ -39,78 +31,6 @@ final class DefaultEvent<T> implements Event<T> {
 
 	@Override
 	public void accept(@Nullable T data) {
-		if (observer != null) {
-			observer.accept(data);
-		}
-	}
-
-	@Override
-	public Observer<T> observer() {
-		synchronized (lock) {
-			if (observer == null) {
-				observer = new EventObserver<>();
-			}
-
-			return observer;
-		}
-	}
-
-	@Override
-	public boolean addListener(Runnable listener) {
-		return observer().addListener(listener);
-	}
-
-	@Override
-	public boolean removeListener(Runnable listener) {
-		return observer().removeListener(listener);
-	}
-
-	@Override
-	public boolean addConsumer(Consumer<? super T> consumer) {
-		return observer().addConsumer(consumer);
-	}
-
-	@Override
-	public boolean removeConsumer(Consumer<? super T> consumer) {
-		return observer().removeConsumer(consumer);
-	}
-
-	@Override
-	public boolean addWeakListener(Runnable listener) {
-		return observer().addWeakListener(listener);
-	}
-
-	@Override
-	public boolean removeWeakListener(Runnable listener) {
-		return observer().removeWeakListener(listener);
-	}
-
-	@Override
-	public boolean addWeakConsumer(Consumer<? super T> consumer) {
-		return observer().addWeakConsumer(consumer);
-	}
-
-	@Override
-	public boolean removeWeakConsumer(Consumer<? super T> consumer) {
-		return observer().removeWeakConsumer(consumer);
-	}
-
-	@Override
-	public Observer<T> when(@Nullable T value) {
-		return observer().when(value);
-	}
-
-	@Override
-	public Observer<T> when(Predicate<? super T> predicate) {
-		return observer().when(predicate);
-	}
-
-	private interface Lock {}
-
-	private static final class EventObserver<T> extends AbstractObserver<T> {
-
-		private void accept(@Nullable T data) {
-			notifyListeners(data);
-		}
+		notifyListeners(data);
 	}
 }

@@ -24,9 +24,16 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Manages event listeners.
+ * Manages listeners and consumers for observable values and events.
+ * <p>
+ * This interface provides default method implementations that delegate to {@link #observer()}.
+ * There are two ways to implement this interface:
+ * <ul>
+ *   <li>Extend {@link AbstractObserver} - provides concrete implementations where {@code observer()} returns {@code this}</li>
+ *   <li>Implement {@code observer()} to return a delegate - useful for wrapper types (see {@link Observable} for an example)</li>
+ * </ul>
  * <p>All implementations are thread-safe and support concurrent access.</p>
- * @param <T> the type of data propagated to listeners.
+ * @param <T> the type of data propagated to listeners
  * @see AbstractObserver
  * @see #when(Object)
  * @see #when(Predicate)
@@ -40,14 +47,18 @@ public interface Observer<T> {
 	 * @return true if this observer did not already contain the specified listener
 	 * @throws NullPointerException in case listener is null
 	 */
-	boolean addListener(Runnable listener);
+	default boolean addListener(Runnable listener) {
+		return observer().addListener(listener);
+	}
 
 	/**
 	 * Removes {@code listener} from this {@link Observer}
 	 * @param listener the listener to remove
 	 * @return true if this observer contained the specified listener
 	 */
-	boolean removeListener(Runnable listener);
+	default boolean removeListener(Runnable listener) {
+		return observer().removeListener(listener);
+	}
 
 	/**
 	 * Adds {@code consumer} to this {@link Observer}.
@@ -56,14 +67,18 @@ public interface Observer<T> {
 	 * @return true if this observer did not already contain the specified consumer
 	 * @throws NullPointerException in case consumer is null
 	 */
-	boolean addConsumer(Consumer<? super T> consumer);
+	default boolean addConsumer(Consumer<? super T> consumer) {
+		return observer().addConsumer(consumer);
+	}
 
 	/**
 	 * Removes {@code consumer} from this {@link Observer}
 	 * @param consumer the consumer to remove
 	 * @return true if this observer contained the specified consumer
 	 */
-	boolean removeConsumer(Consumer<? super T> consumer);
+	default boolean removeConsumer(Consumer<? super T> consumer) {
+		return observer().removeConsumer(consumer);
+	}
 
 	/**
 	 * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
@@ -79,14 +94,18 @@ public interface Observer<T> {
 	 * @param listener the listener
 	 * @return true if this observer did not already contain the specified listener
 	 */
-	boolean addWeakListener(Runnable listener);
+	default boolean addWeakListener(Runnable listener) {
+		return observer().addWeakListener(listener);
+	}
 
 	/**
 	 * Removes {@code listener} from this {@link Observer}
 	 * @param listener the listener to remove
 	 * @return true if this observer contained the specified listener
 	 */
-	boolean removeWeakListener(Runnable listener);
+	default boolean removeWeakListener(Runnable listener) {
+		return observer().removeWeakListener(listener);
+	}
 
 	/**
 	 * Uses a {@link java.lang.ref.WeakReference}, adding {@code consumer} does not prevent it from being garbage collected.
@@ -102,28 +121,45 @@ public interface Observer<T> {
 	 * @param consumer the consumer
 	 * @return true if this observer did not already contain the specified consumer
 	 */
-	boolean addWeakConsumer(Consumer<? super T> consumer);
+	default boolean addWeakConsumer(Consumer<? super T> consumer) {
+		return observer().addWeakConsumer(consumer);
+	}
 
 	/**
 	 * Removes {@code consumer} from this {@link Observer}.
 	 * @param consumer the consumer to remove
 	 * @return true if this observer contained the specified consumer
 	 */
-	boolean removeWeakConsumer(Consumer<? super T> consumer);
+	default boolean removeWeakConsumer(Consumer<? super T> consumer) {
+		return observer().removeWeakConsumer(consumer);
+	}
 
 	/**
 	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with the given value
 	 * @param value the value on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
-	Observer<T> when(@Nullable T value);
+	default Observer<T> when(@Nullable T value) {
+		return observer().when(value);
+	}
 
 	/**
 	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with a value satisfying the given predicate
 	 * @param predicate the predicate on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
-	Observer<T> when(Predicate<? super T> predicate);
+	default Observer<T> when(Predicate<? super T> predicate) {
+		return observer().when(predicate);
+	}
+
+	/**
+	 * Returns the underlying {@link Observer} to which listener operations are delegated.
+	 * <p>
+	 * For {@link AbstractObserver} subclasses this method returns {@code this}.
+	 * For wrapper types, this returns the delegate observer.
+	 * @return the {@link Observer} handling listener management
+	 */
+	Observer<T> observer();
 
 	/**
 	 * Builds an {@link Observer}

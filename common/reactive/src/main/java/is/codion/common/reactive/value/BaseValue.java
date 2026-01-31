@@ -39,7 +39,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.requireNonNull;
 
-abstract class BaseValue<T> implements Value<T> {
+abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 
 	final Object lock = new Lock() {};
 
@@ -47,7 +47,6 @@ abstract class BaseValue<T> implements Value<T> {
 	private final @Nullable Notify notify;
 
 	private @Nullable Locked locked;
-	private @Nullable ValueObserver<T> observer;
 	private @Nullable Observer<ValueChange<T>> changeObserver;
 	private @Nullable Set<Validator<? super T>> validators;
 	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
@@ -75,14 +74,14 @@ abstract class BaseValue<T> implements Value<T> {
 	}
 
 	BaseValue(BaseBuilder<T, ?> builder) {
-		requireNonNull(builder);
+		super(builder);
 		nullValue = builder.nullValue;
 		notify = builder.notify;
-		setAndNotify(builder.prepareInitialValue());
+		setInitialValue(builder.prepareInitialValue());
 		builder.validators.forEach(this::addValidator);
 		builder.linkedValues.forEach(this::link);
 		builder.linkedObservables.forEach(this::link);
-		builder.addListeners(this);
+		builder.changeListeners.forEach(adder -> adder.accept(this));
 		if (builder.locked) {
 			locked().set(true);
 		}
@@ -117,17 +116,6 @@ abstract class BaseValue<T> implements Value<T> {
 			}
 
 			return observable;
-		}
-	}
-
-	@Override
-	public final Observer<T> observer() {
-		synchronized (lock) {
-			if (observer == null) {
-				observer = new ValueObserver<>();
-			}
-
-			return observer;
 		}
 	}
 
@@ -245,9 +233,7 @@ abstract class BaseValue<T> implements Value<T> {
 	 * Notifies the underlying observer that the underlying value has changed or at least that it may have changed
 	 */
 	protected final void notifyObserver() {
-		if (observer != null) {
-			observer.accept(get());
-		}
+		notifyListeners(get());
 	}
 
 	/**
@@ -263,6 +249,10 @@ abstract class BaseValue<T> implements Value<T> {
 
 	final Collection<Validator<? super T>> validators() {
 		return validators == null ? emptyList() : validators;
+	}
+
+	private void setInitialValue(@Nullable T initialValue) {
+		setValue(initialValue);
 	}
 
 	private void setAndNotify(@Nullable T newValue) {
@@ -324,13 +314,6 @@ abstract class BaseValue<T> implements Value<T> {
 		}
 	}
 
-	private static final class ValueObserver<T> extends AbstractObserver<T> {
-
-		private void accept(@Nullable T data) {
-			notifyListeners(data);
-		}
-	}
-
 	private static final class DefaultLocked implements Locked {
 
 		private boolean locked = false;
@@ -351,8 +334,8 @@ abstract class BaseValue<T> implements Value<T> {
 	 * @param <T> the value type
 	 * @param <B> the builder type
 	 */
-	abstract static class BaseBuilder<T, B extends Builder<T, B>>
-					extends AbstractObserver.AbstractBuilder<T, B> implements Builder<T, B> {
+	abstract static class BaseBuilder<T, B extends Value.Builder<T, B>>
+					extends AbstractObserver.AbstractBuilder<T, B> implements Value.Builder<T, B> {
 
 		private final @Nullable T nullValue;
 		private final List<Validator<? super T>> validators = new ArrayList<>();
@@ -442,12 +425,6 @@ abstract class BaseValue<T> implements Value<T> {
 			requireNonNull(weakConsumer);
 			changeListeners.add(val -> val.changed().addWeakConsumer(weakConsumer));
 			return self();
-		}
-
-		@Override
-		protected final void addListeners(Observer<T> observer) {
-			super.addListeners(observer);
-			changeListeners.forEach(adder -> adder.accept((Value<T>) observer));
 		}
 
 		/**
