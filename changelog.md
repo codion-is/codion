@@ -28,6 +28,8 @@ Codion Change Log
 - AbstractComponentBuilder.enableTransferFocusOnEnter(), enableValidIndicator() and enableModifiedIndicator() renamed enable.
 ### is.codion.plugin.flatlaf
 - is.codion.plugin.flatlaf module now exports indicator package, so FlatLafValidIndicatorFactory can be instantiated directly.
+### is.codion.framework.domain
+- DefaultEntity.valueEqual() now uses deepEquals().
 ### is.codion.framework.db.core
 - DeleteEntityException, EntityModifiedException, MultipleEntitiesFoundException, EntityNotFoundException and UpdateEntityException moved from common.db module, EntityModifiedException improved. 
 ### is.codion.framework.db.local

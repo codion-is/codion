@@ -39,7 +39,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -788,13 +787,8 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		if (contains(attribute) != entity.contains(attribute)) {
 			return false;
 		}
-		Object value = get(attribute);
-		Object other = entity.get(attribute);
-		if (attribute.type().isByteArray()) {
-			return Arrays.equals((byte[]) value, (byte[]) other);
-		}
 
-		return Objects.equals(value, other);
+		return Objects.deepEquals(get(attribute), entity.get(attribute));
 	}
 
 	private boolean isModified(Attribute<?> attribute) {
