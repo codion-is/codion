@@ -4,8 +4,8 @@ plugins {
     id("org.sonarqube") version "7.2.2.6593"
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.vanniktech.dependency.graph.generator") version "0.8.0"
-    id("com.diffplug.spotless") version "8.1.0"
-    id("org.gradlex.extra-java-module-info") version "1.13.1"
+    id("com.diffplug.spotless") version "8.2.1"
+    id("org.gradlex.extra-java-module-info") version "1.14"
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
     id("io.github.f-cramer.jasperreports") version "0.0.4"
 }
