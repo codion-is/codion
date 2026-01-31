@@ -63,7 +63,7 @@ final class DurationPanelBuilder extends AbstractComponentValueBuilder<DurationP
 	}
 
 	@Override
-	protected void enableTransferFocusOnEnter(DurationPanel component, TransferFocusOnEnter transferFocusOnEnter) {
+	protected void enable(TransferFocusOnEnter transferFocusOnEnter, DurationPanel component) {
 		transferFocusOnEnter.enable(component.minutesField);
 		transferFocusOnEnter.enable(component.secondsField);
 		// If the component is being used as a table cell editor, the focus jumps outside
@@ -74,14 +74,14 @@ final class DurationPanelBuilder extends AbstractComponentValueBuilder<DurationP
 	}
 
 	@Override
-	protected void enableValidIndicator(ValidIndicator validIndicator, DurationPanel component, ObservableState valid) {
+	protected void enable(ValidIndicator validIndicator, DurationPanel component, ObservableState valid) {
 		validIndicator.enable(component.minutesField, valid);
 		validIndicator.enable(component.secondsField, valid);
 		validIndicator.enable(component.millisecondsField, valid);
 	}
 
 	@Override
-	protected void enableModifiedIndicator(ModifiedIndicator modifiedIndicator, DurationPanel component, ObservableState modified) {
+	protected void enable(ModifiedIndicator modifiedIndicator, DurationPanel component, ObservableState modified) {
 		modifiedIndicator.enable(component.minutesField, modified);
 		modifiedIndicator.enable(component.secondsField, modified);
 		modifiedIndicator.enable(component.millisecondsField, modified);

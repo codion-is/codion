@@ -508,14 +508,13 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected void enableTransferFocusOnEnter(EntitySearchFieldPanel component, TransferFocusOnEnter transferFocusOnEnter) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, EntitySearchFieldPanel component) {
 			transferFocusOnEnter.enable(component.searchField);
 			transferFocusOnEnter.enable(component.buttons.toArray(new JComponent[0]));
 		}
 
 		@Override
-		protected void enableValidIndicator(ValidIndicator validIndicator,
-																				EntitySearchFieldPanel component, ObservableState valid) {
+		protected void enable(ValidIndicator validIndicator, EntitySearchFieldPanel component, ObservableState valid) {
 			validIndicator.enable(component.searchField, valid);
 		}
 

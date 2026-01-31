@@ -290,14 +290,13 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		protected void enableTransferFocusOnEnter(TemporalFieldPanel<T> component, TransferFocusOnEnter transferFocusOnEnter) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, TemporalFieldPanel<T> component) {
 			transferFocusOnEnter.enable(component.temporalField);
 			transferFocusOnEnter.enable(component.button);
 		}
 
 		@Override
-		protected void enableValidIndicator(ValidIndicator validIndicator,
-																				TemporalFieldPanel<T> component, ObservableState valid) {
+		protected void enable(ValidIndicator validIndicator, TemporalFieldPanel<T> component, ObservableState valid) {
 			validIndicator.enable(component.temporalField, valid);
 		}
 

@@ -399,14 +399,13 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected void enableTransferFocusOnEnter(TextFieldPanel component, TransferFocusOnEnter transferFocusOnEnter) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, TextFieldPanel component) {
 			transferFocusOnEnter.enable(component.textField);
 			transferFocusOnEnter.enable(component.button);
 		}
 
 		@Override
-		protected void enableValidIndicator(ValidIndicator validIndicator,
-																				TextFieldPanel component, ObservableState valid) {
+		protected void enable(ValidIndicator validIndicator, TextFieldPanel component, ObservableState valid) {
 			validIndicator.enable(component.textField, valid);
 		}
 	}

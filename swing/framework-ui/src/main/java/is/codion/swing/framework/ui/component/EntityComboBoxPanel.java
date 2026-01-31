@@ -268,14 +268,13 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
-		protected void enableTransferFocusOnEnter(EntityComboBoxPanel component, TransferFocusOnEnter transferFocusOnEnter) {
+		protected void enable(TransferFocusOnEnter transferFocusOnEnter, EntityComboBoxPanel component) {
 			transferFocusOnEnter.enable(component.comboBox());
 			transferFocusOnEnter.enable(component.buttons.toArray(new JComponent[0]));
 		}
 
 		@Override
-		protected void enableValidIndicator(ValidIndicator validIndicator,
-																				EntityComboBoxPanel component, ObservableState valid) {
+		protected void enable(ValidIndicator validIndicator, EntityComboBoxPanel component, ObservableState valid) {
 			validIndicator.enable(component.comboBox, valid);
 		}
 

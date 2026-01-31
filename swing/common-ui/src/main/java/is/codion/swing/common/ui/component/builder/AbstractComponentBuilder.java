@@ -453,10 +453,10 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	/**
 	 * Enables focus transfer on Enter, override for composite components or special handling
-	 * @param component the component
 	 * @param transferFocusOnEnter the transfer focus on enter to enable
+	 * @param component the component
 	 */
-	protected void enableTransferFocusOnEnter(C component, TransferFocusOnEnter transferFocusOnEnter) {
+	protected void enable(TransferFocusOnEnter transferFocusOnEnter, C component) {
 		transferFocusOnEnter.enable(component);
 	}
 
@@ -467,7 +467,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	 * @param component the component
 	 * @param valid the valid state to indicate
 	 */
-	protected void enableValidIndicator(ValidIndicator validIndicator, C component, ObservableState valid) {
+	protected void enable(ValidIndicator validIndicator, C component, ObservableState valid) {
 		validIndicator.enable(component, valid);
 	}
 
@@ -478,7 +478,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	 * @param component the component
 	 * @param modified the modified state to indicate
 	 */
-	protected void enableModifiedIndicator(ModifiedIndicator modifiedIndicator, C component, ObservableState modified) {
+	protected void enable(ModifiedIndicator modifiedIndicator, C component, ObservableState modified) {
 		modifiedIndicator.enable(component, modified);
 	}
 
@@ -562,7 +562,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 			new OnSetVisible<>(component, onSetVisible);
 		}
 		if (transferFocusOnEnter != null) {
-			enableTransferFocusOnEnter(component, transferFocusOnEnter);
+			enable(transferFocusOnEnter, component);
 		}
 		if (transferHandler != null) {
 			component.setTransferHandler(transferHandler);

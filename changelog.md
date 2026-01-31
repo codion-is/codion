@@ -25,6 +25,7 @@ Codion Change Log
 - ModifiedIndicatorFactory renamed ModifiedIndicator.
 - ComponentValueBuilder.modifiedIndicator(ObservableState) renamed modified().
 - LogViewer, clear control moved to popup menu, minor refactoring.
+- AbstractComponentBuilder.enableTransferFocusOnEnter(), enableValidIndicator() and enableModifiedIndicator() renamed enable.
 ### is.codion.plugin.flatlaf
 - is.codion.plugin.flatlaf module now exports indicator package, so FlatLafValidIndicatorFactory can be instantiated directly.
 ### is.codion.framework.db.core

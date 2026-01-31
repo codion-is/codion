@@ -245,16 +245,16 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 			return;
 		}
 		if (validObservable != null) {
-			enableValidIndicator(validIndicator, componentValue.component(), validObservable);
+			enable(validIndicator, componentValue.component(), validObservable);
 		}
 		else if (validPredicate != null) {
-			enableValidIndicator(validIndicator, componentValue.component(), createValidState(componentValue, validPredicate));
+			enable(validIndicator, componentValue.component(), createValidState(componentValue, validPredicate));
 		}
 	}
 
 	private void configureModifiedIndicator(C component) {
 		if (modifiedIndicator != null && modifiedObservable != null) {
-			enableModifiedIndicator(modifiedIndicator, component, modifiedObservable);
+			enable(modifiedIndicator, component, modifiedObservable);
 		}
 	}
 

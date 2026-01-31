@@ -81,7 +81,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 	}
 
 	@Override
-	protected void enableTransferFocusOnEnter(JPanel panel, TransferFocusOnEnter transferFocusOnEnter) {
+	protected void enable(TransferFocusOnEnter transferFocusOnEnter, JPanel panel) {
 		Stream.of(panel.getComponents())
 						.filter(AbstractButton.class::isInstance)
 						.map(AbstractButton.class::cast)
