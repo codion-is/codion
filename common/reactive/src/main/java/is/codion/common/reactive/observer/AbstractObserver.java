@@ -46,8 +46,6 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractObserver<T> implements Observer<T> {
 
-	private final Lock lock = new Lock() {};
-
 	private @Nullable ArrayList<Listener<?>> listeners;
 
 	/**
@@ -128,51 +126,45 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 		}
 	}
 
-	private List<Listener<?>> listeners() {
-		synchronized (lock) {
-			if (listeners == null) {
-				return emptyList();
-			}
-
-			return new ArrayList<>(listeners);
+	private synchronized List<Listener<?>> listeners() {
+		if (listeners == null) {
+			return emptyList();
 		}
+
+		return new ArrayList<>(listeners);
 	}
 
-	private boolean add(Listener<?> listener) {
-		synchronized (lock) {
-			if (contains(listener)) {
-				return false;
-			}
-			if (listeners == null) {
-				listeners = new ArrayList<>(1);
-			}
+	private synchronized boolean add(Listener<?> listener) {
+		if (contains(listener)) {
+			return false;
+		}
+		if (listeners == null) {
+			listeners = new ArrayList<>(1);
+		}
 
-			listeners.add(listener);
-			listeners.trimToSize();
+		listeners.add(listener);
+		listeners.trimToSize();
+
+		return true;
+	}
+
+	private synchronized boolean remove(Object listener) {
+		requireNonNull(listener);
+		if (listeners == null) {
+			return false;
+		}
+		if (remove(listener, listeners.listIterator())) {
+			if (listeners.isEmpty()) {
+				listeners = null;
+			}
+			else {
+				listeners.trimToSize();
+			}
 
 			return true;
 		}
-	}
 
-	private boolean remove(Object listener) {
-		requireNonNull(listener);
-		synchronized (lock) {
-			if (listeners == null) {
-				return false;
-			}
-			if (remove(listener, listeners.listIterator())) {
-				if (listeners.isEmpty()) {
-					listeners = null;
-				}
-				else {
-					listeners.trimToSize();
-				}
-
-				return true;
-			}
-
-			return false;
-		}
+		return false;
 	}
 
 	private static boolean remove(Object listenerToRemove, ListIterator<Listener<?>> iterator) {

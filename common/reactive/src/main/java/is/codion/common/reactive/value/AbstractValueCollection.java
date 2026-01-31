@@ -49,17 +49,13 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final C get() {
-		synchronized (lock) {
-			return super.get();
-		}
+	public final synchronized C get() {
+		return super.get();
 	}
 
 	@Override
-	public final void clear() {
-		synchronized (lock) {
-			super.clear();
-		}
+	public final synchronized void clear() {
+		super.clear();
 	}
 
 	@Override
@@ -68,39 +64,33 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final Optional<C> optional() {
-		synchronized (lock) {
-			C values = getOrThrow();
-			if (values.isEmpty()) {
-				return Optional.empty();
-			}
-
-			return Optional.of(values);
+	public final synchronized Optional<C> optional() {
+		C values = getOrThrow();
+		if (values.isEmpty()) {
+			return Optional.empty();
 		}
+
+		return Optional.of(values);
 	}
 
 	@Override
-	public final void set(@Nullable Collection<T> values) {
-		synchronized (lock) {
-			C newValues = create.get();
-			if (values != null) {
-				newValues.addAll(values);
-			}
-
-			super.set(unmodifiable.apply(newValues));
+	public final synchronized void set(@Nullable Collection<T> values) {
+		C newValues = create.get();
+		if (values != null) {
+			newValues.addAll(values);
 		}
+
+		super.set(unmodifiable.apply(newValues));
 	}
 
 	@Override
-	public final boolean add(@Nullable T value) {
-		synchronized (lock) {
-			C newValues = create.get();
-			newValues.addAll(getOrThrow());
-			boolean added = newValues.add(value);
-			super.set(unmodifiable.apply(newValues));
+	public final synchronized boolean add(@Nullable T value) {
+		C newValues = create.get();
+		newValues.addAll(getOrThrow());
+		boolean added = newValues.add(value);
+		super.set(unmodifiable.apply(newValues));
 
-			return added;
-		}
+		return added;
 	}
 
 	@Override
@@ -109,28 +99,24 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final boolean addAll(Collection<T> values) {
+	public final synchronized boolean addAll(Collection<T> values) {
 		requireNonNull(values);
-		synchronized (lock) {
-			C newValues = create.get();
-			newValues.addAll(getOrThrow());
-			boolean added = newValues.addAll(values);
-			super.set(unmodifiable.apply(newValues));
+		C newValues = create.get();
+		newValues.addAll(getOrThrow());
+		boolean added = newValues.addAll(values);
+		super.set(unmodifiable.apply(newValues));
 
-			return added;
-		}
+		return added;
 	}
 
 	@Override
-	public final boolean remove(@Nullable T value) {
-		synchronized (lock) {
-			C newValues = create.get();
-			newValues.addAll(getOrThrow());
-			boolean removed = newValues.remove(value);
-			super.set(unmodifiable.apply(newValues));
+	public final synchronized boolean remove(@Nullable T value) {
+		C newValues = create.get();
+		newValues.addAll(getOrThrow());
+		boolean removed = newValues.remove(value);
+		super.set(unmodifiable.apply(newValues));
 
-			return removed;
-		}
+		return removed;
 	}
 
 	@Override
@@ -139,74 +125,58 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final boolean removeAll(Collection<T> values) {
+	public final synchronized boolean removeAll(Collection<T> values) {
 		requireNonNull(values);
-		synchronized (lock) {
-			C newValues = create.get();
-			newValues.addAll(getOrThrow());
-			boolean removed = newValues.removeAll(values);
-			super.set(unmodifiable.apply(newValues));
+		C newValues = create.get();
+		newValues.addAll(getOrThrow());
+		boolean removed = newValues.removeAll(values);
+		super.set(unmodifiable.apply(newValues));
 
-			return removed;
-		}
+		return removed;
 	}
 
 	@Override
-	public final boolean contains(@Nullable T value) {
-		synchronized (lock) {
-			return getOrThrow().contains(value);
-		}
+	public final synchronized boolean contains(@Nullable T value) {
+		return getOrThrow().contains(value);
 	}
 
 	@Override
-	public final boolean containsAll(Collection<T> values) {
+	public final synchronized boolean containsAll(Collection<T> values) {
 		requireNonNull(values);
-		synchronized (lock) {
-			return getOrThrow().containsAll(values);
-		}
+		return getOrThrow().containsAll(values);
 	}
 
 	@Override
-	public final boolean containsOnly(Collection<T> values) {
+	public final synchronized boolean containsOnly(Collection<T> values) {
 		requireNonNull(values);
-		synchronized (lock) {
-			C collection = getOrThrow();
+		C collection = getOrThrow();
 
-			return collection.size() == values.size() && collection.containsAll(values);
-		}
+		return collection.size() == values.size() && collection.containsAll(values);
 	}
 
 	@Override
-	public final boolean containsNone(Collection<T> values) {
+	public final synchronized boolean containsNone(Collection<T> values) {
 		requireNonNull(values);
-		synchronized (lock) {
-			return disjoint(getOrThrow(), values);
-		}
+		return disjoint(getOrThrow(), values);
 	}
 
 	@Override
-	public final boolean isEmpty() {
-		synchronized (lock) {
-			return getOrThrow().isEmpty();
-		}
+	public final synchronized boolean isEmpty() {
+		return getOrThrow().isEmpty();
 	}
 
 	@Override
-	public final int size() {
-		synchronized (lock) {
-			return getOrThrow().size();
-		}
+	public final synchronized int size() {
+		return getOrThrow().size();
 	}
 
 	@Override
-	public final Value<T> value() {
-		synchronized (lock) {
-			if (singleValue == null) {
-				singleValue = new SingleValue();
-			}
-
-			return singleValue;
+	public final synchronized Value<T> value() {
+		if (singleValue == null) {
+			singleValue = new SingleValue();
 		}
+
+		return singleValue;
 	}
 
 	@Override
@@ -215,13 +185,11 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final void sort(Comparator<? super T> comparator) {
+	public final synchronized void sort(Comparator<? super T> comparator) {
 		requireNonNull(comparator);
-		synchronized (lock) {
-			List<T> list = new ArrayList<>(getOrThrow());
-			list.sort(comparator);
-			set(list);
-		}
+		List<T> list = new ArrayList<>(getOrThrow());
+		list.sort(comparator);
+		set(list);
 	}
 
 	@Override

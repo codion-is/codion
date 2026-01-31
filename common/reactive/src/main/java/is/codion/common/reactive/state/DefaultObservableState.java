@@ -26,7 +26,6 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultObservableState extends AbstractObserver<Boolean> implements ObservableState {
 
-	private final Lock lock = new Lock() {};
 	private final ObservableState state;
 	private final boolean not;
 
@@ -43,36 +42,28 @@ final class DefaultObservableState extends AbstractObserver<Boolean> implements 
 	}
 
 	@Override
-	public boolean is() {
-		synchronized (lock) {
-			return not ? !state.is() : state.is();
-		}
+	public synchronized boolean is() {
+		return not ? !state.is() : state.is();
 	}
 
 	@Override
-	public ObservableState not() {
+	public synchronized ObservableState not() {
 		if (not) {
 			return state;
 		}
-		synchronized (lock) {
-			if (notObserver == null) {
-				notObserver = new DefaultObservableState(this, true);
-			}
-
-			return notObserver;
+		if (notObserver == null) {
+			notObserver = new DefaultObservableState(this, true);
 		}
+
+		return notObserver;
 	}
 
-	void notifyObservers(boolean newValue, boolean previousValue) {
-		synchronized (lock) {
-			if (previousValue != newValue) {
-				notifyListeners(newValue);
-				if (notObserver != null) {
-					notObserver.notifyObservers(previousValue, newValue);
-				}
+	synchronized void notifyObservers(boolean newValue, boolean previousValue) {
+		if (previousValue != newValue) {
+			notifyListeners(newValue);
+			if (notObserver != null) {
+				notObserver.notifyObservers(previousValue, newValue);
 			}
 		}
 	}
-
-	private interface Lock {}
 }

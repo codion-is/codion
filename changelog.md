@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.reactive
 - Observer.Builder added along with AbstractObserver.AbstractBuilder, related refactoring.
 - Observer.observer() added, Observable, default Observer method implementations moved to Observer, related refactoring.
+- AbstractObserver, BaseValue and DefaultObservableState, internal Lock objects removed, methods synchronized instead.
 ### is.codion.common.db
 - Database.close() and AbstractDatabase.closeDatabase() added, for closing embedded databases.
 ### is.codion.common.model

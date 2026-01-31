@@ -41,8 +41,6 @@ import static java.util.Objects.requireNonNull;
 
 abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 
-	final Object lock = new Lock() {};
-
 	private final @Nullable T nullValue;
 	private final @Nullable Notify notify;
 
@@ -109,36 +107,30 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	}
 
 	@Override
-	public Observable<T> observable() {
-		synchronized (lock) {
-			if (observable == null) {
-				observable = createObservable();
-			}
-
-			return observable;
+	public synchronized Observable<T> observable() {
+		if (observable == null) {
+			observable = createObservable();
 		}
+
+		return observable;
 	}
 
 	@Override
-	public final Observer<ValueChange<T>> changed() {
-		synchronized (lock) {
-			if (changeObserver == null) {
-				changeObserver = new ValueChangeObserver<>(this);
-			}
-
-			return changeObserver;
+	public final synchronized Observer<ValueChange<T>> changed() {
+		if (changeObserver == null) {
+			changeObserver = new ValueChangeObserver<>(this);
 		}
+
+		return changeObserver;
 	}
 
 	@Override
-	public final Locked locked() {
-		synchronized (lock) {
-			if (locked == null) {
-				locked = new DefaultLocked();
-			}
-
-			return locked;
+	public final synchronized Locked locked() {
+		if (locked == null) {
+			locked = new DefaultLocked();
 		}
+
+		return locked;
 	}
 
 	@Override
@@ -434,6 +426,4 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 			return value == null ? nullValue : value;
 		}
 	}
-
-	private interface Lock {}
 }
