@@ -24,7 +24,6 @@ import is.codion.common.reactive.observer.Observer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import static java.util.Objects.requireNonNull;
@@ -260,7 +259,7 @@ public interface Value<T> extends Observable<T> {
 	 * @param <T> the value type
 	 * @param <B> the builder type
 	 */
-	interface Builder<T, B extends Builder<T, B>> {
+	interface Builder<T, B extends Builder<T, B>> extends Observer.Builder<T, B> {
 
 		/**
 		 * @param value the initial value
@@ -305,30 +304,6 @@ public interface Value<T> extends Observable<T> {
 		B link(Observable<T> observable);
 
 		/**
-		 * @param listener a listener to add
-		 * @return this builder instance
-		 */
-		B listener(Runnable listener);
-
-		/**
-		 * @param consumer a consumer to add
-		 * @return this builder instance
-		 */
-		B consumer(Consumer<? super T> consumer);
-
-		/**
-		 * @param weakListener a weak listener to add
-		 * @return this builder instance
-		 */
-		B weakListener(Runnable weakListener);
-
-		/**
-		 * @param weakConsumer a weak consumer to add
-		 * @return this builder instance
-		 */
-		B weakConsumer(Consumer<? super T> weakConsumer);
-
-		/**
 		 * @param listener a change listener to add
 		 * @return this builder instance
 		 * @see Value#changed()
@@ -355,38 +330,6 @@ public interface Value<T> extends Observable<T> {
 		 * @see Value#changed()
 		 */
 		B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer);
-
-		/**
-		 * Adds a conditional listener
-		 * @param value the value on which to run
-		 * @param listener the listener
-		 * @return this builder instance
-		 */
-		B when(T value, Runnable listener);
-
-		/**
-		 * Adds a conditional consumer
-		 * @param value the value to consume
-		 * @param consumer the consumer
-		 * @return this builder instance
-		 */
-		B when(T value, Consumer<? super T> consumer);
-
-		/**
-		 * Adds a conditional listener
-		 * @param predicate the predicate on which to run
-		 * @param listener the runnable
-		 * @return this builder instance
-		 */
-		B when(Predicate<T> predicate, Runnable listener);
-
-		/**
-		 * Adds a conditional consumer
-		 * @param predicate the predicate on which to consume the value
-		 * @param consumer the consumer to use
-		 * @return this builder instance
-		 */
-		B when(Predicate<T> predicate, Consumer<? super T> consumer);
 
 		/**
 		 * @return a new {@link Value} instance based on this builder

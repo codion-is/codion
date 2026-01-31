@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.67
+### is.codion.common.reactive
+- Observer.Builder added along with AbstractObserver.AbstractBuilder, related refactoring.
 ### is.codion.common.db
 - Database.close() and AbstractDatabase.closeDatabase() added, for closing embedded databases.
 ### is.codion.common.model

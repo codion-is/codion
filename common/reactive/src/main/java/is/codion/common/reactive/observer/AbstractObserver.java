@@ -203,6 +203,91 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 		return false;
 	}
 
+	/**
+	 * An abstract base class for an {@link Observer} builder
+	 * @param <T> the observed type
+	 * @param <B> the builder type
+	 * @see #listeners()
+	 */
+	public abstract static class AbstractBuilder<T, B extends Builder<T, B>> implements Builder<T, B> {
+
+		private final List<Consumer<Observer<T>>> listeners = new ArrayList<>();
+
+		protected AbstractBuilder() {}
+
+		@Override
+		public final B listener(Runnable listener) {
+			requireNonNull(listener);
+			listeners.add(observer -> observer.addListener(listener));
+			return self();
+		}
+
+		@Override
+		public final B consumer(Consumer<? super T> consumer) {
+			requireNonNull(consumer);
+			listeners.add(observer -> observer.addConsumer(consumer));
+			return self();
+		}
+
+		@Override
+		public final B weakListener(Runnable weakListener) {
+			requireNonNull(weakListener);
+			listeners.add(observer -> observer.addWeakListener(weakListener));
+			return self();
+		}
+
+		@Override
+		public final B weakConsumer(Consumer<? super T> weakConsumer) {
+			requireNonNull(weakConsumer);
+			listeners.add(observer -> observer.addWeakConsumer(weakConsumer));
+			return self();
+		}
+
+		@Override
+		public final B when(T value, Runnable listener) {
+			requireNonNull(listener);
+			listeners.add(observer -> observer.when(value).addListener(listener));
+			return self();
+		}
+
+		@Override
+		public final B when(T value, Consumer<? super T> consumer) {
+			requireNonNull(consumer);
+			listeners.add(observer -> observer.when(value).addConsumer(consumer));
+			return self();
+		}
+
+		@Override
+		public final B when(Predicate<T> predicate, Runnable listener) {
+			requireNonNull(predicate);
+			requireNonNull(listener);
+			listeners.add(observer -> observer.when(predicate).addListener(listener));
+			return self();
+		}
+
+		@Override
+		public final B when(Predicate<T> predicate, Consumer<? super T> consumer) {
+			requireNonNull(predicate);
+			requireNonNull(consumer);
+			listeners.add(observer -> observer.when(predicate).addConsumer(consumer));
+			return self();
+		}
+
+		/**
+		 * Adds the listeners to the given {@link Observer} instance.
+		 * <p>Subclasses must call this method in order to populate the observer
+		 * with the listeners added via this builder instance.
+		 */
+		protected void addListeners(Observer<T> observer) {
+			requireNonNull(observer);
+			listeners.forEach(consumer -> consumer.accept(observer));
+		}
+
+		protected final B self() {
+			return (B) this;
+		}
+	}
+
 	private interface Listener<T> {
 
 		T get();

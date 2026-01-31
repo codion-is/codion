@@ -124,4 +124,73 @@ public interface Observer<T> {
 	 * @return a new conditional {@link Observer}
 	 */
 	Observer<T> when(Predicate<? super T> predicate);
+
+	/**
+	 * Builds an {@link Observer}
+	 * @param <T> the observed type
+	 * @param <B> the builder type
+	 */
+	interface Builder<T, B extends Builder<T, B>> {
+
+		/**
+		 * @param listener a listener to add
+		 * @return this builder instance
+		 */
+		B listener(Runnable listener);
+
+		/**
+		 * @param consumer a consumer to add
+		 * @return this builder instance
+		 */
+		B consumer(Consumer<? super T> consumer);
+
+		/**
+		 * @param weakListener a weak listener to add
+		 * @return this builder instance
+		 */
+		B weakListener(Runnable weakListener);
+
+		/**
+		 * @param weakConsumer a weak consumer to add
+		 * @return this builder instance
+		 */
+		B weakConsumer(Consumer<? super T> weakConsumer);
+
+		/**
+		 * Adds a conditional listener
+		 * @param value the value on which to run
+		 * @param listener the listener
+		 * @return this builder instance
+		 */
+		B when(T value, Runnable listener);
+
+		/**
+		 * Adds a conditional consumer
+		 * @param value the value to consume
+		 * @param consumer the consumer
+		 * @return this builder instance
+		 */
+		B when(T value, Consumer<? super T> consumer);
+
+		/**
+		 * Adds a conditional listener
+		 * @param predicate the predicate on which to run
+		 * @param listener the runnable
+		 * @return this builder instance
+		 */
+		B when(Predicate<T> predicate, Runnable listener);
+
+		/**
+		 * Adds a conditional consumer
+		 * @param predicate the predicate on which to consume the value
+		 * @param consumer the consumer to use
+		 * @return this builder instance
+		 */
+		B when(Predicate<T> predicate, Consumer<? super T> consumer);
+
+		/**
+		 * @return an {@link Observer} based on this builder
+		 */
+		Observer<T> build();
+	}
 }
