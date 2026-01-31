@@ -779,6 +779,26 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void updatePrimaryKey() {
+		Entity testEntity = ENTITIES.entity(Department.TYPE)
+						.with(Department.DEPTNO, -999)
+						.with(Department.DNAME, "updatePk")
+						.build();
+		connection.startTransaction();
+		try {
+			Entity inserted = connection.insertSelect(testEntity);
+			inserted.set(Department.DEPTNO, -998);
+			inserted.set(Department.DNAME, "updatePk2");
+			Entity updated = connection.updateSelect(inserted);
+			assertEquals(-998, updated.get(Department.DEPTNO));
+			assertEquals("updatePk2", updated.get(Department.DNAME));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void updateNonUpdatable() {
 		assertThrows(UpdateEntityException.class, () -> connection.update(Update.where(Employee.ID.equalTo(1))
 						.set(Employee.ID, 999)

@@ -42,9 +42,9 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 		createTextField(Employee.LASTNAME)
 						.columns(6);
 		createTemporalFieldPanel(Employee.BIRTHDATE)
-						.columns(6);
+						.columns(7);
 		createTemporalFieldPanel(Employee.HIREDATE)
-						.columns(6);
+						.columns(7);
 		createTextField(Employee.TITLE)
 						.columns(8);
 		createTextField(Employee.ADDRESS);

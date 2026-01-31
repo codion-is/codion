@@ -52,7 +52,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 		createTextField(Employee.COMMISSION)
 						.columns(5);
 		createTemporalFieldPanel(Employee.HIREDATE)
-						.columns(6);
+						.columns(7);
 
 		setLayout(flexibleGridLayout(0, 3));
 
