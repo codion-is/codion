@@ -313,7 +313,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a text area builder
 	 */
 	protected final TextAreaBuilder createTextArea(Attribute<String> attribute) {
-		return setComponentBuilder(attribute, entityComponents.textArea(attribute));
+		return component(attribute).set(entityComponents.textArea(attribute));
 	}
 
 	/**
@@ -322,8 +322,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a text field panel builder
 	 */
 	protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
-		return setComponentBuilder(attribute, entityComponents.textFieldPanel(attribute)
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+		return component(attribute).set(entityComponents.textFieldPanel(attribute))
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a text area builder
 	 */
 	protected final <T extends Temporal> TemporalFieldPanel.Builder<T> createTemporalFieldPanel(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, entityComponents.temporalFieldPanel(attribute));
+		return component(attribute).set(entityComponents.temporalFieldPanel(attribute));
 	}
 
 	/**
@@ -345,8 +345,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a text field builder
 	 */
 	protected final <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> createTextField(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, (TextFieldBuilder<C, T, B>) entityComponents.textField(attribute)
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+		return component(attribute).set((B) entityComponents.textField(attribute))
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -356,7 +356,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return an offset date time field builder
 	 */
 	protected final <T extends Temporal> TemporalField.Builder<T> createTemporalField(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, entityComponents.temporalField(attribute));
+		return component(attribute).set(entityComponents.temporalField(attribute));
 	}
 
 	/**
@@ -365,7 +365,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a slider builder
 	 */
 	protected final SliderBuilder createSlider(Attribute<Integer> attribute) {
-		return setComponentBuilder(attribute, entityComponents.slider(attribute));
+		return component(attribute).set(entityComponents.slider(attribute));
 	}
 
 	/**
@@ -374,7 +374,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a spinner builder
 	 */
 	protected final NumberSpinnerBuilder<Integer> createIntegerSpinner(Attribute<Integer> attribute) {
-		return setComponentBuilder(attribute, entityComponents.integerSpinner(attribute));
+		return component(attribute).set(entityComponents.integerSpinner(attribute));
 	}
 
 	/**
@@ -383,7 +383,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a spinner builder
 	 */
 	protected final NumberSpinnerBuilder<Double> createDoubleSpinner(Attribute<Double> attribute) {
-		return setComponentBuilder(attribute, entityComponents.doubleSpinner(attribute));
+		return component(attribute).set(entityComponents.doubleSpinner(attribute));
 	}
 
 	/**
@@ -394,7 +394,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a spinner builder
 	 */
 	protected final <T> ListSpinnerBuilder<T> createListSpinner(Attribute<T> attribute, SpinnerListModel spinnerListModel) {
-		return setComponentBuilder(attribute, entityComponents.listSpinner(attribute, spinnerListModel));
+		return component(attribute).set(entityComponents.listSpinner(attribute, spinnerListModel));
 	}
 
 	/**
@@ -404,7 +404,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a spinner builder
 	 */
 	protected final <T> ItemSpinnerBuilder<T> createItemSpinner(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, entityComponents.itemSpinner(attribute));
+		return component(attribute).set(entityComponents.itemSpinner(attribute));
 	}
 
 	/**
@@ -413,8 +413,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return an integer field builder
 	 */
 	protected final NumberField.Builder<Integer> createIntegerField(Attribute<Integer> attribute) {
-		return setComponentBuilder(attribute, entityComponents.integerField(attribute)
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+		return component(attribute).set(entityComponents.integerField(attribute))
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -423,8 +423,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a long field builder
 	 */
 	protected final NumberField.Builder<Long> createLongField(Attribute<Long> attribute) {
-		return setComponentBuilder(attribute, entityComponents.longField(attribute)
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+		return component(attribute).set(entityComponents.longField(attribute))
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -433,8 +433,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a big integer field builder
 	 */
 	protected final NumberField.Builder<BigInteger> createBigIntegerField(Attribute<BigInteger> attribute) {
-		return setComponentBuilder(attribute, entityComponents.bigIntegerField(attribute)
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+		return component(attribute).set(entityComponents.bigIntegerField(attribute))
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -443,8 +443,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a double field builder
 	 */
 	protected final NumberField.Builder<Double> createDoubleField(Attribute<Double> attribute) {
-		return setComponentBuilder(attribute, entityComponents.doubleField(attribute)
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+		return component(attribute).set(entityComponents.doubleField(attribute))
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -453,8 +453,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a big decimal field builder
 	 */
 	protected final NumberField.Builder<BigDecimal> createBigDecimalField(Attribute<BigDecimal> attribute) {
-		return setComponentBuilder(attribute, entityComponents.bigDecimalField(attribute)
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+		return component(attribute).set(entityComponents.bigDecimalField(attribute))
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -463,7 +463,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a formatted text field builder
 	 */
 	protected final MaskedTextFieldBuilder createMaskedTextField(Attribute<String> attribute) {
-		return setComponentBuilder(attribute, entityComponents.maskedTextField(attribute));
+		return component(attribute).set(entityComponents.maskedTextField(attribute));
 	}
 
 	/**
@@ -472,7 +472,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a check-box builder
 	 */
 	protected final CheckBoxBuilder createCheckBox(Attribute<Boolean> attribute) {
-		return setComponentBuilder(attribute, entityComponents.checkBox(attribute));
+		return component(attribute).set(entityComponents.checkBox(attribute));
 	}
 
 	/**
@@ -481,7 +481,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a check-box builder
 	 */
 	protected final NullableCheckBoxBuilder createNullableCheckBox(Attribute<Boolean> attribute) {
-		return setComponentBuilder(attribute, entityComponents.nullableCheckBox(attribute));
+		return component(attribute).set(entityComponents.nullableCheckBox(attribute));
 	}
 
 	/**
@@ -490,7 +490,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a boolean combo box builder
 	 */
 	protected final ItemComboBoxBuilder<Boolean> createBooleanComboBox(Attribute<Boolean> attribute) {
-		return setComponentBuilder(attribute, entityComponents.booleanComboBox(attribute));
+		return component(attribute).set(entityComponents.booleanComboBox(attribute));
 	}
 
 	/**
@@ -503,7 +503,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a combo box builder
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
-		return setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel));
+		return component(attribute).set((B) entityComponents.comboBox(attribute, comboBoxModel));
 	}
 
 	/**
@@ -513,7 +513,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a value item list combo box builder
 	 */
 	protected final <T> ItemComboBoxBuilder<T> createItemComboBox(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, entityComponents.itemComboBox(attribute));
+		return component(attribute).set(entityComponents.itemComboBox(attribute));
 	}
 
 	/**
@@ -523,7 +523,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a label builder
 	 */
 	protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, Components.label());
+		return component(attribute).set(Components.label());
 	}
 
 	/**
@@ -537,8 +537,8 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createComboBox(Column<T> column) {
 		FilterComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(column);
 
-		return (ComboBoxBuilder<C, T, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
-						.onSetVisible(EntityEditComponentPanel::refreshIfCleared));
+		return component(column).set((B) entityComponents.comboBox(column, comboBoxModel))
+						.onSetVisible(EntityEditComponentPanel::refreshIfCleared);
 	}
 
 	/**
@@ -549,8 +549,8 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntityComboBox.Builder createComboBox(ForeignKey foreignKey) {
 		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
 
-		return setComponentBuilder(foreignKey, entityComponents.comboBox(foreignKey, comboBoxModel)
-						.onSetVisible(EntityEditComponentPanel::refreshIfCleared));
+		return component(foreignKey).set(entityComponents.comboBox(foreignKey, comboBoxModel))
+						.onSetVisible(EntityEditComponentPanel::refreshIfCleared);
 	}
 
 	/**
@@ -563,7 +563,7 @@ public class EntityEditComponentPanel extends JPanel {
 																																	Supplier<EntityEditPanel> editPanel) {
 		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
 
-		return setComponentBuilder(foreignKey, entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
+		return component(foreignKey).set(entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
 						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
 	}
 
@@ -573,10 +573,10 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key search field builder
 	 */
 	protected final EntitySearchField.SingleSelectionBuilder createSearchField(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.searchField(foreignKey,
+		return component(foreignKey).set(entityComponents.searchField(foreignKey,
 										editModel().searchModel(foreignKey))
-						.singleSelection()
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+						.singleSelection())
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -587,10 +587,10 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntitySearchFieldPanel.SingleSelectionBuilder createSearchFieldPanel(ForeignKey foreignKey,
 																																											 Supplier<EntityEditPanel> editPanel) {
-		return (EntitySearchFieldPanel.SingleSelectionBuilder) setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
+		return component(foreignKey).set(entityComponents.searchFieldPanel(foreignKey,
 										editModel().searchModel(foreignKey), editPanel)
-						.singleSelection()
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
+						.singleSelection())
+						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
 	/**
@@ -600,7 +600,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key text field builder
 	 */
 	protected final <B extends TextFieldBuilder<JTextField, Entity, B>> TextFieldBuilder<JTextField, Entity, B> createTextField(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.textField(foreignKey));
+		return component(foreignKey).set((B) entityComponents.textField(foreignKey));
 	}
 
 	/**
@@ -649,6 +649,21 @@ public class EntityEditComponentPanel extends JPanel {
 		void set(ComponentValue<? extends JComponent, T> componentValue);
 
 		/**
+		 * Associates the given component builder with this attribute, configuring it
+		 * with standard defaults (caption, mnemonic, enabled state, focus transfer, tooltips,
+		 * and valid/modified indicators) and linking it to the underlying editor value.
+		 * <p>
+		 * This method enables integration of custom or third-party components by extending
+		 * {@link is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder}.
+		 * @param componentBuilder the component builder providing the component for the attribute
+		 * @param <C> the component type
+		 * @param <B> the component builder type
+		 * @return the component builder
+		 * @throws IllegalStateException in case a component or a component builder has already been associated with the attribute
+		 */
+		<C extends JComponent, B extends ComponentValueBuilder<C, T, B>> B set(B componentBuilder);
+
+		/**
 		 * Replaces an already set component.
 		 * Note that when replacing the component using this method, no value linking is performed.
 		 * @param component the component
@@ -663,45 +678,6 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @see ComponentBuilder#label(JLabel)
 		 */
 		JLabel label();
-	}
-
-	/**
-	 * Associates the given component builder with the given attribute, configuring it
-	 * with standard defaults (caption, mnemonic, enabled state, focus transfer, tooltips,
-	 * and valid/modified indicators) and linking it to the underlying editor value.
-	 * <p>
-	 * This method enables integration of custom or third-party components by extending
-	 * {@link is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder}.
-	 * @param attribute the attribute
-	 * @param componentBuilder the component builder providing the component for the given attribute
-	 * @param <T> the value type
-	 * @param <B> the component builder type
-	 * @return the component builder
-	 * @throws IllegalStateException in case a component or a component builder has already been associated with the attribute
-	 */
-	protected final <T, B extends ComponentValueBuilder<?, T, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
-		requireNonNull(attribute);
-		requireNonNull(componentBuilder);
-		if (componentBuilders.containsKey(attribute) || component(attribute).optional().isPresent()) {
-			throw new IllegalStateException("Component has already been created for attribute: " + attribute);
-		}
-		AttributeDefinition<T> attributeDefinition = editModel().entities()
-						.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
-		EditorValue<T> editorValue = editModel.editor().value(attribute);
-		componentBuilders.put(attribute, componentBuilder
-						.name(attribute.toString())
-						.enabled(!attributeDefinition.derived())
-						.label(label -> label
-										.text(attributeDefinition.caption())
-										.displayedMnemonic(attributeDefinition.mnemonic()))
-						.transferFocusOnEnter(inputFocus.transferOnEnter.is())
-						.toolTipText(editorValue.message())
-						.valid(validIndicator.is() ? editorValue.valid() : null)
-						.modified(modifiedIndicator.is() ? editorValue.modified() : null)
-						.link(editorValue)
-						.onBuild(new SetComponent<>(attribute)));
-
-		return componentBuilder;
 	}
 
 	private boolean isInputComponent(JComponent component) {
@@ -962,8 +938,8 @@ public class EntityEditComponentPanel extends JPanel {
 		public FilterList.Builder.Items<T> items(Attribute<List<T>> attribute) {
 			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
-			return setComponentBuilder(attribute, builderFactory.items()
-							.toolTipText(attributeDefinition.description().orElse(null)));
+			return component(attribute).set(builderFactory.items())
+							.toolTipText(attributeDefinition.description().orElse(null));
 		}
 
 		/**
@@ -974,8 +950,8 @@ public class EntityEditComponentPanel extends JPanel {
 		public FilterList.Builder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute) {
 			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
-			return setComponentBuilder(attribute, builderFactory.selectedItems()
-							.toolTipText(attributeDefinition.description().orElse(null)));
+			return component(attribute).set(builderFactory.selectedItems())
+							.toolTipText(attributeDefinition.description().orElse(null));
 		}
 
 		/**
@@ -986,8 +962,8 @@ public class EntityEditComponentPanel extends JPanel {
 		public FilterList.Builder.SelectedItem<T> selectedItem(Attribute<T> attribute) {
 			AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
-			return setComponentBuilder(attribute, builderFactory.selectedItem()
-							.toolTipText(attributeDefinition.description().orElse(null)));
+			return component(attribute).set(builderFactory.selectedItem())
+							.toolTipText(attributeDefinition.description().orElse(null));
 		}
 	}
 
@@ -1041,6 +1017,31 @@ public class EntityEditComponentPanel extends JPanel {
 		public void set(ComponentValue<? extends JComponent, T> componentValue) {
 			set(requireNonNull(componentValue).component());
 			componentValue.link(editModel.editor().value(attribute));
+		}
+
+		@Override
+		public <C extends JComponent, B extends ComponentValueBuilder<C, T, B>> B set(B componentBuilder) {
+			requireNonNull(componentBuilder);
+			if (componentBuilders.containsKey(attribute) || component.optional().isPresent()) {
+				throw new IllegalStateException("Component has already been set for attribute: " + attribute);
+			}
+			AttributeDefinition<T> attributeDefinition = editModel().entities()
+							.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
+			EditorValue<T> editorValue = editModel.editor().value(attribute);
+			componentBuilders.put(attribute, componentBuilder
+							.name(attribute.toString())
+							.enabled(!attributeDefinition.derived())
+							.label(label -> label
+											.text(attributeDefinition.caption())
+											.displayedMnemonic(attributeDefinition.mnemonic()))
+							.transferFocusOnEnter(inputFocus.transferOnEnter.is())
+							.toolTipText(editorValue.message())
+							.valid(validIndicator.is() ? editorValue.valid() : null)
+							.modified(modifiedIndicator.is() ? editorValue.modified() : null)
+							.link(editorValue)
+							.onBuild(new SetComponent<>(attribute)));
+
+			return componentBuilder;
 		}
 
 		@Override

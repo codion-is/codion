@@ -88,10 +88,9 @@ final class CountryEditPanel extends EntityEditPanel {
 		createComboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
 						.preferredComboBoxWidth(PREFERRED_COMBO_BOX_WIDTH)
 						.includeAddButton(true);
-		component(Country.FLAG).set(ImagePane.builder()
+		component(Country.FLAG).set(ImagePane.builder())
 						.preferredWidth(50)
-						.border(createEtchedBorder())
-						.buildValue());
+						.border(createEtchedBorder());
 		//add a field displaying the avarage city population for the selected country
 		CountryEditModel editModel = (CountryEditModel) editModel();
 		NumberField<Double> averageCityPopulationField = doubleField()

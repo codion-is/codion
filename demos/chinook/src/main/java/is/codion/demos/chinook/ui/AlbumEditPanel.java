@@ -46,10 +46,10 @@ public final class AlbumEditPanel extends EntityEditPanel {
 		createTextField(Album.TITLE)
 						.columns(15);
 		// We use our custom component for the album tags,
-		// which is automatically associated with Album.TAGS.
+		// which is automatically linked to Album.TAGS.
 		component(Album.TAGS).set(new AlbumTagsValue());
 		// And our custom component for the album cover
-		// which is automatically associated with Album.COVER.
+		// which is automatically linked to Album.COVER.
 		component(Album.COVER).set(new CoverArtValue());
 
 		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)

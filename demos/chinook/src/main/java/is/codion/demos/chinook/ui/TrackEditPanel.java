@@ -20,7 +20,6 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.model.TrackEditModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -71,7 +70,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 		createTextFieldPanel(Track.COMPOSER)
 						.columns(12);
 
-		createDurationPanel(Track.MILLISECONDS);
+		component(Track.MILLISECONDS).set(new DurationPanelBuilder());
 
 		createIntegerField(Track.BYTES)
 						.columns(6);
@@ -113,10 +112,6 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 	private GenreEditPanel createGenreEditPanel() {
 		return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
-	}
-
-	private DurationPanelBuilder createDurationPanel(Attribute<Integer> attribute) {
-		return setComponentBuilder(attribute, new DurationPanelBuilder());
 	}
 
 	private void addKeyEvents() {

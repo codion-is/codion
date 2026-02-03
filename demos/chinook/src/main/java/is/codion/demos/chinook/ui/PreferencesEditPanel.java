@@ -19,7 +19,6 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -37,7 +36,7 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 						.columns(14);
 		createComboBox(Preferences.PREFERRED_GENRE_FK)
 						.preferredWidth(160);
-		createTriStateCheckBox(Preferences.NEWSLETTER)
+		component(Preferences.NEWSLETTER).set(new TriStateCheckBoxBuilder())
 						.altStateCycleOrder(true);
 
 		// Automatically update without confirmation when newsletter is toggled
@@ -57,9 +56,5 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 							.confirm(false)
 							.execute();
 		}
-	}
-
-	private TriStateCheckBoxBuilder createTriStateCheckBox(Attribute<Boolean> attribute) {
-		return setComponentBuilder(attribute, new TriStateCheckBoxBuilder());
 	}
 }
