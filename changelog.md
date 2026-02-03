@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.68
+### is.codion.swing.framework.ui
+- EntitySearchFieldPanel.Builder return types fixed.
 
 ## 0.18.67
 ### is.codion.common.reactive

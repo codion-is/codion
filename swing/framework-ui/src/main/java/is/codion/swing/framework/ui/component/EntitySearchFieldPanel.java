@@ -122,38 +122,38 @@ public final class EntitySearchFieldPanel extends JPanel {
 		 * @param includeSearchButton true if a search button should be included
 		 * @return this builder instance
 		 */
-		Builder<T, B> includeSearchButton(boolean includeSearchButton);
+		B includeSearchButton(boolean includeSearchButton);
 
 		/**
 		 * @param includeAddButton true if an 'Add' button should be included
 		 * @return this builder instance
 		 */
-		Builder<T, B> includeAddButton(boolean includeAddButton);
+		B includeAddButton(boolean includeAddButton);
 
 		/**
 		 * @param includeEditButton true if an 'Edit' button should be included
 		 * @return this builder instance
 		 */
-		Builder<T, B> includeEditButton(boolean includeEditButton);
+		B includeEditButton(boolean includeEditButton);
 
 		/**
 		 * @param confirmAdd true if adding an item should be confirmed
 		 * @return this builder instance
 		 */
-		Builder<T, B> confirmAdd(boolean confirmAdd);
+		B confirmAdd(boolean confirmAdd);
 
 		/**
 		 * @param confirmEdit true if editing an item should be confirmed
 		 * @return this builder instance
 		 */
-		Builder<T, B> confirmEdit(boolean confirmEdit);
+		B confirmEdit(boolean confirmEdit);
 
 		/**
 		 * Default false
 		 * @param buttonsFocusable true if the buttons should be focusable
 		 * @return this builder instance
 		 */
-		Builder<T, B> buttonsFocusable(boolean buttonsFocusable);
+		B buttonsFocusable(boolean buttonsFocusable);
 
 		/**
 		 * Must be one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
@@ -161,69 +161,69 @@ public final class EntitySearchFieldPanel extends JPanel {
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case the value is not one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
 		 */
-		Builder<T, B> buttonLocation(String buttonLocation);
+		B buttonLocation(String buttonLocation);
 
 		/**
 		 * @param preferredSearchFieldWidth the preferred search field width
 		 * @return this builder instance
 		 */
-		Builder<T, B> preferredSearchFieldWidth(int preferredSearchFieldWidth);
+		B preferredSearchFieldWidth(int preferredSearchFieldWidth);
 
 		/**
 		 * @param columns the number of colums in the text field
 		 * @return this builder instance
 		 */
-		Builder<T, B> columns(int columns);
+		B columns(int columns);
 
 		/**
 		 * Makes the field convert all lower case input to upper case
 		 * @param upperCase if true the text component convert all lower case input to upper case
 		 * @return this builder instance
 		 */
-		Builder<T, B> upperCase(boolean upperCase);
+		B upperCase(boolean upperCase);
 
 		/**
 		 * Makes the field convert all upper case input to lower case
 		 * @param lowerCase if true the text component convert all upper case input to lower case
 		 * @return this builder instance
 		 */
-		Builder<T, B> lowerCase(boolean lowerCase);
+		B lowerCase(boolean lowerCase);
 
 		/**
 		 * @param editable false if the field should not be editable
 		 * @return this builder instance
 		 */
-		Builder<T, B> editable(boolean editable);
+		B editable(boolean editable);
 
 		/**
 		 * @param searchHintEnabled true if a search hint text should be visible when the field is empty and not focused
 		 * @return this builder instance
 		 */
-		Builder<T, B> searchHintEnabled(boolean searchHintEnabled);
+		B searchHintEnabled(boolean searchHintEnabled);
 
 		/**
 		 * @param searchOnFocusLost true if search should be performed on focus lost
 		 * @return this builder instance
 		 */
-		Builder<T, B> searchOnFocusLost(boolean searchOnFocusLost);
+		B searchOnFocusLost(boolean searchOnFocusLost);
 
 		/**
 		 * @param searchIndicator the search indicator
 		 * @return this builder instance
 		 */
-		Builder<T, B> searchIndicator(EntitySearchField.SearchIndicator searchIndicator);
+		B searchIndicator(EntitySearchField.SearchIndicator searchIndicator);
 
 		/**
 		 * @param selector the selector factory to use
 		 * @return this builder instance
 		 */
-		Builder<T, B> selector(Function<EntitySearchField, EntitySearchField.Selector> selector);
+		B selector(Function<EntitySearchField, EntitySearchField.Selector> selector);
 
 		/**
 		 * @param limit the search result limit
 		 * @return this builder instance
 		 */
-		Builder<T, B> limit(int limit);
+		B limit(int limit);
 
 		/**
 		 * @return a new {@link EntitySearchFieldPanel} based on this builder
@@ -401,105 +401,105 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		public Builder<T, B> includeSearchButton(boolean includeSearchButton) {
+		public B includeSearchButton(boolean includeSearchButton) {
 			this.includeSearchButton = includeSearchButton;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> includeAddButton(boolean includeAddButton) {
+		public B includeAddButton(boolean includeAddButton) {
 			this.includeAddButton = includeAddButton;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> includeEditButton(boolean includeEditButton) {
+		public B includeEditButton(boolean includeEditButton) {
 			this.includeEditButton = includeEditButton;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> confirmAdd(boolean confirmAdd) {
+		public B confirmAdd(boolean confirmAdd) {
 			this.searchFieldBuilder.confirmAdd(confirmAdd);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> confirmEdit(boolean confirmEdit) {
+		public B confirmEdit(boolean confirmEdit) {
 			this.searchFieldBuilder.confirmEdit(confirmEdit);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> buttonsFocusable(boolean buttonsFocusable) {
+		public B buttonsFocusable(boolean buttonsFocusable) {
 			this.buttonsFocusable = buttonsFocusable;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> buttonLocation(String buttonLocation) {
+		public B buttonLocation(String buttonLocation) {
 			this.buttonLocation = validateButtonLocation(buttonLocation);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> preferredSearchFieldWidth(int preferredSearchFieldWidth) {
+		public B preferredSearchFieldWidth(int preferredSearchFieldWidth) {
 			searchFieldBuilder.preferredWidth(preferredSearchFieldWidth);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> columns(int columns) {
+		public B columns(int columns) {
 			searchFieldBuilder.columns(columns);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> upperCase(boolean upperCase) {
+		public B upperCase(boolean upperCase) {
 			searchFieldBuilder.upperCase(upperCase);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> lowerCase(boolean lowerCase) {
+		public B lowerCase(boolean lowerCase) {
 			searchFieldBuilder.lowerCase(lowerCase);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> editable(boolean editable) {
+		public B editable(boolean editable) {
 			searchFieldBuilder.editable(editable);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> searchHintEnabled(boolean searchHintEnabled) {
+		public B searchHintEnabled(boolean searchHintEnabled) {
 			searchFieldBuilder.searchHintEnabled(searchHintEnabled);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> searchOnFocusLost(boolean searchOnFocusLost) {
+		public B searchOnFocusLost(boolean searchOnFocusLost) {
 			searchFieldBuilder.searchOnFocusLost(searchOnFocusLost);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> searchIndicator(EntitySearchField.SearchIndicator searchIndicator) {
+		public B searchIndicator(EntitySearchField.SearchIndicator searchIndicator) {
 			searchFieldBuilder.searchIndicator(searchIndicator);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> selector(Function<EntitySearchField, EntitySearchField.Selector> selector) {
+		public B selector(Function<EntitySearchField, EntitySearchField.Selector> selector) {
 			searchFieldBuilder.selector(selector);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> limit(int limit) {
+		public B limit(int limit) {
 			searchFieldBuilder.limit(limit);
-			return this;
+			return (B) this;
 		}
 
 		@Override
