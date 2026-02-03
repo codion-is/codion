@@ -216,10 +216,10 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 
 		/**
 		 * Sets the default value supplier, use in case of dynamic default values.
-		 * @param supplier the default value supplier
+		 * @param defaultValue the default value supplier
 		 * @return this builder instance
 		 */
-		B defaultValue(ValueSupplier<T> supplier);
+		B defaultValue(DefaultValue<T> defaultValue);
 
 		@Override
 		ValueAttributeDefinition<T> build();

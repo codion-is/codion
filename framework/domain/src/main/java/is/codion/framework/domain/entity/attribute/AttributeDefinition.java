@@ -295,10 +295,10 @@ public sealed interface AttributeDefinition<T>
 	Optional<DateTimeFormatter> dateTimeFormatter();
 
 	/**
-	 * Supplies values, for example default ones.
+	 * Supplies a default value.
 	 * @param <T> the value type
 	 */
-	interface ValueSupplier<T> extends Serializable {
+	interface DefaultValue<T> extends Serializable {
 
 		/**
 		 * @return the value

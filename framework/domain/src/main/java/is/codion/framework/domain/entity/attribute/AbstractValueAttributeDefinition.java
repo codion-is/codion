@@ -55,7 +55,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 					messageBundle(AbstractValueAttributeDefinition.class, getBundle(AbstractValueAttributeDefinition.class.getName()));
 
 	private static final String INVALID_ITEM_SUFFIX = MESSAGES.getString("invalid_item_suffix");
-	private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
+	private static final DefaultValue<Object> NULL = new NullDefaultValue();
 
 	private final Collection<AttributeValidator<T>> validators;
 	private final boolean nullable;
@@ -65,7 +65,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	private final @Nullable Number minimum;
 	private final @Nullable List<Item<T>> items;
 	private final @Nullable Map<T, Item<T>> itemMap;
-	private final ValueSupplier<T> defaultValueSupplier;
+	private final DefaultValue<T> defaultValue;
 
 	protected AbstractValueAttributeDefinition(AbstractValueAttributeDefinitionBuilder<T, ?> builder) {
 		super(builder);
@@ -77,7 +77,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		this.items = builder.items;
 		this.itemMap = items == null ? null : items.stream()
 						.collect(toMap(Item::get, Function.identity()));
-		this.defaultValueSupplier = builder.defaultValueSupplier;
+		this.defaultValue = builder.defaultValue;
 		this.validators = initializeValidators(builder);
 	}
 
@@ -151,12 +151,12 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 
 	@Override
 	public final boolean hasDefaultValue() {
-		return !(defaultValueSupplier instanceof NullDefaultValueSupplier);
+		return !(defaultValue instanceof NullDefaultValue);
 	}
 
 	@Override
 	public final @Nullable T defaultValue() {
-		return defaultValueSupplier.get();
+		return defaultValue.get();
 	}
 
 	private String invalidItemString(T value) {
@@ -296,12 +296,12 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 	}
 
-	private static final class NullDefaultValueSupplier extends DefaultValueSupplier<Object> {
+	private static final class NullDefaultValue extends DefaultAttributeValue<Object> {
 
 		@Serial
 		private static final long serialVersionUID = 1;
 
-		private NullDefaultValueSupplier() {
+		private NullDefaultValue() {
 			super(null);
 		}
 	}
@@ -318,7 +318,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		private @Nullable Number maximum;
 		private @Nullable Number minimum;
 		private @Nullable List<Item<T>> items;
-		private ValueSupplier<T> defaultValueSupplier;
+		private DefaultValue<T> defaultValue;
 
 		AbstractValueAttributeDefinitionBuilder(Attribute<T> attribute, boolean nullable) {
 			super(attribute);
@@ -327,7 +327,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 			trim = TRIM_STRINGS.getOrThrow();
 			minimum = defaultMinimum();
 			maximum = defaultMaximum();
-			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
+			defaultValue = (DefaultValue<T>) NULL;
 		}
 
 		@Override
@@ -394,15 +394,15 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 
 		@Override
 		public final B defaultValue(T defaultValue) {
-			return defaultValue(new DefaultValueSupplier<>(defaultValue));
+			return defaultValue(new DefaultAttributeValue<>(defaultValue));
 		}
 
 		@Override
-		public final B defaultValue(ValueSupplier<T> supplier) {
-			if (supplier != null) {
-				attribute().type().validateType(supplier.get());
+		public final B defaultValue(DefaultValue<T> defaultValue) {
+			if (defaultValue != null) {
+				attribute().type().validateType(defaultValue.get());
 			}
-			this.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
+			this.defaultValue = defaultValue == null ? (DefaultValue<T>) NULL : defaultValue;
 			return self();
 		}
 

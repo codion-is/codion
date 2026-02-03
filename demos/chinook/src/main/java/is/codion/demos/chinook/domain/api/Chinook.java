@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition.ValueSupplier;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition.DefaultValue;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -225,7 +225,7 @@ public interface Chinook {
 		ProcedureType<EntityConnection, Collection<Long>> UPDATE_TOTALS = procedureType("chinook.update_totals");
 		// end::updateTotals[]
 
-		ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
+		DefaultValue<LocalDate> TODAY = LocalDate::now;
 	}
 
 	interface InvoiceLine {

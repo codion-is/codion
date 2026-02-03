@@ -329,7 +329,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		@Override
-		public ValueAttributeDefinition<T> build() {
+		public final ValueAttributeDefinition<T> build() {
 			return new DefaultColumnDefinition<>(this);
 		}
 
@@ -359,8 +359,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		@Override
-		public <C> B converter(Class<C> columnClass, Converter<T, C> converter,
-													 SetParameter<C> setParameter) {
+		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter,
+																 SetParameter<C> setParameter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = getter(this.type, (Column<Object>) super.attribute());
@@ -369,8 +369,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		@Override
-		public <C> B converter(Class<C> columnClass, Converter<T, C> converter,
-													 GetValue<C> getValue, SetParameter<C> setParameter) {
+		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter,
+																 GetValue<C> getValue, SetParameter<C> setParameter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);

@@ -291,14 +291,14 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		return (Comparator<T>) TO_STRING_COMPARATOR;
 	}
 
-	static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
+	static class DefaultAttributeValue<T> implements DefaultValue<T>, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
 
 		private final @Nullable T defaultValue;
 
-		DefaultValueSupplier(@Nullable T defaultValue) {
+		DefaultAttributeValue(@Nullable T defaultValue) {
 			this.defaultValue = defaultValue;
 		}
 

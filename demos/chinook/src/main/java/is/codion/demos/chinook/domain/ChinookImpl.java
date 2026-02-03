@@ -422,7 +422,7 @@ public final class ChinookImpl extends DomainModel {
 										Invoice.DATE.as()
 														.column()
 														.nullable(false)
-														.defaultValue(Invoice.DATE_DEFAULT_VALUE)
+														.defaultValue(Invoice.TODAY)
 														.dateTimePattern(LocaleDateTimePattern.builder()
 																		.delimiterDot()
 																		.yearFourDigits()
