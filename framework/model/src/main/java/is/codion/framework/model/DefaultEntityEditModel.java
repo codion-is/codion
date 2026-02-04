@@ -31,7 +31,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -58,47 +57,49 @@ import static java.util.stream.Collectors.toMap;
 /**
  * A default {@link EntityEditModel} implementation
  */
-public abstract class AbstractEntityEditModel implements EntityEditModel {
+public class DefaultEntityEditModel implements EntityEditModel {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
 
 	private static final Map<EntityType, EditEvents> EVENTS = new ConcurrentHashMap<>();
-
-	private final EntityDefinition entityDefinition;
-	private final EntityConnectionProvider connectionProvider;
-	private final DefaultEntityEditor editor;
-	private final Map<ForeignKey, EntitySearchModel> searchModels = new HashMap<>();
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Collection<Entity>> insertListener = new InsertListener();
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
+	private final DefaultEntityEditor editor;
 	private final Events events;
 	private final DefaultSettings settings;
 
 	/**
-	 * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
-	 * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
+	 * Instantiates a new {@link DefaultEntityEditModel} based on the given entity type.
+	 * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
 	 */
-	protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(requireNonNull(entityType));
-		this.connectionProvider = connectionProvider;
-		this.editor = new DefaultEntityEditor(entityDefinition, connectionProvider);
-		this.settings = new DefaultSettings(entityDefinition.readOnly());
+	public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		this(new DefaultEntityEditor(entityType, connectionProvider));
+	}
+
+	/**
+	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
+	 * @param editor the editor
+	 */
+	public DefaultEntityEditModel(DefaultEntityEditor editor) {
+		this.editor = requireNonNull(editor);
+		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.events = new Events(settings.editEvents);
 		addEditListeners();
 	}
 
 	@Override
 	public final Entities entities() {
-		return connectionProvider.entities();
+		return editor.entities();
 	}
 
 	@Override
 	public final EntityDefinition entityDefinition() {
-		return entityDefinition;
+		return editor.entityDefinition();
 	}
 
 	@Override
@@ -113,21 +114,21 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final EntityType entityType() {
-		return entityDefinition.type();
+		return editor.entityDefinition().type();
 	}
 
 	@Override
 	public final EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+		return editor.connectionProvider();
 	}
 
 	@Override
 	public final EntityConnection connection() {
-		return connectionProvider.connection();
+		return editor.connectionProvider().connection();
 	}
 
 	@Override
-	public final EntityEditor editor() {
+	public EntityEditor editor() {
 		return editor;
 	}
 
@@ -192,38 +193,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public EntitySearchModel createSearchModel(ForeignKey foreignKey) {
-		entityDefinition().foreignKeys().definition(foreignKey);
-		Collection<Column<String>> searchable = entities().definition(foreignKey.referencedType()).columns().searchable();
-		if (searchable.isEmpty()) {
-			throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
-		}
-
-		return EntitySearchModel.builder()
-						.entityType(foreignKey.referencedType())
-						.connectionProvider(connectionProvider)
-						.build();
-	}
-
-	@Override
-	public final EntitySearchModel searchModel(ForeignKey foreignKey) {
-		entityDefinition().foreignKeys().definition(foreignKey);
-		synchronized (searchModels) {
-			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
-			// box models, createSearchModel() may for example call this function
-			// see javadoc: must not attempt to update any other mappings of this map
-			EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
-			if (entitySearchModel == null) {
-				entitySearchModel = createSearchModel(foreignKey);
-				configure(foreignKey, entitySearchModel);
-				searchModels.put(foreignKey, entitySearchModel);
-			}
-
-			return entitySearchModel;
-		}
-	}
-
-	@Override
 	public final Observer<Collection<Entity>> beforeInsert() {
 		return events.beforeInsert.observer();
 	}
@@ -263,13 +232,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		requireNonNull(attribute);
 		requireNonNull(entities).forEach(entity -> entity.set(attribute, value));
 	}
-
-	/**
-	 * <p>Called when a {@link EntitySearchModel} is created in {@link #searchModel(ForeignKey)}.
-	 * @param foreignKey the foreign key
-	 * @param entitySearchModel the search model
-	 */
-	protected void configure(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {}
 
 	/**
 	 * Inserts the given entities into the database using the given connection
@@ -436,7 +398,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	private void addEditListeners() {
-		entityDefinition.foreignKeys().get().stream()
+		editor.entityDefinition().foreignKeys().get().stream()
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType -> {
@@ -467,7 +429,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private Collection<Entity> entityForInsert() {
 			Entity.Builder builder = editor.getOrThrow().copy().builder();
-			entityDefinition.columns().definitions().stream()
+			editor.entityDefinition().columns().definitions().stream()
 							.filter(ColumnDefinition::primaryKey)
 							.filter(ColumnDefinition::generated)
 							.forEach(column -> builder.clear(column.attribute()));
@@ -486,7 +448,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Result perform() {
-				LOG.debug("{} - insert {}", AbstractEntityEditModel.this, entities);
+				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entities);
 				Collection<Entity> inserted = unmodifiableCollection(insert(entities, connection()));
 				if (!entities.isEmpty() && inserted.isEmpty()) {
 					throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
@@ -559,7 +521,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Result perform() {
-				LOG.debug("{} - update {}", AbstractEntityEditModel.this, entities);
+				LOG.debug("{} - update {}", DefaultEntityEditModel.this, entities);
 
 				return new UpdateResult(update(entities, connection()));
 			}
@@ -622,7 +584,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Result perform() {
-				LOG.debug("{} - delete {}", AbstractEntityEditModel.this, entities);
+				LOG.debug("{} - delete {}", DefaultEntityEditModel.this, entities);
 				delete(entities, connection());
 
 				return new DeleteResult(entities);
@@ -764,7 +726,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private void onInsert(Map<EntityType, List<Entity>> inserted) {
 			inserted.forEach((entitType, value) ->
-							entityDefinition.foreignKeys().get(entitType)
+							editor.entityDefinition().foreignKeys().get(entitType)
 											.forEach(foreignKey -> inserted(foreignKey, value)));
 		}
 	}
@@ -778,7 +740,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private void onDelete(Map<EntityType, List<Entity>> deleted) {
 			deleted.forEach((key, value) ->
-							entityDefinition.foreignKeys().get(key)
+							editor.entityDefinition().foreignKeys().get(key)
 											.forEach(foreignKey -> deleted(foreignKey, value)));
 		}
 	}
@@ -796,7 +758,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private void onUpdate(Map<EntityType, Map<Entity.Key, Entity>> updated) {
 			updated.forEach((entityType, entities) ->
-							entityDefinition.foreignKeys().get(entityType)
+							editor.entityDefinition().foreignKeys().get(entityType)
 											.forEach(foreignKey -> updated(foreignKey, entities)));
 		}
 	}

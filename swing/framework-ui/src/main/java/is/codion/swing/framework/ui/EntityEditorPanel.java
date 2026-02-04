@@ -55,7 +55,7 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
@@ -99,7 +99,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base class for entity edit panels, managing the components used for editing entities.
  */
-public class EntityEditComponentPanel extends JPanel {
+public class EntityEditorPanel extends JPanel {
 
 	static final EditComponentFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new EditComponentFocusTraversalPolicy();
 
@@ -112,7 +112,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
 	 */
 	public static final PropertyValue<Boolean> VALID_INDICATOR =
-					booleanValue(EntityEditComponentPanel.class.getName() + ".validIndicator", true);
+					booleanValue(EntityEditorPanel.class.getName() + ".validIndicator", true);
 
 	/**
 	 * Specifies whether components should indicate that the value is modified
@@ -123,7 +123,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @see is.codion.swing.common.ui.component.indicator.ModifiedIndicator
 	 */
 	public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
-					booleanValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicator", true);
+					booleanValue(EntityEditorPanel.class.getName() + ".modifiedIndicator", true);
 
 	/**
 	 * Specifies the default number of text field columns
@@ -133,7 +133,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
-					integerValue(EntityEditComponentPanel.class.getName() + ".defaultTextFieldColumns", 12);
+					integerValue(EntityEditorPanel.class.getName() + ".defaultTextFieldColumns", 12);
 
 	static {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager()
@@ -142,7 +142,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 	private static final String LABELED_BY = "labeledBy";
 
-	private final SwingEntityEditModel editModel;
+	private final SwingEntityEditor editor;
 	private final EntityComponents entityComponents;
 	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
@@ -152,24 +152,13 @@ public class EntityEditComponentPanel extends JPanel {
 	private final State validIndicator = State.state(VALID_INDICATOR.getOrThrow());
 
 	/**
-	 * Instantiates a new {@link EntityEditComponentPanel}
-	 * @param editModel the edit model
+	 * Instantiates a new {@link EntityEditorPanel}
+	 * @param editor the editor
 	 */
-	protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
-		this.editModel = requireNonNull(editModel);
-		this.entityComponents = entityComponents(editModel.entityDefinition());
-		if (!editModel.entityType().equals(entityComponents.entityDefinition().type())) {
-			throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.entityType() +
-							", entityComponents: " + entityComponents.entityDefinition().type());
-		}
+	protected EntityEditorPanel(SwingEntityEditor editor) {
+		this.editor = requireNonNull(editor);
+		this.entityComponents = entityComponents(editor.entityDefinition());
 		inputFocus = new InputFocus(this);
-	}
-
-	/**
-	 * @return the edit model this panel is based on
-	 */
-	public final SwingEntityEditModel editModel() {
-		return editModel;
 	}
 
 	/**
@@ -220,7 +209,7 @@ public class EntityEditComponentPanel extends JPanel {
 			componentBuilder.build();
 		}
 
-		return (EditorComponent<T>) components.computeIfAbsent(attribute, k -> new DefaultEditorComponent<>(editModel.editor().value(attribute)));
+		return (EditorComponent<T>) components.computeIfAbsent(attribute, k -> new DefaultEditorComponent<>(editor.value(attribute)));
 	}
 
 	/**
@@ -230,7 +219,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final void displayException(Exception exception) {
 		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 		if (focusOwner == null) {
-			focusOwner = EntityEditComponentPanel.this;
+			focusOwner = EntityEditorPanel.this;
 		}
 		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
 	}
@@ -293,7 +282,7 @@ public class EntityEditComponentPanel extends JPanel {
 		JComponent component = component(attribute).get();
 		JComponent label = (JComponent) component.getClientProperty(LABELED_BY);
 		if (label == null) {
-			AttributeDefinition<?> attributeDefinition = editModel().entities()
+			AttributeDefinition<?> attributeDefinition = editor.entities()
 							.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
 			label = Components.label(attributeDefinition.caption())
 							.displayedMnemonic(attributeDefinition.mnemonic())
@@ -534,10 +523,10 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a combo box builder
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createComboBox(Column<T> column) {
-		FilterComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(column);
+		FilterComboBoxModel<T> comboBoxModel = editor.comboBoxModel(column);
 
 		return component(column).set((B) entityComponents.comboBox(column, comboBoxModel))
-						.onSetVisible(EntityEditComponentPanel::refreshIfCleared);
+						.onSetVisible(EntityEditorPanel::refreshIfCleared);
 	}
 
 	/**
@@ -546,10 +535,10 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key combo box builder
 	 */
 	protected final EntityComboBox.Builder createComboBox(ForeignKey foreignKey) {
-		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
+		EntityComboBoxModel comboBoxModel = editor.comboBoxModel(foreignKey);
 
 		return component(foreignKey).set(entityComponents.comboBox(foreignKey, comboBoxModel))
-						.onSetVisible(EntityEditComponentPanel::refreshIfCleared);
+						.onSetVisible(EntityEditorPanel::refreshIfCleared);
 	}
 
 	/**
@@ -560,7 +549,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntityComboBoxPanel.Builder createComboBoxPanel(ForeignKey foreignKey,
 																																	Supplier<EntityEditPanel> editPanel) {
-		EntityComboBoxModel comboBoxModel = editModel().comboBoxModel(foreignKey);
+		EntityComboBoxModel comboBoxModel = editor.comboBoxModel(foreignKey);
 
 		return component(foreignKey).set(entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
 						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
@@ -573,7 +562,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntitySearchField.SingleSelectionBuilder createSearchField(ForeignKey foreignKey) {
 		return component(foreignKey).set(entityComponents.searchField(foreignKey,
-														editModel().searchModel(foreignKey))
+														editor.searchModel(foreignKey))
 										.singleSelection())
 						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
@@ -587,7 +576,7 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntitySearchFieldPanel.SingleSelectionBuilder createSearchFieldPanel(ForeignKey foreignKey,
 																																											 Supplier<EntityEditPanel> editPanel) {
 		return component(foreignKey).set(entityComponents.searchFieldPanel(foreignKey,
-														editModel().searchModel(foreignKey), editPanel)
+														editor.searchModel(foreignKey), editPanel)
 										.singleSelection())
 						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
@@ -712,14 +701,14 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	public static final class InputFocus {
 
-		private final EntityEditComponentPanel editComponentPanel;
+		private final EntityEditorPanel editComponentPanel;
 
 		private final State transferOnEnter = State.state(true);
 		private final Initial initial = new Initial();
 		private final AfterInsert afterInsert = new AfterInsert();
 		private final AfterUpdate afterUpdate = new AfterUpdate();
 
-		private InputFocus(EntityEditComponentPanel editComponentPanel) {
+		private InputFocus(EntityEditorPanel editComponentPanel) {
 			this.editComponentPanel = editComponentPanel;
 		}
 
@@ -935,7 +924,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @return a JList builder
 		 */
 		public FilterList.Builder.Items<T> items(Attribute<List<T>> attribute) {
-			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+			AttributeDefinition<List<T>> attributeDefinition = editor.entityDefinition().attributes().definition(attribute);
 
 			return component(attribute).set(builderFactory.items())
 							.toolTipText(attributeDefinition.description().orElse(null));
@@ -947,7 +936,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @return a JList builder
 		 */
 		public FilterList.Builder.SelectedItems<T> selectedItems(Attribute<List<T>> attribute) {
-			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+			AttributeDefinition<List<T>> attributeDefinition = editor.entityDefinition().attributes().definition(attribute);
 
 			return component(attribute).set(builderFactory.selectedItems())
 							.toolTipText(attributeDefinition.description().orElse(null));
@@ -959,7 +948,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @return a JList builder
 		 */
 		public FilterList.Builder.SelectedItem<T> selectedItem(Attribute<T> attribute) {
-			AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+			AttributeDefinition<T> attributeDefinition = editor.entityDefinition().attributes().definition(attribute);
 
 			return component(attribute).set(builderFactory.selectedItem())
 							.toolTipText(attributeDefinition.description().orElse(null));
@@ -1008,7 +997,7 @@ public class EntityEditComponentPanel extends JPanel {
 			if (componentBuilders.containsKey(value.attribute()) || !component.isNull()) {
 				throw new IllegalStateException("Component has already been set for attribute: " + value.attribute());
 			}
-			AttributeDefinition<T> attributeDefinition = editModel().entities()
+			AttributeDefinition<T> attributeDefinition = editor.entities()
 							.definition(value.attribute().entityType()).attributes().definition(value.attribute());
 			componentBuilders.put(value.attribute(), componentBuilder
 							.link(value)
@@ -1063,7 +1052,7 @@ public class EntityEditComponentPanel extends JPanel {
 			Component focusedComponent = (Component) event.getNewValue();
 			if (focusedComponent instanceof JComponent) {
 				JComponent component = (JComponent) focusedComponent;
-				Ancestor.ofType(EntityEditComponentPanel.class).of(component).optional().ifPresent(parent -> {
+				Ancestor.ofType(EntityEditorPanel.class).of(component).optional().ifPresent(parent -> {
 					if (parent.isInputComponent(component)) {
 						parent.inputFocus.afterUpdate.focusedInputComponent = component;
 					}

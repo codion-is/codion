@@ -36,7 +36,7 @@ public final class AlbumModel extends SwingEntityModel {
 		SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
 		detailModels().add(trackModel);
 		TrackEditModel trackEditModel = (TrackEditModel) trackModel.editModel();
-		trackEditModel.initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
+		trackEditModel.editor().initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 		// We refresh albums when tracks are modified, to display the updated rating
 		trackEditModel.afterInsert().addConsumer(this::tracksInsertedOrDeleted);
 		trackEditModel.afterDelete().addConsumer(this::tracksInsertedOrDeleted);

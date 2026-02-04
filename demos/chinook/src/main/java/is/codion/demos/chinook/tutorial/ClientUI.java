@@ -101,7 +101,7 @@ public final class ClientUI {
 		// fetch the Value representing the album artist from the editor
 		Value<Entity> editModelArtistValue = editModel.editor().value(Album.ARTIST_FK);
 
-		EntityComboBoxModel artistComboBoxModel = editModel.comboBoxModel(Album.ARTIST_FK);
+		EntityComboBoxModel artistComboBoxModel = editModel.editor().comboBoxModel(Album.ARTIST_FK);
 
 		// create a combobox for selecting the album artist
 		// based on a combobox model supplied by the edit model

@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import javax.swing.JComponent;
@@ -66,19 +66,19 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 	}
 
 	@Override
-	public ComponentValue<C, T> component(SwingEntityEditModel editModel) {
-		requireNonNull(editModel);
+	public ComponentValue<C, T> component(SwingEntityEditor editor) {
+		requireNonNull(editor);
 		if (attribute instanceof ForeignKey) {
-			return createForeignKeyComponentValue((ForeignKey) attribute, editModel);
+			return createForeignKeyComponentValue((ForeignKey) attribute, editor);
 		}
 		if (attribute.type().isTemporal()) {
-			return createTemporalComponentValue(attribute, entityComponents(editModel.entityDefinition()));
+			return createTemporalComponentValue(attribute, entityComponents(editor.entityDefinition()));
 		}
-		AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
+		AttributeDefinition<T> attributeDefinition = editor.entityDefinition().attributes().definition(attribute);
 		if (!(attributeDefinition instanceof ValueAttributeDefinition)) {
 			throw new IllegalArgumentException("Value based attribute expected: " + attribute);
 		}
-		EntityComponents components = entityComponents(editModel.entityDefinition());
+		EntityComponents components = entityComponents(editor.entityDefinition());
 		ValueAttributeDefinition<T> definition = (ValueAttributeDefinition<T>) attributeDefinition;
 		if (attribute.type().isString() && definition.items().isEmpty()) {
 			return (ComponentValue<C, T>) components.textFieldPanel((Attribute<String>) attribute)
@@ -121,14 +121,14 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 						.searchOnFocusLost(false);
 	}
 
-	private ComponentValue<C, T> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel) {
-		if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
-			return (ComponentValue<C, T>) comboBox(foreignKey, editModel.entityDefinition(), editModel.createComboBoxModel(foreignKey))
+	private ComponentValue<C, T> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditor editor) {
+		if (editor.entities().definition(foreignKey.referencedType()).smallDataset()) {
+			return (ComponentValue<C, T>) comboBox(foreignKey, editor.entityDefinition(), editor.createComboBoxModel(foreignKey))
 							.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 							.buildValue();
 		}
 
-		return (ComponentValue<C, T>) searchField(foreignKey, editModel.entityDefinition(), editModel.createSearchModel(foreignKey))
+		return (ComponentValue<C, T>) searchField(foreignKey, editor.entityDefinition(), editor.createSearchModel(foreignKey))
 						.buildValue();
 	}
 

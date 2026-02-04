@@ -43,10 +43,10 @@ public final class DefaultEditComponentTest {
 
 	@Test
 	void test() {
-		new DefaultEditComponent<>(Detail.MASTER_FK).component(editModel);
-		new DefaultEditComponent<>(Detail.DETAIL_FK).component(editModel);
+		new DefaultEditComponent<>(Detail.MASTER_FK).component(editModel.editor());
+		new DefaultEditComponent<>(Detail.DETAIL_FK).component(editModel.editor());
 
-		new DefaultEditComponent<>(Detail.INT).component(editModel);
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEditComponent<>(Detail.INT_DERIVED).component(editModel));
+		new DefaultEditComponent<>(Detail.INT).component(editModel.editor());
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEditComponent<>(Detail.INT_DERIVED).component(editModel.editor()));
 	}
 }

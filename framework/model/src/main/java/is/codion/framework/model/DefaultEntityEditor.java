@@ -28,8 +28,10 @@ import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -63,7 +65,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
-final class DefaultEntityEditor implements EntityEditor {
+public class DefaultEntityEditor implements EntityEditor {
 
 	private static final ValueSupplier INITIAL_VALUE = new InitialValue();
 
@@ -86,12 +88,30 @@ final class DefaultEntityEditor implements EntityEditor {
 	private final DefaultExists exists;
 	private final DefaultModified modified;
 	private final Value<EntityValidator> validator;
+	private final EditorModels editorModels;
+	private final Map<ForeignKey, EntitySearchModel> searchModels = new HashMap<>();
 
 	private final Entity entity;
 
-	DefaultEntityEditor(EntityDefinition entityDefinition, EntityConnectionProvider connectionProvider) {
-		this.entityDefinition = requireNonNull(entityDefinition);
+	/**
+	 * Instantiates a new {@link DefaultEntityEditor}
+	 * @param entityType the entity type
+	 * @param connectionProvider the connection provider
+	 */
+	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		this(entityType, connectionProvider, new DefaultEditorModels());
+	}
+
+	/**
+	 * Instantiates a new {@link DefaultEntityEditor}
+	 * @param entityType the entity type
+	 * @param connectionProvider the connection provider
+	 * @param editorModels the editor models
+	 */
+	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider, EditorModels editorModels) {
+		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
+		this.editorModels = requireNonNull(editorModels);
 		this.entity = createEntity(INITIAL_VALUE);
 		this.exists = new DefaultExists(entityDefinition);
 		this.modified = new DefaultModified();
@@ -103,38 +123,54 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public void set(@Nullable Entity entity) {
-		changing.accept(entity == null ? null : entity.immutable());
+	public final Entities entities() {
+		return connectionProvider.entities();
+	}
+
+	@Override
+	public final EntityDefinition entityDefinition() {
+		return entityDefinition;
+	}
+
+	@Override
+	public final EntityConnectionProvider connectionProvider() {
+		return connectionProvider;
+	}
+
+	@Override
+	public final void set(@Nullable Entity entity) {
+		entity = entity == null ? null : entity.immutable();
+		changing.accept(entity);
 		setOrDefaults(entity);
 	}
 
 	@Override
-	public Entity get() {
+	public final Entity get() {
 		return entity.immutable();
 	}
 
 	@Override
-	public void clear() {
+	public final void clear() {
 		set(entityDefinition.entity());
 	}
 
 	@Override
-	public Observer<Entity> observer() {
+	public final Observer<Entity> observer() {
 		return changed.observer();
 	}
 
 	@Override
-	public void defaults() {
+	public final void defaults() {
 		set(null);
 	}
 
 	@Override
-	public void revert() {
+	public final void revert() {
 		entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
 	}
 
 	@Override
-	public void refresh() {
+	public final void refresh() {
 		if (exists.is()) {
 			set(connectionProvider.connection().selectSingle(where(key(entity.originalPrimaryKey()))
 							.include(entityDefinition.columns().definitions().stream()
@@ -147,64 +183,64 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public Exists exists() {
+	public final Exists exists() {
 		return exists;
 	}
 
 	@Override
-	public Modified modified() {
+	public final Modified modified() {
 		return modified;
 	}
 
 	@Override
-	public Observer<Entity> changing() {
+	public final Observer<Entity> changing() {
 		return changing.observer();
 	}
 
 	@Override
-	public Observer<Attribute<?>> valueChanged() {
+	public final Observer<Attribute<?>> valueChanged() {
 		return valueChanged.observer();
 	}
 
 	@Override
-	public boolean nullable(Attribute<?> attribute) {
+	public final boolean nullable(Attribute<?> attribute) {
 		return validator.getOrThrow().nullable(entity, attribute);
 	}
 
 	@Override
-	public ObservableState primaryKeyNull() {
+	public final ObservableState primaryKeyNull() {
 		return primaryKeyNull.observable();
 	}
 
 	@Override
-	public Value<EntityValidator> validator() {
+	public final Value<EntityValidator> validator() {
 		return validator;
 	}
 
 	@Override
-	public ObservableState valid() {
+	public final ObservableState valid() {
 		return entityValid.observable();
 	}
 
 	@Override
-	public void validate() {
+	public final void validate() {
 		validate(entity);
 	}
 
 	@Override
-	public void validate(Attribute<?> attribute) {
+	public final void validate(Attribute<?> attribute) {
 		validator.getOrThrow().validate(entity, attribute);
 	}
 
 	@Override
-	public void validate(Collection<Entity> entities) {
+	public final void validate(Collection<Entity> entities) {
 		for (Entity entityToValidate : requireNonNull(entities)) {
 			validate(entityToValidate);
 		}
 	}
 
 	@Override
-	public void validate(Entity entity) {
+	public final void validate(Entity entity) {
 		if (entity.type().equals(entityDefinition.type())) {
 			validator.getOrThrow().validate(entity);
 		}
@@ -214,11 +250,34 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public <T> EditorValue<T> value(Attribute<T> attribute) {
+	public final <T> EditorValue<T> value(Attribute<T> attribute) {
 		return (EditorValue<T>) editorValues.computeIfAbsent(attribute, DefaultEditorValue::new);
 	}
 
-	void setOrDefaults(@Nullable Entity entity) {
+	@Override
+	public final EntitySearchModel searchModel(ForeignKey foreignKey) {
+		entityDefinition().foreignKeys().definition(foreignKey);
+		synchronized (searchModels) {
+			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+			// box models, createSearchModel() may for example call this function
+			// see javadoc: must not attempt to update any other mappings of this map
+			EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
+			if (entitySearchModel == null) {
+				entitySearchModel = createSearchModel(foreignKey);
+				editorModels.configure(foreignKey, entitySearchModel, this);
+				searchModels.put(foreignKey, entitySearchModel);
+			}
+
+			return entitySearchModel;
+		}
+	}
+
+	@Override
+	public final EntitySearchModel createSearchModel(ForeignKey foreignKey) {
+		return editorModels.createSearchModel(foreignKey, this);
+	}
+
+	final void setOrDefaults(@Nullable Entity entity) {
 		Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
 		for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
 			notifyValueChange(affectedAttribute);
@@ -229,6 +288,13 @@ final class DefaultEntityEditor implements EntityEditor {
 		attributeModified.forEach(this::updateAttributeModifiedState);
 
 		changed.accept(entity);
+	}
+
+	/**
+	 * @return the {@link EditorModels} instance
+	 */
+	protected EditorModels editorModels() {
+		return editorModels;
 	}
 
 	private <T> @Nullable T defaultValue(AttributeDefinition<T> attributeDefinition) {
@@ -379,6 +445,26 @@ final class DefaultEntityEditor implements EntityEditor {
 
 	private interface ValueSupplier {
 		<T> @Nullable T get(AttributeDefinition<T> attributeDefinition);
+	}
+
+	/**
+	 * A default {@link EditorModels} implementation.
+	 */
+	public static class DefaultEditorModels implements EditorModels {
+
+		@Override
+		public EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityEditor editor) {
+			requireNonNull(editor).entityDefinition().foreignKeys().definition(foreignKey);
+			Collection<Column<String>> searchable = editor.entities().definition(foreignKey.referencedType()).columns().searchable();
+			if (searchable.isEmpty()) {
+				throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
+			}
+
+			return EntitySearchModel.builder()
+							.entityType(foreignKey.referencedType())
+							.connectionProvider(editor.connectionProvider())
+							.build();
+		}
 	}
 
 	private final class DefaultExists implements Exists {

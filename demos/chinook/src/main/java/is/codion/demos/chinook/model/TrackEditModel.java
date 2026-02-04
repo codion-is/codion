@@ -28,6 +28,6 @@ public final class TrackEditModel extends SwingEntityEditModel {
 		super(Track.TYPE, connectionProvider);
 		// Creates and populates the combo box models for the given foreign keys, otherwise this
 		// would happen when the associated combo boxes are created, as the UI is initialized.
-		initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
+		editor().initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 	}
 }

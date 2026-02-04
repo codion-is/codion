@@ -86,8 +86,8 @@ import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.framework.ui.EntityEditComponentPanel.LAYOUT_FOCUS_TRAVERSAL_POLICY;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.SELECT_INPUT_FIELD;
+import static is.codion.swing.framework.ui.EntityEditorPanel.LAYOUT_FOCUS_TRAVERSAL_POLICY;
 import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.*;
 import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.REFRESH;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
@@ -570,7 +570,7 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Requests focus for this panel. If an edit panel is available and not hidden, the component
-	 * defined as the initial focus component by {@link EntityEditComponentPanel#focus()} gets the input focus.
+	 * defined as the initial focus component by {@link EntityEditorPanel#focus()} gets the input focus.
 	 * If no edit panel is available the table panel gets the focus, otherwise the first child
 	 * component of this {@link EntityPanel} is used.
 	 * @see EntityEditPanel#focus()

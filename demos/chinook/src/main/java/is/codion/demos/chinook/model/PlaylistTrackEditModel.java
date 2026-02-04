@@ -34,7 +34,7 @@ public final class PlaylistTrackEditModel extends SwingEntityEditModel {
 		editor().value(PlaylistTrack.TRACK_FK).persist().set(false);
 		// Set the search model condition, so the search results
 		// won't contain tracks already in the selected playlist
-		searchModel(PlaylistTrack.TRACK_FK).condition().set(this::excludePlaylistTracks);
+		editor().searchModel(PlaylistTrack.TRACK_FK).condition().set(this::excludePlaylistTracks);
 	}
 
 	private Condition excludePlaylistTracks() {

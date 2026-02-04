@@ -29,6 +29,8 @@ import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
+import is.codion.swing.framework.model.SwingEntityEditor.DefaultSwingEditorModels;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityApplication;
@@ -162,33 +164,36 @@ public final class EmployeesMinimalApp {
 	}
 
 	/**
-	 * We extend the default entity edit model to provide a custom
+	 * We extend DefaultSwingEditorModels to provide a custom
 	 * combo box model for the manager property
 	 */
 	public static final class EmployeeEditModel extends SwingEntityEditModel {
 
 		public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
-			super(Employee.TYPE, connectionProvider);
+			super(Employee.TYPE, connectionProvider, new EmployeeEditorModels());
 			//initialize the combo box models now, otherwise it happens
 			//during UI initialization when the combo boxes are created
-			initializeComboBoxModels(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
+			editor().initializeComboBoxModels(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
 		}
 
-		/**
-		 * We override this method to add a query condition to the manager combo box model
-		 * so that is only shows managers.
-		 */
-		@Override
-		public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
-			if (foreignKey.equals(Employee.MANAGER_FK)) {
-				return EntityComboBoxModel.builder()
-								.entityType(Employee.TYPE)
-								.connectionProvider(connectionProvider())
-								.condition(() -> Employee.JOB.in("Manager", "President"))
-								.build();
-			}
+		private static final class EmployeeEditorModels extends DefaultSwingEditorModels {
 
-			return super.createComboBoxModel(foreignKey);
+			/**
+			 * We override this method to add a query condition to the manager combo box model
+			 * so that is only shows managers.
+			 */
+			@Override
+			public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey, SwingEntityEditor editor) {
+				if (foreignKey.equals(Employee.MANAGER_FK)) {
+					return EntityComboBoxModel.builder()
+									.entityType(Employee.TYPE)
+									.connectionProvider(editor.connectionProvider())
+									.condition(() -> Employee.JOB.in("Manager", "President"))
+									.build();
+				}
+
+				return super.createComboBoxModel(foreignKey, editor);
+			}
 		}
 	}
 

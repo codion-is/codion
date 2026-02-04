@@ -24,7 +24,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Preferences;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EditComponent;
@@ -74,7 +74,7 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 	private static final class NewsletterEditor implements EditComponent<FlatTriStateCheckBox, Boolean> {
 
 		@Override
-		public ComponentValue<FlatTriStateCheckBox, Boolean> component(SwingEntityEditModel editModel) {
+		public ComponentValue<FlatTriStateCheckBox, Boolean> component(SwingEntityEditor editor) {
 			return new TriStateCheckBoxValue();
 		}
 	}

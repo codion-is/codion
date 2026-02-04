@@ -301,7 +301,7 @@ public final class EntityDialogs {
 				throw new IllegalArgumentException("All entities must be of the same type when editing");
 			}
 
-			ComponentValue<?, T> componentValue = editComponent.component(editModel);
+			ComponentValue<?, T> componentValue = editComponent.component(editModel.editor());
 			componentValue.set(defaultValue.apply(entities));
 			EditAttributePanel<T> editPanel =
 							new EditAttributePanel<>(editModel, entities, attribute, componentValue,

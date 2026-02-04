@@ -94,7 +94,7 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 /**
  * A UI component based on a {@link EntityEditModel}.
  */
-public abstract class EntityEditPanel extends EntityEditComponentPanel {
+public abstract class EntityEditPanel extends EntityEditorPanel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
@@ -161,6 +161,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = (Consumer<Config>) EMPTY_CONSUMER;
 
+	private final SwingEntityEditModel editModel;
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final Controls.Layout controlsLayout;
@@ -186,7 +187,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * @param config provides access to the panel configuration
 	 */
 	protected EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
-		super(editModel);
+		super(requireNonNull(editModel).editor());
+		this.editModel = editModel;
 		this.configuration = configure(config);
 		this.active = State.state(!configuration.focusActivation);
 		this.controlsLayout = createControlsLayout();
@@ -198,6 +200,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		if (editModel.editor().exists().not().is()) {
 			editModel.editor().defaults();
 		}
+	}
+
+	/**
+	 * @return the edit model this panel is based on
+	 */
+	public final SwingEntityEditModel editModel() {
+		return editModel;
 	}
 
 	@Override
@@ -954,7 +963,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * @param validIndicator specifies whether components should indicate validity
 		 * @return this Config instance
-		 * @see EntityEditComponentPanel#VALID_INDICATOR
+		 * @see EntityEditorPanel#VALID_INDICATOR
 		 */
 		public Config validIndicator(boolean validIndicator) {
 			this.validIndicator = validIndicator;
@@ -964,7 +973,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		/**
 		 * @param modifiedIndicator specifies whether components should indicate modification
 		 * @return this Config instance
-		 * @see EntityEditComponentPanel#MODIFIED_INDICATOR
+		 * @see EntityEditorPanel#MODIFIED_INDICATOR
 		 */
 		public Config modifiedIndicator(boolean modifiedIndicator) {
 			this.modifiedIndicator = modifiedIndicator;

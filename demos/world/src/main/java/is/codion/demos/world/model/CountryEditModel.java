@@ -26,6 +26,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
+import is.codion.swing.framework.model.SwingEntityEditor.DefaultSwingEditorModels;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Objects;
@@ -35,19 +37,8 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	private final Value<Double> averageCityPopulation = Value.nullable();
 
 	CountryEditModel(EntityConnectionProvider connectionProvider) {
-		super(Country.TYPE, connectionProvider);
-		initializeComboBoxModels(Country.CAPITAL_FK);
+		super(Country.TYPE, connectionProvider, new CountryEditorModels());
 		editor().addConsumer(this::setAverageCityPopulation);
-	}
-
-	@Override
-	protected void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
-		if (foreignKey.equals(Country.CAPITAL_FK)) {
-			//only show cities for currently selected country
-			editor().addConsumer(country ->
-							comboBoxModel.filter().predicate().set(city ->
-											country != null && Objects.equals(city.get(City.COUNTRY_FK), country)));
-		}
 	}
 
 	public Observable<Double> averageCityPopulation() {
@@ -57,5 +48,18 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	private void setAverageCityPopulation(Entity country) {
 		averageCityPopulation.set(country == null ? null :
 						connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE)));
+	}
+
+	private static final class CountryEditorModels extends DefaultSwingEditorModels {
+
+		@Override
+		public void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel, SwingEntityEditor editor) {
+			if (foreignKey.equals(Country.CAPITAL_FK)) {
+				//only show cities for currently selected country
+				editor.addConsumer(country ->
+								comboBoxModel.filter().predicate().set(city ->
+												country != null && Objects.equals(city.get(City.COUNTRY_FK), country)));
+			}
+		}
 	}
 }

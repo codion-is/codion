@@ -31,7 +31,7 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EditComponent;
 
@@ -148,8 +148,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 					implements EditComponent<JSpinner, Integer> {
 
 		@Override
-		public ComponentValue<JSpinner, Integer> component(SwingEntityEditModel editModel) {
-			return ratingSpinner(editModel.entityDefinition()).buildValue();
+		public ComponentValue<JSpinner, Integer> component(SwingEntityEditor editor) {
+			return ratingSpinner(editor.entityDefinition()).buildValue();
 		}
 	}
 
@@ -162,7 +162,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public ComponentValue<DurationPanel, Integer> component(SwingEntityEditModel editModel) {
+		public ComponentValue<DurationPanel, Integer> component(SwingEntityEditor editor) {
 			return new DurationPanelBuilder().buildValue();
 		}
 	}

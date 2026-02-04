@@ -35,7 +35,7 @@ import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class EntityEditComponentPanelTest {
+public final class EntityEditorPanelTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -48,7 +48,7 @@ public final class EntityEditComponentPanelTest {
 	@Test
 	void test() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
+		EntityEditorPanel componentPanel = new EntityEditorPanel(editModel.editor());
 		componentPanel.createTextField(Employee.NAME);
 		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));
 		JTextField nameField = (JTextField) componentPanel.component(Employee.NAME).get();
@@ -66,7 +66,7 @@ public final class EntityEditComponentPanelTest {
 	@Test
 	void derived() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
-		EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
+		EntityEditorPanel componentPanel = new EntityEditorPanel(editModel.editor());
 		JTextField textField = componentPanel.createTextField(Detail.INT_DERIVED).build();
 		assertFalse(textField.isEnabled());
 	}

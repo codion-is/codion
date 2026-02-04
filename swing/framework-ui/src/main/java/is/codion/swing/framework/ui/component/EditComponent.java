@@ -20,7 +20,7 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 
 import javax.swing.JComponent;
 import java.util.Optional;
@@ -36,10 +36,10 @@ public interface EditComponent<C extends JComponent, T> {
 
 	/**
 	 * Provides an input {@link ComponentValue} for editing a single attribute value for one or more entities.
-	 * @param editModel the edit model used to create foreign key input models
+	 * @param editor the editor used to create foreign key input models
 	 * @return a new {@link ComponentValue} instance
 	 */
-	ComponentValue<C, T> component(SwingEntityEditModel editModel);
+	ComponentValue<C, T> component(SwingEntityEditor editor);
 
 	/**
 	 * Provides a way to override the default attribute caption, when presenting the component to the user.

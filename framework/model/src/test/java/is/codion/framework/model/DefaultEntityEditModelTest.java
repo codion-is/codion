@@ -62,7 +62,7 @@ import static is.codion.framework.db.EntityConnection.Select.where;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class AbstractEntityEditModelTest {
+public final class DefaultEntityEditModelTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -74,7 +74,7 @@ public final class AbstractEntityEditModelTest {
 					.user(UNIT_TEST_USER)
 					.build();
 
-	private AbstractEntityEditModel employeeEditModel;
+	private DefaultEntityEditModel employeeEditModel;
 	private EntityEditor editor;
 
 	@BeforeEach
@@ -97,10 +97,10 @@ public final class AbstractEntityEditModelTest {
 		Consumer<Map<Entity, Entity>> updateListener = updated -> updateEvents.incrementAndGet();
 		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
-		AbstractEntityEditModel.editEvents(Employee.TYPE).inserted().addWeakConsumer(insertListener);
-		AbstractEntityEditModel.editEvents(Employee.TYPE).updated().addWeakConsumer(updateListener);
-		AbstractEntityEditModel.editEvents(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
-		AbstractEntityEditModel.editEvents(Employee.TYPE).inserted()
+		DefaultEntityEditModel.editEvents(Employee.TYPE).inserted().addWeakConsumer(insertListener);
+		DefaultEntityEditModel.editEvents(Employee.TYPE).updated().addWeakConsumer(updateListener);
+		DefaultEntityEditModel.editEvents(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
+		DefaultEntityEditModel.editEvents(Employee.TYPE).inserted()
 						.when(inserted -> inserted.stream()
 										.anyMatch(entity -> "MANAGER".equals(entity.get(Employee.JOB))))
 						.addListener(() -> managerInserted.set(true));
@@ -126,31 +126,31 @@ public final class AbstractEntityEditModelTest {
 			connection.rollbackTransaction();
 		}
 
-		assertThrows(IllegalArgumentException.class, () -> AbstractEntityEditModel.editEvents(Department.TYPE)
+		assertThrows(IllegalArgumentException.class, () -> DefaultEntityEditModel.editEvents(Department.TYPE)
 						.inserted()
 						.accept(singleton(jones)));
-		assertThrows(IllegalArgumentException.class, () -> AbstractEntityEditModel.editEvents(Department.TYPE)
+		assertThrows(IllegalArgumentException.class, () -> DefaultEntityEditModel.editEvents(Department.TYPE)
 						.updated()
 						.accept(singletonMap(jones, jones)));
-		assertThrows(IllegalArgumentException.class, () -> AbstractEntityEditModel.editEvents(Department.TYPE)
+		assertThrows(IllegalArgumentException.class, () -> DefaultEntityEditModel.editEvents(Department.TYPE)
 						.deleted()
 						.accept(singleton(jones)));
 
-		AbstractEntityEditModel.editEvents(Employee.TYPE).inserted().removeWeakConsumer(insertListener);
-		AbstractEntityEditModel.editEvents(Employee.TYPE).updated().removeWeakConsumer(updateListener);
-		AbstractEntityEditModel.editEvents(Employee.TYPE).deleted().removeWeakConsumer(deleteListener);
+		DefaultEntityEditModel.editEvents(Employee.TYPE).inserted().removeWeakConsumer(insertListener);
+		DefaultEntityEditModel.editEvents(Employee.TYPE).updated().removeWeakConsumer(updateListener);
+		DefaultEntityEditModel.editEvents(Employee.TYPE).deleted().removeWeakConsumer(deleteListener);
 	}
 
 	@Test
 	void searchModel() {
-		EntitySearchModel model = employeeEditModel.searchModel(Employee.DEPARTMENT_FK);
+		EntitySearchModel model = employeeEditModel.editor().searchModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
-		assertSame(model, employeeEditModel.searchModel(Employee.DEPARTMENT_FK));
+		assertSame(model, employeeEditModel.editor().searchModel(Employee.DEPARTMENT_FK));
 	}
 
 	@Test
 	void createSearchModel() {
-		EntitySearchModel model = employeeEditModel.createSearchModel(Employee.DEPARTMENT_FK);
+		EntitySearchModel model = employeeEditModel.editor().createSearchModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
 		assertEquals(Department.TYPE, model.entityDefinition().type());
 	}
@@ -819,14 +819,14 @@ public final class AbstractEntityEditModelTest {
 		assertTrue(editModel.editor().getOrThrow().contains(Employee.DATA));
 	}
 
-	private static final class TestEntityEditModel extends AbstractEntityEditModel {
+	private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
 		private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(entityType, connectionProvider);
 		}
 	}
 
-	private static final class DetailEditModel extends AbstractEntityEditModel {
+	private static final class DetailEditModel extends DefaultEntityEditModel {
 
 		private DetailEditModel(EntityConnectionProvider connectionProvider) {
 			super(Detail.TYPE, connectionProvider);

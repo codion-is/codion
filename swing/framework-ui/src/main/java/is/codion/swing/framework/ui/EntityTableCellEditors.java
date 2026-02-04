@@ -45,7 +45,7 @@ final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Enti
 						new DefaultEditComponent<>((Attribute<Object>) attribute);
 
 		return Optional.of(FilterTableCellEditor.builder()
-						.component(() -> editComponent.component(editModel))
+						.component(() -> editComponent.component(editModel.editor()))
 						.build());
 	}
 

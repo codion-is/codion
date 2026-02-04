@@ -53,7 +53,7 @@ public class SearchValueLinkTest {
 	void test() {
 		ComponentValue<EntitySearchField, Entity> componentValue =
 						inputComponents.searchField(Employee.DEPARTMENT_FK,
-														model.searchModel(Employee.DEPARTMENT_FK))
+														model.editor().searchModel(Employee.DEPARTMENT_FK))
 										.singleSelection()
 										.buildValue();
 		componentValue.link(model.editor().value(Employee.DEPARTMENT_FK));

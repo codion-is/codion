@@ -27,9 +27,9 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
-import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityEditComponentPanel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityEditorPanel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
@@ -75,10 +75,10 @@ public final class EntityEditPanels {
 		Column<String> ITEM_LIST = TYPE.stringColumn("item_list");
 	}
 
-	private static final class EditPanelDemo extends EntityEditComponentPanel {
+	private static final class EditPanelDemo extends EntityEditorPanel {
 
-		public EditPanelDemo(SwingEntityEditModel editModel) {
-			super(editModel);
+		public EditPanelDemo(SwingEntityEditor editor) {
+			super(editor);
 		}
 
 		private void booleanValue() {

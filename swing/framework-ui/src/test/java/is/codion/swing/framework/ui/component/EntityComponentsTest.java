@@ -327,7 +327,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void searchField() {
-		entityComponents.searchField(Detail.MASTER_FK, editModel.searchModel(Detail.MASTER_FK))
+		entityComponents.searchField(Detail.MASTER_FK, editModel.editor().searchModel(Detail.MASTER_FK))
 						.singleSelection()
 						.columns(20)
 						.upperCase(true)
@@ -338,7 +338,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void entityComboBox() {
-		entityComponents.comboBox(Detail.MASTER_FK, editModel.comboBoxModel(Detail.MASTER_FK))
+		entityComponents.comboBox(Detail.MASTER_FK, editModel.editor().comboBoxModel(Detail.MASTER_FK))
 						.link(editor.value(Detail.MASTER_FK))
 						.buildValue();
 	}

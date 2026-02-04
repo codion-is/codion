@@ -28,9 +28,9 @@
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CACHE_ENTITY_PANELS}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CALL_SYSTEM_EXIT}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#SQL_TRACING}
- * <li>{@link is.codion.swing.framework.ui.EntityEditComponentPanel#VALID_INDICATOR}
- * <li>{@link is.codion.swing.framework.ui.EntityEditComponentPanel#MODIFIED_INDICATOR}
- * <li>{@link is.codion.swing.framework.ui.EntityEditComponentPanel#DEFAULT_TEXT_FIELD_COLUMNS}
+ * <li>{@link is.codion.swing.framework.ui.EntityEditorPanel#VALID_INDICATOR}
+ * <li>{@link is.codion.swing.framework.ui.EntityEditorPanel#MODIFIED_INDICATOR}
+ * <li>{@link is.codion.swing.framework.ui.EntityEditorPanel#DEFAULT_TEXT_FIELD_COLUMNS}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_SAVE_CAPTION}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_FOCUS_ACTIVATION}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_ENTITY_VIEWER}

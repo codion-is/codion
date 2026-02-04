@@ -161,7 +161,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 	private static EntityPanel createPreferencesPanel(EntityConnectionProvider connectionProvider) {
 		SwingEntityModel preferencesModel = new SwingEntityModel(Preferences.TYPE, connectionProvider);
-		preferencesModel.editModel().initializeComboBoxModels(Preferences.PREFERRED_GENRE_FK);
+		preferencesModel.editModel().editor().initializeComboBoxModels(Preferences.PREFERRED_GENRE_FK);
 		// Foreign key values persist by default,
 		// but that doesn't make sense with these two
 		preferencesModel.editModel().editor().value(Preferences.CUSTOMER_FK).persist().set(false);
