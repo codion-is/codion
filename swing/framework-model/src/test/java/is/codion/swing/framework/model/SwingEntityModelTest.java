@@ -39,7 +39,7 @@ public final class SwingEntityModelTest
 	protected SwingEntityModel createDepartmentModel() {
 		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider());
 		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
-		employeeModel.editModel().refreshComboBoxModels();
+		employeeModel.editModel().refreshForeignKeyComboBoxModels();
 		departmentModel.detailModels().add(departmentModel.link(employeeModel)
 						.active(true)
 						.build());

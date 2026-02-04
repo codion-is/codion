@@ -58,10 +58,10 @@ public class SwingEntityEditModelTest {
 		FilterComboBoxModel<String> model = employeeEditModel.comboBoxModel(Employee.JOB);
 		assertNotNull(model);
 		assertEquals(model, employeeEditModel.comboBoxModel(Employee.JOB));
-		employeeEditModel.refreshComboBoxModels();
+		employeeEditModel.refreshColumnComboBoxModels();
 		employeeEditModel.clearComboBoxModels();
 		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).items().cleared());
-		employeeEditModel.refreshComboBoxModels();
+		employeeEditModel.refreshColumnComboBoxModels();
 		employeeEditModel.comboBoxModel(Employee.JOB).items().clear();
 		assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).items().cleared());
 	}
@@ -72,7 +72,7 @@ public class SwingEntityEditModelTest {
 		assertNotNull(model);
 		assertTrue(model.items().cleared());
 		assertTrue(model.items().get().isEmpty());
-		employeeEditModel.refreshComboBoxModels();
+		employeeEditModel.refreshForeignKeyComboBoxModels();
 		assertFalse(model.items().cleared());
 		assertFalse(model.items().get().isEmpty());
 		employeeEditModel.clearComboBoxModels();

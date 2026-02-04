@@ -47,7 +47,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	private static final NullItemCaption NULL_ITEM_CAPTION = new NullItemCaption();
 
-	private final Map<Attribute<?>, FilterComboBoxModel<?>> comboBoxModels = new HashMap<>();
+	private final Map<Attribute<?>, EntityComboBoxModel> foreignKeyComboBoxModels = new HashMap<>();
+	private final Map<Attribute<?>, FilterComboBoxModel<?>> columnComboBoxModels = new HashMap<>();
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
@@ -56,6 +57,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 */
 	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		super(entityType, requireNonNull(connectionProvider));
+		afterInsertUpdateOrDelete().addListener(this::refreshColumnComboBoxModels);
 	}
 
 	/**
@@ -82,21 +84,19 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * Refreshes all foreign key combobox models
 	 */
 	public final void refreshForeignKeyComboBoxModels() {
-		synchronized (comboBoxModels) {
-			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
-				if (comboBoxModel instanceof EntityComboBoxModel) {
-					comboBoxModel.items().refresh();
-				}
+		synchronized (foreignKeyComboBoxModels) {
+			for (EntityComboBoxModel comboBoxModel : foreignKeyComboBoxModels.values()) {
+				comboBoxModel.items().refresh();
 			}
 		}
 	}
 
 	/**
-	 * Refreshes all combobox models
+	 * Refreshes all column based combobox models
 	 */
-	public final void refreshComboBoxModels() {
-		synchronized (comboBoxModels) {
-			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+	public final void refreshColumnComboBoxModels() {
+		synchronized (columnComboBoxModels) {
+			for (FilterComboBoxModel<?> comboBoxModel : columnComboBoxModels.values()) {
 				comboBoxModel.items().refresh();
 			}
 		}
@@ -106,8 +106,13 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 * Clears all combobox models
 	 */
 	public final void clearComboBoxModels() {
-		synchronized (comboBoxModels) {
-			for (FilterComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+		synchronized (foreignKeyComboBoxModels) {
+			for (EntityComboBoxModel comboBoxModel : foreignKeyComboBoxModels.values()) {
+				comboBoxModel.items().clear();
+			}
+		}
+		synchronized (columnComboBoxModels) {
+			for (FilterComboBoxModel<?> comboBoxModel : columnComboBoxModels.values()) {
 				comboBoxModel.items().clear();
 			}
 		}
@@ -124,15 +129,15 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 */
 	public final EntityComboBoxModel comboBoxModel(ForeignKey foreignKey) {
 		entityDefinition().foreignKeys().definition(foreignKey);
-		synchronized (comboBoxModels) {
+		synchronized (foreignKeyComboBoxModels) {
 			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
 			// box models, createComboBoxModel() may for example call this function
 			// see javadoc: must not attempt to update any other mappings of this map
-			EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBoxModels.get(foreignKey);
+			EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModels.get(foreignKey);
 			if (comboBoxModel == null) {
 				comboBoxModel = createComboBoxModel(foreignKey);
 				configure(foreignKey, comboBoxModel);
-				comboBoxModels.put(foreignKey, comboBoxModel);
+				foreignKeyComboBoxModels.put(foreignKey, comboBoxModel);
 			}
 
 			return comboBoxModel;
@@ -151,15 +156,15 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	 */
 	public final <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column) {
 		entityDefinition().columns().definition(column);
-		synchronized (comboBoxModels) {
+		synchronized (columnComboBoxModels) {
 			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
 			// box models, createComboBoxModel() may for example call this function
 			// see javadoc: must not attempt to update any other mappings of this map
-			FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) comboBoxModels.get(column);
+			FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) columnComboBoxModels.get(column);
 			if (comboBoxModel == null) {
 				comboBoxModel = createComboBoxModel(column);
 				configure(column, comboBoxModel);
-				comboBoxModels.put(column, comboBoxModel);
+				columnComboBoxModels.put(column, comboBoxModel);
 			}
 
 			return comboBoxModel;
@@ -211,10 +216,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 								.build());
 			}
 		}
-		FilterComboBoxModel<T> comboBoxModel = builder.build();
-		afterInsertUpdateOrDelete().addListener(comboBoxModel.items()::refresh);
 
-		return comboBoxModel;
+		return builder.build();
 	}
 
 	/**

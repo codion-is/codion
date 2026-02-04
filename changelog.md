@@ -6,6 +6,8 @@ Codion Change Log
 - AttributeDefinition.ValueSupplier renamed DefaultValue.
 ### is.codion.framework.model
 - EntityEditModel.EditorValue.attribute() added.
+### is.codion.swing.framework.model
+- SwingEntityEditModel.createComboBoxModel() memory leak bug fixed, refresh listener now only handles managed column combo box models, related refactoring.
 ### is.codion.swing.framework.ui
 - EntitySearchFieldPanel.Builder return types fixed.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValueBuilder) added, setComponentBuilder() removed.
