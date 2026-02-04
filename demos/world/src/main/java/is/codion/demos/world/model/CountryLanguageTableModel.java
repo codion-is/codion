@@ -34,7 +34,7 @@ public final class CountryLanguageTableModel extends SwingEntityTableModel {
 
 	CountryLanguageTableModel(EntityConnectionProvider connectionProvider) {
 		super(CountryLanguage.TYPE, connectionProvider);
-		editModel().editor().initializeComboBoxModels(CountryLanguage.COUNTRY_FK);
+		editModel().editor().comboBoxModels().initialize(CountryLanguage.COUNTRY_FK);
 		items().included().addConsumer(this::refreshChartDataset);
 	}
 

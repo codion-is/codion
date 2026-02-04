@@ -36,7 +36,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 
 	public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
 		super(Employee.TYPE, connectionProvider, new EmployeeComboBoxModels());
-		editor().initializeComboBoxModels(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
+		editor().comboBoxModels().initialize(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
 	}
 	// end::constructor[]
 

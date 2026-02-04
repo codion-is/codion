@@ -46,8 +46,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 
 	private static final NullItemCaption NULL_ITEM_CAPTION = new NullItemCaption();
 
-	private final Map<Attribute<?>, EntityComboBoxModel> foreignKeyComboBoxModels = new HashMap<>();
-	private final Map<Attribute<?>, FilterComboBoxModel<?>> columnComboBoxModels = new HashMap<>();
+	private final ComboBoxModels comboBoxModels = new DefaultComboBoxModels();
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditor}
@@ -68,131 +67,82 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 	}
 
 	/**
-	 * Creates and refreshes combo box models for the given attributes. Doing this in the model
-	 * constructor avoids the models being refreshed when the combo boxes using them are initialized,
-	 * which usually happens on the Event Dispatch Thread.
-	 * @param attributes the attributes for which to initialize combo box models
-	 * @see #createComboBoxModel(Column)
-	 * @see #createComboBoxModel(ForeignKey)
+	 * @return the {@link ComboBoxModels} instance
 	 */
-	public void initializeComboBoxModels(Attribute<?>... attributes) {
-		requireNonNull(attributes);
-		for (Attribute<?> attribute : attributes) {
-			if (attribute instanceof ForeignKey) {
-				comboBoxModel((ForeignKey) attribute).items().refresh();
-			}
-			else if (attribute instanceof Column<?>) {
-				comboBoxModel((Column<?>) attribute).items().refresh();
-			}
-		}
-	}
-
-	/**
-	 * Refreshes all foreign key combobox models
-	 */
-	public void refreshForeignKeyComboBoxModels() {
-		synchronized (foreignKeyComboBoxModels) {
-			for (EntityComboBoxModel comboBoxModel : foreignKeyComboBoxModels.values()) {
-				comboBoxModel.items().refresh();
-			}
-		}
-	}
-
-	/**
-	 * Refreshes all column based combobox models
-	 */
-	public void refreshColumnComboBoxModels() {
-		synchronized (columnComboBoxModels) {
-			for (FilterComboBoxModel<?> comboBoxModel : columnComboBoxModels.values()) {
-				comboBoxModel.items().refresh();
-			}
-		}
-	}
-
-	/**
-	 * <p>Returns the {@link EntityComboBoxModel} associated with the given foreign key.
-	 * If no such combo box model exists, one is created by calling {@link #createComboBoxModel(ForeignKey)}.
-	 * <p>This method always returns the same {@link EntityComboBoxModel} instance, once one has been created.
-	 * @param foreignKey the foreign key
-	 * @return the {@link EntityComboBoxModel} associated with the given foreign key
-	 * @see #createComboBoxModel(ForeignKey)
-	 * @see SwingEditorModels#configure(ForeignKey, EntityComboBoxModel, SwingEntityEditor)
-	 */
-	public EntityComboBoxModel comboBoxModel(ForeignKey foreignKey) {
-		entityDefinition().foreignKeys().definition(foreignKey);
-		synchronized (foreignKeyComboBoxModels) {
-			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
-			// box models, createComboBoxModel() may for example call this function
-			// see javadoc: must not attempt to update any other mappings of this map
-			EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModels.get(foreignKey);
-			if (comboBoxModel == null) {
-				comboBoxModel = createComboBoxModel(foreignKey);
-				editorModels().configure(foreignKey, comboBoxModel, this);
-				foreignKeyComboBoxModels.put(foreignKey, comboBoxModel);
-			}
-
-			return comboBoxModel;
-		}
-	}
-
-	/**
-	 * <p>Returns the {@link FilterComboBoxModel} associated with the given column.
-	 * If no such combo box model exists, one is created by calling {@link #createComboBoxModel(Column)}.
-	 * <p>This method always returns the same {@link FilterComboBoxModel} instance, once one has been created.
-	 * @param column the column
-	 * @param <T> the value type
-	 * @return the {@link FilterComboBoxModel} associated with the given column
-	 * @see #createComboBoxModel(Column)
-	 * @see SwingEditorModels#configure(Column, FilterComboBoxModel, SwingEntityEditor)
-	 */
-	public <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column) {
-		entityDefinition().columns().definition(column);
-		synchronized (columnComboBoxModels) {
-			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
-			// box models, createComboBoxModel() may for example call this function
-			// see javadoc: must not attempt to update any other mappings of this map
-			FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) columnComboBoxModels.get(column);
-			if (comboBoxModel == null) {
-				comboBoxModel = createComboBoxModel(column);
-				editorModels().configure(column, comboBoxModel, this);
-				columnComboBoxModels.put(column, comboBoxModel);
-			}
-
-			return comboBoxModel;
-		}
-	}
-
-	/**
-	 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key.
-	 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
-	 * @return a {@link EntityComboBoxModel} for the given foreign key
-	 * @see SwingEditorModels#createComboBoxModel(ForeignKey, SwingEntityEditor)
-	 * @see FilterComboBoxModel#NULL_CAPTION
-	 * @see EntityComboBoxModel.Builder#nullCaption(String)
-	 * @see EntityComboBoxModel.Builder#includeNull(boolean)
-	 * @see ValueAttributeDefinition#nullable()
-	 * @see EntityComboBoxModel.Builder#attributes(Collection)
-	 * @see ForeignKeyDefinition#attributes()
-	 */
-	public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
-		return editorModels().createComboBoxModel(foreignKey, this);
-	}
-
-	/**
-	 * Creates a combo box model containing the current values of the given column.
-	 * @param column the column
-	 * @param <T> the value type
-	 * @return a combo box model based on the given column
-	 * @see SwingEditorModels#createComboBoxModel(Column, SwingEntityEditor)
-	 * @see FilterComboBoxModel#NULL_CAPTION
-	 */
-	public <T> FilterComboBoxModel<T> createComboBoxModel(Column<T> column) {
-		return editorModels().createComboBoxModel(column, this);
+	public ComboBoxModels comboBoxModels() {
+		return comboBoxModels;
 	}
 
 	@Override
 	protected SwingEditorModels editorModels() {
 		return (SwingEditorModels) super.editorModels();
+	}
+
+	/**
+	 * Manages the combo box models used by a {@link SwingEntityEditor}.
+	 */
+	public interface ComboBoxModels {
+
+		/**
+		 * Creates and refreshes combo box models for the given attributes. Doing this in the model
+		 * constructor avoids the models being refreshed when the combo boxes using them are initialized,
+		 * which usually happens on the Event Dispatch Thread.
+		 * @param attributes the attributes for which to initialize combo box models
+		 * @see #create(Column)
+		 * @see #create(ForeignKey)
+		 */
+		void initialize(Attribute<?>... attributes);
+
+		/**
+		 * Refreshes all column based combobox models
+		 */
+		void refreshColumnComboBoxModels();
+
+		/**
+		 * <p>Returns the {@link EntityComboBoxModel} associated with the given foreign key.
+		 * If no such combo box model exists, one is created by calling {@link #create(ForeignKey)}.
+		 * <p>This method always returns the same {@link EntityComboBoxModel} instance, once one has been created.
+		 * @param foreignKey the foreign key
+		 * @return the {@link EntityComboBoxModel} associated with the given foreign key
+		 * @see ComboBoxModels#create(ForeignKey)
+		 * @see SwingEditorModels#configure(ForeignKey, EntityComboBoxModel, SwingEntityEditor)
+		 */
+		EntityComboBoxModel get(ForeignKey foreignKey);
+
+		/**
+		 * <p>Returns the {@link FilterComboBoxModel} associated with the given column.
+		 * If no such combo box model exists, one is created by calling {@link #create(Column)}.
+		 * <p>This method always returns the same {@link FilterComboBoxModel} instance, once one has been created.
+		 * @param column the column
+		 * @param <T> the value type
+		 * @return the {@link FilterComboBoxModel} associated with the given column
+		 * @see #create(Column)
+		 * @see SwingEditorModels#configure(Column, FilterComboBoxModel, SwingEntityEditor)
+		 */
+		<T> FilterComboBoxModel<T> get(Column<T> column);
+
+		/**
+		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key.
+		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
+		 * @return a {@link EntityComboBoxModel} for the given foreign key
+		 * @see SwingEditorModels#createComboBoxModel(ForeignKey, SwingEntityEditor)
+		 * @see FilterComboBoxModel#NULL_CAPTION
+		 * @see EntityComboBoxModel.Builder#nullCaption(String)
+		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+		 * @see ValueAttributeDefinition#nullable()
+		 * @see EntityComboBoxModel.Builder#attributes(Collection)
+		 * @see ForeignKeyDefinition#attributes()
+		 */
+		EntityComboBoxModel create(ForeignKey foreignKey);
+
+		/**
+		 * Creates a combo box model containing the current values of the given column.
+		 * @param column the column
+		 * @param <T> the value type
+		 * @return a combo box model based on the given column
+		 * @see FilterComboBoxModel#NULL_CAPTION
+		 */
+		<T> FilterComboBoxModel<T> create(Column<T> column);
 	}
 
 	/**
@@ -231,7 +181,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 		<T> FilterComboBoxModel<T> createComboBoxModel(Column<T> column, SwingEntityEditor editor);
 
 		/**
-		 * <p>Called when a {@link EntityComboBoxModel} is created by {@link #comboBoxModel(ForeignKey)}.
+		 * <p>Called when a {@link EntityComboBoxModel} is created by {@link ComboBoxModels#get(ForeignKey)}.
 		 * @param foreignKey the foreign key
 		 * @param comboBoxModel the combo box model
 		 * @param editor the editor
@@ -239,7 +189,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 		default void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel, SwingEntityEditor editor) {}
 
 		/**
-		 * Called when a {@link FilterComboBoxModel} is created by {@link #comboBoxModel(Column)}
+		 * Called when a {@link FilterComboBoxModel} is created by {@link ComboBoxModels#get(Column)}
 		 * @param column the column
 		 * @param comboBoxModel the combo box model
 		 * @param editor the editor
@@ -286,6 +236,79 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 											.items(asList(column.type().valueClass().getEnumConstants())) :
 							FilterComboBoxModel.builder()
 											.items(new ColumnItems<>(connectionProvider, column));
+		}
+	}
+
+	private final class DefaultComboBoxModels implements ComboBoxModels {
+
+		private final Map<Attribute<?>, EntityComboBoxModel> foreignKeyComboBoxModels = new HashMap<>();
+		private final Map<Attribute<?>, FilterComboBoxModel<?>> columnComboBoxModels = new HashMap<>();
+
+		@Override
+		public void initialize(Attribute<?>... attributes) {
+			for (Attribute<?> attribute : requireNonNull(attributes)) {
+				if (attribute instanceof ForeignKey) {
+					get((ForeignKey) attribute).items().refresh();
+				}
+				else if (attribute instanceof Column<?>) {
+					get((Column<?>) attribute).items().refresh();
+				}
+			}
+		}
+
+		@Override
+		public void refreshColumnComboBoxModels() {
+			synchronized (columnComboBoxModels) {
+				for (FilterComboBoxModel<?> comboBoxModel : columnComboBoxModels.values()) {
+					comboBoxModel.items().refresh();
+				}
+			}
+		}
+
+		@Override
+		public EntityComboBoxModel get(ForeignKey foreignKey) {
+			entityDefinition().foreignKeys().definition(foreignKey);
+			synchronized (foreignKeyComboBoxModels) {
+				// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+				// box models, createComboBoxModel() may for example call this function
+				// see javadoc: must not attempt to update any other mappings of this map
+				EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModels.get(foreignKey);
+				if (comboBoxModel == null) {
+					comboBoxModel = create(foreignKey);
+					editorModels().configure(foreignKey, comboBoxModel, SwingEntityEditor.this);
+					foreignKeyComboBoxModels.put(foreignKey, comboBoxModel);
+				}
+
+				return comboBoxModel;
+			}
+		}
+
+		@Override
+		public <T> FilterComboBoxModel<T> get(Column<T> column) {
+			entityDefinition().columns().definition(column);
+			synchronized (columnComboBoxModels) {
+				// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+				// box models, createComboBoxModel() may for example call this function
+				// see javadoc: must not attempt to update any other mappings of this map
+				FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) columnComboBoxModels.get(column);
+				if (comboBoxModel == null) {
+					comboBoxModel = create(column);
+					editorModels().configure(column, comboBoxModel, SwingEntityEditor.this);
+					columnComboBoxModels.put(column, comboBoxModel);
+				}
+
+				return comboBoxModel;
+			}
+		}
+
+		@Override
+		public EntityComboBoxModel create(ForeignKey foreignKey) {
+			return editorModels().createComboBoxModel(foreignKey, SwingEntityEditor.this);
+		}
+
+		@Override
+		public <T> FilterComboBoxModel<T> create(Column<T> column) {
+			return editorModels().createComboBoxModel(column, SwingEntityEditor.this);
 		}
 	}
 

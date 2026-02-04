@@ -173,7 +173,7 @@ public final class EmployeesMinimalApp {
 			super(Employee.TYPE, connectionProvider, new EmployeeEditorModels());
 			//initialize the combo box models now, otherwise it happens
 			//during UI initialization when the combo boxes are created
-			editor().initializeComboBoxModels(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
+			editor().comboBoxModels().initialize(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
 		}
 
 		private static final class EmployeeEditorModels extends DefaultSwingEditorModels {

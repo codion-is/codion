@@ -38,7 +38,8 @@ public final class EmployeesAppModel extends SwingEntityApplicationModel {
 		EmployeeEditModel employeeEditModel = new EmployeeEditModel(connectionProvider);
 		//Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
 		//in case a new manager got hired, fired or promoted
-		employeeEditModel.afterInsertUpdateOrDelete().addListener(employeeEditModel.editor().comboBoxModel(Employee.MANAGER_FK).items()::refresh);
+		employeeEditModel.afterInsertUpdateOrDelete().addListener(employeeEditModel.editor()
+						.comboBoxModels().get(Employee.MANAGER_FK).items()::refresh);
 		departmentModel.detailModels().add(new SwingEntityModel(employeeEditModel));
 		departmentModel.tableModel().items().refresh();
 

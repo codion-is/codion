@@ -28,7 +28,7 @@ public final class CustomerModel extends SwingEntityModel {
 
 	public CustomerModel(EntityConnectionProvider connectionProvider) {
 		super(Customer.TYPE, connectionProvider);
-		editModel().editor().initializeComboBoxModels(Customer.SUPPORTREP_FK);
+		editModel().editor().comboBoxModels().initialize(Customer.SUPPORTREP_FK);
 		InvoiceModel invoiceModel = new InvoiceModel(connectionProvider);
 		ForeignKeyConditionModel customerConditionModel =
 						invoiceModel.tableModel().query().condition().get(Invoice.CUSTOMER_FK);

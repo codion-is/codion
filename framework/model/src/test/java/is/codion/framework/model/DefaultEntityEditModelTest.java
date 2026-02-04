@@ -143,14 +143,14 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void searchModel() {
-		EntitySearchModel model = employeeEditModel.editor().searchModel(Employee.DEPARTMENT_FK);
+		EntitySearchModel model = employeeEditModel.editor().searchModels().get(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
-		assertSame(model, employeeEditModel.editor().searchModel(Employee.DEPARTMENT_FK));
+		assertSame(model, employeeEditModel.editor().searchModels().get(Employee.DEPARTMENT_FK));
 	}
 
 	@Test
 	void createSearchModel() {
-		EntitySearchModel model = employeeEditModel.editor().createSearchModel(Employee.DEPARTMENT_FK);
+		EntitySearchModel model = employeeEditModel.editor().searchModels().create(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
 		assertEquals(Department.TYPE, model.entityDefinition().type());
 	}

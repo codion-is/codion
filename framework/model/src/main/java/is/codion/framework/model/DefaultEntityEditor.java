@@ -89,7 +89,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	private final DefaultModified modified;
 	private final Value<EntityValidator> validator;
 	private final EditorModels editorModels;
-	private final Map<ForeignKey, EntitySearchModel> searchModels = new HashMap<>();
+	private final SearchModels searchModels = new DefaultSearchModels();
 
 	private final Entity entity;
 
@@ -255,26 +255,8 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public final EntitySearchModel searchModel(ForeignKey foreignKey) {
-		entityDefinition().foreignKeys().definition(foreignKey);
-		synchronized (searchModels) {
-			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
-			// box models, createSearchModel() may for example call this function
-			// see javadoc: must not attempt to update any other mappings of this map
-			EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
-			if (entitySearchModel == null) {
-				entitySearchModel = createSearchModel(foreignKey);
-				editorModels.configure(foreignKey, entitySearchModel, this);
-				searchModels.put(foreignKey, entitySearchModel);
-			}
-
-			return entitySearchModel;
-		}
-	}
-
-	@Override
-	public final EntitySearchModel createSearchModel(ForeignKey foreignKey) {
-		return editorModels.createSearchModel(foreignKey, this);
+	public final SearchModels searchModels() {
+		return searchModels;
 	}
 
 	final void setOrDefaults(@Nullable Entity entity) {
@@ -464,6 +446,34 @@ public class DefaultEntityEditor implements EntityEditor {
 							.entityType(foreignKey.referencedType())
 							.connectionProvider(editor.connectionProvider())
 							.build();
+		}
+	}
+
+	private final class DefaultSearchModels implements SearchModels {
+
+		private final Map<ForeignKey, EntitySearchModel> searchModels = new HashMap<>();
+
+		@Override
+		public EntitySearchModel get(ForeignKey foreignKey) {
+			entityDefinition().foreignKeys().definition(foreignKey);
+			synchronized (searchModels) {
+				// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+				// box models, createSearchModel() may for example call this function
+				// see javadoc: must not attempt to update any other mappings of this map
+				EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
+				if (entitySearchModel == null) {
+					entitySearchModel = create(foreignKey);
+					editorModels.configure(foreignKey, entitySearchModel, DefaultEntityEditor.this);
+					searchModels.put(foreignKey, entitySearchModel);
+				}
+
+				return entitySearchModel;
+			}
+		}
+
+		@Override
+		public EntitySearchModel create(ForeignKey foreignKey) {
+			return editorModels.createSearchModel(foreignKey, DefaultEntityEditor.this);
 		}
 	}
 

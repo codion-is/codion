@@ -123,12 +123,12 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 
 	private ComponentValue<C, T> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditor editor) {
 		if (editor.entities().definition(foreignKey.referencedType()).smallDataset()) {
-			return (ComponentValue<C, T>) comboBox(foreignKey, editor.entityDefinition(), editor.createComboBoxModel(foreignKey))
+			return (ComponentValue<C, T>) comboBox(foreignKey, editor.entityDefinition(), editor.comboBoxModels().create(foreignKey))
 							.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 							.buildValue();
 		}
 
-		return (ComponentValue<C, T>) searchField(foreignKey, editor.entityDefinition(), editor.createSearchModel(foreignKey))
+		return (ComponentValue<C, T>) searchField(foreignKey, editor.entityDefinition(), editor.searchModels().create(foreignKey))
 						.buildValue();
 	}
 

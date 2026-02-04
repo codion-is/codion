@@ -523,7 +523,7 @@ public class EntityEditorPanel extends JPanel {
 	 * @return a combo box builder
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createComboBox(Column<T> column) {
-		FilterComboBoxModel<T> comboBoxModel = editor.comboBoxModel(column);
+		FilterComboBoxModel<T> comboBoxModel = editor.comboBoxModels().get(column);
 
 		return component(column).set((B) entityComponents.comboBox(column, comboBoxModel))
 						.onSetVisible(EntityEditorPanel::refreshIfCleared);
@@ -535,7 +535,7 @@ public class EntityEditorPanel extends JPanel {
 	 * @return a foreign key combo box builder
 	 */
 	protected final EntityComboBox.Builder createComboBox(ForeignKey foreignKey) {
-		EntityComboBoxModel comboBoxModel = editor.comboBoxModel(foreignKey);
+		EntityComboBoxModel comboBoxModel = editor.comboBoxModels().get(foreignKey);
 
 		return component(foreignKey).set(entityComponents.comboBox(foreignKey, comboBoxModel))
 						.onSetVisible(EntityEditorPanel::refreshIfCleared);
@@ -549,7 +549,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final EntityComboBoxPanel.Builder createComboBoxPanel(ForeignKey foreignKey,
 																																	Supplier<EntityEditPanel> editPanel) {
-		EntityComboBoxModel comboBoxModel = editor.comboBoxModel(foreignKey);
+		EntityComboBoxModel comboBoxModel = editor.comboBoxModels().get(foreignKey);
 
 		return component(foreignKey).set(entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
 						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
@@ -562,7 +562,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final EntitySearchField.SingleSelectionBuilder createSearchField(ForeignKey foreignKey) {
 		return component(foreignKey).set(entityComponents.searchField(foreignKey,
-														editor.searchModel(foreignKey))
+														editor.searchModels().get(foreignKey))
 										.singleSelection())
 						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
@@ -576,7 +576,7 @@ public class EntityEditorPanel extends JPanel {
 	protected final EntitySearchFieldPanel.SingleSelectionBuilder createSearchFieldPanel(ForeignKey foreignKey,
 																																											 Supplier<EntityEditPanel> editPanel) {
 		return component(foreignKey).set(entityComponents.searchFieldPanel(foreignKey,
-														editor.searchModel(foreignKey), editPanel)
+														editor.searchModels().get(foreignKey), editPanel)
 										.singleSelection())
 						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}

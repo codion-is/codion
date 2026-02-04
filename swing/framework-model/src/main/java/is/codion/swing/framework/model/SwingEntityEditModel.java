@@ -47,7 +47,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 	 */
 	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider, SwingEditorModels editorModels) {
 		super(new SwingEntityEditor(entityType, connectionProvider, editorModels));
-		afterInsertUpdateOrDelete().addListener(editor()::refreshColumnComboBoxModels);
+		afterInsertUpdateOrDelete().addListener(editor().comboBoxModels()::refreshColumnComboBoxModels);
 	}
 
 	@Override

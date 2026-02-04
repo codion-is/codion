@@ -45,7 +45,7 @@ public final class CityEditModel extends SwingEntityEditModel {
 
 	public CityEditModel(EntityConnectionProvider connectionProvider) {
 		super(City.TYPE, connectionProvider);
-		editor().initializeComboBoxModels(City.COUNTRY_FK);
+		editor().comboBoxModels().initialize(City.COUNTRY_FK);
 	}
 
 	public void populateLocation() throws IOException {

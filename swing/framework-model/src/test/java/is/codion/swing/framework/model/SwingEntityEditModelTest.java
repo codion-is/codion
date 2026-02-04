@@ -55,29 +55,28 @@ public class SwingEntityEditModelTest {
 
 	@Test
 	void comboBoxModel() {
-		FilterComboBoxModel<String> model = employeeEditModel.editor().comboBoxModel(Employee.JOB);
+		FilterComboBoxModel<String> model = employeeEditModel.editor().comboBoxModels().get(Employee.JOB);
 		assertNotNull(model);
-		assertEquals(model, employeeEditModel.editor().comboBoxModel(Employee.JOB));
-		employeeEditModel.editor().refreshForeignKeyComboBoxModels();
-		employeeEditModel.editor().comboBoxModel(Employee.JOB).items().clear();
-		assertTrue(employeeEditModel.editor().comboBoxModel(Employee.JOB).items().cleared());
+		assertEquals(model, employeeEditModel.editor().comboBoxModels().get(Employee.JOB));
+		employeeEditModel.editor().comboBoxModels().get(Employee.JOB).items().clear();
+		assertTrue(employeeEditModel.editor().comboBoxModels().get(Employee.JOB).items().cleared());
 	}
 
 	@Test
 	void entityComboBoxModel() {
-		EntityComboBoxModel model = employeeEditModel.editor().comboBoxModel(Employee.DEPARTMENT_FK);
+		EntityComboBoxModel model = employeeEditModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
 		assertTrue(model.items().cleared());
 		assertTrue(model.items().get().isEmpty());
-		employeeEditModel.editor().refreshForeignKeyComboBoxModels();
+		model.items().refresh();
 		assertFalse(model.items().cleared());
 		assertFalse(model.items().get().isEmpty());
-		assertSame(model, employeeEditModel.editor().comboBoxModel(Employee.DEPARTMENT_FK));
+		assertSame(model, employeeEditModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK));
 	}
 
 	@Test
 	void createComboBoxModel() {
-		EntityComboBoxModel model = employeeEditModel.editor().createComboBoxModel(Employee.DEPARTMENT_FK);
+		EntityComboBoxModel model = employeeEditModel.editor().comboBoxModels().create(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
 		assertTrue(model.items().cleared());
 		assertTrue(model.items().get().isEmpty());
@@ -94,16 +93,16 @@ public class SwingEntityEditModelTest {
 
 	@Test
 	void initializeComboBoxModels() {
-		employeeEditModel.editor().initializeComboBoxModels(Employee.DEPARTMENT_FK, Employee.MGR_FK, Employee.JOB);
-		assertFalse(employeeEditModel.editor().comboBoxModel(Employee.JOB).items().cleared());
-		assertFalse(employeeEditModel.editor().comboBoxModel(Employee.DEPARTMENT_FK).items().cleared());
-		assertFalse(employeeEditModel.editor().comboBoxModel(Employee.MGR_FK).items().cleared());
+		employeeEditModel.editor().comboBoxModels().initialize(Employee.DEPARTMENT_FK, Employee.MGR_FK, Employee.JOB);
+		assertFalse(employeeEditModel.editor().comboBoxModels().get(Employee.JOB).items().cleared());
+		assertFalse(employeeEditModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK).items().cleared());
+		assertFalse(employeeEditModel.editor().comboBoxModels().get(Employee.MGR_FK).items().cleared());
 	}
 
 	@Test
 	void enumComboBoxModel() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(EnumEntity.TYPE, CONNECTION_PROVIDER);
-		FilterComboBoxModel<EnumType> comboBoxModel = editModel.editor().comboBoxModel(EnumEntity.ENUM_TYPE);
+		FilterComboBoxModel<EnumType> comboBoxModel = editModel.editor().comboBoxModels().get(EnumEntity.ENUM_TYPE);
 		comboBoxModel.items().refresh();
 		assertEquals(4, comboBoxModel.getSize());
 		for (EnumType enumType : EnumType.values()) {

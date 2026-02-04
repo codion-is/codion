@@ -536,22 +536,33 @@ public interface EntityEditModel {
 		<T> EditorValue<T> value(Attribute<T> attribute);
 
 		/**
-		 * <p>Returns the {@link EntitySearchModel} associated with the given foreign key.
-		 * If no such search model exists, one is created by calling {@link #createSearchModel(ForeignKey)}.
-		 * <p>This method always returns the same {@link EntitySearchModel} instance, once one has been created.
-		 * @param foreignKey the foreign key for which to retrieve the {@link EntitySearchModel}
-		 * @return the {@link EntitySearchModel} associated with the given foreign key
+		 * @return the {@link SearchModels} instance
 		 */
-		EntitySearchModel searchModel(ForeignKey foreignKey);
+		SearchModels searchModels();
 
 		/**
-		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
-		 * using the search attributes defined for that entity type.
-		 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
-		 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
-		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
+		 * Manages the {@link EntitySearchModel}s used by a {@link EntityEditModel}
 		 */
-		EntitySearchModel createSearchModel(ForeignKey foreignKey);
+		interface SearchModels {
+
+			/**
+			 * <p>Returns the {@link EntitySearchModel} associated with the given foreign key.
+			 * If no such search model exists, one is created by calling {@link #create(ForeignKey)}.
+			 * <p>This method always returns the same {@link EntitySearchModel} instance, once one has been created.
+			 * @param foreignKey the foreign key for which to retrieve the {@link EntitySearchModel}
+			 * @return the {@link EntitySearchModel} associated with the given foreign key
+			 */
+			EntitySearchModel get(ForeignKey foreignKey);
+
+			/**
+			 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
+			 * using the search attributes defined for that entity type.
+			 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
+			 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
+			 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
+			 */
+			EntitySearchModel create(ForeignKey foreignKey);
+		}
 
 		/**
 		 * Provides data models for editor components.
@@ -569,7 +580,7 @@ public interface EntityEditModel {
 			EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityEditor editor);
 
 			/**
-			 * <p>Called when a {@link EntitySearchModel} is created in {@link #searchModel(ForeignKey)}.
+			 * <p>Called when a {@link EntitySearchModel} is created in {@link SearchModels#get(ForeignKey)}.
 			 * @param foreignKey the foreign key
 			 * @param entitySearchModel the search model
 			 * @param editor the editor

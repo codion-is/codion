@@ -7,9 +7,11 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditModel.EditorValue.attribute() added.
 - EntityEditor.EditorModels added, related refactoring.
+- EntityEditor.SearchModels added.
 ### is.codion.swing.framework.model
 - SwingEntityEditModel.createComboBoxModel() memory leak bug fixed, refresh listener now only handles managed column combo box models, related refactoring.
 - SwingEntityEditor added along with SwingEditorModels.
+- SwingEntityEditor.ComboBoxModels added.
 ### is.codion.swing.framework.ui
 - EntitySearchFieldPanel.Builder return types fixed.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValueBuilder) added, setComponentBuilder() removed.
