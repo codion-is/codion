@@ -474,6 +474,11 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
+		public Attribute<T> attribute() {
+			return attribute;
+		}
+
+		@Override
 		public @Nullable T original() {
 			return entity.original(attribute);
 		}

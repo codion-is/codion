@@ -4,9 +4,12 @@ Codion Change Log
 ## 0.18.68
 ### is.codion.framework.domain
 - AttributeDefinition.ValueSupplier renamed DefaultValue.
+### is.codion.framework.model
+- EntityEditModel.EditorValue.attribute() added.
 ### is.codion.swing.framework.ui
 - EntitySearchFieldPanel.Builder return types fixed.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValueBuilder) added, setComponentBuilder() removed.
+- EntityEditComponentPanel.DefaultEditorComponent refactored.
 
 ## 0.18.67
 ### is.codion.common.reactive

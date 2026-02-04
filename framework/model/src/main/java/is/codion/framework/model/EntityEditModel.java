@@ -592,6 +592,11 @@ public interface EntityEditModel {
 	interface EditorValue<T> extends Value<T> {
 
 		/**
+		 * @return the attribute
+		 */
+		Attribute<T> attribute();
+
+		/**
 		 * @return the original value, or the current one if not modified
 		 * @see #modified()
 		 */

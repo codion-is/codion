@@ -88,7 +88,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -221,7 +220,7 @@ public class EntityEditComponentPanel extends JPanel {
 			componentBuilder.build();
 		}
 
-		return (EditorComponent<T>) components.computeIfAbsent(attribute, k -> new DefaultEditorComponent<>(attribute));
+		return (EditorComponent<T>) components.computeIfAbsent(attribute, k -> new DefaultEditorComponent<>(editModel.editor().value(attribute)));
 	}
 
 	/**
@@ -574,8 +573,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final EntitySearchField.SingleSelectionBuilder createSearchField(ForeignKey foreignKey) {
 		return component(foreignKey).set(entityComponents.searchField(foreignKey,
-										editModel().searchModel(foreignKey))
-						.singleSelection())
+														editModel().searchModel(foreignKey))
+										.singleSelection())
 						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
@@ -588,8 +587,8 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final EntitySearchFieldPanel.SingleSelectionBuilder createSearchFieldPanel(ForeignKey foreignKey,
 																																											 Supplier<EntityEditPanel> editPanel) {
 		return component(foreignKey).set(entityComponents.searchFieldPanel(foreignKey,
-										editModel().searchModel(foreignKey), editPanel)
-						.singleSelection())
+														editModel().searchModel(foreignKey), editPanel)
+										.singleSelection())
 						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
 	}
 
@@ -967,38 +966,22 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private final class SetComponent<C extends JComponent> implements Consumer<C> {
-
-		private final Attribute<?> attribute;
-
-		private SetComponent(Attribute<?> attribute) {
-			this.attribute = attribute;
-		}
-
-		@Override
-		public void accept(C component) {
-			componentBuilders.remove(attribute);
-			component(attribute).set(component);
-		}
-	}
-
 	private final class DefaultEditorComponent<T> implements EditorComponent<T> {
 
-		private final Attribute<T> attribute;
-		private final Value<JComponent> component;
+		private final Value<JComponent> component = Value.builder()
+						.<JComponent>nullable()
+						.notify(Notify.CHANGED)
+						.build();
+		private final EditorValue<T> value;
 
-		private DefaultEditorComponent(Attribute<T> attribute) {
-			this.component = Value.builder()
-							.<JComponent>nullable()
-							.notify(Notify.CHANGED)
-							.build();
-			this.attribute = attribute;
+		private DefaultEditorComponent(EditorValue<T> value) {
+			this.value = value;
 		}
 
 		@Override
 		public JComponent get() {
 			if (component.isNull()) {
-				throw new IllegalStateException("Component has not been set for: " + attribute);
+				throw new IllegalStateException("Component has not been set for: " + value.attribute());
 			}
 
 			return component.getOrThrow();
@@ -1008,7 +991,7 @@ public class EntityEditComponentPanel extends JPanel {
 		public void set(JComponent component) {
 			requireNonNull(component);
 			if (!this.component.isNull()) {
-				throw new IllegalStateException("Component has already been set for: " + attribute);
+				throw new IllegalStateException("Component has already been set for: " + value.attribute());
 			}
 			this.component.set(component);
 		}
@@ -1016,30 +999,29 @@ public class EntityEditComponentPanel extends JPanel {
 		@Override
 		public void set(ComponentValue<? extends JComponent, T> componentValue) {
 			set(requireNonNull(componentValue).component());
-			componentValue.link(editModel.editor().value(attribute));
+			componentValue.link(value);
 		}
 
 		@Override
 		public <C extends JComponent, B extends ComponentValueBuilder<C, T, B>> B set(B componentBuilder) {
 			requireNonNull(componentBuilder);
-			if (componentBuilders.containsKey(attribute) || component.optional().isPresent()) {
-				throw new IllegalStateException("Component has already been set for attribute: " + attribute);
+			if (componentBuilders.containsKey(value.attribute()) || !component.isNull()) {
+				throw new IllegalStateException("Component has already been set for attribute: " + value.attribute());
 			}
 			AttributeDefinition<T> attributeDefinition = editModel().entities()
-							.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
-			EditorValue<T> editorValue = editModel.editor().value(attribute);
-			componentBuilders.put(attribute, componentBuilder
-							.name(attribute.toString())
+							.definition(value.attribute().entityType()).attributes().definition(value.attribute());
+			componentBuilders.put(value.attribute(), componentBuilder
+							.link(value)
+							.name(value.attribute().toString())
+							.toolTipText(value.message())
 							.enabled(!attributeDefinition.derived())
 							.label(label -> label
 											.text(attributeDefinition.caption())
 											.displayedMnemonic(attributeDefinition.mnemonic()))
 							.transferFocusOnEnter(inputFocus.transferOnEnter.is())
-							.toolTipText(editorValue.message())
-							.valid(validIndicator.is() ? editorValue.valid() : null)
-							.modified(modifiedIndicator.is() ? editorValue.modified() : null)
-							.link(editorValue)
-							.onBuild(new SetComponent<>(attribute)));
+							.valid(validIndicator.is() ? value.valid() : null)
+							.modified(modifiedIndicator.is() ? value.modified() : null)
+							.onBuild(this::setComponent));
 
 			return componentBuilder;
 		}
@@ -1048,7 +1030,7 @@ public class EntityEditComponentPanel extends JPanel {
 		public void replace(JComponent component) {
 			requireNonNull(component);
 			if (this.component.isNull()) {
-				throw new IllegalStateException("No component has been set for: " + attribute);
+				throw new IllegalStateException("No component has been set for: " + value.attribute());
 			}
 			this.component.set(component);
 		}
@@ -1062,10 +1044,15 @@ public class EntityEditComponentPanel extends JPanel {
 		public JLabel label() {
 			JLabel label = (JLabel) get().getClientProperty(LABELED_BY);
 			if (label == null) {
-				throw new IllegalStateException("No label associated with component: " + attribute);
+				throw new IllegalStateException("No label associated with component: " + value.attribute());
 			}
 
 			return label;
+		}
+
+		private void setComponent(JComponent comp) {
+			componentBuilders.remove(value.attribute());
+			component.set(comp);
 		}
 	}
 
