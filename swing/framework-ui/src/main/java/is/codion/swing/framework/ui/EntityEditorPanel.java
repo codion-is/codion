@@ -155,7 +155,7 @@ public class EntityEditorPanel extends JPanel {
 	 * Instantiates a new {@link EntityEditorPanel}
 	 * @param editor the editor
 	 */
-	protected EntityEditorPanel(SwingEntityEditor editor) {
+	public EntityEditorPanel(SwingEntityEditor editor) {
 		this.editor = requireNonNull(editor);
 		this.entityComponents = entityComponents(editor.entityDefinition());
 		inputFocus = new InputFocus(this);

@@ -68,7 +68,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
-	private final DefaultEntityEditor editor;
+	private final EntityEditor editor;
 	private final Events events;
 	private final DefaultSettings settings;
 
@@ -85,7 +85,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
 	 * @param editor the editor
 	 */
-	public DefaultEntityEditModel(DefaultEntityEditor editor) {
+	public DefaultEntityEditModel(EntityEditor editor) {
 		this.editor = requireNonNull(editor);
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.events = new Events(settings.editEvents);
@@ -469,7 +469,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			@Override
 			public Collection<Entity> handle() {
 				if (activeEntity) {
-					editor.setOrDefaults(insertedEntities.iterator().next());
+					editor.replace(insertedEntities.iterator().next());
 				}
 				notifyAfterInsert(insertedEntities);
 
@@ -541,7 +541,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(entity))
 								.findFirst()
-								.ifPresent(editor::setOrDefaults);
+								.ifPresent(editor::replace);
 				notifyAfterUpdate(originalEntityMap(entities, updatedEntities));
 
 				return updatedEntities;
@@ -602,7 +602,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			@Override
 			public Collection<Entity> handle() {
 				if (activeEntity) {
-					editor.setOrDefaults(null);
+					editor.defaults();
 				}
 				notifyAfterDelete(deletedEntities);
 

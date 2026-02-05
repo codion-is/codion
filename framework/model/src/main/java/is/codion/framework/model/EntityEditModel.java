@@ -406,10 +406,12 @@ public interface EntityEditModel {
 		/**
 		 * <p>Populates this editor with the values from the given entity or sets the default value for all attributes in case it is null.
 		 * <p>Use {@link #clear()} in order to clear the editor of all values.
+		 * <p>Notifies that the entity is about to change via {@link #changing()}
 		 * @param entity the entity to set, if null, then defaults are set
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
 		 * @see ValueAttributeDefinition#defaultValue()
+		 * @see #changing()
 		 */
 		void set(@Nullable Entity entity);
 
@@ -419,10 +421,17 @@ public interface EntityEditModel {
 		void clear();
 
 		/**
+		 * Replaces the entity without notifying that it is changing.
+		 */
+		void replace(Entity entity);
+
+		/**
 		 * Populates this edit model with default values for all non-persistent attributes.
+		 * <p>Notifies that the entity is about to change via {@link #changing()}
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
 		 * @see ValueAttributeDefinition#defaultValue()
+		 * @see #changing()
 		 */
 		void defaults();
 
@@ -454,8 +463,8 @@ public interface EntityEditModel {
 		Modified modified();
 
 		/**
-		 * @return an observer notified each time the entity is about to be changed
-		 * via {@link #set(Entity)} or {@link #defaults()}
+		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener will cancel the change.
+		 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link #defaults()}.
 		 * @see #set(Entity)
 		 * @see #defaults()
 		 */

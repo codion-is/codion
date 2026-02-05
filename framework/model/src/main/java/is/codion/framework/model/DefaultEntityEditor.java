@@ -150,6 +150,11 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
+	public final void replace(Entity entity) {
+		setOrDefaults(requireNonNull(entity));
+	}
+
+	@Override
 	public final void clear() {
 		set(entityDefinition.entity());
 	}
@@ -259,7 +264,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		return searchModels;
 	}
 
-	final void setOrDefaults(@Nullable Entity entity) {
+	private final void setOrDefaults(@Nullable Entity entity) {
 		Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
 		for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
 			notifyValueChange(affectedAttribute);
