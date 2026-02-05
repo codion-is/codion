@@ -18,6 +18,8 @@ Codion Change Log
 - EntityEditComponentPanel.EditorComponent.set(ComponentValueBuilder) added, setComponentBuilder() removed.
 - EntityEditComponentPanel.DefaultEditorComponent refactored.
 - EntityEditComponentPanel renamed EntityEditorPanel.
+- EntityEditPanel, modified warning moved to EntityEditorPanel.
+- EntityEditPanel.clearAndRequestFocus() moved to EntityEditorPanel.
 
 ## 0.18.67
 ### is.codion.common.reactive

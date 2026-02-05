@@ -28,7 +28,10 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditorValue;
+import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -69,6 +72,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -88,20 +92,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.JOptionPane.showConfirmDialog;
 
 /**
  * A base class for entity edit panels, managing the components used for editing entities.
  */
 public class EntityEditorPanel extends JPanel {
 
-	static final EditComponentFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new EditComponentFocusTraversalPolicy();
+	static final EditorPanelFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new EditorPanelFocusTraversalPolicy();
 
 	/**
 	 * Specifies whether components should indicate the validity of their current value
@@ -135,6 +142,16 @@ public class EntityEditorPanel extends JPanel {
 	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
 					integerValue(EntityEditorPanel.class.getName() + ".defaultTextFieldColumns", 12);
 
+	/**
+	 * Indicates whether the panel should ask for confirmation before discarding unsaved modifications
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> MODIFIED_WARNING =
+					booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
+
 	static {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager()
 						.addPropertyChangeListener("focusOwner", new FocusedInputComponentListener());
@@ -150,6 +167,7 @@ public class EntityEditorPanel extends JPanel {
 
 	private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.getOrThrow());
 	private final State validIndicator = State.state(VALID_INDICATOR.getOrThrow());
+	private final State modifiedWarning = State.state(MODIFIED_WARNING.getOrThrow());
 
 	/**
 	 * Instantiates a new {@link EntityEditorPanel}
@@ -158,6 +176,7 @@ public class EntityEditorPanel extends JPanel {
 	public EntityEditorPanel(SwingEntityEditor editor) {
 		this.editor = requireNonNull(editor);
 		this.entityComponents = entityComponents(editor.entityDefinition());
+		editor.changing().addConsumer(this::onEntityChanging);
 		inputFocus = new InputFocus(this);
 	}
 
@@ -166,6 +185,25 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	public final InputFocus focus() {
 		return inputFocus;
+	}
+
+	/**
+	 * Clears the underlying edit model and requests the initial focus.
+	 * @see EntityEditModel.EntityEditor#defaults()
+	 * @see #focus()
+	 */
+	public final void clearAndRequestFocus() {
+		editor.defaults();
+		focus().initial().request();
+	}
+
+	/**
+	 * @return a state controlling whether this editor panel presents a warning before discarding editor modifications
+	 * @see EntityEditor#set(Entity)
+	 * @see EntityEditor#defaults()
+	 */
+	public final State modifiedWarning() {
+		return modifiedWarning;
 	}
 
 	/**
@@ -626,7 +664,7 @@ public class EntityEditorPanel extends JPanel {
 		 * Note that when setting the component directly using this method, no value linking is performed.
 		 * @param component the component
 		 * @throws IllegalStateException in case the component has already been set
-		 * @see is.codion.framework.model.EntityEditModel.EntityEditor#value(Attribute)
+		 * @see EntityEditor#value(Attribute)
 		 */
 		void set(JComponent component);
 
@@ -656,7 +694,7 @@ public class EntityEditorPanel extends JPanel {
 		 * Note that when replacing the component using this method, no value linking is performed.
 		 * @param component the component
 		 * @throws IllegalStateException in case no component has been previously set
-		 * @see is.codion.framework.model.EntityEditModel.EntityEditor#value(Attribute)
+		 * @see EntityEditor#value(Attribute)
 		 */
 		void replace(JComponent component);
 
@@ -666,6 +704,30 @@ public class EntityEditorPanel extends JPanel {
 		 * @see ComponentBuilder#label(JLabel)
 		 */
 		JLabel label();
+	}
+
+	private void onEntityChanging(Entity entity) {
+		if (modifiedWarning.is() && editor.modified().is()) {
+			Set<Attribute<?>> modified = editor.modified().attributes().get();
+			if (showConfirmDialog(this, createModifiedMessage(modified),
+							FrameworkMessages.modifiedWarningTitle(), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+				if (!modified.isEmpty()) {
+					focus().request(modified.iterator().next());
+				}
+				throw new CancelException();
+			}
+		}
+	}
+
+	private String createModifiedMessage(Set<Attribute<?>> modified) {
+		if (modified.isEmpty()) {
+			return FrameworkMessages.modifiedWarning();
+		}
+
+		return modified.stream()
+						.map(attribute -> editor.entityDefinition().attributes().definition(attribute))
+						.map(AttributeDefinition::caption)
+						.collect(Collectors.joining(", ", "", "\n\n" + FrameworkMessages.modifiedWarning()));
 	}
 
 	private boolean isInputComponent(JComponent component) {
@@ -1071,7 +1133,7 @@ public class EntityEditorPanel extends JPanel {
 		}
 	}
 
-	static final class EditComponentFocusTraversalPolicy extends LayoutFocusTraversalPolicy {
+	static final class EditorPanelFocusTraversalPolicy extends LayoutFocusTraversalPolicy {
 
 		@Override
 		public Comparator<? super Component> getComparator() {

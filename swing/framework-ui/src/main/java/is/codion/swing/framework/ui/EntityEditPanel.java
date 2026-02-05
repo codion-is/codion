@@ -21,7 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
@@ -73,7 +72,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -194,6 +192,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		this.controlsLayout = createControlsLayout();
 		validIndicator().set(configuration.validIndicator);
 		modifiedIndicator().set(configuration.modifiedIndicator);
+		modifiedWarning().set(configuration.modifiedWarning);
 		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
@@ -225,16 +224,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	 */
 	public final State active() {
 		return active;
-	}
-
-	/**
-	 * Clears the underlying edit model and requests the initial focus.
-	 * @see EntityEditModel.EntityEditor#defaults()
-	 * @see #focus()
-	 */
-	public final void clearAndRequestFocus() {
-		editModel().editor().defaults();
-		focus().initial().request();
 	}
 
 	/**
@@ -276,7 +265,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			LOG.debug("{} - initializing", this);
 			try {
 				setupControls();
-				bindEvents();
 				initializeUI();
 			}
 			finally {
@@ -622,39 +610,11 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 						.build();
 	}
 
-	private void bindEvents() {
-		editModel().editor().changing().addConsumer(this::beforeEntity);
-	}
-
 	private Collection<Attribute<?>> selectComponentAttributes() {
 		return components().keySet().stream()
 						.filter(attribute -> !configuration.excludeFromSelection.contains(attribute))
 						.filter(attribute -> componentSelectable(component(attribute).get()))
 						.collect(collectingAndThen(toList(), Collections::unmodifiableCollection));
-	}
-
-	private void beforeEntity(Entity entity) {
-		if (configuration.modifiedWarning && editModel().editor().modified().is()) {
-			Set<Attribute<?>> modified = editModel().editor().modified().attributes().get();
-			if (showConfirmDialog(this, createModifiedMessage(modified),
-							FrameworkMessages.modifiedWarningTitle(), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
-				if (!modified.isEmpty()) {
-					focus().request(modified.iterator().next());
-				}
-				throw new CancelException();
-			}
-		}
-	}
-
-	private String createModifiedMessage(Set<Attribute<?>> modified) {
-		if (modified.isEmpty()) {
-			return FrameworkMessages.modifiedWarning();
-		}
-
-		return modified.stream()
-						.map(attribute -> editModel().entityDefinition().attributes().definition(attribute))
-						.map(AttributeDefinition::caption)
-						.collect(Collectors.joining(", ", "", "\n\n" + FrameworkMessages.modifiedWarning()));
 	}
 
 	private void setupFocusActivation() {
@@ -782,16 +742,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		 */
 		public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
 						booleanValue(EntityEditPanel.class.getName() + ".useFocusActivation", true);
-
-		/**
-		 * Indicates whether the panel should ask for confirmation before discarding unsaved modifications
-		 * <ul>
-		 * <li>Value type: Boolean
-		 * <li>Default value: false
-		 * </ul>
-		 */
-		public static final PropertyValue<Boolean> MODIFIED_WARNING =
-						booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
 
 		/**
 		 * Indicates whether the panel should ask for confirmation before inserting

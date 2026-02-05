@@ -246,7 +246,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 					.build();
 	private final Event<EntityApplicationPanel<M>> exiting = Event.event();
 	private final Event<EntityApplicationPanel<M>> initializedEvent = Event.event();
-	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.getOrThrow();
+	private final boolean modifiedWarning = EntityEditorPanel.MODIFIED_WARNING.getOrThrow();
 	private final boolean userPreferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow();
 
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
