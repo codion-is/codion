@@ -179,6 +179,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 		@Override
 		public void accept(FilterTableCellEditor<C, T> cellEditor) {
 			C editorComponent = cellEditor.componentValue().component();
+			StopEditingOnEnter stopEditingOnEnter = new StopEditingOnEnter(cellEditor);
 			if (editorComponent instanceof JCheckBox) {
 				((JCheckBox) editorComponent).addActionListener(e -> cellEditor.stopCellEditing());
 			}
@@ -186,16 +187,20 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 				new ComboBoxStopEditingOnEnter(cellEditor, (JComboBox<?>) editorComponent);
 			}
 			else if (editorComponent instanceof TextFieldPanel) {
-				((TextFieldPanel) editorComponent).textField().addKeyListener(new StopEditingOnEnter(cellEditor));
+				((TextFieldPanel) editorComponent).textField().addKeyListener(stopEditingOnEnter);
 			}
 			else if (editorComponent instanceof TemporalFieldPanel<?>) {
-				((TemporalFieldPanel<?>) editorComponent).temporalField().addKeyListener(new StopEditingOnEnter(cellEditor));
+				((TemporalFieldPanel<?>) editorComponent).temporalField().addKeyListener(stopEditingOnEnter);
 			}
 			else if (editorComponent instanceof JSpinner) {
-				((JSpinner) editorComponent).getEditor().addKeyListener(new StopEditingOnEnter(cellEditor));
+				JComponent editor = ((JSpinner) editorComponent).getEditor();
+				editor.addKeyListener(stopEditingOnEnter);
+				if (editor instanceof JSpinner.DefaultEditor) {
+					((JSpinner.DefaultEditor) editor).getTextField().addKeyListener(stopEditingOnEnter);
+				}
 			}
 			else {
-				editorComponent.addKeyListener(new StopEditingOnEnter(cellEditor));
+				editorComponent.addKeyListener(stopEditingOnEnter);
 			}
 		}
 	}

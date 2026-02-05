@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.68
+### is.codion.swing.common.ui
+- DefaultFilterTableCellEditor bug fixed, stop editing on enter now works correctly for spinners.
 ### is.codion.framework.domain
 - AttributeDefinition.ValueSupplier renamed DefaultValue.
 ### is.codion.framework.model
