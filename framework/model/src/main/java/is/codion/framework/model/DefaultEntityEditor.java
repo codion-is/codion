@@ -42,8 +42,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.model.EntityEditModel.EditorValue;
-import is.codion.framework.model.EntityEditModel.EntityEditor;
 
 import org.jspecify.annotations.Nullable;
 

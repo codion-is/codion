@@ -29,9 +29,8 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditModel.EditorValue;
-import is.codion.framework.model.EntityEditModel.EntityEditor;
+import is.codion.framework.model.EntityEditor;
+import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -189,7 +188,7 @@ public class EntityEditorPanel extends JPanel {
 
 	/**
 	 * Clears the underlying edit model and requests the initial focus.
-	 * @see EntityEditModel.EntityEditor#defaults()
+	 * @see EntityEditor#defaults()
 	 * @see #focus()
 	 */
 	public final void clearAndRequestFocus() {

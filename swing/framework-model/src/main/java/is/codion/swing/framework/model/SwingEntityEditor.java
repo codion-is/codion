@@ -27,7 +27,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.DefaultEntityEditor;
-import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -40,7 +39,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Swing implementation of {@link EntityEditor}
+ * A Swing extension of {@link DefaultEntityEditor}
  */
 public final class SwingEntityEditor extends DefaultEntityEditor {
 

@@ -29,7 +29,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntityEditModel.EntityEditor;
+import is.codion.framework.model.EntityEditor;
 
 import org.junit.jupiter.api.Test;
 

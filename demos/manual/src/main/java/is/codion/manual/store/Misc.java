@@ -23,7 +23,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.model.EntityEditModel.EntityEditor;
+import is.codion.framework.model.EntityEditor;
 import is.codion.manual.store.domain.Store;
 import is.codion.manual.store.domain.Store.Customer;
 import is.codion.manual.store.model.CustomerEditModel;

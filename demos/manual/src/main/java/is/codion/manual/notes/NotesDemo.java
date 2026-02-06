@@ -32,7 +32,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
-import is.codion.framework.model.EntityEditModel.EntityEditor;
+import is.codion.framework.model.EntityEditor;
 import is.codion.plugin.flatlaf.intellij.themes.material.MaterialDarker;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;

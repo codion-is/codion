@@ -36,7 +36,7 @@ import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityConditionModel.AdditionalConditions;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditModel.EditorValue;
+import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyModelLink;

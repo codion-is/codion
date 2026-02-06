@@ -35,6 +35,7 @@ import is.codion.framework.domain.entity.exception.ValidationException.InvalidAt
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditTask;
+import is.codion.framework.model.EntityEditor;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -903,7 +904,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
 		 * @return this Config instance
 		 * @see #MODIFIED_WARNING
-		 * @see EntityEditModel.EntityEditor#modified()
+		 * @see EntityEditor#modified()
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;
