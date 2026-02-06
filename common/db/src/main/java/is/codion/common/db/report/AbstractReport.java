@@ -25,10 +25,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base class for wrapping reports, handles caching.
  * @param <T> the report type
- * @param <R> the report result type
  * @param <P> the report parameters type
+ * @param <R> the report result type
  */
-public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
+public abstract class AbstractReport<T, P, R> implements Report<T, P, R> {
 
 	/**
 	 * The path of this report, relative to any defined #{@link Report#REPORT_PATH}.

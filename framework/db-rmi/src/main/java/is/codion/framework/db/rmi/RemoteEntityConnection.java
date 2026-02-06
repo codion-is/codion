@@ -149,47 +149,47 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Executes the function with the given type with no parameter
 	 * @param functionType the function type
 	 * @param <C> the connection type
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @param <R> the return value type
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 * @throws RemoteException in case of a remote exception
 	 */
-	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws RemoteException;
+	<C extends EntityConnection, P, R> R execute(FunctionType<C, P, R> functionType) throws RemoteException;
 
 	/**
 	 * Executes the function with the given type
 	 * @param functionType the function type
 	 * @param parameter the function parameter
 	 * @param <C> the connection type
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @param <R> the return value type
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 * @throws RemoteException in case of a remote exception
 	 */
-	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T parameter) throws RemoteException;
+	<C extends EntityConnection, P, R> R execute(FunctionType<C, P, R> functionType, P parameter) throws RemoteException;
 
 	/**
 	 * Executes the procedure with the given type with no parameter
 	 * @param procedureType the procedure type
 	 * @param <C> the connection type
-	 * @param <T> the procedure parameter type
+	 * @param <P> the procedure parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 * @throws RemoteException in case of a remote exception
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws RemoteException;
+	<C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType) throws RemoteException;
 
 	/**
 	 * Executes the procedure with the given type
 	 * @param procedureType the procedure type
 	 * @param parameter the procedure parameter
 	 * @param <C> the connection type
-	 * @param <T> the procedure parameter type
+	 * @param <P> the procedure parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 * @throws RemoteException in case of a remote exception
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T parameter) throws RemoteException;
+	<C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, P parameter) throws RemoteException;
 
 	/**
 	 * Inserts the given entity, returning the primary key.
@@ -477,15 +477,15 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @param reportType the report to fill
 	 * @param parameter the report parameter, if any
 	 * @param <T> the report type
-	 * @param <R> the report result type
 	 * @param <P> the report parameters type
+	 * @param <R> the report result type
 	 * @return the filled result object
 	 * @throws DatabaseException in case of a db exception
 	 * @throws is.codion.common.db.report.ReportException in case of a report exception
 	 * @throws RemoteException in case of a remote exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
-	<T, R, P> R report(ReportType<T, R, P> reportType, P parameter) throws RemoteException;
+	<T, P, R> R report(ReportType<T, P, R> reportType, P parameter) throws RemoteException;
 
 	/**
 	 * Returns a result set iterator based on the given query condition.

@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializable {
+final class DefaultProcedureType<C, P> implements ProcedureType<C, P>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;

@@ -283,7 +283,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T parameter) {
+	public <C extends EntityConnection, P, R> R execute(FunctionType<C, P, R> functionType, P parameter) {
 		requireNonNull(functionType);
 		synchronized (httpClient) {
 			try {
@@ -302,7 +302,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T parameter) {
+	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, P parameter) {
 		requireNonNull(procedureType);
 		synchronized (httpClient) {
 			try {
@@ -321,7 +321,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public <T, R, P> R report(ReportType<T, R, P> reportType, P parameter) {
+	public <T, P, R> R report(ReportType<T, P, R> reportType, P parameter) {
 		requireNonNull(reportType);
 		synchronized (httpClient) {
 			try {

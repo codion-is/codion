@@ -66,7 +66,7 @@ public final class Store extends DomainModel {
 		Column<String> EMAIL = TYPE.stringColumn("email");
 		Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
 
-		ReportType<JasperReport, JasperPrint, Map<String, Object>> REPORT =
+		ReportType<JasperReport, Map<String, Object>, JasperPrint> REPORT =
 						JasperReports.reportType("customer_report");
 	}
 

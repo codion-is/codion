@@ -209,53 +209,53 @@ public final class EntityObjectMapper extends ObjectMapper {
 
 	/**
 	 * @param procedureType the procedure type
-	 * @param <T> the procedure parameter type
+	 * @param <P> the procedure parameter type
 	 * @return the {@link ParameterType} for the given procedure
 	 */
-	public <T> ParameterType<T> parameter(ProcedureType<?, T> procedureType) {
-		return (ParameterType<T>) procedureParameters.computeIfAbsent(requireNonNull(procedureType),
+	public <P> ParameterType<P> parameter(ProcedureType<?, P> procedureType) {
+		return (ParameterType<P>) procedureParameters.computeIfAbsent(requireNonNull(procedureType),
 						k -> new DefaultParameterType<>("procedure: " + procedureType.name()));
 	}
 
 	/**
 	 * @param functionType the function type
-	 * @param <T> the function parameter type
+	 * @param <P> the function parameter type
 	 * @return the {@link ParameterType} for the given function
 	 */
-	public <T> ParameterType<T> parameter(FunctionType<?, T, ?> functionType) {
-		return (ParameterType<T>) functionParameters.computeIfAbsent(requireNonNull(functionType),
+	public <P> ParameterType<P> parameter(FunctionType<?, P, ?> functionType) {
+		return (ParameterType<P>) functionParameters.computeIfAbsent(requireNonNull(functionType),
 						k -> new DefaultParameterType<>("function: " + functionType.name()));
 	}
 
 	/**
 	 * @param reportType the report type
-	 * @param <T> the report parameter type
+	 * @param <P> the report parameter type
 	 * @return the {@link ParameterType} for the given report
 	 */
-	public <T> ParameterType<T> parameter(ReportType<?, ?, T> reportType) {
-		return (ParameterType<T>) reportParameters.computeIfAbsent(requireNonNull(reportType),
+	public <P> ParameterType<P> parameter(ReportType<?, P, ?> reportType) {
+		return (ParameterType<P>) reportParameters.computeIfAbsent(requireNonNull(reportType),
 						k -> new DefaultParameterType<>("report: " + reportType.name()));
 	}
 
 	/**
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 */
-	public sealed interface ParameterType<T> {
+	public sealed interface ParameterType<P> {
 
 		/**
 		 * @param type the type
 		 */
-		void set(TypeReference<T> type);
+		void set(TypeReference<P> type);
 
 		/**
 		 * @param type the type
 		 */
-		void set(Class<T> type);
+		void set(Class<P> type);
 
 		/**
 		 * @return the type
 		 */
-		Class<T> get();
+		Class<P> get();
 	}
 
 	/**
@@ -267,23 +267,23 @@ public final class EntityObjectMapper extends ObjectMapper {
 		return new EntityObjectMapper(entities);
 	}
 
-	private static final class DefaultParameterType<T> implements ParameterType<T> {
+	private static final class DefaultParameterType<P> implements ParameterType<P> {
 
 		private final String identifier;
 
-		private Class<T> type;
+		private Class<P> type;
 
 		private DefaultParameterType(String identifier) {
 			this.identifier = identifier;
 		}
 
 		@Override
-		public void set(TypeReference<T> type) {
+		public void set(TypeReference<P> type) {
 			set(rawType(requireNonNull(type)));
 		}
 
 		@Override
-		public void set(Class<T> type) {
+		public void set(Class<P> type) {
 			if (this.type != null) {
 				throw new IllegalStateException("Type already set for " + identifier);
 			}
@@ -291,7 +291,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 		}
 
 		@Override
-		public Class<T> get() {
+		public Class<P> get() {
 			if (type == null) {
 				throw new IllegalStateException("Type not set for " + identifier);
 			}

@@ -617,12 +617,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType) {
+	public <C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType) {
 		return execute(functionType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T parameter) {
+	public <C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType, @Nullable P parameter) {
 		requireNonNull(functionType, "functionType may not be null");
 		Exception exception = null;
 		tracer.enter(EXECUTE, functionType, parameter);
@@ -643,12 +643,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) {
+	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType) {
 		execute(procedureType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T parameter) {
+	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, @Nullable P parameter) {
 		requireNonNull(procedureType, "procedureType may not be null");
 		Exception exception = null;
 		tracer.enter(EXECUTE, procedureType, parameter);
@@ -670,7 +670,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public <T, R, P> R report(ReportType<T, R, P> reportType, P parameter) {
+	public <T, P, R> R report(ReportType<T, P, R> reportType, P parameter) {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
 		tracer.enter(REPORT, reportType, parameter);

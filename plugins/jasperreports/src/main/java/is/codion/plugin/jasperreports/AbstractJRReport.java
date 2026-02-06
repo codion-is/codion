@@ -31,7 +31,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractJRReport extends AbstractReport<JasperReport, JasperPrint, Map<String, Object>> implements JRReport {
+abstract class AbstractJRReport extends AbstractReport<JasperReport, Map<String, Object>, JasperPrint> implements JRReport {
 
 	protected AbstractJRReport(String reportPath, boolean cacheReport) {
 		super(reportPath, cacheReport);

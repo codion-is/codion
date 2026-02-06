@@ -212,43 +212,43 @@ public interface EntityConnection extends AutoCloseable {
 	 * Executes the function with the given type with no parameter
 	 * @param functionType the function type
 	 * @param <C> the connection type
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @param <R> the return value type
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType);
+	<C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType);
 
 	/**
 	 * Executes the function with the given type
 	 * @param functionType the function type
 	 * @param parameter the function parameter
 	 * @param <C> the connection type
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @param <R> the return value type
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T parameter);
+	<C extends EntityConnection, P, R> @Nullable R execute(FunctionType<C, P, R> functionType, @Nullable P parameter);
 
 	/**
 	 * Executes the procedure with the given type with no parameter
 	 * @param procedureType the procedure type
 	 * @param <C> the connection type
-	 * @param <T> the procedure parameter type
+	 * @param <P> the procedure parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType);
+	<C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType);
 
 	/**
 	 * Executes the procedure with the given type
 	 * @param procedureType the procedure type
 	 * @param parameter the procedure parameter
 	 * @param <C> the connection type
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T parameter);
+	<C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, @Nullable P parameter);
 
 	/**
 	 * Inserts the given entity, returning the primary key.
@@ -576,14 +576,14 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param reportType the report to fill
 	 * @param parameter the report parameter, if any
 	 * @param <T> the report type
-	 * @param <R> the report result type
 	 * @param <P> the report parameters type
+	 * @param <R> the report result type
 	 * @return the filled result object
 	 * @throws DatabaseException in case of a database exception
 	 * @throws is.codion.common.db.report.ReportException in case of a report exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
-	<T, R, P> R report(ReportType<T, R, P> reportType, @Nullable P parameter);
+	<T, P, R> R report(ReportType<T, P, R> reportType, @Nullable P parameter);
 
 	/**
 	 * Returns a result set iterator based on the given query condition.

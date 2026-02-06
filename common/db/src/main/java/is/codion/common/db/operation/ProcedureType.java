@@ -20,9 +20,9 @@ package is.codion.common.db.operation;
 
 /**
  * @param <C> the connection type
- * @param <T> the procedure parameter type
+ * @param <P> the procedure parameter type
  */
-public interface ProcedureType<C, T> {
+public interface ProcedureType<C, P> {
 
 	/**
 	 * @return the procedure name
@@ -33,10 +33,10 @@ public interface ProcedureType<C, T> {
 	 * Creates a {@link ProcedureType} with the given name and types.
 	 * @param name the name
 	 * @param <C> the connection type
-	 * @param <T> the procedure parameter type
+	 * @param <P> the procedure parameter type
 	 * @return a new {@link ProcedureType}
 	 */
-	static <C, T> ProcedureType<C, T> procedureType(String name) {
+	static <C, P> ProcedureType<C, P> procedureType(String name) {
 		return new DefaultProcedureType<>(name);
 	}
 }

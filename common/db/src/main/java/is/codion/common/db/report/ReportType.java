@@ -22,10 +22,10 @@ package is.codion.common.db.report;
  * Identifies a report.
  * A factory for {@link ReportType} instances.
  * @param <T> the report type
- * @param <R> the report result type
  * @param <P> the report parameters type
+ * @param <R> the report result type
  */
-public interface ReportType<T, R, P> {
+public interface ReportType<T, P, R> {
 
 	/**
 	 * @return the report name
@@ -36,11 +36,11 @@ public interface ReportType<T, R, P> {
 	 * Instantiates a new Report instance with the given name.
 	 * @param name the report name
 	 * @param <T> the report type
-	 * @param <R> the report result type
 	 * @param <P> the report parameters type
+	 * @param <R> the report result type
 	 * @return a report
 	 */
-	static <T, R, P> ReportType<T, R, P> reportType(String name) {
+	static <T, P, R> ReportType<T, P, R> reportType(String name) {
 		return new DefaultReportType<>(name);
 	}
 }

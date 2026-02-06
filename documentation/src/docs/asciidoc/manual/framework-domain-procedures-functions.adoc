@@ -34,7 +34,7 @@ TIP: Transaction control should be external to procedures and functions. Let the
 Procedures and functions are defined as constants within the domain API, typically in the same interface that defines the related entity. The type parameters specify:
 
 * `C` - The connection type (usually `EntityConnection`)
-* `T` - The argument type (can be `Void` for no argument)
+* `P` - The parameter type (can be `Void` for no parameter)
 * `R` - The return type (functions only)
 
 === Function with Custom Parameter Object

@@ -280,7 +280,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 === Function
 
 ** {url-entity-connection}#execute(is.codion.common.db.operation.FunctionType)[execute(FunctionType functionType)]
-** {url-entity-connection}#execute(is.codion.common.db.operation.FunctionType,T)[execute(FunctionType functionType, T argument)]
+** {url-entity-connection}#execute(is.codion.common.db.operation.FunctionType,P)[execute(FunctionType functionType, P parameter)]
 
 [source,java,indent=0]
 ----
@@ -290,7 +290,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 === Procedure
 
 ** {url-entity-connection}#execute(is.codion.common.db.operation.ProcedureType)[execute(ProcedureType procedureType)]
-** {url-entity-connection}#execute(is.codion.common.db.operation.ProcedureType,T)[execute(ProcedureType procedureType, T argument)]
+** {url-entity-connection}#execute(is.codion.common.db.operation.ProcedureType,P)[execute(ProcedureType procedureType, P parameter)]
 
 [source,java,indent=0]
 ----

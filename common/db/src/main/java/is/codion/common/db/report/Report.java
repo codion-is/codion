@@ -31,10 +31,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * A wrapper for a report
  * @param <T> the report type
- * @param <R> the report result type
  * @param <P> the report parameters type
+ * @param <R> the report result type
  */
-public interface Report<T, R, P> {
+public interface Report<T, P, R> {
 
 	/**
 	 * The report path used for file based report generation.

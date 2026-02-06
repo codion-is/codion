@@ -32,7 +32,7 @@ final class DefaultJRReportType implements JRReportType, Serializable {
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final ReportType<JasperReport, JasperPrint, Map<String, Object>> reportType;
+	private final ReportType<JasperReport, Map<String, Object>, JasperPrint> reportType;
 
 	DefaultJRReportType(String name) {
 		this.reportType = ReportType.reportType(name);

@@ -91,8 +91,8 @@ public abstract class DomainModel implements Domain {
 	}
 
 	@Override
-	public final <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {
-		Report<T, R, P> report = domainReports.report(reportType);
+	public final <T, P, R> Report<T, P, R> report(ReportType<T, P, R> reportType) {
+		Report<T, P, R> report = domainReports.report(reportType);
 		if (report == null) {
 			throw new IllegalArgumentException("Undefined report: " + reportType);
 		}
@@ -101,12 +101,12 @@ public abstract class DomainModel implements Domain {
 	}
 
 	@Override
-	public final <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType) {
+	public final <C, P> DatabaseProcedure<C, P> procedure(ProcedureType<C, P> procedureType) {
 		return domainProcedures.procedure(procedureType);
 	}
 
 	@Override
-	public final <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType) {
+	public final <C, P, R> DatabaseFunction<C, P, R> function(FunctionType<C, P, R> functionType) {
 		return domainFunctions.function(functionType);
 	}
 
@@ -125,12 +125,12 @@ public abstract class DomainModel implements Domain {
 	 * @param reportType the report to add
 	 * @param report the actual report to associate with the report type
 	 * @param <T> the report type
-	 * @param <R> the report result type
 	 * @param <P> the report parameters type
+	 * @param <R> the report result type
 	 * @throws RuntimeException in case loading the report failed
 	 * @throws IllegalArgumentException in case the report has already been added
 	 */
-	protected final <T, R, P> void add(ReportType<T, R, P> reportType, Report<T, R, P> report) {
+	protected final <T, P, R> void add(ReportType<T, P, R> reportType, Report<T, P, R> report) {
 		domainReports.addReport(reportType, report);
 	}
 
@@ -139,10 +139,10 @@ public abstract class DomainModel implements Domain {
 	 * @param procedureType the procedure type to identify the procedure
 	 * @param procedure the procedure to add
 	 * @param <C> the connection type
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @throws IllegalArgumentException in case a procedure has already been associated with the given type
 	 */
-	protected final <C, T> void add(ProcedureType<C, T> procedureType, DatabaseProcedure<C, T> procedure) {
+	protected final <C, P> void add(ProcedureType<C, P> procedureType, DatabaseProcedure<C, P> procedure) {
 		domainProcedures.addProcedure(procedureType, procedure);
 	}
 
@@ -151,11 +151,11 @@ public abstract class DomainModel implements Domain {
 	 * @param functionType the function type to identify the function
 	 * @param function the function to add
 	 * @param <C> the connection type
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @param <R> the result type
 	 * @throws IllegalArgumentException in case a function has already been associated with the given type
 	 */
-	protected final <C, T, R> void add(FunctionType<C, T, R> functionType, DatabaseFunction<C, T, R> function) {
+	protected final <C, P, R> void add(FunctionType<C, P, R> functionType, DatabaseFunction<C, P, R> function) {
 		domainFunctions.addFunction(functionType, function);
 	}
 
@@ -266,8 +266,8 @@ public abstract class DomainModel implements Domain {
 			procedures.put(procedureType, requireNonNull(procedure));
 		}
 
-		private <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType) {
-			DatabaseProcedure<C, T> operation = (DatabaseProcedure<C, T>) procedures.get(requireNonNull(procedureType));
+		private <C, P> DatabaseProcedure<C, P> procedure(ProcedureType<C, P> procedureType) {
+			DatabaseProcedure<C, P> operation = (DatabaseProcedure<C, P>) procedures.get(requireNonNull(procedureType));
 			if (operation == null) {
 				throw new IllegalArgumentException("Procedure not found: " + procedureType);
 			}
@@ -288,8 +288,8 @@ public abstract class DomainModel implements Domain {
 			functions.put(functionType, requireNonNull(function));
 		}
 
-		private <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType) {
-			DatabaseFunction<C, T, R> operation = (DatabaseFunction<C, T, R>) functions.get(requireNonNull(functionType));
+		private <C, P, R> DatabaseFunction<C, P, R> function(FunctionType<C, P, R> functionType) {
+			DatabaseFunction<C, P, R> operation = (DatabaseFunction<C, P, R>) functions.get(requireNonNull(functionType));
 			if (operation == null) {
 				throw new IllegalArgumentException("Function not found: " + functionType);
 			}
@@ -302,7 +302,7 @@ public abstract class DomainModel implements Domain {
 
 		private final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports = new HashMap<>();
 
-		private <T, R, P> void addReport(ReportType<T, R, P> reportType, Report<T, R, P> report) {
+		private <T, P, R> void addReport(ReportType<T, P, R> reportType, Report<T, P, R> report) {
 			if (reports.containsKey(requireNonNull(reportType))) {
 				throw new IllegalArgumentException("Report has already been defined: " + reportType);
 			}
@@ -310,8 +310,8 @@ public abstract class DomainModel implements Domain {
 			reports.put(reportType, report);
 		}
 
-		private <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {
-			return (Report<T, R, P>) reports.get(requireNonNull(reportType));
+		private <T, P, R> Report<T, P, R> report(ReportType<T, P, R> reportType) {
+			return (Report<T, P, R>) reports.get(requireNonNull(reportType));
 		}
 	}
 }

@@ -56,7 +56,7 @@ public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
-	public static final ReportType<Object, String, Map<String, Object>> REPORT = ReportType.reportType("report");
+	public static final ReportType<Object, Map<String, Object>, String> REPORT = ReportType.reportType("report");
 
 	public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 	public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
@@ -74,7 +74,7 @@ public final class TestDomain extends DomainModel {
 		job();
 		noPkEntity();
 		Report.REPORT_PATH.set("path/to/reports");
-		add(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path", false) {
+		add(REPORT, new AbstractReport<Object, Map<String, Object>, String>("report.path", false) {
 			@Override
 			public String fill(Connection connection, Map<String, Object> parameters) {
 				return "result";

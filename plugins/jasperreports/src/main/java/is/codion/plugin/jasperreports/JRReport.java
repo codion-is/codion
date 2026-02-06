@@ -28,4 +28,4 @@ import java.util.Map;
 /**
  * A JasperReport.
  */
-public interface JRReport extends Report<JasperReport, JasperPrint, Map<String, Object>> {}
+public interface JRReport extends Report<JasperReport, Map<String, Object>, JasperPrint> {}

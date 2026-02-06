@@ -72,34 +72,34 @@ public interface Domain {
 	/**
 	 * Retrieves the report of the given type.
 	 * @param <T> the report type
-	 * @param <R> the report result type
 	 * @param <P> the report parameters type
+	 * @param <R> the report result type
 	 * @param reportType the report type
 	 * @return the report
 	 * @throws IllegalArgumentException in case the report is not found
 	 */
-	<T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType);
+	<T, P, R> Report<T, P, R> report(ReportType<T, P, R> reportType);
 
 	/**
 	 * Retrieves the procedure of the given type.
 	 * @param <C> the type of the database connection this procedure requires
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @param procedureType the procedure type
 	 * @return the procedure
 	 * @throws IllegalArgumentException in case the procedure is not found
 	 */
-	<C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType);
+	<C, P> DatabaseProcedure<C, P> procedure(ProcedureType<C, P> procedureType);
 
 	/**
 	 * Retrieves the function of the given type.
 	 * @param <C> the type of the database connection this function requires
-	 * @param <T> the parameter type
+	 * @param <P> the parameter type
 	 * @param <R> the result type
 	 * @param functionType the function type
 	 * @return the function
 	 * @throws IllegalArgumentException in case the function is not found
 	 */
-	<C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType);
+	<C, P, R> DatabaseFunction<C, P, R> function(FunctionType<C, P, R> functionType);
 
 	/**
 	 * Configures a database connection for applications using this domain model, for example adding extensions or properties.
