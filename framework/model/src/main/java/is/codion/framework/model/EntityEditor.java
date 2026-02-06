@@ -154,9 +154,9 @@ public interface EntityEditor extends Observable<Entity> {
 	Observer<Attribute<?>> valueChanged();
 
 	/**
-	 * @return an {@link ObservableState} indicating whether the primary key of the entity is null
+	 * @return an {@link ObservableState} indicating whether the value of the entity primary key is present
 	 */
-	ObservableState primaryKeyNull();
+	ObservableState primaryKeyPresent();
 
 	/**
 	 * @return an {@link ObservableState} indicating the valid status of the underlying Entity.

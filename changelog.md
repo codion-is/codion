@@ -12,6 +12,7 @@ Codion Change Log
 - EntityEditor.SearchModels added.
 - EntityEditor.replace() added, DefaultEntityEditor.setOrDefaults() now private.
 - EntityEditModel.EntityEditor moved up to package level, EntityEditModel.EditorValue moved to EntityEditor.
+- EntityEditor.primaryKeyNull() replaced with primaryKeyPresent().
 ### is.codion.swing.framework.model
 - SwingEntityEditModel.createComboBoxModel() memory leak bug fixed, refresh listener now only handles managed column combo box models, related refactoring.
 - SwingEntityEditor added along with SwingEditorModels.

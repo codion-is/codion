@@ -245,10 +245,10 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void test() {
-		ObservableState primaryKeyNullState = editor.primaryKeyNull();
+		ObservableState primaryKeyPresentState = editor.primaryKeyPresent();
 		ObservableState entityExistsState = editor.exists();
 
-		assertTrue(primaryKeyNullState.is());
+		assertFalse(primaryKeyPresentState.is());
 		assertFalse(entityExistsState.is());
 
 		Consumer<Object> consumer = data -> {};
@@ -268,7 +268,7 @@ public final class DefaultEntityEditModelTest {
 
 		Entity employee = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		editor.set(employee);
-		assertFalse(primaryKeyNullState.is());
+		assertTrue(primaryKeyPresentState.is());
 		assertTrue(entityExistsState.is());
 
 		assertTrue(editor.get().equalValues(employee), "Active entity is not equal to the entity just set");
@@ -284,9 +284,9 @@ public final class DefaultEntityEditModelTest {
 
 		Integer originalEmployeeId = editor.value(Employee.ID).get();
 		editor.value(Employee.ID).clear();
-		assertTrue(primaryKeyNullState.is());
+		assertFalse(primaryKeyPresentState.is());
 		editor.value(Employee.ID).set(originalEmployeeId);
-		assertFalse(primaryKeyNullState.is());
+		assertTrue(primaryKeyPresentState.is());
 
 		editor.defaults();
 		assertFalse(entityExistsState.is());

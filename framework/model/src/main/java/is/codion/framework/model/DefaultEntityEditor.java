@@ -63,6 +63,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * A default {@link EntityEditor} implementation.
+ */
 public class DefaultEntityEditor implements EntityEditor {
 
 	private static final ValueSupplier INITIAL_VALUE = new InitialValue();
@@ -81,7 +84,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
-	private final State primaryKeyNull = State.state(true);
+	private final State primaryKeyPresent = State.state(false);
 	private final State entityValid = State.state();
 	private final DefaultExists exists;
 	private final DefaultModified modified;
@@ -211,8 +214,8 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public final ObservableState primaryKeyNull() {
-		return primaryKeyNull.observable();
+	public final ObservableState primaryKeyPresent() {
+		return primaryKeyPresent.observable();
 	}
 
 	@Override
@@ -262,7 +265,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		return searchModels;
 	}
 
-	private final void setOrDefaults(@Nullable Entity entity) {
+	private void setOrDefaults(@Nullable Entity entity) {
 		Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
 		for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
 			notifyValueChange(affectedAttribute);
@@ -322,7 +325,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		exists.update();
 		modified.update();
 		updateEntityValidState();
-		updatePrimaryKeyNullState();
+		updatePrimaryKeyPresentState();
 	}
 
 	private void updateAttributeStates(Attribute<?> attribute) {
@@ -367,8 +370,8 @@ public class DefaultEntityEditor implements EntityEditor {
 		state.set(isValid(attribute));
 	}
 
-	private void updatePrimaryKeyNullState() {
-		primaryKeyNull.set(entity.primaryKey().isNull());
+	private void updatePrimaryKeyPresentState() {
+		primaryKeyPresent.set(!entity.primaryKey().isNull());
 	}
 
 	/**
