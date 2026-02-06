@@ -20,6 +20,9 @@ package is.codion.tools.jul.classpath;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 
 import static java.util.logging.LogManager.getLogManager;
 
@@ -98,6 +101,30 @@ import static java.util.logging.LogManager.getLogManager;
  * java.util.logging.SimpleFormatter.format=%1$tF %1$tT %4$s: %5$s%n
  * }</pre>
  *
+ * <h2>Automatic Directory Creation</h2>
+ * <p>
+ * Java's {@link java.util.logging.FileHandler} does not create parent directories for log file patterns.
+ * A pattern like {@code ./log/serialization.log} will fail silently if the {@code log/} directory does not exist.
+ * This class automatically creates the necessary parent directories when a
+ * {@code java.util.logging.FileHandler.pattern} property is configured.
+ * <p>
+ * The standard JUL pattern substitutions are resolved before creating directories:
+ * <ul>
+ * <li>{@code %h} - the value of {@code user.home}</li>
+ * <li>{@code %t} - the value of {@code java.io.tmpdir}</li>
+ * <li>{@code %%} - a literal {@code %}</li>
+ * </ul>
+ * <p>
+ * Safety checks are applied to prevent accidental misconfiguration:
+ * <ul>
+ * <li>Absolute paths are only allowed when originating from {@code %h} or {@code %t} substitution</li>
+ * <li>Relative paths that escape the working directory via {@code ..} are rejected</li>
+ * <li>Directory depth is limited to 10 levels</li>
+ * </ul>
+ * <p>
+ * This behavior is enabled by default and can be disabled by setting the system property
+ * {@code is.codion.tools.jul.classpath.createDirectories} to {@code false}.
+ *
  * <h2>Benefits</h2>
  *
  * <ul>
@@ -113,6 +140,9 @@ public final class ClasspathConfiguration {
 
 	private static final String CONFIGURATION_FILE = "java.util.logging.config.file";
 	private static final String UNABLE_TO_CONFIGURE = "Unable to configure java.util.logging from classpath: ";
+	private static final String CREATE_DIRECTORIES = "is.codion.tools.jul.classpath.createDirectories";
+	private static final String HOME_DIR = "%h";
+	private static final String TMP_DIR = "%t";
 
 	/**
 	 * Constructs a new ClasspathConfiguration and immediately loads the configuration file
@@ -143,10 +173,56 @@ public final class ClasspathConfiguration {
 			else {
 				getLogManager().readConfiguration(inputStream);
 				System.out.println("Loaded java.util.logging configuration from classpath: " + configFile);
+				String fileHandlerPattern = getLogManager().getProperty("java.util.logging.FileHandler.pattern");
+				if (fileHandlerPattern != null && "true".equalsIgnoreCase(System.getProperty(CREATE_DIRECTORIES, "true"))) {
+					createDirectories(fileHandlerPattern);
+				}
 			}
 		}
 		catch (IOException exception) {
 			System.err.println(UNABLE_TO_CONFIGURE + configFile + " - " + exception.getMessage());
 		}
+	}
+
+	private static void createDirectories(String pattern) {
+		try {
+			Path path = Path.of(resolvePattern(pattern)).getParent();
+			if (path == null) {
+				return;
+			}
+			Path normalized = path.normalize();
+			if (isUnsafePath(pattern, normalized)) {
+				System.err.println("Refusing to create log directory, path escapes base directory: " + pattern);
+				return;
+			}
+			if (normalized.getNameCount() > 10) {
+				System.err.println("Refusing to create log directory, path too deep: " + pattern);
+				return;
+			}
+			Files.createDirectories(normalized);
+			System.out.println("Created log directory: " + normalized);
+		}
+		catch (InvalidPathException exception) {
+			System.err.println("Invalid log file path: " + pattern + " - " + exception.getMessage());
+		}
+		catch (SecurityException | IOException exception) {
+			System.err.println("Unable to create log directory for: " + pattern + " - " + exception.getMessage());
+		}
+	}
+
+	private static boolean isUnsafePath(String pattern, Path normalized) {
+		if (normalized.isAbsolute()) {
+			return !pattern.startsWith(HOME_DIR) && !pattern.startsWith(TMP_DIR);
+		}
+
+		return normalized.startsWith("..");
+	}
+
+	private static String resolvePattern(String pattern) {
+		return pattern
+						.replace("%%", "\0")
+						.replace(HOME_DIR, System.getProperty("user.home"))
+						.replace(TMP_DIR, System.getProperty("java.io.tmpdir"))
+						.replace("\0", "%");
 	}
 }

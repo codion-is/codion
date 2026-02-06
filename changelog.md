@@ -27,6 +27,8 @@ Codion Change Log
 - EntityEditComponentPanel renamed EntityEditorPanel.
 - EntityEditPanel, modified warning moved to EntityEditorPanel.
 - EntityEditPanel.clearAndRequestFocus() moved to EntityEditorPanel.
+### is.codion.tools.jul.classpath
+- Automatic directory creation implemented in ClasspathConfiguration.
 
 ## 0.18.67
 ### is.codion.common.reactive
