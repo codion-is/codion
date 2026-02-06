@@ -30,7 +30,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
-import is.codion.swing.framework.model.SwingEntityEditor.DefaultSwingEditorModels;
+import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityApplication;
@@ -170,13 +170,13 @@ public final class EmployeesMinimalApp {
 	public static final class EmployeeEditModel extends SwingEntityEditModel {
 
 		public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
-			super(Employee.TYPE, connectionProvider, new EmployeeEditorModels());
+			super(Employee.TYPE, connectionProvider, new EmployeeComponentModels());
 			//initialize the combo box models now, otherwise it happens
 			//during UI initialization when the combo boxes are created
 			editor().comboBoxModels().initialize(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
 		}
 
-		private static final class EmployeeEditorModels extends DefaultSwingEditorModels {
+		private static final class EmployeeComponentModels extends SwingComponentModels {
 
 			/**
 			 * We override this method to add a query condition to the manager combo box model

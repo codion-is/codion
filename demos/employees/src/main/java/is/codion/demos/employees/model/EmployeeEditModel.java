@@ -23,7 +23,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
-import is.codion.swing.framework.model.SwingEntityEditor.DefaultSwingEditorModels;
+import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Objects;
@@ -35,12 +35,12 @@ import static java.util.Collections.singleton;
 public final class EmployeeEditModel extends SwingEntityEditModel {
 
 	public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
-		super(Employee.TYPE, connectionProvider, new EmployeeComboBoxModels());
+		super(Employee.TYPE, connectionProvider, new EmployeeComponentModels());
 		editor().comboBoxModels().initialize(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
 	}
 	// end::constructor[]
 
-	private static final class EmployeeComboBoxModels extends DefaultSwingEditorModels {
+	private static final class EmployeeComponentModels extends SwingComponentModels {
 
 		// tag::createComboBoxModel[]
 		// Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president

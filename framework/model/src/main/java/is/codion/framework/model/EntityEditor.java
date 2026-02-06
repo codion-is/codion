@@ -250,9 +250,9 @@ public interface EntityEditor extends Observable<Entity> {
 	}
 
 	/**
-	 * Provides data models for editor components.
+	 * Provides models for editor components requiring database access.
 	 */
-	interface EditorModels {
+	interface ComponentModels {
 
 		/**
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,

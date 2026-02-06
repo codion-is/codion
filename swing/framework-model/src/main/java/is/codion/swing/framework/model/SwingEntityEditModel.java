@@ -22,8 +22,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DefaultEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.framework.model.SwingEntityEditor.DefaultSwingEditorModels;
-import is.codion.swing.framework.model.SwingEntityEditor.SwingEditorModels;
+import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 
 /**
  * A Swing implementation of {@link EntityEditModel}.
@@ -36,17 +35,17 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
 	 */
 	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(entityType, connectionProvider, new DefaultSwingEditorModels());
+		this(entityType, connectionProvider, new SwingComponentModels());
 	}
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
 	 * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
-	 * @param editorModels the editor models
+	 * @param componentModels the component models
 	 */
-	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider, SwingEditorModels editorModels) {
-		super(new SwingEntityEditor(entityType, connectionProvider, editorModels));
+	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider, SwingComponentModels componentModels) {
+		super(new SwingEntityEditor(entityType, connectionProvider, componentModels));
 		afterInsertUpdateOrDelete().addListener(editor().comboBoxModels()::refreshColumnComboBoxModels);
 	}
 

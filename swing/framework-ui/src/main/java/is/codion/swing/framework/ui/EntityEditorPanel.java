@@ -98,6 +98,7 @@ import java.util.stream.Collectors;
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -552,7 +553,7 @@ public class EntityEditorPanel extends JPanel {
 	}
 
 	/**
-	 * Creates a builder for a combo boxe, containing the values of the given column.
+	 * Creates a builder for a combo box, containing the values of the given column.
 	 * @param column the column for which to build a combo box
 	 * @param <C> the component type
 	 * @param <T> the value type
@@ -560,9 +561,23 @@ public class EntityEditorPanel extends JPanel {
 	 * @return a combo box builder
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createComboBox(Column<T> column) {
-		FilterComboBoxModel<T> comboBoxModel = editor.comboBoxModels().get(column);
+		return component(column).set((B) entityComponents.comboBox(column, editor.comboBoxModels().get(column)))
+						.onSetVisible(EntityEditorPanel::refreshIfCleared);
+	}
 
-		return component(column).set((B) entityComponents.comboBox(column, comboBoxModel))
+	/**
+	 * Creates a builder for an enum based combo box.
+	 * @param column the column for which to build a combo box
+	 * @param <C> the component type
+	 * @param <T> the value type
+	 * @param <B> the builder type
+	 * @return a combo box builder
+	 */
+	protected final <T extends Enum<T>, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createEnumComboBox(Column<T> column) {
+		return component(column).set((B) entityComponents.comboBox(column, FilterComboBoxModel.builder()
+										.items(asList(column.type().valueClass().getEnumConstants()))
+										.includeNull(editor.nullable(column))
+										.build()))
 						.onSetVisible(EntityEditorPanel::refreshIfCleared);
 	}
 

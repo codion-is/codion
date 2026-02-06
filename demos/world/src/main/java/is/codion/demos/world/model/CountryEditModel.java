@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
-import is.codion.swing.framework.model.SwingEntityEditor.DefaultSwingEditorModels;
+import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Objects;
@@ -37,7 +37,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	private final Value<Double> averageCityPopulation = Value.nullable();
 
 	CountryEditModel(EntityConnectionProvider connectionProvider) {
-		super(Country.TYPE, connectionProvider, new CountryEditorModels());
+		super(Country.TYPE, connectionProvider, new CountryComponentModels());
 		editor().addConsumer(this::setAverageCityPopulation);
 	}
 
@@ -50,7 +50,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 						connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE)));
 	}
 
-	private static final class CountryEditorModels extends DefaultSwingEditorModels {
+	private static final class CountryComponentModels extends SwingComponentModels {
 
 		@Override
 		public void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel, SwingEntityEditor editor) {

@@ -26,8 +26,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
-import is.codion.framework.model.test.TestDomain.EnumEntity;
-import is.codion.framework.model.test.TestDomain.EnumEntity.EnumType;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -97,16 +95,5 @@ public class SwingEntityEditModelTest {
 		assertFalse(employeeEditModel.editor().comboBoxModels().get(Employee.JOB).items().cleared());
 		assertFalse(employeeEditModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK).items().cleared());
 		assertFalse(employeeEditModel.editor().comboBoxModels().get(Employee.MGR_FK).items().cleared());
-	}
-
-	@Test
-	void enumComboBoxModel() {
-		SwingEntityEditModel editModel = new SwingEntityEditModel(EnumEntity.TYPE, CONNECTION_PROVIDER);
-		FilterComboBoxModel<EnumType> comboBoxModel = editModel.editor().comboBoxModels().get(EnumEntity.ENUM_TYPE);
-		comboBoxModel.items().refresh();
-		assertEquals(4, comboBoxModel.getSize());
-		for (EnumType enumType : EnumType.values()) {
-			assertTrue(comboBoxModel.items().contains(enumType));
-		}
 	}
 }

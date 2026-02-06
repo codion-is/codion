@@ -89,7 +89,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	private final DefaultExists exists;
 	private final DefaultModified modified;
 	private final Value<EntityValidator> validator;
-	private final EditorModels editorModels;
+	private final ComponentModels componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
 
 	private final Entity entity;
@@ -100,19 +100,19 @@ public class DefaultEntityEditor implements EntityEditor {
 	 * @param connectionProvider the connection provider
 	 */
 	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(entityType, connectionProvider, new DefaultEditorModels());
+		this(entityType, connectionProvider, new DefaultComponentModels());
 	}
 
 	/**
 	 * Instantiates a new {@link DefaultEntityEditor}
 	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
-	 * @param editorModels the editor models
+	 * @param componentModels the editor models
 	 */
-	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider, EditorModels editorModels) {
+	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider, ComponentModels componentModels) {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
-		this.editorModels = requireNonNull(editorModels);
+		this.componentModels = requireNonNull(componentModels);
 		this.entity = createEntity(INITIAL_VALUE);
 		this.exists = new DefaultExists(entityDefinition);
 		this.modified = new DefaultModified();
@@ -278,13 +278,6 @@ public class DefaultEntityEditor implements EntityEditor {
 		changed.accept(entity);
 	}
 
-	/**
-	 * @return the {@link EditorModels} instance
-	 */
-	protected EditorModels editorModels() {
-		return editorModels;
-	}
-
 	private <T> @Nullable T defaultValue(AttributeDefinition<T> attributeDefinition) {
 		if (value(attributeDefinition.attribute()).persist().is()) {
 			if (attributeDefinition instanceof ForeignKeyDefinition) {
@@ -436,9 +429,10 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	/**
-	 * A default {@link EditorModels} implementation.
+	 * <p>A default {@link ComponentModels} implementation providing foreign key based {@link EntitySearchModel}.
+	 * <p>Override to customize search model behaviour.
 	 */
-	public static class DefaultEditorModels implements EditorModels {
+	public static class DefaultComponentModels implements ComponentModels {
 
 		@Override
 		public EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityEditor editor) {
@@ -464,12 +458,12 @@ public class DefaultEntityEditor implements EntityEditor {
 			entityDefinition().foreignKeys().definition(foreignKey);
 			synchronized (searchModels) {
 				// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
-				// box models, createSearchModel() may for example call this function
+				// box models, create() may for example call this function
 				// see javadoc: must not attempt to update any other mappings of this map
 				EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
 				if (entitySearchModel == null) {
 					entitySearchModel = create(foreignKey);
-					editorModels.configure(foreignKey, entitySearchModel, DefaultEntityEditor.this);
+					componentModels.configure(foreignKey, entitySearchModel, DefaultEntityEditor.this);
 					searchModels.put(foreignKey, entitySearchModel);
 				}
 
@@ -479,7 +473,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public EntitySearchModel create(ForeignKey foreignKey) {
-			return editorModels.createSearchModel(foreignKey, DefaultEntityEditor.this);
+			return componentModels.createSearchModel(foreignKey, DefaultEntityEditor.this);
 		}
 	}
 
