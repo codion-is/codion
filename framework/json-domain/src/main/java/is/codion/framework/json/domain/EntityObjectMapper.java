@@ -232,7 +232,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * @param <T> the report parameter type
 	 * @return the {@link ParameterType} for the given report
 	 */
-	public <T> ParameterType<T> parameter(ReportType<?, T, ?> reportType) {
+	public <T> ParameterType<T> parameter(ReportType<?, ?, T> reportType) {
 		return (ParameterType<T>) reportParameters.computeIfAbsent(requireNonNull(reportType),
 						k -> new DefaultParameterType<>("report: " + reportType.name()));
 	}

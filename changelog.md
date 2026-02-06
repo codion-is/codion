@@ -14,6 +14,8 @@ Codion Change Log
 - EntityEditModel.EntityEditor moved up to package level, EntityEditModel.EditorValue moved to EntityEditor.
 - EntityEditor.primaryKeyNull() replaced with primaryKeyPresent().
 - EntityEditor.EditorModels renamed ComponentModels.
+### is.codion.framework.json.domain
+- EntityObjectMapper.parameter(ReportType) bug fixed, type parameter order corrected.
 ### is.codion.swing.framework.model
 - SwingEntityEditModel.createComboBoxModel() memory leak bug fixed, refresh listener now only handles managed column combo box models, related refactoring.
 - SwingEntityEditor added along with SwingEditorModels.
