@@ -128,7 +128,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 				list.clearSelection();
 				cancelledState.set(true);
 			};
-			OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder()
+			OkCancelDialogBuilder dialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
 							.component(new JScrollPane(list))
 							.owner(owner)
 							.locationRelativeTo(locationRelativeTo)

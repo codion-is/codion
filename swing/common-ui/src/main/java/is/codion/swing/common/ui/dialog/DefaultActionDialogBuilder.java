@@ -56,10 +56,13 @@ import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
 class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends AbstractDialogBuilder<B> implements ActionDialogBuilder<B> {
 
+	static final ActionDialogComponentStep ACTION_COMPONENT = new DefaultComponentStep();
+
 	private final List<Action> actions = new ArrayList<>();
 	private final Collection<Consumer<JDialog>> onShownConsumers = new ArrayList<>(1);
 
-	private @Nullable JComponent component;
+	private final JComponent component;
+
 	private @Nullable Action defaultAction;
 	private @Nullable Action escapeAction;
 	private @Nullable Border buttonPanelBorder = createEmptyBorder(10, 10, 5, 10);
@@ -68,15 +71,8 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	private boolean resizable = true;
 	private @Nullable Dimension size;
 
-	@Override
-	public final B component(@Nullable JComponent component) {
-		this.component = component;
-		return self();
-	}
-
-	@Override
-	public final B component(Supplier<? extends JComponent> component) {
-		return component(requireNonNull(component).get());
+	protected DefaultActionDialogBuilder(JComponent component) {
+		this.component = requireNonNull(component);
 	}
 
 	@Override
@@ -202,8 +198,21 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		return actions;
 	}
 
-	protected final @Nullable JComponent component() {
+	protected final JComponent component() {
 		return component;
+	}
+
+	private static final class DefaultComponentStep implements ActionDialogComponentStep {
+
+		@Override
+		public <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> component(JComponent component) {
+			return new DefaultActionDialogBuilder<>(component);
+		}
+
+		@Override
+		public <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> component(Supplier<? extends JComponent> component) {
+			return new DefaultActionDialogBuilder<>(requireNonNull(component).get());
+		}
 	}
 
 	private static final class EscapeOnWindowClosingListener extends WindowAdapter {

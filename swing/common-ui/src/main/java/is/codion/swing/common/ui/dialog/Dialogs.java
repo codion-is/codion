@@ -18,6 +18,9 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.swing.common.ui.dialog.ActionDialogBuilder.ActionDialogComponentStep;
+import is.codion.swing.common.ui.dialog.OkCancelDialogBuilder.OkCancelDialogComponentStep;
+
 import org.jspecify.annotations.Nullable;
 
 import java.awt.Window;
@@ -72,22 +75,21 @@ public final class Dialogs {
 	}
 
 	/**
-	 * @return a new OkCancelDialogBuilder
+	 * @return a {@link OkCancelDialogComponentStep} instance
 	 */
-	public static OkCancelDialogBuilder okCancel() {
-		return new DefaultOkCancelDialogBuilder();
+	public static OkCancelDialogComponentStep okCancel() {
+		return DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT;
 	}
 
 	/**
-	 * @param <B> the builder type
-	 * @return a new ActionDialogBuilder
+	 * @return a {@link ActionDialogComponentStep} instance
 	 */
-	public static <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> action() {
-		return new DefaultActionDialogBuilder<>();
+	public static ActionDialogComponentStep action() {
+		return DefaultActionDialogBuilder.ACTION_COMPONENT;
 	}
 
 	/**
-	 * @return a new CalendarDialogBuilder
+	 * @return a new {@link CalendarDialogBuilder}
 	 */
 	public static CalendarDialogBuilder calendar() {
 		return new DefaultCalendarDialogBuilder();

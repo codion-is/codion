@@ -35,20 +35,26 @@ import java.util.function.Supplier;
 public interface ActionDialogBuilder<B extends ActionDialogBuilder<B>> extends DialogBuilder<B> {
 
 	/**
-	 * Note: sets the layout to {@link java.awt.BorderLayout} and
-	 * adds the component at location {@link java.awt.BorderLayout#CENTER}
-	 * @param component the component to display
-	 * @return this builder instance
+	 * Specifies the component to display in the dialog.
 	 */
-	B component(JComponent component);
+	interface ActionDialogComponentStep {
 
-	/**
-	 * Note: sets the layout to {@link java.awt.BorderLayout} and
-	 * adds the component at location {@link java.awt.BorderLayout#CENTER}
-	 * @param component the component to display
-	 * @return this builder instance
-	 */
-	B component(Supplier<? extends JComponent> component);
+		/**
+		 * Note: sets the layout to {@link java.awt.BorderLayout} and
+		 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+		 * @param component the component to display
+		 * @return this builder instance
+		 */
+		<B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> component(JComponent component);
+
+		/**
+		 * Note: sets the layout to {@link java.awt.BorderLayout} and
+		 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+		 * @param component supplies the component to display
+		 * @return this builder instance
+		 */
+		<B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> component(Supplier<? extends JComponent> component);
+	}
 
 	/**
 	 * @param action the action to add

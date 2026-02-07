@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.reactive.state.ObservableState;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
+import java.util.function.Supplier;
 
 /**
  * Builds a modal dialog for displaying the given {@code component},
@@ -28,6 +30,28 @@ import javax.swing.Action;
  * An OK action must be provided and the default Cancel action simply disposes the dialog.
  */
 public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialogBuilder> {
+
+	/**
+	 * Specifies the component to display in the dialog.
+	 */
+	interface OkCancelDialogComponentStep {
+
+		/**
+		 * Note: sets the layout to {@link java.awt.BorderLayout} and
+		 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+		 * @param component the component to display
+		 * @return this builder instance
+		 */
+		OkCancelDialogBuilder component(JComponent component);
+
+		/**
+		 * Note: sets the layout to {@link java.awt.BorderLayout} and
+		 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+		 * @param component supplies the component to display
+		 * @return this builder instance
+		 */
+		OkCancelDialogBuilder component(Supplier<? extends JComponent> component);
+	}
 
 	/**
 	 * Note that this is overridden by {@link #okAction(Action)}.

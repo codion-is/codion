@@ -104,7 +104,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 											.includeText(true))
 							.build(), BorderLayout.SOUTH);
 		}
-		new DefaultOkCancelDialogBuilder()
+		DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
 						.component(basePanel)
 						.owner(owner)
 						.title(MESSAGES.getString("look_and_feel"))

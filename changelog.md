@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - DefaultFilterTableCellEditor bug fixed, stop editing on enter now works correctly for spinners.
 - DefaultOkCancelDialogBuilder refactored.
+- ActionDialogBuilder, OkCancelDialogBuilder, initial component step added.
 ### is.codion.framework.domain
 - AttributeDefinition.ValueSupplier renamed DefaultValue.
 - AbstractValueAttributeDefinition.RangeValidator and MaximumLengthValidator bug fixed, now throw IllegalArgumentException.

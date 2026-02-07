@@ -75,7 +75,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 			owner = dummyFrame = createDummyFrame(title == null ? null : title.get(), icon);
 		}
 		LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent, inputFieldColumns);
-		OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder()
+		OkCancelDialogBuilder dialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
 						.component(loginPanel)
 						.owner(owner)
 						.resizable(false)

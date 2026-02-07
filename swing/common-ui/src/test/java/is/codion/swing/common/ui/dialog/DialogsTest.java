@@ -127,23 +127,29 @@ public final class DialogsTest {
 		ObservableState state = State.state().observable();
 
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
+						.component(label)
 						.onOk(runnable)
 						.okAction(command(command)));
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
+						.component(label)
 						.onCancel(runnable)
 						.cancelAction(command(command)));
 
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
+						.component(label)
 						.okAction(command(command))
 						.onOk(runnable));
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
+						.component(label)
 						.cancelAction(command(command))
 						.onCancel(runnable));
 
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
+						.component(label)
 						.okAction(command(command))
 						.okEnabled(state));
 		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
+						.component(label)
 						.cancelAction(command(command))
 						.cancelEnabled(state));
 	}

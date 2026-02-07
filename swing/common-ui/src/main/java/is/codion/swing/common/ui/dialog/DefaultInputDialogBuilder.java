@@ -54,7 +54,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
 	private final JPanel basePanel = new JPanel(Layouts.borderLayout());
 	private final ComponentValue<?, T> componentValue;
-	private final OkCancelDialogBuilder okCancelDialogBuilder = new DefaultOkCancelDialogBuilder()
+	private final OkCancelDialogBuilder okCancelDialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
 					.component(basePanel);
 
 	private @Nullable String caption;

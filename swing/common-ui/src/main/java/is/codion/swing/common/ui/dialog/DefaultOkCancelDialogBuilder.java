@@ -28,10 +28,13 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
+
+	static final OkCancelDialogComponentStep OK_CANCEL_COMPONENT = new DefaultComponentStep();
 
 	private @Nullable ObservableState okEnabled;
 	private @Nullable ObservableState cancelEnabled;
@@ -39,6 +42,10 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	private @Nullable Runnable onCancel;
 	private @Nullable Action okAction;
 	private @Nullable Action cancelAction;
+
+	private DefaultOkCancelDialogBuilder(JComponent component) {
+		super(component);
+	}
 
 	@Override
 	public OkCancelDialogBuilder action(Action action) {
@@ -125,7 +132,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	private void setupOkAction() {
 		if (okAction == null) {
 			okAction = Control.builder()
-							.command(new DisposeCommand(onOk, component()))
+							.command(new DisposeCommand(component(), onOk))
 							.caption(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
 							.enabled(okEnabled)
@@ -147,7 +154,7 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	private void setupCancelAction() {
 		if (cancelAction == null) {
 			cancelAction = Control.builder()
-							.command(new DisposeCommand(onCancel, component()))
+							.command(new DisposeCommand(component(), onCancel))
 							.caption(Messages.cancel())
 							.mnemonic(Messages.cancelMnemonic())
 							.enabled(cancelEnabled)
@@ -166,12 +173,25 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 		super.escapeAction(cancelAction);
 	}
 
+	private static final class DefaultComponentStep implements OkCancelDialogComponentStep {
+
+		@Override
+		public OkCancelDialogBuilder component(JComponent component) {
+			return new DefaultOkCancelDialogBuilder(component);
+		}
+
+		@Override
+		public OkCancelDialogBuilder component(Supplier<? extends JComponent> component) {
+			return new DefaultOkCancelDialogBuilder(requireNonNull(component).get());
+		}
+	}
+
 	private static final class DisposeCommand implements Control.Command {
 
+		private final JComponent component;
 		private final @Nullable Runnable command;
-		private final @Nullable JComponent component;
 
-		private DisposeCommand(@Nullable Runnable command, @Nullable JComponent component) {
+		private DisposeCommand(JComponent component, @Nullable Runnable command) {
 			this.command = command;
 			this.component = component;
 		}

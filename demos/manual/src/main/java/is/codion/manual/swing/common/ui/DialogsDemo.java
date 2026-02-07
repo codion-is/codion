@@ -34,6 +34,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.swing.common.ui.component.Components.label;
+
 final class DialogsDemo {
 
 	private void dialog(Window window) {
@@ -150,6 +152,7 @@ final class DialogsDemo {
 	private void okCancel(Window window) {
 		// tag::okCancel[]
 		Dialogs.okCancel()
+						.component(label("Message"))
 						.owner(window)
 						.title("Title")
 						.onOk(this::onOk)
@@ -161,6 +164,7 @@ final class DialogsDemo {
 	private void action(Window window) {
 		// tag::action[]
 		Dialogs.action()
+						.component(label("Message"))
 						.owner(window)
 						.title("Title")
 						.defaultAction(Control.builder()
