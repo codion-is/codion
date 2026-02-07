@@ -147,7 +147,7 @@ final class EditAttributePanel<T> extends JPanel {
 				valid.set(true);
 				message.clear();
 			}
-			catch (IllegalArgumentException e) {
+			catch (ValidationException | IllegalArgumentException e) {
 				valid.set(false);
 				message.set(e.getMessage());
 				return;
