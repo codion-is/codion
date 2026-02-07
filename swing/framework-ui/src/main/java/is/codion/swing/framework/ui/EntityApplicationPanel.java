@@ -145,8 +145,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * </ul>
 	 * @see #exit()
 	 */
-	public static final PropertyValue<Boolean> CALL_SYSTEM_EXIT =
-					booleanValue(EntityApplicationPanel.class.getName() + ".callSystemExit", false);
+	public static final PropertyValue<Boolean> SYSTEM_EXIT =
+					booleanValue(EntityApplicationPanel.class.getName() + ".systemExit", false);
 
 	/**
 	 * Specifies whether a button for displaying system properties is included on the about panel.
@@ -378,19 +378,18 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * Exits this application. Calls {@link System#exit(int)} in case {@link #CALL_SYSTEM_EXIT} is true.
+	 * Exits this application. Calls {@link System#exit(int)} in case {@link #SYSTEM_EXIT} is true.
 	 * @throws CancelException if the exit is cancelled
 	 * @see #exiting()
 	 * @see EntityEditPanel.Config#MODIFIED_WARNING
 	 * @see EntityApplicationPanel#CONFIRM_EXIT
-	 * @see EntityApplicationPanel#CALL_SYSTEM_EXIT
+	 * @see EntityApplicationPanel#SYSTEM_EXIT
 	 */
 	public final void exit() {
 		handleUnsavedModifications();
 		if (!confirmExit()) {
 			throw new CancelException();
 		}
-
 		try {
 			exiting.run();
 		}
@@ -411,7 +410,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			Stream.of(Window.getWindows()).forEach(Window::dispose);
 		}
 		catch (Exception ignored) {/*ignored*/}
-		if (CALL_SYSTEM_EXIT.getOrThrow()) {
+		if (SYSTEM_EXIT.getOrThrow()) {
 			System.exit(0);
 		}
 	}

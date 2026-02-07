@@ -26,7 +26,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#HELP_URL}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CACHE_ENTITY_PANELS}
- * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CALL_SYSTEM_EXIT}
+ * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#SYSTEM_EXIT}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#SQL_TRACING}
  * <li>{@link is.codion.swing.framework.ui.EntityEditorPanel#VALID_INDICATOR}
  * <li>{@link is.codion.swing.framework.ui.EntityEditorPanel#MODIFIED_INDICATOR}

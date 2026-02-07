@@ -39,6 +39,7 @@ Codion Change Log
 - EditAttributePanel.updateStates() bug fixed, now catches ValidationException as well as IllegalArgumentException.
 - EntityEditorPanel.editor() added.
 - EntityApplicationPanel.handleUnsavedModifications() bug fixed, now activates the full panel hierarchy.
+- EntityApplicationPanel.CALL_SYSTEM_EXIT renamed SYSTEM_EXIT.
 ### is.codion.tools.jul.classpath
 - Automatic directory creation implemented in ClasspathConfiguration.
 ### is.codion.tools.swing.robot
