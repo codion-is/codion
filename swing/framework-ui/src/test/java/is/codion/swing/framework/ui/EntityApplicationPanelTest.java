@@ -23,17 +23,12 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
-import is.codion.swing.framework.ui.TestDomain.Master;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeModel;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -41,8 +36,6 @@ import java.util.prefs.Preferences;
 import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class EntityApplicationPanelTest {
 
@@ -64,19 +57,6 @@ public class EntityApplicationPanelTest {
 	@AfterEach
 	void tearDown() {
 		Thread.setDefaultUncaughtExceptionHandler(null);
-	}
-
-	@Test
-	void createDependencyTreeModel() {
-		TreeModel model = EntityApplicationPanel.createDependencyTreeModel(CONNECTION_PROVIDER.entities());
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-		Enumeration<?> tree = root.preorderEnumeration();
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
-		assertNull(node.getUserObject());
-		node = (DefaultMutableTreeNode) tree.nextElement();
-		assertEquals(Master.TYPE, node.getUserObject());
-		node = (DefaultMutableTreeNode) tree.nextElement();
-		assertEquals(Detail.TYPE, node.getUserObject());
 	}
 
 	@Test

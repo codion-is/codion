@@ -32,11 +32,9 @@ import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityEditModel;
@@ -78,7 +76,6 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -358,18 +355,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * Shows a dialog containing a dependency tree view of all defined entities
-	 */
-	public final void viewDependencyTree() {
-		Dialogs.builder()
-						.component(createDependencyTree())
-						.owner(this)
-						.title(FrameworkMessages.dependencies())
-						.modal(false)
-						.show();
-	}
-
-	/**
 	 * @return an observer notified when this application panel is initialized
 	 * @see #initialize()
 	 */
@@ -509,22 +494,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * @param entities the entities
-	 * @return a tree model showing the dependencies between entities via foreign keys
-	 */
-	public static TreeModel createDependencyTreeModel(Entities entities) {
-		requireNonNull(entities);
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-		for (EntityDefinition definition : entities.definitions()) {
-			if (definition.foreignKeys().get().isEmpty() || referencesOnlySelf(entities, definition.type())) {
-				root.add(new EntityDependencyTreeNode(definition.type(), entities));
-			}
-		}
-
-		return new DefaultTreeModel(root);
-	}
-
-	/**
 	 * @return the controls on which to base the main menu or an empty Optional if the menu should be excluded
 	 * @see #createFileMenuControls()
 	 * @see #createViewMenuControls()
@@ -650,16 +619,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		return Control.builder()
 						.command(this::viewApplicationTree)
 						.caption(resourceBundle.getString("view_application_tree"))
-						.build();
-	}
-
-	/**
-	 * @return a Control for viewing the application dependency tree
-	 */
-	protected final Control createViewDependencyTree() {
-		return Control.builder()
-						.command(this::viewDependencyTree)
-						.caption(FrameworkMessages.dependencies())
 						.build();
 	}
 
@@ -1068,10 +1027,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		return createTree(createApplicationTree(entityPanels));
 	}
 
-	private JScrollPane createDependencyTree() {
-		return createTree(createDependencyTreeModel(applicationModel.entities()));
-	}
-
 	private void handleUnsavedModifications() {
 		Map<EntityPanel, Collection<Attribute<?>>> modified = modified(entityPanels);
 		if (modifiedWarning && !modified.isEmpty() && showConfirmDialog(this,
@@ -1361,11 +1316,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 	}
 
-	private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
-		return entities.definition(entityType).foreignKeys().get().stream()
-						.allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
-	}
-
 	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {
 		entityPanel.store(applicationModel.preferences().node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
 		if (LEGACY_PREFERENCES.getOrThrow()) {
@@ -1409,58 +1359,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			String caption2 = ep2.caption().orElse(entities.definition(ep2.entityType()).caption());
 
 			return comparator.compare(caption1, caption2);
-		}
-	}
-
-	private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
-
-		private final Entities entities;
-
-		private EntityDependencyTreeNode(EntityType entityType, Entities entities) {
-			super(requireNonNull(entityType));
-			this.entities = entities;
-		}
-
-		/**
-		 * @return the type of the entity this node represents
-		 */
-		public EntityType entityType() {
-			return (EntityType) getUserObject();
-		}
-
-		@Override
-		public void setParent(MutableTreeNode newParent) {
-			super.setParent(newParent);
-			removeAllChildren();
-			for (EntityDependencyTreeNode child : getChildren()) {
-				add(child);
-			}
-		}
-
-		private List<EntityDependencyTreeNode> getChildren() {
-			List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
-			for (EntityDefinition definition : entities.definitions()) {
-				for (ForeignKeyDefinition foreignKeyDefinition : definition.foreignKeys().definitions()) {
-					if (foreignKeyDefinition.attribute().referencedType().equals(entityType()) && !foreignKeyDefinition.soft()
-									&& !foreignKeyCycle(foreignKeyDefinition.attribute().referencedType())) {
-						childrenList.add(new EntityDependencyTreeNode(definition.type(), entities));
-					}
-				}
-			}
-
-			return childrenList;
-		}
-
-		private boolean foreignKeyCycle(EntityType referencedEntityType) {
-			TreeNode tmp = getParent();
-			while (tmp instanceof EntityDependencyTreeNode) {
-				if (((EntityDependencyTreeNode) tmp).entityType().equals(referencedEntityType)) {
-					return true;
-				}
-				tmp = tmp.getParent();
-			}
-
-			return false;
 		}
 	}
 
