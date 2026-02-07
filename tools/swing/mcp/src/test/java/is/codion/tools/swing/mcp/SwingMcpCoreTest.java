@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JPanel;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -143,11 +142,9 @@ public class SwingMcpCoreTest {
 
 	@Test
 	void testPluginStateCreation() {
-		JPanel testPanel = new JPanel();
-
 		// Test that we can create MCP server states
-		State state1 = SwingMcpPlugin.mcpServer(testPanel, false);
-		State state2 = SwingMcpPlugin.mcpServer(testPanel, false);
+		State state1 = SwingMcpPlugin.builder().window(() -> null).build();
+		State state2 = SwingMcpPlugin.builder().window(() -> null).build();
 
 		assertNotNull(state1);
 		assertNotNull(state2);
@@ -197,12 +194,10 @@ public class SwingMcpCoreTest {
 
 	@Test
 	void testServerCreationAndSafeOperations() {
-		JPanel testPanel = new JPanel();
-
 		// These tests verify that the server can be created and methods don't throw
 		// IMPORTANT: Only test actual Robot operations in headless environments to avoid
 		// affecting the development environment (like clearing editor contents!)
-		SwingMcpServer server = new SwingMcpServer(testPanel, false);
+		SwingMcpServer server = new SwingMcpServer(() -> null, false);
 
 		// Only test API surface without actual automation in non-headless environments
 		if (GraphicsEnvironment.isHeadless()) {

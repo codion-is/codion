@@ -39,6 +39,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.List;
 
 import static is.codion.common.utilities.Configuration.integerValue;
@@ -86,26 +87,21 @@ public final class Narrator {
 									.columns(Narrator::configureColumns)
 									.autoResizeMode(AUTO_RESIZE_ALL_COLUMNS)
 									.build();
+	private final Resizer resizer = new Resizer();
+	private final WindowListener detachOnClose = new DetachOnClose();
 	private final JFrame frame;
 
-	Narrator(Controller controller, Window window) {
+	private Window window;
+
+	Narrator(Controller controller) {
 		frame = Frames.builder()
 						.title(MESSAGES.getString("narrator"))
 						.component(createMainPanel())
-						.size(new Dimension(FRAME_WIDTH.getOrThrow(), window.getHeight()))
-						.location(new Point(window.getX() + window.getWidth(), window.getY()))
 						.focusableWindowState(false)
 						.defaultCloseOperation(DO_NOTHING_ON_CLOSE)
 						.resizable(false)
-						.show();
+						.build();
 		controller.key().addConsumer(this::onKeyStroke);
-		window.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				close();
-			}
-		});
-		window.addComponentListener(new ApplicationWindowListener(window));
 	}
 
 	/**
@@ -141,11 +137,10 @@ public final class Narrator {
 
 	/**
 	 * @param controller the controller to narrate
-	 * @param window the window to attach to
 	 * @return a new {@link Narrator}
 	 */
-	public static Narrator narrator(Controller controller, Window window) {
-		return new Narrator(requireNonNull(controller), requireNonNull(window));
+	public static Narrator narrator(Controller controller) {
+		return new Narrator(requireNonNull(controller));
 	}
 
 	/**
@@ -153,7 +148,36 @@ public final class Narrator {
 	 */
 	public void close() {
 		clear();
+		detach();
 		frame.dispose();
+	}
+
+	/**
+	 * Attaches this narrator to the given window
+	 * @param window the window to attach to
+	 */
+   void attach(Window window) {
+		requireNonNull(window);
+		if (this.window != null) {
+			detach();
+		}
+		this.window = window;
+		window.addComponentListener(resizer);
+		window.addWindowListener(detachOnClose);
+		frame.setSize(new Dimension(FRAME_WIDTH.getOrThrow(), window.getHeight()));
+		frame.setLocation(new Point(window.getX() + window.getWidth(), window.getY()));
+		frame.setVisible(true);
+	}
+
+	/**
+	 * Detaches this narrator from its currently attached window.
+	 */
+	void detach() {
+		if (window != null) {
+			window.removeComponentListener(resizer);
+			window.removeWindowListener(detachOnClose);
+			window = null;
+		}
 	}
 
 	private JPanel createMainPanel() {
@@ -179,13 +203,7 @@ public final class Narrator {
 		}
 	}
 
-	private final class ApplicationWindowListener extends ComponentAdapter {
-
-		private final Window window;
-
-		private ApplicationWindowListener(Window window) {
-			this.window = window;
-		}
+	private final class Resizer extends ComponentAdapter {
 
 		@Override
 		public void componentMoved(ComponentEvent e) {
@@ -199,6 +217,14 @@ public final class Narrator {
 
 		private void updateFrameBounds() {
 			frame.setBounds(window.getX() + window.getWidth(), window.getY(), FRAME_WIDTH.getOrThrow(), window.getHeight());
+		}
+	}
+
+	private final class DetachOnClose extends WindowAdapter {
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			detach();
 		}
 	}
 

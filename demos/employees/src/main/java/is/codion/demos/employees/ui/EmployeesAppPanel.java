@@ -54,7 +54,10 @@ import static java.util.Collections.emptyList;
 // tag::createEntityPanels[]
 public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel> {
 
-	private final State mcpServerController = SwingMcpPlugin.mcpServer(this, true);
+	private final State mcpController = SwingMcpPlugin.builder()
+					.component(this)
+					.narrator(true)
+					.build();
 
 	public EmployeesAppPanel(EmployeesAppModel applicationModel) {
 		super(applicationModel, createPanels(applicationModel), emptyList());
@@ -121,7 +124,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 																		.run(new DemoScript()))
 														.caption("Run demo"))
 										.control(Control.builder()
-														.toggle(mcpServerController)
+														.toggle(mcpController)
 														.caption("MCP Server"))
 										.build());
 	}

@@ -407,7 +407,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		catch (Exception e) {
 			LOG.debug("Exception while disconnecting from database", e);
 		}
-		Stream.of(Window.getWindows()).forEach(Window::dispose);
+		try {
+			Stream.of(Window.getWindows()).forEach(Window::dispose);
+		}
+		catch (Exception ignored) {/*ignored*/}
 		if (CALL_SYSTEM_EXIT.getOrThrow()) {
 			System.exit(0);
 		}

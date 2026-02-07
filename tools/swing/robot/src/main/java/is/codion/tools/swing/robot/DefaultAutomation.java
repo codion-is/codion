@@ -41,12 +41,7 @@ final class DefaultAutomation implements Automation {
 
 	private DefaultAutomation(DefaultBuilder builder) {
 		this.controller = Controller.controller(builder.device);
-		if (builder.applicationWindow != null) {
-			this.narrator = new Narrator(controller, builder.applicationWindow);
-		}
-		else {
-			this.narrator = null;
-		}
+		this.narrator = initializeNarrator(builder);
 	}
 
 	@Override
@@ -74,6 +69,18 @@ final class DefaultAutomation implements Automation {
 		if (narrator != null) {
 			narrator.close();
 		}
+	}
+
+	private Narrator initializeNarrator(DefaultBuilder builder) {
+		if (builder.applicationWindow == null) {
+			return null;
+		}
+		Narrator narrator = new Narrator(controller);
+		if (builder.applicationWindow != null) {
+			narrator.attach(builder.applicationWindow);
+		}
+
+		return narrator;
 	}
 
 	private static void handleException(Exception exception) {

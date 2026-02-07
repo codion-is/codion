@@ -41,6 +41,10 @@ Codion Change Log
 - EntityApplicationPanel.handleUnsavedModifications() bug fixed, now activates the full panel hierarchy.
 ### is.codion.tools.jul.classpath
 - Automatic directory creation implemented in ClasspathConfiguration.
+### is.codion.tools.swing.robot
+- Narrator window handling improved.
+### is.codion.tools.swing.mcp
+- SwingMcpPlugin.Builder added, related refactoring.
 
 ## 0.18.67
 ### is.codion.common.reactive

@@ -18,7 +18,6 @@
  */
 package is.codion.tools.swing.mcp;
 
-import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.tools.swing.robot.Controller;
 import is.codion.tools.swing.robot.Controller.FocusLostException;
 import is.codion.tools.swing.robot.Narrator;
@@ -35,10 +34,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Dialog;
@@ -59,6 +56,7 @@ import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static java.awt.AWTEvent.WINDOW_EVENT_MASK;
 import static java.awt.event.WindowEvent.*;
@@ -97,18 +95,18 @@ final class SwingMcpServer {
 
 	private final Controller controller;
 	private final Narrator narrator;
-	private final JComponent applicationComponent;
+	private final Supplier<Window> applicationWindow;
 
 	private final WindowEventListener windowEventListener = new WindowEventListener();
 
 	private volatile Window lastActiveWindow = null;
 	private volatile long lastActivationTime = 0;
 
-	SwingMcpServer(JComponent applicationComponent, boolean includeNarrator) {
-		this.applicationComponent = requireNonNull(applicationComponent);
-		Window window = Ancestor.window().of(applicationComponent).get();
+	SwingMcpServer(Supplier<Window> applicationWindow, boolean includeNarrator) {
+		this.applicationWindow = requireNonNull(applicationWindow);
+		Window window = applicationWindow.get();
 		this.controller = window == null ? Controller.controller() : Controller.controller(window.getGraphicsConfiguration().getDevice());
-		this.narrator = window == null || !includeNarrator ? null : Narrator.narrator(controller, window);
+		this.narrator = includeNarrator ? Narrator.narrator(controller) : null;
 		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);
 	}
 
@@ -311,7 +309,7 @@ final class SwingMcpServer {
 	}
 
 	private Window getApplicationWindow() {
-		Window window = (Window) SwingUtilities.getAncestorOfClass(Window.class, applicationComponent);
+		Window window = applicationWindow.get();
 		if (window == null) {
 			throw new IllegalStateException("No application window found");
 		}

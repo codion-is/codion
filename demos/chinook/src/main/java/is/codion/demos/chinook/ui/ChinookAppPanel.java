@@ -85,7 +85,10 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	/* Non-static so this is not initialized before main(), which sets the locale */
 	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
 
-	private final State mcpServerController = SwingMcpPlugin.mcpServer(this, true);
+	private final State mcpController = SwingMcpPlugin.builder()
+					.component(this)
+					.narrator(true)
+					.build();
 
 	private AnalyticsPanel analyticsPanel;
 
@@ -187,7 +190,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 														.build())
 										.separator()
 										.control(Control.builder()
-														.toggle(mcpServerController)
+														.toggle(mcpController)
 														.caption("MCP Server"))
 										.build());
 	}

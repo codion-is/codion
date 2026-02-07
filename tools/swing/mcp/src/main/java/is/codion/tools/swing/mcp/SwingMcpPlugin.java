@@ -21,6 +21,7 @@ package is.codion.tools.swing.mcp;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.version.Version;
+import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.tools.swing.mcp.SwingMcpHttpServer.HttpTool;
 
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -35,6 +37,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.tools.swing.mcp.SwingMcpServer.*;
@@ -50,6 +53,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * <p>
  * Configure with system properties:
  * -Dcodion.swing.mcp.http.port=8080      (HTTP server port, default 8080)
+ * @see #builder()
  */
 public final class SwingMcpPlugin {
 
@@ -93,30 +97,16 @@ public final class SwingMcpPlugin {
 					}
 					""";
 
-	private final JComponent applicationComponent;
-	private final boolean includeNarrator;
+	private final Supplier<Window> window;
+	private final boolean narrator;
 
 	private ExecutorService executor;
 	private SwingMcpServer server;
 	private SwingMcpHttpServer httpServer;
 
-	private SwingMcpPlugin(JComponent applicationComponent, boolean includeNarrator) {
-		this.applicationComponent = applicationComponent;
-		this.includeNarrator = includeNarrator;
-	}
-
-	/**
-	 * Create an MCP server for the given application component.
-	 * @param applicationComponent the application component
-	 * @param includeNarrator if true a {@link is.codion.tools.swing.robot.Narrator} is included
-	 * @return a {@link State} controlling the started state of this mcp server
-	 */
-	public static State mcpServer(JComponent applicationComponent, boolean includeNarrator) {
-		SwingMcpPlugin plugin = new SwingMcpPlugin(requireNonNull(applicationComponent), includeNarrator);
-
-		return State.builder()
-						.consumer(new ServerController(plugin))
-						.build();
+	private SwingMcpPlugin(Builder builder) {
+		this.window = builder.window;
+		this.narrator = builder.narrator;
 	}
 
 	/**
@@ -148,7 +138,7 @@ public final class SwingMcpPlugin {
 	private void runServer() {
 		try {
 			// Initialize the UI automation server
-			server = new SwingMcpServer(applicationComponent, includeNarrator);
+			server = new SwingMcpServer(window, narrator);
 			// Start HTTP server for MCP client access
 			startHttpServer(server);
 		}
@@ -326,6 +316,79 @@ public final class SwingMcpPlugin {
 		T execute() throws IOException;
 	}
 
+	/**
+	 * @return a {@link Builder.Factory} instance.
+	 */
+	public static Builder.Factory builder() {
+		return Builder.FACTORY;
+	}
+
+	/**
+	 * Builds a {@link State} for controlling a {@link SwingMcpServer}
+	 */
+	public static final class Builder {
+
+		private static final Factory FACTORY = new Factory();
+
+		private final Supplier<Window> window;
+
+		private boolean narrator;
+		private boolean start;
+
+		private Builder(Supplier<Window> window) {
+			this.window = window;
+		}
+
+		/**
+		 * Default false.
+		 * @param narrator if true a {@link is.codion.tools.swing.robot.Narrator} is included
+		 * @return this builder
+		 */
+		public Builder narrator(boolean narrator) {
+			this.narrator = narrator;
+			return this;
+		}
+
+		/**
+		 * Default false.
+		 * @param start true if the server should be started right away
+		 * @return this builder
+		 */
+		public Builder start(boolean start) {
+			this.start = start;
+			return this;
+		}
+
+		/**
+		 * @return a {@link State} controlling the started state of the mcp server
+		 */
+		public State build() {
+			ServerController controller = new ServerController(new SwingMcpPlugin(this));
+			if (start) {
+				controller.accept(true);
+			}
+
+			return State.builder()
+							.value(start)
+							.consumer(controller)
+							.build();
+		}
+
+		public static final class Factory {
+
+			private Factory() {}
+
+			public Builder component(JComponent component) {
+				requireNonNull(component);
+
+				return window(() -> Ancestor.window().of(component).get());
+			}
+
+			public Builder window(Supplier<Window> window) {
+				return new Builder(requireNonNull(window));
+			}
+		}
+	}
 
 	private static final class ServerController implements Consumer<Boolean> {
 
