@@ -33,7 +33,7 @@ public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialo
 	 * Note that this is overridden by {@link #okAction(Action)}.
 	 * @param okEnabled the state observer controlling the ok enabled state
 	 * @return this builder instance
-	 * @throws IllegalStateException in case an ok action has already been set
+	 * @throws IllegalStateException in case {@link #okAction(Action)} has already been set
 	 */
 	OkCancelDialogBuilder okEnabled(ObservableState okEnabled);
 
@@ -41,21 +41,21 @@ public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialo
 	 * Note that this is overridden by {@link #cancelAction(Action)}.
 	 * @param cancelEnabled the state observer controlling the cancel enabled state
 	 * @return this builder instance
-	 * @throws IllegalStateException in case a cancel action has already been set
+	 * @throws IllegalStateException in case {@link #cancelAction(Action)} has already been set
 	 */
 	OkCancelDialogBuilder cancelEnabled(ObservableState cancelEnabled);
 
 	/**
 	 * @param onOk called on ok pressed, before the dialog has been disposed
 	 * @return this builder instance
-	 * @throws IllegalStateException in case an ok action has already been set
+	 * @throws IllegalStateException in case {@link #okAction(Action)} has already been set
 	 */
 	OkCancelDialogBuilder onOk(Runnable onOk);
 
 	/**
 	 * @param onCancel called on cancel pressed, before the dialog has been disposed
 	 * @return this builder instance
-	 * @throws IllegalStateException in case a cancel action has already been set
+	 * @throws IllegalStateException in case {@link #cancelAction(Action)} has already been set
 	 */
 	OkCancelDialogBuilder onCancel(Runnable onCancel);
 
@@ -63,6 +63,7 @@ public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialo
 	 * Note that this action is responsible for closing the dialog.
 	 * @param okAction the action for the OK button, this action must dispose the dialog
 	 * @return this builder instance
+	 * @throws IllegalStateException in case {@link #onOk(Runnable)} has already been set
 	 */
 	OkCancelDialogBuilder okAction(Action okAction);
 
@@ -70,6 +71,7 @@ public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialo
 	 * Note that this action is responsible for closing the dialog.
 	 * @param cancelAction the action for the Cancel button, this action must dispose the dialog
 	 * @return this builder instance
+	 * @throws IllegalStateException in case {@link #onCancel(Runnable)} has already been set
 	 */
 	OkCancelDialogBuilder cancelAction(Action cancelAction);
 }

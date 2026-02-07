@@ -6,6 +6,7 @@ Codion Change Log
 - ReportType, ProcedureType and FunctionType type parameters now consistent, P for parameter, and result type last.
 ### is.codion.swing.common.ui
 - DefaultFilterTableCellEditor bug fixed, stop editing on enter now works correctly for spinners.
+- DefaultOkCancelDialogBuilder refactored.
 ### is.codion.framework.domain
 - AttributeDefinition.ValueSupplier renamed DefaultValue.
 ### is.codion.framework.model

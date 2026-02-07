@@ -116,9 +116,16 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	@Override
 	public JDialog build() {
 		actions().clear();
+		setupOkAction();
+		setupCancelAction();
+
+		return super.build();
+	}
+
+	private void setupOkAction() {
 		if (okAction == null) {
 			okAction = Control.builder()
-							.command(onOk == null ? new DefaultOkCommand(component()) : new PerformAndCloseCommand(onOk, component()))
+							.command(new DisposeCommand(onOk, component()))
 							.caption(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
 							.enabled(okEnabled)
@@ -134,9 +141,13 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 			okAction.putValue(Action.NAME, Messages.ok());
 			okAction.putValue(Action.MNEMONIC_KEY, (int) Messages.okMnemonic());
 		}
+		super.defaultAction(okAction);
+	}
+
+	private void setupCancelAction() {
 		if (cancelAction == null) {
 			cancelAction = Control.builder()
-							.command(onCancel == null ? new DefaultCancelCommand(component()) : new PerformAndCloseCommand(onCancel, component()))
+							.command(new DisposeCommand(onCancel, component()))
 							.caption(Messages.cancel())
 							.mnemonic(Messages.cancelMnemonic())
 							.enabled(cancelEnabled)
@@ -152,53 +163,24 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 			cancelAction.putValue(Action.NAME, Messages.cancel());
 			cancelAction.putValue(Action.MNEMONIC_KEY, (int) Messages.cancelMnemonic());
 		}
-		super.defaultAction(okAction);
 		super.escapeAction(cancelAction);
-
-		return super.build();
 	}
 
-	private static final class PerformAndCloseCommand implements Control.Command {
+	private static final class DisposeCommand implements Control.Command {
 
-		private final Runnable command;
+		private final @Nullable Runnable command;
 		private final @Nullable JComponent component;
 
-		private PerformAndCloseCommand(Runnable command, @Nullable JComponent component) {
+		private DisposeCommand(@Nullable Runnable command, @Nullable JComponent component) {
 			this.command = command;
 			this.component = component;
 		}
 
 		@Override
 		public void execute() {
-			command.run();
-			Ancestor.window().of(component).dispose();
-		}
-	}
-
-	private static final class DefaultOkCommand implements Control.Command {
-
-		private final @Nullable JComponent component;
-
-		private DefaultOkCommand(@Nullable JComponent component) {
-			this.component = component;
-		}
-
-		@Override
-		public void execute() {
-			Ancestor.window().of(component).dispose();
-		}
-	}
-
-	private static final class DefaultCancelCommand implements Control.Command {
-
-		private final @Nullable JComponent component;
-
-		private DefaultCancelCommand(@Nullable JComponent component) {
-			this.component = component;
-		}
-
-		@Override
-		public void execute() {
+			if (command != null) {
+				command.run();
+			}
 			Ancestor.window().of(component).dispose();
 		}
 	}
