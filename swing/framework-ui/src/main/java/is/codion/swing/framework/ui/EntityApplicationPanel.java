@@ -1080,7 +1080,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 							.findFirst()
 							.orElse(modified.keySet().iterator().next());
 			if (!modifiedPanel.isShowing()) {
-				modifiedPanel.activate();
+				activatePanelHierarchy(modifiedPanel);
 			}
 			Collection<Attribute<?>> attributes = modified.get(modifiedPanel);
 			if (!attributes.isEmpty()) {// modified can be predicate based
@@ -1126,6 +1126,17 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 										.map(AttributeDefinition::caption)
 										.collect(Collectors.joining(", ")))
 						.collect(joining("\n", "", "\n\n")) + FrameworkMessages.modifiedWarning();
+	}
+
+	private static void activatePanelHierarchy(EntityPanel panel) {
+		List<EntityPanel> hierarchy = new ArrayList<>();
+		hierarchy.add(panel);
+		Optional<EntityPanel> parent = panel.parentPanel();
+		while (parent.isPresent()) {
+			hierarchy.add(0, parent.get());
+			parent = parent.get().parentPanel();
+		}
+		hierarchy.forEach(EntityPanel::activate);
 	}
 
 	private static Map<Object, State> createLogLevelStateMap() {
