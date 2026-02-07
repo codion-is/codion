@@ -69,16 +69,8 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -94,7 +86,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -166,25 +157,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public static final PropertyValue<Boolean> SQL_TRACING =
 					booleanValue(EntityApplicationPanel.class.getName() + ".sqlTracing", false);
 
-	private static final String LOG_LEVEL = "log_level";
-	private static final String LOG_LEVEL_DESC = "log_level_desc";
-	private static final String HELP = "help";
-	private static final String SHORTCUTS = "shortcuts";
-	private static final String ABOUT = "about";
-	private static final String ALWAYS_ON_TOP = "always_on_top";
-	private static final String APPLICATION_VERSION = "application_version";
-	private static final String CODION_VERSION = "codion_version";
-	private static final String MEMORY_USAGE = "memory_usage";
-	private static final String ADVANCED_LOG_LEVEL = "advanced_log_level";
-	private static final String ADVANCED_LOG_LEVEL_MNEMONIC = "advanced_log_level_mnemonic";
-	private static final String ENTITY_PANELS_KEY = "entityPanels";
-	private static final String AUXILIARY_PANEL_KEY = "auxiliaryPanels";
-	private static final String APPLICATION_PANEL_KEY = "applicationPanel";
-	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
-	private static final Runtime RUNTIME = Runtime.getRuntime();
-
-	private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
-
 	/**
 	 * Specifies the URL to the application help
 	 * <ul>
@@ -227,6 +199,25 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", true);
+
+	private static final String LOG_LEVEL = "log_level";
+	private static final String LOG_LEVEL_DESC = "log_level_desc";
+	private static final String HELP = "help";
+	private static final String SHORTCUTS = "shortcuts";
+	private static final String ABOUT = "about";
+	private static final String ALWAYS_ON_TOP = "always_on_top";
+	private static final String APPLICATION_VERSION = "application_version";
+	private static final String CODION_VERSION = "codion_version";
+	private static final String MEMORY_USAGE = "memory_usage";
+	private static final String ADVANCED_LOG_LEVEL = "advanced_log_level";
+	private static final String ADVANCED_LOG_LEVEL_MNEMONIC = "advanced_log_level_mnemonic";
+	private static final String ENTITY_PANELS_KEY = "entityPanels";
+	private static final String AUXILIARY_PANEL_KEY = "auxiliaryPanels";
+	private static final String APPLICATION_PANEL_KEY = "applicationPanel";
+	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
+	private static final Runtime RUNTIME = Runtime.getRuntime();
+
+	private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
 	// Non-static so that Locale.setDefault(...) can be called in the main method of a subclass
 	private final MessageBundle resourceBundle =
@@ -340,18 +331,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public final State alwaysOnTop() {
 		return alwaysOnTopState;
-	}
-
-	/**
-	 * Displays in a dialog a tree describing the application layout
-	 */
-	public final void viewApplicationTree() {
-		Dialogs.builder()
-						.component(createApplicationTree())
-						.owner(this)
-						.title(resourceBundle.getString("view_application_tree"))
-						.modal(false)
-						.show();
 	}
 
 	/**
@@ -609,16 +588,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 										.command(this::advancedLogLevelConfiguration)
 										.caption(resourceBundle.getString(ADVANCED_LOG_LEVEL) + "...")
 										.mnemonic(resourceBundle.getString(ADVANCED_LOG_LEVEL_MNEMONIC).charAt(0)))
-						.build();
-	}
-
-	/**
-	 * @return a Control for viewing the application structure tree
-	 */
-	protected final Control createViewApplicationTreeControl() {
-		return Control.builder()
-						.command(this::viewApplicationTree)
-						.caption(resourceBundle.getString("view_application_tree"))
 						.build();
 	}
 
@@ -1023,10 +992,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.build();
 	}
 
-	private JScrollPane createApplicationTree() {
-		return createTree(createApplicationTree(entityPanels));
-	}
-
 	private void handleUnsavedModifications() {
 		Map<EntityPanel, Collection<Attribute<?>>> modified = modified(entityPanels);
 		if (modifiedWarning && !modified.isEmpty() && showConfirmDialog(this,
@@ -1273,47 +1238,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.owner(this)
 						.title(resourceBundle.getString(ADVANCED_LOG_LEVEL))
 						.show();
-	}
-
-	private static JScrollPane createTree(TreeModel treeModel) {
-		JTree tree = Components.tree()
-						.model(treeModel)
-						.showsRootHandles(true)
-						.toggleClickCount(1)
-						.rootVisible(false)
-						.build();
-		expandAll(tree, new TreePath(tree.getModel().getRoot()));
-
-		return new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	}
-
-	private static void expandAll(JTree tree, TreePath parent) {
-		TreeNode node = (TreeNode) parent.getLastPathComponent();
-		if (node.getChildCount() >= 0) {
-			Enumeration<? extends TreeNode> e = node.children();
-			while (e.hasMoreElements()) {
-				expandAll(tree, parent.pathByAddingChild(e.nextElement()));
-			}
-		}
-		tree.expandPath(parent);
-	}
-
-	private static DefaultTreeModel createApplicationTree(Collection<? extends EntityPanel> entityPanels) {
-		DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
-		addPanelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
-
-		return applicationTreeModel;
-	}
-
-	private static void addPanelsToTree(DefaultMutableTreeNode root, Collection<? extends EntityPanel> panels) {
-		for (EntityPanel entityPanel : panels) {
-			DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.caption());
-			node.setUserObject(entityPanel);
-			root.add(node);
-			if (!entityPanel.detailPanels().get().isEmpty()) {
-				addPanelsToTree(node, entityPanel.detailPanels().get());
-			}
-		}
 	}
 
 	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {

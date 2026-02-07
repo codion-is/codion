@@ -779,7 +779,6 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |system_properties|System properties|Kerfisstillingar
 |tools|Tools|Tól
 |tools_mnemonic|T|T
-|view_application_tree|Application Tree|Yfirlitsmynd
 |view_sql_trace|View|Skoða
 |===
 

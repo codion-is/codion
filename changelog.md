@@ -41,6 +41,7 @@ Codion Change Log
 - EntityApplicationPanel.handleUnsavedModifications() bug fixed, now activates the full panel hierarchy.
 - EntityApplicationPanel.CALL_SYSTEM_EXIT renamed SYSTEM_EXIT.
 - EntityApplicationPanel.viewDependencyTree() removed.
+- EntityApplicationPanel.viewApplicationTree() removed.
 ### is.codion.tools.jul.classpath
 - Automatic directory creation implemented in ClasspathConfiguration.
 ### is.codion.tools.swing.robot
