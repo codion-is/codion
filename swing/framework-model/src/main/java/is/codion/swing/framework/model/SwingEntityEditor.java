@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -82,8 +83,8 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 		private final SwingEntityEditor editor;
 		private final SwingComponentModels componentModels;
 
-		private final Map<Attribute<?>, EntityComboBoxModel> foreignKeyComboBoxModels = new HashMap<>();
-		private final Map<Attribute<?>, FilterComboBoxModel<?>> columnComboBoxModels = new HashMap<>();
+		private final Map<ForeignKey, EntityComboBoxModel> foreignKeyComboBoxModels = new HashMap<>();
+		private final Map<Column<?>, FilterComboBoxModel<?>> columnComboBoxModels = new HashMap<>();
 
 		private ComboBoxModels(SwingEntityEditor editor, SwingComponentModels componentModels) {
 			this.editor = editor;
@@ -91,9 +92,28 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 		}
 
 		/**
-		 * Creates and refreshes combo box models for the given attributes. Doing this in the model
-		 * constructor avoids the models being refreshed when the combo boxes using them are initialized,
-		 * which usually happens on the Event Dispatch Thread.
+		 * Returns the foreign key based combo box models initialized via {@link #get(ForeignKey)}.
+		 * @return an unmodifiable view of the foreign key based combo box models
+		 */
+		public Map<ForeignKey, EntityComboBoxModel> foreignKey() {
+			synchronized (foreignKeyComboBoxModels) {
+				return unmodifiableMap(foreignKeyComboBoxModels);
+			}
+		}
+
+		/**
+		 * Returns the column based combo box models initialized via {@link #get(Column)}.
+		 * @return an unmodifiable view of the column based combo box models
+		 */
+		public Map<Column<?>, FilterComboBoxModel<?>> column() {
+			synchronized (columnComboBoxModels) {
+				return unmodifiableMap(columnComboBoxModels);
+			}
+		}
+
+		/**
+		 * Creates and refreshes combo box models for the given attributes. Doing this in a edit model
+		 * constructor avoids the models being refreshed when the combo boxes using them are initialized
 		 * @param attributes the attributes for which to initialize combo box models
 		 * @see #create(Column)
 		 * @see #create(ForeignKey)
@@ -105,17 +125,6 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 				}
 				else if (attribute instanceof Column<?>) {
 					get((Column<?>) attribute).items().refresh();
-				}
-			}
-		}
-
-		/**
-		 * Refreshes all column based combobox models
-		 */
-		public void refreshColumnComboBoxModels() {
-			synchronized (columnComboBoxModels) {
-				for (FilterComboBoxModel<?> comboBoxModel : columnComboBoxModels.values()) {
-					comboBoxModel.items().refresh();
 				}
 			}
 		}
@@ -186,7 +195,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 		 * @see ForeignKeyDefinition#attributes()
 		 */
 		public EntityComboBoxModel create(ForeignKey foreignKey) {
-			return componentModels.createComboBoxModel(foreignKey, editor);
+			return componentModels.createComboBoxModel(requireNonNull(foreignKey), editor);
 		}
 
 		/**
@@ -197,7 +206,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 */
 		public <T> FilterComboBoxModel<T> create(Column<T> column) {
-			return componentModels.createComboBoxModel(column, editor);
+			return componentModels.createComboBoxModel(requireNonNull(column), editor);
 		}
 	}
 

@@ -28,6 +28,7 @@ Codion Change Log
 - SwingEntityEditor.ComboBoxModels added.
 - SwingEntityEditor.SwingComponentModels and ComboBoxModels interfaces removed, some refactoring.
 - SwingComponentModels.createComboBoxModel() enum handling moved to EntityEditorPanel.createEnumComboBox().
+- SwingEntityEditor.ComboBoxModels.column() and foreignKey() added, refreshColumnComboBoxModels() removed.
 ### is.codion.swing.framework.ui
 - EntitySearchFieldPanel.Builder return types fixed.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValueBuilder) added, setComponentBuilder() removed.
