@@ -227,11 +227,8 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		try {
 			validator.validate(value);
 		}
-		catch (ValidationException e) {
-			throw e;
-		}
 		catch (IllegalArgumentException e) {
-			throw new ValidationException(attribute(), value, e.getMessage());
+			throw new ValidationException(attribute(), value, caption() + ": " + e.getMessage());
 		}
 	}
 
@@ -271,12 +268,10 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		public void validate(T value) {
 			Number number = (Number) value;
 			if (minimum != null && number.doubleValue() < minimum.doubleValue()) {
-				throw new ValidationException(attribute(), number,
-								"'" + caption() + "' " + MESSAGES.getString("value_too_small") + " " + minimum);
+				throw new IllegalArgumentException(MESSAGES.getString("value_too_small") + " " + minimum);
 			}
 			if (maximum != null && number.doubleValue() > maximum.doubleValue()) {
-				throw new ValidationException(attribute(), number,
-								"'" + caption() + "' " + MESSAGES.getString("value_too_large") + " " + maximum);
+				throw new IllegalArgumentException(MESSAGES.getString("value_too_large") + " " + maximum);
 			}
 		}
 	}
@@ -290,8 +285,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		public void validate(T value) {
 			String string = (String) value;
 			if (maximumLength != -1 && string.length() > maximumLength) {
-				throw new ValidationException(attribute(), string,
-								"'" + caption() + "' " + MESSAGES.getString("value_too_long") + " " + maximumLength + "\n:'" + string + "'");
+				throw new IllegalArgumentException(MESSAGES.getString("value_too_long") + " " + maximumLength + "\n:'" + string + "'");
 			}
 		}
 	}

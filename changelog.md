@@ -9,6 +9,8 @@ Codion Change Log
 - DefaultOkCancelDialogBuilder refactored.
 ### is.codion.framework.domain
 - AttributeDefinition.ValueSupplier renamed DefaultValue.
+- AbstractValueAttributeDefinition.RangeValidator and MaximumLengthValidator bug fixed, now throw IllegalArgumentException.
+- AbstractValueAttributeDefinition.validate() now prepends caption to error message.
 ### is.codion.framework.model
 - EntityEditModel.EditorValue.attribute() added.
 - EntityEditor.EditorModels added, related refactoring.
