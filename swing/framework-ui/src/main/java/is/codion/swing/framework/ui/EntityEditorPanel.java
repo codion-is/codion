@@ -181,6 +181,13 @@ public class EntityEditorPanel extends JPanel {
 	}
 
 	/**
+	 * @return the underlying editor
+	 */
+	public final SwingEntityEditor editor() {
+		return editor;
+	}
+
+	/**
 	 * @return the {@link InputFocus} instance, managing the input focus
 	 */
 	public final InputFocus focus() {

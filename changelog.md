@@ -35,6 +35,7 @@ Codion Change Log
 - EntityEditPanel, modified warning moved to EntityEditorPanel.
 - EntityEditPanel.clearAndRequestFocus() moved to EntityEditorPanel.
 - EditAttributePanel.updateStates() bug fixed, now catches ValidationException as well as IllegalArgumentException.
+- EntityEditorPanel.editor() added.
 ### is.codion.tools.jul.classpath
 - Automatic directory creation implemented in ClasspathConfiguration.
 
