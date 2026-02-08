@@ -89,12 +89,12 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	}
 
 	@Override
-	public final void activated(EntityPanel entityPanel) {
+	public final void display(EntityPanel entityPanel) {
 		requireNonNull(entityPanel);
 		if (tabbedPane == null) {
 			throw new IllegalStateException("EntityApplicationPanel has not been laid out");
 		}
-		if (tabbedPane.indexOfComponent(entityPanel) != -1) {
+		if (tabbedPane.getSelectedIndex() != tabbedPane.indexOfComponent(entityPanel)) {
 			entityPanel.initialize();
 			tabbedPane.setSelectedComponent(entityPanel);
 		}
@@ -123,7 +123,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			if (tabbedPane.getTabCount() > 0) {
-				((EntityPanel) tabbedPane.getSelectedComponent()).activate();
+				((EntityPanel) tabbedPane.getSelectedComponent()).activation().request();
 			}
 		}
 	}

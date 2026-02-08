@@ -42,6 +42,8 @@ Codion Change Log
 - EntityApplicationPanel.CALL_SYSTEM_EXIT renamed SYSTEM_EXIT.
 - EntityApplicationPanel.viewDependencyTree() removed.
 - EntityApplicationPanel.viewApplicationTree() removed.
+- EntityPanel.Display and Activation replace activate() and activated().
+- EntityApplicationPanel.handleUnsavedModifications() no longer now activates the full panel hierarchy, now handled by EntityPanel.display().
 ### is.codion.tools.jul.classpath
 - Automatic directory creation implemented in ClasspathConfiguration.
 ### is.codion.tools.swing.robot

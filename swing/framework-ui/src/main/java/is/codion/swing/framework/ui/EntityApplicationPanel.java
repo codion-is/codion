@@ -69,6 +69,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
@@ -749,7 +750,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
 							.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-							.onOpened(e -> entityPanel.activate())
+							.onOpened(e -> entityPanel.activation().request())
 							.onClosed(e -> onEntityPanelWindowClosed(entityPanel))
 							.show();
 		}
@@ -778,7 +779,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 							.owner(Ancestor.window().of(this).get())
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))
-							.onOpened(e -> entityPanel.activate())
+							.onOpened(e -> entityPanel.activation().request())
 							.onClosed(e -> onEntityPanelWindowClosed(entityPanel))
 							.modal(modal)
 							.show();
@@ -958,7 +959,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void configureEntityPanel(EntityPanel entityPanel) {
 		entityPanel.linkSiblings(entityPanels);
-		entityPanel.activated().addConsumer(applicationLayout::activated);
+		entityPanel.display().requested().addConsumer(applicationLayout::display);
 		if (entityPanel.containsEditPanel()) {
 			entityPanel.editPanel().active().addConsumer(new DisplayActivatedPanel(entityPanel));
 		}
@@ -1001,12 +1002,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 							.filter(entityPanel -> entityPanel.editPanel().active().is())
 							.findFirst()
 							.orElse(modified.keySet().iterator().next());
-			if (!modifiedPanel.isShowing()) {
-				activatePanelHierarchy(modifiedPanel);
-			}
+			modifiedPanel.display().request();
 			Collection<Attribute<?>> attributes = modified.get(modifiedPanel);
 			if (!attributes.isEmpty()) {// modified can be predicate based
-				modifiedPanel.editPanel().focus().request(attributes.iterator().next());
+				SwingUtilities.invokeLater(() -> modifiedPanel.editPanel().focus().request(attributes.iterator().next()));
 			}
 
 			throw new CancelException();
@@ -1048,17 +1047,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 										.map(AttributeDefinition::caption)
 										.collect(Collectors.joining(", ")))
 						.collect(joining("\n", "", "\n\n")) + FrameworkMessages.modifiedWarning();
-	}
-
-	private static void activatePanelHierarchy(EntityPanel panel) {
-		List<EntityPanel> hierarchy = new ArrayList<>();
-		hierarchy.add(panel);
-		Optional<EntityPanel> parent = panel.parentPanel();
-		while (parent.isPresent()) {
-			hierarchy.add(0, parent.get());
-			parent = parent.get().parentPanel();
-		}
-		hierarchy.forEach(EntityPanel::activate);
 	}
 
 	private static Map<Object, State> createLogLevelStateMap() {
@@ -1263,7 +1251,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		@Override
 		public void accept(Boolean active) {
 			if (active) {
-				applicationLayout.activated(entityPanel);
+				applicationLayout.display(entityPanel);
 			}
 		}
 	}
@@ -1300,12 +1288,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		JComponent layout();
 
 		/**
-		 * Called when the given entity panel is activated,
-		 * responsible for making sure it becomes visible.
-		 * @param entityPanel the entity panel being activated
-		 * @see EntityPanel#activate()
-		 * @see EntityPanel#activated()
+		 * Called when the given entity panel should be displayed,
+		 * responsible for making sure it can be displayed.
+		 * @param entityPanel the entity panel to display
+		 * @see EntityPanel#display()
 		 */
-		default void activated(EntityPanel entityPanel) {}
+		default void display(EntityPanel entityPanel) {}
 	}
 }

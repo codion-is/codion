@@ -191,7 +191,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		if (splitPane != null) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has already been laid out");
 		}
-		entityPanel.activated().addListener(new ShowIfHidden());
+		entityPanel.display().requested().addListener(new ShowIfHidden());
 		splitPane = createSplitPane(entityPanel.defaultPanel());
 		tabbedPane = createTabbedPane(entityPanel.detailPanels().get());
 		setupControls(entityPanel);
@@ -281,7 +281,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 	}
 
 	private void bindEvents(EntityPanel detailPanel) {
-		detailPanel.activated().addConsumer(detailController::activated);
+		detailPanel.display().requested().addConsumer(detailController::display);
+		detailPanel.activation().requested().addConsumer(detailController::activate);
 		controlMap.keyStroke(RESIZE_RIGHT).optional().ifPresent(keyStroke ->
 						detailPanel.addKeyEvent(KeyEvents.builder()
 										.keyStroke(keyStroke)
@@ -349,7 +350,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private JTabbedPane createTabbedPane(Collection<EntityPanel> detailPanels) {
 		TabbedPaneBuilder builder = tabbedPane()
 						.focusable(false)
-						.changeListener(e -> selectedDetailPanel().activate())
+						.changeListener(e -> selectedDetailPanel().activation().request())
 						.minimumSize(new Dimension(0, 0))
 						.focusCycleRoot(true);
 		detailPanels.forEach(detailPanel -> builder
@@ -388,7 +389,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			if (detailController.panelState.is(HIDDEN)) {
 				detailController.panelState.set(detailController.panelStateMapper.apply(HIDDEN));
 			}
-			detailPanel.activate();
+			detailPanel.activation().request();
 		}
 	}
 
@@ -401,7 +402,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			if (DIVIDER_LOCATION.equals(changeEvent.getPropertyName())) {
 				JSplitPane pane = (JSplitPane) changeEvent.getSource();
 				if (Objects.equals(changeEvent.getNewValue(), pane.getMaximumDividerLocation())) {
-					entityPanel.activate();
+					entityPanel.activation().request();
 				}
 			}
 		}
@@ -492,16 +493,19 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		@Override
-		public void activated(EntityPanel detailPanel) {
+		public void display(EntityPanel detailPanel) {
 			requireNonNull(detailPanel);
-			// Ensure the parent panel is initialized
-			entityPanel.initialize();
+			// Ensure the parent panel is displayed
+			entityPanel.display().request();
 			tabbedPane.setFocusable(true);
 			tabbedPane.setSelectedComponent(detailPanel);
 			tabbedPane.setFocusable(false);
 			showDetailPanel();
-			activateDetailModelLink(detailPanel.model());
-			showWindow(detailPanel);
+		}
+
+		@Override
+		public void activate(EntityPanel detailPanel) {
+			activateDetailModelLink(requireNonNull(detailPanel).model());
 		}
 
 		@Override
@@ -517,13 +521,6 @@ public final class TabbedDetailLayout implements DetailLayout {
 			}
 			if (detailController.panelState.is(HIDDEN)) {
 				panelState.set(panelStateMapper.apply(HIDDEN));
-			}
-		}
-
-		private void showWindow(EntityPanel detailPanel) {
-			Ancestor.window().of(detailPanel).toFront();
-			if (detailPanel.containsEditPanel()) {
-				Ancestor.window().of(detailPanel.editPanel()).toFront();
 			}
 		}
 

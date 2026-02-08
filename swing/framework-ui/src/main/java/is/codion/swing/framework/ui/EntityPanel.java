@@ -243,7 +243,8 @@ public class EntityPanel extends JPanel {
 	private final JPanel defaultPanel;
 	private final DetailLayout detailLayout;
 	private final DetailController detailController;
-	private final Event<EntityPanel> activatedEvent = Event.event();
+	private final Display display = new Display();
+	private final Activation activation = new Activation();
 	private final Value<PanelState> editPanelState;
 	private final UnaryOperator<PanelState> editPanelStateMapper;
 
@@ -526,25 +527,17 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @return an observer notified when this panel is activated
-	 * @see #activate()
+	 * @return the {@link Display} instance
 	 */
-	public final Observer<EntityPanel> activated() {
-		return activatedEvent.observer();
+	public final Display display() {
+		return display;
 	}
 
 	/**
-	 * <p>Activates this panel, by initializing it, bringing its parent window to front and requesting initial focus.
-	 * <p>It is up the {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} (for top level panels)
-	 * and the {@link DetailController} (for detail panels) to make sure this panel is displayed when activated.
-	 * @see #activated()
-	 * @see is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout#activated(EntityPanel)
-	 * @see DetailController#activated(EntityPanel)
+	 * @return the {@link Activation} instance
 	 */
-	public final void activate() {
-		activatedEvent.accept(this);
-		initialize();
-		requestInitialFocus();
+	public final Activation activation() {
+		return activation;
 	}
 
 	/**
@@ -1168,17 +1161,17 @@ public class EntityPanel extends JPanel {
 			switch (direction) {
 				case LEFT:
 					if (previousPanel != null) {
-						previousPanel.activate();
+						previousPanel.activation.request();
 					}
 					break;
 				case RIGHT:
 					if (nextPanel != null) {
-						nextPanel.activate();
+						nextPanel.activation.request();
 					}
 					break;
 				case UP:
 					if (parentPanel != null) {
-						parentPanel.activate();
+						parentPanel.activation.request();
 					}
 					break;
 				case DOWN:
@@ -1195,7 +1188,7 @@ public class EntityPanel extends JPanel {
 			detailPanels.active().stream()
 							.findFirst()
 							.orElse(detailPanels.panels.get(0))
-							.activate();
+							.activation.request();
 		}
 	}
 
@@ -1300,6 +1293,8 @@ public class EntityPanel extends JPanel {
 	 * <p>Use {@link Display#request()} to request that this {@link EntityPanel} is displayed in its parent panel.
 	 * {@link is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout} and {@link DetailLayout} implementations
 	 * are responsible for responding to these requests and making sure the panel is displayed.
+	 * @see is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout#display(EntityPanel)
+	 * @see DetailController#display(EntityPanel)
 	 */
 	public final class Display {
 
@@ -1313,13 +1308,41 @@ public class EntityPanel extends JPanel {
 		 * @see #requested()
 		 */
 		public void request() {
+			initialize();
 			request.accept(EntityPanel.this);
-			Ancestor.window().of(EntityPanel.this).toFront();
-			Ancestor.window().of(editControlPanel).toFront();
 		}
 
 		/**
 		 * @return an {@link Observer} notified when a display request for this panel has been issued
+		 * @see #request()
+		 */
+		public Observer<EntityPanel> requested() {
+			return request.observer();
+		}
+	}
+
+	/**
+	 * <p>Manages activation requests for this panel, that is, displayed with initial focus requested.
+	 */
+	public final class Activation {
+
+		private final Event<EntityPanel> request = Event.event();
+
+		private Activation() {}
+
+		/**
+		 * <p>Activates this panel, requesting it be displayed and requesting initial focus.
+		 * <p>It is up the {@link DetailController} to make sure the detail model link is activated.
+		 * @see DetailController#activate(EntityPanel)
+		 */
+		public void request() {
+			display.request();
+			request.accept(EntityPanel.this);
+			requestInitialFocus();
+		}
+
+		/**
+		 * @return an {@link Observer} notified when an activation request for this panel has been issued
 		 * @see #request()
 		 */
 		public Observer<EntityPanel> requested() {
@@ -1836,9 +1859,14 @@ public class EntityPanel extends JPanel {
 		 * Called when the given detail panel should be displayed,
 		 * responsible for making sure it becomes visible.
 		 * @param detailPanel the detail panel to display
-		 * @see EntityPanel.Display#requested()
 		 */
-		default void activated(EntityPanel detailPanel) {}
+		default void display(EntityPanel detailPanel) {}
+
+		/**
+		 * Called when the detail panel is activated.
+		 * @param detailPanel the detail panel to activate
+		 */
+		default void activate(EntityPanel detailPanel) {}
 	}
 
 	/**

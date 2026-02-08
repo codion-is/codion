@@ -784,15 +784,14 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	public static final class InputFocus {
 
-		private final EntityEditorPanel editComponentPanel;
-
+		private final EntityEditorPanel editorPanel;
 		private final State transferOnEnter = State.state(true);
 		private final Initial initial = new Initial();
 		private final AfterInsert afterInsert = new AfterInsert();
 		private final AfterUpdate afterUpdate = new AfterUpdate();
 
-		private InputFocus(EntityEditorPanel editComponentPanel) {
-			this.editComponentPanel = editComponentPanel;
+		private InputFocus(EntityEditorPanel editorPanel) {
+			this.editorPanel = editorPanel;
 		}
 
 		/**
@@ -802,7 +801,8 @@ public class EntityEditorPanel extends JPanel {
 		 * @param attribute the attribute of the component to select
 		 */
 		public void request(Attribute<?> attribute) {
-			editComponentPanel.component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
+			Ancestor.window().of(editorPanel).toFront();
+			editorPanel.component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
 		}
 
 		/**
@@ -840,7 +840,7 @@ public class EntityEditorPanel extends JPanel {
 				component.requestFocus();
 			}
 			else {
-				editComponentPanel.requestFocus();
+				editorPanel.requestFocus();
 			}
 		}
 
@@ -871,12 +871,12 @@ public class EntityEditorPanel extends JPanel {
 			public JComponent get() {
 				JComponent initial = component.get();
 				if (initial == null) {
-					Component defaultComponent = LAYOUT_FOCUS_TRAVERSAL_POLICY.getDefaultComponent(editComponentPanel);
+					Component defaultComponent = LAYOUT_FOCUS_TRAVERSAL_POLICY.getDefaultComponent(editorPanel);
 					if (defaultComponent instanceof JComponent) {
 						return (JComponent) defaultComponent;
 					}
 
-					return editComponentPanel;
+					return editorPanel;
 				}
 
 				return initial;
@@ -898,7 +898,7 @@ public class EntityEditorPanel extends JPanel {
 			 */
 			public void set(Attribute<?> attribute) {
 				requireNonNull(attribute);
-				set(() -> editComponentPanel.component(attribute).get());
+				set(() -> editorPanel.component(attribute).get());
 			}
 
 			/**
@@ -915,7 +915,7 @@ public class EntityEditorPanel extends JPanel {
 			 * @see #get()
 			 */
 			public void request() {
-				if (editComponentPanel.isVisible()) {
+				if (editorPanel.isVisible()) {
 					requestFocus(get());
 				}
 			}
@@ -946,7 +946,7 @@ public class EntityEditorPanel extends JPanel {
 			 */
 			public void set(Attribute<?> attribute) {
 				requireNonNull(attribute);
-				set(() -> editComponentPanel.component(attribute).get());
+				set(() -> editorPanel.component(attribute).get());
 			}
 
 			/**

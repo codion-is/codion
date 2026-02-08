@@ -21,7 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.Controls;
@@ -97,7 +96,8 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	private void addDetailPanel(EntityPanel detailPanel) {
 		panelWindows.put(detailPanel, new DetailWindow(detailPanel));
-		detailPanel.activated().addConsumer(detailController::activated);
+		detailPanel.display().requested().addConsumer(detailController::display);
+		detailPanel.activation().requested().addConsumer(detailController::activate);
 	}
 
 	private void setupControls(EntityPanel entityPanel) {
@@ -125,17 +125,6 @@ public final class WindowDetailLayout implements DetailLayout {
 		@Override
 		public Value<PanelState> panelState(EntityPanel detailPanel) {
 			return detailWindow(detailPanel).panelState;
-		}
-
-		@Override
-		public void activated(EntityPanel detailPanel) {
-			Window panelWindow = detailWindow(detailPanel).window;
-			if (panelWindow != null && panelWindow.isShowing()) {
-				panelWindow.toFront();
-				if (detailPanel.containsEditPanel()) {
-					Ancestor.window().of(detailPanel).toFront();
-				}
-			}
 		}
 
 		private DetailWindow detailWindow(EntityPanel detailPanel) {
