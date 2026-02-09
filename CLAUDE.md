@@ -322,7 +322,6 @@ FilterTable<Row, Column> table = FilterTable.builder(model)
     .selectionMode(SINGLE_SELECTION)
     .doubleClick(command(this::onDoubleClick))
     .enabled(taskActive.not())
-    .cellRenderer(Column.STATUS, customRenderer)
     .build();
 ```
 
@@ -422,10 +421,14 @@ public final class ChatModel extends SwingEntityModel {
 Implement business logic in edit models, not domain definitions:
 
 ```java
-public final class ChatEditModel extends AbstractEntityEditModel {
+public final class ChatEditModel extends DefaultEntityEditModel {
     private final Event<List<Document>> documentsSelected = Event.event();
     private final State processing = State.state();
     private final Value<ChatLanguageModel> model = Value.nullable();
+	
+	public ChatEditModel(EntityConnectionProvider connectionProvider) {
+		super(Chat.TYPE, connectionProvider);
+    }
     
     void submitPrompt() {
         ProgressWorker.builder(this::callLLM)
@@ -537,7 +540,7 @@ Column<Location> LOCATION = TYPE.column("location", Location.class);
 // LocationConverter handles database ↔ Java conversion
 LOCATION.as()
     .column()
-    .columnClass(String.class, new LocationConverter());
+    .converter(String.class, new LocationConverter());
 ```
 
 ### Array/Collection Columns
@@ -551,7 +554,7 @@ Column<List<String>> TAGS = TYPE.column("tags", new TypeReference<>() {});
 // TagsConverter handles SQL Array ↔ List<String>
 TAGS.as()
     .column()
-    .columnClass(Array.class, new TagsConverter());
+    .converter(Array.class, new TagsConverter());
 ```
 
 ### Cross-Entity Validation
@@ -589,11 +592,11 @@ CountryLanguage.NO_OF_SPEAKERS.as()
      .from(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
      .with(new NoOfSpeakers())
      .caption("No. of speakers")
-     .numberFormatGrouping(true)
+     .numberGrouping(true)
 
 class NoOfSpeakers implements DerivedValue<Integer> {
     @Override
-    public Integer get(SourceValues values) {
+    public Integer from(SourceValues values) {
         Double percentage = values.get(CountryLanguage.PERCENTAGE);
         Entity country = values.get(CountryLanguage.COUNTRY_FK);
         if (percentage != null && country != null) {
@@ -665,7 +668,8 @@ Note: Generators now receive `Database` and `Connection` directly, providing exp
 ```java
 // World demo - simply fetches the the denormalized value from the referenced entity, if available
 Country.CAPITAL_POPULATION.as()
-    .denormalized(Country.CAPITAL_FK, City.POPULATION)
+    .denormalized(Country.CAPITAL_FK)
+    .using(City.POPULATION);
 ```
 
 #### Reference Depth Control
@@ -759,7 +763,9 @@ public Employees() {
 JasperPrint employeeReport = tableModel().connection()
 		.report(Employee.EMPLOYEE_REPORT, reportParameters);
 
-Dialogs.componentDialog(new JRViewer(employeeReport)).show();
+Dialogs.builder()
+    .component(new JRViewer(employeeReport))
+    .show();
 ```
 
 ### Key Principles for Complex Domains
