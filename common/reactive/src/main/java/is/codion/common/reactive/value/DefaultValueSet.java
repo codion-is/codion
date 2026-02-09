@@ -29,7 +29,7 @@ final class DefaultValueSet<T> extends AbstractValueCollection<T, Set<T>> implem
 	}
 
 	@Override
-	public ObservableValueSet<T> observable() {
+	public synchronized ObservableValueSet<T> observable() {
 		return (ObservableValueSet<T>) super.observable();
 	}
 

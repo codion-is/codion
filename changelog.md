@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.68
+### is.codion.common.reactive
+- AbstractValueCollection, minor synchronization code cleanup.
 ### is.codion.common.db
 - ReportType, ProcedureType and FunctionType type parameters now consistent, P for parameter, and result type last.
 ### is.codion.swing.common.ui
