@@ -141,10 +141,10 @@ public class SwingMcpCoreTest {
 	}
 
 	@Test
-	void testPluginStateCreation() {
+	void testServerStateCreation() {
 		// Test that we can create MCP server states
-		State state1 = SwingMcpPlugin.builder().window(() -> null).build();
-		State state2 = SwingMcpPlugin.builder().window(() -> null).build();
+		State state1 = SwingMcpServer.builder().window(() -> null).build();
+		State state2 = SwingMcpServer.builder().window(() -> null).build();
 
 		assertNotNull(state1);
 		assertNotNull(state2);
@@ -256,7 +256,5 @@ public class SwingMcpCoreTest {
 				// Expected in headless environments
 			}
 		});
-
-		server.stop();
 	}
 }

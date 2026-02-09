@@ -50,6 +50,7 @@ Codion Change Log
 - Narrator window handling improved.
 ### is.codion.tools.swing.mcp
 - SwingMcpPlugin.Builder added, related refactoring.
+- SwingMcpPlugin merged with SwingMcpServer, unused io.modelcontextprotocol.sdk:mcp dependency replaced with jackson-databind.
 
 ## 0.18.67
 ### is.codion.common.reactive

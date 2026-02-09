@@ -26,7 +26,6 @@ module is.codion.tools.swing.mcp {
 	requires org.slf4j;
 	requires jdk.httpserver;
 	requires java.desktop;
-	requires io.modelcontextprotocol.sdk.mcp;
 	requires com.fasterxml.jackson.databind;
 
 	exports is.codion.tools.swing.mcp;

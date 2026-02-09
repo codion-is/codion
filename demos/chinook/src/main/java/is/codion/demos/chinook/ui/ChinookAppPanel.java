@@ -53,7 +53,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.EntityTablePanel.SelectionMode;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
-import is.codion.tools.swing.mcp.SwingMcpPlugin;
+import is.codion.tools.swing.mcp.SwingMcpServer;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
@@ -85,7 +85,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	/* Non-static so this is not initialized before main(), which sets the locale */
 	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
 
-	private final State mcpController = SwingMcpPlugin.builder()
+	private final State mcpController = SwingMcpServer.builder()
 					.component(this)
 					.narrator(true)
 					.build();

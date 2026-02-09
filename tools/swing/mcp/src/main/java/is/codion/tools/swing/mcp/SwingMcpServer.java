@@ -18,6 +18,11 @@
  */
 package is.codion.tools.swing.mcp;
 
+import is.codion.common.reactive.state.State;
+import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.version.Version;
+import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.tools.swing.mcp.SwingMcpHttpServer.HttpTool;
 import is.codion.tools.swing.robot.Controller;
 import is.codion.tools.swing.robot.Controller.FocusLostException;
 import is.codion.tools.swing.robot.Narrator;
@@ -34,6 +39,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import java.awt.AWTEvent;
@@ -56,24 +62,44 @@ import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.common.utilities.Configuration.integerValue;
 import static java.awt.AWTEvent.WINDOW_EVENT_MASK;
 import static java.awt.event.WindowEvent.*;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.stream.Collectors.toList;
 
 /**
  * MCP Server for UI automation of Swing applications.
  * Provides keyboard control, screenshot capabilities, and HTTP-only MCP protocol integration.
- * This version is simplified to support only HTTP transport.
+ * <p>
+ * The HTTP server runs in-process and can be toggled on/off at runtime.
+ * Claude Desktop connects via a Java bridge that translates STDIO to HTTP.
+ * <p>
+ * Configure with system properties:
+ * -Dcodion.swing.mcp.http.port=8080      (HTTP server port, default 8080)
+ * @see #builder()
  */
-final class SwingMcpServer {
+public final class SwingMcpServer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SwingMcpServer.class);
 
-	// Tool names (public for SwingMcpPlugin)
+	/**
+	 * System property to set the HTTP server port (default: 8080).
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 8080
+	 * </ul>
+	 */
+	public static final PropertyValue<Integer> HTTP_PORT = integerValue("codion.swing.mcp.http.port", 8080);
+
+	// Tool names
 	static final String TYPE_TEXT = "type_text";
 	static final String KEY_COMBO = "key";
 	static final String CLEAR_FIELD = "clear_field";
@@ -91,23 +117,57 @@ final class SwingMcpServer {
 	// Schema constants
 	static final String INPUT_SCHEMA = "{\"type\": \"object\", \"properties\": {}}";
 
+	private static final String WIDTH = "width";
+	private static final String HEIGHT = "height";
+	private static final String IMAGE = "image";
+	private static final String CODION_SWING_MCP = "codion-swing-mcp";
+	private static final String SERVER_STARTUP_INFO = "Started MCP HTTP server for Swing application";
+	private static final String SERVER_STOPPED_INFO = "Stopped MCP server";
+	private static final String NARRATOR_NOT_AVAILABLE = "Narrator not available";
+	private static final String KEY_SCHEMA = """
+					{
+						"type": "object",
+						"properties": {
+							"combo": {
+								"type": "string",
+								"description": "Key combination in AWT keystroke format. Examples: 'ENTER', 'shift ENTER', 'TAB', 'ctrl S', 'ctrl alt LEFT', 'shift TAB', 'alt F4', 'UP', 'DOWN', 'typed a', 'F5'"
+							},
+							"repeat": {
+								"type": "integer",
+								"description": "Number of times to repeat the keystroke (default: 1)"
+							},
+							"description": {
+								"type": "string",
+								"description": "Optional description of the action associated with this keystroke"
+							}
+						},
+						"required": ["combo"]
+					}
+					""";
+
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-	private final Controller controller;
-	private final Narrator narrator;
 	private final Supplier<Window> applicationWindow;
+	private final boolean includeNarrator;
 
-	private final WindowEventListener windowEventListener = new WindowEventListener();
+	private ExecutorService executor;
+	private Controller controller;
+	private Narrator narrator;
+	private SwingMcpHttpServer httpServer;
+	private WindowEventListener windowEventListener;
 
 	private volatile Window lastActiveWindow = null;
 	private volatile long lastActivationTime = 0;
 
+	private SwingMcpServer(Builder builder) {
+		this.applicationWindow = builder.window;
+		this.includeNarrator = builder.narrator;
+	}
+
 	SwingMcpServer(Supplier<Window> applicationWindow, boolean includeNarrator) {
 		this.applicationWindow = requireNonNull(applicationWindow);
-		Window window = applicationWindow.get();
-		this.controller = window == null ? Controller.controller() : Controller.controller(window.getGraphicsConfiguration().getDevice());
-		this.narrator = includeNarrator ? Narrator.narrator(controller) : null;
-		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);
+		this.includeNarrator = includeNarrator;
+		initializeServer();
 	}
 
 	/**
@@ -223,6 +283,218 @@ final class SwingMcpServer {
 	 */
 	void focusWindow() {
 		focusApplicationWindow();
+	}
+
+	private void start() {
+		executor = newSingleThreadExecutor(new DaemonThreadFactory());
+		executor.submit(this::runServer);
+	}
+
+	private void stop() {
+		if (httpServer != null) {
+			httpServer.stop();
+			httpServer = null;
+			LOG.info("Stopped MCP HTTP server");
+		}
+		if (executor != null) {
+			executor.shutdownNow();
+			executor = null;
+			LOG.info("Stopped MCP executor");
+		}
+		if (narrator != null) {
+			narrator.close();
+			narrator = null;
+		}
+		if (windowEventListener != null) {
+			Toolkit.getDefaultToolkit().removeAWTEventListener(windowEventListener);
+			windowEventListener = null;
+		}
+		controller = null;
+		LOG.info(SERVER_STOPPED_INFO);
+	}
+
+	private void runServer() {
+		try {
+			initializeServer();
+			startHttpServer();
+		}
+		catch (Exception e) {
+			LOG.error("Failed to start MCP server: {}", e.getMessage());
+		}
+	}
+
+	private void initializeServer() {
+		Window window = applicationWindow.get();
+		this.controller = window == null ? Controller.controller() : Controller.controller(window.getGraphicsConfiguration().getDevice());
+		this.narrator = includeNarrator ? Narrator.narrator(controller) : null;
+		this.windowEventListener = new WindowEventListener();
+		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);
+	}
+
+	private void startHttpServer() throws IOException {
+		httpServer = new SwingMcpHttpServer(HTTP_PORT.getOrThrow(), CODION_SWING_MCP, Version.versionString());
+		registerHttpTools(httpServer);
+		httpServer.start();
+		LOG.info(SERVER_STARTUP_INFO);
+	}
+
+	private void registerHttpTools(SwingMcpHttpServer httpServer) {
+		// Type text tool
+		httpServer.addTool(new HttpTool(
+						TYPE_TEXT, "Type text into the currently focused field",
+						createSchema(TEXT, STRING, "The text to type"),
+						arguments -> {
+							String text = (String) arguments.get(TEXT);
+							type(text);
+
+							return "Text typed successfully";
+						}
+		));
+
+		// Key combination tool - handles all keyboard input
+		httpServer.addTool(new HttpTool(
+						KEY_COMBO, "Press a key combination using AWT KeyStroke format",
+						KEY_SCHEMA,
+						arguments -> {
+							String combo = (String) arguments.get("combo");
+							int repeat = integerParam(arguments, "repeat", 1);
+							String description = (String) arguments.get("description");
+							key(combo, repeat, description);
+
+							String message = repeat > 1
+											? String.format("Key combination '%s' pressed %d times", combo, repeat)
+											: String.format("Key combination '%s' pressed", combo);
+							if (description != null) {
+								message += " (" + description + ")";
+							}
+							return message;
+						}
+		));
+
+
+		// Application window screenshot tool
+		httpServer.addTool(new HttpTool(
+						APP_SCREENSHOT, "Take a screenshot of just the application window and return as base64",
+						createSchema(FORMAT, STRING, IMAGE_FORMAT + " (tip: use 'jpg' for better compression)"),
+						arguments -> screenshotToBase64(arguments, takeApplicationScreenshot())
+		));
+
+		// Active window screenshot tool
+		httpServer.addTool(new HttpTool(
+						ACTIVE_WINDOW_SCREENSHOT, "Take a screenshot of the currently active window (dialog, popup, etc.) and return as base64",
+						createSchema(FORMAT, STRING, IMAGE_FORMAT + " (tip: use 'jpg' for better compression)"),
+						arguments -> screenshotToBase64(arguments, takeActiveWindowScreenshot())
+		));
+
+		// Application window bounds tool
+		httpServer.addTool(new HttpTool(
+						APP_WINDOW_BOUNDS, "Get the application window bounds (x, y, width, height)",
+						INPUT_SCHEMA,
+						arguments -> {
+							Rectangle bounds = getApplicationWindowBounds();
+
+							return Map.of(
+											"x", bounds.x,
+											"y", bounds.y,
+											WIDTH, bounds.width,
+											HEIGHT, bounds.height);
+						}
+		));
+
+		// Focus application window tool
+		httpServer.addTool(new HttpTool(
+						FOCUS_WINDOW, "Bring the application window to front and focus it",
+						INPUT_SCHEMA,
+						arguments -> {
+							focusWindow();
+
+							return "Application window focused";
+						}
+		));
+
+		// Clear field tool
+		httpServer.addTool(new HttpTool(
+						CLEAR_FIELD, "Clear the current field by selecting all and deleting",
+						INPUT_SCHEMA,
+						arguments -> {
+							clearField();
+
+							return "Field cleared";
+						}
+		));
+
+		// Narrator tools (only added if narrator is available)
+		if (narratorAvailable()) {
+			// Narrate tool
+			httpServer.addTool(new HttpTool(
+							"narrate", "Add narration text to the narrator window",
+							createSchema(TEXT, STRING, "The narration text to display"),
+							arguments -> {
+								String text = (String) arguments.get(TEXT);
+								if (narrate(text)) {
+									return "Narration added successfully";
+								}
+
+								return NARRATOR_NOT_AVAILABLE;
+							}
+			));
+
+			// Clear narration tool
+			httpServer.addTool(new HttpTool(
+							"clear_narration", "Clear all narration text from the narrator window",
+							INPUT_SCHEMA,
+							arguments -> {
+								if (clearNarration()) {
+									return "Narration cleared successfully";
+								}
+
+								return NARRATOR_NOT_AVAILABLE;
+							}
+			));
+
+			// Clear keystrokes tool
+			httpServer.addTool(new HttpTool(
+							"clear_keystrokes", "Clear the keystroke history from the narrator window",
+							INPUT_SCHEMA,
+							arguments -> {
+								if (clearKeyStrokes()) {
+									return "Keystrokes cleared successfully";
+								}
+
+								return NARRATOR_NOT_AVAILABLE;
+							}
+			));
+		}
+	}
+
+	private static Map<String, Object> screenshotToBase64(Map<String, Object> arguments, BufferedImage screenshot) {
+		return handleImageOperation(() -> {
+			String format = (String) arguments.getOrDefault(FORMAT, PNG);
+			if ("jpg".equalsIgnoreCase(format)) {
+				format = "jpeg";
+			}
+			String base64 = screenshotToBase64(screenshot, format);
+
+			return Map.<String, Object>of(
+							IMAGE, base64,
+							WIDTH, screenshot.getWidth(),
+							HEIGHT, screenshot.getHeight(),
+							FORMAT, format);
+		});
+	}
+
+	private static <T> T handleImageOperation(ImageOperation<T> operation) {
+		try {
+			return operation.execute();
+		}
+		catch (IOException e) {
+			throw new UncheckedIOException("Failed to encode screenshot: " + e.getMessage(), e);
+		}
+	}
+
+	@FunctionalInterface
+	private interface ImageOperation<T> {
+		T execute() throws IOException;
 	}
 
 	private List<WindowInfo> getApplicationWindows() {
@@ -422,13 +694,6 @@ final class SwingMcpServer {
 			LOG.warn(errorMessage, e);
 			// Continue anyway - the action might still work
 		}
-	}
-
-	void stop() {
-		if (narrator != null) {
-			narrator.close();
-		}
-		Toolkit.getDefaultToolkit().removeAWTEventListener(windowEventListener);
 	}
 
 	/**
@@ -647,6 +912,110 @@ final class SwingMcpServer {
 		g2d.dispose();
 
 		return rgbImage;
+	}
+
+	/**
+	 * @return a {@link Builder.Factory} instance.
+	 */
+	public static Builder.Factory builder() {
+		return Builder.FACTORY;
+	}
+
+	/**
+	 * Builds a {@link State} for controlling a {@link SwingMcpServer}
+	 */
+	public static final class Builder {
+
+		private static final Factory FACTORY = new Factory();
+
+		private final Supplier<Window> window;
+
+		private boolean narrator;
+		private boolean start;
+
+		private Builder(Supplier<Window> window) {
+			this.window = window;
+		}
+
+		/**
+		 * Default false.
+		 * @param narrator if true a {@link is.codion.tools.swing.robot.Narrator} is included
+		 * @return this builder
+		 */
+		public Builder narrator(boolean narrator) {
+			this.narrator = narrator;
+			return this;
+		}
+
+		/**
+		 * Default false.
+		 * @param start true if the server should be started right away
+		 * @return this builder
+		 */
+		public Builder start(boolean start) {
+			this.start = start;
+			return this;
+		}
+
+		/**
+		 * @return a {@link State} controlling the started state of the mcp server
+		 */
+		public State build() {
+			ServerController controller = new ServerController(new SwingMcpServer(this));
+			if (start) {
+				controller.accept(true);
+			}
+
+			return State.builder()
+							.value(start)
+							.consumer(controller)
+							.build();
+		}
+
+		public static final class Factory {
+
+			private Factory() {}
+
+			public Builder component(JComponent component) {
+				requireNonNull(component);
+
+				return window(() -> Ancestor.window().of(component).get());
+			}
+
+			public Builder window(Supplier<Window> window) {
+				return new Builder(requireNonNull(window));
+			}
+		}
+	}
+
+	private static final class ServerController implements Consumer<Boolean> {
+
+		private final SwingMcpServer server;
+
+		private ServerController(SwingMcpServer server) {
+			this.server = server;
+		}
+
+		@Override
+		public void accept(Boolean start) {
+			if (start) {
+				server.start();
+			}
+			else {
+				server.stop();
+			}
+		}
+	}
+
+	private static final class DaemonThreadFactory implements ThreadFactory {
+
+		@Override
+		public Thread newThread(Runnable runnable) {
+			Thread thread = new Thread(runnable);
+			thread.setDaemon(true);
+
+			return thread;
+		}
 	}
 
 	// Data classes for JSON serialization

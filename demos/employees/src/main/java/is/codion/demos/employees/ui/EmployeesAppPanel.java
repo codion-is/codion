@@ -38,7 +38,7 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
-import is.codion.tools.swing.mcp.SwingMcpPlugin;
+import is.codion.tools.swing.mcp.SwingMcpServer;
 import is.codion.tools.swing.robot.Automation;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -54,7 +54,7 @@ import static java.util.Collections.emptyList;
 // tag::createEntityPanels[]
 public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel> {
 
-	private final State mcpController = SwingMcpPlugin.builder()
+	private final State mcpController = SwingMcpServer.builder()
 					.component(this)
 					.narrator(true)
 					.build();

@@ -233,8 +233,6 @@ dependencyResolutionManagement {
             version("jasperreports", "7.0.3")
             version("jspecify", "1.0.0")
 
-            version("mcp", "0.12.1")
-
             library("slf4j-api", "org.slf4j", "slf4j-api").versionRef("slf4j.api")
             library("logback-core", "ch.qos.logback", "logback-core").versionRef("logback")
             library("logback-classic", "ch.qos.logback", "logback-classic").versionRef("logback")
@@ -265,8 +263,6 @@ dependencyResolutionManagement {
 
             library("jasperreports", "net.sf.jasperreports", "jasperreports").versionRef("jasperreports")
             library("jasperreports-jdt", "net.sf.jasperreports", "jasperreports-jdt").versionRef("jasperreports")
-
-            library("mcp", "io.modelcontextprotocol.sdk", "mcp").versionRef("mcp")
         }
     }
 }
