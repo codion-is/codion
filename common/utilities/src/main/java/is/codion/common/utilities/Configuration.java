@@ -37,6 +37,7 @@ import static java.util.Collections.emptyList;
  * A utility class for central configuration values.
  * <p>
  * Parses a property file on class load, specified by the {@link #CONFIGURATION_FILE} system property.
+ * System properties set on the command line ({@code -D}) take precedence over values from the configuration file.
  * <p>
  * Note that if {@link #CONFIGURATION_FILE_REQUIRED} is true and the file referenced by {@link #CONFIGURATION_FILE}
  * is not found a {@link ConfigurationFileNotFoundException} is thrown when this class is loaded.

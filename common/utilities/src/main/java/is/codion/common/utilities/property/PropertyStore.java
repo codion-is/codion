@@ -48,9 +48,13 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Provides configuration values which sync with system properties when set. Note that setting the value via {@link System#setProperty(String, String)}
+ * Provides configuration values which sync with system properties when set.
+ * System properties already set when the store is created (e.g. via {@code -D} on the command line)
+ * take precedence over values loaded from a configuration file.
+ * <p>
+ * Note that setting the value via {@link System#setProperty(String, String)}
  * does not affect the property store value, so the value should only be modified via the property store value instance.
- * If no value is found in a configuration file or in a system property, the default property value is used as the inital value.
+ * If no value is found in a configuration file or in a system property, the default property value is used as the initial value.
  * When the value is set to null via {@link is.codion.common.reactive.value.Value#set(Object)} the default value is used, if one has been specified.
  * {@snippet :
  * Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties");
@@ -102,8 +106,16 @@ public final class PropertyStore {
 
 	private PropertyStore(Properties properties) {
 		this.properties.putAll(requireNonNull(properties));
-		this.properties.stringPropertyNames().forEach(property ->
-						System.setProperty(property, this.properties.getProperty(property)));
+		this.properties.stringPropertyNames().forEach(property -> {
+			String existing = System.getProperty(property);
+			if (existing != null) {
+				// Command-line property takes precedence over config file
+				this.properties.setProperty(property, existing);
+			}
+			else {
+				System.setProperty(property, this.properties.getProperty(property));
+			}
+		});
 	}
 
 	/**

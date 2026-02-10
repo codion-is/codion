@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.69
+### is.codion.common.utilities
+- PropertyStore, command line properties now take precedence over configuration file.
 
 ## 0.18.68
 ### is.codion.common.reactive
