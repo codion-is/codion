@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.69
+
 ## 0.18.68
 ### is.codion.common.reactive
 - AbstractValueCollection, minor synchronization code cleanup.
