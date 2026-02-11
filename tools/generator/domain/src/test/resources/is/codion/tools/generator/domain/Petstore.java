@@ -323,11 +323,13 @@ public final class Petstore extends DomainModel {
 				Product.INSERT_TIME.as()
 					.column()
 					.caption("Insert time")
-					.readOnly(true),
+					.readOnly(true)
+					.hidden(true),
 				Product.INSERT_USER.as()
 					.column()
 					.caption("Insert user")
-					.readOnly(true))
+					.readOnly(true)
+					.hidden(true))
 			.caption("Product")
 			.description("The available products")
 			.build();
@@ -455,11 +457,13 @@ public final class Petstore extends DomainModel {
 				Item.INSERT_TIME.as()
 					.column()
 					.caption("Insert time")
-					.readOnly(true),
+					.readOnly(true)
+					.hidden(true),
 				Item.INSERT_USER.as()
 					.column()
 					.caption("Insert user")
-					.readOnly(true))
+					.readOnly(true)
+					.hidden(true))
 			.caption("Item")
 			.build();
 	}

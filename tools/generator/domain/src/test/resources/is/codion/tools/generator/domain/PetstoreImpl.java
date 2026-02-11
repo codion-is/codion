@@ -144,10 +144,12 @@ public final class PetstoreImpl extends DomainModel {
 					.maximumLength(55),
 				Product.INSERT_TIME.as()
 					.column()
-					.readOnly(true),
+					.readOnly(true)
+					.hidden(true),
 				Product.INSERT_USER.as()
 					.column()
-					.readOnly(true))
+					.readOnly(true)
+					.hidden(true))
 			.build();
 	}
 
@@ -199,10 +201,12 @@ public final class PetstoreImpl extends DomainModel {
 					.withDefault(true),
 				Item.INSERT_TIME.as()
 					.column()
-					.readOnly(true),
+					.readOnly(true)
+					.hidden(true),
 				Item.INSERT_USER.as()
 					.column()
-					.readOnly(true))
+					.readOnly(true)
+					.hidden(true))
 			.build();
 	}
 

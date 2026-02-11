@@ -1123,6 +1123,9 @@ public final class DomainSource {
 			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1) {
 				builder.add("\n$L.fractionDigits($L)", TRIPLE_INDENT, column.fractionDigits());
 			}
+			if (!column.primaryKey() && column.hidden()) {
+				builder.add("\n$L.hidden(true)", TRIPLE_INDENT);
+			}
 			column.description().ifPresent(description ->
 							captionStrategy.addAttributeDescription(builder, description));
 
