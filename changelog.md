@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.69
 ### is.codion.common.utilities
 - PropertyStore, command line properties now take precedence over configuration file.
+### is.codion.swing.common.ui
+- Windows.resizeToFitScreen() bug fixed, now uses getMaximumWindowBounds().
 ### is.codion.framework.model
 - EntityEditor.EditorEntity added, handling the access to the underlying entity.
 ### is.codion.swing.framework.ui
