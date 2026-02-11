@@ -8,6 +8,7 @@ Codion Change Log
 - EntityEditor.EditorEntity added, handling the access to the underlying entity.
 ### is.codion.swing.framework.ui
 - EntityEditorPanel.Config added, handles validIndicator, modifiedIndicator, modifiedWarning and defaultTextFieldColumns.
+- EntityEditorPanel.Config.transferFocusOnEnter() added along with Config.TRANSFER_FOCUS_ON_ENTER.
 
 ## 0.18.68
 ### is.codion.common.reactive

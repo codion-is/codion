@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.utilities.property.PropertyValue;
@@ -640,6 +639,16 @@ public class EntityEditorPanel extends JPanel {
 						booleanValue(EntityEditorPanel.class.getName() + ".modifiedIndicator", true);
 
 		/**
+		 * Specifies whether components should transfer focus on enter
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
+						booleanValue(EntityEditorPanel.class.getName() + ".transferFocusOnEnter", true);
+
+		/**
 		 * Specifies the default number of text field columns
 		 * <ul>
 		 * <li>Value type: Integer
@@ -653,6 +662,7 @@ public class EntityEditorPanel extends JPanel {
 		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
 		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
 		private int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow();
+		private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.getOrThrow();
 
 		protected Config() {}
 
@@ -665,6 +675,7 @@ public class EntityEditorPanel extends JPanel {
 			this.validIndicator = config.validIndicator;
 			this.modifiedIndicator = config.modifiedIndicator;
 			this.defaultTextFieldColumns = config.defaultTextFieldColumns;
+			this.transferFocusOnEnter = config.transferFocusOnEnter;
 		}
 
 		/**
@@ -717,6 +728,16 @@ public class EntityEditorPanel extends JPanel {
 		 */
 		public final C defaultTextFieldColumns(int defaultTextFieldColumns) {
 			this.defaultTextFieldColumns = defaultTextFieldColumns;
+			return (C) this;
+		}
+
+		/**
+		 * @param transferFocusOnEnter specifies whether components will transfer focus on enter
+		 * @return this Config instance
+		 * @see #TRANSFER_FOCUS_ON_ENTER
+		 */
+		public final C transferFocusOnEnter(boolean transferFocusOnEnter) {
+			this.transferFocusOnEnter = transferFocusOnEnter;
 			return (C) this;
 		}
 	}
@@ -842,7 +863,6 @@ public class EntityEditorPanel extends JPanel {
 	public static final class InputFocus {
 
 		private final EntityEditorPanel editorPanel;
-		private final State transferOnEnter = State.state(true);
 		private final Initial initial = new Initial();
 		private final AfterInsert afterInsert = new AfterInsert();
 		private final AfterUpdate afterUpdate = new AfterUpdate();
@@ -860,15 +880,6 @@ public class EntityEditorPanel extends JPanel {
 		public void request(Attribute<?> attribute) {
 			Ancestor.window().of(editorPanel).toFront();
 			editorPanel.component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
-		}
-
-		/**
-		 * If set to true then components created subsequently will transfer focus on enter, otherwise not.
-		 * Note that changing this has no effect on components that have already been created.
-		 * @return the {@link State} controlling whether components transfer focus on enter
-		 */
-		public State transferOnEnter() {
-			return transferOnEnter;
 		}
 
 		/**
@@ -1147,7 +1158,7 @@ public class EntityEditorPanel extends JPanel {
 							.label(label -> label
 											.text(attributeDefinition.caption())
 											.displayedMnemonic(attributeDefinition.mnemonic()))
-							.transferFocusOnEnter(inputFocus.transferOnEnter.is())
+							.transferFocusOnEnter(configuration.transferFocusOnEnter)
 							.valid(configuration.validIndicator ? value.valid() : null)
 							.modified(configuration.modifiedIndicator ? value.modified() : null)
 							.onBuild(this::setComponent));
