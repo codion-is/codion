@@ -92,6 +92,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -110,48 +111,6 @@ public class EntityEditorPanel extends JPanel {
 
 	static final EditorPanelFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new EditorPanelFocusTraversalPolicy();
 
-	/**
-	 * Specifies whether components should indicate the validity of their current value
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
-	 */
-	public static final PropertyValue<Boolean> VALID_INDICATOR =
-					booleanValue(EntityEditorPanel.class.getName() + ".validIndicator", true);
-
-	/**
-	 * Specifies whether components should indicate that the value is modified
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 * @see is.codion.swing.common.ui.component.indicator.ModifiedIndicator
-	 */
-	public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
-					booleanValue(EntityEditorPanel.class.getName() + ".modifiedIndicator", true);
-
-	/**
-	 * Specifies the default number of text field columns
-	 * <ul>
-	 * <li>Value type: Integer
-	 * <li>Default value: 12
-	 * </ul>
-	 */
-	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
-					integerValue(EntityEditorPanel.class.getName() + ".defaultTextFieldColumns", 12);
-
-	/**
-	 * Indicates whether the panel should ask for confirmation before discarding unsaved modifications
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: false
-	 * </ul>
-	 */
-	public static final PropertyValue<Boolean> MODIFIED_WARNING =
-					booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
-
 	static {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager()
 						.addPropertyChangeListener("focusOwner", new FocusedInputComponentListener());
@@ -165,17 +124,25 @@ public class EntityEditorPanel extends JPanel {
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final InputFocus inputFocus;
 
-	private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.getOrThrow());
-	private final State validIndicator = State.state(VALID_INDICATOR.getOrThrow());
-	private final State modifiedWarning = State.state(MODIFIED_WARNING.getOrThrow());
+	private final Config<?> configuration;
 
 	/**
 	 * Instantiates a new {@link EntityEditorPanel}
 	 * @param editor the editor
 	 */
 	public EntityEditorPanel(SwingEntityEditor editor) {
+		this(editor, config -> {});
+	}
+
+	/**
+	 * Instantiates a new {@link EntityEditorPanel}
+	 * @param editor the editor
+	 * @param config provides access to the panel configuration
+	 */
+	public <C extends Config<C>> EntityEditorPanel(SwingEntityEditor editor, Consumer<Config<C>> config) {
 		this.editor = requireNonNull(editor);
 		this.entityComponents = entityComponents(editor.entityDefinition());
+		this.configuration = configure(config);
 		editor.entity().changing().addConsumer(this::onEntityChanging);
 		inputFocus = new InputFocus(this);
 	}
@@ -202,15 +169,6 @@ public class EntityEditorPanel extends JPanel {
 	public final void clearAndRequestFocus() {
 		editor.defaults();
 		focus().initial().request();
-	}
-
-	/**
-	 * @return a state controlling whether this editor panel presents a warning before discarding editor modifications
-	 * @see EntityEditor#set(Entity)
-	 * @see EntityEditor#defaults()
-	 */
-	public final State modifiedWarning() {
-		return modifiedWarning;
 	}
 
 	/**
@@ -267,33 +225,6 @@ public class EntityEditorPanel extends JPanel {
 			focusOwner = EntityEditorPanel.this;
 		}
 		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
-	}
-
-	/**
-	 * If set to true then component labels will indicate that the value is modified.
-	 * This applies to all components created by this edit component panel as well as
-	 * components set via {@link #component(Attribute)} as long
-	 * as the component has a JLabel associated with its 'labeledBy' client property.
-	 * Note that changing this has no effect on components that have already been created.
-	 * @return the {@link State} controlling whether components display an indicator if the value is modified
-	 * @see #MODIFIED_INDICATOR
-	 * @see JLabel#setLabelFor(Component)
-	 */
-	protected final State modifiedIndicator() {
-		return modifiedIndicator;
-	}
-
-	/**
-	 * If set to true then components will indicate whether the current value is valid.
-	 * This applies to all components created by this edit component panel as well as
-	 * components set via {@link #component(Attribute)}
-	 * Note that changing this has no effect on components that have already been created.
-	 * @return the {@link State} controlling whether components indicate if the current value is valid
-	 * @see #VALID_INDICATOR
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
-	 */
-	protected final State validIndicator() {
-		return validIndicator;
 	}
 
 	/**
@@ -356,7 +287,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
 		return component(attribute).set(entityComponents.textFieldPanel(attribute))
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -379,7 +310,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> createTextField(Attribute<T> attribute) {
 		return component(attribute).set((B) entityComponents.textField(attribute))
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -447,7 +378,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Integer> createIntegerField(Attribute<Integer> attribute) {
 		return component(attribute).set(entityComponents.integerField(attribute))
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -457,7 +388,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Long> createLongField(Attribute<Long> attribute) {
 		return component(attribute).set(entityComponents.longField(attribute))
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -467,7 +398,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<BigInteger> createBigIntegerField(Attribute<BigInteger> attribute) {
 		return component(attribute).set(entityComponents.bigIntegerField(attribute))
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -477,7 +408,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Double> createDoubleField(Attribute<Double> attribute) {
 		return component(attribute).set(entityComponents.doubleField(attribute))
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -487,7 +418,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<BigDecimal> createBigDecimalField(Attribute<BigDecimal> attribute) {
 		return component(attribute).set(entityComponents.bigDecimalField(attribute))
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -623,7 +554,7 @@ public class EntityEditorPanel extends JPanel {
 		return component(foreignKey).set(entityComponents.searchField(foreignKey,
 														editor.searchModels().get(foreignKey))
 										.singleSelection())
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -637,7 +568,7 @@ public class EntityEditorPanel extends JPanel {
 		return component(foreignKey).set(entityComponents.searchFieldPanel(foreignKey,
 														editor.searchModels().get(foreignKey), editPanel)
 										.singleSelection())
-						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow());
+						.columns(configuration.defaultTextFieldColumns);
 	}
 
 	/**
@@ -662,6 +593,132 @@ public class EntityEditorPanel extends JPanel {
 
 	protected final Map<Attribute<?>, EditorComponent<?>> components() {
 		return unmodifiableMap(components);
+	}
+
+	private static <C extends Config<C>> Config<C> configure(Consumer<Config<C>> configuration) {
+		Config<C> config = new Config<C>();
+		requireNonNull(configuration).accept(config);
+
+		return new Config<>(config);
+	}
+
+	/**
+	 * Contains configuration settings for a {@link EntityEditorPanel}
+	 */
+	public static class Config<C extends Config<C>> {
+
+		/**
+		 * Indicates whether the panel should ask for confirmation before discarding unsaved modifications
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> MODIFIED_WARNING =
+						booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
+
+		/**
+		 * Specifies whether components should indicate the validity of their current value
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
+		 */
+		public static final PropertyValue<Boolean> VALID_INDICATOR =
+						booleanValue(EntityEditorPanel.class.getName() + ".validIndicator", true);
+
+		/**
+		 * Specifies whether components should indicate that the value is modified
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 * @see is.codion.swing.common.ui.component.indicator.ModifiedIndicator
+		 */
+		public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
+						booleanValue(EntityEditorPanel.class.getName() + ".modifiedIndicator", true);
+
+		/**
+		 * Specifies the default number of text field columns
+		 * <ul>
+		 * <li>Value type: Integer
+		 * <li>Default value: 12
+		 * </ul>
+		 */
+		public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
+						integerValue(EntityEditorPanel.class.getName() + ".defaultTextFieldColumns", 12);
+
+		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
+		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
+		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
+		private int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow();
+
+		protected Config() {}
+
+		/**
+		 * Copy constructor
+		 * @param config the config to copy
+		 */
+		protected Config(Config<C> config) {
+			this.modifiedWarning = config.modifiedWarning;
+			this.validIndicator = config.validIndicator;
+			this.modifiedIndicator = config.modifiedIndicator;
+			this.defaultTextFieldColumns = config.defaultTextFieldColumns;
+		}
+
+		/**
+		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
+		 * @return this Config instance
+		 * @see #MODIFIED_WARNING
+		 * @see EntityEditor#modified()
+		 * @see EntityEditor#set(Entity)
+		 * @see EntityEditor#defaults()
+		 */
+		public final C modifiedWarning(boolean modifiedWarning) {
+			this.modifiedWarning = modifiedWarning;
+			return (C) this;
+		}
+
+		/**
+		 * If set to true then components will indicate whether the current value is valid.
+		 * This applies to all components created by this edit component panel as well as
+		 * components set via {@link #component(Attribute)}
+		 * @param validIndicator specifies whether components should indicate validity
+		 * @return this Config instance
+		 * @see #VALID_INDICATOR
+		 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
+		 */
+		public final C validIndicator(boolean validIndicator) {
+			this.validIndicator = validIndicator;
+			return (C) this;
+		}
+
+		/**
+		 * If set to true then component labels will indicate that the value is modified.
+		 * This applies to all components created by this edit component panel as well as
+		 * components set via {@link #component(Attribute)} as long
+		 * as the component has a JLabel associated with its 'labeledBy' client property.
+		 * @param modifiedIndicator specifies whether components should indicate modification
+		 * @return this Config instance
+		 * @see #MODIFIED_INDICATOR
+		 * @see JLabel#setLabelFor(Component)
+		 */
+		public final C modifiedIndicator(boolean modifiedIndicator) {
+			this.modifiedIndicator = modifiedIndicator;
+			return (C) this;
+		}
+
+		/**
+		 * Specifies the default number of text field columns
+		 * @param defaultTextFieldColumns the default number of text field columns
+		 * @return this Config instance
+		 * @see #DEFAULT_TEXT_FIELD_COLUMNS
+		 */
+		public final C defaultTextFieldColumns(int defaultTextFieldColumns) {
+			this.defaultTextFieldColumns = defaultTextFieldColumns;
+			return (C) this;
+		}
 	}
 
 	/**
@@ -728,7 +785,7 @@ public class EntityEditorPanel extends JPanel {
 	}
 
 	private void onEntityChanging(Entity entity) {
-		if (modifiedWarning.is() && editor.modified().is()) {
+		if (configuration.modifiedWarning && editor.modified().is()) {
 			Set<Attribute<?>> modified = editor.modified().attributes().get();
 			if (showConfirmDialog(this, createModifiedMessage(modified),
 							FrameworkMessages.modifiedWarningTitle(), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
@@ -1091,8 +1148,8 @@ public class EntityEditorPanel extends JPanel {
 											.text(attributeDefinition.caption())
 											.displayedMnemonic(attributeDefinition.mnemonic()))
 							.transferFocusOnEnter(inputFocus.transferOnEnter.is())
-							.valid(validIndicator.is() ? value.valid() : null)
-							.modified(modifiedIndicator.is() ? value.modified() : null)
+							.valid(configuration.validIndicator ? value.valid() : null)
+							.modified(configuration.modifiedIndicator ? value.modified() : null)
 							.onBuild(this::setComponent));
 
 			return componentBuilder;

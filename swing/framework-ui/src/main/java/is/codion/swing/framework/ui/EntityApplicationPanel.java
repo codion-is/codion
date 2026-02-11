@@ -235,7 +235,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 					.build();
 	private final Event<EntityApplicationPanel<M>> exiting = Event.event();
 	private final Event<EntityApplicationPanel<M>> initializedEvent = Event.event();
-	private final boolean modifiedWarning = EntityEditorPanel.MODIFIED_WARNING.getOrThrow();
+	private final boolean modifiedWarning = EntityEditorPanel.Config.MODIFIED_WARNING.getOrThrow();
 	private final boolean userPreferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow();
 
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
@@ -346,7 +346,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * Exits this application. Calls {@link System#exit(int)} in case {@link #SYSTEM_EXIT} is true.
 	 * @throws CancelException if the exit is cancelled
 	 * @see #exiting()
-	 * @see EntityEditPanel.Config#MODIFIED_WARNING
+	 * @see EntityEditorPanel.Config#MODIFIED_WARNING
 	 * @see EntityApplicationPanel#CONFIRM_EXIT
 	 * @see EntityApplicationPanel#SYSTEM_EXIT
 	 */

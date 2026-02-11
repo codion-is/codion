@@ -6,6 +6,8 @@ Codion Change Log
 - PropertyStore, command line properties now take precedence over configuration file.
 ### is.codion.framework.model
 - EntityEditor.EditorEntity added, handling the access to the underlying entity.
+### is.codion.swing.framework.ui
+- EntityEditorPanel.Config added, handles validIndicator, modifiedIndicator, modifiedWarning and defaultTextFieldColumns.
 
 ## 0.18.68
 ### is.codion.common.reactive

@@ -35,7 +35,6 @@ import is.codion.framework.domain.entity.exception.ValidationException.InvalidAt
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditModel.EditTask;
-import is.codion.framework.model.EntityEditor;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -191,9 +190,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		this.configuration = configure(config);
 		this.active = State.state(!configuration.focusActivation);
 		this.controlsLayout = createControlsLayout();
-		validIndicator().set(configuration.validIndicator);
-		modifiedIndicator().set(configuration.modifiedIndicator);
-		modifiedWarning().set(configuration.modifiedWarning);
 		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
@@ -702,7 +698,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	/**
 	 * Contains configuration settings for a {@link EntityEditPanel} which must be set before the panel is initialized.
 	 */
-	public static final class Config {
+	public static final class Config extends EntityEditorPanel.Config<Config> {
 
 		/**
 		 * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)
@@ -785,9 +781,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		private boolean focusActivation = USE_FOCUS_ACTIVATION.getOrThrow();
 		private boolean includeEntityViewer = INCLUDE_ENTITY_VIEWER.getOrThrow();
 		private boolean includeQueryInspector = INCLUDE_QUERY_INSPECTOR.getOrThrow();
-		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
-		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
-		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
 						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.getOrThrow();
 		private boolean confirmInsert = CONFIRM_INSERT.getOrThrow();
@@ -806,6 +799,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		}
 
 		private Config(Config config) {
+			super(config);
 			this.editPanel = config.editPanel;
 			this.controlMap = config.controlMap.copy();
 			this.clearAfterInsert = config.clearAfterInsert;
@@ -820,9 +814,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeEntityViewer = config.includeEntityViewer;
 			this.includeQueryInspector = config.includeQueryInspector;
-			this.modifiedWarning = config.modifiedWarning;
-			this.validIndicator = config.validIndicator;
-			this.modifiedIndicator = config.modifiedIndicator;
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 		}
 
@@ -897,37 +888,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		 */
 		public Config includeQueryInspector(boolean includeQueryInspector) {
 			this.includeQueryInspector = includeQueryInspector;
-			return this;
-		}
-
-		/**
-		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
-		 * @return this Config instance
-		 * @see #MODIFIED_WARNING
-		 * @see EntityEditor#modified()
-		 */
-		public Config modifiedWarning(boolean modifiedWarning) {
-			this.modifiedWarning = modifiedWarning;
-			return this;
-		}
-
-		/**
-		 * @param validIndicator specifies whether components should indicate validity
-		 * @return this Config instance
-		 * @see EntityEditorPanel#VALID_INDICATOR
-		 */
-		public Config validIndicator(boolean validIndicator) {
-			this.validIndicator = validIndicator;
-			return this;
-		}
-
-		/**
-		 * @param modifiedIndicator specifies whether components should indicate modification
-		 * @return this Config instance
-		 * @see EntityEditorPanel#MODIFIED_INDICATOR
-		 */
-		public Config modifiedIndicator(boolean modifiedIndicator) {
-			this.modifiedIndicator = modifiedIndicator;
 			return this;
 		}
 
