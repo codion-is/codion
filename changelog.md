@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.69
 ### is.codion.common.utilities
 - PropertyStore, command line properties now take precedence over configuration file.
+### is.codion.framework.model
+- EntityEditor.EditorEntity added, handling the access to the underlying entity.
 
 ## 0.18.68
 ### is.codion.common.reactive

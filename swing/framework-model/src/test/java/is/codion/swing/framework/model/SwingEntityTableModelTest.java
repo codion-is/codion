@@ -198,11 +198,11 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		tableModel.items().refresh();
 		SwingEntityEditModel employeeEditModel = tableModel.editModel();
-		employeeEditModel.editor().set(tableModel.items().included().get(0));
+		employeeEditModel.editor().entity().set(tableModel.items().included().get(0));
 		String newName = "new name";
 		employeeEditModel.editor().value(Employee.NAME).set(newName);
 		SwingEntityEditModel departmentEditModel = new SwingEntityEditModel(Department.TYPE, testModel.connectionProvider());
-		departmentEditModel.editor().set(employeeEditModel.editor().value(Employee.DEPARTMENT_FK).get());
+		departmentEditModel.editor().entity().set(employeeEditModel.editor().value(Employee.DEPARTMENT_FK).get());
 		departmentEditModel.editor().value(Department.NAME).set(newName);
 		EntityConnection connection = tableModel.connectionProvider().connection();
 		connection.startTransaction();

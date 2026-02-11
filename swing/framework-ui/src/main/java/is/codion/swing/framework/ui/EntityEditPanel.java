@@ -410,7 +410,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			EntityDependenciesPanel.displayDependencies(singletonList(editModel().editor().get()), editModel().connectionProvider(),
+			EntityDependenciesPanel.displayDependencies(singletonList(editModel().editor().entity().get()), editModel().connectionProvider(),
 							this, dependenciesDialogSize, dependencyPanelPreferences, true);
 		}
 		else {
@@ -637,7 +637,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	}
 
 	private void viewEntity() {
-		EntityViewer.view(editModel().editor().get(), editModel().connectionProvider(), this);
+		EntityViewer.view(editModel().editor().entity().get(), editModel().connectionProvider(), this);
 	}
 
 	private Config configure(Consumer<Config> configuration) {

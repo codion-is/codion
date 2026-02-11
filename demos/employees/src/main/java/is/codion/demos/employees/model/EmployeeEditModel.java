@@ -74,7 +74,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 		public void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel, SwingEntityEditor editor) {
 			if (foreignKey.equals(Employee.MANAGER_FK)) {
 				//hide the employee being edited to prevent an employee from being made her own manager
-				editor.addConsumer(employee ->
+				editor.entity().addConsumer(employee ->
 								comboBoxModel.filter().predicate().set(manager ->
 												!Objects.equals(manager, employee)));
 				//and only show managers from the currently selected department

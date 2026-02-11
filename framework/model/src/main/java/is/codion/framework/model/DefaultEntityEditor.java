@@ -72,8 +72,6 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 	private final Event<Attribute<?>> valueChanged = Event.event();
-	private final Event<Entity> changing = Event.event();
-	private final Event<Entity> changed = Event.event();
 
 	private final Map<Attribute<?>, DefaultEditorValue<?>> editorValues = new HashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new HashMap<>();
@@ -92,7 +90,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	private final ComponentModels componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
 
-	private final Entity entity;
+	private final DefaultEditorEntity entity;
 
 	/**
 	 * Instantiates a new {@link DefaultEntityEditor}
@@ -113,7 +111,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.componentModels = requireNonNull(componentModels);
-		this.entity = createEntity(INITIAL_VALUE);
+		this.entity = new DefaultEditorEntity(createEntity(INITIAL_VALUE));
 		this.exists = new DefaultExists(entityDefinition);
 		this.modified = new DefaultModified();
 		this.validator = Value.builder()
@@ -139,53 +137,23 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public final void set(@Nullable Entity entity) {
-		entity = entity == null ? null : entity.immutable();
-		changing.accept(entity);
-		setOrDefaults(entity);
-	}
-
-	@Override
-	public final Entity get() {
-		return entity.immutable();
-	}
-
-	@Override
-	public final void replace(Entity entity) {
-		setOrDefaults(requireNonNull(entity));
+	public final EditorEntity entity() {
+		return entity;
 	}
 
 	@Override
 	public final void clear() {
-		set(entityDefinition.entity());
-	}
-
-	@Override
-	public final Observer<Entity> observer() {
-		return changed.observer();
+		entity.set(entityDefinition.entity());
 	}
 
 	@Override
 	public final void defaults() {
-		set(null);
+		entity.set(null);
 	}
 
 	@Override
 	public final void revert() {
 		entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
-	}
-
-	@Override
-	public final void refresh() {
-		if (exists.is()) {
-			set(connectionProvider.connection().selectSingle(where(key(entity.originalPrimaryKey()))
-							.include(entityDefinition.columns().definitions().stream()
-											.filter(definition -> !definition.selected())
-											.map(ColumnDefinition::attribute)
-											.filter(entity::contains)
-											.collect(toSet()))
-							.build()));
-		}
 	}
 
 	@Override
@@ -199,18 +167,13 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public final Observer<Entity> changing() {
-		return changing.observer();
-	}
-
-	@Override
 	public final Observer<Attribute<?>> valueChanged() {
 		return valueChanged.observer();
 	}
 
 	@Override
 	public final boolean nullable(Attribute<?> attribute) {
-		return validator.getOrThrow().nullable(entity, attribute);
+		return validator.getOrThrow().nullable(entity.instance, attribute);
 	}
 
 	@Override
@@ -230,12 +193,12 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	@Override
 	public final void validate() {
-		validate(entity);
+		validate(entity.instance);
 	}
 
 	@Override
 	public final void validate(Attribute<?> attribute) {
-		validator.getOrThrow().validate(entity, attribute);
+		validator.getOrThrow().validate(entity.instance, attribute);
 	}
 
 	@Override
@@ -265,31 +228,6 @@ public class DefaultEntityEditor implements EntityEditor {
 		return searchModels;
 	}
 
-	private void setOrDefaults(@Nullable Entity entity) {
-		Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
-		for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
-			notifyValueChange(affectedAttribute);
-		}
-		if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
-			updateStates();
-		}
-		attributeModified.forEach(this::updateAttributeModifiedState);
-
-		changed.accept(entity);
-	}
-
-	private <T> @Nullable T defaultValue(AttributeDefinition<T> attributeDefinition) {
-		if (value(attributeDefinition.attribute()).persist().is()) {
-			if (attributeDefinition instanceof ForeignKeyDefinition) {
-				return (T) entity.entity((ForeignKey) attributeDefinition.attribute());
-			}
-
-			return entity.get(attributeDefinition.attribute());
-		}
-
-		return value(attributeDefinition.attribute()).defaultValue().getOrThrow().get();
-	}
-
 	private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
 		notifyValueChange(attribute);
 		Event<T> editEvent = (Event<T>) editEvents.get(attribute);
@@ -297,7 +235,7 @@ public class DefaultEntityEditor implements EntityEditor {
 			editEvent.accept(value);
 		}
 		dependingValues.forEach((dependingAttribute, previousValue) -> {
-			Object currentValue = entity.get(dependingAttribute);
+			Object currentValue = entity.instance.get(dependingAttribute);
 			if (!Objects.equals(previousValue, currentValue)) {
 				notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
 			}
@@ -324,7 +262,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	private void updateAttributeStates(Attribute<?> attribute) {
 		State presentState = attributePresent.get(attribute);
 		if (presentState != null) {
-			presentState.set(!entity.isNull(attribute));
+			presentState.set(!entity.instance.isNull(attribute));
 		}
 		State validState = attributeValid.get(attribute);
 		if (validState != null) {
@@ -338,7 +276,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	private boolean isValid(Attribute<?> attribute) {
 		try {
-			validator.getOrThrow().validate(entity, attribute);
+			validator.getOrThrow().validate(entity.instance, attribute);
 			return true;
 		}
 		catch (ValidationException e) {
@@ -347,11 +285,11 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-		modifiedState.set(exists.predicate.getOrThrow().test(entity) && entity.modified(attribute));
+		modifiedState.set(exists.predicate.getOrThrow().test(entity.instance) && entity.instance.modified(attribute));
 	}
 
 	private void updateEntityValidState() {
-		entityValid.set(validator.getOrThrow().valid(entity));
+		entityValid.set(validator.getOrThrow().valid(entity.instance));
 	}
 
 	private void updateValidStates() {
@@ -364,7 +302,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	private void updatePrimaryKeyPresentState() {
-		primaryKeyPresent.set(!entity.primaryKey().isNull());
+		primaryKeyPresent.set(!entity.instance.primaryKey().isNull());
 	}
 
 	/**
@@ -449,6 +387,92 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 	}
 
+	private final class DefaultEditorEntity implements EditorEntity {
+
+		private final Event<Entity> changing = Event.event();
+		private final Event<Entity> changed = Event.event();
+
+		private final Entity instance;
+
+		private DefaultEditorEntity(Entity instance) {
+			this.instance = instance;
+		}
+
+		@Override
+		public Entity get() {
+			return instance.immutable();
+		}
+
+		@Override
+		public Observer<Entity> observer() {
+			return changed.observer();
+		}
+
+		@Override
+		public void set(@Nullable Entity entity) {
+			entity = entity == null ? null : validateType(entity).immutable();
+			changing.accept(entity);
+			setOrDefaults(entity);
+		}
+
+		@Override
+		public Observer<Entity> changing() {
+			return changing.observer();
+		}
+
+		@Override
+		public void replace(Entity entity) {
+			setOrDefaults(validateType(entity));
+		}
+
+		@Override
+		public void refresh() {
+			if (exists.is()) {
+				set(connectionProvider.connection().selectSingle(where(key(instance.originalPrimaryKey()))
+								.include(entityDefinition.columns().definitions().stream()
+												.filter(definition -> !definition.selected())
+												.map(ColumnDefinition::attribute)
+												.filter(instance::contains)
+												.collect(toSet()))
+								.build()));
+			}
+		}
+
+		private void setOrDefaults(@Nullable Entity entity) {
+			Map<Attribute<?>, Object> affectedAttributes = this.instance.set(entity == null ? createEntity(this::defaultValue) : entity);
+			for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
+				notifyValueChange(affectedAttribute);
+			}
+			if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
+				updateStates();
+			}
+			attributeModified.forEach(DefaultEntityEditor.this::updateAttributeModifiedState);
+
+			changed.accept(entity);
+		}
+
+		private <T> @Nullable T defaultValue(AttributeDefinition<T> attributeDefinition) {
+			if (value(attributeDefinition.attribute()).persist().is()) {
+				if (attributeDefinition instanceof ForeignKeyDefinition) {
+					return (T) instance.entity((ForeignKey) attributeDefinition.attribute());
+				}
+
+				return instance.get(attributeDefinition.attribute());
+			}
+
+			return value(attributeDefinition.attribute()).defaultValue().getOrThrow().get();
+		}
+
+		private Entity validateType(Entity entity) {
+			requireNonNull(entity);
+			if (!entityDefinition.type().equals(entity.type())) {
+				throw new IllegalStateException("Entity type mismatch for entity: " + entity);
+			}
+
+			return entity;
+		}
+	}
+
 	private final class DefaultSearchModels implements SearchModels {
 
 		private final Map<ForeignKey, EntitySearchModel> searchModels = new HashMap<>();
@@ -510,7 +534,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		private void update() {
-			exists.set(predicate.getOrThrow().test(entity));
+			exists.set(predicate.getOrThrow().test(entity.instance));
 		}
 	}
 
@@ -545,11 +569,11 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public void update() {
-			boolean existing = exists.predicate.getOrThrow().test(entity);
+			boolean existing = exists.predicate.getOrThrow().test(entity.instance);
 			attributes.set(existing ? editorValues.keySet().stream()
-							.filter(entity::modified)
+							.filter(entity.instance::modified)
 							.collect(toSet()) : emptySet());
-			modified.set(existing && predicate.getOrThrow().test(entity));
+			modified.set(existing && predicate.getOrThrow().test(entity.instance));
 		}
 
 		@Override
@@ -576,7 +600,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public @Nullable T original() {
-			return entity.original(attribute);
+			return entity.instance.original(attribute);
 		}
 
 		@Override
@@ -608,7 +632,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		@Override
 		public ObservableState present() {
 			return attributePresent.computeIfAbsent(attribute,
-							k -> State.state(!entity.isNull(attribute))).observable();
+							k -> State.state(!entity.instance.isNull(attribute))).observable();
 		}
 
 		@Override
@@ -620,7 +644,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		@Override
 		public ObservableState modified() {
 			return attributeModified.computeIfAbsent(attribute,
-							k -> State.state(exists.is() && entity.modified(attribute))).observable();
+							k -> State.state(exists.is() && entity.instance.modified(attribute))).observable();
 		}
 
 		@Override
@@ -635,13 +659,13 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		protected @Nullable T getValue() {
-			return entity.get(attribute);
+			return entity.instance.get(attribute);
 		}
 
 		@Override
 		protected void setValue(@Nullable T value) {
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
-			T previousValue = entity.set(attribute, value);
+			T previousValue = entity.instance.set(attribute, value);
 			if (!Objects.equals(value, previousValue)) {
 				notifyValueEdit(attribute, value, dependingValues);
 			}
@@ -665,19 +689,19 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, @Nullable Object> dependingValues) {
 			entityDefinition.attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
-				dependingValues.put(derivedAttribute, entity.get(derivedAttribute));
+				dependingValues.put(derivedAttribute, entity.instance.get(derivedAttribute));
 				addDependingDerivedAttributes(derivedAttribute, dependingValues);
 			});
 		}
 
 		private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, @Nullable Object> dependingValues) {
 			entityDefinition.foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
-							dependingValues.put(foreignKeyDefinition.attribute(), entity.get(foreignKeyDefinition.attribute())));
+							dependingValues.put(foreignKeyDefinition.attribute(), entity.instance.get(foreignKeyDefinition.attribute())));
 		}
 
 		private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, @Nullable Object> dependingValues) {
 			foreignKey.references().forEach(reference ->
-							dependingValues.put(reference.column(), entity.get(reference.column())));
+							dependingValues.put(reference.column(), entity.instance.get(reference.column())));
 		}
 
 		private Observable<String> observableMessage(Attribute<?> attribute) {

@@ -99,7 +99,7 @@ public final class CityEditPanel extends EntityEditPanel {
 	private void populateLocation() throws IOException {
 		CityEditModel editModel = (CityEditModel) editModel();
 		editModel.populateLocation();
-		displayLocations(List.of(editModel.editor().get()));
+		displayLocations(List.of(editModel.editor().entity().get()));
 	}
 
 	private void displayLocations(Collection<Entity> cities) {

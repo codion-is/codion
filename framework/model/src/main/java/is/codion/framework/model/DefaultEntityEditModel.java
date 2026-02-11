@@ -428,7 +428,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 
 		private Collection<Entity> entityForInsert() {
-			Entity.Builder builder = editor.getOrThrow().copy().builder();
+			Entity.Builder builder = editor.entity().get().copy().builder();
 			editor.entityDefinition().columns().definitions().stream()
 							.filter(ColumnDefinition::primaryKey)
 							.filter(ColumnDefinition::generated)
@@ -469,7 +469,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			@Override
 			public Collection<Entity> handle() {
 				if (activeEntity) {
-					editor.replace(insertedEntities.iterator().next());
+					editor.entity().replace(insertedEntities.iterator().next());
 				}
 				notifyAfterInsert(insertedEntities);
 
@@ -483,7 +483,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private final Collection<Entity> entities;
 
 		private DefaultUpdateEntities() {
-			entities = singleton(editor.getOrThrow().copy().mutable());
+			entities = singleton(editor.entity().get().copy().mutable());
 			settings.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
 			verifyModified();
@@ -505,7 +505,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private void verifyModified() {
 			if (!editor.modified().is()) {
-				throw new IllegalStateException("Entity is not modified: " + editor.get());
+				throw new IllegalStateException("Entity is not modified: " + editor.entity().get());
 			}
 		}
 
@@ -537,11 +537,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				Entity entity = editor.get();
+				Entity entity = editor.entity().get();
 				updatedEntities.stream()
 								.filter(updatedEntity -> updatedEntity.equals(entity))
 								.findFirst()
-								.ifPresent(editor::replace);
+								.ifPresent(editor.entity()::replace);
 				notifyAfterUpdate(originalEntityMap(entities, updatedEntities));
 
 				return updatedEntities;
@@ -574,7 +574,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 
 		private Entity activeEntity() {
-			Entity copy = editor.getOrThrow().copy().mutable();
+			Entity copy = editor.entity().get().copy().mutable();
 			copy.revert();
 
 			return copy;

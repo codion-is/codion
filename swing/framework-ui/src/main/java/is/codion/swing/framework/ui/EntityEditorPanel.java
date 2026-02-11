@@ -176,7 +176,7 @@ public class EntityEditorPanel extends JPanel {
 	public EntityEditorPanel(SwingEntityEditor editor) {
 		this.editor = requireNonNull(editor);
 		this.entityComponents = entityComponents(editor.entityDefinition());
-		editor.changing().addConsumer(this::onEntityChanging);
+		editor.entity().changing().addConsumer(this::onEntityChanging);
 		inputFocus = new InputFocus(this);
 	}
 

@@ -190,7 +190,7 @@ final class CountryEditPanel extends EntityEditPanel {
 			//add the city to the table model items when a new city is inserted
 			cityEditModel.afterInsert().addConsumer(cityTableItems::add);
 			//if an existing country is selected, then we assume we are adding a city in that country
-			capitalEditPanel.editModel().editor().value(City.COUNTRY_FK).set(editModel().editor().get());
+			capitalEditPanel.editModel().editor().value(City.COUNTRY_FK).set(editModel().editor().entity().get());
 			//initialize the panel components, so we can configure the country component
 			capitalEditPanel.initialize();
 			//disables the country selection component and changes the initial focus property

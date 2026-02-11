@@ -217,8 +217,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		editModel.afterInsert().addConsumer(this::onInsert);
 		editModel.afterUpdate().addConsumer(this::onUpdate);
 		editModel.afterDelete().addConsumer(this::onDelete);
-		editModel.editor().addConsumer(this::onEntityChanged);
-		selection().item().addConsumer(editModel.editor()::set);
+		editModel.editor().entity().addConsumer(this::onEntityChanged);
+		selection().item().addConsumer(editModel.editor().entity()::set);
 
 		orderQuery.addConsumer(enabled ->
 						queryModel.orderBy().set(enabled ? orderBy().orElse(null) : null));

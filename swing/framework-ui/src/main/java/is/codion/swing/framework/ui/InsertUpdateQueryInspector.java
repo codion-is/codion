@@ -69,12 +69,12 @@ final class InsertUpdateQueryInspector extends JPanel {
 	}
 
 	private String createInsertQuery() {
-		return queries.insert(editModel.editor().getOrThrow());
+		return queries.insert(editModel.editor().entity().get());
 	}
 
 	private String createUpdateQuery() {
 		if (editModel.editor().modified().is()) {
-			return queries.update(editModel.editor().getOrThrow());
+			return queries.update(editModel.editor().entity().get());
 		}
 
 		return "<unmodified>";

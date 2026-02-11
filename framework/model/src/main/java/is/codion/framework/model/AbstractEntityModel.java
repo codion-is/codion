@@ -160,7 +160,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 			return emptyList();
 		}
 
-		return singletonList(editModel.editor().get());
+		return singletonList(editModel.editor().entity().get());
 	}
 
 	private void bindEventsInternal() {
@@ -171,7 +171,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 			tableModel.selection().indexes().addListener(this::selectionChanged);
 		}
 		else {
-			editModel.editor().addListener(this::selectionChanged);
+			editModel.editor().entity().addListener(this::selectionChanged);
 		}
 	}
 

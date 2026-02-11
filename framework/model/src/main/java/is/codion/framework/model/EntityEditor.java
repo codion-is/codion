@@ -46,7 +46,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 /**
  * Provides edit access to an underlying entity.
  */
-public interface EntityEditor extends Observable<Entity> {
+public interface EntityEditor {
 
 	/**
 	 * Specifies whether foreign key values should persist by default when defaults are set
@@ -74,22 +74,9 @@ public interface EntityEditor extends Observable<Entity> {
 	EntityConnectionProvider connectionProvider();
 
 	/**
-	 * @return an immutable copy of the entity being edited
+	 * @return the {@link EditorEntity} instance
 	 */
-	@Override
-	Entity get();
-
-	/**
-	 * <p>Populates this editor with the values from the given entity or sets the default value for all attributes in case it is null.
-	 * <p>Use {@link #clear()} in order to clear the editor of all values.
-	 * <p>Notifies that the entity is about to change via {@link #changing()}
-	 * @param entity the entity to set, if null, then defaults are set
-	 * @see EditorValue#defaultValue()
-	 * @see EditorValue#persist()
-	 * @see ValueAttributeDefinition#defaultValue()
-	 * @see #changing()
-	 */
-	void set(@Nullable Entity entity);
+	EditorEntity entity();
 
 	/**
 	 * Clears all values from the underlying entity, disregarding the {@link EditorValue#persist()} directive.
@@ -97,12 +84,7 @@ public interface EntityEditor extends Observable<Entity> {
 	void clear();
 
 	/**
-	 * Replaces the entity without notifying that it is changing.
-	 */
-	void replace(Entity entity);
-
-	/**
-	 * Populates this edit model with default values for all non-persistent attributes.
+	 * Populates this editor with default values for all non-persistent attributes.
 	 * <p>Notifies that the entity is about to change via {@link #changing()}
 	 * @see EditorValue#defaultValue()
 	 * @see EditorValue#persist()
@@ -115,13 +97,6 @@ public interface EntityEditor extends Observable<Entity> {
 	 * Reverts all attribute value changes.
 	 */
 	void revert();
-
-	/**
-	 * Refreshes the active Entity from the database, discarding all changes.
-	 * If the active Entity is new then calling this method has no effect.
-	 * @see #exists()
-	 */
-	void refresh();
 
 	/**
 	 * @return an {@link ObservableState} indicating whether the entity exists in the database
@@ -137,14 +112,6 @@ public interface EntityEditor extends Observable<Entity> {
 	 * @see Exists
 	 */
 	Modified modified();
-
-	/**
-	 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener will cancel the change.
-	 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link #defaults()}.
-	 * @see #set(Entity)
-	 * @see #defaults()
-	 */
-	Observer<Entity> changing();
 
 	/**
 	 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}
@@ -224,6 +191,52 @@ public interface EntityEditor extends Observable<Entity> {
 	 * @return the {@link SearchModels} instance
 	 */
 	SearchModels searchModels();
+
+	/**
+	 * Provides access to the entity instance being edited.
+	 */
+	interface EditorEntity extends Observable<Entity> {
+
+		/**
+		 * @return an immutable copy of the entity being edited
+		 */
+		@Override
+		Entity get();
+
+		/**
+		 * <p>Populates this editor entity with the values from the given entity or sets
+		 * the default value for all attributes in case it is null.
+		 * <p>Use {@link #clear()} in order to clear the editor of all values.
+		 * <p>Notifies that the entity is about to change via {@link #changing()}
+		 * @param entity the entity to set, if null, then defaults are set
+		 * @see EditorValue#defaultValue()
+		 * @see EditorValue#persist()
+		 * @see ValueAttributeDefinition#defaultValue()
+		 * @see #changing()
+		 * @throws IllegalArgumentException in case the entity is not of the correct type
+		 */
+		void set(@Nullable Entity entity);
+
+		/**
+		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener will cancel the change.
+		 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link #defaults()}.
+		 * @see #set(Entity)
+		 * @see #defaults()
+		 */
+		Observer<Entity> changing();
+
+		/**
+		 * Replaces the entity without notifying that it is changing.
+		 */
+		void replace(Entity entity);
+
+		/**
+		 * Refreshes the active Entity from the database, discarding all changes.
+		 * If the active Entity is new then calling this method has no effect.
+		 * @see #exists()
+		 */
+		void refresh();
+	}
 
 	/**
 	 * Manages the {@link EntitySearchModel}s used by a {@link EntityEditModel}

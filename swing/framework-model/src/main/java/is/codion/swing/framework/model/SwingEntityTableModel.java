@@ -313,7 +313,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 						.optional()
 						.orElse(-1)
 						.intValue()) {
-			editModel().editor().set(selection().item().get());
+			editModel().editor().entity().set(selection().item().get());
 		}
 	}
 

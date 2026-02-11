@@ -55,7 +55,7 @@ public final class EntityEditPanelTest {
 		assertTrue(editPanel.active().is());
 
 		Entity martin = editModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
-		editModel.editor().set(martin);
+		editModel.editor().entity().set(martin);
 		assertTrue(editModel.editor().exists().is());
 		editPanel.clearAndRequestFocus();
 		assertFalse(editModel.editor().exists().is());

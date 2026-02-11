@@ -38,7 +38,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 
 	CountryEditModel(EntityConnectionProvider connectionProvider) {
 		super(Country.TYPE, connectionProvider, new CountryComponentModels());
-		editor().addConsumer(this::setAverageCityPopulation);
+		editor().entity().addConsumer(this::setAverageCityPopulation);
 	}
 
 	public Observable<Double> averageCityPopulation() {
@@ -56,7 +56,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 		public void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel, SwingEntityEditor editor) {
 			if (foreignKey.equals(Country.CAPITAL_FK)) {
 				//only show cities for currently selected country
-				editor.addConsumer(country ->
+				editor.entity().addConsumer(country ->
 								comboBoxModel.filter().predicate().set(city ->
 												country != null && Objects.equals(city.get(City.COUNTRY_FK), country)));
 			}

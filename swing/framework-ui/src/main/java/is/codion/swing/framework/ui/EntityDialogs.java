@@ -626,7 +626,7 @@ public final class EntityDialogs {
 
 		private void initializeEditModel(SwingEntityEditModel editModel) {
 			if (entity != null) {
-				editModel.editor().set(entity.get());
+				editModel.editor().entity().set(entity.get());
 			}
 			else {
 				editModel.editor().revert();

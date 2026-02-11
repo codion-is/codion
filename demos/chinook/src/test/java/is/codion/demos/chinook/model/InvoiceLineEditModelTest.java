@@ -73,7 +73,7 @@ public final class InvoiceLineEditModelTest {
 			theCallOfKtulu.set(Track.UNITPRICE, BigDecimal.valueOf(2));
 			theCallOfKtulu = connection.updateSelect(theCallOfKtulu);
 
-			editor.set(invoiceLineBattery);
+			editor.entity().set(invoiceLineBattery);
 			editor.value(InvoiceLine.TRACK_FK).set(theCallOfKtulu);
 			editModel.update();
 

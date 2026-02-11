@@ -85,7 +85,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 		deptTableModel.items().included().predicate().set(item ->
 						!Objects.equals(80, item.get(Department.ID)));
 
-		deptEditModel.editor().set(operations);
+		deptEditModel.editor().entity().set(operations);
 		deptEditModel.editor().value(Department.ID).set(40);
 		deptEditModel.update();
 
