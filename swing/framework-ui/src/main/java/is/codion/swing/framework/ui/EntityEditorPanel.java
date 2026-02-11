@@ -560,7 +560,7 @@ public class EntityEditorPanel extends JPanel {
 	}
 
 	private static <C extends Config<C>> Config<C> configure(Consumer<Config<C>> configuration) {
-		Config<C> config = new Config<C>();
+		Config<C> config = new Config<>();
 		requireNonNull(configuration).accept(config);
 
 		return new Config<>(config);

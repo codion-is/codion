@@ -669,8 +669,8 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		EntityViewer.view(editModel().editor().entity().get(), editModel().connectionProvider(), this);
 	}
 
-	private Config configure(Consumer<Config> configuration) {
-		Config config = new Config(this);
+	private static Config configure(Consumer<Config> configuration) {
+		Config config = new Config();
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
@@ -859,8 +859,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
-		private final EntityEditPanel editPanel;
-
 		private boolean clearAfterInsert = true;
 		private boolean requestFocusAfterInsert = true;
 		private boolean focusActivation = USE_FOCUS_ACTIVATION.getOrThrow();
@@ -879,14 +877,12 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 
 		final ControlMap controlMap;
 
-		private Config(EntityEditPanel editPanel) {
-			this.editPanel = editPanel;
+		private Config() {
 			this.controlMap = controlMap(ControlKeys.class);
 		}
 
 		private Config(Config config) {
 			super(config);
-			this.editPanel = config.editPanel;
 			this.controlMap = config.controlMap.copy();
 			this.clearAfterInsert = config.clearAfterInsert;
 			this.requestFocusAfterInsert = config.requestFocusAfterInsert;
@@ -902,13 +898,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			this.includeQueryInspector = config.includeQueryInspector;
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 			this.modifiedWarning = config.modifiedWarning;
-		}
-
-		/**
-		 * @return the edit panel
-		 */
-		public EntityEditPanel editPanel() {
-			return editPanel;
 		}
 
 		/**
