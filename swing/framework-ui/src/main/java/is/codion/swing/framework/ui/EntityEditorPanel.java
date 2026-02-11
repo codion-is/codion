@@ -251,7 +251,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
 		return component(attribute).set(entityComponents.textFieldPanel(attribute))
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -274,7 +274,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> createTextField(Attribute<T> attribute) {
 		return component(attribute).set((B) entityComponents.textField(attribute))
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -342,7 +342,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Integer> createIntegerField(Attribute<Integer> attribute) {
 		return component(attribute).set(entityComponents.integerField(attribute))
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -352,7 +352,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Long> createLongField(Attribute<Long> attribute) {
 		return component(attribute).set(entityComponents.longField(attribute))
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -362,7 +362,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<BigInteger> createBigIntegerField(Attribute<BigInteger> attribute) {
 		return component(attribute).set(entityComponents.bigIntegerField(attribute))
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -372,7 +372,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Double> createDoubleField(Attribute<Double> attribute) {
 		return component(attribute).set(entityComponents.doubleField(attribute))
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -382,7 +382,7 @@ public class EntityEditorPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<BigDecimal> createBigDecimalField(Attribute<BigDecimal> attribute) {
 		return component(attribute).set(entityComponents.bigDecimalField(attribute))
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -518,7 +518,7 @@ public class EntityEditorPanel extends JPanel {
 		return component(foreignKey).set(entityComponents.searchField(foreignKey,
 														editor.searchModels().get(foreignKey))
 										.singleSelection())
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -532,7 +532,7 @@ public class EntityEditorPanel extends JPanel {
 		return component(foreignKey).set(entityComponents.searchFieldPanel(foreignKey,
 														editor.searchModels().get(foreignKey), editPanel)
 										.singleSelection())
-						.columns(configuration.defaultTextFieldColumns);
+						.columns(configuration.textFieldColumns);
 	}
 
 	/**
@@ -610,12 +610,12 @@ public class EntityEditorPanel extends JPanel {
 		 * <li>Default value: 12
 		 * </ul>
 		 */
-		public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
-						integerValue(EntityEditorPanel.class.getName() + ".defaultTextFieldColumns", 12);
+		public static final PropertyValue<Integer> TEXT_FIELD_COLUMNS =
+						integerValue(EntityEditorPanel.class.getName() + ".textFieldColumns", 12);
 
 		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
 		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
-		private int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow();
+		private int textFieldColumns = TEXT_FIELD_COLUMNS.getOrThrow();
 		private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.getOrThrow();
 
 		protected Config() {}
@@ -627,7 +627,7 @@ public class EntityEditorPanel extends JPanel {
 		protected Config(Config<C> config) {
 			this.validIndicator = config.validIndicator;
 			this.modifiedIndicator = config.modifiedIndicator;
-			this.defaultTextFieldColumns = config.defaultTextFieldColumns;
+			this.textFieldColumns = config.textFieldColumns;
 			this.transferFocusOnEnter = config.transferFocusOnEnter;
 		}
 
@@ -662,12 +662,13 @@ public class EntityEditorPanel extends JPanel {
 
 		/**
 		 * Specifies the default number of text field columns
-		 * @param defaultTextFieldColumns the default number of text field columns
+		 * @param textFieldColumns the default number of text field columns
 		 * @return this Config instance
-		 * @see #DEFAULT_TEXT_FIELD_COLUMNS
+		 * @see JTextField#setColumns(int)
+		 * @see #TEXT_FIELD_COLUMNS
 		 */
-		public final C defaultTextFieldColumns(int defaultTextFieldColumns) {
-			this.defaultTextFieldColumns = defaultTextFieldColumns;
+		public final C textFieldColumns(int textFieldColumns) {
+			this.textFieldColumns = textFieldColumns;
 			return (C) this;
 		}
 

@@ -12,6 +12,7 @@ Codion Change Log
 - EntityEditorPanel.InputFocus moved to EntityEditPanel.
 - EntityEditorPanel.Config.modifiedWarning() moved to EntityEditPanel.Config.
 - EntityEditPanel.Config.editPanel() removed, unused.
+- EntityEditorPanel.Config.defaultTextFieldColumns() renamed textFieldColumns().
 
 ## 0.18.68
 ### is.codion.common.reactive
