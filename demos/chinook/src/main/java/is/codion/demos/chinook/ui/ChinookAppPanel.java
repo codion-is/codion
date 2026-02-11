@@ -46,7 +46,6 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityEditorPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -256,7 +255,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		EntityApplicationPanel.SQL_TRACING.set(true);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		EntityPanel.Config.WINDOW_TYPE.set(WindowType.FRAME);
-		EntityEditorPanel.Config.MODIFIED_WARNING.set(true);
+		EntityEditPanel.Config.MODIFIED_WARNING.set(true);
 		EntityEditPanel.Config.INCLUDE_QUERY_INSPECTOR.set(true);
 		// Add a CTRL modifier to the DELETE key shortcut for table panels
 		EntityTablePanel.ControlKeys.DELETE.defaultKeystroke().update(keyStroke ->

@@ -563,7 +563,7 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Requests focus for this panel. If an edit panel is available and not hidden, the component
-	 * defined as the initial focus component by {@link EntityEditorPanel#focus()} gets the input focus.
+	 * defined as the initial focus component by {@link EntityEditPanel#focus()} gets the input focus.
 	 * If no edit panel is available the table panel gets the focus, otherwise the first child
 	 * component of this {@link EntityPanel} is used.
 	 * @see EntityEditPanel#focus()

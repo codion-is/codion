@@ -76,8 +76,8 @@ public interface EntityEditModel {
 	EntityConnection connection();
 
 	/**
-	 * Returns a {@link EntityEditor} wrapping the entity being edited. {@link EntityEditor#get()} returns
-	 * an immutable copy of the {@link Entity} instance being edited, while {@link EntityEditor#set(Entity)}
+	 * Returns a {@link EntityEditor} wrapping the entity being edited. {@link EntityEditor.EditorEntity#get()} returns
+	 * an immutable copy of the {@link Entity} instance being edited, while {@link EntityEditor.EditorEntity#set(Entity)}
 	 * copies the values from the given {@link Entity} into the underlying {@link Entity}.
 	 * Note that value changes must go through the {@link EntityEditor.EditorValue} accessible via {@link EntityEditor#value(Attribute)}.
 	 * @return the {@link EntityEditor} wrapping the {@link Entity} instance being edited

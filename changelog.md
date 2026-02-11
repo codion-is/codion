@@ -9,6 +9,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityEditorPanel.Config added, handles validIndicator, modifiedIndicator, modifiedWarning and defaultTextFieldColumns.
 - EntityEditorPanel.Config.transferFocusOnEnter() added along with Config.TRANSFER_FOCUS_ON_ENTER.
+- EntityEditorPanel.InputFocus moved to EntityEditPanel.
+- EntityEditorPanel.Config.modifiedWarning() moved to EntityEditPanel.Config.
 
 ## 0.18.68
 ### is.codion.common.reactive

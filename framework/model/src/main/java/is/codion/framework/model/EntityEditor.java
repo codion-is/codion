@@ -85,11 +85,11 @@ public interface EntityEditor {
 
 	/**
 	 * Populates this editor with default values for all non-persistent attributes.
-	 * <p>Notifies that the entity is about to change via {@link #changing()}
+	 * <p>Notifies that the entity is about to change via {@link EditorEntity#changing()}
 	 * @see EditorValue#defaultValue()
 	 * @see EditorValue#persist()
 	 * @see ValueAttributeDefinition#defaultValue()
-	 * @see #changing()
+	 * @see EditorEntity#changing()
 	 */
 	void defaults();
 
@@ -115,7 +115,7 @@ public interface EntityEditor {
 
 	/**
 	 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}
-	 * instance or when the entity is set via {@link #clear()}, {@link #set(Entity)} or {@link #defaults()}.
+	 * instance or when the entity is set via {@link #clear()}, {@link EditorEntity#set(Entity)} or {@link #defaults()}.
 	 * @return an observer notified each time a value is changed
 	 */
 	Observer<Attribute<?>> valueChanged();
@@ -394,7 +394,7 @@ public interface EntityEditor {
 		/**
 		 * <p>Returns an observer notified each time this value is modified via {@link EditorValue#set(Object)}.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
-		 * via {@link EntityEditor#set(Entity)}, {@link EntityEditor#defaults()} or {@link EntityEditor#clear()}.
+		 * via {@link EditorEntity#set(Entity)}, {@link EntityEditor#defaults()} or {@link EntityEditor#clear()}.
 		 * <p>Note that this event is only triggered if the value actually changes.
 		 * @return an observer notified when the given attribute value is edited
 		 */
