@@ -50,7 +50,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
-import static is.codion.framework.model.EntityEditModel.events;
+import static is.codion.framework.model.PersistenceEvents.events;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -95,7 +95,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.settings = unmodifiableMap(searchColumns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
 		this.limit = Value.nullable(builder.limit);
-		if (builder.editEvents) {
+		if (builder.persistenceEvents) {
 			events(entityDefinition.type()).updated().addWeakConsumer(updateListener);
 			events(entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
 		}
@@ -359,7 +359,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private @Nullable Supplier<Condition> condition;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private @Nullable Integer limit = DEFAULT_LIMIT.get();
-		private boolean editEvents = EDIT_EVENTS.getOrThrow();
+		private boolean persistenceEvents = PERSISTENCE_EVENTS.getOrThrow();
 		private @Nullable OrderBy orderBy;
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
@@ -402,8 +402,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public Builder editEvents(boolean editEvents) {
-			this.editEvents = editEvents;
+		public Builder persistenceEvents(boolean persistenceEvents) {
+			this.persistenceEvents = persistenceEvents;
 			return this;
 		}
 

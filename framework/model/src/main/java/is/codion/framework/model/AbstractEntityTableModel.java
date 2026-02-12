@@ -228,7 +228,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType ->
-										DefaultEntityEditModel.editEvents(entityType).updated().addWeakConsumer(updateListener));
+										PersistenceEvents.events(entityType).updated().addWeakConsumer(updateListener));
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {

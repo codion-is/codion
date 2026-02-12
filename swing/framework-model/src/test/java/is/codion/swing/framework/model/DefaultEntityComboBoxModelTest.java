@@ -26,7 +26,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.PersistenceEvents;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -58,7 +58,7 @@ public final class DefaultEntityComboBoxModelTest {
 					.build();
 
 	@Test
-	void editEvents() {
+	void persistenceEvents() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
@@ -70,7 +70,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.with(Employee.NAME, "Noname")
 						.build();
 
-		EntityEditModel.events(Employee.TYPE).inserted().accept(singletonList(temp));
+		PersistenceEvents.events(Employee.TYPE).inserted().accept(singletonList(temp));
 		assertTrue(comboBoxModel.items().included().contains(temp));
 
 		temp.set(Employee.NAME, "Newname");
@@ -80,11 +80,11 @@ public final class DefaultEntityComboBoxModelTest {
 		Map<Entity, Entity> updated = new HashMap<>();
 		updated.put(temp, tempUpdated);
 
-		EntityEditModel.events(Employee.TYPE).updated().accept(updated);
+		PersistenceEvents.events(Employee.TYPE).updated().accept(updated);
 		comboBoxModel.select(temp.primaryKey());
 		assertEquals("Newname", comboBoxModel.selection().item().getOrThrow().get(Employee.NAME));
 
-		EntityEditModel.events(Employee.TYPE).deleted().accept(singletonList(temp));
+		PersistenceEvents.events(Employee.TYPE).deleted().accept(singletonList(temp));
 		assertFalse(comboBoxModel.items().included().contains(temp));
 	}
 

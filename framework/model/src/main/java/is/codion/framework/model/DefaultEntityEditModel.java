@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.AbstractObserver;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
@@ -45,7 +44,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static is.codion.framework.domain.entity.Entity.groupByType;
@@ -60,8 +58,6 @@ import static java.util.stream.Collectors.toMap;
 public class DefaultEntityEditModel implements EntityEditModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
-
-	private static final Map<EntityType, EditEvents> EVENTS = new ConcurrentHashMap<>();
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Collection<Entity>> insertListener = new InsertListener();
@@ -88,7 +84,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	public DefaultEntityEditModel(EntityEditor editor) {
 		this.editor = requireNonNull(editor);
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
-		this.events = new Events(settings.editEvents);
+		this.events = new Events(settings.persistenceEvents);
 		addEditListeners();
 	}
 
@@ -269,7 +265,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 * <p>Called when entities of the type referenced by the given foreign key are inserted.
 	 * @param foreignKey the foreign key
 	 * @param entities the inserted entities
-	 * @see EditEvents#inserted()
+	 * @see PersistenceEvents#inserted()
 	 */
 	protected void inserted(ForeignKey foreignKey, Collection<Entity> entities) {}
 
@@ -279,7 +275,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 * the corresponding value from {@code entities}
 	 * @param foreignKey the foreign key
 	 * @param entities the updated entities, mapped to their original primary key
-	 * @see EditEvents#updated()
+	 * @see PersistenceEvents#updated()
 	 */
 	protected void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
 		requireNonNull(foreignKey);
@@ -297,7 +293,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 * <p>Clears any foreign key values referencing the deleted entities.
 	 * @param foreignKey the foreign key
 	 * @param entities the deleted entities
-	 * @see EditEvents#deleted()
+	 * @see PersistenceEvents#deleted()
 	 */
 	protected void deleted(ForeignKey foreignKey, Collection<Entity> entities) {
 		requireNonNull(foreignKey);
@@ -363,10 +359,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		events.notifyDeleted(requireNonNull(deletedEntities));
 	}
 
-	static EditEvents editEvents(EntityType entityType) {
-		return EVENTS.computeIfAbsent(requireNonNull(entityType), DefaultEditEvents::new);
-	}
-
 	/**
 	 * Maps the given entities and their updated counterparts, assumes a single copy of each entity in the given lists.
 	 * @param entitiesBeforeUpdate the entities before update
@@ -402,9 +394,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType -> {
-							editEvents(entityType).inserted().addWeakConsumer(insertListener);
-							editEvents(entityType).updated().addWeakConsumer(updateListener);
-							editEvents(entityType).deleted().addWeakConsumer(deleteListener);
+							PersistenceEvents.events(entityType).inserted().addWeakConsumer(insertListener);
+							PersistenceEvents.events(entityType).updated().addWeakConsumer(updateListener);
+							PersistenceEvents.events(entityType).deleted().addWeakConsumer(deleteListener);
 						});
 	}
 
@@ -621,33 +613,33 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<Collection<Entity>> afterInsertUpdateOrDelete = Event.event();
 
-		private final ObservableState editEvents;
+		private final ObservableState persistenceEvents;
 
-		private Events(ObservableState editEvents) {
-			this.editEvents = editEvents;
+		private Events(ObservableState persistenceEvents) {
+			this.persistenceEvents = persistenceEvents;
 		}
 
 		private void notifyInserted(Collection<Entity> inserted) {
 			afterInsert.accept(inserted);
 			afterInsertUpdateOrDelete.accept(inserted);
-			if (editEvents.is()) {
-				DefaultEditEvents.notifyInserted(inserted);
+			if (persistenceEvents.is()) {
+				DefaultEntityEditModel.notifyInserted(inserted);
 			}
 		}
 
 		private void notifyUpdated(Map<Entity, Entity> updated) {
 			afterUpdate.accept(updated);
 			afterInsertUpdateOrDelete.accept(updated.values());
-			if (editEvents.is()) {
-				DefaultEditEvents.notifyUpdated(updated);
+			if (persistenceEvents.is()) {
+				DefaultEntityEditModel.notifyUpdated(updated);
 			}
 		}
 
 		private void notifyDeleted(Collection<Entity> deleted) {
 			afterDelete.accept(deleted);
 			afterInsertUpdateOrDelete.accept(deleted);
-			if (editEvents.is()) {
-				DefaultEditEvents.notifyDeleted(deleted);
+			if (persistenceEvents.is()) {
+				DefaultEntityEditModel.notifyDeleted(deleted);
 			}
 		}
 	}
@@ -659,15 +651,15 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private final State updateEnabled = State.state(true);
 		private final State updateMultipleEnabled = State.state(true);
 		private final State deleteEnabled = State.state(true);
-		private final State editEvents = State.state(EDIT_EVENTS.getOrThrow());
+		private final State persistenceEvents = State.state(PERSISTENCE_EVENTS.getOrThrow());
 
 		private DefaultSettings(boolean readOnly) {
 			this.readOnly = State.state(readOnly);
 		}
 
 		@Override
-		public State editEvents() {
-			return editEvents;
+		public State persistenceEvents() {
+			return persistenceEvents;
 		}
 
 		@Override
@@ -763,86 +755,21 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private static final class DefaultEditEvents implements EditEvents {
+	private static void notifyInserted(Collection<Entity> inserted) {
+		groupByType(inserted).forEach((entityType, entities) ->
+						PersistenceEvents.events(entityType).inserted().accept(entities));
+	}
 
-		private final EntityType entityType;
+	private static void notifyUpdated(Map<Entity, Entity> updated) {
+		updated.entrySet().stream()
+						.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
+										toMap(Map.Entry::getKey, Map.Entry::getValue)))
+						.forEach((entityType, entities) ->
+										PersistenceEvents.events(entityType).updated().accept(entities));
+	}
 
-		private final Inserted inserted = new DefaultInsertEvent();
-		private final Updated updated = new DefaultUpdated();
-		private final Deleted deleted = new DefaultDeleted();
-
-		private DefaultEditEvents(EntityType entityType) {
-			this.entityType = entityType;
-		}
-
-		@Override
-		public Inserted inserted() {
-			return inserted;
-		}
-
-		@Override
-		public Updated updated() {
-			return updated;
-		}
-
-		@Override
-		public Deleted deleted() {
-			return deleted;
-		}
-
-		private static void notifyInserted(Collection<Entity> inserted) {
-			groupByType(inserted).forEach((entityType, entities) ->
-							editEvents(entityType).inserted().accept(entities));
-		}
-
-		private static void notifyUpdated(Map<Entity, Entity> updated) {
-			updated.entrySet()
-							.stream()
-							.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
-											toMap(Map.Entry::getKey, Map.Entry::getValue)))
-							.forEach((entityType, entities) ->
-											editEvents(entityType).updated().accept(entities));
-		}
-
-		private static void notifyDeleted(Collection<Entity> deleted) {
-			groupByType(deleted).forEach((entityType, entities) ->
-							editEvents(entityType).deleted().accept(entities));
-		}
-
-		private void validate(Collection<Entity> entities) {
-			for (Entity entity : requireNonNull(entities)) {
-				if (!entity.type().equals(entityType)) {
-					throw new IllegalArgumentException("Invalid entity type for edit notification: " + entity.type() + ", expected " + entityType);
-				}
-			}
-		}
-
-		private final class DefaultInsertEvent extends AbstractObserver<Collection<Entity>> implements Inserted {
-
-			@Override
-			public void accept(Collection<Entity> inserted) {
-				validate(inserted);
-				notifyListeners(inserted);
-			}
-		}
-
-		private final class DefaultUpdated extends AbstractObserver<Map<Entity, Entity>> implements Updated {
-
-			@Override
-			public void accept(Map<Entity, Entity> updated) {
-				validate(requireNonNull(updated).keySet());
-				validate(updated.values());
-				notifyListeners(updated);
-			}
-		}
-
-		private final class DefaultDeleted extends AbstractObserver<Collection<Entity>> implements Deleted {
-
-			@Override
-			public void accept(Collection<Entity> deleted) {
-				validate(deleted);
-				notifyListeners(deleted);
-			}
-		}
+	private static void notifyDeleted(Collection<Entity> deleted) {
+		groupByType(deleted).forEach((entityType, entities) ->
+						PersistenceEvents.events(entityType).deleted().accept(entities));
 	}
 }

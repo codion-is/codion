@@ -23,7 +23,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.PersistenceEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public final class ArtistTableModel extends SwingEntityTableModel {
 	public void onCombined(List<Entity> artistsToDelete, Entity artistToKeep) {
 		selection().item().set(artistToKeep);
 		items().remove(artistsToDelete);
-		EntityEditModel.events(Artist.TYPE).deleted().accept(artistsToDelete);
+		PersistenceEvents.events(Artist.TYPE).deleted().accept(artistsToDelete);
 		refresh(singleton(artistToKeep.primaryKey()));
 	}
 }

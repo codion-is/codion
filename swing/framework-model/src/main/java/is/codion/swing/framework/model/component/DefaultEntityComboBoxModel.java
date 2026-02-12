@@ -50,7 +50,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.model.EntityEditModel.events;
+import static is.codion.framework.model.PersistenceEvents.events;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -87,7 +87,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 				throw new UnsupportedOperationException("EntityComboBoxModel include item predicate can only be set via filter().predicate().set()");
 			}
 		});
-		if (builder.editEvents) {
+		if (builder.persistenceEvents) {
 			events(entityItems.entityDefinition.type()).inserted().addWeakConsumer(insertListener);
 			events(entityItems.entityDefinition.type()).updated().addWeakConsumer(updateListener);
 			events(entityItems.entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
@@ -491,7 +491,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private final Map<ForeignKey, EntityComboBoxModel> filterLinks = new HashMap<>();
 
 		private @Nullable Comparator<Entity> comparator;
-		private boolean editEvents = EDIT_EVENTS.getOrThrow();
+		private boolean persistenceEvents = PERSISTENCE_EVENTS.getOrThrow();
 		private boolean filterSelected = false;
 		private @Nullable Entity selectEntity;
 
@@ -549,8 +549,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public Builder editEvents(boolean editEvents) {
-			this.editEvents = editEvents;
+		public Builder persistenceEvents(boolean persistenceEvents) {
+			this.persistenceEvents = persistenceEvents;
 			return this;
 		}
 

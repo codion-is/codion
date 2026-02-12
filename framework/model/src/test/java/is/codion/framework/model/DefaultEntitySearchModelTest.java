@@ -247,7 +247,7 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
-	void editEvents() {
+	void persistenceEvents() {
 		Entity temp = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, -42)
 						.with(Employee.NAME, "Noname")
@@ -262,10 +262,10 @@ public final class DefaultEntitySearchModelTest {
 		Map<Entity, Entity> updated = new HashMap<>();
 		updated.put(temp, tempUpdated);
 
-		EntityEditModel.events(Employee.TYPE).updated().accept(updated);
+		PersistenceEvents.events(Employee.TYPE).updated().accept(updated);
 		assertEquals("Newname", searchModel.selection().entity().get().get(Employee.NAME));
 
-		EntityEditModel.events(Employee.TYPE).deleted().accept(singletonList(temp));
+		PersistenceEvents.events(Employee.TYPE).deleted().accept(singletonList(temp));
 		assertTrue(searchModel.selection().empty().is());
 	}
 

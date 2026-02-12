@@ -8,6 +8,7 @@ Codion Change Log
 - Windows.resizeToFitScreen() bug fixed, now uses getMaximumWindowBounds().
 ### is.codion.framework.model
 - EntityEditor.EditorEntity added, handling the access to the underlying entity.
+- EntityEditModel.EditEvents moved to PersistenceEvents, related renaming.
 ### is.codion.swing.framework.ui
 - EntityEditorPanel.Config added, handles validIndicator, modifiedIndicator, modifiedWarning and defaultTextFieldColumns.
 - EntityEditorPanel.Config.transferFocusOnEnter() added along with Config.TRANSFER_FOCUS_ON_ENTER.

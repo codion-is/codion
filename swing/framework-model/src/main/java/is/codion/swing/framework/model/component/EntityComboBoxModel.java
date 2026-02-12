@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.model.PersistenceEvents;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
@@ -49,16 +50,16 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 	/**
-	 * Specifies whether entity combo box models handle entity edit events, by adding new entities, replacing updated and removing deleted ones
+	 * Specifies whether entity combo box models handle entity persistence events, by adding new entities, replacing updated and removing deleted ones
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see Builder#editEvents(boolean)
-	 * @see is.codion.framework.model.EntityEditModel#EDIT_EVENTS
+	 * @see Builder#persistenceEvents(boolean)
+	 * @see is.codion.framework.model.EntityEditModel#PERSISTENCE_EVENTS
 	 */
-	PropertyValue<Boolean> EDIT_EVENTS =
-					booleanValue(EntityComboBoxModel.class.getName() + ".editEvents", true);
+	PropertyValue<Boolean> PERSISTENCE_EVENTS =
+					booleanValue(EntityComboBoxModel.class.getName() + ".persistenceEvents", true);
 
 	/**
 	 * @return the connection provider used by this combo box model
@@ -186,13 +187,13 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder select(@Nullable Entity entity);
 
 		/**
-		 * @param editEvents controls whether this combo box model should handle entity edit events, by adding inserted items,
+		 * @param persistenceEvents controls whether this combo box model should handle entity persistence events, by adding inserted items,
 		 * updating any updated items and removing deleted ones
 		 * @return this builder instance
-		 * @see #EDIT_EVENTS
-		 * @see is.codion.framework.model.EntityEditModel.EditEvents
+		 * @see #PERSISTENCE_EVENTS
+		 * @see PersistenceEvents
 		 */
-		Builder editEvents(boolean editEvents);
+		Builder persistenceEvents(boolean persistenceEvents);
 
 		/**
 		 * Specifies whether filtering the model affects the currently selected item.

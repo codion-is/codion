@@ -86,7 +86,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void editEvents() {
+	void persistenceEvents() {
 		AtomicInteger insertEvents = new AtomicInteger();
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
@@ -96,15 +96,15 @@ public final class DefaultEntityEditModelTest {
 		Consumer<Map<Entity, Entity>> updateListener = updated -> updateEvents.incrementAndGet();
 		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
-		DefaultEntityEditModel.editEvents(Employee.TYPE).inserted().addWeakConsumer(insertListener);
-		DefaultEntityEditModel.editEvents(Employee.TYPE).updated().addWeakConsumer(updateListener);
-		DefaultEntityEditModel.editEvents(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
-		DefaultEntityEditModel.editEvents(Employee.TYPE).inserted()
+		PersistenceEvents.events(Employee.TYPE).inserted().addWeakConsumer(insertListener);
+		PersistenceEvents.events(Employee.TYPE).updated().addWeakConsumer(updateListener);
+		PersistenceEvents.events(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
+		PersistenceEvents.events(Employee.TYPE).inserted()
 						.when(inserted -> inserted.stream()
 										.anyMatch(entity -> "MANAGER".equals(entity.get(Employee.JOB))))
 						.addListener(() -> managerInserted.set(true));
 
-		employeeEditModel.settings().editEvents().set(true);
+		employeeEditModel.settings().persistenceEvents().set(true);
 
 		EntityConnection connection = employeeEditModel.connection();
 		Entity jones = connection.selectSingle(Employee.NAME.equalTo("JONES"));
@@ -125,19 +125,19 @@ public final class DefaultEntityEditModelTest {
 			connection.rollbackTransaction();
 		}
 
-		assertThrows(IllegalArgumentException.class, () -> DefaultEntityEditModel.editEvents(Department.TYPE)
+		assertThrows(IllegalArgumentException.class, () -> PersistenceEvents.events(Department.TYPE)
 						.inserted()
 						.accept(singleton(jones)));
-		assertThrows(IllegalArgumentException.class, () -> DefaultEntityEditModel.editEvents(Department.TYPE)
+		assertThrows(IllegalArgumentException.class, () -> PersistenceEvents.events(Department.TYPE)
 						.updated()
 						.accept(singletonMap(jones, jones)));
-		assertThrows(IllegalArgumentException.class, () -> DefaultEntityEditModel.editEvents(Department.TYPE)
+		assertThrows(IllegalArgumentException.class, () -> PersistenceEvents.events(Department.TYPE)
 						.deleted()
 						.accept(singleton(jones)));
 
-		DefaultEntityEditModel.editEvents(Employee.TYPE).inserted().removeWeakConsumer(insertListener);
-		DefaultEntityEditModel.editEvents(Employee.TYPE).updated().removeWeakConsumer(updateListener);
-		DefaultEntityEditModel.editEvents(Employee.TYPE).deleted().removeWeakConsumer(deleteListener);
+		PersistenceEvents.events(Employee.TYPE).inserted().removeWeakConsumer(insertListener);
+		PersistenceEvents.events(Employee.TYPE).updated().removeWeakConsumer(updateListener);
+		PersistenceEvents.events(Employee.TYPE).deleted().removeWeakConsumer(deleteListener);
 	}
 
 	@Test

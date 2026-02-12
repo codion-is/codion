@@ -37,7 +37,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 
@@ -49,14 +48,14 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 public interface EntityEditModel {
 
 	/**
-	 * Specifies whether edit models post their insert, update and delete events to {@link EditEvents}
+	 * Specifies whether edit models post their insert, update and delete events to {@link PersistenceEvents}
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see Settings#editEvents()
+	 * @see Settings#persistenceEvents()
 	 */
-	PropertyValue<Boolean> EDIT_EVENTS = booleanValue(EntityEditModel.class.getName() + ".editEvents", true);
+	PropertyValue<Boolean> PERSISTENCE_EVENTS = booleanValue(EntityEditModel.class.getName() + ".persistenceEvents", true);
 
 	/**
 	 * @return the type of the entity this edit model is based on
@@ -303,14 +302,6 @@ public interface EntityEditModel {
 	<T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, @Nullable T value);
 
 	/**
-	 * @param entityType the entity type
-	 * @return the central {@link EditEvents} instance for the given entity type
-	 */
-	static EditEvents events(EntityType entityType) {
-		return DefaultEntityEditModel.editEvents(entityType);
-	}
-
-	/**
 	 * The edit model settings.
 	 */
 	interface Settings {
@@ -352,10 +343,10 @@ public interface EntityEditModel {
 
 		/**
 		 * @return a state controlling whether this edit model posts insert, update and delete events
-		 * on the {@link EditEvents} event bus.
-		 * @see #EDIT_EVENTS
+		 * on the {@link PersistenceEvents} event bus.
+		 * @see #PERSISTENCE_EVENTS
 		 */
-		State editEvents();
+		State persistenceEvents();
 	}
 
 	/**
@@ -405,71 +396,6 @@ public interface EntityEditModel {
 			 * @return the entities involved
 			 */
 			Collection<Entity> handle();
-		}
-	}
-
-	/**
-	 * @see EntityEditModel#EDIT_EVENTS
-	 * @see Settings#editEvents()
-	 * @see #events(EntityType)
-	 */
-	interface EditEvents {
-
-		/**
-		 * Returns an {@link Inserted}, notified each time entities are inserted.
-		 * @return the {@link Inserted} instance
-		 */
-		Inserted inserted();
-
-		/**
-		 * Returns an {@link Updated}, notified each time entities are updated.
-		 * @return the {@link Updated} instance
-		 */
-		Updated updated();
-
-		/**
-		 * Returns a {@link Deleted}, notified each time entities are deleted.
-		 * @return the {@link Deleted} instance
-		 */
-		Deleted deleted();
-
-		/**
-		 * Notified on insert.
-		 */
-		interface Inserted extends Observer<Collection<Entity>>, Consumer<Collection<Entity>> {
-
-			/**
-			 * Notifies that the given entities have been inserted.
-			 * @param inserted the inserted entities
-			 * @throws IllegalArgumentException in case any of the entities is of the incorrect type
-			 */
-			void accept(Collection<Entity> inserted);
-		}
-
-		/**
-		 * Notified on update.
-		 */
-		interface Updated extends Observer<Map<Entity, Entity>>, Consumer<Map<Entity, Entity>> {
-
-			/**
-			 * Notifies that the given entities have been updated.
-			 * @param updated tne updated entities, mapped to their original state
-			 * @throws IllegalArgumentException in case any of the entities is of the incorrect type
-			 */
-			void accept(Map<Entity, Entity> updated);
-		}
-
-		/**
-		 * Notified on delete.
-		 */
-		interface Deleted extends Observer<Collection<Entity>>, Consumer<Collection<Entity>> {
-
-			/**
-			 * Notifies that the given entities have been deleted.
-			 * @param deleted the deleted entities
-			 * @throws IllegalArgumentException in case any of the entities is of the incorrect type
-			 */
-			void accept(Collection<Entity> deleted);
 		}
 	}
 }
