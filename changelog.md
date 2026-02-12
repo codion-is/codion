@@ -13,6 +13,7 @@ Codion Change Log
 - EntityEditModel.PERSISTENCE_EVENTS renamed PUBLISH_PERSISTENCE_EVENTS, Settings.persistenceEvents() renamed publishPersistenceEvents().
 - EntitySearchModel.PERSISTENCE_EVENTS renamed PERSISTENCE_AWARE, Builder.persistenceEvents() renamed persistenceAware().
 - PersistenceEvents.events() renamed persistenceEvents() for static import.
+- DefaultEntityEditModel.DefaultSettings minor refactoring.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.PERSISTENCE_EVENTS renamed PERSISTENCE_AWARE, Builder.persistenceEvents() renamed persistenceAware().
 ### is.codion.swing.framework.ui

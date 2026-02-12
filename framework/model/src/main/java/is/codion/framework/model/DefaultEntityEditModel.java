@@ -690,14 +690,16 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 
 		private void verifyInsertEnabled() {
-			if (readOnly.is() || !insertEnabled.is()) {
-				throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
+			verifyNotReadOnly();
+			if (!insertEnabled.is()) {
+				throw new IllegalStateException("Inserting is not enabled!");
 			}
 		}
 
 		private void verifyUpdateEnabled(int entityCount) {
-			if (readOnly.is() || !updateEnabled.is()) {
-				throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
+			verifyNotReadOnly();
+			if (!updateEnabled.is()) {
+				throw new IllegalStateException("Updating is not enabled!");
 			}
 			if (entityCount > 1 && !updateMultipleEnabled.is()) {
 				throw new IllegalStateException("Updating multiple entities is not enabled");
@@ -705,8 +707,15 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 
 		private void verifyDeleteEnabled() {
-			if (readOnly.is() || !deleteEnabled.is()) {
-				throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
+			verifyNotReadOnly();
+			if (!deleteEnabled.is()) {
+				throw new IllegalStateException("Deleting is not enabled!");
+			}
+		}
+
+		private void verifyNotReadOnly() {
+			if (readOnly.is()) {
+				throw new IllegalStateException("Edit model is read-only!");
 			}
 		}
 	}
