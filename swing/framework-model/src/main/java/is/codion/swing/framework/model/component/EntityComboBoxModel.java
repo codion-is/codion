@@ -50,16 +50,16 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 	/**
-	 * Specifies whether entity combo box models handle entity persistence events, by adding new entities, replacing updated and removing deleted ones
+	 * Specifies whether entity combo box models respond to entity persistence events, by adding new entities, replacing updated and removing deleted ones
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see Builder#persistenceEvents(boolean)
-	 * @see is.codion.framework.model.EntityEditModel#PERSISTENCE_EVENTS
+	 * @see Builder#persistenceAware(boolean)
+	 * @see is.codion.framework.model.EntityEditModel#PUBLISH_PERSISTENCE_EVENTS
 	 */
-	PropertyValue<Boolean> PERSISTENCE_EVENTS =
-					booleanValue(EntityComboBoxModel.class.getName() + ".persistenceEvents", true);
+	PropertyValue<Boolean> PERSISTENCE_AWARE =
+					booleanValue(EntityComboBoxModel.class.getName() + ".persistenceAware", true);
 
 	/**
 	 * @return the connection provider used by this combo box model
@@ -187,13 +187,13 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder select(@Nullable Entity entity);
 
 		/**
-		 * @param persistenceEvents controls whether this combo box model should handle entity persistence events, by adding inserted items,
+		 * @param persistenceAware controls whether this combo box model should respond to entity persistence events, by adding inserted items,
 		 * updating any updated items and removing deleted ones
 		 * @return this builder instance
-		 * @see #PERSISTENCE_EVENTS
+		 * @see #PERSISTENCE_AWARE
 		 * @see PersistenceEvents
 		 */
-		Builder persistenceEvents(boolean persistenceEvents);
+		Builder persistenceAware(boolean persistenceAware);
 
 		/**
 		 * Specifies whether filtering the model affects the currently selected item.

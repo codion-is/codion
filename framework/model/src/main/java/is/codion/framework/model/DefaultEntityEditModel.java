@@ -84,7 +84,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	public DefaultEntityEditModel(EntityEditor editor) {
 		this.editor = requireNonNull(editor);
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
-		this.events = new Events(settings.persistenceEvents);
+		this.events = new Events(settings.publishPersistenceEvents);
 		addEditListeners();
 	}
 
@@ -613,16 +613,16 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<Collection<Entity>> persisted = Event.event();
 
-		private final ObservableState persistenceEvents;
+		private final ObservableState publishPersistenceEvents;
 
-		private Events(ObservableState persistenceEvents) {
-			this.persistenceEvents = persistenceEvents;
+		private Events(ObservableState publishPersistenceEvents) {
+			this.publishPersistenceEvents = publishPersistenceEvents;
 		}
 
 		private void notifyInserted(Collection<Entity> inserted) {
 			afterInsert.accept(inserted);
 			persisted.accept(inserted);
-			if (persistenceEvents.is()) {
+			if (publishPersistenceEvents.is()) {
 				DefaultEntityEditModel.notifyInserted(inserted);
 			}
 		}
@@ -630,7 +630,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private void notifyUpdated(Map<Entity, Entity> updated) {
 			afterUpdate.accept(updated);
 			persisted.accept(updated.values());
-			if (persistenceEvents.is()) {
+			if (publishPersistenceEvents.is()) {
 				DefaultEntityEditModel.notifyUpdated(updated);
 			}
 		}
@@ -638,7 +638,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private void notifyDeleted(Collection<Entity> deleted) {
 			afterDelete.accept(deleted);
 			persisted.accept(deleted);
-			if (persistenceEvents.is()) {
+			if (publishPersistenceEvents.is()) {
 				DefaultEntityEditModel.notifyDeleted(deleted);
 			}
 		}
@@ -651,15 +651,15 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private final State updateEnabled = State.state(true);
 		private final State updateMultipleEnabled = State.state(true);
 		private final State deleteEnabled = State.state(true);
-		private final State persistenceEvents = State.state(PERSISTENCE_EVENTS.getOrThrow());
+		private final State publishPersistenceEvents = State.state(PUBLISH_PERSISTENCE_EVENTS.getOrThrow());
 
 		private DefaultSettings(boolean readOnly) {
 			this.readOnly = State.state(readOnly);
 		}
 
 		@Override
-		public State persistenceEvents() {
-			return persistenceEvents;
+		public State publishPersistenceEvents() {
+			return publishPersistenceEvents;
 		}
 
 		@Override

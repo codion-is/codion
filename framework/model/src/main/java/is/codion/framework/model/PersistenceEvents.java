@@ -29,8 +29,8 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * @see EntityEditModel#PERSISTENCE_EVENTS
- * @see EntityEditModel.Settings#persistenceEvents()
+ * @see EntityEditModel#PUBLISH_PERSISTENCE_EVENTS
+ * @see EntityEditModel.Settings#publishPersistenceEvents()
  * @see #events(EntityType)
  */
 public interface PersistenceEvents {

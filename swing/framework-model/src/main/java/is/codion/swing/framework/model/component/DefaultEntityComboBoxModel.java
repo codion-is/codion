@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.model.PersistenceEvents;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
@@ -50,7 +51,6 @@ import java.util.function.Supplier;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.model.PersistenceEvents.events;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -87,10 +87,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 				throw new UnsupportedOperationException("EntityComboBoxModel include item predicate can only be set via filter().predicate().set()");
 			}
 		});
-		if (builder.persistenceEvents) {
-			events(entityItems.entityDefinition.type()).inserted().addWeakConsumer(insertListener);
-			events(entityItems.entityDefinition.type()).updated().addWeakConsumer(updateListener);
-			events(entityItems.entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
+		if (builder.persistenceAware) {
+			PersistenceEvents.events(entityItems.entityDefinition.type()).inserted().addWeakConsumer(insertListener);
+			PersistenceEvents.events(entityItems.entityDefinition.type()).updated().addWeakConsumer(updateListener);
+			PersistenceEvents.events(entityItems.entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
 		}
 	}
 
@@ -491,7 +491,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private final Map<ForeignKey, EntityComboBoxModel> filterLinks = new HashMap<>();
 
 		private @Nullable Comparator<Entity> comparator;
-		private boolean persistenceEvents = PERSISTENCE_EVENTS.getOrThrow();
+		private boolean persistenceAware = PERSISTENCE_AWARE.getOrThrow();
 		private boolean filterSelected = false;
 		private @Nullable Entity selectEntity;
 
@@ -549,8 +549,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public Builder persistenceEvents(boolean persistenceEvents) {
-			this.persistenceEvents = persistenceEvents;
+		public Builder persistenceAware(boolean persistenceAware) {
+			this.persistenceAware = persistenceAware;
 			return this;
 		}
 

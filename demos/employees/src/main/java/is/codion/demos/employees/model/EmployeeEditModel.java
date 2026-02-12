@@ -58,7 +58,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 								//Prevent automatically reflecting changes to employees
 								//when persisted, as we simply refresh instead, due to the
 								//filter predicate, see configure() below
-								.persistenceEvents(false)
+								.persistenceAware(false)
 								.build();
 			}
 

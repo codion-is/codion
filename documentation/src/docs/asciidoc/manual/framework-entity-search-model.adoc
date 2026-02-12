@@ -72,9 +72,9 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.
 |===
 |Property |Default |Description
 
-|`is.codion.framework.model.EntitySearchModel.HANDLE_EDIT_EVENTS`
+|`is.codion.framework.model.EntitySearchModel.PERSISTENCE_AWARE`
 |true
-|Whether search models react to entity edit events
+|Whether search models react to entity persistence events
 
 |`is.codion.framework.model.EntitySearchModel.DEFAULT_LIMIT`
 |100

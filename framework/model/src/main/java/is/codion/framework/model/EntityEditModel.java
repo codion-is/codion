@@ -48,14 +48,14 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 public interface EntityEditModel {
 
 	/**
-	 * Specifies whether edit models post their insert, update and delete events to {@link PersistenceEvents}
+	 * Specifies whether edit models publish their insert, update and delete events to {@link PersistenceEvents}
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see Settings#persistenceEvents()
+	 * @see Settings#publishPersistenceEvents()
 	 */
-	PropertyValue<Boolean> PERSISTENCE_EVENTS = booleanValue(EntityEditModel.class.getName() + ".persistenceEvents", true);
+	PropertyValue<Boolean> PUBLISH_PERSISTENCE_EVENTS = booleanValue(EntityEditModel.class.getName() + ".publishPersistenceEvents", true);
 
 	/**
 	 * @return the type of the entity this edit model is based on
@@ -342,11 +342,11 @@ public interface EntityEditModel {
 		State deleteEnabled();
 
 		/**
-		 * @return a state controlling whether this edit model posts insert, update and delete events
+		 * @return a state controlling whether this edit model publishes insert, update and delete events
 		 * on the {@link PersistenceEvents} event bus.
-		 * @see #PERSISTENCE_EVENTS
+		 * @see #PUBLISH_PERSISTENCE_EVENTS
 		 */
-		State persistenceEvents();
+		State publishPersistenceEvents();
 	}
 
 	/**

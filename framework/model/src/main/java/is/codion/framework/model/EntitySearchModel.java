@@ -47,16 +47,16 @@ import static is.codion.common.utilities.Configuration.integerValue;
 public interface EntitySearchModel {
 
 	/**
-	 * Specifies whether search models handle entity persistence events, by replacing updated entities and removing deleted ones
+	 * Specifies whether search models respond to persistence events, by replacing updated entities and removing deleted ones
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see Builder#persistenceEvents(boolean)
-	 * @see EntityEditModel#PERSISTENCE_EVENTS
+	 * @see Builder#persistenceAware(boolean)
+	 * @see EntityEditModel#PUBLISH_PERSISTENCE_EVENTS
 	 */
-	PropertyValue<Boolean> PERSISTENCE_EVENTS =
-					booleanValue(EntitySearchModel.class.getName() + ".persistenceEvents", true);
+	PropertyValue<Boolean> PERSISTENCE_AWARE =
+					booleanValue(EntitySearchModel.class.getName() + ".persistenceAware", true);
 
 	/**
 	 * Specifies the default search result limit, that is, the maximum number of results, null meaning no limit
@@ -241,11 +241,11 @@ public interface EntitySearchModel {
 		Builder orderBy(OrderBy orderBy);
 
 		/**
-		 * @param persistenceEvents controls whether this search model should handle entity persistence events, by updating any updated items and removing deleted ones
+		 * @param persistenceAware controls whether this search model should respond to entity persistence events, by updating any updated items and removing deleted ones
 		 * @return this builder instance
 		 * @see PersistenceEvents
 		 */
-		Builder persistenceEvents(boolean persistenceEvents);
+		Builder persistenceAware(boolean persistenceAware);
 
 		/**
 		 * @param limit the search result limit

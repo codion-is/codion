@@ -58,7 +58,7 @@ public final class DefaultEntityComboBoxModelTest {
 					.build();
 
 	@Test
-	void persistenceEvents() {
+	void persistenceAware() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)

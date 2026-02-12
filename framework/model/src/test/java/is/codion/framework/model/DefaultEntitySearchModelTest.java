@@ -247,7 +247,7 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
-	void persistenceEvents() {
+	void persistenceAware() {
 		Entity temp = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, -42)
 						.with(Employee.NAME, "Noname")

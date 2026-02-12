@@ -104,7 +104,7 @@ public final class DefaultEntityEditModelTest {
 										.anyMatch(entity -> "MANAGER".equals(entity.get(Employee.JOB))))
 						.addListener(() -> managerInserted.set(true));
 
-		employeeEditModel.settings().persistenceEvents().set(true);
+		employeeEditModel.settings().publishPersistenceEvents().set(true);
 
 		EntityConnection connection = employeeEditModel.connection();
 		Entity jones = connection.selectSingle(Employee.NAME.equalTo("JONES"));

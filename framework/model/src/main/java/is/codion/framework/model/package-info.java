@@ -21,7 +21,7 @@
  * <ul>
  * <li>{@link is.codion.framework.model.EntityApplicationModel#USER_PREFERENCES}
  * <li>{@link is.codion.framework.model.EntityApplicationModel#PREFERENCES_KEY}
- * <li>{@link is.codion.framework.model.EntityEditModel#PERSISTENCE_EVENTS}
+ * <li>{@link is.codion.framework.model.EntityEditModel#PUBLISH_PERSISTENCE_EVENTS}
  * <li>{@link is.codion.framework.model.EntityEditor#PERSIST_FOREIGN_KEYS}
  * <li>{@link is.codion.framework.model.EntityQueryModel#LIMIT}
  * <li>{@link is.codion.framework.model.EntityTableModel#ON_INSERT}
@@ -32,7 +32,7 @@
  * <li>{@link is.codion.framework.model.ForeignKeyModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION}
  * <li>{@link is.codion.framework.model.ForeignKeyModelLink#CLEAR_VALUE_ON_EMPTY_SELECTION}
  * <li>{@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}
- * <li>{@link is.codion.framework.model.EntitySearchModel#PERSISTENCE_EVENTS}
+ * <li>{@link is.codion.framework.model.EntitySearchModel#PERSISTENCE_AWARE}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked
