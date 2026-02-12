@@ -114,7 +114,8 @@ final class EditAttributePanel<T> extends JPanel {
 						.map(Entity::copy)
 						.map(Entity.Copy::mutable)
 						.collect(toList());
-		editModel.applyEdit(toUpdate, attribute, componentValue.get());
+		T value = componentValue.get();
+		toUpdate.forEach(entity -> editModel.applyEdit(entity, attribute, value));
 		ProgressWorker.builder()
 						.task(editModel.updateTask(toUpdate.stream()
 														.filter(Entity::modified)
@@ -133,12 +134,12 @@ final class EditAttributePanel<T> extends JPanel {
 
 	private void updateStates() {
 		EntityValidator validator = editModel.editor().validator().getOrThrow();
-		T value = componentValue.get();
 		Collection<Entity> toUpdate = entities.stream()
 						.map(Entity::copy)
 						.map(Entity.Copy::mutable)
 						.collect(toList());
-		editModel.applyEdit(toUpdate, attribute, value);
+		T value = componentValue.get();
+		toUpdate.forEach(entity -> editModel.applyEdit(entity, attribute, value));
 		modified.set(toUpdate.stream().anyMatch(Entity::modified));
 		for (Entity entity : toUpdate) {
 			try {

@@ -23,8 +23,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
-import java.util.Collection;
-
 import static is.codion.demos.chinook.domain.api.Chinook.Customer;
 import static is.codion.demos.chinook.domain.api.Chinook.Invoice;
 
@@ -44,18 +42,16 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 	// This method is called when editing happens outside the edit model,
 	// such as in a table, via an editable table cell or multi item editing
 	@Override
-	public <T> void applyEdit(Collection<Entity> invoices, Attribute<T> attribute, T value) {
-		super.applyEdit(invoices, attribute, value);
+	public <T> void applyEdit(Entity invoice, Attribute<T> attribute, T value) {
+		super.applyEdit(invoice, attribute, value);
 		if (attribute.equals(Invoice.CUSTOMER_FK)) {
 			Entity customer = (Entity) value;
-			invoices.forEach(invoice -> {
-				// Set the billing address
-				invoice.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS));
-				invoice.set(Invoice.BILLINGCITY, customer == null ? null : customer.get(Customer.CITY));
-				invoice.set(Invoice.BILLINGPOSTALCODE, customer == null ? null : customer.get(Customer.POSTALCODE));
-				invoice.set(Invoice.BILLINGSTATE, customer == null ? null : customer.get(Customer.STATE));
-				invoice.set(Invoice.BILLINGCOUNTRY, customer == null ? null : customer.get(Customer.COUNTRY));
-			});
+			// Set the billing address
+			invoice.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS));
+			invoice.set(Invoice.BILLINGCITY, customer == null ? null : customer.get(Customer.CITY));
+			invoice.set(Invoice.BILLINGPOSTALCODE, customer == null ? null : customer.get(Customer.POSTALCODE));
+			invoice.set(Invoice.BILLINGSTATE, customer == null ? null : customer.get(Customer.STATE));
+			invoice.set(Invoice.BILLINGCOUNTRY, customer == null ? null : customer.get(Customer.COUNTRY));
 		}
 	}
 

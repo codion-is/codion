@@ -225,9 +225,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public <T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, @Nullable T value) {
+	public <T> void applyEdit(Entity entity, Attribute<T> attribute, @Nullable T value) {
 		requireNonNull(attribute);
-		requireNonNull(entities).forEach(entity -> entity.set(attribute, value));
+		requireNonNull(entity).set(attribute, value);
 	}
 
 	/**

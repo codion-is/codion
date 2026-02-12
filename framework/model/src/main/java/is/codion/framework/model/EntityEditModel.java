@@ -276,30 +276,29 @@ public interface EntityEditModel {
 	Observer<Collection<Entity>> persisted();
 
 	/**
-	 * <p>Applies the given value to the given entities. This method can be used by components
+	 * <p>Applies the given value to the given entity. This method can be used by components
 	 * providing edit functionality, such as editable tables, in order to apply the edited value,
 	 * ensuring that any associated values are updated as well.
 	 * <p>Note that that {@code value} may be null.
-	 * <p>By default, this sets the given attribute value in the entities via {@link Entity#set(Attribute, Object)}.
-	 * <p>Override to customize, f.ex. when associated values must be changed accordingly.
+	 * <p>By default, this sets the given attribute value in the entity via {@link Entity#set(Attribute, Object)}.
+	 * <p>Override to customize, f.ex. when associated values must be changed accordingly, remember to call super.applyEdit().
 	 * {@snippet :
 	 *  @Override
-	 * 	public <T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, T value) {
-	 * 	  super.applyEdit(entities, attribute, value);
+	 * 	public <T> void applyEdit(Entity entity, Attribute<T> attribute, T value) {
+	 * 	  super.applyEdit(entity, attribute, value);
 	 * 	  if (attribute.equals(Invoice.CUSTOMER_FK)) {
 	 * 	    Entity customer = (Entity) value;
 	 * 	    // Set the billing address when the customer is changed
-	 * 	    entities.forEach(entity ->
-	 *            entity.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS)));
+	 *      entity.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS));
 	 * 	  }
 	 * 	}
 	 *}
-	 * @param entities the entities to apply the value to
+	 * @param entity the entity to apply the value to
 	 * @param attribute the attribute being edited
 	 * @param value the value to apply
 	 * @see Entity#set(Attribute, Object)
 	 */
-	<T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, @Nullable T value);
+	<T> void applyEdit(Entity entity, Attribute<T> attribute, @Nullable T value);
 
 	/**
 	 * The edit model settings.

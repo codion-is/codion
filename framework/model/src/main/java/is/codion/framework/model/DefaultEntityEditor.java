@@ -236,7 +236,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 		dependingValues.forEach((dependingAttribute, previousValue) -> {
 			Object currentValue = entity.instance.get(dependingAttribute);
-			if (!Objects.equals(previousValue, currentValue)) {
+			if (!Objects.deepEquals(previousValue, currentValue)) {
 				notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
 			}
 		});
@@ -666,7 +666,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		protected void setValue(@Nullable T value) {
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
 			T previousValue = entity.instance.set(attribute, value);
-			if (!Objects.equals(value, previousValue)) {
+			if (!Objects.deepEquals(value, previousValue)) {
 				notifyValueEdit(attribute, value, dependingValues);
 			}
 		}

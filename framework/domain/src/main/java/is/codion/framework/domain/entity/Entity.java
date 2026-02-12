@@ -127,8 +127,7 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 * @return the previous value
 	 * @throws UnsupportedOperationException in case this entity is immutable
 	 */
-	@Nullable
-	<T> T set(Attribute<T> attribute, @Nullable T value);
+	@Nullable <T> T set(Attribute<T> attribute, @Nullable T value);
 
 	/**
 	 * Returns the value associated with {@code attribute}.

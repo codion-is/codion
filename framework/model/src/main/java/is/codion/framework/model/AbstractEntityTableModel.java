@@ -366,7 +366,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 				throw new IllegalStateException("Attribute is not editable, entity: " + entity + ", attribute: " + attribute);
 			}
 			Entity copy = entity.copy().mutable();
-			editModel.applyEdit(singleton(copy), attribute, value);
+			editModel.applyEdit(copy, attribute, value);
 			try {
 				if (copy.modified()) {
 					editModel.update(singleton(copy));
