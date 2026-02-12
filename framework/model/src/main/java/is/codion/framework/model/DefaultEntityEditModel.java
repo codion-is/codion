@@ -219,8 +219,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Observer<Collection<Entity>> afterInsertUpdateOrDelete() {
-		return events.afterInsertUpdateOrDelete.observer();
+	public final Observer<Collection<Entity>> persisted() {
+		return events.persisted.observer();
 	}
 
 	@Override
@@ -611,7 +611,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private final Event<Map<Entity, Entity>> afterUpdate = Event.event();
 		private final Event<Collection<Entity>> beforeDelete = Event.event();
 		private final Event<Collection<Entity>> afterDelete = Event.event();
-		private final Event<Collection<Entity>> afterInsertUpdateOrDelete = Event.event();
+		private final Event<Collection<Entity>> persisted = Event.event();
 
 		private final ObservableState persistenceEvents;
 
@@ -621,7 +621,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private void notifyInserted(Collection<Entity> inserted) {
 			afterInsert.accept(inserted);
-			afterInsertUpdateOrDelete.accept(inserted);
+			persisted.accept(inserted);
 			if (persistenceEvents.is()) {
 				DefaultEntityEditModel.notifyInserted(inserted);
 			}
@@ -629,7 +629,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private void notifyUpdated(Map<Entity, Entity> updated) {
 			afterUpdate.accept(updated);
-			afterInsertUpdateOrDelete.accept(updated.values());
+			persisted.accept(updated.values());
 			if (persistenceEvents.is()) {
 				DefaultEntityEditModel.notifyUpdated(updated);
 			}
@@ -637,7 +637,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private void notifyDeleted(Collection<Entity> deleted) {
 			afterDelete.accept(deleted);
-			afterInsertUpdateOrDelete.accept(deleted);
+			persisted.accept(deleted);
 			if (persistenceEvents.is()) {
 				DefaultEntityEditModel.notifyDeleted(deleted);
 			}

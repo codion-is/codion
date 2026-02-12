@@ -259,7 +259,7 @@ public final class DefaultEntityEditModelTest {
 		employeeEditModel.beforeInsert().addConsumer(consumer);
 		employeeEditModel.beforeUpdate().addConsumer(consumer);
 		Runnable listener = () -> {};
-		employeeEditModel.afterInsertUpdateOrDelete().addListener(listener);
+		employeeEditModel.persisted().addListener(listener);
 
 		assertEquals(Employee.TYPE, employeeEditModel.entityType());
 
@@ -339,7 +339,7 @@ public final class DefaultEntityEditModelTest {
 		employeeEditModel.beforeDelete().removeConsumer(consumer);
 		employeeEditModel.beforeInsert().removeConsumer(consumer);
 		employeeEditModel.beforeUpdate().removeConsumer(consumer);
-		employeeEditModel.afterInsertUpdateOrDelete().removeListener(listener);
+		employeeEditModel.persisted().removeListener(listener);
 	}
 
 	@Test

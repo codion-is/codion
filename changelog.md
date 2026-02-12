@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditor.EditorEntity added, handling the access to the underlying entity.
 - EntityEditModel.EditEvents moved to PersistenceEvents, related renaming.
+- EntityEditModel.afterInsertUpdateOrDelete() renamed persisted().
 ### is.codion.swing.framework.ui
 - EntityEditorPanel.Config added, handles validIndicator, modifiedIndicator, modifiedWarning and defaultTextFieldColumns.
 - EntityEditorPanel.Config.transferFocusOnEnter() added along with Config.TRANSFER_FOCUS_ON_ENTER.

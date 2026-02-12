@@ -271,9 +271,9 @@ public interface EntityEditModel {
 	Observer<Collection<Entity>> afterDelete();
 
 	/**
-	 * @return an observer notified each time one or more entities have been inserted, updated or deleted via this model
+	 * @return an observer notified each time one or more entities have been persisted, as in, inserted, updated or deleted via this model
 	 */
-	Observer<Collection<Entity>> afterInsertUpdateOrDelete();
+	Observer<Collection<Entity>> persisted();
 
 	/**
 	 * <p>Applies the given value to the given entities. This method can be used by components

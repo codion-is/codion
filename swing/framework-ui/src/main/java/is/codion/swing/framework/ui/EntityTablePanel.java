@@ -1543,7 +1543,7 @@ public class EntityTablePanel extends JPanel {
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.query().condition().changed().addListener(this::onConditionChanged);
-		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
+		tableModel.editModel().persisted().addListener(table::repaint);
 	}
 
 	private void enableConditionPanelRefreshOnEnter(JComponent component) {
