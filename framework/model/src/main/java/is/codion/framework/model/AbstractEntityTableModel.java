@@ -227,8 +227,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		entityDefinition().foreignKeys().get().stream()
 						.map(ForeignKey::referencedType)
 						.distinct()
-						.forEach(entityType ->
-										PersistenceEvents.events(entityType).updated().addWeakConsumer(updateListener));
+						.map(PersistenceEvents::persistenceEvents)
+						.map(PersistenceEvents::updated)
+						.forEach(updated -> updated.addWeakConsumer(updateListener));
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {

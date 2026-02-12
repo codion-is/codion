@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @see EntityEditModel#PUBLISH_PERSISTENCE_EVENTS
  * @see EntityEditModel.Settings#publishPersistenceEvents()
- * @see #events(EntityType)
+ * @see #persistenceEvents(EntityType)
  */
 public interface PersistenceEvents {
 
@@ -39,7 +39,7 @@ public interface PersistenceEvents {
 	 * @param entityType the entity type
 	 * @return the central {@link PersistenceEvents} instance for the given entity type
 	 */
-	static PersistenceEvents events(EntityType entityType) {
+	static PersistenceEvents persistenceEvents(EntityType entityType) {
 		return DefaultPersistenceEvents.EVENTS.computeIfAbsent(requireNonNull(entityType), DefaultPersistenceEvents::new);
 	}
 

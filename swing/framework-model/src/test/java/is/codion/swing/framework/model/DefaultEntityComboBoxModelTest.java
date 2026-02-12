@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,7 +71,8 @@ public final class DefaultEntityComboBoxModelTest {
 						.with(Employee.NAME, "Noname")
 						.build();
 
-		PersistenceEvents.events(Employee.TYPE).inserted().accept(singletonList(temp));
+		PersistenceEvents persistenceEvents = persistenceEvents(Employee.TYPE);
+		persistenceEvents.inserted().accept(singletonList(temp));
 		assertTrue(comboBoxModel.items().included().contains(temp));
 
 		temp.set(Employee.NAME, "Newname");
@@ -80,11 +82,11 @@ public final class DefaultEntityComboBoxModelTest {
 		Map<Entity, Entity> updated = new HashMap<>();
 		updated.put(temp, tempUpdated);
 
-		PersistenceEvents.events(Employee.TYPE).updated().accept(updated);
+		persistenceEvents.updated().accept(updated);
 		comboBoxModel.select(temp.primaryKey());
 		assertEquals("Newname", comboBoxModel.selection().item().getOrThrow().get(Employee.NAME));
 
-		PersistenceEvents.events(Employee.TYPE).deleted().accept(singletonList(temp));
+		persistenceEvents.deleted().accept(singletonList(temp));
 		assertFalse(comboBoxModel.items().included().contains(temp));
 	}
 

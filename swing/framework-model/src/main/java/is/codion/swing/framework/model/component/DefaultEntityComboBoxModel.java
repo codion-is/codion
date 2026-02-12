@@ -51,6 +51,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -88,9 +89,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			}
 		});
 		if (builder.persistenceAware) {
-			PersistenceEvents.events(entityItems.entityDefinition.type()).inserted().addWeakConsumer(insertListener);
-			PersistenceEvents.events(entityItems.entityDefinition.type()).updated().addWeakConsumer(updateListener);
-			PersistenceEvents.events(entityItems.entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
+			PersistenceEvents persistenceEvents = persistenceEvents(entityItems.entityDefinition.type());
+			persistenceEvents.inserted().addWeakConsumer(insertListener);
+			persistenceEvents.updated().addWeakConsumer(updateListener);
+			persistenceEvents.deleted().addWeakConsumer(deleteListener);
 		}
 	}
 

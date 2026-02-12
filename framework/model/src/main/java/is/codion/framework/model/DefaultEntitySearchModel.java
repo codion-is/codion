@@ -50,6 +50,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
+import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -95,8 +96,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
 		this.limit = Value.nullable(builder.limit);
 		if (builder.persistenceAware) {
-			PersistenceEvents.events(entityDefinition.type()).updated().addWeakConsumer(updateListener);
-			PersistenceEvents.events(entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
+			PersistenceEvents persistenceEvents = persistenceEvents(entityDefinition.type());
+			persistenceEvents.updated().addWeakConsumer(updateListener);
+			persistenceEvents.deleted().addWeakConsumer(deleteListener);
 		}
 	}
 

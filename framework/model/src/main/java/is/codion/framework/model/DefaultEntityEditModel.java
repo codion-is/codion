@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static is.codion.framework.domain.entity.Entity.groupByType;
+import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
@@ -394,9 +395,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType -> {
-							PersistenceEvents.events(entityType).inserted().addWeakConsumer(insertListener);
-							PersistenceEvents.events(entityType).updated().addWeakConsumer(updateListener);
-							PersistenceEvents.events(entityType).deleted().addWeakConsumer(deleteListener);
+							PersistenceEvents persistenceEvents = persistenceEvents(entityType);
+							persistenceEvents.inserted().addWeakConsumer(insertListener);
+							persistenceEvents.updated().addWeakConsumer(updateListener);
+							persistenceEvents.deleted().addWeakConsumer(deleteListener);
 						});
 	}
 
@@ -757,7 +759,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 	private static void notifyInserted(Collection<Entity> inserted) {
 		groupByType(inserted).forEach((entityType, entities) ->
-						PersistenceEvents.events(entityType).inserted().accept(entities));
+						persistenceEvents(entityType).inserted().accept(entities));
 	}
 
 	private static void notifyUpdated(Map<Entity, Entity> updated) {
@@ -765,11 +767,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
 						.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
 										toMap(Map.Entry::getKey, Map.Entry::getValue)))
 						.forEach((entityType, entities) ->
-										PersistenceEvents.events(entityType).updated().accept(entities));
+										persistenceEvents(entityType).updated().accept(entities));
 	}
 
 	private static void notifyDeleted(Collection<Entity> deleted) {
 		groupByType(deleted).forEach((entityType, entities) ->
-						PersistenceEvents.events(entityType).deleted().accept(entities));
+						persistenceEvents(entityType).deleted().accept(entities));
 	}
 }
