@@ -51,8 +51,8 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 	 * <li>Default value: 20
 	 * </ul>
 	 */
-	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
-					integerValue(DefaultEditComponent.class.getName() + ".defaultTextFieldColumns", 20);
+	public static final PropertyValue<Integer> TEXT_FIELD_COLUMNS =
+					integerValue(DefaultEditComponent.class.getName() + ".textFieldColumns", 20);
 
 	private static final int MAXIMUM_TEXT_FIELD_COLUMNS = 30;
 
@@ -142,7 +142,7 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 	}
 
 	private static int textFieldColumns(ValueAttributeDefinition<String> definition) {
-		int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow();
+		int defaultTextFieldColumns = TEXT_FIELD_COLUMNS.getOrThrow();
 		if (definition.maximumLength() > defaultTextFieldColumns) {
 			return MAXIMUM_TEXT_FIELD_COLUMNS;
 		}

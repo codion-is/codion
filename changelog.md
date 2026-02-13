@@ -26,6 +26,7 @@ Codion Change Log
 - EntityEditorPanel.Config.modifiedWarning() moved to EntityEditPanel.Config.
 - EntityEditPanel.Config.editPanel() removed, unused.
 - EntityEditorPanel.Config.defaultTextFieldColumns() renamed textFieldColumns().
+- DefaultEditComponent.DEFAULT_TEXT_FIELD_COLUMNS renamed TEXT_FIELD_COLUMNS.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, did not set hidden() for columns.
 
