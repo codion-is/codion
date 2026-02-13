@@ -20,8 +20,10 @@ package is.codion.demos.chinook.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.model.EntityEditor.EditorValue.Propagator;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+
+import org.jspecify.annotations.Nullable;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Customer;
 import static is.codion.demos.chinook.domain.api.Chinook.Invoice;
@@ -35,31 +37,22 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 		editor().value(Invoice.CUSTOMER_FK).persist().set(false);
 		// We populate the invoice address fields with
 		// the customer address when the customer is edited
-		editor().value(Invoice.CUSTOMER_FK).edited().addConsumer(this::setAddress);
+		editor().value(Invoice.CUSTOMER_FK).propagate(new SetBillingAddress());
 	}
 
-	// Override to update the billing address when the invoice customer is changed.
-	// This method is called when editing happens outside the edit model,
+	// Implement a Propagator, which updates the billing address when the
+	// invoice customer is changed. The value propagation is applied each time
+	// editing happens via the underlying editor, or when triggered externally,
 	// such as in a table, via an editable table cell or multi item editing
-	@Override
-	public <T> void applyEdit(Entity invoice, Attribute<T> attribute, T value) {
-		super.applyEdit(invoice, attribute, value);
-		if (attribute.equals(Invoice.CUSTOMER_FK)) {
-			Entity customer = (Entity) value;
-			// Set the billing address
-			invoice.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS));
-			invoice.set(Invoice.BILLINGCITY, customer == null ? null : customer.get(Customer.CITY));
-			invoice.set(Invoice.BILLINGPOSTALCODE, customer == null ? null : customer.get(Customer.POSTALCODE));
-			invoice.set(Invoice.BILLINGSTATE, customer == null ? null : customer.get(Customer.STATE));
-			invoice.set(Invoice.BILLINGCOUNTRY, customer == null ? null : customer.get(Customer.COUNTRY));
-		}
-	}
+	private static final class SetBillingAddress implements Propagator<Entity> {
 
-	private void setAddress(Entity customer) {
-		editor().value(Invoice.BILLINGADDRESS).set(customer == null ? null : customer.get(Customer.ADDRESS));
-		editor().value(Invoice.BILLINGCITY).set(customer == null ? null : customer.get(Customer.CITY));
-		editor().value(Invoice.BILLINGPOSTALCODE).set(customer == null ? null : customer.get(Customer.POSTALCODE));
-		editor().value(Invoice.BILLINGSTATE).set(customer == null ? null : customer.get(Customer.STATE));
-		editor().value(Invoice.BILLINGCOUNTRY).set(customer == null ? null : customer.get(Customer.COUNTRY));
+		@Override
+		public void propagate(@Nullable Entity customer, Setter setter) {
+			setter.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS));
+			setter.set(Invoice.BILLINGCITY, customer == null ? null : customer.get(Customer.CITY));
+			setter.set(Invoice.BILLINGPOSTALCODE, customer == null ? null : customer.get(Customer.POSTALCODE));
+			setter.set(Invoice.BILLINGSTATE, customer == null ? null : customer.get(Customer.STATE));
+			setter.set(Invoice.BILLINGCOUNTRY, customer == null ? null : customer.get(Customer.COUNTRY));
+		}
 	}
 }

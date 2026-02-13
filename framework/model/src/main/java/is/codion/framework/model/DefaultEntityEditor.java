@@ -584,8 +584,13 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	private final class DefaultEditorValue<T> extends AbstractValue<T> implements EditorValue<T> {
 
+		private static final Propagator<Object> NULL_PROPAGATOR = (value, setter) -> {};
+
 		private final Attribute<T> attribute;
 		private final Value<Supplier<T>> defaultValue;
+		private final EditorValueSetter editorValueSetter = new EditorValueSetter();
+
+		private Propagator<T> propagator = (Propagator<T>) NULL_PROPAGATOR;
 
 		private DefaultEditorValue(Attribute<T> attribute) {
 			super(nullValue(entityDefinition.attributes().definition(attribute)));
@@ -658,6 +663,17 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
+		public void propagate(@Nullable Propagator<T> propagator) {
+			this.propagator = propagator == null ? (Propagator<T>) NULL_PROPAGATOR : propagator;
+		}
+
+		@Override
+		public void set(Entity entity, @Nullable T value) {
+			requireNonNull(entity).set(attribute, value);
+			propagator.propagate(value, entity::set);
+		}
+
+		@Override
 		protected @Nullable T getValue() {
 			return entity.instance.get(attribute);
 		}
@@ -669,6 +685,7 @@ public class DefaultEntityEditor implements EntityEditor {
 			if (!Objects.deepEquals(value, previousValue)) {
 				notifyValueEdit(attribute, value, dependingValues);
 			}
+			propagator.propagate(value, editorValueSetter);
 		}
 
 		private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
@@ -737,6 +754,14 @@ public class DefaultEntityEditor implements EntityEditor {
 
 			return Stream.of(validationMessage, description)
 							.collect(joining("<br>", "<html>", "</html"));
+		}
+
+		private final class EditorValueSetter implements Propagator.Setter {
+
+			@Override
+			public <T> void set(Attribute<T> attribute, @Nullable T value) {
+				value(attribute).set(value);
+			}
 		}
 
 		private final class DefaultValue implements Supplier<T> {

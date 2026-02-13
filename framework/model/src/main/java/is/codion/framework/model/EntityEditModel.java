@@ -33,8 +33,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.Collection;
 import java.util.Map;
 
@@ -274,31 +272,6 @@ public interface EntityEditModel {
 	 * @return an observer notified each time one or more entities have been persisted, as in, inserted, updated or deleted via this model
 	 */
 	Observer<Collection<Entity>> persisted();
-
-	/**
-	 * <p>Applies the given value to the given entity. This method can be used by components
-	 * providing edit functionality, such as editable tables, in order to apply the edited value,
-	 * ensuring that any associated values are updated as well.
-	 * <p>Note that that {@code value} may be null.
-	 * <p>By default, this sets the given attribute value in the entity via {@link Entity#set(Attribute, Object)}.
-	 * <p>Override to customize, f.ex. when associated values must be changed accordingly, remember to call super.applyEdit().
-	 * {@snippet :
-	 *  @Override
-	 * 	public <T> void applyEdit(Entity entity, Attribute<T> attribute, T value) {
-	 * 	  super.applyEdit(entity, attribute, value);
-	 * 	  if (attribute.equals(Invoice.CUSTOMER_FK)) {
-	 * 	    Entity customer = (Entity) value;
-	 * 	    // Set the billing address when the customer is changed
-	 *      entity.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS));
-	 * 	  }
-	 * 	}
-	 *}
-	 * @param entity the entity to apply the value to
-	 * @param attribute the attribute being edited
-	 * @param value the value to apply
-	 * @see Entity#set(Attribute, Object)
-	 */
-	<T> void applyEdit(Entity entity, Attribute<T> attribute, @Nullable T value);
 
 	/**
 	 * The edit model settings.

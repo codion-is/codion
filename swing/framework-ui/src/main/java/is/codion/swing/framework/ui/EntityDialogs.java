@@ -81,7 +81,8 @@ public final class EntityDialogs {
 	 * @param attribute the attribute to edit
 	 * @param <T> the attribute type
 	 * @return a new builder
-	 * @see is.codion.framework.model.EntityEditModel#applyEdit(Entity, Attribute, Object)
+	 * @see is.codion.framework.model.EntityEditor.EditorValue#set(Entity, Object)
+	 * @see is.codion.framework.model.EntityEditor.EditorValue#propagate(is.codion.framework.model.EntityEditor.EditorValue.Propagator)
 	 */
 	public static <T> EditAttributeDialogBuilder<T> editAttributeDialog(SwingEntityEditModel editModel, Attribute<T> attribute) {
 		return new DefaultEditAttributeDialogBuilder<>(editModel, attribute);

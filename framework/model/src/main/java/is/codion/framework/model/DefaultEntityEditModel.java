@@ -29,11 +29,9 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,12 +220,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	@Override
 	public final Observer<Collection<Entity>> persisted() {
 		return events.persisted.observer();
-	}
-
-	@Override
-	public <T> void applyEdit(Entity entity, Attribute<T> attribute, @Nullable T value) {
-		requireNonNull(attribute);
-		requireNonNull(entity).set(attribute, value);
 	}
 
 	/**

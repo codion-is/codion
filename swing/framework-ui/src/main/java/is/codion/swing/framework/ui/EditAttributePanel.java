@@ -115,7 +115,7 @@ final class EditAttributePanel<T> extends JPanel {
 						.map(Entity.Copy::mutable)
 						.collect(toList());
 		T value = componentValue.get();
-		toUpdate.forEach(entity -> editModel.applyEdit(entity, attribute, value));
+		toUpdate.forEach(entity -> editModel.editor().value(attribute).set(entity, value));
 		ProgressWorker.builder()
 						.task(editModel.updateTask(toUpdate.stream()
 														.filter(Entity::modified)
@@ -139,7 +139,7 @@ final class EditAttributePanel<T> extends JPanel {
 						.map(Entity.Copy::mutable)
 						.collect(toList());
 		T value = componentValue.get();
-		toUpdate.forEach(entity -> editModel.applyEdit(entity, attribute, value));
+		toUpdate.forEach(entity -> editModel.editor().value(attribute).set(entity, value));
 		modified.set(toUpdate.stream().anyMatch(Entity::modified));
 		for (Entity entity : toUpdate) {
 			try {
