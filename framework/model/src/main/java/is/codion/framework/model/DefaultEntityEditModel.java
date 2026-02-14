@@ -42,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static is.codion.framework.domain.entity.Entity.groupByType;
@@ -159,32 +160,32 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final EditTask insertTask() {
-		return new DefaultInsertEntities();
+		return new InsertEntity();
 	}
 
 	@Override
 	public final EditTask insertTask(Collection<Entity> entities) {
-		return new DefaultInsertEntities(entities);
+		return new InsertEntities(entities);
 	}
 
 	@Override
 	public final EditTask updateTask() {
-		return new DefaultUpdateEntities();
+		return new UpdateEntity();
 	}
 
 	@Override
 	public final EditTask updateTask(Collection<Entity> entities) {
-		return new DefaultUpdateEntities(entities);
+		return new UpdateEntities(entities);
 	}
 
 	@Override
 	public final EditTask deleteTask() {
-		return new DefaultDeleteEntities();
+		return new DeleteEntity();
 	}
 
 	@Override
 	public final EditTask deleteTask(Collection<Entity> entities) {
-		return new DefaultDeleteEntities(entities);
+		return new DeleteEntities(entities);
 	}
 
 	@Override
@@ -223,6 +224,19 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	/**
+	 * <p>Inserts the given entity into the database using the given connection.
+	 * <p>It may be assumed that this method is called when inserting the active entity.
+	 * <p>Calls {@link #insert(Collection, EntityConnection)} by default.
+	 * @param entity the entity to insert
+	 * @param connection the connection to use
+	 * @return the inserted entity
+	 * @throws DatabaseException in case of a database exception
+	 */
+	protected Entity insert(Entity entity, EntityConnection connection) {
+		return insert(singleton(requireNonNull(entity)), connection).iterator().next();
+	}
+
+	/**
 	 * Inserts the given entities into the database using the given connection
 	 * @param entities the entities to insert
 	 * @param connection the connection to use
@@ -234,6 +248,19 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	/**
+	 * <p>Updates the given entity in the database using the given connection.
+	 * <p>It may be assumed that this method is called when updating the active entity.
+	 * <p>Calls {@link #update(Collection, EntityConnection)} by default.
+	 * @param entity the entity to update
+	 * @param connection the connection to use
+	 * @return the updated entity
+	 * @throws DatabaseException in case of a database exception
+	 */
+	protected Entity update(Entity entity, EntityConnection connection) {
+		return update(singleton(requireNonNull(entity)), connection).iterator().next();
+	}
+
+	/**
 	 * Updates the given entities in the database using the given connection
 	 * @param entities the entities to update
 	 * @param connection the connection to use
@@ -242,6 +269,18 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 */
 	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) {
 		return requireNonNull(connection).updateSelect(entities);
+	}
+
+	/**
+	 * <p>Deletes the given entity from the database using the given connection.
+	 * <p>It may be assumed that this method is called when deleting the active entity.
+	 * <p>Calls {@link #delete(Collection, EntityConnection)} by default.
+	 * @param entity the entity to delete
+	 * @param connection the connection to use
+	 * @throws DatabaseException in case of a database exception
+	 */
+	protected void delete(Entity entity, EntityConnection connection) {
+		delete(singleton(requireNonNull(entity)), connection);
 	}
 
 	/**
@@ -394,33 +433,69 @@ public class DefaultEntityEditModel implements EntityEditModel {
 						});
 	}
 
-	private final class DefaultInsertEntities implements EditTask {
+	private final class InsertEntity implements EditTask {
 
-		private final Collection<Entity> entities;
-		private final boolean activeEntity;
+		private final Entity entity = activeEntity();
 
-		private DefaultInsertEntities() {
-			this.entities = entityForInsert();
-			this.activeEntity = true;
+		private InsertEntity() {
 			settings.verifyInsertEnabled();
-			editor.validate(entities);
+			editor.validate(entity);
 		}
 
-		private DefaultInsertEntities(Collection<Entity> entities) {
-			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			this.activeEntity = false;
-			settings.verifyInsertEnabled();
-			editor.validate(entities);
+		@Override
+		public Task prepare() {
+			notifyBeforeInsert(singleton(entity));
+
+			return new InsertTask();
 		}
 
-		private Collection<Entity> entityForInsert() {
+		private Entity activeEntity() {
 			Entity.Builder builder = editor.entity().get().copy().builder();
 			editor.entityDefinition().columns().definitions().stream()
 							.filter(ColumnDefinition::primaryKey)
 							.filter(ColumnDefinition::generated)
 							.forEach(column -> builder.clear(column.attribute()));
 
-			return singleton(builder.build());
+			return builder.build();
+		}
+
+		private final class InsertTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entity);
+
+				return new InsertResult(insert(entity, connection()));
+			}
+		}
+
+		private final class InsertResult implements Result {
+
+			private final Entity insertedEntity;
+
+			private InsertResult(Entity insertedEntity) {
+				this.insertedEntity = insertedEntity;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				editor.entity().replace(insertedEntity);
+				Set<Entity> inserted = singleton(insertedEntity);
+				notifyAfterInsert(inserted);
+
+				return inserted;
+			}
+		}
+	}
+
+	private final class InsertEntities implements EditTask {
+
+		private final Collection<Entity> entities;
+
+		private InsertEntities(Collection<Entity> entities) {
+			this.entities = unmodifiableCollection(new ArrayList<>(entities));
+			settings.verifyInsertEnabled();
+			editor.validate(entities);
 		}
 
 		@Override
@@ -450,9 +525,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				if (activeEntity) {
-					editor.entity().replace(insertedEntities.iterator().next());
-				}
 				notifyAfterInsert(insertedEntities);
 
 				return insertedEntities;
@@ -460,18 +532,63 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private final class DefaultUpdateEntities implements EditTask {
+	private final class UpdateEntity implements EditTask {
 
-		private final Collection<Entity> entities;
+		private final Entity entity = editor.entity().get().copy().mutable();
 
-		private DefaultUpdateEntities() {
-			entities = singleton(editor.entity().get().copy().mutable());
-			settings.verifyUpdateEnabled(entities.size());
-			editor.validate(entities);
+		private UpdateEntity() {
+			settings.verifyUpdateEnabled(1);
+			editor.validate(entity);
 			verifyModified();
 		}
 
-		private DefaultUpdateEntities(Collection<Entity> entities) {
+		@Override
+		public Task prepare() {
+			notifyBeforeUpdate(singleton(entity));
+
+			return new UpdateTask();
+		}
+
+		private void verifyModified() {
+			if (!editor.modified().is()) {
+				throw new IllegalStateException("Entity is not modified: " + editor.entity().get());
+			}
+		}
+
+		private final class UpdateTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - update {}", DefaultEntityEditModel.this, entity);
+
+				return new UpdateResult(update(entity, connection()));
+			}
+		}
+
+		private final class UpdateResult implements Result {
+
+			private final Entity updatedEntity;
+
+			private UpdateResult(Entity updatedEntity) {
+				this.updatedEntity = updatedEntity;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				Entity entity = editor.entity().get();
+				editor.entity().replace(updatedEntity);
+				notifyAfterUpdate(singletonMap(entity, updatedEntity));
+
+				return singleton(updatedEntity);
+			}
+		}
+	}
+
+	private final class UpdateEntities implements EditTask {
+
+		private final Collection<Entity> entities;
+
+		private UpdateEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			settings.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
@@ -483,12 +600,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			notifyBeforeUpdate(entities);
 
 			return new UpdateTask();
-		}
-
-		private void verifyModified() {
-			if (!editor.modified().is()) {
-				throw new IllegalStateException("Entity is not modified: " + editor.entity().get());
-			}
 		}
 
 		private void verifyModified(Collection<Entity> entities) {
@@ -519,11 +630,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				Entity entity = editor.entity().get();
-				updatedEntities.stream()
-								.filter(updatedEntity -> updatedEntity.equals(entity))
-								.findFirst()
-								.ifPresent(editor.entity()::replace);
 				notifyAfterUpdate(originalEntityMap(entities, updatedEntities));
 
 				return updatedEntities;
@@ -531,26 +637,17 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private final class DefaultDeleteEntities implements EditTask {
+	private final class DeleteEntity implements EditTask {
 
-		private final Collection<Entity> entities;
-		private final boolean activeEntity;
+		private final Entity entity = activeEntity();
 
-		private DefaultDeleteEntities() {
-			this.entities = singleton(activeEntity());
-			this.activeEntity = true;
-			settings.verifyDeleteEnabled();
-		}
-
-		private DefaultDeleteEntities(Collection<Entity> entities) {
-			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			this.activeEntity = false;
+		private DeleteEntity() {
 			settings.verifyDeleteEnabled();
 		}
 
 		@Override
 		public Task prepare() {
-			notifyBeforeDelete(entities);
+			notifyBeforeDelete(singleton(entity));
 
 			return new DeleteTask();
 		}
@@ -560,6 +657,52 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			copy.revert();
 
 			return copy;
+		}
+
+		private final class DeleteTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - delete {}", DefaultEntityEditModel.this, entity);
+				delete(entity, connection());
+
+				return new DeleteResult(entity);
+			}
+		}
+
+		private final class DeleteResult implements Result {
+
+			private final Entity deletedEntity;
+
+			private DeleteResult(Entity deletedEntity) {
+				this.deletedEntity = deletedEntity;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				editor.defaults();
+				Set<Entity> deleted = singleton(deletedEntity);
+				notifyAfterDelete(deleted);
+
+				return deleted;
+			}
+		}
+	}
+
+	private final class DeleteEntities implements EditTask {
+
+		private final Collection<Entity> entities;
+
+		private DeleteEntities(Collection<Entity> entities) {
+			this.entities = unmodifiableCollection(new ArrayList<>(entities));
+			settings.verifyDeleteEnabled();
+		}
+
+		@Override
+		public Task prepare() {
+			notifyBeforeDelete(entities);
+
+			return new DeleteTask();
 		}
 
 		private final class DeleteTask implements Task {
@@ -583,9 +726,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				if (activeEntity) {
-					editor.defaults();
-				}
 				notifyAfterDelete(deletedEntities);
 
 				return deletedEntities;
