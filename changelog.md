@@ -17,6 +17,7 @@ Codion Change Log
 - EntityEditModel.applyEdit() entities Collection parameter replaced with a single entity.
 - DefaultEntityEditor now uses Objects.deepEquals() when notifying.
 - EntityEditModel.applyEdit() replaced with the more focused EntityEditor.EditorValue.propagate() and Propagator.
+- DefaultEntityConditionModel now validates attributes when retrieving condition models.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.PERSISTENCE_EVENTS renamed PERSISTENCE_AWARE, Builder.persistenceEvents() renamed persistenceAware().
 ### is.codion.swing.framework.ui
