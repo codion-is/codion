@@ -32,6 +32,7 @@ import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.exception.DeleteEntityException;
 import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.InsertEntityException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.entity.Entities;
@@ -220,6 +221,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @param entity the entity to insert
 	 * @return the inserted entity
 	 * @throws DatabaseException in case of a database exception
+	 * @throws InsertEntityException in case of no insertable values or if there is a mismatch between expected and actual number of inserted rows
 	 * @throws RemoteException in case of a remote exception
 	 */
 	Entity insertSelect(Entity entity) throws RemoteException;
@@ -247,6 +249,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @param entities the entities to insert
 	 * @return the inserted entities
 	 * @throws DatabaseException in case of a database exception
+	 * @throws InsertEntityException in case of no insertable values or if there is a mismatch between expected and actual number of inserted rows
 	 * @throws RemoteException in case of a remote exception
 	 */
 	Collection<Entity> insertSelect(Collection<Entity> entities) throws RemoteException;

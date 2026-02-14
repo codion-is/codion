@@ -435,12 +435,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			@Override
 			public Result perform() {
 				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entities);
-				Collection<Entity> inserted = unmodifiableCollection(insert(entities, connection()));
-				if (!entities.isEmpty() && inserted.isEmpty()) {
-					throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
-				}
 
-				return new InsertResult(inserted);
+				return new InsertResult(unmodifiableCollection(insert(entities, connection())));
 			}
 		}
 

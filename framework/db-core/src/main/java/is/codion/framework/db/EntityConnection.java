@@ -29,6 +29,7 @@ import is.codion.framework.db.DefaultSelect.DefaultBuilder;
 import is.codion.framework.db.exception.DeleteEntityException;
 import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.InsertEntityException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.entity.Entities;
@@ -287,6 +288,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param entity the entity to insert
 	 * @return the inserted entity
 	 * @throws DatabaseException in case of a database exception
+	 * @throws InsertEntityException in case of no insertable values or if there is a mismatch between expected and actual number of inserted rows
 	 */
 	Entity insertSelect(Entity entity);
 
@@ -312,6 +314,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param entities the entities to insert
 	 * @return the inserted entities
 	 * @throws DatabaseException in case of a database exception
+	 * @throws InsertEntityException in case of no insertable values or if there is a mismatch between expected and actual number of inserted rows
 	 */
 	Collection<Entity> insertSelect(Collection<Entity> entities);
 

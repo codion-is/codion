@@ -2232,7 +2232,7 @@ public class DefaultLocalEntityConnectionTest {
 						.build();
 
 		entity1 = connection.insertSelect(entity1);
-		entity2 = connection.insertSelect(entity2);
+		connection.insert(entity2);
 
 		Entity finalEntity1 = entity1;
 

@@ -32,6 +32,7 @@ import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.exception.DeleteEntityException;
 import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.InsertEntityException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.local.tracer.MethodTracer;
@@ -85,6 +86,7 @@ import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.*;
+import static java.lang.String.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -832,11 +834,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 									statementColumns, statementValues, column -> entity.contains(column.attribute()));
 					lazyColumns.computeIfAbsent(entity.type(), k -> new HashSet<>()).addAll(lazyColumns(entity));
 					if (generatedColumns.isEmpty() && statementColumns.isEmpty()) {
-						throw new SQLException("Unable to insert entity " + entity.type() + ", no values to insert");
+						throw new InsertEntityException("Unable to insert entity " + entity.type() + ", no values to insert");
 					}
 					insertQuery = insertQuery(entityDefinition.table(), statementColumns);
 					try (PreparedStatement statement = prepareStatement(insertQuery, generatedKeys(entityDefinition, generatedColumns))) {
-						executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
+						int insertedRows = executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
+						if (insertedRows != 1) {
+							throw new InsertEntityException(format("Single row insert affected %d rows, entityType: %s", insertedRows, entityDefinition.type()));
+						}
 						for (ColumnDefinition<?> column : generatedColumns) {
 							generateAfterInsert(entity, column, statement);
 						}
@@ -848,9 +853,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				}
 				if (insertedEntities != null) {
 					for (Map.Entry<EntityType, List<Key>> entry : groupByType(insertedKeys).entrySet()) {
-						insertedEntities.addAll(query(where(keys(entry.getValue()))
+						List<Entity> selected = query(where(keys(entry.getValue()))
 										.include(lazyColumns.get(entry.getKey()))
-										.build(), 0));
+										.build(), 0);
+						if (selected.size() != entry.getValue().size()) {
+							throw new InsertEntityException(entry.getValue().size() + " inserted rows expected, query returned " +
+											selected.size() + ", entityType: " + entry.getKey());
+						}
+						insertedEntities.addAll(selected);
 					}
 				}
 				commitIfTransactionIsNotOpen();
@@ -910,8 +920,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 							statementColumns.addAll(definitions(condition.columns()));
 							statementValues.addAll(condition.values());
 							int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
-							if (updatedRows == 0) {
-								throw new UpdateEntityException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
+							if (updatedRows != 1) {
+								throw new UpdateEntityException(format("Single row update affected %d rows, entityType: %s", updatedRows, entityDefinition.type()));
 							}
 						}
 
