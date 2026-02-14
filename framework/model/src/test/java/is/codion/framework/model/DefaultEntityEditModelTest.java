@@ -805,6 +805,7 @@ public final class DefaultEntityEditModelTest {
 		Entity jones = connection.selectSingle(where(Employee.NAME.equalTo("JONES")).build());
 
 		TestEntityEditModel editModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		assertFalse(editModel.editor().entity().get().contains(Employee.DATA));
 		editModel.editor().entity().set(jones);
 		assertFalse(editModel.editor().entity().get().contains(Employee.DATA));
 		editModel.editor().entity().refresh();

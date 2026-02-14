@@ -330,6 +330,7 @@ public class DefaultEntityEditor implements EntityEditor {
 						//these are set via their respective parent foreign key
 						.filter(columnDefinition -> !entityDefinition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
 						.filter(columnDefinition -> !columnDefinition.withDefault() || columnDefinition.hasDefaultValue())
+						.filter(ColumnDefinition::selected) // don't populate lazy loaded values
 						.map(columnDefinition -> (ColumnDefinition<Object>) columnDefinition)
 						.forEach(columnDefinition -> newEntity.set(columnDefinition.attribute(), valueSupplier.get(columnDefinition)));
 	}
