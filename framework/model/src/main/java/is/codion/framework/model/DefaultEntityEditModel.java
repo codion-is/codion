@@ -242,60 +242,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	/**
-	 * Notifies that insert is about to be performed
-	 * @param entitiesToInsert the entities about to be inserted
-	 * @see #beforeInsert()
-	 */
-	protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
-		events.beforeInsert.accept(requireNonNull(entitiesToInsert));
-	}
-
-	/**
-	 * Notifies that insert has been performed
-	 * @param insertedEntities the inserted entities
-	 * @see #afterInsert()
-	 */
-	protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
-		events.notifyInserted(requireNonNull(insertedEntities));
-	}
-
-	/**
-	 * Notifies that update is about to be performed
-	 * @param entitiesToUpdate the entities about to be updated
-	 * @see #beforeUpdate()
-	 */
-	protected final void notifyBeforeUpdate(Collection<Entity> entitiesToUpdate) {
-		events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
-	}
-
-	/**
-	 * Notifies that update has been performed
-	 * @param updatedEntities a map containing the updated entities, mapped to their state before the update
-	 * @see #afterUpdate()
-	 */
-	protected final void notifyAfterUpdate(Map<Entity, Entity> updatedEntities) {
-		events.notifyUpdated(requireNonNull(updatedEntities));
-	}
-
-	/**
-	 * Notifies that delete is about to be performed
-	 * @param entitiesToDelete the entities about to be deleted
-	 * @see #beforeDelete()
-	 */
-	protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
-		events.beforeDelete.accept(requireNonNull(entitiesToDelete));
-	}
-
-	/**
-	 * Notifies that delete has been performed
-	 * @param deletedEntities the deleted entities
-	 * @see #afterDelete()
-	 */
-	protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
-		events.notifyDeleted(requireNonNull(deletedEntities));
-	}
-
-	/**
 	 * Maps the given entities and their updated counterparts, assumes a single copy of each entity in the given lists.
 	 * @param entitiesBeforeUpdate the entities before update
 	 * @param entitiesAfterUpdate the entities after update
@@ -336,7 +282,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public Task prepare() {
-			notifyBeforeInsert(singleton(entity));
+			events.beforeInsert.accept(singleton(entity));
 
 			return new InsertTask();
 		}
@@ -373,7 +319,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Collection<Entity> handle() {
 				editor.entity().replace(insertedEntity);
 				Set<Entity> inserted = singleton(insertedEntity);
-				notifyAfterInsert(inserted);
+				events.notifyInserted(inserted);
 
 				return inserted;
 			}
@@ -392,7 +338,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public Task prepare() {
-			notifyBeforeInsert(entities);
+			events.beforeInsert.accept(entities);
 
 			return new InsertTask();
 		}
@@ -417,7 +363,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				notifyAfterInsert(insertedEntities);
+				events.notifyInserted(insertedEntities);
 
 				return insertedEntities;
 			}
@@ -436,7 +382,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public Task prepare() {
-			notifyBeforeUpdate(singleton(entity));
+			events.beforeUpdate.accept(singleton(entity));
 
 			return new UpdateTask();
 		}
@@ -469,7 +415,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Collection<Entity> handle() {
 				Entity editorEntity = editor.entity().get();
 				editor.entity().replace(updatedEntity);
-				notifyAfterUpdate(singletonMap(editorEntity, updatedEntity));
+				events.notifyUpdated(singletonMap(editorEntity, updatedEntity));
 
 				return singleton(updatedEntity);
 			}
@@ -489,7 +435,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public Task prepare() {
-			notifyBeforeUpdate(entities);
+			events.beforeUpdate.accept(entities);
 
 			return new UpdateTask();
 		}
@@ -522,7 +468,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				notifyAfterUpdate(originalEntityMap(entities, updatedEntities));
+				events.notifyUpdated(originalEntityMap(entities, updatedEntities));
 
 				return updatedEntities;
 			}
@@ -539,7 +485,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public Task prepare() {
-			notifyBeforeDelete(singleton(entity));
+			events.beforeDelete.accept(singleton(entity));
 
 			return new DeleteTask();
 		}
@@ -574,7 +520,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Collection<Entity> handle() {
 				editor.defaults();
 				Set<Entity> deleted = singleton(deletedEntity);
-				notifyAfterDelete(deleted);
+				events.notifyDeleted(deleted);
 
 				return deleted;
 			}
@@ -592,7 +538,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public Task prepare() {
-			notifyBeforeDelete(entities);
+			events.beforeDelete.accept(entities);
 
 			return new DeleteTask();
 		}
@@ -618,7 +564,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				notifyAfterDelete(deletedEntities);
+				events.notifyDeleted(deletedEntities);
 
 				return deletedEntities;
 			}
