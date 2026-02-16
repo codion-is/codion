@@ -6,6 +6,7 @@ Codion Change Log
 - PropertyStore, command line properties now take precedence over configuration file.
 ### is.codion.swing.common.ui
 - Windows.resizeToFitScreen() bug fixed, now uses getMaximumWindowBounds().
+- FilterTable.Builder.headerless() added.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.insertSelect() exception behaviour now consistent with updateSelect(), fails if selected row count differs from number inserted entities.
 ### is.codion.framework.model

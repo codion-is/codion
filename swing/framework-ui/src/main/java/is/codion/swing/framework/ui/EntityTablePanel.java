@@ -1706,7 +1706,9 @@ public class EntityTablePanel extends JPanel {
 
 	private void onConditionChanged() {
 		if (table != null) {
-			table.getTableHeader().repaint();
+			if (table.getTableHeader() != null) {
+				table.getTableHeader().repaint();
+			}
 			table.repaint();
 		}
 	}

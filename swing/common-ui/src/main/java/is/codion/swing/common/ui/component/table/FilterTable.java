@@ -384,9 +384,9 @@ public final class FilterTable<R, C> extends JTable {
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder);
-		configureTableHeader(builder.columnReordering, builder.columnResizing);
+		configureTableHeader(builder);
 		filters().view().set(builder.filterView);
-		bindEvents(builder.columnReordering, builder.columnResizing);
+		bindEvents(builder);
 		addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor(builder.resizeRowToFitEditor));
 		if (builder.rowSelection != null) {
 			setRowSelectionAllowed(builder.rowSelection);
@@ -1004,14 +1004,19 @@ public final class FilterTable<R, C> extends JTable {
 						});
 	}
 
-	private void configureTableHeader(boolean reorderingAllowed, boolean columnResizingAllowed) {
-		JTableHeader header = getTableHeader();
-		header.setFocusable(false);
-		header.setReorderingAllowed(reorderingAllowed);
-		header.setResizingAllowed(columnResizingAllowed);
-		header.setAutoscrolls(true);
-		header.addMouseMotionListener(new ColumnDragMouseHandler());
-		header.addMouseListener(new MouseSortHandler());
+	private void configureTableHeader(DefaultBuilder<R, C>	builder) {
+		if (builder.headerless) {
+			setTableHeader(null);
+		}
+		else {
+			JTableHeader header = getTableHeader();
+			header.setFocusable(false);
+			header.setReorderingAllowed(builder.columnReordering);
+			header.setResizingAllowed(builder.columnResizing);
+			header.setAutoscrolls(true);
+			header.addMouseMotionListener(new ColumnDragMouseHandler());
+			header.addMouseListener(new MouseSortHandler());
+		}
 	}
 
 	private List<ToggleControl> createAutoResizeModeControls() {
@@ -1033,18 +1038,19 @@ public final class FilterTable<R, C> extends JTable {
 		return controls;
 	}
 
-	private void bindEvents(boolean columnReorderingAllowed,
-													boolean columnResizingAllowed) {
+	private void bindEvents(DefaultBuilder<R, C>	builder) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
-		columnModel().selection().lead().addListener(getTableHeader()::repaint);
-		tableModel.selection().indexes().addListener(getTableHeader()::repaint);
+		if (getTableHeader() != null) {
+			columnModel().selection().lead().addListener(getTableHeader()::repaint);
+			tableModel.selection().indexes().addListener(getTableHeader()::repaint);
+			tableModel.filters().changed().addListener(getTableHeader()::repaint);
+			tableModel.sort().observer().addListener(getTableHeader()::repaint);
+		}
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
 		tableModel.items().included().added().addConsumer(new ScrollToAdded());
-		tableModel.filters().changed().addListener(getTableHeader()::repaint);
 		searchModel.results().current().addListener(this::repaint);
-		tableModel.sort().observer().addListener(getTableHeader()::repaint);
 		addMouseListener(new FilterTableMouseListener());
-		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
+		addKeyListener(new MoveResizeColumnKeyListener(builder.columnReordering, builder.columnResizing));
 		controlMap.keyEvent(COPY_CELL).ifPresent(keyEvent -> keyEvent.enable(this));
 		controlMap.keyEvent(COPY_COLUMN).ifPresent(keyEvent -> keyEvent.enable(this));
 		controlMap.keyEvent(TOGGLE_PREVIOUS_SORT_ORDER_ADD).ifPresent(keyEvent -> keyEvent.enable(this));
@@ -1464,6 +1470,12 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> rowsFillViewport(boolean rowsFillViewport);
 
 		/**
+		 * @param headerless true if the table should be headerless
+		 * @return this builder instance
+		 */
+		Builder<R, C> headerless(boolean headerless);
+
+		/**
 		 * @param sortable true if sorting via clicking the header should be enbled
 		 * @return this builder instance
 		 */
@@ -1646,6 +1658,7 @@ public final class FilterTable<R, C> extends JTable {
 		private @Nullable Boolean cellSelection;
 		private boolean columnReordering = COLUMN_REORDERING.getOrThrow();
 		private boolean columnResizing = COLUMN_RESIZING.getOrThrow();
+		private boolean headerless = false;
 		private int autoResizeMode = AUTO_RESIZE_MODE.getOrThrow();
 		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.getOrThrow();
 		private ConditionView filterView = ConditionView.HIDDEN;
@@ -1802,6 +1815,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> rowsFillViewport(boolean rowsFillViewport) {
 			this.rowsFillViewport = rowsFillViewport;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> headerless(boolean headerless) {
+			this.headerless = headerless;
 			return this;
 		}
 
@@ -2018,18 +2037,17 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final class MoveResizeColumnKeyListener extends KeyAdapter {
 
-		private final boolean columnResizingAllowed;
-		private final boolean columnReorderingAllowed;
+		private final boolean columnResizing;
+		private final boolean columnReordering;
 
 		private final @Nullable KeyStroke moveLeft;
 		private final @Nullable KeyStroke moveRight;
 		private final @Nullable KeyStroke increaseSize;
 		private final @Nullable KeyStroke decreaseSize;
 
-		private MoveResizeColumnKeyListener(boolean columnReorderingAllowed,
-																				boolean columnResizingAllowed) {
-			this.columnReorderingAllowed = columnReorderingAllowed;
-			this.columnResizingAllowed = columnResizingAllowed;
+		private MoveResizeColumnKeyListener(boolean columnReordering, boolean columnResizing) {
+			this.columnReordering = columnReordering;
+			this.columnResizing = columnResizing;
 			moveLeft = controlMap.keyStroke(MOVE_COLUMN_LEFT).get();
 			moveRight = controlMap.keyStroke(MOVE_COLUMN_RIGHT).get();
 			increaseSize = controlMap.keyStroke(INCREASE_COLUMN_SIZE).get();
@@ -2038,11 +2056,11 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (columnReorderingAllowed && move(e)) {
+			if (columnReordering && move(e)) {
 				moveSelectedColumn(e.getKeyCode() == moveLeft.getKeyCode());
 				e.consume();
 			}
-			else if (columnResizingAllowed && resize(e)) {
+			else if (columnResizing && resize(e)) {
 				resizeSelectedColumn(e.getKeyCode() == increaseSize.getKeyCode());
 				e.consume();
 			}
