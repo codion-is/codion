@@ -25,6 +25,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.model.EntityPersistence;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Collection;
@@ -37,34 +38,13 @@ import static is.codion.framework.domain.entity.Entity.primaryKeys;
 public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
-		super(InvoiceLine.TYPE, connectionProvider);
+		super(InvoiceLine.TYPE, connectionProvider, new InvoiceLinePersistence());
 		// We populate the unit price when the track is edited
 		Observer<Entity> trackEdited = editor().value(InvoiceLine.TRACK_FK).edited();
 		trackEdited.when(Objects::nonNull)
 						.addConsumer(this::setUnitPrice);
 		trackEdited.when(Objects::isNull)
 						.addListener(this::clearUnitPrice);
-	}
-
-	@Override
-	protected Collection<Entity> insert(Collection<Entity> invoiceLines, EntityConnection connection) {
-		// Use a transaction to update the invoice totals when an invoice line is inserted
-		return transaction(connection, () -> updateTotals(connection.insertSelect(invoiceLines), connection));
-	}
-
-	@Override
-	protected Collection<Entity> update(Collection<Entity> invoiceLines, EntityConnection connection) {
-		// Use a transaction to update the invoice totals when an invoice line is updated
-		return transaction(connection, () -> updateTotals(connection.updateSelect(invoiceLines), connection));
-	}
-
-	@Override
-	protected void delete(Collection<Entity> invoiceLines, EntityConnection connection) {
-		// Use a transaction to update the invoice totals when an invoice line is deleted
-		transaction(connection, () -> {
-			connection.delete(primaryKeys(invoiceLines));
-			updateTotals(invoiceLines, connection);
-		});
 	}
 
 	private void setUnitPrice(Entity track) {
@@ -75,14 +55,38 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		editor().value(InvoiceLine.UNITPRICE).clear();
 	}
 
-	// tag::updateTotals[]
-	private static Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) {
-		// Get the IDs of the invoices that need their totals updated
-		Collection<Long> invoiceIds = distinct(InvoiceLine.INVOICE_ID, invoiceLines);
-		// Execute the UPDATE_TOTALS procedure
-		connection.execute(Invoice.UPDATE_TOTALS, invoiceIds);
+	private static final class InvoiceLinePersistence implements EntityPersistence {
 
-		return invoiceLines;
+		@Override
+		public Collection<Entity> insert(Collection<Entity> invoiceLines, EntityConnection connection) {
+			// Use a transaction to update the invoice totals when an invoice line is inserted
+			return transaction(connection, () -> updateTotals(connection.insertSelect(invoiceLines), connection));
+		}
+
+		@Override
+		public Collection<Entity> update(Collection<Entity> invoiceLines, EntityConnection connection) {
+			// Use a transaction to update the invoice totals when an invoice line is updated
+			return transaction(connection, () -> updateTotals(connection.updateSelect(invoiceLines), connection));
+		}
+
+		@Override
+		public void delete(Collection<Entity> invoiceLines, EntityConnection connection) {
+			// Use a transaction to update the invoice totals when an invoice line is deleted
+			transaction(connection, () -> {
+				connection.delete(primaryKeys(invoiceLines));
+				updateTotals(invoiceLines, connection);
+			});
+		}
+
+		// tag::updateTotals[]
+		private static Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) {
+			// Get the IDs of the invoices that need their totals updated
+			Collection<Long> invoiceIds = distinct(InvoiceLine.INVOICE_ID, invoiceLines);
+			// Execute the UPDATE_TOTALS procedure
+			connection.execute(Invoice.UPDATE_TOTALS, invoiceIds);
+
+			return invoiceLines;
+		}
+		// end::updateTotals[]
 	}
-	// end::updateTotals[]
 }

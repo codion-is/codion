@@ -83,6 +83,11 @@ public interface EntityEditModel {
 	EntityEditor editor();
 
 	/**
+	 * @return the {@link EntityPersistence} used by this edit model
+	 */
+	EntityPersistence persistence();
+
+	/**
 	 * @return the underlying domain entities
 	 */
 	Entities entities();

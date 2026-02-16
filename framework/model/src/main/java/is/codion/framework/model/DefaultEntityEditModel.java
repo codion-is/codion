@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -65,6 +64,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private final EntityEditor editor;
+	private final EntityPersistence persistence;
 	private final Events events;
 	private final DefaultSettings settings;
 
@@ -74,7 +74,18 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
 	 */
 	public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(new DefaultEntityEditor(entityType, connectionProvider));
+		this(new DefaultEntityEditor(entityType, connectionProvider), new EntityPersistence() {});
+	}
+
+	/**
+	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
+	 * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
+	 * @param connectionProvider the {@link EntityConnectionProvider} instance
+	 * @param persistence the persistence implementation
+	 */
+	public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+																EntityPersistence persistence) {
+		this(new DefaultEntityEditor(entityType, connectionProvider), persistence);
 	}
 
 	/**
@@ -82,7 +93,17 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 * @param editor the editor
 	 */
 	public DefaultEntityEditModel(EntityEditor editor) {
+		this(editor, new EntityPersistence() {});
+	}
+
+	/**
+	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
+	 * @param editor the editor
+	 * @param persistence the persistence implementation
+	 */
+	public DefaultEntityEditModel(EntityEditor editor, EntityPersistence persistence) {
 		this.editor = requireNonNull(editor);
+		this.persistence = requireNonNull(persistence);
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.events = new Events(settings.publishPersistenceEvents);
 		addEditListeners();
@@ -126,6 +147,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	@Override
 	public EntityEditor editor() {
 		return editor;
+	}
+
+	@Override
+	public final EntityPersistence persistence() {
+		return persistence;
 	}
 
 	@Override
@@ -221,76 +247,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	@Override
 	public final Observer<Collection<Entity>> persisted() {
 		return events.persisted.observer();
-	}
-
-	/**
-	 * <p>Inserts the given entity into the database using the given connection.
-	 * <p>It may be assumed that this method is called when inserting the active entity.
-	 * <p>Calls {@link #insert(Collection, EntityConnection)} by default.
-	 * @param entity the entity to insert
-	 * @param connection the connection to use
-	 * @return the inserted entity
-	 * @throws DatabaseException in case of a database exception
-	 */
-	protected Entity insert(Entity entity, EntityConnection connection) {
-		return insert(singleton(requireNonNull(entity)), connection).iterator().next();
-	}
-
-	/**
-	 * Inserts the given entities into the database using the given connection
-	 * @param entities the entities to insert
-	 * @param connection the connection to use
-	 * @return the inserted entities
-	 * @throws DatabaseException in case of a database exception
-	 */
-	protected Collection<Entity> insert(Collection<Entity> entities, EntityConnection connection) {
-		return requireNonNull(connection).insertSelect(entities);
-	}
-
-	/**
-	 * <p>Updates the given entity in the database using the given connection.
-	 * <p>It may be assumed that this method is called when updating the active entity.
-	 * <p>Calls {@link #update(Collection, EntityConnection)} by default.
-	 * @param entity the entity to update
-	 * @param connection the connection to use
-	 * @return the updated entity
-	 * @throws DatabaseException in case of a database exception
-	 */
-	protected Entity update(Entity entity, EntityConnection connection) {
-		return update(singleton(requireNonNull(entity)), connection).iterator().next();
-	}
-
-	/**
-	 * Updates the given entities in the database using the given connection
-	 * @param entities the entities to update
-	 * @param connection the connection to use
-	 * @return the updated entities
-	 * @throws DatabaseException in case of a database exception
-	 */
-	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) {
-		return requireNonNull(connection).updateSelect(entities);
-	}
-
-	/**
-	 * <p>Deletes the given entity from the database using the given connection.
-	 * <p>It may be assumed that this method is called when deleting the active entity.
-	 * <p>Calls {@link #delete(Collection, EntityConnection)} by default.
-	 * @param entity the entity to delete
-	 * @param connection the connection to use
-	 * @throws DatabaseException in case of a database exception
-	 */
-	protected void delete(Entity entity, EntityConnection connection) {
-		delete(singleton(requireNonNull(entity)), connection);
-	}
-
-	/**
-	 * Deletes the given entities from the database using the given connection
-	 * @param entities the entities to delete
-	 * @param connection the connection to use
-	 * @throws DatabaseException in case of a database exception
-	 */
-	protected void delete(Collection<Entity> entities, EntityConnection connection) {
-		requireNonNull(connection).delete(Entity.primaryKeys(entities));
 	}
 
 	/**
@@ -465,7 +421,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Result perform() {
 				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entity);
 
-				return new InsertResult(insert(entity, connection()));
+				return new InsertResult(persistence.insert(entity, connection()));
 			}
 		}
 
@@ -511,7 +467,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Result perform() {
 				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entities);
 
-				return new InsertResult(unmodifiableCollection(insert(entities, connection())));
+				return new InsertResult(unmodifiableCollection(persistence.insert(entities, connection())));
 			}
 		}
 
@@ -561,7 +517,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Result perform() {
 				LOG.debug("{} - update {}", DefaultEntityEditModel.this, entity);
 
-				return new UpdateResult(update(entity, connection()));
+				return new UpdateResult(persistence.update(entity, connection()));
 			}
 		}
 
@@ -616,7 +572,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Result perform() {
 				LOG.debug("{} - update {}", DefaultEntityEditModel.this, entities);
 
-				return new UpdateResult(update(entities, connection()));
+				return new UpdateResult(persistence.update(entities, connection()));
 			}
 		}
 
@@ -664,7 +620,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			@Override
 			public Result perform() {
 				LOG.debug("{} - delete {}", DefaultEntityEditModel.this, entity);
-				delete(entity, connection());
+				persistence.delete(entity, connection());
 
 				return new DeleteResult(entity);
 			}
@@ -710,7 +666,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			@Override
 			public Result perform() {
 				LOG.debug("{} - delete {}", DefaultEntityEditModel.this, entities);
-				delete(entities, connection());
+				persistence.delete(entities, connection());
 
 				return new DeleteResult(entities);
 			}

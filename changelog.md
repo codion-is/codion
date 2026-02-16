@@ -22,6 +22,7 @@ Codion Change Log
 - DefaultEntityConditionModel now validates attributes when retrieving condition models.
 - DefaultEntityEditModel.insert(), update() and delete() overloaded with a single Entity instance parameter, used when persisting the active entity.
 - DefaultEntityEditor bug fixed, no longer populates lazy loaded values with defaults.
+- EntityPersistence refactored from DefaultEntityEditModel.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.PERSISTENCE_EVENTS renamed PERSISTENCE_AWARE, Builder.persistenceEvents() renamed persistenceAware().
 ### is.codion.swing.framework.ui
