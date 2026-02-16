@@ -24,6 +24,7 @@ Codion Change Log
 - DefaultEntityEditModel.insert(), update() and delete() overloaded with a single Entity instance parameter, used when persisting the active entity.
 - DefaultEntityEditor bug fixed, no longer populates lazy loaded values with defaults.
 - EntityPersistence refactored from DefaultEntityEditModel.
+- DefaultEntityEditModel persistence listeners moved to DefaultEntityEditor, inserted(), udpated() and deleted() removed.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.PERSISTENCE_EVENTS renamed PERSISTENCE_AWARE, Builder.persistenceEvents() renamed persistenceAware().
 ### is.codion.swing.framework.ui

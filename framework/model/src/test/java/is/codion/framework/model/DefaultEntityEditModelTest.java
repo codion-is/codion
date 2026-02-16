@@ -557,15 +557,23 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void updated() {
-		Entity james = employeeEditModel.connection()
-						.selectSingle(Employee.NAME.equalTo("JAMES"));
-		editor.entity().set(james);
-		assertTrue(editor.entity().get().entity(Employee.MGR_FK).isNull(Employee.COMMISSION));
-		Entity blake = employeeEditModel.connection()
-						.selectSingle(Employee.NAME.equalTo("BLAKE"));
-		blake.set(Employee.COMMISSION, 100d);
-		employeeEditModel.updated(Employee.MGR_FK, singletonMap(blake.primaryKey(), blake));
-		assertEquals(100d, editor.entity().get().entity(Employee.MGR_FK).get(Employee.COMMISSION));
+		EntityConnection connection = employeeEditModel.connection();
+		connection.startTransaction();
+		try {
+			Entity james = connection
+							.selectSingle(Employee.NAME.equalTo("JAMES"));
+			editor.entity().set(james);
+			assertTrue(editor.entity().get().entity(Employee.MGR_FK).isNull(Employee.COMMISSION));
+			TestEntityEditModel blakeEditModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+			blakeEditModel.editor().entity().set(connection
+							.selectSingle(Employee.NAME.equalTo("BLAKE")));
+			blakeEditModel.editor().value(Employee.COMMISSION).set(100d);
+			blakeEditModel.update();
+			assertEquals(100d, editor.entity().get().entity(Employee.MGR_FK).get(Employee.COMMISSION));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
 	}
 
 	@Test

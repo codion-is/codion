@@ -44,19 +44,24 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.domain.entity.Entity.groupByType;
 import static is.codion.framework.domain.entity.condition.Condition.key;
+import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
@@ -67,6 +72,8 @@ import static java.util.stream.Collectors.toSet;
  * A default {@link EntityEditor} implementation.
  */
 public class DefaultEntityEditor implements EntityEditor {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditor.class);
 
 	private static final ValueSupplier INITIAL_VALUE = new InitialValue();
 
@@ -79,6 +86,10 @@ public class DefaultEntityEditor implements EntityEditor {
 	private final Map<Attribute<?>, State> attributePresent = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
 	private final Map<Attribute<?>, Observable<String>> messages = new HashMap<>();
+
+	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
+	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
+	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
@@ -119,6 +130,7 @@ public class DefaultEntityEditor implements EntityEditor {
 						.listener(this::updateValidStates)
 						.build();
 		configurePersistentForeignKeys();
+		addEditListeners();
 	}
 
 	@Override
@@ -226,6 +238,11 @@ public class DefaultEntityEditor implements EntityEditor {
 	@Override
 	public final SearchModels searchModels() {
 		return searchModels;
+	}
+
+	@Override
+	public final String toString() {
+		return getClass() + ", " + entityDefinition.type();
 	}
 
 	private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
@@ -363,6 +380,17 @@ public class DefaultEntityEditor implements EntityEditor {
 						.anyMatch(columnDefinition -> !columnDefinition.readOnly());
 	}
 
+	private void addEditListeners() {
+		entityDefinition.foreignKeys().get().stream()
+						.map(ForeignKey::referencedType)
+						.distinct()
+						.forEach(entityType -> {
+							PersistenceEvents persistenceEvents = persistenceEvents(entityType);
+							persistenceEvents.updated().addWeakConsumer(updateListener);
+							persistenceEvents.deleted().addWeakConsumer(deleteListener);
+						});
+	}
+
 	private interface ValueSupplier {
 		<T> @Nullable T get(AttributeDefinition<T> attributeDefinition);
 	}
@@ -385,6 +413,47 @@ public class DefaultEntityEditor implements EntityEditor {
 							.entityType(foreignKey.referencedType())
 							.connectionProvider(editor.connectionProvider())
 							.build();
+		}
+	}
+
+	private final class DeleteListener implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> deleted) {
+			groupByType(deleted).forEach((key, value) ->
+							entityDefinition.foreignKeys().get(key)
+											.forEach(foreignKey -> deleted(foreignKey, value)));
+		}
+
+		private void deleted(ForeignKey foreignKey, Collection<Entity> entities) {
+			Entity currentForeignKeyValue = value(foreignKey).get();
+			if (currentForeignKeyValue != null && entities.contains(currentForeignKeyValue)) {
+				value(foreignKey).clear();
+				LOG.debug("{} - cleared FK {} (referenced entity deleted)", this, foreignKey);
+			}
+		}
+	}
+
+	private final class UpdateListener implements Consumer<Map<Entity, Entity>> {
+
+		@Override
+		public void accept(Map<Entity, Entity> updated) {
+			Map<EntityType, Map<Entity.Key, Entity>> grouped = new HashMap<>();
+			updated.forEach((beforeUpdate, afterUpdate) ->
+							grouped.computeIfAbsent(beforeUpdate.type(), k -> new HashMap<>())
+											.put(beforeUpdate.originalPrimaryKey(), afterUpdate));
+			grouped.forEach((entityType, entities) ->
+							entityDefinition.foreignKeys().get(entityType)
+											.forEach(foreignKey -> updated(foreignKey, entities)));
+		}
+
+		private void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
+			Entity currentForeignKeyValue = value(foreignKey).get();
+			if (currentForeignKeyValue != null && entities.containsKey(currentForeignKeyValue.primaryKey())) {
+				value(foreignKey).clear();
+				value(foreignKey).set(entities.get(currentForeignKeyValue.primaryKey()));
+				LOG.debug("{} - updated FK {}", this, foreignKey);
+			}
 		}
 	}
 

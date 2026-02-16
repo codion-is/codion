@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static is.codion.framework.domain.entity.Entity.groupByType;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
@@ -57,11 +55,6 @@ import static java.util.stream.Collectors.toMap;
 public class DefaultEntityEditModel implements EntityEditModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
-
-	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
-	private final Consumer<Collection<Entity>> insertListener = new InsertListener();
-	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
-	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private final EntityEditor editor;
 	private final EntityPersistence persistence;
@@ -106,7 +99,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		this.persistence = requireNonNull(persistence);
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.events = new Events(settings.publishPersistenceEvents);
-		addEditListeners();
 	}
 
 	@Override
@@ -250,50 +242,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	/**
-	 * <p>Called when entities of the type referenced by the given foreign key are inserted.
-	 * @param foreignKey the foreign key
-	 * @param entities the inserted entities
-	 * @see PersistenceEvents#inserted()
-	 */
-	protected void inserted(ForeignKey foreignKey, Collection<Entity> entities) {}
-
-	/**
-	 * <p>Called when entities of the type referenced by the given foreign key have been updated.
-	 * <p>For every field referencing the given foreign key values, replaces that foreign key instance with
-	 * the corresponding value from {@code entities}
-	 * @param foreignKey the foreign key
-	 * @param entities the updated entities, mapped to their original primary key
-	 * @see PersistenceEvents#updated()
-	 */
-	protected void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
-		requireNonNull(foreignKey);
-		requireNonNull(entities);
-		Entity currentForeignKeyValue = editor.value(foreignKey).get();
-		if (currentForeignKeyValue != null && entities.containsKey(currentForeignKeyValue.primaryKey())) {
-			editor.value(foreignKey).clear();
-			editor.value(foreignKey).set(entities.get(currentForeignKeyValue.primaryKey()));
-			LOG.debug("{} - updated FK {}", this, foreignKey);
-		}
-	}
-
-	/**
-	 * <p>Called when entities of the type referenced by the given foreign key are deleted.
-	 * <p>Clears any foreign key values referencing the deleted entities.
-	 * @param foreignKey the foreign key
-	 * @param entities the deleted entities
-	 * @see PersistenceEvents#deleted()
-	 */
-	protected void deleted(ForeignKey foreignKey, Collection<Entity> entities) {
-		requireNonNull(foreignKey);
-		requireNonNull(entities);
-		Entity currentForeignKeyValue = editor.value(foreignKey).get();
-		if (currentForeignKeyValue != null && entities.contains(currentForeignKeyValue)) {
-			editor.value(foreignKey).clear();
-			LOG.debug("{} - cleared FK {} (referenced entity deleted)", this, foreignKey);
-		}
-	}
-
-	/**
 	 * Notifies that insert is about to be performed
 	 * @param entitiesToInsert the entities about to be inserted
 	 * @see #beforeInsert()
@@ -375,18 +323,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 
 		throw new IllegalStateException("Updated entity not found");
-	}
-
-	private void addEditListeners() {
-		editor.entityDefinition().foreignKeys().get().stream()
-						.map(ForeignKey::referencedType)
-						.distinct()
-						.forEach(entityType -> {
-							PersistenceEvents persistenceEvents = persistenceEvents(entityType);
-							persistenceEvents.inserted().addWeakConsumer(insertListener);
-							persistenceEvents.updated().addWeakConsumer(updateListener);
-							persistenceEvents.deleted().addWeakConsumer(deleteListener);
-						});
 	}
 
 	private final class InsertEntity implements EditTask {
@@ -531,9 +467,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				Entity entity = editor.entity().get();
+				Entity editorEntity = editor.entity().get();
 				editor.entity().replace(updatedEntity);
-				notifyAfterUpdate(singletonMap(entity, updatedEntity));
+				notifyAfterUpdate(singletonMap(editorEntity, updatedEntity));
 
 				return singleton(updatedEntity);
 			}
@@ -801,52 +737,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			if (readOnly.is()) {
 				throw new IllegalStateException("Edit model is read-only!");
 			}
-		}
-	}
-
-	private final class InsertListener implements Consumer<Collection<Entity>> {
-
-		@Override
-		public void accept(Collection<Entity> inserted) {
-			onInsert(groupByType(inserted));
-		}
-
-		private void onInsert(Map<EntityType, List<Entity>> inserted) {
-			inserted.forEach((entitType, value) ->
-							editor.entityDefinition().foreignKeys().get(entitType)
-											.forEach(foreignKey -> inserted(foreignKey, value)));
-		}
-	}
-
-	private final class DeleteListener implements Consumer<Collection<Entity>> {
-
-		@Override
-		public void accept(Collection<Entity> deleted) {
-			onDelete(groupByType(deleted));
-		}
-
-		private void onDelete(Map<EntityType, List<Entity>> deleted) {
-			deleted.forEach((key, value) ->
-							editor.entityDefinition().foreignKeys().get(key)
-											.forEach(foreignKey -> deleted(foreignKey, value)));
-		}
-	}
-
-	private final class UpdateListener implements Consumer<Map<Entity, Entity>> {
-
-		@Override
-		public void accept(Map<Entity, Entity> updated) {
-			Map<EntityType, Map<Entity.Key, Entity>> grouped = new HashMap<>();
-			updated.forEach((beforeUpdate, afterUpdate) ->
-							grouped.computeIfAbsent(beforeUpdate.type(), k -> new HashMap<>())
-											.put(beforeUpdate.originalPrimaryKey(), afterUpdate));
-			onUpdate(grouped);
-		}
-
-		private void onUpdate(Map<EntityType, Map<Entity.Key, Entity>> updated) {
-			updated.forEach((entityType, entities) ->
-							editor.entityDefinition().foreignKeys().get(entityType)
-											.forEach(foreignKey -> updated(foreignKey, entities)));
 		}
 	}
 
