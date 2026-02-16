@@ -34,6 +34,7 @@ Codion Change Log
 - EntityEditPanel.Config.editPanel() removed, unused.
 - EntityEditorPanel.Config.defaultTextFieldColumns() renamed textFieldColumns().
 - DefaultEditComponent.DEFAULT_TEXT_FIELD_COLUMNS renamed TEXT_FIELD_COLUMNS.
+- EntityTablePanel.Config.closeAddDialog(), includeSearchField() and includeStatusPanel() added.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, did not set hidden() for columns.
 

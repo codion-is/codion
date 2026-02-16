@@ -1806,7 +1806,7 @@ public class EntityTablePanel extends JPanel {
 		public void execute() {
 			addEntityDialog(editPanel())
 							.owner(EntityTablePanel.this)
-							.closeDialog(false)
+							.closeDialog(configuration.closeAddDialog)
 							.show();
 		}
 	}
@@ -2216,6 +2216,9 @@ public class EntityTablePanel extends JPanel {
 		private int refreshProgressBarDelay = REFRESH_PROGRESS_BAR_DELAY.getOrThrow();
 		private boolean confirmDelete = CONFIRM_DELETE.getOrThrow();
 		private Confirmer deleteConfirmer;
+		private boolean includeSearchField = true;
+		private boolean includeStatusPanel = true;
+		private boolean closeAddDialog = false;
 
 		final ControlMap controlMap;
 
@@ -2278,6 +2281,9 @@ public class EntityTablePanel extends JPanel {
 			this.conditionPanelFactory = config.conditionPanelFactory;
 			this.conditionComponents = new HashMap<>(config.conditionComponents);
 			this.excludeHiddenColumns = config.excludeHiddenColumns;
+			this.includeSearchField = config.includeSearchField;
+			this.includeStatusPanel = config.includeStatusPanel;
+			this.closeAddDialog = config.closeAddDialog;
 		}
 
 		/**
@@ -2711,6 +2717,43 @@ public class EntityTablePanel extends JPanel {
 			return this;
 		}
 
+		/**
+		 * Specifies whether the table search field is included on the south panel.
+		 * <p>Has no effect if south panel is not included.
+		 * @return this Config instance
+		 * @see #includeSouthPanel(boolean)
+		 */
+		public Config includeSearchField(boolean includeSearchField) {
+			this.includeSearchField = includeSearchField;
+			return this;
+		}
+
+		/**
+		 * Specifies whether the status panel is included on the south panel,
+		 * that is, the one displaying statistics on the number of rows in the table,
+		 * selected, filtered etc.
+		 * <p>Has no effect if south panel is not included.
+		 * @return this Config instance
+		 * @see #includeSouthPanel(boolean)
+		 */
+		public Config includeStatusPanel(boolean includeStatusPanel) {
+			this.includeStatusPanel = includeStatusPanel;
+			return this;
+		}
+
+		/**
+		 * Specifies whether the add entity dialog is closed after each insert, or if it should stay open.
+		 * <p>Default false.
+		 * <p>Has no effect if the Add control is not enabled.
+		 * @return this Config instance
+		 * @see #includeAddControl(boolean)
+		 * @see AddEntityDialogBuilder#closeDialog(boolean)
+		 */
+		public Config closeAddDialog(boolean closeAddDialog) {
+			this.closeAddDialog = closeAddDialog;
+			return this;
+		}
+
 		private ControlKey<?> popupMenuEditAttributeControl() {
 			return editAttributeSelection == SelectionMode.MENU ?
 							EDIT_ATTRIBUTE_CONTROLS :
@@ -3040,13 +3083,9 @@ public class EntityTablePanel extends JPanel {
 
 		private SouthPanel() {
 			super(new BorderLayout());
-			add(Components.splitPane()
-							.continuousLayout(true)
-							.leftComponent(Components.panel()
-											.layout(new GridBagLayout())
-											.add(table.searchField(), createHorizontalFillConstraints()))
-							.rightComponent(statusPanel())
-							.build(), BorderLayout.CENTER);
+			if (configuration.includeSearchField || configuration.includeStatusPanel) {
+				add(centerComponent(), BorderLayout.CENTER);
+			}
 			add(refreshButtonToolBar, BorderLayout.WEST);
 			if (configuration.includeToolBar) {
 				JToolBar southToolBar = createToolBar();
@@ -3060,6 +3099,29 @@ public class EntityTablePanel extends JPanel {
 		public void updateUI() {
 			super.updateUI();
 			Utilities.updateUI(statusPanel);
+		}
+
+		private JComponent centerComponent() {
+			if (configuration.includeStatusPanel && configuration.includeSearchField) {
+				return Components.splitPane()
+								.continuousLayout(true)
+								.leftComponent(Components.panel()
+												.layout(new GridBagLayout())
+												.add(table.searchField(), createHorizontalFillConstraints()))
+								.rightComponent(statusPanel())
+								.build();
+			}
+			if (configuration.includeStatusPanel) {
+				return statusPanel();
+			}
+
+			return Components.splitPane()
+							.continuousLayout(true)
+							.leftComponent(Components.panel()
+											.layout(new GridBagLayout())
+											.add(table.searchField(), createHorizontalFillConstraints()))
+							.rightComponent(new JLabel())
+							.build();
 		}
 
 		private StatusPanel statusPanel() {
