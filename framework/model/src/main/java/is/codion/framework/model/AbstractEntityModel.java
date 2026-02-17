@@ -164,9 +164,9 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	}
 
 	private void bindEventsInternal() {
-		editModel.afterInsert().addConsumer(this::onInsert);
-		editModel.afterUpdate().addConsumer(this::onUpdate);
-		editModel.afterDelete().addConsumer(this::onDelete);
+		editModel.events().afterInsert().addConsumer(this::onInsert);
+		editModel.events().afterUpdate().addConsumer(this::onUpdate);
+		editModel.events().afterDelete().addConsumer(this::onDelete);
 		if (containsTableModel()) {
 			tableModel.selection().indexes().addListener(this::selectionChanged);
 		}

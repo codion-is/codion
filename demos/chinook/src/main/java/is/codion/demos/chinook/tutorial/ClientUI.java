@@ -78,7 +78,7 @@ public final class ClientUI {
 										.build();
 
 		// show a message after insert
-		editModel.afterInsert().addConsumer(insertedEntities ->
+		editModel.events().afterInsert().addConsumer(insertedEntities ->
 						JOptionPane.showMessageDialog(artistNameTextField,
 										"Inserted: " + insertedEntities.iterator().next()));
 
@@ -148,7 +148,7 @@ public final class ClientUI {
 										.build();
 
 		// show a message after insert
-		editModel.afterInsert().addConsumer(insertedEntities ->
+		editModel.events().afterInsert().addConsumer(insertedEntities ->
 						JOptionPane.showMessageDialog(titleTextField,
 										"Inserted: " + insertedEntities.iterator().next()));
 

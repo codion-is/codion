@@ -214,9 +214,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	private void bindEvents() {
-		editModel.afterInsert().addConsumer(this::onInsert);
-		editModel.afterUpdate().addConsumer(this::onUpdate);
-		editModel.afterDelete().addConsumer(this::onDelete);
+		editModel.events().afterInsert().addConsumer(this::onInsert);
+		editModel.events().afterUpdate().addConsumer(this::onUpdate);
+		editModel.events().afterDelete().addConsumer(this::onDelete);
 		editModel.editor().entity().addConsumer(this::onEntityChanged);
 		selection().item().addConsumer(editModel.editor().entity()::set);
 

@@ -88,6 +88,16 @@ public interface EntityEditModel {
 	EntityPersistence persistence();
 
 	/**
+	 * @return the {@link PersistTasks}
+	 */
+	PersistTasks tasks();
+
+	/**
+	 * @return the {@link PersistEvents}
+	 */
+	PersistEvents events();
+
+	/**
 	 * @return the underlying domain entities
 	 */
 	Entities entities();
@@ -110,8 +120,8 @@ public interface EntityEditModel {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
-	 * @see Settings#beforeInsert()
-	 * @see #afterInsert()
+	 * @see PersistEvents#beforeInsert()
+	 * @see PersistEvents#afterInsert()
 	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
@@ -125,8 +135,8 @@ public interface EntityEditModel {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
-	 * @see #beforeInsert()
-	 * @see #afterInsert()
+	 * @see PersistEvents#beforeInsert()
+	 * @see PersistEvents#afterInsert()
 	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
@@ -141,8 +151,8 @@ public interface EntityEditModel {
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
 	 * @throws UpdateEntityException in case the active entity is not modified
-	 * @see #beforeUpdate()
-	 * @see #afterUpdate()
+	 * @see PersistEvents#beforeUpdate()
+	 * @see PersistEvents#afterUpdate()
 	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
@@ -158,8 +168,8 @@ public interface EntityEditModel {
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
 	 * @throws UpdateEntityException in case any of the given entities are not modified
-	 * @see #beforeUpdate()
-	 * @see #afterUpdate()
+	 * @see PersistEvents#beforeUpdate()
+	 * @see PersistEvents#afterUpdate()
 	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
@@ -170,8 +180,8 @@ public interface EntityEditModel {
 	 * @return the deleted entity
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
-	 * @see #beforeDelete()
-	 * @see #afterDelete()
+	 * @see PersistEvents#beforeDelete()
+	 * @see PersistEvents#afterDelete()
 	 * @see Settings#deleteEnabled()
 	 */
 	Entity delete();
@@ -182,101 +192,145 @@ public interface EntityEditModel {
 	 * @return the deleted entities
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
-	 * @see #beforeDelete()
-	 * @see #afterDelete()
+	 * @see PersistEvents#beforeDelete()
+	 * @see PersistEvents#afterDelete()
 	 * @see Settings#deleteEnabled()
 	 */
 	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
-	 * Creates a new {@link EditTask} instance for inserting the active entity.
-	 * @return a new {@link EditTask} instance
-	 * @throws IllegalStateException in inserting is not enabled
-	 * @throws ValidationException in case validation fails
-	 * @see Settings#insertEnabled()
+	 * Provides {@link PersistTask}s
 	 */
-	EditTask insertTask();
+	interface PersistTasks {
+
+		/**
+		 * Creates a new {@link PersistTask} instance for inserting the active entity.
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException if inserting is not enabled
+		 * @throws ValidationException in case validation fails
+		 * @see EntityEditor#entity()
+		 * @see Settings#insertEnabled()
+		 */
+		PersistTask insert();
+
+		/**
+		 * Creates a new {@link PersistTask} instance for inserting the given entity.
+		 * @param entity the entity to insert
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException if inserting is not enabled
+		 * @throws ValidationException in case validation fails
+		 * @see Settings#insertEnabled()
+		 */
+		PersistTask insert(Entity entity);
+
+		/**
+		 * Creates a new {@link PersistTask} instance for inserting the given entities.
+		 * @param entities the entities to insert
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException if inserting is not enabled
+		 * @throws ValidationException in case validation fails
+		 * @see Settings#insertEnabled()
+		 */
+		PersistTask insert(Collection<Entity> entities);
+
+		/**
+		 * Creates a new {@link PersistTask} instance for updating the active entity.
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException in case the active entity is unmodified or if updating is not enabled
+		 * @throws ValidationException in case validation fails
+		 * @see EntityEditor#entity()
+		 * @see Settings#updateEnabled()
+		 */
+		PersistTask update();
+
+		/**
+		 * Creates a new {@link PersistTask} instance for updating the given entity.
+		 * @param entity the entity to update
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException in case the given entity is unmodified or if updating is not enabled
+		 * @throws ValidationException in case validation fails
+		 * @see Settings#updateEnabled()
+		 */
+		PersistTask update(Entity entity);
+
+		/**
+		 * Creates a new {@link PersistTask} instance for updating the given entities.
+		 * @param entities the entities to update
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException in case any of the given entities are unmodified or if updating is not enabled
+		 * @throws ValidationException in case validation fails
+		 * @see Settings#updateEnabled()
+		 */
+		PersistTask update(Collection<Entity> entities);
+
+		/**
+		 * Creates a new {@link PersistTask} instance for deleting the active entity.
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException if deleting is not enabled
+		 * @see EntityEditor#entity()
+		 * @see Settings#deleteEnabled()
+		 */
+		PersistTask delete();
+
+		/**
+		 * Creates a new {@link PersistTask} instance for deleting the given entity.
+		 * @param entity the entity to delete
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException if deleting is not enabled
+		 * @see Settings#deleteEnabled()
+		 */
+		PersistTask delete(Entity entity);
+
+		/**
+		 * Creates a new {@link PersistTask} instance for deleting the given entities.
+		 * @param entities the entities to delete
+		 * @return a new {@link PersistTask} instance
+		 * @throws IllegalStateException if deleting is not enabled
+		 * @see Settings#deleteEnabled()
+		 */
+		PersistTask delete(Collection<Entity> entities);
+	}
 
 	/**
-	 * Creates a new {@link EditTask} instance for inserting the given entities.
-	 * @param entities the entities to insert
-	 * @return a new {@link EditTask} instance
-	 * @throws IllegalStateException in inserting is not enabled
-	 * @throws ValidationException in case validation fails
-	 * @see Settings#insertEnabled()
+	 * Provides event observers for the edit model.
 	 */
-	EditTask insertTask(Collection<Entity> entities);
+	interface PersistEvents {
 
-	/**
-	 * Creates a new {@link EditTask} instance for updating the active entity.
-	 * @return a new {@link EditTask} instance
-	 * @throws IllegalStateException in case the active entity is unmodified or if updating is not enabled
-	 * @throws ValidationException in case validation fails
-	 * @see Settings#updateEnabled()
-	 */
-	EditTask updateTask();
+		/**
+		 * @return an observer notified before insert is performed, after validation
+		 */
+		Observer<Collection<Entity>> beforeInsert();
 
-	/**
-	 * Creates a new {@link EditTask} instance for updating the given entities.
-	 * @param entities the entities to update
-	 * @return a new {@link EditTask} instance
-	 * @throws IllegalStateException in case any of the given entities are unmodified or if updating is not enabled
-	 * @throws ValidationException in case validation fails
-	 * @see Settings#updateEnabled()
-	 */
-	EditTask updateTask(Collection<Entity> entities);
+		/**
+		 * @return an observer notified after insert is performed
+		 */
+		Observer<Collection<Entity>> afterInsert();
 
-	/**
-	 * Creates a new {@link EditTask} instance for deleting the active entity.
-	 * @return a new {@link EditTask} instance
-	 * @throws IllegalStateException in deleting is not enabled
-	 * @see Settings#deleteEnabled()
-	 */
-	EditTask deleteTask();
+		/**
+		 * @return an observer notified before update is performed, after validation
+		 */
+		Observer<Collection<Entity>> beforeUpdate();
 
-	/**
-	 * Creates a new {@link EditTask} instance for deleting the given entities.
-	 * @param entities the entities to delete
-	 * @return a new {@link EditTask} instance
-	 * @throws IllegalStateException in deleting is not enabled
-	 * @see Settings#deleteEnabled()
-	 */
-	EditTask deleteTask(Collection<Entity> entities);
+		/**
+		 * @return an observer notified after update is performed, with the updated entities, mapped to their state before the update
+		 */
+		Observer<Map<Entity, Entity>> afterUpdate();
 
-	/**
-	 * @return an observer notified before insert is performed, after validation
-	 */
-	Observer<Collection<Entity>> beforeInsert();
+		/**
+		 * @return an observer notified before delete is performed
+		 */
+		Observer<Collection<Entity>> beforeDelete();
 
-	/**
-	 * @return an observer notified after insert is performed
-	 */
-	Observer<Collection<Entity>> afterInsert();
+		/**
+		 * @return an observer notified after delete is performed
+		 */
+		Observer<Collection<Entity>> afterDelete();
 
-	/**
-	 * @return an observer notified before update is performed, after validation
-	 */
-	Observer<Collection<Entity>> beforeUpdate();
-
-	/**
-	 * @return an observer notified after update is performed, with the updated entities, mapped to their state before the update
-	 */
-	Observer<Map<Entity, Entity>> afterUpdate();
-
-	/**
-	 * @return an observer notified before delete is performed
-	 */
-	Observer<Collection<Entity>> beforeDelete();
-
-	/**
-	 * @return an observer notified after delete is performed
-	 */
-	Observer<Collection<Entity>> afterDelete();
-
-	/**
-	 * @return an observer notified each time one or more entities have been persisted, as in, inserted, updated or deleted via this model
-	 */
-	Observer<Collection<Entity>> persisted();
+		/**
+		 * @return an observer notified each time one or more entities have been persisted, as in, inserted, updated or deleted via this model
+		 */
+		Observer<Collection<Entity>> persisted();
+	}
 
 	/**
 	 * The edit model settings.
@@ -327,21 +381,21 @@ public interface EntityEditModel {
 	}
 
 	/**
-	 * Represents a task for inserting, updating or deleting entities, split up for use with a background thread.
+	 * Represents a task for persisting entities, inserting, updating or deleting, split up for use with a background thread.
 	 * {@snippet :
-	 *   EditTask insert = editModel.createInsert();
+	 *   PersistTask insert = editModel.createInsert();
 	 *
-	 *   EditTask.Task task = insert.prepare();
+	 *   PersistTask.Task task = insert.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   EditTask.Result result = task.perform();
+	 *   PersistTask.Result result = task.perform();
 	 *
 	 *   Collection<Entity> insertedEntities = result.handle();
 	 *}
-	 * {@link Task#perform()} may be called on a background thread while {@link EditTask#prepare()}
+	 * {@link Task#perform()} may be called on a background thread while {@link PersistTask#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
-	interface EditTask {
+	interface PersistTask {
 
 		/**
 		 * Notifies listeners that an operation is about to be performed.

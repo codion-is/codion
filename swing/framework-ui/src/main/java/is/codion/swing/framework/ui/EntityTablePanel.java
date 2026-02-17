@@ -43,7 +43,7 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditModel.EditTask;
+import is.codion.framework.model.EntityEditModel.PersistTask;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -1543,7 +1543,7 @@ public class EntityTablePanel extends JPanel {
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.query().condition().changed().addListener(this::onConditionChanged);
-		tableModel.editModel().persisted().addListener(table::repaint);
+		tableModel.editModel().events().persisted().addListener(table::repaint);
 	}
 
 	private void enableConditionPanelRefreshOnEnter(JComponent component) {
@@ -1828,11 +1828,11 @@ public class EntityTablePanel extends JPanel {
 			if (!configuration.confirmDelete || confirmDelete()) {
 				List<Entity> selectedItems = tableModel().selection().items().get();
 				Dialogs.progressWorker()
-								.task(tableModel().editModel().deleteTask(selectedItems).prepare()::perform)
+								.task(tableModel().editModel().tasks().delete(selectedItems).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
 								.onException(this::onException)
-								.onResult(EditTask.Result::handle)
+								.onResult(PersistTask.Result::handle)
 								.execute();
 			}
 		}

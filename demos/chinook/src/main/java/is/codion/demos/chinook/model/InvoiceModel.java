@@ -45,7 +45,7 @@ public final class InvoiceModel extends SwingEntityModel {
 
 		// We listen for invoice line modifications in order to refresh the
 		// associated invoices in the table model to display the updated total.
-		invoiceLineEditModel.persisted().addConsumer(this::onInvoiceLinesModified);
+		invoiceLineEditModel.events().persisted().addConsumer(this::onInvoiceLinesModified);
 	}
 
 	private void onInvoiceLinesModified(Collection<Entity> invoiceLines) {

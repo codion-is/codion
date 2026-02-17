@@ -119,7 +119,7 @@ public final class FrameworkModelDemo {
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Listen for entity changes
-		editModel.afterInsert().addConsumer(entities -> {
+		editModel.events().afterInsert().addConsumer(entities -> {
 			System.out.println("Inserted: " + entities);
 		});
 
@@ -188,9 +188,9 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
 
 		// Update summary when details change
-		invoiceLineModel.editModel().afterInsert().addConsumer(entities -> updateInvoiceTotal());
-		invoiceLineModel.editModel().afterUpdate().addConsumer(entities -> updateInvoiceTotal());
-		invoiceLineModel.editModel().afterDelete().addConsumer(entities -> updateInvoiceTotal());
+		invoiceLineModel.editModel().events().afterInsert().addConsumer(entities -> updateInvoiceTotal());
+		invoiceLineModel.editModel().events().afterUpdate().addConsumer(entities -> updateInvoiceTotal());
+		invoiceLineModel.editModel().events().afterDelete().addConsumer(entities -> updateInvoiceTotal());
 		// end::eventHandling[]
 	}
 

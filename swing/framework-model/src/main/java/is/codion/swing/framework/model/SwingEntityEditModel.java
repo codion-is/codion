@@ -71,7 +71,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
 															SwingComponentModels componentModels, EntityPersistence persistence) {
 		super(new SwingEntityEditor(entityType, connectionProvider, componentModels), persistence);
-		persisted().addListener(() -> editor().comboBoxModels().column().values()
+		events().persisted().addListener(() -> editor().comboBoxModels().column().values()
 						.forEach(comboBoxModel -> comboBoxModel.items().refresh()));
 	}
 

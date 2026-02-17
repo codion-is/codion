@@ -35,7 +35,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException.InvalidAttribute;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditModel.EditTask;
+import is.codion.framework.model.EntityEditModel.PersistTask;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.swing.common.ui.Utilities;
@@ -1425,7 +1425,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmInsert()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().insertTask().prepare()::perform)
+								.task(editPanel.editModel().tasks().insert().prepare()::perform)
 								.title(MESSAGES.getString("inserting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1434,7 +1434,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			}
 		}
 
-		private void handleResult(EditTask.Result result) {
+		private void handleResult(PersistTask.Result result) {
 			Collection<Entity> inserted = result.handle();
 			onInsert.forEach(consumer -> consumer.accept(inserted));
 			if (editPanel.configuration.clearAfterInsert) {
@@ -1504,7 +1504,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmUpdate()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().updateTask().prepare()::perform)
+								.task(editPanel.editModel().tasks().update().prepare()::perform)
 								.title(MESSAGES.getString("updating"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1513,7 +1513,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			}
 		}
 
-		private void handleResult(EditTask.Result result) {
+		private void handleResult(PersistTask.Result result) {
 			Collection<Entity> updated = result.handle();
 			onUpdate.forEach(consumer -> consumer.accept(updated));
 			editPanel.inputFocus.afterUpdate().request();
@@ -1577,7 +1577,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmDelete()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().deleteTask().prepare()::perform)
+								.task(editPanel.editModel().tasks().delete().prepare()::perform)
 								.title(MESSAGES.getString("deleting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1586,7 +1586,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			}
 		}
 
-		private void handleResult(EditTask.Result result) {
+		private void handleResult(PersistTask.Result result) {
 			Collection<Entity> deleted = result.handle();
 			onDelete.forEach(consumer -> consumer.accept(deleted));
 			editPanel.inputFocus.initial().request();

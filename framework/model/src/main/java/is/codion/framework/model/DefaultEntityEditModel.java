@@ -58,7 +58,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 	private final EntityEditor editor;
 	private final EntityPersistence persistence;
-	private final Events events;
+	private final DefaultPersistTasks tasks;
+	private final DefaultPersistEvents events;
 	private final DefaultSettings settings;
 
 	/**
@@ -98,7 +99,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		this.editor = requireNonNull(editor);
 		this.persistence = requireNonNull(persistence);
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
-		this.events = new Events(settings.publishPersistenceEvents);
+		this.tasks = new DefaultPersistTasks();
+		this.events = new DefaultPersistEvents(settings.publishPersistenceEvents);
 	}
 
 	@Override
@@ -147,98 +149,43 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
+	public final PersistTasks tasks() {
+		return tasks;
+	}
+
+	@Override
+	public final PersistEvents events() {
+		return events;
+	}
+
+	@Override
 	public final Entity insert() {
-		return insertTask().prepare().perform().handle().iterator().next();
+		return tasks.insert().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
 	public final Collection<Entity> insert(Collection<Entity> entities) {
-		return insertTask(entities).prepare().perform().handle();
+		return tasks.insert(entities).prepare().perform().handle();
 	}
 
 	@Override
 	public final Entity update() {
-		return updateTask().prepare().perform().handle().iterator().next();
+		return tasks.update().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
 	public final Collection<Entity> update(Collection<Entity> entities) {
-		return updateTask(entities).prepare().perform().handle();
+		return tasks.update(entities).prepare().perform().handle();
 	}
 
 	@Override
 	public final Entity delete() {
-		return deleteTask().prepare().perform().handle().iterator().next();
+		return tasks.delete().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
 	public final Collection<Entity> delete(Collection<Entity> entities) {
-		return deleteTask(entities).prepare().perform().handle();
-	}
-
-	@Override
-	public final EditTask insertTask() {
-		return new InsertEntity();
-	}
-
-	@Override
-	public final EditTask insertTask(Collection<Entity> entities) {
-		return new InsertEntities(entities);
-	}
-
-	@Override
-	public final EditTask updateTask() {
-		return new UpdateEntity();
-	}
-
-	@Override
-	public final EditTask updateTask(Collection<Entity> entities) {
-		return new UpdateEntities(entities);
-	}
-
-	@Override
-	public final EditTask deleteTask() {
-		return new DeleteEntity();
-	}
-
-	@Override
-	public final EditTask deleteTask(Collection<Entity> entities) {
-		return new DeleteEntities(entities);
-	}
-
-	@Override
-	public final Observer<Collection<Entity>> beforeInsert() {
-		return events.beforeInsert.observer();
-	}
-
-	@Override
-	public final Observer<Collection<Entity>> afterInsert() {
-		return events.afterInsert.observer();
-	}
-
-	@Override
-	public final Observer<Collection<Entity>> beforeUpdate() {
-		return events.beforeUpdate.observer();
-	}
-
-	@Override
-	public final Observer<Map<Entity, Entity>> afterUpdate() {
-		return events.afterUpdate.observer();
-	}
-
-	@Override
-	public final Observer<Collection<Entity>> beforeDelete() {
-		return events.beforeDelete.observer();
-	}
-
-	@Override
-	public final Observer<Collection<Entity>> afterDelete() {
-		return events.afterDelete.observer();
-	}
-
-	@Override
-	public final Observer<Collection<Entity>> persisted() {
-		return events.persisted.observer();
+		return tasks.delete(entities).prepare().perform().handle();
 	}
 
 	/**
@@ -271,7 +218,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		throw new IllegalStateException("Updated entity not found");
 	}
 
-	private final class InsertEntity implements EditTask {
+	private final class InsertEntity implements PersistTask {
 
 		private final Entity entity = activeEntity();
 
@@ -319,14 +266,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Collection<Entity> handle() {
 				editor.entity().replace(insertedEntity);
 				Set<Entity> inserted = singleton(insertedEntity);
-				events.notifyInserted(inserted);
+				events.inserted(inserted);
 
 				return inserted;
 			}
 		}
 	}
 
-	private final class InsertEntities implements EditTask {
+	private final class InsertEntities implements PersistTask {
 
 		private final Collection<Entity> entities;
 
@@ -363,14 +310,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				events.notifyInserted(insertedEntities);
+				events.inserted(insertedEntities);
 
 				return insertedEntities;
 			}
 		}
 	}
 
-	private final class UpdateEntity implements EditTask {
+	private final class UpdateEntity implements PersistTask {
 
 		private final Entity entity = editor.entity().get().copy().mutable();
 
@@ -415,14 +362,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Collection<Entity> handle() {
 				Entity editorEntity = editor.entity().get();
 				editor.entity().replace(updatedEntity);
-				events.notifyUpdated(singletonMap(editorEntity, updatedEntity));
+				events.updated(singletonMap(editorEntity, updatedEntity));
 
 				return singleton(updatedEntity);
 			}
 		}
 	}
 
-	private final class UpdateEntities implements EditTask {
+	private final class UpdateEntities implements PersistTask {
 
 		private final Collection<Entity> entities;
 
@@ -468,14 +415,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				events.notifyUpdated(originalEntityMap(entities, updatedEntities));
+				events.updated(originalEntityMap(entities, updatedEntities));
 
 				return updatedEntities;
 			}
 		}
 	}
 
-	private final class DeleteEntity implements EditTask {
+	private final class DeleteEntity implements PersistTask {
 
 		private final Entity entity = activeEntity();
 
@@ -520,14 +467,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Collection<Entity> handle() {
 				editor.defaults();
 				Set<Entity> deleted = singleton(deletedEntity);
-				events.notifyDeleted(deleted);
+				events.deleted(deleted);
 
 				return deleted;
 			}
 		}
 	}
 
-	private final class DeleteEntities implements EditTask {
+	private final class DeleteEntities implements PersistTask {
 
 		private final Collection<Entity> entities;
 
@@ -564,14 +511,62 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Collection<Entity> handle() {
-				events.notifyDeleted(deletedEntities);
+				events.deleted(deletedEntities);
 
 				return deletedEntities;
 			}
 		}
 	}
 
-	private static final class Events {
+	private final class DefaultPersistTasks implements PersistTasks {
+
+		@Override
+		public PersistTask insert() {
+			return new InsertEntity();
+		}
+
+		@Override
+		public PersistTask insert(Entity entity) {
+			return insert(singleton(requireNonNull(entity)));
+		}
+
+		@Override
+		public PersistTask insert(Collection<Entity> entities) {
+			return new InsertEntities(entities);
+		}
+
+		@Override
+		public PersistTask update() {
+			return new UpdateEntity();
+		}
+
+		@Override
+		public PersistTask update(Entity entity) {
+			return update(singleton(requireNonNull(entity)));
+		}
+
+		@Override
+		public PersistTask update(Collection<Entity> entities) {
+			return new UpdateEntities(entities);
+		}
+
+		@Override
+		public PersistTask delete() {
+			return new DeleteEntity();
+		}
+
+		@Override
+		public PersistTask delete(Entity entity) {
+			return delete(singleton(requireNonNull(entity)));
+		}
+
+		@Override
+		public PersistTask delete(Collection<Entity> entities) {
+			return new DeleteEntities(entities);
+		}
+	}
+
+	private static final class DefaultPersistEvents implements PersistEvents {
 
 		private final Event<Collection<Entity>> beforeInsert = Event.event();
 		private final Event<Collection<Entity>> afterInsert = Event.event();
@@ -583,11 +578,47 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private final ObservableState publishPersistenceEvents;
 
-		private Events(ObservableState publishPersistenceEvents) {
+		private DefaultPersistEvents(ObservableState publishPersistenceEvents) {
 			this.publishPersistenceEvents = publishPersistenceEvents;
 		}
 
-		private void notifyInserted(Collection<Entity> inserted) {
+		@Override
+		public Observer<Collection<Entity>> beforeInsert() {
+			return beforeInsert.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> afterInsert() {
+			return afterInsert.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> beforeUpdate() {
+			return beforeUpdate.observer();
+		}
+
+		@Override
+		public Observer<Map<Entity, Entity>> afterUpdate() {
+			return afterUpdate.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> beforeDelete() {
+			return beforeDelete.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> afterDelete() {
+			return afterDelete.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> persisted() {
+			return persisted.observer();
+		}
+
+		private void inserted(Collection<Entity> inserted) {
+			requireNonNull(inserted);
 			afterInsert.accept(inserted);
 			persisted.accept(inserted);
 			if (publishPersistenceEvents.is()) {
@@ -595,7 +626,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			}
 		}
 
-		private void notifyUpdated(Map<Entity, Entity> updated) {
+		private void updated(Map<Entity, Entity> updated) {
+			requireNonNull(updated);
 			afterUpdate.accept(updated);
 			persisted.accept(updated.values());
 			if (publishPersistenceEvents.is()) {
@@ -603,7 +635,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			}
 		}
 
-		private void notifyDeleted(Collection<Entity> deleted) {
+		private void deleted(Collection<Entity> deleted) {
+			requireNonNull(deleted);
 			afterDelete.accept(deleted);
 			persisted.accept(deleted);
 			if (publishPersistenceEvents.is()) {

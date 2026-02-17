@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.model.EntityEditModel.EditTask.Result;
+import is.codion.framework.model.EntityEditModel.PersistTask.Result;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
@@ -117,7 +117,7 @@ final class EditAttributePanel<T> extends JPanel {
 		T value = componentValue.get();
 		toUpdate.forEach(entity -> editModel.editor().value(attribute).set(entity, value));
 		ProgressWorker.builder()
-						.task(editModel.updateTask(toUpdate.stream()
+						.task(editModel.tasks().update(toUpdate.stream()
 														.filter(Entity::modified)
 														.collect(toList()))
 										.prepare()::perform)
