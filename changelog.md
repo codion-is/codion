@@ -27,6 +27,7 @@ Codion Change Log
 - DefaultEntityEditModel persistence listeners moved to DefaultEntityEditor, inserted(), udpated() and deleted() removed.
 - DefaultEntityEditModel, notify before and after persist methods removed.
 - EntityEditModel.PersistEvents and PersistTasks added.
+- EntityEditModel.persistence() removed, protected DefaultEntityEditModel.persistence() added instead.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.PERSISTENCE_EVENTS renamed PERSISTENCE_AWARE, Builder.persistenceEvents() renamed persistenceAware().
 ### is.codion.swing.framework.ui

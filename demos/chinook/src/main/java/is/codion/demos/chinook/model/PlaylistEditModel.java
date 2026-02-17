@@ -34,7 +34,8 @@ import static is.codion.framework.domain.entity.Entity.primaryKeys;
 public final class PlaylistEditModel extends SwingEntityEditModel {
 
 	public PlaylistEditModel(EntityConnectionProvider connectionProvider) {
-		super(Playlist.TYPE, connectionProvider, new PlaylistPersistence());
+		super(Playlist.TYPE, connectionProvider);
+		persistence().set(new PlaylistPersistence());
 	}
 
 	private static final class PlaylistPersistence implements EntityPersistence {

@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,29 +58,18 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
 
 	private final EntityEditor editor;
-	private final EntityPersistence persistence;
+	private final EditPersistence persistence;
 	private final DefaultPersistTasks tasks;
 	private final DefaultPersistEvents events;
 	private final DefaultSettings settings;
 
 	/**
-	 * Instantiates a new {@link DefaultEntityEditModel} based on the given entity type.
+	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
 	 * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
 	 */
 	public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(new DefaultEntityEditor(entityType, connectionProvider), new EntityPersistence() {});
-	}
-
-	/**
-	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
-	 * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
-	 * @param connectionProvider the {@link EntityConnectionProvider} instance
-	 * @param persistence the persistence implementation
-	 */
-	public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																EntityPersistence persistence) {
-		this(new DefaultEntityEditor(entityType, connectionProvider), persistence);
+		this(new DefaultEntityEditor(entityType, connectionProvider));
 	}
 
 	/**
@@ -87,17 +77,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 * @param editor the editor
 	 */
 	public DefaultEntityEditModel(EntityEditor editor) {
-		this(editor, new EntityPersistence() {});
-	}
-
-	/**
-	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
-	 * @param editor the editor
-	 * @param persistence the persistence implementation
-	 */
-	public DefaultEntityEditModel(EntityEditor editor, EntityPersistence persistence) {
 		this.editor = requireNonNull(editor);
-		this.persistence = requireNonNull(persistence);
+		this.persistence = new EditPersistence();
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.tasks = new DefaultPersistTasks();
 		this.events = new DefaultPersistEvents(settings.publishPersistenceEvents);
@@ -144,11 +125,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final EntityPersistence persistence() {
-		return persistence;
-	}
-
-	@Override
 	public final PersistTasks tasks() {
 		return tasks;
 	}
@@ -186,6 +162,13 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	@Override
 	public final Collection<Entity> delete(Collection<Entity> entities) {
 		return tasks.delete(entities).prepare().perform().handle();
+	}
+
+	/**
+	 * @return the {@link EditPersistence} used by this edit model
+	 */
+	protected final EditPersistence persistence() {
+		return persistence;
 	}
 
 	/**
@@ -250,7 +233,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Result perform() {
 				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entity);
 
-				return new InsertResult(persistence.insert(entity, connection()));
+				return new InsertResult(persistence.get().insert(entity, connection()));
 			}
 		}
 
@@ -296,7 +279,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Result perform() {
 				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entities);
 
-				return new InsertResult(unmodifiableCollection(persistence.insert(entities, connection())));
+				return new InsertResult(unmodifiableCollection(persistence.get().insert(entities, connection())));
 			}
 		}
 
@@ -346,7 +329,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Result perform() {
 				LOG.debug("{} - update {}", DefaultEntityEditModel.this, entity);
 
-				return new UpdateResult(persistence.update(entity, connection()));
+				return new UpdateResult(persistence.get().update(entity, connection()));
 			}
 		}
 
@@ -401,7 +384,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			public Result perform() {
 				LOG.debug("{} - update {}", DefaultEntityEditModel.this, entities);
 
-				return new UpdateResult(persistence.update(entities, connection()));
+				return new UpdateResult(persistence.get().update(entities, connection()));
 			}
 		}
 
@@ -449,7 +432,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			@Override
 			public Result perform() {
 				LOG.debug("{} - delete {}", DefaultEntityEditModel.this, entity);
-				persistence.delete(entity, connection());
+				persistence.get().delete(entity, connection());
 
 				return new DeleteResult(entity);
 			}
@@ -495,7 +478,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			@Override
 			public Result perform() {
 				LOG.debug("{} - delete {}", DefaultEntityEditModel.this, entities);
-				persistence.delete(entities, connection());
+				persistence.get().delete(entities, connection());
 
 				return new DeleteResult(entities);
 			}
@@ -563,6 +546,30 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		@Override
 		public PersistTask delete(Collection<Entity> entities) {
 			return new DeleteEntities(entities);
+		}
+	}
+
+	/**
+	 * Manages the {@link EntityPersistence} used by this model
+	 */
+	protected static final class EditPersistence {
+
+		private static final EntityPersistence DEFAULT = new EntityPersistence() {};
+
+		private EntityPersistence instance = DEFAULT;
+
+		/**
+		 * @return the {@link EntityPersistence} used by this edit model
+		 */
+		public EntityPersistence get() {
+			return instance;
+		}
+
+		/**
+		 * @param persistence the {@link EntityPersistence} to use, default is set if null
+		 */
+		public void set(@Nullable EntityPersistence persistence) {
+			this.instance = persistence == null ? DEFAULT : persistence;
 		}
 	}
 

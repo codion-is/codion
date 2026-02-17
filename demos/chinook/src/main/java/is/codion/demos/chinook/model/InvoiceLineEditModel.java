@@ -38,7 +38,8 @@ import static is.codion.framework.domain.entity.Entity.primaryKeys;
 public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
-		super(InvoiceLine.TYPE, connectionProvider, new InvoiceLinePersistence());
+		super(InvoiceLine.TYPE, connectionProvider);
+		persistence().set(new InvoiceLinePersistence());
 		// We populate the unit price when the track is edited
 		Observer<Entity> trackEdited = editor().value(InvoiceLine.TRACK_FK).edited();
 		trackEdited.when(Objects::nonNull)

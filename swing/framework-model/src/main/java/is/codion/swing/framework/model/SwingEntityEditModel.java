@@ -22,7 +22,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DefaultEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityPersistence;
 import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 
 /**
@@ -43,34 +42,11 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
 	 * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
-	 * @param persistence the persistence implementation
-	 */
-	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-															EntityPersistence persistence) {
-		this(entityType, connectionProvider, new SwingComponentModels(), persistence);
-	}
-
-	/**
-	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
-	 * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
-	 * @param connectionProvider the {@link EntityConnectionProvider} instance
 	 * @param componentModels the component models
 	 */
 	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
 															SwingComponentModels componentModels) {
-		this(entityType, connectionProvider, componentModels, new EntityPersistence() {});
-	}
-
-	/**
-	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
-	 * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
-	 * @param connectionProvider the {@link EntityConnectionProvider} instance
-	 * @param componentModels the component models
-	 * @param persistence the persistence implementation
-	 */
-	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-															SwingComponentModels componentModels, EntityPersistence persistence) {
-		super(new SwingEntityEditor(entityType, connectionProvider, componentModels), persistence);
+		super(new SwingEntityEditor(entityType, connectionProvider, componentModels));
 		events().persisted().addListener(() -> editor().comboBoxModels().column().values()
 						.forEach(comboBoxModel -> comboBoxModel.items().refresh()));
 	}
