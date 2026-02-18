@@ -351,6 +351,4 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 			return weakReference.get();
 		}
 	}
-
-	private interface Lock {}
 }
