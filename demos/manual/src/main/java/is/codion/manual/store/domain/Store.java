@@ -108,6 +108,7 @@ public final class Store extends DomainModel {
 										Customer.ACTIVE.as()
 														.column()
 														.caption("Active")
+														.nullable(false)
 														.withDefault(true)
 														.defaultValue(true))
 						// tag::formatter[]

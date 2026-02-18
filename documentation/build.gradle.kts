@@ -109,7 +109,7 @@ tasks.asciidoctor {
         modules {
             diagram.use()
         }
-        attributes(mapOf("source-highlighter" to "prettify"))
+        attributes(mapOf("source-highlighter" to "rouge"))
     }
 }
 
