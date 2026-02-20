@@ -107,8 +107,8 @@ public interface EntityEditor {
 	/**
 	 * <p>Returns an {@link ObservableState} indicating whether any values have been modified.
 	 * <p>Note that only existing entities are modified, new, or non-existing entities are never modified.
-	 * @return an {@link ObservableState} indicating the modified state of this entity
-	 * @see Modified#predicate()
+	 * @return an {@link ObservableState} indicating the modified state of this editor entity
+	 * @see Modified#additional()
 	 * @see Exists
 	 */
 	Modified modified();
@@ -305,7 +305,7 @@ public interface EntityEditor {
 	/**
 	 * Indicates whether the active entity is modified, that is, exists and has one or more modified attribute values.
 	 * @see #attributes()
-	 * @see #predicate()
+	 * @see #additional()
 	 */
 	interface Modified extends ObservableState {
 
@@ -319,17 +319,11 @@ public interface EntityEditor {
 		ObservableValueSet<Attribute<?>> attributes();
 
 		/**
-		 * Controls the 'modified' predicate for this {@link Modified} instance, which is responsible for providing
-		 * the modified state of the underlying entity.
-		 * @return the {@link Value} controlling the predicate used to check if the entity is modified
-		 * @see Entity#modified()
+		 * Controls the 'additional' modified state for this {@link Modified} instance,
+		 * which is combined with the entity modified state using OR.
+		 * @return the {@link Value} controlling the additional modified state
 		 */
-		Value<Predicate<Entity>> predicate();
-
-		/**
-		 * Updates the modified state
-		 */
-		void update();
+		Value<ObservableState> additional();
 	}
 
 	/**

@@ -762,13 +762,22 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	public void modified() {
-		State extraModified = State.builder()
-						.listener(editor.modified()::update)
-						.build();
-		editor.modified().predicate().update(modified -> modified.or(entity -> extraModified.is()));
+		State extraModified = State.state();
+		editor.modified().additional().set(extraModified);
 
 		editor.entity().set(employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN")));
+		assertFalse(editor.modified().is());
 		extraModified.set(true);
+		assertTrue(editor.modified().is());
+		extraModified.set(false);
+		assertFalse(editor.modified().is());
+		State extraModified2 = State.state(false);
+		editor.modified().additional().set(extraModified2);
+		assertFalse(editor.modified().is());
+		extraModified.set(true);// not listened to anymore
+		assertFalse(editor.modified().is());
+		extraModified2.set(true);
+		assertTrue(editor.modified().is());
 		// UpdateException from the EntityConnection since the entity isn't really modified
 		assertThrows(UpdateEntityException.class, () -> employeeEditModel.update());
 	}

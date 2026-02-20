@@ -26,6 +26,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueChange;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -612,9 +613,10 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		private final State modified = State.state();
 		private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
-		private final Value<Predicate<Entity>> predicate = Value.builder()
-						.nonNull((Predicate<Entity>) Entity::modified)
-						.listener(this::update)
+		private final Runnable additionalListener = this::update;
+		private final Value<ObservableState> additional = Value.builder()
+						.<ObservableState>nullable()
+						.changeConsumer(this::additionalChanged)
 						.build();
 
 		@Override
@@ -623,8 +625,8 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public Value<Predicate<Entity>> predicate() {
-			return predicate;
+		public Value<ObservableState> additional() {
+			return additional;
 		}
 
 		@Override
@@ -638,17 +640,30 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public void update() {
+		public Observer<Boolean> observer() {
+			return modified.observer();
+		}
+
+		private void update() {
 			boolean existing = exists.predicate.getOrThrow().test(entity.instance);
 			attributes.set(existing ? editorValues.keySet().stream()
 							.filter(entity.instance::modified)
 							.collect(toSet()) : emptySet());
-			modified.set(existing && predicate.getOrThrow().test(entity.instance));
+			modified.set(existing && entity.instance.modified() || additional.optional()
+							.map(ObservableState::is)
+							.orElse(false));
 		}
 
-		@Override
-		public Observer<Boolean> observer() {
-			return modified.observer();
+		private void additionalChanged(ValueChange<? super ObservableState> change) {
+			ObservableState previous = (ObservableState) change.previous();
+			if (previous != null) {
+				previous.removeListener(additionalListener);
+			}
+			ObservableState current = (ObservableState) change.current();
+			if (current != null) {
+				current.addListener(additionalListener);
+			}
+			update();
 		}
 	}
 
