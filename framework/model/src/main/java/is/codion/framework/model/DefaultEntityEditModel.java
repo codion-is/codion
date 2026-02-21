@@ -28,7 +28,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -203,7 +202,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 	private final class InsertEntity implements PersistTask {
 
-		private final Entity entity = activeEntity();
+		private final Entity entity = editor.entity().get().copy().mutable();
 
 		private InsertEntity() {
 			settings.verifyInsertEnabled();
@@ -215,16 +214,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			events.beforeInsert.accept(singleton(entity));
 
 			return new InsertTask();
-		}
-
-		private Entity activeEntity() {
-			Entity.Builder builder = editor.entity().get().copy().builder();
-			editor.entityDefinition().columns().definitions().stream()
-							.filter(ColumnDefinition::primaryKey)
-							.filter(ColumnDefinition::generated)
-							.forEach(column -> builder.clear(column.attribute()));
-
-			return builder.build();
 		}
 
 		private final class InsertTask implements Task {
@@ -319,7 +308,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private void verifyModified() {
 			if (!editor.modified().is()) {
-				throw new IllegalStateException("Entity is not modified: " + editor.entity().get());
+				throw new IllegalStateException("Entity is not modified: " + entity);
 			}
 		}
 
@@ -407,9 +396,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 	private final class DeleteEntity implements PersistTask {
 
-		private final Entity entity = activeEntity();
+		private final Entity entity = editor.entity().get().copy().mutable();
 
 		private DeleteEntity() {
+			entity.revert();
 			settings.verifyDeleteEnabled();
 		}
 
@@ -418,13 +408,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 			events.beforeDelete.accept(singleton(entity));
 
 			return new DeleteTask();
-		}
-
-		private Entity activeEntity() {
-			Entity copy = editor.entity().get().copy().mutable();
-			copy.revert();
-
-			return copy;
 		}
 
 		private final class DeleteTask implements Task {

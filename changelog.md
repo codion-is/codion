@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.70
 ### is.codion.framework.model
 - EntityEditor.Modified.predicate() replaced with ObservableState based additional().
+- DefaultEntityEditModel, no longer clears generated key columns on insert, minor refactoring.
 
 ## 0.18.69
 ### is.codion.common.utilities
