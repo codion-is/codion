@@ -38,6 +38,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -339,13 +340,14 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 		@Override
 		public Boolean apply(EventObject event) {
-			if (event instanceof MouseEvent) {
-				MouseEvent mouseEvent = (MouseEvent) event;
-				if ((mouseEvent.getModifiersEx() & MODIFIERS) != 0) {
+			if (event instanceof InputEvent) {
+				InputEvent inputEvent = (InputEvent) event;
+				if ((inputEvent.getModifiersEx() & MODIFIERS) != 0) {
 					return false;
 				}
-
-				return mouseEvent.getClickCount() >= clickCountToStart;
+			}
+			if (event instanceof MouseEvent) {
+				return ((MouseEvent) event).getClickCount() >= clickCountToStart;
 			}
 
 			return true;
