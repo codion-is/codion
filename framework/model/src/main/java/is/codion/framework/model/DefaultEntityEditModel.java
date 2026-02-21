@@ -77,7 +77,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 */
 	public DefaultEntityEditModel(EntityEditor editor) {
 		this.editor = requireNonNull(editor);
-		this.persistence = new EditPersistence();
+		this.persistence = new DefaultEditPersistence();
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.tasks = new DefaultPersistTasks();
 		this.events = new DefaultPersistEvents(settings.publishPersistenceEvents);
@@ -116,6 +116,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	@Override
 	public final EntityConnection connection() {
 		return editor.connectionProvider().connection();
+	}
+
+	@Override
+	public final EditPersistence persistence() {
+		return persistence;
 	}
 
 	@Override
@@ -161,13 +166,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	@Override
 	public final Collection<Entity> delete(Collection<Entity> entities) {
 		return tasks.delete(entities).prepare().perform().handle();
-	}
-
-	/**
-	 * @return the {@link EditPersistence} used by this edit model
-	 */
-	protected final EditPersistence persistence() {
-		return persistence;
 	}
 
 	/**
@@ -532,26 +530,22 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	/**
-	 * Manages the {@link EntityPersistence} used by this model
-	 */
-	protected static final class EditPersistence {
+	private static class DefaultEditPersistence implements EditPersistence {
 
 		private static final EntityPersistence DEFAULT = new EntityPersistence() {};
 
 		private EntityPersistence instance = DEFAULT;
 
-		/**
-		 * @return the {@link EntityPersistence} used by this edit model
-		 */
+		@Override
 		public EntityPersistence get() {
 			return instance;
 		}
 
-		/**
-		 * @param persistence the {@link EntityPersistence} to use, default is set if null
-		 */
+		@Override
 		public void set(@Nullable EntityPersistence persistence) {
+			if (!instance.replaceable()) {
+				throw new IllegalStateException("Current EntityPersistence implementation is not replaceable");
+			}
 			this.instance = persistence == null ? DEFAULT : persistence;
 		}
 	}

@@ -95,4 +95,12 @@ public interface EntityPersistence {
 	default void delete(Collection<Entity> entities, EntityConnection connection) {
 		requireNonNull(connection).delete(Entity.primaryKeys(entities));
 	}
+
+	/**
+	 * Specifies whether this {@link EntityPersistence} instance is replaceable, default true
+	 * @return true if this instance is replaceable
+	 */
+	default boolean replaceable() {
+		return true;
+	}
 }

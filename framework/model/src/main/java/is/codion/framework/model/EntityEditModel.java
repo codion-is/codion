@@ -73,6 +73,11 @@ public interface EntityEditModel {
 	EntityConnection connection();
 
 	/**
+	 * @return the {@link EditPersistence} used by this edit model
+	 */
+	EditPersistence persistence();
+
+	/**
 	 * Returns a {@link EntityEditor} wrapping the entity being edited. {@link EntityEditor.EditorEntity#get()} returns
 	 * an immutable copy of the {@link Entity} instance being edited, while {@link EntityEditor.EditorEntity#set(Entity)}
 	 * copies the values from the given {@link Entity} into the underlying {@link Entity}.
@@ -192,6 +197,24 @@ public interface EntityEditModel {
 	 * @see Settings#deleteEnabled()
 	 */
 	Collection<Entity> delete(Collection<Entity> entities);
+
+	/**
+	 * Manages the {@link EntityPersistence} used by this model
+	 */
+	interface EditPersistence {
+
+		/**
+		 * @return the {@link EntityPersistence} used by this model
+		 */
+		EntityPersistence get();
+
+		/**
+		 * @param persistence the {@link EntityPersistence} to use, default is set if null
+		 * @throws IllegalStateException in case the current instance is not replaceable
+		 * @see EntityPersistence#replaceable()
+		 */
+		void set(EntityPersistence persistence);
+	}
 
 	/**
 	 * Provides {@link PersistTask}s
