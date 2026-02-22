@@ -567,6 +567,13 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		boolean updatable(ForeignKey foreignKey);
 
 		/**
+		 * A foreign key is nullable if one or more of its columns is nullable.
+		 * @param foreignKey the foreign key
+		 * @return true if this attribute is nullable
+		 */
+		boolean nullable(ForeignKey foreignKey);
+
+		/**
 		 * @param column the column
 		 * @return true if the given column is part of a foreign key
 		 */

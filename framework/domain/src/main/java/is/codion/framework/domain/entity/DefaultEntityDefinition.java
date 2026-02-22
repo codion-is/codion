@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.condition.ConditionString;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
@@ -447,6 +448,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			return foreignKey.references().stream()
 							.map(reference -> columns.definition(reference.column()))
 							.allMatch(ColumnDefinition::updatable);
+		}
+
+		@Override
+		public boolean nullable(ForeignKey foreignKey) {
+			return foreignKey.references().stream()
+							.map(ForeignKey.Reference::column)
+							.map(columns()::definition)
+							.anyMatch(ValueAttributeDefinition::nullable);
 		}
 
 		@Override
