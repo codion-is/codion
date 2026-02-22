@@ -93,13 +93,6 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * @return the underlying entity definition
-	 */
-	public EntityDefinition entityDefinition() {
-		return entityDefinition;
-	}
-
-	/**
 	 * <p>Returns a {@link ComponentBuilder} instance for a default input component for the given attribute.
 	 * <p>Note that this method does not create an input component for {@link ForeignKey}s, it simply returns
 	 * a non-focusable and non-editable {@link JTextField} from {@link #textField(ForeignKey)}.
@@ -170,7 +163,7 @@ public final class EntityComponents {
 	 * @throws IllegalArgumentException in case the attribute is nullable
 	 */
 	public CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
-		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		AttributeDefinition<Boolean> attributeDefinition = definition(attribute);
 		if (attributeDefinition instanceof ValueAttributeDefinition<Boolean> &&
 						((ValueAttributeDefinition<Boolean>) attributeDefinition).nullable()) {
 			throw new IllegalArgumentException("Attribute: " + attribute + " is nullable, use nullableCheckBox()");
@@ -188,7 +181,7 @@ public final class EntityComponents {
 	 * @return a NullableCheckBox builder
 	 */
 	public NullableCheckBoxBuilder nullableCheckBox(Attribute<Boolean> attribute) {
-		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		AttributeDefinition<Boolean> attributeDefinition = definition(attribute);
 
 		return Components.nullableCheckBox()
 						.toolTipText(attributeDefinition.description().orElse(null))
@@ -203,7 +196,7 @@ public final class EntityComponents {
 	 * @return a JToggleButton builder
 	 */
 	public <B extends ButtonBuilder<JToggleButton, Boolean, B>> ButtonBuilder<JToggleButton, Boolean, B> toggleButton(Attribute<Boolean> attribute) {
-		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		AttributeDefinition<Boolean> attributeDefinition = definition(attribute);
 
 		return (ButtonBuilder<JToggleButton, Boolean, B>) Components.toggleButton()
 						.toolTipText(attributeDefinition.description().orElse(null))
@@ -217,7 +210,7 @@ public final class EntityComponents {
 	 * @return a boolean JComboBox builder
 	 */
 	public ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
-		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		AttributeDefinition<Boolean> attributeDefinition = definition(attribute);
 
 		return Components.booleanComboBox()
 						.toolTipText(attributeDefinition.description().orElse(null));
@@ -231,7 +224,7 @@ public final class EntityComponents {
 	 */
 	public EntityComboBox.Builder comboBox(ForeignKey foreignKey,
 																				 EntityComboBoxModel comboBoxModel) {
-		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
 
 		return EntityComboBox.builder()
 						.model(comboBoxModel)
@@ -248,7 +241,7 @@ public final class EntityComponents {
 	public EntityComboBoxPanel.Builder comboBoxPanel(ForeignKey foreignKey,
 																									 EntityComboBoxModel comboBoxModel,
 																									 Supplier<EntityEditPanel> editPanel) {
-		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
 
 		return EntityComboBoxPanel.builder()
 						.model(comboBoxModel)
@@ -287,7 +280,7 @@ public final class EntityComponents {
 	 * @return a {@link Entity} JTextField builder
 	 */
 	public <B extends TextFieldBuilder<JTextField, Entity, B>> TextFieldBuilder<JTextField, Entity, B> textField(ForeignKey foreignKey) {
-		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
 
 		return (TextFieldBuilder<JTextField, Entity, B>) Components.textField()
 						.valueClass(Entity.class)
@@ -654,6 +647,10 @@ public final class EntityComponents {
 		return entityDefinition.attributes().definition(attribute);
 	}
 
+	private ForeignKeyDefinition definition(ForeignKey foreignKey) {
+		return entityDefinition.foreignKeys().definition(foreignKey);
+	}
+
 	private static boolean nullable(AttributeDefinition<?> attributeDefinition) {
 		return attributeDefinition instanceof ValueAttributeDefinition<?> &&
 						((ValueAttributeDefinition<?>) attributeDefinition).nullable();
@@ -698,7 +695,7 @@ public final class EntityComponents {
 
 		private SearchFieldBuilderFactory(ForeignKey foreignKey, EntitySearchModel searchModel) {
 			this.searchModel = requireNonNull(searchModel);
-			this.foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+			this.foreignKeyDefinition = definition(foreignKey);
 		}
 
 		@Override
@@ -726,7 +723,7 @@ public final class EntityComponents {
 
 		private SearchFieldPanelBuilderFactory(ForeignKey foreignKey, EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
 			this.searchModel = requireNonNull(searchModel);
-			this.foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+			this.foreignKeyDefinition = definition(foreignKey);
 			this.editPanel = requireNonNull(editPanel);
 		}
 
