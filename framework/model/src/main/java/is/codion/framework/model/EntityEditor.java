@@ -271,11 +271,11 @@ public interface EntityEditor {
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
 		 * using the search attributes defined for that entity type.
 		 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
-		 * @param editor the editor
+		 * @param connectionProvider the connection provider
 		 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 		 */
-		EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityEditor editor);
+		EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider);
 	}
 
 	/**

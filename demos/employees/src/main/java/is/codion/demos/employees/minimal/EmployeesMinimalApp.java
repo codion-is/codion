@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -183,16 +182,13 @@ public final class EmployeesMinimalApp {
 			 * so that is only shows managers.
 			 */
 			@Override
-			public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey, SwingEntityEditor editor) {
+			public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+				EntityComboBoxModel comboBoxModel = super.createComboBoxModel(foreignKey, connectionProvider);
 				if (foreignKey.equals(Employee.MANAGER_FK)) {
-					return EntityComboBoxModel.builder()
-									.entityType(Employee.TYPE)
-									.connectionProvider(editor.connectionProvider())
-									.condition(() -> Employee.JOB.in("Manager", "President"))
-									.build();
+					comboBoxModel.condition().set(() -> Employee.JOB.in("Manager", "President"));
 				}
 
-				return super.createComboBoxModel(foreignKey, editor);
+				return comboBoxModel;
 			}
 		}
 	}

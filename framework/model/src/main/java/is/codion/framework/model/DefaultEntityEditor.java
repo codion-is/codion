@@ -403,16 +403,18 @@ public class DefaultEntityEditor implements EntityEditor {
 	public static class DefaultComponentModels implements ComponentModels {
 
 		@Override
-		public EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityEditor editor) {
-			requireNonNull(editor).entityDefinition().foreignKeys().definition(foreignKey);
-			Collection<Column<String>> searchable = editor.entities().definition(foreignKey.referencedType()).columns().searchable();
+		public EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+			Collection<Column<String>> searchable = requireNonNull(connectionProvider).entities()
+							.definition(requireNonNull(foreignKey).referencedType())
+							.columns()
+							.searchable();
 			if (searchable.isEmpty()) {
 				throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
 			}
 
 			return EntitySearchModel.builder()
 							.entityType(foreignKey.referencedType())
-							.connectionProvider(editor.connectionProvider())
+							.connectionProvider(connectionProvider)
 							.build();
 		}
 	}
@@ -567,7 +569,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public EntitySearchModel create(ForeignKey foreignKey) {
-			return componentModels.createSearchModel(foreignKey, DefaultEntityEditor.this);
+			return componentModels.createSearchModel(foreignKey, connectionProvider);
 		}
 	}
 

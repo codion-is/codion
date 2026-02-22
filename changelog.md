@@ -11,6 +11,9 @@ Codion Change Log
 - DefaultEntityEditModel, no longer clears generated key columns on insert, minor refactoring.
 - EntityEditModel.EditPersistence added, EntityPersistence.replaceable() added.
 - EntityEditor.ComponentModels.configure() removed.
+- EntityEditor.ComponentModels.createSearchModel() editor parameter replaced with connection provider.
+### is.codion.swing.framework.model
+- SwingEntityEditor.SwingComponentModels.createComboBoxModel() editor parameter replaced with connection provider.
 ### is.codion.swing.framework.ui
 - EntityComponents, minor refactoring.
 
