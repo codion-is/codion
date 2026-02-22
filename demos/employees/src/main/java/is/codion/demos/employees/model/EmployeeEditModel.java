@@ -37,8 +37,26 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 	public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
 		super(Employee.TYPE, connectionProvider, new EmployeeComponentModels());
 		editor().comboBoxModels().initialize(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
+		configureManagerComboBoxModel();
 	}
 	// end::constructor[]
+
+	// tag::configureComboBoxModel[]
+	// Configure the manager ComboBoxModel, this should not be done when creating
+	// the combo box model in createComboBox(), since that method is also called each
+	// time a combo box is required for editing multiple entities via the table panel
+	private void configureManagerComboBoxModel() {
+		//hide the employee being edited to prevent an employee from being made her own manager
+		EntityComboBoxModel comboBoxModel = editor().comboBoxModels().get(Employee.MANAGER_FK);
+		editor().entity().addConsumer(employee ->
+						comboBoxModel.filter().predicate().set(manager ->
+										!Objects.equals(manager, employee)));
+		//and only show managers from the currently selected department
+		editor().value(Employee.DEPARTMENT_FK).addConsumer(department ->
+						comboBoxModel.filter().get(Employee.DEPARTMENT_FK)
+										.set(department == null ? emptyList() : singleton(department.primaryKey())));
+	}
+	// end::configureComboBoxModel[]
 
 	private static final class EmployeeComponentModels extends SwingComponentModels {
 
@@ -65,24 +83,5 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 			return super.createComboBoxModel(foreignKey, editor);
 		}
 		// end::createComboBoxModel[]
-
-		// tag::configureComboBoxModel[]
-		// Configure the manager ComboBoxModel, this should not be done when creating
-		// the combo box model in createComboBox(), since that method is also called each
-		// time a combo box is required for editing multiple entities via the table panel
-		@Override
-		public void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel, SwingEntityEditor editor) {
-			if (foreignKey.equals(Employee.MANAGER_FK)) {
-				//hide the employee being edited to prevent an employee from being made her own manager
-				editor.entity().addConsumer(employee ->
-								comboBoxModel.filter().predicate().set(manager ->
-												!Objects.equals(manager, employee)));
-				//and only show managers from the currently selected department
-				editor.value(Employee.DEPARTMENT_FK).addConsumer(department ->
-								comboBoxModel.filter().get(Employee.DEPARTMENT_FK)
-												.set(department == null ? emptyList() : singleton(department.primaryKey())));
-			}
-		}
-		// end::configureComboBoxModel[]
 	}
 }

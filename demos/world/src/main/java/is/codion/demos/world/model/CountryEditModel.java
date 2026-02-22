@@ -24,11 +24,7 @@ import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityEditor;
-import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Objects;
 
@@ -37,8 +33,10 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	private final Value<Double> averageCityPopulation = Value.nullable();
 
 	CountryEditModel(EntityConnectionProvider connectionProvider) {
-		super(Country.TYPE, connectionProvider, new CountryComponentModels());
+		super(Country.TYPE, connectionProvider);
 		editor().entity().addConsumer(this::setAverageCityPopulation);
+		//only show cities for currently selected country
+		editor().entity().addConsumer(this::filterCities);
 	}
 
 	public Observable<Double> averageCityPopulation() {
@@ -50,16 +48,8 @@ public final class CountryEditModel extends SwingEntityEditModel {
 						connection().execute(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE)));
 	}
 
-	private static final class CountryComponentModels extends SwingComponentModels {
-
-		@Override
-		public void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel, SwingEntityEditor editor) {
-			if (foreignKey.equals(Country.CAPITAL_FK)) {
-				//only show cities for currently selected country
-				editor.entity().addConsumer(country ->
-								comboBoxModel.filter().predicate().set(city ->
-												country != null && Objects.equals(city.get(City.COUNTRY_FK), country)));
-			}
-		}
+	private void filterCities(Entity country) {
+		editor().comboBoxModels().get(Country.CAPITAL_FK).filter().predicate().set(city ->
+						country != null && Objects.equals(city.get(City.COUNTRY_FK), country));
 	}
 }

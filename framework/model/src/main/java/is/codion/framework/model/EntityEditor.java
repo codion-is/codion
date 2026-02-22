@@ -276,14 +276,6 @@ public interface EntityEditor {
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 		 */
 		EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityEditor editor);
-
-		/**
-		 * <p>Called when a {@link EntitySearchModel} is created in {@link SearchModels#get(ForeignKey)}.
-		 * @param foreignKey the foreign key
-		 * @param entitySearchModel the search model
-		 * @param editor the editor
-		 */
-		default void configure(ForeignKey foreignKey, EntitySearchModel entitySearchModel, EntityEditor editor) {}
 	}
 
 	/**

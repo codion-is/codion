@@ -558,7 +558,6 @@ public class DefaultEntityEditor implements EntityEditor {
 				EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
 				if (entitySearchModel == null) {
 					entitySearchModel = create(foreignKey);
-					componentModels.configure(foreignKey, entitySearchModel, DefaultEntityEditor.this);
 					searchModels.put(foreignKey, entitySearchModel);
 				}
 
