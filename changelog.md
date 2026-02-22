@@ -12,10 +12,14 @@ Codion Change Log
 - EntityEditModel.EditPersistence added, EntityPersistence.replaceable() added.
 - EntityEditor.ComponentModels.configure() removed.
 - EntityEditor.ComponentModels.createSearchModel() editor parameter replaced with connection provider.
+- EntityEditor.ComponentModels now with default implementation.
+- DefaultEntityEditor.componentModels() added.
 ### is.codion.swing.framework.model
 - SwingEntityEditor.SwingComponentModels.createComboBoxModel() editor parameter replaced with connection provider.
+- SwingEntityEditor.SwingComponentModels now with default implementations.
 ### is.codion.swing.framework.ui
 - EntityComponents, minor refactoring.
+- EntityEditorPanel.createEnumComboBox() no longer uses validator for nullability check.
 
 ## 0.18.69
 ### is.codion.common.utilities

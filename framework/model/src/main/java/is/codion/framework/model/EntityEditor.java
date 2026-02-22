@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -42,6 +43,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Provides edit access to an underlying entity.
@@ -271,11 +273,24 @@ public interface EntityEditor {
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
 		 * using the search attributes defined for that entity type.
 		 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
-		 * @param connectionProvider the connection provider
+		 * @param connectionProvider the conectiom provider
 		 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 		 */
-		EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider);
+		default EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+			Collection<Column<String>> searchable = connectionProvider.entities()
+							.definition(requireNonNull(foreignKey).referencedType())
+							.columns()
+							.searchable();
+			if (searchable.isEmpty()) {
+				throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
+			}
+
+			return EntitySearchModel.builder()
+							.entityType(foreignKey.referencedType())
+							.connectionProvider(connectionProvider)
+							.build();
+		}
 	}
 
 	/**
@@ -415,7 +430,7 @@ public interface EntityEditor {
 		 *     setter.set(Sample.MONTH, date == null ? null : date.getMonthValue());
 		 *     setter.set(Sample.YEAR, date == null ? null : date.getYear());
 		 * });
-		 * }
+		 *}
 		 * @param propagator the propagator, null to remove
 		 * @see Propagator
 		 */

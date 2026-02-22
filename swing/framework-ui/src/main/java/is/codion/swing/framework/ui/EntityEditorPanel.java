@@ -478,7 +478,7 @@ public class EntityEditorPanel extends JPanel {
 	protected final <T extends Enum<T>, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createEnumComboBox(Column<T> column) {
 		return component(column).set((B) entityComponents.comboBox(column, FilterComboBoxModel.builder()
 										.items(asList(column.type().valueClass().getEnumConstants()))
-										.includeNull(editor.nullable(column))
+										.includeNull(editor.entityDefinition().columns().definition(column).nullable())
 										.build()))
 						.onSetVisible(EntityEditorPanel::refreshIfCleared);
 	}

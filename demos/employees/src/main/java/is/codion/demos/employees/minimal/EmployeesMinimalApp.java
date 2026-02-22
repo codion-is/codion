@@ -175,7 +175,7 @@ public final class EmployeesMinimalApp {
 			editor().comboBoxModels().initialize(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
 		}
 
-		private static final class EmployeeComponentModels extends SwingComponentModels {
+		private static final class EmployeeComponentModels implements SwingComponentModels {
 
 			/**
 			 * We override this method to add a query condition to the manager combo box model
@@ -183,7 +183,7 @@ public final class EmployeesMinimalApp {
 			 */
 			@Override
 			public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-				EntityComboBoxModel comboBoxModel = super.createComboBoxModel(foreignKey, connectionProvider);
+				EntityComboBoxModel comboBoxModel = SwingComponentModels.super.createComboBoxModel(foreignKey, connectionProvider);
 				if (foreignKey.equals(Employee.MANAGER_FK)) {
 					comboBoxModel.condition().set(() -> Employee.JOB.in("Manager", "President"));
 				}

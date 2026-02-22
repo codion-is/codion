@@ -57,7 +57,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 	}
 	// end::configureComboBoxModel[]
 
-	private static final class EmployeeComponentModels extends SwingComponentModels {
+	private static final class EmployeeComponentModels implements SwingComponentModels {
 
 		// tag::createComboBoxModel[]
 		// Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president
@@ -79,7 +79,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 								.build();
 			}
 
-			return super.createComboBoxModel(foreignKey, connectionProvider);
+			return SwingComponentModels.super.createComboBoxModel(foreignKey, connectionProvider);
 		}
 		// end::createComboBoxModel[]
 	}

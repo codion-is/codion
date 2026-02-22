@@ -110,7 +110,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	 * @param connectionProvider the connection provider
 	 */
 	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(entityType, connectionProvider, new DefaultComponentModels());
+		this(entityType, connectionProvider, new ComponentModels() {});
 	}
 
 	/**
@@ -244,6 +244,13 @@ public class DefaultEntityEditor implements EntityEditor {
 	@Override
 	public final String toString() {
 		return getClass() + ", " + entityDefinition.type();
+	}
+
+	/**
+	 * @return the {@link ComponentModels} instance
+	 */
+	protected ComponentModels componentModels() {
+		return componentModels;
 	}
 
 	private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
@@ -394,29 +401,6 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	private interface ValueSupplier {
 		<T> @Nullable T get(AttributeDefinition<T> attributeDefinition);
-	}
-
-	/**
-	 * <p>A default {@link ComponentModels} implementation providing foreign key based {@link EntitySearchModel}.
-	 * <p>Override to customize search model behaviour.
-	 */
-	public static class DefaultComponentModels implements ComponentModels {
-
-		@Override
-		public EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-			Collection<Column<String>> searchable = requireNonNull(connectionProvider).entities()
-							.definition(requireNonNull(foreignKey).referencedType())
-							.columns()
-							.searchable();
-			if (searchable.isEmpty()) {
-				throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
-			}
-
-			return EntitySearchModel.builder()
-							.entityType(foreignKey.referencedType())
-							.connectionProvider(connectionProvider)
-							.build();
-		}
 	}
 
 	private final class DeleteListener implements Consumer<Collection<Entity>> {

@@ -35,7 +35,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 	 * @param connectionProvider the {@link EntityConnectionProvider} instance
 	 */
 	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(entityType, connectionProvider, new SwingComponentModels());
+		this(entityType, connectionProvider, new SwingComponentModels() {});
 	}
 
 	/**
