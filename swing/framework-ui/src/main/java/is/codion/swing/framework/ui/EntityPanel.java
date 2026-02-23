@@ -333,6 +333,7 @@ public class EntityPanel extends JPanel {
 	 */
 	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel,
 										 Consumer<Config> config) {
+		setFocusCycleRoot(true);
 		this.entityModel = requireNonNull(entityModel);
 		this.editPanel = editPanel;
 		this.tablePanel = tablePanel;
@@ -411,7 +412,6 @@ public class EntityPanel extends JPanel {
 			LOG.debug("{} - initializing", this);
 			try {
 				setupControls();
-				setFocusCycleRoot(true);
 				setFocusTraversalPolicy(new EntityPanelFocusTraversalPolicy());
 				setupEditAndTablePanelControls();
 				initializeEditPanel();
