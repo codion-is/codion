@@ -763,7 +763,7 @@ public final class DefaultEntityEditModelTest {
 	@Test
 	public void modified() {
 		State extraModified = State.state();
-		editor.modified().additional().set(extraModified);
+		editor.modified().additional().add(extraModified);
 
 		editor.entity().set(employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN")));
 		assertFalse(editor.modified().is());
@@ -771,8 +771,9 @@ public final class DefaultEntityEditModelTest {
 		assertTrue(editor.modified().is());
 		extraModified.set(false);
 		assertFalse(editor.modified().is());
+		editor.modified().additional().remove(extraModified);
 		State extraModified2 = State.state(false);
-		editor.modified().additional().set(extraModified2);
+		editor.modified().additional().add(extraModified2);
 		assertFalse(editor.modified().is());
 		extraModified.set(true);// not listened to anymore
 		assertFalse(editor.modified().is());

@@ -16,6 +16,7 @@ Codion Change Log
 - EntityEditor.ComponentModels.createSearchModel() editor parameter replaced with connection provider.
 - EntityEditor.ComponentModels now with default implementation.
 - DefaultEntityEditor.componentModels() added.
+- EntityEditor.Modified.additional() now ValueSet based.
 ### is.codion.swing.framework.model
 - SwingEntityEditor.SwingComponentModels.createComboBoxModel() editor parameter replaced with connection provider.
 - SwingEntityEditor.SwingComponentModels now with default implementations.

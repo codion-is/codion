@@ -24,6 +24,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -326,11 +327,11 @@ public interface EntityEditor {
 		ObservableValueSet<Attribute<?>> attributes();
 
 		/**
-		 * Controls the 'additional' modified state for this {@link Modified} instance,
-		 * which is combined with the entity modified state using OR.
-		 * @return the {@link Value} controlling the additional modified state
+		 * Controls the 'additional' modified states for this {@link Modified} instance,
+		 * which are combined with the entity modified state using OR.
+		 * @return the {@link ValueSet} controlling the additional modified states
 		 */
-		Value<ObservableState> additional();
+		ValueSet<ObservableState> additional();
 	}
 
 	/**

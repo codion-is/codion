@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -599,8 +600,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final State modified = State.state();
 		private final ValueSet<Attribute<?>> attributes = ValueSet.valueSet();
 		private final Runnable additionalListener = this::update;
-		private final Value<ObservableState> additional = Value.builder()
-						.<ObservableState>nullable()
+		private final ValueSet<ObservableState> additional = ValueSet.<ObservableState>builder()
 						.changeConsumer(this::additionalChanged)
 						.build();
 
@@ -610,7 +610,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public Value<ObservableState> additional() {
+		public ValueSet<ObservableState> additional() {
 			return additional;
 		}
 
@@ -634,20 +634,13 @@ public class DefaultEntityEditor implements EntityEditor {
 			attributes.set(existing ? editorValues.keySet().stream()
 							.filter(entity.instance::modified)
 							.collect(toSet()) : emptySet());
-			modified.set(existing && entity.instance.modified() || additional.optional()
-							.map(ObservableState::is)
-							.orElse(false));
+			modified.set(existing && entity.instance.modified() || additional.get().stream()
+							.anyMatch(ObservableState::is));
 		}
 
-		private void additionalChanged(ValueChange<? super ObservableState> change) {
-			ObservableState previous = (ObservableState) change.previous();
-			if (previous != null) {
-				previous.removeListener(additionalListener);
-			}
-			ObservableState current = (ObservableState) change.current();
-			if (current != null) {
-				current.addListener(additionalListener);
-			}
+		private void additionalChanged(ValueChange<Set<ObservableState>> change) {
+			change.previous().forEach(state -> state.removeListener(additionalListener));
+			change.current().forEach(state -> state.addListener(additionalListener));
 			update();
 		}
 	}
