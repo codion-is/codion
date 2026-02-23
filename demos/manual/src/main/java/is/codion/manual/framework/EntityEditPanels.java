@@ -27,9 +27,8 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
-import is.codion.swing.framework.model.SwingEntityEditor;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityEditorPanel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
@@ -75,71 +74,75 @@ public final class EntityEditPanels {
 		Column<String> ITEM_LIST = TYPE.stringColumn("item_list");
 	}
 
-	private static final class EditPanelDemo extends EntityEditorPanel {
+	private static final class EditPanelDemo extends EntityEditPanel {
 
-		public EditPanelDemo(SwingEntityEditor editor) {
-			super(editor);
+		private EditPanelDemo(SwingEntityEditModel editModel) {
+			super(editModel);
 		}
+
+		@Override
+		protected void initializeUI() {}
 
 		private void booleanValue() {
 			// tag::booleanValue[]
-			JCheckBox checkBox =
-							createCheckBox(Demo.BOOLEAN)
-											.build();
+			JCheckBox checkBox = create()
+							.checkBox(Demo.BOOLEAN)
+							.build();
 
-			NullableCheckBox nullableCheckBox =
-							createNullableCheckBox(Demo.BOOLEAN_NULLABLE)
-											.build();
+			NullableCheckBox nullableCheckBox = create()
+							.nullableCheckBox(Demo.BOOLEAN_NULLABLE)
+							.build();
 
-			JComboBox<Item<Boolean>> comboBox =
-							createBooleanComboBox(Demo.BOOLEAN_NULLABLE)
-											.build();
+			JComboBox<Item<Boolean>> comboBox = create()
+							.booleanComboBox(Demo.BOOLEAN_NULLABLE)
+							.build();
 			// end::booleanValue[]
 		}
 
 		private void foreignKeyValue() {
 			// tag::foreignKeyValue[]
-			EntityComboBox comboBox =
-							createComboBox(Demo.FOREIGN_KEY)
-											.build();
+			EntityComboBox comboBox = create()
+							.comboBox(Demo.FOREIGN_KEY)
+							.build();
 
 			// Include add/edit buttons
-			EntityComboBoxPanel comboBoxPanel =
-							createComboBoxPanel(Demo.FOREIGN_KEY, this::createEditPanel)
-											.includeAddButton(true)
-											.includeEditButton(true)
-											.build();
+			EntityComboBoxPanel comboBoxPanel = create()
+							.comboBoxPanel(Demo.FOREIGN_KEY, this::createEditPanel)
+							.includeAddButton(true)
+							.includeEditButton(true)
+							.build();
 
-			EntitySearchField searchField =
-							createSearchField(Demo.FOREIGN_KEY)
-											.build();
+			EntitySearchField searchField = create()
+							.searchField(Demo.FOREIGN_KEY)
+							.build();
 
 			// Include add/edit buttons
-			EntitySearchFieldPanel searchFieldPanel =
-							createSearchFieldPanel(Demo.FOREIGN_KEY, this::createEditPanel)
-											.includeAddButton(true)
-											.includeEditButton(true)
-											.build();
+			EntitySearchFieldPanel searchFieldPanel = create()
+							.searchFieldPanel(Demo.FOREIGN_KEY, this::createEditPanel)
+							.includeAddButton(true)
+							.includeEditButton(true)
+							.build();
 
 			//readOnly
-			JTextField textField =
-							createTextField(Demo.FOREIGN_KEY)
-											.build();
+			JTextField textField = create()
+							.textField(Demo.FOREIGN_KEY)
+							.build();
 			// end::foreignKeyValue[]
 		}
 
 		private void temporalValue() {
 			// tag::temporalValue[]
 			TemporalField<LocalDateTime> textField =
-							(TemporalField<LocalDateTime>) createTextField(Demo.LOCAL_DATE)
+							(TemporalField<LocalDateTime>) create()
+											.textField(Demo.LOCAL_DATE)
 											.build();
 
-			TemporalField<LocalDate> localDateField =
-							createTemporalField(Demo.LOCAL_DATE)
-											.build();
+			TemporalField<LocalDate> localDateField = create()
+							.temporalField(Demo.LOCAL_DATE)
+							.build();
 
-			TemporalFieldPanel<LocalDate> temporalPanel =
-							createTemporalFieldPanel(Demo.LOCAL_DATE)
+			TemporalFieldPanel<LocalDate> temporalPanel = create()
+							.temporalFieldPanel(Demo.LOCAL_DATE)
 											.build();
 			// end::temporalValue[]
 		}
@@ -147,67 +150,73 @@ public final class EntityEditPanels {
 		private void numericalValue() {
 			// tag::numericalValue[]
 			NumberField<Integer> integerField =
-							(NumberField<Integer>) createTextField(Demo.INTEGER)
+							(NumberField<Integer>) create()
+											.textField(Demo.INTEGER)
 											.build();
 
-			integerField =
-							createIntegerField(Demo.INTEGER)
-											.build();
+			integerField = create()
+							.integerField(Demo.INTEGER)
+							.build();
 
 			NumberField<Long> longField =
-							(NumberField<Long>) createTextField(Demo.LONG)
+							(NumberField<Long>) create()
+											.textField(Demo.LONG)
 											.build();
 
 			longField =
-							createLongField(Demo.LONG)
+							create()
+											.longField(Demo.LONG)
 											.build();
 
 			NumberField<Double> doubleField =
-							(NumberField<Double>) createTextField(Demo.DOUBLE)
+							(NumberField<Double>) create()
+											.textField(Demo.DOUBLE)
 											.build();
 
-			doubleField =
-							createDoubleField(Demo.DOUBLE)
-											.build();
+			doubleField = create()
+							.doubleField(Demo.DOUBLE)
+							.build();
 
 			NumberField<BigDecimal> bigDecimalField =
-							(NumberField<BigDecimal>) createTextField(Demo.BIG_DECIMAL)
+							(NumberField<BigDecimal>) create()
+											.textField(Demo.BIG_DECIMAL)
 											.build();
 
-			bigDecimalField =
-							createBigDecimalField(Demo.BIG_DECIMAL)
-											.build();
+			bigDecimalField = create()
+							.bigDecimalField(Demo.BIG_DECIMAL)
+							.build();
 
 			NumberField<BigInteger> bigIntegerField =
-							(NumberField<BigInteger>) createTextField(Demo.BIG_DECIMAL)
+							(NumberField<BigInteger>) create()
+											.textField(Demo.BIG_DECIMAL)
 											.build();
 
-			bigIntegerField =
-							createBigIntegerField(Demo.BIG_INTEGER)
-											.build();
+			bigIntegerField = create()
+							.bigIntegerField(Demo.BIG_INTEGER)
+							.build();
 			// end::numericalValue[]
 		}
 
 		private void textValue() {
 			// tag::textValue[]
-			JTextField textField =
-							createTextField(Demo.TEXT)
-											.build();
+			JTextField textField = create()
+							.textField(Demo.TEXT)
+							.build();
 
-			JFormattedTextField maskedField =
-							createMaskedTextField(Demo.FORMATTED_TEXT)
-											.mask("###:###")
-											.valueContainsLiteralCharacters(true)
-											.build();
+			JFormattedTextField maskedField = create()
+							.maskedTextField(Demo.FORMATTED_TEXT)
+							.mask("###:###")
+							.valueContainsLiteralCharacters(true)
+							.build();
 
-			JTextArea textArea =
-							createTextArea(Demo.LONG_TEXT)
-											.rowsColumns(5, 20)
-											.build();
+			JTextArea textArea = create()
+							.textArea(Demo.LONG_TEXT)
+							.rowsColumns(5, 20)
+							.build();
 
-			TextFieldPanel inputPanel =
-							createTextFieldPanel(Demo.LONG_TEXT)
-											.build();
+			TextFieldPanel inputPanel = create()
+							.textFieldPanel(Demo.LONG_TEXT)
+							.build();
 			// end::textValue[]
 		}
 
@@ -216,27 +225,29 @@ public final class EntityEditPanels {
 			DefaultComboBoxModel<String> comboBoxModel =
 							new DefaultComboBoxModel<>(new String[] {"One", "Two"});
 
-			JComboBox<String> comboBox =
-							createComboBox(Demo.TEXT, comboBoxModel)
-											.editable(true)
-											.build();
+			JComboBox<String> comboBox = create()
+							.comboBox(Demo.TEXT, comboBoxModel)
+							.editable(true)
+							.build();
 			// end::selectionValue[]
 		}
 
 		private void item() {
 			// tag::item[]
-			JComboBox<Item<String>> comboBox =
-							createItemComboBox(Demo.ITEM_LIST)
-											.build();
+			JComboBox<Item<String>> comboBox = create()
+							.itemComboBox(Demo.ITEM_LIST)
+							.build();
 			// end::item[]
 		}
 
 		private void panelLabel() {
 			// tag::panelLabel[]
-			JLabel label = createLabel(Demo.TEXT)
+			JLabel label = create()
+							.label(Demo.TEXT)
 							.build();
 
-			JPanel inputPanel = createInputPanel(Demo.TEXT)
+			JPanel inputPanel = create()
+							.inputPanel(Demo.TEXT)
 							.label(new JLabel("Label"))
 							.build();
 			// end::panelLabel[]

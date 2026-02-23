@@ -66,17 +66,17 @@ public final class CityEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createComboBox(City.COUNTRY_FK)
+		create().comboBox(City.COUNTRY_FK)
 						.preferredWidth(120);
-		createTextField(City.NAME);
-		createTextField(City.DISTRICT);
-		createTextField(City.POPULATION);
+		create().textField(City.NAME);
+		create().textField(City.DISTRICT);
+		create().textField(City.POPULATION);
 
 		JPanel inputPanel = gridLayoutPanel(0, 1)
-						.add(createInputPanel(City.COUNTRY_FK))
-						.add(createInputPanel(City.NAME))
-						.add(createInputPanel(City.DISTRICT))
-						.add(createInputPanel(City.POPULATION))
+						.add(create().inputPanel(City.COUNTRY_FK))
+						.add(create().inputPanel(City.NAME))
+						.add(create().inputPanel(City.DISTRICT))
+						.add(create().inputPanel(City.POPULATION))
 						.build();
 
 		JPanel centerPanel = gridLayoutPanel(1, 0)

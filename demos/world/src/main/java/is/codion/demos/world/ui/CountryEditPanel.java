@@ -56,36 +56,36 @@ final class CountryEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Country.CODE)
+		create().textField(Country.CODE)
 						.columns(6)
 						.upperCase(true);
-		createTextField(Country.CODE_2)
+		create().textField(Country.CODE_2)
 						.columns(6)
 						.upperCase(true);
-		createTextField(Country.NAME);
-		createTextField(Country.LOCALNAME);
-		createItemComboBox(Country.CONTINENT)
+		create().textField(Country.NAME);
+		create().textField(Country.LOCALNAME);
+		create().itemComboBox(Country.CONTINENT)
 						.preferredWidth(PREFERRED_COMBO_BOX_WIDTH);
-		createComboBox(Country.REGION)
+		create().comboBox(Country.REGION)
 						.preferredWidth(PREFERRED_COMBO_BOX_WIDTH);
-		createTextField(Country.SURFACEAREA)
+		create().textField(Country.SURFACEAREA)
 						.columns(5);
-		createTextField(Country.INDEPYEAR)
+		create().textField(Country.INDEPYEAR)
 						.columns(5);
-		createTextField(Country.POPULATION)
+		create().textField(Country.POPULATION)
 						.columns(5);
-		createTextField(Country.LIFE_EXPECTANCY)
+		create().textField(Country.LIFE_EXPECTANCY)
 						.columns(5);
-		createTextField(Country.GNP)
+		create().textField(Country.GNP)
 						.columns(6);
-		createTextField(Country.GNPOLD)
+		create().textField(Country.GNPOLD)
 						.columns(6);
-		createComboBox(Country.GOVERNMENTFORM)
+		create().comboBox(Country.GOVERNMENTFORM)
 						.preferredWidth(PREFERRED_COMBO_BOX_WIDTH)
 						.editable(true);
-		createTextField(Country.HEADOFSTATE);
+		create().textField(Country.HEADOFSTATE);
 		//create a panel with a button for adding a new city
-		createComboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
+		create().comboBoxPanel(Country.CAPITAL_FK, this::createCapitalEditPanel)
 						.preferredComboBoxWidth(PREFERRED_COMBO_BOX_WIDTH)
 						.includeAddButton(true);
 		component(Country.FLAG).set(ImagePane.builder())
@@ -103,23 +103,23 @@ final class CountryEditPanel extends EntityEditPanel {
 						.build();
 
 		JPanel codePanel = gridLayoutPanel(1, 2)
-						.add(createInputPanel(Country.CODE))
-						.add(createInputPanel(Country.CODE_2))
+						.add(create().inputPanel(Country.CODE))
+						.add(create().inputPanel(Country.CODE_2))
 						.build();
 
 		JPanel gnpPanel = gridLayoutPanel(1, 2)
-						.add(createInputPanel(Country.GNP))
-						.add(createInputPanel(Country.GNPOLD))
+						.add(create().inputPanel(Country.GNP))
+						.add(create().inputPanel(Country.GNPOLD))
 						.build();
 
 		JPanel surfaceAreaIndYearPanel = gridLayoutPanel(1, 2)
-						.add(createInputPanel(Country.SURFACEAREA))
-						.add(createInputPanel(Country.INDEPYEAR))
+						.add(create().inputPanel(Country.SURFACEAREA))
+						.add(create().inputPanel(Country.INDEPYEAR))
 						.build();
 
 		JPanel populationLifeExpectancyPanel = gridLayoutPanel(1, 2)
-						.add(createInputPanel(Country.POPULATION))
-						.add(createInputPanel(Country.LIFE_EXPECTANCY))
+						.add(create().inputPanel(Country.POPULATION))
+						.add(create().inputPanel(Country.LIFE_EXPECTANCY))
 						.build();
 
 		setLayout(gridLayout(4, 5));
@@ -136,7 +136,7 @@ final class CountryEditPanel extends EntityEditPanel {
 		addInputPanel(Country.GOVERNMENTFORM);
 		addInputPanel(Country.HEADOFSTATE);
 		add(borderLayoutPanel()
-						.west(createInputPanel(Country.FLAG)
+						.west(create().inputPanel(Country.FLAG)
 										.component(borderLayoutPanel()
 														.layout(new BorderLayout())
 														.center(component(Country.FLAG).get())

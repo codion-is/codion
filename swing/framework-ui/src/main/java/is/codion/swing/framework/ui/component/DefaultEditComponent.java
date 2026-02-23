@@ -19,16 +19,13 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditor;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import javax.swing.JComponent;
 import java.time.temporal.Temporal;
@@ -98,37 +95,35 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 
 	/**
 	 * @param foreignKey the foreign key
-	 * @param entityDefinition the entity definition
-	 * @param comboBoxModel the {@link EntityComboBoxModel} to base the combo box on
+	 * @param editor the editor providing the combo box model factory
 	 * @return a {@link EntityComboBox.Builder} instance
+	 * @see SwingEntityEditor.ComboBoxModels
 	 */
-	protected EntityComboBox.Builder comboBox(ForeignKey foreignKey, EntityDefinition entityDefinition,
-																						EntityComboBoxModel comboBoxModel) {
-		return EntityComponents.entityComponents(entityDefinition).comboBox(foreignKey, comboBoxModel);
+	protected EntityComboBox.Builder comboBox(ForeignKey foreignKey, SwingEntityEditor editor) {
+		return entityComponents(requireNonNull(editor).entityDefinition()).comboBox(requireNonNull(foreignKey), editor.comboBoxModels().create(foreignKey));
 	}
 
 	/**
 	 * @param foreignKey the foreign key
-	 * @param entityDefinition the entity definition
-	 * @param searchModel the {@link EntitySearchModel} to base the search field on
+	 * @param editor the editor providing the search model factory
 	 * @return a {@link EntitySearchField.SingleSelectionBuilder} instance
 	 * @throws IllegalArgumentException in case {@code searchModel} is not configured for single selection
+	 * @see SwingEntityEditor.SearchModels
 	 */
-	protected EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey, EntityDefinition entityDefinition,
-																																 EntitySearchModel searchModel) {
-		return entityComponents(entityDefinition).searchField(foreignKey, searchModel)
+	protected EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey, SwingEntityEditor editor) {
+		return entityComponents(requireNonNull(editor).entityDefinition()).searchField(requireNonNull(foreignKey), editor.searchModels().create(foreignKey))
 						.singleSelection()
 						.searchOnFocusLost(false);
 	}
 
 	private ComponentValue<C, T> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditor editor) {
 		if (editor.entities().definition(foreignKey.referencedType()).smallDataset()) {
-			return (ComponentValue<C, T>) comboBox(foreignKey, editor.entityDefinition(), editor.comboBoxModels().create(foreignKey))
+			return (ComponentValue<C, T>) comboBox(foreignKey, editor)
 							.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 							.buildValue();
 		}
 
-		return (ComponentValue<C, T>) searchField(foreignKey, editor.entityDefinition(), editor.searchModels().create(foreignKey))
+		return (ComponentValue<C, T>) searchField(foreignKey, editor)
 						.buildValue();
 	}
 

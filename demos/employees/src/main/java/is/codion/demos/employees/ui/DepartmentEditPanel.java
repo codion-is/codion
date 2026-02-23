@@ -38,13 +38,13 @@ public class DepartmentEditPanel extends EntityEditPanel {
 	// tag::initializeUI[]
 	@Override
 	protected void initializeUI() {
-		createTextField(Department.DEPARTMENT_NO)
+		create().textField(Department.DEPARTMENT_NO)
 						.columns(3)
 						//don't allow editing of existing department numbers
 						.enabled(editModel().editor().exists().not());
-		createTextField(Department.NAME)
+		create().textField(Department.NAME)
 						.columns(8);
-		createTextField(Department.LOCATION)
+		create().textField(Department.LOCATION)
 						.columns(12);
 
 		editModel().editor().exists().addConsumer(exists ->
@@ -53,9 +53,9 @@ public class DepartmentEditPanel extends EntityEditPanel {
 		setLayout(borderLayout());
 		add(borderLayoutPanel()
 						.north(borderLayoutPanel()
-										.west(createInputPanel(Department.DEPARTMENT_NO))
-										.center(createInputPanel(Department.NAME)))
-						.center(createInputPanel(Department.LOCATION))
+										.west(create().inputPanel(Department.DEPARTMENT_NO))
+										.center(create().inputPanel(Department.NAME)))
+						.center(create().inputPanel(Department.LOCATION))
 						.build(), BorderLayout.CENTER);
 	}
 }

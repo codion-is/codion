@@ -37,33 +37,33 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Employee.FIRSTNAME)
+		create().textField(Employee.FIRSTNAME)
 						.columns(6);
-		createTextField(Employee.LASTNAME)
+		create().textField(Employee.LASTNAME)
 						.columns(6);
-		createTemporalFieldPanel(Employee.BIRTHDATE)
+		create().temporalFieldPanel(Employee.BIRTHDATE)
 						.columns(7);
-		createTemporalFieldPanel(Employee.HIREDATE)
+		create().temporalFieldPanel(Employee.HIREDATE)
 						.columns(7);
-		createTextField(Employee.TITLE)
+		create().textField(Employee.TITLE)
 						.columns(8);
-		createTextField(Employee.ADDRESS);
-		createTextField(Employee.CITY)
+		create().textField(Employee.ADDRESS);
+		create().textField(Employee.CITY)
 						.columns(8);
-		createTextField(Employee.POSTALCODE)
+		create().textField(Employee.POSTALCODE)
 						.columns(4);
-		createTextField(Employee.STATE)
+		create().textField(Employee.STATE)
 						.columns(4)
 						.upperCase(true);
-		createTextField(Employee.COUNTRY)
+		create().textField(Employee.COUNTRY)
 						.columns(8);
-		createTextField(Employee.PHONE)
+		create().textField(Employee.PHONE)
 						.columns(12);
-		createTextField(Employee.FAX)
+		create().textField(Employee.FAX)
 						.columns(12);
-		createTextField(Employee.EMAIL)
+		create().textField(Employee.EMAIL)
 						.columns(12);
-		createComboBox(Employee.REPORTSTO_FK)
+		create().comboBox(Employee.REPORTSTO_FK)
 						.preferredWidth(120)
 						// Only transfer focus backward on Enter, this way
 						// the Enter key without any modifiers will trigger
@@ -71,23 +71,23 @@ public final class EmployeeEditPanel extends EntityEditPanel {
 						.transferFocusOnEnter(BACKWARD);
 
 		JPanel firstLastNamePanel = gridLayoutPanel(1, 2)
-						.add(createInputPanel(Employee.FIRSTNAME))
-						.add(createInputPanel(Employee.LASTNAME))
+						.add(create().inputPanel(Employee.FIRSTNAME))
+						.add(create().inputPanel(Employee.LASTNAME))
 						.build();
 
 		JPanel birthHireDatePanel = gridLayoutPanel(1, 2)
-						.add(createInputPanel(Employee.BIRTHDATE))
-						.add(createInputPanel(Employee.HIREDATE))
+						.add(create().inputPanel(Employee.BIRTHDATE))
+						.add(create().inputPanel(Employee.HIREDATE))
 						.build();
 
 		JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
-						.add(createInputPanel(Employee.CITY))
-						.add(createInputPanel(Employee.POSTALCODE))
+						.add(create().inputPanel(Employee.CITY))
+						.add(create().inputPanel(Employee.POSTALCODE))
 						.build();
 
 		JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
-						.add(createInputPanel(Employee.STATE))
-						.add(createInputPanel(Employee.COUNTRY))
+						.add(create().inputPanel(Employee.STATE))
+						.add(create().inputPanel(Employee.COUNTRY))
 						.build();
 
 		setLayout(flexibleGridLayout(4, 3));

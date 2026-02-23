@@ -46,7 +46,7 @@ final class EditPanelDemo extends EntityEditPanel {
 
 	private void initializeUIBasic() {
 		// tag::basic[]
-		createTextField(Customer.FIRST_NAME)
+		create().textField(Customer.FIRST_NAME)
 						.columns(12);
 
 		setLayout(gridLayout(1, 1));

@@ -50,10 +50,10 @@ public class StoreDemo {
 
 		@Override
 		protected void initializeUI() {
-			createTextField(Customer.FIRST_NAME);
-			createTextField(Customer.LAST_NAME);
-			createTextField(Customer.EMAIL);
-			createCheckBox(Customer.ACTIVE);
+			create().textField(Customer.FIRST_NAME);
+			create().textField(Customer.LAST_NAME);
+			create().textField(Customer.EMAIL);
+			create().checkBox(Customer.ACTIVE);
 			setLayout(gridLayout(4, 1));
 			addInputPanel(Customer.FIRST_NAME);
 			addInputPanel(Customer.LAST_NAME);
@@ -71,9 +71,9 @@ public class StoreDemo {
 		@Override
 		protected void initializeUI() {
 			focus().initial().set(Address.STREET);
-			createComboBox(Address.CUSTOMER_FK);
-			createTextField(Address.STREET);
-			createTextField(Address.CITY);
+			create().comboBox(Address.CUSTOMER_FK);
+			create().textField(Address.STREET);
+			create().textField(Address.CITY);
 			setLayout(gridLayout(3, 1));
 			addInputPanel(Address.CUSTOMER_FK);
 			addInputPanel(Address.STREET);

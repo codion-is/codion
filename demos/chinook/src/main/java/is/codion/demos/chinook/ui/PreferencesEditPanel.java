@@ -32,9 +32,9 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createSearchField(Preferences.CUSTOMER_FK)
+		create().searchField(Preferences.CUSTOMER_FK)
 						.columns(14);
-		createComboBox(Preferences.PREFERRED_GENRE_FK)
+		create().comboBox(Preferences.PREFERRED_GENRE_FK)
 						.preferredWidth(160);
 		component(Preferences.NEWSLETTER).set(new TriStateCheckBoxBuilder())
 						.altStateCycleOrder(true);

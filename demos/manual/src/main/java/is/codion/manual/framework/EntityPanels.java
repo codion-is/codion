@@ -38,8 +38,8 @@ public final class EntityPanels {
 
 		@Override
 		protected void initializeUI() {
-			createTextField(Address.STREET);
-			createTextField(Address.CITY);
+			create().textField(Address.STREET);
+			create().textField(Address.CITY);
 			addInputPanel(Address.STREET);
 			addInputPanel(Address.CITY);
 		}

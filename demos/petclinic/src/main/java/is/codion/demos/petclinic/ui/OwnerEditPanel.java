@@ -32,12 +32,12 @@ public final class OwnerEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Owner.FIRST_NAME);
-		createTextField(Owner.LAST_NAME);
-		createTextField(Owner.ADDRESS);
-		createTextField(Owner.CITY);
-		createTextField(Owner.TELEPHONE);
-		createEnumComboBox(Owner.PHONE_TYPE);
+		create().textField(Owner.FIRST_NAME);
+		create().textField(Owner.LAST_NAME);
+		create().textField(Owner.ADDRESS);
+		create().textField(Owner.CITY);
+		create().textField(Owner.TELEPHONE);
+		create().enumComboBox(Owner.PHONE_TYPE);
 
 		setLayout(gridLayout(3, 2));
 

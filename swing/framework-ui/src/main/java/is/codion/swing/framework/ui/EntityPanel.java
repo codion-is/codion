@@ -87,7 +87,7 @@ import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.SELECT_INPUT_FIELD;
-import static is.codion.swing.framework.ui.EntityEditorPanel.LAYOUT_FOCUS_TRAVERSAL_POLICY;
+import static is.codion.swing.framework.ui.EntityEditPanel.LAYOUT_FOCUS_TRAVERSAL_POLICY;
 import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.*;
 import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.REFRESH;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;

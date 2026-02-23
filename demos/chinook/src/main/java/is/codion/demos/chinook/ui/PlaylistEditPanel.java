@@ -39,12 +39,12 @@ final class PlaylistEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Playlist.NAME)
+		create().textField(Playlist.NAME)
 						.transferFocusOnEnter(false)
 						.columns(20);
 
 		setLayout(borderLayout());
-		add(createInputPanel(Playlist.NAME)
+		add(create().inputPanel(Playlist.NAME)
 						.layout(InputPanelLayout.border()
 										.labelConstraints(BorderLayout.WEST)
 										.build())

@@ -70,13 +70,13 @@ public final class EntityEditPanelTest {
 
 		public TestEditPanel(SwingEntityEditModel editModel) {
 			super(editModel);
-			createTextField(Employee.NAME);
-			createItemComboBox(Employee.JOB);
-			createComboBox(Employee.MGR_FK);
-			createComboBox(Employee.DEPARTMENT_FK);
-			createTextField(Employee.SALARY);
-			createTextField(Employee.COMMISSION);
-			createTemporalFieldPanel(Employee.HIREDATE);
+			create().textField(Employee.NAME);
+			create().itemComboBox(Employee.JOB);
+			create().comboBox(Employee.MGR_FK);
+			create().comboBox(Employee.DEPARTMENT_FK);
+			create().textField(Employee.SALARY);
+			create().textField(Employee.COMMISSION);
+			create().temporalFieldPanel(Employee.HIREDATE);
 		}
 
 		@Override

@@ -32,9 +32,9 @@ public class ProductEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createComboBox(Product.CATEGORY_FK);
-		createTextField(Product.NAME);
-		createTextField(Product.DESCRIPTION)
+		create().comboBox(Product.CATEGORY_FK);
+		create().textField(Product.NAME);
+		create().textField(Product.DESCRIPTION)
 						.columns(16);
 
 		setLayout(Layouts.gridLayout(3, 1));

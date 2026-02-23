@@ -35,10 +35,10 @@ public class CustomerEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		//methods creating an input field also create a label by default,
 		//which is accessible via component(Customer.FIRST_NAME).label()
-		createTextField(Customer.FIRST_NAME);
-		createTextField(Customer.LAST_NAME);
-		createTextField(Customer.EMAIL);
-		createCheckBox(Customer.ACTIVE);
+		create().textField(Customer.FIRST_NAME);
+		create().textField(Customer.LAST_NAME);
+		create().textField(Customer.EMAIL);
+		create().checkBox(Customer.ACTIVE);
 
 		setLayout(gridLayout(4, 1));
 		//the addInputPanel method creates and adds a panel containing the

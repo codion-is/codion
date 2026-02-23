@@ -39,13 +39,13 @@ final class PlaylistTrackEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createSearchField(PlaylistTrack.TRACK_FK)
+		create().searchField(PlaylistTrack.TRACK_FK)
 						.selector(new TrackSelector())
 						.transferFocusOnEnter(false)
 						.columns(25);
 
 		setLayout(borderLayout());
-		add(createInputPanel(PlaylistTrack.TRACK_FK)
+		add(create().inputPanel(PlaylistTrack.TRACK_FK)
 						.layout(InputPanelLayout.border()
 										.labelConstraints(BorderLayout.WEST)
 										.build())

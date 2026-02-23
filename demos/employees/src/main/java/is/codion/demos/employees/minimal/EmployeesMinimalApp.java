@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -182,8 +183,8 @@ public final class EmployeesMinimalApp {
 			 * so that is only shows managers.
 			 */
 			@Override
-			public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-				EntityComboBoxModel comboBoxModel = SwingComponentModels.super.createComboBoxModel(foreignKey, connectionProvider);
+			public EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, SwingEntityEditor editor) {
+				EntityComboBoxModel comboBoxModel = SwingComponentModels.super.comboBoxModel(foreignKey, editor);
 				if (foreignKey.equals(Employee.MANAGER_FK)) {
 					comboBoxModel.condition().set(() -> Employee.JOB.in("Manager", "President"));
 				}
@@ -207,9 +208,9 @@ public final class EmployeesMinimalApp {
 
 		@Override
 		protected void initializeUI() {
-			createTextField(Department.DEPARTMENT_NO);
-			createTextField(Department.NAME);
-			createTextField(Department.LOCATION);
+			create().textField(Department.DEPARTMENT_NO);
+			create().textField(Department.NAME);
+			create().textField(Department.LOCATION);
 
 			setLayout(gridLayout(3, 1));
 
@@ -230,13 +231,13 @@ public final class EmployeesMinimalApp {
 
 		@Override
 		protected void initializeUI() {
-			createTextField(Employee.NAME);
-			createComboBox(Employee.DEPARTMENT_FK);
-			createTextField(Employee.JOB);
-			createComboBox(Employee.MANAGER_FK);
-			createTemporalFieldPanel(Employee.HIREDATE);
-			createTextField(Employee.SALARY);
-			createTextField(Employee.COMMISSION);
+			create().textField(Employee.NAME);
+			create().comboBox(Employee.DEPARTMENT_FK);
+			create().textField(Employee.JOB);
+			create().comboBox(Employee.MANAGER_FK);
+			create().temporalFieldPanel(Employee.HIREDATE);
+			create().textField(Employee.SALARY);
+			create().textField(Employee.COMMISSION);
 
 			setLayout(gridLayout(4, 2));
 

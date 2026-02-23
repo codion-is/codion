@@ -135,7 +135,8 @@ public final class NotesDemo {
 
 		@Override
 		protected void initializeUI() {
-			JTextField noteField = createTextField(Note.NOTE)
+			JTextField noteField = create()
+							.textField(Note.NOTE)
 							.hint("Take note...")
 							// Only a single input field, no need for focus transfer
 							.transferFocusOnEnter(false)

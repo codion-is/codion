@@ -212,11 +212,11 @@ public interface EntityEditor {
 		 * <p>Use {@link #clear()} in order to clear the editor of all values.
 		 * <p>Notifies that the entity is about to change via {@link #changing()}
 		 * @param entity the entity to set, if null, then defaults are set
+		 * @throws IllegalArgumentException in case the entity is not of the correct type
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
 		 * @see ValueAttributeDefinition#defaultValue()
 		 * @see #changing()
-		 * @throws IllegalArgumentException in case the entity is not of the correct type
 		 */
 		void set(@Nullable Entity entity);
 
@@ -274,12 +274,13 @@ public interface EntityEditor {
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
 		 * using the search attributes defined for that entity type.
 		 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
-		 * @param connectionProvider the conectiom provider
+		 * @param editor the editor
 		 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
+		 * @see EntityDefinition.Columns#searchable()
 		 */
-		default EntitySearchModel createSearchModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-			Collection<Column<String>> searchable = connectionProvider.entities()
+		default EntitySearchModel searchModel(ForeignKey foreignKey, EntityEditor editor) {
+			Collection<Column<String>> searchable = requireNonNull(editor).connectionProvider().entities()
 							.definition(requireNonNull(foreignKey).referencedType())
 							.columns()
 							.searchable();
@@ -289,7 +290,7 @@ public interface EntityEditor {
 
 			return EntitySearchModel.builder()
 							.entityType(foreignKey.referencedType())
-							.connectionProvider(connectionProvider)
+							.connectionProvider(editor.connectionProvider())
 							.build();
 		}
 	}

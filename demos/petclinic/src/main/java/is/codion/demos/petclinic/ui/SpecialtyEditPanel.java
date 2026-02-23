@@ -32,7 +32,7 @@ public final class SpecialtyEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Specialty.NAME);
+		create().textField(Specialty.NAME);
 
 		setLayout(gridLayout(1, 1));
 

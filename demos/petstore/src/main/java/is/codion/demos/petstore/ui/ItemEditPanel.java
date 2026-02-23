@@ -32,20 +32,20 @@ public class ItemEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createComboBox(Item.PRODUCT_FK);
-		createTextField(Item.NAME);
-		createTextFieldPanel(Item.DESCRIPTION)
+		create().comboBox(Item.PRODUCT_FK);
+		create().textField(Item.NAME);
+		create().textFieldPanel(Item.DESCRIPTION)
 						.buttonFocusable(false);
-		createTextField(Item.PRICE);
-		createComboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
+		create().textField(Item.PRICE);
+		create().comboBoxPanel(Item.CONTACT_INFO_FK, this::createContactInfoEditPanel)
 						.preferredWidth(180)
 						.includeAddButton(true);
-		createComboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
+		create().comboBoxPanel(Item.ADDRESS_FK, this::createAddressEditPanel)
 						.preferredWidth(180)
 						.includeAddButton(true);
-		createTextField(Item.IMAGE_URL);
-		createTextField(Item.IMAGE_THUMB_URL);
-		createCheckBox(Item.DISABLED);
+		create().textField(Item.IMAGE_URL);
+		create().textField(Item.IMAGE_THUMB_URL);
+		create().checkBox(Item.DISABLED);
 
 		setLayout(Layouts.flexibleGridLayout(3, 3));
 		addInputPanel(Item.PRODUCT_FK);

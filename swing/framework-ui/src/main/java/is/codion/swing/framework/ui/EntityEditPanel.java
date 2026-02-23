@@ -48,6 +48,7 @@ import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jspecify.annotations.Nullable;
@@ -55,19 +56,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.LayoutFocusTraversalPolicy;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -81,6 +88,7 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
+import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -99,7 +107,9 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 /**
  * A UI component based on a {@link EntityEditModel}.
  */
-public abstract class EntityEditPanel extends EntityEditorPanel {
+public abstract class EntityEditPanel extends JPanel implements EditorComponents {
+
+	static final EditorPanelFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new EditorPanelFocusTraversalPolicy();
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
@@ -107,7 +117,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
-
 
 	static {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager()
@@ -173,6 +182,8 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = (Consumer<Config>) EMPTY_CONSUMER;
 
 	private final SwingEntityEditModel editModel;
+	private final DefaultEditorComponents components;
+	private final ComponentFactory componentFactory;
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final Controls.Layout controlsLayout;
@@ -199,13 +210,13 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	 * @param config provides access to the panel configuration
 	 */
 	protected EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
-		super(requireNonNull(editModel).editor());
-		this.editModel = editModel;
+		this.editModel = requireNonNull(editModel);
 		this.configuration = configure(config);
+		this.components = createEditorComponents(editModel.editor());
+		this.componentFactory = new ComponentFactory(components);
 		this.active = State.state(!configuration.focusActivation);
 		this.controlsLayout = createControlsLayout();
-		inputFocus = new InputFocus(this);
-		editor().entity().changing().addConsumer(this::onEntityChanging);
+		this.inputFocus = new InputFocus();
 		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
@@ -365,6 +376,21 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		return initialized;
 	}
 
+	@Override
+	public final SwingEntityEditor editor() {
+		return components.editor();
+	}
+
+	@Override
+	public final ComponentSettings settings() {
+		return components.settings();
+	}
+
+	@Override
+	public final <T> EditorComponent<T> component(Attribute<T> attribute) {
+		return components.component(attribute);
+	}
+
 	/**
 	 * @return true if confirmed
 	 */
@@ -411,12 +437,54 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	}
 
 	/**
+	 * @return the {@link ComponentFactory} instance
+	 */
+	protected final ComponentFactory create() {
+		return componentFactory;
+	}
+
+	/**
+	 * Adds a panel for the given attribute to this panel
+	 * @param attribute the attribute
+	 * @see ComponentFactory#inputPanel(Attribute)
+	 */
+	protected final void addInputPanel(Attribute<?> attribute) {
+		add(componentFactory.inputPanel(attribute));
+	}
+
+	/**
+	 * Adds a panel for the given attribute to this panel using the given layout constraints
+	 * @param attribute the attribute
+	 * @param constraints the layout constraints
+	 * @see ComponentFactory#inputPanel(Attribute)
+	 */
+	protected final void addInputPanel(Attribute<?> attribute, Object constraints) {
+		add(componentFactory.inputPanel(attribute), constraints);
+	}
+
+	/**
+	 * @param component the component to add
+	 * @see #add(Component)
+	 */
+	protected final void add(Supplier<? extends JComponent> component) {
+		super.add(requireNonNull(component).get());
+	}
+
+	/**
+	 * @param component the component to add
+	 * @param constraints the constraints
+	 * @see #add(Component, Object)
+	 */
+	protected final void add(Supplier<? extends JComponent> component, Object constraints) {
+		super.add(requireNonNull(component).get(), constraints);
+	}
+
+	/**
 	 * Propagates the exception to {@link #onValidationException(ValidationException)} or
 	 * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
 	 * otherwise forwards to the super implementation.
 	 * @param exception the exception to handle
 	 */
-	@Override
 	protected void onException(Exception exception) {
 		if (exception instanceof ValidationException) {
 			onValidationException((ValidationException) exception);
@@ -424,8 +492,8 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		else if (exception instanceof ReferentialIntegrityException) {
 			onReferentialIntegrityException((ReferentialIntegrityException) exception);
 		}
-		else {
-			super.onException(exception);
+		else if (!(exception instanceof CancelException)) {
+			displayException(exception);
 		}
 	}
 
@@ -443,7 +511,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 							this, dependenciesDialogSize, dependencyPanelPreferences, true);
 		}
 		else {
-			super.onException(exception);
+			displayException(exception);
 		}
 	}
 
@@ -463,6 +531,18 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	}
 
 	/**
+	 * Displays the exception in a dialog
+	 * @param exception the exception to display
+	 */
+	protected final void displayException(Exception exception) {
+		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+		if (focusOwner == null) {
+			focusOwner = EntityEditPanel.this;
+		}
+		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
+	}
+
+	/**
 	 * Override to set up any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(ControlKey)
@@ -474,8 +554,8 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	 * required for editing the underlying entity type.
 	 * {@snippet :
 	 *   protected void initializeUI() {
-	 *      createTextField(DomainModel.USER_NAME);
-	 *      createTextField(DomainModel.USER_ADDRESS);
+	 *      create().textField(DomainModel.USER_NAME);
+	 *      create().textField(DomainModel.USER_ADDRESS);
 	 *
 	 *      setLayout(new GridLayout(2, 1, 5, 5));
 	 *
@@ -641,9 +721,9 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	}
 
 	private Collection<Attribute<?>> selectComponentAttributes() {
-		return components().keySet().stream()
+		return components.components().keySet().stream()
 						.filter(attribute -> !configuration.excludeFromSelection.contains(attribute))
-						.filter(attribute -> componentSelectable(component(attribute).get()))
+						.filter(attribute -> componentSelectable(components.component(attribute).get()))
 						.collect(collectingAndThen(toList(), Collections::unmodifiableCollection));
 	}
 
@@ -691,7 +771,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		Set<Attribute<?>> attributes = invalidAttributes.stream()
 						.map(InvalidAttribute::attribute)
 						.collect(toSet());
-		return components().entrySet().stream()
+		return components.components().entrySet().stream()
 						.filter(entry -> attributes.contains(entry.getKey()))
 						.min(EntityEditPanel::compareFocusOrder)
 						.map(Map.Entry::getKey)
@@ -724,11 +804,22 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	}
 
 	private boolean isInputComponent(JComponent component) {
-		return components().values().stream()
+		return components.components().values().stream()
 						.map(EditorComponent::optional)
 						.filter(Optional::isPresent)
 						.map(Optional::get)
 						.anyMatch(comp -> sameOrParentOf(comp, component));
+	}
+
+	private DefaultEditorComponents createEditorComponents(SwingEntityEditor editor) {
+		DefaultEditorComponents editorComponents = new DefaultEditorComponents(editor);
+		editorComponents.settings().validIndicator().set(configuration.validIndicator);
+		editorComponents.settings().modifiedIndicator().set(configuration.modifiedIndicator);
+		editorComponents.settings().transferFocusOnEnter().set(configuration.transferFocusOnEnter);
+		editorComponents.settings().textFieldColumns().set(configuration.textFieldColumns);
+		editorComponents.editor().entity().changing().addConsumer(this::onEntityChanging);
+
+		return editorComponents;
 	}
 
 	private static boolean sameOrParentOf(JComponent parent, @Nullable JComponent component) {
@@ -773,7 +864,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	/**
 	 * Contains configuration settings for a {@link EntityEditPanel} which must be set before the panel is initialized.
 	 */
-	public static final class Config extends EntityEditorPanel.Config<Config> {
+	public static final class Config {
 
 		/**
 		 * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)
@@ -855,6 +946,49 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		public static final PropertyValue<Boolean> MODIFIED_WARNING =
 						booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
 
+
+		/**
+		 * Specifies whether components should indicate the validity of their current value
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
+		 */
+		public static final PropertyValue<Boolean> VALID_INDICATOR =
+						booleanValue(EntityEditPanel.class.getName() + ".validIndicator", true);
+
+		/**
+		 * Specifies whether components should indicate that the value is modified
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 * @see is.codion.swing.common.ui.component.indicator.ModifiedIndicator
+		 */
+		public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
+						booleanValue(EntityEditPanel.class.getName() + ".modifiedIndicator", true);
+
+		/**
+		 * Specifies whether components should transfer focus on enter
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
+						booleanValue(EntityEditPanel.class.getName() + ".transferFocusOnEnter", true);
+
+		/**
+		 * Specifies the default number of text field columns
+		 * <ul>
+		 * <li>Value type: Integer
+		 * <li>Default value: 12
+		 * </ul>
+		 */
+		public static final PropertyValue<Integer> TEXT_FIELD_COLUMNS =
+						integerValue(EntityEditPanel.class.getName() + ".textFieldColumns", 12);
+
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
 		private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
@@ -874,6 +1008,10 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
 		private Set<Attribute<?>> excludeFromSelection = emptySet();
 		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
+		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
+		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
+		private int textFieldColumns = TEXT_FIELD_COLUMNS.getOrThrow();
+		private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.getOrThrow();
 
 		final ControlMap controlMap;
 
@@ -882,7 +1020,6 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		}
 
 		private Config(Config config) {
-			super(config);
 			this.controlMap = config.controlMap.copy();
 			this.clearAfterInsert = config.clearAfterInsert;
 			this.requestFocusAfterInsert = config.requestFocusAfterInsert;
@@ -898,6 +1035,10 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			this.includeQueryInspector = config.includeQueryInspector;
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 			this.modifiedWarning = config.modifiedWarning;
+			this.validIndicator = config.validIndicator;
+			this.modifiedIndicator = config.modifiedIndicator;
+			this.textFieldColumns = config.textFieldColumns;
+			this.transferFocusOnEnter = config.transferFocusOnEnter;
 		}
 
 		/**
@@ -1052,6 +1193,57 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;
+			return this;
+		}
+
+		/**
+		 * If set to true then components will indicate whether the current value is valid.
+		 * This applies to all components created by this edit component panel as well as
+		 * components set via {@link #component(Attribute)}
+		 * @param validIndicator specifies whether components should indicate validity
+		 * @return this Config instance
+		 * @see #VALID_INDICATOR
+		 * @see is.codion.swing.common.ui.component.indicator.ValidIndicator
+		 */
+		public Config validIndicator(boolean validIndicator) {
+			this.validIndicator = validIndicator;
+			return this;
+		}
+
+		/**
+		 * If set to true then component labels will indicate that the value is modified.
+		 * This applies to all components created by this edit component panel as well as
+		 * components set via {@link #component(Attribute)} as long
+		 * as the component has a JLabel associated with its 'labeledBy' client property.
+		 * @param modifiedIndicator specifies whether components should indicate modification
+		 * @return this Config instance
+		 * @see #MODIFIED_INDICATOR
+		 * @see JLabel#setLabelFor(Component)
+		 */
+		public Config modifiedIndicator(boolean modifiedIndicator) {
+			this.modifiedIndicator = modifiedIndicator;
+			return this;
+		}
+
+		/**
+		 * Specifies the default number of text field columns
+		 * @param textFieldColumns the default number of text field columns
+		 * @return this Config instance
+		 * @see JTextField#setColumns(int)
+		 * @see #TEXT_FIELD_COLUMNS
+		 */
+		public Config textFieldColumns(int textFieldColumns) {
+			this.textFieldColumns = textFieldColumns;
+			return this;
+		}
+
+		/**
+		 * @param transferFocusOnEnter specifies whether components will transfer focus on enter
+		 * @return this Config instance
+		 * @see #TRANSFER_FOCUS_ON_ENTER
+		 */
+		public Config transferFocusOnEnter(boolean transferFocusOnEnter) {
+			this.transferFocusOnEnter = transferFocusOnEnter;
 			return this;
 		}
 	}
@@ -1212,16 +1404,11 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 	/**
 	 * Manages the components that should receive the input focus.
 	 */
-	public static final class InputFocus {
+	public final class InputFocus {
 
-		private final EntityEditorPanel editorPanel;
 		private final Initial initial = new Initial();
 		private final AfterInsert afterInsert = new AfterInsert();
 		private final AfterUpdate afterUpdate = new AfterUpdate();
-
-		private InputFocus(EntityEditorPanel editorPanel) {
-			this.editorPanel = editorPanel;
-		}
 
 		/**
 		 * Request focus for the component associated with the given attribute.
@@ -1230,8 +1417,8 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 		 * @param attribute the attribute of the component to select
 		 */
 		public void request(Attribute<?> attribute) {
-			Ancestor.window().of(editorPanel).toFront();
-			editorPanel.component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
+			Ancestor.window().of(EntityEditPanel.this).toFront();
+			components.component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
 		}
 
 		/**
@@ -1260,7 +1447,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 				component.requestFocus();
 			}
 			else {
-				editorPanel.requestFocus();
+				EntityEditPanel.this.requestFocus();
 			}
 		}
 
@@ -1291,12 +1478,12 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			public JComponent get() {
 				JComponent initial = component.get();
 				if (initial == null) {
-					Component defaultComponent = LAYOUT_FOCUS_TRAVERSAL_POLICY.getDefaultComponent(editorPanel);
+					Component defaultComponent = LAYOUT_FOCUS_TRAVERSAL_POLICY.getDefaultComponent(EntityEditPanel.this);
 					if (defaultComponent instanceof JComponent) {
 						return (JComponent) defaultComponent;
 					}
 
-					return editorPanel;
+					return EntityEditPanel.this;
 				}
 
 				return initial;
@@ -1318,7 +1505,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			 */
 			public void set(Attribute<?> attribute) {
 				requireNonNull(attribute);
-				set(() -> editorPanel.component(attribute).get());
+				set(() -> component(attribute).get());
 			}
 
 			/**
@@ -1335,7 +1522,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			 * @see #get()
 			 */
 			public void request() {
-				if (editorPanel.isVisible()) {
+				if (EntityEditPanel.this.isVisible()) {
 					requestFocus(get());
 				}
 			}
@@ -1366,7 +1553,7 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			 */
 			public void set(Attribute<?> attribute) {
 				requireNonNull(attribute);
-				set(() -> editorPanel.component(attribute).get());
+				set(() -> component(attribute).get());
 			}
 
 			/**
@@ -1631,6 +1818,24 @@ public abstract class EntityEditPanel extends EntityEditorPanel {
 			public DeleteCommand build() {
 				return new DefaultDeleteCommand(this);
 			}
+		}
+	}
+
+	static final class AttributeDefinitionComparator implements Comparator<AttributeDefinition<?>> {
+
+		private final Collator collator = Collator.getInstance();
+
+		@Override
+		public int compare(AttributeDefinition<?> definition1, AttributeDefinition<?> definition2) {
+			return collator.compare(definition1.toString().toLowerCase(), definition2.toString().toLowerCase());
+		}
+	}
+
+	static final class EditorPanelFocusTraversalPolicy extends LayoutFocusTraversalPolicy {
+
+		@Override
+		public Comparator<? super Component> getComparator() {
+			return super.getComparator();
 		}
 	}
 

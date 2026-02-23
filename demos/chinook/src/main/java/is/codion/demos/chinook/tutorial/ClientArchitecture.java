@@ -92,7 +92,7 @@ public final class ClientArchitecture {
 		EntityEditPanel artistEditPanel = new EntityEditPanel(artistEditModel) {
 			@Override
 			protected void initializeUI() {
-				createTextField(Artist.NAME).columns(15);
+				create().textField(Artist.NAME).columns(15);
 				addInputPanel(Artist.NAME);
 			}
 		};

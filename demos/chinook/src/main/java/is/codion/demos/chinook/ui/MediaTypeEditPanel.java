@@ -32,7 +32,7 @@ public final class MediaTypeEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(MediaType.NAME);
+		create().textField(MediaType.NAME);
 
 		setLayout(gridLayout(1, 1));
 		addInputPanel(MediaType.NAME);

@@ -37,13 +37,13 @@ public final class AlbumEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createSearchField(Album.ARTIST_FK)
+		create().searchField(Album.ARTIST_FK)
 						.columns(15)
 						// We provide an edit panel supplier, which enables
 						// keyboard shortcuts for adding a new artist (INSERT)
 						// or editing the currently selected one (CTRL-INSERT).
 						.editPanel(this::createArtistEditPanel);
-		createTextField(Album.TITLE)
+		create().textField(Album.TITLE)
 						.columns(15);
 		// We use our custom component for the album tags,
 		// which is automatically linked to Album.TAGS.
@@ -53,10 +53,10 @@ public final class AlbumEditPanel extends EntityEditPanel {
 		component(Album.COVER).set(new CoverArtValue());
 
 		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)
-						.add(createInputPanel(Album.ARTIST_FK))
-						.add(createInputPanel(Album.TITLE))
-						.add(createInputPanel(Album.TAGS))
-						.add(createInputPanel(Album.COVER))
+						.add(create().inputPanel(Album.ARTIST_FK))
+						.add(create().inputPanel(Album.TITLE))
+						.add(create().inputPanel(Album.TAGS))
+						.add(create().inputPanel(Album.COVER))
 						.build();
 
 		setLayout(borderLayout());

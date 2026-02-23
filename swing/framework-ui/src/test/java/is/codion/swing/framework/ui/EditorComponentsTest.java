@@ -35,7 +35,7 @@ import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class EntityEditorPanelTest {
+public final class EditorComponentsTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -48,17 +48,18 @@ public final class EntityEditorPanelTest {
 	@Test
 	void test() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityEditorPanel componentPanel = new EntityEditorPanel(editModel.editor());
-		componentPanel.createTextField(Employee.NAME);
-		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));
-		JTextField nameField = (JTextField) componentPanel.component(Employee.NAME).get();
+		EditorComponents components = new DefaultEditorComponents(editModel.editor());
+		EditorComponents.ComponentFactory factory = new EditorComponents.ComponentFactory(components);
+		factory.textField(Employee.NAME);
+		assertThrows(IllegalStateException.class, () -> factory.textField(Employee.NAME));
+		JTextField nameField = (JTextField) components.component(Employee.NAME).get();
 		assertNotNull(nameField);
-		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));
-		assertFalse(componentPanel.component(Employee.JOB).optional().isPresent());
-		assertThrows(IllegalStateException.class, () -> componentPanel.component(Employee.NAME).set(new JLabel()));
+		assertThrows(IllegalStateException.class, () -> factory.textField(Employee.NAME));
+		assertFalse(components.component(Employee.JOB).optional().isPresent());
+		assertThrows(IllegalStateException.class, () -> components.component(Employee.NAME).set(new JLabel()));
 
 		ComponentValue<NumberField<Double>, Double> salary = Components.doubleField().buildValue();
-		componentPanel.component(Employee.SALARY).set(salary);
+		components.component(Employee.SALARY).set(salary);
 		salary.set(2000d);
 		assertEquals(salary.get(), editModel.editor().value(Employee.SALARY).get());
 	}
@@ -66,8 +67,9 @@ public final class EntityEditorPanelTest {
 	@Test
 	void derived() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
-		EntityEditorPanel componentPanel = new EntityEditorPanel(editModel.editor());
-		JTextField textField = componentPanel.createTextField(Detail.INT_DERIVED).build();
+		EditorComponents components = new DefaultEditorComponents(editModel.editor());
+		EditorComponents.ComponentFactory factory = new EditorComponents.ComponentFactory(components);
+		JTextField textField = factory.textField(Detail.INT_DERIVED).build();
 		assertFalse(textField.isEnabled());
 	}
 }

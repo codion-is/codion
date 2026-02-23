@@ -48,10 +48,10 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createSearchField(InvoiceLine.TRACK_FK)
+		create().searchField(InvoiceLine.TRACK_FK)
 						.selector(new TrackSelector())
 						.columns(15);
-		createTextField(InvoiceLine.QUANTITY)
+		create().textField(InvoiceLine.QUANTITY)
 						.selectAllOnFocusGained(true)
 						.columns(2)
 						// Set the INSERT control as the quantity field
@@ -70,8 +70,8 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 						.build();
 
 		JPanel centerPanel = flexibleGridLayoutPanel(1, 0)
-						.add(createInputPanel(InvoiceLine.TRACK_FK))
-						.add(createInputPanel(InvoiceLine.QUANTITY))
+						.add(create().inputPanel(InvoiceLine.TRACK_FK))
+						.add(create().inputPanel(InvoiceLine.QUANTITY))
 						.add(borderLayoutPanel()
 										.north(label(" "))
 										.center(updateButton))

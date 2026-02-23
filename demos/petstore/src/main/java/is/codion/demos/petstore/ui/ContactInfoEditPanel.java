@@ -32,9 +32,9 @@ public class ContactInfoEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(SellerContactInfo.LAST_NAME);
-		createTextField(SellerContactInfo.FIRST_NAME);
-		createTextField(SellerContactInfo.EMAIL);
+		create().textField(SellerContactInfo.LAST_NAME);
+		create().textField(SellerContactInfo.FIRST_NAME);
+		create().textField(SellerContactInfo.EMAIL);
 
 		setLayout(Layouts.flexibleGridLayout(3, 1));
 		addInputPanel(SellerContactInfo.LAST_NAME);

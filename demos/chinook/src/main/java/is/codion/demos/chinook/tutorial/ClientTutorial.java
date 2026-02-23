@@ -131,7 +131,7 @@ public final class ClientTutorial {
 
 		@Override
 		protected void initializeUI() {
-			createTextField(Artist.NAME)
+			create().textField(Artist.NAME)
 							.columns(15);
 			addInputPanel(Artist.NAME);
 		}
@@ -145,9 +145,9 @@ public final class ClientTutorial {
 
 		@Override
 		protected void initializeUI() {
-			createSearchField(Album.ARTIST_FK)
+			create().searchField(Album.ARTIST_FK)
 							.columns(15);
-			createTextField(Album.TITLE)
+			create().textField(Album.TITLE)
 							.action(control(INSERT).get())
 							.columns(15);
 			setLayout(gridLayout(2, 1));

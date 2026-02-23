@@ -33,11 +33,11 @@ public class AddressEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Address.STREET)
+		create().textField(Address.STREET)
 						.columns(25);
-		createTextField(Address.CITY)
+		create().textField(Address.CITY)
 						.columns(25);
-		createCheckBox(Address.VALID);
+		create().checkBox(Address.VALID);
 
 		setLayout(gridLayout(3, 1));
 		addInputPanel(Address.STREET);

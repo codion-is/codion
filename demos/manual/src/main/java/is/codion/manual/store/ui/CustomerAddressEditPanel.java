@@ -34,7 +34,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createComboBoxPanel(CustomerAddress.ADDRESS_FK, this::createAddressEditPanel)
+		create().comboBoxPanel(CustomerAddress.ADDRESS_FK, this::createAddressEditPanel)
 						.preferredWidth(280)
 						.includeAddButton(true);
 

@@ -32,10 +32,10 @@ public class CategoryEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Category.NAME);
-		createTextField(Category.DESCRIPTION)
+		create().textField(Category.NAME);
+		create().textField(Category.DESCRIPTION)
 						.columns(18);
-		createTextField(Category.IMAGE_URL);
+		create().textField(Category.IMAGE_URL);
 
 		setLayout(Layouts.gridLayout(3, 1));
 		addInputPanel(Category.NAME);

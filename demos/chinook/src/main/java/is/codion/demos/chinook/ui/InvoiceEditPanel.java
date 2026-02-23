@@ -53,45 +53,45 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createSearchField(Invoice.CUSTOMER_FK)
+		create().searchField(Invoice.CUSTOMER_FK)
 						.columns(14)
 						// We add a custom selector factory, creating a selector which
 						// displays a table instead of a list when selecting a customer
 						.selector(new CustomerSelector());
-		createTemporalFieldPanel(Invoice.DATE)
+		create().temporalFieldPanel(Invoice.DATE)
 						.columns(6);
 
-		createTextField(Invoice.BILLINGADDRESS)
+		create().textField(Invoice.BILLINGADDRESS)
 						.columns(12)
 						.selectAllOnFocusGained(true);
 
-		createTextField(Invoice.BILLINGCITY)
+		create().textField(Invoice.BILLINGCITY)
 						.columns(8)
 						.selectAllOnFocusGained(true);
-		createTextField(Invoice.BILLINGPOSTALCODE)
+		create().textField(Invoice.BILLINGPOSTALCODE)
 						.columns(4)
 						.selectAllOnFocusGained(true);
 
-		createTextField(Invoice.BILLINGSTATE)
+		create().textField(Invoice.BILLINGSTATE)
 						.columns(4)
 						.selectAllOnFocusGained(true);
-		createTextField(Invoice.BILLINGCOUNTRY)
+		create().textField(Invoice.BILLINGCOUNTRY)
 						.columns(8)
 						.selectAllOnFocusGained(true);
 
 		JPanel customerDatePanel = flexibleGridLayoutPanel(1, 2)
-						.add(createInputPanel(Invoice.CUSTOMER_FK))
-						.add(createInputPanel(Invoice.DATE))
+						.add(create().inputPanel(Invoice.CUSTOMER_FK))
+						.add(create().inputPanel(Invoice.DATE))
 						.build();
 
 		JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
-						.add(createInputPanel(Invoice.BILLINGCITY))
-						.add(createInputPanel(Invoice.BILLINGPOSTALCODE))
+						.add(create().inputPanel(Invoice.BILLINGCITY))
+						.add(create().inputPanel(Invoice.BILLINGPOSTALCODE))
 						.build();
 
 		JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
-						.add(createInputPanel(Invoice.BILLINGSTATE))
-						.add(createInputPanel(Invoice.BILLINGCOUNTRY))
+						.add(create().inputPanel(Invoice.BILLINGSTATE))
+						.add(create().inputPanel(Invoice.BILLINGCOUNTRY))
 						.build();
 
 		JPanel cityPostalCodeStateCountryPanel = gridLayoutPanel(1, 2)
@@ -101,7 +101,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
 		JPanel centerPanel = gridLayoutPanel(4, 1)
 						.add(customerDatePanel)
-						.add(createInputPanel(Invoice.BILLINGADDRESS))
+						.add(create().inputPanel(Invoice.BILLINGADDRESS))
 						.add(cityPostalCodeStateCountryPanel)
 						.build();
 

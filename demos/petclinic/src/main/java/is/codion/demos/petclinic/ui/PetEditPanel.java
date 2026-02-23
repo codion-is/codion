@@ -35,11 +35,11 @@ public final class PetEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		focus().initial().set(Pet.NAME);
 
-		createComboBox(Pet.OWNER_FK);
-		createTextField(Pet.NAME);
-		createComboBoxPanel(Pet.PET_TYPE_FK, this::createPetTypeEditPanel)
+		create().comboBox(Pet.OWNER_FK);
+		create().textField(Pet.NAME);
+		create().comboBoxPanel(Pet.PET_TYPE_FK, this::createPetTypeEditPanel)
 						.includeAddButton(true);
-		createTemporalFieldPanel(Pet.BIRTH_DATE);
+		create().temporalFieldPanel(Pet.BIRTH_DATE);
 
 		setLayout(gridLayout(2, 2));
 

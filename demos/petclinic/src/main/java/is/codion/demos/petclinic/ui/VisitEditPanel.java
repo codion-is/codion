@@ -37,25 +37,25 @@ public final class VisitEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createComboBox(Visit.PET_FK);
-		createComboBox(Visit.VET_FK);
-		createTemporalFieldPanel(Visit.VISIT_DATE);
-		createTextArea(Visit.DESCRIPTION)
+		create().comboBox(Visit.PET_FK);
+		create().comboBox(Visit.VET_FK);
+		create().temporalFieldPanel(Visit.VISIT_DATE);
+		create().textArea(Visit.DESCRIPTION)
 						.rowsColumns(4, 20);
 
 		JPanel northPanel = gridLayoutPanel(2, 1)
 						.add(gridLayoutPanel(1, 2)
-										.add(createInputPanel(Visit.PET_FK))
-										.add(createInputPanel(Visit.VISIT_DATE)))
-						.add(createInputPanel(Visit.VET_FK))
+										.add(create().inputPanel(Visit.PET_FK))
+										.add(create().inputPanel(Visit.VISIT_DATE)))
+						.add(create().inputPanel(Visit.VET_FK))
 						.build();
 
 		setLayout(borderLayout());
 		add(northPanel, BorderLayout.NORTH);
-		add(createInputPanel(Visit.DESCRIPTION)
+		add(create().inputPanel(Visit.DESCRIPTION)
 						.component(scrollPane()
 										.view(component(Visit.DESCRIPTION).get())), BorderLayout.CENTER);
-		add(createInputPanel(Visit.DESCRIPTION)
+		add(create().inputPanel(Visit.DESCRIPTION)
 						.component(scrollPane()
 										.view(component(Visit.DESCRIPTION).get())), BorderLayout.CENTER);
 	}

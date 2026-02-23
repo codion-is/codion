@@ -42,29 +42,29 @@ public class EmployeeEditPanel extends EntityEditPanel {
 	// tag::initializeUI[]
 	@Override
 	protected void initializeUI() {
-		createTextField(Employee.NAME)
+		create().textField(Employee.NAME)
 						.columns(8);
-		createComboBox(Employee.DEPARTMENT_FK);
-		createItemComboBox(Employee.JOB);
-		createComboBox(Employee.MANAGER_FK);
-		createTextField(Employee.SALARY)
+		create().comboBox(Employee.DEPARTMENT_FK);
+		create().itemComboBox(Employee.JOB);
+		create().comboBox(Employee.MANAGER_FK);
+		create().textField(Employee.SALARY)
 						.columns(5);
-		createTextField(Employee.COMMISSION)
+		create().textField(Employee.COMMISSION)
 						.columns(5);
-		createTemporalFieldPanel(Employee.HIREDATE)
+		create().temporalFieldPanel(Employee.HIREDATE)
 						.columns(7);
 
 		setLayout(flexibleGridLayout(0, 3));
 
 		addInputPanel(Employee.NAME);
-		add(createInputPanel(Employee.DEPARTMENT_FK)
+		add(create().inputPanel(Employee.DEPARTMENT_FK)
 						.component(createDepartmentPanel()));
 		addInputPanel(Employee.JOB);
 
 		addInputPanel(Employee.MANAGER_FK);
 		add(gridLayoutPanel(1, 2)
-						.add(createInputPanel(Employee.SALARY))
-						.add(createInputPanel(Employee.COMMISSION)));
+						.add(create().inputPanel(Employee.SALARY))
+						.add(create().inputPanel(Employee.COMMISSION)));
 		addInputPanel(Employee.HIREDATE);
 	}
 

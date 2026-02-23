@@ -33,9 +33,9 @@ public class TagItemEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createComboBox(TagItem.ITEM_FK)
+		create().comboBox(TagItem.ITEM_FK)
 						.preferredWidth(180);
-		createComboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)
+		create().comboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)
 						.includeAddButton(true);
 		setLayout(flexibleGridLayout(2, 1));
 		addInputPanel(TagItem.ITEM_FK);

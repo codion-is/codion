@@ -41,21 +41,21 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createComboBox(CountryLanguage.COUNTRY_FK)
+		create().comboBox(CountryLanguage.COUNTRY_FK)
 						.preferredWidth(120);
-		createTextField(CountryLanguage.LANGUAGE);
-		createCheckBox(CountryLanguage.IS_OFFICIAL);
-		createDoubleField(CountryLanguage.PERCENTAGE)
+		create().textField(CountryLanguage.LANGUAGE);
+		create().checkBox(CountryLanguage.IS_OFFICIAL);
+		create().doubleField(CountryLanguage.PERCENTAGE)
 						.range(0, 100)
 						.silentValidation(true)
 						.columns(4);
-		createTextField(CountryLanguage.NO_OF_SPEAKERS)
+		create().textField(CountryLanguage.NO_OF_SPEAKERS)
 						.columns(6);
 
 		JPanel percentageOfficialPanel = gridLayoutPanel(1, 3)
-						.add(createInputPanel(CountryLanguage.PERCENTAGE))
-						.add(createInputPanel(CountryLanguage.IS_OFFICIAL))
-						.add(createInputPanel(CountryLanguage.NO_OF_SPEAKERS))
+						.add(create().inputPanel(CountryLanguage.PERCENTAGE))
+						.add(create().inputPanel(CountryLanguage.IS_OFFICIAL))
+						.add(create().inputPanel(CountryLanguage.NO_OF_SPEAKERS))
 						.build();
 
 		setLayout(gridLayout(0, 1));

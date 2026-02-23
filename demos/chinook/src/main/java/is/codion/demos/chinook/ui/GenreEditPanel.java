@@ -32,7 +32,7 @@ public final class GenreEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Genre.NAME);
+		create().textField(Genre.NAME);
 
 		setLayout(gridLayout(1, 1));
 		addInputPanel(Genre.NAME);

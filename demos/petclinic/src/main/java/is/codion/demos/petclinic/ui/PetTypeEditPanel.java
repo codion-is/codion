@@ -32,7 +32,7 @@ public final class PetTypeEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(PetType.NAME);
+		create().textField(PetType.NAME);
 
 		setLayout(gridLayout(1, 1));
 

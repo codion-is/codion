@@ -32,7 +32,7 @@ public final class ArtistEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Artist.NAME)
+		create().textField(Artist.NAME)
 						.columns(18);
 
 		setLayout(gridLayout(1, 1));

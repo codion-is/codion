@@ -47,8 +47,8 @@ public final class Example {
 
 		@Override
 		protected void initializeUI() {
-			createTextField(Customer.FIRST_NAME);
-			createTextField(Customer.LAST_NAME);
+			create().textField(Customer.FIRST_NAME);
+			create().textField(Customer.LAST_NAME);
 			addInputPanel(Customer.FIRST_NAME);
 			addInputPanel(Customer.LAST_NAME);
 		}
@@ -64,8 +64,8 @@ public final class Example {
 
 		@Override
 		protected void initializeUI() {
-			createComboBox(CustomerAddress.CUSTOMER_FK);
-			createComboBox(CustomerAddress.ADDRESS_FK);
+			create().comboBox(CustomerAddress.CUSTOMER_FK);
+			create().comboBox(CustomerAddress.ADDRESS_FK);
 			addInputPanel(CustomerAddress.CUSTOMER_FK);
 			addInputPanel(CustomerAddress.ADDRESS_FK);
 		}

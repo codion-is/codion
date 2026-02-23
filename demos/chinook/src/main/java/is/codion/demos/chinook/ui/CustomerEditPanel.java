@@ -43,21 +43,21 @@ public final class CustomerEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Customer.FIRSTNAME)
+		create().textField(Customer.FIRSTNAME)
 						.columns(6);
-		createTextField(Customer.LASTNAME)
+		create().textField(Customer.LASTNAME)
 						.columns(6);
-		createTextField(Customer.EMAIL)
+		create().textField(Customer.EMAIL)
 						.columns(12);
-		createTextField(Customer.COMPANY)
+		create().textField(Customer.COMPANY)
 						.columns(12);
-		createTextField(Customer.ADDRESS)
+		create().textField(Customer.ADDRESS)
 						.columns(12);
-		createTextField(Customer.CITY)
+		create().textField(Customer.CITY)
 						.columns(8);
-		createTextField(Customer.POSTALCODE)
+		create().textField(Customer.POSTALCODE)
 						.columns(4);
-		createTextField(Customer.STATE)
+		create().textField(Customer.STATE)
 						.columns(4)
 						.upperCase(true)
 						// CTRL-SPACE displays a dialog for selecting
@@ -66,28 +66,28 @@ public final class CustomerEditPanel extends EntityEditPanel {
 										.keyCode(VK_SPACE)
 										.modifiers(MENU_SHORTCUT_MASK)
 										.action(Control.action(this::selectState)));
-		createTextField(Customer.COUNTRY)
+		create().textField(Customer.COUNTRY)
 						.columns(8);
-		createTextField(Customer.PHONE)
+		create().textField(Customer.PHONE)
 						.columns(12);
-		createTextField(Customer.FAX)
+		create().textField(Customer.FAX)
 						.columns(12);
-		createComboBox(Customer.SUPPORTREP_FK)
+		create().comboBox(Customer.SUPPORTREP_FK)
 						.preferredWidth(120);
 
 		JPanel firstLastNamePanel = gridLayoutPanel(1, 2)
-						.add(createInputPanel(Customer.FIRSTNAME))
-						.add(createInputPanel(Customer.LASTNAME))
+						.add(create().inputPanel(Customer.FIRSTNAME))
+						.add(create().inputPanel(Customer.LASTNAME))
 						.build();
 
 		JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
-						.add(createInputPanel(Customer.CITY))
-						.add(createInputPanel(Customer.POSTALCODE))
+						.add(create().inputPanel(Customer.CITY))
+						.add(create().inputPanel(Customer.POSTALCODE))
 						.build();
 
 		JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
-						.add(createInputPanel(Customer.STATE))
-						.add(createInputPanel(Customer.COUNTRY))
+						.add(create().inputPanel(Customer.STATE))
+						.add(create().inputPanel(Customer.COUNTRY))
 						.build();
 
 		setLayout(flexibleGridLayout(4, 3));

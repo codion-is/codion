@@ -554,7 +554,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public EntitySearchModel create(ForeignKey foreignKey) {
-			return componentModels.createSearchModel(foreignKey, connectionProvider);
+			return componentModels.searchModel(foreignKey, DefaultEntityEditor.this);
 		}
 	}
 

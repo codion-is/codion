@@ -32,8 +32,8 @@ public final class VetEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Vet.FIRST_NAME);
-		createTextField(Vet.LAST_NAME);
+		create().textField(Vet.FIRST_NAME);
+		create().textField(Vet.LAST_NAME);
 
 		setLayout(gridLayout(2, 1));
 

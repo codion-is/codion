@@ -34,13 +34,13 @@ public class AddressEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		createTextField(Address.CITY);
-		createTextField(Address.STATE);
-		createTextField(Address.ZIP);
-		createTextField(Address.STREET_1);
-		createTextField(Address.STREET_2);
-		createTextField(Address.LATITUDE);
-		createTextField(Address.LONGITUDE);
+		create().textField(Address.CITY);
+		create().textField(Address.STATE);
+		create().textField(Address.ZIP);
+		create().textField(Address.STREET_1);
+		create().textField(Address.STREET_2);
+		create().textField(Address.LATITUDE);
+		create().textField(Address.LONGITUDE);
 
 		setLayout(Layouts.flexibleGridLayout(4, 2));
 		addInputPanel(Address.CITY);
