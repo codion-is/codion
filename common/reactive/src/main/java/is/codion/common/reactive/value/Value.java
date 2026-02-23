@@ -315,7 +315,7 @@ public interface Value<T> extends Observable<T> {
 		 * @return this builder instance
 		 * @see Value#changed()
 		 */
-		B changeConsumer(Consumer<ValueChange<? super T>> consumer);
+		B changeConsumer(Consumer<ValueChange<T>> consumer);
 
 		/**
 		 * @param weakListener a weak change listener to add
@@ -329,7 +329,7 @@ public interface Value<T> extends Observable<T> {
 		 * @return this builder instance
 		 * @see Value#changed()
 		 */
-		B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer);
+		B weakChangeConsumer(Consumer<ValueChange<T>> weakConsumer);
 
 		/**
 		 * @return a new {@link Value} instance based on this builder

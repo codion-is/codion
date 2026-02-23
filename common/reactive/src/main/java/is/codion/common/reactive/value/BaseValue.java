@@ -399,7 +399,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		}
 
 		@Override
-		public final B changeConsumer(Consumer<ValueChange<? super T>> consumer) {
+		public final B changeConsumer(Consumer<ValueChange<T>> consumer) {
 			requireNonNull(consumer);
 			changeListeners.add(val -> val.changed().addConsumer(consumer));
 			return self();
@@ -413,7 +413,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		}
 
 		@Override
-		public final B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer) {
+		public final B weakChangeConsumer(Consumer<ValueChange<T>> weakConsumer) {
 			requireNonNull(weakConsumer);
 			changeListeners.add(val -> val.changed().addWeakConsumer(weakConsumer));
 			return self();
