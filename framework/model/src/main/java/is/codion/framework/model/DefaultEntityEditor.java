@@ -48,9 +48,12 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -64,8 +67,7 @@ import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.Entity.groupByType;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
@@ -102,6 +104,8 @@ public class DefaultEntityEditor implements EntityEditor {
 	private final Value<EntityValidator> validator;
 	private final ComponentModels componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
+	private final PersistTasks tasks = new DefaultEditorTasks();
+	private final EditorPersistence persistence;
 
 	private final DefaultEditorEntity entity;
 
@@ -124,6 +128,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.componentModels = requireNonNull(componentModels);
+		this.persistence = new DefaultEditorPersistence();
 		this.entity = new DefaultEditorEntity(createEntity(INITIAL_VALUE));
 		this.exists = new DefaultExists(entityDefinition);
 		this.modified = new DefaultModified();
@@ -240,6 +245,16 @@ public class DefaultEntityEditor implements EntityEditor {
 	@Override
 	public final SearchModels searchModels() {
 		return searchModels;
+	}
+
+	@Override
+	public final EditorPersistence persistence() {
+		return persistence;
+	}
+
+	@Override
+	public final PersistTasks tasks() {
+		return tasks;
 	}
 
 	@Override
@@ -400,6 +415,36 @@ public class DefaultEntityEditor implements EntityEditor {
 						});
 	}
 
+	/**
+	 * Maps the given entities and their updated counterparts, assumes a single copy of each entity in the given lists.
+	 * @param entitiesBeforeUpdate the entities before update
+	 * @param entitiesAfterUpdate the entities after update
+	 * @return the updated entities mapped to their respective state before the update
+	 */
+	private static Map<Entity, Entity> originalEntityMap(Collection<Entity> entitiesBeforeUpdate,
+																											 Collection<Entity> entitiesAfterUpdate) {
+		List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
+		Map<Entity, Entity> entityMap = new HashMap<>(entitiesBeforeUpdate.size());
+		for (Entity entity : entitiesBeforeUpdate) {
+			entityMap.put(entity.immutable(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
+		}
+
+		return unmodifiableMap(entityMap);
+	}
+
+	private static Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
+		while (iterator.hasNext()) {
+			Entity current = iterator.next();
+			if (current.primaryKey().equals(primaryKey)) {
+				iterator.remove();
+
+				return current;
+			}
+		}
+
+		throw new IllegalStateException("Updated entity not found");
+	}
+
 	private interface ValueSupplier {
 		<T> @Nullable T get(AttributeDefinition<T> attributeDefinition);
 	}
@@ -528,6 +573,462 @@ public class DefaultEntityEditor implements EntityEditor {
 			}
 
 			return entity;
+		}
+	}
+
+	private final class DefaultEditorTasks implements PersistTasks {
+
+		@Override
+		public InsertTaskBuilder insert() {
+			return new DefaultInsertTaskBuilder(null);
+		}
+
+		@Override
+		public InsertTaskBuilder insert(Collection<Entity> entities) {
+			return new DefaultInsertTaskBuilder(requireNonNull(entities));
+		}
+
+		@Override
+		public UpdateTaskBuilder update() {
+			return new DefaultUpdateTaskBuilder(null);
+		}
+
+		@Override
+		public UpdateTaskBuilder update(Collection<Entity> entities) {
+			return new DefaultUpdateTaskBuilder(requireNonNull(entities));
+		}
+
+		@Override
+		public DeleteTaskBuilder delete() {
+			return new DefaultDeleteTaskBuilder(null);
+		}
+
+		@Override
+		public DeleteTaskBuilder delete(Collection<Entity> entities) {
+			return new DefaultDeleteTaskBuilder(requireNonNull(entities));
+		}
+	}
+
+	private final class DefaultInsertTaskBuilder implements InsertTaskBuilder {
+
+		private final @Nullable Collection<Entity> entities;
+
+		private Consumer<Collection<Entity>> before = entities -> {};
+		private Consumer<Collection<Entity>> after = entities -> {};
+
+		private DefaultInsertTaskBuilder(@Nullable Collection<Entity> entities) {
+			this.entities = entities;
+		}
+
+		@Override
+		public InsertTaskBuilder before(Consumer<Collection<Entity>> before) {
+			this.before = requireNonNull(before);
+			return this;
+		}
+
+		@Override
+		public InsertTaskBuilder after(Consumer<Collection<Entity>> after) {
+			this.after = requireNonNull(after);
+			return this;
+		}
+
+		@Override
+		public PersistTask build() {
+			if (entities != null) {
+				return new InsertEntities(entities, before, after);
+			}
+
+			return new InsertEntity(before, after);
+		}
+	}
+
+	private final class InsertEntity implements PersistTask {
+
+		private final Consumer<Collection<Entity>> before;
+		private final Consumer<Collection<Entity>> after;
+		private final Entity entity = entity().get().copy().mutable();
+
+		private InsertEntity(Consumer<Collection<Entity>> before,
+												 Consumer<Collection<Entity>> after) {
+			validate(entity);
+			this.before = before;
+			this.after = after;
+		}
+
+		@Override
+		public Task prepare() {
+			before.accept(singleton(entity));
+
+			return new InsertTask();
+		}
+
+		private final class InsertTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - insert {}", DefaultEntityEditor.this, entity);
+
+				return new InsertResult(persistence.get().insert(entity, connectionProvider.connection()));
+			}
+		}
+
+		private final class InsertResult implements Result {
+
+			private final Entity insertedEntity;
+
+			private InsertResult(Entity insertedEntity) {
+				this.insertedEntity = insertedEntity;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				entity().replace(insertedEntity);
+				Set<Entity> inserted = singleton(insertedEntity);
+				after.accept(inserted);
+
+				return inserted;
+			}
+		}
+	}
+
+	private final class InsertEntities implements PersistTask {
+
+		private final Collection<Entity> entities;
+		private final Consumer<Collection<Entity>> before;
+		private final Consumer<Collection<Entity>> after;
+
+		private InsertEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Collection<Entity>> after) {
+			this.entities = unmodifiableCollection(new ArrayList<>(entities));
+			this.before = before;
+			this.after = after;
+			validate(entities);
+		}
+
+		@Override
+		public Task prepare() {
+			before.accept(entities);
+
+			return new InsertTask();
+		}
+
+		private final class InsertTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - insert {}", DefaultEntityEditor.this, entities);
+
+				return new InsertResult(unmodifiableCollection(persistence.get().insert(entities, connectionProvider.connection())));
+			}
+		}
+
+		private final class InsertResult implements Result {
+
+			private final Collection<Entity> insertedEntities;
+
+			private InsertResult(Collection<Entity> insertedEntities) {
+				this.insertedEntities = insertedEntities;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				after.accept(insertedEntities);
+
+				return insertedEntities;
+			}
+		}
+	}
+
+	private final class DefaultUpdateTaskBuilder implements UpdateTaskBuilder {
+
+		private final @Nullable Collection<Entity> entities;
+
+		private Consumer<Collection<Entity>> before = entities -> {};
+		private Consumer<Map<Entity, Entity>> after = entities -> {};
+
+		private DefaultUpdateTaskBuilder(@Nullable Collection<Entity> entities) {
+			this.entities = entities;
+		}
+
+		@Override
+		public UpdateTaskBuilder before(Consumer<Collection<Entity>> before) {
+			this.before = requireNonNull(before);
+			return this;
+		}
+
+		@Override
+		public UpdateTaskBuilder after(Consumer<Map<Entity, Entity>> after) {
+			this.after = requireNonNull(after);
+			return this;
+		}
+
+		@Override
+		public PersistTask build() {
+			if (entities != null) {
+				return new UpdateEntities(entities, before, after);
+			}
+
+			return new UpdateEntity(before, after);
+		}
+	}
+
+	private final class UpdateEntity implements PersistTask {
+
+		private final Consumer<Collection<Entity>> before;
+		private final Consumer<Map<Entity, Entity>> after;
+		private final Entity entity = entity().get().copy().mutable();
+
+		private UpdateEntity(Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) {
+			this.before = before;
+			this.after = after;
+			validate(entity);
+			verifyModified();
+		}
+
+		@Override
+		public Task prepare() {
+			before.accept(singleton(entity));
+
+			return new UpdateTask();
+		}
+
+		private void verifyModified() {
+			if (!modified().is()) {
+				throw new IllegalStateException("Entity is not modified: " + entity);
+			}
+		}
+
+		private final class UpdateTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - update {}", DefaultEntityEditor.this, entity);
+
+				return new UpdateResult(persistence.get().update(entity, connectionProvider.connection()));
+			}
+		}
+
+		private final class UpdateResult implements Result {
+
+			private final Entity updatedEntity;
+
+			private UpdateResult(Entity updatedEntity) {
+				this.updatedEntity = updatedEntity;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				Entity editorEntity = entity().get();
+				entity().replace(updatedEntity);
+				after.accept(singletonMap(editorEntity, updatedEntity));
+
+				return singleton(updatedEntity);
+			}
+		}
+	}
+
+	private final class UpdateEntities implements PersistTask {
+
+		private final Collection<Entity> entities;
+		private final Consumer<Collection<Entity>> before;
+		private final Consumer<Map<Entity, Entity>> after;
+
+		private UpdateEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) {
+			this.before = before;
+			this.after = after;
+			this.entities = unmodifiableCollection(new ArrayList<>(entities));
+			validate(entities);
+			verifyModified(entities);
+		}
+
+		@Override
+		public Task prepare() {
+			before.accept(entities);
+
+			return new UpdateTask();
+		}
+
+		private void verifyModified(Collection<Entity> entities) {
+			for (Entity entity : entities) {
+				if (!entity.modified()) {
+					throw new IllegalStateException("Entity is not modified: " + entity);
+				}
+			}
+		}
+
+		private final class UpdateTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - update {}", DefaultEntityEditor.this, entities);
+
+				return new UpdateResult(persistence.get().update(entities, connectionProvider.connection()));
+			}
+		}
+
+		private final class UpdateResult implements Result {
+
+			private final Collection<Entity> updatedEntities;
+
+			private UpdateResult(Collection<Entity> updatedEntities) {
+				this.updatedEntities = updatedEntities;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				after.accept(originalEntityMap(entities, updatedEntities));
+
+				return updatedEntities;
+			}
+		}
+	}
+
+	private final class DefaultDeleteTaskBuilder implements DeleteTaskBuilder {
+
+		private final @Nullable Collection<Entity> entities;
+
+		private Consumer<Collection<Entity>> before = entities -> {};
+		private Consumer<Collection<Entity>> after = entities -> {};
+
+		private DefaultDeleteTaskBuilder(@Nullable Collection<Entity> entities) {
+			this.entities = entities;
+		}
+
+		@Override
+		public DeleteTaskBuilder before(Consumer<Collection<Entity>> before) {
+			this.before = requireNonNull(before);
+			return this;
+		}
+
+		@Override
+		public DeleteTaskBuilder after(Consumer<Collection<Entity>> after) {
+			this.after = requireNonNull(after);
+			return this;
+		}
+
+		@Override
+		public PersistTask build() {
+			if (entities != null) {
+				return new DeleteEntities(entities, before, after);
+			}
+
+			return new DeleteEntity(before, after);
+		}
+	}
+
+	private final class DeleteEntity implements PersistTask {
+
+		private final Consumer<Collection<Entity>> before;
+		private final Consumer<Collection<Entity>> after;
+		private final Entity entity = entity().get().copy().mutable();
+
+		private DeleteEntity(Consumer<Collection<Entity>> before,
+												 Consumer<Collection<Entity>> after) {
+			this.before = before;
+			this.after = after;
+			entity.revert();
+		}
+
+		@Override
+		public Task prepare() {
+			before.accept(singleton(entity));
+
+			return new DeleteTask();
+		}
+
+		private final class DeleteTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - delete {}", DefaultEntityEditor.this, entity);
+				persistence.get().delete(entity, connectionProvider.connection());
+
+				return new DeleteResult(entity);
+			}
+		}
+
+		private final class DeleteResult implements Result {
+
+			private final Entity deletedEntity;
+
+			private DeleteResult(Entity deletedEntity) {
+				this.deletedEntity = deletedEntity;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				defaults();
+				Set<Entity> deleted = singleton(deletedEntity);
+				after.accept(deleted);
+
+				return deleted;
+			}
+		}
+	}
+
+	private final class DeleteEntities implements PersistTask {
+
+		private final Collection<Entity> entities;
+		private final Consumer<Collection<Entity>> before;
+		private final Consumer<Collection<Entity>> after;
+
+		private DeleteEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Collection<Entity>> after) {
+			this.before = before;
+			this.after = after;
+			this.entities = unmodifiableCollection(new ArrayList<>(entities));
+		}
+
+		@Override
+		public Task prepare() {
+			before.accept(entities);
+
+			return new DeleteTask();
+		}
+
+		private final class DeleteTask implements Task {
+
+			@Override
+			public Result perform() {
+				LOG.debug("{} - delete {}", DefaultEntityEditor.this, entities);
+				persistence.get().delete(entities, connectionProvider.connection());
+
+				return new DeleteResult(entities);
+			}
+		}
+
+		private final class DeleteResult implements Result {
+
+			private final Collection<Entity> deletedEntities;
+
+			private DeleteResult(Collection<Entity> deletedEntities) {
+				this.deletedEntities = deletedEntities;
+			}
+
+			@Override
+			public Collection<Entity> handle() {
+				after.accept(deletedEntities);
+
+				return deletedEntities;
+			}
+		}
+	}
+
+	private static class DefaultEditorPersistence implements EditorPersistence {
+
+		private static final EntityPersistence DEFAULT = new EntityPersistence() {};
+
+		private EntityPersistence instance = DEFAULT;
+
+		@Override
+		public EntityPersistence get() {
+			return instance;
+		}
+
+		@Override
+		public void set(@Nullable EntityPersistence persistence) {
+			if (!instance.replaceable()) {
+				throw new IllegalStateException("Current EntityPersistence implementation is not replaceable");
+			}
+			this.instance = persistence == null ? DEFAULT : persistence;
 		}
 	}
 

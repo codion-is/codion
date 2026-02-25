@@ -39,7 +39,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
 		super(InvoiceLine.TYPE, connectionProvider);
-		persistence().set(new InvoiceLinePersistence());
+		editor().persistence().set(new InvoiceLinePersistence());
 		// We populate the unit price when the track is edited
 		Observer<Entity> trackEdited = editor().value(InvoiceLine.TRACK_FK).edited();
 		trackEdited.when(Objects::nonNull)

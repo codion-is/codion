@@ -28,23 +28,15 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.model.EntityEditor.PersistTask;
 
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import static is.codion.framework.domain.entity.Entity.groupByType;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
-import static java.util.Collections.*;
+import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
@@ -54,10 +46,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class DefaultEntityEditModel implements EntityEditModel {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
-
 	private final EntityEditor editor;
-	private final EditPersistence persistence;
 	private final DefaultPersistTasks tasks;
 	private final DefaultPersistEvents events;
 	private final DefaultSettings settings;
@@ -77,7 +66,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	 */
 	public DefaultEntityEditModel(EntityEditor editor) {
 		this.editor = requireNonNull(editor);
-		this.persistence = new DefaultEditPersistence();
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.tasks = new DefaultPersistTasks();
 		this.events = new DefaultPersistEvents(settings.publishPersistenceEvents);
@@ -116,11 +104,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	@Override
 	public final EntityConnection connection() {
 		return editor.connectionProvider().connection();
-	}
-
-	@Override
-	public final EditPersistence persistence() {
-		return persistence;
 	}
 
 	@Override
@@ -168,321 +151,16 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		return tasks.delete(entities).prepare().perform().handle();
 	}
 
-	/**
-	 * Maps the given entities and their updated counterparts, assumes a single copy of each entity in the given lists.
-	 * @param entitiesBeforeUpdate the entities before update
-	 * @param entitiesAfterUpdate the entities after update
-	 * @return the updated entities mapped to their respective state before the update
-	 */
-	private static Map<Entity, Entity> originalEntityMap(Collection<Entity> entitiesBeforeUpdate,
-																											 Collection<Entity> entitiesAfterUpdate) {
-		List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-		Map<Entity, Entity> entityMap = new HashMap<>(entitiesBeforeUpdate.size());
-		for (Entity entity : entitiesBeforeUpdate) {
-			entityMap.put(entity.immutable(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
-		}
-
-		return unmodifiableMap(entityMap);
-	}
-
-	private static Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
-		while (iterator.hasNext()) {
-			Entity current = iterator.next();
-			if (current.primaryKey().equals(primaryKey)) {
-				iterator.remove();
-
-				return current;
-			}
-		}
-
-		throw new IllegalStateException("Updated entity not found");
-	}
-
-	private final class InsertEntity implements PersistTask {
-
-		private final Entity entity = editor.entity().get().copy().mutable();
-
-		private InsertEntity() {
-			editor.validate(entity);
-		}
-
-		@Override
-		public Task prepare() {
-			events.beforeInsert.accept(singleton(entity));
-
-			return new InsertTask();
-		}
-
-		private final class InsertTask implements Task {
-
-			@Override
-			public Result perform() {
-				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entity);
-
-				return new InsertResult(persistence.get().insert(entity, connection()));
-			}
-		}
-
-		private final class InsertResult implements Result {
-
-			private final Entity insertedEntity;
-
-			private InsertResult(Entity insertedEntity) {
-				this.insertedEntity = insertedEntity;
-			}
-
-			@Override
-			public Collection<Entity> handle() {
-				editor.entity().replace(insertedEntity);
-				Set<Entity> inserted = singleton(insertedEntity);
-				events.inserted(inserted);
-
-				return inserted;
-			}
-		}
-	}
-
-	private final class InsertEntities implements PersistTask {
-
-		private final Collection<Entity> entities;
-
-		private InsertEntities(Collection<Entity> entities) {
-			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			editor.validate(entities);
-		}
-
-		@Override
-		public Task prepare() {
-			events.beforeInsert.accept(entities);
-
-			return new InsertTask();
-		}
-
-		private final class InsertTask implements Task {
-
-			@Override
-			public Result perform() {
-				LOG.debug("{} - insert {}", DefaultEntityEditModel.this, entities);
-
-				return new InsertResult(unmodifiableCollection(persistence.get().insert(entities, connection())));
-			}
-		}
-
-		private final class InsertResult implements Result {
-
-			private final Collection<Entity> insertedEntities;
-
-			private InsertResult(Collection<Entity> insertedEntities) {
-				this.insertedEntities = insertedEntities;
-			}
-
-			@Override
-			public Collection<Entity> handle() {
-				events.inserted(insertedEntities);
-
-				return insertedEntities;
-			}
-		}
-	}
-
-	private final class UpdateEntity implements PersistTask {
-
-		private final Entity entity = editor.entity().get().copy().mutable();
-
-		private UpdateEntity() {
-			editor.validate(entity);
-			verifyModified();
-		}
-
-		@Override
-		public Task prepare() {
-			events.beforeUpdate.accept(singleton(entity));
-
-			return new UpdateTask();
-		}
-
-		private void verifyModified() {
-			if (!editor.modified().is()) {
-				throw new IllegalStateException("Entity is not modified: " + entity);
-			}
-		}
-
-		private final class UpdateTask implements Task {
-
-			@Override
-			public Result perform() {
-				LOG.debug("{} - update {}", DefaultEntityEditModel.this, entity);
-
-				return new UpdateResult(persistence.get().update(entity, connection()));
-			}
-		}
-
-		private final class UpdateResult implements Result {
-
-			private final Entity updatedEntity;
-
-			private UpdateResult(Entity updatedEntity) {
-				this.updatedEntity = updatedEntity;
-			}
-
-			@Override
-			public Collection<Entity> handle() {
-				Entity editorEntity = editor.entity().get();
-				editor.entity().replace(updatedEntity);
-				events.updated(singletonMap(editorEntity, updatedEntity));
-
-				return singleton(updatedEntity);
-			}
-		}
-	}
-
-	private final class UpdateEntities implements PersistTask {
-
-		private final Collection<Entity> entities;
-
-		private UpdateEntities(Collection<Entity> entities) {
-			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			editor.validate(entities);
-			verifyModified(entities);
-		}
-
-		@Override
-		public Task prepare() {
-			events.beforeUpdate.accept(entities);
-
-			return new UpdateTask();
-		}
-
-		private void verifyModified(Collection<Entity> entities) {
-			for (Entity entity : entities) {
-				if (!entity.modified()) {
-					throw new IllegalStateException("Entity is not modified: " + entity);
-				}
-			}
-		}
-
-		private final class UpdateTask implements Task {
-
-			@Override
-			public Result perform() {
-				LOG.debug("{} - update {}", DefaultEntityEditModel.this, entities);
-
-				return new UpdateResult(persistence.get().update(entities, connection()));
-			}
-		}
-
-		private final class UpdateResult implements Result {
-
-			private final Collection<Entity> updatedEntities;
-
-			private UpdateResult(Collection<Entity> updatedEntities) {
-				this.updatedEntities = updatedEntities;
-			}
-
-			@Override
-			public Collection<Entity> handle() {
-				events.updated(originalEntityMap(entities, updatedEntities));
-
-				return updatedEntities;
-			}
-		}
-	}
-
-	private final class DeleteEntity implements PersistTask {
-
-		private final Entity entity = editor.entity().get().copy().mutable();
-
-		private DeleteEntity() {
-			entity.revert();
-		}
-
-		@Override
-		public Task prepare() {
-			events.beforeDelete.accept(singleton(entity));
-
-			return new DeleteTask();
-		}
-
-		private final class DeleteTask implements Task {
-
-			@Override
-			public Result perform() {
-				LOG.debug("{} - delete {}", DefaultEntityEditModel.this, entity);
-				persistence.get().delete(entity, connection());
-
-				return new DeleteResult(entity);
-			}
-		}
-
-		private final class DeleteResult implements Result {
-
-			private final Entity deletedEntity;
-
-			private DeleteResult(Entity deletedEntity) {
-				this.deletedEntity = deletedEntity;
-			}
-
-			@Override
-			public Collection<Entity> handle() {
-				editor.defaults();
-				Set<Entity> deleted = singleton(deletedEntity);
-				events.deleted(deleted);
-
-				return deleted;
-			}
-		}
-	}
-
-	private final class DeleteEntities implements PersistTask {
-
-		private final Collection<Entity> entities;
-
-		private DeleteEntities(Collection<Entity> entities) {
-			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-		}
-
-		@Override
-		public Task prepare() {
-			events.beforeDelete.accept(entities);
-
-			return new DeleteTask();
-		}
-
-		private final class DeleteTask implements Task {
-
-			@Override
-			public Result perform() {
-				LOG.debug("{} - delete {}", DefaultEntityEditModel.this, entities);
-				persistence.get().delete(entities, connection());
-
-				return new DeleteResult(entities);
-			}
-		}
-
-		private final class DeleteResult implements Result {
-
-			private final Collection<Entity> deletedEntities;
-
-			private DeleteResult(Collection<Entity> deletedEntities) {
-				this.deletedEntities = deletedEntities;
-			}
-
-			@Override
-			public Collection<Entity> handle() {
-				events.deleted(deletedEntities);
-
-				return deletedEntities;
-			}
-		}
-	}
-
 	private final class DefaultPersistTasks implements PersistTasks {
 
 		@Override
 		public PersistTask insert() {
 			settings.verifyInsertEnabled();
 
-			return new InsertEntity();
+			return editor.tasks().insert()
+							.before(events.beforeInsert)
+							.after(events::inserted)
+							.build();
 		}
 
 		@Override
@@ -494,14 +172,20 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		public PersistTask insert(Collection<Entity> entities) {
 			settings.verifyInsertEnabled();
 
-			return new InsertEntities(entities);
+			return editor.tasks().insert(entities)
+							.before(events.beforeInsert)
+							.after(events::inserted)
+							.build();
 		}
 
 		@Override
 		public PersistTask update() {
 			settings.verifyUpdateEnabled(1);
 
-			return new UpdateEntity();
+			return editor.tasks().update()
+							.before(events.beforeUpdate)
+							.after(events::updated)
+							.build();
 		}
 
 		@Override
@@ -513,14 +197,20 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		public PersistTask update(Collection<Entity> entities) {
 			settings.verifyUpdateEnabled(requireNonNull(entities).size());
 
-			return new UpdateEntities(entities);
+			return editor.tasks().update(entities)
+							.before(events.beforeUpdate)
+							.after(events::updated)
+							.build();
 		}
 
 		@Override
 		public PersistTask delete() {
 			settings.verifyDeleteEnabled();
 
-			return new DeleteEntity();
+			return editor.tasks().delete()
+							.before(events.beforeDelete)
+							.after(events::deleted)
+							.build();
 		}
 
 		@Override
@@ -532,27 +222,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		public PersistTask delete(Collection<Entity> entities) {
 			settings.verifyDeleteEnabled();
 
-			return new DeleteEntities(entities);
-		}
-	}
-
-	private static class DefaultEditPersistence implements EditPersistence {
-
-		private static final EntityPersistence DEFAULT = new EntityPersistence() {};
-
-		private EntityPersistence instance = DEFAULT;
-
-		@Override
-		public EntityPersistence get() {
-			return instance;
-		}
-
-		@Override
-		public void set(@Nullable EntityPersistence persistence) {
-			if (!instance.replaceable()) {
-				throw new IllegalStateException("Current EntityPersistence implementation is not replaceable");
-			}
-			this.instance = persistence == null ? DEFAULT : persistence;
+			return editor.tasks().delete(entities)
+							.before(events.beforeDelete)
+							.after(events::deleted)
+							.build();
 		}
 	}
 

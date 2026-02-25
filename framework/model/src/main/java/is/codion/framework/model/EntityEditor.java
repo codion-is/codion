@@ -40,6 +40,8 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -194,6 +196,189 @@ public interface EntityEditor {
 	 * @return the {@link SearchModels} instance
 	 */
 	SearchModels searchModels();
+
+	/**
+	 * @return the {@link EditorPersistence} used by this editor
+	 */
+	EditorPersistence persistence();
+
+	/**
+	 * @return the {@link PersistTasks} instance
+	 */
+	PersistTasks tasks();
+
+	/**
+	 * Represents a task for persisting entities, inserting, updating or deleting, split up for use with a background thread.
+	 * {@snippet :
+	 *   PersistTask insert = editor.insert().build();
+	 *
+	 *   PersistTask.Task task = insert.prepare();
+	 *
+	 *   // Can safely be called in a background thread
+	 *   PersistTask.Result result = task.perform();
+	 *
+	 *   Collection<Entity> insertedEntities = result.handle();
+	 *}
+	 * {@link Task#perform()} may be called on a background thread while {@link PersistTask#prepare()}
+	 * and {@link Result#handle()} must be called on the UI thread.
+	 */
+	interface PersistTask {
+
+		/**
+		 * Notifies listeners that an operation is about to be performed.
+		 * Must be called on the UI thread if this model has a panel based on it.
+		 * @return the task
+		 */
+		Task prepare();
+
+		/**
+		 * The task performing the operation
+		 */
+		interface Task {
+
+			/**
+			 * May be called in a background thread.
+			 * @return the insert result
+			 */
+			Result perform();
+		}
+
+		/**
+		 * The task result
+		 */
+		interface Result {
+
+			/**
+			 * Notifies listeners that the task has been performed.
+			 * Must be called on the UI thread if this model has a panel based on it.
+			 * @return the entities involved
+			 */
+			Collection<Entity> handle();
+		}
+	}
+
+	/**
+	 * Builds an async task for inserting entities.
+	 */
+	interface InsertTaskBuilder {
+
+		/**
+		 * @param before called before the task is executed
+		 * @return this builder
+		 */
+		InsertTaskBuilder before(Consumer<Collection<Entity>> before);
+
+		/**
+		 * @param after called after the task is executed
+		 * @return this builder
+		 */
+		InsertTaskBuilder after(Consumer<Collection<Entity>> after);
+
+		/**
+		 * @return the task
+		 */
+		PersistTask build();
+	}
+
+	/**
+	 * Builds an async task for updating entities.
+	 */
+	interface UpdateTaskBuilder {
+
+		/**
+		 * @param before called before the task is executed
+		 * @return this builder
+		 */
+		UpdateTaskBuilder before(Consumer<Collection<Entity>> before);
+
+		/**
+		 * @param after called after the task is executed
+		 * @return this builder
+		 */
+		UpdateTaskBuilder after(Consumer<Map<Entity, Entity>> after);
+
+		/**
+		 * @return the task
+		 */
+		PersistTask build();
+	}
+
+	/**
+	 * Builds an async task for deleting entities.
+	 */
+	interface DeleteTaskBuilder {
+
+		/**
+		 * @param before called before the task is executed
+		 * @return this builder
+		 */
+		DeleteTaskBuilder before(Consumer<Collection<Entity>> before);
+
+		/**
+		 * @param after called after the task is executed
+		 * @return this builder
+		 */
+		DeleteTaskBuilder after(Consumer<Collection<Entity>> after);
+
+		/**
+		 * @return the task
+		 */
+		PersistTask build();
+	}
+
+	/**
+	 * Manages the {@link EntityPersistence} used by this editor
+	 */
+	interface EditorPersistence {
+
+		/**
+		 * @return the {@link EntityPersistence} used by this editor
+		 */
+		EntityPersistence get();
+
+		/**
+		 * @param persistence the {@link EntityPersistence} to use, default is set if null
+		 * @throws IllegalStateException in case the current instance is not replaceable
+		 * @see EntityPersistence#replaceable()
+		 */
+		void set(EntityPersistence persistence);
+	}
+
+	/**
+	 * Provides builders for async persist tasks.
+	 */
+	interface PersistTasks {
+
+		/**
+		 * @return a builder for an async task for inserting the active entity
+		 */
+		InsertTaskBuilder insert();
+
+		/**
+		 * @return a builder for an async task for inserting the given entities
+		 */
+		InsertTaskBuilder insert(Collection<Entity> entities);
+
+		/**
+		 * @return a builder for an async task for updating the active entity
+		 */
+		UpdateTaskBuilder update();
+
+		/**
+		 * @return a builder for an async task for updating the given entities
+		 */
+		UpdateTaskBuilder update(Collection<Entity> entities);
+
+		/**
+		 * @return a builder for an async task for deleting the active entity
+		 */
+		DeleteTaskBuilder delete();
+
+		/**
+		 * @return a builder for an async task for deleting the given entities
+		 */
+		DeleteTaskBuilder delete(Collection<Entity> entities);
+	}
 
 	/**
 	 * Provides access to the entity instance being edited.

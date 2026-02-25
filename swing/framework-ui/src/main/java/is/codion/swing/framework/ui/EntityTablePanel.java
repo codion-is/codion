@@ -43,7 +43,7 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditModel.PersistTask;
+import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -1832,7 +1832,7 @@ public class EntityTablePanel extends JPanel {
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
 								.onException(this::onException)
-								.onResult(PersistTask.Result::handle)
+								.onResult(EntityEditor.PersistTask.Result::handle)
 								.execute();
 			}
 		}

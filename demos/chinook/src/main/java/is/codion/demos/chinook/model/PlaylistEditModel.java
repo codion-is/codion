@@ -35,7 +35,7 @@ public final class PlaylistEditModel extends SwingEntityEditModel {
 
 	public PlaylistEditModel(EntityConnectionProvider connectionProvider) {
 		super(Playlist.TYPE, connectionProvider);
-		persistence().set(new PlaylistPersistence());
+		editor().persistence().set(new PlaylistPersistence());
 	}
 
 	private static final class PlaylistPersistence implements EntityPersistence {

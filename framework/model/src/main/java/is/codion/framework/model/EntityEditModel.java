@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.model.EntityEditor.PersistTask;
 
 import java.util.Collection;
 import java.util.Map;
@@ -71,11 +72,6 @@ public interface EntityEditModel {
 	 * @return the connection used by this edit model
 	 */
 	EntityConnection connection();
-
-	/**
-	 * @return the {@link EditPersistence} used by this edit model
-	 */
-	EditPersistence persistence();
 
 	/**
 	 * Returns a {@link EntityEditor} wrapping the entity being edited. {@link EntityEditor.EditorEntity#get()} returns
@@ -197,24 +193,6 @@ public interface EntityEditModel {
 	 * @see Settings#deleteEnabled()
 	 */
 	Collection<Entity> delete(Collection<Entity> entities);
-
-	/**
-	 * Manages the {@link EntityPersistence} used by this model
-	 */
-	interface EditPersistence {
-
-		/**
-		 * @return the {@link EntityPersistence} used by this model
-		 */
-		EntityPersistence get();
-
-		/**
-		 * @param persistence the {@link EntityPersistence} to use, default is set if null
-		 * @throws IllegalStateException in case the current instance is not replaceable
-		 * @see EntityPersistence#replaceable()
-		 */
-		void set(EntityPersistence persistence);
-	}
 
 	/**
 	 * Provides {@link PersistTask}s
@@ -396,55 +374,5 @@ public interface EntityEditModel {
 		 * @see #PUBLISH_PERSISTENCE_EVENTS
 		 */
 		State publishPersistenceEvents();
-	}
-
-	/**
-	 * Represents a task for persisting entities, inserting, updating or deleting, split up for use with a background thread.
-	 * {@snippet :
-	 *   PersistTask insert = editModel.createInsert();
-	 *
-	 *   PersistTask.Task task = insert.prepare();
-	 *
-	 *   // Can safely be called in a background thread
-	 *   PersistTask.Result result = task.perform();
-	 *
-	 *   Collection<Entity> insertedEntities = result.handle();
-	 *}
-	 * {@link Task#perform()} may be called on a background thread while {@link PersistTask#prepare()}
-	 * and {@link Result#handle()} must be called on the UI thread.
-	 */
-	interface PersistTask {
-
-		/**
-		 * Notifies listeners that an operation is about to be performed.
-		 * Must be called on the UI thread if this model has a panel based on it.
-		 * @return the task
-		 */
-		Task prepare();
-
-		/**
-		 * The task performing the operation
-		 */
-		interface Task {
-
-			/**
-			 * May be called in a background thread.
-			 * @return the insert result
-			 */
-			Result perform();
-		}
-
-		/**
-		 * The task result
-		 */
-		interface Result {
-
-			/**
-			 * Notifies listeners that the task has been performed.
-			 * Must be called on the UI thread if this model has a panel based on it.
-			 * @return the entities involved
-			 */
-			Collection<Entity> handle();
-		}
 	}
 }
