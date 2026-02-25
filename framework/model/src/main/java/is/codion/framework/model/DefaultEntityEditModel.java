@@ -203,7 +203,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private final Entity entity = editor.entity().get().copy().mutable();
 
 		private InsertEntity() {
-			settings.verifyInsertEnabled();
 			editor.validate(entity);
 		}
 
@@ -249,7 +248,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private InsertEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			settings.verifyInsertEnabled();
 			editor.validate(entities);
 		}
 
@@ -292,7 +290,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		private final Entity entity = editor.entity().get().copy().mutable();
 
 		private UpdateEntity() {
-			settings.verifyUpdateEnabled(1);
 			editor.validate(entity);
 			verifyModified();
 		}
@@ -345,7 +342,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private UpdateEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			settings.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
 			verifyModified(entities);
 		}
@@ -398,7 +394,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private DeleteEntity() {
 			entity.revert();
-			settings.verifyDeleteEnabled();
 		}
 
 		@Override
@@ -444,7 +439,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		private DeleteEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			settings.verifyDeleteEnabled();
 		}
 
 		@Override
@@ -486,6 +480,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public PersistTask insert() {
+			settings.verifyInsertEnabled();
+
 			return new InsertEntity();
 		}
 
@@ -496,11 +492,15 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public PersistTask insert(Collection<Entity> entities) {
+			settings.verifyInsertEnabled();
+
 			return new InsertEntities(entities);
 		}
 
 		@Override
 		public PersistTask update() {
+			settings.verifyUpdateEnabled(1);
+
 			return new UpdateEntity();
 		}
 
@@ -511,11 +511,15 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public PersistTask update(Collection<Entity> entities) {
+			settings.verifyUpdateEnabled(requireNonNull(entities).size());
+
 			return new UpdateEntities(entities);
 		}
 
 		@Override
 		public PersistTask delete() {
+			settings.verifyDeleteEnabled();
+
 			return new DeleteEntity();
 		}
 
@@ -526,6 +530,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
 		@Override
 		public PersistTask delete(Collection<Entity> entities) {
+			settings.verifyDeleteEnabled();
+
 			return new DeleteEntities(entities);
 		}
 	}

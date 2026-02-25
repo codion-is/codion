@@ -17,6 +17,7 @@ Codion Change Log
 - EntityEditor.ComponentModels now with default implementation.
 - DefaultEntityEditor.componentModels() added.
 - EntityEditor.Modified.additional() now ValueSet based.
+- DefaultEntityEditModel.DefaultPersistTasks now handles verifying persistence action is allowed.
 ### is.codion.swing.framework.model
 - SwingEntityEditor.SwingComponentModels.createComboBoxModel() editor parameter replaced with connection provider.
 - SwingEntityEditor.SwingComponentModels now with default implementations.
