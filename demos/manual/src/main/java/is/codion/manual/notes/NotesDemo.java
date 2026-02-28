@@ -32,7 +32,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor;
 import is.codion.plugin.flatlaf.intellij.themes.material.MaterialDarker;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
@@ -155,7 +155,7 @@ public final class NotesDemo {
 			add(new JButton(control(CLEAR).get()), BorderLayout.EAST);
 		}
 
-		private void insertDeleteOrUpdate() throws ValidationException {
+		private void insertDeleteOrUpdate() throws EntityValidationException {
 			EntityEditor editor = editModel().editor();
 			if (editor.exists().not().is() && !editor.value(Note.NOTE).isNull()) {
 				// A new note with a non-null text

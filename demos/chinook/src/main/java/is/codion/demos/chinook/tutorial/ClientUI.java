@@ -26,7 +26,7 @@ import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -62,7 +62,7 @@ public final class ClientUI {
 				// clear the edit model after a successful insert
 				editModel.editor().defaults();
 			}
-			catch (DatabaseException | ValidationException e) {
+			catch (DatabaseException | EntityValidationException e) {
 				JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
 								e.getMessage(), "Unable to insert", JOptionPane.ERROR_MESSAGE);
 			}
@@ -131,7 +131,7 @@ public final class ClientUI {
 				// and transfer the focus to the combo box
 				artistComboBox.requestFocusInWindow();
 			}
-			catch (DatabaseException | ValidationException e) {
+			catch (DatabaseException | EntityValidationException e) {
 				JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
 								e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}

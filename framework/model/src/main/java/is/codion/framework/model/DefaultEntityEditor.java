@@ -42,7 +42,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -211,24 +212,24 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public final void validate() throws ValidationException {
+	public final void validate() throws EntityValidationException {
 		validate(entity.instance);
 	}
 
 	@Override
-	public final void validate(Attribute<?> attribute) throws ValidationException {
+	public final void validate(Attribute<?> attribute) throws AttributeValidationException {
 		validator.getOrThrow().validate(entity.instance, attribute);
 	}
 
 	@Override
-	public final void validate(Collection<Entity> entities) throws ValidationException {
+	public final void validate(Collection<Entity> entities) throws EntityValidationException {
 		for (Entity entityToValidate : requireNonNull(entities)) {
 			validate(entityToValidate);
 		}
 	}
 
 	@Override
-	public final void validate(Entity entity) throws ValidationException {
+	public final void validate(Entity entity) throws EntityValidationException {
 		if (entity.type().equals(entityDefinition.type())) {
 			validator.getOrThrow().validate(entity);
 		}
@@ -320,7 +321,7 @@ public class DefaultEntityEditor implements EntityEditor {
 			validator.getOrThrow().validate(entity.instance, attribute);
 			return true;
 		}
-		catch (ValidationException e) {
+		catch (AttributeValidationException e) {
 			return false;
 		}
 	}
@@ -633,7 +634,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public PersistTask build() throws ValidationException {
+		public PersistTask build() throws EntityValidationException {
 			if (entities != null) {
 				return new InsertEntities(entities, before, after);
 			}
@@ -649,7 +650,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final Entity entity = entity().get().copy().mutable();
 
 		private InsertEntity(Consumer<Collection<Entity>> before,
-												 Consumer<Collection<Entity>> after) throws ValidationException {
+												 Consumer<Collection<Entity>> after) throws EntityValidationException {
 			validate(entity);
 			this.before = before;
 			this.after = after;
@@ -697,7 +698,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final Consumer<Collection<Entity>> before;
 		private final Consumer<Collection<Entity>> after;
 
-		private InsertEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Collection<Entity>> after) throws ValidationException {
+		private InsertEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Collection<Entity>> after) throws EntityValidationException {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			this.before = before;
 			this.after = after;
@@ -762,7 +763,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public PersistTask build() throws ValidationException {
+		public PersistTask build() throws EntityValidationException {
 			if (entities != null) {
 				return new UpdateEntities(entities, before, after);
 			}
@@ -777,7 +778,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final Consumer<Map<Entity, Entity>> after;
 		private final Entity entity = entity().get().copy().mutable();
 
-		private UpdateEntity(Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) throws ValidationException {
+		private UpdateEntity(Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) throws EntityValidationException {
 			this.before = before;
 			this.after = after;
 			validate(entity);
@@ -832,7 +833,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final Consumer<Collection<Entity>> before;
 		private final Consumer<Map<Entity, Entity>> after;
 
-		private UpdateEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) throws ValidationException {
+		private UpdateEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) throws EntityValidationException {
 			this.before = before;
 			this.after = after;
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
@@ -1303,7 +1304,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 				return null;
 			}
-			catch (ValidationException e) {
+			catch (AttributeValidationException e) {
 				return e.getMessage();
 			}
 		}

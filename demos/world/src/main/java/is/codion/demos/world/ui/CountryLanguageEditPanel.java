@@ -19,7 +19,7 @@
 package is.codion.demos.world.ui;
 
 import is.codion.demos.world.domain.api.World.CountryLanguage;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -75,7 +75,7 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 								.confirm(false)
 								.execute();
 			}
-			catch (ValidationException e) {
+			catch (EntityValidationException e) {
 				onValidationException(e);
 			}
 		}

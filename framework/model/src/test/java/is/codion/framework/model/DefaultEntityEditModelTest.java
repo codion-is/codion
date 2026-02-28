@@ -34,7 +34,8 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Derived;
@@ -87,7 +88,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void persistenceEvents() throws ValidationException {
+	void persistenceEvents() throws EntityValidationException {
 		AtomicInteger insertEvents = new AtomicInteger();
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
@@ -321,12 +322,11 @@ public final class DefaultEntityEditModelTest {
 			editor.validate(Employee.COMMISSION);
 			fail("Validation should fail on invalid commission value");
 		}
-		catch (ValidationException e) {
-			ValidationException.InvalidAttribute invalid = e.invalid().iterator().next();
-			assertEquals(Employee.COMMISSION, invalid.attribute());
-			assertEquals(50d, invalid.value());
+		catch (AttributeValidationException e) {
+			assertEquals(Employee.COMMISSION, e.attribute());
+			assertEquals(50d, e.value());
 			ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>)
-							ENTITIES.definition(Employee.TYPE).attributes().definition(invalid.attribute());
+							ENTITIES.definition(Employee.TYPE).attributes().definition(e.attribute());
 			assertTrue(e.getMessage().contains(attributeDefinition.toString()));
 			assertTrue(e.getMessage().contains(attributeDefinition.minimum().map(Objects::toString).get()));
 		}
@@ -362,7 +362,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void insert() throws ValidationException {
+	void insert() throws EntityValidationException {
 		assertTrue(employeeEditModel.insert(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -411,7 +411,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void update() throws ValidationException {
+	void update() throws EntityValidationException {
 		assertTrue(employeeEditModel.update(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -556,7 +556,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void updated() throws ValidationException {
+	void updated() throws EntityValidationException {
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
 		try {
@@ -695,7 +695,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void modifiedUpdate() throws ValidationException {
+	void modifiedUpdate() throws EntityValidationException {
 		EntityConnection connection = employeeEditModel.connection();
 		ObservableState nameModifiedObserver = editor.value(Employee.NAME).modified();
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
@@ -793,9 +793,9 @@ public final class DefaultEntityEditModelTest {
 		assertTrue(editor.value(Employee.SALARY).valid().is());
 		editor.validator().set(new EntityValidator() {
 			@Override
-			public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
+			public void validate(Entity entity, Attribute<?> attribute) throws AttributeValidationException {
 				if (attribute.equals(Employee.NAME) || attribute.equals(Employee.SALARY)) {
-					throw new ValidationException(attribute, entity.get(attribute), "invalid");
+					throw new AttributeValidationException(attribute, entity.get(attribute), "invalid");
 				}
 			}
 		});
@@ -809,12 +809,12 @@ public final class DefaultEntityEditModelTest {
 		TestEntityEditModel editModel = new TestEntityEditModel(NonGeneratedPK.TYPE, CONNECTION_PROVIDER);
 		editModel.editor().value(NonGeneratedPK.ID).set(UUID.randomUUID());
 		editModel.editor().value(NonGeneratedPK.NAME).set("123456");//length > 5
-		assertThrows(ValidationException.class, editModel::insert);//works, due to the edit model setting the defaults
+		assertThrows(EntityValidationException.class, editModel::insert);//works, due to the edit model setting the defaults
 
 		Entity manual = editModel.entities().entity(NonGeneratedPK.TYPE).build();
 		manual.set(NonGeneratedPK.ID, UUID.randomUUID());// non generated pk column initialized to null in entity builder, exists = false
 		manual.set(NonGeneratedPK.NAME, "123456");
-		assertThrows(ValidationException.class, () -> editModel.insert(singleton(manual)));
+		assertThrows(EntityValidationException.class, () -> editModel.insert(singleton(manual)));
 	}
 
 	@Test

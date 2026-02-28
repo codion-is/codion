@@ -24,7 +24,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.AbstractValueAttributeDefinition.AbstractValueAttributeDefinitionBuilder;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -124,12 +124,12 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 	 * @param entity the entity containing the value to validate
 	 * @param nullable true if null values are allowed in this validation context,
 	 * false if null should trigger a null validation exception
-	 * @throws ValidationException in case the value of this attribute is invalid in the given entity
+	 * @throws AttributeValidationException in case the value of this attribute is invalid in the given entity
 	 * @see EntityDefinition.Builder#validator(EntityValidator)
 	 * @see Builder#validator(AttributeValidator)
 	 * @see AttributeValidator
 	 */
-	void validate(Entity entity, boolean nullable) throws ValidationException;
+	void validate(Entity entity, boolean nullable) throws AttributeValidationException;
 
 	/**
 	 * Builds a ValueAttributeDefinition instance

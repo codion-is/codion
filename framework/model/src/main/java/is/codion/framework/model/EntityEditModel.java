@@ -31,7 +31,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor.PersistTask;
 
 import java.util.Collection;
@@ -114,14 +114,14 @@ public interface EntityEditModel {
 	 * according to the primary key of the inserted entity
 	 * @return the inserted entity
 	 * @throws DatabaseException in case of a database exception
-	 * @throws ValidationException in case validation fails
+	 * @throws EntityValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
 	 * @see PersistEvents#beforeInsert()
 	 * @see PersistEvents#afterInsert()
 	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
-	Entity insert() throws ValidationException;
+	Entity insert() throws EntityValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -129,14 +129,14 @@ public interface EntityEditModel {
 	 * @param entities the entities to insert
 	 * @return a list containing the inserted entities
 	 * @throws DatabaseException in case of a database exception
-	 * @throws ValidationException in case validation fails
+	 * @throws EntityValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
 	 * @see PersistEvents#beforeInsert()
 	 * @see PersistEvents#afterInsert()
 	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
-	Collection<Entity> insert(Collection<Entity> entities) throws ValidationException;
+	Collection<Entity> insert(Collection<Entity> entities) throws EntityValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -144,7 +144,7 @@ public interface EntityEditModel {
 	 * @return the updated entity
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityModifiedException in case the entity has been modified since it was loaded
-	 * @throws ValidationException in case validation fails
+	 * @throws EntityValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
 	 * @throws UpdateEntityException in case the active entity is not modified
 	 * @see PersistEvents#beforeUpdate()
@@ -152,7 +152,7 @@ public interface EntityEditModel {
 	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
-	Entity update() throws ValidationException;
+	Entity update() throws EntityValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -161,7 +161,7 @@ public interface EntityEditModel {
 	 * @return the updated entities
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityModifiedException in case an entity has been modified since it was loaded
-	 * @throws ValidationException in case validation fails
+	 * @throws EntityValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
 	 * @throws UpdateEntityException in case any of the given entities are not modified
 	 * @see PersistEvents#beforeUpdate()
@@ -169,7 +169,7 @@ public interface EntityEditModel {
 	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
-	Collection<Entity> update(Collection<Entity> entities) throws ValidationException;
+	Collection<Entity> update(Collection<Entity> entities) throws EntityValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -203,61 +203,61 @@ public interface EntityEditModel {
 		 * Creates a new {@link PersistTask} instance for inserting the active entity.
 		 * @return a new {@link PersistTask} instance
 		 * @throws IllegalStateException if inserting is not enabled
-		 * @throws ValidationException in case validation fails
+		 * @throws EntityValidationException in case validation fails
 		 * @see EntityEditor#entity()
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert() throws ValidationException;
+		PersistTask insert() throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for inserting the given entity.
 		 * @param entity the entity to insert
 		 * @return a new {@link PersistTask} instance
 		 * @throws IllegalStateException if inserting is not enabled
-		 * @throws ValidationException in case validation fails
+		 * @throws EntityValidationException in case validation fails
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert(Entity entity) throws ValidationException;
+		PersistTask insert(Entity entity) throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for inserting the given entities.
 		 * @param entities the entities to insert
 		 * @return a new {@link PersistTask} instance
 		 * @throws IllegalStateException if inserting is not enabled
-		 * @throws ValidationException in case validation fails
+		 * @throws EntityValidationException in case validation fails
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert(Collection<Entity> entities) throws ValidationException;
+		PersistTask insert(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the active entity.
 		 * @return a new {@link PersistTask} instance
 		 * @throws IllegalStateException in case the active entity is unmodified or if updating is not enabled
-		 * @throws ValidationException in case validation fails
+		 * @throws EntityValidationException in case validation fails
 		 * @see EntityEditor#entity()
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update() throws ValidationException;
+		PersistTask update() throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the given entity.
 		 * @param entity the entity to update
 		 * @return a new {@link PersistTask} instance
 		 * @throws IllegalStateException in case the given entity is unmodified or if updating is not enabled
-		 * @throws ValidationException in case validation fails
+		 * @throws EntityValidationException in case validation fails
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update(Entity entity) throws ValidationException;
+		PersistTask update(Entity entity) throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the given entities.
 		 * @param entities the entities to update
 		 * @return a new {@link PersistTask} instance
 		 * @throws IllegalStateException in case any of the given entities are unmodified or if updating is not enabled
-		 * @throws ValidationException in case validation fails
+		 * @throws EntityValidationException in case validation fails
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update(Collection<Entity> entities) throws ValidationException;
+		PersistTask update(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for deleting the active entity.

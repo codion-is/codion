@@ -25,7 +25,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
@@ -63,7 +63,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 					.build();
 
 	@Test
-	public void testUpdatePrimaryKey() throws ValidationException {
+	public void testUpdatePrimaryKey() throws EntityValidationException {
 		M departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
@@ -96,7 +96,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 	}
 
 	@Test
-	public void testDetailModels() throws ValidationException {
+	public void testDetailModels() throws EntityValidationException {
 		M departmentModel = createDepartmentModel();
 		assertEquals(1, departmentModel.detailModels().active().size());
 		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(false);
@@ -226,7 +226,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 	}
 
 	@Test
-	public void setConditionOnInsert() throws ValidationException {
+	public void setConditionOnInsert() throws EntityValidationException {
 		M departmentModel = createDepartmentModelWithoutDetailModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
@@ -289,7 +289,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 	}
 
 	@Test
-	public void setValueOnInsert() throws ValidationException {
+	public void setValueOnInsert() throws EntityValidationException {
 		M departmentModel = createDepartmentModelWithoutDetailModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
@@ -459,7 +459,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 	}
 
 	@Test
-	public void insertDifferentTypes() throws ValidationException {
+	public void insertDifferentTypes() throws EntityValidationException {
 		M departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;

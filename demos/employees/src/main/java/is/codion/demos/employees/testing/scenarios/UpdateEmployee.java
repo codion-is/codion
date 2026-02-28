@@ -23,7 +23,7 @@ import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.framework.domain.test.DomainTest.EntityFactory;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -36,7 +36,7 @@ public final class UpdateEmployee extends AbstractPerformer {
 	private final Random random = new Random();
 
 	@Override
-	public void perform(EmployeesAppModel application) throws ValidationException {
+	public void perform(EmployeesAppModel application) throws EntityValidationException {
 		SwingEntityModel departmentModel = application.entityModels().get(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);

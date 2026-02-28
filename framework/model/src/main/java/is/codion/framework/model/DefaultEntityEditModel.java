@@ -28,7 +28,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor.PersistTask;
 
 import java.util.Collection;
@@ -123,22 +123,22 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Entity insert() throws ValidationException {
+	public final Entity insert() throws EntityValidationException {
 		return tasks.insert().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
-	public final Collection<Entity> insert(Collection<Entity> entities) throws ValidationException {
+	public final Collection<Entity> insert(Collection<Entity> entities) throws EntityValidationException {
 		return tasks.insert(entities).prepare().perform().handle();
 	}
 
 	@Override
-	public final Entity update() throws ValidationException {
+	public final Entity update() throws EntityValidationException {
 		return tasks.update().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
-	public final Collection<Entity> update(Collection<Entity> entities) throws ValidationException {
+	public final Collection<Entity> update(Collection<Entity> entities) throws EntityValidationException {
 		return tasks.update(entities).prepare().perform().handle();
 	}
 
@@ -155,7 +155,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	private final class DefaultPersistTasks implements PersistTasks {
 
 		@Override
-		public PersistTask insert() throws ValidationException {
+		public PersistTask insert() throws EntityValidationException {
 			settings.verifyInsertEnabled();
 
 			return editor.tasks().insert()
@@ -165,12 +165,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public PersistTask insert(Entity entity) throws ValidationException {
+		public PersistTask insert(Entity entity) throws EntityValidationException {
 			return insert(singleton(requireNonNull(entity)));
 		}
 
 		@Override
-		public PersistTask insert(Collection<Entity> entities) throws ValidationException {
+		public PersistTask insert(Collection<Entity> entities) throws EntityValidationException {
 			settings.verifyInsertEnabled();
 
 			return editor.tasks().insert(entities)
@@ -180,7 +180,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public PersistTask update() throws ValidationException {
+		public PersistTask update() throws EntityValidationException {
 			settings.verifyUpdateEnabled(1);
 
 			return editor.tasks().update()
@@ -190,12 +190,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
 		}
 
 		@Override
-		public PersistTask update(Entity entity) throws ValidationException {
+		public PersistTask update(Entity entity) throws EntityValidationException {
 			return update(singleton(requireNonNull(entity)));
 		}
 
 		@Override
-		public PersistTask update(Collection<Entity> entities) throws ValidationException {
+		public PersistTask update(Collection<Entity> entities) throws EntityValidationException {
 			settings.verifyUpdateEnabled(requireNonNull(entities).size());
 
 			return editor.tasks().update(entities)

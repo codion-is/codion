@@ -31,8 +31,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.entity.exception.ValidationException.InvalidAttribute;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditor;
@@ -103,6 +103,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.*;
 import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -256,7 +257,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	 * @see #focus()
 	 */
 	public final void clearAndRequestFocus() {
-		editor().defaults();
+		components.editor().defaults();
 		inputFocus.initial().request();
 	}
 
@@ -339,11 +340,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	 * <p>Performs insert on the active entity.
 	 * <p>If insert confirmation is enabled, confirmation is requested first using
 	 * the {@link Confirmer} specified via {@link Config#insertConfirmer(Confirmer)}.
-	 * @throws ValidationException in case of validation failure
+	 * @throws EntityValidationException in case of validation failure
 	 * @see Config#confirmInsert(boolean)
 	 * @see Config#insertConfirmer(Confirmer)
 	 */
-	public final void insert() throws ValidationException {
+	public final void insert() throws EntityValidationException {
 		insertCommand().execute();
 	}
 
@@ -362,11 +363,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	 * <p>Performs update on the active entity.
 	 * <p>If update confirmation is enabled, confirmation is requested first using
 	 * the {@link Confirmer} specified via {@link Config#updateConfirmer(Confirmer)}.
-	 * @throws ValidationException in case of validation failure
+	 * @throws EntityValidationException in case of validation failure
 	 * @see Config#confirmUpdate(boolean)
 	 * @see Config#updateConfirmer(Confirmer)
 	 */
-	public final void update() throws ValidationException {
+	public final void update() throws EntityValidationException {
 		updateCommand().execute();
 	}
 
@@ -482,14 +483,14 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	}
 
 	/**
-	 * Propagates the exception to {@link #onValidationException(ValidationException)} or
+	 * Propagates the exception to {@link #onValidationException(EntityValidationException)} or
 	 * {@link #onReferentialIntegrityException(ReferentialIntegrityException)} depending on type,
 	 * otherwise forwards to the super implementation.
 	 * @param exception the exception to handle
 	 */
 	protected void onException(Exception exception) {
-		if (exception instanceof ValidationException) {
-			onValidationException((ValidationException) exception);
+		if (exception instanceof EntityValidationException) {
+			onValidationException((EntityValidationException) exception);
 		}
 		else if (exception instanceof ReferentialIntegrityException) {
 			onReferentialIntegrityException((ReferentialIntegrityException) exception);
@@ -521,15 +522,21 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	 * Displays the exception message after which the first component involved receives the focus.
 	 * @param exception the validation exception
 	 */
-	protected void onValidationException(ValidationException exception) {
+	protected void onValidationException(EntityValidationException exception) {
 		requireNonNull(exception);
-		Attribute<?> firstAttribute = firstAttribute(exception.invalid());
-		InvalidAttribute invalidAttribute = exception.invalid().stream()
-						.filter(invalid -> invalid.attribute().equals(firstAttribute))
-						.findFirst()
-						.orElseThrow(IllegalStateException::new);
-		JOptionPane.showMessageDialog(this, invalidAttribute.message(), Messages.error(), JOptionPane.ERROR_MESSAGE);
-		inputFocus.request(invalidAttribute.attribute());
+		Collection<AttributeValidationException> attributes = exception.attributes();
+		if (attributes.isEmpty()) {
+			showMessageDialog(this, exception.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
+		}
+		else {
+			Attribute<?> firstAttribute = firstAttribute(attributes);
+			AttributeValidationException invalidAttribute = attributes.stream()
+							.filter(invalid -> invalid.attribute().equals(firstAttribute))
+							.findFirst()
+							.orElseThrow(IllegalStateException::new);
+			showMessageDialog(this, invalidAttribute.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
+			inputFocus.request(invalidAttribute.attribute());
+		}
 	}
 
 	/**
@@ -759,7 +766,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	}
 
 	private void handleException(Exception exception) {
-		if (exception instanceof ValidationException ||
+		if (exception instanceof EntityValidationException ||
 						exception instanceof ReferentialIntegrityException) {
 			LOG.debug(exception.getMessage(), exception);
 		}
@@ -769,9 +776,9 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 		onException(exception);
 	}
 
-	private Attribute<?> firstAttribute(Collection<InvalidAttribute> invalidAttributes) {
+	private Attribute<?> firstAttribute(Collection<AttributeValidationException> invalidAttributes) {
 		Set<Attribute<?>> attributes = invalidAttributes.stream()
-						.map(InvalidAttribute::attribute)
+						.map(AttributeValidationException::attribute)
 						.collect(toSet());
 		return components.components().entrySet().stream()
 						.filter(entry -> attributes.contains(entry.getKey()))
@@ -1280,10 +1287,10 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	public interface InsertCommand extends Command {
 
 		/**
-		 * @throws ValidationException in case of validation failure
+		 * @throws EntityValidationException in case of validation failure
 		 */
 		@Override
-		void execute() throws ValidationException;
+		void execute() throws EntityValidationException;
 
 		/**
 		 * Builds an async insert command
@@ -1310,9 +1317,9 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 
 			/**
 			 * Builds and executes this command
-			 * @throws ValidationException in case of validation failure
+			 * @throws EntityValidationException in case of validation failure
 			 */
-			void execute() throws ValidationException;
+			void execute() throws EntityValidationException;
 
 			/**
 			 * @return the command
@@ -1327,10 +1334,10 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	public interface UpdateCommand extends Command {
 
 		/**
-		 * @throws ValidationException in case of validation failure
+		 * @throws EntityValidationException in case of validation failure
 		 */
 		@Override
-		void execute() throws ValidationException;
+		void execute() throws EntityValidationException;
 
 		/**
 		 * Builds an async update command
@@ -1357,9 +1364,9 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 
 			/**
 			 * Builds and executes this command
-			 * @throws ValidationException in case of validation failure
+			 * @throws EntityValidationException in case of validation failure
 			 */
-			void execute() throws ValidationException;
+			void execute() throws EntityValidationException;
 
 			/**
 			 * @return the command
@@ -1619,7 +1626,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 		}
 
 		@Override
-		public void execute() throws ValidationException {
+		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmInsert()) {
 				PersistTask.Task task = editPanel.editModel().tasks().insert().prepare();
 				Dialogs.progressWorker()
@@ -1675,7 +1682,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 			}
 
 			@Override
-			public void execute() throws ValidationException {
+			public void execute() throws EntityValidationException {
 				build().execute();
 			}
 
@@ -1699,7 +1706,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 		}
 
 		@Override
-		public void execute() throws ValidationException {
+		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmUpdate()) {
 				PersistTask.Task task = editPanel.editModel().tasks().update().prepare();
 				Dialogs.progressWorker()
@@ -1749,7 +1756,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 			}
 
 			@Override
-			public void execute() throws ValidationException {
+			public void execute() throws EntityValidationException {
 				build().execute();
 			}
 

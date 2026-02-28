@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.attribute.AttributeValidator;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -157,7 +157,7 @@ public interface World {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public void validate(Entity city, Attribute<?> attribute) throws ValidationException {
+		public void validate(Entity city, Attribute<?> attribute) throws AttributeValidationException {
 			EntityValidator.super.validate(city, attribute);
 			if (attribute.equals(City.POPULATION)) {
 				// population is guaranteed to be non-null after the call to super.validate()
@@ -166,7 +166,7 @@ public interface World {
 					Entity country = city.get(City.COUNTRY_FK);
 					Integer countryPopulation = country.get(Country.POPULATION);
 					if (countryPopulation != null && cityPopulation > countryPopulation) {
-						throw new ValidationException(City.POPULATION,
+						throw new AttributeValidationException(City.POPULATION,
 										cityPopulation, "City population can not exceed country population");
 					}
 				}

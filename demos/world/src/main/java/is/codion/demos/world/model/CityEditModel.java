@@ -23,7 +23,7 @@ import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.domain.api.World.Location;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.json.JSONArray;
@@ -49,7 +49,7 @@ public final class CityEditModel extends SwingEntityEditModel {
 		editor().comboBoxModels().initialize(City.COUNTRY_FK);
 	}
 
-	public void populateLocation() throws IOException, ValidationException {
+	public void populateLocation() throws IOException, EntityValidationException {
 		Location location = lookupLocation(editor().entity().get())
 						.orElseThrow(() -> new RuntimeException("Location not found for city: " + editor().entity().get()));
 		editor().value(City.LOCATION).set(location);
@@ -58,7 +58,7 @@ public final class CityEditModel extends SwingEntityEditModel {
 		}
 	}
 
-	void populateLocation(Entity city) throws IOException, ValidationException {
+	void populateLocation(Entity city) throws IOException, EntityValidationException {
 		lookupLocation(city).ifPresent(location -> city.set(City.LOCATION, location));
 		if (city.modified()) {
 			update(List.of(city));

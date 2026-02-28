@@ -25,7 +25,8 @@ import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.PersistTask.Result;
 import is.codion.swing.common.model.worker.ProgressWorker;
@@ -109,7 +110,7 @@ final class EditAttributePanel<T> extends JPanel {
 						.build();
 	}
 
-	private void performUpdate() throws ValidationException {
+	private void performUpdate() throws EntityValidationException {
 		updating.set(true);
 		Collection<Entity> toUpdate = entities.stream()
 						.map(Entity::copy)
@@ -150,7 +151,7 @@ final class EditAttributePanel<T> extends JPanel {
 				valid.set(true);
 				message.clear();
 			}
-			catch (ValidationException | IllegalArgumentException e) {
+			catch (AttributeValidationException | IllegalArgumentException e) {
 				valid.set(false);
 				message.set(e.getMessage());
 				return;
@@ -161,8 +162,8 @@ final class EditAttributePanel<T> extends JPanel {
 	private void onException(Exception exception) {
 		updating.set(false);
 		hideProgress();
-		if (exception instanceof ValidationException) {
-			handleValidationException((ValidationException) exception);
+		if (exception instanceof EntityValidationException) {
+			handleValidationException((EntityValidationException) exception);
 		}
 		else if (exception instanceof ExecutionException) {
 			Throwable cause = exception.getCause();
@@ -179,7 +180,7 @@ final class EditAttributePanel<T> extends JPanel {
 		}
 	}
 
-	private void handleValidationException(ValidationException exception) {
+	private void handleValidationException(EntityValidationException exception) {
 		showMessageDialog(this, exception.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
 	}
 

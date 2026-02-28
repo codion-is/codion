@@ -28,7 +28,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -451,9 +451,9 @@ public final class EntitiesTest {
 			EntityValidator validator = new EntityValidator() {};
 
 			// Missing required foreign key
-			ValidationException exception = assertThrows(ValidationException.class,
+			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(emp));
-			assertEquals(Employee.DEPARTMENT_FK, exception.invalid().iterator().next().attribute());
+			assertEquals(Employee.DEPARTMENT_FK, exception.attributes().iterator().next().attribute());
 
 			// Fix foreign key
 			emp.set(Employee.DEPARTMENT_NO, 1);
@@ -461,9 +461,9 @@ public final class EntitiesTest {
 
 			// Remove required salary
 			emp.set(Employee.SALARY, null);
-			exception = assertThrows(ValidationException.class,
+			exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(emp));
-			assertEquals(Employee.SALARY, exception.invalid().iterator().next().attribute());
+			assertEquals(Employee.SALARY, exception.attributes().iterator().next().attribute());
 		}
 
 		@Test
@@ -481,9 +481,9 @@ public final class EntitiesTest {
 
 			// Exceed max length
 			emp.set(Employee.NAME, "LooooongName");
-			ValidationException exception = assertThrows(ValidationException.class,
+			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(emp));
-			assertEquals(Employee.NAME, exception.invalid().iterator().next().attribute());
+			assertEquals(Employee.NAME, exception.attributes().iterator().next().attribute());
 		}
 
 		@Test
@@ -502,11 +502,11 @@ public final class EntitiesTest {
 
 			// Below minimum
 			emp.set(Employee.COMMISSION, 10d);
-			assertThrows(ValidationException.class, () -> validator.validate(emp));
+			assertThrows(EntityValidationException.class, () -> validator.validate(emp));
 
 			// Above maximum
 			emp.set(Employee.COMMISSION, 2100d);
-			assertThrows(ValidationException.class, () -> validator.validate(emp));
+			assertThrows(EntityValidationException.class, () -> validator.validate(emp));
 		}
 
 		@Test
@@ -520,7 +520,7 @@ public final class EntitiesTest {
 			Entity emp = entities.definition(Employee.TYPE).entity(values);
 			EntityValidator validator = new EntityValidator() {};
 
-			assertThrows(ValidationException.class, () -> validator.validate(emp));
+			assertThrows(EntityValidationException.class, () -> validator.validate(emp));
 		}
 
 		@Test
@@ -536,7 +536,7 @@ public final class EntitiesTest {
 
 			// Non-strict validation
 			EntityValidator validator = new EntityValidator() {};
-			assertThrows(ValidationException.class, () -> validator.validate(emp));
+			assertThrows(EntityValidationException.class, () -> validator.validate(emp));
 
 			emp.set(Employee.NAME, "Name");
 			emp.save();
@@ -544,7 +544,7 @@ public final class EntitiesTest {
 			// Simulate existing entity
 			emp.set(Employee.ID, 10);
 			emp.set(Employee.NAME, "1234567891000");
-			assertThrows(ValidationException.class, () -> validator.validate(emp));
+			assertThrows(EntityValidationException.class, () -> validator.validate(emp));
 
 			emp.save(); // Not modified
 			assertDoesNotThrow(() -> validator.validate(emp)); // Non-strict passes
@@ -556,17 +556,17 @@ public final class EntitiesTest {
 					return true;
 				}
 			};
-			assertThrows(ValidationException.class, () -> strictValidator.validate(emp));
+			assertThrows(EntityValidationException.class, () -> strictValidator.validate(emp));
 
 			emp.set(Employee.NAME, "Name");
 			emp.save();
 
 			emp.set(Employee.ID, 10);
 			emp.set(Employee.NAME, "1234567891000");
-			assertThrows(ValidationException.class, () -> validator.validate(emp));
+			assertThrows(EntityValidationException.class, () -> validator.validate(emp));
 
 			emp.save(); // Not modified
-			assertThrows(ValidationException.class, () -> strictValidator.validate(emp));
+			assertThrows(EntityValidationException.class, () -> strictValidator.validate(emp));
 		}
 	}
 

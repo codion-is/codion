@@ -20,7 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.model.TrackEditModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -139,7 +139,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.enable(this);
 	}
 
-	private void decrementSelection() throws ValidationException {
+	private void decrementSelection() throws EntityValidationException {
 		if (editModel().editor().modified().is()) {
 			updateAndDecrementSelectedIndexes.execute();
 		}
@@ -148,7 +148,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 		}
 	}
 
-	private void incrementSelection() throws ValidationException {
+	private void incrementSelection() throws EntityValidationException {
 		if (editModel().editor().modified().is()) {
 			updateAndIncrementSelectedIndexes.execute();
 		}

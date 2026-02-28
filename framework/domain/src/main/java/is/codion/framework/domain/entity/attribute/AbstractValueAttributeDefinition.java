@@ -24,7 +24,7 @@ import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -122,7 +122,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	@Override
-	public final void validate(Entity entity, boolean nullable) throws ValidationException {
+	public final void validate(Entity entity, boolean nullable) throws AttributeValidationException {
 		requireNonNull(entity);
 		if (!(attribute() instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute())) {
 			validateNull(entity, nullable);
@@ -168,7 +168,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		return value + " <" + INVALID_ITEM_SUFFIX + ">";
 	}
 
-	private void validateNull(Entity entity, boolean nullable) throws ValidationException {
+	private void validateNull(Entity entity, boolean nullable) throws AttributeValidationException {
 		if (!nullable && entity.isNull(attribute())) {
 			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attribute() instanceof ForeignKey)) {
 				//a new entity being inserted, allow null for columns with default values and generated primary key values
@@ -197,8 +197,8 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		return unmodifiableCollection(new ArrayList<>(list));
 	}
 
-	static ValidationException createNullValidationException(Attribute<?> attribute, String caption) {
-		return new ValidationException(attribute, null, MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
+	static AttributeValidationException createNullValidationException(Attribute<?> attribute, String caption) {
+		return new AttributeValidationException(attribute, null, MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
 	}
 
 	private boolean isNonGeneratedPrimaryKeyColumn() {
@@ -213,22 +213,22 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 						&& !((ColumnDefinition<?>) this).withDefault();
 	}
 
-	private void validateItem(@Nullable T value) throws ValidationException {
+	private void validateItem(@Nullable T value) throws AttributeValidationException {
 		if (value == null && nullable()) {
 			return;
 		}
 		if (!validItem(value)) {
-			throw new ValidationException(attribute(), value,
+			throw new AttributeValidationException(attribute(), value,
 							MESSAGES.getString("invalid_item_value") + ": " + value);
 		}
 	}
 
-	private void validate(AttributeValidator<T> validator, T value) throws ValidationException {
+	private void validate(AttributeValidator<T> validator, T value) throws AttributeValidationException {
 		try {
 			validator.validate(value);
 		}
 		catch (IllegalArgumentException e) {
-			throw new ValidationException(attribute(), value, caption() + ": " + e.getMessage());
+			throw new AttributeValidationException(attribute(), value, caption() + ": " + e.getMessage());
 		}
 	}
 

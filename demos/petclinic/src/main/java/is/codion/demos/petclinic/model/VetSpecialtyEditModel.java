@@ -22,7 +22,7 @@ import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
@@ -41,7 +41,7 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 	private final class VetSpecialtyValidator implements EntityValidator {
 
 		@Override
-		public void validate(Entity entity) throws ValidationException {
+		public void validate(Entity entity) throws EntityValidationException {
 			// Perform the standard validation in order to
 			// assert that all required values are present
 			EntityValidator.super.validate(entity);
@@ -49,8 +49,7 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 							VetSpecialty.SPECIALTY.equalTo(entity.get(VetSpecialty.SPECIALTY)),
 							VetSpecialty.VET.equalTo(entity.get(VetSpecialty.VET)))));
 			if (rowCount > 0) {
-				throw new ValidationException(VetSpecialty.SPECIALTY_FK,
-								entity.get(VetSpecialty.SPECIALTY_FK), "Vet/specialty combination already exists");
+				throw new EntityValidationException("Vet/specialty combination already exists");
 			}
 		}
 	}

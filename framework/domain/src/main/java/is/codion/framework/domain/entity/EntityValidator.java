@@ -25,8 +25,8 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.entity.exception.ValidationException.InvalidAttribute;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +49,7 @@ import static java.util.Objects.requireNonNull;
  * public class CustomerValidator implements EntityValidator {
  *
  *     @Override
- *     public <T> void validate(Entity customer, Attribute<T> attribute) {
+ *     public <T> void validate(Entity customer, Attribute<T> attribute) throws AttributeValidationException {
  *         // Start with super.validate(), which performs null validation
  *         EntityValidator.super.validate(customer, attribute);
  *         // Validate email format
@@ -79,7 +79,7 @@ import static java.util.Objects.requireNonNull;
  *     .build();
  *}
  * @see EntityDefinition.Builder#validator(EntityValidator)
- * @see ValidationException
+ * @see EntityValidationException
  */
 public interface EntityValidator {
 
@@ -153,7 +153,7 @@ public interface EntityValidator {
 			validate(entity);
 			return true;
 		}
-		catch (ValidationException e) {
+		catch (EntityValidationException e) {
 			return false;
 		}
 	}
@@ -178,9 +178,9 @@ public interface EntityValidator {
 	 *     validator.validate(customer);
 	 *     // Validation passed
 	 *     connection.insert(customer);
-	 * } catch (ValidationException e) {
+	 * } catch (EntityValidationException e) {
 	 *     // Handle validation error
-	 *     System.err.println("Validation failed for attribute " + e.attribute() + ": " + e.getMessage());
+	 *     System.err.println("Validation failed " + e.getMessage());
 	 * }
 	 *
 	 * // Check if entity is valid without throwing exception
@@ -191,25 +191,25 @@ public interface EntityValidator {
 	 * }
 	 *}
 	 * @param entity the entity
-	 * @throws ValidationException in case of one or more invalid values
+	 * @throws EntityValidationException in case of one or more invalid values
 	 * @see #strict()
 	 */
-	default void validate(Entity entity) throws ValidationException {
+	default void validate(Entity entity) throws EntityValidationException {
 		List<Attribute<?>> attributes = requireNonNull(entity).definition().attributes().definitions().stream()
 						.filter(definition -> validated(entity, definition))
 						.map(AttributeDefinition::attribute)
 						.collect(Collectors.toList());
-		Collection<InvalidAttribute> invalid = new ArrayList<>();
+		Collection<AttributeValidationException> invalid = new ArrayList<>();
 		for (Attribute<?> attribute : attributes) {
 			try {
 				validate(entity, attribute);
 			}
-			catch (ValidationException e) {
-				invalid.addAll(e.invalid());
+			catch (AttributeValidationException e) {
+				invalid.add(e);
 			}
 		}
 		if (!invalid.isEmpty()) {
-			throw new ValidationException(invalid);
+			throw new EntityValidationException(invalid);
 		}
 	}
 
@@ -217,9 +217,9 @@ public interface EntityValidator {
 	 * Checks if the value associated with the give attribute is valid, throws a ValidationException if not
 	 * @param entity the entity to validate
 	 * @param attribute the attribute the value is associated with
-	 * @throws ValidationException if the given value is not valid for the given attribute
+	 * @throws AttributeValidationException if the given value is not valid for the given attribute
 	 */
-	default void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
+	default void validate(Entity entity, Attribute<?> attribute) throws AttributeValidationException {
 		AttributeDefinition<?> definition = requireNonNull(entity).definition().attributes().definition(attribute);
 		if (definition instanceof ValueAttributeDefinition<?>) {
 			((ValueAttributeDefinition<?>) definition).validate(entity, nullable(entity, attribute));

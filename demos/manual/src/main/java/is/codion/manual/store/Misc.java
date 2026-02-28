@@ -23,7 +23,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor;
 import is.codion.manual.store.domain.Store;
 import is.codion.manual.store.domain.Store.Customer;
@@ -70,7 +70,7 @@ public final class Misc {
 		// end::jasperReportDataSource[]
 	}
 
-	public static void main(String[] args) throws ValidationException {
+	public static void main(String[] args) throws EntityValidationException {
 		// tag::editModel[]
 		EntityConnectionProvider connectionProvider =
 						EntityConnectionProvider.builder()

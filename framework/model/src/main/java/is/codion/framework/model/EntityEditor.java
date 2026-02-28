@@ -35,7 +35,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -146,36 +147,36 @@ public interface EntityEditor {
 
 	/**
 	 * Validates the current state of the entity
-	 * @throws ValidationException in case the entity is invalid
+	 * @throws EntityValidationException in case the entity is invalid
 	 */
-	void validate() throws ValidationException;
+	void validate() throws EntityValidationException;
 
 	/**
 	 * Validates the value associated with the given attribute, using the underlying validator.
 	 * @param attribute the attribute the value is associated with
-	 * @throws ValidationException if the given value is not valid for the given attribute
+	 * @throws AttributeValidationException if the given value is not valid for the given attribute
 	 */
-	void validate(Attribute<?> attribute) throws ValidationException;
+	void validate(Attribute<?> attribute) throws AttributeValidationException;
 
 	/**
 	 * Validates the given entities, using the underlying validator.
 	 * For entities of a type other than this edit model is based on,
 	 * their respective validators are used.
 	 * @param entities the entities to validate
-	 * @throws ValidationException on finding the first invalid entity
+	 * @throws EntityValidationException on finding the first invalid entity
 	 * @see EntityDefinition#validator()
 	 */
-	void validate(Collection<Entity> entities) throws ValidationException;
+	void validate(Collection<Entity> entities) throws EntityValidationException;
 
 	/**
 	 * Validates the given entity, using the underlying validator.
 	 * For entities of a type other than this edit model is based on,
 	 * their respective validators are used.
 	 * @param entity the entity to validate
-	 * @throws ValidationException in case the entity is invalid
+	 * @throws EntityValidationException in case the entity is invalid
 	 * @throws NullPointerException in case the entity is null
 	 */
-	void validate(Entity entity) throws ValidationException;
+	void validate(Entity entity) throws EntityValidationException;
 
 	/**
 	 * @param attribute the attribute
@@ -276,9 +277,9 @@ public interface EntityEditor {
 
 		/**
 		 * @return the task
-		 * @throws ValidationException in case of validation failure
+		 * @throws EntityValidationException in case of validation failure
 		 */
-		PersistTask build() throws ValidationException;
+		PersistTask build() throws EntityValidationException;
 	}
 
 	/**
@@ -300,9 +301,9 @@ public interface EntityEditor {
 
 		/**
 		 * @return the task
-		 * @throws ValidationException in case of validation failure
+		 * @throws EntityValidationException in case of validation failure
 		 */
-		PersistTask build() throws ValidationException;
+		PersistTask build() throws EntityValidationException;
 	}
 
 	/**
