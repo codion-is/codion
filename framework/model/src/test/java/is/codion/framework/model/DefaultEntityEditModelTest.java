@@ -87,7 +87,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void persistenceEvents() {
+	void persistenceEvents() throws ValidationException {
 		AtomicInteger insertEvents = new AtomicInteger();
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
@@ -362,7 +362,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void insert() {
+	void insert() throws ValidationException {
 		assertTrue(employeeEditModel.insert(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -411,7 +411,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void update() {
+	void update() throws ValidationException {
 		assertTrue(employeeEditModel.update(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -556,7 +556,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void updated() {
+	void updated() throws ValidationException {
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
 		try {
@@ -695,7 +695,7 @@ public final class DefaultEntityEditModelTest {
 	}
 
 	@Test
-	void modifiedUpdate() {
+	void modifiedUpdate() throws ValidationException {
 		EntityConnection connection = employeeEditModel.connection();
 		ObservableState nameModifiedObserver = editor.value(Employee.NAME).modified();
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
@@ -793,7 +793,7 @@ public final class DefaultEntityEditModelTest {
 		assertTrue(editor.value(Employee.SALARY).valid().is());
 		editor.validator().set(new EntityValidator() {
 			@Override
-			public void validate(Entity entity, Attribute<?> attribute) {
+			public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 				if (attribute.equals(Employee.NAME) || attribute.equals(Employee.SALARY)) {
 					throw new ValidationException(attribute, entity.get(attribute), "invalid");
 				}

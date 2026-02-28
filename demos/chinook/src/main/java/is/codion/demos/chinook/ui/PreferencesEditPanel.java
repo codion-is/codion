@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -52,9 +53,14 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 	private void updateNewsletter() {
 		// Only when we're editing an existing record
 		if (editModel().editor().exists().is()) {
-			updateCommand()
-							.confirm(false)
-							.execute();
+			try {
+				updateCommand()
+								.confirm(false)
+								.execute();
+			}
+			catch (ValidationException e) {
+				onValidationException(e);
+			}
 		}
 	}
 }

@@ -211,24 +211,24 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public final void validate() {
+	public final void validate() throws ValidationException {
 		validate(entity.instance);
 	}
 
 	@Override
-	public final void validate(Attribute<?> attribute) {
+	public final void validate(Attribute<?> attribute) throws ValidationException {
 		validator.getOrThrow().validate(entity.instance, attribute);
 	}
 
 	@Override
-	public final void validate(Collection<Entity> entities) {
+	public final void validate(Collection<Entity> entities) throws ValidationException {
 		for (Entity entityToValidate : requireNonNull(entities)) {
 			validate(entityToValidate);
 		}
 	}
 
 	@Override
-	public final void validate(Entity entity) {
+	public final void validate(Entity entity) throws ValidationException {
 		if (entity.type().equals(entityDefinition.type())) {
 			validator.getOrThrow().validate(entity);
 		}
@@ -633,7 +633,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public PersistTask build() {
+		public PersistTask build() throws ValidationException {
 			if (entities != null) {
 				return new InsertEntities(entities, before, after);
 			}
@@ -649,7 +649,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final Entity entity = entity().get().copy().mutable();
 
 		private InsertEntity(Consumer<Collection<Entity>> before,
-												 Consumer<Collection<Entity>> after) {
+												 Consumer<Collection<Entity>> after) throws ValidationException {
 			validate(entity);
 			this.before = before;
 			this.after = after;
@@ -697,7 +697,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final Consumer<Collection<Entity>> before;
 		private final Consumer<Collection<Entity>> after;
 
-		private InsertEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Collection<Entity>> after) {
+		private InsertEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Collection<Entity>> after) throws ValidationException {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			this.before = before;
 			this.after = after;
@@ -762,7 +762,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public PersistTask build() {
+		public PersistTask build() throws ValidationException {
 			if (entities != null) {
 				return new UpdateEntities(entities, before, after);
 			}
@@ -777,7 +777,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final Consumer<Map<Entity, Entity>> after;
 		private final Entity entity = entity().get().copy().mutable();
 
-		private UpdateEntity(Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) {
+		private UpdateEntity(Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) throws ValidationException {
 			this.before = before;
 			this.after = after;
 			validate(entity);
@@ -832,7 +832,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final Consumer<Collection<Entity>> before;
 		private final Consumer<Map<Entity, Entity>> after;
 
-		private UpdateEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) {
+		private UpdateEntities(Collection<Entity> entities, Consumer<Collection<Entity>> before, Consumer<Map<Entity, Entity>> after) throws ValidationException {
 			this.before = before;
 			this.after = after;
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));

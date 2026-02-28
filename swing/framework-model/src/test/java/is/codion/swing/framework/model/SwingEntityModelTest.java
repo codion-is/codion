@@ -21,6 +21,7 @@ package is.codion.swing.framework.model;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -78,7 +79,7 @@ public final class SwingEntityModelTest
 	}
 
 	@Test
-	public void testDetailModels() {
+	public void testDetailModels() throws ValidationException {
 		SwingEntityModel departmentModel = createDepartmentModel();
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		assertNotNull(employeeModel);

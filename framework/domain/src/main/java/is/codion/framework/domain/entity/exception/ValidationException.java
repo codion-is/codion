@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Specifies that one or more attribute values are invalid.
  */
-public final class ValidationException extends RuntimeException {
+public final class ValidationException extends Exception {
 
 	private final Collection<InvalidAttribute> invalid;
 

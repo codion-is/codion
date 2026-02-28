@@ -148,14 +148,14 @@ public interface EntityEditor {
 	 * Validates the current state of the entity
 	 * @throws ValidationException in case the entity is invalid
 	 */
-	void validate();
+	void validate() throws ValidationException;
 
 	/**
 	 * Validates the value associated with the given attribute, using the underlying validator.
 	 * @param attribute the attribute the value is associated with
 	 * @throws ValidationException if the given value is not valid for the given attribute
 	 */
-	void validate(Attribute<?> attribute);
+	void validate(Attribute<?> attribute) throws ValidationException;
 
 	/**
 	 * Validates the given entities, using the underlying validator.
@@ -165,7 +165,7 @@ public interface EntityEditor {
 	 * @throws ValidationException on finding the first invalid entity
 	 * @see EntityDefinition#validator()
 	 */
-	void validate(Collection<Entity> entities);
+	void validate(Collection<Entity> entities) throws ValidationException;
 
 	/**
 	 * Validates the given entity, using the underlying validator.
@@ -175,7 +175,7 @@ public interface EntityEditor {
 	 * @throws ValidationException in case the entity is invalid
 	 * @throws NullPointerException in case the entity is null
 	 */
-	void validate(Entity entity);
+	void validate(Entity entity) throws ValidationException;
 
 	/**
 	 * @param attribute the attribute
@@ -276,8 +276,9 @@ public interface EntityEditor {
 
 		/**
 		 * @return the task
+		 * @throws ValidationException in case of validation failure
 		 */
-		PersistTask build();
+		PersistTask build() throws ValidationException;
 	}
 
 	/**
@@ -299,8 +300,9 @@ public interface EntityEditor {
 
 		/**
 		 * @return the task
+		 * @throws ValidationException in case of validation failure
 		 */
-		PersistTask build();
+		PersistTask build() throws ValidationException;
 	}
 
 	/**

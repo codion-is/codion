@@ -189,7 +189,7 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	 * false if null should trigger a null validation exception
 	 * @throws ValidationException in case of an invalid value
 	 */
-	void validate(Entity entity, boolean nullable);
+	void validate(Entity entity, boolean nullable) throws ValidationException;
 
 	/**
 	 * Builds a {@link ForeignKeyDefinition}.

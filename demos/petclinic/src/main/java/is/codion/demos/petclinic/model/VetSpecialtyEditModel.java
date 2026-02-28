@@ -41,7 +41,7 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 	private final class VetSpecialtyValidator implements EntityValidator {
 
 		@Override
-		public void validate(Entity entity) {
+		public void validate(Entity entity) throws ValidationException {
 			// Perform the standard validation in order to
 			// assert that all required values are present
 			EntityValidator.super.validate(entity);

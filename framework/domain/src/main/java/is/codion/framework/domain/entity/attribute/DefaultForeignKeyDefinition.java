@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
+import is.codion.framework.domain.entity.exception.ValidationException;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 	}
 
 	@Override
-	public void validate(Entity entity, boolean nullable) {
+	public void validate(Entity entity, boolean nullable) throws ValidationException {
 		if (!nullable && entity.isNull(attribute())) {
 			throw createNullValidationException(attribute(), caption());
 		}

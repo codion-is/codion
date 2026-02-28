@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.PersistTask.Result;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -108,7 +109,7 @@ final class EditAttributePanel<T> extends JPanel {
 						.build();
 	}
 
-	private void performUpdate() {
+	private void performUpdate() throws ValidationException {
 		updating.set(true);
 		Collection<Entity> toUpdate = entities.stream()
 						.map(Entity::copy)
@@ -116,11 +117,12 @@ final class EditAttributePanel<T> extends JPanel {
 						.collect(toList());
 		T value = componentValue.get();
 		toUpdate.forEach(entity -> editModel.editor().value(attribute).set(entity, value));
+		EntityEditor.PersistTask.Task task = editModel.tasks().update(toUpdate.stream()
+										.filter(Entity::modified)
+										.collect(toList()))
+						.prepare();
 		ProgressWorker.builder()
-						.task(editModel.tasks().update(toUpdate.stream()
-														.filter(Entity::modified)
-														.collect(toList()))
-										.prepare()::perform)
+						.task(task::perform)
 						.onStarted(this::showProgress)
 						.onResult(this::onResult)
 						.onException(this::onException)

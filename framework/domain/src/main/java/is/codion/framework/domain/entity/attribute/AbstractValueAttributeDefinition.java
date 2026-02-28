@@ -122,7 +122,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	@Override
-	public final void validate(Entity entity, boolean nullable) {
+	public final void validate(Entity entity, boolean nullable) throws ValidationException {
 		requireNonNull(entity);
 		if (!(attribute() instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute())) {
 			validateNull(entity, nullable);
@@ -168,7 +168,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		return value + " <" + INVALID_ITEM_SUFFIX + ">";
 	}
 
-	private void validateNull(Entity entity, boolean nullable) {
+	private void validateNull(Entity entity, boolean nullable) throws ValidationException {
 		if (!nullable && entity.isNull(attribute())) {
 			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attribute() instanceof ForeignKey)) {
 				//a new entity being inserted, allow null for columns with default values and generated primary key values
@@ -213,7 +213,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 						&& !((ColumnDefinition<?>) this).withDefault();
 	}
 
-	private void validateItem(@Nullable T value) {
+	private void validateItem(@Nullable T value) throws ValidationException {
 		if (value == null && nullable()) {
 			return;
 		}
@@ -223,7 +223,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 	}
 
-	private void validate(AttributeValidator<T> validator, T value) {
+	private void validate(AttributeValidator<T> validator, T value) throws ValidationException {
 		try {
 			validator.validate(value);
 		}

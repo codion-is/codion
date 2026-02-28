@@ -33,6 +33,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityConditionModel.AdditionalConditions;
 import is.codion.framework.model.EntityEditModel;
@@ -64,7 +65,7 @@ public final class FrameworkModelDemo {
 		// end::entityModel[]
 	}
 
-	void entityEditModel(EntityConnectionProvider connectionProvider) {
+	void entityEditModel(EntityConnectionProvider connectionProvider) throws ValidationException {
 		// tag::entityEditModel[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 		EntityEditModel editModel = customerModel.editModel();

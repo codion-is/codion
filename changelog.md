@@ -8,6 +8,7 @@ Codion Change Log
 - DefaultFilterTableCellEditor.DefaultCellEditable now prevents editing from starting on key event if modifiers are enabled.
 ### is.codion.framework.domain
 - EntityDefinition.ForeignKeys.nullable() added.
+- ValidationException now checked.
 ### is.codion.framework.model
 - EntityEditor.Modified.predicate() replaced with ObservableState based additional().
 - DefaultEntityEditModel, no longer clears generated key columns on insert, minor refactoring.

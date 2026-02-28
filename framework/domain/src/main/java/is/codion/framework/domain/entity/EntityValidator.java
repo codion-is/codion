@@ -194,7 +194,7 @@ public interface EntityValidator {
 	 * @throws ValidationException in case of one or more invalid values
 	 * @see #strict()
 	 */
-	default void validate(Entity entity) {
+	default void validate(Entity entity) throws ValidationException {
 		List<Attribute<?>> attributes = requireNonNull(entity).definition().attributes().definitions().stream()
 						.filter(definition -> validated(entity, definition))
 						.map(AttributeDefinition::attribute)
@@ -219,7 +219,7 @@ public interface EntityValidator {
 	 * @param attribute the attribute the value is associated with
 	 * @throws ValidationException if the given value is not valid for the given attribute
 	 */
-	default void validate(Entity entity, Attribute<?> attribute) {
+	default void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 		AttributeDefinition<?> definition = requireNonNull(entity).definition().attributes().definition(attribute);
 		if (definition instanceof ValueAttributeDefinition<?>) {
 			((ValueAttributeDefinition<?>) definition).validate(entity, nullable(entity, attribute));

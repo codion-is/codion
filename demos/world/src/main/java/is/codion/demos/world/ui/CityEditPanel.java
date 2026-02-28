@@ -23,6 +23,7 @@ import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.model.CityEditModel;
 import is.codion.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -96,7 +97,7 @@ public final class CityEditPanel extends EntityEditPanel {
 		focus().initial().set(City.NAME);
 	}
 
-	private void populateLocation() throws IOException {
+	private void populateLocation() throws IOException, ValidationException {
 		CityEditModel editModel = (CityEditModel) editModel();
 		editModel.populateLocation();
 		displayLocations(List.of(editModel.editor().entity().get()));

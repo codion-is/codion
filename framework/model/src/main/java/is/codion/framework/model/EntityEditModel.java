@@ -121,7 +121,7 @@ public interface EntityEditModel {
 	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
-	Entity insert();
+	Entity insert() throws ValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -136,7 +136,7 @@ public interface EntityEditModel {
 	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
-	Collection<Entity> insert(Collection<Entity> entities);
+	Collection<Entity> insert(Collection<Entity> entities) throws ValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -152,7 +152,7 @@ public interface EntityEditModel {
 	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
-	Entity update();
+	Entity update() throws ValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -169,7 +169,7 @@ public interface EntityEditModel {
 	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
-	Collection<Entity> update(Collection<Entity> entities);
+	Collection<Entity> update(Collection<Entity> entities) throws ValidationException;
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -207,7 +207,7 @@ public interface EntityEditModel {
 		 * @see EntityEditor#entity()
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert();
+		PersistTask insert() throws ValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for inserting the given entity.
@@ -217,7 +217,7 @@ public interface EntityEditModel {
 		 * @throws ValidationException in case validation fails
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert(Entity entity);
+		PersistTask insert(Entity entity) throws ValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for inserting the given entities.
@@ -227,7 +227,7 @@ public interface EntityEditModel {
 		 * @throws ValidationException in case validation fails
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert(Collection<Entity> entities);
+		PersistTask insert(Collection<Entity> entities) throws ValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the active entity.
@@ -237,7 +237,7 @@ public interface EntityEditModel {
 		 * @see EntityEditor#entity()
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update();
+		PersistTask update() throws ValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the given entity.
@@ -247,7 +247,7 @@ public interface EntityEditModel {
 		 * @throws ValidationException in case validation fails
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update(Entity entity);
+		PersistTask update(Entity entity) throws ValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the given entities.
@@ -257,7 +257,7 @@ public interface EntityEditModel {
 		 * @throws ValidationException in case validation fails
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update(Collection<Entity> entities);
+		PersistTask update(Collection<Entity> entities) throws ValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for deleting the active entity.

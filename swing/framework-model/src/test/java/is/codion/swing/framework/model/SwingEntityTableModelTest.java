@@ -24,6 +24,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -194,7 +195,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	}
 
 	@Test
-	void persistenceEvents() {
+	void persistenceEvents() throws ValidationException {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		tableModel.items().refresh();
 		SwingEntityEditModel employeeEditModel = tableModel.editModel();

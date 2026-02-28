@@ -25,6 +25,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
@@ -62,7 +63,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 					.build();
 
 	@Test
-	public void testUpdatePrimaryKey() {
+	public void testUpdatePrimaryKey() throws ValidationException {
 		M departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
@@ -95,7 +96,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 	}
 
 	@Test
-	public void testDetailModels() {
+	public void testDetailModels() throws ValidationException {
 		M departmentModel = createDepartmentModel();
 		assertEquals(1, departmentModel.detailModels().active().size());
 		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(false);
@@ -225,7 +226,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 	}
 
 	@Test
-	public void setConditionOnInsert() {
+	public void setConditionOnInsert() throws ValidationException {
 		M departmentModel = createDepartmentModelWithoutDetailModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
@@ -288,7 +289,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 	}
 
 	@Test
-	public void setValueOnInsert() {
+	public void setValueOnInsert() throws ValidationException {
 		M departmentModel = createDepartmentModelWithoutDetailModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
@@ -458,7 +459,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 	}
 
 	@Test
-	public void insertDifferentTypes() {
+	public void insertDifferentTypes() throws ValidationException {
 		M departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;

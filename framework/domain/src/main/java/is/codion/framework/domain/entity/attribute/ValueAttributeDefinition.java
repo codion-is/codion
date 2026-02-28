@@ -129,7 +129,7 @@ public sealed interface ValueAttributeDefinition<T> extends AttributeDefinition<
 	 * @see Builder#validator(AttributeValidator)
 	 * @see AttributeValidator
 	 */
-	void validate(Entity entity, boolean nullable);
+	void validate(Entity entity, boolean nullable) throws ValidationException;
 
 	/**
 	 * Builds a ValueAttributeDefinition instance

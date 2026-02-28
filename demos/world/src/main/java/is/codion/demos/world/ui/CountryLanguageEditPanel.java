@@ -19,6 +19,7 @@
 package is.codion.demos.world.ui;
 
 import is.codion.demos.world.domain.api.World.CountryLanguage;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditor;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -69,9 +70,14 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 		EntityEditor editor = editModel().editor();
 		//Only when IS_OFFICIAL is the only attribute being edited in an existing entity
 		if (editor.modified().attributes().is(singleton(CountryLanguage.IS_OFFICIAL))) {
-			updateCommand()
-							.confirm(false)
-							.execute();
+			try {
+				updateCommand()
+								.confirm(false)
+								.execute();
+			}
+			catch (ValidationException e) {
+				onValidationException(e);
+			}
 		}
 	}
 }

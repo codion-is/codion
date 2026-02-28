@@ -339,10 +339,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	 * <p>Performs insert on the active entity.
 	 * <p>If insert confirmation is enabled, confirmation is requested first using
 	 * the {@link Confirmer} specified via {@link Config#insertConfirmer(Confirmer)}.
+	 * @throws ValidationException in case of validation failure
 	 * @see Config#confirmInsert(boolean)
 	 * @see Config#insertConfirmer(Confirmer)
 	 */
-	public final void insert() {
+	public final void insert() throws ValidationException {
 		insertCommand().execute();
 	}
 
@@ -361,10 +362,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	 * <p>Performs update on the active entity.
 	 * <p>If update confirmation is enabled, confirmation is requested first using
 	 * the {@link Confirmer} specified via {@link Config#updateConfirmer(Confirmer)}.
+	 * @throws ValidationException in case of validation failure
 	 * @see Config#confirmUpdate(boolean)
 	 * @see Config#updateConfirmer(Confirmer)
 	 */
-	public final void update() {
+	public final void update() throws ValidationException {
 		updateCommand().execute();
 	}
 
@@ -1277,8 +1279,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	 */
 	public interface InsertCommand extends Command {
 
+		/**
+		 * @throws ValidationException in case of validation failure
+		 */
 		@Override
-		void execute();
+		void execute() throws ValidationException;
 
 		/**
 		 * Builds an async insert command
@@ -1305,8 +1310,9 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 
 			/**
 			 * Builds and executes this command
+			 * @throws ValidationException in case of validation failure
 			 */
-			void execute();
+			void execute() throws ValidationException;
 
 			/**
 			 * @return the command
@@ -1320,8 +1326,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	 */
 	public interface UpdateCommand extends Command {
 
+		/**
+		 * @throws ValidationException in case of validation failure
+		 */
 		@Override
-		void execute();
+		void execute() throws ValidationException;
 
 		/**
 		 * Builds an async update command
@@ -1348,8 +1357,9 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 
 			/**
 			 * Builds and executes this command
+			 * @throws ValidationException in case of validation failure
 			 */
-			void execute();
+			void execute() throws ValidationException;
 
 			/**
 			 * @return the command
@@ -1609,10 +1619,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 		}
 
 		@Override
-		public void execute() {
+		public void execute() throws ValidationException {
 			if (!confirm || editPanel.confirmInsert()) {
+				PersistTask.Task task = editPanel.editModel().tasks().insert().prepare();
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().tasks().insert().prepare()::perform)
+								.task(task::perform)
 								.title(MESSAGES.getString("inserting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1664,7 +1675,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 			}
 
 			@Override
-			public void execute() {
+			public void execute() throws ValidationException {
 				build().execute();
 			}
 
@@ -1688,10 +1699,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 		}
 
 		@Override
-		public void execute() {
+		public void execute() throws ValidationException {
 			if (!confirm || editPanel.confirmUpdate()) {
+				PersistTask.Task task = editPanel.editModel().tasks().update().prepare();
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().tasks().update().prepare()::perform)
+								.task(task::perform)
 								.title(MESSAGES.getString("updating"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1737,7 +1749,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 			}
 
 			@Override
-			public void execute() {
+			public void execute() throws ValidationException {
 				build().execute();
 			}
 
