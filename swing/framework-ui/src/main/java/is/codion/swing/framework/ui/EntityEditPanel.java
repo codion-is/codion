@@ -49,6 +49,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
+import is.codion.swing.framework.ui.EditorComponents.CreateComponents;
+import is.codion.swing.framework.ui.EditorComponents.EditorComponent;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jspecify.annotations.Nullable;
@@ -108,7 +110,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 /**
  * A UI component based on a {@link EntityEditModel}.
  */
-public abstract class EntityEditPanel extends JPanel implements EditorComponents {
+public abstract class EntityEditPanel extends JPanel {
 
 	static final EditorPanelFocusTraversalPolicy LAYOUT_FOCUS_TRAVERSAL_POLICY = new EditorPanelFocusTraversalPolicy();
 
@@ -184,7 +186,6 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 
 	private final SwingEntityEditModel editModel;
 	private final DefaultEditorComponents components;
-	private final ComponentFactory componentFactory;
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final Controls.Layout controlsLayout;
@@ -214,7 +215,6 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 		this.editModel = requireNonNull(editModel);
 		this.configuration = configure(config);
 		this.components = createEditorComponents(editModel.editor());
-		this.componentFactory = new ComponentFactory(components);
 		this.active = State.state(!configuration.focusActivation);
 		this.controlsLayout = createControlsLayout();
 		this.inputFocus = new InputFocus();
@@ -379,19 +379,11 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 		return initialized;
 	}
 
-	@Override
+	/**
+	 * @return the underlying {@link SwingEntityEditor}
+	 */
 	public final SwingEntityEditor editor() {
 		return components.editor();
-	}
-
-	@Override
-	public final ComponentSettings settings() {
-		return components.settings();
-	}
-
-	@Override
-	public final <T> EditorComponent<T> component(Attribute<T> attribute) {
-		return components.component(attribute);
 	}
 
 	/**
@@ -440,29 +432,45 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	}
 
 	/**
-	 * @return the {@link ComponentFactory} instance
+	 * @return the {@link CreateComponents} instance
 	 */
-	protected final ComponentFactory create() {
-		return componentFactory;
+	protected final CreateComponents create() {
+		return components.create();
+	}
+
+	/**
+	 * @return the {@link EditorComponents} instance
+	 */
+	protected final EditorComponents components() {
+		return components;
+	}
+
+	/**
+	 * @param <T> the value type
+	 * @param attribute the attribute
+	 * @return the {@link EditorComponent} containing the component associated with the given attribute
+	 */
+	protected final <T> EditorComponent<T> component(Attribute<T> attribute) {
+		return components.component(attribute);
 	}
 
 	/**
 	 * Adds a panel for the given attribute to this panel
 	 * @param attribute the attribute
-	 * @see ComponentFactory#inputPanel(Attribute)
+	 * @see CreateComponents#inputPanel(Attribute)
 	 */
 	protected final void addInputPanel(Attribute<?> attribute) {
-		add(componentFactory.inputPanel(attribute));
+		add(components.create().inputPanel(attribute));
 	}
 
 	/**
 	 * Adds a panel for the given attribute to this panel using the given layout constraints
 	 * @param attribute the attribute
 	 * @param constraints the layout constraints
-	 * @see ComponentFactory#inputPanel(Attribute)
+	 * @see CreateComponents#inputPanel(Attribute)
 	 */
 	protected final void addInputPanel(Attribute<?> attribute, Object constraints) {
-		add(componentFactory.inputPanel(attribute), constraints);
+		add(components.create().inputPanel(attribute), constraints);
 	}
 
 	/**
@@ -789,8 +797,8 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 	}
 
 	private void onEntityChanging(Entity entity) {
-		if (configuration.modifiedWarning && editor().modified().is()) {
-			Set<Attribute<?>> modified = editor().modified().attributes().get();
+		if (configuration.modifiedWarning && components.editor().modified().is()) {
+			Set<Attribute<?>> modified = components.editor().modified().attributes().get();
 			if (showConfirmDialog(this, createModifiedMessage(modified),
 							FrameworkMessages.modifiedWarningTitle(), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
 				if (!modified.isEmpty()) {
@@ -807,7 +815,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 		}
 
 		return modified.stream()
-						.map(attribute -> editor().entityDefinition().attributes().definition(attribute))
+						.map(attribute -> components.editor().entityDefinition().attributes().definition(attribute))
 						.map(AttributeDefinition::caption)
 						.collect(Collectors.joining(", ", "", "\n\n" + FrameworkMessages.modifiedWarning()));
 	}
@@ -1522,7 +1530,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 			 */
 			public void set(Attribute<?> attribute) {
 				requireNonNull(attribute);
-				set(() -> component(attribute).get());
+				set(() -> components.component(attribute).get());
 			}
 
 			/**
@@ -1570,7 +1578,7 @@ public abstract class EntityEditPanel extends JPanel implements EditorComponents
 			 */
 			public void set(Attribute<?> attribute) {
 				requireNonNull(attribute);
-				set(() -> component(attribute).get());
+				set(() -> components.component(attribute).get());
 			}
 
 			/**

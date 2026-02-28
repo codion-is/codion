@@ -86,6 +86,11 @@ public interface EditorComponents {
 	SwingEntityEditor editor();
 
 	/**
+	 * @return the {@link CreateComponents} instance
+	 */
+	CreateComponents create();
+
+	/**
 	 * @return the component settings
 	 */
 	ComponentSettings settings();
@@ -192,9 +197,9 @@ public interface EditorComponents {
 	}
 
 	/**
-	 * A factory for {@link SwingEntityEditor} based components
+	 * Creates {@link SwingEntityEditor} based components
 	 */
-	final class ComponentFactory {
+	final class CreateComponents {
 
 		private static final String LABELED_BY = "labeledBy";
 
@@ -202,10 +207,10 @@ public interface EditorComponents {
 		private final EditorComponents components;
 
 		/**
-		 * Instantiates a new {@link ComponentFactory}
+		 * Instantiates a new {@link CreateComponents}
 		 * @param components the editor components
 		 */
-		ComponentFactory(EditorComponents components) {
+		CreateComponents(EditorComponents components) {
 			this.components = requireNonNull(components);
 			this.entityComponents = entityComponents(components.editor().entityDefinition());
 		}
@@ -433,7 +438,7 @@ public interface EditorComponents {
 		public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> comboBox(Column<T> column) {
 			return components.component(column)
 							.set((B) entityComponents.comboBox(column, components.editor().comboBoxModels().get(column)))
-							.onSetVisible(ComponentFactory::refreshIfCleared);
+							.onSetVisible(CreateComponents::refreshIfCleared);
 		}
 
 		/**
@@ -449,7 +454,7 @@ public interface EditorComponents {
 											.items(asList(column.type().valueClass().getEnumConstants()))
 											.includeNull(components.editor().entityDefinition().columns().definition(column).nullable())
 											.build()))
-							.onSetVisible(ComponentFactory::refreshIfCleared);
+							.onSetVisible(CreateComponents::refreshIfCleared);
 		}
 
 		/**
@@ -461,7 +466,7 @@ public interface EditorComponents {
 			EntityComboBoxModel comboBoxModel = components.editor().comboBoxModels().get(foreignKey);
 
 			return components.component(foreignKey).set(entityComponents.comboBox(foreignKey, comboBoxModel))
-							.onSetVisible(ComponentFactory::refreshIfCleared);
+							.onSetVisible(CreateComponents::refreshIfCleared);
 		}
 
 		/**

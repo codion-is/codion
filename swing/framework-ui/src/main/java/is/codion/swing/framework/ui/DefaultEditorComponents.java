@@ -47,10 +47,12 @@ final class DefaultEditorComponents implements EditorComponents {
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 
 	private final ComponentSettings settings = new DefaultComponentSettings();
+	private final CreateComponents create;
 	private final SwingEntityEditor editor;
 
 	DefaultEditorComponents(SwingEntityEditor editor) {
 		this.editor = requireNonNull(editor);
+		this.create = new CreateComponents(this);
 	}
 
 	@Override
@@ -61,6 +63,11 @@ final class DefaultEditorComponents implements EditorComponents {
 	@Override
 	public ComponentSettings settings() {
 		return settings;
+	}
+
+	@Override
+	public CreateComponents create() {
+		return create;
 	}
 
 	@Override

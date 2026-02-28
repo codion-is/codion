@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EditorComponents.CreateComponents;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
@@ -49,12 +50,12 @@ public final class EditorComponentsTest {
 	void test() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 		EditorComponents components = new DefaultEditorComponents(editModel.editor());
-		EditorComponents.ComponentFactory factory = new EditorComponents.ComponentFactory(components);
-		factory.textField(Employee.NAME);
-		assertThrows(IllegalStateException.class, () -> factory.textField(Employee.NAME));
+		CreateComponents create = new CreateComponents(components);
+		create.textField(Employee.NAME);
+		assertThrows(IllegalStateException.class, () -> create.textField(Employee.NAME));
 		JTextField nameField = (JTextField) components.component(Employee.NAME).get();
 		assertNotNull(nameField);
-		assertThrows(IllegalStateException.class, () -> factory.textField(Employee.NAME));
+		assertThrows(IllegalStateException.class, () -> create.textField(Employee.NAME));
 		assertFalse(components.component(Employee.JOB).optional().isPresent());
 		assertThrows(IllegalStateException.class, () -> components.component(Employee.NAME).set(new JLabel()));
 
@@ -68,7 +69,7 @@ public final class EditorComponentsTest {
 	void derived() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
 		EditorComponents components = new DefaultEditorComponents(editModel.editor());
-		EditorComponents.ComponentFactory factory = new EditorComponents.ComponentFactory(components);
+		CreateComponents factory = new CreateComponents(components);
 		JTextField textField = factory.textField(Detail.INT_DERIVED).build();
 		assertFalse(textField.isEnabled());
 	}

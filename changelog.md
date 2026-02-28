@@ -30,6 +30,8 @@ Codion Change Log
 - EntityEditorPanel.createEnumComboBox() no longer uses validator for nullability check.
 - EntityPanel now sets focus cycle root in constructor instead of when initialized.
 - EntityEditorPanel refactored into EditorComponents and EditorComponents.ComponentFactory, related refactoring.
+- EntityComponents.create() added, related refactoring.
+- EntityEditPanel no longer implements EntityComponents.
 
 ## 0.18.69
 ### is.codion.common.utilities
