@@ -10,6 +10,7 @@ Codion Change Log
 - EntityDefinition.ForeignKeys.nullable() added.
 - ValidationException now checked.
 - ValidationException split into AttributeValidationException and EntityValidationException.
+- NullValueException and InvalidItemException added.
 ### is.codion.framework.model
 - EntityEditor.Modified.predicate() replaced with ObservableState based additional().
 - DefaultEntityEditModel, no longer clears generated key columns on insert, minor refactoring.

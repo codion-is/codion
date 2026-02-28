@@ -26,6 +26,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
+import is.codion.framework.domain.entity.exception.InvalidItemException;
+import is.codion.framework.domain.entity.exception.NullValueException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -994,6 +996,7 @@ public final class EntityValidationEnhancementTest {
 			EntityValidationException exception = assertThrows(EntityValidationException.class,
 							() -> validator.validate(customer));
 			assertEquals(Customer.NAME, exception.attributes().iterator().next().attribute());
+			assertEquals(NullValueException.class, exception.attributes().iterator().next().getClass());
 		}
 	}
 
@@ -1006,7 +1009,6 @@ public final class EntityValidationEnhancementTest {
 		void multipleValidationErrors_differentAttributes() {
 			// Create entity with multiple invalid values using entity(Map) to bypass immediate validation
 			Map<Attribute<?>, Object> values = new HashMap<>();
-			values.put(Customer.ID, 1);
 			values.put(Customer.NAME, Text.leftPad("", 101, 'A')); // Too long
 			values.put(Customer.EMAIL, "invalid-email"); // Invalid format
 			values.put(Customer.CREDIT_LIMIT, new BigDecimal("-1000")); // Negative
@@ -1020,6 +1022,17 @@ public final class EntityValidationEnhancementTest {
 			// Test the email validation which should fail due to invalid format
 			assertThrows(AttributeValidationException.class,
 							() -> validator.validate(customer, Customer.EMAIL));
+			try {
+				validator.validate(customer);
+				fail();
+			}
+			catch (EntityValidationException e) {
+				assertEquals(7, e.attributes().size());
+				assertTrue(e.attributes().stream()
+								.anyMatch(InvalidItemException.class::isInstance));
+				assertTrue(e.attributes().stream()
+								.anyMatch(NullValueException.class::isInstance));
+			}
 		}
 
 		@Test

@@ -22,38 +22,17 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 
 import org.jspecify.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
 /**
- * Indicates that an attribute value is invalid.
+ * Indicates that a non-null attribute has a null value.
  */
-public class AttributeValidationException extends Exception {
-
-	private final Attribute<?> attribute;
-	private final @Nullable Object value;
+public final class NullValueException extends AttributeValidationException {
 
 	/**
 	 * @param attribute the attribute
 	 * @param value the value
 	 * @param message the message
 	 */
-	public AttributeValidationException(Attribute<?> attribute, @Nullable Object value, String message) {
-		super(requireNonNull(message));
-		this.attribute = requireNonNull(attribute);
-		this.value = value;
-	}
-
-	/**
-	 * @return the attribute
-	 */
-	public final Attribute<?> attribute() {
-		return attribute;
-	}
-
-	/**
-	 * @return the value
-	 */
-	public final @Nullable Object value() {
-		return value;
+	public NullValueException(Attribute<?> attribute, @Nullable Object value, String message) {
+		super(attribute, value, message);
 	}
 }

@@ -25,6 +25,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
+import is.codion.framework.domain.entity.exception.InvalidItemException;
+import is.codion.framework.domain.entity.exception.NullValueException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -198,7 +200,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	static AttributeValidationException createNullValidationException(Attribute<?> attribute, String caption) {
-		return new AttributeValidationException(attribute, null, MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
+		return new NullValueException(attribute, null, MessageFormat.format(MESSAGES.getString("value_is_required"), caption));
 	}
 
 	private boolean isNonGeneratedPrimaryKeyColumn() {
@@ -218,7 +220,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 			return;
 		}
 		if (!validItem(value)) {
-			throw new AttributeValidationException(attribute(), value,
+			throw new InvalidItemException(attribute(), value,
 							MESSAGES.getString("invalid_item_value") + ": " + value);
 		}
 	}
