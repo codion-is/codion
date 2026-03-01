@@ -33,11 +33,13 @@ import static is.codion.common.utilities.Configuration.stringValue;
 
 /**
  * A central application model class.
- * @param <M> the type of {@link EntityModel} this application model is based on
- * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
- * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  */
-public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
 
 	/**
 	 * Specifies whether the client should apply and save user preferences
@@ -84,7 +86,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	/**
 	 * @return the {@link EntityModels}
 	 */
-	EntityModels<M, E, T> entityModels();
+	EntityModels<M, E, T, R> entityModels();
 
 	/**
 	 * Returns file-based preferences using the domain name as identifier or {@link #PREFERENCES_KEY} if specified.
@@ -96,11 +98,13 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 
 	/**
 	 * Manages the {@link EntityModel}s for a {@link EntityApplicationModel}
-	 * @param <M> the type of {@link EntityModel} this application model is based on
-	 * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
-	 * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
+	 * @param <R> the {@link EntityEditor} type
 	 */
-	interface EntityModels<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+	interface EntityModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
 
 		/**
 		 * @param modelClass the application model class

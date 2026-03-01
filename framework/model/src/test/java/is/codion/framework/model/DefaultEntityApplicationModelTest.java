@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.framework.model.DefaultEntityModelTest.TestEntityEditModel;
+import is.codion.framework.model.DefaultEntityModelTest.TestEntityEditor;
 import is.codion.framework.model.DefaultEntityModelTest.TestEntityModel;
 import is.codion.framework.model.DefaultEntityModelTest.TestEntityTableModel;
 import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
@@ -26,7 +27,7 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 public final class DefaultEntityApplicationModelTest extends AbstractEntityApplicationModelTest<TestEntityModel,
-				TestEntityEditModel, TestEntityTableModel> {
+				TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
 
 	@Override
 	protected TestEntityModel createDepartmentModel() {

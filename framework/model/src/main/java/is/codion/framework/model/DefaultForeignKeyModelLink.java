@@ -31,11 +31,11 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
-				T extends EntityTableModel<E>> implements ForeignKeyModelLink<M, E, T> {
+final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements ForeignKeyModelLink<M, E, T, R> {
 
 	private final ForeignKey foreignKey;
-	private final ModelLink<M, E, T> modelLink;
+	private final ModelLink<M, E, T, R> modelLink;
 
 	private final boolean clearValueOnEmptySelection;
 	private final boolean clearConditionOnEmptySelection;
@@ -43,7 +43,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 	private final boolean setConditionOnInsert;
 	private final boolean refreshOnSelection;
 
-	private DefaultForeignKeyModelLink(DefaultBuilder<M, E, T, ?> builder) {
+	private DefaultForeignKeyModelLink(DefaultBuilder<M, E, T, R, ?> builder) {
 		this.modelLink = ModelLink.builder(builder.model)
 						.onSelection(builder.onSelection == null ? new OnSelection() : builder.onSelection)
 						.onInsert(builder.onInsert == null ? new OnInsert() : builder.onInsert)
@@ -172,8 +172,9 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		}
 	}
 
-	static final class DefaultBuilder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>,
-					B extends ForeignKeyModelLink.Builder<M, E, T, B>> implements Builder<M, E, T, B> {
+	static final class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>,
+					B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> implements Builder<M, E, T, R, B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
@@ -258,7 +259,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		}
 
 		@Override
-		public ForeignKeyModelLink<M, E, T> build() {
+		public ForeignKeyModelLink<M, E, T, R> build() {
 			return new DefaultForeignKeyModelLink<>(this);
 		}
 	}

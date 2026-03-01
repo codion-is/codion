@@ -44,28 +44,24 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  * A default {@link EntityEditModel} implementation
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  */
-public class DefaultEntityEditModel implements EntityEditModel {
+public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements EntityEditModel<M, E, T, R> {
 
-	private final EntityEditor editor;
+	private final R editor;
 	private final DefaultPersistTasks tasks;
 	private final DefaultPersistEvents events;
 	private final DefaultSettings settings;
 
 	/**
 	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
-	 * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
-	 * @param connectionProvider the {@link EntityConnectionProvider} instance
-	 */
-	public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(new DefaultEntityEditor(entityType, connectionProvider));
-	}
-
-	/**
-	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
 	 * @param editor the editor
 	 */
-	public DefaultEntityEditModel(EntityEditor editor) {
+	public DefaultEntityEditModel(R editor) {
 		this.editor = requireNonNull(editor);
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.tasks = new DefaultPersistTasks();
@@ -108,7 +104,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public EntityEditor editor() {
+	public final R editor() {
 		return editor;
 	}
 

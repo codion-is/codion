@@ -29,13 +29,13 @@ import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
+import is.codion.framework.model.DefaultEntityModelTest.TestEntityEditModel;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Derived;
@@ -75,8 +75,8 @@ public final class DefaultEntityEditModelTest {
 					.build();
 	private static final PersistenceEvents EMPLOYEE_PERSISTENCE_EVENTS = PersistenceEvents.persistenceEvents(Employee.TYPE);
 
-	private DefaultEntityEditModel employeeEditModel;
-	private EntityEditor editor;
+	private DefaultEntityEditModel<?, ?, ?, ?> employeeEditModel;
+	private EntityEditor<?, ?, ?, ?> editor;
 
 	@BeforeEach
 	void setUp() {
@@ -596,7 +596,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void derivedAttributes() {
-		EntityEditModel editModel = new DetailEditModel(employeeEditModel.connectionProvider());
+		TestEntityEditModel editModel = new TestEntityEditModel(Detail.TYPE, employeeEditModel.connectionProvider());
 
 		AtomicInteger derivedCounter = new AtomicInteger();
 		AtomicInteger derivedEditCounter = new AtomicInteger();
@@ -622,7 +622,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void persistWritableForeignKey() {
-		EntityEditModel editModel = new DetailEditModel(employeeEditModel.connectionProvider());
+		TestEntityEditModel editModel = new TestEntityEditModel(Detail.TYPE, employeeEditModel.connectionProvider());
 		assertFalse(editModel.editor().value(Detail.MASTER_FK).persist().is());//not writable
 	}
 
@@ -836,19 +836,5 @@ public final class DefaultEntityEditModelTest {
 		assertTrue(editModel.editor().entity().get().contains(Employee.DATA));
 		editModel.editor().entity().refresh();
 		assertTrue(editModel.editor().entity().get().contains(Employee.DATA));
-	}
-
-	private static final class TestEntityEditModel extends DefaultEntityEditModel {
-
-		private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			super(entityType, connectionProvider);
-		}
-	}
-
-	private static final class DetailEditModel extends DefaultEntityEditModel {
-
-		private DetailEditModel(EntityConnectionProvider connectionProvider) {
-			super(Detail.TYPE, connectionProvider);
-		}
 	}
 }

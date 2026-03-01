@@ -27,7 +27,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing implementation of {@link is.codion.framework.model.EntityModel}
  */
-public class SwingEntityModel extends AbstractEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
+public class SwingEntityModel extends AbstractEntityModel<SwingEntityModel,
+				SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
 
 	/**
 	 * Instantiates a new SwingEntityModel with default SwingEntityEditModel and SwingEntityTableModel implementations.

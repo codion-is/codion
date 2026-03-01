@@ -42,9 +42,14 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 /**
  * Specifies a class for editing an {@link Entity} instance.
  * The underlying attribute values are available via {@link EntityEditor#value(Attribute)}.
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  * @see #editor()
  */
-public interface EntityEditModel {
+public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
 
 	/**
 	 * Specifies whether edit models publish their insert, update and delete events to {@link PersistenceEvents}
@@ -81,7 +86,7 @@ public interface EntityEditModel {
 	 * @return the {@link EntityEditor} wrapping the {@link Entity} instance being edited
 	 * @see Entity#immutable()
 	 */
-	EntityEditor editor();
+	R editor();
 
 	/**
 	 * @return the {@link PersistTasks}

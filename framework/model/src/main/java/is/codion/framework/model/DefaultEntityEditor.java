@@ -75,8 +75,13 @@ import static java.util.stream.Collectors.toSet;
 
 /**
  * A default {@link EntityEditor} implementation.
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  */
-public class DefaultEntityEditor implements EntityEditor {
+public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements EntityEditor<M, E, T, R> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditor.class);
 
@@ -103,7 +108,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	private final DefaultExists exists;
 	private final DefaultModified modified;
 	private final Value<EntityValidator> validator;
-	private final ComponentModels componentModels;
+	private final ComponentModels<M, E, T, R> componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
 	private final PersistTasks tasks = new DefaultEditorTasks();
 	private final EditorPersistence persistence;
@@ -114,18 +119,10 @@ public class DefaultEntityEditor implements EntityEditor {
 	 * Instantiates a new {@link DefaultEntityEditor}
 	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
+	 * @param componentModels the editor component models
 	 */
-	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(entityType, connectionProvider, new ComponentModels() {});
-	}
-
-	/**
-	 * Instantiates a new {@link DefaultEntityEditor}
-	 * @param entityType the entity type
-	 * @param connectionProvider the connection provider
-	 * @param componentModels the editor models
-	 */
-	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider, ComponentModels componentModels) {
+	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
+														 ComponentModels<M, E, T, R> componentModels) {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.componentModels = requireNonNull(componentModels);
@@ -266,7 +263,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	/**
 	 * @return the {@link ComponentModels} instance
 	 */
-	protected ComponentModels componentModels() {
+	protected ComponentModels<M, E, T, R> componentModels() {
 		return componentModels;
 	}
 
@@ -1056,7 +1053,12 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public EntitySearchModel create(ForeignKey foreignKey) {
-			return componentModels.searchModel(foreignKey, DefaultEntityEditor.this);
+			return componentModels.searchModel(foreignKey, self());
+		}
+
+		@SuppressWarnings("unchecked")
+		private R self() {
+			return (R) DefaultEntityEditor.this;
 		}
 	}
 

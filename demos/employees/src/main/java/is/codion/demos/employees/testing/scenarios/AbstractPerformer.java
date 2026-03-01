@@ -19,7 +19,7 @@
 package is.codion.demos.employees.testing.scenarios;
 
 import is.codion.demos.employees.model.EmployeesAppModel;
-import is.codion.framework.model.EntityTableModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.tools.loadtest.Scenario.Performer;
 
 import java.util.Random;
@@ -28,7 +28,7 @@ abstract class AbstractPerformer implements Performer<EmployeesAppModel> {
 
 	private static final Random RANDOM = new Random();
 
-	protected static void selectRandomRow(EntityTableModel<?> tableModel) {
+	protected static void selectRandomRow(SwingEntityTableModel tableModel) {
 		if (tableModel.items().included().size() > 0) {
 			tableModel.selection().index().set(RANDOM.nextInt(tableModel.items().included().size()));
 		}

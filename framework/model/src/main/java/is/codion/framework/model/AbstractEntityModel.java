@@ -42,16 +42,17 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract {@link EntityModel} implementation.
- * @param <M> the type of {@link EntityModel} used for detail models
- * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
- * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  */
-public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel,
-				T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
+public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements EntityModel<M, E, T, R> {
 
 	private final E editModel;
 	private final @Nullable T tableModel;
-	private final DetailModels<M, E, T> detailModels = new DefaultDetailModels();
+	private final DetailModels<M, E, T, R> detailModels = new DefaultDetailModels();
 
 	/**
 	 * Instantiates a new {@link AbstractEntityModel}, without a table model
@@ -127,7 +128,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	}
 
 	@Override
-	public final <B extends ForeignKeyModelLink.Builder<M, E, T, B>> ForeignKeyModelLink.Builder<M, E, T, B> link(M model) {
+	public final <B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> ForeignKeyModelLink.Builder<M, E, T, R, B> link(M model) {
 		Collection<ForeignKey> foreignKeys = requireNonNull(model).editModel()
 						.entityDefinition().foreignKeys().get(editModel.entityType());
 		if (foreignKeys.isEmpty()) {
@@ -143,7 +144,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	}
 
 	@Override
-	public final DetailModels<M, E, T> detailModels() {
+	public final DetailModels<M, E, T, R> detailModels() {
 		return detailModels;
 	}
 
@@ -187,9 +188,9 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		detailModels.get().values().forEach(link -> link.onDelete(deletedEntities));
 	}
 
-	private final class DefaultDetailModels implements DetailModels<M, E, T> {
+	private final class DefaultDetailModels implements DetailModels<M, E, T, R> {
 
-		private final Map<M, ModelLink<M, E, T>> models = new HashMap<>();
+		private final Map<M, ModelLink<M, E, T, R>> models = new HashMap<>();
 		private final ValueSet<M> active = ValueSet.valueSet();
 
 		@Override
@@ -210,7 +211,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public void add(ModelLink<M, E, T> modelLink) {
+		public void add(ModelLink<M, E, T, R> modelLink) {
 			if (AbstractEntityModel.this == requireNonNull(modelLink).model()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
@@ -231,7 +232,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public Map<M, ModelLink<M, E, T>> get() {
+		public Map<M, ModelLink<M, E, T, R>> get() {
 			return unmodifiableMap(models);
 		}
 
@@ -269,9 +270,9 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 		private final class ActiveChanged implements Consumer<Boolean> {
 
-			private final ModelLink<M, E, T> modelLink;
+			private final ModelLink<M, E, T, R> modelLink;
 
-			private ActiveChanged(ModelLink<M, E, T> modelLink) {
+			private ActiveChanged(ModelLink<M, E, T, R> modelLink) {
 				this.modelLink = modelLink;
 			}
 

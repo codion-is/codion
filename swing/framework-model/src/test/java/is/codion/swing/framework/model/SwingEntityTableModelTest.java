@@ -42,7 +42,8 @@ import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<SwingEntityEditModel, SwingEntityTableModel> {
+public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<
+				SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
 
 	@Override
 	protected SwingEntityTableModel createTestTableModel() {

@@ -44,9 +44,13 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a table model containing {@link Entity} instances.
- * @param <E> the type of {@link EntityEditModel} used by this {@link EntityTableModel}
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  */
-public interface EntityTableModel<E extends EntityEditModel> extends FilterModel<Entity> {
+public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> extends FilterModel<Entity> {
 
 	/**
 	 * Specifies the default action a table model takes when entities are inserted via its edit model.

@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -46,10 +47,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A base class for testing {@link EntityTableModel} subclasses.
- * @param <EditModel> the {@link EntityEditModel} type
- * @param <TableModel> the {@link EntityTableModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R>> the {@link EntityEditor} type
  */
-public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditModel, TableModel extends EntityTableModel<EditModel>> {
+public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, E, T, R>,
+				T extends EntityTableModel<?, E, T, R>, R extends EntityEditor<?, E, T, R>> {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -63,7 +66,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	protected final List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
 
-	protected final TableModel testModel;
+	protected final T testModel;
 
 	protected AbstractEntityTableModelTest() {
 		connectionProvider = CONNECTION_PROVIDER;
@@ -72,7 +75,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void select() {
-		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.items().refresh();
 
 		List<Entity.Key> keys = tableModel.entities().primaryKeys(Employee.TYPE, 1, 2);
@@ -99,7 +102,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void selectedEntitiesIterator() {
-		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.items().refresh();
 
 		tableModel.selection().indexes().set(asList(0, 3, 5));
@@ -111,7 +114,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void onInsert() throws EntityValidationException {
-		TableModel deptModel = createDepartmentTableModel();
+		T deptModel = createDepartmentTableModel();
 		deptModel.items().refresh();
 
 		Entities entities = deptModel.entities();
@@ -154,7 +157,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void removeDeletedEntities() {
-		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.items().refresh();
 
 		Entities entities = tableModel.entities();
@@ -203,7 +206,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void attributes() {
-		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.query().attributes().exclude().addAll(Employee.COMMISSION, Employee.DEPARTMENT_FK);
 		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
@@ -217,7 +220,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void limit() {
-		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.query().limit().set(6);
 		tableModel.items().refresh();
 		assertEquals(6, tableModel.items().included().size());
@@ -236,7 +239,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void conditionChangedListener() {
-		TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
+		T empModel = createTableModel(Employee.TYPE, connectionProvider);
 		AtomicInteger counter = new AtomicInteger();
 		Runnable conditionChangedListener = counter::incrementAndGet;
 		empModel.query().condition().modified().addListener(conditionChangedListener);
@@ -254,7 +257,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void testSearchState() {
-		TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
+		T empModel = createTableModel(Employee.TYPE, connectionProvider);
 		assertFalse(empModel.query().condition().modified().is());
 		ConditionModel<String> jobModel =
 						empModel.query().condition().get(Employee.JOB);
@@ -276,15 +279,15 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	 * @return a EntityTableModel using {@link #testEntities} with an edit model
 	 * @see Detail#TYPE
 	 */
-	protected abstract TableModel createTestTableModel();
+	protected abstract T createTestTableModel();
 
-	protected abstract TableModel createDepartmentTableModel();
+	protected abstract T createDepartmentTableModel();
 
-	protected abstract TableModel createTableModel(EntityType entityType, EntityConnectionProvider connectionProvider);
+	protected abstract T createTableModel(EntityType entityType, EntityConnectionProvider connectionProvider);
 
-	protected abstract TableModel createTableModel(EditModel editModel);
+	protected abstract T createTableModel(E editModel);
 
-	protected abstract EditModel createEditModel(EntityType entityType, EntityConnectionProvider connectionProvider);
+	protected abstract E createEditModel(EntityType entityType, EntityConnectionProvider connectionProvider);
 
 	private static List<Entity> initTestEntities(Entities entities) {
 		List<Entity> testEntities = new ArrayList<>(5);

@@ -51,8 +51,13 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Provides edit access to an underlying entity.
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  */
-public interface EntityEditor {
+public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
 
 	/**
 	 * Specifies whether foreign key values should persist by default when defaults are set
@@ -455,8 +460,13 @@ public interface EntityEditor {
 
 	/**
 	 * Provides models for editor components requiring database access.
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
+	 * @param <R> the {@link EntityEditor} type
 	 */
-	interface ComponentModels {
+	interface ComponentModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
 
 		/**
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
@@ -467,7 +477,7 @@ public interface EntityEditor {
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 		 * @see EntityDefinition.Columns#searchable()
 		 */
-		default EntitySearchModel searchModel(ForeignKey foreignKey, EntityEditor editor) {
+		default EntitySearchModel searchModel(ForeignKey foreignKey, R editor) {
 			Collection<Column<String>> searchable = requireNonNull(editor).connectionProvider().entities()
 							.definition(requireNonNull(foreignKey).referencedType())
 							.columns()

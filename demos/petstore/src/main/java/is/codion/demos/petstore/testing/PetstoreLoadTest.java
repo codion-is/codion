@@ -22,8 +22,8 @@ import is.codion.common.utilities.user.User;
 import is.codion.demos.petstore.domain.Petstore;
 import is.codion.demos.petstore.model.PetstoreAppModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario;
 import is.codion.tools.loadtest.Scenario.Performer;
@@ -79,7 +79,7 @@ public final class PetstoreLoadTest {
 							.tableModel());
 		}
 
-		private static void selectRandomRow(EntityTableModel<?> tableModel) {
+		private static void selectRandomRow(SwingEntityTableModel tableModel) {
 			if (tableModel.items().included().size() > 0) {
 				tableModel.selection().index().set(RANDOM.nextInt(tableModel.items().included().size()));
 			}

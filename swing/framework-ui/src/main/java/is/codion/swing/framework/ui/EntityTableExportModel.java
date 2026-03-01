@@ -62,7 +62,7 @@ final class EntityTableExportModel {
 	static final NullConfigurationFile NULL_CONFIGURATION_FILE = new NullConfigurationFile();
 	static final String JSON = "json";
 
-	private final EntityTableModel<?> tableModel;
+	private final EntityTableModel<?, ?, ?, ?> tableModel;
 
 	private final EntityConnectionProvider connectionProvider;
 	private final FilterComboBoxModel<ConfigurationFile> configurationFiles;
@@ -72,7 +72,7 @@ final class EntityTableExportModel {
 
 	private @Nullable Dimension dialogSize;
 
-	EntityTableExportModel(EntityTableModel<?> tableModel) {
+	EntityTableExportModel(EntityTableModel<?, ?, ?, ?> tableModel) {
 		this.tableModel = tableModel;
 		this.connectionProvider = tableModel.connectionProvider();
 		this.treeModel = new EntityTableExportTreeModel(tableModel.entityDefinition().type(), tableModel.connectionProvider().entities());

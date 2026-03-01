@@ -25,7 +25,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
@@ -34,6 +33,7 @@ import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.ui.TestDomain;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Detail.EnumType;
@@ -65,7 +65,7 @@ public final class EntityComponentsTest {
 					.build();
 
 	private final SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
-	private final EntityEditor editor = editModel.editor();
+	private final SwingEntityEditor editor = editModel.editor();
 	private final EntityComponents entityComponents = entityComponents(editModel.entityDefinition());
 
 	@Test

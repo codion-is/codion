@@ -28,7 +28,7 @@ import java.util.prefs.Preferences;
  * A Swing implementation of {@link is.codion.framework.model.EntityApplicationModel}
  */
 public class SwingEntityApplicationModel
-				extends DefaultEntityApplicationModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
+				extends DefaultEntityApplicationModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
 
 	/**
 	 * Instantiates a new {@link SwingEntityApplicationModel}

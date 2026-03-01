@@ -25,7 +25,7 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntityModelTest.TestEntityModel,
-				DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {
+				DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel, DefaultEntityModelTest.TestEntityEditor> {
 
 	@Override
 	protected TestEntityModel createDepartmentModel() {
@@ -48,18 +48,25 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		return new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
 	}
 
-	public static final class TestEntityEditModel extends DefaultEntityEditModel {
+	public static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
 
 		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			super(entityType, connectionProvider);
+			super(new TestEntityEditor(entityType, connectionProvider));
 		}
 	}
 
-	public static final class TestEntityModel extends AbstractEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {
+	public static final class TestEntityModel extends AbstractEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
 		public TestEntityModel(TestEntityEditModel editModel) {
 			super(editModel);
 		}
 	}
 
-	public interface TestEntityTableModel extends EntityTableModel<TestEntityEditModel> {}
+	public static final class TestEntityEditor extends DefaultEntityEditor<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
+
+		public TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
+			super(entityType, connectionProvider);
+		}
+	}
+
+	public interface TestEntityTableModel extends EntityTableModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {}
 }

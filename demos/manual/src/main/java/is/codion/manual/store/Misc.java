@@ -24,13 +24,13 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.model.EntityEditor;
 import is.codion.manual.store.domain.Store;
 import is.codion.manual.store.domain.Store.Customer;
 import is.codion.manual.store.model.CustomerEditModel;
 import is.codion.plugin.jasperreports.JRReport;
 import is.codion.plugin.jasperreports.JasperReports;
 import is.codion.plugin.jasperreports.JasperReportsDataSource;
+import is.codion.swing.framework.model.SwingEntityEditor;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -81,7 +81,7 @@ public final class Misc {
 
 		CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 
-		EntityEditor editor = editModel.editor();
+		SwingEntityEditor editor = editModel.editor();
 		editor.value(Customer.ID).defaultValue()
 						.set(() -> UUID.randomUUID().toString());
 

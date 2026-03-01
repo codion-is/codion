@@ -64,8 +64,8 @@ import static javax.swing.SwingUtilities.isEventDispatchThread;
 /**
  * A TableModel implementation for displaying and working with entities.
  */
-public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityEditModel>
-				implements FilterTableModel<Entity, Attribute<?>> {
+public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityModel, SwingEntityEditModel,
+				SwingEntityTableModel, SwingEntityEditor> implements FilterTableModel<Entity, Attribute<?>> {
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.

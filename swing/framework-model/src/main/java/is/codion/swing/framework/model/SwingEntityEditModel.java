@@ -27,7 +27,8 @@ import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 /**
  * A Swing implementation of {@link EntityEditModel}.
  */
-public class SwingEntityEditModel extends DefaultEntityEditModel {
+public class SwingEntityEditModel extends DefaultEntityEditModel<SwingEntityModel,
+				SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
@@ -49,10 +50,5 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 		super(new SwingEntityEditor(entityType, connectionProvider, componentModels));
 		events().persisted().addListener(() -> editor().comboBoxModels().column().values()
 						.forEach(comboBoxModel -> comboBoxModel.items().refresh()));
-	}
-
-	@Override
-	public final SwingEntityEditor editor() {
-		return (SwingEntityEditor) super.editor();
 	}
 }

@@ -27,6 +27,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.framework.model.ForeignKeyModelLink;
@@ -50,9 +51,10 @@ import static org.junit.jupiter.api.Assertions.*;
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  */
-public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
-				E extends EntityEditModel, T extends EntityTableModel<E>> {
+public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
+				E extends EntityEditModel<M, E, T, R>, T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -69,7 +71,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 			return;
 		}
 		departmentModel.tableModel().items().refresh();
-		EntityEditModel deptEditModel = departmentModel.editModel();
+		E deptEditModel = departmentModel.editModel();
 		T deptTableModel = departmentModel.tableModel();
 		Entity.Key operationsKey = deptEditModel.entities().primaryKey(Department.TYPE, 40);//operations
 		deptTableModel.select(singletonList(operationsKey));

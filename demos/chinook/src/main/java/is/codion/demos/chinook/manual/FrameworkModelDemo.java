@@ -43,6 +43,7 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.framework.model.ModelLink;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -493,7 +494,7 @@ public final class FrameworkModelDemo {
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
 
-		ModelLink<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> customLink =
+		ModelLink<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> customLink =
 						customerModel.link(invoiceModel)
 										.active(true)
 										.onSelection(selectedCustomers -> {

@@ -21,11 +21,11 @@ package is.codion.manual.store.test;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
-import is.codion.framework.model.EntityTableModel;
 import is.codion.manual.store.domain.Store;
 import is.codion.manual.store.domain.Store.Customer;
 import is.codion.manual.store.model.StoreApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario.Performer;
 
@@ -67,7 +67,7 @@ public class StoreLoadTest {
 			selectRandomRow(customerModel.tableModel());
 		}
 
-		private static void selectRandomRow(EntityTableModel<?> tableModel) {
+		private static void selectRandomRow(SwingEntityTableModel tableModel) {
 			if (tableModel.items().included().size() > 0) {
 				tableModel.selection().index().set(RANDOM.nextInt(tableModel.items().included().size()));
 			}

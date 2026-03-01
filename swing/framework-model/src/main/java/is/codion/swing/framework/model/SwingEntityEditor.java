@@ -43,12 +43,22 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing extension of {@link DefaultEntityEditor}
  */
-public final class SwingEntityEditor extends DefaultEntityEditor {
+public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityModel,
+				SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
 
 	private static final String NULL_ITEM_CAPTION = FilterComboBoxModel.NULL_CAPTION.getOrThrow();
 	private static final ProxyBuilder.ProxyMethod<Object> NULL_ITEM_TO_STRING = parameters -> NULL_ITEM_CAPTION;
 
 	private final ComboBoxModels comboBoxModels = new ComboBoxModels();
+
+	/**
+	 * Instantiates a new {@link SwingEntityEditor}
+	 * @param entityType the entity type
+	 * @param connectionProvider the connection provider
+	 */
+	public SwingEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		this(entityType, connectionProvider, new SwingComponentModels() {});
+	}
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditor}
@@ -203,7 +213,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor {
 	 * {@link EntityComboBoxModel} and column based {@link FilterComboBoxModel}.
 	 * <p>Override to customize combo box model creation.
 	 */
-	public interface SwingComponentModels extends ComponentModels {
+	public interface SwingComponentModels extends ComponentModels<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
 
 		/**
 		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key, override to

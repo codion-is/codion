@@ -33,7 +33,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.model.EntityEditor;
 import is.codion.plugin.flatlaf.intellij.themes.material.MaterialDarker;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
@@ -42,6 +41,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityApplication;
@@ -156,7 +156,7 @@ public final class NotesDemo {
 		}
 
 		private void insertDeleteOrUpdate() throws EntityValidationException {
-			EntityEditor editor = editModel().editor();
+			SwingEntityEditor editor = editModel().editor();
 			if (editor.exists().not().is() && !editor.value(Note.NOTE).isNull()) {
 				// A new note with a non-null text
 				insertCommand()

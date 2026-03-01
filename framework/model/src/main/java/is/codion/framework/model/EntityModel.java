@@ -31,11 +31,13 @@ import java.util.Map;
 
 /**
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
- * @param <M> the type of {@link EntityModel} used for detail models
- * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
- * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
+ * @param <R> the {@link EntityEditor} type
  */
-public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
 
 	/**
 	 * @return the type of the entity this entity model is based on
@@ -86,25 +88,27 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 	 * @return a {@link ForeignKeyModelLink.Builder}, based on a fitting foreign key
 	 * @throws IllegalArgumentException in case zero or multiple fitting foreign keys are found
 	 */
-	<B extends ForeignKeyModelLink.Builder<M, E, T, B>> ForeignKeyModelLink.Builder<M, E, T, B> link(M model);
+	<B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> ForeignKeyModelLink.Builder<M, E, T, R, B> link(M model);
 
 	/**
 	 * @return the detail models
 	 */
-	DetailModels<M, E, T> detailModels();
+	DetailModels<M, E, T, R> detailModels();
 
 	/**
 	 * Manages the detail models for a {@link EntityModel}
-	 * @param <M> the type of {@link EntityModel} used for detail models
-	 * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
-	 * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
+	 * @param <R> the {@link EntityEditor} type
 	 */
-	interface DetailModels<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+	interface DetailModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
 
 		/**
 		 * @return an unmodifiable view of the detail models this model contains
 		 */
-		Map<M, ModelLink<M, E, T>> get();
+		Map<M, ModelLink<M, E, T, R>> get();
 
 		/**
 		 * @return the active detail models, that is, those that should respond to master model selection events
@@ -144,7 +148,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @param modelLink the {@link ModelLink} to add
 		 * @throws IllegalArgumentException in case the model has already been added
 		 */
-		void add(ModelLink<M, E, T> modelLink);
+		void add(ModelLink<M, E, T, R> modelLink);
 
 		/**
 		 * @param detailModel the detail model
