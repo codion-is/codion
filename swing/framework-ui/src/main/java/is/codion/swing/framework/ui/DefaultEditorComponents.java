@@ -160,7 +160,6 @@ final class DefaultEditorComponents implements EditorComponents {
 							.link(value)
 							.name(value.attribute().toString())
 							.toolTipText(value.message())
-							.enabled(!attributeDefinition.derived())
 							.label(label -> label
 											.text(attributeDefinition.caption())
 											.displayedMnemonic(attributeDefinition.mnemonic()))
@@ -168,7 +167,10 @@ final class DefaultEditorComponents implements EditorComponents {
 							.valid(settings.validIndicator().is() ? value.valid() : null)
 							.modified(settings.modifiedIndicator().is() ? value.modified() : null)
 							.onBuild(this::setComponent));
-			if (componentBuilder instanceof TextFieldBuilder<?,?,?>) {
+			if (attributeDefinition.derived()) {
+				componentBuilder.enabled(false);
+			}
+			if (componentBuilder instanceof TextFieldBuilder<?, ?, ?>) {
 				((TextFieldBuilder<?, ?, ?>) componentBuilder).columns(settings.textFieldColumns().getOrThrow());
 			}
 

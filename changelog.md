@@ -35,6 +35,7 @@ Codion Change Log
 - EntityEditorPanel refactored into EditorComponents and EditorComponents.ComponentFactory, related refactoring.
 - EntityComponents.create() added, related refactoring.
 - EntityEditPanel no longer implements EntityComponents.
+- DefaultEditorComponents.DefaultEditorComponent.set() bug fixed, disables more carefully in case of derived attributes, previously interfered with initial action based text field enabled state.
 
 ## 0.18.69
 ### is.codion.common.utilities
