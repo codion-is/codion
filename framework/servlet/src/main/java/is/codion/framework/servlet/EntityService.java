@@ -241,12 +241,6 @@ public final class EntityService implements AuxiliaryServer {
 
 	@Override
 	public void start() {
-		if (serialization) {
-			addSerializationHandlers();
-		}
-		if (json) {
-			addJsonHandlers();
-		}
 		javalin.start(sslEnabled ? securePort : port);
 	}
 
@@ -265,59 +259,59 @@ public final class EntityService implements AuxiliaryServer {
 						+ ", sslEnabled: " + sslEnabled;
 	}
 
-	private void addSerializationHandlers() {
-		javalin.post(URL_SERIAL + "entities", entitiesHandler::serial);
-		javalin.post(URL_SERIAL + "close", closeHandler::serial);
-		javalin.post(URL_SERIAL + "isTransactionOpen", isTransactionOpenHandler::serial);
-		javalin.post(URL_SERIAL + "startTransaction", startTransactionHandler::serial);
-		javalin.post(URL_SERIAL + "rollbackTransaction", rollbackTransactionHandler::serial);
-		javalin.post(URL_SERIAL + "commitTransaction", commitTransactionHandler::serial);
-		javalin.post(URL_SERIAL + "isQueryCacheEnabled", isQueryCacheEnabledHandler::serial);
-		javalin.post(URL_SERIAL + "setQueryCacheEnabled", setQueryCacheEnabledHandler::serial);
-		javalin.post(URL_SERIAL + "procedure", procedureHandler::serial);
-		javalin.post(URL_SERIAL + "function", functionHandler::serial);
-		javalin.post(URL_SERIAL + "report", reportHandler::serial);
-		javalin.post(URL_SERIAL + "dependencies", dependenciesHandler::serial);
-		javalin.post(URL_SERIAL + "count", countHandler::serial);
-		javalin.post(URL_SERIAL + "values", valuesHandler::serial);
-		javalin.post(URL_SERIAL + "selectByKey", selectByKeyHandler::serial);
-		javalin.post(URL_SERIAL + "select", selectHandler::serial);
-		javalin.post(URL_SERIAL + "insert", insertHandler::serial);
-		javalin.post(URL_SERIAL + "insertSelect", insertSelectHandler::serial);
-		javalin.post(URL_SERIAL + "update", updateHandler::serial);
-		javalin.post(URL_SERIAL + "updateSelect", updateSelectHandler::serial);
-		javalin.post(URL_SERIAL + "updateByCondition", updateByConditionHandler::serial);
-		javalin.post(URL_SERIAL + "delete", deleteHandler::serial);
-		javalin.post(URL_SERIAL + "deleteByKey", deleteByKeyHandler::serial);
+	private void addSerializationHandlers(JavalinConfig config) {
+		config.routes.post(URL_SERIAL + "entities", entitiesHandler::serial);
+		config.routes.post(URL_SERIAL + "close", closeHandler::serial);
+		config.routes.post(URL_SERIAL + "isTransactionOpen", isTransactionOpenHandler::serial);
+		config.routes.post(URL_SERIAL + "startTransaction", startTransactionHandler::serial);
+		config.routes.post(URL_SERIAL + "rollbackTransaction", rollbackTransactionHandler::serial);
+		config.routes.post(URL_SERIAL + "commitTransaction", commitTransactionHandler::serial);
+		config.routes.post(URL_SERIAL + "isQueryCacheEnabled", isQueryCacheEnabledHandler::serial);
+		config.routes.post(URL_SERIAL + "setQueryCacheEnabled", setQueryCacheEnabledHandler::serial);
+		config.routes.post(URL_SERIAL + "procedure", procedureHandler::serial);
+		config.routes.post(URL_SERIAL + "function", functionHandler::serial);
+		config.routes.post(URL_SERIAL + "report", reportHandler::serial);
+		config.routes.post(URL_SERIAL + "dependencies", dependenciesHandler::serial);
+		config.routes.post(URL_SERIAL + "count", countHandler::serial);
+		config.routes.post(URL_SERIAL + "values", valuesHandler::serial);
+		config.routes.post(URL_SERIAL + "selectByKey", selectByKeyHandler::serial);
+		config.routes.post(URL_SERIAL + "select", selectHandler::serial);
+		config.routes.post(URL_SERIAL + "insert", insertHandler::serial);
+		config.routes.post(URL_SERIAL + "insertSelect", insertSelectHandler::serial);
+		config.routes.post(URL_SERIAL + "update", updateHandler::serial);
+		config.routes.post(URL_SERIAL + "updateSelect", updateSelectHandler::serial);
+		config.routes.post(URL_SERIAL + "updateByCondition", updateByConditionHandler::serial);
+		config.routes.post(URL_SERIAL + "delete", deleteHandler::serial);
+		config.routes.post(URL_SERIAL + "deleteByKey", deleteByKeyHandler::serial);
 	}
 
-	private void addJsonHandlers() {
+	private void addJsonHandlers(JavalinConfig config) {
 		// Note: Some methods (for example those without parameters and return values)
 		// use the java serialization handler, so these are not just some glaring
 		// mistakes below, where a ::serial call is associated with the json url
-		javalin.post(URL_JSON + "entities", entitiesHandler::serial);
-		javalin.post(URL_JSON + "close", closeHandler::serial);
-		javalin.post(URL_JSON + "isTransactionOpen", isTransactionOpenHandler::json);
-		javalin.post(URL_JSON + "startTransaction", startTransactionHandler::serial);
-		javalin.post(URL_JSON + "rollbackTransaction", rollbackTransactionHandler::serial);
-		javalin.post(URL_JSON + "commitTransaction", commitTransactionHandler::serial);
-		javalin.post(URL_JSON + "isQueryCacheEnabled", isQueryCacheEnabledHandler::json);
-		javalin.post(URL_JSON + "setQueryCacheEnabled", setQueryCacheEnabledHandler::json);
-		javalin.post(URL_JSON + "procedure", procedureHandler::json);
-		javalin.post(URL_JSON + "function", functionHandler::json);
-		javalin.post(URL_JSON + "report", reportHandler::json);
-		javalin.post(URL_JSON + "dependencies", dependenciesHandler::json);
-		javalin.post(URL_JSON + "count", countHandler::json);
-		javalin.post(URL_JSON + "values", valuesHandler::json);
-		javalin.post(URL_JSON + "selectByKey", selectByKeyHandler::json);
-		javalin.post(URL_JSON + "select", selectHandler::json);
-		javalin.post(URL_JSON + "insert", insertHandler::json);
-		javalin.post(URL_JSON + "insertSelect", insertSelectHandler::json);
-		javalin.post(URL_JSON + "update", updateHandler::json);
-		javalin.post(URL_JSON + "updateSelect", updateSelectHandler::json);
-		javalin.post(URL_JSON + "updateByCondition", updateByConditionHandler::json);
-		javalin.post(URL_JSON + "delete", deleteHandler::json);
-		javalin.post(URL_JSON + "deleteByKey", deleteByKeyHandler::json);
+		config.routes.post(URL_JSON + "entities", entitiesHandler::serial);
+		config.routes.post(URL_JSON + "close", closeHandler::serial);
+		config.routes.post(URL_JSON + "isTransactionOpen", isTransactionOpenHandler::json);
+		config.routes.post(URL_JSON + "startTransaction", startTransactionHandler::serial);
+		config.routes.post(URL_JSON + "rollbackTransaction", rollbackTransactionHandler::serial);
+		config.routes.post(URL_JSON + "commitTransaction", commitTransactionHandler::serial);
+		config.routes.post(URL_JSON + "isQueryCacheEnabled", isQueryCacheEnabledHandler::json);
+		config.routes.post(URL_JSON + "setQueryCacheEnabled", setQueryCacheEnabledHandler::json);
+		config.routes.post(URL_JSON + "procedure", procedureHandler::json);
+		config.routes.post(URL_JSON + "function", functionHandler::json);
+		config.routes.post(URL_JSON + "report", reportHandler::json);
+		config.routes.post(URL_JSON + "dependencies", dependenciesHandler::json);
+		config.routes.post(URL_JSON + "count", countHandler::json);
+		config.routes.post(URL_JSON + "values", valuesHandler::json);
+		config.routes.post(URL_JSON + "selectByKey", selectByKeyHandler::json);
+		config.routes.post(URL_JSON + "select", selectHandler::json);
+		config.routes.post(URL_JSON + "insert", insertHandler::json);
+		config.routes.post(URL_JSON + "insertSelect", insertSelectHandler::json);
+		config.routes.post(URL_JSON + "update", updateHandler::json);
+		config.routes.post(URL_JSON + "updateSelect", updateSelectHandler::json);
+		config.routes.post(URL_JSON + "updateByCondition", updateByConditionHandler::json);
+		config.routes.post(URL_JSON + "delete", deleteHandler::json);
+		config.routes.post(URL_JSON + "deleteByKey", deleteByKeyHandler::json);
 	}
 
 	private final class EntitiesHandler {
@@ -993,9 +987,15 @@ public final class EntityService implements AuxiliaryServer {
 
 		@Override
 		public void accept(JavalinConfig config) {
-			config.useVirtualThreads = useVirtualThreads;
+			config.concurrency.useVirtualThreads = useVirtualThreads;
 			if (sslEnabled) {
 				config.registerPlugin(new SslPlugin(new SslPLuginConfigurer()));
+			}
+			if (serialization) {
+				addSerializationHandlers(config);
+			}
+			if (json) {
+				addJsonHandlers(config);
 			}
 		}
 	}

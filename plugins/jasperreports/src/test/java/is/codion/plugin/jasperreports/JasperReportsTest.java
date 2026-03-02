@@ -32,11 +32,12 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,11 +113,9 @@ public class JasperReportsTest {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set("http://localhost:1234");
 		Server server = new Server(1234);
-		HandlerList handlers = new HandlerList();
-		ResourceHandler fileHandler = new ResourceHandler();
-		fileHandler.setResourceBase(REPORT_PATH);
-		handlers.addHandler(fileHandler);
-		server.setHandler(handlers);
+		ResourceHandler resourceHandler = new ResourceHandler();
+		resourceHandler.setBaseResource(ResourceFactory.of(resourceHandler).newResource(Path.of(REPORT_PATH)));
+		server.setHandler(resourceHandler);
 		try {
 			server.start();
 			Map<String, Object> reportParameters = new HashMap<>();
