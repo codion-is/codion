@@ -6,6 +6,7 @@ Codion Change Log
 - Value.Builder.changeConsumer() and weakChangeConsumer() wildcard removed from type parameter, was unusable.
 ### is.codion.swing.common.ui
 - DefaultFilterTableCellEditor.DefaultCellEditable now prevents editing from starting on key event if modifiers are enabled.
+- TransferFocusOnEnter, modifier added for JTable.
 ### is.codion.framework.domain
 - EntityDefinition.ForeignKeys.nullable() added.
 - ValidationException now checked.

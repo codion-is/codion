@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.key;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
 
@@ -36,7 +37,7 @@ public enum TransferFocusOnEnter {
 
 	/**
 	 * <p>Transfer the focus forward when Enter is pressed.
-	 * <p>Note that in case of {@link JTextArea} the {@link KeyEvents#MENU_SHORTCUT_MASK} modifier is added.
+	 * <p>Note that in case of {@link JTextArea} and {@link JTable} the {@link KeyEvents#MENU_SHORTCUT_MASK} modifier is added.
 	 */
 	FORWARD {
 		@Override
@@ -61,7 +62,7 @@ public enum TransferFocusOnEnter {
 	/**
 	 * <p>Transfer the focus forward when Enter is pressed and backward when Enter
 	 * is pressed with the {@link java.awt.event.InputEvent#SHIFT_DOWN_MASK} modifier enabled.
-	 * <p>Note that in case of {@link JTextArea} the {@link KeyEvents#MENU_SHORTCUT_MASK}
+	 * <p>Note that in case of {@link JTextArea} and {@link JTable} the {@link KeyEvents#MENU_SHORTCUT_MASK}
 	 * modifier is added for the forward trigger.
 	 */
 	FORWARD_BACKWARD {
@@ -90,8 +91,12 @@ public enum TransferFocusOnEnter {
 	private static <T extends JComponent> KeyEvents.Builder forward(T component) {
 		return KeyEvents.builder()
 						.keyCode(VK_ENTER)
-						.modifiers(component instanceof JTextArea ? MENU_SHORTCUT_MASK : 0)
+						.modifiers(requiresModifier(component) ? MENU_SHORTCUT_MASK : 0)
 						.action(TRANSFER_FOCUS_FORWARD);
+	}
+
+	private static boolean requiresModifier(JComponent component) {
+		return component instanceof JTextArea || component instanceof JTable;
 	}
 
 	private static final class TransferFocusAction extends AbstractAction {
