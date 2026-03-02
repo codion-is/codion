@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.model.EntityEditor.ComponentModels;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -55,7 +56,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		}
 	}
 
-	public static final class TestEntityModel extends AbstractEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
+	public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
 		public TestEntityModel(TestEntityEditModel editModel) {
 			super(editModel);
 		}
@@ -64,9 +65,11 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 	public static final class TestEntityEditor extends DefaultEntityEditor<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
 
 		public TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			super(entityType, connectionProvider);
+			super(entityType, connectionProvider, new TestComponentModels() {});
 		}
 	}
+
+	public interface TestComponentModels extends ComponentModels<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {}
 
 	public interface TestEntityTableModel extends EntityTableModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {}
 }

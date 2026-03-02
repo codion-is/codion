@@ -41,13 +41,13 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract {@link EntityModel} implementation.
+ * A default {@link EntityModel} implementation.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
  * @param <R> the {@link EntityEditor} type
  */
-public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
 				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements EntityModel<M, E, T, R> {
 
 	private final E editModel;
@@ -55,20 +55,20 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 	private final DetailModels<M, E, T, R> detailModels = new DefaultDetailModels();
 
 	/**
-	 * Instantiates a new {@link AbstractEntityModel}, without a table model
+	 * Instantiates a new {@link DefaultEntityModel}, without a table model
 	 * @param editModel the edit model
 	 */
-	protected AbstractEntityModel(E editModel) {
+	public DefaultEntityModel(E editModel) {
 		this.editModel = requireNonNull(editModel);
 		this.tableModel = null;
 		bindEventsInternal();
 	}
 
 	/**
-	 * Instantiates a new {@link AbstractEntityModel}
+	 * Instantiates a new {@link DefaultEntityModel}
 	 * @param tableModel the table model
 	 */
-	protected AbstractEntityModel(T tableModel) {
+	public DefaultEntityModel(T tableModel) {
 		this.editModel = requireNonNull(tableModel).editModel();
 		this.tableModel = tableModel;
 		bindEventsInternal();
@@ -212,7 +212,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 
 		@Override
 		public void add(ModelLink<M, E, T, R> modelLink) {
-			if (AbstractEntityModel.this == requireNonNull(modelLink).model()) {
+			if (DefaultEntityModel.this == requireNonNull(modelLink).model()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
 			if (models.containsKey(modelLink.model())) {
@@ -256,7 +256,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 			return (C) models.keySet().stream()
 							.filter(detailModel -> detailModel.getClass().equals(modelClass))
 							.findFirst()
-							.orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + AbstractEntityModel.this));
+							.orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + DefaultEntityModel.this));
 		}
 
 		@Override
@@ -265,7 +265,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 			return models.keySet().stream()
 							.filter(detailModel -> detailModel.entityType().equals(entityType))
 							.findFirst()
-							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + AbstractEntityModel.this));
+							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + DefaultEntityModel.this));
 		}
 
 		private final class ActiveChanged implements Consumer<Boolean> {

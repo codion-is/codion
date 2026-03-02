@@ -24,6 +24,7 @@ Codion Change Log
 - PersistTask moved from EntityEditModel to EntityEditor, EntityEditor now handles creating async persist tasks.
 - EntityPersistence moved from EntityEditModel to EntityEditor.
 - EntityModel, R type parameter for EntityEditor added.
+- AbstractEntityModel no longer abstract, renamed DefaultEntityModel.
 ### is.codion.swing.framework.model
 - SwingEntityEditor.SwingComponentModels.createComboBoxModel() editor parameter replaced with connection provider.
 - SwingEntityEditor.SwingComponentModels now with default implementations.
