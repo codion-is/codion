@@ -277,8 +277,12 @@ public final class ChinookImpl extends DomainModel {
 
 	EntityDefinition preferences() {
 		return Preferences.TYPE.as(
+										Preferences.ID.as()
+														.primaryKey()
+														.generator(identity()),
 										Preferences.CUSTOMER_ID.as()
-														.primaryKey(),
+														.column()
+														.nullable(false),
 										Preferences.CUSTOMER_FK.as()
 														.foreignKey(),
 										Preferences.PREFERRED_GENRE_ID.as()

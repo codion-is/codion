@@ -141,6 +141,7 @@ public interface Chinook {
 	interface Preferences {
 		EntityType TYPE = DOMAIN.entityType("chinook.preferences", Preferences.class);
 
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
 		Column<Long> PREFERRED_GENRE_ID = TYPE.longColumn("preferred_genre_id");
 		Column<Boolean> NEWSLETTER = TYPE.booleanColumn("newsletter");
