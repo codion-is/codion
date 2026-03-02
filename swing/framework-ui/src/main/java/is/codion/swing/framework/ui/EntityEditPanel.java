@@ -68,12 +68,10 @@ import javax.swing.KeyStroke;
 import javax.swing.LayoutFocusTraversalPolicy;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -81,7 +79,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -97,6 +94,7 @@ import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
@@ -120,11 +118,6 @@ public abstract class EntityEditPanel extends JPanel {
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
-
-	static {
-		KeyboardFocusManager.getCurrentKeyboardFocusManager()
-						.addPropertyChangeListener("focusOwner", new FocusedInputComponentListener());
-	}
 
 	/**
 	 * The controls available for {@link EntityEditPanel}s.
@@ -170,9 +163,10 @@ public abstract class EntityEditPanel extends JPanel {
 		private ControlKeys() {}
 	}
 
+	private static @Nullable JComponent lastFocusedComponent;
+
 	static {
-		KeyboardFocusManager.getCurrentKeyboardFocusManager()
-						.addPropertyChangeListener("focusOwner", new FocusActivationListener());
+		getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new EditFocusListener());
 	}
 
 	private static final String ALT_PREFIX = " (ALT-";
@@ -552,7 +546,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * @param exception the exception to display
 	 */
 	protected final void displayException(Exception exception) {
-		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+		Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
 		if (focusOwner == null) {
 			focusOwner = EntityEditPanel.this;
 		}
@@ -820,14 +814,6 @@ public abstract class EntityEditPanel extends JPanel {
 						.collect(Collectors.joining(", ", "", "\n\n" + FrameworkMessages.modifiedWarning()));
 	}
 
-	private boolean isInputComponent(JComponent component) {
-		return components.components().values().stream()
-						.map(EditorComponent::optional)
-						.filter(Optional::isPresent)
-						.map(Optional::get)
-						.anyMatch(comp -> sameOrParentOf(comp, component));
-	}
-
 	private DefaultEditorComponents createEditorComponents(SwingEntityEditor editor) {
 		DefaultEditorComponents editorComponents = new DefaultEditorComponents(editor);
 		editorComponents.settings().validIndicator().set(configuration.validIndicator);
@@ -837,16 +823,6 @@ public abstract class EntityEditPanel extends JPanel {
 		editorComponents.editor().entity().changing().addConsumer(this::onEntityChanging);
 
 		return editorComponents;
-	}
-
-	private static boolean sameOrParentOf(JComponent parent, @Nullable JComponent component) {
-		if (parent == component) {
-			return true;
-		}
-
-		return Arrays.stream(parent.getComponents()).anyMatch(childComponent ->
-						childComponent instanceof JComponent &&
-										sameOrParentOf((JComponent) childComponent, component));
 	}
 
 	private static int compareFocusOrder(Map.Entry<Attribute<?>, EditorComponent<?>> entry1, Map.Entry<Attribute<?>, EditorComponent<?>> entry2) {
@@ -1608,15 +1584,13 @@ public abstract class EntityEditPanel extends JPanel {
 		 */
 		public final class AfterUpdate {
 
-			private @Nullable JComponent focusedInputComponent;
-
 			private AfterUpdate() {}
 
 			/**
 			 * Request focus after an update operation
 			 */
 			public void request() {
-				requestFocus(focusedInputComponent == null ? initial.get() : focusedInputComponent);
+				requestFocus(lastFocusedComponent == null ? initial.get() : lastFocusedComponent);
 			}
 		}
 	}
@@ -1866,28 +1840,13 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 	}
 
-	private static final class FocusedInputComponentListener implements PropertyChangeListener {
-
-		@Override
-		public void propertyChange(PropertyChangeEvent event) {
-			Component focusedComponent = (Component) event.getNewValue();
-			if (focusedComponent instanceof JComponent) {
-				JComponent component = (JComponent) focusedComponent;
-				Ancestor.ofType(EntityEditPanel.class).of(component).optional().ifPresent(parent -> {
-					if (parent.isInputComponent(component)) {
-						parent.inputFocus.afterUpdate.focusedInputComponent = component;
-					}
-				});
-			}
-		}
-	}
-
-	private static final class FocusActivationListener implements PropertyChangeListener {
+	private static final class EditFocusListener implements PropertyChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent changeEvent) {
 			Component focusedComponent = (Component) changeEvent.getNewValue();
-			if (focusedComponent != null) {
+			if (focusedComponent instanceof JComponent) {
+				lastFocusedComponent = (JComponent) focusedComponent;
 				EntityEditPanel editPanel = null;
 				EntityPanel entityPanel = entityPanel(focusedComponent);
 				if (entityPanel != null) {
