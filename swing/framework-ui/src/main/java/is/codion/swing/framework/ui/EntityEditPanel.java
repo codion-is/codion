@@ -22,6 +22,7 @@ import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
@@ -70,6 +71,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.ref.WeakReference;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -118,6 +120,7 @@ public abstract class EntityEditPanel extends JPanel {
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
+	private static final String FOCUS_OWNER = "focusOwner";
 
 	/**
 	 * The controls available for {@link EntityEditPanel}s.
@@ -166,7 +169,7 @@ public abstract class EntityEditPanel extends JPanel {
 	private static @Nullable JComponent lastFocusedComponent;
 
 	static {
-		getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new EditFocusListener());
+		getCurrentKeyboardFocusManager().addPropertyChangeListener(FOCUS_OWNER, new EditFocusListener());
 	}
 
 	private static final String ALT_PREFIX = " (ALT-";
@@ -182,6 +185,7 @@ public abstract class EntityEditPanel extends JPanel {
 	private final DefaultEditorComponents components;
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
+	private final FocusedListener focusedListener = new FocusedListener(this);
 	private final Controls.Layout controlsLayout;
 	private final InputFocus inputFocus;
 	private final State active;
@@ -625,6 +629,10 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 
 		return controlsLayout.create(configuration.controlMap);
+	}
+
+	ObservableState focused() {
+		return focusedListener.focused.observable();
 	}
 
 	private void createControls() {
@@ -1840,13 +1848,37 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 	}
 
+	private static class FocusedListener implements PropertyChangeListener {
+
+		private final State focused = State.state();
+		private final WeakReference<EntityEditPanel> reference;
+
+		private FocusedListener(EntityEditPanel editPanel) {
+			this.reference = new WeakReference<>(editPanel);
+			getCurrentKeyboardFocusManager().addPropertyChangeListener(FOCUS_OWNER, this);
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent changeEvent) {
+			EntityEditPanel editPanel = reference.get();
+			if (editPanel == null) {
+				getCurrentKeyboardFocusManager().removePropertyChangeListener(FOCUS_OWNER, this);
+				return;
+			}
+			Component focusedComponent = (Component) changeEvent.getNewValue();
+			if (focusedComponent instanceof JComponent) {
+				focused.set(Ancestor.ofType(EntityEditPanel.class).of(focusedComponent).get() == editPanel);
+			}
+		}
+	}
+
 	private static final class EditFocusListener implements PropertyChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent changeEvent) {
 			Component focusedComponent = (Component) changeEvent.getNewValue();
 			if (focusedComponent instanceof JComponent) {
-				lastFocusedComponent = (JComponent) focusedComponent;
+				setLastFocusedComponent((JComponent) focusedComponent);
 				EntityEditPanel editPanel = null;
 				EntityPanel entityPanel = entityPanel(focusedComponent);
 				if (entityPanel != null) {
@@ -1861,6 +1893,10 @@ public abstract class EntityEditPanel extends JPanel {
 					editPanel.active.set(true);
 				}
 			}
+		}
+
+		private static synchronized void setLastFocusedComponent(@Nullable JComponent focusedComponent) {
+			lastFocusedComponent = focusedComponent;
 		}
 
 		private static @Nullable EntityPanel entityPanel(Component focusedComponent) {

@@ -113,6 +113,8 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.Format;
@@ -463,6 +465,7 @@ public class EntityTablePanel extends JPanel {
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
+	private final State tableFocused = State.state();
 
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
@@ -1345,7 +1348,10 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createRequestTableFocusControl() {
-		return command(table::requestFocus);
+		return Control.builder()
+						.command(table::requestFocus)
+						.enabled(tableFocused.not())
+						.build();
 	}
 
 	private CommandControl createRequestSearchFieldFocusControl() {
@@ -1643,7 +1649,9 @@ public class EntityTablePanel extends JPanel {
 			controlMap.control(SINGLE_SELECTION).set(table.createSingleSelectionControl());
 		}
 		controlMap.control(REQUEST_TABLE_FOCUS).set(createRequestTableFocusControl());
-		controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
+		if (configuration.includeSearchField) {
+			controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
+		}
 	}
 
 	private void setupStandardControls() {
@@ -2762,6 +2770,7 @@ public class EntityTablePanel extends JPanel {
 
 		private FilterTable<Entity, Attribute<?>> buildTable() {
 			FilterTable<Entity, Attribute<?>> filterTable = tableBuilder.build();
+			filterTable.addFocusListener(new TableFocusedListener(tablePanel));
 			configureConditionIndicator(filterTable);
 			tableBuilder = null;
 
@@ -3310,6 +3319,25 @@ public class EntityTablePanel extends JPanel {
 		private void synchronize() {
 			linkedModel.setRangeProperties(mainModel.getValue(), mainModel.getExtent(),
 							mainModel.getMinimum(), mainModel.getMaximum(), mainModel.getValueIsAdjusting());
+		}
+	}
+
+	private static class TableFocusedListener implements FocusListener {
+
+		private final EntityTablePanel tablePanel;
+
+		private TableFocusedListener(EntityTablePanel tablePanel) {
+			this.tablePanel = tablePanel;
+		}
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			tablePanel.tableFocused.set(true);
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			tablePanel.tableFocused.set(false);
 		}
 	}
 }

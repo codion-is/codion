@@ -38,6 +38,9 @@ Codion Change Log
 - EntityEditPanel no longer implements EntityComponents.
 - DefaultEditorComponents.DefaultEditorComponent.set() bug fixed, disables more carefully in case of derived attributes, previously interfered with initial action based text field enabled state.
 - EntityEditPanel now returns the focus to the last focused component after update, not last focused input component.
+- EntityEditPanel.focused() added.
+- EntityTablePanel requestTableFocusControl no longer enabled when table is focused.
+- EntityPanel requestEditPanelFocusControl no longer enabled when edit panel is focused.
 
 ## 0.18.69
 ### is.codion.common.utilities

@@ -839,7 +839,10 @@ public class EntityPanel extends JPanel {
 	 * @return a Control instance for requesting edit panel focus
 	 */
 	private CommandControl createRequestEditPanelFocusControl() {
-		return command(this::requestEditPanelFocus);
+		return Control.builder()
+						.command(this::requestEditPanelFocus)
+						.enabled(editPanel.focused().not())
+						.build();
 	}
 
 	/**
@@ -1126,8 +1129,10 @@ public class EntityPanel extends JPanel {
 		};
 		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
-		controlMap.control(REQUEST_EDIT_PANEL_FOCUS).set(createRequestEditPanelFocusControl());
-		controlMap.control(TOGGLE_EDIT_PANEL).set(createToggleEditPanelControl());
+		if (containsEditPanel()) {
+			controlMap.control(REQUEST_EDIT_PANEL_FOCUS).set(createRequestEditPanelFocusControl());
+			controlMap.control(TOGGLE_EDIT_PANEL).set(createToggleEditPanelControl());
+		}
 		controlMap.control(NAVIGATE_UP).set(command(new Navigate(UP)));
 		controlMap.control(NAVIGATE_DOWN).set(command(new Navigate(DOWN)));
 		controlMap.control(NAVIGATE_LEFT).set(command(new Navigate(LEFT)));
