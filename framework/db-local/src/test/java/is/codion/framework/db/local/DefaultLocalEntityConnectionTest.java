@@ -1729,7 +1729,7 @@ public class DefaultLocalEntityConnectionTest {
 			assertFalse(connection1.select(Department.DEPTNO.equalTo(-42)).isEmpty());
 			connection2.commitTransaction();
 			assertTrue(connection1.select(Department.DEPTNO.equalTo(-42)).isEmpty());
-			assertThrows(IllegalStateException.class, () -> transaction(connection, () -> transaction(connection, () -> {})));
+			transaction(connection, () -> transaction(connection, () -> {}));
 		}
 	}
 

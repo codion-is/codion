@@ -641,7 +641,10 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
-	 * Note that nesting transactions will cause an {@link IllegalStateException} to be thrown, causing the outer transaction to be rolled back.
+	 * <p>
+	 * If a transaction is already open on the connection, the code is executed within the existing transaction
+	 * without starting a new one. The outermost caller controls the transaction boundary (commit/rollback).
+	 * This allows nested calls without requiring explicit transaction state checks.
 	 * {@snippet :
 	 * EntityConnection connection = connection();
 	 * transaction(connection, () -> {
@@ -668,7 +671,10 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Executes the given {@link TransactionalResult} instance within a transaction on the given connection, committing on success and rolling back on exception.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
-	 * Note that nesting transactions will cause an {@link IllegalStateException} to be thrown, causing the outer transaction to be rolled back.
+	 * <p>
+	 * If a transaction is already open on the connection, the code is executed within the existing transaction
+	 * without starting a new one. The outermost caller controls the transaction boundary (commit/rollback).
+	 * This allows nested calls without requiring explicit transaction state checks.
 	 * {@snippet :
 	 * EntityConnection connection = connection();
 	 * Entity randomPlaylist = transaction(connection, () ->
@@ -684,6 +690,17 @@ public interface EntityConnection extends AutoCloseable {
 	static <T> @Nullable T transaction(EntityConnection connection, TransactionalResult<T> transactional) {
 		requireNonNull(connection);
 		requireNonNull(transactional);
+		if (connection.transactionOpen()) {
+			try {
+				return transactional.execute();
+			}
+			catch (Error | RuntimeException e) {
+				throw e;
+			}
+			catch (Throwable e) {
+				throw new RuntimeException(e);
+			}
+		}
 		connection.startTransaction();
 		try {
 			T result = transactional.execute();
@@ -691,15 +708,12 @@ public interface EntityConnection extends AutoCloseable {
 
 			return result;
 		}
+		catch (Error | RuntimeException e) {
+			connection.rollbackTransaction();
+			throw e;
+		}
 		catch (Throwable e) {
 			connection.rollbackTransaction();
-			if (e instanceof RuntimeException) {
-				throw (RuntimeException) e;
-			}
-			if (e instanceof Error) {
-				throw (Error) e;
-			}
-
 			throw new RuntimeException(e);
 		}
 	}

@@ -321,7 +321,7 @@ Most use cases are covered by:
 
 These methods perform a commit on success and rollback on failure.
 
-NOTE: Nested transactions are not supported and will cause an IllegalStateException to be thrown, causing the outer transaction to be rolled back.
+NOTE: If a transaction is already open on the connection, the code is executed within the existing transaction without starting a new one. The outermost caller controls the transaction boundary.
 
 ==== Transaction without a result
 

@@ -379,7 +379,7 @@ public class RemoteEntityConnectionTest {
 		});
 		Collection<Entity> departments = transaction(connection, () -> connection.select(Condition.all(Department.TYPE)));
 		assertFalse(departments.isEmpty());
-		assertThrows(IllegalStateException.class, () -> transaction(connection, () -> transaction(connection, () -> {})));
+		transaction(connection, () -> transaction(connection, () -> {}));
 	}
 
 	@Test

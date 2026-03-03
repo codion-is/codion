@@ -12,6 +12,8 @@ Codion Change Log
 - ValidationException now checked.
 - ValidationException split into AttributeValidationException and EntityValidationException.
 - NullValueException and InvalidItemException added.
+### is.codion.framework.db.core
+- EntityConnection.transaction() now supports nested transactions, with the outermost call controlling the transaction boundary.
 ### is.codion.framework.model
 - EntityEditor.Modified.predicate() replaced with ObservableState based additional().
 - DefaultEntityEditModel, no longer clears generated key columns on insert, minor refactoring.
