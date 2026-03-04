@@ -46,6 +46,7 @@ Codion Change Log
 - TabbedDetailLayout.TabbedDetailController.display() bug fixed, now selects parent panel tabs instead of requesting display, which expanded collapsed parent panels.
 - EntityEditPanel.InputFocus.AfterUpdate removed, requestFocus() calls replaced with requestFocusInWindow(), toFront() used.
 - EntityPanel now triggers display request when activated.
+- EditorComponents.editorComponents() factory method added.
 
 ## 0.18.69
 ### is.codion.common.utilities

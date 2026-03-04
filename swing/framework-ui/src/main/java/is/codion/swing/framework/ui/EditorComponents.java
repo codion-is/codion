@@ -103,6 +103,14 @@ public interface EditorComponents {
 	<T> EditorComponent<T> component(Attribute<T> attribute);
 
 	/**
+	 * @param editor the editor
+	 * @return a new {@link EditorComponents} instance
+	 */
+	static EditorComponents editorComponents(SwingEntityEditor editor) {
+		return new DefaultEditorComponents(requireNonNull(editor));
+	}
+
+	/**
 	 * Manages settings that are applied to a component builder when set.
 	 * @see EditorComponent#set(ComponentValueBuilder)
 	 */
