@@ -43,6 +43,7 @@ Codion Change Log
 - EntityEditPanel.focused() added.
 - EntityTablePanel requestTableFocusControl no longer enabled when table is focused.
 - EntityPanel requestEditPanelFocusControl no longer enabled when edit panel is focused.
+- TabbedDetailLayout.TabbedDetailController.display() bug fixed, now selects parent panel tabs instead of requesting display, which expanded collapsed parent panels.
 
 ## 0.18.69
 ### is.codion.common.utilities

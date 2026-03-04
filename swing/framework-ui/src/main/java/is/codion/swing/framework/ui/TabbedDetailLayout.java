@@ -494,11 +494,11 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		@Override
 		public void display(EntityPanel detailPanel) {
-			requireNonNull(detailPanel);
-			// Ensure the parent panel is displayed
-			entityPanel.display().request();
+			selectParentTabs(requireNonNull(detailPanel));
 			tabbedPane.setFocusable(true);
-			tabbedPane.setSelectedComponent(detailPanel);
+			if (tabbedPane.getSelectedComponent() != detailPanel) {
+				tabbedPane.setSelectedComponent(detailPanel);
+			}
 			tabbedPane.setFocusable(false);
 			showDetailPanel();
 		}
@@ -643,6 +643,19 @@ public final class TabbedDetailLayout implements DetailLayout {
 							.center(component)
 							.border(createEmptyBorder(gap, gap, 0, gap))
 							.build();
+		}
+
+		private static void selectParentTabs(EntityPanel detailPanel) {
+			EntityPanel parent = detailPanel.parentPanel().orElse(null);
+			while (parent != null) {
+				JTabbedPane parentPane = Ancestor.ofType(JTabbedPane.class).of(parent).get();
+				if (parentPane != null && parentPane.indexOfTabComponent(parent) >= 0) {
+					if (parentPane.getSelectedComponent() != parent) {
+						parentPane.setSelectedComponent(parent);
+					}
+				}
+				parent = parent.parentPanel().orElse(null);
+			}
 		}
 	}
 
