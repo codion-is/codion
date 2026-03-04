@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.71
+
 ## 0.18.70
 ### is.codion.common.reactive
 - Value.Builder.changeConsumer() and weakChangeConsumer() wildcard removed from type parameter, was unusable.
