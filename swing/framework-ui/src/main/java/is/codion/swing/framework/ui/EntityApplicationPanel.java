@@ -93,7 +93,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -960,9 +959,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private void configureEntityPanel(EntityPanel entityPanel) {
 		entityPanel.linkSiblings(entityPanels);
 		entityPanel.display().requested().addConsumer(applicationLayout::display);
-		if (entityPanel.containsEditPanel()) {
-			entityPanel.editPanel().active().addConsumer(new DisplayActivatedPanel(entityPanel));
-		}
 	}
 
 	private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
@@ -1238,22 +1234,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	void setSaveDefaultUsername(boolean saveDefaultUsername) {
 		this.saveDefaultUsername = saveDefaultUsername;
-	}
-
-	private final class DisplayActivatedPanel implements Consumer<Boolean> {
-
-		private final EntityPanel entityPanel;
-
-		private DisplayActivatedPanel(EntityPanel entityPanel) {
-			this.entityPanel = entityPanel;
-		}
-
-		@Override
-		public void accept(Boolean active) {
-			if (active) {
-				applicationLayout.display(entityPanel);
-			}
-		}
 	}
 
 	private static final class LookupPanelBuilderComparator implements Comparator<EntityPanel.Builder> {

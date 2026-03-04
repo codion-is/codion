@@ -137,6 +137,16 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	@Override
+	public boolean requestFocusInWindow() {
+		if (isEditable()) {
+			return getEditor().getEditorComponent().requestFocusInWindow();
+		}
+		else {
+			return super.requestFocusInWindow();
+		}
+	}
+
+	@Override
 	public synchronized void addFocusListener(FocusListener listener) {
 		super.addFocusListener(listener);
 		if (isEditable()) {

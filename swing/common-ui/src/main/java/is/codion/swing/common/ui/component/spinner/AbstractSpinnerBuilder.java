@@ -160,5 +160,10 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 		public void requestFocus() {
 			getEditor().requestFocus();
 		}
+
+		@Override
+		public boolean requestFocusInWindow() {
+			return getEditor().requestFocusInWindow();
+		}
 	}
 }

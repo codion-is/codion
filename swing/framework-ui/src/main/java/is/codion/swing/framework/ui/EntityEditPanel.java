@@ -67,6 +67,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutFocusTraversalPolicy;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
@@ -1417,7 +1418,6 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private final Initial initial = new Initial();
 		private final AfterInsert afterInsert = new AfterInsert();
-		private final AfterUpdate afterUpdate = new AfterUpdate();
 
 		/**
 		 * Request focus for the component associated with the given attribute.
@@ -1426,8 +1426,7 @@ public abstract class EntityEditPanel extends JPanel {
 		 * @param attribute the attribute of the component to select
 		 */
 		public void request(Attribute<?> attribute) {
-			Ancestor.window().of(EntityEditPanel.this).toFront();
-			components.component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
+			components.component(attribute).optional().ifPresent(InputFocus::requestFocus);
 		}
 
 		/**
@@ -1444,19 +1443,12 @@ public abstract class EntityEditPanel extends JPanel {
 			return afterInsert;
 		}
 
-		/**
-		 * @return the after update focus settings
-		 */
-		public AfterUpdate afterUpdate() {
-			return afterUpdate;
-		}
-
-		private void requestFocus(@Nullable JComponent component) {
+		private static void requestFocus(@Nullable JComponent component) {
 			if (component != null && component.isFocusable()) {
-				component.requestFocus();
-			}
-			else {
-				EntityEditPanel.this.requestFocus();
+				SwingUtilities.invokeLater(() -> {
+					Ancestor.window().of(component).toFront();
+					focusableComponent(component).requestFocusInWindow();
+				});
 			}
 		}
 
@@ -1586,21 +1578,6 @@ public abstract class EntityEditPanel extends JPanel {
 				return afterInsert == null ? initial.get() : afterInsert;
 			}
 		}
-
-		/**
-		 * Manages the component that should receive focus after an update has been performed.
-		 */
-		public final class AfterUpdate {
-
-			private AfterUpdate() {}
-
-			/**
-			 * Request focus after an update operation
-			 */
-			public void request() {
-				requestFocus(lastFocusedComponent == null ? initial.get() : lastFocusedComponent);
-			}
-		}
 	}
 
 	protected static final class DefaultInsertCommand implements InsertCommand {
@@ -1712,7 +1689,7 @@ public abstract class EntityEditPanel extends JPanel {
 		private void handleResult(PersistTask.Result result) {
 			Collection<Entity> updated = result.handle();
 			onUpdate.forEach(consumer -> consumer.accept(updated));
-			editPanel.inputFocus.afterUpdate().request();
+			InputFocus.requestFocus(lastFocusedComponent);
 		}
 
 		private static final class DefaultBuilder implements Builder {
@@ -1785,7 +1762,7 @@ public abstract class EntityEditPanel extends JPanel {
 		private void handleResult(PersistTask.Result result) {
 			Collection<Entity> deleted = result.handle();
 			onDelete.forEach(consumer -> consumer.accept(deleted));
-			editPanel.inputFocus.initial().request();
+			InputFocus.requestFocus(lastFocusedComponent);
 		}
 
 		protected static final class DefaultBuilder implements Builder {
