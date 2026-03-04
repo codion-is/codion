@@ -611,8 +611,8 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 		private final @Nullable Collection<Entity> entities;
 
-		private Consumer<Collection<Entity>> before = entities -> {};
-		private Consumer<Collection<Entity>> after = entities -> {};
+		private Consumer<Collection<Entity>> before = e -> {};
+		private Consumer<Collection<Entity>> after = e -> {};
 
 		private DefaultInsertTaskBuilder(@Nullable Collection<Entity> entities) {
 			this.entities = entities;
@@ -740,8 +740,8 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 		private final @Nullable Collection<Entity> entities;
 
-		private Consumer<Collection<Entity>> before = entities -> {};
-		private Consumer<Map<Entity, Entity>> after = entities -> {};
+		private Consumer<Collection<Entity>> before = e -> {};
+		private Consumer<Map<Entity, Entity>> after = e -> {};
 
 		private DefaultUpdateTaskBuilder(@Nullable Collection<Entity> entities) {
 			this.entities = entities;
@@ -884,8 +884,8 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 		private final @Nullable Collection<Entity> entities;
 
-		private Consumer<Collection<Entity>> before = entities -> {};
-		private Consumer<Collection<Entity>> after = entities -> {};
+		private Consumer<Collection<Entity>> before = e -> {};
+		private Consumer<Collection<Entity>> after = e -> {};
 
 		private DefaultDeleteTaskBuilder(@Nullable Collection<Entity> entities) {
 			this.entities = entities;

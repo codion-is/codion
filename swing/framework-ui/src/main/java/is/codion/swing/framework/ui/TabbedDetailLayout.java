@@ -649,10 +649,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 			EntityPanel parent = detailPanel.parentPanel().orElse(null);
 			while (parent != null) {
 				JTabbedPane parentPane = Ancestor.ofType(JTabbedPane.class).of(parent).get();
-				if (parentPane != null && parentPane.indexOfTabComponent(parent) >= 0) {
-					if (parentPane.getSelectedComponent() != parent) {
-						parentPane.setSelectedComponent(parent);
-					}
+				if (parentPane != null && parentPane.indexOfTabComponent(parent) >= 0 && parentPane.getSelectedComponent() != parent) {
+					parentPane.setSelectedComponent(parent);
 				}
 				parent = parent.parentPanel().orElse(null);
 			}

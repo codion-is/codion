@@ -647,6 +647,11 @@ public class EntityPanel extends JPanel {
 		storeDetailPanelPreferences(preferences);
 	}
 
+	@Override
+	public final void setFocusCycleRoot(boolean focusCycleRoot) {
+		super.setFocusCycleRoot(focusCycleRoot);
+	}
+
 	/**
 	 * @return a {@link Builder.EntityTypeStep}
 	 */
