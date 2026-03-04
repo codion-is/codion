@@ -70,6 +70,8 @@ final class CityTablePanel extends ChartTablePanel {
 										.toggle(task.cancelled())
 										.caption("Cancel")
 										.enabled(task.cancelled().not()))
+						.onPublish(task::publish)
+						.onResult(task::result)
 						.onException(this::displayPopulateException)
 						.execute();
 	}

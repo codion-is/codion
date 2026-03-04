@@ -23,7 +23,7 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.demos.world.domain.api.World.City;
-import is.codion.demos.world.domain.api.World.Country;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 public final class CityTableModel extends SwingEntityTableModel {
 
@@ -76,7 +75,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		cities.forEach(city -> chartDataset.setValue(city.get(City.NAME), city.get(City.POPULATION)));
 	}
 
-	public final class PopulateLocationTask implements ProgressResultTask<Void, String> {
+	public final class PopulateLocationTask implements ProgressResultTask<Collection<Entity>, Entity> {
 
 		private final State cancelled = State.state();
 		private final Collection<Entity> cities;
@@ -96,22 +95,28 @@ public final class CityTableModel extends SwingEntityTableModel {
 			return cancelled;
 		}
 
-		@Override
-		public Void execute(ProgressReporter<String> progressReporter) throws IOException, EntityValidationException {
-			Collection<Entity> updatedCities = new ArrayList<>();
-			CityEditModel editModel = (CityEditModel) editModel();
-			Iterator<Entity> citiesIterator = cities.iterator();
-			while (citiesIterator.hasNext() && !cancelled.is()) {
-				Entity city = citiesIterator.next();
-				progressReporter.publish(city.get(City.COUNTRY_FK).get(Country.NAME) + " - " + city.get(City.NAME));
-				editModel.populateLocation(city);
-				updatedCities.add(city);
-				progressReporter.report(updatedCities.size());
-				displayLocationEvent.accept(List.of(city));
-			}
-			displayLocationEvent.accept(selection().items().get());
+		public void publish(Collection<Entity> cities) {
+			cities.forEach(city -> items().replace(city, city));
+			displayLocationEvent.accept(cities);
+		}
 
-			return null;
+		public void result(Collection<Entity> cities) {
+			displayLocationEvent.accept(cities);
+		}
+
+		@Override
+		public Collection<Entity> execute(ProgressReporter<Entity> progressReporter) throws IOException, EntityValidationException {
+			Collection<Entity> updatedCities = new ArrayList<>();
+			Iterator<Entity> citiesIterator = cities.iterator();
+			EntityConnection connection = editModel().connection();
+			while (citiesIterator.hasNext() && !cancelled.is()) {
+				Entity city = CityEditModel.populateLocation(citiesIterator.next(), connection);
+				updatedCities.add(city);
+				progressReporter.publish(city);
+				progressReporter.report(updatedCities.size());
+			}
+
+			return updatedCities;
 		}
 	}
 }

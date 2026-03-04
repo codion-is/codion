@@ -21,6 +21,7 @@ package is.codion.demos.world.model;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.domain.api.World.Location;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
@@ -33,8 +34,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -58,11 +59,13 @@ public final class CityEditModel extends SwingEntityEditModel {
 		}
 	}
 
-	void populateLocation(Entity city) throws IOException, EntityValidationException {
+	static Entity populateLocation(Entity city, EntityConnection connection) throws IOException, EntityValidationException {
 		lookupLocation(city).ifPresent(location -> city.set(City.LOCATION, location));
 		if (city.modified()) {
-			update(List.of(city));
+			return connection.updateSelect(city);
 		}
+
+		return city;
 	}
 
 	private static Optional<Location> lookupLocation(Entity city) throws IOException {
@@ -79,7 +82,9 @@ public final class CityEditModel extends SwingEntityEditModel {
 	}
 
 	private static JSONArray toJSONArray(URI uri) throws IOException {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(uri.toURL().openConnection().getInputStream(), UTF_8))) {
+		URLConnection connection = uri.toURL().openConnection();
+		connection.setRequestProperty("User-Agent", "Codion World Demo");
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), UTF_8))) {
 			return new JSONArray(reader.lines().collect(joining()));
 		}
 	}
