@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
  * @see #user(String, char[])
  * @see #parse(String)
  */
-public interface User {
+public sealed interface User permits DefaultUser {
 
 	/**
 	 * Specifies the maximum allowed username length.

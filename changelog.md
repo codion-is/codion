@@ -2,6 +2,10 @@ Codion Change Log
 =================
 
 ## 0.18.71
+### is.codion.common.utilities
+- User is now sealed.
+### is.codion.common.rmi
+- RemoteClient now sealed.
 
 ## 0.18.70
 ### is.codion.common.reactive
