@@ -184,13 +184,6 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	void validate(Entity entity) throws EntityValidationException;
 
 	/**
-	 * @param attribute the attribute
-	 * @return true if this value is allowed to be null according to the validator
-	 * @see #validator()
-	 */
-	boolean nullable(Attribute<?> attribute);
-
-	/**
 	 * Returns the {@link EditorValue} instance representing {@code attribute} in this {@link EntityEditor}.
 	 * @param attribute the attribute
 	 * @param <T> the value type

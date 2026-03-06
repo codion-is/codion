@@ -70,8 +70,7 @@ import static is.codion.framework.domain.entity.condition.Condition.key;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * A default {@link EntityEditor} implementation.
@@ -95,7 +94,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
 	private final Map<Attribute<?>, State> attributePresent = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
-	private final Map<Attribute<?>, Observable<String>> messages = new HashMap<>();
+	private final Map<Attribute<?>, Value<String>> messages = new HashMap<>();
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
@@ -189,11 +188,6 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	}
 
 	@Override
-	public final boolean nullable(Attribute<?> attribute) {
-		return validator.getOrThrow().nullable(entity.instance, attribute);
-	}
-
-	@Override
 	public final ObservableState primaryKeyPresent() {
 		return primaryKeyPresent.observable();
 	}
@@ -210,12 +204,12 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 	@Override
 	public final void validate() throws EntityValidationException {
-		validate(entity.instance);
+		validate(entity.get());
 	}
 
 	@Override
 	public final void validate(Attribute<?> attribute) throws AttributeValidationException {
-		validator.getOrThrow().validate(entity.instance, attribute);
+		validator.getOrThrow().validate(entity.get(), attribute);
 	}
 
 	@Override
@@ -267,81 +261,83 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		return componentModels;
 	}
 
-	private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
-		notifyValueChange(attribute);
-		Event<T> editEvent = (Event<T>) editEvents.get(attribute);
-		if (editEvent != null) {
-			editEvent.accept(value);
-		}
-		dependingValues.forEach((dependingAttribute, previousValue) -> {
-			Object currentValue = entity.instance.get(dependingAttribute);
-			if (!Objects.deepEquals(previousValue, currentValue)) {
-				notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
-			}
-		});
-	}
-
-	private void notifyValueChange(Attribute<?> attribute) {
-		updateStates();
-		updateAttributeStates(attribute);
-		DefaultEditorValue<?> valueEditor = editorValues.get(attribute);
-		if (valueEditor != null) {
-			valueEditor.valueChanged();
+	private void notifyValueChange(Attribute<?> attribute, Map<Attribute<?>, String> invalidAttributes) {
+		updateAttributeStates(attribute, invalidAttributes);
+		DefaultEditorValue<?> editorValue = editorValues.get(attribute);
+		if (editorValue != null) {
+			editorValue.valueChanged();
 		}
 		valueChanged.accept(attribute);
 	}
 
-	private void updateStates() {
-		exists.update();
+	private Map<Attribute<?>, String> updateStates() {
+		Entity instance = entity.get();
+		exists.update(instance);
 		modified.update();
-		updateEntityValidState();
-		updatePrimaryKeyPresentState();
+		primaryKeyPresent.set(!entity.instance.primaryKey().isNull());
+
+		return updateEntityValidState(instance);
 	}
 
-	private void updateAttributeStates(Attribute<?> attribute) {
+	private void updateAttributeStates(Attribute<?> attribute, Map<Attribute<?>, String> invalid) {
 		State presentState = attributePresent.get(attribute);
 		if (presentState != null) {
 			presentState.set(!entity.instance.isNull(attribute));
 		}
 		State validState = attributeValid.get(attribute);
 		if (validState != null) {
-			updateAttributeValidState(attribute, validState);
+			validState.set(!invalid.containsKey(attribute));
 		}
 		State modifiedState = attributeModified.get(attribute);
 		if (modifiedState != null) {
 			updateAttributeModifiedState(attribute, modifiedState);
 		}
+		Value<String> message = messages.get(attribute);
+		if (message != null) {
+			message.set(createMessage(attribute, invalid.get(attribute)));
+		}
 	}
 
-	private boolean isValid(Attribute<?> attribute) {
-		try {
-			validator.getOrThrow().validate(entity.instance, attribute);
-			return true;
+	private @Nullable String createMessage(Attribute<?> attribute, @Nullable String validationMessage) {
+		String description = entityDefinition.attributes().definition(attribute).description().orElse(null);
+		if (nullOrEmpty(validationMessage)) {
+			return description;
 		}
-		catch (AttributeValidationException e) {
-			return false;
+		else if (nullOrEmpty(description)) {
+			return validationMessage;
 		}
+
+		return Stream.of(validationMessage, description)
+						.collect(joining("<br>", "<html>", "</html"));
 	}
 
 	private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
 		modifiedState.set(exists.is() && entity.instance.modified(attribute));
 	}
 
-	private void updateEntityValidState() {
-		valid.set(validator.getOrThrow().valid(entity.instance));
+	private Map<Attribute<?>, String> updateEntityValidState() {
+		return updateEntityValidState(entity.get());
+	}
+
+	private Map<Attribute<?>, String> updateEntityValidState(Entity instance) {
+		try {
+			validator.getOrThrow().validate(instance);
+			valid.set(true);
+
+			return emptyMap();
+		}
+		catch (EntityValidationException e) {
+			valid.set(false);
+
+			return e.attributes().stream()
+							.collect(toMap(AttributeValidationException::attribute, Throwable::getMessage));
+		}
 	}
 
 	private void updateValidStates() {
-		updateEntityValidState();
-		attributeValid.forEach(this::updateAttributeValidState);
-	}
-
-	private void updateAttributeValidState(Attribute<?> attribute, State state) {
-		state.set(isValid(attribute));
-	}
-
-	private void updatePrimaryKeyPresentState() {
-		primaryKeyPresent.set(!entity.instance.primaryKey().isNull());
+		Map<Attribute<?>, String> invalid = updateEntityValidState();
+		attributeValid.forEach((attribute, state) -> state.set(!invalid.containsKey(attribute)));
+		messages.forEach((attribute, value) -> value.set(invalid.get(attribute)));
 	}
 
 	/**
@@ -540,12 +536,10 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void setOrDefaults(@Nullable Entity entity) {
-			Map<Attribute<?>, Object> affectedAttributes = this.instance.set(entity == null ? createEntity(this::defaultValue) : entity);
+			Map<Attribute<?>, Object> affectedAttributes = instance.set(entity == null ? createEntity(this::defaultValue) : entity);
+			Map<Attribute<?>, String> invalidAttributes = updateStates();
 			for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
-				notifyValueChange(affectedAttribute);
-			}
-			if (affectedAttributes.isEmpty()) {//otherwise notifyValueChange() triggers entity state updates
-				updateStates();
+				notifyValueChange(affectedAttribute, invalidAttributes);
 			}
 			attributeModified.forEach(DefaultEntityEditor.this::updateAttributeModifiedState);
 
@@ -1095,7 +1089,11 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void update() {
-			exists.set(predicate.getOrThrow().test(entity.instance));
+			update(entity.get());
+		}
+
+		private void update(Entity instance) {
+			exists.set(predicate.getOrThrow().test(instance));
 		}
 	}
 
@@ -1186,7 +1184,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		public void validate() {
 			State validState = attributeValid.get(attribute);
 			if (validState != null) {
-				updateAttributeValidState(attribute, validState);
+				validState.set(isValid(attribute));
 			}
 		}
 
@@ -1210,7 +1208,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		@Override
 		public Observable<String> message() {
 			return messages.computeIfAbsent(attribute,
-							k -> observableMessage(attribute));
+							k -> createMessage()).observable();
 		}
 
 		@Override
@@ -1255,6 +1253,25 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 			propagator.propagate(value, editorValueSetter);
 		}
 
+		private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
+			notifyValueEdit(attribute, value, dependingValues, updateStates());
+		}
+
+		private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues,
+																		 Map<Attribute<?>, String> invalidAttributes) {
+			notifyValueChange(attribute, invalidAttributes);
+			Event<T> editEvent = (Event<T>) editEvents.get(attribute);
+			if (editEvent != null) {
+				editEvent.accept(value);
+			}
+			dependingValues.forEach((dependingAttribute, previousValue) -> {
+				Object currentValue = entity.instance.get(dependingAttribute);
+				if (!Objects.deepEquals(previousValue, currentValue)) {
+					notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap(), invalidAttributes);
+				}
+			});
+		}
+
 		private Map<Attribute<?>, Object> dependingValues(Attribute<?> attribute) {
 			return dependingValues(attribute, new LinkedHashMap<>());
 		}
@@ -1288,16 +1305,18 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 							dependingValues.put(reference.column(), entity.instance.get(reference.column())));
 		}
 
-		private Observable<String> observableMessage(Attribute<?> attribute) {
-			String description = entityDefinition.attributes().definition(attribute).description().orElse(null);
-			Value<String> toolTip = Value.nullable(createMessage(description));
-			value(attribute).addListener(() -> toolTip.set(createMessage(description)));
-
-			return toolTip.observable();
+		private boolean isValid(Attribute<?> attribute) {
+			try {
+				validator.getOrThrow().validate(entity.get(), attribute);
+				return true;
+			}
+			catch (AttributeValidationException e) {
+				return false;
+			}
 		}
 
-		private @Nullable String createMessage(@Nullable String description) {
-			return createToolTipText(validationString(), description);
+		private Value<String> createMessage() {
+			return Value.nullable(DefaultEntityEditor.this.createMessage(attribute, validationString()));
 		}
 
 		private @Nullable String validationString() {
@@ -1309,18 +1328,6 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 			catch (AttributeValidationException e) {
 				return e.getMessage();
 			}
-		}
-
-		private @Nullable String createToolTipText(@Nullable String validationMessage, @Nullable String description) {
-			if (nullOrEmpty(validationMessage)) {
-				return description;
-			}
-			else if (nullOrEmpty(description)) {
-				return validationMessage;
-			}
-
-			return Stream.of(validationMessage, description)
-							.collect(joining("<br>", "<html>", "</html"));
 		}
 
 		private final class EditorValueSetter implements Propagator.Setter {

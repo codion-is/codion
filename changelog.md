@@ -6,6 +6,9 @@ Codion Change Log
 - User is now sealed.
 ### is.codion.common.rmi
 - RemoteClient now sealed.
+### is.codion.framework.model
+- EntityEditor.nullable(attribute) removed.
+- DefaultEntityEditor bug fixed, internal mutable entity instance no longer propagated to state predicates and validators, state management refactored.
 
 ## 0.18.70
 ### is.codion.common.reactive
