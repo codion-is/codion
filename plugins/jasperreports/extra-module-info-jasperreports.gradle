@@ -3,5 +3,4 @@ extraJavaModuleInfo {
     automaticModule("commons-digester:commons-digester", "commons.digester")
     automaticModule("commons-beanutils:commons-beanutils", "commons.beanutils")
     automaticModule("org.apache.xmlgraphics:batik-shared-resources", "org.apache.xmlgraphics.batik.shared.resources")
-    automaticModule("org.apache.xmlgraphics:xmlgraphics-commons", "org.apache.xmlgraphics.commons")
 }
