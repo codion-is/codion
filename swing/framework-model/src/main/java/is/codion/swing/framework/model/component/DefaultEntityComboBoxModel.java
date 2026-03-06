@@ -24,6 +24,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityDefinition.ForeignKeys;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -467,19 +468,31 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		public Builder.ConnectionProviderStep entityType(EntityType entityType) {
 			return new DefaultConnectionProviderStep(requireNonNull(entityType));
 		}
+
+		@Override
+		public Builder.ConnectionProviderStep foreignKey(ForeignKey foreignKey) {
+			return new DefaultConnectionProviderStep(requireNonNull(foreignKey));
+		}
 	}
 
 	private static class DefaultConnectionProviderStep implements Builder.ConnectionProviderStep {
 
 		private final EntityType entityType;
+		private final @Nullable ForeignKey foreignKey;
+
+		private DefaultConnectionProviderStep(ForeignKey foreignKey) {
+			this.entityType = foreignKey.referencedType();
+			this.foreignKey = foreignKey;
+		}
 
 		private DefaultConnectionProviderStep(EntityType entityType) {
 			this.entityType = entityType;
+			this.foreignKey = null;
 		}
 
 		@Override
 		public Builder connectionProvider(EntityConnectionProvider connectionProvider) {
-			return new DefaultBuilder(this.entityType, connectionProvider);
+			return new DefaultBuilder(entityType, foreignKey, connectionProvider);
 		}
 	}
 
@@ -497,11 +510,16 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private boolean filterSelected = false;
 		private @Nullable Entity selectEntity;
 
-		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		private DefaultBuilder(EntityType entityType, @Nullable ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
 			this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 			this.items = new EntityItems(entityDefinition, connectionProvider);
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();
 			this.modelBuilder = FilterComboBoxModel.builder().items(items);
+			if (foreignKey != null) {
+				ForeignKeys foreignKeys = connectionProvider.entities().definition(foreignKey.entityType()).foreignKeys();
+				includeNull(foreignKeys.nullable(foreignKey));
+				attributes(foreignKeys.definition(foreignKey).attributes());
+			}
 		}
 
 		@Override

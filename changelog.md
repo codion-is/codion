@@ -9,6 +9,8 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditor.nullable(attribute) removed.
 - DefaultEntityEditor bug fixed, internal mutable entity instance no longer propagated to state predicates and validators, state management refactored.
+### is.codion.swing.framework.model
+- EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() added, configures attributes and null inclusion.
 
 ## 0.18.70
 ### is.codion.common.reactive

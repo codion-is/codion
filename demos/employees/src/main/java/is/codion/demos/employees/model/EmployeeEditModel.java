@@ -66,7 +66,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 		public EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, SwingEntityEditor editor) {
 			if (foreignKey.equals(Employee.MANAGER_FK)) {
 				return EntityComboBoxModel.builder()
-								.entityType(Employee.TYPE)
+								.foreignKey(foreignKey)
 								.connectionProvider(editor.connectionProvider())
 								//Customize the null value caption so that it displays 'None'
 								//instead of the default '-' character
@@ -75,7 +75,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 								.condition(() -> Employee.JOB.in(Employee.MANAGER, Employee.PRESIDENT))
 								//Prevent automatically reflecting changes to employees
 								//when persisted, as we simply refresh instead, due to the
-								//filter predicate, see configure() below
+								//filter predicate, see configureManagerComboBoxModel()
 								.persistenceAware(false)
 								.build();
 			}

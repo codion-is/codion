@@ -93,6 +93,7 @@ public final class DefaultEntityComboBoxModelTest {
 	@Test
 	void constructorNullEntityType() {
 		assertThrows(NullPointerException.class, () -> EntityComboBoxModel.builder().entityType(null));
+		assertThrows(NullPointerException.class, () -> EntityComboBoxModel.builder().foreignKey(null));
 	}
 
 	@Test
@@ -158,6 +159,29 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(4, managerComboBoxModel.items().filtered().size());
 		assertEquals(0, employeeComboBoxModel.items().included().size());
 		assertEquals(16, employeeComboBoxModel.items().filtered().size());
+	}
+
+	@Test
+	void buildFromForeignKey() {
+		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
+						.foreignKey(Employee.MGR_FK)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.condition(() -> Employee.JOB.in("MANAGER"))
+						.build();
+		// Foreign key is nullable
+		assertTrue(employeeComboBoxModel.items().included().contains(null));
+		employeeComboBoxModel.items().refresh();
+		Entity entity = employeeComboBoxModel.items().included().get(1);
+		// Foreign key included attributes specified, should only contain NAME
+		assertTrue(entity.contains(Employee.NAME));
+		assertFalse(entity.contains(Employee.JOB));
+		assertFalse(entity.contains(Employee.SALARY));
+
+		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.connectionProvider(CONNECTION_PROVIDER).build();
+		// Foreign key is not nullable
+		assertFalse(departmentComboBoxModel.items().included().contains(null));
 	}
 
 	@Test

@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.PersistenceEvents;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
@@ -111,6 +112,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	interface Builder {
 
 		/**
+		 * Specifies the entity type, either directly or derived from a {@link ForeignKey}.
 		 * Provides a {@link ConnectionProviderStep}
 		 */
 		interface EntityTypeStep {
@@ -120,6 +122,19 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 			 * @return a new {@link ConnectionProviderStep} instance
 			 */
 			ConnectionProviderStep entityType(EntityType entityType);
+
+			/**
+			 * <p>This method configures the resulting {@link EntityComboBoxModel} according to the given foreign key,
+			 * including null if it is nullable and specifying the attributes to include if defined.
+			 * <p>If the foreign key has select attributes defined, those are set in the combo box model.
+			 * @param foreignKey the foreign key which referenced entity type this combo box model should represent
+			 * @return a new {@link ConnectionProviderStep} instance
+			 * @see ForeignKeyDefinition#attributes()
+			 * @see EntityDefinition.ForeignKeys#nullable(ForeignKey)
+			 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+			 * @see EntityComboBoxModel.Builder#attributes(Collection)
+			 */
+			ConnectionProviderStep foreignKey(ForeignKey foreignKey);
 		}
 
 		/**

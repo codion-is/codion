@@ -232,14 +232,9 @@ public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityMode
 		 * @see ForeignKeyDefinition#attributes()
 		 */
 		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, SwingEntityEditor editor) {
-			EntityDefinition entityDefinition = requireNonNull(editor).connectionProvider().entities().definition(requireNonNull(foreignKey).entityType());
-			ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
-
 			return EntityComboBoxModel.builder()
-							.entityType(foreignKey.referencedType())
-							.connectionProvider(editor.connectionProvider())
-							.attributes(foreignKeyDefinition.attributes())
-							.includeNull(entityDefinition.foreignKeys().nullable(foreignKey))
+							.foreignKey(foreignKey)
+							.connectionProvider(requireNonNull(editor).connectionProvider())
 							.build();
 		}
 
