@@ -104,7 +104,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
 	private final State primaryKeyPresent = State.state(false);
-	private final State entityValid = State.state();
+	private final State valid = State.state();
 	private final DefaultExists exists;
 	private final DefaultModified modified;
 	private final Value<EntityValidator> validator;
@@ -205,7 +205,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 	@Override
 	public final ObservableState valid() {
-		return entityValid.observable();
+		return valid.observable();
 	}
 
 	@Override
@@ -324,11 +324,11 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	}
 
 	private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-		modifiedState.set(exists.predicate.getOrThrow().test(entity.instance) && entity.instance.modified(attribute));
+		modifiedState.set(exists.is() && entity.instance.modified(attribute));
 	}
 
 	private void updateEntityValidState() {
-		entityValid.set(validator.getOrThrow().valid(entity.instance));
+		valid.set(validator.getOrThrow().valid(entity.instance));
 	}
 
 	private void updateValidStates() {
@@ -1134,7 +1134,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void update() {
-			boolean existing = exists.predicate.getOrThrow().test(entity.instance);
+			boolean existing = exists.is();
 			attributes.set(existing ? editorValues.keySet().stream()
 							.filter(entity.instance::modified)
 							.collect(toSet()) : emptySet());
