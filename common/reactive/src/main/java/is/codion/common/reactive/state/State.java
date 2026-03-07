@@ -110,12 +110,15 @@ public interface State extends ObservableState {
 
 	/**
 	 * A {@link State.Group} deactivates all other states when a state in the group is activated.
+	 * By default, all states may be inactive. Use {@link #fallback(State)} to specify a state
+	 * that is activated when the last active state is deactivated.
 	 */
 	interface Group {
 
 		/**
-		 * Adds a state to this {@link State.Group}.
-		 * Adding an active state deactivates all other states in the group.
+		 * <p>Adds a state to this {@link State.Group}.
+		 * If the given state is already in the group, this method has no effect.
+		 * <p>Adding an active state deactivates all other states in the group.
 		 * @param state the {@link State} instance to add
 		 */
 		void add(State state);
@@ -125,6 +128,14 @@ public interface State extends ObservableState {
 		 * @param states the {@link State} instances to add
 		 */
 		void add(Collection<State> states);
+
+		/**
+		 * Sets a fallback state to activate when the last active state in the group is deactivated.
+		 * The fallback state must be a member of this group.
+		 * @param state the fallback {@link State}
+		 * @throws IllegalArgumentException in case the given state is not a member of the group
+		 */
+		void fallback(State state);
 	}
 
 	/**

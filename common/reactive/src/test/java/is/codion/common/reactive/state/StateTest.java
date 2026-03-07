@@ -153,31 +153,23 @@ public class StateTest {
 		assertFalse(two.is());
 		assertFalse(three.is());
 
-		//one to three
+		// one to none
 		one.set(false);
 		assertFalse(one.is());
-		assertFalse(two.is());
-		assertTrue(three.is());
-
-		three.set(false);
-		assertTrue(one.is());
 		assertFalse(two.is());
 		assertFalse(three.is());
 
-		one.set(false);
-		assertFalse(one.is());
-		assertFalse(two.is());
-		assertTrue(three.is());
-
+		// none to two
 		two.set(true);
 		assertFalse(one.is());
 		assertTrue(two.is());
 		assertFalse(three.is());
 
+		// two to none
 		two.set(false);
 		assertFalse(one.is());
 		assertFalse(two.is());
-		assertTrue(three.is());
+		assertFalse(three.is());
 	}
 
 	@Test
@@ -188,13 +180,61 @@ public class StateTest {
 		State.group(one, two);
 		one.set(true);
 		one.set(false);
-		assertTrue(two.is());
+		assertFalse(one.is());
+		assertFalse(two.is());
 
 		one = State.state();
 		State.group(one);
 		one.set(true);
 		one.set(false);
 		assertFalse(one.is());
+	}
+
+	@Test
+	void groupFallback() {
+		assertThrows(IllegalArgumentException.class, () -> State.group(State.state()).fallback(State.state()));
+
+		State one = State.state();
+		State two = State.state();
+		State three = State.state();
+
+		State.group(one, two, three).fallback(one);
+
+		// no state active, fallback not triggered (only on deactivation)
+		assertFalse(one.is());
+
+		// activate two, then deactivate -> fallback
+		two.set(true);
+		assertTrue(two.is());
+		two.set(false);
+		assertTrue(one.is());
+		assertFalse(two.is());
+		assertFalse(three.is());
+
+		// switch to three, then deactivate -> fallback
+		three.set(true);
+		assertFalse(one.is());
+		three.set(false);
+		assertTrue(one.is());
+
+		// deactivate fallback itself -> activates first non-fallback member
+		one.set(false);
+		assertFalse(one.is());
+		assertTrue(two.is());
+		assertFalse(three.is());
+	}
+
+	@Test
+	void groupFallbackOnly() {
+		State only = State.state();
+
+		State.group(only).fallback(only);
+
+		only.set(true);
+		assertTrue(only.is());
+		// sole member, toggles freely
+		only.set(false);
+		assertFalse(only.is());
 	}
 
 	@Test

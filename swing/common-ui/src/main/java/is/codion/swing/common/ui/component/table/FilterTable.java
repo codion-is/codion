@@ -1023,14 +1023,18 @@ public final class FilterTable<R, C> extends JTable {
 		List<ToggleControl> controls = new ArrayList<>();
 		State.Group group = State.group();
 		for (Item<Integer> resizeMode : AUTO_RESIZE_MODES) {
+			State state = State.builder()
+							.value(resizeMode.getOrThrow().equals(getAutoResizeMode()))
+							.when(true, () -> setAutoResizeMode(resizeMode.getOrThrow()))
+							.group(group)
+							.build();
 			controls.add(Control.builder()
-							.toggle(State.builder()
-											.value(resizeMode.getOrThrow().equals(getAutoResizeMode()))
-											.when(true, () -> setAutoResizeMode(resizeMode.getOrThrow()))
-											.group(group)
-											.build())
+							.toggle(state)
 							.caption(resizeMode.caption())
 							.build());
+			if (resizeMode.getOrThrow().equals(AUTO_RESIZE_OFF)) {
+				group.fallback(state);
+			}
 		}
 		addPropertyChangeListener("autoResizeMode", changeEvent ->
 						controls.get((Integer) changeEvent.getNewValue()).value().set(true));

@@ -792,7 +792,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.consumer(new EnableWildcard(PREFIX_AND_POSTFIX))
 						.build();
 
-		State.group(wildcardNone, wildcardPostfix, wildcardPrefix, wildcardPrefixAndPostfix);
+		State.group(wildcardNone, wildcardPostfix, wildcardPrefix, wildcardPrefixAndPostfix).fallback(wildcardNone);
 
 		wildcard.addConsumer(newWildcard -> {
 			switch (newWildcard) {

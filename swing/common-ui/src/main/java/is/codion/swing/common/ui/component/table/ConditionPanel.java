@@ -108,7 +108,7 @@ public abstract class ConditionPanel<T> extends JPanel {
 	protected abstract void onViewChanged(ConditionView conditionView);
 
 	private void configureStates() {
-		State.group(hiddenView, simpleView, advancedView);
+		State.group(hiddenView, simpleView, advancedView).fallback(hiddenView);
 		hiddenView.when(true).addListener(() -> view.set(HIDDEN));
 		simpleView.when(true).addListener(() -> view.set(SIMPLE));
 		advancedView.when(true).addListener(() -> view.set(ADVANCED));

@@ -31,8 +31,8 @@ final class DefaultStateGroup implements State.Group {
 
 	private final List<State> members = new ArrayList<>();
 
-	private @Nullable State previousState;
-	private boolean disablingStates = false;
+	private @Nullable State fallback;
+	private boolean disabling = false;
 
 	DefaultStateGroup(State... states) {
 		this(Arrays.asList(states));
@@ -51,15 +51,11 @@ final class DefaultStateGroup implements State.Group {
 			if (!members.contains(state)) {
 				members.add(state);
 				if (state.is()) {
-					stateChanged(state);
+					disableOthers(state);
 				}
+				state.addListener(new StateListener(state));
 			}
 		}
-		state.addListener(() -> {
-			synchronized (members) {
-				stateChanged(state);
-			}
-		});
 	}
 
 	@Override
@@ -67,42 +63,50 @@ final class DefaultStateGroup implements State.Group {
 		requireNonNull(states).forEach(this::add);
 	}
 
-	private void stateChanged(State state) {
-		if (state.is()) {
-			disableOthers(state);
+	@Override
+	public void fallback(State state) {
+		if (!members.contains(requireNonNull(state))) {
+			throw new IllegalArgumentException("Fallback state must be a member of the group");
 		}
-		else if (!disablingStates) {
-			enablePrevious(state);
-		}
+		this.fallback = state;
 	}
 
 	private void disableOthers(State current) {
-		previousState = previousState(current);
-		disablingStates = true;
+		disabling = true;
 		members.stream()
 						.filter(state -> state != current)
 						.filter(ObservableState::is)
 						.forEach(state -> state.set(false));
-		disablingStates = false;
+		disabling = false;
 	}
 
-	private void enablePrevious(State current) {
-		if (previousState != null) {
-			previousState.set(true);
-		}
-		else if (members.size() > 1) {
-			//fallback to the next state
-			int index = members.indexOf(current);
-			members.get(index == members.size() - 1 ? 0 : index + 1).set(true);
-		}
-		previousState = current;
-	}
+	private final class StateListener implements Runnable {
 
-	private @Nullable State previousState(State current) {
-		return members.stream()
-						.filter(state -> state != current)
-						.filter(ObservableState::is)
-						.findFirst()
-						.orElse(null);
+		private final State state;
+
+		private StateListener(State state) {
+			this.state = state;
+		}
+
+		@Override
+		public void run() {
+			synchronized (members) {
+				if (disabling) {
+					return;
+				}
+				if (state.is()) {
+					disableOthers(state);
+				}
+				else if (state == fallback) { // activate first non-fallback state
+					members.stream()
+									.filter(st -> st != fallback)
+									.findFirst()
+									.ifPresent(st -> st.set(true));
+				}
+				else if (fallback != null) {
+					fallback.set(true);
+				}
+			}
+		}
 	}
 }
