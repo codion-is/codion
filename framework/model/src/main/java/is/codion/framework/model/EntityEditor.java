@@ -465,13 +465,13 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
 		 * using the search attributes defined for that entity type.
 		 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
-		 * @param editor the editor
+		 * @param connectionProvider the connection provider
 		 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 		 * @see EntityDefinition.Columns#searchable()
 		 */
-		default EntitySearchModel searchModel(ForeignKey foreignKey, R editor) {
-			Collection<Column<String>> searchable = requireNonNull(editor).connectionProvider().entities()
+		default EntitySearchModel searchModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+			Collection<Column<String>> searchable = requireNonNull(connectionProvider).entities()
 							.definition(requireNonNull(foreignKey).referencedType())
 							.columns()
 							.searchable();
@@ -481,7 +481,7 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 
 			return EntitySearchModel.builder()
 							.entityType(foreignKey.referencedType())
-							.connectionProvider(editor.connectionProvider())
+							.connectionProvider(connectionProvider)
 							.build();
 		}
 	}

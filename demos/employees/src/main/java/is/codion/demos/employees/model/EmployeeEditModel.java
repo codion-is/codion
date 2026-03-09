@@ -22,7 +22,6 @@ import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -63,11 +62,11 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 		// tag::createComboBoxModel[]
 		// Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president
 		@Override
-		public EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, SwingEntityEditor editor) {
+		public EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
 			if (foreignKey.equals(Employee.MANAGER_FK)) {
 				return EntityComboBoxModel.builder()
 								.foreignKey(foreignKey)
-								.connectionProvider(editor.connectionProvider())
+								.connectionProvider(connectionProvider)
 								//Customize the null value caption so that it displays 'None'
 								//instead of the default '-' character
 								.nullCaption("None")
@@ -80,7 +79,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 								.build();
 			}
 
-			return SwingComponentModels.super.comboBoxModel(foreignKey, editor);
+			return SwingComponentModels.super.comboBoxModel(foreignKey, connectionProvider);
 		}
 		// end::createComboBoxModel[]
 	}

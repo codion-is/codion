@@ -1047,12 +1047,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 		@Override
 		public EntitySearchModel create(ForeignKey foreignKey) {
-			return componentModels.searchModel(foreignKey, self());
-		}
-
-		@SuppressWarnings("unchecked")
-		private R self() {
-			return (R) DefaultEntityEditor.this;
+			return componentModels.searchModel(foreignKey, connectionProvider);
 		}
 	}
 

@@ -184,7 +184,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityMode
 		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key.
 		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
 		 * @return a {@link EntityComboBoxModel} for the given foreign key
-		 * @see SwingComponentModels#comboBoxModel(ForeignKey, SwingEntityEditor)
+		 * @see SwingComponentModels#comboBoxModel(ForeignKey, EntityConnectionProvider)
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 * @see EntityComboBoxModel.Builder#nullCaption(String)
 		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
@@ -193,7 +193,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityMode
 		 * @see ForeignKeyDefinition#attributes()
 		 */
 		public EntityComboBoxModel create(ForeignKey foreignKey) {
-			return componentModels().comboBoxModel(requireNonNull(foreignKey), SwingEntityEditor.this);
+			return componentModels().comboBoxModel(requireNonNull(foreignKey), connectionProvider());
 		}
 
 		/**
@@ -204,7 +204,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityMode
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 */
 		public <T> FilterComboBoxModel<T> create(Column<T> column) {
-			return componentModels().comboBoxModel(requireNonNull(column), SwingEntityEditor.this);
+			return componentModels().comboBoxModel(requireNonNull(column), connectionProvider());
 		}
 	}
 
@@ -222,7 +222,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityMode
 		 * null item caption if the underlying attribute is nullable.
 		 * <p>If the foreign key has select attributes defined, those are set in the combo box model.
 		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
-		 * @param editor the editor
+		 * @param connectionProvider the connection provider
 		 * @return a {@link EntityComboBoxModel} for the given foreign key
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 * @see EntityComboBoxModel.Builder#nullCaption(String)
@@ -231,10 +231,10 @@ public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityMode
 		 * @see EntityComboBoxModel.Builder#attributes(Collection)
 		 * @see ForeignKeyDefinition#attributes()
 		 */
-		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, SwingEntityEditor editor) {
+		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
 			return EntityComboBoxModel.builder()
 							.foreignKey(foreignKey)
-							.connectionProvider(requireNonNull(editor).connectionProvider())
+							.connectionProvider(requireNonNull(requireNonNull(connectionProvider)))
 							.build();
 		}
 
@@ -243,17 +243,18 @@ public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityMode
 		 * This default implementation returns a sorted {@link FilterComboBoxModel} using the default
 		 * null item caption if the underlying column is nullable
 		 * @param column the column
-		 * @param editor the editor
+		 * @param connectionProvider the connection provider
 		 * @param <T> the value type
 		 * @return a combo box model based on the given column
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 */
-		default <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column, SwingEntityEditor editor) {
-			EntityDefinition entityDefinition = requireNonNull(editor).connectionProvider().entities().definition(requireNonNull(column).entityType());
+		default <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnectionProvider connectionProvider) {
+			EntityDefinition entityDefinition = requireNonNull(connectionProvider).entities()
+							.definition(requireNonNull(column).entityType());
 			boolean nullable = entityDefinition.columns().definition(column).nullable();
 
 			return FilterComboBoxModel.builder()
-							.items(() -> editor.connectionProvider().connection().select(column))
+							.items(() -> connectionProvider.connection().select(column))
 							.nullItem(nullable ? createNullItem(column) : null)
 							.includeNull(nullable)
 							.build();
