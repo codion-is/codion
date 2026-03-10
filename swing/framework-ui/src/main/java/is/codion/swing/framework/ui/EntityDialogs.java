@@ -35,6 +35,7 @@ import is.codion.swing.common.ui.dialog.ActionDialogBuilder;
 import is.codion.swing.common.ui.dialog.DialogBuilder;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.DefaultEditComponent;
 import is.codion.swing.framework.ui.component.EditComponent;
@@ -77,15 +78,15 @@ public final class EntityDialogs {
 	private EntityDialogs() {}
 
 	/**
-	 * @param editModel the edit model to use for creating component data models and applying the accepted value
+	 * @param editor the editor to use for creating component data models and applying the accepted value
 	 * @param attribute the attribute to edit
 	 * @param <T> the attribute type
 	 * @return a new builder
 	 * @see is.codion.framework.model.EntityEditor.EditorValue#set(Entity, Object)
 	 * @see is.codion.framework.model.EntityEditor.EditorValue#propagate(is.codion.framework.model.EntityEditor.EditorValue.Propagator)
 	 */
-	public static <T> EditAttributeDialogBuilder<T> editAttributeDialog(SwingEntityEditModel editModel, Attribute<T> attribute) {
-		return new DefaultEditAttributeDialogBuilder<>(editModel, attribute);
+	public static <T> EditAttributeDialogBuilder<T> editAttributeDialog(SwingEntityEditor editor, Attribute<T> attribute) {
+		return new DefaultEditAttributeDialogBuilder<>(editor, attribute);
 	}
 
 	/**
@@ -261,14 +262,14 @@ public final class EntityDialogs {
 	private static final class DefaultEditAttributeDialogBuilder<T> extends AbstractDialogBuilder<EditAttributeDialogBuilder<T>>
 					implements EditAttributeDialogBuilder<T> {
 
-		private final SwingEntityEditModel editModel;
+		private final SwingEntityEditor editor;
 		private final Attribute<T> attribute;
 
 		private EditComponent<?, T> editComponent;
 		private Function<Collection<Entity>, T> defaultValue = new DefaultValue();
 
-		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
-			this.editModel = requireNonNull(editModel);
+		private DefaultEditAttributeDialogBuilder(SwingEntityEditor editor, Attribute<T> attribute) {
+			this.editor = requireNonNull(editor);
 			this.attribute = requireNonNull(attribute);
 			this.editComponent = new DefaultEditComponent<>(attribute);
 		}
@@ -302,11 +303,11 @@ public final class EntityDialogs {
 				throw new IllegalArgumentException("All entities must be of the same type when editing");
 			}
 
-			ComponentValue<?, T> componentValue = editComponent.component(editModel.editor());
+			ComponentValue<?, T> componentValue = editComponent.component(editor);
 			componentValue.set(defaultValue.apply(entities));
 			EditAttributePanel<T> editPanel =
-							new EditAttributePanel<>(editModel, entities, attribute, componentValue,
-											editComponent.caption(editModel.entityDefinition()
+							new EditAttributePanel<>(editor, entities, attribute, componentValue,
+											editComponent.caption(editor.entityDefinition()
 															.attributes().definition(attribute)).orElse(null));
 			Dialogs.okCancel()
 							.component(editPanel)

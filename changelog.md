@@ -17,6 +17,8 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() added, configures attributes and null inclusion.
 - SwingComponentModels.comboBox(), EntityEditor parameter replaced with EntityConnection.
+### is.codion.swing.framework.ui
+- EditAttributePanel, EditAttributeDialogBuilder now use SwingEntityEditor instead of SwingEntityEditModel.
 
 ## 0.18.70
 ### is.codion.common.reactive

@@ -35,7 +35,7 @@ import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -69,7 +69,7 @@ final class EditAttributePanel<T> extends JPanel {
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 
 	private final ComponentValue<? extends JComponent, T> componentValue;
-	private final SwingEntityEditModel editModel;
+	private final SwingEntityEditor editor;
 	private final Collection<Entity> entities;
 	private final Attribute<T> attribute;
 	private final State valid = State.state(true);
@@ -79,11 +79,11 @@ final class EditAttributePanel<T> extends JPanel {
 	private final JPanel componentPanel;
 	private final JProgressBar progressBar;
 
-	EditAttributePanel(SwingEntityEditModel editModel, Collection<Entity> entities, Attribute<T> attribute,
+	EditAttributePanel(SwingEntityEditor editor, Collection<Entity> entities, Attribute<T> attribute,
 										 ComponentValue<?, T> componentValue, @Nullable String caption) {
 		setLayout(borderLayout());
 		setBorder(createEmptyBorder(GAP.getOrThrow(), GAP.getOrThrow(), 0, GAP.getOrThrow()));
-		this.editModel = editModel;
+		this.editor = editor;
 		this.attribute = attribute;
 		this.entities = entities;
 		this.componentValue = componentValue;
@@ -117,10 +117,11 @@ final class EditAttributePanel<T> extends JPanel {
 						.map(Entity.Copy::mutable)
 						.collect(toList());
 		T value = componentValue.get();
-		toUpdate.forEach(entity -> editModel.editor().value(attribute).set(entity, value));
-		Task<Collection<Entity>> task = editModel.tasks().update(toUpdate.stream()
+		toUpdate.forEach(entity -> editor.value(attribute).set(entity, value));
+		Task<Collection<Entity>> task = editor.tasks(editor.connectionProvider().connection()).update(toUpdate.stream()
 										.filter(Entity::modified)
 										.collect(toList()))
+						.build()
 						.prepare();
 		ProgressWorker.builder()
 						.task(task::perform)
@@ -136,13 +137,13 @@ final class EditAttributePanel<T> extends JPanel {
 	}
 
 	private void updateStates() {
-		EntityValidator validator = editModel.editor().validator().getOrThrow();
+		EntityValidator validator = editor.validator().getOrThrow();
 		Collection<Entity> toUpdate = entities.stream()
 						.map(Entity::copy)
 						.map(Entity.Copy::mutable)
 						.collect(toList());
 		T value = componentValue.get();
-		toUpdate.forEach(entity -> editModel.editor().value(attribute).set(entity, value));
+		toUpdate.forEach(entity -> editor.value(attribute).set(entity, value));
 		modified.set(toUpdate.stream().anyMatch(Entity::modified));
 		for (Entity entity : toUpdate) {
 			try {
