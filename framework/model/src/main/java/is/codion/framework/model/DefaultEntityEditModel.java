@@ -38,6 +38,7 @@ import java.util.Map;
 import static is.codion.framework.domain.entity.Entity.groupByType;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
@@ -120,7 +121,7 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 
 	@Override
 	public final Entity insert() throws EntityValidationException {
-		return tasks.insert().prepare().perform().handle().iterator().next();
+		return tasks.insert().prepare().perform().handle();
 	}
 
 	@Override
@@ -130,7 +131,7 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 
 	@Override
 	public final Entity update() throws EntityValidationException {
-		return tasks.update().prepare().perform().handle().iterator().next();
+		return tasks.update().prepare().perform().handle();
 	}
 
 	@Override
@@ -140,7 +141,7 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 
 	@Override
 	public final Entity delete() {
-		return tasks.delete().prepare().perform().handle().iterator().next();
+		return tasks.delete().prepare().perform().handle();
 	}
 
 	@Override
@@ -151,75 +152,90 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 	private final class DefaultPersistTasks implements PersistTasks {
 
 		@Override
-		public PersistTask insert() throws EntityValidationException {
+		public PersistTask<Entity> insert() throws EntityValidationException {
 			settings.verifyInsertEnabled();
 
-			return editor.tasks().insert()
+			return editor.tasks(connection()).insert()
+							.before(entity -> events.beforeInsert.accept(singleton(entity)))
+							.after(entity -> events.inserted(singleton(entity)))
+							.build();
+		}
+
+		@Override
+		public PersistTask<Entity> insert(Entity entity) throws EntityValidationException {
+			settings.verifyInsertEnabled();
+
+			return editor.tasks(connection()).insert(entity)
+							.before(inserting -> events.beforeInsert.accept(singleton(inserting)))
+							.after(inserted -> events.inserted(singleton(inserted)))
+							.build();
+		}
+
+		@Override
+		public PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
+			settings.verifyInsertEnabled();
+
+			return editor.tasks(connection()).insert(entities)
 							.before(events.beforeInsert)
 							.after(events::inserted)
 							.build();
 		}
 
 		@Override
-		public PersistTask insert(Entity entity) throws EntityValidationException {
-			return insert(singleton(requireNonNull(entity)));
-		}
-
-		@Override
-		public PersistTask insert(Collection<Entity> entities) throws EntityValidationException {
-			settings.verifyInsertEnabled();
-
-			return editor.tasks().insert(entities)
-							.before(events.beforeInsert)
-							.after(events::inserted)
-							.build();
-		}
-
-		@Override
-		public PersistTask update() throws EntityValidationException {
+		public PersistTask<Entity> update() throws EntityValidationException {
 			settings.verifyUpdateEnabled(1);
 
-			return editor.tasks().update()
-							.before(events.beforeUpdate)
-							.after(events::updated)
+			return editor.tasks(connection()).update()
+							.before(entity -> events.beforeUpdate.accept(singleton(entity)))
+							.after((before, after) -> events.updated(singletonMap(before, after)))
 							.build();
 		}
 
 		@Override
-		public PersistTask update(Entity entity) throws EntityValidationException {
-			return update(singleton(requireNonNull(entity)));
+		public PersistTask<Entity> update(Entity entity) throws EntityValidationException {
+			settings.verifyUpdateEnabled(1);
+
+			return editor.tasks(connection()).update(entity)
+							.before(updating -> events.beforeUpdate.accept(singleton(updating)))
+							.after((before, after) -> events.updated(singletonMap(before, after)))
+							.build();
 		}
 
 		@Override
-		public PersistTask update(Collection<Entity> entities) throws EntityValidationException {
+		public PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException {
 			settings.verifyUpdateEnabled(requireNonNull(entities).size());
 
-			return editor.tasks().update(entities)
+			return editor.tasks(connection()).update(entities)
 							.before(events.beforeUpdate)
 							.after(events::updated)
 							.build();
 		}
 
 		@Override
-		public PersistTask delete() {
+		public PersistTask<Entity> delete() {
 			settings.verifyDeleteEnabled();
 
-			return editor.tasks().delete()
-							.before(events.beforeDelete)
-							.after(events::deleted)
+			return editor.tasks(connection()).delete()
+							.before(entity -> events.beforeDelete.accept(singleton(entity)))
+							.after(entity -> events.deleted(singleton(entity)))
 							.build();
 		}
 
 		@Override
-		public PersistTask delete(Entity entity) {
-			return delete(singleton(requireNonNull(entity)));
+		public PersistTask<Entity> delete(Entity entity) {
+			settings.verifyDeleteEnabled();
+
+			return editor.tasks(connection()).delete(entity)
+							.before(deleting -> events.beforeDelete.accept(singleton(deleting)))
+							.after(deleted -> events.deleted(singleton(deleted)))
+							.build();
 		}
 
 		@Override
-		public PersistTask delete(Collection<Entity> entities) {
+		public PersistTask<Collection<Entity>> delete(Collection<Entity> entities) {
 			settings.verifyDeleteEnabled();
 
-			return editor.tasks().delete(entities)
+			return editor.tasks(connection()).delete(entities)
 							.before(events.beforeDelete)
 							.after(events::deleted)
 							.build();

@@ -36,6 +36,7 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.DefaultEntityModelTest.TestEntityEditModel;
+import is.codion.framework.model.DefaultEntityModelTest.TestEntityEditor;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Derived;
@@ -169,9 +170,9 @@ public final class DefaultEntityEditModelTest {
 			editor.entity().refresh();
 			assertEquals("NOONE", editor.value(Employee.NAME).get());
 
-			EntityEditModel departmentEditModel = new TestEntityEditModel(Department.TYPE, employeeEditModel.connectionProvider());
+			TestEntityEditModel departmentEditModel = new TestEntityEditModel(Department.TYPE, employeeEditModel.connectionProvider());
 			Entity accounting = connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-			EntityEditor departmentEditor = departmentEditModel.editor();
+			TestEntityEditor departmentEditor = departmentEditModel.editor();
 			departmentEditor.entity().set(accounting);
 			departmentEditor.value(Department.ID).set(-20);
 
@@ -443,7 +444,7 @@ public final class DefaultEntityEditModelTest {
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.update(Arrays.asList(emp1, emp2)));
 
 			// Test afterUpdate event map contents
-			EntityEditModel deptEditModel = new TestEntityEditModel(Department.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditModel deptEditModel = new TestEntityEditModel(Department.TYPE, CONNECTION_PROVIDER);
 			deptEditModel.editor().value(Department.ID).set(-1);
 			deptEditModel.editor().value(Department.NAME).set("UpdTest");
 			Entity dept = deptEditModel.insert();
@@ -714,7 +715,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	public void derivedValues() {
-		EntityEditModel editModel = new TestEntityEditModel(Derived.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditModel editModel = new TestEntityEditModel(Derived.TYPE, CONNECTION_PROVIDER);
 
 		List<Attribute<?>> changed = new ArrayList<>();
 		editModel.editor().value(Derived.INT1).addListener(() -> changed.add(Derived.INT1));

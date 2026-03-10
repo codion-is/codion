@@ -38,7 +38,8 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorEntity;
-import is.codion.framework.model.EntityEditor.PersistTask;
+import is.codion.framework.model.EntityEditor.PersistTask.Result;
+import is.codion.framework.model.EntityEditor.PersistTask.Task;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -1306,7 +1307,7 @@ public abstract class EntityEditPanel extends JPanel {
 			 * @param onInsert called after a successful insert
 			 * @return this builder instance
 			 */
-			Builder onInsert(Consumer<Collection<Entity>> onInsert);
+			Builder onInsert(Consumer<Entity> onInsert);
 
 			/**
 			 * Builds and executes this command
@@ -1353,7 +1354,7 @@ public abstract class EntityEditPanel extends JPanel {
 			 * @param onUpdate called after a successful update
 			 * @return this builder instance
 			 */
-			Builder onUpdate(Consumer<Collection<Entity>> onUpdate);
+			Builder onUpdate(Consumer<Entity> onUpdate);
 
 			/**
 			 * Builds and executes this command
@@ -1397,7 +1398,7 @@ public abstract class EntityEditPanel extends JPanel {
 			 * @param onDelete called after a successful delete
 			 * @return this builder instance
 			 */
-			Builder onDelete(Consumer<Collection<Entity>> onDelete);
+			Builder onDelete(Consumer<Entity> onDelete);
 
 			/**
 			 * Builds and executes this command
@@ -1584,7 +1585,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private final EntityEditPanel editPanel;
 		private final boolean confirm;
-		private final Collection<Consumer<Collection<Entity>>> onInsert;
+		private final Collection<Consumer<Entity>> onInsert;
 
 		private DefaultInsertCommand(DefaultBuilder builder) {
 			this.editPanel = builder.editPanel;
@@ -1595,7 +1596,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmInsert()) {
-				PersistTask.Task task = editPanel.editModel().tasks().insert().prepare();
+				Task<Entity> task = editPanel.editModel().tasks().insert().prepare();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("inserting"))
@@ -1606,8 +1607,8 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 		}
 
-		private void handleResult(PersistTask.Result result) {
-			Collection<Entity> inserted = result.handle();
+		private void handleResult(Result<Entity> result) {
+			Entity inserted = result.handle();
 			onInsert.forEach(consumer -> consumer.accept(inserted));
 			if (editPanel.configuration.clearAfterInsert) {
 				editPanel.editModel().editor().defaults();
@@ -1620,7 +1621,7 @@ public abstract class EntityEditPanel extends JPanel {
 		private static final class DefaultBuilder implements Builder {
 
 			private final EntityEditPanel editPanel;
-			private final Collection<Consumer<Collection<Entity>>> onInsert = new ArrayList<>(1);
+			private final Collection<Consumer<Entity>> onInsert = new ArrayList<>(1);
 
 			private boolean confirm;
 
@@ -1643,7 +1644,7 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 
 			@Override
-			public Builder onInsert(Consumer<Collection<Entity>> onInsert) {
+			public Builder onInsert(Consumer<Entity> onInsert) {
 				this.onInsert.add(requireNonNull(onInsert));
 				return this;
 			}
@@ -1664,7 +1665,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private final EntityEditPanel editPanel;
 		private final boolean confirm;
-		private final Collection<Consumer<Collection<Entity>>> onUpdate;
+		private final Collection<Consumer<Entity>> onUpdate;
 
 		private DefaultUpdateCommand(DefaultBuilder builder) {
 			this.editPanel = builder.editPanel;
@@ -1675,7 +1676,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmUpdate()) {
-				PersistTask.Task task = editPanel.editModel().tasks().update().prepare();
+				Task<Entity> task = editPanel.editModel().tasks().update().prepare();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("updating"))
@@ -1686,8 +1687,8 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 		}
 
-		private void handleResult(PersistTask.Result result) {
-			Collection<Entity> updated = result.handle();
+		private void handleResult(Result<Entity> result) {
+			Entity updated = result.handle();
 			onUpdate.forEach(consumer -> consumer.accept(updated));
 			InputFocus.requestFocus(lastFocusedComponent);
 		}
@@ -1695,7 +1696,7 @@ public abstract class EntityEditPanel extends JPanel {
 		private static final class DefaultBuilder implements Builder {
 
 			private final EntityEditPanel editPanel;
-			private final Collection<Consumer<Collection<Entity>>> onUpdate = new ArrayList<>(1);
+			private final Collection<Consumer<Entity>> onUpdate = new ArrayList<>(1);
 			private boolean confirm;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
@@ -1717,7 +1718,7 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 
 			@Override
-			public Builder onUpdate(Consumer<Collection<Entity>> onUpdate) {
+			public Builder onUpdate(Consumer<Entity> onUpdate) {
 				this.onUpdate.add(requireNonNull(onUpdate));
 				return this;
 			}
@@ -1738,7 +1739,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private final EntityEditPanel editPanel;
 		private final boolean confirm;
-		private final Collection<Consumer<Collection<Entity>>> onDelete;
+		private final Collection<Consumer<Entity>> onDelete;
 
 		private DefaultDeleteCommand(DefaultBuilder builder) {
 			this.editPanel = builder.editPanel;
@@ -1759,8 +1760,8 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 		}
 
-		private void handleResult(PersistTask.Result result) {
-			Collection<Entity> deleted = result.handle();
+		private void handleResult(Result<Entity> result) {
+			Entity deleted = result.handle();
 			onDelete.forEach(consumer -> consumer.accept(deleted));
 			InputFocus.requestFocus(lastFocusedComponent);
 		}
@@ -1768,7 +1769,7 @@ public abstract class EntityEditPanel extends JPanel {
 		protected static final class DefaultBuilder implements Builder {
 
 			private final EntityEditPanel editPanel;
-			private final Collection<Consumer<Collection<Entity>>> onDelete = new ArrayList<>(1);
+			private final Collection<Consumer<Entity>> onDelete = new ArrayList<>(1);
 			private boolean confirm;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
@@ -1790,7 +1791,7 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 
 			@Override
-			public Builder onDelete(Consumer<Collection<Entity>> onDelete) {
+			public Builder onDelete(Consumer<Entity> onDelete) {
 				this.onDelete.add(requireNonNull(onDelete));
 				return this;
 			}

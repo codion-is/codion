@@ -212,7 +212,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @see EntityEditor#entity()
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert() throws EntityValidationException;
+		PersistTask<Entity> insert() throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for inserting the given entity.
@@ -222,7 +222,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @throws EntityValidationException in case validation fails
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert(Entity entity) throws EntityValidationException;
+		PersistTask<Entity> insert(Entity entity) throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for inserting the given entities.
@@ -232,7 +232,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @throws EntityValidationException in case validation fails
 		 * @see Settings#insertEnabled()
 		 */
-		PersistTask insert(Collection<Entity> entities) throws EntityValidationException;
+		PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the active entity.
@@ -242,7 +242,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @see EntityEditor#entity()
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update() throws EntityValidationException;
+		PersistTask<Entity> update() throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the given entity.
@@ -252,7 +252,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @throws EntityValidationException in case validation fails
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update(Entity entity) throws EntityValidationException;
+		PersistTask<Entity> update(Entity entity) throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for updating the given entities.
@@ -262,7 +262,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @throws EntityValidationException in case validation fails
 		 * @see Settings#updateEnabled()
 		 */
-		PersistTask update(Collection<Entity> entities) throws EntityValidationException;
+		PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * Creates a new {@link PersistTask} instance for deleting the active entity.
@@ -271,7 +271,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @see EntityEditor#entity()
 		 * @see Settings#deleteEnabled()
 		 */
-		PersistTask delete();
+		PersistTask<Entity> delete();
 
 		/**
 		 * Creates a new {@link PersistTask} instance for deleting the given entity.
@@ -280,7 +280,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @throws IllegalStateException if deleting is not enabled
 		 * @see Settings#deleteEnabled()
 		 */
-		PersistTask delete(Entity entity);
+		PersistTask<Entity> delete(Entity entity);
 
 		/**
 		 * Creates a new {@link PersistTask} instance for deleting the given entities.
@@ -289,7 +289,7 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 		 * @throws IllegalStateException if deleting is not enabled
 		 * @see Settings#deleteEnabled()
 		 */
-		PersistTask delete(Collection<Entity> entities);
+		PersistTask<Collection<Entity>> delete(Collection<Entity> entities);
 	}
 
 	/**

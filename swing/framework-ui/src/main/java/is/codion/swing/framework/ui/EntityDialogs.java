@@ -518,7 +518,7 @@ public final class EntityDialogs {
 							.show();
 		}
 
-		private final class OnInsert implements Consumer<Collection<Entity>> {
+		private final class OnInsert implements Consumer<Entity> {
 
 			private final Runnable disposeDialog;
 
@@ -527,8 +527,8 @@ public final class EntityDialogs {
 			}
 
 			@Override
-			public void accept(Collection<Entity> inserted) {
-				onInsert.accept(inserted.iterator().next());
+			public void accept(Entity inserted) {
+				onInsert.accept(inserted);
 				if (closeDialog) {
 					disposeDialog.run();
 				}
@@ -536,7 +536,7 @@ public final class EntityDialogs {
 		}
 
 		private static Control createAddControl(EntityEditPanel editPanel,
-																						Consumer<Collection<Entity>> onInsert,
+																						Consumer<Entity> onInsert,
 																						boolean confirm) {
 			return Control.builder()
 							.command(editPanel.insertCommand()
@@ -634,7 +634,7 @@ public final class EntityDialogs {
 			}
 		}
 
-		private final class OnUpdate implements Consumer<Collection<Entity>> {
+		private final class OnUpdate implements Consumer<Entity> {
 
 			private final Runnable disposeDialog;
 
@@ -643,14 +643,14 @@ public final class EntityDialogs {
 			}
 
 			@Override
-			public void accept(Collection<Entity> updatedEntities) {
-				onUpdate.accept(updatedEntities.iterator().next());
+			public void accept(Entity updatedEntities) {
+				onUpdate.accept(updatedEntities);
 				disposeDialog.run();
 			}
 		}
 
 		private static Control createUpdateControl(EntityEditPanel editPanel,
-																							 Consumer<Collection<Entity>> onUpdate,
+																							 Consumer<Entity> onUpdate,
 																							 boolean confirm) {
 			return Control.builder()
 							.command(editPanel.updateCommand()

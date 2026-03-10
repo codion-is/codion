@@ -12,6 +12,8 @@ Codion Change Log
 - EntityEditor.nullable(attribute) removed.
 - DefaultEntityEditor bug fixed, internal mutable entity instance no longer propagated to state predicates and validators, state management refactored.
 - ComponentModels.searchModel(), EntityEditor parameter replaced with EntityConnection.
+- EntityEditor.tasks(), EntityConnection parameter added.
+- EntityEditor.PersistTask now with result type, related refactoring.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() added, configures attributes and null inclusion.
 - SwingComponentModels.comboBox(), EntityEditor parameter replaced with EntityConnection.

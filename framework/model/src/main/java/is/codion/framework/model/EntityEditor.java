@@ -26,6 +26,7 @@ import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -42,6 +43,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -202,129 +204,200 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	EditorPersistence persistence();
 
 	/**
+	 * @param connection the connection to use when persisting
 	 * @return the {@link PersistTasks} instance
 	 */
-	PersistTasks tasks();
+	PersistTasks tasks(EntityConnection connection);
 
 	/**
 	 * Represents a task for persisting entities, inserting, updating or deleting, split up for use with a background thread.
 	 * {@snippet :
-	 *   PersistTask insert = editor.insert().build();
+	 *   PersistTask<Entity> insert = editor.insert().build();
 	 *
-	 *   PersistTask.Task task = insert.prepare();
+	 *   PersistTask.Task<Entity> task = insert.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   PersistTask.Result result = task.perform();
+	 *   PersistTask.Result<Entity> result = task.perform();
 	 *
-	 *   Collection<Entity> insertedEntities = result.handle();
+	 *   Entity insertedEntity = result.handle();
 	 *}
 	 * {@link Task#perform()} may be called on a background thread while {@link PersistTask#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
+	 * @param <T> the result type
 	 */
-	interface PersistTask {
+	interface PersistTask<T> {
 
 		/**
 		 * Notifies listeners that an operation is about to be performed.
 		 * Must be called on the UI thread if this model has a panel based on it.
 		 * @return the task
 		 */
-		Task prepare();
+		Task<T> prepare();
 
 		/**
 		 * The task performing the operation
+		 * @param <T> the result type
 		 */
-		interface Task {
+		interface Task<T> {
 
 			/**
 			 * May be called in a background thread.
 			 * @return the insert result
 			 */
-			Result perform();
+			Result<T> perform();
 		}
 
 		/**
 		 * The task result
+		 * @param <T> the result type
 		 */
-		interface Result {
+		interface Result<T> {
 
 			/**
 			 * Notifies listeners that the task has been performed.
 			 * Must be called on the UI thread if this model has a panel based on it.
 			 * @return the entities involved
 			 */
-			Collection<Entity> handle();
+			T handle();
 		}
 	}
 
 	/**
 	 * Builds an async task for inserting entities.
 	 */
-	interface InsertTaskBuilder {
+	interface InsertEntityTaskBuilder {
 
 		/**
 		 * @param before called before the task is executed
 		 * @return this builder
 		 */
-		InsertTaskBuilder before(Consumer<Collection<Entity>> before);
+		InsertEntityTaskBuilder before(Consumer<Entity> before);
 
 		/**
 		 * @param after called after the task is executed
 		 * @return this builder
 		 */
-		InsertTaskBuilder after(Consumer<Collection<Entity>> after);
+		InsertEntityTaskBuilder after(Consumer<Entity> after);
 
 		/**
 		 * @return the task
-		 * @throws EntityValidationException in case of validation failure
 		 */
-		PersistTask build() throws EntityValidationException;
+		PersistTask<Entity> build();
+	}
+
+	/**
+	 * Builds an async task for inserting entities.
+	 */
+	interface InsertEntitiesTaskBuilder {
+
+		/**
+		 * @param before called before the task is executed
+		 * @return this builder
+		 */
+		InsertEntitiesTaskBuilder before(Consumer<Collection<Entity>> before);
+
+		/**
+		 * @param after called after the task is executed
+		 * @return this builder
+		 */
+		InsertEntitiesTaskBuilder after(Consumer<Collection<Entity>> after);
+
+		/**
+		 * @return the task
+		 */
+		PersistTask<Collection<Entity>> build();
 	}
 
 	/**
 	 * Builds an async task for updating entities.
 	 */
-	interface UpdateTaskBuilder {
+	interface UpdateEntityTaskBuilder {
 
 		/**
 		 * @param before called before the task is executed
 		 * @return this builder
 		 */
-		UpdateTaskBuilder before(Consumer<Collection<Entity>> before);
+		UpdateEntityTaskBuilder before(Consumer<Entity> before);
 
 		/**
 		 * @param after called after the task is executed
 		 * @return this builder
 		 */
-		UpdateTaskBuilder after(Consumer<Map<Entity, Entity>> after);
+		UpdateEntityTaskBuilder after(BiConsumer<Entity, Entity> after);
 
 		/**
 		 * @return the task
-		 * @throws EntityValidationException in case of validation failure
 		 */
-		PersistTask build() throws EntityValidationException;
+		PersistTask<Entity> build();
+	}
+
+	/**
+	 * Builds an async task for updating entities.
+	 */
+	interface UpdateEntitiesTaskBuilder {
+
+		/**
+		 * @param before called before the task is executed
+		 * @return this builder
+		 */
+		UpdateEntitiesTaskBuilder before(Consumer<Collection<Entity>> before);
+
+		/**
+		 * @param after called after the task is executed
+		 * @return this builder
+		 */
+		UpdateEntitiesTaskBuilder after(Consumer<Map<Entity, Entity>> after);
+
+		/**
+		 * @return the task
+		 */
+		PersistTask<Collection<Entity>> build();
 	}
 
 	/**
 	 * Builds an async task for deleting entities.
 	 */
-	interface DeleteTaskBuilder {
+	interface DeleteEntityTaskBuilder {
 
 		/**
 		 * @param before called before the task is executed
 		 * @return this builder
 		 */
-		DeleteTaskBuilder before(Consumer<Collection<Entity>> before);
+		DeleteEntityTaskBuilder before(Consumer<Entity> before);
 
 		/**
 		 * @param after called after the task is executed
 		 * @return this builder
 		 */
-		DeleteTaskBuilder after(Consumer<Collection<Entity>> after);
+		DeleteEntityTaskBuilder after(Consumer<Entity> after);
 
 		/**
 		 * @return the task
 		 */
-		PersistTask build();
+		PersistTask<Entity> build();
+	}
+
+	/**
+	 * Builds an async task for deleting entities.
+	 */
+	interface DeleteEntitiesTaskBuilder {
+
+		/**
+		 * @param before called before the task is executed
+		 * @return this builder
+		 */
+		DeleteEntitiesTaskBuilder before(Consumer<Collection<Entity>> before);
+
+		/**
+		 * @param after called after the task is executed
+		 * @return this builder
+		 */
+		DeleteEntitiesTaskBuilder after(Consumer<Collection<Entity>> after);
+
+		/**
+		 * @return the task
+		 */
+		PersistTask<Collection<Entity>> build();
 	}
 
 	/**
@@ -352,33 +425,62 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 
 		/**
 		 * @return a builder for an async task for inserting the active entity
+		 * @throws EntityValidationException in case of validation failure
 		 */
-		InsertTaskBuilder insert();
+		InsertEntityTaskBuilder insert() throws EntityValidationException;
 
 		/**
-		 * @return a builder for an async task for inserting the given entities
+		 * @param entity the entity
+		 * @return a builder for an async task for inserting the given entity
+		 * @throws EntityValidationException in case of validation failure
 		 */
-		InsertTaskBuilder insert(Collection<Entity> entities);
+		InsertEntityTaskBuilder insert(Entity entity) throws EntityValidationException;
+
+		/**
+		 * @param entities the entities
+		 * @return a builder for an async task for inserting the given entities
+		 * @throws EntityValidationException in case of validation failure
+		 */
+		InsertEntitiesTaskBuilder insert(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * @return a builder for an async task for updating the active entity
+		 * @throws EntityValidationException in case of validation failure
 		 */
-		UpdateTaskBuilder update();
+		UpdateEntityTaskBuilder update() throws EntityValidationException;
 
 		/**
-		 * @return a builder for an async task for updating the given entities
+		 * @param entity the entity
+		 * @return a builder for an async task for updating the given entity
+		 * @throws IllegalStateException in case the entity is not modified
+		 * @throws EntityValidationException in case of validation failure
 		 */
-		UpdateTaskBuilder update(Collection<Entity> entities);
+		UpdateEntityTaskBuilder update(Entity entity) throws EntityValidationException;
+
+		/**
+		 * @param entities the entities
+		 * @return a builder for an async task for updating the given entities
+		 * @throws IllegalStateException in case any entity is not modified
+		 * @throws EntityValidationException in case of validation failure
+		 */
+		UpdateEntitiesTaskBuilder update(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * @return a builder for an async task for deleting the active entity
 		 */
-		DeleteTaskBuilder delete();
+		DeleteEntityTaskBuilder delete();
 
 		/**
+		 * @param entity the entity
+		 * @return a builder for an async task for deleting the given entity
+		 */
+		DeleteEntityTaskBuilder delete(Entity entity);
+
+		/**
+		 * @param entities the entities
 		 * @return a builder for an async task for deleting the given entities
 		 */
-		DeleteTaskBuilder delete(Collection<Entity> entities);
+		DeleteEntitiesTaskBuilder delete(Collection<Entity> entities);
 	}
 
 	/**
