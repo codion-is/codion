@@ -668,8 +668,7 @@ public final class DefaultEntityEditModelTest {
 	@Test
 	void modifiedAndNullObserver() {
 		editor.value(Employee.NAME).set("NAME");
-		//only modified when the entity is not new
-		assertFalse(editor.value(Employee.NAME).modified().is());
+		assertTrue(editor.value(Employee.NAME).modified().is());
 		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		editor.entity().set(martin);
 		State modifiedState = State.state();

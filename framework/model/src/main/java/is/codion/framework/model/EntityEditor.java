@@ -680,8 +680,9 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		Observable<String> message();
 
 		/**
-		 * <p>Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified.
-		 * <p>Note that only attributes of existing entities are modified, attributes of new, or non-existing entities are never modified.
+		 * <p>Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified,
+		 * that is, if the current value differs from its default value.
+		 * <p>Note that unlike {@link EditorEntity#modified()} this state does not depend on whether the underlying entity exists.
 		 * @return an {@link ObservableState} indicating the modified state of the value of the given attribute
 		 * @see EntityEditor#modified()
 		 */

@@ -291,7 +291,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 		State modifiedState = attributeModified.get(attribute);
 		if (modifiedState != null) {
-			updateAttributeModifiedState(attribute, modifiedState);
+			modifiedState.set(entity.instance.modified(attribute));
 		}
 		Value<String> message = messages.get(attribute);
 		if (message != null) {
@@ -310,10 +310,6 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 		return Stream.of(validationMessage, description)
 						.collect(joining("<br>", "<html>", "</html"));
-	}
-
-	private void updateAttributeModifiedState(Attribute<?> attribute, State modifiedState) {
-		modifiedState.set(exists.is() && entity.instance.modified(attribute));
 	}
 
 	private Map<Attribute<?>, String> updateEntityValidState() {
@@ -512,7 +508,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 			for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
 				notifyValueChange(affectedAttribute, invalidAttributes);
 			}
-			attributeModified.forEach(DefaultEntityEditor.this::updateAttributeModifiedState);
+			attributeModified.forEach((attribute, modifiedState) -> modifiedState.set(instance.modified(attribute)));
 
 			changed.accept(entity);
 		}
@@ -1315,7 +1311,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		@Override
 		public ObservableState modified() {
 			return attributeModified.computeIfAbsent(attribute,
-							k -> State.state(exists.is() && entity.instance.modified(attribute))).observable();
+							k -> State.state(entity.instance.modified(attribute))).observable();
 		}
 
 		@Override
