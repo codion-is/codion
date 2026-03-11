@@ -17,6 +17,8 @@ Codion Change Log
 - EntityEditor.tasks(), EntityConnection parameter added.
 - EntityEditor.PersistTask now with result type, related refactoring.
 - EntityEditor.EditorValue.modified() now active when entity does not exist.
+- EntityEditor.EditorEntity.replace() now accepts null, for replacing with defaults.
+- DefaultEntityEditor bug fixed, warned about unsaved changes when deleting a modified entity.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() added, configures attributes and null inclusion.
 - SwingComponentModels.comboBox(), EntityEditor parameter replaced with EntityConnection.

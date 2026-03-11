@@ -517,9 +517,10 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		Observer<Entity> changing();
 
 		/**
-		 * Replaces the entity without notifying that it is changing.
+		 * Replaces the entity without notifying that it is changing. A null argument sets default values.
+		 * @see #changing()
 		 */
-		void replace(Entity entity);
+		void replace(@Nullable Entity entity);
 
 		/**
 		 * Refreshes the active Entity from the database, discarding all changes.

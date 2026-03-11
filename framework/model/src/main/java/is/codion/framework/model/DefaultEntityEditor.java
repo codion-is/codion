@@ -485,8 +485,8 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		@Override
-		public void replace(Entity entity) {
-			setOrDefaults(validateType(entity));
+		public void replace(@Nullable Entity entity) {
+			setOrDefaults(entity == null ? null : validateType(entity));
 		}
 
 		@Override
@@ -526,8 +526,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private Entity validateType(Entity entity) {
-			requireNonNull(entity);
-			if (!entityDefinition.type().equals(entity.type())) {
+			if (entity != null && !entityDefinition.type().equals(entity.type())) {
 				throw new IllegalStateException("Entity type mismatch for entity: " + entity);
 			}
 
@@ -603,7 +602,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		@Override
 		public DeleteEntityTaskBuilder delete() {
 			return new DefaultDeleteEntityTaskBuilder(entity().get().copy().mutable())
-							.after(deletedEntities -> defaults());
+							.after(deletedEntities -> entity().replace(null));
 		}
 
 		@Override
