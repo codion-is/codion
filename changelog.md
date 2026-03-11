@@ -8,6 +8,8 @@ Codion Change Log
 - User is now sealed.
 ### is.codion.common.rmi
 - RemoteClient now sealed.
+### is.codion.swing.common.model
+- FilterComboBoxModel.createSelector() renamed selector().
 ### is.codion.framework.model
 - EntityEditor.nullable(attribute) removed.
 - DefaultEntityEditor bug fixed, internal mutable entity instance no longer propagated to state predicates and validators, state management refactored.
@@ -17,6 +19,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() added, configures attributes and null inclusion.
 - SwingComponentModels.comboBox(), EntityEditor parameter replaced with EntityConnection.
+- EntityComboBoxModel.createSelector() renamed selector().
 ### is.codion.swing.framework.ui
 - EditAttributePanel, EditAttributeDialogBuilder now use SwingEntityEditor instead of SwingEntityEditModel.
 - EntityComboBox.selector() added, selector field builders moved to Selector.

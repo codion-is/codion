@@ -139,12 +139,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public <T> Value<T> createSelectorValue(Attribute<T> attribute) {
-		if (!entityItems.entityDefinition.attributes().contains(attribute)) {
-			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityItems.entityDefinition.type());
-		}
+	public <T> Value<T> selector(Attribute<T> attribute) {
+		entityItems.entityDefinition.attributes().definition(attribute);
 
-		return createSelector(new EntityFinder<>(attribute));
+		return selector(new EntityFinder<>(attribute));
 	}
 
 	@Override
@@ -158,8 +156,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public <V> Value<V> createSelector(ItemFinder<Entity, V> itemFinder) {
-		return comboBoxModel.createSelector(itemFinder);
+	public <V> Value<V> selector(ItemFinder<Entity, V> itemFinder) {
+		return comboBoxModel.selector(itemFinder);
 	}
 
 	@Override
@@ -496,7 +494,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	static class DefaultBuilder implements Builder {
+	static final class DefaultBuilder implements Builder {
 
 		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 

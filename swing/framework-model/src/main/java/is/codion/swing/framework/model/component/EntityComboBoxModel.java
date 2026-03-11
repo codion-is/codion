@@ -95,9 +95,9 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
 	 * @param <T> the attribute type
 	 * @param attribute the attribute
-	 * @return a {@link Value} for selecting items by attribute value
+	 * @return a new {@link Value} for selecting items by attribute value
 	 */
-	<T> Value<T> createSelectorValue(Attribute<T> attribute);
+	<T> Value<T> selector(Attribute<T> attribute);
 
 	/**
 	 * @return a {@link Builder.EntityTypeStep} instance

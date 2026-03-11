@@ -239,7 +239,7 @@ public final class ApplicationPanel extends JPanel {
 						.build(inputPanel::add);
 
 		FilterComboBoxModel<Item<Integer>> integerItemComboBoxModel = model.createIntegerItemComboBoxModel();
-		Value<Integer> integerItemSelector = integerItemComboBoxModel.createSelector(new IntegerItemFinder());
+		Value<Integer> integerItemSelector = integerItemComboBoxModel.selector(new IntegerItemFinder());
 		NumberField<Integer> integerItemSelectorField = integerField()
 						.link(integerItemSelector)
 						.columns(2)

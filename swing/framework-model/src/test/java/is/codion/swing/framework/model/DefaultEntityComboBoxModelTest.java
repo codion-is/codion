@@ -319,8 +319,8 @@ public final class DefaultEntityComboBoxModelTest {
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER).build();
 		comboBoxModel.items().refresh();
-		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.createSelectorValue(Department.ID));
-		Value<Integer> empIdValue = comboBoxModel.createSelectorValue(Employee.ID);
+		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.selector(Department.ID));
+		Value<Integer> empIdValue = comboBoxModel.selector(Employee.ID);
 		assertNull(empIdValue.get());
 		Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);
 		comboBoxModel.select(jonesKey);

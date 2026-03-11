@@ -241,7 +241,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 						Attribute<Integer> attribute) {
 			requireNonNull(attribute);
 			return (B) Components.integerField()
-							.link(getModel().createSelectorValue(attribute))
+							.link(model().selector(attribute))
 							.columns(2)
 							.selectAllOnFocusGained(true);
 		}
@@ -256,7 +256,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 						ItemFinder<Entity, Integer> itemFinder) {
 			requireNonNull(itemFinder);
 			return (B) Components.integerField()
-							.link(getModel().createSelector(itemFinder))
+							.link(model().selector(itemFinder))
 							.columns(2)
 							.selectAllOnFocusGained(true);
 		}
@@ -271,7 +271,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 						Attribute<String> attribute) {
 			requireNonNull(attribute);
 			return (B) Components.stringField()
-							.link(getModel().createSelectorValue(attribute))
+							.link(model().selector(attribute))
 							.columns(2)
 							.selectAllOnFocusGained(true);
 		}
@@ -286,7 +286,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 						ItemFinder<Entity, String> itemFinder) {
 			requireNonNull(itemFinder);
 			return (B) Components.stringField()
-							.link(getModel().createSelector(itemFinder))
+							.link(model().selector(itemFinder))
 							.columns(2)
 							.selectAllOnFocusGained(true);
 		}
