@@ -84,7 +84,7 @@ public class EntityComboBoxTest {
 		EntityComboBox comboBox = EntityComboBox.builder()
 						.model(comboBoxModel)
 						.build();
-		NumberField<Integer> empIdValue = comboBox.integerSelectorField(Employee.ID).build();
+		NumberField<Integer> empIdValue = comboBox.selector().integerField(Employee.ID).build();
 		assertEquals(3, empIdValue.get());
 		Entity.Key blakeKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);
 		comboBoxModel.select(blakeKey);

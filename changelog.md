@@ -19,6 +19,7 @@ Codion Change Log
 - SwingComponentModels.comboBox(), EntityEditor parameter replaced with EntityConnection.
 ### is.codion.swing.framework.ui
 - EditAttributePanel, EditAttributeDialogBuilder now use SwingEntityEditor instead of SwingEntityEditModel.
+- EntityComboBox.selector() added, selector field builders moved to Selector.
 
 ## 0.18.70
 ### is.codion.common.reactive

@@ -163,63 +163,10 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
-	 * Creates a {@link TextFieldBuilder} returning a {@link NumberField} which value is bound to the selected value in this combo box
-	 * @param attribute the attribute
-	 * @param <B> the builder type
-	 * @return a {@link NumberField} builder bound to the selected value
+	 * @return the Selector instance, providing selector fields
 	 */
-	public <B extends TextFieldBuilder<NumberField<Integer>, Integer, B>> TextFieldBuilder<NumberField<Integer>, Integer, B> integerSelectorField(
-					Attribute<Integer> attribute) {
-		requireNonNull(attribute);
-		return (B) Components.integerField()
-						.link(getModel().createSelectorValue(attribute))
-						.columns(2)
-						.selectAllOnFocusGained(true);
-	}
-
-	/**
-	 * Creates a {@link TextFieldBuilder} returning a {@link NumberField} which value is bound to the selected value in this combo box
-	 * @param itemFinder responsible for finding the item to select by value
-	 * @param <B> the builder type
-	 * @return a {@link NumberField} builder bound to the selected value
-	 */
-	public <B extends TextFieldBuilder<NumberField<Integer>, Integer, B>> TextFieldBuilder<NumberField<Integer>, Integer, B> integerSelectorField(
-					ItemFinder<Entity, Integer> itemFinder) {
-		requireNonNull(itemFinder);
-		return (B) Components.integerField()
-						.link(getModel().createSelector(itemFinder))
-						.columns(2)
-						.selectAllOnFocusGained(true);
-	}
-
-	/**
-	 * Creates a {@link TextFieldBuilder} returning a text field which value is bound to the selected value in this combo box
-	 * @param attribute the attribute
-	 * @param <B> the builder type
-	 * @return a {@link JTextField} builder bound to the selected value
-	 */
-	public <B extends TextFieldBuilder<JTextField, String, B>> TextFieldBuilder<JTextField, String, B> stringSelectorField(
-					Attribute<String> attribute) {
-		requireNonNull(attribute);
-		return (B) Components.stringField()
-						.link(getModel().createSelectorValue(attribute))
-						.columns(2)
-						.selectAllOnFocusGained(true);
-	}
-
-	/**
-	 * Creates a {@link TextFieldBuilder} returning a text field which value is bound to the selected value in this combo box
-	 * @param itemFinder responsible for finding the item to select by value
-	 * @param <B> the builder type
-	 * @return a {@link JTextField} builder bound to the selected value
-	 */
-	public <B extends TextFieldBuilder<JTextField, String, B>> TextFieldBuilder<JTextField, String, B> stringSelectorField(
-					ItemFinder<Entity, String> itemFinder) {
-		requireNonNull(itemFinder);
-		return (B) Components.stringField()
-						.link(getModel().createSelector(itemFinder))
-						.columns(2)
-						.selectAllOnFocusGained(true);
+	public Selector selector() {
+		return new Selector();
 	}
 
 	/**
@@ -275,6 +222,74 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		 * @see #editPanel(Supplier)
 		 */
 		Builder confirmEdit(boolean confirmEdit);
+	}
+
+	/**
+	 * Provides builders for selector fields.
+	 */
+	public final class Selector {
+
+		private Selector() {}
+
+		/**
+		 * Creates a {@link TextFieldBuilder} returning a {@link NumberField} which value is bound to the selected value in this combo box
+		 * @param attribute the attribute
+		 * @param <B> the builder type
+		 * @return a {@link NumberField} builder bound to the selected value
+		 */
+		public <B extends TextFieldBuilder<NumberField<Integer>, Integer, B>> TextFieldBuilder<NumberField<Integer>, Integer, B> integerField(
+						Attribute<Integer> attribute) {
+			requireNonNull(attribute);
+			return (B) Components.integerField()
+							.link(getModel().createSelectorValue(attribute))
+							.columns(2)
+							.selectAllOnFocusGained(true);
+		}
+
+		/**
+		 * Creates a {@link TextFieldBuilder} returning a {@link NumberField} which value is bound to the selected value in this combo box
+		 * @param itemFinder responsible for finding the item to select by value
+		 * @param <B> the builder type
+		 * @return a {@link NumberField} builder bound to the selected value
+		 */
+		public <B extends TextFieldBuilder<NumberField<Integer>, Integer, B>> TextFieldBuilder<NumberField<Integer>, Integer, B> integerField(
+						ItemFinder<Entity, Integer> itemFinder) {
+			requireNonNull(itemFinder);
+			return (B) Components.integerField()
+							.link(getModel().createSelector(itemFinder))
+							.columns(2)
+							.selectAllOnFocusGained(true);
+		}
+
+		/**
+		 * Creates a {@link TextFieldBuilder} returning a text field which value is bound to the selected value in this combo box
+		 * @param attribute the attribute
+		 * @param <B> the builder type
+		 * @return a {@link JTextField} builder bound to the selected value
+		 */
+		public <B extends TextFieldBuilder<JTextField, String, B>> TextFieldBuilder<JTextField, String, B> stringField(
+						Attribute<String> attribute) {
+			requireNonNull(attribute);
+			return (B) Components.stringField()
+							.link(getModel().createSelectorValue(attribute))
+							.columns(2)
+							.selectAllOnFocusGained(true);
+		}
+
+		/**
+		 * Creates a {@link TextFieldBuilder} returning a text field which value is bound to the selected value in this combo box
+		 * @param itemFinder responsible for finding the item to select by value
+		 * @param <B> the builder type
+		 * @return a {@link JTextField} builder bound to the selected value
+		 */
+		public <B extends TextFieldBuilder<JTextField, String, B>> TextFieldBuilder<JTextField, String, B> stringField(
+						ItemFinder<Entity, String> itemFinder) {
+			requireNonNull(itemFinder);
+			return (B) Components.stringField()
+							.link(getModel().createSelector(itemFinder))
+							.columns(2)
+							.selectAllOnFocusGained(true);
+		}
 	}
 
 	private @Nullable CommandControl createAddControl(@Nullable Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {

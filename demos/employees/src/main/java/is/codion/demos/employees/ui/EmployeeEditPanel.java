@@ -70,7 +70,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
 	private JPanel createDepartmentPanel() {
 		EntityComboBox departmentBox = (EntityComboBox) component(Employee.DEPARTMENT_FK).get();
-		NumberField<Integer> departmentNumberField = departmentBox.integerSelectorField(Department.DEPARTMENT_NO)
+		NumberField<Integer> departmentNumberField = departmentBox.selector().integerField(Department.DEPARTMENT_NO)
 						.transferFocusOnEnter(true)
 						.valid(editModel().editor().value(Employee.DEPARTMENT_FK).valid())
 						.build();
