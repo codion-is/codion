@@ -1502,44 +1502,20 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 	private static final class DefaultPersistEvents implements PersistEvents {
 
-		private final Event<Collection<Entity>> beforeInsert = Event.event();
-		private final Event<Collection<Entity>> afterInsert = Event.event();
-		private final Event<Collection<Entity>> beforeUpdate = Event.event();
-		private final Event<Map<Entity, Entity>> afterUpdate = Event.event();
-		private final Event<Collection<Entity>> beforeDelete = Event.event();
-		private final Event<Collection<Entity>> afterDelete = Event.event();
+		private final DefaultBeforePersist before = new DefaultBeforePersist();
+		private final DefaultAfterPersist after = new DefaultAfterPersist();
 		private final Event<Collection<Entity>> persisted = Event.event();
 
 		private final State publishPersistenceEvents = State.state(PUBLISH_PERSISTENCE_EVENTS.getOrThrow());
 
 		@Override
-		public Observer<Collection<Entity>> beforeInsert() {
-			return beforeInsert.observer();
+		public BeforePersist before() {
+			return before;
 		}
 
 		@Override
-		public Observer<Collection<Entity>> afterInsert() {
-			return afterInsert.observer();
-		}
-
-		@Override
-		public Observer<Collection<Entity>> beforeUpdate() {
-			return beforeUpdate.observer();
-		}
-
-		@Override
-		public Observer<Map<Entity, Entity>> afterUpdate() {
-			return afterUpdate.observer();
-		}
-
-		@Override
-		public Observer<Collection<Entity>> beforeDelete() {
-			return beforeDelete.observer();
-		}
-
-		@Override
-		public Observer<Collection<Entity>> afterDelete() {
-			return afterDelete.observer();
+		public AfterPersist after() {
+			return after;
 		}
 
 		@Override
@@ -1552,7 +1528,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void beforeInsert(Collection<Entity> entities) {
-			beforeInsert.accept(entities);
+			before.insert.accept(entities);
 		}
 
 		private void afterInsert(Entity entity) {
@@ -1560,7 +1536,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void afterInsert(Collection<Entity> inserted) {
-			afterInsert.accept(inserted);
+			after.insert.accept(inserted);
 			persisted.accept(inserted);
 			if (publishPersistenceEvents.is()) {
 				notifyInserted(inserted);
@@ -1572,7 +1548,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void beforeUpdate(Collection<Entity> entities) {
-			beforeUpdate.accept(entities);
+			before.update.accept(entities);
 		}
 
 		private void afterUpdate(Entity before, Entity after) {
@@ -1580,7 +1556,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void afterUpdate(Map<Entity, Entity> updated) {
-			afterUpdate.accept(updated);
+			after.update.accept(updated);
 			persisted.accept(updated.values());
 			if (publishPersistenceEvents.is()) {
 				notifyUpdated(updated);
@@ -1592,7 +1568,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void beforeDelete(Collection<Entity> entities) {
-			beforeDelete.accept(entities);
+			before.delete.accept(entities);
 		}
 
 		private void afterDelete(Entity deleted) {
@@ -1600,7 +1576,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		private void afterDelete(Collection<Entity> deleted) {
-			afterDelete.accept(deleted);
+			after.delete.accept(deleted);
 			persisted.accept(deleted);
 			if (publishPersistenceEvents.is()) {
 				notifyDeleted(deleted);
@@ -1623,6 +1599,50 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		private static void notifyDeleted(Collection<Entity> deleted) {
 			groupByType(deleted).forEach((entityType, entities) ->
 							persistenceEvents(entityType).deleted().accept(entities));
+		}
+
+		private static final class DefaultBeforePersist implements BeforePersist {
+
+			private final Event<Collection<Entity>> insert = Event.event();
+			private final Event<Collection<Entity>> update = Event.event();
+			private final Event<Collection<Entity>> delete = Event.event();
+
+			@Override
+			public Observer<Collection<Entity>> insert() {
+				return insert.observer();
+			}
+
+			@Override
+			public Observer<Collection<Entity>> update() {
+				return update.observer();
+			}
+
+			@Override
+			public Observer<Collection<Entity>> delete() {
+				return delete.observer();
+			}
+		}
+
+		private static final class DefaultAfterPersist implements AfterPersist {
+
+			private final Event<Collection<Entity>> insert = Event.event();
+			private final Event<Map<Entity, Entity>> update = Event.event();
+			private final Event<Collection<Entity>> delete = Event.event();
+
+			@Override
+			public Observer<Collection<Entity>> insert() {
+				return insert.observer();
+			}
+
+			@Override
+			public Observer<Map<Entity, Entity>> update() {
+				return update.observer();
+			}
+
+			@Override
+			public Observer<Collection<Entity>> delete() {
+				return delete.observer();
+			}
 		}
 	}
 }

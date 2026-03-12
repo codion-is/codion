@@ -371,39 +371,61 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	interface PersistEvents {
 
 		/**
-		 * @return an observer notified before insert is performed, after validation
+		 * @return the {@link BeforePersist}
 		 */
-		Observer<Collection<Entity>> beforeInsert();
+		BeforePersist before();
 
 		/**
-		 * @return an observer notified after insert is performed
+		 * @return the {@link AfterPersist}
 		 */
-		Observer<Collection<Entity>> afterInsert();
-
-		/**
-		 * @return an observer notified before update is performed, after validation
-		 */
-		Observer<Collection<Entity>> beforeUpdate();
-
-		/**
-		 * @return an observer notified after update is performed, with the updated entities, mapped to their state before the update
-		 */
-		Observer<Map<Entity, Entity>> afterUpdate();
-
-		/**
-		 * @return an observer notified before delete is performed
-		 */
-		Observer<Collection<Entity>> beforeDelete();
-
-		/**
-		 * @return an observer notified after delete is performed
-		 */
-		Observer<Collection<Entity>> afterDelete();
+		AfterPersist after();
 
 		/**
 		 * @return an observer notified each time one or more entities have been persisted, as in, inserted, updated or deleted via this model
 		 */
 		Observer<Collection<Entity>> persisted();
+
+		/**
+		 * Events triggered before entities are persisted.
+		 */
+		interface BeforePersist {
+
+			/**
+			 * @return an observer notified before insert is performed, after validation
+			 */
+			Observer<Collection<Entity>> insert();
+
+			/**
+			 * @return an observer notified before update is performed, after validation
+			 */
+			Observer<Collection<Entity>> update();
+
+			/**
+			 * @return an observer notified before delete is performed
+			 */
+			Observer<Collection<Entity>> delete();
+		}
+
+		/**
+		 * Events triggered after entities are persisted.
+		 */
+		interface AfterPersist {
+
+			/**
+			 * @return an observer notified after insert is performed
+			 */
+			Observer<Collection<Entity>> insert();
+
+			/**
+			 * @return an observer notified after update is performed, with the updated entities, mapped to their state before the update
+			 */
+			Observer<Map<Entity, Entity>> update();
+
+			/**
+			 * @return an observer notified after delete is performed
+			 */
+			Observer<Collection<Entity>> delete();
+		}
 	}
 
 	/**

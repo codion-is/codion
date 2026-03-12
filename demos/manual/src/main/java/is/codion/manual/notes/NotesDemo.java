@@ -123,7 +123,7 @@ public final class NotesDemo {
 		private NoteEditModel(EntityConnectionProvider connectionProvider) {
 			super(Note.TYPE, connectionProvider);
 			// Set the Note.UPDATED value before we perform an update
-			editor().events().beforeUpdate().addConsumer(notes ->
+			editor().events().before().update().addConsumer(notes ->
 							notes.forEach(note -> note.set(Note.UPDATED, LocalDateTime.now())));
 		}
 	}

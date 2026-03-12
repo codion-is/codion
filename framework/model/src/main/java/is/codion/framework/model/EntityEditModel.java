@@ -106,8 +106,8 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
-	 * @see PersistEvents#beforeInsert()
-	 * @see PersistEvents#afterInsert()
+	 * @see PersistEvents.BeforePersist#insert()
+	 * @see PersistEvents.AfterPersist#insert()
 	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
@@ -121,8 +121,8 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
-	 * @see PersistEvents#beforeInsert()
-	 * @see PersistEvents#afterInsert()
+	 * @see PersistEvents.BeforePersist#insert()
+	 * @see PersistEvents.AfterPersist#insert()
 	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
@@ -137,8 +137,8 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 	 * @throws EntityValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
 	 * @throws UpdateEntityException in case the active entity is not modified
-	 * @see PersistEvents#beforeUpdate()
-	 * @see PersistEvents#afterUpdate()
+	 * @see PersistEvents.BeforePersist#update()
+	 * @see PersistEvents.AfterPersist#update()
 	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
@@ -154,8 +154,8 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 	 * @throws EntityValidationException in case validation fails
 	 * @throws IllegalStateException in case updating is not enabled
 	 * @throws UpdateEntityException in case any of the given entities are not modified
-	 * @see PersistEvents#beforeUpdate()
-	 * @see PersistEvents#afterUpdate()
+	 * @see PersistEvents.BeforePersist#update()
+	 * @see PersistEvents.AfterPersist#update()
 	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
@@ -166,8 +166,8 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 	 * @return the deleted entity
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
-	 * @see PersistEvents#beforeDelete()
-	 * @see PersistEvents#afterDelete()
+	 * @see PersistEvents.BeforePersist#delete()
+	 * @see PersistEvents.AfterPersist#delete()
 	 * @see Settings#deleteEnabled()
 	 */
 	Entity delete();
@@ -178,8 +178,8 @@ public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends En
 	 * @return the deleted entities
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
-	 * @see PersistEvents#beforeDelete()
-	 * @see PersistEvents#afterDelete()
+	 * @see PersistEvents.BeforePersist#delete()
+	 * @see PersistEvents.AfterPersist#delete()
 	 * @see Settings#deleteEnabled()
 	 */
 	Collection<Entity> delete(Collection<Entity> entities);

@@ -20,6 +20,7 @@ Codion Change Log
 - EntityEditor.EditorEntity.replace() now accepts null, for replacing with defaults.
 - DefaultEntityEditor bug fixed, warned about unsaved changes when deleting a modified entity.
 - EntityEditModel.PersistTasks removed, EntityEditor, task builders removed, related refactoring.
+- EntityEditor.PersistEvents.BeforePersist and AfterPersist added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() added, configures attributes and null inclusion.
 - SwingComponentModels.comboBox(), EntityEditor parameter replaced with EntityConnection.
