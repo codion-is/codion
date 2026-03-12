@@ -211,6 +211,16 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	EntityApplication<M, P> user(Supplier<User> userSupplier);
 
 	/**
+	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connectionProvider(Function)}.
+	 * <p>This may be via a login dialog or simply by returning a hardcoded instance.
+	 * <p>This function receives the default user set via {@link #defaultUser(User)} or the one saved in application preferences, null if none is available.
+	 * <p>Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
+	 * @param userSupplier supplies the application user, for example via a login dialog
+	 * @return this {@link EntityApplication} instance
+	 */
+	EntityApplication<M, P> user(Function<@Nullable User, Supplier<User>> userSupplier);
+
+	/**
 	 * @param defaultUser the default user credentials to display in a login dialog
 	 * @return this {@link EntityApplication} instance
 	 */

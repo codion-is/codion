@@ -109,7 +109,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	private @Nullable Observable<String> frameTitle;
 	private boolean connectionInfoUpperCase = CONNECTION_INFO_UPPER_CASE.getOrThrow();
 
-	private Supplier<User> userSupplier = new DefaultUserSupplier();
+	private Function<@Nullable User, Supplier<User>> userSupplier = new DefaultUserSupplier();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
 	private boolean startupDialog = STARTUP_DIALOG.getOrThrow();
 	private @Nullable ImageIcon icon;
@@ -215,6 +215,13 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	@Override
 	public EntityApplication<M, P> user(Supplier<User> userSupplier) {
+		requireNonNull(userSupplier);
+		this.userSupplier = u -> userSupplier;
+		return this;
+	}
+
+	@Override
+	public EntityApplication<M, P> user(Function<@Nullable User, Supplier<User>> userSupplier) {
 		this.userSupplier = requireNonNull(userSupplier);
 		return this;
 	}
@@ -550,7 +557,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		if (connectionProvider != null) {
 			return connectionProvider;
 		}
-		User connectionUser = user == null ? userSupplier.get() : user;
+		User connectionUser = user == null ? userSupplier.apply(defaultUser).get() : user;
 		if (connectionProviderFunction != null) {
 			return connectionProviderFunction.apply(connectionUser);
 		}
@@ -604,19 +611,19 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		}
 	}
 
-	private final class DefaultUserSupplier implements Supplier<User> {
+	private final class DefaultUserSupplier implements Function<@Nullable User, Supplier<User>> {
 
 		private final DefaultLoginValidator loginValidator = new DefaultLoginValidator();
 
 		@Override
-		public User get() {
+		public Supplier<User> apply(@Nullable User user) {
 			return Dialogs.login()
-							.defaultUser(defaultUser)
+							.defaultUser(user)
 							.validator(loginValidator)
 							.title(loginDialogTitle())
 							.icon(icon)
 							.southComponent(loginPanelSouthComponentSupplier.get())
-							.show();
+							::show;
 		}
 
 		private String loginDialogTitle() {
