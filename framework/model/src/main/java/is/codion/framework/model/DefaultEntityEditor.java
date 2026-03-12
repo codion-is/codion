@@ -59,7 +59,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -559,31 +558,21 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		public PersistTask<Entity> insert() throws EntityValidationException {
 			validate();
 
-			return new InsertEntityTaskBuilder(entity().get().copy().mutable())
-							.before(persistEvents::beforeInsert)
-							.after(insertedEntity -> entity().replace(insertedEntity))
-							.after(persistEvents::afterInsert)
-							.build();
+			return new DefaultInsertEntity();
 		}
 
 		@Override
 		public PersistTask<Entity> insert(Entity entity) throws EntityValidationException {
 			validate(requireNonNull(entity));
 
-			return new InsertEntityTaskBuilder(entity.copy().mutable())
-							.before(persistEvents::beforeInsert)
-							.after(persistEvents::afterInsert)
-							.build();
+			return new DefaultInsertEntity(entity.copy().mutable());
 		}
 
 		@Override
 		public PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
 			validate(requireNonNull(entities));
 
-			return new InsertEntitiesTaskBuilder(entities)
-							.before(persistEvents::beforeInsert)
-							.after(persistEvents::afterInsert)
-							.build();
+			return new DefaultInsertEntitiesTask(entities);
 		}
 
 		@Override
@@ -593,11 +582,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 				throw new IllegalStateException(NOT_MODIFIED + entity().get());
 			}
 
-			return new UpdateEntityTaskBuilder(entity().get().copy().mutable())
-							.before(persistEvents::beforeUpdate)
-							.after((beforeUpdate, afterUpdate) -> entity().replace(afterUpdate))
-							.after(persistEvents::afterUpdate)
-							.build();
+			return new UpdateEntity();
 		}
 
 		@Override
@@ -607,10 +592,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 				throw new IllegalStateException(NOT_MODIFIED + entity);
 			}
 
-			return new UpdateEntityTaskBuilder(entity.copy().mutable())
-							.before(persistEvents::beforeUpdate)
-							.after(persistEvents::afterUpdate)
-							.build();
+			return new UpdateEntity(entity.copy().mutable());
 		}
 
 		@Override
@@ -622,204 +604,42 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 				}
 			}
 
-			return new UpdateEntitiesTaskBuilder(entities)
-							.before(persistEvents::beforeUpdate)
-							.after(persistEvents::afterUpdate)
-							.build();
+			return new UpdateEntities(entities);
 		}
 
 		@Override
 		public PersistTask<Entity> delete() {
-			return new DeleteEntityTaskBuilder(entity().get().copy().mutable())
-							.before(persistEvents::beforeDelete)
-							.after(deletedEntities -> entity().replace(null))
-							.after(persistEvents::afterDelete)
-							.build();
+			return new DeleteEntity();
 		}
 
 		@Override
 		public PersistTask<Entity> delete(Entity entity) {
-			return new DeleteEntityTaskBuilder(requireNonNull(entity).copy().mutable())
-							.before(persistEvents::beforeDelete)
-							.after(persistEvents::afterDelete)
-							.build();
+			return new DeleteEntity(requireNonNull(entity).copy().mutable());
 		}
 
 		@Override
 		public PersistTask<Collection<Entity>> delete(Collection<Entity> entities) {
-			return new DeleteEntitiesTaskBuilder(requireNonNull(entities))
-							.before(persistEvents::beforeDelete)
-							.after(persistEvents::afterDelete)
-							.build();
-		}
-
-		private final class InsertEntityTaskBuilder {
-
-			private final Entity entity;
-			private final Collection<Consumer<Entity>> before = new ArrayList<>();
-			private final Collection<Consumer<Entity>> after = new ArrayList<>();
-
-			private InsertEntityTaskBuilder(Entity entity) {
-				this.entity = entity;
-			}
-
-			private InsertEntityTaskBuilder before(Consumer<Entity> before) {
-				this.before.add(before);
-				return this;
-			}
-
-			private InsertEntityTaskBuilder after(Consumer<Entity> after) {
-				this.after.add(after);
-				return this;
-			}
-
-			private PersistTask<Entity> build() {
-				return new DefaultInsertEntity(entity, before, after);
-			}
-		}
-
-		private final class InsertEntitiesTaskBuilder {
-
-			private final Collection<Entity> entities;
-			private final Collection<Consumer<Collection<Entity>>> before = new ArrayList<>();
-			private final Collection<Consumer<Collection<Entity>>> after = new ArrayList<>();
-
-			private InsertEntitiesTaskBuilder(Collection<Entity> entities) {
-				this.entities = entities;
-			}
-
-			private InsertEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
-				this.before.add(before);
-				return this;
-			}
-
-			private InsertEntitiesTaskBuilder after(Consumer<Collection<Entity>> after) {
-				this.after.add(after);
-				return this;
-			}
-
-			private PersistTask<Collection<Entity>> build() {
-				return new DefaultInsertEntitiesTask(entities, before, after);
-			}
-		}
-
-		private final class UpdateEntityTaskBuilder {
-
-			private final Entity entity;
-			private final Collection<Consumer<Entity>> before = new ArrayList<>();
-			private final Collection<BiConsumer<Entity, Entity>> after = new ArrayList<>();
-
-			private UpdateEntityTaskBuilder(Entity entity) {
-				this.entity = entity;
-			}
-
-			private UpdateEntityTaskBuilder before(Consumer<Entity> before) {
-				this.before.add(before);
-				return this;
-			}
-
-			private UpdateEntityTaskBuilder after(BiConsumer<Entity, Entity> after) {
-				this.after.add(after);
-				return this;
-			}
-
-			private PersistTask<Entity> build() {
-				return new UpdateEntity(entity, before, after);
-			}
-		}
-
-		private final class UpdateEntitiesTaskBuilder {
-
-			private final Collection<Entity> entities;
-			private final Collection<Consumer<Collection<Entity>>> before = new ArrayList<>();
-			private final Collection<Consumer<Map<Entity, Entity>>> after = new ArrayList<>();
-
-			private UpdateEntitiesTaskBuilder(Collection<Entity> entities) {
-				this.entities = entities;
-			}
-
-			private UpdateEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
-				this.before.add(before);
-				return this;
-			}
-
-			private UpdateEntitiesTaskBuilder after(Consumer<Map<Entity, Entity>> after) {
-				this.after.add(after);
-				return this;
-			}
-
-			private PersistTask<Collection<Entity>> build() {
-				return new UpdateEntities(entities, before, after);
-			}
-		}
-
-		private final class DeleteEntityTaskBuilder {
-
-			private final Entity entity;
-			private final Collection<Consumer<Entity>> before = new ArrayList<>();
-			private final Collection<Consumer<Entity>> after = new ArrayList<>();
-
-			private DeleteEntityTaskBuilder(Entity entity) {
-				this.entity = entity;
-			}
-
-			private DeleteEntityTaskBuilder before(Consumer<Entity> before) {
-				this.before.add(before);
-				return this;
-			}
-
-			private DeleteEntityTaskBuilder after(Consumer<Entity> after) {
-				this.after.add(after);
-				return this;
-			}
-
-			private PersistTask<Entity> build() {
-				return new DeleteEntity(entity, before, after);
-			}
-		}
-
-		private final class DeleteEntitiesTaskBuilder {
-
-			private final Collection<Entity> entities;
-			private final Collection<Consumer<Collection<Entity>>> before = new ArrayList<>();
-			private final Collection<Consumer<Collection<Entity>>> after = new ArrayList<>();
-
-			private DeleteEntitiesTaskBuilder(Collection<Entity> entities) {
-				this.entities = entities;
-			}
-
-			private DeleteEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
-				this.before.add(requireNonNull(before));
-				return this;
-			}
-
-			private DeleteEntitiesTaskBuilder after(Consumer<Collection<Entity>> after) {
-				this.after.add(requireNonNull(after));
-				return this;
-			}
-
-			private PersistTask<Collection<Entity>> build() {
-				return new DeleteEntities(entities, before, after);
-			}
+			return new DeleteEntities(requireNonNull(entities));
 		}
 
 		private final class DefaultInsertEntity implements PersistTask<Entity> {
 
 			private final Entity entity;
-			private final Collection<Consumer<Entity>> before;
-			private final Collection<Consumer<Entity>> after;
+			private final Consumer<Entity> handler;
 
-			private DefaultInsertEntity(Entity entity,
-																	Collection<Consumer<Entity>> before,
-																	Collection<Consumer<Entity>> after) {
+			private DefaultInsertEntity() {
+				this.entity = entity().get().copy().mutable();
+				this.handler = inserted -> entity().replace(inserted);
+			}
+
+			private DefaultInsertEntity(Entity entity) {
 				this.entity = entity;
-				this.before = before;
-				this.after = after;
+				this.handler = e -> {};
 			}
 
 			@Override
 			public Task<Entity> prepare() {
-				before.forEach(consumer -> consumer.accept(entity));
+				persistEvents.beforeInsert(entity);
 
 				return new DefaultInsertEntity.InsertTask();
 			}
@@ -844,7 +664,8 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 				@Override
 				public Entity handle() {
-					after.forEach(consumer -> consumer.accept(insertedEntity));
+					handler.accept(insertedEntity);
+					persistEvents.afterInsert(insertedEntity);
 
 					return insertedEntity;
 				}
@@ -854,20 +675,14 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		private final class DefaultInsertEntitiesTask implements PersistTask<Collection<Entity>> {
 
 			private final Collection<Entity> entities;
-			private final Collection<Consumer<Collection<Entity>>> before;
-			private final Collection<Consumer<Collection<Entity>>> after;
 
-			private DefaultInsertEntitiesTask(Collection<Entity> entities,
-																				Collection<Consumer<Collection<Entity>>> before,
-																				Collection<Consumer<Collection<Entity>>> after) {
+			private DefaultInsertEntitiesTask(Collection<Entity> entities) {
 				this.entities = unmodifiableCollection(new ArrayList<>(entities));
-				this.before = before;
-				this.after = after;
 			}
 
 			@Override
 			public Task<Collection<Entity>> prepare() {
-				before.forEach(consumer -> consumer.accept(entities));
+				persistEvents.beforeInsert(entities);
 
 				return new DefaultInsertEntitiesTask.InsertTask();
 			}
@@ -892,7 +707,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 				@Override
 				public Collection<Entity> handle() {
-					after.forEach(consumer -> consumer.accept(insertedEntities));
+					persistEvents.afterInsert(insertedEntities);
 
 					return insertedEntities;
 				}
@@ -902,20 +717,21 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		private final class UpdateEntity implements PersistTask<Entity> {
 
 			private final Entity entity;
-			private final Collection<Consumer<Entity>> before;
-			private final Collection<BiConsumer<Entity, Entity>> after;
+			private final Consumer<Entity> handler;
 
-			private UpdateEntity(Entity entity,
-													 Collection<Consumer<Entity>> before,
-													 Collection<BiConsumer<Entity, Entity>> after) {
+			private UpdateEntity() {
+				this.entity = entity().get().copy().mutable();
+				this.handler = updated -> entity().replace(updated);
+			}
+
+			private UpdateEntity(Entity entity) {
 				this.entity = entity;
-				this.before = before;
-				this.after = after;
+				this.handler = e -> {};
 			}
 
 			@Override
 			public Task<Entity> prepare() {
-				before.forEach(consumer -> consumer.accept(entity));
+				persistEvents.beforeUpdate(entity);
 
 				return new UpdateEntity.UpdateTask();
 			}
@@ -940,7 +756,8 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 				@Override
 				public Entity handle() {
-					after.forEach(consumer -> consumer.accept(entity.immutable(), updatedEntity));
+					handler.accept(updatedEntity);
+					persistEvents.afterUpdate(entity, updatedEntity);
 
 					return updatedEntity;
 				}
@@ -950,20 +767,14 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		private final class UpdateEntities implements PersistTask<Collection<Entity>> {
 
 			private final Collection<Entity> entities;
-			private final Collection<Consumer<Collection<Entity>>> before;
-			private final Collection<Consumer<Map<Entity, Entity>>> after;
 
-			private UpdateEntities(Collection<Entity> entities,
-														 Collection<Consumer<Collection<Entity>>> before,
-														 Collection<Consumer<Map<Entity, Entity>>> after) {
+			private UpdateEntities(Collection<Entity> entities) {
 				this.entities = unmodifiableCollection(new ArrayList<>(entities));
-				this.before = before;
-				this.after = after;
 			}
 
 			@Override
 			public Task<Collection<Entity>> prepare() {
-				before.forEach(consumer -> consumer.accept(entities));
+				persistEvents.beforeUpdate(entities);
 
 				return new UpdateEntities.UpdateTask();
 			}
@@ -988,7 +799,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 				@Override
 				public Collection<Entity> handle() {
-					after.forEach(consumer -> consumer.accept(originalEntityMap(entities, updatedEntities)));
+					persistEvents.afterUpdate(originalEntityMap(entities, updatedEntities));
 
 					return updatedEntities;
 				}
@@ -1028,21 +839,22 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		private final class DeleteEntity implements PersistTask<Entity> {
 
 			private final Entity entity;
-			private final Collection<Consumer<Entity>> before;
-			private final Collection<Consumer<Entity>> after;
+			private final Runnable handler;
 
-			private DeleteEntity(Entity entity,
-													 Collection<Consumer<Entity>> before,
-													 Collection<Consumer<Entity>> after) {
+			private DeleteEntity() {
+				this.entity = entity().get().copy().mutable();
+				this.handler = () -> entity().replace(null);
+			}
+
+			private DeleteEntity(Entity entity) {
 				this.entity = entity;
-				this.before = before;
-				this.after = after;
-				entity.revert();
+				this.handler = () -> {};
 			}
 
 			@Override
 			public Task<Entity> prepare() {
-				before.forEach(consumer -> consumer.accept(entity));
+				entity.revert();// in case of a modified primary key
+				persistEvents.beforeDelete(entity);
 
 				return new DeleteEntity.DeleteTask();
 			}
@@ -1068,7 +880,8 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 				@Override
 				public Entity handle() {
-					after.forEach(consumer -> consumer.accept(deletedEntity));
+					handler.run();
+					persistEvents.afterDelete(deletedEntity);
 
 					return deletedEntity;
 				}
@@ -1078,20 +891,15 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		private final class DeleteEntities implements PersistTask<Collection<Entity>> {
 
 			private final Collection<Entity> entities;
-			private final Collection<Consumer<Collection<Entity>>> before;
-			private final Collection<Consumer<Collection<Entity>>> after;
 
-			private DeleteEntities(Collection<Entity> entities,
-														 Collection<Consumer<Collection<Entity>>> before,
-														 Collection<Consumer<Collection<Entity>>> after) {
+			private DeleteEntities(Collection<Entity> entities) {
 				this.entities = unmodifiableCollection(new ArrayList<>(entities));
-				this.before = before;
-				this.after = after;
 			}
 
 			@Override
 			public Task<Collection<Entity>> prepare() {
-				before.forEach(consumer -> consumer.accept(entities));
+				entities.forEach(Entity::revert);// in case of a modified primary key
+				persistEvents.beforeDelete(entities);
 
 				return new DeleteEntities.DeleteTask();
 			}
@@ -1117,7 +925,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 				@Override
 				public Collection<Entity> handle() {
-					after.forEach(consumer -> consumer.accept(deletedEntities));
+					persistEvents.afterDelete(deletedEntities);
 
 					return deletedEntities;
 				}

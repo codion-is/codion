@@ -24,6 +24,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -491,6 +492,8 @@ public final class DefaultEntityEditModelTest {
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
 			employeeEditModel.settings().deleteEnabled().set(true);
 			assertTrue(employeeEditModel.settings().deleteEnabled().is());
+			editor.value(Employee.ID).set(3);// modify primary key to JONES, should be reverted before delete
+			assertEquals(1, connection.count(Count.where(Employee.NAME.equalTo("JONES"))));// JONES was not deleted
 
 			employeeEditModel.delete();
 		}
