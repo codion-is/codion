@@ -22,6 +22,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import java.util.Collection;
@@ -35,12 +36,12 @@ public final class AlbumModel extends SwingEntityModel {
 		super(Album.TYPE, connectionProvider);
 		SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
 		detailModels().add(trackModel);
-		TrackEditModel trackEditModel = (TrackEditModel) trackModel.editModel();
-		trackEditModel.editor().comboBoxModels().initialize(Track.MEDIATYPE_FK, Track.GENRE_FK);
+		SwingEntityEditor editor = trackModel.editModel().editor();
+		editor.comboBoxModels().initialize(Track.MEDIATYPE_FK, Track.GENRE_FK);
 		// We refresh albums when tracks are modified, to display the updated rating
-		trackEditModel.events().afterInsert().addConsumer(this::tracksInsertedOrDeleted);
-		trackEditModel.events().afterDelete().addConsumer(this::tracksInsertedOrDeleted);
-		trackEditModel.events().afterUpdate().addConsumer(this::tracksUpdated);
+		editor.events().afterInsert().addConsumer(this::tracksInsertedOrDeleted);
+		editor.events().afterDelete().addConsumer(this::tracksInsertedOrDeleted);
+		editor.events().afterUpdate().addConsumer(this::tracksUpdated);
 	}
 
 	private void tracksInsertedOrDeleted(Collection<Entity> tracks) {

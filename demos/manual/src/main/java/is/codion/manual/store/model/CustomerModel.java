@@ -43,7 +43,7 @@ public class CustomerModel extends SwingEntityModel {
 
 		CustomerEditModel editModel = (CustomerEditModel) editModel();
 
-		editModel.events().afterInsert()
+		editModel.editor().events().afterInsert()
 						.addConsumer(inserted ->
 										System.out.println("Entities inserted" + inserted));
 

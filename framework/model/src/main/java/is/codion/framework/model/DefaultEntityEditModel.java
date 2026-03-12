@@ -18,9 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
-import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -30,18 +27,11 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor.PersistTask;
+import is.codion.framework.model.EntityEditor.PersistTasks;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
-import static is.codion.framework.domain.entity.Entity.groupByType;
-import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -55,7 +45,6 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 
 	private final R editor;
 	private final DefaultPersistTasks tasks;
-	private final DefaultPersistEvents events;
 	private final DefaultSettings settings;
 
 	/**
@@ -66,7 +55,6 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 		this.editor = requireNonNull(editor);
 		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
 		this.tasks = new DefaultPersistTasks();
-		this.events = new DefaultPersistEvents(settings.publishPersistenceEvents);
 	}
 
 	@Override
@@ -115,11 +103,6 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 	}
 
 	@Override
-	public final PersistEvents events() {
-		return events;
-	}
-
-	@Override
 	public final Entity insert() throws EntityValidationException {
 		return tasks.insert().prepare().perform().handle();
 	}
@@ -155,169 +138,63 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 		public PersistTask<Entity> insert() throws EntityValidationException {
 			settings.verifyInsertEnabled();
 
-			return editor.tasks(connection()).insert()
-							.before(entity -> events.beforeInsert.accept(singleton(entity)))
-							.after(entity -> events.inserted(singleton(entity)))
-							.build();
+			return editor.tasks(connection()).insert();
 		}
 
 		@Override
 		public PersistTask<Entity> insert(Entity entity) throws EntityValidationException {
 			settings.verifyInsertEnabled();
 
-			return editor.tasks(connection()).insert(entity)
-							.before(inserting -> events.beforeInsert.accept(singleton(inserting)))
-							.after(inserted -> events.inserted(singleton(inserted)))
-							.build();
+			return editor.tasks(connection()).insert(entity);
 		}
 
 		@Override
 		public PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
 			settings.verifyInsertEnabled();
 
-			return editor.tasks(connection()).insert(entities)
-							.before(events.beforeInsert)
-							.after(events::inserted)
-							.build();
+			return editor.tasks(connection()).insert(entities);
 		}
 
 		@Override
 		public PersistTask<Entity> update() throws EntityValidationException {
 			settings.verifyUpdateEnabled(1);
 
-			return editor.tasks(connection()).update()
-							.before(entity -> events.beforeUpdate.accept(singleton(entity)))
-							.after((before, after) -> events.updated(singletonMap(before, after)))
-							.build();
+			return editor.tasks(connection()).update();
 		}
 
 		@Override
 		public PersistTask<Entity> update(Entity entity) throws EntityValidationException {
 			settings.verifyUpdateEnabled(1);
 
-			return editor.tasks(connection()).update(entity)
-							.before(updating -> events.beforeUpdate.accept(singleton(updating)))
-							.after((before, after) -> events.updated(singletonMap(before, after)))
-							.build();
+			return editor.tasks(connection()).update(entity);
 		}
 
 		@Override
 		public PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException {
 			settings.verifyUpdateEnabled(requireNonNull(entities).size());
 
-			return editor.tasks(connection()).update(entities)
-							.before(events.beforeUpdate)
-							.after(events::updated)
-							.build();
+			return editor.tasks(connection()).update(entities);
 		}
 
 		@Override
 		public PersistTask<Entity> delete() {
 			settings.verifyDeleteEnabled();
 
-			return editor.tasks(connection()).delete()
-							.before(entity -> events.beforeDelete.accept(singleton(entity)))
-							.after(entity -> events.deleted(singleton(entity)))
-							.build();
+			return editor.tasks(connection()).delete();
 		}
 
 		@Override
 		public PersistTask<Entity> delete(Entity entity) {
 			settings.verifyDeleteEnabled();
 
-			return editor.tasks(connection()).delete(entity)
-							.before(deleting -> events.beforeDelete.accept(singleton(deleting)))
-							.after(deleted -> events.deleted(singleton(deleted)))
-							.build();
+			return editor.tasks(connection()).delete(entity);
 		}
 
 		@Override
 		public PersistTask<Collection<Entity>> delete(Collection<Entity> entities) {
 			settings.verifyDeleteEnabled();
 
-			return editor.tasks(connection()).delete(entities)
-							.before(events.beforeDelete)
-							.after(events::deleted)
-							.build();
-		}
-	}
-
-	private static final class DefaultPersistEvents implements PersistEvents {
-
-		private final Event<Collection<Entity>> beforeInsert = Event.event();
-		private final Event<Collection<Entity>> afterInsert = Event.event();
-		private final Event<Collection<Entity>> beforeUpdate = Event.event();
-		private final Event<Map<Entity, Entity>> afterUpdate = Event.event();
-		private final Event<Collection<Entity>> beforeDelete = Event.event();
-		private final Event<Collection<Entity>> afterDelete = Event.event();
-		private final Event<Collection<Entity>> persisted = Event.event();
-
-		private final ObservableState publishPersistenceEvents;
-
-		private DefaultPersistEvents(ObservableState publishPersistenceEvents) {
-			this.publishPersistenceEvents = publishPersistenceEvents;
-		}
-
-		@Override
-		public Observer<Collection<Entity>> beforeInsert() {
-			return beforeInsert.observer();
-		}
-
-		@Override
-		public Observer<Collection<Entity>> afterInsert() {
-			return afterInsert.observer();
-		}
-
-		@Override
-		public Observer<Collection<Entity>> beforeUpdate() {
-			return beforeUpdate.observer();
-		}
-
-		@Override
-		public Observer<Map<Entity, Entity>> afterUpdate() {
-			return afterUpdate.observer();
-		}
-
-		@Override
-		public Observer<Collection<Entity>> beforeDelete() {
-			return beforeDelete.observer();
-		}
-
-		@Override
-		public Observer<Collection<Entity>> afterDelete() {
-			return afterDelete.observer();
-		}
-
-		@Override
-		public Observer<Collection<Entity>> persisted() {
-			return persisted.observer();
-		}
-
-		private void inserted(Collection<Entity> inserted) {
-			requireNonNull(inserted);
-			afterInsert.accept(inserted);
-			persisted.accept(inserted);
-			if (publishPersistenceEvents.is()) {
-				DefaultEntityEditModel.notifyInserted(inserted);
-			}
-		}
-
-		private void updated(Map<Entity, Entity> updated) {
-			requireNonNull(updated);
-			afterUpdate.accept(updated);
-			persisted.accept(updated.values());
-			if (publishPersistenceEvents.is()) {
-				DefaultEntityEditModel.notifyUpdated(updated);
-			}
-		}
-
-		private void deleted(Collection<Entity> deleted) {
-			requireNonNull(deleted);
-			afterDelete.accept(deleted);
-			persisted.accept(deleted);
-			if (publishPersistenceEvents.is()) {
-				DefaultEntityEditModel.notifyDeleted(deleted);
-			}
+			return editor.tasks(connection()).delete(entities);
 		}
 	}
 
@@ -328,15 +205,9 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 		private final State updateEnabled = State.state(true);
 		private final State updateMultipleEnabled = State.state(true);
 		private final State deleteEnabled = State.state(true);
-		private final State publishPersistenceEvents = State.state(PUBLISH_PERSISTENCE_EVENTS.getOrThrow());
 
 		private DefaultSettings(boolean readOnly) {
 			this.readOnly = State.state(readOnly);
-		}
-
-		@Override
-		public State publishPersistenceEvents() {
-			return publishPersistenceEvents;
 		}
 
 		@Override
@@ -393,23 +264,5 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 				throw new IllegalStateException("Edit model is read-only!");
 			}
 		}
-	}
-
-	private static void notifyInserted(Collection<Entity> inserted) {
-		groupByType(inserted).forEach((entityType, entities) ->
-						persistenceEvents(entityType).inserted().accept(entities));
-	}
-
-	private static void notifyUpdated(Map<Entity, Entity> updated) {
-		updated.entrySet().stream()
-						.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
-										toMap(Map.Entry::getKey, Map.Entry::getValue)))
-						.forEach((entityType, entities) ->
-										persistenceEvents(entityType).updated().accept(entities));
-	}
-
-	private static void notifyDeleted(Collection<Entity> deleted) {
-		groupByType(deleted).forEach((entityType, entities) ->
-						persistenceEvents(entityType).deleted().accept(entities));
 	}
 }

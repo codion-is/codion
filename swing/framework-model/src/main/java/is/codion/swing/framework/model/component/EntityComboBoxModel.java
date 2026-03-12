@@ -57,7 +57,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * <li>Default value: true
 	 * </ul>
 	 * @see Builder#persistenceAware(boolean)
-	 * @see is.codion.framework.model.EntityEditModel#PUBLISH_PERSISTENCE_EVENTS
+	 * @see is.codion.framework.model.EntityEditor#PUBLISH_PERSISTENCE_EVENTS
 	 */
 	PropertyValue<Boolean> PERSISTENCE_AWARE =
 					booleanValue(EntityComboBoxModel.class.getName() + ".persistenceAware", true);

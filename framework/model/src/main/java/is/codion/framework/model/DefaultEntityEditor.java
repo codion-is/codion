@@ -89,6 +89,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	private static final ValueSupplier INITIAL_VALUE = new InitialValue();
 
 	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
+	private final DefaultPersistEvents persistEvents = new DefaultPersistEvents();
 	private final Event<Attribute<?>> valueChanged = Event.event();
 
 	private final Map<Attribute<?>, DefaultEditorValue<?>> editorValues = new HashMap<>();
@@ -151,6 +152,16 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	@Override
 	public final EntityConnectionProvider connectionProvider() {
 		return connectionProvider;
+	}
+
+	@Override
+	public final PersistEvents events() {
+		return persistEvents;
+	}
+
+	@Override
+	public final State publishPersistenceEvents() {
+		return persistEvents.publishPersistenceEvents;
 	}
 
 	@Override
@@ -545,50 +556,65 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		@Override
-		public InsertEntityTaskBuilder insert() throws EntityValidationException {
+		public PersistTask<Entity> insert() throws EntityValidationException {
 			validate();
 
-			return new DefaultInsertEntityTaskBuilder(entity().get().copy().mutable())
-							.after(insertedEntity -> entity().replace(insertedEntity));
+			return new InsertEntityTaskBuilder(entity().get().copy().mutable())
+							.before(persistEvents::beforeInsert)
+							.after(insertedEntity -> entity().replace(insertedEntity))
+							.after(persistEvents::afterInsert)
+							.build();
 		}
 
 		@Override
-		public InsertEntityTaskBuilder insert(Entity entity) throws EntityValidationException {
+		public PersistTask<Entity> insert(Entity entity) throws EntityValidationException {
 			validate(requireNonNull(entity));
 
-			return new DefaultInsertEntityTaskBuilder(entity.copy().mutable());
+			return new InsertEntityTaskBuilder(entity.copy().mutable())
+							.before(persistEvents::beforeInsert)
+							.after(persistEvents::afterInsert)
+							.build();
 		}
 
 		@Override
-		public InsertEntitiesTaskBuilder insert(Collection<Entity> entities) throws EntityValidationException {
+		public PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
 			validate(requireNonNull(entities));
 
-			return new DefaultInsertEntitiesTaskBuilder(entities);
+			return new InsertEntitiesTaskBuilder(entities)
+							.before(persistEvents::beforeInsert)
+							.after(persistEvents::afterInsert)
+							.build();
 		}
 
 		@Override
-		public UpdateEntityTaskBuilder update() throws EntityValidationException {
+		public PersistTask<Entity> update() throws EntityValidationException {
 			validate();
 			if (!modified().is()) {
 				throw new IllegalStateException(NOT_MODIFIED + entity().get());
 			}
 
-			return new DefaultUpdateEntityTaskBuilder(entity().get().copy().mutable())
-							.after((beforeUpdate, afterUpdate) -> entity().replace(afterUpdate));
+			return new UpdateEntityTaskBuilder(entity().get().copy().mutable())
+							.before(persistEvents::beforeUpdate)
+							.after((beforeUpdate, afterUpdate) -> entity().replace(afterUpdate))
+							.after(persistEvents::afterUpdate)
+							.build();
 		}
 
 		@Override
-		public UpdateEntityTaskBuilder update(Entity entity) throws EntityValidationException {
+		public PersistTask<Entity> update(Entity entity) throws EntityValidationException {
 			validate(requireNonNull(entity));
 			if (!entity.modified()) {
 				throw new IllegalStateException(NOT_MODIFIED + entity);
 			}
 
-			return new DefaultUpdateEntityTaskBuilder(entity.copy().mutable());
+			return new UpdateEntityTaskBuilder(entity.copy().mutable())
+							.before(persistEvents::beforeUpdate)
+							.after(persistEvents::afterUpdate)
+							.build();
 		}
 
 		@Override
-		public UpdateEntitiesTaskBuilder update(Collection<Entity> entities) throws EntityValidationException {
+		public PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException {
 			validate(requireNonNull(entities));
 			for (Entity entity : entities) {
 				if (!entity.modified()) {
@@ -596,189 +622,183 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 				}
 			}
 
-			return new DefaultUpdateEntitiesTaskBuilder(entities);
+			return new UpdateEntitiesTaskBuilder(entities)
+							.before(persistEvents::beforeUpdate)
+							.after(persistEvents::afterUpdate)
+							.build();
 		}
 
 		@Override
-		public DeleteEntityTaskBuilder delete() {
-			return new DefaultDeleteEntityTaskBuilder(entity().get().copy().mutable())
-							.after(deletedEntities -> entity().replace(null));
+		public PersistTask<Entity> delete() {
+			return new DeleteEntityTaskBuilder(entity().get().copy().mutable())
+							.before(persistEvents::beforeDelete)
+							.after(deletedEntities -> entity().replace(null))
+							.after(persistEvents::afterDelete)
+							.build();
 		}
 
 		@Override
-		public DeleteEntityTaskBuilder delete(Entity entity) {
-			return new DefaultDeleteEntityTaskBuilder(requireNonNull(entity).copy().mutable());
+		public PersistTask<Entity> delete(Entity entity) {
+			return new DeleteEntityTaskBuilder(requireNonNull(entity).copy().mutable())
+							.before(persistEvents::beforeDelete)
+							.after(persistEvents::afterDelete)
+							.build();
 		}
 
 		@Override
-		public DeleteEntitiesTaskBuilder delete(Collection<Entity> entities) {
-			return new DefaultDeleteEntitiesTaskBuilder(requireNonNull(entities));
+		public PersistTask<Collection<Entity>> delete(Collection<Entity> entities) {
+			return new DeleteEntitiesTaskBuilder(requireNonNull(entities))
+							.before(persistEvents::beforeDelete)
+							.after(persistEvents::afterDelete)
+							.build();
 		}
 
-		private final class DefaultInsertEntityTaskBuilder implements InsertEntityTaskBuilder {
+		private final class InsertEntityTaskBuilder {
 
 			private final Entity entity;
 			private final Collection<Consumer<Entity>> before = new ArrayList<>();
 			private final Collection<Consumer<Entity>> after = new ArrayList<>();
 
-			private DefaultInsertEntityTaskBuilder(Entity entity) {
+			private InsertEntityTaskBuilder(Entity entity) {
 				this.entity = entity;
 			}
 
-			@Override
-			public InsertEntityTaskBuilder before(Consumer<Entity> before) {
-				this.before.add(requireNonNull(before));
+			private InsertEntityTaskBuilder before(Consumer<Entity> before) {
+				this.before.add(before);
 				return this;
 			}
 
-			@Override
-			public InsertEntityTaskBuilder after(Consumer<Entity> after) {
-				this.after.add(requireNonNull(after));
+			private InsertEntityTaskBuilder after(Consumer<Entity> after) {
+				this.after.add(after);
 				return this;
 			}
 
-			@Override
-			public PersistTask<Entity> build() {
+			private PersistTask<Entity> build() {
 				return new DefaultInsertEntity(entity, before, after);
 			}
 		}
 
-		private final class DefaultInsertEntitiesTaskBuilder implements InsertEntitiesTaskBuilder {
+		private final class InsertEntitiesTaskBuilder {
 
 			private final Collection<Entity> entities;
 			private final Collection<Consumer<Collection<Entity>>> before = new ArrayList<>();
 			private final Collection<Consumer<Collection<Entity>>> after = new ArrayList<>();
 
-			private DefaultInsertEntitiesTaskBuilder(Collection<Entity> entities) {
+			private InsertEntitiesTaskBuilder(Collection<Entity> entities) {
 				this.entities = entities;
 			}
 
-			@Override
-			public InsertEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
-				this.before.add(requireNonNull(before));
+			private InsertEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
+				this.before.add(before);
 				return this;
 			}
 
-			@Override
-			public InsertEntitiesTaskBuilder after(Consumer<Collection<Entity>> after) {
-				this.after.add(requireNonNull(after));
+			private InsertEntitiesTaskBuilder after(Consumer<Collection<Entity>> after) {
+				this.after.add(after);
 				return this;
 			}
 
-			@Override
-			public PersistTask<Collection<Entity>> build() {
+			private PersistTask<Collection<Entity>> build() {
 				return new DefaultInsertEntitiesTask(entities, before, after);
 			}
 		}
 
-		private final class DefaultUpdateEntityTaskBuilder implements UpdateEntityTaskBuilder {
+		private final class UpdateEntityTaskBuilder {
 
 			private final Entity entity;
 			private final Collection<Consumer<Entity>> before = new ArrayList<>();
 			private final Collection<BiConsumer<Entity, Entity>> after = new ArrayList<>();
 
-			private DefaultUpdateEntityTaskBuilder(Entity entity) {
+			private UpdateEntityTaskBuilder(Entity entity) {
 				this.entity = entity;
 			}
 
-			@Override
-			public UpdateEntityTaskBuilder before(Consumer<Entity> before) {
-				this.before.add(requireNonNull(before));
+			private UpdateEntityTaskBuilder before(Consumer<Entity> before) {
+				this.before.add(before);
 				return this;
 			}
 
-			@Override
-			public UpdateEntityTaskBuilder after(BiConsumer<Entity, Entity> after) {
-				this.after.add(requireNonNull(after));
+			private UpdateEntityTaskBuilder after(BiConsumer<Entity, Entity> after) {
+				this.after.add(after);
 				return this;
 			}
 
-			@Override
-			public PersistTask<Entity> build() {
+			private PersistTask<Entity> build() {
 				return new UpdateEntity(entity, before, after);
 			}
 		}
 
-		private final class DefaultUpdateEntitiesTaskBuilder implements UpdateEntitiesTaskBuilder {
+		private final class UpdateEntitiesTaskBuilder {
 
 			private final Collection<Entity> entities;
 			private final Collection<Consumer<Collection<Entity>>> before = new ArrayList<>();
 			private final Collection<Consumer<Map<Entity, Entity>>> after = new ArrayList<>();
 
-			private DefaultUpdateEntitiesTaskBuilder(Collection<Entity> entities) {
+			private UpdateEntitiesTaskBuilder(Collection<Entity> entities) {
 				this.entities = entities;
 			}
 
-			@Override
-			public UpdateEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
-				this.before.add(requireNonNull(before));
+			private UpdateEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
+				this.before.add(before);
 				return this;
 			}
 
-			@Override
-			public UpdateEntitiesTaskBuilder after(Consumer<Map<Entity, Entity>> after) {
-				this.after.add(requireNonNull(after));
+			private UpdateEntitiesTaskBuilder after(Consumer<Map<Entity, Entity>> after) {
+				this.after.add(after);
 				return this;
 			}
 
-			@Override
-			public PersistTask<Collection<Entity>> build() {
+			private PersistTask<Collection<Entity>> build() {
 				return new UpdateEntities(entities, before, after);
 			}
 		}
 
-		private final class DefaultDeleteEntityTaskBuilder implements DeleteEntityTaskBuilder {
+		private final class DeleteEntityTaskBuilder {
 
 			private final Entity entity;
 			private final Collection<Consumer<Entity>> before = new ArrayList<>();
 			private final Collection<Consumer<Entity>> after = new ArrayList<>();
 
-			private DefaultDeleteEntityTaskBuilder(Entity entity) {
+			private DeleteEntityTaskBuilder(Entity entity) {
 				this.entity = entity;
 			}
 
-			@Override
-			public DeleteEntityTaskBuilder before(Consumer<Entity> before) {
-				this.before.add(requireNonNull(before));
+			private DeleteEntityTaskBuilder before(Consumer<Entity> before) {
+				this.before.add(before);
 				return this;
 			}
 
-			@Override
-			public DeleteEntityTaskBuilder after(Consumer<Entity> after) {
-				this.after.add(requireNonNull(after));
+			private DeleteEntityTaskBuilder after(Consumer<Entity> after) {
+				this.after.add(after);
 				return this;
 			}
 
-			@Override
-			public PersistTask<Entity> build() {
+			private PersistTask<Entity> build() {
 				return new DeleteEntity(entity, before, after);
 			}
 		}
 
-		private final class DefaultDeleteEntitiesTaskBuilder implements DeleteEntitiesTaskBuilder {
+		private final class DeleteEntitiesTaskBuilder {
 
 			private final Collection<Entity> entities;
 			private final Collection<Consumer<Collection<Entity>>> before = new ArrayList<>();
 			private final Collection<Consumer<Collection<Entity>>> after = new ArrayList<>();
 
-			private DefaultDeleteEntitiesTaskBuilder(Collection<Entity> entities) {
+			private DeleteEntitiesTaskBuilder(Collection<Entity> entities) {
 				this.entities = entities;
 			}
 
-			@Override
-			public DeleteEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
+			private DeleteEntitiesTaskBuilder before(Consumer<Collection<Entity>> before) {
 				this.before.add(requireNonNull(before));
 				return this;
 			}
 
-			@Override
-			public DeleteEntitiesTaskBuilder after(Consumer<Collection<Entity>> after) {
+			private DeleteEntitiesTaskBuilder after(Consumer<Collection<Entity>> after) {
 				this.after.add(requireNonNull(after));
 				return this;
 			}
 
-			@Override
-			public PersistTask<Collection<Entity>> build() {
+			private PersistTask<Collection<Entity>> build() {
 				return new DeleteEntities(entities, before, after);
 			}
 		}
@@ -1478,5 +1498,131 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		return null;
+	}
+
+	private static final class DefaultPersistEvents implements PersistEvents {
+
+		private final Event<Collection<Entity>> beforeInsert = Event.event();
+		private final Event<Collection<Entity>> afterInsert = Event.event();
+		private final Event<Collection<Entity>> beforeUpdate = Event.event();
+		private final Event<Map<Entity, Entity>> afterUpdate = Event.event();
+		private final Event<Collection<Entity>> beforeDelete = Event.event();
+		private final Event<Collection<Entity>> afterDelete = Event.event();
+		private final Event<Collection<Entity>> persisted = Event.event();
+
+		private final State publishPersistenceEvents = State.state(PUBLISH_PERSISTENCE_EVENTS.getOrThrow());
+
+		@Override
+		public Observer<Collection<Entity>> beforeInsert() {
+			return beforeInsert.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> afterInsert() {
+			return afterInsert.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> beforeUpdate() {
+			return beforeUpdate.observer();
+		}
+
+		@Override
+		public Observer<Map<Entity, Entity>> afterUpdate() {
+			return afterUpdate.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> beforeDelete() {
+			return beforeDelete.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> afterDelete() {
+			return afterDelete.observer();
+		}
+
+		@Override
+		public Observer<Collection<Entity>> persisted() {
+			return persisted.observer();
+		}
+
+		private void beforeInsert(Entity entity) {
+			beforeInsert(singleton(entity));
+		}
+
+		private void beforeInsert(Collection<Entity> entities) {
+			beforeInsert.accept(entities);
+		}
+
+		private void afterInsert(Entity entity) {
+			afterInsert(singleton(entity));
+		}
+
+		private void afterInsert(Collection<Entity> inserted) {
+			afterInsert.accept(inserted);
+			persisted.accept(inserted);
+			if (publishPersistenceEvents.is()) {
+				notifyInserted(inserted);
+			}
+		}
+
+		private void beforeUpdate(Entity entity) {
+			beforeUpdate(singleton(entity));
+		}
+
+		private void beforeUpdate(Collection<Entity> entities) {
+			beforeUpdate.accept(entities);
+		}
+
+		private void afterUpdate(Entity before, Entity after) {
+			afterUpdate(singletonMap(before, after));
+		}
+
+		private void afterUpdate(Map<Entity, Entity> updated) {
+			afterUpdate.accept(updated);
+			persisted.accept(updated.values());
+			if (publishPersistenceEvents.is()) {
+				notifyUpdated(updated);
+			}
+		}
+
+		private void beforeDelete(Entity entity) {
+			beforeDelete(singleton(entity));
+		}
+
+		private void beforeDelete(Collection<Entity> entities) {
+			beforeDelete.accept(entities);
+		}
+
+		private void afterDelete(Entity deleted) {
+			afterDelete(singleton(deleted));
+		}
+
+		private void afterDelete(Collection<Entity> deleted) {
+			afterDelete.accept(deleted);
+			persisted.accept(deleted);
+			if (publishPersistenceEvents.is()) {
+				notifyDeleted(deleted);
+			}
+		}
+
+		private static void notifyInserted(Collection<Entity> inserted) {
+			groupByType(inserted).forEach((entityType, entities) ->
+							persistenceEvents(entityType).inserted().accept(entities));
+		}
+
+		private static void notifyUpdated(Map<Entity, Entity> updated) {
+			updated.entrySet().stream()
+							.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
+											toMap(Map.Entry::getKey, Map.Entry::getValue)))
+							.forEach((entityType, entities) ->
+											persistenceEvents(entityType).updated().accept(entities));
+		}
+
+		private static void notifyDeleted(Collection<Entity> deleted) {
+			groupByType(deleted).forEach((entityType, entities) ->
+							persistenceEvents(entityType).deleted().accept(entities));
+		}
 	}
 }

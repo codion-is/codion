@@ -43,8 +43,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -60,6 +58,16 @@ import static java.util.Objects.requireNonNull;
  */
 public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
 				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
+
+	/**
+	 * Specifies whether editors publish their insert, update and delete events to {@link PersistenceEvents}
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see EntityEditor#publishPersistenceEvents()
+	 */
+	PropertyValue<Boolean> PUBLISH_PERSISTENCE_EVENTS = booleanValue(EntityEditor.class.getName() + ".publishPersistenceEvents", true);
 
 	/**
 	 * Specifies whether foreign key values should persist by default when defaults are set
@@ -85,6 +93,18 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	 * @return the connection provider
 	 */
 	EntityConnectionProvider connectionProvider();
+
+	/**
+	 * @return the {@link PersistEvents}
+	 */
+	PersistEvents events();
+
+	/**
+	 * @return a state controlling whether this edit model publishes insert, update and delete events
+	 * on the {@link PersistenceEvents} event bus.
+	 * @see #PUBLISH_PERSISTENCE_EVENTS
+	 */
+	State publishPersistenceEvents();
 
 	/**
 	 * @return the {@link EditorEntity} instance
@@ -263,144 +283,6 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	}
 
 	/**
-	 * Builds an async task for inserting entities.
-	 */
-	interface InsertEntityTaskBuilder {
-
-		/**
-		 * @param before called before the task is executed
-		 * @return this builder
-		 */
-		InsertEntityTaskBuilder before(Consumer<Entity> before);
-
-		/**
-		 * @param after called after the task is executed
-		 * @return this builder
-		 */
-		InsertEntityTaskBuilder after(Consumer<Entity> after);
-
-		/**
-		 * @return the task
-		 */
-		PersistTask<Entity> build();
-	}
-
-	/**
-	 * Builds an async task for inserting entities.
-	 */
-	interface InsertEntitiesTaskBuilder {
-
-		/**
-		 * @param before called before the task is executed
-		 * @return this builder
-		 */
-		InsertEntitiesTaskBuilder before(Consumer<Collection<Entity>> before);
-
-		/**
-		 * @param after called after the task is executed
-		 * @return this builder
-		 */
-		InsertEntitiesTaskBuilder after(Consumer<Collection<Entity>> after);
-
-		/**
-		 * @return the task
-		 */
-		PersistTask<Collection<Entity>> build();
-	}
-
-	/**
-	 * Builds an async task for updating entities.
-	 */
-	interface UpdateEntityTaskBuilder {
-
-		/**
-		 * @param before called before the task is executed
-		 * @return this builder
-		 */
-		UpdateEntityTaskBuilder before(Consumer<Entity> before);
-
-		/**
-		 * @param after called after the task is executed
-		 * @return this builder
-		 */
-		UpdateEntityTaskBuilder after(BiConsumer<Entity, Entity> after);
-
-		/**
-		 * @return the task
-		 */
-		PersistTask<Entity> build();
-	}
-
-	/**
-	 * Builds an async task for updating entities.
-	 */
-	interface UpdateEntitiesTaskBuilder {
-
-		/**
-		 * @param before called before the task is executed
-		 * @return this builder
-		 */
-		UpdateEntitiesTaskBuilder before(Consumer<Collection<Entity>> before);
-
-		/**
-		 * @param after called after the task is executed
-		 * @return this builder
-		 */
-		UpdateEntitiesTaskBuilder after(Consumer<Map<Entity, Entity>> after);
-
-		/**
-		 * @return the task
-		 */
-		PersistTask<Collection<Entity>> build();
-	}
-
-	/**
-	 * Builds an async task for deleting entities.
-	 */
-	interface DeleteEntityTaskBuilder {
-
-		/**
-		 * @param before called before the task is executed
-		 * @return this builder
-		 */
-		DeleteEntityTaskBuilder before(Consumer<Entity> before);
-
-		/**
-		 * @param after called after the task is executed
-		 * @return this builder
-		 */
-		DeleteEntityTaskBuilder after(Consumer<Entity> after);
-
-		/**
-		 * @return the task
-		 */
-		PersistTask<Entity> build();
-	}
-
-	/**
-	 * Builds an async task for deleting entities.
-	 */
-	interface DeleteEntitiesTaskBuilder {
-
-		/**
-		 * @param before called before the task is executed
-		 * @return this builder
-		 */
-		DeleteEntitiesTaskBuilder before(Consumer<Collection<Entity>> before);
-
-		/**
-		 * @param after called after the task is executed
-		 * @return this builder
-		 */
-		DeleteEntitiesTaskBuilder after(Consumer<Collection<Entity>> after);
-
-		/**
-		 * @return the task
-		 */
-		PersistTask<Collection<Entity>> build();
-	}
-
-	/**
 	 * Manages the {@link EntityPersistence} used by this editor
 	 */
 	interface EditorPersistence {
@@ -424,63 +306,104 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	interface PersistTasks {
 
 		/**
-		 * @return a builder for an async task for inserting the active entity
+		 * @return an async task for inserting the active entity
 		 * @throws EntityValidationException in case of validation failure
 		 */
-		InsertEntityTaskBuilder insert() throws EntityValidationException;
+		PersistTask<Entity> insert() throws EntityValidationException;
 
 		/**
 		 * @param entity the entity
-		 * @return a builder for an async task for inserting the given entity
+		 * @return an async task for inserting the given entity
 		 * @throws EntityValidationException in case of validation failure
 		 */
-		InsertEntityTaskBuilder insert(Entity entity) throws EntityValidationException;
+		PersistTask<Entity> insert(Entity entity) throws EntityValidationException;
 
 		/**
 		 * @param entities the entities
-		 * @return a builder for an async task for inserting the given entities
+		 * @return an async task for inserting the given entities
 		 * @throws EntityValidationException in case of validation failure
 		 */
-		InsertEntitiesTaskBuilder insert(Collection<Entity> entities) throws EntityValidationException;
+		PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
-		 * @return a builder for an async task for updating the active entity
+		 * @return an async task for updating the active entity
 		 * @throws EntityValidationException in case of validation failure
 		 */
-		UpdateEntityTaskBuilder update() throws EntityValidationException;
+		PersistTask<Entity> update() throws EntityValidationException;
 
 		/**
 		 * @param entity the entity
-		 * @return a builder for an async task for updating the given entity
+		 * @return an async task for updating the given entity
 		 * @throws IllegalStateException in case the entity is not modified
 		 * @throws EntityValidationException in case of validation failure
 		 */
-		UpdateEntityTaskBuilder update(Entity entity) throws EntityValidationException;
+		PersistTask<Entity> update(Entity entity) throws EntityValidationException;
 
 		/**
 		 * @param entities the entities
-		 * @return a builder for an async task for updating the given entities
+		 * @return an async task for updating the given entities
 		 * @throws IllegalStateException in case any entity is not modified
 		 * @throws EntityValidationException in case of validation failure
 		 */
-		UpdateEntitiesTaskBuilder update(Collection<Entity> entities) throws EntityValidationException;
+		PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
-		 * @return a builder for an async task for deleting the active entity
+		 * @return an async task for deleting the active entity
 		 */
-		DeleteEntityTaskBuilder delete();
+		PersistTask<Entity> delete();
 
 		/**
 		 * @param entity the entity
-		 * @return a builder for an async task for deleting the given entity
+		 * @return an async task for deleting the given entity
 		 */
-		DeleteEntityTaskBuilder delete(Entity entity);
+		PersistTask<Entity> delete(Entity entity);
 
 		/**
 		 * @param entities the entities
-		 * @return a builder for an async task for deleting the given entities
+		 * @return an async task for deleting the given entities
 		 */
-		DeleteEntitiesTaskBuilder delete(Collection<Entity> entities);
+		PersistTask<Collection<Entity>> delete(Collection<Entity> entities);
+	}
+
+	/**
+	 * Provides persistence event observers for the editor
+	 */
+	interface PersistEvents {
+
+		/**
+		 * @return an observer notified before insert is performed, after validation
+		 */
+		Observer<Collection<Entity>> beforeInsert();
+
+		/**
+		 * @return an observer notified after insert is performed
+		 */
+		Observer<Collection<Entity>> afterInsert();
+
+		/**
+		 * @return an observer notified before update is performed, after validation
+		 */
+		Observer<Collection<Entity>> beforeUpdate();
+
+		/**
+		 * @return an observer notified after update is performed, with the updated entities, mapped to their state before the update
+		 */
+		Observer<Map<Entity, Entity>> afterUpdate();
+
+		/**
+		 * @return an observer notified before delete is performed
+		 */
+		Observer<Collection<Entity>> beforeDelete();
+
+		/**
+		 * @return an observer notified after delete is performed
+		 */
+		Observer<Collection<Entity>> afterDelete();
+
+		/**
+		 * @return an observer notified each time one or more entities have been persisted, as in, inserted, updated or deleted via this model
+		 */
+		Observer<Collection<Entity>> persisted();
 	}
 
 	/**

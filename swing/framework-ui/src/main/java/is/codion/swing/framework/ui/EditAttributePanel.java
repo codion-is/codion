@@ -121,7 +121,6 @@ final class EditAttributePanel<T> extends JPanel {
 		Task<Collection<Entity>> task = editor.tasks(editor.connectionProvider().connection()).update(toUpdate.stream()
 										.filter(Entity::modified)
 										.collect(toList()))
-						.build()
 						.prepare();
 		ProgressWorker.builder()
 						.task(task::perform)

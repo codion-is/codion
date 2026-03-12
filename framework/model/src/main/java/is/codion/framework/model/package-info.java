@@ -21,7 +21,7 @@
  * <ul>
  * <li>{@link is.codion.framework.model.EntityApplicationModel#USER_PREFERENCES}
  * <li>{@link is.codion.framework.model.EntityApplicationModel#PREFERENCES_KEY}
- * <li>{@link is.codion.framework.model.EntityEditModel#PUBLISH_PERSISTENCE_EVENTS}
+ * <li>{@link is.codion.framework.model.EntityEditor#PUBLISH_PERSISTENCE_EVENTS}
  * <li>{@link is.codion.framework.model.EntityEditor#PERSIST_FOREIGN_KEYS}
  * <li>{@link is.codion.framework.model.EntityQueryModel#LIMIT}
  * <li>{@link is.codion.framework.model.EntityTableModel#ON_INSERT}

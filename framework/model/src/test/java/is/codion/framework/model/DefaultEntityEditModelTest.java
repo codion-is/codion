@@ -107,7 +107,7 @@ public final class DefaultEntityEditModelTest {
 										.anyMatch(entity -> "MANAGER".equals(entity.get(Employee.JOB))))
 						.addListener(() -> managerInserted.set(true));
 
-		employeeEditModel.settings().publishPersistenceEvents().set(true);
+		employeeEditModel.editor().publishPersistenceEvents().set(true);
 
 		EntityConnection connection = employeeEditModel.connection();
 		Entity jones = connection.selectSingle(Employee.NAME.equalTo("JONES"));
@@ -255,14 +255,14 @@ public final class DefaultEntityEditModelTest {
 		assertFalse(entityExistsState.is());
 
 		Consumer<Object> consumer = data -> {};
-		employeeEditModel.events().afterDelete().addConsumer(consumer);
-		employeeEditModel.events().afterInsert().addConsumer(consumer);
-		employeeEditModel.events().afterUpdate().addConsumer(consumer);
-		employeeEditModel.events().beforeDelete().addConsumer(consumer);
-		employeeEditModel.events().beforeInsert().addConsumer(consumer);
-		employeeEditModel.events().beforeUpdate().addConsumer(consumer);
+		employeeEditModel.editor().events().afterDelete().addConsumer(consumer);
+		employeeEditModel.editor().events().afterInsert().addConsumer(consumer);
+		employeeEditModel.editor().events().afterUpdate().addConsumer(consumer);
+		employeeEditModel.editor().events().beforeDelete().addConsumer(consumer);
+		employeeEditModel.editor().events().beforeInsert().addConsumer(consumer);
+		employeeEditModel.editor().events().beforeUpdate().addConsumer(consumer);
 		Runnable listener = () -> {};
-		employeeEditModel.events().persisted().addListener(listener);
+		employeeEditModel.editor().events().persisted().addListener(listener);
 
 		assertEquals(Employee.TYPE, employeeEditModel.entityType());
 
@@ -335,13 +335,13 @@ public final class DefaultEntityEditModelTest {
 		editor.defaults();
 		assertTrue(editor.entity().get().primaryKey().isNull(), "Active entity is not null after model is cleared");
 
-		employeeEditModel.events().afterDelete().removeConsumer(consumer);
-		employeeEditModel.events().afterInsert().removeConsumer(consumer);
-		employeeEditModel.events().afterUpdate().removeConsumer(consumer);
-		employeeEditModel.events().beforeDelete().removeConsumer(consumer);
-		employeeEditModel.events().beforeInsert().removeConsumer(consumer);
-		employeeEditModel.events().beforeUpdate().removeConsumer(consumer);
-		employeeEditModel.events().persisted().removeListener(listener);
+		employeeEditModel.editor().events().afterDelete().removeConsumer(consumer);
+		employeeEditModel.editor().events().afterInsert().removeConsumer(consumer);
+		employeeEditModel.editor().events().afterUpdate().removeConsumer(consumer);
+		employeeEditModel.editor().events().beforeDelete().removeConsumer(consumer);
+		employeeEditModel.editor().events().beforeInsert().removeConsumer(consumer);
+		employeeEditModel.editor().events().beforeUpdate().removeConsumer(consumer);
+		employeeEditModel.editor().events().persisted().removeListener(listener);
 	}
 
 	@Test
@@ -384,7 +384,7 @@ public final class DefaultEntityEditModelTest {
 
 			editor.value(Employee.DEPARTMENT_FK).set(department);
 
-			employeeEditModel.events().afterInsert().addConsumer(insertedEntities ->
+			employeeEditModel.editor().events().afterInsert().addConsumer(insertedEntities ->
 							assertEquals(department, insertedEntities.iterator().next().get(Employee.DEPARTMENT_FK)));
 			employeeEditModel.settings().insertEnabled().set(false);
 			assertFalse(employeeEditModel.settings().insertEnabled().is());
@@ -424,7 +424,7 @@ public final class DefaultEntityEditModelTest {
 			List<Entity> toUpdate = singletonList(editor.entity().get());
 			Consumer<Map<Entity, Entity>> consumer = updatedEntities ->
 							assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
-			employeeEditModel.events().afterUpdate().addConsumer(consumer);
+			employeeEditModel.editor().events().afterUpdate().addConsumer(consumer);
 			employeeEditModel.settings().updateEnabled().set(false);
 			assertFalse(employeeEditModel.settings().updateEnabled().is());
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
@@ -433,7 +433,7 @@ public final class DefaultEntityEditModelTest {
 
 			employeeEditModel.update();
 			assertFalse(editor.modified().is());
-			employeeEditModel.events().afterUpdate().removeConsumer(consumer);
+			employeeEditModel.editor().events().afterUpdate().removeConsumer(consumer);
 
 			employeeEditModel.settings().updateMultipleEnabled().set(false);
 
@@ -452,7 +452,7 @@ public final class DefaultEntityEditModelTest {
 
 			AtomicBoolean checker = new AtomicBoolean(false);
 
-			deptEditModel.events().afterUpdate().addConsumer(updated -> {
+			deptEditModel.editor().events().afterUpdate().addConsumer(updated -> {
 				checker.set(true);
 				Map.Entry<Entity, Entity> entry = updated.entrySet().iterator().next();
 				Entity beforeUpdate = entry.getKey();
@@ -485,7 +485,7 @@ public final class DefaultEntityEditModelTest {
 		try {
 			editor.entity().set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			List<Entity> toDelete = singletonList(editor.entity().get());
-			employeeEditModel.events().afterDelete().addConsumer(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
+			employeeEditModel.editor().events().afterDelete().addConsumer(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
 			employeeEditModel.settings().deleteEnabled().set(false);
 			assertFalse(employeeEditModel.settings().deleteEnabled().is());
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());

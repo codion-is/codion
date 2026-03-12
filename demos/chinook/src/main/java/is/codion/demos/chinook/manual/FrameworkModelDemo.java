@@ -36,8 +36,8 @@ import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityConditionModel.AdditionalConditions;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditor.EditorValue;
+import is.codion.framework.model.EntityEditor.PersistEvents;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyModelLink;
@@ -69,7 +69,7 @@ public final class FrameworkModelDemo {
 	void entityEditModel(EntityConnectionProvider connectionProvider) throws EntityValidationException {
 		// tag::entityEditModel[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityEditModel editModel = customerModel.editModel();
+		SwingEntityEditModel editModel = customerModel.editModel();
 
 		// Access entity values
 		Value<String> nameValue = editModel.editor().value(Customer.FIRSTNAME);
@@ -97,7 +97,7 @@ public final class FrameworkModelDemo {
 	void observableState(EntityConnectionProvider connectionProvider) {
 		// tag::observableState[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		EntityEditModel editModel = customerModel.editModel();
+		SwingEntityEditModel editModel = customerModel.editModel();
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Edit model states
@@ -121,7 +121,7 @@ public final class FrameworkModelDemo {
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Listen for entity changes
-		editModel.events().afterInsert().addConsumer(entities -> {
+		editModel.editor().events().afterInsert().addConsumer(entities -> {
 			System.out.println("Inserted: " + entities);
 		});
 
@@ -135,7 +135,7 @@ public final class FrameworkModelDemo {
 	void valueObservers(EntityConnectionProvider connectionProvider) {
 		// tag::valueObservers[]
 		SwingEntityModel trackModel = new SwingEntityModel(Track.TYPE, connectionProvider);
-		EntityEditModel editModel = trackModel.editModel();
+		SwingEntityEditModel editModel = trackModel.editModel();
 
 		// Bind edit model value to UI state
 		EditorValue<BigDecimal> priceValue = editModel.editor().value(Track.UNITPRICE);
@@ -190,9 +190,10 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
 
 		// Update summary when details change
-		invoiceLineModel.editModel().events().afterInsert().addConsumer(entities -> updateInvoiceTotal());
-		invoiceLineModel.editModel().events().afterUpdate().addConsumer(entities -> updateInvoiceTotal());
-		invoiceLineModel.editModel().events().afterDelete().addConsumer(entities -> updateInvoiceTotal());
+		PersistEvents events = invoiceLineModel.editModel().editor().events();
+		events.afterInsert().addConsumer(entities -> updateInvoiceTotal());
+		events.afterUpdate().addConsumer(entities -> updateInvoiceTotal());
+		events.afterDelete().addConsumer(entities -> updateInvoiceTotal());
 		// end::eventHandling[]
 	}
 

@@ -53,7 +53,7 @@ public interface EntitySearchModel {
 	 * <li>Default value: true
 	 * </ul>
 	 * @see Builder#persistenceAware(boolean)
-	 * @see EntityEditModel#PUBLISH_PERSISTENCE_EVENTS
+	 * @see EntityEditor#PUBLISH_PERSISTENCE_EVENTS
 	 */
 	PropertyValue<Boolean> PERSISTENCE_AWARE =
 					booleanValue(EntitySearchModel.class.getName() + ".persistenceAware", true);
