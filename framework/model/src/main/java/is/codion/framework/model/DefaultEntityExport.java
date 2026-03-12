@@ -492,11 +492,8 @@ final class DefaultEntityExport implements EntityExport {
 		public int compare(Attribute<?> attribute1, Attribute<?> attribute2) {
 			int index1 = order.indexOf(attribute1);
 			int index2 = order.indexOf(attribute2);
-			if (index1 == -1 || index2 == -1) {
-				return 0;
-			}
 
-			return Integer.compare(index1, index2);
+			return Integer.compare(index1 == -1 ? order.size() : index1, index2 == -1 ? order.size() : index2);
 		}
 	}
 
