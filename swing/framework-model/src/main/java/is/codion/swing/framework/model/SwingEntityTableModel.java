@@ -34,6 +34,7 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableModel.RefreshTask.Result;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -308,16 +309,22 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	}
 
 	private void onTableModelEvent(TableModelEvent tableModelEvent) {
-		//if the selected row is updated via the table model, refresh the one in the edit model
+		// Syncs the editor when the selected row is updated via the table (e.g. inline cell or multi item editing).
+		// The equalValues() guard prevents a redundant editor set when the update originated
+		// from the editor itself, since the editor already holds the updated entity.
 		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selection().index()
 						.optional()
 						.orElse(-1)
 						.intValue()) {
-			editModel().editor().entity().set(selection().item().get());
+			Entity selected = selection().item().get();
+			EditorEntity editorEntity = editModel().editor().entity();
+			if (!editorEntity.get().equalValues(selected)) {
+				editorEntity.set(selected);
+			}
 		}
 	}
 
-	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(EntityEditModel editModel) {
+	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditModel editModel) {
 		return FilterTableModel.builder()
 						.columns(new EntityTableColumns(editModel.entityDefinition()))
 						.filters(new EntityFilters(editModel.entityDefinition()))
