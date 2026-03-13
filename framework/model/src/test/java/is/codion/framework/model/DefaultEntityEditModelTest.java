@@ -418,6 +418,8 @@ public final class DefaultEntityEditModelTest {
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
 		try {
+			AtomicInteger replacedCount = new AtomicInteger();
+			editor.entity().replaced().addListener(replacedCount::incrementAndGet);
 			editor.entity().set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			assertFalse(editor.modified().is());
 			editor.value(Employee.NAME).set("BJORN");
@@ -434,6 +436,7 @@ public final class DefaultEntityEditModelTest {
 
 			employeeEditModel.update();
 			assertFalse(editor.modified().is());
+			assertEquals(1, replacedCount.get());
 			employeeEditModel.editor().events().after().update().removeConsumer(consumer);
 
 			employeeEditModel.settings().updateMultipleEnabled().set(false);

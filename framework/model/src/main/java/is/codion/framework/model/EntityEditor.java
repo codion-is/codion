@@ -381,7 +381,7 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		AfterPersist after();
 
 		/**
-		 * @return an observer notified each time one or more entities have been persisted, as in, inserted, updated or deleted via this model
+		 * @return an observer notified each time one or more entities have been persisted, as in, inserted, updated or deleted via this editor
 		 */
 		Observer<Collection<Entity>> persisted();
 
@@ -462,8 +462,13 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		Observer<Entity> changing();
 
 		/**
-		 * Replaces the entity without notifying that it is changing. A null argument sets default values.
-		 * @see #changing()
+		 * @return an observer notified each time the entity is replaced via {@link #replace(Entity)}
+		 */
+		Observer<Entity> replaced();
+
+		/**
+		 * Replaces the entity without triggering entity change notifications. A null argument sets default values.
+		 * @see #replaced()
 		 */
 		void replace(@Nullable Entity entity);
 

@@ -22,6 +22,9 @@ Codion Change Log
 - EntityEditModel.PersistTasks removed, EntityEditor, task builders removed, related refactoring.
 - EntityEditor.PersistEvents.BeforePersist and AfterPersist added.
 - DefaultEntityExport.IndexedOrder bug fixed, comparator no longer violates its general contract.
+- DefaultEntityEditor.DefaultEditorEntity.replace() no longer triggers a changed event.
+- DefaultEntityEditor.DefaultEditorEntity.refresh() now uses replace().
+- EntityEditor.EditorEntity.replaced() observer added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() added, configures attributes and null inclusion.
 - SwingComponentModels.comboBox(), EntityEditor parameter replaced with EntityConnection.

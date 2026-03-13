@@ -465,6 +465,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 		private final Event<Entity> changing = Event.event();
 		private final Event<Entity> changed = Event.event();
+		private final Event<Entity> replaced = Event.event();
 
 		private final Entity instance;
 
@@ -487,6 +488,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 			entity = entity == null ? null : validateType(entity).immutable();
 			changing.accept(entity);
 			setOrDefaults(entity);
+			changed.accept(entity);
 		}
 
 		@Override
@@ -495,14 +497,20 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 		}
 
 		@Override
+		public Observer<Entity> replaced() {
+			return replaced.observer();
+		}
+
+		@Override
 		public void replace(@Nullable Entity entity) {
 			setOrDefaults(entity == null ? null : validateType(entity));
+			replaced.accept(entity);
 		}
 
 		@Override
 		public void refresh() {
 			if (exists.is()) {
-				set(connectionProvider.connection().selectSingle(where(key(instance.originalPrimaryKey()))
+				replace(connectionProvider.connection().selectSingle(where(key(instance.originalPrimaryKey()))
 								.include(entityDefinition.columns().definitions().stream()
 												.filter(definition -> !definition.selected())
 												.map(ColumnDefinition::attribute)
@@ -519,8 +527,6 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 				notifyValueChange(affectedAttribute, invalidAttributes);
 			}
 			attributeModified.forEach((attribute, modifiedState) -> modifiedState.set(instance.modified(attribute)));
-
-			changed.accept(entity);
 		}
 
 		private <T> @Nullable T defaultValue(AttributeDefinition<T> attributeDefinition) {
