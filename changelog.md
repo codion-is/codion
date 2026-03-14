@@ -10,6 +10,8 @@ Codion Change Log
 - RemoteClient now sealed.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.createSelector() renamed selector().
+### is.codion.swing.common.ui
+- FilterTable.Builder.visibleRows() added.
 ### is.codion.framework.model
 - EntityEditor.nullable(attribute) removed.
 - DefaultEntityEditor bug fixed, internal mutable entity instance no longer propagated to state predicates and validators, state management refactored.

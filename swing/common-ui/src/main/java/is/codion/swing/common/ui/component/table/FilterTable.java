@@ -333,6 +333,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final Value<CenterOnScroll> centerOnScroll;
 	private final boolean scrollToAddedItem;
 	private final boolean rowsFillViewport;
+	private final int visibleRows;
 	final boolean columnToolTips;
 
 	private final ControlMap controlMap;
@@ -358,6 +359,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.scrollToAddedItem = builder.scrollToAddedItem;
 		this.columnToolTips = builder.columnToolTips;
 		this.rowsFillViewport = builder.rowsFillViewport;
+		this.visibleRows = builder.visibleRows;
 		this.sortable = State.state(builder.sortable);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
@@ -499,6 +501,16 @@ public final class FilterTable<R, C> extends JTable {
 			throw new IllegalStateException("Selection model has already been set");
 		}
 		super.setSelectionModel(selectionModel);
+	}
+
+	@Override
+	public Dimension getPreferredScrollableViewportSize() {
+		Dimension preferredSize = super.getPreferredScrollableViewportSize();
+		if (visibleRows > 0) {
+			return new Dimension(preferredSize.width, (getRowHeight() + getRowMargin()) * visibleRows);
+		}
+
+		return preferredSize;
 	}
 
 	/**
@@ -1458,7 +1470,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * @param fillsViewportHeight whether this table is always made large enough to fill the height of an enclosing viewport
 		 * @return this builder instance
 		 * @see #FILLS_VIEWPORT_HEIGHT
-		 * @see JTable#setFillsViewportHeight(boolean)
+		 * @see #setFillsViewportHeight(boolean)
 		 */
 		Builder<R, C> fillsViewportHeight(boolean fillsViewportHeight);
 
@@ -1472,6 +1484,14 @@ public final class FilterTable<R, C> extends JTable {
 		 * @see #fillsViewportHeight(boolean)
 		 */
 		Builder<R, C> rowsFillViewport(boolean rowsFillViewport);
+
+		/**
+		 * Specifies the preferred number of rows to display in a scrollable viewport.
+		 * @param visibleRows the preferred number of visible rows to display
+		 * @return this builder instance
+		 * @see JTable#getPreferredScrollableViewportSize()
+		 */
+		Builder<R, C> visibleRows(int visibleRows);
 
 		/**
 		 * @param headerless true if the table should be headerless
@@ -1655,6 +1675,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean columnToolTips = COLUMN_TOOL_TIPS.getOrThrow();
 		private boolean fillsViewportHeight = FILLS_VIEWPORT_HEIGHT.getOrThrow();
 		private boolean rowsFillViewport = ROWS_FILL_VIEWPORT.getOrThrow();
+		private int visibleRows = -1;
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private @Nullable Boolean rowSelection;
@@ -1819,6 +1840,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> rowsFillViewport(boolean rowsFillViewport) {
 			this.rowsFillViewport = rowsFillViewport;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> visibleRows(int visibleRows) {
+			this.visibleRows = visibleRows;
 			return this;
 		}
 
