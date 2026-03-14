@@ -23,10 +23,11 @@ import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.Insets;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * A builder for text components.
@@ -143,10 +144,12 @@ public interface TextComponentBuilder<C extends JTextComponent, T, B extends Tex
 	B caretListener(CaretListener caretListener);
 
 	/**
-	 * @param onTextChanged called when the text changes
+	 * Adds a document listener to the underlying document.
+	 * @param documentListener a function providing a document listener, receives the text component
 	 * @return this builder instance
+	 * @see javax.swing.text.Document#addDocumentListener(DocumentListener)
 	 */
-	B onTextChanged(Consumer<String> onTextChanged);
+	B documentListener(Function<C, DocumentListener> documentListener);
 
 	/**
 	 * @param dragEnabled true if automatic drag handling should be enabled

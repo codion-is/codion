@@ -12,6 +12,7 @@ Codion Change Log
 - FilterComboBoxModel.createSelector() renamed selector().
 ### is.codion.swing.common.ui
 - FilterTable.Builder.visibleRows() added.
+- TextComponentBuilder.onTextChanged() replaced with documentListener().
 ### is.codion.framework.model
 - EntityEditor.nullable(attribute) removed.
 - DefaultEntityEditor bug fixed, internal mutable entity instance no longer propagated to state predicates and validators, state management refactored.

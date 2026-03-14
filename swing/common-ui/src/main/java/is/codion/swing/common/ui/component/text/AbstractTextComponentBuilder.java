@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.Caret;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.JTextComponent;
@@ -33,6 +34,7 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
@@ -43,6 +45,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 				extends AbstractComponentValueBuilder<C, T, B> implements TextComponentBuilder<C, T, B> {
 
 	private final List<CaretListener> caretListeners = new ArrayList<>();
+	private final List<Function<C, DocumentListener>> documentListeners = new ArrayList<>();
 
 	private UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
 	private @Nullable Boolean editable;
@@ -57,7 +60,6 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	private boolean selectAllOnFocusGained;
 	private boolean moveCaretToEndOnFocusGained;
 	private boolean moveCaretToStartOnFocusGained;
-	private @Nullable Consumer<String> onTextChanged;
 	private @Nullable Boolean dragEnabled;
 	private @Nullable Character focusAcceleratorKey;
 	private CaretPosition caretPosition = CaretPosition.START;
@@ -165,8 +167,8 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	}
 
 	@Override
-	public final B onTextChanged(Consumer<String> onTextChanged) {
-		this.onTextChanged = requireNonNull(onTextChanged);
+	public final B documentListener(Function<C, DocumentListener> documentListener) {
+		documentListeners.add(requireNonNull(documentListener));
 		return self();
 	}
 
@@ -204,6 +206,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 			textComponent.setDragEnabled(dragEnabled);
 		}
 		caretListeners.forEach(new AddCaretListener(textComponent));
+		documentListeners.forEach(new AddDocumentListener<>(textComponent));
 		if (focusAcceleratorKey != null) {
 			textComponent.setFocusAccelerator(focusAcceleratorKey);
 		}
@@ -251,9 +254,6 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 		if (moveCaretToEndOnFocusGained) {
 			textComponent.addFocusListener(new MoveCaretToEndListener(textComponent));
 		}
-		if (onTextChanged != null) {
-			textComponent.getDocument().addDocumentListener(new OnTextChangedListener(onTextChanged, textComponent));
-		}
 
 		return textComponent;
 	}
@@ -288,6 +288,20 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 		@Override
 		public void accept(CaretListener listener) {
 			textComponent.addCaretListener(listener);
+		}
+	}
+
+	private static final class AddDocumentListener<C extends JTextComponent> implements Consumer<Function<C, DocumentListener>> {
+
+		private final C textComponent;
+
+		private AddDocumentListener(C textComponent) {
+			this.textComponent = textComponent;
+		}
+
+		@Override
+		public void accept(Function<C, DocumentListener> listener) {
+			textComponent.getDocument().addDocumentListener(listener.apply(textComponent));
 		}
 	}
 }

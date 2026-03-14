@@ -34,6 +34,7 @@ import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
+import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.border.Borders;
@@ -892,9 +893,10 @@ public final class FilterTable<R, C> extends JTable {
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ESCAPE)
 										.action(requestTableFocus))
-						.popupControls(textField -> searchFieldPopupMenuControls())
+						.popupControls(field -> searchFieldPopupMenuControls())
 						.hint(Messages.find() + "...")
-						.onTextChanged(this::onSearchTextChanged)
+						.documentListener(field -> (DocumentAdapter) e ->
+										onSearchTextChanged(field.getText()))
 						.onBuild(field -> KeyEvents.builder()
 										.keyCode(VK_F)
 										.modifiers(MENU_SHORTCUT_MASK)
