@@ -287,12 +287,9 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 		@Override
 		public final void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == VK_ENTER) {
+			if (e.getKeyCode() == VK_ENTER && !e.isConsumed()) {
 				onEnter();
 				e.consume();
-			}
-			else {
-				super.keyPressed(e);
 			}
 		}
 

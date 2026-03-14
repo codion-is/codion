@@ -13,6 +13,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable.Builder.visibleRows() added.
 - TextComponentBuilder.onTextChanged() replaced with documentListener().
+- DefaultFilterTableCellEditor.StopEditingOnEnter bug fixed, now checks if key event has already been consumed.
 ### is.codion.framework.model
 - EntityEditor.nullable(attribute) removed.
 - DefaultEntityEditor bug fixed, internal mutable entity instance no longer propagated to state predicates and validators, state management refactored.
