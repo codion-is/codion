@@ -45,6 +45,8 @@ import static java.util.ResourceBundle.getBundle;
 
 final class DurationPanelBuilder extends AbstractComponentValueBuilder<DurationPanel, Integer, DurationPanelBuilder> {
 
+	private static final ResourceBundle BUNDLE = getBundle(DurationPanelBuilder.class.getName());
+
 	private boolean cellEditor = false;
 
 	DurationPanelBuilder cellEditor(boolean cellEditor) {
@@ -116,8 +118,6 @@ final class DurationPanelBuilder extends AbstractComponentValueBuilder<DurationP
 	}
 
 	static final class DurationPanel extends JPanel {
-
-		private static final ResourceBundle BUNDLE = getBundle(DurationPanel.class.getName());
 
 		private final JLabel minLabel = Components.label(BUNDLE.getString("min")).build();
 		private final JLabel secLabel = Components.label(BUNDLE.getString("sec")).build();

@@ -18,8 +18,11 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.demos.chinook.ui.AlbumTagsPanelBuilder.AlbumTagsPanel;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -27,6 +30,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.JPanel;
@@ -41,21 +45,21 @@ import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.*;
 
-final class AlbumTagsValue extends AbstractComponentValue<AlbumTagsValue.AlbumTagsPanel, List<String>> {
+final class AlbumTagsPanelBuilder extends AbstractComponentValueBuilder<AlbumTagsPanel, List<String>, AlbumTagsPanelBuilder> {
 
-	AlbumTagsValue() {
-		super(new AlbumTagsPanel());
-		component().value.addListener(this::notifyObserver);
+	@Override
+	protected AlbumTagsPanel createComponent() {
+		return new AlbumTagsPanel();
 	}
 
 	@Override
-	protected List<String> getComponentValue() {
-		return component().value.get();
+	protected ComponentValue<AlbumTagsPanel, List<String>> createValue(AlbumTagsPanel component) {
+		return new AlbumTagsValue(component);
 	}
 
 	@Override
-	protected void setComponentValue(List<String> value) {
-		component().value.set(value);
+	protected void enable(TransferFocusOnEnter transferFocusOnEnter, AlbumTagsPanel component) {
+		transferFocusOnEnter.enable(component.value.component());
 	}
 
 	static final class AlbumTagsPanel extends JPanel {
@@ -69,7 +73,6 @@ final class AlbumTagsValue extends AbstractComponentValue<AlbumTagsValue.AlbumTa
 						.model(model)
 						.items()
 						.nullable(true)
-						.transferFocusOnEnter(true)
 						.buildValue();
 		private final FilterList<String> list = value.component();
 		private final Control addTagControl = Control.builder()
@@ -94,13 +97,14 @@ final class AlbumTagsValue extends AbstractComponentValue<AlbumTagsValue.AlbumTa
 
 		AlbumTagsPanel() {
 			super(borderLayout());
+			System.out.println("new tag panel");
 			add(createCenterPanel(), BorderLayout.CENTER);
 			setupKeyEvents();
 		}
 
 		private JPanel createCenterPanel() {
 			return borderLayoutPanel()
-							.center(scrollPane()
+							.center(Components.scrollPane()
 											.view(list)
 											.preferredWidth(120))
 							.south(borderLayoutPanel()
@@ -184,6 +188,24 @@ final class AlbumTagsValue extends AbstractComponentValue<AlbumTagsValue.AlbumTa
 			for (int i = selected.length - 1; i >= 0; i--) {
 				tags.add(selected[i] + 1, tags.remove(selected[i]));
 			}
+		}
+	}
+
+	private static final class AlbumTagsValue extends AbstractComponentValue<AlbumTagsPanel, List<String>> {
+
+		private AlbumTagsValue(AlbumTagsPanel component) {
+			super(component);
+			component().value.addListener(this::notifyObserver);
+		}
+
+		@Override
+		protected List<String> getComponentValue() {
+			return component().value.get();
+		}
+
+		@Override
+		protected void setComponentValue(List<String> value) {
+			component().value.set(value);
 		}
 	}
 }

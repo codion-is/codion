@@ -60,6 +60,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -246,6 +247,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	public static void main(String[] args) throws CancelException {
 		String language = UserPreferences.get(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
+		UIManager.put("PasswordField.showRevealButton", true);
 		FrameworkIcons icons = FrameworkIcons.instance();
 		icons.put("plus", ChinookAppPanel.class.getResource("plus.svg"));
 		icons.put("minus", ChinookAppPanel.class.getResource("minus.svg"));

@@ -57,7 +57,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 	@Override
 	protected void initializeUI() {
-		create().searchField(Track.ALBUM_FK);
+		create().searchField(Track.ALBUM_FK)
+						.columns(20);
 		create().textField(Track.NAME)
 						.columns(12);
 		create().comboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)

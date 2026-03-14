@@ -19,12 +19,15 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.common.reactive.state.State;
+import is.codion.demos.chinook.ui.CoverArtPanelBuilder.CoverArtPanel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.image.ImagePane;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.common.ui.transfer.FileTransferHandler;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -52,23 +55,23 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
-final class CoverArtValue extends AbstractComponentValue<CoverArtValue.CoverArtPanel, byte[]> {
+final class CoverArtPanelBuilder extends AbstractComponentValueBuilder<CoverArtPanel, byte[], CoverArtPanelBuilder> {
 
-	private static final ResourceBundle BUNDLE = getBundle(CoverArtValue.class.getName());
+	private static final ResourceBundle BUNDLE = getBundle(CoverArtPanelBuilder.class.getName());
 
-	CoverArtValue() {
-		super(new CoverArtPanel());
-		component().value.addListener(this::notifyObserver);
+	@Override
+	protected CoverArtPanel createComponent() {
+		return new CoverArtPanel();
 	}
 
 	@Override
-	protected byte[] getComponentValue() {
-		return component().value.get();
+	protected ComponentValue<CoverArtPanel, byte[]> createValue(CoverArtPanel component) {
+		return new CoverArtValue(component);
 	}
 
 	@Override
-	protected void setComponentValue(byte[] value) {
-		component().value.set(value);
+	protected void enable(TransferFocusOnEnter transferFocusOnEnter, CoverArtPanel component) {
+		transferFocusOnEnter.enable(component.addButton, component.removeButton);
 	}
 
 	static final class CoverArtPanel extends JPanel {
@@ -91,13 +94,11 @@ final class CoverArtValue extends AbstractComponentValue<CoverArtValue.CoverArtP
 						.control(Control.builder()
 										.command(this::addCover)
 										.smallIcon(ICONS.get("plus").small()))
-						.transferFocusOnEnter(true)
 						.build();
 		private final JButton removeButton = button()
 						.control(Control.builder()
 										.command(this::removeCover)
 										.smallIcon(ICONS.get("minus").small()))
-						.transferFocusOnEnter(true)
 						.enabled(present(value))
 						.build();
 		private final JPanel centerPanel = createCenterPanel();
@@ -109,13 +110,6 @@ final class CoverArtValue extends AbstractComponentValue<CoverArtValue.CoverArtP
 		CoverArtPanel() {
 			super(borderLayout());
 			add(centerPanel, BorderLayout.CENTER);
-		}
-
-		@Override
-		public boolean requestFocusInWindow() {
-			// The panel itself is not focusable,
-			// request focus for the add button instead
-			return addButton.requestFocusInWindow();
 		}
 
 		private JPanel createCenterPanel() {
@@ -211,6 +205,24 @@ final class CoverArtValue extends AbstractComponentValue<CoverArtValue.CoverArtP
 			private boolean singleImage(List<File> files) {
 				return files.size() == 1 && IMAGE_FILE_FILTER.accept(files.get(0));
 			}
+		}
+	}
+
+	private static final class CoverArtValue extends AbstractComponentValue<CoverArtPanel, byte[]> {
+
+		private CoverArtValue(CoverArtPanel component) {
+			super(component);
+			component().value.addListener(this::notifyObserver);
+		}
+
+		@Override
+		protected byte[] getComponentValue() {
+			return component().value.get();
+		}
+
+		@Override
+		protected void setComponentValue(byte[] value) {
+			component().value.set(value);
 		}
 	}
 }

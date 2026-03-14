@@ -345,6 +345,9 @@ public interface Chinook {
 
 	final class EmailValidator implements EntityValidator, Serializable {
 
+		@Serial
+		private static final long serialVersionUID = 1;
+
 		private static final Pattern EMAIL_PATTERN = Pattern.compile("^(.+)@(.+)$");
 		private static final ResourceBundle BUNDLE = getBundle(Chinook.class.getName());
 

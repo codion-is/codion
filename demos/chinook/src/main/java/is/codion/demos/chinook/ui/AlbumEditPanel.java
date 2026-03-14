@@ -47,10 +47,10 @@ public final class AlbumEditPanel extends EntityEditPanel {
 						.columns(15);
 		// We use our custom component for the album tags,
 		// which is automatically linked to Album.TAGS.
-		component(Album.TAGS).set(new AlbumTagsValue());
+		component(Album.TAGS).set(new AlbumTagsPanelBuilder());
 		// And our custom component for the album cover
 		// which is automatically linked to Album.COVER.
-		component(Album.COVER).set(new CoverArtValue());
+		component(Album.COVER).set(new CoverArtPanelBuilder());
 
 		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)
 						.add(create().inputPanel(Album.ARTIST_FK))
