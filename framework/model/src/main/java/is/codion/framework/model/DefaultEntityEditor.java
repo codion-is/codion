@@ -89,9 +89,10 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 	private final DefaultPersistEvents persistEvents = new DefaultPersistEvents();
+	private final EditorValues values = new DefaultEditorValues();
 	private final Event<Attribute<?>> valueChanged = Event.event();
 
-	private final Map<Attribute<?>, DefaultEditorValue<?>> editorValues = new HashMap<>();
+	private final Map<Attribute<?>, EditorValue<?>> editorValues = new HashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
 	private final Map<Attribute<?>, State> attributePresent = new HashMap<>();
@@ -169,18 +170,8 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	}
 
 	@Override
-	public final void clear() {
-		entity.set(entityDefinition.entity());
-	}
-
-	@Override
-	public final void defaults() {
-		entity.set(null);
-	}
-
-	@Override
-	public final void revert() {
-		entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
+	public final EditorValues values() {
+		return values;
 	}
 
 	@Override
@@ -191,11 +182,6 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	@Override
 	public final Modified modified() {
 		return modified;
-	}
-
-	@Override
-	public final Observer<Attribute<?>> valueChanged() {
-		return valueChanged.observer();
 	}
 
 	@Override
@@ -274,7 +260,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 
 	private void notifyValueChange(Attribute<?> attribute, Map<Attribute<?>, String> invalidAttributes) {
 		updateAttributeStates(attribute, invalidAttributes);
-		DefaultEditorValue<?> editorValue = editorValues.get(attribute);
+		DefaultEditorValue<?> editorValue = (DefaultEditorValue<?>) editorValues.get(attribute);
 		if (editorValue != null) {
 			editorValue.valueChanged();
 		}
@@ -956,6 +942,29 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 				throw new IllegalStateException("Current EntityPersistence implementation is not replaceable");
 			}
 			this.instance = persistence == null ? DEFAULT : persistence;
+		}
+	}
+
+	private final class DefaultEditorValues implements EditorValues {
+
+		@Override
+		public void clear() {
+			entity.set(entityDefinition.entity());
+		}
+
+		@Override
+		public void defaults() {
+			entity.set(null);
+		}
+
+		@Override
+		public void revert() {
+			entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
+		}
+
+		@Override
+		public Observer<Attribute<?>> changed() {
+			return valueChanged.observer();
 		}
 	}
 

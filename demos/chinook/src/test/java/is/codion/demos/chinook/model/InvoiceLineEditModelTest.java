@@ -30,7 +30,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.model.EntityEditor;
+import is.codion.swing.framework.model.SwingEntityEditor;
 
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +53,7 @@ public final class InvoiceLineEditModelTest {
 			Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
 
 			InvoiceLineEditModel editModel = new InvoiceLineEditModel(connectionProvider);
-			EntityEditor editor = editModel.editor();
+			SwingEntityEditor editor = editModel.editor();
 			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
 			editor.value(InvoiceLine.TRACK_FK).set(battery);
 			Entity invoiceLineBattery = editModel.insert();
@@ -62,7 +62,7 @@ public final class InvoiceLineEditModelTest {
 			assertEquals(battery.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
 
 			Entity orion = connection.selectSingle(Track.NAME.equalToIgnoreCase("orion"));
-			editor.defaults();
+			editor.values().defaults();
 			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
 			editor.value(InvoiceLine.TRACK_FK).set(orion);
 			editModel.insert();

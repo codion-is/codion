@@ -75,7 +75,7 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see EntityEditor#defaults()
+	 * @see EditorValues#defaults()
 	 */
 	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = booleanValue(EntityEditor.class.getName() + ".persistForeignKeys", true);
 
@@ -112,26 +112,6 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	EditorEntity entity();
 
 	/**
-	 * Clears all values from the underlying entity, disregarding the {@link EditorValue#persist()} directive.
-	 */
-	void clear();
-
-	/**
-	 * Populates this editor with default values for all non-persistent attributes.
-	 * <p>Notifies that the entity is about to change via {@link EditorEntity#changing()}
-	 * @see EditorValue#defaultValue()
-	 * @see EditorValue#persist()
-	 * @see ValueAttributeDefinition#defaultValue()
-	 * @see EditorEntity#changing()
-	 */
-	void defaults();
-
-	/**
-	 * Reverts all attribute value changes.
-	 */
-	void revert();
-
-	/**
 	 * @return an {@link ObservableState} indicating whether the entity exists in the database
 	 * @see Exists#predicate()
 	 */
@@ -145,13 +125,6 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	 * @see Exists
 	 */
 	Modified modified();
-
-	/**
-	 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}
-	 * instance or when the entity is set via {@link #clear()}, {@link EditorEntity#set(Entity)} or {@link #defaults()}.
-	 * @return an observer notified each time a value is changed
-	 */
-	Observer<Attribute<?>> valueChanged();
 
 	/**
 	 * @return an {@link ObservableState} indicating whether the value of the entity primary key is present
@@ -222,6 +195,11 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	 * @return the {@link EditorPersistence} used by this editor
 	 */
 	EditorPersistence persistence();
+
+	/**
+	 * @return the {@link EditorValues}
+	 */
+	EditorValues values();
 
 	/**
 	 * @param connection the connection to use when persisting
@@ -442,7 +420,7 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		/**
 		 * <p>Populates this editor entity with the values from the given entity or sets
 		 * the default value for all attributes in case it is null.
-		 * <p>Use {@link #clear()} in order to clear the editor of all values.
+		 * <p>Use {@link EditorValues#clear()} in order to clear the editor of all values.
 		 * <p>Notifies that the entity is about to change via {@link #changing()}
 		 * @param entity the entity to set, if null, then defaults are set
 		 * @throws IllegalArgumentException in case the entity is not of the correct type
@@ -455,9 +433,9 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 
 		/**
 		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener will cancel the change.
-		 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link #defaults()}.
+		 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link EditorValues#defaults()}.
 		 * @see #set(Entity)
-		 * @see #defaults()
+		 * @see EditorValues#defaults()
 		 */
 		Observer<Entity> changing();
 
@@ -580,6 +558,39 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 	}
 
 	/**
+	 * Provides access to the underlying values.
+	 */
+	interface EditorValues {
+
+		/**
+		 * Clears all values, disregarding the {@link EditorValue#persist()} directive.
+		 */
+		void clear();
+
+		/**
+		 * Populates this editor with default values for all non-persistent attributes.
+		 * <p>Notifies that the entity is about to change via {@link EditorEntity#changing()}
+		 * @see EditorValue#defaultValue()
+		 * @see EditorValue#persist()
+		 * @see ValueAttributeDefinition#defaultValue()
+		 * @see EditorEntity#changing()
+		 */
+		void defaults();
+
+		/**
+		 * Reverts all attribute value changes.
+		 */
+		void revert();
+
+		/**
+		 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}
+		 * instance or when the entity is set via {@link #clear()}, {@link EditorEntity#set(Entity)} or {@link #defaults()}.
+		 * @return an observer notified each time a value is changed
+		 */
+		Observer<Attribute<?>> changed();
+	}
+
+	/**
 	 * Provides edit access to an {@link Attribute} value in the underlying entity being edited.
 	 * @param <T> the attribute value type
 	 */
@@ -610,7 +621,7 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		/**
 		 * <p>Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.
 		 * @return a {@link State} controlling whether the given attribute value should persist when defaults are set
-		 * @see EntityEditor#defaults()
+		 * @see EditorValues#defaults()
 		 * @see EntityEditor#PERSIST_FOREIGN_KEYS
 		 */
 		State persist();
@@ -642,7 +653,7 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		/**
 		 * <p>Returns an observer notified each time this value is modified via {@link EditorValue#set(Object)}.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
-		 * via {@link EditorEntity#set(Entity)}, {@link EntityEditor#defaults()} or {@link EntityEditor#clear()}.
+		 * via {@link EditorEntity#set(Entity)}, {@link EditorValues#defaults()} or {@link EditorValues#clear()}.
 		 * <p>Note that this event is only triggered if the value actually changes.
 		 * @return an observer notified when the given attribute value is edited
 		 */
@@ -651,7 +662,7 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 		/**
 		 * <p>Returns the {@link Value} instance controlling the default value supplier for the given attribute.
 		 * <p>Used when the underlying value is not persistent.
-		 * <p>Use {@link EntityEditor#defaults()} to populate the editor with default values.
+		 * <p>Use {@link EditorValues#defaults()} to populate the editor with default values.
 		 * @return the {@link Value} instance controlling the default value supplier
 		 * @see #persist()
 		 */

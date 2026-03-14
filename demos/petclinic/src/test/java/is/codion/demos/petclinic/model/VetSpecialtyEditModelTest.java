@@ -53,7 +53,7 @@ public final class VetSpecialtyEditModelTest {
 
 			// Test update
 			List<Entity> specialties = connection.select(VetSpecialty.VET_FK.equalTo(linda));
-			model.editor().clear();
+			model.editor().values().clear();
 			model.editor().entity().set(specialties.get(0));
 			model.editor().value(VetSpecialty.SPECIALTY).set(specialties.get(1).get(VetSpecialty.SPECIALTY));
 			assertThrows(EntityValidationException.class, model::update);

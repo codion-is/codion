@@ -41,7 +41,7 @@ public class CountryEditModelTest {
 			countryEditModel.editor().entity().set(connectionProvider.connection().selectSingle(
 							Country.NAME.equalTo("Afghanistan")));
 			assertEquals(583_025, countryEditModel.averageCityPopulation().get());
-			countryEditModel.editor().defaults();
+			countryEditModel.editor().values().defaults();
 			assertNull(countryEditModel.averageCityPopulation().get());
 		}
 	}

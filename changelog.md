@@ -25,6 +25,7 @@ Codion Change Log
 - DefaultEntityEditor.DefaultEditorEntity.replace() no longer triggers a changed event.
 - DefaultEntityEditor.DefaultEditorEntity.refresh() now uses replace().
 - EntityEditor.EditorEntity.replaced() observer added.
+- EntityEditor.EditorValues added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeStep.foreignKey() added, configures attributes and null inclusion.
 - SwingComponentModels.comboBox(), EntityEditor parameter replaced with EntityConnection.
