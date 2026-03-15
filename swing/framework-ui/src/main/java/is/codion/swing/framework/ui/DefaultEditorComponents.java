@@ -28,6 +28,8 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditor;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import java.util.HashMap;
@@ -114,11 +116,9 @@ final class DefaultEditorComponents implements EditorComponents {
 
 	private final class DefaultEditorComponent<T> implements EditorComponent<T> {
 
-		private final Value<JComponent> component = Value.builder()
-						.<JComponent>nullable()
-						.notify(Value.Notify.CHANGED)
-						.build();
 		private final EditorValue<T> value;
+
+		private @Nullable JComponent component;
 
 		private DefaultEditorComponent(EditorValue<T> value) {
 			this.value = value;
@@ -126,20 +126,20 @@ final class DefaultEditorComponents implements EditorComponents {
 
 		@Override
 		public JComponent get() {
-			if (component.isNull()) {
+			if (component == null) {
 				throw new IllegalStateException("Component has not been set for: " + value.attribute());
 			}
 
-			return component.getOrThrow();
+			return component;
 		}
 
 		@Override
 		public void set(JComponent component) {
 			requireNonNull(component);
-			if (!this.component.isNull()) {
+			if (this.component != null) {
 				throw new IllegalStateException("Component has already been set for: " + value.attribute());
 			}
-			this.component.set(component);
+			this.component = component;
 		}
 
 		@Override
@@ -151,7 +151,7 @@ final class DefaultEditorComponents implements EditorComponents {
 		@Override
 		public <C extends JComponent, B extends ComponentValueBuilder<C, T, B>> B set(B componentBuilder) {
 			requireNonNull(componentBuilder);
-			if (componentBuilders.containsKey(value.attribute()) || !component.isNull()) {
+			if (componentBuilders.containsKey(value.attribute()) || component != null) {
 				throw new IllegalStateException("Component has already been set for attribute: " + value.attribute());
 			}
 			AttributeDefinition<T> attributeDefinition = editor.entities()
@@ -180,15 +180,15 @@ final class DefaultEditorComponents implements EditorComponents {
 		@Override
 		public void replace(JComponent component) {
 			requireNonNull(component);
-			if (this.component.isNull()) {
+			if (this.component == null) {
 				throw new IllegalStateException("No component has been set for: " + value.attribute());
 			}
-			this.component.set(component);
+			this.component = component;
 		}
 
 		@Override
 		public Optional<JComponent> optional() {
-			return component.optional();
+			return Optional.ofNullable(component);
 		}
 
 		@Override
@@ -203,7 +203,7 @@ final class DefaultEditorComponents implements EditorComponents {
 
 		private void setComponent(JComponent comp) {
 			componentBuilders.remove(value.attribute());
-			component.set(comp);
+			component = comp;
 		}
 	}
 }

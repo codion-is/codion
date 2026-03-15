@@ -40,6 +40,7 @@ Codion Change Log
 - EditAttributePanel, EditAttributeDialogBuilder now use SwingEntityEditor instead of SwingEntityEditModel.
 - EntityComboBox.selector() added, selector field builders moved to Selector.
 - EntityApplication.user() overloaded with a Function<User, Supplier<User>> parameter, receives the default user.
+- DefaultEditorComponents.DefaultEditorComponent component no longer Value based.
 
 ## 0.18.70
 ### is.codion.common.reactive
