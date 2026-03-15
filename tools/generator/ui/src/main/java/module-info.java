@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * Framework Swing generator UI.
+ * Swing domain generator UI classes.
  * <ul>
  * <li>{@link is.codion.tools.generator.ui.DomainGeneratorPanel}
  * </ul>

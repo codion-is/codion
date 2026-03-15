@@ -336,11 +336,11 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	 */
 	protected abstract static class AbstractEntityTableEditor implements EntityTableEditor {
 
-		private final EntityEditModel editModel;
+		private final EntityEditModel<?, ?, ?, ?> editModel;
 		private final State enabled = State.state();
 		private final Value<Editable> editable;
 
-		protected AbstractEntityTableEditor(EntityEditModel editModel) {
+		protected AbstractEntityTableEditor(EntityEditModel<?, ?, ?, ?> editModel) {
 			this.editModel = requireNonNull(editModel);
 			this.editable = Value.nonNull(new Editable() {});
 		}

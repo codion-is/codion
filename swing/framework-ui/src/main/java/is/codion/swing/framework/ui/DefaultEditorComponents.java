@@ -38,7 +38,6 @@ import java.util.Optional;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static javax.accessibility.AccessibleRelation.LABELED_BY;
 
 /**
  * A default {@link EditorComponents} implementation
@@ -193,7 +192,7 @@ final class DefaultEditorComponents implements EditorComponents {
 
 		@Override
 		public JLabel label() {
-			JLabel label = (JLabel) get().getClientProperty(LABELED_BY);
+			JLabel label = (JLabel) get().getClientProperty(CreateComponents.LABELED_BY);
 			if (label == null) {
 				throw new IllegalStateException("No label associated with component: " + value.attribute());
 			}

@@ -37,12 +37,14 @@ import static java.util.Objects.requireNonNull;
  *
  * ObservableState observable = state.observable();
  *
- * observer.addConsumer(this::onStateChange);
+ * observable.addConsumer(this::onStateChange);
  *
  * state.set(true);
  * state.set(false);
  *
  * boolean value = state.is();
+ *
+ * ObservableState opposite = state.not();
  *}
  * A factory for {@link State} instances.
  * <p>Listener management (add/remove) and state modifications are thread-safe

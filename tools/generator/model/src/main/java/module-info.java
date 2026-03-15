@@ -17,7 +17,7 @@
  * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * Framework Swing generator model classes, such as:
+ * Swing domain generator model classes, such as:
  * <ul>
  * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel}
  * </ul>

@@ -209,7 +209,7 @@ public interface EditorComponents {
 	 */
 	final class CreateComponents {
 
-		private static final String LABELED_BY = "labeledBy";
+		static final String LABELED_BY = "labeledBy";
 
 		private final EntityComponents entityComponents;
 		private final EditorComponents components;

@@ -20,8 +20,8 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.db.database.Database;
 import is.codion.framework.db.EntityQueries;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -46,9 +46,9 @@ final class InsertUpdateQueryInspector extends JPanel {
 					.font(InsertUpdateQueryInspector::monospaced)
 					.build();
 	private final EntityQueries queries;
-	private final EntityEditModel editModel;
+	private final SwingEntityEditModel editModel;
 
-	InsertUpdateQueryInspector(EntityEditModel editModel) {
+	InsertUpdateQueryInspector(SwingEntityEditModel editModel) {
 		requireNonNull(editModel);
 		this.queries = EntityQueries.factory()
 						.orElseThrow(() -> new IllegalStateException("No EntityQueries.Factory available"))

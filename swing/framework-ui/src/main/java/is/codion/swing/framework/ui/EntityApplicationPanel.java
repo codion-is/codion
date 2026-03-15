@@ -37,7 +37,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -56,6 +55,7 @@ import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.scaler.Scaler;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -1026,7 +1026,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private static Map<EntityPanel, Collection<Attribute<?>>> modified(Collection<EntityPanel> panels) {
 		Map<EntityPanel, Collection<Attribute<?>>> modifiedPanels = new LinkedHashMap<>();
 		for (EntityPanel panel : panels) {
-			EntityEditModel editModel = panel.editModel();
+			SwingEntityEditModel editModel = panel.editModel();
 			if (editModel.editor().modified().is()) {
 				modifiedPanels.put(panel, editModel.editor().modified().attributes().get());
 			}
