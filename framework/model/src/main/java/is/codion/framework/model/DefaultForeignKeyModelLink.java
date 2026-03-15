@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements ForeignKeyModelLink<M, E, T, R> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> implements ForeignKeyModelLink<M, E, T, R> {
 
 	private final ForeignKey foreignKey;
 	private final ModelLink<M, E, T, R> modelLink;
@@ -173,7 +173,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 	}
 
 	static final class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>,
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor,
 					B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> implements Builder<M, E, T, R, B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();

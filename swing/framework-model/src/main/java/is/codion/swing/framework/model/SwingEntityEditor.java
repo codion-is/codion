@@ -43,8 +43,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing extension of {@link DefaultEntityEditor}
  */
-public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityModel,
-				SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
+public final class SwingEntityEditor extends DefaultEntityEditor {
 
 	private static final String NULL_ITEM_CAPTION = FilterComboBoxModel.NULL_CAPTION.getOrThrow();
 	private static final ProxyBuilder.ProxyMethod<Object> NULL_ITEM_TO_STRING = parameters -> NULL_ITEM_CAPTION;
@@ -213,7 +212,7 @@ public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityMode
 	 * {@link EntityComboBoxModel} and column based {@link FilterComboBoxModel}.
 	 * <p>Override to customize combo box model creation.
 	 */
-	public interface SwingComponentModels extends ComponentModels<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
+	public interface SwingComponentModels extends ComponentModels {
 
 		/**
 		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key, override to

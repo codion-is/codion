@@ -60,7 +60,7 @@ import static java.util.stream.Collectors.toMap;
  * @param <R> the {@link EntityEditor} type
  */
 public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements EntityTableModel<M, E, T, R> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> implements EntityTableModel<M, E, T, R> {
 
 	private final FilterModel<Entity> filterModel;
 	private final E editModel;

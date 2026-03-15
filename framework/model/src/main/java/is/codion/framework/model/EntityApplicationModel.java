@@ -39,7 +39,7 @@ import static is.codion.common.utilities.Configuration.stringValue;
  * @param <R> the {@link EntityEditor} type
  */
 public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> {
 
 	/**
 	 * Specifies whether the client should apply and save user preferences
@@ -104,7 +104,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	 * @param <R> the {@link EntityEditor} type
 	 */
 	interface EntityModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> {
 
 		/**
 		 * @param modelClass the application model class

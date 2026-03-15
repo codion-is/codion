@@ -37,7 +37,7 @@ import java.util.function.Consumer;
  * @see #onDelete(Collection)
  */
 public interface ModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> {
 
 	/**
 	 * @return the linked model
@@ -91,7 +91,7 @@ public interface ModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEd
 	 * @return a {@link Builder} instance
 	 */
 	static <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>, T extends EntityTableModel<M, E, T, R>,
-					B extends Builder<M, E, T, R, B>, R extends EntityEditor<M, E, T, R>> Builder<M, E, T, R, B> builder(M model) {
+					B extends Builder<M, E, T, R, B>, R extends EntityEditor> Builder<M, E, T, R, B> builder(M model) {
 		return new DefaultModelLink.DefaultBuilder<>(model);
 	}
 
@@ -104,7 +104,7 @@ public interface ModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEd
 	 * @param <B> the builder type
 	 */
 	interface Builder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>, B extends Builder<M, E, T, R, B>> {
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor, B extends Builder<M, E, T, R, B>> {
 
 		/**
 		 * Note that only active model links respond to parent model selection by default.

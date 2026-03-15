@@ -75,13 +75,8 @@ import static java.util.stream.Collectors.*;
 
 /**
  * A default {@link EntityEditor} implementation.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
- * @param <R> the {@link EntityEditor} type
  */
-public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements EntityEditor<M, E, T, R> {
+public class DefaultEntityEditor implements EntityEditor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditor.class);
 
@@ -110,7 +105,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	private final DefaultExists exists;
 	private final DefaultModified modified;
 	private final Value<EntityValidator> validator;
-	private final ComponentModels<M, E, T, R> componentModels;
+	private final ComponentModels componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
 	private final EditorPersistence persistence;
 
@@ -123,7 +118,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	 * @param componentModels the editor component models
 	 */
 	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
-														 ComponentModels<M, E, T, R> componentModels) {
+														 ComponentModels componentModels) {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.componentModels = requireNonNull(componentModels);
@@ -254,7 +249,7 @@ public class DefaultEntityEditor<M extends EntityModel<M, E, T, R>, E extends En
 	/**
 	 * @return the {@link ComponentModels} instance
 	 */
-	protected ComponentModels<M, E, T, R> componentModels() {
+	protected ComponentModels componentModels() {
 		return componentModels;
 	}
 

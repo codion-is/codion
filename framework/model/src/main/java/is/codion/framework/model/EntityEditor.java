@@ -51,13 +51,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Provides edit access to an underlying entity.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
- * @param <R> the {@link EntityEditor} type
  */
-public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
+public interface EntityEditor {
 
 	/**
 	 * Specifies whether editors publish their insert, update and delete events to {@link PersistenceEvents}
@@ -484,13 +479,8 @@ public interface EntityEditor<M extends EntityModel<M, E, T, R>, E extends Entit
 
 	/**
 	 * Provides models for editor components requiring database access.
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
-	 * @param <R> the {@link EntityEditor} type
 	 */
-	interface ComponentModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> {
+	interface ComponentModels {
 
 		/**
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,

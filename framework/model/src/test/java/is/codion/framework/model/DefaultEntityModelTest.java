@@ -62,14 +62,14 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		}
 	}
 
-	public static final class TestEntityEditor extends DefaultEntityEditor<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
+	public static final class TestEntityEditor extends DefaultEntityEditor {
 
 		public TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(entityType, connectionProvider, new TestComponentModels() {});
 		}
 	}
 
-	public interface TestComponentModels extends ComponentModels<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {}
+	public interface TestComponentModels extends ComponentModels {}
 
 	public interface TestEntityTableModel extends EntityTableModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {}
 }

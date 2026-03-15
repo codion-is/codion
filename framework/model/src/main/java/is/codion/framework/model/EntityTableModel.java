@@ -50,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  * @param <R> the {@link EntityEditor} type
  */
 public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> extends FilterModel<Entity> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> extends FilterModel<Entity> {
 
 	/**
 	 * Specifies the default action a table model takes when entities are inserted via its edit model.

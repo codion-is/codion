@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>> implements ModelLink<M, E, T, R> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> implements ModelLink<M, E, T, R> {
 
 	private final M model;
 	private final State active;
@@ -83,7 +83,7 @@ final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends Entity
 	}
 
 	static class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<M, E, T, R>, B extends Builder<M, E, T, R, B>>
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor, B extends Builder<M, E, T, R, B>>
 					implements Builder<M, E, T, R, B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
