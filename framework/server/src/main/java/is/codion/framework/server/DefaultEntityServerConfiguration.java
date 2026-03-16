@@ -88,6 +88,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
+	public Collection<String> authenticators() {
+		return serverConfiguration.authenticators();
+	}
+
+	@Override
 	public boolean sslEnabled() {
 		return serverConfiguration.sslEnabled();
 	}
@@ -250,6 +255,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		@Override
 		public Builder auxiliaryServerFactory(Collection<String> auxiliaryServerFactory) {
 			serverConfigurationBuilder.auxiliaryServerFactory(auxiliaryServerFactory);
+			return this;
+		}
+
+		@Override
+		public Builder authenticator(String authenticatorClass) {
+			serverConfigurationBuilder.authenticator(authenticatorClass);
 			return this;
 		}
 

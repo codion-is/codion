@@ -159,8 +159,6 @@ public class AbstractServerTest {
 		assertEquals(connectionRequest.clientId(), connection.remoteClient().clientId());
 
 		server.disconnect(connectionRequest.clientId());
-
-		assertThrows(IllegalStateException.class, () -> server.addAuthenticator(new TestAuthenticator()));
 	}
 
 	@Test
@@ -268,6 +266,7 @@ public class AbstractServerTest {
 		return ServerConfiguration.builder(PORT)
 						.serverName("remoteServerTestServer")
 						.objectInputFilterFactoryRequired(false)
+						.authenticator(TestAuthenticator.class.getName())
 						.build();
 	}
 
@@ -282,7 +281,6 @@ public class AbstractServerTest {
 		private TestServer(ServerConfiguration configuration) throws RemoteException {
 			super(configuration);
 			setAdmin(new DefaultServerAdmin(this, configuration));
-			addAuthenticator(new TestAuthenticator());
 		}
 
 		@Override

@@ -107,7 +107,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		try {
 			configureObjectInputFilter(configuration);
 			startAuxiliaryServers(configuration.auxiliaryServerFactory());
-			loadAuthenticators();
+			loadAuthenticators(configuration.authenticators());
 		}
 		catch (Throwable exception) {
 			throw logShutdownAndReturn(new RuntimeException(exception));
@@ -247,27 +247,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		authenticators.values().forEach(AbstractServer::closeAuthenticator);
 		auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
 		shutdownEvent.run();
-	}
-
-	/**
-	 * Adds a {@link Authenticator} instance to this server.
-	 * If {@link Authenticator#clientType()} is empty, the authenticator
-	 * is shared between all client types, otherwise it is only used for clients of the given type.
-	 * @param authenticator the authenticator to add
-	 * @throws IllegalStateException in case an authenticator with the same clientType has been added
-	 */
-	public final void addAuthenticator(Authenticator authenticator) {
-		requireNonNull(authenticator);
-		if (authenticator.clientType().isPresent()) {
-			String clientType = authenticator.clientType().get();
-			if (authenticators.containsKey(clientType)) {
-				throw new IllegalStateException("Authenticator for clientType '" + clientType + "' has alread been added");
-			}
-			authenticators.put(clientType, authenticator);
-		}
-		else {
-			sharedAuthenticators.add(authenticator);
-		}
 	}
 
 	/**
@@ -523,13 +502,47 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		return requestParameterHost;
 	}
 
-	private void loadAuthenticators() {
+	private void loadAuthenticators(Collection<String> authenticatorClassNames) {
 		Authenticator.authenticators().forEach(authenticator -> {
 			String clientType = authenticator.clientType().orElse(null);
 			LOG.info("Server loading authenticator '{}' as service, {}", authenticator.getClass()
-							.getName(), clientType == null ? "shared" : "(clientType: '" + clientType + "'");
+							.getName(), clientType == null ? "shared" : "clientType: '" + clientType + "'");
 			addAuthenticator(authenticator);
 		});
+		authenticatorClassNames.forEach(className -> {
+			try {
+				Authenticator authenticator = (Authenticator) Class.forName(className).getDeclaredConstructor().newInstance();
+				String clientType = authenticator.clientType().orElse(null);
+				LOG.info("Server loading authenticator '{}' from classpath, {}", className,
+								clientType == null ? "shared" : "clientType: '" + clientType + "'");
+				addAuthenticator(authenticator);
+			}
+			catch (Exception e) {
+				LOG.error("Exception while instantiating authenticator: {}", className, e);
+				throw Exceptions.runtime(e);
+			}
+		});
+	}
+
+	/**
+	 * Adds a {@link Authenticator} instance to this server.
+	 * If {@link Authenticator#clientType()} is empty, the authenticator
+	 * is shared between all client types, otherwise it is only used for clients of the given type.
+	 * @param authenticator the authenticator to add
+	 * @throws IllegalStateException in case an authenticator with the same clientType has been added
+	 */
+	private void addAuthenticator(Authenticator authenticator) {
+		requireNonNull(authenticator);
+		if (authenticator.clientType().isPresent()) {
+			String clientType = authenticator.clientType().get();
+			if (authenticators.containsKey(clientType)) {
+				throw new IllegalStateException("Authenticator for clientType '" + clientType + "' has already been added");
+			}
+			authenticators.put(clientType, authenticator);
+		}
+		else {
+			sharedAuthenticators.add(authenticator);
+		}
 	}
 
 	/**

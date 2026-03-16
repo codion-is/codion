@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.72
+### is.codion.common.rmi
+- AbstractServer.addAuthenticator() no longer public, ServerConfiguration.Builder.authenticator() added.
 
 ## 0.18.71
 ### is.codion.common.reactive

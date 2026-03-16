@@ -238,6 +238,11 @@ public interface ServerConfiguration {
 	Collection<String> auxiliaryServerFactory();
 
 	/**
+	 * @return the class names of {@link Authenticator}s to use
+	 */
+	Collection<String> authenticators();
+
+	/**
 	 * @return true if ssl is enabled
 	 */
 	boolean sslEnabled();
@@ -303,6 +308,13 @@ public interface ServerConfiguration {
 		 * @return this builder instance
 		 */
 		B auxiliaryServerFactory(Collection<String> auxiliaryServerFactory);
+
+		/**
+		 * Specifies an {@link Authenticator} class name, instantiated on server start, must have a parameterless constructor
+		 * @param authenticatorClass the authenticator class name
+		 * @return this builder instance
+		 */
+		B authenticator(String authenticatorClass);
 
 		/**
 		 * When set to true this also sets the rmi client/server socket factories.

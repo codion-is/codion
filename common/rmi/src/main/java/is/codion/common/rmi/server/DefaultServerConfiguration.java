@@ -53,6 +53,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final int port;
 	private final int registryPort;
 	private final Collection<String> auxiliaryServerFactories;
+	private final Collection<String> authenticators;
 	private final int adminPort;
 	private final boolean sslEnabled;
 	private final Supplier<String> serverNameSupplier;
@@ -67,6 +68,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		this.port = builder.serverPort;
 		this.registryPort = builder.registryPort;
 		this.auxiliaryServerFactories = unmodifiableCollection(builder.auxiliaryServerFactories);
+		this.authenticators = unmodifiableCollection(builder.authenticators);
 		this.adminPort = builder.serverAdminPort;
 		this.sslEnabled = builder.sslEnabled;
 		this.serverNameSupplier = builder.serverName;
@@ -106,6 +108,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	@Override
 	public Collection<String> auxiliaryServerFactory() {
 		return auxiliaryServerFactories;
+	}
+
+	@Override
+	public Collection<String> authenticators() {
+		return authenticators;
 	}
 
 	@Override
@@ -152,6 +159,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private final int serverPort;
 		private final int registryPort;
 		private final Collection<String> auxiliaryServerFactories = new HashSet<>();
+		private final Collection<String> authenticators = new HashSet<>();
 		private int serverAdminPort;
 		private boolean sslEnabled = true;
 		private Supplier<String> serverName = new DefaultServerName();
@@ -191,6 +199,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		@Override
 		public DefaultBuilder auxiliaryServerFactory(Collection<String> auxiliaryServerFactory) {
 			this.auxiliaryServerFactories.addAll(requireNonNull(auxiliaryServerFactory));
+			return this;
+		}
+
+		@Override
+		public DefaultBuilder authenticator(String authenticatorClass) {
+			this.authenticators.add(requireNonNull(authenticatorClass));
 			return this;
 		}
 

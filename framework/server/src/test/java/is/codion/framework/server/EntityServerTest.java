@@ -70,7 +70,7 @@ public class EntityServerTest {
 	@BeforeAll
 	public static synchronized void setUp() throws Exception {
 		String serverName = CONFIGURATION.serverName();
-		EntityServer.startServer(CONFIGURATION).addAuthenticator(new TestAuthenticator());
+		EntityServer.startServer(CONFIGURATION);
 		server = (Server<RemoteEntityConnection, EntityServerAdmin>)
 						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), CONFIGURATION.registryPort()).lookup(serverName);
 		admin = server.admin(ADMIN_USER);
@@ -328,6 +328,7 @@ public class EntityServerTest {
 						.methodTracing(true)
 						.sslEnabled(true)
 						.objectInputFilterFactory(SerializationFilterFactory.class.getName())
+						.authenticator(TestAuthenticator.class.getName())
 						.build();
 	}
 
