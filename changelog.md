@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.72
+
 ## 0.18.71
 ### is.codion.common.reactive
 - State.Group.fallback() added, related refactoring.
