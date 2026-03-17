@@ -545,21 +545,21 @@ public class DefaultEntityEditor implements EntityEditor {
 		public PersistTask<Entity> insert() throws EntityValidationException {
 			validate();
 
-			return new DefaultInsertEntity();
+			return new InsertEntity();
 		}
 
 		@Override
 		public PersistTask<Entity> insert(Entity entity) throws EntityValidationException {
 			validate(requireNonNull(entity));
 
-			return new DefaultInsertEntity(entity.copy().mutable());
+			return new InsertEntity(entity.copy().mutable());
 		}
 
 		@Override
 		public PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
 			validate(requireNonNull(entities));
 
-			return new DefaultInsertEntitiesTask(entities);
+			return new InsertEntities(entities);
 		}
 
 		@Override
@@ -609,17 +609,17 @@ public class DefaultEntityEditor implements EntityEditor {
 			return new DeleteEntities(requireNonNull(entities));
 		}
 
-		private final class DefaultInsertEntity implements PersistTask<Entity> {
+		private final class InsertEntity implements PersistTask<Entity> {
 
 			private final Entity entity;
 			private final Consumer<Entity> handler;
 
-			private DefaultInsertEntity() {
+			private InsertEntity() {
 				this.entity = entity().get().copy().mutable();
 				this.handler = inserted -> entity().replace(inserted);
 			}
 
-			private DefaultInsertEntity(Entity entity) {
+			private InsertEntity(Entity entity) {
 				this.entity = entity;
 				this.handler = e -> {};
 			}
@@ -628,7 +628,7 @@ public class DefaultEntityEditor implements EntityEditor {
 			public Task<Entity> prepare() {
 				persistEvents.beforeInsert(entity);
 
-				return new DefaultInsertEntity.InsertTask();
+				return new InsertEntity.InsertTask();
 			}
 
 			private final class InsertTask implements Task<Entity> {
@@ -659,11 +659,11 @@ public class DefaultEntityEditor implements EntityEditor {
 			}
 		}
 
-		private final class DefaultInsertEntitiesTask implements PersistTask<Collection<Entity>> {
+		private final class InsertEntities implements PersistTask<Collection<Entity>> {
 
 			private final Collection<Entity> entities;
 
-			private DefaultInsertEntitiesTask(Collection<Entity> entities) {
+			private InsertEntities(Collection<Entity> entities) {
 				this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			}
 
@@ -671,7 +671,7 @@ public class DefaultEntityEditor implements EntityEditor {
 			public Task<Collection<Entity>> prepare() {
 				persistEvents.beforeInsert(entities);
 
-				return new DefaultInsertEntitiesTask.InsertTask();
+				return new InsertEntities.InsertTask();
 			}
 
 			private final class InsertTask implements Task<Collection<Entity>> {
