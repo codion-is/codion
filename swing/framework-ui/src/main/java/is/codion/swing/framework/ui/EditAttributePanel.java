@@ -118,7 +118,7 @@ final class EditAttributePanel<T> extends JPanel {
 						.collect(toList());
 		T value = componentValue.get();
 		toUpdate.forEach(entity -> editor.value(attribute).set(entity, value));
-		Task<Collection<Entity>> task = editor.tasks(editor.connectionProvider().connection()).update(toUpdate.stream()
+		Task<Collection<Entity>> task = editor.tasks().update(toUpdate.stream()
 										.filter(Entity::modified)
 										.collect(toList()))
 						.prepare();

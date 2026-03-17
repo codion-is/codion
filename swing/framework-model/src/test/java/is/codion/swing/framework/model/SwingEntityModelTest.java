@@ -93,21 +93,21 @@ public final class SwingEntityModelTest
 		Entity operations = departmentModel.tableModel().selection().item().getOrThrow();
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
-		departmentModel.editModel().delete();
+		departmentModel.editModel().editor().delete();
 		assertFalse(departmentsComboBoxModel.items().contains(operations));
 		departmentModel.editModel().editor().value(Department.ID).set(99);
 		departmentModel.editModel().editor().value(Department.NAME).set("nameit");
-		Entity inserted = departmentModel.editModel().insert();
+		Entity inserted = departmentModel.editModel().editor().insert();
 		assertTrue(departmentsComboBoxModel.items().contains(inserted));
 		departmentModel.tableModel().selection().item().set(inserted);
 		departmentModel.editModel().editor().value(Department.NAME).set("nameitagain");
-		departmentModel.editModel().update();
+		departmentModel.editModel().editor().update();
 		departmentsComboBoxModel.select(inserted.primaryKey());
 		assertEquals("nameitagain", departmentsComboBoxModel.selection().item().getOrThrow().get(Department.NAME));
 
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey.copy().with(Department.ID, 20).build()));
 		departmentModel.editModel().editor().value(Department.NAME).set("NewName");
-		departmentModel.editModel().update();
+		departmentModel.editModel().editor().update();
 
 		for (Entity employee : employeeModel.tableModel().items().get()) {
 			Entity dept = employee.entity(Employee.DEPARTMENT_FK);

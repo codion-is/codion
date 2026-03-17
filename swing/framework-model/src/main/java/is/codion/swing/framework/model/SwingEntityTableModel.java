@@ -33,7 +33,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityConditionModel;
-import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableModel.RefreshTask.Result;
@@ -134,14 +134,14 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	 * @throws IllegalArgumentException in case the edit model and query model entity type is not the same
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
-		super(requireNonNull(editModel), queryModel, tableModelBuilder(editModel)
+		super(requireNonNull(editModel), queryModel, tableModelBuilder(editModel.editor())
 						.items(requireNonNull(queryModel)::query)
 						.build());
 		addTableModelListener(this::onTableModelEvent);
 	}
 
 	private SwingEntityTableModel(SwingEntityEditModel editModel, Collection<Entity> items) {
-		super(requireNonNull(editModel), tableModelBuilder(editModel).build());
+		super(requireNonNull(editModel), tableModelBuilder(editModel.editor()).build());
 		items().add(requireNonNull(items));
 	}
 
@@ -324,12 +324,12 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 		}
 	}
 
-	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditModel editModel) {
+	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditor editor) {
 		return FilterTableModel.builder()
-						.columns(new EntityTableColumns(editModel.entityDefinition()))
-						.filters(new EntityFilters(editModel.entityDefinition()))
-						.validator(new EntityItemValidator(editModel.entityType()))
-						.editor(tableModel -> new SwingEntityTableEditor(editModel));
+						.columns(new EntityTableColumns(editor.entityDefinition()))
+						.filters(new EntityFilters(editor.entityDefinition()))
+						.validator(new EntityItemValidator(editor.entityDefinition().type()))
+						.editor(tableModel -> new SwingEntityTableEditor(editor));
 	}
 
 	private static EntityType entityType(Collection<Entity> entities) {
@@ -346,8 +346,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	public static final class SwingEntityTableEditor extends AbstractEntityTableEditor
 					implements EntityTableEditor, Editor<Entity, Attribute<?>> {
 
-		private SwingEntityTableEditor(EntityEditModel editModel) {
-			super(editModel);
+		private SwingEntityTableEditor(EntityEditor editor) {
+			super(editor);
 		}
 
 		@Override

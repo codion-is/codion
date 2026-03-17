@@ -209,9 +209,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		EntityConnection connection = tableModel.connectionProvider().connection();
 		connection.startTransaction();
 		try {
-			employeeEditModel.update();
+			employeeEditModel.editor().update();
 			assertEquals(newName, tableModel.items().included().get(0).get(Employee.NAME));
-			departmentEditModel.update();
+			departmentEditModel.editor().update();
 			assertEquals(newName, tableModel.items().included().get(0).get(Employee.DEPARTMENT_FK).get(Department.NAME));
 		}
 		finally {

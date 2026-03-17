@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.framework.domain.test.DomainTest.EntityFactory;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import java.util.Random;
@@ -40,6 +41,7 @@ public final class UpdateEmployee extends AbstractPerformer {
 		SwingEntityModel departmentModel = application.entityModels().get(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
+		SwingEntityEditor editor = employeeModel.editModel().editor();
 		EntityFactory entityFactory = new DefaultEntityFactory(application.connection());
 		if (employeeModel.tableModel().items().included().size() > 0) {
 			EntityConnection connection = employeeModel.connection();
@@ -48,13 +50,13 @@ public final class UpdateEmployee extends AbstractPerformer {
 				selectRandomRow(employeeModel.tableModel());
 				Entity selected = employeeModel.tableModel().selection().item().get();
 				entityFactory.modify(selected);
-				employeeModel.editModel().editor().entity().set(selected);
-				employeeModel.editModel().update();
+				editor.entity().set(selected);
+				editor.update();
 				selectRandomRow(employeeModel.tableModel());
 				selected = employeeModel.tableModel().selection().item().get();
 				entityFactory.modify(selected);
-				employeeModel.editModel().editor().entity().set(selected);
-				employeeModel.editModel().update();
+				editor.entity().set(selected);
+				editor.update();
 			}
 			finally {
 				if (random.nextBoolean()) {

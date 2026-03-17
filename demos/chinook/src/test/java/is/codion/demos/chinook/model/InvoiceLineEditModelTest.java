@@ -56,7 +56,7 @@ public final class InvoiceLineEditModelTest {
 			SwingEntityEditor editor = editModel.editor();
 			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
 			editor.value(InvoiceLine.TRACK_FK).set(battery);
-			Entity invoiceLineBattery = editModel.insert();
+			Entity invoiceLineBattery = editor.insert();
 
 			invoice = connection.selectSingle(key(invoice.primaryKey()));
 			assertEquals(battery.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
@@ -65,7 +65,7 @@ public final class InvoiceLineEditModelTest {
 			editor.values().defaults();
 			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
 			editor.value(InvoiceLine.TRACK_FK).set(orion);
-			editModel.insert();
+			editor.insert();
 
 			invoice = connection.selectSingle(key(invoice.primaryKey()));
 			assertEquals(battery.get(Track.UNITPRICE).add(orion.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
@@ -76,12 +76,12 @@ public final class InvoiceLineEditModelTest {
 
 			editor.entity().set(invoiceLineBattery);
 			editor.value(InvoiceLine.TRACK_FK).set(theCallOfKtulu);
-			editModel.update();
+			editor.update();
 
 			invoice = connection.selectSingle(key(invoice.primaryKey()));
 			assertEquals(orion.get(Track.UNITPRICE).add(theCallOfKtulu.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
 
-			editModel.delete();
+			editor.delete();
 
 			invoice = connection.selectSingle(key(invoice.primaryKey()));
 			assertEquals(orion.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));

@@ -32,7 +32,7 @@ public final class InsertDepartment implements Performer<EmployeesAppModel> {
 	public void perform(EmployeesAppModel application) throws EntityValidationException {
 		SwingEntityModel departmentModel = application.entityModels().get(Department.TYPE);
 		departmentModel.editModel().editor().entity().set(new DefaultEntityFactory(application.connection()).entity(Department.TYPE));
-		departmentModel.editModel().insert();
+		departmentModel.editModel().editor().insert();
 	}
 }
 // end::loadTest[]

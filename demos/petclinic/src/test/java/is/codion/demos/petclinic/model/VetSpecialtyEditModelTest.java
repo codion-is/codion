@@ -28,6 +28,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
+import is.codion.swing.framework.model.SwingEntityEditor;
 
 import org.junit.jupiter.api.Test;
 
@@ -47,16 +48,17 @@ public final class VetSpecialtyEditModelTest {
 			Entity surgery = connection.selectSingle(Specialty.NAME.equalTo("surgery"));
 
 			// Test insert
-			model.editor().value(VetSpecialty.VET_FK).set(linda);
-			model.editor().value(VetSpecialty.SPECIALTY_FK).set(surgery);
-			assertThrows(EntityValidationException.class, model::insert);
+			SwingEntityEditor editor = model.editor();
+			editor.value(VetSpecialty.VET_FK).set(linda);
+			editor.value(VetSpecialty.SPECIALTY_FK).set(surgery);
+			assertThrows(EntityValidationException.class, editor::insert);
 
 			// Test update
 			List<Entity> specialties = connection.select(VetSpecialty.VET_FK.equalTo(linda));
-			model.editor().values().clear();
-			model.editor().entity().set(specialties.get(0));
-			model.editor().value(VetSpecialty.SPECIALTY).set(specialties.get(1).get(VetSpecialty.SPECIALTY));
-			assertThrows(EntityValidationException.class, model::update);
+			editor.values().clear();
+			editor.entity().set(specialties.get(0));
+			editor.value(VetSpecialty.SPECIALTY).set(specialties.get(1).get(VetSpecialty.SPECIALTY));
+			assertThrows(EntityValidationException.class, editor::update);
 		}
 	}
 

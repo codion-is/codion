@@ -75,9 +75,9 @@ public final class FrameworkModelDemo {
 		Value<String> nameValue = editModel.editor().value(Customer.FIRSTNAME);
 
 		// Perform operations
-		editModel.insert();
-		editModel.update();
-		editModel.delete();
+		editModel.editor().insert();
+		editModel.editor().update();
+		editModel.editor().delete();
 		// end::entityEditModel[]
 	}
 
@@ -101,8 +101,8 @@ public final class FrameworkModelDemo {
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Edit model states
-		State updateEnabled = editModel.settings().updateEnabled();
-		State updateMultipleEnabled = editModel.settings().updateMultipleEnabled();
+		State updateEnabled = editModel.editor().settings().updateEnabled();
+		State updateMultipleEnabled = editModel.editor().settings().updateMultipleEnabled();
 		ObservableState modified = editModel.editor().modified();
 
 		// Table model states

@@ -645,14 +645,14 @@ public abstract class EntityEditPanel extends JPanel {
 		};
 		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
-		if (!editModel().settings().readOnly().is()) {
-			if (editModel().settings().insertEnabled().is()) {
+		if (!editModel().editor().settings().readOnly().is()) {
+			if (editModel().editor().settings().insertEnabled().is()) {
 				controlMap.control(INSERT).set(createInsertControl());
 			}
-			if (editModel().settings().updateEnabled().is()) {
+			if (editModel().editor().settings().updateEnabled().is()) {
 				controlMap.control(UPDATE).set(createUpdateControl());
 			}
-			if (editModel().settings().deleteEnabled().is()) {
+			if (editModel().editor().settings().deleteEnabled().is()) {
 				controlMap.control(DELETE).set(createDeleteControl());
 			}
 		}
@@ -671,7 +671,7 @@ public abstract class EntityEditPanel extends JPanel {
 						.command(this::delete)
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(active,
-										editModel().settings().deleteEnabled(),
+										editModel().editor().settings().deleteEnabled(),
 										editModel().editor().exists()))
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
@@ -717,7 +717,7 @@ public abstract class EntityEditPanel extends JPanel {
 						.command(this::update)
 						.caption(FrameworkMessages.update())
 						.enabled(State.and(active,
-										editModel().settings().updateEnabled(),
+										editModel().editor().settings().updateEnabled(),
 										editModel().editor().modified()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
@@ -733,7 +733,7 @@ public abstract class EntityEditPanel extends JPanel {
 		return Control.builder()
 						.command(this::insert)
 						.caption(caption)
-						.enabled(State.and(active, editModel().settings().insertEnabled()))
+						.enabled(State.and(active, editModel().editor().settings().insertEnabled()))
 						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
 						.mnemonic(mnemonic)
 						.icon(ICONS.add())
@@ -1596,7 +1596,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmInsert()) {
-				Task<Entity> task = editPanel.editModel().tasks().insert().prepare();
+				Task<Entity> task = editPanel.editModel().editor().tasks().insert().prepare();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("inserting"))
@@ -1676,7 +1676,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmUpdate()) {
-				Task<Entity> task = editPanel.editModel().tasks().update().prepare();
+				Task<Entity> task = editPanel.editModel().editor().tasks().update().prepare();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("updating"))
@@ -1751,7 +1751,7 @@ public abstract class EntityEditPanel extends JPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmDelete()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().tasks().delete().prepare()::perform)
+								.task(editPanel.editModel().editor().tasks().delete().prepare()::perform)
 								.title(MESSAGES.getString("deleting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)

@@ -125,7 +125,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 						.with(Department.NAME, "HELLO")
 						.build();
 		int count = deptModel.items().included().size();
-		deptModel.editModel().insert(singletonList(dept));
+		deptModel.editModel().editor().insert(singletonList(dept));
 		assertEquals(count + 1, deptModel.items().included().size());
 		// Sort by name is enabled
 		assertEquals(dept, deptModel.items().included().get().get(1));
@@ -136,7 +136,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 						.with(Department.LOCATION, "Nowhere2")
 						.with(Department.NAME, "NONAME")
 						.build();
-		deptModel.editModel().insert(singletonList(dept2));
+		deptModel.editModel().editor().insert(singletonList(dept2));
 		assertEquals(count + 2, deptModel.items().included().size());
 		assertEquals(dept2, deptModel.items().included().get().get(2));
 
@@ -146,13 +146,13 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 						.with(Department.LOCATION, "Nowhere3")
 						.with(Department.NAME, "NONAME2")
 						.build();
-		deptModel.editModel().insert(singletonList(dept3));
+		deptModel.editModel().editor().insert(singletonList(dept3));
 		assertEquals(count + 2, deptModel.items().included().size());
 
 		deptModel.items().refresh();
 		assertEquals(count + 3, deptModel.items().included().size());
 
-		deptModel.editModel().delete(asList(dept, dept2, dept3));
+		deptModel.editModel().editor().delete(asList(dept, dept2, dept3));
 	}
 
 	@Test
@@ -190,7 +190,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 
 	@Test
 	public void deleteNotEnabled() {
-		testModel.editModel().settings().deleteEnabled().set(false);
+		testModel.editModel().editor().settings().deleteEnabled().set(false);
 		testModel.items().refresh();
 		testModel.selection().indexes().set(singletonList(0));
 		assertThrows(IllegalStateException.class, testModel::deleteSelected);
@@ -200,7 +200,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 	public void testTheRest() {
 		assertNotNull(testModel.connectionProvider());
 		assertNotNull(testModel.editModel());
-		assertFalse(testModel.editModel().settings().readOnly().is());
+		assertFalse(testModel.editModel().editor().settings().readOnly().is());
 		testModel.items().refresh();
 	}
 

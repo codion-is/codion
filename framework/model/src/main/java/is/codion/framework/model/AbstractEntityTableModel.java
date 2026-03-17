@@ -168,7 +168,7 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 
 	@Override
 	public final Collection<Entity> deleteSelected() {
-		return editModel.delete(selection().items().get());
+		return editModel.editor().delete(selection().items().get());
 	}
 
 	@Override
@@ -336,12 +336,12 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	 */
 	protected abstract static class AbstractEntityTableEditor implements EntityTableEditor {
 
-		private final EntityEditModel<?, ?, ?, ?> editModel;
+		private final EntityEditor editor;
 		private final State enabled = State.state();
 		private final Value<Editable> editable;
 
-		protected AbstractEntityTableEditor(EntityEditModel<?, ?, ?, ?> editModel) {
-			this.editModel = requireNonNull(editModel);
+		protected AbstractEntityTableEditor(EntityEditor editor) {
+			this.editor = requireNonNull(editor);
 			this.editable = Value.nonNull(new Editable() {});
 		}
 
@@ -357,7 +357,7 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 
 		@Override
 		public final boolean editable(Entity entity, Attribute<?> attribute) {
-			if (editModel.settings().readOnly().is() || !editModel.settings().updateEnabled().is()) {
+			if (editor.settings().readOnly().is() || !editor.settings().updateEnabled().is()) {
 				return false;
 			}
 
@@ -370,10 +370,10 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 				throw new IllegalStateException("Attribute is not editable, entity: " + entity + ", attribute: " + attribute);
 			}
 			Entity copy = entity.copy().mutable();
-			editModel.editor().value(attribute).set(copy, value);
+			editor.value(attribute).set(copy, value);
 			try {
 				if (copy.modified()) {
-					editModel.update(singleton(copy));
+					editor.update(singleton(copy));
 				}
 			}
 			catch (Exception e) {

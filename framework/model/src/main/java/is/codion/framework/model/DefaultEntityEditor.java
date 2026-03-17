@@ -100,6 +100,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
+	private final DefaultSettings settings;
 	private final State primaryKeyPresent = State.state(false);
 	private final State valid = State.state();
 	private final DefaultExists exists;
@@ -121,6 +122,7 @@ public class DefaultEntityEditor implements EntityEditor {
 														 ComponentModels componentModels) {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
+		this.settings = new DefaultSettings(entityDefinition.readOnly());
 		this.componentModels = requireNonNull(componentModels);
 		this.persistence = new DefaultEditorPersistence();
 		this.entity = new DefaultEditorEntity(createEntity(INITIAL_VALUE));
@@ -147,6 +149,11 @@ public class DefaultEntityEditor implements EntityEditor {
 	@Override
 	public final EntityConnectionProvider connectionProvider() {
 		return connectionProvider;
+	}
+
+	@Override
+	public final Settings settings() {
+		return settings;
 	}
 
 	@Override
@@ -237,8 +244,43 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
+	public final PersistTasks tasks() {
+		return tasks(connectionProvider.connection());
+	}
+
+	@Override
 	public final PersistTasks tasks(EntityConnection connection) {
 		return new DefaultPersistTasks(requireNonNull(connection));
+	}
+
+	@Override
+	public final Entity insert() throws EntityValidationException {
+		return tasks().insert().prepare().perform().handle();
+	}
+
+	@Override
+	public final Collection<Entity> insert(Collection<Entity> entities) throws EntityValidationException {
+		return tasks().insert(entities).prepare().perform().handle();
+	}
+
+	@Override
+	public final Entity update() throws EntityValidationException {
+		return tasks().update().prepare().perform().handle();
+	}
+
+	@Override
+	public final Collection<Entity> update(Collection<Entity> entities) throws EntityValidationException {
+		return tasks().update(entities).prepare().perform().handle();
+	}
+
+	@Override
+	public final Entity delete() {
+		return tasks().delete().prepare().perform().handle();
+	}
+
+	@Override
+	public final Collection<Entity> delete(Collection<Entity> entities) {
+		return tasks().delete(entities).prepare().perform().handle();
 	}
 
 	@Override
@@ -543,6 +585,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public PersistTask<Entity> insert() throws EntityValidationException {
+			settings.verifyInsertEnabled();
 			validate();
 
 			return new InsertEntity();
@@ -550,6 +593,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public PersistTask<Entity> insert(Entity entity) throws EntityValidationException {
+			settings.verifyInsertEnabled();
 			validate(requireNonNull(entity));
 
 			return new InsertEntity(entity.copy().mutable());
@@ -557,6 +601,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
+			settings.verifyInsertEnabled();
 			validate(requireNonNull(entities));
 
 			return new InsertEntities(entities);
@@ -564,6 +609,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public PersistTask<Entity> update() throws EntityValidationException {
+			settings.verifyUpdateEnabled(1);
 			validate();
 			if (!modified().is()) {
 				throw new IllegalStateException(NOT_MODIFIED + entity().get());
@@ -574,6 +620,7 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public PersistTask<Entity> update(Entity entity) throws EntityValidationException {
+			settings.verifyUpdateEnabled(1);
 			validate(requireNonNull(entity));
 			if (!entity.modified()) {
 				throw new IllegalStateException(NOT_MODIFIED + entity);
@@ -584,7 +631,8 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException {
-			validate(requireNonNull(entities));
+			settings.verifyUpdateEnabled(requireNonNull(entities).size());
+			validate(entities);
 			for (Entity entity : entities) {
 				if (!entity.modified()) {
 					throw new IllegalStateException(NOT_MODIFIED + entity);
@@ -596,16 +644,22 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public PersistTask<Entity> delete() {
+			settings.verifyDeleteEnabled();
+
 			return new DeleteEntity();
 		}
 
 		@Override
 		public PersistTask<Entity> delete(Entity entity) {
+			settings.verifyDeleteEnabled();
+
 			return new DeleteEntity(requireNonNull(entity).copy().mutable());
 		}
 
 		@Override
 		public PersistTask<Collection<Entity>> delete(Collection<Entity> entities) {
+			settings.verifyDeleteEnabled();
+
 			return new DeleteEntities(requireNonNull(entities));
 		}
 
@@ -1460,6 +1514,74 @@ public class DefaultEntityEditor implements EntityEditor {
 			@Override
 			public Observer<Collection<Entity>> delete() {
 				return delete.observer();
+			}
+		}
+	}
+
+	private static final class DefaultSettings implements Settings {
+
+		private final State readOnly;
+		private final State insertEnabled = State.state(true);
+		private final State updateEnabled = State.state(true);
+		private final State updateMultipleEnabled = State.state(true);
+		private final State deleteEnabled = State.state(true);
+
+		private DefaultSettings(boolean readOnly) {
+			this.readOnly = State.state(readOnly);
+		}
+
+		@Override
+		public State readOnly() {
+			return readOnly;
+		}
+
+		@Override
+		public State insertEnabled() {
+			return insertEnabled;
+		}
+
+		@Override
+		public State updateEnabled() {
+			return updateEnabled;
+		}
+
+		@Override
+		public State updateMultipleEnabled() {
+			return updateMultipleEnabled;
+		}
+
+		@Override
+		public State deleteEnabled() {
+			return deleteEnabled;
+		}
+
+		private void verifyInsertEnabled() {
+			verifyNotReadOnly();
+			if (!insertEnabled.is()) {
+				throw new IllegalStateException("Inserting is not enabled!");
+			}
+		}
+
+		private void verifyUpdateEnabled(int entityCount) {
+			verifyNotReadOnly();
+			if (!updateEnabled.is()) {
+				throw new IllegalStateException("Updating is not enabled!");
+			}
+			if (entityCount > 1 && !updateMultipleEnabled.is()) {
+				throw new IllegalStateException("Updating multiple entities is not enabled");
+			}
+		}
+
+		private void verifyDeleteEnabled() {
+			verifyNotReadOnly();
+			if (!deleteEnabled.is()) {
+				throw new IllegalStateException("Deleting is not enabled!");
+			}
+		}
+
+		private void verifyNotReadOnly() {
+			if (readOnly.is()) {
+				throw new IllegalStateException("Edit model is read-only!");
 			}
 		}
 	}

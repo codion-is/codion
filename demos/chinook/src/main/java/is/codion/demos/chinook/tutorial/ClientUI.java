@@ -58,7 +58,7 @@ public final class ClientUI {
 		Control insertControl = Control.action(actionEvent -> {
 			try {
 				// insert the entity
-				editModel.insert();
+				editModel.editor().insert();
 				// clear the edit model after a successful insert
 				editModel.editor().values().defaults();
 			}
@@ -125,7 +125,7 @@ public final class ClientUI {
 		Control insertControl = Control.action(actionEvent -> {
 			try {
 				// insert the entity
-				editModel.insert();
+				editModel.editor().insert();
 				// clear the edit model after a successful insert
 				editModel.editor().values().defaults();
 				// and transfer the focus to the combo box

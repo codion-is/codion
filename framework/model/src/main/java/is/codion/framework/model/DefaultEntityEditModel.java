@@ -18,18 +18,11 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.reactive.state.State;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.model.EntityEditor.PersistTask;
-import is.codion.framework.model.EntityEditor.PersistTasks;
-
-import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,8 +37,6 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> implements EntityEditModel<M, E, T, R> {
 
 	private final R editor;
-	private final DefaultPersistTasks tasks;
-	private final DefaultSettings settings;
 
 	/**
 	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
@@ -53,8 +44,6 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 	 */
 	public DefaultEntityEditModel(R editor) {
 		this.editor = requireNonNull(editor);
-		this.settings = new DefaultSettings(editor.entityDefinition().readOnly());
-		this.tasks = new DefaultPersistTasks();
 	}
 
 	@Override
@@ -70,11 +59,6 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 	@Override
 	public final String toString() {
 		return getClass() + ", " + entityType();
-	}
-
-	@Override
-	public final Settings settings() {
-		return settings;
 	}
 
 	@Override
@@ -95,174 +79,5 @@ public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends
 	@Override
 	public final R editor() {
 		return editor;
-	}
-
-	@Override
-	public final PersistTasks tasks() {
-		return tasks;
-	}
-
-	@Override
-	public final Entity insert() throws EntityValidationException {
-		return tasks.insert().prepare().perform().handle();
-	}
-
-	@Override
-	public final Collection<Entity> insert(Collection<Entity> entities) throws EntityValidationException {
-		return tasks.insert(entities).prepare().perform().handle();
-	}
-
-	@Override
-	public final Entity update() throws EntityValidationException {
-		return tasks.update().prepare().perform().handle();
-	}
-
-	@Override
-	public final Collection<Entity> update(Collection<Entity> entities) throws EntityValidationException {
-		return tasks.update(entities).prepare().perform().handle();
-	}
-
-	@Override
-	public final Entity delete() {
-		return tasks.delete().prepare().perform().handle();
-	}
-
-	@Override
-	public final Collection<Entity> delete(Collection<Entity> entities) {
-		return tasks.delete(entities).prepare().perform().handle();
-	}
-
-	private final class DefaultPersistTasks implements PersistTasks {
-
-		@Override
-		public PersistTask<Entity> insert() throws EntityValidationException {
-			settings.verifyInsertEnabled();
-
-			return editor.tasks(connection()).insert();
-		}
-
-		@Override
-		public PersistTask<Entity> insert(Entity entity) throws EntityValidationException {
-			settings.verifyInsertEnabled();
-
-			return editor.tasks(connection()).insert(entity);
-		}
-
-		@Override
-		public PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
-			settings.verifyInsertEnabled();
-
-			return editor.tasks(connection()).insert(entities);
-		}
-
-		@Override
-		public PersistTask<Entity> update() throws EntityValidationException {
-			settings.verifyUpdateEnabled(1);
-
-			return editor.tasks(connection()).update();
-		}
-
-		@Override
-		public PersistTask<Entity> update(Entity entity) throws EntityValidationException {
-			settings.verifyUpdateEnabled(1);
-
-			return editor.tasks(connection()).update(entity);
-		}
-
-		@Override
-		public PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException {
-			settings.verifyUpdateEnabled(requireNonNull(entities).size());
-
-			return editor.tasks(connection()).update(entities);
-		}
-
-		@Override
-		public PersistTask<Entity> delete() {
-			settings.verifyDeleteEnabled();
-
-			return editor.tasks(connection()).delete();
-		}
-
-		@Override
-		public PersistTask<Entity> delete(Entity entity) {
-			settings.verifyDeleteEnabled();
-
-			return editor.tasks(connection()).delete(entity);
-		}
-
-		@Override
-		public PersistTask<Collection<Entity>> delete(Collection<Entity> entities) {
-			settings.verifyDeleteEnabled();
-
-			return editor.tasks(connection()).delete(entities);
-		}
-	}
-
-	private static final class DefaultSettings implements Settings {
-
-		private final State readOnly;
-		private final State insertEnabled = State.state(true);
-		private final State updateEnabled = State.state(true);
-		private final State updateMultipleEnabled = State.state(true);
-		private final State deleteEnabled = State.state(true);
-
-		private DefaultSettings(boolean readOnly) {
-			this.readOnly = State.state(readOnly);
-		}
-
-		@Override
-		public State readOnly() {
-			return readOnly;
-		}
-
-		@Override
-		public State insertEnabled() {
-			return insertEnabled;
-		}
-
-		@Override
-		public State updateEnabled() {
-			return updateEnabled;
-		}
-
-		@Override
-		public State updateMultipleEnabled() {
-			return updateMultipleEnabled;
-		}
-
-		@Override
-		public State deleteEnabled() {
-			return deleteEnabled;
-		}
-
-		private void verifyInsertEnabled() {
-			verifyNotReadOnly();
-			if (!insertEnabled.is()) {
-				throw new IllegalStateException("Inserting is not enabled!");
-			}
-		}
-
-		private void verifyUpdateEnabled(int entityCount) {
-			verifyNotReadOnly();
-			if (!updateEnabled.is()) {
-				throw new IllegalStateException("Updating is not enabled!");
-			}
-			if (entityCount > 1 && !updateMultipleEnabled.is()) {
-				throw new IllegalStateException("Updating multiple entities is not enabled");
-			}
-		}
-
-		private void verifyDeleteEnabled() {
-			verifyNotReadOnly();
-			if (!deleteEnabled.is()) {
-				throw new IllegalStateException("Deleting is not enabled!");
-			}
-		}
-
-		private void verifyNotReadOnly() {
-			if (readOnly.is()) {
-				throw new IllegalStateException("Edit model is read-only!");
-			}
-		}
 	}
 }

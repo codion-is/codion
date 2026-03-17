@@ -37,7 +37,7 @@ public final class InsertEmployee extends AbstractPerformer {
 		Entity employee = new DefaultEntityFactory(application.connection()).entity(Employee.TYPE);
 		employee.set(Employee.DEPARTMENT_FK, departmentModel.tableModel().selection().item().get());
 		employeeModel.editModel().editor().entity().set(employee);
-		employeeModel.editModel().insert();
+		employeeModel.editModel().editor().insert();
 	}
 }
 // end::loadTest[]

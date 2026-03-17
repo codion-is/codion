@@ -93,17 +93,17 @@ public final class Misc {
 		editor.value(Customer.ACTIVE).set(true);
 
 		//inserts and returns the inserted entity
-		Entity customer = editModel.insert();
+		Entity customer = editor.insert();
 
 		//modify some values
 		editor.value(Customer.FIRST_NAME).set("John");
 		editor.value(Customer.LAST_NAME).set("Doe");
 
 		//updates and returns the updated entity
-		customer = editModel.update();
+		customer = editor.update();
 
 		//deletes the active entity
-		editModel.delete();
+		editor.delete();
 		// end::editModel[]
 	}
 }

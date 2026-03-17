@@ -116,12 +116,12 @@ public final class DefaultEntityEditModelTest {
 		try {
 			editor.entity().set(jones);
 			editor.value(Employee.NAME).set("Noname");
-			employeeEditModel.insert();
+			employeeEditModel.editor().insert();
 			assertEquals(1, insertEvents.get());
 			editor.value(Employee.NAME).set("Another");
-			employeeEditModel.update();
+			employeeEditModel.editor().update();
 			assertEquals(1, updateEvents.get());
-			assertNotNull(employeeEditModel.delete());
+			assertNotNull(employeeEditModel.editor().delete());
 			assertEquals(1, deleteEvents.get());
 			assertTrue(managerInserted.get());
 		}
@@ -347,25 +347,25 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void insertReadOnly() throws CancelException {
-		employeeEditModel.settings().readOnly().set(true);
-		assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
+		employeeEditModel.editor().settings().readOnly().set(true);
+		assertThrows(IllegalStateException.class, () -> employeeEditModel.editor().insert());
 	}
 
 	@Test
 	void updateReadOnly() throws CancelException {
-		employeeEditModel.settings().readOnly().set(true);
-		assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
+		employeeEditModel.editor().settings().readOnly().set(true);
+		assertThrows(IllegalStateException.class, () -> employeeEditModel.editor().update());
 	}
 
 	@Test
 	void deleteReadOnly() throws CancelException {
-		employeeEditModel.settings().readOnly().set(true);
-		assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
+		employeeEditModel.editor().settings().readOnly().set(true);
+		assertThrows(IllegalStateException.class, () -> employeeEditModel.editor().delete());
 	}
 
 	@Test
 	void insert() throws EntityValidationException {
-		assertTrue(employeeEditModel.insert(emptyList()).isEmpty());
+		assertTrue(employeeEditModel.editor().insert(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
 		try {
@@ -387,13 +387,13 @@ public final class DefaultEntityEditModelTest {
 
 			employeeEditModel.editor().events().after().insert().addConsumer(insertedEntities ->
 							assertEquals(department, insertedEntities.iterator().next().get(Employee.DEPARTMENT_FK)));
-			employeeEditModel.settings().insertEnabled().set(false);
-			assertFalse(employeeEditModel.settings().insertEnabled().is());
-			assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
-			employeeEditModel.settings().insertEnabled().set(true);
-			assertTrue(employeeEditModel.settings().insertEnabled().is());
+			employeeEditModel.editor().settings().insertEnabled().set(false);
+			assertFalse(employeeEditModel.editor().settings().insertEnabled().is());
+			assertThrows(IllegalStateException.class, () -> employeeEditModel.editor().insert());
+			employeeEditModel.editor().settings().insertEnabled().set(true);
+			assertTrue(employeeEditModel.editor().settings().insertEnabled().is());
 
-			employeeEditModel.insert();
+			employeeEditModel.editor().insert();
 			assertTrue(editor.exists().is());
 			Entity entityCopy = editor.entity().get();
 			assertFalse(entityCopy.primaryKey().isNull());
@@ -401,7 +401,7 @@ public final class DefaultEntityEditModelTest {
 
 			editor.value(Employee.NAME).set("Bobby");
 			try {
-				employeeEditModel.insert();
+				employeeEditModel.editor().insert();
 			}
 			catch (Exception e) {
 				fail("Should be able to insert again");
@@ -414,7 +414,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void update() throws EntityValidationException {
-		assertTrue(employeeEditModel.update(emptyList()).isEmpty());
+		assertTrue(employeeEditModel.editor().update(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
 		try {
@@ -428,30 +428,30 @@ public final class DefaultEntityEditModelTest {
 			Consumer<Map<Entity, Entity>> consumer = updatedEntities ->
 							assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
 			employeeEditModel.editor().events().after().update().addConsumer(consumer);
-			employeeEditModel.settings().updateEnabled().set(false);
-			assertFalse(employeeEditModel.settings().updateEnabled().is());
-			assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
-			employeeEditModel.settings().updateEnabled().set(true);
-			assertTrue(employeeEditModel.settings().updateEnabled().is());
+			employeeEditModel.editor().settings().updateEnabled().set(false);
+			assertFalse(employeeEditModel.editor().settings().updateEnabled().is());
+			assertThrows(IllegalStateException.class, () -> employeeEditModel.editor().update());
+			employeeEditModel.editor().settings().updateEnabled().set(true);
+			assertTrue(employeeEditModel.editor().settings().updateEnabled().is());
 
-			employeeEditModel.update();
+			employeeEditModel.editor().update();
 			assertFalse(editor.modified().is());
 			assertEquals(1, replacedCount.get());
 			employeeEditModel.editor().events().after().update().removeConsumer(consumer);
 
-			employeeEditModel.settings().updateMultipleEnabled().set(false);
+			employeeEditModel.editor().settings().updateMultipleEnabled().set(false);
 
 			Entity emp1 = connection.selectSingle(Employee.NAME.equalTo("BLAKE"));
 			emp1.set(Employee.COMMISSION, 100d);
 			Entity emp2 = connection.selectSingle(Employee.NAME.equalTo("JONES"));
 			emp2.set(Employee.COMMISSION, 100d);
-			assertThrows(IllegalStateException.class, () -> employeeEditModel.update(Arrays.asList(emp1, emp2)));
+			assertThrows(IllegalStateException.class, () -> employeeEditModel.editor().update(Arrays.asList(emp1, emp2)));
 
 			// Test afterUpdate event map contents
 			TestEntityEditModel deptEditModel = new TestEntityEditModel(Department.TYPE, CONNECTION_PROVIDER);
 			deptEditModel.editor().value(Department.ID).set(-1);
 			deptEditModel.editor().value(Department.NAME).set("UpdTest");
-			Entity dept = deptEditModel.insert();
+			Entity dept = deptEditModel.editor().insert();
 			deptEditModel.editor().entity().set(dept);
 
 			AtomicBoolean checker = new AtomicBoolean(false);
@@ -471,34 +471,34 @@ public final class DefaultEntityEditModelTest {
 
 			deptEditModel.editor().value(Department.ID).set(-2);
 			deptEditModel.editor().value(Department.NAME).set("UpdTest2");
-			deptEditModel.update();
+			deptEditModel.editor().update();
 
 			assertTrue(checker.get(), "After update event should have been triggered");
 		}
 		finally {
 			connection.rollbackTransaction();
-			employeeEditModel.settings().updateMultipleEnabled().set(true);
+			employeeEditModel.editor().settings().updateMultipleEnabled().set(true);
 		}
 	}
 
 	@Test
 	void delete() {
-		assertTrue(employeeEditModel.delete(emptyList()).isEmpty());
+		assertTrue(employeeEditModel.editor().delete(emptyList()).isEmpty());
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
 		try {
 			editor.entity().set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			List<Entity> toDelete = singletonList(editor.entity().get());
 			employeeEditModel.editor().events().after().delete().addConsumer(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
-			employeeEditModel.settings().deleteEnabled().set(false);
-			assertFalse(employeeEditModel.settings().deleteEnabled().is());
-			assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
-			employeeEditModel.settings().deleteEnabled().set(true);
-			assertTrue(employeeEditModel.settings().deleteEnabled().is());
+			employeeEditModel.editor().settings().deleteEnabled().set(false);
+			assertFalse(employeeEditModel.editor().settings().deleteEnabled().is());
+			assertThrows(IllegalStateException.class, () -> employeeEditModel.editor().delete());
+			employeeEditModel.editor().settings().deleteEnabled().set(true);
+			assertTrue(employeeEditModel.editor().settings().deleteEnabled().is());
 			editor.value(Employee.ID).set(3);// modify primary key to JONES, should be reverted before delete
 			assertEquals(1, connection.count(Count.where(Employee.NAME.equalTo("JONES"))));// JONES was not deleted
 
-			employeeEditModel.delete();
+			employeeEditModel.editor().delete();
 		}
 		finally {
 			connection.rollbackTransaction();
@@ -575,7 +575,7 @@ public final class DefaultEntityEditModelTest {
 			blakeEditModel.editor().entity().set(connection
 							.selectSingle(Employee.NAME.equalTo("BLAKE")));
 			blakeEditModel.editor().value(Employee.COMMISSION).set(100d);
-			blakeEditModel.update();
+			blakeEditModel.editor().update();
 			assertEquals(100d, editor.entity().get().entity(Employee.MGR_FK).get(Employee.COMMISSION));
 		}
 		finally {
@@ -710,7 +710,7 @@ public final class DefaultEntityEditModelTest {
 		assertTrue(nameModifiedObserver.is());
 		connection.startTransaction();
 		try {
-			employeeEditModel.update();
+			employeeEditModel.editor().update();
 			assertFalse(nameModifiedObserver.is());
 		}
 		finally {
@@ -786,7 +786,7 @@ public final class DefaultEntityEditModelTest {
 		extraModified2.set(true);
 		assertTrue(editor.modified().is());
 		// UpdateException from the EntityConnection since the entity isn't really modified
-		assertThrows(UpdateEntityException.class, () -> employeeEditModel.update());
+		assertThrows(UpdateEntityException.class, () -> employeeEditModel.editor().update());
 	}
 
 	@Test
@@ -815,12 +815,12 @@ public final class DefaultEntityEditModelTest {
 		TestEntityEditModel editModel = new TestEntityEditModel(NonGeneratedPK.TYPE, CONNECTION_PROVIDER);
 		editModel.editor().value(NonGeneratedPK.ID).set(UUID.randomUUID());
 		editModel.editor().value(NonGeneratedPK.NAME).set("123456");//length > 5
-		assertThrows(EntityValidationException.class, editModel::insert);//works, due to the edit model setting the defaults
+		assertThrows(EntityValidationException.class, editModel.editor()::insert);//works, due to the edit model setting the defaults
 
 		Entity manual = editModel.entities().entity(NonGeneratedPK.TYPE).build();
 		manual.set(NonGeneratedPK.ID, UUID.randomUUID());// non generated pk column initialized to null in entity builder, exists = false
 		manual.set(NonGeneratedPK.NAME, "123456");
-		assertThrows(EntityValidationException.class, () -> editModel.insert(singleton(manual)));
+		assertThrows(EntityValidationException.class, () -> editModel.editor().insert(singleton(manual)));
 	}
 
 	@Test

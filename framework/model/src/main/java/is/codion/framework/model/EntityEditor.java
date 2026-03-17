@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -28,6 +29,8 @@ import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.exception.EntityModifiedException;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -88,6 +91,11 @@ public interface EntityEditor {
 	 * @return the connection provider
 	 */
 	EntityConnectionProvider connectionProvider();
+
+	/**
+	 * @return the editor settings
+	 */
+	Settings settings();
 
 	/**
 	 * @return the {@link PersistEvents}
@@ -197,10 +205,101 @@ public interface EntityEditor {
 	EditorValues values();
 
 	/**
+	 * @return the {@link PersistTasks} instance
+	 */
+	PersistTasks tasks();
+
+	/**
 	 * @param connection the connection to use when persisting
 	 * @return the {@link PersistTasks} instance
 	 */
 	PersistTasks tasks(EntityConnection connection);
+
+	/**
+	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Performs an insert on the active entity, sets the primary key values of the active entity
+	 * according to the primary key of the inserted entity
+	 * @return the inserted entity
+	 * @throws DatabaseException in case of a database exception
+	 * @throws EntityValidationException in case validation fails
+	 * @throws IllegalStateException in case inserting is not enabled
+	 * @see PersistEvents.BeforePersist#insert()
+	 * @see PersistEvents.AfterPersist#insert()
+	 * @see EntityEditor.Settings#insertEnabled()
+	 * @see EntityEditor#validate(Entity)
+	 */
+	Entity insert() throws EntityValidationException;
+
+	/**
+	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Performs an insert on the given entities.
+	 * @param entities the entities to insert
+	 * @return a list containing the inserted entities
+	 * @throws DatabaseException in case of a database exception
+	 * @throws EntityValidationException in case validation fails
+	 * @throws IllegalStateException in case inserting is not enabled
+	 * @see PersistEvents.BeforePersist#insert()
+	 * @see PersistEvents.AfterPersist#insert()
+	 * @see EntityEditor.Settings#insertEnabled()
+	 * @see EntityEditor#validate(Entity)
+	 */
+	Collection<Entity> insert(Collection<Entity> entities) throws EntityValidationException;
+
+	/**
+	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Performs an update on the active entity
+	 * @return the updated entity
+	 * @throws DatabaseException in case of a database exception
+	 * @throws EntityModifiedException in case the entity has been modified since it was loaded
+	 * @throws EntityValidationException in case validation fails
+	 * @throws IllegalStateException in case updating is not enabled
+	 * @throws UpdateEntityException in case the active entity is not modified
+	 * @see PersistEvents.BeforePersist#update()
+	 * @see PersistEvents.AfterPersist#update()
+	 * @see EntityEditor.Settings#updateEnabled()
+	 * @see EntityEditor#validate(Entity)
+	 */
+	Entity update() throws EntityValidationException;
+
+	/**
+	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Updates the given entities.
+	 * @param entities the entities to update
+	 * @return the updated entities
+	 * @throws DatabaseException in case of a database exception
+	 * @throws EntityModifiedException in case an entity has been modified since it was loaded
+	 * @throws EntityValidationException in case validation fails
+	 * @throws IllegalStateException in case updating is not enabled
+	 * @throws UpdateEntityException in case any of the given entities are not modified
+	 * @see PersistEvents.BeforePersist#update()
+	 * @see PersistEvents.AfterPersist#update()
+	 * @see EntityEditor.Settings#updateEnabled()
+	 * @see EntityEditor#validate(Entity)
+	 */
+	Collection<Entity> update(Collection<Entity> entities) throws EntityValidationException;
+
+	/**
+	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * @return the deleted entity
+	 * @throws DatabaseException in case of a database exception
+	 * @throws IllegalStateException in case deleting is not enabled
+	 * @see PersistEvents.BeforePersist#delete()
+	 * @see PersistEvents.AfterPersist#delete()
+	 * @see EntityEditor.Settings#deleteEnabled()
+	 */
+	Entity delete();
+
+	/**
+	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * @param entities the entities to delete
+	 * @return the deleted entities
+	 * @throws DatabaseException in case of a database exception
+	 * @throws IllegalStateException in case deleting is not enabled
+	 * @see PersistEvents.BeforePersist#delete()
+	 * @see PersistEvents.AfterPersist#delete()
+	 * @see EntityEditor.Settings#deleteEnabled()
+	 */
+	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
 	 * Represents a task for persisting entities, inserting, updating or deleting, split up for use with a background thread.
@@ -281,6 +380,7 @@ public interface EntityEditor {
 		/**
 		 * @return an async task for inserting the active entity
 		 * @throws EntityValidationException in case of validation failure
+		 * @throws IllegalStateException in case inserting is not enabled
 		 */
 		PersistTask<Entity> insert() throws EntityValidationException;
 
@@ -288,6 +388,7 @@ public interface EntityEditor {
 		 * @param entity the entity
 		 * @return an async task for inserting the given entity
 		 * @throws EntityValidationException in case of validation failure
+		 * @throws IllegalStateException in case inserting is not enabled
 		 */
 		PersistTask<Entity> insert(Entity entity) throws EntityValidationException;
 
@@ -295,19 +396,21 @@ public interface EntityEditor {
 		 * @param entities the entities
 		 * @return an async task for inserting the given entities
 		 * @throws EntityValidationException in case of validation failure
+		 * @throws IllegalStateException in case inserting is not enabled
 		 */
 		PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * @return an async task for updating the active entity
 		 * @throws EntityValidationException in case of validation failure
+		 * @throws IllegalStateException in case updating is not enabled
 		 */
 		PersistTask<Entity> update() throws EntityValidationException;
 
 		/**
 		 * @param entity the entity
 		 * @return an async task for updating the given entity
-		 * @throws IllegalStateException in case the entity is not modified
+		 * @throws IllegalStateException in case the entity is not modified or if updating is not enabled
 		 * @throws EntityValidationException in case of validation failure
 		 */
 		PersistTask<Entity> update(Entity entity) throws EntityValidationException;
@@ -315,25 +418,28 @@ public interface EntityEditor {
 		/**
 		 * @param entities the entities
 		 * @return an async task for updating the given entities
-		 * @throws IllegalStateException in case any entity is not modified
+		 * @throws IllegalStateException in case the entity is not modified or if updating is not enabled
 		 * @throws EntityValidationException in case of validation failure
 		 */
 		PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * @return an async task for deleting the active entity
+		 * @throws IllegalStateException in case deleting is not enabled
 		 */
 		PersistTask<Entity> delete();
 
 		/**
 		 * @param entity the entity
 		 * @return an async task for deleting the given entity
+		 * @throws IllegalStateException in case deleting is not enabled
 		 */
 		PersistTask<Entity> delete(Entity entity);
 
 		/**
 		 * @param entities the entities
 		 * @return an async task for deleting the given entities
+		 * @throws IllegalStateException in case deleting is not enabled
 		 */
 		PersistTask<Collection<Entity>> delete(Collection<Entity> entities);
 	}
@@ -736,5 +842,46 @@ public interface EntityEditor {
 				<T> void set(Attribute<T> attribute, @Nullable T value);
 			}
 		}
+	}
+
+	/**
+	 * The edit model settings.
+	 */
+	interface Settings {
+
+		/**
+		 * Making this edit model read-only prevents any changes from being
+		 * persisted to the database, trying to insert, update or delete will
+		 * cause an exception being thrown, it does not prevent editing.
+		 * Use {@link #insertEnabled()}, {@link #updateEnabled()} and {@link #deleteEnabled()}
+		 * to configure the enabled state of those specific actions.
+		 * @return the {@link State} controlling whether this model is read only
+		 */
+		State readOnly();
+
+		/**
+		 * Disabling insert causes an exception being thrown when inserting.
+		 * @return the {@link State} controlling whether inserting is enabled via this edit model
+		 */
+		State insertEnabled();
+
+		/**
+		 * Disabling update causes an exception being thrown when updating.
+		 * @return the {@link State} controlling whether updating is enabled via this edit model
+		 */
+		State updateEnabled();
+
+		/**
+		 * Disabling updating multiple entities causes an exception being thrown when
+		 * trying to update multiple entities at a time.
+		 * @return the {@link State} controlling whether updating multiple entities is enabled
+		 */
+		State updateMultipleEnabled();
+
+		/**
+		 * Disabling delete causes an exception being thrown when deleting.
+		 * @return the {@link State} controlling whether deleting is enabled via this edit model
+		 */
+		State deleteEnabled();
 	}
 }
