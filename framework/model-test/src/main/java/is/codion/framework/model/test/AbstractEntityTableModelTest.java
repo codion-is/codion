@@ -169,13 +169,13 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 			tableModel.selection().index().set(0);
 			Entity selected = tableModel.selection().item().get();
 			tableModel.removeDeleted().set(true);
-			tableModel.deleteSelected();
+			tableModel.editModel().editor().tasks().delete(tableModel.selection().items().get()).prepare().perform().handle();
 			assertFalse(tableModel.items().contains(selected));
 
 			tableModel.select(singletonList(pk2));
 			selected = tableModel.selection().item().get();
 			tableModel.removeDeleted().set(false);
-			assertEquals(1, tableModel.deleteSelected().size());
+			assertEquals(1, tableModel.editModel().editor().tasks().delete(tableModel.selection().items().get()).prepare().perform().handle().size());
 			assertTrue(tableModel.items().contains(selected));
 		}
 		finally {
@@ -193,7 +193,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 		testModel.editModel().editor().settings().deleteEnabled().set(false);
 		testModel.items().refresh();
 		testModel.selection().indexes().set(singletonList(0));
-		assertThrows(IllegalStateException.class, testModel::deleteSelected);
+		assertThrows(IllegalStateException.class, () -> testModel.editModel().editor().tasks().delete(testModel.selection().items().get()).prepare().perform().handle());
 	}
 
 	@Test

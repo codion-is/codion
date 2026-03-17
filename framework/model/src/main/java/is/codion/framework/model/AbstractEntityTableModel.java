@@ -167,11 +167,6 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	}
 
 	@Override
-	public final Collection<Entity> deleteSelected() {
-		return editModel.editor().delete(selection().items().get());
-	}
-
-	@Override
 	public final RefreshTask refreshTask(Collection<Entity.Key> keys) {
 		return new DefaultRefreshTask(requireNonNull(keys));
 	}

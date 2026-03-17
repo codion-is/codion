@@ -43,7 +43,7 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditor.PersistTask;
+import is.codion.framework.model.EntityEditor.PersistTask.Result;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -668,38 +668,26 @@ public class EntityTablePanel extends JPanel {
 	 * <p>Performs delete on the selected entities.
 	 * <p>If delete confirmation is enabled, confirmation is requested first using
 	 * the {@link Confirmer} specified via {@link Config#deleteConfirmer(Confirmer)}.
-	 * @return true if the delete operation was successful
 	 * @see Config#confirmDelete(boolean)
 	 * @see Config#deleteConfirmer(Confirmer)
 	 */
-	public final boolean deleteSelectedWithConfirmation() {
+	public final void deleteSelectedWithConfirmation() {
 		if (!configuration.confirmDelete || confirmDelete()) {
-			return deleteSelected();
+			deleteSelected();
 		}
-
-		return false;
 	}
 
 	/**
 	 * Deletes the entities selected in the underlying table model without asking for confirmation.
-	 * @return true if the delete operation was successful
 	 */
-	public final boolean deleteSelected() {
-		try {
-			tableModel.deleteSelected();
-
-			return true;
-		}
-		catch (ReferentialIntegrityException e) {
-			LOG.debug(e.getMessage(), e);
-			onException(e);
-		}
-		catch (Exception e) {
-			LOG.error(e.getMessage(), e);
-			onException(e);
-		}
-
-		return false;
+	public final void deleteSelected() {
+		Dialogs.progressWorker()
+						.task(tableModel.editModel().editor().tasks().delete(tableModel.selection().items().get()).prepare()::perform)
+						.title(MESSAGES.getString("deleting"))
+						.owner(this)
+						.onResult(Result::handle)
+						.onException(this::onException)
+						.execute();
 	}
 
 	/**
@@ -1836,11 +1824,11 @@ public class EntityTablePanel extends JPanel {
 			if (!configuration.confirmDelete || confirmDelete()) {
 				List<Entity> selectedItems = tableModel().selection().items().get();
 				Dialogs.progressWorker()
-								.task(tableModel().editModel().editor().tasks().delete(selectedItems).prepare()::perform)
+								.task(tableModel.editModel().editor().tasks().delete(selectedItems).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
 								.onException(this::onException)
-								.onResult(PersistTask.Result::handle)
+								.onResult(Result::handle)
 								.execute();
 			}
 		}

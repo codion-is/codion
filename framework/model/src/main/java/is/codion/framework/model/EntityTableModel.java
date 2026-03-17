@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.state.State;
@@ -135,15 +134,6 @@ public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends E
 	 * @param keys the keys of the entities to refresh
 	 */
 	void refresh(Collection<Entity.Key> keys);
-
-	/**
-	 * Deletes the selected entities
-	 * @return the deleted entities
-	 * @throws DatabaseException in case of a database exception
-	 * @throws is.codion.common.model.CancelException in case the user cancels the operation
-	 * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow deleting
-	 */
-	Collection<Entity> deleteSelected();
 
 	/**
 	 * @return the {@link Value} controlling the action to perform when entities are inserted via the associated edit model

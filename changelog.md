@@ -6,6 +6,7 @@ Codion Change Log
 - AbstractServer.addAuthenticator() no longer public, ServerConfiguration.Builder.authenticator() added.
 ### is.codion.framework.model
 - EntityEditModel.Settings moved to EntityEditor, related refactoring.
+- AbstractEntityTableModel.deleteSelected() removed, related refactoring.
 
 ## 0.18.71
 ### is.codion.common.reactive

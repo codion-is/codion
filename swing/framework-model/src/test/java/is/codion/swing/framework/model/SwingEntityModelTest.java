@@ -136,7 +136,8 @@ public final class SwingEntityModelTest
 							.comboBoxModels().get(Employee.DEPARTMENT_FK);
 			deptComboBoxModel.items().refresh();
 			deptComboBoxModel.setSelectedItem(department);
-			departmentModel.tableModel().deleteSelected();
+			departmentModel.editModel().editor().tasks().delete(departmentModel.tableModel()
+							.selection().items().get()).prepare().perform().handle();
 			assertEquals(3, employeeModel.editModel().editor().comboBoxModels().get(Employee.DEPARTMENT_FK).getSize());
 			assertNotNull(employeeModel.editModel().editor().comboBoxModels().get(Employee.DEPARTMENT_FK).selection().item().get());
 		}
