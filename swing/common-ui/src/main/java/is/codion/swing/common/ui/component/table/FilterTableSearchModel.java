@@ -86,12 +86,25 @@ public interface FilterTableSearchModel {
 		Optional<RowColumn> selectPrevious();
 
 		/**
-		 * Returns the {@link Observable} notified of the selected search result row/column if available, otherwise one with row: -1 and column: -1
+		 * Returns the {@link Observable} notified of the current search result row/column if available
 		 * @return an observable notified each time the current search result changes
 		 * @see #next()
 		 * @see #previous()
 		 */
-		Observable<RowColumn> current();
+		CurrentResult current();
+
+		/**
+		 * Specifies the current search result
+		 */
+		interface CurrentResult extends Observable<RowColumn> {
+
+			/**
+			 * @param row the row
+			 * @param column the column
+			 * @return true if the given row and column represent the current search result
+			 */
+			boolean is(int row, int column);
+		}
 	}
 
 	/**
@@ -114,8 +127,8 @@ public interface FilterTableSearchModel {
 		 * @param column the column
 		 * @return true if this RowColumn instance represents the given row and column
 		 */
-		default boolean equals(int row, int column) {
-			return row() == row && column == column();
+		default boolean is(int row, int column) {
+			return row() == row && column() == column;
 		}
 	}
 }

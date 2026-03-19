@@ -34,8 +34,8 @@ public final class DefaultRowColumnTest {
 		RowColumn rowColumn2 = new DefaultFilterTableSearchModel.DefaultRowColumn(3, 4);
 		assertEquals(3, rowColumn2.row());
 		assertEquals(4, rowColumn2.column());
-		assertTrue(rowColumn2.equals(3, 4));
-		assertFalse(rowColumn2.equals(1, 2));
+		assertTrue(rowColumn2.is(3, 4));
+		assertFalse(rowColumn2.is(1, 2));
 
 		assertEquals(3, rowColumn1.hashCode());
 

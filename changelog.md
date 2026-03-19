@@ -4,6 +4,9 @@ Codion Change Log
 ## 0.18.72
 ### is.codion.common.rmi
 - AbstractServer.addAuthenticator() no longer public, ServerConfiguration.Builder.authenticator() added.
+### is.codion.swing.common.ui
+- FilterTableSearchModel.Results.CurrentResult added.
+- DefaultFilterTableSearchModel.DefaultResults.current() now nullable.
 ### is.codion.framework.model
 - EntityEditModel.Settings moved to EntityEditor, related refactoring.
 - AbstractEntityTableModel.deleteSelected() removed, related refactoring.

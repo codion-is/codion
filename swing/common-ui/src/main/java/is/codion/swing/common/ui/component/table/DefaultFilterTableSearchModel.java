@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -43,8 +42,6 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
-
-	private static final RowColumn NULL_COORDINATE = new DefaultRowColumn(-1, -1);
 
 	private final FilterTableModel<?, C> tableModel;
 	private final FilterTableColumnModel<C> columnModel;
@@ -137,7 +134,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 		private final List<RowColumn> searchResults = new ArrayList<>();
 		private final Event<List<RowColumn>> resultsChanged = Event.event();
-		private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE);
+		private final DefaultCurrentResult current = new DefaultCurrentResult();
 
 		private int searchResultIndex = -1;
 
@@ -162,8 +159,8 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		}
 
 		@Override
-		public Observable<RowColumn> current() {
-			return searchResult.observable();
+		public CurrentResult current() {
+			return current;
 		}
 
 		@Override
@@ -182,7 +179,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			}
 
 			searchResultIndex = incrementSearchResultIndex();
-			searchResult.set(searchResults.get(searchResultIndex));
+			current.result.set(searchResults.get(searchResultIndex));
 
 			return select(addToSelection);
 		}
@@ -193,20 +190,20 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			}
 
 			searchResultIndex = decrementSearchResultIndex();
-			searchResult.set(searchResults.get(searchResultIndex));
+			current.result.set(searchResults.get(searchResultIndex));
 
 			return select(addToSelection);
 		}
 
 		private Optional<RowColumn> select(boolean addToSelection) {
 			if (addToSelection) {
-				tableModel.selection().indexes().add(searchResult.getOrThrow().row());
+				tableModel.selection().indexes().add(current.result.getOrThrow().row());
 			}
 			else {
-				tableModel.selection().index().set(searchResult.getOrThrow().row());
+				tableModel.selection().index().set(current.result.getOrThrow().row());
 			}
 
-			return searchResult.optional();
+			return current.result.optional();
 		}
 
 		private Optional<RowColumn> empty(boolean addToSelection) {
@@ -228,13 +225,35 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		private void clear() {
 			searchResults.clear();
 			searchResultIndex = -1;
-			searchResult.clear();
+			current.result.clear();
 			resultsChanged.accept(emptyList());
 		}
 
 		private void add(DefaultRowColumn rowColumn) {
 			searchResults.add(rowColumn);
 			resultsChanged.accept(get());
+		}
+
+		private final class DefaultCurrentResult implements CurrentResult {
+
+			private final Value<RowColumn> result = Value.nullable();
+
+			@Override
+			public boolean is(int row, int column) {
+				RowColumn rowColumn = result.get();
+
+				return rowColumn != null && rowColumn.is(row, column);
+			}
+
+			@Override
+			public @Nullable RowColumn get() {
+				return result.get();
+			}
+
+			@Override
+			public Observer<RowColumn> observer() {
+				return result.observer();
+			}
 		}
 	}
 
