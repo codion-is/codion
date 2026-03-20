@@ -21,9 +21,11 @@ package is.codion.demos.chinook.ui;
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static java.util.Collections.singleton;
 
 public final class PreferencesEditPanel extends EntityEditPanel {
 
@@ -51,8 +53,10 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 	}
 
 	private void updateNewsletter() {
+		SwingEntityEditor editor = editModel().editor();
 		// Only when we're editing an existing record
-		if (editModel().editor().exists().is()) {
+		if (editor.exists().is() && // and newsletter is the only modified attribute
+						editor.modified().attributes().get().equals(singleton(Preferences.NEWSLETTER))) {
 			try {
 				updateCommand()
 								.confirm(false)
