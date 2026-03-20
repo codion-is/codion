@@ -10,6 +10,8 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditModel.Settings moved to EntityEditor, related refactoring.
 - AbstractEntityTableModel.deleteSelected() removed, related refactoring.
+### is.codion.framework.ui
+- TabbedDetailLayout.TabbedDetailController.selectParentTabs() bug fixed, now uses the correct indexOfComponent() instead of indexOfTabComponent().
 
 ## 0.18.71
 ### is.codion.common.reactive
