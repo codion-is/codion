@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTableSearchModel.Results.CurrentResult added.
 - DefaultFilterTableSearchModel.DefaultResults.current() now nullable.
+- Utilities.printFocusOwner() bug fixed, no longer assumes focus owner is a JComponent.
 ### is.codion.framework.model
 - EntityEditModel.Settings moved to EntityEditor, related refactoring.
 - AbstractEntityTableModel.deleteSelected() removed, related refactoring.

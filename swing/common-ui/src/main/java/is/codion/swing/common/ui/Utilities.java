@@ -38,6 +38,7 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -215,7 +216,7 @@ public final class Utilities {
 	 * For focus debug purposes, prints the new and old values to the standard output
 	 * when the 'focusOwner' value changes in the current keyboard focus manager.
 	 * <p>Note that calling this method for a second time has no effect.
-	 * @param formatter formats the component in the output, only called for non-null components
+	 * @param formatter formats components in the output, only called for instances of {@link JComponent}
 	 */
 	public static void printFocusOwner(Function<JComponent, String> formatter) {
 		requireNonNull(formatter);
@@ -236,17 +237,15 @@ public final class Utilities {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent changeEvent) {
-			JComponent oldValue = (JComponent) changeEvent.getOldValue();
-			JComponent newValue = (JComponent) changeEvent.getNewValue();
-			System.out.println(toString(oldValue) + " -> " + toString(newValue));
+			System.out.println(toString(changeEvent.getOldValue()) + " -> " + toString(changeEvent.getNewValue()));
 		}
 
-		private String toString(JComponent component) {
-			if (component == null) {
-				return "null";
+		private String toString(Object focusOwner) {
+			if (focusOwner instanceof JComponent) {
+				return formatter.apply((JComponent) focusOwner);
 			}
 
-			return formatter.apply(component);
+			return Objects.toString(focusOwner);
 		}
 	}
 
