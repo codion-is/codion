@@ -351,7 +351,6 @@ public class EntityPanel extends JPanel {
 						.nonNull(configuration.initialEditState)
 						.consumer(this::updateEditState)
 						.build();
-		displayWhenActivated();
 		createControls();
 	}
 
@@ -1145,22 +1144,6 @@ public class EntityPanel extends JPanel {
 		controlMap.control(NAVIGATE_RIGHT).set(command(new Navigate(RIGHT)));
 		if (containsTablePanel()) {
 			controlMap.control(REFRESH).set(createRefreshTableControl());
-		}
-	}
-
-	private void displayWhenActivated() {
-		if (editPanel != null) {
-			editPanel.active().addConsumer(new DisplayActivatedPanel());
-		}
-	}
-
-	private final class DisplayActivatedPanel implements Consumer<Boolean> {
-
-		@Override
-		public void accept(Boolean active) {
-			if (active) {
-				display.request();
-			}
 		}
 	}
 
