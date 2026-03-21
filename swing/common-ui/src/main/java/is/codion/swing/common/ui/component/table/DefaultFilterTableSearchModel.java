@@ -37,6 +37,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import static is.codion.common.reactive.value.Value.Notify.SET;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -51,6 +52,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 					.build();
 	private final Value<Predicate<String>> predicate = Value.builder()
 					.<Predicate<String>>nullable()
+					.notify(SET)
 					.listener(this::performSearch)
 					.build();
 	private final Value<String> searchString = Value.builder()
