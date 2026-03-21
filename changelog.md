@@ -14,6 +14,7 @@ Codion Change Log
 - AbstractEntityTableModel.deleteSelected() removed, related refactoring.
 ### is.codion.framework.ui
 - TabbedDetailLayout.TabbedDetailController.selectParentTabs() bug fixed, now uses the correct indexOfComponent() instead of indexOfTabComponent().
+- TabbedApplicationLayout and TabbedDetailLayout now initialize panels using prepareComponent(), panels now contain focusable components when shown.
 
 ## 0.18.71
 ### is.codion.common.reactive

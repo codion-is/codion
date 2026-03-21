@@ -27,8 +27,6 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 
 import static is.codion.common.utilities.Configuration.integerValue;
@@ -74,8 +72,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 		tabbedPane = Components.tabbedPane()
 						.tabPlacement(TAB_PLACEMENT.getOrThrow())
 						.focusable(false)
-						// InitializeSelectedPanelListener initializes first panel
-						.changeListener(new InitializeSelectedPanelListener())
+						.prepareComponent(TabbedApplicationLayout::preparePanel)
 						.build();
 
 		applicationPanel.entityPanels().forEach(this::addTab);
@@ -118,13 +115,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 		tabbedPane.setIconAt(tabbedPane.getTabCount() - 1, entityPanel.icon().orElse(null));
 	}
 
-	private final class InitializeSelectedPanelListener implements ChangeListener {
-
-		@Override
-		public void stateChanged(ChangeEvent e) {
-			if (tabbedPane.getTabCount() > 0) {
-				((EntityPanel) tabbedPane.getSelectedComponent()).activation().request();
-			}
-		}
+	private static void preparePanel(JComponent component) {
+		((EntityPanel) component).initialize();
 	}
 }

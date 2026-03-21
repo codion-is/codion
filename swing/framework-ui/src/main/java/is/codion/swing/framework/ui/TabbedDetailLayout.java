@@ -350,9 +350,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private JTabbedPane createTabbedPane(Collection<EntityPanel> detailPanels) {
 		TabbedPaneBuilder builder = tabbedPane()
 						.focusable(false)
-						.changeListener(e -> selectedDetailPanel().activation().request())
-						.minimumSize(new Dimension(0, 0))
-						.focusCycleRoot(true);
+						.prepareComponent(TabbedDetailLayout::preparePanel)
+						.minimumSize(new Dimension(0, 0));
 		detailPanels.forEach(detailPanel -> builder
 						.tab(detailPanel.caption())
 						.component(detailPanel)
@@ -364,6 +363,10 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		return builder.build();
+	}
+
+	private static void preparePanel(JComponent component) {
+		((EntityPanel) component).initialize();
 	}
 
 	private final class ShowIfHidden implements Runnable {
@@ -495,11 +498,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 		@Override
 		public void display(EntityPanel detailPanel) {
 			selectParentTabs(requireNonNull(detailPanel));
-			tabbedPane.setFocusable(true);
 			if (tabbedPane.getSelectedComponent() != detailPanel) {
 				tabbedPane.setSelectedComponent(detailPanel);
 			}
-			tabbedPane.setFocusable(false);
 			showDetailPanel();
 		}
 

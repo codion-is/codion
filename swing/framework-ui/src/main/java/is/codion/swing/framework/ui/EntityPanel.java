@@ -919,7 +919,7 @@ public class EntityPanel extends JPanel {
 
 		return borderLayoutPanel()
 						.minimumSize(new Dimension(0, 0))
-						.mouseListener(new ActivateOnMouseClickListener())
+						.mouseListener(new FocusOnMouseClickListener())
 						.build();
 	}
 
@@ -1971,7 +1971,7 @@ public class EntityPanel extends JPanel {
 		EntityPanel build(EntityConnectionProvider connectionProvider);
 	}
 
-	private final class ActivateOnMouseClickListener extends MouseAdapter {
+	private final class FocusOnMouseClickListener extends MouseAdapter {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
