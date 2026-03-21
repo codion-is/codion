@@ -27,6 +27,7 @@ import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
 import java.awt.Component;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -70,6 +71,12 @@ public interface TabbedPaneBuilder extends ComponentBuilder<JTabbedPane, TabbedP
 	 * @see JTabbedPane#setTabLayoutPolicy(int)
 	 */
 	TabbedPaneBuilder tabLayoutPolicy(int tabLayoutPolicy);
+
+	/**
+	 * @param prepareComponent called for the selected tab component before it is shown
+	 * @return this builder instance
+	 */
+	TabbedPaneBuilder prepareComponent(Consumer<JComponent> prepareComponent);
 
 	/**
 	 * @param changeListener the change listener

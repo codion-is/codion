@@ -36,10 +36,14 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPane, TabbedPaneBuilder> implements TabbedPaneBuilder {
 
+	private static final Consumer<JComponent> EMPTY_CONSUMER = c -> {};
+
 	private int tabPlacement = SwingConstants.TOP;
 	private int tabLayoutPolicy = JTabbedPane.WRAP_TAB_LAYOUT;
 	private final List<DefaultTabBuilder> tabBuilders = new ArrayList<>();
 	private final List<ChangeListener> changeListeners = new ArrayList<>();
+
+	private Consumer<JComponent> prepareComponent = EMPTY_CONSUMER;
 
 	@Override
 	public TabbedPaneBuilder tabPlacement(int tabPlacement) {
@@ -50,6 +54,12 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPan
 	@Override
 	public TabbedPaneBuilder tabLayoutPolicy(int tabLayoutPolicy) {
 		this.tabLayoutPolicy = tabLayoutPolicy;
+		return this;
+	}
+
+	@Override
+	public TabbedPaneBuilder prepareComponent(Consumer<JComponent> prepareComponent) {
+		this.prepareComponent = requireNonNull(prepareComponent);
 		return this;
 	}
 
@@ -79,7 +89,7 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPan
 
 	@Override
 	protected JTabbedPane createComponent() {
-		JTabbedPane tabbedPane = new JTabbedPane(tabPlacement, tabLayoutPolicy);
+		JTabbedPane tabbedPane = new PreparedTabbedPane(tabPlacement, tabLayoutPolicy, prepareComponent);
 		tabBuilders.forEach(tabBuilder -> {
 			int tabIndex = tabbedPane.getTabCount();
 			tabbedPane.addTab(tabBuilder.title, tabBuilder.icon, tabBuilder.component, tabBuilder.toolTipText);
@@ -165,6 +175,22 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPan
 		@Override
 		public void accept(ChangeListener listener) {
 			tabbedPane.addChangeListener(listener);
+		}
+	}
+
+	private static final class PreparedTabbedPane extends JTabbedPane {
+
+		private final Consumer<JComponent> prepareComponent;
+
+		private PreparedTabbedPane(int tabPlacement, int tabLayoutPolicy, Consumer<JComponent> prepareComponent) {
+			super(tabPlacement, tabLayoutPolicy);
+			this.prepareComponent = prepareComponent;
+		}
+
+		@Override
+		protected void fireStateChanged() {
+			prepareComponent.accept((JComponent) getComponentAt(getSelectedIndex()));
+			super.fireStateChanged();
 		}
 	}
 }
