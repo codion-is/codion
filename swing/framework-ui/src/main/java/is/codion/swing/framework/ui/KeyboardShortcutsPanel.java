@@ -51,6 +51,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 	private static final String SHIFT = "Shift + ";
 	private static final String INSERT = "Insert";
 	private static final String ENTER = "Enter";
+	private static final String SPACE = "Space";
 	private static final String LEFT_RIGHT = "←/→";
 	private static final String UP_DOWN = "↑/↓";
 	private static final String DOWN_UP = "↓/↑";
@@ -161,9 +162,12 @@ final class KeyboardShortcutsPanel extends JPanel {
 	private static JPanel searchField() {
 		return gridLayoutPanel(0, 2)
 						.addAll(new JLabel(MESSAGES.getString("find_next")), new JLabel(ENTER + OR + DOWN))
-						.addAll(new JLabel(MESSAGES.getString("find_and_select_next")), new JLabel(SHIFT + ENTER + OR + DOWN))
+						.addAll(new JLabel(MESSAGES.getString("select_next")), new JLabel(CTRL + ENTER + OR + DOWN))
+						.addAll(new JLabel(MESSAGES.getString("add_next_to_selection")), new JLabel(SHIFT + ENTER + OR + DOWN))
 						.addAll(new JLabel(MESSAGES.getString("find_previous")), new JLabel(UP))
-						.addAll(new JLabel(MESSAGES.getString("find_and_select_previous")), new JLabel(SHIFT + UP))
+						.addAll(new JLabel(MESSAGES.getString("select_previous")), new JLabel(CTRL + UP))
+						.addAll(new JLabel(MESSAGES.getString("add_previous_to_selection")), new JLabel(SHIFT + UP))
+						.addAll(new JLabel(MESSAGES.getString("toggle_search_result_selection")), new JLabel(CTRL + SPACE))
 						.addAll(new JLabel(MESSAGES.getString("move_focus_to_table")), new JLabel("Esc"))
 						.border(createTitledBorder(MESSAGES.getString("table_search_field")))
 						.build();
@@ -171,7 +175,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 
 	private static JPanel tableExport() {
 		return gridLayoutPanel(0, 2)
-						.addAll(new JLabel(MESSAGES.getString("toggle_include_attribute")), new JLabel("Space"))
+						.addAll(new JLabel(MESSAGES.getString("toggle_include_attribute")), new JLabel(SPACE))
 						.border(createTitledBorder(MESSAGES.getString("table_export")))
 						.build();
 	}

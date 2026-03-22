@@ -10,6 +10,7 @@ Codion Change Log
 - Utilities.printFocusOwner() bug fixed, no longer assumes focus owner is a JComponent.
 - TabbedPaneBuilder.prepareComponent() added.
 - DefaultFilterTableSearchModel bug fixed, predicate now notifies when SET.
+- FilterTable, search field keyboard actions improved.
 ### is.codion.framework.model
 - EntityEditModel.Settings moved to EntityEditor, related refactoring.
 - AbstractEntityTableModel.deleteSelected() removed, related refactoring.

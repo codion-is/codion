@@ -62,28 +62,16 @@ public interface FilterTableSearchModel {
 	interface Results extends Observable<List<RowColumn>> {
 
 		/**
-		 * Finds the next value and selects the row, if none is found the selection is cleared
+		 * Finds the next value and navigates to the cell if one is available
 		 * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
 		 */
 		Optional<RowColumn> next();
 
 		/**
-		 * Finds the next value and adds the row to the selection
-		 * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
-		 */
-		Optional<RowColumn> selectNext();
-
-		/**
-		 * Finds the previous value and selects the row, if none is found the selection is cleared
+		 * Finds the previous value and navigates to the cell if one is available
 		 * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
 		 */
 		Optional<RowColumn> previous();
-
-		/**
-		 * Finds the previous value and adds the row to the selection
-		 * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
-		 */
-		Optional<RowColumn> selectPrevious();
 
 		/**
 		 * Returns the {@link Observable} notified of the current search result row/column if available
@@ -92,6 +80,11 @@ public interface FilterTableSearchModel {
 		 * @see #previous()
 		 */
 		CurrentResult current();
+
+		/**
+		 * @return the {@link SelectResult} instance
+		 */
+		SelectResult select();
 
 		/**
 		 * Specifies the current search result
@@ -104,6 +97,36 @@ public interface FilterTableSearchModel {
 			 * @return true if the given row and column represent the current search result
 			 */
 			boolean is(int row, int column);
+		}
+
+		/**
+		 * Selects search results
+		 */
+		interface SelectResult {
+
+			/**
+			 * Finds the next value and selects the row, if none is found the selection is cleared
+			 * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
+			 */
+			Optional<RowColumn> next();
+
+			/**
+			 * Finds the next value and adds the row to the selection
+			 * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
+			 */
+			Optional<RowColumn> addNext();
+
+			/**
+			 * Finds the previous value and selects the row, if none is found the selection is cleared
+			 * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
+			 */
+			Optional<RowColumn> previous();
+
+			/**
+			 * Finds the previous value and adds the row to the selection
+			 * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
+			 */
+			Optional<RowColumn> addPrevious();
 		}
 	}
 

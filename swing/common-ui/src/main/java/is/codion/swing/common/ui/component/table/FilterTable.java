@@ -44,6 +44,7 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableColumn.DefaultFilterTableColumnBuilder;
+import is.codion.swing.common.ui.component.table.FilterTableSearchModel.Results;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -858,10 +859,13 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a search field
 	 */
 	private JTextField createSearchField() {
-		Control nextResult = command(() -> selectSearchResult(false, true));
-		Control selectNextResult = command(() -> selectSearchResult(true, true));
-		Control previousResult = command(() -> selectSearchResult(false, false));
-		Control selectPreviousResult = command(() -> selectSearchResult(true, false));
+		Control navigateToNextResult = command(() -> navigateToSearchResult(true));
+		Control navigateToPreviousResult = command(() -> navigateToSearchResult(false));
+		Control selectNextResult = command(() -> selectSearchResult(false, true));
+		Control addNextResultToSelection = command(() -> selectSearchResult(true, true));
+		Control selectPreviousResult = command(() -> selectSearchResult(false, false));
+		Control addPreviousResultToSelection = command(() -> selectSearchResult(true, false));
+		Control toggleCurrentSearchSelection = command(this::toggleCurrentSearchResultSelection);
 		Control requestTableFocus = command(this::requestFocusInWindow);
 
 		return Components.stringField()
@@ -871,25 +875,41 @@ public final class FilterTable<R, C> extends JTable {
 						.selectAllOnFocusGained(true)
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ENTER)
-										.action(nextResult))
+										.action(navigateToNextResult))
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_ENTER)
+										.modifiers(MENU_SHORTCUT_MASK)
+										.action(selectNextResult))
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ENTER)
 										.modifiers(SHIFT_DOWN_MASK)
+										.action(addNextResultToSelection))
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_DOWN)
+										.action(navigateToNextResult))
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_DOWN)
+										.modifiers(MENU_SHORTCUT_MASK)
 										.action(selectNextResult))
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_DOWN)
-										.action(nextResult))
-						.keyEvent(KeyEvents.builder()
-										.keyCode(VK_DOWN)
 										.modifiers(SHIFT_DOWN_MASK)
-										.action(selectNextResult))
+										.action(addNextResultToSelection))
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_UP)
-										.action(previousResult))
+										.action(navigateToPreviousResult))
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_UP)
-										.modifiers(SHIFT_DOWN_MASK)
+										.modifiers(MENU_SHORTCUT_MASK)
 										.action(selectPreviousResult))
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_UP)
+										.modifiers(SHIFT_DOWN_MASK)
+										.action(addPreviousResultToSelection))
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_SPACE)
+										.modifiers(MENU_SHORTCUT_MASK)
+										.action(toggleCurrentSearchSelection))
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ESCAPE)
 										.action(requestTableFocus))
@@ -906,19 +926,40 @@ public final class FilterTable<R, C> extends JTable {
 						.build();
 	}
 
+	private void navigateToSearchResult(boolean next) {
+		searchResult(next).ifPresent(rowColumn ->
+						scrollToRowColumn(rowColumn.row(), rowColumn.column(), centerOnScroll.getOrThrow()));
+	}
+
 	private void selectSearchResult(boolean addToSelection, boolean next) {
-		searchResult(addToSelection, next).ifPresent(rowColumn -> {
+		selectedSearchResult(addToSelection, next).ifPresent(rowColumn -> {
 			changeSelection(rowColumn.row(), rowColumn.column(), true, true);
 			scrollToRowColumn(rowColumn.row(), rowColumn.column(), centerOnScroll.getOrThrow());
 		});
 	}
 
-	private Optional<RowColumn> searchResult(boolean addToSelection, boolean next) {
+	private void toggleCurrentSearchResultSelection() {
+		searchModel.results().current().optional().map(RowColumn::row).ifPresent(row -> {
+			if (tableModel.selection().isSelectedIndex(row)) {
+				tableModel.selection().indexes().remove(row);
+			}
+			else {
+				tableModel.selection().indexes().add(row);
+			}
+		});
+	}
+
+	private Optional<RowColumn> searchResult(boolean next) {
+		return next ? searchModel.results().next() : searchModel.results().previous();
+	}
+
+	private Optional<RowColumn> selectedSearchResult(boolean add, boolean next) {
+		Results.SelectResult select = searchModel.results().select();
 		if (next) {
-			return addToSelection ? searchModel.results().selectNext() : searchModel.results().next();
+			return add ? select.addNext() : select.next();
 		}
 
-		return addToSelection ? searchModel.results().selectPrevious() : searchModel.results().previous();
+		return add ? select.addPrevious() : select.previous();
 	}
 
 	private void onSearchTextChanged(String searchText) {

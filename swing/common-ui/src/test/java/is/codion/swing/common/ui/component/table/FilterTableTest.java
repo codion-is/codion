@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.reactive.observer.Observable;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort;
@@ -166,27 +167,28 @@ public class FilterTableTest {
 		JTextField searchField = filterTable.searchField();
 
 		searchField.setText("d");
-		assertEquals(0, tableModel.selection().index().get());
+		Observable<RowColumn> searchResult = filterTable.search().results().current();
+		assertEquals(0, searchResult.getOrThrow().row());
 		searchField.setText("da");
-		assertEquals(0, tableModel.selection().index().get());
+		assertEquals(0, searchResult.getOrThrow().row());
 		searchField.setText("dac");
-		assertEquals(1, tableModel.selection().index().get());
+		assertEquals(1, searchResult.getOrThrow().row());
 		searchField.setText("dar");
-		assertEquals(0, tableModel.selection().index().get());
+		assertEquals(0, searchResult.getOrThrow().row());
 		searchField.setText("dan");
-		assertEquals(2, tableModel.selection().index().get());
+		assertEquals(2, searchResult.getOrThrow().row());
 		searchField.setText("dl");
-		assertEquals(3, tableModel.selection().index().get());
+		assertEquals(3, searchResult.getOrThrow().row());
 		searchField.setText("darri");
-		assertEquals(0, tableModel.selection().index().get());
+		assertEquals(0, searchResult.getOrThrow().row());
 		searchField.setText("dac");
-		assertEquals(1, tableModel.selection().index().get());
+		assertEquals(1, searchResult.getOrThrow().row());
 		searchField.setText("dl");
-		assertEquals(3, tableModel.selection().index().get());
+		assertEquals(3, searchResult.getOrThrow().row());
 		searchField.setText("dans");
-		assertEquals(2, tableModel.selection().index().get());
+		assertEquals(2, searchResult.getOrThrow().row());
 		searchField.setText("dansu");
-		assertTrue(tableModel.selection().isSelectionEmpty());
+		assertTrue(searchResult.isNull());
 
 		searchField.setText("");
 	}
@@ -278,9 +280,9 @@ public class FilterTableTest {
 		Predicate<String> predicate = item -> item.equals("b") || item.equals("e");
 
 		searchModel.predicate().set(predicate);
-		rowColumn = searchModel.results().selectPrevious().orElse(null);
+		rowColumn = searchModel.results().previous().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 1), rowColumn);
-		rowColumn = searchModel.results().selectPrevious().orElse(null);
+		rowColumn = searchModel.results().previous().orElse(null);
 		assertEquals(new DefaultRowColumn(0, 1), rowColumn);
 
 		assertEquals(asList(
@@ -322,26 +324,28 @@ public class FilterTableTest {
 		predicate = item -> item.equals("b") || item.equals("e");
 
 		searchModel.predicate().set(predicate);
-		rowColumn = searchModel.results().selectPrevious().orElse(null);
+		rowColumn = searchModel.results().previous().orElse(null);
 		assertEquals(new DefaultRowColumn(3, 0), rowColumn);
-		rowColumn = searchModel.results().selectPrevious().orElse(null);
+		rowColumn = searchModel.results().previous().orElse(null);
 		assertEquals(new DefaultRowColumn(0, 0), rowColumn);
 
+		table.model().sort().ascending(0);
+		searchModel.predicate().set(predicate);// clear
+
+		assertTrue(testModel.selection().isSelectionEmpty());
+		searchModel.results().select().next();
+		assertEquals(singletonList(1), testModel.selection().indexes().get());
+		searchModel.results().select().next();
+		assertEquals(singletonList(4), testModel.selection().indexes().get());
+
+		searchModel.predicate().set(predicate);// clear
+
+		searchModel.results().select().previous();
+		assertEquals(singletonList(4), testModel.selection().indexes().get());
+		searchModel.results().select().addPrevious();
+		assertEquals(asList(1, 4), testModel.selection().indexes().get());
+
 		assertEquals(2, testModel.selection().count());
-
-		searchModel.results().selectPrevious();
-		searchModel.results().selectNext();
-		searchModel.results().selectNext();
-		searchModel.results().selectNext();
-
-		searchModel.results().selectPrevious().orElse(null);
-		searchModel.results().selectNext().orElse(null);
-		searchModel.results().selectNext().orElse(null);
-
-		assertEquals(asList(
-						new DefaultRowColumn(0, 0),
-						new DefaultRowColumn(3, 0)
-		), searchModel.results().get());
 	}
 
 	@Test

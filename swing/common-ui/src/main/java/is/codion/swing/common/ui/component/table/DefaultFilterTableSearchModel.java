@@ -137,27 +137,32 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		private final List<RowColumn> searchResults = new ArrayList<>();
 		private final Event<List<RowColumn>> resultsChanged = Event.event();
 		private final DefaultCurrentResult current = new DefaultCurrentResult();
+		private final DefaultSelectResult select = new DefaultSelectResult();
 
 		private int searchResultIndex = -1;
 
 		@Override
 		public Optional<RowColumn> next() {
-			return next(false);
-		}
+			if (searchResults.isEmpty()) {
+				return Optional.empty();
+			}
 
-		@Override
-		public Optional<RowColumn> selectNext() {
-			return next(true);
+			searchResultIndex = incrementSearchResultIndex();
+			current.result.set(searchResults.get(searchResultIndex));
+
+			return current.result.optional();
 		}
 
 		@Override
 		public Optional<RowColumn> previous() {
-			return previous(false);
-		}
+			if (searchResults.isEmpty()) {
+				return Optional.empty();
+			}
 
-		@Override
-		public Optional<RowColumn> selectPrevious() {
-			return previous(true);
+			searchResultIndex = decrementSearchResultIndex();
+			current.result.set(searchResults.get(searchResultIndex));
+
+			return current.result.optional();
 		}
 
 		@Override
@@ -175,45 +180,9 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			return resultsChanged.observer();
 		}
 
-		private Optional<RowColumn> next(boolean addToSelection) {
-			if (searchResults.isEmpty()) {
-				return empty(addToSelection);
-			}
-
-			searchResultIndex = incrementSearchResultIndex();
-			current.result.set(searchResults.get(searchResultIndex));
-
-			return select(addToSelection);
-		}
-
-		private Optional<RowColumn> previous(boolean addToSelection) {
-			if (searchResults.isEmpty()) {
-				return empty(addToSelection);
-			}
-
-			searchResultIndex = decrementSearchResultIndex();
-			current.result.set(searchResults.get(searchResultIndex));
-
-			return select(addToSelection);
-		}
-
-		private Optional<RowColumn> select(boolean addToSelection) {
-			if (addToSelection) {
-				tableModel.selection().indexes().add(current.result.getOrThrow().row());
-			}
-			else {
-				tableModel.selection().index().set(current.result.getOrThrow().row());
-			}
-
-			return current.result.optional();
-		}
-
-		private Optional<RowColumn> empty(boolean addToSelection) {
-			if (!addToSelection) {
-				tableModel.selection().clearSelection();
-			}
-
-			return Optional.empty();
+		@Override
+		public SelectResult select() {
+			return select;
 		}
 
 		private int incrementSearchResultIndex() {
@@ -234,6 +203,50 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		private void add(DefaultRowColumn rowColumn) {
 			searchResults.add(rowColumn);
 			resultsChanged.accept(get());
+		}
+
+		private final class DefaultSelectResult implements SelectResult {
+
+			@Override
+			public Optional<RowColumn> next() {
+				return select(true, false);
+			}
+
+			@Override
+			public Optional<RowColumn> addNext() {
+				return select(true, true);
+			}
+
+			@Override
+			public Optional<RowColumn> previous() {
+				return select(false, false);
+			}
+
+			@Override
+			public Optional<RowColumn> addPrevious() {
+				return select(false, true);
+			}
+
+			private Optional<RowColumn> select(boolean next, boolean add) {
+				Optional<RowColumn> rowColumn = next ? DefaultResults.this.next() : DefaultResults.this.previous();
+				if (rowColumn.isPresent()) {
+					select(add, rowColumn.get());
+				}
+				else if (!add) {
+					tableModel.selection().clearSelection();
+				}
+
+				return rowColumn;
+			}
+
+			private void select(boolean add, RowColumn rowColumn) {
+				if (add) {
+					tableModel.selection().indexes().add(rowColumn.row());
+				}
+				else {
+					tableModel.selection().index().set(rowColumn.row());
+				}
+			}
 		}
 
 		private final class DefaultCurrentResult implements CurrentResult {

@@ -727,8 +727,8 @@ NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for all shortcuts 
 2+|Table condition panel
 
 |kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next search operator
-|kbd:[Ctrol + Enter]|Enable/disable column condition
-|kbd:[Ctrol + Shift + Enter]|Clear column condition
+|kbd:[Ctrl + Enter]|Enable/disable column condition
+|kbd:[Ctrl + Shift + Enter]|Clear column condition
 |kbd:[Enter]|Refresh table data
 |===
 
@@ -737,9 +737,12 @@ NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for all shortcuts 
 2+|Table search field
 
 |kbd:[Enter or &#x2193;]|Find next
-|kbd:[Shift + Enter or &#x2193;]|Find and select next
+|kbd:[Ctrl + Enter or &#x2193;]|Select next
+|kbd:[Shift + Enter or &#x2193;]|Add next to selection
 |kbd:[&#x2191;]|Find previous
-|kbd:[Shift + &#x2191;]|Find and select previous
+|kbd:[Ctrl + &#x2191;]|Select previous
+|kbd:[Shift + &#x2191;]|Add previous to selection
+|kbd:[Ctrl + Enter]|Toggle search result selection
 |kbd:[Esc]|Move focus to table
 |===
 

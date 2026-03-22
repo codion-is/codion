@@ -930,6 +930,8 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 
 |add|Add|Ný færsla
 |add_new_item|Add new item|Bæta við nýrri færslu
+|add_next_to_selection|Add next to selection|Bæta næstu við val
+|add_previous_to_selection|Add previous to selection|Bæta síðustu við val
 |calendar|Calendar|Dagatal
 |clear_condition|Clear condition|Hreinsa leitarreit dálks
 |condition_panel|Table condition panel|Leitarflötur
@@ -947,8 +949,6 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |enable_disable_condition|Enable/disable column condition|Virkja/afvirkja leitarreit dálks
 |entity_field|Entity field (combo box or search field) with a new item or edit item control|Færslureitur (flettilisti eða leitarreitur) með aðgerð til að búa til nýja eða breyta færslu
 |expand_collapse|Expand/collapse|Stækka/minnka alveg
-|find_and_select_next|Find and select next|Finna og velja næstu
-|find_and_select_previous|Find and select previous|Finna og velja síðustu
 |find_next|Find next|Finna næstu
 |find_previous|Find previous|Finna síðustu
 |increment_decrement|Increment/decrement based to cursor position|Hækka/læækka út frá staðsetningu bendils
@@ -975,6 +975,8 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |save|Save|Vista
 |select_condition_panel|Select a condition panel|Velja leitarflöt
 |select_filter_panel|Select a filter panel|Velja sýjunarflöt
+|select_next|Select next|Velja næstu
+|select_previous|Select previous|Velja síðustu
 |show_popup_menu|Show popup menu|Birta valmynd
 |table_export|Table export|Töfluafritun
 |table_panel|Table panel|Tafla
@@ -986,6 +988,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |toggle_edit_panel|Toggle edit panel|Fela/birta innsláttarflöt
 |toggle_filter_panel|Toggle filter panel view, between hidden, visible and advanced|Skipta á milli sýna á sýjunarfleti, falinn, sjáanlegur og nákvæmur
 |toggle_include_attribute|Toggle attribute inclusion|Velja/afvelja gildi
+|toggle_search_result_selection|Toggle result selection|Velja/afvelja leitarniðurstöðu
 |transfer_focus|Transfer focus|Færa fókus
 |transfer_focus_edit_panel|Edit panel|Innsláttarflötur
 |transfer_focus_find_in_table|Find in table field|Leita í töflu
