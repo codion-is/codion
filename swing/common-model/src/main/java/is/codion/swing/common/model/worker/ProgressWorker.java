@@ -24,6 +24,7 @@ import is.codion.common.utilities.exceptions.Exceptions;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.SwingWorker;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
@@ -31,6 +32,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingUtilities.invokeLater;
 
@@ -63,26 +66,26 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private final Object task;
 	private final int maximum;
-	private final @Nullable Runnable onStarted;
-	private final Runnable onDone;
-	private final Consumer<T> onResult;
-	private final Consumer<Integer> onProgress;
-	private final Consumer<List<V>> onPublish;
-	private final Consumer<Exception> onException;
-	private final Runnable onCancelled;
-	private final Runnable onInterrupted;
+	private final List<Runnable> onStarted;
+	private final List<Runnable> onDone;
+	private final List<Consumer<T>> onResult;
+	private final List<Consumer<Integer>> onProgress;
+	private final List<Consumer<List<V>>> onPublish;
+	private final List<Consumer<Exception>> onException;
+	private final List<Runnable> onCancelled;
+	private final List<Runnable> onInterrupted;
 
 	private ProgressWorker(DefaultBuilder<T, V> builder) {
 		this.task = builder.task;
 		this.maximum = builder.maximum;
-		this.onStarted = builder.onStarted;
-		this.onDone = builder.onDone;
-		this.onResult = builder.onResult;
-		this.onProgress = builder.onProgress;
-		this.onPublish = builder.onPublish;
-		this.onException = builder.onException;
-		this.onCancelled = builder.onCancelled;
-		this.onInterrupted = builder.onInterrupted;
+		this.onStarted = builder.onStarted();
+		this.onDone = builder.onDone();
+		this.onResult = builder.onResult();
+		this.onProgress = builder.onProgress();
+		this.onPublish = builder.onPublish();
+		this.onException = builder.onException();
+		this.onCancelled = builder.onCancelled();
+		this.onInterrupted = builder.onInterrupted();
 	}
 
 	/**
@@ -115,35 +118,36 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	@Override
 	protected void done() {
-		onDone.run();
+		onDone.forEach(Runnable::run);
 		try {
-			onResult.accept(get());
+			T result = get();
+			onResult.forEach(c -> c.accept(result));
 		}
 		catch (CancellationException e) {
-			onCancelled.run();
+			onCancelled.forEach(Runnable::run);
 		}
 		catch (InterruptedException e) {
-			onInterrupted.run();
+			onInterrupted.forEach(Runnable::run);
 		}
 		catch (ExecutionException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof CancelException) {
-				onCancelled.run();
+				onCancelled.forEach(Runnable::run);
 			}
 			else if (cause instanceof Exception) {
-				onException.accept((Exception) cause);
+				onException.forEach(c -> c.accept((Exception) cause));
 			}
 			else {
-				onException.accept(new RuntimeException(cause));
+				onException.forEach(c -> c.accept(new RuntimeException(cause)));
 			}
 		}
 	}
 
 	private void runOnStarted() throws InterruptedException {
-		if (onStarted != null) {
+		if (!onStarted.isEmpty()) {
 			CountDownLatch startedLatch = new CountDownLatch(1);
 			invokeLater(() -> {
-				onStarted.run();
+				onStarted.forEach(Runnable::run);
 				startedLatch.countDown();
 			});
 			try {
@@ -368,16 +372,16 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		@Override
 		public void report(int progress) {
 			setProgress(maximum == 0 ? DEFAULT_MAXIMUM : DEFAULT_MAXIMUM * progress / maximum);
-			if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
-				invokeLater(() -> onProgress.accept(progress));
+			if (!onProgress.isEmpty()) {
+				invokeLater(() -> onProgress.forEach(c -> c.accept(progress)));
 			}
 		}
 
 		@Override
 		public void publish(V... chunks) {
 			ProgressWorker.this.publish(chunks);
-			if (onPublish != DefaultBuilder.EMPTY_CONSUMER) {
-				invokeLater(() -> onPublish.accept(asList(chunks)));
+			if (!onPublish.isEmpty()) {
+				invokeLater(() -> onPublish.forEach(c -> c.accept(asList(chunks))));
 			}
 		}
 	}
@@ -407,22 +411,20 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private static final class DefaultBuilder<T, V> implements Builder<T, V> {
 
-		private static final Runnable EMPTY_RUNNABLE = new EmptyRunnable();
-		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 		private static final Consumer<Exception> RETHROW_HANDLER = new RethrowHandler();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
 		private final Object task;
 
 		private int maximum = DEFAULT_MAXIMUM;
-		private @Nullable Runnable onStarted;
-		private Runnable onDone = EMPTY_RUNNABLE;
-		private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
-		private Consumer<Integer> onProgress = (Consumer<Integer>) EMPTY_CONSUMER;
-		private Consumer<List<V>> onPublish = (Consumer<List<V>>) EMPTY_CONSUMER;
-		private Consumer<Exception> onException = RETHROW_HANDLER;
-		private Runnable onCancelled = EMPTY_RUNNABLE;
-		private Runnable onInterrupted = INTERRUPT_CURRENT_ON_INTERRUPTED;
+		private @Nullable List<Runnable> onStarted;
+		private @Nullable List<Runnable> onDone;
+		private @Nullable List<Consumer<T>> onResult;
+		private @Nullable List<Consumer<Integer>> onProgress;
+		private @Nullable List<Consumer<List<V>>> onPublish;
+		private @Nullable List<Consumer<Exception>> onException;
+		private @Nullable List<Runnable> onCancelled;
+		private @Nullable List<Runnable> onInterrupted;
 
 		private DefaultBuilder(Task task) {
 			this.task = requireNonNull(task);
@@ -453,13 +455,19 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		@Override
 		public Builder<T, V> onStarted(Runnable onStarted) {
-			this.onStarted = requireNonNull(onStarted);
+			if (this.onStarted == null) {
+				this.onStarted = new ArrayList<>(1);
+			}
+			this.onStarted.add(requireNonNull(onStarted));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onDone(Runnable onDone) {
-			this.onDone = requireNonNull(onDone);
+			if (this.onDone == null) {
+				this.onDone = new ArrayList<>(1);
+			}
+			this.onDone.add(requireNonNull(onDone));
 			return this;
 		}
 
@@ -471,37 +479,55 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		@Override
 		public Builder<T, V> onResult(Consumer<T> onResult) {
-			this.onResult = requireNonNull(onResult);
+			if (this.onResult == null) {
+				this.onResult = new ArrayList<>(1);
+			}
+			this.onResult.add(requireNonNull(onResult));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onProgress(Consumer<Integer> onProgress) {
-			this.onProgress = requireNonNull(onProgress);
+			if (this.onProgress == null) {
+				this.onProgress = new ArrayList<>(1);
+			}
+			this.onProgress.add(requireNonNull(onProgress));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onPublish(Consumer<List<V>> onPublish) {
-			this.onPublish = requireNonNull(onPublish);
+			if (this.onPublish == null) {
+				this.onPublish = new ArrayList<>(1);
+			}
+			this.onPublish.add(requireNonNull(onPublish));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onException(Consumer<Exception> onException) {
-			this.onException = requireNonNull(onException);
+			if (this.onException == null) {
+				this.onException = new ArrayList<>(1);
+			}
+			this.onException.add(requireNonNull(onException));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onCancelled(Runnable onCancelled) {
-			this.onCancelled = requireNonNull(onCancelled);
+			if (this.onCancelled == null) {
+				this.onCancelled = new ArrayList<>(1);
+			}
+			this.onCancelled.add(requireNonNull(onCancelled));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onInterrupted(Runnable onInterrupted) {
-			this.onInterrupted = requireNonNull(onInterrupted);
+			if (this.onInterrupted == null) {
+				this.onInterrupted = new ArrayList<>(1);
+			}
+			this.onInterrupted.add(requireNonNull(onInterrupted));
 			return this;
 		}
 
@@ -517,18 +543,38 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		public ProgressWorker<T, V> build() {
 			return new ProgressWorker<>(this);
 		}
-	}
 
-	private static final class EmptyRunnable implements Runnable {
+		private List<Runnable> onStarted() {
+			return onStarted == null ? emptyList() : onStarted;
+		}
 
-		@Override
-		public void run() {}
-	}
+		private List<Runnable> onDone() {
+			return onDone == null ? emptyList() : onDone;
+		}
 
-	private static final class EmptyConsumer<T> implements Consumer<T> {
+		private List<Consumer<T>> onResult() {
+			return onResult == null ? emptyList() : onResult;
+		}
 
-		@Override
-		public void accept(T result) {}
+		private List<Consumer<Integer>> onProgress() {
+			return onProgress == null ? emptyList() : onProgress;
+		}
+
+		private List<Consumer<List<V>>> onPublish() {
+			return onPublish == null ? emptyList() : onPublish;
+		}
+
+		private List<Consumer<Exception>> onException() {
+			return onException == null ? singletonList(RETHROW_HANDLER) : onException;
+		}
+
+		private List<Runnable> onCancelled() {
+			return onCancelled == null ? emptyList() : onCancelled;
+		}
+
+		private List<Runnable> onInterrupted() {
+			return onInterrupted == null ? singletonList(INTERRUPT_CURRENT_ON_INTERRUPTED) : onInterrupted;
+		}
 	}
 
 	private static final class RethrowHandler implements Consumer<Exception> {

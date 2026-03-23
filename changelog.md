@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.72
 ### is.codion.common.rmi
 - AbstractServer.addAuthenticator() no longer public, ServerConfiguration.Builder.authenticator() added.
+### is.codion.swing.common.model
+- ProgressWorker now supports multiple handlers.
 ### is.codion.swing.common.ui
 - FilterTableSearchModel.Results.CurrentResult added.
 - DefaultFilterTableSearchModel.DefaultResults.current() now nullable.
