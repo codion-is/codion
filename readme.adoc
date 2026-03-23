@@ -86,6 +86,8 @@ Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and F
 
 A SDKMAN desktop app, demonstrating Swing UI development using the `codion-swing-common-ui` library for apps not requiring CRUD functionality.
 
+https://codion.is/doc/{version}/tutorials/sdkboy/sdkboy.html[SDKBOY Tutorial]
+
 UI design and SDKMAN API borrowed from https://github.com/jagodevreede/sdkman-ui[sdkman-ui]. This app would not exist without it!
 
 image::https://github.com/codion-is/sdkboy/blob/main/src/docs/asciidoc/images/sdkboy.png[SDKBOY client]
@@ -93,6 +95,8 @@ image::https://github.com/codion-is/sdkboy/blob/main/src/docs/asciidoc/images/sd
 === https://github.com/codion-is/llemmy[Llemmy]
 
 A simple LLM chat app, mixing a custom UI for chat interaction with some basic CRUD functionality.
+
+https://codion.is/doc/{version}/tutorials/lemmy/lemmy.html[Llemmy Tutorial]
 
 Includes modules configured for the **OpenAI** models as well as one configured for a local **Ollama** model. A module for running a local **Ollama** model using https://testcontainers.com/[Testcontainers] is included.
 
@@ -103,11 +107,15 @@ image::https://github.com/codion-is/llemmy/blob/main/llemmy/src/docs/asciidoc/im
 Minimalistic bare-bones CRUD application project, with a local JDBC connection option.
 A good place to start.
 
+https://codion.is/doc/{version}/tutorials/petclinic/petclinic.html[Petclinic Tutorial]
+
 image::https://github.com/codion-is/petclinic/blob/main/src/docs/asciidoc/images/owners.png[Petclinic client]
 
 === https://github.com/codion-is/world[World]
 
 Fully configured multi-module CRUD application project, with separate client modules configured for JDBC, RMI and HTTP connection options.
+
+https://codion.is/doc/{version}/tutorials/world/world.html[World Tutorial]
 
 Includes server and server monitor modules and `jlink`/`jpackage` configurations.
 
@@ -115,7 +123,9 @@ image::https://github.com/codion-is/world/blob/main/documentation/src/docs/ascii
 
 === https://github.com/codion-is/chinook[Chinook]
 
-The *Kitchen Sink* demo, with lots of customization examples.
+The *Kitchen Sink* demo, with lots of customization and deployment examples.
+
+https://codion.is/doc/{version}/tutorials/chinook/chinook.html[Chinook Tutorial]
 
 Fully configured multi-module CRUD application project, with separate client modules configured for JDBC, RMI and HTTP connection options.
 
