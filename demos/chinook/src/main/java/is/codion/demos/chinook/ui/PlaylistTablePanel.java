@@ -22,7 +22,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParamet
 import is.codion.demos.chinook.model.PlaylistTableModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -81,13 +81,12 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 		RandomPlaylistTask task = new RandomPlaylistTask(parameters);
 		Dialogs.progressWorker()
 						.task(task)
-						.onResult(task::handle)
 						.owner(this)
 						.title(BUNDLE.getString("random_playlist"))
 						.execute();
 	}
 
-	private final class RandomPlaylistTask implements ResultTask<Entity> {
+	private final class RandomPlaylistTask implements ResultTaskHandler<Entity> {
 
 		private final RandomPlaylistParameters parameters;
 
@@ -100,7 +99,8 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 			return ((PlaylistTableModel) tableModel()).createRandomPlaylist(parameters);
 		}
 
-		private void handle(Entity playlist) {
+		@Override
+		public void onResult(Entity playlist) {
 			tableModel().items().included().add(0, playlist);
 			tableModel().selection().item().set(playlist);
 		}

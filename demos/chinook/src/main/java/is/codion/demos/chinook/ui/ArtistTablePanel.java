@@ -22,6 +22,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.utilities.Text;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.model.ArtistTableModel;
+import is.codion.demos.chinook.model.ArtistTableModel.CombineArtistsTask;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -71,17 +72,18 @@ public final class ArtistTablePanel extends EntityTablePanel {
 		artistsToDelete.remove(artistToKeep);
 		int albumCount = tableModel().connection().count(where(Album.ARTIST_FK.in(artistsToDelete)));
 		if (confirmCombination(artistsToDelete, artistToKeep, albumCount)) {
-			ArtistTableModel tableModel = (ArtistTableModel) tableModel();
+			CombineArtistsTask task = ((ArtistTableModel) tableModel()).combine(artistsToDelete, artistToKeep);
 			Dialogs.progressWorker()
-							.task(() -> tableModel.combine(artistsToDelete, artistToKeep))
+							.task(task)
 							.owner(this)
-							.title("Updating albums...")
-							.onResult(() -> {
-								tableModel.onCombined(artistsToDelete, artistToKeep);
-								showMessageDialog(this, "Artists combined!");
-							})
+							.title("Combining artists...")
+							.onResult(this::onArtistsCombined)
 							.execute();
 		}
+	}
+
+	private void onArtistsCombined() {
+		showMessageDialog(this, "Artists combined!");
 	}
 
 	private boolean confirmCombination(List<Entity> artistsToDelete, Entity artistToKeep, int albumCount) {

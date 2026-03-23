@@ -70,16 +70,7 @@ final class CityTablePanel extends ChartTablePanel {
 										.toggle(task.cancelled())
 										.caption("Cancel")
 										.enabled(task.cancelled().not()))
-						.onPublish(task::publish)
-						.onResult(task::result)
-						.onException(this::displayPopulateException)
+						.onException("Unable to populate location")
 						.execute();
-	}
-
-	private void displayPopulateException(Exception exception) {
-		Dialogs.exception()
-						.owner(this)
-						.title("Unable to populate location")
-						.show(exception);
 	}
 }

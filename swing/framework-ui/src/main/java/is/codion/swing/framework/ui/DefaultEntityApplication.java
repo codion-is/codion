@@ -30,7 +30,7 @@ import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.model.EntityApplicationModel;
-import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
@@ -357,13 +357,11 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		long initializationStarted = currentTimeMillis();
 		if (startupDialog) {
 			Dialogs.progressWorker()
-							.task(new InitializeApplicationModel(connectionProvider))
+							.task(new InitializeApplicationModel(connectionProvider, initializationStarted))
 							.title(applicationName())
 							.icon(icon)
 							.border(emptyBorder())
 							.westComponent(createStartupIconLabel())
-							.onResult(new StartApplication(initializationStarted))
-							.onException(new DisplayExceptionAndExit())
 							.execute();
 		}
 		else {
@@ -691,39 +689,29 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		}
 	}
 
-	private final class StartApplication implements Consumer<M> {
-
-		private final long initializationStarted;
-
-		private StartApplication(long initializationStarted) {
-			this.initializationStarted = initializationStarted;
-		}
-
-		@Override
-		public void accept(M applicationModel) {
-			startApplication(applicationModel, initializationStarted);
-		}
-	}
-
-	private final class InitializeApplicationModel implements ProgressWorker.ResultTask<M> {
+	private final class InitializeApplicationModel implements ResultTaskHandler<M> {
 
 		private final EntityConnectionProvider connectionProvider;
+		private final long initializationStarted;
 
-		private InitializeApplicationModel(EntityConnectionProvider connectionProvider) {
+		private InitializeApplicationModel(EntityConnectionProvider connectionProvider, long initializationStarted) {
 			this.connectionProvider = connectionProvider;
+			this.initializationStarted = initializationStarted;
 		}
 
 		@Override
 		public M execute() throws Exception {
 			return initializeApplicationModel(connectionProvider);
 		}
-	}
-
-	private static class DisplayExceptionAndExit implements Consumer<Exception> {
 
 		@Override
-		public void accept(Exception e) {
-			displayExceptionAndExit(e, null);
+		public void onResult(M applicationModel) {
+			startApplication(applicationModel, initializationStarted);
+		}
+
+		@Override
+		public void onException(Exception exception) {
+			displayExceptionAndExit(exception, null);
 		}
 	}
 

@@ -23,6 +23,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.util.List;
@@ -39,20 +40,37 @@ public final class ArtistTableModel extends SwingEntityTableModel {
 		super(Artist.TYPE, connectionProvider);
 	}
 
-	public void combine(List<Entity> artistsToDelete, Entity artistToKeep) {
-		EntityConnection connection = connection();
-		transaction(connection, () -> {
-			connection.update(where(Album.ARTIST_FK.in(artistsToDelete))
-							.set(Album.ARTIST_ID, artistToKeep.primaryKey().value())
-							.build());
-			connection.delete(primaryKeys(artistsToDelete));
-		});
+	public CombineArtistsTask combine(List<Entity> artistsToDelete, Entity artistToKeep) {
+		return new CombineArtistsTask(artistsToDelete, artistToKeep);
 	}
 
-	public void onCombined(List<Entity> artistsToDelete, Entity artistToKeep) {
-		selection().item().set(artistToKeep);
-		items().remove(artistsToDelete);
-		persistenceEvents(Artist.TYPE).deleted().accept(artistsToDelete);
-		refresh(singleton(artistToKeep.primaryKey()));
+	public final class CombineArtistsTask implements TaskHandler {
+
+		private final List<Entity> artistsToDelete;
+		private final Entity artistToKeep;
+
+		public CombineArtistsTask(List<Entity> artistsToDelete, Entity artistToKeep) {
+			this.artistsToDelete = artistsToDelete;
+			this.artistToKeep = artistToKeep;
+		}
+
+		@Override
+		public void execute() throws Exception {
+			EntityConnection connection = connection();
+			transaction(connection, () -> {
+				connection.update(where(Album.ARTIST_FK.in(artistsToDelete))
+								.set(Album.ARTIST_ID, artistToKeep.primaryKey().value())
+								.build());
+				connection.delete(primaryKeys(artistsToDelete));
+			});
+		}
+
+		@Override
+		public void onResult() {
+			selection().item().set(artistToKeep);
+			items().remove(artistsToDelete);
+			persistenceEvents(Artist.TYPE).deleted().accept(artistsToDelete);
+			refresh(singleton(artistToKeep.primaryKey()));
+		}
 	}
 }

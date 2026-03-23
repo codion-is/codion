@@ -551,8 +551,6 @@ public final class DomainGeneratorPanel extends JPanel {
 										.toggle(task.cancelled())
 										.caption("Cancel")
 										.enabled(task.cancelled().not()))
-						.maximum(task.maximum())
-						.onResult(task::finish)
 						.execute();
 	}
 

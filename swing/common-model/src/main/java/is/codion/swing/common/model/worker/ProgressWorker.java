@@ -43,6 +43,14 @@ import static javax.swing.SwingUtilities.invokeLater;
  * those directly to the {@code onProgress} and {@code onPublish} handlers on the Event Dispatch Thread.</p>
  * <p>The {@code onStarted} handler is guaranteed to be called on the Event Dispatch Thread before the background task executes,
  * and the {@code onDone} handler is guaranteed to be called after the background task completes.
+ * <p>There are two ways to use this class:
+ * <ul>
+ * <li><b>Builder-only</b>: pass a task and wire handlers via the builder.
+ * <li><b>Handler interfaces</b>: implement one of the handler interfaces ({@link TaskHandler}, {@link ResultTaskHandler},
+ * {@link ProgressTaskHandler}, {@link ProgressResultTaskHandler}) to encapsulate both the background task and its
+ * handlers in a single class. Handler methods are wired automatically and can be supplemented via the builder.
+ * </ul>
+ * Builder based usage example:
  * {@snippet :
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
@@ -57,6 +65,7 @@ import static javax.swing.SwingUtilities.invokeLater;
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result produced by this {@link ProgressWorker}
  * @see #builder()
+ * @see Handler
  */
 public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
@@ -161,32 +170,35 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	}
 
 	/**
-	 * Provides builders for a given task type.
+	 * <p>Provides builders for a given task type.
+	 * <p>If the task also implements the corresponding handler interface (e.g. {@link TaskHandler},
+	 * {@link ResultTaskHandler}), the handler methods are automatically wired to the builder.
+	 * These can be supplemented via the returned {@link Builder}.
 	 */
 	public sealed interface BuilderFactory {
 
 		/**
-		 * @param task the task to run
+		 * @param task the task to run, if it implements {@link TaskHandler} its handler methods are wired automatically
 		 * @return a new {@link Builder} instance
 		 */
 		Builder<?, ?> task(Task task);
 
 		/**
-		 * @param task the task to run
-		 * @param <T> the worker result typee
+		 * @param task the task to run, if it implements {@link ResultTaskHandler} its handler methods are wired automatically
+		 * @param <T> the worker result type
 		 * @return a new {@link Builder} instance
 		 */
 		<T> Builder<T, ?> task(ResultTask<T> task);
 
 		/**
-		 * @param task the task to run
+		 * @param task the task to run, if it implements {@link ProgressTaskHandler} its handler methods are wired automatically
 		 * @param <V> the intermediate result type
 		 * @return a new {@link Builder} instance
 		 */
 		<V> Builder<?, V> task(ProgressTask<V> task);
 
 		/**
-		 * @param task the task to run
+		 * @param task the task to run, if it implements {@link ProgressResultTaskHandler} its handler methods are wired automatically
 		 * @param <T> the worker result type
 		 * @param <V> the intermediate result type
 		 * @return a new {@link Builder} instance
@@ -264,6 +276,127 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		default int maximum() {
 			return DEFAULT_MAXIMUM;
 		}
+	}
+
+	/**
+	 * <p>Provides default handler methods for the {@link ProgressWorker} lifecycle.
+	 * <p>All handler methods are called on the Event Dispatch Thread.
+	 * <p>Combined with a task interface (via {@link TaskHandler}, {@link ResultTaskHandler}, etc.),
+	 * this allows a single class to encapsulate both the background task and its handlers.
+	 * Handler methods from this interface are automatically wired when the task is passed to
+	 * {@link BuilderFactory#task(Task)}, and can be supplemented via the {@link Builder}.
+	 * @see TaskHandler
+	 * @see ResultTaskHandler
+	 * @see ProgressTaskHandler
+	 * @see ProgressResultTaskHandler
+	 */
+	public interface Handler {
+
+		/**
+		 * Called on the Event Dispatch Thread before the background task executes.
+		 */
+		default void onStarted() {}
+
+		/**
+		 * Called on the Event Dispatch Thread when the task is done, successfully or not, before the result is processed.
+		 */
+		default void onDone() {}
+
+		/**
+		 * Called on the Event Dispatch Thread if an exception occurred during the background task.
+		 * @param exception the exception
+		 */
+		default void onException(Exception exception) {}
+
+		/**
+		 * Called on the Event Dispatch Thread if the background task was cancelled.
+		 */
+		default void onCancelled() {}
+
+		/**
+		 * Called on the Event Dispatch Thread if the background task was interrupted.
+		 */
+		default void onInterrupted() {
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	/**
+	 * A {@link Task} combined with {@link Handler}, for encapsulating a background task and its handlers in a single class.
+	 * @see BuilderFactory#task(Task)
+	 */
+	public interface TaskHandler extends Task, Handler {
+
+		/**
+		 * Called on the Event Dispatch Thread after a successful execution.
+		 */
+		default void onResult() {}
+	}
+
+	/**
+	 * A {@link ResultTask} combined with {@link Handler}, for encapsulating a result-producing background task
+	 * and its handlers in a single class.
+	 * @param <T> the task result type
+	 * @see BuilderFactory#task(ResultTask)
+	 */
+	public interface ResultTaskHandler<T> extends ResultTask<T>, Handler {
+
+		/**
+		 * Called on the Event Dispatch Thread after a successful execution.
+		 * @param result the task result
+		 */
+		default void onResult(T result) {}
+	}
+
+	/**
+	 * Extends {@link Handler} with progress and publish handlers.
+	 * @param <V> the intermediate result type
+	 * @see ProgressTaskHandler
+	 * @see ProgressResultTaskHandler
+	 */
+	public interface ProgressHandler<V> extends Handler {
+
+		/**
+		 * Called on the Event Dispatch Thread when progress is reported.
+		 * @param progress the progress value
+		 */
+		default void onProgress(int progress) {}
+
+		/**
+		 * Called on the Event Dispatch Thread when intermediate results are available.
+		 * @param chunks the published chunks
+		 */
+		default void onPublish(List<V> chunks) {}
+	}
+
+	/**
+	 * A {@link ProgressTask} combined with {@link ProgressHandler}, for encapsulating a progress-aware
+	 * background task and its handlers in a single class.
+	 * @param <V> the intermediate result type
+	 * @see BuilderFactory#task(ProgressTask)
+	 */
+	public interface ProgressTaskHandler<V> extends ProgressTask<V>, ProgressHandler<V> {
+
+		/**
+		 * Called on the Event Dispatch Thread after a successful execution.
+		 */
+		default void onResult() {}
+	}
+
+	/**
+	 * A {@link ProgressResultTask} combined with {@link ProgressHandler}, for encapsulating a progress-aware,
+	 * result-producing background task and its handlers in a single class.
+	 * @param <T> the task result type
+	 * @param <V> the intermediate result type
+	 * @see BuilderFactory#task(ProgressResultTask)
+	 */
+	public interface ProgressResultTaskHandler<T, V> extends ProgressResultTask<T, V>, ProgressHandler<V> {
+
+		/**
+		 * Called on the Event Dispatch Thread after a successful execution.
+		 * @param result the task result
+		 */
+		default void onResult(T result) {}
 	}
 
 	/**
@@ -390,22 +523,70 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		@Override
 		public Builder<?, ?> task(Task task) {
-			return new DefaultBuilder<>(task);
+			DefaultBuilder<?, ?> builder = new DefaultBuilder<>(task);
+			if (task instanceof TaskHandler) {
+				TaskHandler handler = (TaskHandler) task;
+				builder.onStarted(handler::onStarted)
+								.onDone(handler::onDone)
+								.onResult(handler::onResult)
+								.onException(handler::onException)
+								.onCancelled(handler::onCancelled)
+								.onInterrupted(handler::onInterrupted);
+			}
+
+			return builder;
 		}
 
 		@Override
 		public <T> Builder<T, ?> task(ResultTask<T> task) {
-			return new DefaultBuilder<>(task);
+			DefaultBuilder<T, ?> builder = new DefaultBuilder<>(task);
+			if (task instanceof ResultTaskHandler) {
+				ResultTaskHandler<T> handler = (ResultTaskHandler<T>) task;
+				builder.onStarted(handler::onStarted)
+								.onDone(handler::onDone)
+								.onResult(handler::onResult)
+								.onException(handler::onException)
+								.onCancelled(handler::onCancelled)
+								.onInterrupted(handler::onInterrupted);
+			}
+
+			return builder;
 		}
 
 		@Override
 		public <V> Builder<?, V> task(ProgressTask<V> task) {
-			return new DefaultBuilder<>(task);
+			DefaultBuilder<?, V> builder = new DefaultBuilder<>(task);
+			if (task instanceof ProgressTaskHandler) {
+				ProgressTaskHandler<V> handler = (ProgressTaskHandler<V>) task;
+				builder.onStarted(handler::onStarted)
+								.onProgress(handler::onProgress)
+								.onPublish(handler::onPublish)
+								.onDone(handler::onDone)
+								.onResult(handler::onResult)
+								.onException(handler::onException)
+								.onCancelled(handler::onCancelled)
+								.onInterrupted(handler::onInterrupted);
+			}
+
+			return builder;
 		}
 
 		@Override
 		public <T, V> Builder<T, V> task(ProgressResultTask<T, V> task) {
-			return new DefaultBuilder<>(task);
+			DefaultBuilder<T, V> builder = new DefaultBuilder<>(task);
+			if (task instanceof ProgressResultTaskHandler) {
+				ProgressResultTaskHandler<T, V> handler = (ProgressResultTaskHandler<T, V>) task;
+				builder.onStarted(handler::onStarted)
+								.onProgress(handler::onProgress)
+								.onPublish(handler::onPublish)
+								.onDone(handler::onDone)
+								.onResult(handler::onResult)
+								.onException(handler::onException)
+								.onCancelled(handler::onCancelled)
+								.onInterrupted(handler::onInterrupted);
+			}
+
+			return builder;
 		}
 	}
 

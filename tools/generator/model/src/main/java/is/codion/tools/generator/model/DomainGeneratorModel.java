@@ -34,7 +34,7 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTaskHandler;
 import is.codion.tools.generator.domain.DomainSource;
 
 import org.json.JSONObject;
@@ -438,7 +438,7 @@ public final class DomainGeneratorModel {
 		return PACKAGE_PATTERN.matcher(packageName).matches();
 	}
 
-	public final class PopulateTask implements ProgressTask<String> {
+	public final class PopulateTask implements ProgressTaskHandler<String> {
 
 		private final State cancelled = State.state();
 
@@ -463,7 +463,8 @@ public final class DomainGeneratorModel {
 			return cancelled;
 		}
 
-		public void finish() {
+		@Override
+		public void onResult() {
 			schemaTableModel.selection().indexes().get().forEach(index ->
 							schemaTableModel.fireTableRowsUpdated(index, index));
 			schemaSelectionChanged();

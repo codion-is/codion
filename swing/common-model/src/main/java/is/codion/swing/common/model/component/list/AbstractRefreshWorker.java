@@ -22,6 +22,7 @@ import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.AbstractRefresher;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 
 import org.jspecify.annotations.Nullable;
 
@@ -60,10 +61,7 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 		items().ifPresent(items -> {
 			cancelCurrentRefresh();
 			worker = ProgressWorker.builder()
-							.task(items::get)
-							.onStarted(this::onRefreshStarted)
-							.onResult(result -> onRefreshResult(result, onResult))
-							.onException(this::onException)
+							.task(new RefreshTask(items, onResult))
 							.execute();
 		});
 	}
@@ -104,6 +102,37 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 		ProgressWorker<?, ?> progressWorker = worker;
 		if (progressWorker != null) {
 			progressWorker.cancel(true);
+		}
+	}
+
+	private final class RefreshTask implements ResultTaskHandler<Collection<T>> {
+
+		private final Supplier<Collection<T>> items;
+		private final Consumer<Collection<T>> onResult;
+
+		private RefreshTask(Supplier<Collection<T>> items, Consumer<Collection<T>> onResult) {
+			this.items = items;
+			this.onResult = onResult;
+		}
+
+		@Override
+		public Collection<T> execute() throws Exception {
+			return items.get();
+		}
+
+		@Override
+		public void onStarted() {
+			onRefreshStarted();
+		}
+
+		@Override
+		public void onResult(Collection<T> result) {
+			onRefreshResult(result, onResult);
+		}
+
+		@Override
+		public void onException(Exception exception) {
+			AbstractRefreshWorker.this.onException(exception);
 		}
 	}
 

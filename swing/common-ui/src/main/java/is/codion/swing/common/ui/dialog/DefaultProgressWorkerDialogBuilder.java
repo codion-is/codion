@@ -32,6 +32,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -39,6 +40,7 @@ import java.util.function.Supplier;
 
 import static is.codion.swing.common.model.action.DelayedAction.delayedAction;
 import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -48,14 +50,11 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	static final ProgressWorkerDialogBuilder.BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
 
-	private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
-
 	private final ProgressWorker.Builder<T, V> progressWorkerBuilder;
 	private final ProgressDialog.Builder progressDialogBuilder = new ProgressDialog.DefaultBuilder();
 
-	private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
-	private @Nullable Consumer<List<V>> onPublish;
-	private Consumer<Exception> onException = new DisplayExceptionInDialog();
+	private final Consumer<Exception> displayExceptionInDialog = new DisplayExceptionInDialog();
+	private final List<Consumer<Exception>> onException = new ArrayList<>(singleton(displayExceptionInDialog));
 	private int showDelay = SHOW_DELAY.getOrThrow();
 	private int hideDelay = HIDE_DELAY.getOrThrow();
 
@@ -153,7 +152,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	@Override
 	public ProgressWorkerDialogBuilder<T, V> onPublish(Consumer<List<V>> onPublish) {
-		this.onPublish = requireNonNull(onPublish);
+		this.progressWorkerBuilder.onPublish(onPublish);
 		return this;
 	}
 
@@ -164,7 +163,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	@Override
 	public ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult) {
-		this.onResult = requireNonNull(onResult);
+		this.progressWorkerBuilder.onResult(onResult);
 		return this;
 	}
 
@@ -178,7 +177,9 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	@Override
 	public ProgressWorkerDialogBuilder<T, V> onException(Consumer<Exception> onException) {
-		this.onException = requireNonNull(onException);
+		this.onException.add(requireNonNull(onException));
+		// Make sure the default exception handler is removed, whenever a custom one is specified
+		this.onException.remove(displayExceptionInDialog);
 		return this;
 	}
 
@@ -198,6 +199,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	@Override
 	public ProgressWorker<T, V> build() {
 		onBuildConsumers.forEach(progressDialogBuilder::onBuild);
+		onException.forEach(progressWorkerBuilder::onException);
 
 		ProgressDialog progressDialog = progressDialogBuilder
 						.owner(owner)
@@ -211,10 +213,8 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		return progressWorkerBuilder
 						.onStarted(dialog::show)
 						.onProgress(progressDialog::setProgress)
-						.onPublish(chunks -> publish(chunks, progressDialog))
+						.onPublish(chunks -> progressDialog.setMessage(message(chunks)))
 						.onDone(dialog::hide)
-						.onResult(onResult)
-						.onException(onException)
 						.build();
 	}
 
@@ -252,7 +252,6 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		}
 	}
 
-
 	private static class DefaultBuilderFactory implements BuilderFactory {
 
 		@Override
@@ -273,13 +272,6 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		@Override
 		public <T, V> ProgressWorkerDialogBuilder<T, V> task(ProgressResultTask<T, V> task) {
 			return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task)).indeterminate(false);
-		}
-	}
-
-	private void publish(List<V> chunks, ProgressDialog progressDialog) {
-		progressDialog.setMessage(message(chunks));
-		if (onPublish != null) {
-			onPublish.accept(chunks);
 		}
 	}
 
@@ -306,11 +298,5 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 							.title(dialogTitle)
 							.show(exception);
 		}
-	}
-
-	private static final class EmptyConsumer<T> implements Consumer<T> {
-
-		@Override
-		public void accept(T result) {}
 	}
 }

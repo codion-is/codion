@@ -16,6 +16,13 @@ NOTE: Like https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.
 include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=taskWorker]
 ----
 
+== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.TaskHandler.html[TaskHandler]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=taskHandler]
+----
+
 == {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ResultTask.html[ResultTask]
 
 [source,java,indent=0]
@@ -23,11 +30,25 @@ include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerD
 include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=resultTaskWorker]
 ----
 
+== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ResultTaskHandler.html[ResultTaskHandler]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=resultTaskHandler]
+----
+
 == {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ProgressTask.html[ProgressTask]
 
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressTaskWorker]
+----
+
+== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ProgressTaskHandler.html[ProgressTaskHandler]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressTaskHandler]
 ----
 
 == {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ProgressResultTask.html[ProgressResultTask]

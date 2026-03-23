@@ -21,7 +21,10 @@ package is.codion.manual.swing.common.model.worker;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTaskHandler;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
+import is.codion.swing.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -61,6 +64,30 @@ final class ProgressWorkerDemo {
 		// end::taskWorker[]
 	}
 
+	private static void taskHandler() {
+		// tag::taskHandler[]
+		// A non-progress aware task, producing no result
+		ProgressWorker.TaskHandler task = new TaskHandler() {
+
+			@Override
+			public void execute() throws Exception {
+				// Perform the task
+			}
+
+			@Override
+			public void onException(Exception exception) {
+				Dialogs.exception()
+								.owner(applicationFrame)
+								.show(exception);
+			}
+		};
+
+		ProgressWorker.builder()
+						.task(task)
+						.execute();
+		// end::taskHandler[]
+	}
+
 	private static void resultTask() {
 		// tag::resultTaskWorker[]
 		// A non-progress aware task, producing a result
@@ -79,6 +106,35 @@ final class ProgressWorkerDemo {
 														.show(exception))
 						.execute();
 		// end::resultTaskWorker[]
+	}
+
+	private static void resultTaskHandler() {
+		// tag::resultTaskHandler[]
+		ResultTaskHandler<String> task = new ResultTaskHandler<String>() {
+
+			@Override
+			public String execute() throws Exception {
+				// Perform the task
+				return "Result";
+			}
+
+			@Override
+			public void onResult(String result) {
+				showMessageDialog(applicationFrame, result);
+			}
+
+			@Override
+			public void onException(Exception exception) {
+				Dialogs.exception()
+								.owner(applicationFrame)
+								.show(exception);
+			}
+		};
+
+		ProgressWorker.builder()
+						.task(task)
+						.execute();
+		// end::resultTaskHandler[]
 	}
 
 	private static void progressTask() {
@@ -104,6 +160,42 @@ final class ProgressWorkerDemo {
 		// end::progressTaskWorker[]
 	}
 
+	private static void progressTaskHandler() {
+		// tag::progressTaskHandler[]
+		// A progress aware task, producing no result
+		ProgressTaskHandler<String> task = new ProgressTaskHandler<String>() {
+
+			@Override
+			public void onProgress(int progress) {
+				System.out.println("Progress: " + progress);
+			}
+
+			@Override
+			public void onPublish(List<String> message) {
+				showMessageDialog(applicationFrame, message);
+			}
+
+			@Override
+			public void onException(Exception exception) {
+				Dialogs.exception()
+								.owner(applicationFrame)
+								.show(exception);
+			}
+
+			@Override
+			public void execute(ProgressReporter<String> progressReporter) throws Exception {
+				// Perform the task
+				progressReporter.report(42);
+				progressReporter.publish("Message");
+			}
+		};
+
+		ProgressWorker.builder()
+						.task(task)
+						.execute();
+		// end::progressTaskHandler[]
+	}
+
 	private static void progressResultTask() {
 		// tag::progressResultWorker[]
 		// A reusable, cancellable task, producing a result.
@@ -112,19 +204,12 @@ final class ProgressWorkerDemo {
 
 		ProgressWorker.builder()
 						.task(task.prepare(142))
-						.onStarted(task::started)
-						.onProgress(task::progress)
-						.onPublish(task::publish)
-						.onDone(task::done)
-						.onCancelled(task::cancelled)
-						.onException(task::failed)
-						.onResult(task::finished)
 						.execute();
 		// end::progressResultWorker[]
 	}
 
 	// tag::progressResultTask1[]
-	static final class DemoProgressResultTask implements ProgressResultTask<Integer, String> {
+	static final class DemoProgressResultTask implements ProgressResultTaskHandler<Integer, String> {
 
 		private final JProgressBar progressBar = progressBar()
 						.indeterminate(false)
@@ -160,11 +245,6 @@ final class ProgressWorkerDemo {
 		private int taskSize;
 
 		@Override
-		public int maximum() {
-			return taskSize;
-		}
-
-		@Override
 		public Integer execute(ProgressReporter<String> progressReporter) throws Exception {
 			List<Integer> result = new ArrayList<>();
 			for (int i = 0; i < taskSize; i++) {
@@ -179,6 +259,53 @@ final class ProgressWorkerDemo {
 			return result.stream()
 							.mapToInt(Integer::intValue)
 							.sum();
+		}
+
+		@Override
+		public int maximum() {
+			return taskSize;
+		}
+
+		@Override
+		public void onStarted() {
+			dialog.setVisible(true);
+		}
+
+		@Override
+		public void onProgress(int progress) {
+			progressBar.setValue(progress);
+		}
+
+		@Override
+		public void onPublish(List<String> strings) {
+			progressBar.setString(strings.get(0));
+		}
+
+		@Override
+		public void onDone() {
+			dialog.setVisible(false);
+			// end::progressResultTask1[]
+			// DEMO ONLY CODE: So that the demo JVM exits
+			// when the demo is done, otherwise not required
+			dialog.dispose();
+			// tag::progressResultTask2[]
+		}
+
+		@Override
+		public void onCancelled() {
+			showMessageDialog(applicationFrame, "Cancelled");
+		}
+
+		@Override
+		public void onException(Exception exception) {
+			Dialogs.exception()
+							.owner(applicationFrame)
+							.show(exception);
+		}
+
+		@Override
+		public void onResult(Integer result) {
+			showMessageDialog(applicationFrame, "Result : " + result);
 		}
 
 		// Makes this task reusable by resetting the internal state
@@ -201,41 +328,6 @@ final class ProgressWorkerDemo {
 			else if (progress > taskSize * 0.85) {
 				reporter.publish("Almost done");
 			}
-		}
-
-		private void started() {
-			dialog.setVisible(true);
-		}
-
-		private void progress(int progress) {
-			progressBar.setValue(progress);
-		}
-
-		private void publish(List<String> strings) {
-			progressBar.setString(strings.get(0));
-		}
-
-		private void done() {
-			dialog.setVisible(false);
-			// end::progressResultTask1[]
-			// DEMO ONLY CODE: So that the demo JVM exits
-			// when the demo is done, otherwise not required
-			dialog.dispose();
-			// tag::progressResultTask2[]
-		}
-
-		private void cancelled() {
-			showMessageDialog(applicationFrame, "Cancelled");
-		}
-
-		private void failed(Exception exception) {
-			Dialogs.exception()
-							.owner(applicationFrame)
-							.show(exception);
-		}
-
-		private void finished(Integer result) {
-			showMessageDialog(applicationFrame, "Result : " + result);
 		}
 	}
 	// end::progressResultTask2[]

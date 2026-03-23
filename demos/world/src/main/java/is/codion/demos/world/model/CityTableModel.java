@@ -28,7 +28,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;
@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public final class CityTableModel extends SwingEntityTableModel {
 
@@ -75,7 +76,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		cities.forEach(city -> chartDataset.setValue(city.get(City.NAME), city.get(City.POPULATION)));
 	}
 
-	public final class PopulateLocationTask implements ProgressResultTask<Collection<Entity>, Entity> {
+	public final class PopulateLocationTask implements ProgressResultTaskHandler<Collection<Entity>, Entity> {
 
 		private final State cancelled = State.state();
 		private final Collection<Entity> cities;
@@ -95,12 +96,14 @@ public final class CityTableModel extends SwingEntityTableModel {
 			return cancelled;
 		}
 
-		public void publish(Collection<Entity> cities) {
+		@Override
+		public void onPublish(List<Entity> cities) {
 			cities.forEach(city -> items().replace(city, city));
 			displayLocationEvent.accept(cities);
 		}
 
-		public void result(Collection<Entity> cities) {
+		@Override
+		public void onResult(Collection<Entity> cities) {
 			displayLocationEvent.accept(cities);
 		}
 

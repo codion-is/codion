@@ -79,18 +79,21 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".hideDelay", 800);
 
 	/**
-	 * Provides builders for a given task type.
+	 * <p>Provides builders for a given task type.
+	 * <p>If the task also implements the corresponding handler interface, its handler methods
+	 * are automatically wired and can be supplemented via the returned builder.
+	 * @see ProgressWorker.Handler
 	 */
 	interface BuilderFactory {
 
 		/**
-		 * @param task the task to run
+		 * @param task the task to run, if it implements {@link ProgressWorker.TaskHandler} its handler methods are wired automatically
 		 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 		 */
 		ProgressWorkerDialogBuilder<?, ?> task(ProgressWorker.Task task);
 
 		/**
-		 * @param task the task to run
+		 * @param task the task to run, if it implements {@link ProgressWorker.ResultTaskHandler} its handler methods are wired automatically
 		 * @param <T> the worker result type
 		 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 		 */
@@ -98,7 +101,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 
 		/**
 		 * Note, also sets the progress bar type to 'determinate'.
-		 * @param task the task to run
+		 * @param task the task to run, if it implements {@link ProgressWorker.ProgressTaskHandler} its handler methods are wired automatically
 		 * @param <V> the worker intermediate result type
 		 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
 		 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
@@ -107,7 +110,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 
 		/**
 		 * Note, also sets the progress bar type to 'determinate'.
-		 * @param task the task to run
+		 * @param task the task to run, if it implements {@link ProgressWorker.ProgressResultTaskHandler} its handler methods are wired automatically
 		 * @param <T> the worker result type
 		 * @param <V> the worker intermediate result type
 		 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance

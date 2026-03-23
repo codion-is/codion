@@ -97,7 +97,6 @@ final class AlbumTagsPanelBuilder extends AbstractComponentValueBuilder<AlbumTag
 
 		AlbumTagsPanel() {
 			super(borderLayout());
-			System.out.println("new tag panel");
 			add(createCenterPanel(), BorderLayout.CENTER);
 			setupKeyEvents();
 		}
