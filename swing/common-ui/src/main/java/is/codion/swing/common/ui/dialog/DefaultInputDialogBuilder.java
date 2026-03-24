@@ -59,6 +59,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
 	private @Nullable String caption;
 	private @Nullable ObservableState valid;
+	private @Nullable Predicate<@Nullable T> close;
 
 	DefaultInputDialogBuilder(ComponentValue<?, T> componentValue) {
 		this.componentValue = requireNonNull(componentValue);
@@ -117,14 +118,19 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
 	@Override
 	public InputDialogBuilder<T> valid(ObservableState valid) {
-		this.valid = valid;
-		okCancelDialogBuilder.okEnabled(valid);
+		this.valid = requireNonNull(valid);
 		return this;
 	}
 
 	@Override
 	public InputDialogBuilder<T> validator(Predicate<@Nullable T> validator) {
 		return valid(createInputValidObserver(requireNonNull(validator)));
+	}
+
+	@Override
+	public InputDialogBuilder<T> close(Predicate<T> close) {
+		this.close = requireNonNull(close);
+		return this;
 	}
 
 	@Override
@@ -140,15 +146,16 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public void show(Predicate<@Nullable T> closeDialog) {
-		requireNonNull(closeDialog);
+	public @Nullable T show() {
+		State inputAccepted = State.state();
 		if (caption != null) {
 			basePanel.add(new JLabel(caption), BorderLayout.NORTH);
 		}
 		CommandControl okControl = Control.builder()
 						.command(() -> {
-							if (closeDialog.test(componentValue.get())) {
+							if (close == null || close.test(componentValue.get())) {
 								Ancestor.window().of(componentValue.component()).dispose();
+								inputAccepted.set(true);
 							}
 						})
 						.caption(Messages.ok())
@@ -157,16 +164,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 						.build();
 
 		okCancelDialogBuilder.okAction(okControl).show();
-	}
-
-	@Override
-	public @Nullable T show() {
-		State okPressed = State.state();
-		if (caption != null) {
-			basePanel.add(new JLabel(caption), BorderLayout.NORTH);
-		}
-		okCancelDialogBuilder.onOk(new OnOk(componentValue, okPressed)).show();
-		if (okPressed.is()) {
+		if (inputAccepted.is()) {
 			return componentValue.get();
 		}
 
@@ -174,10 +172,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	private ObservableState createInputValidObserver(Predicate<@Nullable T> inputValidator) {
-		State validInputState = State.state(inputValidator.test(componentValue.get()));
-		componentValue.addListener(new InputValidStateListener<>(validInputState, inputValidator, componentValue));
-
-		return validInputState;
+		return new InputValidStateListener<>(inputValidator, componentValue).validInputState.observable();
 	}
 
 	private static final class DefaultComponentStep implements ComponentStep {
@@ -193,33 +188,17 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		}
 	}
 
-	private static final class OnOk implements Runnable {
-
-		private final ComponentValue<?, ?> componentValue;
-		private final State okPressed;
-
-		private OnOk(ComponentValue<?, ?> componentValue, State okPressed) {
-			this.componentValue = componentValue;
-			this.okPressed = okPressed;
-		}
-
-		@Override
-		public void run() {
-			Ancestor.window().of(componentValue.component()).dispose();
-			okPressed.set(true);
-		}
-	}
-
 	private static final class InputValidStateListener<T> implements Runnable {
 
 		private final State validInputState;
 		private final Predicate<@Nullable T> validInputPredicate;
 		private final Value<T> componentValue;
 
-		private InputValidStateListener(State validInputState, Predicate<@Nullable T> validInputPredicate, Value<T> componentValue) {
-			this.validInputState = validInputState;
+		private InputValidStateListener(Predicate<@Nullable T> validInputPredicate, Value<T> componentValue) {
+			this.validInputState = State.state(validInputPredicate.test(componentValue.get()));
 			this.validInputPredicate = validInputPredicate;
 			this.componentValue = componentValue;
+			this.componentValue.addListener(this);
 		}
 
 		@Override
