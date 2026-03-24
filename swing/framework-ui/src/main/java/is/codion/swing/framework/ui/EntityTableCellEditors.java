@@ -24,7 +24,7 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.DefaultEditComponent;
 import is.codion.swing.framework.ui.component.EditComponent;
@@ -36,8 +36,8 @@ final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Enti
 
 	@Override
 	public Optional<FilterTableCellEditor<?, ?>> create(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
-		SwingEntityEditModel editModel = ((SwingEntityTableModel) table.model()).editModel();
-		if (nonUpdatableForeignKey(attribute, editModel)) {
+		SwingEntityEditor editor = ((SwingEntityTableModel) table.model()).editModel().editor();
+		if (nonUpdatableForeignKey(attribute, editor)) {
 			return Optional.empty();
 		}
 
@@ -45,17 +45,17 @@ final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Enti
 						new DefaultEditComponent<>((Attribute<Object>) attribute);
 
 		return Optional.of(FilterTableCellEditor.builder()
-						.component(() -> editComponent.component(editModel.editor()))
+						.component(() -> editComponent.component(editor))
 						.build());
 	}
 
-	private static boolean nonUpdatableForeignKey(Attribute<?> attribute, SwingEntityEditModel editModel) {
+	private static boolean nonUpdatableForeignKey(Attribute<?> attribute, SwingEntityEditor editor) {
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 
 			return foreignKey.references().stream()
 							.map(ForeignKey.Reference::column)
-							.map(referenceAttribute -> editModel.entityDefinition().columns().definition(referenceAttribute))
+							.map(referenceAttribute -> editor.entityDefinition().columns().definition(referenceAttribute))
 							.map(ColumnDefinition.class::cast)
 							.noneMatch(ColumnDefinition::updatable);
 		}

@@ -162,11 +162,6 @@ public class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public final State publishPersistenceEvents() {
-		return persistEvents.publishPersistenceEvents;
-	}
-
-	@Override
 	public final EditorEntity entity() {
 		return entity;
 	}
@@ -1372,13 +1367,11 @@ public class DefaultEntityEditor implements EntityEditor {
 		return null;
 	}
 
-	private static final class DefaultPersistEvents implements PersistEvents {
+	private final class DefaultPersistEvents implements PersistEvents {
 
 		private final DefaultBeforePersist before = new DefaultBeforePersist();
 		private final DefaultAfterPersist after = new DefaultAfterPersist();
 		private final Event<Collection<Entity>> persisted = Event.event();
-
-		private final State publishPersistenceEvents = State.state(PUBLISH_PERSISTENCE_EVENTS.getOrThrow());
 
 		@Override
 		public BeforePersist before() {
@@ -1410,7 +1403,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private void afterInsert(Collection<Entity> inserted) {
 			after.insert.accept(inserted);
 			persisted.accept(inserted);
-			if (publishPersistenceEvents.is()) {
+			if (settings.publishPersistenceEvents.is()) {
 				notifyInserted(inserted);
 			}
 		}
@@ -1430,7 +1423,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private void afterUpdate(Map<Entity, Entity> updated) {
 			after.update.accept(updated);
 			persisted.accept(updated.values());
-			if (publishPersistenceEvents.is()) {
+			if (settings.publishPersistenceEvents.is()) {
 				notifyUpdated(updated);
 			}
 		}
@@ -1450,7 +1443,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private void afterDelete(Collection<Entity> deleted) {
 			after.delete.accept(deleted);
 			persisted.accept(deleted);
-			if (publishPersistenceEvents.is()) {
+			if (settings.publishPersistenceEvents.is()) {
 				notifyDeleted(deleted);
 			}
 		}
@@ -1525,6 +1518,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		private final State updateEnabled = State.state(true);
 		private final State updateMultipleEnabled = State.state(true);
 		private final State deleteEnabled = State.state(true);
+		private final State publishPersistenceEvents = State.state(PUBLISH_PERSISTENCE_EVENTS.getOrThrow());
 
 		private DefaultSettings(boolean readOnly) {
 			this.readOnly = State.state(readOnly);
@@ -1553,6 +1547,11 @@ public class DefaultEntityEditor implements EntityEditor {
 		@Override
 		public State deleteEnabled() {
 			return deleteEnabled;
+		}
+
+		@Override
+		public State publishPersistenceEvents() {
+			return publishPersistenceEvents;
 		}
 
 		private void verifyInsertEnabled() {

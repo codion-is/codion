@@ -33,10 +33,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityConditionModel;
-import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityQueryModel;
-import is.codion.framework.model.EntityTableModel.RefreshTask.Result;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort;
@@ -55,7 +53,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -260,11 +261,11 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	@Override
 	public final void refresh(Collection<Entity.Key> keys) {
 		if (!requireNonNull(keys).isEmpty()) {
-			RefreshTask task = refreshTask(keys);
+			RefreshTask task = new RefreshTask(keys);
 			if (isEventDispatchThread()) {
 				ProgressWorker.builder()
 								.task(task::perform)
-								.onResult(Result::handle)
+								.onResult(RefreshResult::handle)
 								.execute();
 			}
 			else {
@@ -346,7 +347,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	public static final class SwingEntityTableEditor extends AbstractEntityTableEditor
 					implements EntityTableEditor, Editor<Entity, Attribute<?>> {
 
-		private SwingEntityTableEditor(EntityEditor editor) {
+		private SwingEntityTableEditor(SwingEntityEditor editor) {
 			super(editor);
 		}
 
@@ -412,6 +413,40 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 			}
 
 			return entityDefinition.attributes().definition(attribute).comparator();
+		}
+	}
+
+	private final class RefreshTask {
+
+		private final Collection<Entity.Key> keys;
+
+		private RefreshTask(Collection<Entity.Key> keys) {
+			this.keys = keys;
+		}
+
+		private RefreshResult perform() {
+			if (keys.isEmpty()) {
+				return new RefreshResult(emptyList());
+			}
+
+			return new RefreshResult(connection().select(where(keys(keys))
+							.attributes(query().attributes().defaults().get())
+							.include(query().attributes().include().get())
+							.exclude(query().attributes().exclude().get())
+							.build()));
+		}
+	}
+
+	private final class RefreshResult {
+
+		private final Collection<Entity> entities;
+
+		private RefreshResult(Collection<Entity> entities) {
+			this.entities = entities;
+		}
+
+		private void handle() {
+			replace(entities);
 		}
 	}
 

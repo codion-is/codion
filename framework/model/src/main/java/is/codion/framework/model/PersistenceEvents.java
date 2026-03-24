@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * @see EntityEditor#PUBLISH_PERSISTENCE_EVENTS
- * @see EntityEditor#publishPersistenceEvents()
+ * @see EntityEditor.Settings#publishPersistenceEvents()
  * @see #persistenceEvents(EntityType)
  */
 public interface PersistenceEvents {

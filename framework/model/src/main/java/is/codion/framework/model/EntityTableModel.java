@@ -154,12 +154,6 @@ public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends E
 	void select(Collection<Entity.Key> keys);
 
 	/**
-	 * @param keys the keys of the entities to refresh
-	 * @return a task for refreshing the given entities
-	 */
-	RefreshTask refreshTask(Collection<Entity.Key> keys);
-
-	/**
 	 * Specifies whether the current {@link #sort()} order is used as a basis for the {@link EntityQueryModel} order by clause.
 	 * Note that this only applies to column attributes.
 	 * @return the {@link State} controlling whether the current sort order should be used as a basis for the query order by clause
@@ -180,30 +174,6 @@ public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends E
 	 * @return the {@link EntityTableEditor}
 	 */
 	EntityTableEditor editor();
-
-	/**
-	 * A task for refreshing a set of entities, split up for use with a background thread
-	 */
-	interface RefreshTask {
-
-		/**
-		 * Fetches the entities, can be called on a background thread
-		 * @return the result
-		 */
-		Result perform();
-
-		/**
-		 * The task result
-		 */
-		interface Result {
-
-			/**
-			 * Replaces the refreshed entities.
-			 * Must be called on the UI thread if this model has a panel based on it.
-			 */
-			void handle();
-		}
-	}
 
 	/**
 	 * Controls table model editing

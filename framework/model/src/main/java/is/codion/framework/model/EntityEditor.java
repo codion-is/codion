@@ -63,7 +63,7 @@ public interface EntityEditor {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see EntityEditor#publishPersistenceEvents()
+	 * @see EntityEditor.Settings#publishPersistenceEvents()
 	 */
 	PropertyValue<Boolean> PUBLISH_PERSISTENCE_EVENTS = booleanValue(EntityEditor.class.getName() + ".publishPersistenceEvents", true);
 
@@ -103,13 +103,6 @@ public interface EntityEditor {
 	PersistEvents events();
 
 	/**
-	 * @return a state controlling whether this edit model publishes insert, update and delete events
-	 * on the {@link PersistenceEvents} event bus.
-	 * @see #PUBLISH_PERSISTENCE_EVENTS
-	 */
-	State publishPersistenceEvents();
-
-	/**
 	 * @return the {@link EditorEntity} instance
 	 */
 	EditorEntity entity();
@@ -142,7 +135,7 @@ public interface EntityEditor {
 	ObservableState valid();
 
 	/**
-	 * Controls the validator used by this edit model.
+	 * Controls the validator used by this editor.
 	 * @return the {@link Value} controlling the validator
 	 * @see #validate(Entity)
 	 */
@@ -163,7 +156,7 @@ public interface EntityEditor {
 
 	/**
 	 * Validates the given entities, using the underlying validator.
-	 * For entities of a type other than this edit model is based on,
+	 * For entities of a type other than this editor is based on,
 	 * their respective validators are used.
 	 * @param entities the entities to validate
 	 * @throws EntityValidationException on finding the first invalid entity
@@ -173,7 +166,7 @@ public interface EntityEditor {
 
 	/**
 	 * Validates the given entity, using the underlying validator.
-	 * For entities of a type other than this edit model is based on,
+	 * For entities of a type other than this editor is based on,
 	 * their respective validators are used.
 	 * @param entity the entity to validate
 	 * @throws EntityValidationException in case the entity is invalid
@@ -845,29 +838,29 @@ public interface EntityEditor {
 	}
 
 	/**
-	 * The edit model settings.
+	 * The editor settings.
 	 */
 	interface Settings {
 
 		/**
-		 * Making this edit model read-only prevents any changes from being
+		 * Making this editor read-only prevents any changes from being
 		 * persisted to the database, trying to insert, update or delete will
 		 * cause an exception being thrown, it does not prevent editing.
 		 * Use {@link #insertEnabled()}, {@link #updateEnabled()} and {@link #deleteEnabled()}
 		 * to configure the enabled state of those specific actions.
-		 * @return the {@link State} controlling whether this model is read only
+		 * @return the {@link State} controlling whether this editor is read only
 		 */
 		State readOnly();
 
 		/**
 		 * Disabling insert causes an exception being thrown when inserting.
-		 * @return the {@link State} controlling whether inserting is enabled via this edit model
+		 * @return the {@link State} controlling whether inserting is enabled via this editor
 		 */
 		State insertEnabled();
 
 		/**
 		 * Disabling update causes an exception being thrown when updating.
-		 * @return the {@link State} controlling whether updating is enabled via this edit model
+		 * @return the {@link State} controlling whether updating is enabled via this editor
 		 */
 		State updateEnabled();
 
@@ -880,8 +873,15 @@ public interface EntityEditor {
 
 		/**
 		 * Disabling delete causes an exception being thrown when deleting.
-		 * @return the {@link State} controlling whether deleting is enabled via this edit model
+		 * @return the {@link State} controlling whether deleting is enabled via this editor
 		 */
 		State deleteEnabled();
+
+		/**
+		 * @return a state controlling whether this editor publishes insert, update and delete events
+		 * on the {@link PersistenceEvents} event bus.
+		 * @see #PUBLISH_PERSISTENCE_EVENTS
+		 */
+		State publishPersistenceEvents();
 	}
 }
