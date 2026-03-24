@@ -988,7 +988,7 @@ public class EntityTablePanel extends JPanel {
 	protected <T> EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
 		return editAttributeDialog(tableModel.editModel().editor(), attribute)
 						.owner(this)
-						.editComponent((EditComponent<?, T>) configuration.editComponents
+						.component((EditComponent<?, T>) configuration.editComponents
 										.getOrDefault(attribute, new DefaultEditComponent<>(attribute)));
 	}
 
@@ -2831,10 +2831,7 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public FilterTableHeaderRenderer create(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
-			requireNonNull(attribute);
-			requireNonNull(table);
-
-			return new EntityTableHeaderRenderer(attribute, table);
+			return new EntityTableHeaderRenderer(requireNonNull(attribute), requireNonNull(table));
 		}
 	}
 

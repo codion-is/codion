@@ -36,7 +36,7 @@ public interface EditComponent<C extends JComponent, T> {
 
 	/**
 	 * Provides an input {@link ComponentValue} for editing a single attribute value for one or more entities.
-	 * @param editor the editor used to create foreign key input models
+	 * @param editor the editor used to create foreign key component models
 	 * @return a new {@link ComponentValue} instance
 	 */
 	ComponentValue<C, T> component(SwingEntityEditor editor);

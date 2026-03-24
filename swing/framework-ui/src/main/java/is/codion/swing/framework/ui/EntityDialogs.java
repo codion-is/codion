@@ -124,10 +124,10 @@ public final class EntityDialogs {
 	public interface EditAttributeDialogBuilder<T> extends DialogBuilder<EditAttributeDialogBuilder<T>> {
 
 		/**
-		 * @param editComponent the edit component factory
+		 * @param component the edit component factory
 		 * @return this builder
 		 */
-		EditAttributeDialogBuilder<T> editComponent(EditComponent<?, T> editComponent);
+		EditAttributeDialogBuilder<T> component(EditComponent<?, T> component);
 
 		/**
 		 * <p>Provides the default value presented in the edit component.
@@ -275,8 +275,8 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public EditAttributeDialogBuilder<T> editComponent(EditComponent<?, T> editComponent) {
-			this.editComponent = requireNonNull(editComponent);
+		public EditAttributeDialogBuilder<T> component(EditComponent<?, T> component) {
+			this.editComponent = requireNonNull(component);
 			return this;
 		}
 
