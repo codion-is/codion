@@ -97,7 +97,11 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	private void raisePriceOfSelected() {
 		TrackTableModel tableModel = (TrackTableModel) tableModel();
-		tableModel.raisePriceOfSelected(getAmountFromUser());
+		Dialogs.progressWorker()
+						.task(tableModel.raisePriceOfSelected(getAmountFromUser()))
+						.owner(this)
+						.title(BUNDLE.getString("raise_price"))
+						.execute();
 	}
 
 	private BigDecimal getAmountFromUser() {

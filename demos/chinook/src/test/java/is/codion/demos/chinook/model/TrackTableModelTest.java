@@ -22,6 +22,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
+import is.codion.demos.chinook.model.TrackTableModel.RaisePriceTask;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -35,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class TrackTableModelTest {
 
 	@Test
-	void raisePriceOfSelected() {
+	void raisePriceOfSelected() throws Exception {
 		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
 			Entity masterOfPuppets = connectionProvider.connection()
 							.selectSingle(Album.TITLE.equalTo("Master Of Puppets"));
@@ -48,7 +49,8 @@ public final class TrackTableModelTest {
 			assertEquals(8, trackTableModel.items().included().size());
 
 			trackTableModel.selection().selectAll();
-			trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
+			RaisePriceTask raisePriceTask = trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
+			raisePriceTask.onResult(raisePriceTask.execute());
 
 			trackTableModel.items().get().forEach(track ->
 							assertEquals(BigDecimal.valueOf(1.99), track.get(Track.UNITPRICE)));

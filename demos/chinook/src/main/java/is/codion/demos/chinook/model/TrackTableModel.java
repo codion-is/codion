@@ -25,6 +25,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.framework.model.SwingEntityConditions;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
@@ -51,22 +52,38 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		configureLimit();
 	}
 
-	// tag::raisePrice[]
-	public void raisePriceOfSelected(BigDecimal increase) {
-		if (selection().empty().not().is()) {
-			Collection<Long> trackIds = Entity.values(Track.ID, selection().items().get());
-			Collection<Entity> result = connection()
-							.execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
-			replace(result);
-		}
+	public RaisePriceTask raisePriceOfSelected(BigDecimal increase) {
+		return new RaisePriceTask(increase);
 	}
-	// end::raisePrice[]
 
 	private void configureLimit() {
 		query().limit().set(DEFAULT_LIMIT);
 		query().limit().addListener(items()::refresh);
 		query().limit().addValidator(new LimitValidator());
 	}
+
+	// tag::raisePrice[]
+	public final class RaisePriceTask implements ResultTaskHandler<Collection<Entity>> {
+
+		private final BigDecimal increase;
+
+		private RaisePriceTask(BigDecimal increase) {
+			this.increase = increase;
+		}
+
+		@Override
+		public Collection<Entity> execute() throws Exception {
+			Collection<Long> trackIds = Entity.values(Track.ID, selection().items().get());
+
+			return connection().execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
+		}
+
+		@Override
+		public void onResult(Collection<Entity> result) {
+			replace(result);
+		}
+	}
+	// end::raisePrice[]
 
 	private static final class LimitValidator implements Validator<Integer> {
 
