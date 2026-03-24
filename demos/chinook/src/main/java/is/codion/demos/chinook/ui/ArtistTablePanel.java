@@ -33,13 +33,17 @@ import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ArtistTablePanel extends EntityTablePanel {
+
+	private static final ResourceBundle BUNDLE = getBundle(ArtistTablePanel.class.getName());
 
 	public ArtistTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel);
@@ -52,7 +56,7 @@ public final class ArtistTablePanel extends EntityTablePanel {
 	private Control createCombineControl() {
 		return Control.builder()
 						.command(this::combineSelected)
-						.caption("Combine...")
+						.caption(BUNDLE.getString("combine") + "...")
 						.enabled(tableModel().selection().multiple())
 						.build();
 	}
@@ -62,7 +66,7 @@ public final class ArtistTablePanel extends EntityTablePanel {
 		Entity artistToKeep = Dialogs.select()
 						.list(selectedArtists)
 						.owner(this)
-						.title("Select the artist to keep")
+						.title(BUNDLE.getString("select_artists_to_keep"))
 						.comparator(Text.collator())
 						.select()
 						.single()
@@ -76,29 +80,29 @@ public final class ArtistTablePanel extends EntityTablePanel {
 			Dialogs.progressWorker()
 							.task(task)
 							.owner(this)
-							.title("Combining artists...")
+							.title(BUNDLE.getString("combining_artists") + "...")
 							.onResult(this::onArtistsCombined)
 							.execute();
 		}
 	}
 
 	private void onArtistsCombined() {
-		showMessageDialog(this, "Artists combined!");
+		showMessageDialog(this, BUNDLE.getString("artists_combined"));
 	}
 
 	private boolean confirmCombination(List<Entity> artistsToDelete, Entity artistToKeep, int albumCount) {
 		StringBuilder message = new StringBuilder();
 		if (albumCount > 0) {
-			message.append("Associate ").append(albumCount).append(" albums(s) ").append("\n")
-							.append("with ").append(artistToKeep).append("?").append("\n");
+			message.append(BUNDLE.getString("associate") + " ").append(albumCount).append(" " + BUNDLE.getString("albums"))
+							.append(" " + BUNDLE.getString("with") + ":").append("\n\n").append(artistToKeep).append("?").append("\n\n");
 		}
-		message.append("Delete the following:").append("\n")
+		message.append(BUNDLE.getString("delete_the_following") + ":").append("\n\n")
 						.append(artistsToDelete.stream()
 										.map(Objects::toString)
-										.collect(joining("\n"))).append("\n")
-						.append("while keeping: ").append(artistToKeep).append("?");
+										.collect(joining("\n"))).append("\n\n")
+						.append(BUNDLE.getString("while_keeping") + ": ").append(artistToKeep).append("?");
 
 		return showConfirmDialog(ArtistTablePanel.this, message,
-						"Confirm artist combination", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+						BUNDLE.getString("confirm_artist_combination"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
 	}
 }
