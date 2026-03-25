@@ -142,4 +142,13 @@ public interface Observable<T> extends Observer<T> {
 	default boolean isNot(@Nullable T value) {
 		return !is(value);
 	}
+
+	/**
+	 * The default implementation returns a new {@link Observer} instance on each call,
+	 * but subclasses are free to return the same instance.
+	 * @return an {@link Observer} instance notified when this observable has changed
+	 */
+	default Observer<Change<T>> changed() {
+		return new ChangeObserver<>(this);
+	}
 }

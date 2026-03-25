@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.72
+### is.codion.common.reactive
+- Value.changed() moved to Observable.
 ### is.codion.common.rmi
 - AbstractServer.addAuthenticator() no longer public, ServerConfiguration.Builder.authenticator() added.
 ### is.codion.swing.common.model

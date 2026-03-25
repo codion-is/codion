@@ -19,6 +19,7 @@
 package is.codion.common.reactive.value;
 
 import is.codion.common.reactive.observer.AbstractObserver;
+import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 
@@ -45,7 +46,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	private final @Nullable Notify notify;
 
 	private @Nullable Locked locked;
-	private @Nullable Observer<ValueChange<T>> changeObserver;
+	private @Nullable Observer<Change<T>> changeObserver;
 	private @Nullable Set<Validator<? super T>> validators;
 	private @Nullable Map<Value<T>, ValueLink<T>> linkedValues;
 	private @Nullable Map<Observable<T>, ObservableLink> linkedObservables;
@@ -116,9 +117,9 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	}
 
 	@Override
-	public final synchronized Observer<ValueChange<T>> changed() {
+	public final synchronized Observer<Change<T>> changed() {
 		if (changeObserver == null) {
-			changeObserver = new ValueChangeObserver<>(this);
+			changeObserver = Value.super.changed();
 		}
 
 		return changeObserver;
@@ -399,7 +400,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		}
 
 		@Override
-		public final B changeConsumer(Consumer<ValueChange<T>> consumer) {
+		public final B changeConsumer(Consumer<Change<T>> consumer) {
 			requireNonNull(consumer);
 			changeListeners.add(val -> val.changed().addConsumer(consumer));
 			return self();
@@ -413,7 +414,7 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		}
 
 		@Override
-		public final B weakChangeConsumer(Consumer<ValueChange<T>> weakConsumer) {
+		public final B weakChangeConsumer(Consumer<Change<T>> weakConsumer) {
 			requireNonNull(weakConsumer);
 			changeListeners.add(val -> val.changed().addWeakConsumer(weakConsumer));
 			return self();

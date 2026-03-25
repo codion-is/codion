@@ -18,10 +18,10 @@
  */
 package is.codion.swing.common.ui.component.builder;
 
+import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.ValueChange;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
 import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -158,30 +158,30 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	/**
 	 * @param listener a change listener to add
 	 * @return this builder instance
-	 * @see Value#changed()
+	 * @see Observable#changed()
 	 */
 	B changeListener(Runnable listener);
 
 	/**
 	 * @param consumer a change consumer to add
 	 * @return this builder instance
-	 * @see Value#changed()
+	 * @see Observable#changed()
 	 */
-	B changeConsumer(Consumer<ValueChange<? super T>> consumer);
+	B changeConsumer(Consumer<Change<? super T>> consumer);
 
 	/**
 	 * @param weakListener a weak change listener to add
 	 * @return this builder instance
-	 * @see Value#changed()
+	 * @see Observable#changed()
 	 */
 	B weakChangeListener(Runnable weakListener);
 
 	/**
 	 * @param weakConsumer a weak change consumer to add
 	 * @return this builder instance
-	 * @see Value#changed()
+	 * @see Observable#changed()
 	 */
-	B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer);
+	B weakChangeConsumer(Consumer<Change<? super T>> weakConsumer);
 
 	/**
 	 * Adds a conditional listener

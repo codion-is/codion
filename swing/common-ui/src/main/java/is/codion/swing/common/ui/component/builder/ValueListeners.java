@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.builder;
 
+import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.ValueChange;
 
 import org.jspecify.annotations.Nullable;
 
@@ -62,7 +62,7 @@ final class ValueListeners<T> {
 		listeners.add(new AddChangeListener<>(requireNonNull(listener)));
 	}
 
-	void changeConsumer(Consumer<ValueChange<? super T>> consumer) {
+	void changeConsumer(Consumer<Change<? super T>> consumer) {
 		listeners.add(new AddChangeConsumer<>(requireNonNull(consumer)));
 	}
 
@@ -70,7 +70,7 @@ final class ValueListeners<T> {
 		listeners.add(new AddWeakChangeListener<>(requireNonNull(weakListener)));
 	}
 
-	void weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer) {
+	void weakChangeConsumer(Consumer<Change<? super T>> weakConsumer) {
 		listeners.add(new AddWeakChangeConsumer<>(requireNonNull(weakConsumer)));
 	}
 
@@ -181,9 +181,9 @@ final class ValueListeners<T> {
 
 	private static final class AddChangeConsumer<T> implements Adder<T> {
 
-		private final Consumer<ValueChange<? super T>> consumer;
+		private final Consumer<Change<? super T>> consumer;
 
-		private AddChangeConsumer(Consumer<ValueChange<? super T>> consumer) {
+		private AddChangeConsumer(Consumer<Change<? super T>> consumer) {
 			this.consumer = consumer;
 		}
 
@@ -195,9 +195,9 @@ final class ValueListeners<T> {
 
 	private static final class AddWeakChangeConsumer<T> implements Adder<T> {
 
-		private final Consumer<ValueChange<? super T>> consumer;
+		private final Consumer<Change<? super T>> consumer;
 
-		private AddWeakChangeConsumer(Consumer<ValueChange<? super T>> consumer) {
+		private AddWeakChangeConsumer(Consumer<Change<? super T>> consumer) {
 			this.consumer = consumer;
 		}
 

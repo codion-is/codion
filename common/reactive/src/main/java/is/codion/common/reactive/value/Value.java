@@ -18,6 +18,7 @@
  */
 package is.codion.common.reactive.value;
 
+import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 
@@ -118,11 +119,6 @@ public interface Value<T> extends Observable<T> {
 	 * @return a read-only {@link Observable} instance for this value
 	 */
 	Observable<T> observable();
-
-	/**
-	 * @return an {@link Observer} notified when this value has changed
-	 */
-	Observer<ValueChange<T>> changed();
 
 	/**
 	 * <p>Locking a value prevents it from being changed, it does not prevent it from being set.
@@ -306,30 +302,30 @@ public interface Value<T> extends Observable<T> {
 		/**
 		 * @param listener a change listener to add
 		 * @return this builder instance
-		 * @see Value#changed()
+		 * @see Observable#changed()
 		 */
 		B changeListener(Runnable listener);
 
 		/**
 		 * @param consumer a change consumer to add
 		 * @return this builder instance
-		 * @see Value#changed()
+		 * @see Observable#changed()
 		 */
-		B changeConsumer(Consumer<ValueChange<T>> consumer);
+		B changeConsumer(Consumer<Change<T>> consumer);
 
 		/**
 		 * @param weakListener a weak change listener to add
 		 * @return this builder instance
-		 * @see Value#changed()
+		 * @see Observable#changed()
 		 */
 		B weakChangeListener(Runnable weakListener);
 
 		/**
 		 * @param weakConsumer a weak change consumer to add
 		 * @return this builder instance
-		 * @see Value#changed()
+		 * @see Observable#changed()
 		 */
-		B weakChangeConsumer(Consumer<ValueChange<T>> weakConsumer);
+		B weakChangeConsumer(Consumer<Change<T>> weakConsumer);
 
 		/**
 		 * @return a new {@link Value} instance based on this builder

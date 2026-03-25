@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -26,7 +27,6 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.ValueChange;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -1123,7 +1123,7 @@ public class DefaultEntityEditor implements EntityEditor {
 							.anyMatch(ObservableState::is));
 		}
 
-		private void additionalChanged(ValueChange<Set<ObservableState>> change) {
+		private void additionalChanged(Change<Set<ObservableState>> change) {
 			change.previous().forEach(state -> state.removeListener(additionalListener));
 			change.current().forEach(state -> state.addListener(additionalListener));
 			update();

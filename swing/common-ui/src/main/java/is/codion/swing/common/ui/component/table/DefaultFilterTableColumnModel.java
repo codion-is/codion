@@ -350,8 +350,8 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		private final Event<List<C>> event = Event.event();
 
 		private DefaultVisibleColumns() {
-			columnHidden.addListener(this::changed);
-			columnShown.addListener(this::changed);
+			columnHidden.addListener(this::notifyChanged);
+			columnShown.addListener(this::notifyChanged);
 		}
 
 		@Override
@@ -401,7 +401,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 			return event.observer();
 		}
 
-		private void changed() {
+		private void notifyChanged() {
 			event.accept(get());
 		}
 	}
@@ -411,8 +411,8 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		private final Event<Collection<C>> event = Event.event();
 
 		private DefaultHiddenColumns() {
-			columnHidden.addListener(this::changed);
-			columnShown.addListener(this::changed);
+			columnHidden.addListener(this::notifyChanged);
+			columnShown.addListener(this::notifyChanged);
 		}
 
 		@Override
@@ -432,7 +432,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 							.collect(toList()));
 		}
 
-		private void changed() {
+		private void notifyChanged() {
 			event.accept(get());
 		}
 	}

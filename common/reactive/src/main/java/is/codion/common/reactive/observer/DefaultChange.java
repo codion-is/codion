@@ -16,29 +16,44 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.reactive.value;
-
-import is.codion.common.reactive.observer.AbstractObserver;
+package is.codion.common.reactive.observer;
 
 import org.jspecify.annotations.Nullable;
 
-import static is.codion.common.reactive.value.ValueChange.valueChange;
-import static java.util.Objects.deepEquals;
+import java.util.Objects;
 
-final class ValueChangeObserver<T> extends AbstractObserver<ValueChange<T>> {
+final class DefaultChange<T> implements Change<T> {
 
-	private @Nullable T current;
+	private final @Nullable T previous;
+	private final @Nullable T current;
 
-	ValueChangeObserver(Value<T> value) {
-		current = value.get();
-		value.addConsumer(this::notify);
+	DefaultChange(@Nullable T previous, @Nullable T current) {
+		this.previous = previous;
+		this.current = current;
 	}
 
-	private void notify(@Nullable T newValue) {
-		if (!deepEquals(current, newValue)) {
-			T previous = current;
-			current = newValue;
-			notifyListeners(valueChange(previous, newValue));
+	@Override
+	public @Nullable T previous() {
+		return previous;
+	}
+
+	@Override
+	public @Nullable T current() {
+		return current;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Change)) {
+			return false;
 		}
+		Change<?> that = (Change<?>) object;
+
+		return Objects.deepEquals(previous, that.previous()) && Objects.deepEquals(current, that.current());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(previous, current);
 	}
 }

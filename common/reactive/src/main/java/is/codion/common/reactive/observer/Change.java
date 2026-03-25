@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.reactive.value;
+package is.codion.common.reactive.observer;
 
 import org.jspecify.annotations.Nullable;
 
@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
  * Represents a value change
  * @param <T> the value type
  */
-public interface ValueChange<T> {
+public interface Change<T> {
 
 	/**
 	 * @return the previous value
@@ -37,13 +37,13 @@ public interface ValueChange<T> {
 	@Nullable T current();
 
 	/**
-	 * Instantiates a new {@link ValueChange} instance
+	 * Instantiates a new {@link Change} instance
 	 * @param previous the previous value
 	 * @param current the current value
 	 * @param <T> the value type
-	 * @return a new {@link ValueChange} instance
+	 * @return a new {@link Change} instance
 	 */
-	static <T> ValueChange<T> valueChange(@Nullable T previous, @Nullable T current) {
-		return new DefaultValueChange<>(previous, current);
+	static <T> Change<T> change(@Nullable T previous, @Nullable T current) {
+		return new DefaultChange<>(previous, current);
 	}
 }

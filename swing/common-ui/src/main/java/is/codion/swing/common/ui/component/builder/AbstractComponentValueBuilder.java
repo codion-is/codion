@@ -18,11 +18,11 @@
  */
 package is.codion.swing.common.ui.component.builder;
 
+import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.ValueChange;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicator;
 import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -141,7 +141,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	@Override
-	public final B changeConsumer(Consumer<ValueChange<? super T>> consumer) {
+	public final B changeConsumer(Consumer<Change<? super T>> consumer) {
 		this.listeners.changeConsumer(consumer);
 		return self();
 	}
@@ -153,7 +153,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	@Override
-	public final B weakChangeConsumer(Consumer<ValueChange<? super T>> weakConsumer) {
+	public final B weakChangeConsumer(Consumer<Change<? super T>> weakConsumer) {
 		this.listeners.weakChangeConsumer(weakConsumer);
 		return self();
 	}

@@ -24,12 +24,12 @@ import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
+import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.reactive.value.ValueChange;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -661,7 +661,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public Observer<ValueChange<Predicate<String>>> changed() {
+		public Observer<Change<Predicate<String>>> changed() {
 			return predicate.changed();
 		}
 
@@ -950,7 +950,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public Observer<ValueChange<List<Integer>>> changed() {
+			public Observer<Change<List<Integer>>> changed() {
 				return indexes.changed();
 			}
 
@@ -1116,7 +1116,7 @@ public class DefaultFilterModelItemsTest {
 			}
 
 			@Override
-			public Observer<ValueChange<List<String>>> changed() {
+			public Observer<Change<List<String>>> changed() {
 				return selectedItems.changed();
 			}
 

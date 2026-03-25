@@ -18,6 +18,7 @@
  */
 package is.codion.common.reactive.value;
 
+import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value.Notify;
 
@@ -30,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import static is.codion.common.reactive.value.ValueChange.valueChange;
+import static is.codion.common.reactive.observer.Change.change;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,12 +96,12 @@ public class ValueTest {
 
 	@Test
 	void changeConsumer() {
-		List<ValueChange<Integer>> changes = asList(
-						valueChange(null, 0),
-						valueChange(0, 1),
-						valueChange(1, 3),
-						valueChange(3, 5),
-						valueChange(5, null));
+		List<Change<Integer>> changes = asList(
+						change(null, 0),
+						change(0, 1),
+						change(1, 3),
+						change(3, 5),
+						change(5, null));
 		AtomicInteger counter = new AtomicInteger();
 		Value<Integer> value = Value.nullable();
 		value.changed().addConsumer(change ->
@@ -235,7 +236,7 @@ public class ValueTest {
 		AtomicInteger counter = new AtomicInteger();
 		int[] one = new int[] {1};
 		int[] two = new int[] {2};
-		ValueChange<int[]> oneTwo = valueChange(one, two);
+		Change<int[]> oneTwo = change(one, two);
 		Value<int[]> value = Value.nonNull(new int[] {1});
 		value.changed().when(oneTwo).addListener(counter::incrementAndGet);
 		value.set(new int[] {2});
