@@ -185,6 +185,12 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			return select;
 		}
 
+		@Override
+		public boolean contains(int row, int column) {
+			return results.searchResults.stream()
+							.anyMatch(rowColumn -> rowColumn.is(row, column));
+		}
+
 		private int incrementSearchResultIndex() {
 			return searchResultIndex == -1 || searchResultIndex == searchResults.size() - 1 ? 0 : searchResultIndex + 1;
 		}

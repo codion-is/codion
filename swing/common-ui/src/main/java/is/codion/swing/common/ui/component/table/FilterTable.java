@@ -1104,9 +1104,11 @@ public final class FilterTable<R, C> extends JTable {
 			tableModel.selection().indexes().addListener(getTableHeader()::repaint);
 			tableModel.filters().changed().addListener(getTableHeader()::repaint);
 			tableModel.sort().observer().addListener(getTableHeader()::repaint);
+			searchModel.results().current().addListener(getTableHeader()::repaint);
 		}
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
 		tableModel.items().included().added().addConsumer(new ScrollToAdded());
+		searchModel.results().addListener(this::repaint);
 		searchModel.results().current().addListener(this::repaint);
 		addMouseListener(new FilterTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener(builder.columnReordering, builder.columnResizing));

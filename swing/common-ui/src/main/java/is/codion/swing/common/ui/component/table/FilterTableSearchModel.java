@@ -87,6 +87,13 @@ public interface FilterTableSearchModel {
 		SelectResult select();
 
 		/**
+		 * @param row the row
+		 * @param column the column
+		 * @return true if the search results contain the given row and column
+		 */
+		boolean contains(int row, int column);
+
+		/**
 		 * Specifies the current search result
 		 */
 		interface CurrentResult extends Observable<RowColumn> {

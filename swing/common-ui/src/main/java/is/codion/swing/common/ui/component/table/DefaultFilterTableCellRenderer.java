@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
+import is.codion.swing.common.ui.component.table.FilterTableSearchModel.Results;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -285,7 +286,10 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 				component.setForeground(foreground);
 			}
 			component.setBackground(background);
-			setComponentBorder(component, isSearchResult(filterTable.search(), rowIndex, columnIndex), hasFocus);
+			Results searchResults = filterTable.search().results();
+			setComponentBorder(component, hasFocus,
+							searchResults.contains(rowIndex, columnIndex),
+							searchResults.current().is(rowIndex, columnIndex));
 			for (Customizer<R, C> customizer : customizers) {
 				if (customizer.enabled()) {
 					customizer.customize(filterTable, identifier, component);
@@ -384,17 +388,16 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return cellBackgroundColor;
 		}
 
-		private static boolean isSearchResult(FilterTableSearchModel searchModel, int rowIndex, int columnIndex) {
-			return searchModel.results().current().is(rowIndex, columnIndex);
-		}
-
 		private static boolean alternateRow(int rowIndex) {
 			return rowIndex % 2 != 0;
 		}
 
-		private void setComponentBorder(JComponent component, boolean searchResult, boolean hasFocus) {
-			if (searchResult) {
-				component.setBorder(uiSettings.focusedCellBorder());
+		private void setComponentBorder(JComponent component, boolean hasFocus, boolean searchResult, boolean currentSearchResult) {
+			if (currentSearchResult) {
+				component.setBorder(uiSettings.currentSearchResultBorder());
+			}
+			else if (searchResult) {
+				component.setBorder(uiSettings.searchResultBorder());
 			}
 			else if (setBorder) {
 				if ((focusedCellIndicator && hasFocus)) {
@@ -778,6 +781,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final Color alternateSelectionBackground;
 		private final Border cellBorder;
 		private final Border focusedCellBorder;
+		private final Border currentSearchResultBorder;
 
 		private UISettings(int leftPadding, int rightPadding) {
 			this.leftPadding = leftPadding;
@@ -791,6 +795,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
 			cellBorder = createEmptyBorder(0, leftPadding, 0, rightPadding);
 			focusedCellBorder = createFocusedCellBorder();
+			currentSearchResultBorder = createCurrentSearchResultBorder();
 		}
 
 		private UISettings<C> update() {
@@ -833,9 +838,22 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return focusedCellBorder;
 		}
 
+		private Border searchResultBorder() {
+			return focusedCellBorder;
+		}
+
+		private Border currentSearchResultBorder() {
+			return currentSearchResultBorder;
+		}
+
 		private CompoundBorder createFocusedCellBorder() {
 			return createCompoundBorder(createLineBorder(darker(foreground, DOUBLE_DARKENING_FACTOR),
 							FOCUSED_CELL_BORDER_THICKNESS), cellBorder);
+		}
+
+		private CompoundBorder createCurrentSearchResultBorder() {
+			return createCompoundBorder(createLineBorder(darker(foreground, DOUBLE_DARKENING_FACTOR),
+							FOCUSED_CELL_BORDER_THICKNESS * 2), cellBorder);
 		}
 	}
 }

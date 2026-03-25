@@ -22,6 +22,7 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSort;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
+import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 
 import org.jspecify.annotations.Nullable;
 
@@ -90,9 +91,12 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 				Border tableCellBorder = ((DefaultFilterTableCellRenderer<?, ?, ?>) columnCellRenderer).cellBorder();
 				label.setBorder(label.getBorder() == null ? tableCellBorder : createCompoundBorder(label.getBorder(), tableCellBorder));
 			}
-			if (focusedColumnIndicator && !table.getSelectionModel().isSelectionEmpty()) {
-				int selectedColumn = table.getColumnModel().getSelectionModel().getLeadSelectionIndex();
-				if (column == selectedColumn) {
+			if (focusedColumnIndicator) {
+				RowColumn currentSearchResult = ((FilterTable<R, C>) table).search().results().current().get();
+				if (currentSearchResult != null && column == currentSearchResult.column()) {
+					label.setBackground(darker(label.getBackground(), FOCUSED_COLUMN_DARKENING_FACTOR));
+				}
+				if (!table.getSelectionModel().isSelectionEmpty() && column == table.getColumnModel().getSelectionModel().getLeadSelectionIndex()) {
 					label.setBackground(darker(label.getBackground(), FOCUSED_COLUMN_DARKENING_FACTOR));
 				}
 			}
