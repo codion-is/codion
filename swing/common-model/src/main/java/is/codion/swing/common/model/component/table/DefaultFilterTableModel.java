@@ -373,6 +373,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		static final Builder.ColumnsStep COLUMNS = new DefaultColumnsStep();
 
+		private static final ValidPredicate<Object> DEFAULT_VALID_PREDICATE = new ValidPredicate<>();
+
 		private final TableColumns<R, C> columns;
 		private final List<Runnable> selectionListeners = new ArrayList<>();
 		private final List<Consumer<R>> itemSelectedListeners = new ArrayList<>();
@@ -382,7 +384,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private final List<Consumer<FilterListSelection<R>>> selectionConsumers = new ArrayList<>();
 
 		private @Nullable Supplier<? extends Collection<R>> itemSupplier;
-		private Predicate<R> validator = new ValidPredicate<>();
+		private Predicate<R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;

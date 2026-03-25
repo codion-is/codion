@@ -19,6 +19,8 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -358,51 +360,156 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 			Class<?> columnClass = table.model().columns().columnClass(identifier);
 			FilterTableCellEditor<?, ?> cellEditor = null;
 			if (columnClass.equals(LocalTime.class)) {
-				cellEditor = COMPONENT_STEP.component(localTimeField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new LocalTimeFieldSupplier()).build();
 			}
 			else if (columnClass.equals(LocalDate.class)) {
-				cellEditor = COMPONENT_STEP.component(localDateField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new LocalDateFieldSupplier()).build();
 			}
 			else if (columnClass.equals(LocalDateTime.class)) {
-				cellEditor = COMPONENT_STEP.component(localDateTimeField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new LocalDateTimeFieldSupplier()).build();
 			}
 			else if (columnClass.equals(OffsetDateTime.class)) {
-				cellEditor = COMPONENT_STEP.component(offsetDateTimeField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new OffsetDateTimeFieldSupplier()).build();
 			}
 			else if (columnClass.equals(String.class)) {
-				cellEditor = COMPONENT_STEP.component(stringField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new StringFieldSupplier()).build();
 			}
 			else if (columnClass.equals(Character.class)) {
-				cellEditor = COMPONENT_STEP.component(characterField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new CharacterFieldSupplier()).build();
 			}
 			else if (columnClass.equals(Short.class)) {
-				cellEditor = COMPONENT_STEP.component(shortField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new ShortFieldSupplier()).build();
 			}
 			else if (columnClass.equals(Integer.class)) {
-				cellEditor = COMPONENT_STEP.component(integerField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new IntegerFieldSupplier()).build();
 			}
 			else if (columnClass.equals(Long.class)) {
-				cellEditor = COMPONENT_STEP.component(longField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new LongFieldSupplier()).build();
 			}
 			else if (columnClass.equals(BigInteger.class)) {
-				cellEditor = COMPONENT_STEP.component(bigIntegerField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new BigIntegerFieldSupplier()).build();
 			}
 			else if (columnClass.equals(Double.class)) {
-				cellEditor = COMPONENT_STEP.component(doubleField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new DoubleFieldSupplier()).build();
 			}
 			else if (columnClass.equals(BigDecimal.class)) {
-				cellEditor = COMPONENT_STEP.component(bigDecimalField()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new BigDecimalFieldSupplier()).build();
 			}
 			else if (columnClass.equals(Boolean.class)) {
-				cellEditor = COMPONENT_STEP.component(checkBox()::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new CheckBoxSupplier()).build();
 			}
 			else if (columnClass.isEnum()) {
-				cellEditor = COMPONENT_STEP.component(comboBox().model(FilterComboBoxModel.builder()
-								.items(asList(columnClass.getEnumConstants()))
-								.build())::buildValue).build();
+				cellEditor = COMPONENT_STEP.component(new EnumComboBoxSupplier<>(columnClass)).build();
 			}
 
 			return Optional.ofNullable(cellEditor);
+		}
+
+		private static final class LocalTimeFieldSupplier implements Supplier<ComponentValue<TemporalField<LocalTime>, LocalTime>> {
+			@Override
+			public ComponentValue<TemporalField<LocalTime>, LocalTime> get() {
+				return localTimeField().buildValue();
+			}
+		}
+
+		private static final class LocalDateFieldSupplier implements Supplier<ComponentValue<TemporalField<LocalDate>, LocalDate>> {
+			@Override
+			public ComponentValue<TemporalField<LocalDate>, LocalDate> get() {
+				return localDateField().buildValue();
+			}
+		}
+
+		private static final class LocalDateTimeFieldSupplier implements Supplier<ComponentValue<TemporalField<LocalDateTime>, LocalDateTime>> {
+			@Override
+			public ComponentValue<TemporalField<LocalDateTime>, LocalDateTime> get() {
+				return localDateTimeField().buildValue();
+			}
+		}
+
+		private static final class OffsetDateTimeFieldSupplier implements Supplier<ComponentValue<TemporalField<OffsetDateTime>, OffsetDateTime>> {
+			@Override
+			public ComponentValue<TemporalField<OffsetDateTime>, OffsetDateTime> get() {
+				return offsetDateTimeField().buildValue();
+			}
+		}
+
+		private static final class StringFieldSupplier implements Supplier<ComponentValue<JTextField, String>> {
+			@Override
+			public ComponentValue<JTextField, String> get() {
+				return stringField().buildValue();
+			}
+		}
+
+		private static final class CharacterFieldSupplier implements Supplier<ComponentValue<JTextField, Character>> {
+			@Override
+			public ComponentValue<JTextField, Character> get() {
+				return characterField().buildValue();
+			}
+		}
+
+		private static final class ShortFieldSupplier implements Supplier<ComponentValue<NumberField<Short>, Short>> {
+			@Override
+			public ComponentValue<NumberField<Short>, Short> get() {
+				return shortField().buildValue();
+			}
+		}
+
+		private static final class IntegerFieldSupplier implements Supplier<ComponentValue<NumberField<Integer>, Integer>> {
+			@Override
+			public ComponentValue<NumberField<Integer>, Integer> get() {
+				return integerField().buildValue();
+			}
+		}
+
+		private static final class LongFieldSupplier implements Supplier<ComponentValue<NumberField<Long>, Long>> {
+			@Override
+			public ComponentValue<NumberField<Long>, Long> get() {
+				return longField().buildValue();
+			}
+		}
+
+		private static final class BigIntegerFieldSupplier implements Supplier<ComponentValue<NumberField<BigInteger>, BigInteger>> {
+			@Override
+			public ComponentValue<NumberField<BigInteger>, BigInteger> get() {
+				return bigIntegerField().buildValue();
+			}
+		}
+
+		private static final class DoubleFieldSupplier implements Supplier<ComponentValue<NumberField<Double>, Double>> {
+			@Override
+			public ComponentValue<NumberField<Double>, Double> get() {
+				return doubleField().buildValue();
+			}
+		}
+
+		private static final class BigDecimalFieldSupplier implements Supplier<ComponentValue<NumberField<BigDecimal>, BigDecimal>> {
+			@Override
+			public ComponentValue<NumberField<BigDecimal>, BigDecimal> get() {
+				return bigDecimalField().buildValue();
+			}
+		}
+
+		private static final class CheckBoxSupplier implements Supplier<ComponentValue<JCheckBox, Boolean>> {
+			@Override
+			public ComponentValue<JCheckBox, Boolean> get() {
+				return checkBox().buildValue();
+			}
+		}
+
+		private static final class EnumComboBoxSupplier<T> implements Supplier<ComponentValue<JComboBox<T>, T>> {
+
+			private final Class<T> columnClass;
+
+			private EnumComboBoxSupplier(Class<T> columnClass) {
+				this.columnClass = columnClass;
+			}
+
+			@Override
+			public ComponentValue<JComboBox<T>, T> get() {
+				return comboBox().model(FilterComboBoxModel.builder()
+								.items(asList(columnClass.getEnumConstants()))
+								.build()).buildValue();
+			}
 		}
 	}
 }

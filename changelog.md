@@ -15,6 +15,7 @@ Codion Change Log
 - DefaultFilterTableSearchModel bug fixed, predicate now notifies when SET.
 - FilterTable, search field keyboard actions improved.
 - InputDialogBuilder.close(Predicate) added, replacing overloaded show() method.
+- DefaultFilterTableCellEditor.DefaultFactory, lambdas replaced with inner classes.
 ### is.codion.framework.model
 - EntityEditModel.Settings moved to EntityEditor, related refactoring.
 - AbstractEntityTableModel.deleteSelected() removed, related refactoring.
