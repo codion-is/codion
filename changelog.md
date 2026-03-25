@@ -26,6 +26,7 @@ Codion Change Log
 - TabbedApplicationLayout and TabbedDetailLayout now initialize panels using prepareComponent(), panels now contain focusable components when shown.
 - EntityPanel no longer triggers display request when activated.
 - EditAttributeDialogBuilder.editComponent() renamed component().
+- TabbedDetailLayout bug fixed, tab change listener reintroduced for detail model activation.
 
 ## 0.18.71
 ### is.codion.common.reactive

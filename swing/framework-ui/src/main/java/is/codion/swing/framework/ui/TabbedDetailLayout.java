@@ -350,6 +350,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private JTabbedPane createTabbedPane(Collection<EntityPanel> detailPanels) {
 		TabbedPaneBuilder builder = tabbedPane()
 						.focusable(false)
+						.changeListener(e -> selectedDetailPanel().activation().request())
 						.prepareComponent(TabbedDetailLayout::preparePanel)
 						.minimumSize(new Dimension(0, 0));
 		detailPanels.forEach(detailPanel -> builder
