@@ -854,7 +854,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void editor() {
-		class ItemEditor implements FilterTableModel.Editor<TestRow, Integer> {
+		class ItemEditor implements FilterTableModel.RowEditor<TestRow, Integer> {
 
 			private final Items<TestRow> items;
 
@@ -875,7 +875,7 @@ public final class DefaultFilterTableModelTest {
 		FilterTableModel<TestRow, Integer> model = FilterTableModel.builder()
 						.columns(new TestColumns())
 						.items(() -> ITEMS)
-						.editor(ItemEditor::new)
+						.rowEditor(ItemEditor::new)
 						.refresh(true)
 						.build();
 

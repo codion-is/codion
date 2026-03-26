@@ -71,16 +71,16 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final FilterListSelection<R> selection;
 	private final DefaultFilterTableSort<R, C> sort;
 	private final DefaultColumnValues columnValues = new DefaultColumnValues();
-	private final Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory;
+	private final Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory;
 	private final RemoveSelectionListener removeSelectionListener;
 
-	private @Nullable Editor<R, C> editor;
+	private @Nullable RowEditor<R, C> rowEditor;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = builder.columns;
 		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
-		this.editorFactory = builder.editorFactory;
+		this.rowEditorFactory = builder.rowEditorFactory;
 		this.items = Items.builder()
 						.refresher(builder::createRefresher)
 						.selection(FilterListSelection::filterListSelection)
@@ -157,12 +157,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return editor().editable(items.included().get(rowIndex), columns.identifier(columnIndex));
+		return rowEditor().editable(items.included().get(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
 	public void setValueAt(@Nullable Object value, int rowIndex, int columnIndex) {
-		editor().set(value, rowIndex, items.included().get(rowIndex), columns.identifier(columnIndex));
+		rowEditor().set(value, rowIndex, items.included().get(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
@@ -176,12 +176,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Editor<R, C> editor() {
-		if (editor == null) {
-			editor = editorFactory.apply(this);
+	public RowEditor<R, C> rowEditor() {
+		if (rowEditor == null) {
+			rowEditor = rowEditorFactory.apply(this);
 		}
 
-		return editor;
+		return rowEditor;
 	}
 
 	@Override
@@ -342,7 +342,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private static final class DefaultEditor<R, C> implements Editor<R, C> {
+	private static final class DefaultRowEditor<R, C> implements RowEditor<R, C> {
 
 		@Override
 		public boolean editable(R row, C identifier) {
@@ -353,11 +353,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		public void set(@Nullable Object value, int rowIndex, R row, C identifier) {}
 	}
 
-	private static final class DefaultEditorFactory<R, C> implements Function<FilterTableModel<R, C>, Editor<R, C>> {
+	private static final class DefaultRowEditorFactory<R, C> implements Function<FilterTableModel<R, C>, RowEditor<R, C>> {
 
 		@Override
-		public Editor<R, C> apply(FilterTableModel<R, C> tableModel) {
-			return new DefaultEditor<>();
+		public RowEditor<R, C> apply(FilterTableModel<R, C> tableModel) {
+			return new DefaultRowEditor<>();
 		}
 	}
 
@@ -388,7 +388,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;
-		private Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory = new DefaultEditorFactory<>();
+		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 		private @Nullable Predicate<R> included;
 		private boolean refresh = false;
 
@@ -431,8 +431,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> editor(Function<FilterTableModel<R, C>, Editor<R, C>> editor) {
-			this.editorFactory = requireNonNull(editor);
+		public Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor) {
+			this.rowEditorFactory = requireNonNull(rowEditor);
 			return this;
 		}
 

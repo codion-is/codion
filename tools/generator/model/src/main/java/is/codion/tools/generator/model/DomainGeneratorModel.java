@@ -31,7 +31,7 @@ import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
+import is.codion.swing.common.model.component.table.FilterTableModel.RowEditor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTaskHandler;
@@ -120,7 +120,7 @@ public final class DomainGeneratorModel {
 									.columns(new EntityColumns())
 									.items(new EntityItems())
 									.onItemSelected(this::search)
-									.editor(EntityEditor::new)
+									.rowEditor(EntityEditor::new)
 									.build();
 	private final Database database;
 	private final User user;
@@ -528,7 +528,7 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	private final class EntityEditor implements Editor<EntityRow, String> {
+	private final class EntityEditor implements RowEditor<EntityRow, String> {
 
 		private final IncludedItems<EntityRow> items;
 

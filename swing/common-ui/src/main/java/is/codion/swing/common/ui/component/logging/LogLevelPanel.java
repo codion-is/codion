@@ -95,7 +95,7 @@ public final class LogLevelPanel extends JPanel {
 		tableModel = FilterTableModel.builder()
 						.columns(new LogLevelColumns())
 						.items(new LogLevelItems())
-						.editor(LogLevelEditor::new)
+						.rowEditor(LogLevelEditor::new)
 						.refresh(true)
 						.build();
 		tableModel.sort().ascending(LogLevelColumn.LOGGER);
@@ -205,7 +205,7 @@ public final class LogLevelPanel extends JPanel {
 		}
 	}
 
-	private final class LogLevelEditor implements FilterTableModel.Editor<LogLevelRow, LogLevelColumn> {
+	private final class LogLevelEditor implements FilterTableModel.RowEditor<LogLevelRow, LogLevelColumn> {
 
 		private final FilterTableModel<LogLevelRow, LogLevelColumn> tableModel;
 

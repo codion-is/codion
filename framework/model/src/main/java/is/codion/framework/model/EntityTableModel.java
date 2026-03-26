@@ -171,14 +171,14 @@ public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends E
 	EntityQueryModel query();
 
 	/**
-	 * @return the {@link EntityTableEditor}
+	 * @return the {@link EntityRowEditor}
 	 */
-	EntityTableEditor editor();
+	EntityRowEditor rowEditor();
 
 	/**
 	 * Controls table model editing
 	 */
-	interface EntityTableEditor {
+	interface EntityRowEditor {
 
 		/**
 		 * @return the {@link State} controlling whether editing is enabled

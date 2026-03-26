@@ -88,9 +88,9 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	Export<C> export();
 
 	/**
-	 * @return the {@link Editor} providing the row editing functionality
+	 * @return the {@link RowEditor} providing the row editing functionality
 	 */
-	Editor<R, C> editor();
+	RowEditor<R, C> rowEditor();
 
 	/**
 	 * Notifies all listeners that all cell values in the table's rows may have changed.
@@ -210,10 +210,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException);
 
 		/**
-		 * @param editor supplies the row editor
+		 * @param rowEditor supplies the row editor
 		 * @return this builder instance
 		 */
-		Builder<R, C> editor(Function<FilterTableModel<R, C>, Editor<R, C>> editor);
+		Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor);
 
 		/**
 		 * @param included the {@link Predicate} controlling which items should be included
@@ -377,7 +377,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
-	interface Editor<R, C> {
+	interface RowEditor<R, C> {
 
 		/**
 		 * @param row the row

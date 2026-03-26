@@ -21,7 +21,7 @@ package is.codion.tools.loadtest.ui;
 import is.codion.common.reactive.value.ObservableValueList;
 import is.codion.common.reactive.value.ValueList;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
+import is.codion.swing.common.model.component.table.FilterTableModel.RowEditor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
@@ -58,7 +58,7 @@ final class ScenarioPanel<T> extends JPanel {
 		this.scenarioRows = createRows();
 		this.scenarioTableModel = FilterTableModel.builder()
 						.columns(new ScenarioColumns())
-						.editor(ScenarioEditor::new)
+						.rowEditor(ScenarioEditor::new)
 						.items(() -> scenarioRows)
 						.onItemsSelected(this::onScenariosSelected)
 						.refresh(true)
@@ -154,7 +154,7 @@ final class ScenarioPanel<T> extends JPanel {
 		}
 	}
 
-	private final class ScenarioEditor implements Editor<RandomItem<Scenario<T>>, String> {
+	private final class ScenarioEditor implements RowEditor<RandomItem<Scenario<T>>, String> {
 
 		private final FilterTableModel<RandomItem<Scenario<T>>, String> tableModel;
 

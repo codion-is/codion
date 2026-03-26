@@ -283,15 +283,16 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	}
 
 	/**
-	 * An abstract {@link EntityTableEditor} implementation.
+	 * An abstract {@link EntityRowEditor} implementation.
+	 * @param <R> the {@link EntityEditor} type
 	 */
-	protected abstract static class AbstractEntityTableEditor implements EntityTableEditor {
+	protected abstract static class AbstractEntityRowEditor<R extends EntityEditor> implements EntityRowEditor {
 
-		private final EntityEditor editor;
+		private final R editor;
 		private final State enabled = State.state();
 		private final Value<Editable> editable;
 
-		protected AbstractEntityTableEditor(EntityEditor editor) {
+		protected AbstractEntityRowEditor(R editor) {
 			this.editor = requireNonNull(editor);
 			this.editable = Value.nonNull(new Editable() {});
 		}
@@ -312,7 +313,7 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 				return false;
 			}
 
-			return EntityTableEditor.super.editable(entity, attribute);
+			return EntityRowEditor.super.editable(entity, attribute);
 		}
 
 		@Override

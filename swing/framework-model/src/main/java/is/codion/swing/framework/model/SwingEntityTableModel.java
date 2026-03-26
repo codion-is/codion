@@ -254,8 +254,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	}
 
 	@Override
-	public final SwingEntityTableEditor editor() {
-		return (SwingEntityTableEditor) filterModel().editor();
+	public final SwingEntityRowEditor rowEditor() {
+		return (SwingEntityRowEditor) filterModel().rowEditor();
 	}
 
 	@Override
@@ -330,7 +330,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 						.columns(new EntityTableColumns(editor.entityDefinition()))
 						.filters(new EntityFilters(editor.entityDefinition()))
 						.validator(new EntityItemValidator(editor.entityDefinition().type()))
-						.editor(tableModel -> new SwingEntityTableEditor(editor));
+						.rowEditor(tableModel -> new SwingEntityRowEditor(editor));
 	}
 
 	private static EntityType entityType(Collection<Entity> entities) {
@@ -342,12 +342,12 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	}
 
 	/**
-	 * A Swing specific {@link EntityTableEditor} implementation.
+	 * A Swing specific {@link EntityRowEditor} implementation.
 	 */
-	public static final class SwingEntityTableEditor extends AbstractEntityTableEditor
-					implements EntityTableEditor, Editor<Entity, Attribute<?>> {
+	public static final class SwingEntityRowEditor extends AbstractEntityRowEditor<SwingEntityEditor>
+					implements EntityRowEditor, RowEditor<Entity, Attribute<?>> {
 
-		private SwingEntityTableEditor(SwingEntityEditor editor) {
+		private SwingEntityRowEditor(SwingEntityEditor editor) {
 			super(editor);
 		}
 

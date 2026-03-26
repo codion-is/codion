@@ -48,7 +48,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 										.connectionProvider(connectionProvider)
 										.conditions(new TrackConditions(connectionProvider))
 										.build()));
-		editor().enabled().set(true);
+		rowEditor().enabled().set(true);
 		configureLimit();
 	}
 

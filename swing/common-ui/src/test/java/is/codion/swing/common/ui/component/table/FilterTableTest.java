@@ -648,7 +648,7 @@ public class FilterTableTest {
 				}
 			}
 		};
-		FilterTableModel.Editor<Row, Integer> editor = new FilterTableModel.Editor<Row, Integer>() {
+		FilterTableModel.RowEditor<Row, Integer> rowEditor = new FilterTableModel.RowEditor<Row, Integer>() {
 
 			@Override
 			public boolean editable(Row row, Integer identifier) {
@@ -708,7 +708,7 @@ public class FilterTableTest {
 
 		FilterTableModel<Row, Integer> model = FilterTableModel.builder()
 						.columns(columns)
-						.editor(m -> editor)
+						.rowEditor(m -> rowEditor)
 						.items(() -> asList(
 										new Row(LocalTime.now(), LocalDate.now(), LocalDateTime.now(), OffsetDateTime.now(), "Test",
 														(short) 10, 42, 24345L, 12.456, BigInteger.valueOf(1200),
