@@ -141,7 +141,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 	}
 
 	private void decrementSelection() throws EntityValidationException {
-		if (editModel().editor().modified().is()) {
+		if (editor().modified().is()) {
 			updateAndDecrementSelectedIndexes.execute();
 		}
 		else {
@@ -150,7 +150,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 	}
 
 	private void incrementSelection() throws EntityValidationException {
-		if (editModel().editor().modified().is()) {
+		if (editor().modified().is()) {
 			updateAndIncrementSelectedIndexes.execute();
 		}
 		else {

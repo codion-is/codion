@@ -133,6 +133,11 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	}
 
 	@Override
+	public final R editor() {
+		return editModel.editor();
+	}
+
+	@Override
 	public final EntityConnectionProvider connectionProvider() {
 		return editModel.connectionProvider();
 	}

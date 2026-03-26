@@ -164,13 +164,13 @@ final class CountryEditPanel extends EntityEditPanel {
 	private Control createRemoveFlagControl() {
 		return Control.builder()
 						.command(this::removeFlag)
-						.enabled(present(editModel().editor().value(Country.FLAG)))
+						.enabled(present(editor().value(Country.FLAG)))
 						.caption("-")
 						.build();
 	}
 
 	private void addFlag() throws IOException {
-		editModel().editor().value(Country.FLAG).set(Files.readAllBytes(Dialogs.select()
+		editor().value(Country.FLAG).set(Files.readAllBytes(Dialogs.select()
 						.files()
 						.owner(this)
 						.title("Select flag")
@@ -180,17 +180,17 @@ final class CountryEditPanel extends EntityEditPanel {
 	}
 
 	private void removeFlag() {
-		editModel().editor().value(Country.FLAG).clear();
+		editor().value(Country.FLAG).clear();
 	}
 
 	private EntityEditPanel createCapitalEditPanel() {
 		SwingEntityEditModel cityEditModel = new SwingEntityEditModel(City.TYPE, editModel().connectionProvider());
 		CityEditPanel capitalEditPanel = new CityEditPanel(cityEditModel);
-		if (editModel().editor().exists().is()) {
+		if (editor().exists().is()) {
 			//add the city to the table model items when a new city is inserted
 			cityEditModel.editor().events().after().insert().addConsumer(cityTableItems::add);
 			//if an existing country is selected, then we assume we are adding a city in that country
-			capitalEditPanel.editModel().editor().value(City.COUNTRY_FK).set(editModel().editor().entity().get());
+			capitalEditPanel.editor().value(City.COUNTRY_FK).set(editor().entity().get());
 			//initialize the panel components, so we can configure the country component
 			capitalEditPanel.initialize();
 			//disables the country selection component and changes the initial focus property

@@ -36,7 +36,7 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 		super(editModel);
 		// Perform an update each time the IS_OFFICIAL
 		// value is edited, bypassing the update confirmation
-		editModel.editor().value(CountryLanguage.IS_OFFICIAL)
+		editor().value(CountryLanguage.IS_OFFICIAL)
 						.edited().addListener(this::updateIsOfficial);
 	}
 
@@ -67,7 +67,7 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 	}
 
 	private void updateIsOfficial() {
-		SwingEntityEditor editor = editModel().editor();
+		SwingEntityEditor editor = editor();
 		//Only when IS_OFFICIAL is the only attribute being edited in an existing entity
 		if (editor.modified().attributes().is(singleton(CountryLanguage.IS_OFFICIAL))) {
 			try {

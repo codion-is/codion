@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 
@@ -50,17 +51,18 @@ public final class ClientUI {
 	static void artistPanel(EntityConnectionProvider connectionProvider) {
 		// create a EditModel based on the artist entity
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Artist.TYPE, connectionProvider);
+		SwingEntityEditor editor = editModel.editor();
 
 		// fetch the Value representing the artist name from the editor
-		Value<String> artistNameEditModelValue = editModel.editor().value(Artist.NAME);
+		Value<String> artistNameEditModelValue = editor.value(Artist.NAME);
 
 		// create a Control for inserting a new Artist
 		Control insertControl = Control.action(actionEvent -> {
 			try {
 				// insert the entity
-				editModel.editor().insert();
+				editor.insert();
 				// clear the edit model after a successful insert
-				editModel.editor().values().defaults();
+				editor.values().defaults();
 			}
 			catch (DatabaseException | EntityValidationException e) {
 				JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
@@ -78,7 +80,7 @@ public final class ClientUI {
 										.build();
 
 		// show a message after insert
-		editModel.editor().events().after().insert().addConsumer(insertedEntities ->
+		editor.events().after().insert().addConsumer(insertedEntities ->
 						JOptionPane.showMessageDialog(artistNameTextField,
 										"Inserted: " + insertedEntities.iterator().next()));
 
@@ -97,11 +99,12 @@ public final class ClientUI {
 	static void albumPanel(EntityConnectionProvider connectionProvider) {
 		// create a EditModel based on the album entity
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Album.TYPE, connectionProvider);
+		SwingEntityEditor editor = editModel.editor();
 
 		// fetch the Value representing the album artist from the editor
-		Value<Entity> editModelArtistValue = editModel.editor().value(Album.ARTIST_FK);
+		Value<Entity> editModelArtistValue = editor.value(Album.ARTIST_FK);
 
-		EntityComboBoxModel artistComboBoxModel = editModel.editor().comboBoxModels().get(Album.ARTIST_FK);
+		EntityComboBoxModel artistComboBoxModel = editor.comboBoxModels().get(Album.ARTIST_FK);
 
 		// create a combobox for selecting the album artist
 		// based on a combobox model supplied by the edit model
@@ -119,15 +122,15 @@ public final class ClientUI {
 										.build();
 
 		// fetch the Value representing the album title from the editor
-		Value<String> editModelTitleValue = editModel.editor().value(Album.TITLE);
+		Value<String> editModelTitleValue = editor.value(Album.TITLE);
 
 		// create a Control for inserting a new Album row
 		Control insertControl = Control.action(actionEvent -> {
 			try {
 				// insert the entity
-				editModel.editor().insert();
+				editor.insert();
 				// clear the edit model after a successful insert
-				editModel.editor().values().defaults();
+				editor.values().defaults();
 				// and transfer the focus to the combo box
 				artistComboBox.requestFocusInWindow();
 			}
@@ -148,7 +151,7 @@ public final class ClientUI {
 										.build();
 
 		// show a message after insert
-		editModel.editor().events().after().insert().addConsumer(insertedEntities ->
+		editor.events().after().insert().addConsumer(insertedEntities ->
 						JOptionPane.showMessageDialog(titleTextField,
 										"Inserted: " + insertedEntities.iterator().next()));
 

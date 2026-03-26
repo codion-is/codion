@@ -36,7 +36,7 @@ final class EntityTableCellEditors implements FilterTableCellEditor.Factory<Enti
 
 	@Override
 	public Optional<FilterTableCellEditor<?, ?>> create(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
-		SwingEntityEditor editor = ((SwingEntityTableModel) table.model()).editModel().editor();
+		SwingEntityEditor editor = ((SwingEntityTableModel) table.model()).editor();
 		if (nonUpdatableForeignKey(attribute, editor)) {
 			return Optional.empty();
 		}

@@ -31,8 +31,8 @@ public final class InsertDepartment implements Performer<EmployeesAppModel> {
 	@Override
 	public void perform(EmployeesAppModel application) throws EntityValidationException {
 		SwingEntityModel departmentModel = application.entityModels().get(Department.TYPE);
-		departmentModel.editModel().editor().entity().set(new DefaultEntityFactory(application.connection()).entity(Department.TYPE));
-		departmentModel.editModel().editor().insert();
+		departmentModel.editor().entity().set(new DefaultEntityFactory(application.connection()).entity(Department.TYPE));
+		departmentModel.editor().insert();
 	}
 }
 // end::loadTest[]

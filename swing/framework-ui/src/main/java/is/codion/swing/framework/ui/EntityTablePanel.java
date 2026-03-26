@@ -682,7 +682,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void deleteSelected() {
 		Dialogs.progressWorker()
-						.task(tableModel.editModel().editor().tasks().delete(tableModel.selection().items().get()).prepare()::perform)
+						.task(tableModel.editor().tasks().delete(tableModel.selection().items().get()).prepare()::perform)
 						.title(MESSAGES.getString("deleting"))
 						.owner(this)
 						.onResult(Result::handle)
@@ -986,7 +986,7 @@ public class EntityTablePanel extends JPanel {
 	 * @return a edit dialog builder
 	 */
 	protected <T> EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
-		return editAttributeDialog(tableModel.editModel().editor(), attribute)
+		return editAttributeDialog(tableModel.editor(), attribute)
 						.owner(this)
 						.component((EditComponent<?, T>) configuration.editComponents
 										.getOrDefault(attribute, new DefaultEditComponent<>(attribute)));
@@ -1110,9 +1110,9 @@ public class EntityTablePanel extends JPanel {
 
 	private ObservableState createEditAttributeEnabledState() {
 		ObservableState selectionNotEmpty = tableModel.selection().empty().not();
-		ObservableState updateEnabled = tableModel.editModel().editor().settings().updateEnabled();
+		ObservableState updateEnabled = tableModel.editor().settings().updateEnabled();
 		ObservableState updateMultipleEnabledOrSingleSelection =
-						State.or(tableModel.editModel().editor().settings().updateMultipleEnabled(),
+						State.or(tableModel.editor().settings().updateMultipleEnabled(),
 										tableModel.selection().single());
 
 		return State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
@@ -1148,7 +1148,7 @@ public class EntityTablePanel extends JPanel {
 						.command(new DeleteCommand())
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(
-										tableModel.editModel().editor().settings().deleteEnabled(),
+										tableModel.editor().settings().deleteEnabled(),
 										tableModel.selection().empty().not()))
 						.description(FrameworkMessages.deleteSelectedTip())
 						.icon(ICONS.delete())
@@ -1408,8 +1408,8 @@ public class EntityTablePanel extends JPanel {
 
 	private boolean includeAddControl() {
 		return editPanel != null && configuration.includeAddControl &&
-						!tableModel.editModel().editor().settings().readOnly().is() &&
-						tableModel.editModel().editor().settings().insertEnabled().is();
+						!tableModel.editor().settings().readOnly().is() &&
+						tableModel.editor().settings().insertEnabled().is();
 	}
 
 	private boolean includeEditControl() {
@@ -1423,12 +1423,12 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean updatable() {
-		return !tableModel.editModel().editor().settings().readOnly().is() &&
-						tableModel.editModel().editor().settings().updateEnabled().is();
+		return !tableModel.editor().settings().readOnly().is() &&
+						tableModel.editor().settings().updateEnabled().is();
 	}
 
 	private boolean includeDeleteControl() {
-		return !tableModel.editModel().editor().settings().readOnly().is() && tableModel.editModel().editor().settings().deleteEnabled().is();
+		return !tableModel.editor().settings().readOnly().is() && tableModel.editor().settings().deleteEnabled().is();
 	}
 
 	private boolean includeViewDependenciesControl() {
@@ -1537,7 +1537,7 @@ public class EntityTablePanel extends JPanel {
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.query().condition().changed().addListener(this::onConditionChanged);
-		tableModel.editModel().editor().events().persisted().addListener(table::repaint);
+		tableModel.editor().events().persisted().addListener(table::repaint);
 	}
 
 	private void enableConditionPanelRefreshOnEnter(JComponent component) {
@@ -1824,7 +1824,7 @@ public class EntityTablePanel extends JPanel {
 			if (!configuration.confirmDelete || confirmDelete()) {
 				List<Entity> selectedItems = tableModel().selection().items().get();
 				Dialogs.progressWorker()
-								.task(tableModel.editModel().editor().tasks().delete(selectedItems).prepare()::perform)
+								.task(tableModel.editor().tasks().delete(selectedItems).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
 								.onException(this::onException)

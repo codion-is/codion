@@ -69,15 +69,15 @@ public final class FrameworkModelDemo {
 	void entityEditModel(EntityConnectionProvider connectionProvider) throws EntityValidationException {
 		// tag::entityEditModel[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		SwingEntityEditModel editModel = customerModel.editModel();
+		SwingEntityEditor editor = customerModel.editor();
 
 		// Access entity values
-		Value<String> nameValue = editModel.editor().value(Customer.FIRSTNAME);
+		Value<String> nameValue = editor.value(Customer.FIRSTNAME);
 
 		// Perform operations
-		editModel.editor().insert();
-		editModel.editor().update();
-		editModel.editor().delete();
+		editor.insert();
+		editor.update();
+		editor.delete();
 		// end::entityEditModel[]
 	}
 
@@ -190,7 +190,7 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
 
 		// Update summary when details change
-		PersistEvents events = invoiceLineModel.editModel().editor().events();
+		PersistEvents events = invoiceLineModel.editor().events();
 		events.after().insert().addConsumer(entities -> updateInvoiceTotal());
 		events.after().update().addConsumer(entities -> updateInvoiceTotal());
 		events.after().delete().addConsumer(entities -> updateInvoiceTotal());

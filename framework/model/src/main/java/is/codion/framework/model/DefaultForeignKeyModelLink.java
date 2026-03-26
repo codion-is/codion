@@ -129,9 +129,9 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 
 		private void setValueOnSelection(Collection<Entity> entities) {
 			Entity foreignKeyValue = entities.isEmpty() ? null : entities.iterator().next();
-			if (model().editModel().editor().exists().not().is()
+			if (model().editor().exists().not().is()
 							&& (foreignKeyValue != null || clearValueOnEmptySelection)) {
-				model().editModel().editor().value(foreignKey).set(foreignKeyValue);
+				model().editor().value(foreignKey).set(foreignKeyValue);
 			}
 		}
 	}
@@ -151,8 +151,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		}
 
 		private void setValueOnInsert(Entity foreignKeyValue) {
-			if (model().editModel().editor().exists().not().is() && setValueOnInsert) {
-				model().editModel().editor().value(foreignKey).set(foreignKeyValue);
+			if (model().editor().exists().not().is() && setValueOnInsert) {
+				model().editor().value(foreignKey).set(foreignKeyValue);
 			}
 		}
 

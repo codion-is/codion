@@ -124,6 +124,12 @@ public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends E
 	E editModel();
 
 	/**
+	 * Returns the {@link EntityEditor} associated with this table model
+	 * @return the editor associated with this table model
+	 */
+	R editor();
+
+	/**
 	 * Replaces the given entities in this table model
 	 * @param entities the entities to replace
 	 */

@@ -40,7 +40,7 @@ public final class SwingEntityModelTest
 	protected SwingEntityModel createDepartmentModel() {
 		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider());
 		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
-		employeeModel.editModel().editor().comboBoxModels().initialize(Employee.DEPARTMENT_FK, Employee.MGR_FK);
+		employeeModel.editor().comboBoxModels().initialize(Employee.DEPARTMENT_FK, Employee.MGR_FK);
 		departmentModel.detailModels().add(departmentModel.link(employeeModel)
 						.active(true)
 						.build());
@@ -93,21 +93,21 @@ public final class SwingEntityModelTest
 		Entity operations = departmentModel.tableModel().selection().item().getOrThrow();
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
-		departmentModel.editModel().editor().delete();
+		departmentModel.editor().delete();
 		assertFalse(departmentsComboBoxModel.items().contains(operations));
-		departmentModel.editModel().editor().value(Department.ID).set(99);
-		departmentModel.editModel().editor().value(Department.NAME).set("nameit");
-		Entity inserted = departmentModel.editModel().editor().insert();
+		departmentModel.editor().value(Department.ID).set(99);
+		departmentModel.editor().value(Department.NAME).set("nameit");
+		Entity inserted = departmentModel.editor().insert();
 		assertTrue(departmentsComboBoxModel.items().contains(inserted));
 		departmentModel.tableModel().selection().item().set(inserted);
-		departmentModel.editModel().editor().value(Department.NAME).set("nameitagain");
-		departmentModel.editModel().editor().update();
+		departmentModel.editor().value(Department.NAME).set("nameitagain");
+		departmentModel.editor().update();
 		departmentsComboBoxModel.select(inserted.primaryKey());
 		assertEquals("nameitagain", departmentsComboBoxModel.selection().item().getOrThrow().get(Department.NAME));
 
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey.copy().with(Department.ID, 20).build()));
-		departmentModel.editModel().editor().value(Department.NAME).set("NewName");
-		departmentModel.editModel().editor().update();
+		departmentModel.editor().value(Department.NAME).set("NewName");
+		departmentModel.editor().update();
 
 		for (Entity employee : employeeModel.tableModel().items().get()) {
 			Entity dept = employee.entity(Employee.DEPARTMENT_FK);
@@ -132,14 +132,14 @@ public final class SwingEntityModelTest
 			Entity department = connection.selectSingle(Department.NAME.equalTo("OPERATIONS"));
 			departmentModel.tableModel().selection().item().set(department);
 			SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
-			EntityComboBoxModel deptComboBoxModel = employeeModel.editModel().editor()
+			EntityComboBoxModel deptComboBoxModel = employeeModel.editor()
 							.comboBoxModels().get(Employee.DEPARTMENT_FK);
 			deptComboBoxModel.items().refresh();
 			deptComboBoxModel.setSelectedItem(department);
-			departmentModel.editModel().editor().tasks().delete(departmentModel.tableModel()
+			departmentModel.editor().tasks().delete(departmentModel.tableModel()
 							.selection().items().get()).prepare().perform().handle();
-			assertEquals(3, employeeModel.editModel().editor().comboBoxModels().get(Employee.DEPARTMENT_FK).getSize());
-			assertNotNull(employeeModel.editModel().editor().comboBoxModels().get(Employee.DEPARTMENT_FK).selection().item().get());
+			assertEquals(3, employeeModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK).getSize());
+			assertNotNull(employeeModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK).selection().item().get());
 		}
 		finally {
 			connection.rollbackTransaction();

@@ -383,7 +383,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * @return the underlying {@link SwingEntityEditor}
 	 */
 	public final SwingEntityEditor editor() {
-		return components.editor();
+		return editModel.editor();
 	}
 
 	/**
@@ -518,7 +518,7 @@ public abstract class EntityEditPanel extends JPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			EntityDependenciesPanel.displayDependencies(singletonList(editModel().editor().entity().get()), editModel().connectionProvider(),
+			EntityDependenciesPanel.displayDependencies(singletonList(editor().entity().get()), editModel().connectionProvider(),
 							this, dependenciesDialogSize, dependencyPanelPreferences, true);
 		}
 		else {
@@ -645,14 +645,14 @@ public abstract class EntityEditPanel extends JPanel {
 		};
 		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
-		if (!editModel().editor().settings().readOnly().is()) {
-			if (editModel().editor().settings().insertEnabled().is()) {
+		if (!editor().settings().readOnly().is()) {
+			if (editor().settings().insertEnabled().is()) {
 				controlMap.control(INSERT).set(createInsertControl());
 			}
-			if (editModel().editor().settings().updateEnabled().is()) {
+			if (editor().settings().updateEnabled().is()) {
 				controlMap.control(UPDATE).set(createUpdateControl());
 			}
-			if (editModel().editor().settings().deleteEnabled().is()) {
+			if (editor().settings().deleteEnabled().is()) {
 				controlMap.control(DELETE).set(createDeleteControl());
 			}
 		}
@@ -671,8 +671,8 @@ public abstract class EntityEditPanel extends JPanel {
 						.command(this::delete)
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(active,
-										editModel().editor().settings().deleteEnabled(),
-										editModel().editor().exists()))
+										editor().settings().deleteEnabled(),
+										editor().exists()))
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
 						.icon(ICONS.delete())
@@ -697,7 +697,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 	private void inspectQuery() {
 		if (queryInspector == null) {
-			queryInspector = new InsertUpdateQueryInspector(editModel());
+			queryInspector = new InsertUpdateQueryInspector(editor());
 		}
 		if (queryInspector.isShowing()) {
 			Ancestor.window().of(queryInspector).toFront();
@@ -717,8 +717,8 @@ public abstract class EntityEditPanel extends JPanel {
 						.command(this::update)
 						.caption(FrameworkMessages.update())
 						.enabled(State.and(active,
-										editModel().editor().settings().updateEnabled(),
-										editModel().editor().modified()))
+										editor().settings().updateEnabled(),
+										editor().modified()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
 						.icon(ICONS.update())
@@ -733,7 +733,7 @@ public abstract class EntityEditPanel extends JPanel {
 		return Control.builder()
 						.command(this::insert)
 						.caption(caption)
-						.enabled(State.and(active, editModel().editor().settings().insertEnabled()))
+						.enabled(State.and(active, editor().settings().insertEnabled()))
 						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
 						.mnemonic(mnemonic)
 						.icon(ICONS.add())
@@ -767,7 +767,7 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	private void viewEntity() {
-		EntityViewer.view(editModel().editor().entity().get(), editModel().connectionProvider(), this);
+		EntityViewer.view(editor().entity().get(), editModel().connectionProvider(), this);
 	}
 
 	private static Config configure(Consumer<Config> configuration) {
@@ -1596,7 +1596,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmInsert()) {
-				Task<Entity> task = editPanel.editModel().editor().tasks().insert().prepare();
+				Task<Entity> task = editPanel.editor().tasks().insert().prepare();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("inserting"))
@@ -1611,7 +1611,7 @@ public abstract class EntityEditPanel extends JPanel {
 			Entity inserted = result.handle();
 			onInsert.forEach(consumer -> consumer.accept(inserted));
 			if (editPanel.configuration.clearAfterInsert) {
-				editPanel.editModel().editor().values().defaults();
+				editPanel.editor().values().defaults();
 			}
 			if (editPanel.configuration.requestFocusAfterInsert) {
 				editPanel.inputFocus.afterInsert().request();
@@ -1676,7 +1676,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmUpdate()) {
-				Task<Entity> task = editPanel.editModel().editor().tasks().update().prepare();
+				Task<Entity> task = editPanel.editor().tasks().update().prepare();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("updating"))
@@ -1751,7 +1751,7 @@ public abstract class EntityEditPanel extends JPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmDelete()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().editor().tasks().delete().prepare()::perform)
+								.task(editPanel.editor().tasks().delete().prepare()::perform)
 								.title(MESSAGES.getString("deleting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)

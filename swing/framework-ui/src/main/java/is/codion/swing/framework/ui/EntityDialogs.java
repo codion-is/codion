@@ -608,8 +608,8 @@ public final class EntityDialogs {
 
 		@Override
 		public void show() {
-			SwingEntityEditModel editModel = editPanel.editModel();
-			initializeEditModel(editModel);
+			SwingEntityEditor editor = editPanel.editor();
+			initializeEditor(editor);
 			Dialogs.action()
 							.component(borderLayoutPanel()
 											.center(editPanel.initialize())
@@ -620,18 +620,17 @@ public final class EntityDialogs {
 							.defaultAction(createUpdateControl(editPanel,
 											new OnUpdate(new DisposeDialog(editPanel)), confirm))
 							.escapeAction(createCancelControl(new RevertAndDisposeDialog(editPanel)))
-							.title(FrameworkMessages.edit() + " - " + editModel.entities()
-											.definition(editModel.entityType()).caption())
+							.title(FrameworkMessages.edit() + " - " + editor.entityDefinition().caption())
 							.onShown(new OnShown(editPanel, onShownConsumers))
 							.show();
 		}
 
-		private void initializeEditModel(SwingEntityEditModel editModel) {
+		private void initializeEditor(SwingEntityEditor editor) {
 			if (entity != null) {
-				editModel.editor().entity().set(entity.get());
+				editor.entity().set(entity.get());
 			}
 			else {
-				editModel.editor().values().revert();
+				editor.values().revert();
 			}
 		}
 
@@ -661,7 +660,7 @@ public final class EntityDialogs {
 							.caption(FrameworkMessages.update())
 							.mnemonic(FrameworkMessages.updateMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
-							.enabled(editPanel.editModel().editor().modified())
+							.enabled(editPanel.editor().modified())
 							.build();
 		}
 
@@ -747,7 +746,7 @@ public final class EntityDialogs {
 
 		@Override
 		public void run() {
-			editPanel.editModel().editor().values().revert();
+			editPanel.editor().values().revert();
 			Ancestor.window().of(editPanel).dispose();
 		}
 	}

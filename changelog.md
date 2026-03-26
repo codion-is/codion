@@ -29,6 +29,7 @@ Codion Change Log
 - AbstractEntityTableModel.deleteSelected() removed, related refactoring.
 - EntityEditor.publishPersistenceEvents() moved to Settings, minor cleanup.
 - EntityTableModel.refreshTask() removed.
+- EntityTableModel, EntityModel.editor() added.
 ### is.codion.swing.framework.ui
 - TabbedDetailLayout.TabbedDetailController.selectParentTabs() bug fixed, now uses the correct indexOfComponent() instead of indexOfTabComponent().
 - TabbedApplicationLayout and TabbedDetailLayout now initialize panels using prepareComponent(), panels now contain focusable components when shown.

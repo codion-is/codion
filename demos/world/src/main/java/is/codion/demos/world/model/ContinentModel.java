@@ -87,7 +87,7 @@ public final class ContinentModel extends SwingEntityModel {
 
 		private CountryModel(EntityConnectionProvider connectionProvider) {
 			super(Country.TYPE, connectionProvider);
-			editModel().editor().settings().readOnly().set(true);
+			editor().settings().readOnly().set(true);
 			ConditionModel<?> continentCondition =
 							tableModel().query().condition().get(Country.CONTINENT);
 			continentCondition.operands().wildcard().set(Wildcard.NONE);

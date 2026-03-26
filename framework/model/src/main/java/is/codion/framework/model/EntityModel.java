@@ -72,6 +72,11 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	E editModel();
 
 	/**
+	 * @return the {@link EntityEditor} instance used by this {@link EntityModel}
+	 */
+	R editor();
+
+	/**
 	 * @return the {@link EntityTableModel}
 	 * @throws IllegalStateException in case no table model is available
 	 */

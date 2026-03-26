@@ -114,6 +114,11 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 	}
 
 	@Override
+	public final R editor() {
+		return editModel.editor();
+	}
+
+	@Override
 	public final T tableModel() {
 		if (tableModel == null) {
 			throw new IllegalStateException("Entity model " + this + " does not contain a table model");

@@ -21,7 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.database.Database;
 import is.codion.framework.db.EntityQueries;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityEditor;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -46,15 +46,15 @@ final class InsertUpdateQueryInspector extends JPanel {
 					.font(InsertUpdateQueryInspector::monospaced)
 					.build();
 	private final EntityQueries queries;
-	private final SwingEntityEditModel editModel;
+	private final SwingEntityEditor editor;
 
-	InsertUpdateQueryInspector(SwingEntityEditModel editModel) {
-		requireNonNull(editModel);
+	InsertUpdateQueryInspector(SwingEntityEditor editor) {
+		requireNonNull(editor);
 		this.queries = EntityQueries.factory()
 						.orElseThrow(() -> new IllegalStateException("No EntityQueries.Factory available"))
-						.create(Database.instance(), editModel.connectionProvider().connection().entities());
-		this.editModel = editModel;
-		this.editModel.editor().values().changed().addListener(this::refreshQuery);
+						.create(Database.instance(), editor.connectionProvider().connection().entities());
+		this.editor = editor;
+		this.editor.values().changed().addListener(this::refreshQuery);
 		initializeUI();
 		refreshQuery();
 	}
@@ -69,12 +69,12 @@ final class InsertUpdateQueryInspector extends JPanel {
 	}
 
 	private String createInsertQuery() {
-		return queries.insert(editModel.editor().entity().get());
+		return queries.insert(editor.entity().get());
 	}
 
 	private String createUpdateQuery() {
-		if (editModel.editor().modified().is()) {
-			return queries.update(editModel.editor().entity().get());
+		if (editor.modified().is()) {
+			return queries.update(editor.entity().get());
 		}
 
 		return "<unmodified>";

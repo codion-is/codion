@@ -318,7 +318,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 						.orElse(-1)
 						.intValue()) {
 			Entity selected = selection().item().get();
-			EditorEntity editorEntity = editModel().editor().entity();
+			EditorEntity editorEntity = editor().entity();
 			if (!editorEntity.get().equalValues(selected)) {
 				editorEntity.set(selected);
 			}

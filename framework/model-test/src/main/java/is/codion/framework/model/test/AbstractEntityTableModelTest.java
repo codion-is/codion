@@ -125,7 +125,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 						.with(Department.NAME, "HELLO")
 						.build();
 		int count = deptModel.items().included().size();
-		deptModel.editModel().editor().insert(singletonList(dept));
+		deptModel.editor().insert(singletonList(dept));
 		assertEquals(count + 1, deptModel.items().included().size());
 		// Sort by name is enabled
 		assertEquals(dept, deptModel.items().included().get().get(1));
@@ -136,7 +136,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 						.with(Department.LOCATION, "Nowhere2")
 						.with(Department.NAME, "NONAME")
 						.build();
-		deptModel.editModel().editor().insert(singletonList(dept2));
+		deptModel.editor().insert(singletonList(dept2));
 		assertEquals(count + 2, deptModel.items().included().size());
 		assertEquals(dept2, deptModel.items().included().get().get(2));
 
@@ -146,13 +146,13 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 						.with(Department.LOCATION, "Nowhere3")
 						.with(Department.NAME, "NONAME2")
 						.build();
-		deptModel.editModel().editor().insert(singletonList(dept3));
+		deptModel.editor().insert(singletonList(dept3));
 		assertEquals(count + 2, deptModel.items().included().size());
 
 		deptModel.items().refresh();
 		assertEquals(count + 3, deptModel.items().included().size());
 
-		deptModel.editModel().editor().delete(asList(dept, dept2, dept3));
+		deptModel.editor().delete(asList(dept, dept2, dept3));
 	}
 
 	@Test
@@ -169,13 +169,13 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 			tableModel.selection().index().set(0);
 			Entity selected = tableModel.selection().item().get();
 			tableModel.removeDeleted().set(true);
-			tableModel.editModel().editor().tasks().delete(tableModel.selection().items().get()).prepare().perform().handle();
+			tableModel.editor().tasks().delete(tableModel.selection().items().get()).prepare().perform().handle();
 			assertFalse(tableModel.items().contains(selected));
 
 			tableModel.select(singletonList(pk2));
 			selected = tableModel.selection().item().get();
 			tableModel.removeDeleted().set(false);
-			assertEquals(1, tableModel.editModel().editor().tasks().delete(tableModel.selection().items().get()).prepare().perform().handle().size());
+			assertEquals(1, tableModel.editor().tasks().delete(tableModel.selection().items().get()).prepare().perform().handle().size());
 			assertTrue(tableModel.items().contains(selected));
 		}
 		finally {
@@ -190,17 +190,17 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 
 	@Test
 	public void deleteNotEnabled() {
-		testModel.editModel().editor().settings().deleteEnabled().set(false);
+		testModel.editor().settings().deleteEnabled().set(false);
 		testModel.items().refresh();
 		testModel.selection().indexes().set(singletonList(0));
-		assertThrows(IllegalStateException.class, () -> testModel.editModel().editor().tasks().delete(testModel.selection().items().get()).prepare().perform().handle());
+		assertThrows(IllegalStateException.class, () -> testModel.editor().tasks().delete(testModel.selection().items().get()).prepare().perform().handle());
 	}
 
 	@Test
 	public void testTheRest() {
 		assertNotNull(testModel.connectionProvider());
 		assertNotNull(testModel.editModel());
-		assertFalse(testModel.editModel().editor().settings().readOnly().is());
+		assertFalse(testModel.editor().settings().readOnly().is());
 		testModel.items().refresh();
 	}
 
