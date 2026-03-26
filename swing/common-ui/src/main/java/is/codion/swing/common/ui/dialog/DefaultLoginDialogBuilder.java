@@ -33,12 +33,11 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogBuilder> implements LoginDialogBuilder {
 
-	private static final int DEFAULT_FIELD_COLUMNS = 8;
-
 	private @Nullable User defaultUser;
 	private LoginValidator validator = new NoLoginValidation();
 	private @Nullable JComponent southComponent;
-	private int inputFieldColumns = DEFAULT_FIELD_COLUMNS;
+	private int inputFieldColumns = INPUT_FIELD_COLUMNS.getOrThrow();
+	private boolean resizable = RESIZABLE.getOrThrow();
 
 	DefaultLoginDialogBuilder() {
 		title(Value.nullable(Messages.login()));
@@ -69,6 +68,12 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	}
 
 	@Override
+	public LoginDialogBuilder resizable(boolean resizable) {
+		this.resizable = resizable;
+		return this;
+	}
+
+	@Override
 	public User show() {
 		JFrame dummyFrame = null;
 		if (owner == null && isWindows()) {
@@ -78,12 +83,15 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 		OkCancelDialogBuilder dialogBuilder = DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
 						.component(loginPanel)
 						.owner(owner)
-						.resizable(false)
+						.resizable(resizable)
 						.title(title)
 						.icon(icon)
 						.okAction(loginPanel.okControl())
 						.cancelAction(loginPanel.cancelControl())
-						.onShown(dialog -> loginPanel.requestInitialFocus());
+						.onShown(dialog -> {
+							dialog.setMinimumSize(dialog.getSize());
+							loginPanel.requestInitialFocus();
+						});
 		onBuildConsumers.forEach(dialogBuilder::onBuild);
 
 		dialogBuilder.show();

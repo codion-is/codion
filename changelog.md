@@ -20,6 +20,9 @@ Codion Change Log
 - DefaultFilterTableCellEditor.DefaultFactory, lambdas replaced with inner classes.
 - FilterTable now highlights all search results, not just current.
 - FilterTable now indicates current search result column.
+- LoginDialogBuilder.INPUT_FIELD_COLUMNS configuration value added.
+- LoginDialogBuilder.resizable() added along with RESIZABLE configuration value.
+- LoginPanel now supports resizing.
 ### is.codion.framework.model
 - EntityEditModel.Settings moved to EntityEditor, related refactoring.
 - AbstractEntityTableModel.deleteSelected() removed, related refactoring.

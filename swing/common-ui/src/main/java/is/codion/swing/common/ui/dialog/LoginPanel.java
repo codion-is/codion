@@ -25,32 +25,34 @@ import is.codion.common.utilities.user.User;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.progressbar.ProgressBarBuilder;
 import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 
 import static is.codion.common.reactive.state.State.present;
+import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.awt.BorderLayout.WEST;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.LEADING;
 
 /**
  * A JPanel for retrieving login information.
@@ -127,34 +129,25 @@ final class LoginPanel extends JPanel {
 	}
 
 	private void initializeUI(@Nullable JComponent southComponent) {
-		setLayout(new GridBagLayout());
-		setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-
-		GridBagConstraints constraints = createGridBagConstraints();
-		if (icon != null) {
-			add(new JLabel(icon, SwingConstants.CENTER), constraints);
-		}
-		add(createCredentialsBasePanel(southComponent), constraints);
-	}
-
-	private JPanel createCredentialsBasePanel(@Nullable JComponent southComponent) {
-		JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
-		credentialsBasePanel.add(createCredentialsPanel(), BorderLayout.CENTER);
+		BorderLayoutPanelBuilder credentialsPanel = borderLayoutPanel()
+						.west(gridLayoutPanel(2, 1)
+										.add(new JLabel(Messages.username(), LEADING))
+										.add(new JLabel(Messages.password(), LEADING)))
+						.center(gridLayoutPanel(2, 1)
+										.add(usernameField)
+										.add(createPasswordProgressPanel()));
 		if (southComponent != null) {
-			credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
+			credentialsPanel.south(southComponent);
 		}
-
-		return credentialsBasePanel;
-	}
-
-	private JPanel createCredentialsPanel() {
-		return PanelBuilder.builder()
-						.flexibleGridLayout(2, 2)
-						.add(new JLabel(Messages.username(), SwingConstants.LEADING))
-						.add(usernameField)
-						.add(new JLabel(Messages.password(), SwingConstants.LEADING))
-						.add(createPasswordProgressPanel())
-						.build();
+		setLayout(borderLayout());
+		setBorder(createEmptyBorder(10, 10, 0, 10));
+		if (icon != null) {
+			add(new JLabel(icon, CENTER), WEST);
+		}
+		add(panel()
+						.layout(new GridBagLayout())
+						.add(credentialsPanel.build(), credentialsPanelConstraints())
+						.build(), CENTER);
 	}
 
 	private JPanel createPasswordProgressPanel() {
@@ -211,10 +204,10 @@ final class LoginPanel extends JPanel {
 		Ancestor.window().of(this).dispose();
 	}
 
-	private static GridBagConstraints createGridBagConstraints() {
+	private static GridBagConstraints credentialsPanelConstraints() {
 		GridBagConstraints constraints = new GridBagConstraints();
-		int insets = Layouts.GAP.getOrThrow();
-		constraints.insets = new Insets(insets, insets, insets, insets);
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.weightx = 1.0;
 
 		return constraints;
 	}
