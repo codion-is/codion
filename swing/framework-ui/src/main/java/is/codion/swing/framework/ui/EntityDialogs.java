@@ -83,7 +83,7 @@ public final class EntityDialogs {
 	 * @param <T> the attribute type
 	 * @return a new builder
 	 * @see is.codion.framework.model.EntityEditor.EditorValue#set(Entity, Object)
-	 * @see is.codion.framework.model.EntityEditor.EditorValue#propagate(is.codion.framework.model.EntityEditor.EditorValue.Propagator)
+	 * @see is.codion.framework.model.EntityEditor.EditorValue#propagate(Attribute, Function)
 	 */
 	public static <T> EditAttributeDialogBuilder<T> editAttributeDialog(SwingEntityEditor editor, Attribute<T> attribute) {
 		return new DefaultEditAttributeDialogBuilder<>(editor, attribute);

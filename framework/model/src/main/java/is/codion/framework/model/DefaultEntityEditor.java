@@ -60,6 +60,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -1132,13 +1133,9 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	private final class DefaultEditorValue<T> extends AbstractValue<T> implements EditorValue<T> {
 
-		private static final Propagator<Object> NULL_PROPAGATOR = (value, setter) -> {};
-
 		private final Attribute<T> attribute;
 		private final Value<Supplier<T>> defaultValue;
-		private final EditorValueSetter editorValueSetter = new EditorValueSetter();
-
-		private Propagator<T> propagator = (Propagator<T>) NULL_PROPAGATOR;
+		private final Map<Attribute<?>, Function<@Nullable T, ?>> propagators = new HashMap<>();
 
 		private DefaultEditorValue(Attribute<T> attribute) {
 			super(nullValue(entityDefinition.attributes().definition(attribute)));
@@ -1211,14 +1208,16 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public void propagate(@Nullable Propagator<T> propagator) {
-			this.propagator = propagator == null ? (Propagator<T>) NULL_PROPAGATOR : propagator;
+		public <V> void propagate(Attribute<V> attribute, Function<@Nullable T, @Nullable V> deriver) {
+			entityDefinition.attributes().definition(attribute);
+			propagators.put(attribute, requireNonNull(deriver));
 		}
 
 		@Override
 		public void set(Entity entity, @Nullable T value) {
 			requireNonNull(entity).set(attribute, value);
-			propagator.propagate(value, entity::set);
+			propagators.forEach((attr, deriver) ->
+							entity.set((Attribute<Object>) attr, deriver.apply(entity.get(attribute))));
 		}
 
 		@Override
@@ -1233,7 +1232,8 @@ public class DefaultEntityEditor implements EntityEditor {
 			if (!Objects.deepEquals(value, previousValue)) {
 				notifyValueEdit(attribute, value, dependingValues);
 			}
-			propagator.propagate(value, editorValueSetter);
+			propagators.forEach((attr, deriver) ->
+							value((Attribute<Object>) attr).set(deriver.apply(entity.instance.get(attribute))));
 		}
 
 		private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
@@ -1310,14 +1310,6 @@ public class DefaultEntityEditor implements EntityEditor {
 			}
 			catch (AttributeValidationException e) {
 				return e.getMessage();
-			}
-		}
-
-		private final class EditorValueSetter implements Propagator.Setter {
-
-			@Override
-			public <T> void set(Attribute<T> attribute, @Nullable T value) {
-				value(attribute).set(value);
 			}
 		}
 

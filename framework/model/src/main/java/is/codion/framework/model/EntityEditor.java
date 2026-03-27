@@ -46,6 +46,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -758,83 +759,44 @@ public interface EntityEditor {
 		Value<Supplier<T>> defaultValue();
 
 		/**
-		 * <p>Sets a {@link Propagator} for this attribute, which propagates derived values
-		 * each time this attribute is edited via {@link #set(Object)} or set in an entity via {@link #set(Entity, Object)}.
-		 * <p>When this attribute is edited via the editor, the {@link Propagator} sets associated values via
-		 * their respective {@link EditorValue} instances, triggering the usual edit events.
-		 * When this attribute is set in an entity via {@link #set(Entity, Object)}, the associated values
-		 * are set directly on the entity via {@link Entity#set(Attribute, Object)}.
+		 * <p>Adds a propagation mapping from this attribute to the given attribute.
+		 * Each time this attribute is edited via {@link #set(Object)} or set in an entity
+		 * via {@link #set(Entity, Object)}, the function is applied to derive the target attribute value.
+		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}
+		 * instances, triggering edit events. When setting values in an entity, derived values are
+		 * set directly on the entity via {@link Entity#set(Attribute, Object)}.
+		 * <p>Multiple propagations can be added for a single source attribute.
 		 * {@snippet :
 		 * // Populate billing address fields when customer changes
-		 * editor().value(Invoice.CUSTOMER_FK).propagate((customer, setter) -> {
-		 *     setter.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS));
-		 *     setter.set(Invoice.BILLINGCITY, customer == null ? null : customer.get(Customer.CITY));
-		 * });
+		 * editor().value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
+		 *     customer -> customer == null ? null : customer.get(Customer.ADDRESS));
+		 * editor().value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGCITY,
+		 *     customer -> customer == null ? null : customer.get(Customer.CITY));
 		 *
 		 * // Decompose a date into constituent parts
-		 * editor().value(Sample.SAMPLE_DATE).propagate((date, setter) -> {
-		 *     setter.set(Sample.DAY, date == null ? null : date.getDayOfMonth());
-		 *     setter.set(Sample.MONTH, date == null ? null : date.getMonthValue());
-		 *     setter.set(Sample.YEAR, date == null ? null : date.getYear());
-		 * });
+		 * editor().value(Sample.SAMPLE_DATE).propagate(Sample.DAY,
+		 *     date -> date == null ? null : date.getDayOfMonth());
+		 * editor().value(Sample.SAMPLE_DATE).propagate(Sample.MONTH,
+		 *     date -> date == null ? null : date.getMonthValue());
 		 *}
-		 * @param propagator the propagator, null to remove
-		 * @see Propagator
+		 * @param attribute the target attribute to propagate to
+		 * @param deriver the function deriving the target value from this attribute's value
+		 * @param <V> the target attribute value type
 		 */
-		void propagate(@Nullable Propagator<T> propagator);
+		<V> void propagate(Attribute<V> attribute, Function<@Nullable T, @Nullable V> deriver);
 
 		/**
 		 * <p>Sets the given value for the underlying attribute in the given entity,
-		 * applying the associated {@link Propagator}, if one is specified.
+		 * applying the associated propagators, if any are specified.
 		 * <p>This method is used by components providing edit functionality outside the editor,
 		 * such as editable table cells or multi-item editing dialogs, to ensure that
 		 * derived values are updated along with the primary attribute value.
 		 * <p>Note that {@code value} may be null.
 		 * @param entity the entity
 		 * @param value the value to set
-		 * @see #propagate(Propagator)
+		 * @see #propagate(Attribute, Function)
 		 */
 		void set(Entity entity, @Nullable T value);
-
-		/**
-		 * <p>Propagates derived attribute values when a source attribute value changes.
-		 * <p>A {@link Propagator} provides a unified mechanism for updating associated attribute values,
-		 * replacing the need to separately handle value propagation in the editor
-		 * (via {@link EditorValue#edited()} listeners) and in entities (via overriding).
-		 * <p>The {@link Setter} provided to {@link #propagate(Object, Setter)} routes to the
-		 * appropriate target depending on context:
-		 * <ul>
-		 * <li>When editing via the editor ({@link EditorValue#set(Object)}),
-		 *     values are set via the respective {@link EditorValue} instances, triggering edit events.
-		 * <li>When setting values in an entity ({@link EditorValue#set(Entity, Object)}),
-		 *     values are set directly on the entity via {@link Entity#set(Attribute, Object)}.
-		 * </ul>
-		 * @param <T> the source attribute value type
-		 * @see EditorValue#propagate(Propagator)
-		 */
-		interface Propagator<T> {
-
-			/**
-			 * Propagates derived values based on the given source attribute value.
-			 * @param value the new source attribute value, may be null
-			 * @param setter the setter to use when setting derived attribute values
-			 */
-			void propagate(@Nullable T value, Setter setter);
-
-			/**
-			 * Sets attribute values, routing to the appropriate target depending on context.
-			 */
-			interface Setter {
-
-				/**
-				 * Sets the value of the given attribute.
-				 * @param attribute the attribute
-				 * @param value the value
-				 * @param <T> the value type
-				 */
-				<T> void set(Attribute<T> attribute, @Nullable T value);
-			}
-		}
 	}
 
 	/**
