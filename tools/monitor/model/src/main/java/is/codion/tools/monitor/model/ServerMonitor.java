@@ -57,6 +57,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -308,8 +309,11 @@ public final class ServerMonitor {
 		contents.append(serverInformation.locale()).append("\n");
 		contents.append("Server time zone: ").append("\n");
 		contents.append(serverInformation.timeZone()).append("\n");
-		contents.append("System properties:").append("\n");
-		contents.append(server.systemProperties());
+		String systemProperties = server.systemProperties();
+		if (!nullOrEmpty(systemProperties)) {
+			contents.append("System properties:").append("\n");
+			contents.append(systemProperties);
+		}
 
 		return contents.toString();
 	}

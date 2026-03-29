@@ -6,6 +6,7 @@ Codion Change Log
 - Value.changed() moved to Observable.
 ### is.codion.common.rmi
 - AbstractServer.addAuthenticator() no longer public, ServerConfiguration.Builder.authenticator() added.
+- ServerConfiguration.SYSTEM_PROPERTIES configuration value added.
 ### is.codion.swing.common.model
 - ProgressWorker now supports multiple handlers.
 - ProgressWorker.TaskHandler and related classes added.

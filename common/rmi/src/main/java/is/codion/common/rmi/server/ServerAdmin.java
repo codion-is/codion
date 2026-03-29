@@ -88,8 +88,10 @@ public interface ServerAdmin extends Remote {
 	void setConnectionLimit(int value) throws RemoteException;
 
 	/**
-	 * @return the server system properties
+	 * @return the server system properties, or an empty string if system properties are not enabled
 	 * @throws RemoteException in case of an exception
+	 * @see ServerConfiguration#SYSTEM_PROPERTIES
+	 * @see ServerConfiguration.Builder#systemProperties(boolean)
 	 */
 	String systemProperties() throws RemoteException;
 

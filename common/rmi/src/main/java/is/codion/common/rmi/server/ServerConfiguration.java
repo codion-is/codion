@@ -211,6 +211,15 @@ public interface ServerConfiguration {
 	PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL = integerValue("codion.server.connectionMaintenanceInterval", DEFAULT_CONNECTION_MAINTENANCE_INTERVAL);
 
 	/**
+	 * Specifies whether the server supplies its system properties via {@link ServerAdmin#systemProperties()}.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	PropertyValue<Boolean> SYSTEM_PROPERTIES = booleanValue("codion.server.systemProperties", false);
+
+	/**
 	 * @return the server name
 	 * @throws IllegalArgumentException in case the supplied server name is null or empty
 	 * @see Builder#serverName(Supplier)
@@ -276,6 +285,11 @@ public interface ServerConfiguration {
 	 * @return the maximum number of concurrent connections, -1 for no limit
 	 */
 	int connectionLimit();
+
+	/**
+	 * @return true if the server should provide its system properties via the admin interface
+	 */
+	boolean systemProperties();
 
 	/**
 	 * A Builder for ServerConfiguration
@@ -347,6 +361,14 @@ public interface ServerConfiguration {
 		 * @return this builder instance
 		 */
 		B connectionLimit(int connectionLimit);
+
+		/**
+		 * @param systemProperties specifies whether the server should provide its system properties via the admin interface
+		 * @return this builder instance
+		 * @see ServerConfiguration#SYSTEM_PROPERTIES
+		 * @see ServerConfiguration.Builder#systemProperties(boolean)
+		 */
+		B systemProperties(boolean systemProperties);
 
 		/**
 		 * @return a new ServerConfiguration instance based on this builder

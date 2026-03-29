@@ -138,6 +138,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
+	public boolean systemProperties() {
+		return serverConfiguration.systemProperties();
+	}
+
+	@Override
 	public Database database() {
 		return database;
 	}
@@ -297,6 +302,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		@Override
 		public Builder connectionLimit(int connectionLimit) {
 			serverConfigurationBuilder.connectionLimit(connectionLimit);
+			return this;
+		}
+
+		@Override
+		public Builder systemProperties(boolean systemProperties) {
+			this.serverConfigurationBuilder.systemProperties(systemProperties);
 			return this;
 		}
 

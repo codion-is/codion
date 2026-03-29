@@ -55,6 +55,7 @@ application {
         "-Dcodion.server.http.secure=false",
         "-Dcodion.server.http.json=true",
         "-Dcodion.server.http.serialization=true",
+        "-Dcodion.server.systemProperties=true",
         "-Dcodion.server.pooling.poolFactory=is.codion.plugin.hikari.pool.HikariConnectionPoolFactory",
         "-Dcodion.server.auxiliaryServerFactories=is.codion.framework.servlet.EntityServiceFactory",
         "-Dcodion.server.objectInputFilterFactory=is.codion.common.rmi.server.SerializationFilterFactory",

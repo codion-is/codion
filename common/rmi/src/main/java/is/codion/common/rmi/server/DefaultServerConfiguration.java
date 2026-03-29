@@ -63,6 +63,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final boolean objectInputFilterFactoryRequired;
 	private final int connectionMaintenanceInterval;
 	private final int connectionLimit;
+	private final boolean systemProperties;
 
 	DefaultServerConfiguration(DefaultServerConfiguration.DefaultBuilder builder) {
 		this.port = builder.serverPort;
@@ -78,6 +79,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		this.objectInputFilterFactoryRequired = builder.objectInputFilterFactoryRequired;
 		this.connectionMaintenanceInterval = builder.connectionMaintenanceInterval;
 		this.connectionLimit = builder.connectionLimit;
+		this.systemProperties = builder.systemProperties;
 	}
 
 	@Override
@@ -150,6 +152,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		return connectionLimit;
 	}
 
+	@Override
+	public boolean systemProperties() {
+		return systemProperties;
+	}
+
 	static final class DefaultBuilder implements Builder<DefaultBuilder> {
 
 		static {
@@ -169,6 +176,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private boolean objectInputFilterFactoryRequired = OBJECT_INPUT_FILTER_FACTORY_REQUIRED.getOrThrow();
 		private Integer connectionMaintenanceInterval = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 		private int connectionLimit = -1;
+		private boolean systemProperties = SYSTEM_PROPERTIES.getOrThrow();
 
 		DefaultBuilder(int serverPort, int registryPort) {
 			this.serverPort = serverPort;
@@ -243,6 +251,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		@Override
 		public DefaultBuilder connectionLimit(int connectionLimit) {
 			this.connectionLimit = connectionLimit;
+			return this;
+		}
+
+		@Override
+		public DefaultBuilder systemProperties(boolean systemProperties) {
+			this.systemProperties = systemProperties;
 			return this;
 		}
 
