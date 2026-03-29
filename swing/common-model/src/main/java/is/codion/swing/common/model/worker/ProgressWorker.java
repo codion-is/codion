@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -159,10 +160,18 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private void runOnStarted() throws InterruptedException {
 		if (!onStarted.isEmpty()) {
+			AtomicReference<RuntimeException> exception = new AtomicReference<>();
 			CountDownLatch startedLatch = new CountDownLatch(1);
 			invokeLater(() -> {
-				onStarted.forEach(Runnable::run);
-				startedLatch.countDown();
+				try {
+					onStarted.forEach(Runnable::run);
+				}
+				catch (RuntimeException e) {
+					exception.set(e);
+				}
+				finally {
+					startedLatch.countDown();
+				}
 			});
 			try {
 				startedLatch.await();
@@ -170,6 +179,9 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 			catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				throw e;
+			}
+			if (exception.get() != null) {
+				throw exception.get();
 			}
 		}
 	}
