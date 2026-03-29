@@ -66,7 +66,7 @@ public final class ArtistTableModel extends SwingEntityTableModel {
 		}
 
 		@Override
-		public void onResult() {
+		public void onSuccess() {
 			selection().item().set(artistToKeep);
 			items().remove(artistsToDelete);
 			persistenceEvents(Artist.TYPE).deleted().accept(artistsToDelete);

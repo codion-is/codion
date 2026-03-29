@@ -157,8 +157,9 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> onResult(Runnable onResult) {
-		return onResult(result -> onResult.run());
+	public ProgressWorkerDialogBuilder<T, V> onSuccess(Runnable onSuccess) {
+		this.progressWorkerBuilder.onSuccess(onSuccess);
+		return this;
 	}
 
 	@Override
@@ -168,11 +169,11 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> onResult(String title, String message) {
+	public ProgressWorkerDialogBuilder<T, V> onSuccess(String title, String message) {
 		requireNonNull(title);
 		requireNonNull(message);
-
-		return onResult(result -> showMessageDialog(owner, message, title, INFORMATION_MESSAGE));
+		this.progressWorkerBuilder.onSuccess(() -> showMessageDialog(owner, message, title, INFORMATION_MESSAGE));
+		return this;
 	}
 
 	@Override

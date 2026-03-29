@@ -36,12 +36,16 @@ import javax.swing.JProgressBar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 final class ProgressWorkerDemo {
+
+	private static final Logger LOG = Logger.getLogger("none");
 
 	private static JFrame applicationFrame;
 
@@ -66,7 +70,12 @@ final class ProgressWorkerDemo {
 
 	private static void taskHandler() {
 		// tag::taskHandler[]
-		// A non-progress aware task, producing no result
+		// TaskHandler encapsulates the task and its handlers in a single class.
+		// Handler interface methods are called first, followed by
+		// any handlers added via the builder, in the order they were added.
+		// This enables a layered approach where the handler interface
+		// handles model-level concerns (logging, state updates) while
+		// builder handlers handle UI-level concerns (displaying dialogs).
 		ProgressWorker.TaskHandler task = new TaskHandler() {
 
 			@Override
@@ -74,16 +83,19 @@ final class ProgressWorkerDemo {
 				// Perform the task
 			}
 
+			// Called first on exception: log the error (model-level)
 			@Override
 			public void onException(Exception exception) {
-				Dialogs.exception()
-								.owner(applicationFrame)
-								.show(exception);
+				LOG.log(Level.WARNING, exception.getMessage());
 			}
 		};
 
 		ProgressWorker.builder()
 						.task(task)
+						// Called after the handler's onException: display the error (UI-level)
+						.onException(exception -> Dialogs.exception()
+										.owner(applicationFrame)
+										.show(exception))
 						.execute();
 		// end::taskHandler[]
 	}
@@ -110,6 +122,9 @@ final class ProgressWorkerDemo {
 
 	private static void resultTaskHandler() {
 		// tag::resultTaskHandler[]
+		// ResultTaskHandler encapsulates a result-producing task and its handlers.
+		// The handler's onResult and onException are called first (model-level),
+		// then the builder's handlers are called after (UI-level).
 		ResultTaskHandler<String> task = new ResultTaskHandler<String>() {
 
 			@Override
@@ -118,21 +133,27 @@ final class ProgressWorkerDemo {
 				return "Result";
 			}
 
+			// Called first on success: log the result (model-level)
 			@Override
 			public void onResult(String result) {
-				showMessageDialog(applicationFrame, result);
+				LOG.log(Level.INFO, result);
 			}
 
+			// Called first on exception: log the error (model-level)
 			@Override
 			public void onException(Exception exception) {
-				Dialogs.exception()
-								.owner(applicationFrame)
-								.show(exception);
+				LOG.log(Level.WARNING, exception.getMessage());
 			}
 		};
 
 		ProgressWorker.builder()
 						.task(task)
+						// Called after the handler's onResult: display the result (UI-level)
+						.onResult(result -> showMessageDialog(applicationFrame, result))
+						// Called after the handler's onException: display the error (UI-level)
+						.onException(exception -> Dialogs.exception()
+										.owner(applicationFrame)
+										.show(exception))
 						.execute();
 		// end::resultTaskHandler[]
 	}
@@ -162,8 +183,19 @@ final class ProgressWorkerDemo {
 
 	private static void progressTaskHandler() {
 		// tag::progressTaskHandler[]
-		// A progress aware task, producing no result
+		// ProgressTaskHandler encapsulates a progress-aware task and its handlers.
+		// The handler's methods are called first (model-level),
+		// then the builder's handlers are called after (UI-level).
 		ProgressTaskHandler<String> task = new ProgressTaskHandler<String>() {
+
+			@Override
+			public void execute(ProgressReporter<String> progressReporter) throws Exception {
+				// Perform the task
+				for (int i = 0; i < maximum(); i++) {
+					progressReporter.report(i);
+					progressReporter.publish("Message " + i);
+				}
+			}
 
 			@Override
 			public void onProgress(int progress) {
@@ -172,29 +204,113 @@ final class ProgressWorkerDemo {
 
 			@Override
 			public void onPublish(List<String> message) {
-				showMessageDialog(applicationFrame, message);
+				displayMessage(message);
 			}
 
+			// Called first on exception: log the error (model-level)
 			@Override
 			public void onException(Exception exception) {
-				Dialogs.exception()
-								.owner(applicationFrame)
-								.show(exception);
-			}
-
-			@Override
-			public void execute(ProgressReporter<String> progressReporter) throws Exception {
-				// Perform the task
-				progressReporter.report(42);
-				progressReporter.publish("Message");
+				LOG.log(Level.WARNING, exception.getMessage());
 			}
 		};
 
 		ProgressWorker.builder()
 						.task(task)
+						// Called after the handler's onException: display the error (UI-level)
+						.onException(exception -> Dialogs.exception()
+										.owner(applicationFrame)
+										.show(exception))
 						.execute();
 		// end::progressTaskHandler[]
 	}
+
+	private static void displayMessage(List<String> message) {}
+
+	// tag::layeredModel[]
+	// A model class that exposes a task for importing data.
+	// The handler interface methods handle model-level concerns:
+	// updating internal state on success and logging errors.
+	static final class DataImportModel {
+
+		private static final Logger LOG = Logger.getLogger(DataImportModel.class.getName());
+
+		private final List<String> importedItems = new ArrayList<>();
+
+		// Returns a task that can be further configured by the UI layer
+		ImportTask importTask(List<String> items) {
+			return new ImportTask(items);
+		}
+
+		List<String> importedItems() {
+			return importedItems;
+		}
+
+		final class ImportTask implements ResultTaskHandler<Integer> {
+
+			private final List<String> items;
+
+			private ImportTask(List<String> items) {
+				this.items = items;
+			}
+
+			@Override
+			public Integer execute() throws Exception {
+				// Perform the import
+				int count = 0;
+				for (String item : items) {
+					importItem(item);
+					count++;
+				}
+
+				return count;
+			}
+
+			// Model-level: update internal state after a successful import
+			@Override
+			public void onResult(Integer count) {
+				importedItems.addAll(items);
+			}
+
+			// Model-level: log the error
+			@Override
+			public void onException(Exception exception) {
+				LOG.log(Level.SEVERE, "Import failed", exception);
+			}
+
+			private void importItem(String item) throws Exception {
+				// Import the item
+			}
+		}
+	}
+	// end::layeredModel[]
+
+	// tag::layeredUI[]
+	// The UI layer creates the task from the model and adds
+	// its own handlers for user-facing feedback.
+	// These run after the model-level handlers.
+	static final class DataImportPanel extends JPanel {
+
+		private final DataImportModel model;
+
+		DataImportPanel(DataImportModel model) {
+			this.model = model;
+		}
+
+		void performImport(List<String> items) {
+			ProgressWorker.builder()
+							.task(model.importTask(items))
+							// UI-level: display the result to the user
+							.onResult(count ->
+											showMessageDialog(this, count + " items imported"))
+							// UI-level: display the error to the user
+							.onException(exception ->
+											Dialogs.exception()
+															.owner(this)
+															.show(exception))
+							.execute();
+		}
+	}
+	// end::layeredUI[]
 
 	private static void progressResultTask() {
 		// tag::progressResultWorker[]

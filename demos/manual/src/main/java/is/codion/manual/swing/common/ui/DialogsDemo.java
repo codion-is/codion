@@ -223,7 +223,7 @@ final class DialogsDemo {
 						.owner(window)
 						.title("Performing task")
 						.delay(500, 1000)
-						.onResult(this::handleResult)
+						.onSuccess(this::handleResult)
 						.onException(this::handleException)
 						.execute();
 		// end::progress[]

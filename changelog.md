@@ -10,6 +10,7 @@ Codion Change Log
 - ProgressWorker now supports multiple handlers.
 - ProgressWorker.TaskHandler and related classes added.
 - FilterTableModel.Editor renamed RowEditor.
+- ProgressWorker.Handler.onSuccess() added, replaces onResult() when no results are involved.
 ### is.codion.swing.common.ui
 - FilterTableSearchModel.Results.CurrentResult added.
 - DefaultFilterTableSearchModel.DefaultResults.current() now nullable.

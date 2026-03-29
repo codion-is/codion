@@ -81,7 +81,8 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	/**
 	 * <p>Provides builders for a given task type.
 	 * <p>If the task also implements the corresponding handler interface, its handler methods
-	 * are automatically wired and can be supplemented via the returned builder.
+	 * are automatically wired first. Additional handlers can then be added via the returned builder,
+	 * and are called after the handler interface methods, in the order they were added.
 	 * @see ProgressWorker.Handler
 	 */
 	interface BuilderFactory {
@@ -196,37 +197,46 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	ProgressWorkerDialogBuilder<T, V> delay(int show, int hide);
 
 	/**
-	 * @param onPublish called on the Event Dispatch Thread when chunks are available for publishing
+	 * Adds a handler called on the Event Dispatch Thread when chunks are available for publishing.
+	 * @param onPublish the handler to add
 	 * @return this builder instance
 	 */
 	ProgressWorkerDialogBuilder<T, V> onPublish(Consumer<List<V>> onPublish);
 
 	/**
-	 * @param onResult executed on the Event Dispatch Thread after a successful run
+	 * Adds a handler called on the Event Dispatch Thread after a successful run,
+	 * before any {@link #onResult(Consumer)} handlers.
+	 * @param onSuccess the handler to add
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> onResult(Runnable onResult);
+	ProgressWorkerDialogBuilder<T, V> onSuccess(Runnable onSuccess);
 
 	/**
-	 * @param onResult executed on the Event Dispatch Thread after a successful run
+	 * Adds a handler called on the Event Dispatch Thread when the result of a successful run is available,
+	 * after any {@link #onSuccess(Runnable)} handlers.
+	 * @param onResult the handler to add
 	 * @return this Builder instance
 	 */
 	ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult);
 
 	/**
+	 * Adds a handler that displays a message dialog after a successful run,
+	 * before any {@link #onResult(Consumer)} handlers.
 	 * @param title the dialog title
-	 * @param message if specified then this message is displayed after the task has successfully run
+	 * @param message the message to display
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> onResult(String title, String message);
+	ProgressWorkerDialogBuilder<T, V> onSuccess(String title, String message);
 
 	/**
-	 * @param onException the exception handler
+	 * Adds a handler called on the Event Dispatch Thread if an exception occurred.
+	 * @param onException the handler to add
 	 * @return this Builder instance
 	 */
 	ProgressWorkerDialogBuilder<T, V> onException(Consumer<Exception> onException);
 
 	/**
+	 * Adds a handler that displays an exception dialog with the given title.
 	 * @param exceptionTitle the title of the exception dialog
 	 * @return this Builder instance
 	 */

@@ -41,20 +41,25 @@ import static javax.swing.SwingUtilities.invokeLater;
  * <p>A {@link SwingWorker} implementation. Instances of this class are not reusable.</p>
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
  * those directly to the {@code onProgress} and {@code onPublish} handlers on the Event Dispatch Thread.</p>
- * <p>The {@code onStarted} handler is guaranteed to be called on the Event Dispatch Thread before the background task executes,
- * and the {@code onDone} handler is guaranteed to be called after the background task completes.
+ * <p>The {@code onStarted} handlers are guaranteed to be called on the Event Dispatch Thread before the background task executes,
+ * and the {@code onDone} handlers are guaranteed to be called after the background task completes.
+ * <p>All handler types support multiple handlers, which are called in the order they were added.
  * <p>There are two ways to use this class:
  * <ul>
  * <li><b>Builder-only</b>: pass a task and wire handlers via the builder.
  * <li><b>Handler interfaces</b>: implement one of the handler interfaces ({@link TaskHandler}, {@link ResultTaskHandler},
  * {@link ProgressTaskHandler}, {@link ProgressResultTaskHandler}) to encapsulate both the background task and its
- * handlers in a single class. Handler methods are wired automatically and can be supplemented via the builder.
+ * handlers in a single class. Handler interface methods are wired automatically and called first.
+ * Additional handlers can then be added via the builder and are called after.
  * </ul>
- * Builder based usage example:
+ * <p>On successful completion, handlers are called in this order:
+ * {@code onDone} &rarr; {@code onSuccess} &rarr; {@code onResult(T)} (result-producing tasks only).
+ * <p>Builder based usage example:
  * {@snippet :
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
  *   .onDone(this::closeDialog)
+ *   .onSuccess(this::handleSuccess)
  *   .onResult(this::handleResult)
  *   .onProgress(this::displayProgress)
  *   .onPublish(this::publishMessage)
@@ -172,8 +177,9 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	/**
 	 * <p>Provides builders for a given task type.
 	 * <p>If the task also implements the corresponding handler interface (e.g. {@link TaskHandler},
-	 * {@link ResultTaskHandler}), the handler methods are automatically wired to the builder.
-	 * These can be supplemented via the returned {@link Builder}.
+	 * {@link ResultTaskHandler}), the handler methods are automatically wired first.
+	 * Additional handlers can then be added via the returned {@link Builder},
+	 * and are called after the handler interface methods, in the order they were added.
 	 */
 	public sealed interface BuilderFactory {
 
@@ -284,7 +290,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * <p>Combined with a task interface (via {@link TaskHandler}, {@link ResultTaskHandler}, etc.),
 	 * this allows a single class to encapsulate both the background task and its handlers.
 	 * Handler methods from this interface are automatically wired when the task is passed to
-	 * {@link BuilderFactory#task(Task)}, and can be supplemented via the {@link Builder}.
+	 * {@link BuilderFactory#task(Task)}, and called first. Any handlers added via the {@link Builder}
+	 * are called after, in the order they were added.
 	 * @see TaskHandler
 	 * @see ResultTaskHandler
 	 * @see ProgressTaskHandler
@@ -301,6 +308,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		 * Called on the Event Dispatch Thread when the task is done, successfully or not, before the result is processed.
 		 */
 		default void onDone() {}
+
+		/**
+		 * Called on the Event Dispatch Thread after a successful task execution,
+		 * before {@link ResultTaskHandler#onResult(Object)} or
+		 * {@link ProgressResultTaskHandler#onResult(Object)} for result-producing tasks.
+		 */
+		default void onSuccess() {}
 
 		/**
 		 * Called on the Event Dispatch Thread if an exception occurred during the background task.
@@ -325,13 +339,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * A {@link Task} combined with {@link Handler}, for encapsulating a background task and its handlers in a single class.
 	 * @see BuilderFactory#task(Task)
 	 */
-	public interface TaskHandler extends Task, Handler {
-
-		/**
-		 * Called on the Event Dispatch Thread after a successful execution.
-		 */
-		default void onResult() {}
-	}
+	public interface TaskHandler extends Task, Handler {}
 
 	/**
 	 * A {@link ResultTask} combined with {@link Handler}, for encapsulating a result-producing background task
@@ -342,7 +350,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	public interface ResultTaskHandler<T> extends ResultTask<T>, Handler {
 
 		/**
-		 * Called on the Event Dispatch Thread after a successful execution.
+		 * Called on the Event Dispatch Thread after a successful execution,
+		 * after {@link Handler#onSuccess()}.
 		 * @param result the task result
 		 */
 		default void onResult(T result) {}
@@ -375,13 +384,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @param <V> the intermediate result type
 	 * @see BuilderFactory#task(ProgressTask)
 	 */
-	public interface ProgressTaskHandler<V> extends ProgressTask<V>, ProgressHandler<V> {
-
-		/**
-		 * Called on the Event Dispatch Thread after a successful execution.
-		 */
-		default void onResult() {}
-	}
+	public interface ProgressTaskHandler<V> extends ProgressTask<V>, ProgressHandler<V> {}
 
 	/**
 	 * A {@link ProgressResultTask} combined with {@link ProgressHandler}, for encapsulating a progress-aware,
@@ -393,7 +396,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	public interface ProgressResultTaskHandler<T, V> extends ProgressResultTask<T, V>, ProgressHandler<V> {
 
 		/**
-		 * Called on the Event Dispatch Thread after a successful execution.
+		 * Called on the Event Dispatch Thread after a successful execution,
+		 * after {@link Handler#onSuccess()}.
 		 * @param result the task result
 		 */
 		default void onResult(T result) {}
@@ -417,7 +421,11 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	}
 
 	/**
-	 * Builds a {@link ProgressWorker} instance.
+	 * <p>Builds a {@link ProgressWorker} instance.
+	 * <p>Each handler method can be called multiple times to add multiple handlers.
+	 * All handlers are called in the order they were added. When using a task that implements
+	 * a handler interface (e.g. {@link TaskHandler}), those handler methods are added first,
+	 * and any handlers added via this builder are called after.
 	 * @param <T> the worker result type
 	 * @param <V> the intermediate result type
 	 */
@@ -433,57 +441,68 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		Builder<T, V> maximum(int maximum);
 
 		/**
-		 * @param onStarted called on the EDT before background processing is started
+		 * Adds a handler called on the EDT before background processing is started.
+		 * @param onStarted the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onStarted(Runnable onStarted);
 
 		/**
-		 * @param onDone called on the Event Dispatch Thread when the task is done running, successfully or not, before the result is processed
+		 * Adds a handler called on the Event Dispatch Thread when the task is done running,
+		 * successfully or not, before the result is processed.
+		 * @param onDone the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onDone(Runnable onDone);
 
 		/**
-		 * @param onResult called on the Event Dispatch Thread when the result of a successful run is available
+		 * Adds a handler called on the Event Dispatch Thread after a successful task run,
+		 * before any {@link #onResult(Consumer)} handlers.
+		 * @param onSuccess the handler to add
 		 * @return this builder instance
 		 */
-		Builder<T, V> onResult(Runnable onResult);
+		Builder<T, V> onSuccess(Runnable onSuccess);
 
 		/**
-		 * @param onResult called on the Event Dispatch Thread when the result of a successful run is available
+		 * Adds a handler called on the Event Dispatch Thread when the result of a successful run is available,
+		 * after any {@link #onSuccess(Runnable)} handlers.
+		 * @param onResult the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onResult(Consumer<T> onResult);
 
 		/**
-		 * @param onProgress called on the Event Dispatch Thread when progress is reported
+		 * Adds a handler called on the Event Dispatch Thread when progress is reported.
+		 * @param onProgress the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onProgress(Consumer<Integer> onProgress);
 
 		/**
-		 * @param onPublish called on the Event Dispatch Thread when chunks are available for publishing
+		 * Adds a handler called on the Event Dispatch Thread when chunks are available for publishing.
+		 * @param onPublish the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onPublish(Consumer<List<V>> onPublish);
 
 		/**
-		 * @param onException called on the Event Dispatch Thread if an exception occurred
+		 * Adds a handler called on the Event Dispatch Thread if an exception occurred.
+		 * @param onException the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onException(Consumer<Exception> onException);
 
 		/**
-		 * Called in case the background task is cancelled via {@link SwingWorker#cancel(boolean)}
-		 * or if it throws a {@link CancelException}
-		 * @param onCancelled called on the Event Dispatch Thread if the background task was cancelled
+		 * Adds a handler called on the Event Dispatch Thread if the background task is cancelled
+		 * via {@link SwingWorker#cancel(boolean)} or if it throws a {@link CancelException}.
+		 * @param onCancelled the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onCancelled(Runnable onCancelled);
 
 		/**
-		 * @param onInterrupted called on the Event Dispatch Thread if the background task was interrupted
+		 * Adds a handler called on the Event Dispatch Thread if the background task was interrupted.
+		 * @param onInterrupted the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onInterrupted(Runnable onInterrupted);
@@ -528,7 +547,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 				TaskHandler handler = (TaskHandler) task;
 				builder.onStarted(handler::onStarted)
 								.onDone(handler::onDone)
-								.onResult(handler::onResult)
+								.onSuccess(handler::onSuccess)
 								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
 								.onInterrupted(handler::onInterrupted);
@@ -544,6 +563,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 				ResultTaskHandler<T> handler = (ResultTaskHandler<T>) task;
 				builder.onStarted(handler::onStarted)
 								.onDone(handler::onDone)
+								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
 								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
@@ -562,7 +582,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 								.onProgress(handler::onProgress)
 								.onPublish(handler::onPublish)
 								.onDone(handler::onDone)
-								.onResult(handler::onResult)
+								.onSuccess(handler::onSuccess)
 								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
 								.onInterrupted(handler::onInterrupted);
@@ -580,6 +600,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 								.onProgress(handler::onProgress)
 								.onPublish(handler::onPublish)
 								.onDone(handler::onDone)
+								.onSuccess(handler::onSuccess)
 								.onResult(handler::onResult)
 								.onException(handler::onException)
 								.onCancelled(handler::onCancelled)
@@ -653,9 +674,9 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		}
 
 		@Override
-		public Builder<T, V> onResult(Runnable onResult) {
-			requireNonNull(onResult);
-			return onResult(result -> onResult.run());
+		public Builder<T, V> onSuccess(Runnable onSuccess) {
+			requireNonNull(onSuccess);
+			return onResult(result -> onSuccess.run());
 		}
 
 		@Override

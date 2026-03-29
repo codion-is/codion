@@ -81,7 +81,7 @@ public final class ArtistTablePanel extends EntityTablePanel {
 							.task(task)
 							.owner(this)
 							.title(BUNDLE.getString("combining_artists") + "...")
-							.onResult(this::onArtistsCombined)
+							.onSuccess(this::onArtistsCombined)
 							.execute();
 		}
 	}

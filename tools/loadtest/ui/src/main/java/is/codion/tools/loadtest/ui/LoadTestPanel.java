@@ -539,7 +539,7 @@ public final class LoadTestPanel<T> extends JPanel {
 							.task(loadTest::shutdown)
 							.owner(Ancestor.window().of(this).get())
 							.title("Shutting down...")
-							.onResult(() -> System.exit(0))
+							.onSuccess(() -> System.exit(0))
 							.execute();
 		}
 	}

@@ -214,7 +214,7 @@ final class EntityTableExportPanel extends JPanel {
 						.owner(this)
 						.title(MESSAGES.getString("exporting_data"))
 						.control(cancelControl(task.cancel()))
-						.onResult(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_file"))
+						.onSuccess(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_file"))
 						.execute();
 	}
 
@@ -225,7 +225,7 @@ final class EntityTableExportPanel extends JPanel {
 						.owner(this)
 						.title(MESSAGES.getString("exporting_data"))
 						.control(cancelControl(task.cancel()))
-						.onResult(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_clipboard"))
+						.onSuccess(MESSAGES.getString("data_exported"), MESSAGES.getString("exported_to_clipboard"))
 						.execute();
 	}
 

@@ -464,7 +464,7 @@ public final class DomainGeneratorModel {
 		}
 
 		@Override
-		public void onResult() {
+		public void onSuccess() {
 			schemaTableModel.selection().indexes().get().forEach(index ->
 							schemaTableModel.fireTableRowsUpdated(index, index));
 			schemaSelectionChanged();
