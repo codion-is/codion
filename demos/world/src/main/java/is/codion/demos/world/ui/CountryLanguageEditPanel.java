@@ -21,7 +21,6 @@ package is.codion.demos.world.ui;
 import is.codion.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
@@ -67,9 +66,9 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 	}
 
 	private void updateIsOfficial() {
-		SwingEntityEditor editor = editor();
-		//Only when IS_OFFICIAL is the only attribute being edited in an existing entity
-		if (editor.modified().attributes().is(singleton(CountryLanguage.IS_OFFICIAL))) {
+		// Only when we're editing an existing record
+		if (editor().exists().is() && // and is official is the only modified attribute
+						editor().modified().attributes().is(singleton(CountryLanguage.IS_OFFICIAL))) {
 			try {
 				updateCommand()
 								.confirm(false)

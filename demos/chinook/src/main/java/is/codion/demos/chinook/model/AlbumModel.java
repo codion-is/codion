@@ -36,12 +36,12 @@ public final class AlbumModel extends SwingEntityModel {
 		super(Album.TYPE, connectionProvider);
 		SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
 		detailModels().add(trackModel);
-		SwingEntityEditor editor = trackModel.editor();
-		editor.comboBoxModels().initialize(Track.MEDIATYPE_FK, Track.GENRE_FK);
+		SwingEntityEditor trackEditor = trackModel.editor();
+		trackEditor.comboBoxModels().initialize(Track.MEDIATYPE_FK, Track.GENRE_FK);
 		// We refresh albums when tracks are modified, to display the updated rating
-		editor.events().after().insert().addConsumer(this::tracksInsertedOrDeleted);
-		editor.events().after().delete().addConsumer(this::tracksInsertedOrDeleted);
-		editor.events().after().update().addConsumer(this::tracksUpdated);
+		trackEditor.events().after().insert().addConsumer(this::tracksInsertedOrDeleted);
+		trackEditor.events().after().delete().addConsumer(this::tracksInsertedOrDeleted);
+		trackEditor.events().after().update().addConsumer(this::tracksUpdated);
 	}
 
 	private void tracksInsertedOrDeleted(Collection<Entity> tracks) {
@@ -50,6 +50,7 @@ public final class AlbumModel extends SwingEntityModel {
 
 	private void tracksUpdated(Map<Entity, Entity> tracks) {
 		tableModel().refresh(tracks.keySet().stream()
+						// We only need to refresh albums for tracks which rating was modified
 						.filter(track -> track.modified(Track.RATING))
 						.map(track -> track.key(Track.ALBUM_FK))
 						.collect(toSet()));
