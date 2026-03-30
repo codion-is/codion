@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.73
+
 ## 0.18.72
 ### is.codion.common.reactive
 - Value.changed() moved to Observable.
