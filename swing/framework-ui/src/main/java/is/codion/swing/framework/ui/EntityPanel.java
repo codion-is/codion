@@ -550,7 +550,9 @@ public class EntityPanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityPanel.this;
 		}
-		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
+		Dialogs.exception()
+						.owner(Ancestor.window().of(focusOwner).get())
+						.show(exception);
 	}
 
 	/**

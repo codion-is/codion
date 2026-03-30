@@ -634,7 +634,9 @@ public final class EntitySearchField extends HintTextField {
 
 	private void handleException(Exception exception) {
 		endSearch();
-		Dialogs.displayException(exception, Ancestor.window().of(this).get());
+		Dialogs.exception()
+						.owner(Ancestor.window().of(this).get())
+						.show(exception);
 	}
 
 	private void handleCancel() {

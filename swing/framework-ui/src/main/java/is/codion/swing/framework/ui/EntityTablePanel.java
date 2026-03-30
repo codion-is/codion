@@ -1015,7 +1015,9 @@ public class EntityTablePanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityTablePanel.this;
 		}
-		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
+		Dialogs.exception()
+						.owner(Ancestor.window().of(focusOwner).get())
+						.show(exception);
 	}
 
 	/**

@@ -21,10 +21,6 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.ui.dialog.ActionDialogBuilder.ActionDialogComponentStep;
 import is.codion.swing.common.ui.dialog.OkCancelDialogBuilder.OkCancelDialogComponentStep;
 
-import org.jspecify.annotations.Nullable;
-
-import java.awt.Window;
-
 /**
  * A utility class for displaying Dialogs.
  */
@@ -100,16 +96,5 @@ public final class Dialogs {
 	 */
 	public static InputDialogBuilder.ComponentStep input() {
 		return DefaultInputDialogBuilder.COMPONENT;
-	}
-
-	/**
-	 * Displays the given exception in a dialog
-	 * @param exception the exception
-	 * @param dialogParent the dialog parent window
-	 */
-	public static void displayException(Throwable exception, @Nullable Window dialogParent) {
-		new DefaultExceptionDialogBuilder()
-						.owner(dialogParent)
-						.show(exception);
 	}
 }

@@ -605,7 +605,9 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	private static void displayException(Throwable exception, @Nullable JFrame applicationFrame) {
 		if (!(exception instanceof CancelException)) {
 			Window focusOwnerParentWindow = Ancestor.window().of(getCurrentKeyboardFocusManager().getFocusOwner()).get();
-			Dialogs.displayException(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+			Dialogs.exception()
+							.owner(Ancestor.window().of(focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow).get())
+							.show(exception);
 		}
 	}
 

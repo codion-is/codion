@@ -185,7 +185,9 @@ final class EditAttributePanel<T> extends JPanel {
 	}
 
 	private void handleException(Exception exception) {
-		Dialogs.displayException(exception, Ancestor.window().of(this).get());
+		Dialogs.exception()
+						.owner(Ancestor.window().of(this).get())
+						.show(exception);
 	}
 
 	private JPanel createComponentPanel(@Nullable String caption) {

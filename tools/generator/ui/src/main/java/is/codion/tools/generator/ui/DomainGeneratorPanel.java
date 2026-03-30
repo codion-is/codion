@@ -656,7 +656,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			System.exit(0);
 		}
 		catch (Exception e) {
-			Dialogs.displayException(e, null);
+			Dialogs.exception().show(e);
 			System.exit(1);
 		}
 	}
@@ -671,7 +671,9 @@ public final class DomainGeneratorPanel extends JPanel {
 			panel = new DomainGeneratorPanel(domainGeneratorModel(database));
 		}
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
-						Dialogs.displayException(throwable, Ancestor.window().of(panel).get()));
+						Dialogs.exception()
+										.owner(Ancestor.window().of(panel).get())
+										.show(throwable));
 		panel.showFrame();
 	}
 

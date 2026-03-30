@@ -155,7 +155,9 @@ public final class LoadTestPanel<T> extends JPanel {
 	 */
 	public void run() {
 		Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-						Dialogs.displayException(e, Ancestor.window().of(LoadTestPanel.this).get()));
+						Dialogs.exception()
+										.owner(Ancestor.window().of(LoadTestPanel.this).get())
+										.show(e));
 		SwingUtilities.invokeLater(this::showFrame);
 	}
 
@@ -545,7 +547,9 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private void displayException(Exception exception) {
-		Dialogs.displayException(exception, Ancestor.window().of(this).get());
+		Dialogs.exception()
+						.owner(Ancestor.window().of(this).get())
+						.show(exception);
 	}
 
 	private static Exception exception(ApplicationRow application) {

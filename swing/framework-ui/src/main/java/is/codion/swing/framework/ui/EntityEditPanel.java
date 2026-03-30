@@ -556,7 +556,9 @@ public abstract class EntityEditPanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityEditPanel.this;
 		}
-		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
+		Dialogs.exception()
+						.owner(Ancestor.window().of(focusOwner).get())
+						.show(exception);
 	}
 
 	/**

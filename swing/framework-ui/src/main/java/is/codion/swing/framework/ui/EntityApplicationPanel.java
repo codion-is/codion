@@ -289,7 +289,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		if (focusOwner == null) {
 			focusOwner = EntityApplicationPanel.this;
 		}
-		Dialogs.displayException(exception, Ancestor.window().of(focusOwner).get());
+		Dialogs.exception()
+						.owner(Ancestor.window().of(focusOwner).get())
+						.show(exception);
 	}
 
 	/**
