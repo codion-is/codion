@@ -682,7 +682,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void deleteSelected() {
 		Dialogs.progressWorker()
-						.task(tableModel.editor().tasks().delete(tableModel.selection().items().get()).prepare()::perform)
+						.task(tableModel.editor().tasks().delete(tableModel.selection().items().get())::perform)
 						.title(MESSAGES.getString("deleting"))
 						.owner(this)
 						.onResult(Result::handle)
@@ -1826,7 +1826,7 @@ public class EntityTablePanel extends JPanel {
 			if (!configuration.confirmDelete || confirmDelete()) {
 				List<Entity> selectedItems = tableModel().selection().items().get();
 				Dialogs.progressWorker()
-								.task(tableModel.editor().tasks().delete(selectedItems).prepare()::perform)
+								.task(tableModel.editor().tasks().delete(selectedItems)::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
 								.onException(this::onException)

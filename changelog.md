@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.73
 ### is.codion.swing.common.ui
 - Dialogs.displayException() removed.
+### is.codion.framework.model
+- PersistTask.Task removed.
 
 ## 0.18.72
 ### is.codion.common.reactive

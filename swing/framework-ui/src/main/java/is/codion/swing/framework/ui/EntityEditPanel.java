@@ -38,8 +38,8 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorEntity;
+import is.codion.framework.model.EntityEditor.PersistTask;
 import is.codion.framework.model.EntityEditor.PersistTask.Result;
-import is.codion.framework.model.EntityEditor.PersistTask.Task;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -1598,7 +1598,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmInsert()) {
-				Task<Entity> task = editPanel.editor().tasks().insert().prepare();
+				PersistTask<Entity> task = editPanel.editor().tasks().insert();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("inserting"))
@@ -1678,7 +1678,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmUpdate()) {
-				Task<Entity> task = editPanel.editor().tasks().update().prepare();
+				PersistTask<Entity> task = editPanel.editor().tasks().update();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("updating"))
@@ -1753,7 +1753,7 @@ public abstract class EntityEditPanel extends JPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmDelete()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editor().tasks().delete().prepare()::perform)
+								.task(editPanel.editor().tasks().delete()::perform)
 								.title(MESSAGES.getString("deleting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)

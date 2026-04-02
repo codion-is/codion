@@ -296,42 +296,29 @@ public interface EntityEditor {
 	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
-	 * Represents a task for persisting entities, inserting, updating or deleting, split up for use with a background thread.
+	 * <p>Represents a task for persisting entities, inserting, updating or deleting, split up for use with a background thread.
+	 * <p>A {@link PersistTask} captures entity state and fires "before" events at creation time.
+	 * It should be executed promptly after creation, not cached for later use.
 	 * {@snippet :
-	 *   PersistTask<Entity> insert = editor.insert().build();
-	 *
-	 *   PersistTask.Task<Entity> task = insert.prepare();
+	 *   // Must be called on the UI thread, fires "before" events and captures entity state
+	 *   PersistTask<Entity> task = editor.tasks().insert();
 	 *
 	 *   // Can safely be called in a background thread
 	 *   PersistTask.Result<Entity> result = task.perform();
 	 *
+	 *   // Must be called on the UI thread, fires "after" events
 	 *   Entity insertedEntity = result.handle();
 	 *}
-	 * {@link Task#perform()} may be called on a background thread while {@link PersistTask#prepare()}
-	 * and {@link Result#handle()} must be called on the UI thread.
 	 * @param <T> the result type
+	 * @see PersistTasks
 	 */
 	interface PersistTask<T> {
 
 		/**
-		 * Notifies listeners that an operation is about to be performed.
-		 * Must be called on the UI thread if this model has a panel based on it.
-		 * @return the task
+		 * Performs the persist operation. May be called on a background thread.
+		 * @return the task result
 		 */
-		Task<T> prepare();
-
-		/**
-		 * The task performing the operation
-		 * @param <T> the result type
-		 */
-		interface Task<T> {
-
-			/**
-			 * May be called in a background thread.
-			 * @return the insert result
-			 */
-			Result<T> perform();
-		}
+		Result<T> perform();
 
 		/**
 		 * The task result
@@ -341,7 +328,7 @@ public interface EntityEditor {
 
 			/**
 			 * Notifies listeners that the task has been performed.
-			 * Must be called on the UI thread if this model has a panel based on it.
+			 * Must be called on the UI thread if the editor is linked to UI components.
 			 * @return the entities involved
 			 */
 			T handle();
@@ -367,12 +354,15 @@ public interface EntityEditor {
 	}
 
 	/**
-	 * Provides builders for async persist tasks.
+	 * <p>Provides factory methods for creating {@link PersistTask} instances.
+	 * <p>Each factory method validates the input, captures entity state and fires "before" events.
+	 * Must be called on the UI thread if the editor is linked to UI components.
+	 * The returned task should be executed promptly, not cached for later use.
 	 */
 	interface PersistTasks {
 
 		/**
-		 * @return an async task for inserting the active entity
+		 * @return a task for inserting the active entity
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled
 		 */
@@ -380,7 +370,7 @@ public interface EntityEditor {
 
 		/**
 		 * @param entity the entity
-		 * @return an async task for inserting the given entity
+		 * @return a task for inserting the given entity
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled
 		 */
@@ -388,14 +378,14 @@ public interface EntityEditor {
 
 		/**
 		 * @param entities the entities
-		 * @return an async task for inserting the given entities
+		 * @return a task for inserting the given entities
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled
 		 */
 		PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
-		 * @return an async task for updating the active entity
+		 * @return a task for updating the active entity
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case updating is not enabled
 		 */
@@ -403,7 +393,7 @@ public interface EntityEditor {
 
 		/**
 		 * @param entity the entity
-		 * @return an async task for updating the given entity
+		 * @return a task for updating the given entity
 		 * @throws IllegalStateException in case the entity is not modified or if updating is not enabled
 		 * @throws EntityValidationException in case of validation failure
 		 */
@@ -411,28 +401,28 @@ public interface EntityEditor {
 
 		/**
 		 * @param entities the entities
-		 * @return an async task for updating the given entities
+		 * @return a task for updating the given entities
 		 * @throws IllegalStateException in case the entity is not modified or if updating is not enabled
 		 * @throws EntityValidationException in case of validation failure
 		 */
 		PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
-		 * @return an async task for deleting the active entity
+		 * @return a task for deleting the active entity
 		 * @throws IllegalStateException in case deleting is not enabled
 		 */
 		PersistTask<Entity> delete();
 
 		/**
 		 * @param entity the entity
-		 * @return an async task for deleting the given entity
+		 * @return a task for deleting the given entity
 		 * @throws IllegalStateException in case deleting is not enabled
 		 */
 		PersistTask<Entity> delete(Entity entity);
 
 		/**
 		 * @param entities the entities
-		 * @return an async task for deleting the given entities
+		 * @return a task for deleting the given entities
 		 * @throws IllegalStateException in case deleting is not enabled
 		 */
 		PersistTask<Collection<Entity>> delete(Collection<Entity> entities);

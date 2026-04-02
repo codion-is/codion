@@ -251,32 +251,32 @@ public class DefaultEntityEditor implements EntityEditor {
 
 	@Override
 	public final Entity insert() throws EntityValidationException {
-		return tasks().insert().prepare().perform().handle();
+		return tasks().insert().perform().handle();
 	}
 
 	@Override
 	public final Collection<Entity> insert(Collection<Entity> entities) throws EntityValidationException {
-		return tasks().insert(entities).prepare().perform().handle();
+		return tasks().insert(entities).perform().handle();
 	}
 
 	@Override
 	public final Entity update() throws EntityValidationException {
-		return tasks().update().prepare().perform().handle();
+		return tasks().update().perform().handle();
 	}
 
 	@Override
 	public final Collection<Entity> update(Collection<Entity> entities) throws EntityValidationException {
-		return tasks().update(entities).prepare().perform().handle();
+		return tasks().update(entities).perform().handle();
 	}
 
 	@Override
 	public final Entity delete() {
-		return tasks().delete().prepare().perform().handle();
+		return tasks().delete().perform().handle();
 	}
 
 	@Override
 	public final Collection<Entity> delete(Collection<Entity> entities) {
-		return tasks().delete(entities).prepare().perform().handle();
+		return tasks().delete(entities).perform().handle();
 	}
 
 	@Override
@@ -667,28 +667,20 @@ public class DefaultEntityEditor implements EntityEditor {
 			private InsertEntity() {
 				this.entity = entity().get().copy().mutable();
 				this.handler = inserted -> entity().replace(inserted);
+				persistEvents.beforeInsert(entity);
 			}
 
 			private InsertEntity(Entity entity) {
 				this.entity = entity;
 				this.handler = e -> {};
+				persistEvents.beforeInsert(entity);
 			}
 
 			@Override
-			public Task<Entity> prepare() {
-				persistEvents.beforeInsert(entity);
+			public Result<Entity> perform() {
+				LOG.debug("insert {}", entity);
 
-				return new InsertEntity.InsertTask();
-			}
-
-			private final class InsertTask implements Task<Entity> {
-
-				@Override
-				public Result<Entity> perform() {
-					LOG.debug("insert {}", entity);
-
-					return new InsertResult(persistence.get().insert(entity, connection));
-				}
+				return new InsertResult(persistence.get().insert(entity, connection));
 			}
 
 			private final class InsertResult implements Result<Entity> {
@@ -715,23 +707,14 @@ public class DefaultEntityEditor implements EntityEditor {
 
 			private InsertEntities(Collection<Entity> entities) {
 				this.entities = unmodifiableCollection(new ArrayList<>(entities));
+				persistEvents.beforeInsert(entities);
 			}
 
 			@Override
-			public Task<Collection<Entity>> prepare() {
-				persistEvents.beforeInsert(entities);
+			public Result<Collection<Entity>> perform() {
+				LOG.debug("insert {}", entities);
 
-				return new InsertEntities.InsertTask();
-			}
-
-			private final class InsertTask implements Task<Collection<Entity>> {
-
-				@Override
-				public Result<Collection<Entity>> perform() {
-					LOG.debug("insert {}", entities);
-
-					return new InsertResult(unmodifiableCollection(persistence.get().insert(entities, connection)));
-				}
+				return new InsertResult(unmodifiableCollection(persistence.get().insert(entities, connection)));
 			}
 
 			private final class InsertResult implements Result<Collection<Entity>> {
@@ -759,28 +742,20 @@ public class DefaultEntityEditor implements EntityEditor {
 			private UpdateEntity() {
 				this.entity = entity().get().copy().mutable();
 				this.handler = updated -> entity().replace(updated);
+				persistEvents.beforeUpdate(entity);
 			}
 
 			private UpdateEntity(Entity entity) {
 				this.entity = entity;
 				this.handler = e -> {};
+				persistEvents.beforeUpdate(entity);
 			}
 
 			@Override
-			public Task<Entity> prepare() {
-				persistEvents.beforeUpdate(entity);
+			public Result<Entity> perform() {
+				LOG.debug("update {}", entity);
 
-				return new UpdateEntity.UpdateTask();
-			}
-
-			private final class UpdateTask implements Task<Entity> {
-
-				@Override
-				public Result<Entity> perform() {
-					LOG.debug("update {}", entity);
-
-					return new UpdateResult(persistence.get().update(entity, connection));
-				}
+				return new UpdateResult(persistence.get().update(entity, connection));
 			}
 
 			private final class UpdateResult implements Result<Entity> {
@@ -807,23 +782,14 @@ public class DefaultEntityEditor implements EntityEditor {
 
 			private UpdateEntities(Collection<Entity> entities) {
 				this.entities = unmodifiableCollection(new ArrayList<>(entities));
+				persistEvents.beforeUpdate(entities);
 			}
 
 			@Override
-			public Task<Collection<Entity>> prepare() {
-				persistEvents.beforeUpdate(entities);
+			public Result<Collection<Entity>> perform() {
+				LOG.debug("update {}", entities);
 
-				return new UpdateEntities.UpdateTask();
-			}
-
-			private final class UpdateTask implements Task<Collection<Entity>> {
-
-				@Override
-				public Result<Collection<Entity>> perform() {
-					LOG.debug("update {}", entities);
-
-					return new UpdateResult(persistence.get().update(entities, connection));
-				}
+				return new UpdateResult(persistence.get().update(entities, connection));
 			}
 
 			private final class UpdateResult implements Result<Collection<Entity>> {
@@ -881,30 +847,23 @@ public class DefaultEntityEditor implements EntityEditor {
 			private DeleteEntity() {
 				this.entity = entity().get().copy().mutable();
 				this.handler = () -> entity().replace(null);
+				this.entity.revert();// in case of a modified primary key
+				persistEvents.beforeDelete(entity);
 			}
 
 			private DeleteEntity(Entity entity) {
 				this.entity = entity;
 				this.handler = () -> {};
+				this.entity.revert();// in case of a modified primary key
+				persistEvents.beforeDelete(entity);
 			}
 
 			@Override
-			public Task<Entity> prepare() {
-				entity.revert();// in case of a modified primary key
-				persistEvents.beforeDelete(entity);
+			public Result<Entity> perform() {
+				LOG.debug("delete {}", entity);
+				persistence.get().delete(entity, connection);
 
-				return new DeleteEntity.DeleteTask();
-			}
-
-			private final class DeleteTask implements Task<Entity> {
-
-				@Override
-				public Result<Entity> perform() {
-					LOG.debug("delete {}", entity);
-					persistence.get().delete(entity, connection);
-
-					return new DeleteEntity.DeleteResult(entity);
-				}
+				return new DeleteResult(entity);
 			}
 
 			private final class DeleteResult implements Result<Entity> {
@@ -931,25 +890,16 @@ public class DefaultEntityEditor implements EntityEditor {
 
 			private DeleteEntities(Collection<Entity> entities) {
 				this.entities = unmodifiableCollection(new ArrayList<>(entities));
+				entities.forEach(Entity::revert);// in case of a modified primary key
+				persistEvents.beforeDelete(entities);
 			}
 
 			@Override
-			public Task<Collection<Entity>> prepare() {
-				entities.forEach(Entity::revert);// in case of a modified primary key
-				persistEvents.beforeDelete(entities);
+			public Result<Collection<Entity>> perform() {
+				LOG.debug("delete {}", entities);
+				persistence.get().delete(entities, connection);
 
-				return new DeleteEntities.DeleteTask();
-			}
-
-			private final class DeleteTask implements Task<Collection<Entity>> {
-
-				@Override
-				public Result<Collection<Entity>> perform() {
-					LOG.debug("delete {}", entities);
-					persistence.get().delete(entities, connection);
-
-					return new DeleteEntities.DeleteResult(entities);
-				}
+				return new DeleteResult(entities);
 			}
 
 			private final class DeleteResult implements Result<Collection<Entity>> {
