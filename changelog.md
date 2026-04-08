@@ -8,6 +8,7 @@ Codion Change Log
 - PersistTask.Task removed.
 ### is.codion.swing.framework.ui
 - EditorComponents no longer an interface.
+- EntityApplication no longer an interface.
 
 ## 0.18.72
 ### is.codion.common.reactive

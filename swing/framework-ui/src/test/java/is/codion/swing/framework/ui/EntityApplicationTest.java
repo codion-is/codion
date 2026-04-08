@@ -33,7 +33,7 @@ import static is.codion.common.model.preferences.FilePreferences.filePreferences
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-public final class DefaultEntityApplicationTest {
+public final class EntityApplicationTest {
 
 	@AfterAll
 	static void cleanUp() throws BackingStoreException {
