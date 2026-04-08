@@ -6,6 +6,8 @@ Codion Change Log
 - Dialogs.displayException() removed.
 ### is.codion.framework.model
 - PersistTask.Task removed.
+### is.codion.swing.framework.ui
+- EditorComponents no longer an interface.
 
 ## 0.18.72
 ### is.codion.common.reactive

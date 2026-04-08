@@ -184,7 +184,7 @@ public abstract class EntityEditPanel extends JPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = (Consumer<Config>) EMPTY_CONSUMER;
 
 	private final SwingEntityEditModel editModel;
-	private final DefaultEditorComponents components;
+	private final EditorComponents components;
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final FocusedListener focusedListener = new FocusedListener(this);
@@ -826,8 +826,8 @@ public abstract class EntityEditPanel extends JPanel {
 						.collect(Collectors.joining(", ", "", "\n\n" + FrameworkMessages.modifiedWarning()));
 	}
 
-	private DefaultEditorComponents createEditorComponents(SwingEntityEditor editor) {
-		DefaultEditorComponents editorComponents = new DefaultEditorComponents(editor);
+	private EditorComponents createEditorComponents(SwingEntityEditor editor) {
+		EditorComponents editorComponents = new EditorComponents(editor);
 		editorComponents.settings().validIndicator().set(configuration.validIndicator);
 		editorComponents.settings().modifiedIndicator().set(configuration.modifiedIndicator);
 		editorComponents.settings().transferFocusOnEnter().set(configuration.transferFocusOnEnter);
@@ -1583,7 +1583,7 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 	}
 
-	protected static final class DefaultInsertCommand implements InsertCommand {
+	private static final class DefaultInsertCommand implements InsertCommand {
 
 		private final EntityEditPanel editPanel;
 		private final boolean confirm;
@@ -1768,7 +1768,7 @@ public abstract class EntityEditPanel extends JPanel {
 			InputFocus.requestFocus(lastFocusedComponent);
 		}
 
-		protected static final class DefaultBuilder implements Builder {
+		private static final class DefaultBuilder implements Builder {
 
 			private final EntityEditPanel editPanel;
 			private final Collection<Consumer<Entity>> onDelete = new ArrayList<>(1);

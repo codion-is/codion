@@ -49,7 +49,7 @@ public final class EditorComponentsTest {
 	@Test
 	void test() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EditorComponents components = new DefaultEditorComponents(editModel.editor());
+		EditorComponents components = new EditorComponents(editModel.editor());
 		CreateComponents create = new CreateComponents(components);
 		create.textField(Employee.NAME);
 		assertThrows(IllegalStateException.class, () -> create.textField(Employee.NAME));
@@ -68,7 +68,7 @@ public final class EditorComponentsTest {
 	@Test
 	void derived() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
-		EditorComponents components = new DefaultEditorComponents(editModel.editor());
+		EditorComponents components = new EditorComponents(editModel.editor());
 		CreateComponents factory = new CreateComponents(components);
 		JTextField textField = factory.textField(Detail.INT_DERIVED).build();
 		assertFalse(textField.isEnabled());

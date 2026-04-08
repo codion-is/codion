@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityEditor;
+import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.Components;
@@ -58,6 +59,8 @@ import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -67,96 +70,148 @@ import javax.swing.SpinnerListModel;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.temporal.Temporal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Manages the components for a {@link SwingEntityEditor}
  */
-public interface EditorComponents {
+public final class EditorComponents {
+
+	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
+	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
+
+	private final ComponentSettings settings = new ComponentSettings();
+	private final CreateComponents create;
+	private final SwingEntityEditor editor;
+
+	EditorComponents(SwingEntityEditor editor) {
+		this.editor = requireNonNull(editor);
+		this.create = new CreateComponents(this);
+	}
 
 	/**
 	 * @return the underlying editor
 	 */
-	SwingEntityEditor editor();
-
-	/**
-	 * @return the {@link CreateComponents} instance
-	 */
-	CreateComponents create();
+	public SwingEntityEditor editor() {
+		return editor;
+	}
 
 	/**
 	 * @return the component settings
 	 */
-	ComponentSettings settings();
+	public ComponentSettings settings() {
+		return settings;
+	}
+
+	/**
+	 * @return the {@link CreateComponents} instance
+	 */
+	public CreateComponents create() {
+		return create;
+	}
 
 	/**
 	 * @param <T> the value type
 	 * @param attribute the attribute
 	 * @return the {@link EditorComponent} containing the component associated with the given attribute
 	 */
-	<T> EditorComponent<T> component(Attribute<T> attribute);
+	public <T> EditorComponent<T> component(Attribute<T> attribute) {
+		ComponentValueBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
+		if (componentBuilder != null) {
+			componentBuilder.build();
+		}
+
+		return (EditorComponent<T>) components.computeIfAbsent(attribute, k -> new EditorComponent<>(editor.value(attribute)));
+	}
+
+	Map<Attribute<?>, EditorComponent<?>> components() {
+		return unmodifiableMap(components);
+	}
 
 	/**
 	 * @param editor the editor
 	 * @return a new {@link EditorComponents} instance
 	 */
 	static EditorComponents editorComponents(SwingEntityEditor editor) {
-		return new DefaultEditorComponents(requireNonNull(editor));
+		return new EditorComponents(requireNonNull(editor));
 	}
 
 	/**
 	 * Manages settings that are applied to a component builder when set.
 	 * @see EditorComponent#set(ComponentValueBuilder)
 	 */
-	interface ComponentSettings {
+	public static final class ComponentSettings {
+
+		private final Value<Integer> textFieldColumns = Value.nonNull(12);
+		private final State modifiedIndicator = State.state(true);
+		private final State validIndicator = State.state(true);
+		private final State transferFocusOnEnter = State.state(true);
+
+		private ComponentSettings() {}
 
 		/**
 		 * Note that changing this has no effect on previously created components
 		 * @return a {@link Value} controlling the default text field columns for created components
 		 */
-		Value<Integer> textFieldColumns();
+		public Value<Integer> textFieldColumns() {
+			return textFieldColumns;
+		}
 
 		/**
 		 * Note that changing this has no effect on previously created components
 		 * @return a State controlling whether created components have a modified indicator
 		 */
-		State modifiedIndicator();
+		public State modifiedIndicator() {
+			return modifiedIndicator;
+		}
 
 		/**
 		 * Note that changing this has no effect on previously created components
 		 * @return a State controlling whether created components have a valid indicator
 		 */
-		State validIndicator();
+		public State validIndicator() {
+			return validIndicator;
+		}
 
 		/**
 		 * Note that changing this has no effect on previously created components
 		 * @return a {@link State} controlling whether created components transfer focus on enter
 		 */
-		State transferFocusOnEnter();
+		public State transferFocusOnEnter() {
+			return transferFocusOnEnter;
+		}
 	}
 
-	/**
-	 * Manages the component used to edit an attribute
-	 * @param <T> the value type
-	 */
-	interface EditorComponent<T> {
+	public final class EditorComponent<T> {
+
+		private final EditorValue<T> value;
+
+		private @Nullable JComponent component;
+
+		private EditorComponent(EditorValue<T> value) {
+			this.value = value;
+		}
 
 		/**
 		 * @return the component
 		 * @throws IllegalStateException in case no component has been set
 		 */
-		JComponent get();
+		public JComponent get() {
+			if (component == null) {
+				throw new IllegalStateException("Component has not been set for: " + value.attribute());
+			}
 
-		/**
-		 * @return the component or an empty Optional in case none has been set
-		 */
-		Optional<JComponent> optional();
+			return component;
+		}
 
 		/**
 		 * Note that when setting the component directly using this method, no value linking is performed.
@@ -164,13 +219,22 @@ public interface EditorComponents {
 		 * @throws IllegalStateException in case the component has already been set
 		 * @see EntityEditor#value(Attribute)
 		 */
-		void set(JComponent component);
+		public void set(JComponent component) {
+			requireNonNull(component);
+			if (this.component != null) {
+				throw new IllegalStateException("Component has already been set for: " + value.attribute());
+			}
+			this.component = component;
+		}
 
 		/**
 		 * Sets the component and links the value with the underlying editor value
 		 * @param componentValue the component value
 		 */
-		void set(ComponentValue<? extends JComponent, T> componentValue);
+		public void set(ComponentValue<? extends JComponent, T> componentValue) {
+			set(requireNonNull(componentValue).component());
+			componentValue.link(value);
+		}
 
 		/**
 		 * Associates the given component builder with this attribute, configuring it
@@ -185,7 +249,33 @@ public interface EditorComponents {
 		 * @return the component builder
 		 * @throws IllegalStateException in case a component or a component builder has already been associated with the attribute
 		 */
-		<C extends JComponent, B extends ComponentValueBuilder<C, T, B>> B set(B componentBuilder);
+		public <C extends JComponent, B extends ComponentValueBuilder<C, T, B>> B set(B componentBuilder) {
+			requireNonNull(componentBuilder);
+			if (componentBuilders.containsKey(value.attribute()) || component != null) {
+				throw new IllegalStateException("Component has already been set for attribute: " + value.attribute());
+			}
+			AttributeDefinition<T> attributeDefinition = editor.entities()
+							.definition(value.attribute().entityType()).attributes().definition(value.attribute());
+			componentBuilders.put(value.attribute(), componentBuilder
+							.link(value)
+							.name(value.attribute().toString())
+							.toolTipText(value.message())
+							.label(label -> label
+											.text(attributeDefinition.caption())
+											.displayedMnemonic(attributeDefinition.mnemonic()))
+							.transferFocusOnEnter(settings.transferFocusOnEnter().is())
+							.valid(settings.validIndicator().is() ? value.valid() : null)
+							.modified(settings.modifiedIndicator().is() ? value.modified() : null)
+							.onBuild(this::setComponent));
+			if (attributeDefinition.derived()) {
+				componentBuilder.enabled(false);
+			}
+			if (componentBuilder instanceof TextFieldBuilder<?, ?, ?>) {
+				((TextFieldBuilder<?, ?, ?>) componentBuilder).columns(settings.textFieldColumns().getOrThrow());
+			}
+
+			return componentBuilder;
+		}
 
 		/**
 		 * Replaces an already set component.
@@ -194,20 +284,45 @@ public interface EditorComponents {
 		 * @throws IllegalStateException in case no component has been previously set
 		 * @see EntityEditor#value(Attribute)
 		 */
-		void replace(JComponent component);
+		public void replace(JComponent component) {
+			requireNonNull(component);
+			if (this.component == null) {
+				throw new IllegalStateException("No component has been set for: " + value.attribute());
+			}
+			this.component = component;
+		}
+
+		/**
+		 * @return the component or an empty Optional in case none has been set
+		 */
+		public Optional<JComponent> optional() {
+			return Optional.ofNullable(component);
+		}
 
 		/**
 		 * @return the label associated with the component
 		 * @throws IllegalStateException in case no component has been set or if no label is associated with it
 		 * @see ComponentBuilder#label(JLabel)
 		 */
-		JLabel label();
+		public JLabel label() {
+			JLabel label = (JLabel) get().getClientProperty(CreateComponents.LABELED_BY);
+			if (label == null) {
+				throw new IllegalStateException("No label associated with component: " + value.attribute());
+			}
+
+			return label;
+		}
+
+		private void setComponent(JComponent comp) {
+			componentBuilders.remove(value.attribute());
+			component = comp;
+		}
 	}
 
 	/**
 	 * Creates {@link SwingEntityEditor} based components
 	 */
-	final class CreateComponents {
+	public static final class CreateComponents {
 
 		static final String LABELED_BY = "labeledBy";
 
