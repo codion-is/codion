@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - Dialogs.displayException() removed.
 - LayoutPanelBuilder added.
+- ToggleButtonBuilder.builder() component type parameter removed.
 ### is.codion.framework.model
 - PersistTask.Task removed.
 ### is.codion.swing.framework.ui

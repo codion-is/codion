@@ -59,11 +59,10 @@ public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleBu
 	B link(ObservableState linkedState);
 
 	/**
-	 * @param <C> the component type
 	 * @param <B> the builder type
-	 * @return a builder for a component
+	 * @return a builder for a toggle button
 	 */
-	static <C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> ToggleButtonBuilder<C, B> builder() {
+	static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> builder() {
 		return new DefaultToggleButtonBuilder<>();
 	}
 }
