@@ -121,8 +121,8 @@ class DefaultPanelBuilder<L extends LayoutManager, B extends PanelBuilder<L, B>>
 	private static final class DefaultPanelBuilderFactory implements PanelBuilderFactory {
 
 		@Override
-		public <L extends LayoutManager, B extends PanelBuilder<L, B>> PanelBuilder<L, B> layout(L layout) {
-			return (PanelBuilder<L, B>) new DefaultPanelBuilder<>().layout(layout);
+		public LayoutPanelBuilder layout(LayoutManager layout) {
+			return new DefaultLayoutPanelBuilder(requireNonNull(layout));
 		}
 
 		@Override

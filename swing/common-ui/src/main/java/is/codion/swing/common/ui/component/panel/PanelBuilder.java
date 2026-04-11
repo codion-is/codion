@@ -103,11 +103,9 @@ public interface PanelBuilder<L extends LayoutManager, B extends PanelBuilder<L,
 
 		/**
 		 * @param layout the layout
-		 * @param <L> the layout type
-		 * @param <B> the builder type
 		 * @return a new panel builder
 		 */
-		<L extends LayoutManager, B extends PanelBuilder<L, B>> PanelBuilder<L, B> layout(L layout);
+		LayoutPanelBuilder layout(LayoutManager layout);
 
 		/**
 		 * Uses the default vertical and horizontal gap value

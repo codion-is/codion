@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.73
 ### is.codion.swing.common.ui
 - Dialogs.displayException() removed.
+- LayoutPanelBuilder added.
 ### is.codion.framework.model
 - PersistTask.Task removed.
 ### is.codion.swing.framework.ui

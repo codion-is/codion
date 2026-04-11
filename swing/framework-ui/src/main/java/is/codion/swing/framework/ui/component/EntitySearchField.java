@@ -40,7 +40,7 @@ import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
-import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.component.panel.LayoutPanelBuilder;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.HintTextField;
 import is.codion.swing.common.ui.component.text.TextComponents;
@@ -695,7 +695,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private static JPanel createSearchColumnPanel(EntitySearchModel searchModel) {
 			CardLayout cardLayout = new CardLayout(5, 5);
-			PanelBuilder<CardLayout, ?> columnBasePanelBuilder = panel().layout(cardLayout);
+			LayoutPanelBuilder columnBasePanelBuilder = panel().layout(cardLayout);
 			List<Item<Column<String>>> items = new ArrayList<>();
 			EntityDefinition definition = searchModel.entityDefinition();
 			for (Map.Entry<Column<String>, EntitySearchModel.Settings> entry : searchModel.settings().entrySet()) {
