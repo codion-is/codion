@@ -827,7 +827,7 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	private EditorComponents createEditorComponents(SwingEntityEditor editor) {
-		EditorComponents editorComponents = new EditorComponents(editor);
+		EditorComponents editorComponents = EditorComponents.editorComponents(editor);
 		editorComponents.settings().validIndicator().set(configuration.validIndicator);
 		editorComponents.settings().modifiedIndicator().set(configuration.modifiedIndicator);
 		editorComponents.settings().transferFocusOnEnter().set(configuration.transferFocusOnEnter);
@@ -1421,6 +1421,8 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private final Initial initial = new Initial();
 		private final AfterInsert afterInsert = new AfterInsert();
+
+		private InputFocus() {}
 
 		/**
 		 * Request focus for the component associated with the given attribute.

@@ -93,7 +93,7 @@ public final class EditorComponents {
 	private final CreateComponents create;
 	private final SwingEntityEditor editor;
 
-	EditorComponents(SwingEntityEditor editor) {
+	private EditorComponents(SwingEntityEditor editor) {
 		this.editor = requireNonNull(editor);
 		this.create = new CreateComponents(this);
 	}
@@ -141,7 +141,7 @@ public final class EditorComponents {
 	 * @param editor the editor
 	 * @return a new {@link EditorComponents} instance
 	 */
-	static EditorComponents editorComponents(SwingEntityEditor editor) {
+	public static EditorComponents editorComponents(SwingEntityEditor editor) {
 		return new EditorComponents(requireNonNull(editor));
 	}
 
