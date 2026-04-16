@@ -181,8 +181,13 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 
 	/**
 	 * Customizes a renderer component for a given cell
+	 * <p>Note that when {@link FilterTable#ROWS_FILL_VIEWPORT} is enabled, the {@code row} instance
+	 * received by {@link #customize(FilterTable, Object, Object, JComponent)} is null, when
+	 * rendering outside the available table rows.
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
+	 * @see FilterTable#ROWS_FILL_VIEWPORT
+	 * @see FilterTable.Builder#rowsFillViewport(boolean)
 	 */
 	interface Customizer<R, C> {
 
@@ -193,10 +198,11 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 
 		/**
 		 * @param table the table
+		 * @param row the row, null when rendering outside the available table rows
 		 * @param identifier the column identifier
 		 * @param component the renderer component
 		 */
-		void customize(FilterTable<R, C> table, C identifier, JComponent component);
+		void customize(FilterTable<R, C> table, @Nullable R row, C identifier, JComponent component);
 	}
 
 	/**

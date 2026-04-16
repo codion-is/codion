@@ -6,6 +6,7 @@ Codion Change Log
 - Dialogs.displayException() removed.
 - LayoutPanelBuilder added.
 - ToggleButtonBuilder.builder() component type parameter removed.
+- FilterTableCellRenderer.Customizer.customize() row parameter added.
 ### is.codion.framework.model
 - PersistTask.Task removed.
 ### is.codion.swing.framework.ui

@@ -142,18 +142,18 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		return (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}
 
-	private void paintBackground(FilterTable<R, C> filterTable, int row, int column, Graphics graphics) {
-		paintBackground(filterTable, row, column, graphics,
-						settings.backgroundColor(filterTable, row, filterTable.columnModel().getColumn(column).identifier(),
-										component(filterTable, null, false, false, row, column)));
+	private void paintBackground(FilterTable<R, C> filterTable, int rowIndex, R row, int column, Graphics graphics) {
+		paintBackground(filterTable, rowIndex, column, graphics,
+						settings.backgroundColor(filterTable, rowIndex, row, filterTable.columnModel().getColumn(column).identifier(),
+										component(filterTable, null, false, false, rowIndex, column)));
 	}
 
 	static <R, C> void paintBackground(FilterTable<R, C> filterTable, int row, int column, Graphics graphics, TableCellRenderer renderer) {
 		if (renderer instanceof DefaultFilterTableCellRenderer) {
-			((DefaultFilterTableCellRenderer<R, C, ?>) renderer).paintBackground(filterTable, row, column, graphics);
+			((DefaultFilterTableCellRenderer<R, C, ?>) renderer).paintBackground(filterTable, row, null, column, graphics);
 		}
 		else if (renderer instanceof DefaultFilterTableCellRenderer.BooleanRenderer) {
-			((DefaultFilterTableCellRenderer.BooleanRenderer<R, C>) renderer).paintBackground(filterTable, row, column, graphics);
+			((DefaultFilterTableCellRenderer.BooleanRenderer<R, C>) renderer).paintBackground(filterTable, row, null, column, graphics);
 		}
 		else {
 			Color color = renderer.getTableCellRendererComponent(filterTable, null, false, false, row, column).getBackground();
@@ -227,9 +227,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		private void paintBackground(FilterTable<R, C> filterTable, int row, int column, Graphics graphics) {
-			DefaultFilterTableCellRenderer.paintBackground(filterTable, row, column, graphics,
-							settings.backgroundColor(filterTable, row, filterTable.columnModel().getColumn(column).identifier(), this));
+		private void paintBackground(FilterTable<R, C> filterTable, int rowIndex, R row, int column, Graphics graphics) {
+			DefaultFilterTableCellRenderer.paintBackground(filterTable, rowIndex, column, graphics,
+							settings.backgroundColor(filterTable, rowIndex, row, filterTable.columnModel().getColumn(column).identifier(), this));
 		}
 	}
 
@@ -290,11 +290,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			setComponentBorder(component, hasFocus,
 							searchResults.contains(rowIndex, columnIndex),
 							searchResults.current().is(rowIndex, columnIndex));
-			for (Customizer<R, C> customizer : customizers) {
-				if (customizer.enabled()) {
-					customizer.customize(filterTable, identifier, component);
-				}
-			}
+			customize(filterTable, row, identifier, component);
 		}
 
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
@@ -306,15 +302,19 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return selected ? uiSettings.selectionForeground() : uiSettings.foreground();
 		}
 
-		private Color backgroundColor(FilterTable<R, C> filterTable, int row, C identifier, JComponent component) {
-			component.setBackground(backgroundColor(row));
-			for (Customizer<R, C> customizer : customizers) {
-				if (customizer.enabled()) {
-					customizer.customize(filterTable, identifier, component);
-				}
-			}
+		private Color backgroundColor(FilterTable<R, C> filterTable, int rowIndex, R row, C identifier, JComponent component) {
+			component.setBackground(backgroundColor(rowIndex));
+			customize(filterTable, row, identifier, component);
 
 			return component.getBackground();
+		}
+
+		private void customize(FilterTable<R, C> filterTable, R row, C identifier, JComponent component) {
+			for (Customizer<R, C> customizer : customizers) {
+				if (customizer.enabled()) {
+					customizer.customize(filterTable, row, identifier, component);
+				}
+			}
 		}
 
 		private Color backgroundColor(int row) {
@@ -429,7 +429,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public void customize(FilterTable<R, C> table, C identifier, JComponent component) {
+		public void customize(FilterTable<R, C> table, R row, C identifier, JComponent component) {
 			if (filterEnabled(identifier, table.model())) {
 				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
 			}

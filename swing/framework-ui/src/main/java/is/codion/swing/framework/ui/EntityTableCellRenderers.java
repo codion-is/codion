@@ -98,7 +98,7 @@ public class EntityTableCellRenderers implements FilterTableCellRenderer.Factory
 		boolean enabled;
 
 		@Override
-		public void customize(FilterTable<Entity, Attribute<?>> table, Attribute<?> attribute, JComponent component) {
+		public void customize(FilterTable<Entity, Attribute<?>> table, Entity entity, Attribute<?> attribute, JComponent component) {
 			if (conditionEnabled(attribute, (SwingEntityTableModel) table.model())) {
 				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
 			}
