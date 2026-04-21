@@ -7,6 +7,8 @@ Codion Change Log
 - LayoutPanelBuilder added.
 - ToggleButtonBuilder.builder() component type parameter removed.
 - FilterTableCellRenderer.Customizer.customize() row parameter added.
+### is.codion.framework.domain
+- AttributeDefinition.USE_LEXICAL_STRING_COMPARATOR renamed LEXICAL_STRING_COMPARATOR.
 ### is.codion.framework.model
 - PersistTask.Task removed.
 ### is.codion.swing.framework.ui

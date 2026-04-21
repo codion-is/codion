@@ -281,7 +281,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	protected Comparator<T> defaultComparator(Attribute<T> attribute) {
-		if (attribute.type().isString() && USE_LEXICAL_STRING_COMPARATOR.getOrThrow()) {
+		if (attribute.type().isString() && LEXICAL_STRING_COMPARATOR.getOrThrow()) {
 			return (Comparator<T>) LEXICAL_COMPARATOR;
 		}
 		if (Comparable.class.isAssignableFrom(attribute.type().valueClass())) {

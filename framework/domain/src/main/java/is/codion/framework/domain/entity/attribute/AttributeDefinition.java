@@ -189,7 +189,7 @@ public sealed interface AttributeDefinition<T>
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> USE_LEXICAL_STRING_COMPARATOR = booleanValue("codion.domain.useLexicalStringComparator", true);
+	PropertyValue<Boolean> LEXICAL_STRING_COMPARATOR = booleanValue("codion.domain.lexicalStringComparator", true);
 
 	/**
 	 * The suffix used for the mnemonic resource key.
