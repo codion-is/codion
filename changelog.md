@@ -16,6 +16,7 @@ Codion Change Log
 - EntityApplication no longer an interface.
 - EditorComponents bug fixed, factory method now public.
 - EntityEditPanel.PersistCommands added.
+- EntityEditPanel.Config.USE_SAVE_CAPTION removed.
 
 ## 0.18.72
 ### is.codion.common.reactive

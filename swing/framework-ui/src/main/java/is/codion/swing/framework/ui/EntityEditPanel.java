@@ -713,15 +713,12 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	private CommandControl createInsertControl() {
-		boolean useSaveCaption = EntityEditPanel.Config.USE_SAVE_CAPTION.getOrThrow();
-		char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.insertMnemonic();
-		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
 		return Control.builder()
 						.command(this::insert)
-						.caption(caption)
+						.caption(FrameworkMessages.insert())
 						.enabled(State.and(active, editor().settings().insertEnabled()))
-						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
-						.mnemonic(mnemonic)
+						.description(FrameworkMessages.insertTip() + ALT_PREFIX + FrameworkMessages.insertMnemonic() + ")")
+						.mnemonic(FrameworkMessages.insertMnemonic())
 						.icon(ICONS.add())
 						.onException(this::onException)
 						.build();
@@ -854,16 +851,6 @@ public abstract class EntityEditPanel extends JPanel {
 	 * Contains configuration settings for a {@link EntityEditPanel} which must be set before the panel is initialized.
 	 */
 	public static final class Config {
-
-		/**
-		 * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)
-		 * <ul>
-		 * <li>Value type: Boolean
-		 * <li>Default value: false
-		 * </ul>
-		 */
-		public static final PropertyValue<Boolean> USE_SAVE_CAPTION =
-						booleanValue(EntityEditPanel.class.getName() + ".useSaveCaption", false);
 
 		/**
 		 * Specifies whether to include a {@link EntityViewer} action on this edit panel, triggered with CTRL-ALT-V by default.
