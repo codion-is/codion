@@ -159,19 +159,19 @@ public final class NotesDemo {
 			SwingEntityEditor editor = editor();
 			if (editor.exists().not().is() && !editor.value(Note.NOTE).isNull()) {
 				// A new note with a non-null text
-				insertCommand()
+				commands().insert()
 								.execute();
 			}
 			else if (editor.modified().is()) {
 				if (editor.value(Note.NOTE).isNull()) {
 					// An existing note with no text
-					deleteCommand()
+					commands().delete()
 									.confirm(false)
 									.execute();
 				}
 				else {
 					// An existing note with a modified text
-					updateCommand()
+					commands().update()
 									.confirm(false)
 									.execute();
 				}

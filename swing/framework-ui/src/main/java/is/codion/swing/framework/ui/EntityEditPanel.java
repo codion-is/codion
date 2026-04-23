@@ -185,6 +185,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 	private final SwingEntityEditModel editModel;
 	private final EditorComponents components;
+	private final PersistCommands commands = new PersistCommands();
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final FocusedListener focusedListener = new FocusedListener(this);
@@ -345,7 +346,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * @see Config#insertConfirmer(Confirmer)
 	 */
 	public final void insert() throws EntityValidationException {
-		insertCommand().execute();
+		commands.insert().execute();
 	}
 
 	/**
@@ -356,7 +357,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * @see Config#deleteConfirmer(Confirmer)
 	 */
 	public final void delete() {
-		deleteCommand().execute();
+		commands.delete().execute();
 	}
 
 	/**
@@ -368,7 +369,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * @see Config#updateConfirmer(Confirmer)
 	 */
 	public final void update() throws EntityValidationException {
-		updateCommand().execute();
+		commands.update().execute();
 	}
 
 	/**
@@ -384,6 +385,13 @@ public abstract class EntityEditPanel extends JPanel {
 	 */
 	public final SwingEntityEditor editor() {
 		return editModel.editor();
+	}
+
+	/**
+	 * @return the {@link PersistCommands} instance
+	 */
+	public final PersistCommands commands() {
+		return commands;
 	}
 
 	/**
@@ -405,30 +413,6 @@ public abstract class EntityEditPanel extends JPanel {
 	 */
 	protected final boolean confirmDelete() {
 		return configuration.deleteConfirmer.confirm(this);
-	}
-
-	/**
-	 * Returns an async insert command builder
-	 * @return a new async insert command builder
-	 */
-	protected final InsertCommand.Builder insertCommand() {
-		return new DefaultInsertCommand.DefaultBuilder(this);
-	}
-
-	/**
-	 * Returns an async update command builder
-	 * @return a new async update command builder
-	 */
-	protected final UpdateCommand.Builder updateCommand() {
-		return new DefaultUpdateCommand.DefaultBuilder(this);
-	}
-
-	/**
-	 * Returns an async delete command builder
-	 * @return a new async delete command builder
-	 */
-	protected final DeleteCommand.Builder deleteCommand() {
-		return new DefaultDeleteCommand.DefaultBuilder(this);
 	}
 
 	/**
@@ -1274,6 +1258,38 @@ public abstract class EntityEditPanel extends JPanel {
 		 */
 		default boolean confirm(JComponent dialogOwner, String message, String title) {
 			return showConfirmDialog(dialogOwner, message, title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+		}
+	}
+
+	/**
+	 * Provides async persist commands.
+	 */
+	public final class PersistCommands {
+
+		private PersistCommands() {}
+
+		/**
+		 * Returns an async insert command builder
+		 * @return a new async insert command builder
+		 */
+		public InsertCommand.Builder insert() {
+			return new DefaultInsertCommand.DefaultBuilder(EntityEditPanel.this);
+		}
+
+		/**
+		 * Returns an async update command builder
+		 * @return a new async update command builder
+		 */
+		public UpdateCommand.Builder update() {
+			return new DefaultUpdateCommand.DefaultBuilder(EntityEditPanel.this);
+		}
+
+		/**
+		 * Returns an async delete command builder
+		 * @return a new async delete command builder
+		 */
+		public DeleteCommand.Builder delete() {
+			return new DefaultDeleteCommand.DefaultBuilder(EntityEditPanel.this);
 		}
 	}
 

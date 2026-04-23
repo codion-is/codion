@@ -46,10 +46,10 @@ public final class TrackEditPanel extends EntityEditPanel {
 	public TrackEditPanel(TrackEditModel editModel, FilterListSelection<Entity> trackSelection) {
 		super(editModel);
 		this.trackSelection = trackSelection;
-		this.updateAndDecrementSelectedIndexes = updateCommand()
+		this.updateAndDecrementSelectedIndexes = commands().update()
 						.onUpdate(trackSelection.indexes()::decrement)
 						.build();
-		this.updateAndIncrementSelectedIndexes = updateCommand()
+		this.updateAndIncrementSelectedIndexes = commands().update()
 						.onUpdate(trackSelection.indexes()::increment)
 						.build();
 		addKeyEvents();

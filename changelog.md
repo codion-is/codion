@@ -15,6 +15,7 @@ Codion Change Log
 - EditorComponents no longer an interface.
 - EntityApplication no longer an interface.
 - EditorComponents bug fixed, factory method now public.
+- EntityEditPanel.PersistCommands added.
 
 ## 0.18.72
 ### is.codion.common.reactive

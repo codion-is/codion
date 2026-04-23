@@ -56,7 +56,7 @@ public final class PreferencesEditPanel extends EntityEditPanel {
 		if (editor().exists().is() && // and newsletter is the only modified attribute
 						editor().modified().attributes().get().equals(singleton(Preferences.NEWSLETTER))) {
 			try {
-				updateCommand()
+				commands().update()
 								.confirm(false)
 								.execute();
 			}
