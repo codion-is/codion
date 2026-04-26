@@ -232,6 +232,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 					}
 				}
 			}
+			filtered.notifyChanges();
+			included.notifyChanges();
 			included.sort();
 		}
 	}

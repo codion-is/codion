@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.73
+### is.codion.common.model
+- DefaultFilterModelItems.replace() now triggers change events for filtered and included items.
 ### is.codion.swing.common.ui
 - Dialogs.displayException() removed.
 - LayoutPanelBuilder added.
