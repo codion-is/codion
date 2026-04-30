@@ -35,6 +35,7 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
@@ -591,13 +592,60 @@ public final class EntitySearchField extends HintTextField {
 		else {
 			cancelCurrentSearch();
 			searchWorker = ProgressWorker.builder()
-							.task(model.search()::result)
-							.onStarted(this::handleStart)
-							.onResult(searchResult -> handleResult(searchResult, promptUser))
-							.onException(this::handleException)
-							.onCancelled(this::handleCancel)
-							.onInterrupted(this::handleInterrupted)
+							.task(new SearchTask(promptUser))
 							.execute();
+		}
+	}
+
+	private final class SearchTask implements ResultTaskHandler<List<Entity>> {
+
+		private final boolean promptUser;
+
+		private SearchTask(boolean promptUser) {
+			this.promptUser = promptUser;
+		}
+
+		@Override
+		public List<Entity> execute() {
+			return model.search().result();
+		}
+
+		@Override
+		public void onStarted() {
+			searching.set(true);
+		}
+
+		@Override
+		public void onDone() {
+			searchWorker = null;
+			searching.set(false);
+		}
+
+		@Override
+		public void onResult(List<Entity> searchResult) {
+			if (searchResult.size() == 1) {
+				model.selection().entities().set(searchResult);
+			}
+			else if (promptUser) {
+				promptUser(searchResult);
+			}
+		}
+
+		@Override
+		public void onException(Exception exception) {
+			Dialogs.exception()
+							.owner(Ancestor.window().of(EntitySearchField.this).get())
+							.show(exception);
+		}
+
+		private void promptUser(List<Entity> searchResult) {
+			if (searchResult.isEmpty()) {
+				JOptionPane.showMessageDialog(EntitySearchField.this, FrameworkMessages.noSearchResults(),
+								SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
+			}
+			else {
+				selector.apply(EntitySearchField.this).select(searchResult);
+			}
 		}
 	}
 
@@ -606,51 +654,6 @@ public final class EntitySearchField extends HintTextField {
 		if (currentWorker != null) {
 			currentWorker.cancel(true);
 		}
-	}
-
-	private void handleStart() {
-		searching.set(true);
-	}
-
-	private void handleResult(List<Entity> searchResult, boolean promptUser) {
-		endSearch();
-		if (searchResult.size() == 1) {
-			model.selection().entities().set(searchResult);
-		}
-		else if (promptUser) {
-			promptUser(searchResult);
-		}
-	}
-
-	private void promptUser(List<Entity> searchResult) {
-		if (searchResult.isEmpty()) {
-			JOptionPane.showMessageDialog(this, FrameworkMessages.noSearchResults(),
-							SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
-		}
-		else {
-			selector.apply(this).select(searchResult);
-		}
-	}
-
-	private void handleException(Exception exception) {
-		endSearch();
-		Dialogs.exception()
-						.owner(Ancestor.window().of(this).get())
-						.show(exception);
-	}
-
-	private void handleCancel() {
-		endSearch();
-	}
-
-	private void handleInterrupted() {
-		endSearch();
-		Thread.currentThread().interrupt();
-	}
-
-	private void endSearch() {
-		searchWorker = null;
-		searching.set(false);
 	}
 
 	private JPopupMenu createPopupMenu() {

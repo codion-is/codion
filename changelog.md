@@ -23,6 +23,7 @@ Codion Change Log
 - EditorComponents bug fixed, factory method now public.
 - EntityEditPanel.PersistCommands added.
 - EntityEditPanel.Config.USE_SAVE_CAPTION removed.
+- EntitySearchField, search task now ResultTaskHandler based.
 
 ## 0.18.72
 ### is.codion.common.reactive
