@@ -14,6 +14,8 @@ Codion Change Log
 - AttributeDefinition.USE_LEXICAL_STRING_COMPARATOR renamed LEXICAL_STRING_COMPARATOR.
 ### is.codion.framework.model
 - PersistTask.Task removed.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.refresh(), minor refactoring.
 ### is.codion.swing.framework.ui
 - EditorComponents no longer an interface.
 - EntityApplication no longer an interface.

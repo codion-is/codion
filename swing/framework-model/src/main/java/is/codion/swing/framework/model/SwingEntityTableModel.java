@@ -40,6 +40,7 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 
 import org.jspecify.annotations.Nullable;
 
@@ -264,12 +265,11 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 			RefreshTask task = new RefreshTask(keys);
 			if (isEventDispatchThread()) {
 				ProgressWorker.builder()
-								.task(task::perform)
-								.onResult(RefreshResult::handle)
+								.task(task)
 								.execute();
 			}
 			else {
-				task.perform().handle();
+				task.onResult(task.execute());
 			}
 		}
 	}
@@ -416,7 +416,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 		}
 	}
 
-	private final class RefreshTask {
+	private final class RefreshTask implements ResultTaskHandler<Collection<Entity>> {
 
 		private final Collection<Entity.Key> keys;
 
@@ -424,28 +424,21 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 			this.keys = keys;
 		}
 
-		private RefreshResult perform() {
+		@Override
+		public Collection<Entity> execute() {
 			if (keys.isEmpty()) {
-				return new RefreshResult(emptyList());
+				return emptyList();
 			}
 
-			return new RefreshResult(connection().select(where(keys(keys))
+			return connection().select(where(keys(keys))
 							.attributes(query().attributes().defaults().get())
 							.include(query().attributes().include().get())
 							.exclude(query().attributes().exclude().get())
-							.build()));
-		}
-	}
-
-	private final class RefreshResult {
-
-		private final Collection<Entity> entities;
-
-		private RefreshResult(Collection<Entity> entities) {
-			this.entities = entities;
+							.build());
 		}
 
-		private void handle() {
+		@Override
+		public void onResult(Collection<Entity> entities) {
 			replace(entities);
 		}
 	}
