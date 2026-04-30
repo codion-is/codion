@@ -33,14 +33,14 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * Example usage:
  * <pre>{@code
- * DelayedAction showProgress = delayedAction(300, () -> {
+ * DelayedAction showProgress = delayedAction(() -> {
  *     progressBar.setVisible(true);
- * });
+ * }, 300);
  *
  * // Later, if operation completes quickly:
  * showProgress.cancel();
  * }</pre>
- * @see #delayedAction(int, Runnable)
+ * @see #delayedAction(Runnable, int)
  */
 public interface DelayedAction {
 
@@ -54,12 +54,12 @@ public interface DelayedAction {
 	/**
 	 * Creates a new delayed action that executes the given action after the specified delay.
 	 * The action is scheduled on the Event Dispatch Thread and executes exactly once if not cancelled.
-	 * @param delay the delay in milliseconds before the action executes
 	 * @param action the action to execute after the delay
+	 * @param delay the delay in milliseconds before the action executes
 	 * @return a new {@link DelayedAction} instance that can be cancelled
 	 * @throws NullPointerException if action is null
 	 */
-	static DelayedAction delayedAction(int delay, Runnable action) {
-		return new DefaultDelayedAction(delay, requireNonNull(action));
+	static DelayedAction delayedAction(Runnable action, int delay) {
+		return new DefaultDelayedAction(requireNonNull(action), delay);
 	}
 }

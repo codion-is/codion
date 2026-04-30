@@ -1167,12 +1167,12 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private void showProgressBarDelayed() {
-			showProgressBarAction = delayedAction(searchRefreshProgressBarDelay, () -> {
+			showProgressBarAction = delayedAction(() -> {
 				setLayout(new BorderLayout());
 				add(progressBar, BorderLayout.CENTER);
 				revalidate();
 				repaint();
-			});
+			}, searchRefreshProgressBarDelay);
 		}
 
 		private void hideProgressBar() {

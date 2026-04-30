@@ -232,17 +232,17 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 		private void show() {
 			startTime = currentTimeMillis();
-			show = delayedAction(showDelay, () -> progressDialog.setVisible(true));
+			show = delayedAction(() -> progressDialog.setVisible(true), showDelay);
 		}
 
 		private void hide() {
 			cancel();
 			long elapsed = currentTimeMillis() - startTime;
 			long remainingDelay = hideDelay - elapsed;
-			delayedAction((int) Math.max(0, remainingDelay), () -> {
+			delayedAction(() -> {
 				progressDialog.setVisible(false);
 				progressDialog.dispose();
-			});
+			}, (int) Math.max(0, remainingDelay));
 		}
 
 		private void cancel() {

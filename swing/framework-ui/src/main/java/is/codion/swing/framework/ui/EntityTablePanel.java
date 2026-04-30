@@ -3215,12 +3215,12 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void showProgressBarDelayed() {
-			showProgressBarAction = delayedAction(configuration.refreshProgressBarDelay, () -> {
+			showProgressBarAction = delayedAction(() -> {
 				removeAll();
 				add(progressPanel, BorderLayout.CENTER);
 				revalidate();
 				repaint();
-			});
+			}, configuration.refreshProgressBarDelay);
 		}
 
 		private void hideProgressBar() {

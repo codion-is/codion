@@ -26,7 +26,7 @@ final class DefaultDelayedAction implements DelayedAction {
 
 	private final Timer timer;
 
-	DefaultDelayedAction(int delay, Runnable action) {
+	DefaultDelayedAction(Runnable action, int delay) {
 		this.timer = new Timer(delay, new Performer(action));
 		this.timer.setRepeats(false);
 		this.timer.start();
