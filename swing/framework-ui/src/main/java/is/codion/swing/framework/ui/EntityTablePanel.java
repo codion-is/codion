@@ -447,7 +447,6 @@ public class EntityTablePanel extends JPanel {
 		MENU
 	}
 
-	private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.getOrThrow());
@@ -2230,8 +2229,7 @@ public class EntityTablePanel extends JPanel {
 							.headerRenderers(new EntityTableHeaderRenderers())
 							.cellEditors(new EntityTableCellEditors())
 							.cellEditable(new EntityCellEditable(tablePanel.tableModel.entities()))
-							.scrollToAddedItem(true)
-							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
+							.scrollToAddedItem(true);
 			this.conditionPanelFactory = new DefaultConditionPanelFactory();
 			this.conditionComponents = new HashMap<>();
 			this.controlMap = ControlMap.controlMap(ControlKeys.class);

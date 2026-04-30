@@ -9,6 +9,7 @@ Codion Change Log
 - LayoutPanelBuilder added.
 - ToggleButtonBuilder.builder() component type parameter removed.
 - FilterTableCellRenderer.Customizer.customize() row parameter added.
+- FilterTable.Builder.rowHeightFromFontSize() and rowHeightFontPadding() added along with ROW_HEIGHT_FROM_FONT_SIZE and ROW_HEIGHT_FONT_PADDING configuration values.
 ### is.codion.framework.domain
 - AttributeDefinition.USE_LEXICAL_STRING_COMPARATOR renamed LEXICAL_STRING_COMPARATOR.
 ### is.codion.framework.model

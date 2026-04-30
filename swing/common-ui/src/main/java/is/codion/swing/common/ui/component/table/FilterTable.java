@@ -213,6 +213,28 @@ public final class FilterTable<R, C> extends JTable {
 					booleanValue(FilterTable.class.getName() + ".resizeRowToFitEditor", true);
 
 	/**
+	 * Specifies whether tables set their initial rowHeight according to the table font size.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see #ROW_HEIGHT_FONT_PADDING
+	 */
+	public static final PropertyValue<Boolean> ROW_HEIGHT_FROM_FONT_SIZE =
+					booleanValue(FilterTable.class.getName() + ".rowHeightFromFontSize", true);
+
+	/**
+	 * Specifies the number of pixels to add to the table font size to use as the initial table rowHeight.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 4
+	 * </ul>
+	 * @see #ROW_HEIGHT_FROM_FONT_SIZE
+	 */
+	public static final PropertyValue<Integer> ROW_HEIGHT_FONT_PADDING =
+					integerValue(FilterTable.class.getName() + ".rowHeightFontPadding", 4);
+
+	/**
 	 * Specifies whether the table should stop and commit editing when it loses focus.
 	 * <ul>
 	 * <li>Value type: Boolean
@@ -1617,11 +1639,31 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 
 		/**
+		 * Overrides {@link #rowHeightFromFontSize(boolean)}
 		 * @param rowHeight the row height
 		 * @return this builder instance
 		 * @see JTable#setRowHeight(int)
 		 */
 		Builder<R, C> rowHeight(int rowHeight);
+
+		/**
+		 * Overridden by {@link #rowHeight(int)}
+		 * @param rowHeightFromFontSize whether the table sets its initial rowHeight according to the table font.
+		 * @return this builder instance
+		 * @see #rowHeightFontPadding(int)
+		 * @see JTable#setRowHeight(int)
+		 * @see #ROW_HEIGHT_FROM_FONT_SIZE
+		 */
+		Builder<R, C> rowHeightFromFontSize(boolean rowHeightFromFontSize);
+
+		/**
+		 * Specifies the number of pixels to add to the table font size to use as the initial table rowHeight.
+		 * @param rowHeightFontPadding the font size padding
+		 * @return this builder instance
+		 * @see JTable#setRowHeight(int)
+		 * @see #ROW_HEIGHT_FONT_PADDING
+		 */
+		Builder<R, C> rowHeightFontPadding(int rowHeightFontPadding);
 
 		/**
 		 * @param rowMargin the row margin
@@ -1733,6 +1775,8 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.getOrThrow();
 		private ConditionView filterView = ConditionView.HIDDEN;
 		private @Nullable Integer rowHeight;
+		private boolean rowHeightFromFontSize = ROW_HEIGHT_FROM_FONT_SIZE.getOrThrow();
+		private int rowHeightFontPadding = ROW_HEIGHT_FONT_PADDING.getOrThrow();
 		private @Nullable Integer rowMargin;
 		private @Nullable Dimension intercellSpacing;
 		private @Nullable Color gridColor;
@@ -1973,6 +2017,18 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
+		public Builder<R, C> rowHeightFromFontSize(boolean rowHeightFromFontSize) {
+			this.rowHeightFromFontSize = rowHeightFromFontSize;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> rowHeightFontPadding(int rowHeightFontPadding) {
+			this.rowHeightFontPadding = rowHeightFontPadding;
+			return this;
+		}
+
+		@Override
 		public Builder<R, C> rowMargin(int rowMargin) {
 			this.rowMargin = rowMargin;
 			return this;
@@ -2023,6 +2079,16 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		protected FilterTable<R, C> createComponent() {
 			return new FilterTable<>(this);
+		}
+
+		@Override
+		protected FilterTable<R, C> configureComponent(FilterTable<R, C> table) {
+			super.configureComponent(table);
+			if (rowHeight == null && rowHeightFromFontSize) {
+				table.setRowHeight(table.getFont().getSize() + rowHeightFontPadding);
+			}
+
+			return table;
 		}
 	}
 
