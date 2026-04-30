@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
@@ -167,37 +168,41 @@ final class LoginPanel extends JPanel {
 
 	private void onOkPressed() {
 		ProgressWorker.builder()
-						.task(this::validateLogin)
-						.onStarted(this::onValidationStarted)
-						.onResult(this::onValidationSuccess)
-						.onException(this::onValidationFailure)
+						.task(new LoginTask())
 						.execute();
 	}
 
-	private User validateLogin() throws Exception {
-		User currentUser = User.user(usernameField.getText(), passwordField.getPassword());
-		loginValidator.validate(currentUser);
+	private final class LoginTask implements ResultTaskHandler<User> {
 
-		return currentUser;
-	}
+		@Override
+		public User execute() throws Exception {
+			User currentUser = User.user(usernameField.getText(), passwordField.getPassword());
+			loginValidator.validate(currentUser);
 
-	private void onValidationStarted() {
-		validating.set(true);
-	}
+			return currentUser;
+		}
 
-	private void onValidationSuccess(User user) {
-		this.user.set(user);
-		validating.set(false);
-		closeDialog();
-	}
+		@Override
+		public void onStarted() {
+			validating.set(true);
+		}
 
-	private void onValidationFailure(Exception exception) {
-		user.clear();
-		validating.set(false);
-		new DefaultExceptionDialogBuilder()
-						.owner(Ancestor.window().of(this).get())
-						.show(exception);
-		requestInitialFocus();
+		@Override
+		public void onResult(User result) {
+			user.set(result);
+			validating.set(false);
+			closeDialog();
+		}
+
+		@Override
+		public void onException(Exception exception) {
+			user.clear();
+			validating.set(false);
+			new DefaultExceptionDialogBuilder()
+							.owner(Ancestor.window().of(LoginPanel.this).get())
+							.show(exception);
+			requestInitialFocus();
+		}
 	}
 
 	private void closeDialog() {
