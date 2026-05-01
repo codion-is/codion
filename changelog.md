@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.73
 ### is.codion.common.model
 - DefaultFilterModelItems.replace() now triggers change events for filtered and included items.
+- FilterModelItems.Builder.listener() now supports multiple listeners.
 ### is.codion.swing.common.model
 - DelayedAction factory method parameters reordered.
 ### is.codion.swing.common.ui

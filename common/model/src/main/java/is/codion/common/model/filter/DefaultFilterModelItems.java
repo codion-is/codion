@@ -58,7 +58,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private final Predicate<R> validator;
 	private final DefaultIncludedItems included;
 	private final DefaultFilteredItems filtered;
-	private final ItemsListener itemsListener;
+	private final Collection<ItemsListener> listeners;
 
 	private final MultiSelection<R> selection;
 	private final Sort<R> sort;
@@ -71,7 +71,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		this.filtered = new DefaultFilteredItems();
 		this.refresher = builder.refresher.apply(this);
 		this.selection = builder.selection.apply(included);
-		this.itemsListener = builder.itemsListener;
+		this.listeners = new ArrayList<>(builder.listeners);
 		this.included.predicate.addListener(DefaultFilterModelItems.this::filter);
 		this.sort.observer().addListener(included::sort);
 	}
@@ -140,7 +140,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				int index = included.items.indexOf(item);
 				if (index >= 0) {
 					included.items.remove(index);
-					itemsListener.deleted(index, index);
+					notifyDeleted(index, index);
 					included.notifyChanges();
 				}
 			}
@@ -167,7 +167,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				R item = iterator.previous();
 				if (toRemove.remove(item)) {
 					iterator.remove();
-					itemsListener.deleted(index, index);
+					notifyDeleted(index, index);
 					includedRemoved = true;
 				}
 			}
@@ -210,7 +210,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 					if (included.predicate.test(replacement)) {
 						included.items.add(replacement);
 						int index = included.items.size() - 1;
-						itemsListener.inserted(index, index);
+						notifyInserted(index, index);
 					}
 					else {
 						filtered.items.add(replacement);
@@ -224,7 +224,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				if (replacement != null) {
 					if (included.predicate.test(replacement)) {
 						iterator.set(replacement);
-						itemsListener.updated(iterator.previousIndex(), iterator.previousIndex());
+						notifyUpdated(iterator.previousIndex(), iterator.previousIndex());
 					}
 					else {
 						iterator.remove();
@@ -273,7 +273,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			if (sort.sorted()) {
 				included.items.sort(sort);
 			}
-			itemsListener.changed();
+			notifyChanged();
 			included.notifyChanges();
 			filtered.notifyChanges();
 		}
@@ -286,7 +286,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			int includedSize = included.items.size();
 			included.items.clear();
 			if (includedSize > 0) {
-				itemsListener.deleted(0, includedSize - 1);
+				notifyDeleted(0, includedSize - 1);
 				included.notifyChanges();
 			}
 			int filteredSize = filtered.size();
@@ -340,7 +340,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 		if (!includedItems.isEmpty()) {
 			included.items.addAll(index, includedItems);
-			itemsListener.inserted(index, index + includedItems.size());
+			notifyInserted(index, index + includedItems.size());
 			included.notifyChanges();
 			included.sort();
 			included.notifyAdded(includedItems);
@@ -351,6 +351,22 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		return !includedItems.isEmpty();
+	}
+
+	private void notifyInserted(int firstIndex, int lastIndex) {
+		listeners.forEach(itemsListener -> itemsListener.inserted(firstIndex, lastIndex));
+	}
+
+	private void notifyUpdated(int firstIndex, int lastIndex) {
+		listeners.forEach(itemsListener -> itemsListener.updated(firstIndex, lastIndex));
+	}
+
+	private void notifyDeleted(int firstIndex, int lastIndex) {
+		listeners.forEach(itemsListener -> itemsListener.deleted(firstIndex, lastIndex));
+	}
+
+	private void notifyChanged() {
+		listeners.forEach(ItemsListener::changed);
 	}
 
 	private void validate(R item) {
@@ -446,7 +462,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			synchronized (lock) {
 				if (predicate.test(item)) {
 					items.set(index, item);
-					itemsListener.updated(index, index);
+					notifyUpdated(index, index);
 					included.notifyChanges();
 
 					return true;
@@ -460,7 +476,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		public R remove(int index) {
 			synchronized (lock) {
 				R removed = items.remove(index);
-				itemsListener.deleted(index, index);
+				notifyDeleted(index, index);
 				notifyChanges();
 
 				return removed;
@@ -473,7 +489,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				List<R> subList = items.subList(fromIndex, toIndex);
 				List<R> removedItems = new ArrayList<>(subList);
 				subList.clear();
-				itemsListener.deleted(fromIndex, toIndex);
+				notifyDeleted(fromIndex, toIndex);
 				notifyChanges();
 
 				return removedItems;
@@ -493,7 +509,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				List<R> selectedItems = selection.items().get();
 				synchronized (lock) {
 					items.sort(sort);
-					itemsListener.updated(0, items.size());
+					notifyUpdated(0, items.size());
 					notifyChanges();
 				}
 				selection.items().set(selectedItems);
@@ -590,11 +606,11 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		private final Function<IncludedItems<T>, MultiSelection<T>> selection;
 		private final Function<Items<T>, Refresher<T>> refresher;
+		private final Collection<ItemsListener> listeners = new ArrayList<>(1);
 		private final Sort<T> sort;
 
 		private IncludePredicate<T> include = new DefaultIncludePredicate<>();
 		private Predicate<T> validator = new ValidPredicate<>();
-		private ItemsListener itemsListener = new DefaultItemsListener();
 
 		private DefaultBuilder(Function<IncludedItems<T>, MultiSelection<T>> selection,
 													 Function<Items<T>, Refresher<T>> refresher, Sort<T> sort) {
@@ -617,7 +633,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		@Override
 		public Builder<T> listener(ItemsListener itemsListener) {
-			this.itemsListener = requireNonNull(itemsListener);
+			listeners.add(requireNonNull(itemsListener));
 			return this;
 		}
 
@@ -625,21 +641,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		public Items<T> build() {
 			return new DefaultFilterModelItems<>(this);
 		}
-	}
-
-	private static final class DefaultItemsListener implements ItemsListener {
-
-		@Override
-		public void inserted(int firstIndex, int lastIndex) {}
-
-		@Override
-		public void updated(int firstIndex, int lastIndex) {}
-
-		@Override
-		public void deleted(int firstIndex, int lastIndex) {}
-
-		@Override
-		public void changed() {}
 	}
 
 	private static final class ValidPredicate<R> implements Predicate<R> {

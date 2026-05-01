@@ -18,6 +18,7 @@
  */
 package is.codion.common.model.filter;
 
+import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.event.Event;
@@ -273,10 +274,10 @@ public interface FilterModel<T> {
 			Builder<T> include(IncludePredicate<T> include);
 
 			/**
-			 * @param itemsListener the {@link IncludedItems.ItemsListener}
+			 * @param itemsListener the {@link ItemsListener} to add
 			 * @return this builder
 			 */
-			Builder<T> listener(IncludedItems.ItemsListener itemsListener);
+			Builder<T> listener(ItemsListener itemsListener);
 
 			/**
 			 * @return a new {@link Items} instance
