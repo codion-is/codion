@@ -19,6 +19,7 @@ Codion Change Log
 ### is.codion.framework.model
 - PersistTask.Task removed.
 - EntityModel.detailModels() renamed detail().
+- EntityApplicationModel.entityModels() renamed models().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 ### is.codion.swing.framework.ui
@@ -29,6 +30,7 @@ Codion Change Log
 - EntityEditPanel.Config.USE_SAVE_CAPTION removed.
 - EntitySearchField, search task now ResultTaskHandler based.
 - EntityPanel.detailPanels() renamed detail().
+- EntityApplicationPanel.entityPanels() renamed panels().
 
 ## 0.18.72
 ### is.codion.common.reactive

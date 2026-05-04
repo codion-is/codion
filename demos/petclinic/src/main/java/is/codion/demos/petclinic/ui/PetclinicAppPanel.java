@@ -48,7 +48,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 	}
 
 	private static List<EntityPanel> createPanels(PetclinicAppModel applicationModel) {
-		SwingEntityModel ownersModel = applicationModel.entityModels().get(Owner.TYPE);
+		SwingEntityModel ownersModel = applicationModel.models().get(Owner.TYPE);
 		SwingEntityModel petsModel = ownersModel.detail().get(Pet.TYPE);
 		SwingEntityModel visitsModel = petsModel.detail().get(Visit.TYPE);
 

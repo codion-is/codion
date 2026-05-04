@@ -52,7 +52,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 	}
 
 	private static List<EntityPanel> createPanels(SchemaBrowserApplicationModel applicationModel) {
-		SwingEntityModel schemaModel = applicationModel.entityModels().get(Schema.TYPE);
+		SwingEntityModel schemaModel = applicationModel.models().get(Schema.TYPE);
 		SwingEntityModel tableModel = schemaModel.detail().get(Table.TYPE);
 		SwingEntityModel columnModel = tableModel.detail().get(TableColumn.TYPE);
 		SwingEntityModel constraintModel = tableModel.detail().get(Constraint.TYPE);

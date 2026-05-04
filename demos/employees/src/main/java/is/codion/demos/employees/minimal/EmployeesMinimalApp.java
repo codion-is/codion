@@ -285,7 +285,7 @@ public final class EmployeesMinimalApp {
 
 		private static List<EntityPanel> createPanels(EmployeesApplicationModel applicationModel) {
 			//now, let's assemble our application
-			SwingEntityModel departmentModel = applicationModel.entityModels().get(Department.TYPE);
+			SwingEntityModel departmentModel = applicationModel.models().get(Department.TYPE);
 			SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 
 			EntityPanel employeePanel = new EntityPanel(employeeModel,

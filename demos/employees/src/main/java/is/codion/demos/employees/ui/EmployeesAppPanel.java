@@ -64,7 +64,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 	}
 
 	private static List<EntityPanel> createPanels(EmployeesAppModel applicationModel) {
-		SwingEntityModel departmentModel = applicationModel.entityModels().get(Department.TYPE);
+		SwingEntityModel departmentModel = applicationModel.models().get(Department.TYPE);
 		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 
 		EntityPanel employeePanel = new EntityPanel(employeeModel,

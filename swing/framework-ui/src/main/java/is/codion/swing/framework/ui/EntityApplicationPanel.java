@@ -324,7 +324,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	/**
 	 * @return an unmodifiable view of the main application panels
 	 */
-	public final List<EntityPanel> entityPanels() {
+	public final List<EntityPanel> panels() {
 		return entityPanels;
 	}
 
@@ -466,7 +466,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	/**
 	 * <p>Requests the initial application focus by calling {@link EntityPanel#requestInitialFocus()}
 	 * on the main entity panel.
-	 * <p>By default, the main entity panel is the first one returned by {@link #entityPanels()}.
+	 * <p>By default, the main entity panel is the first one returned by {@link #panels()}.
 	 */
 	public void requestInitialFocus() {
 		if (!entityPanels.isEmpty()) {
@@ -817,7 +817,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	@Deprecated
 	protected void writePreferences(Preferences preferences) {
 		try {
-			entityPanels().forEach(entityPanel -> entityPanel.writePreferences(preferences));
+			panels().forEach(entityPanel -> entityPanel.writePreferences(preferences));
 			createApplicationPreferences().save(preferences);
 		}
 		catch (Exception e) {

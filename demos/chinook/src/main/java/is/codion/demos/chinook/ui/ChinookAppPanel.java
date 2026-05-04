@@ -104,9 +104,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 	private static List<EntityPanel> createPanels(ChinookAppModel applicationModel) {
 		return List.of(
-						new CustomerPanel((CustomerModel) applicationModel.entityModels().get(Customer.TYPE)),
-						new AlbumPanel((AlbumModel) applicationModel.entityModels().get(Album.TYPE)),
-						new PlaylistPanel((PlaylistModel) applicationModel.entityModels().get(Playlist.TYPE)));
+						new CustomerPanel((CustomerModel) applicationModel.models().get(Customer.TYPE)),
+						new AlbumPanel((AlbumModel) applicationModel.models().get(Album.TYPE)),
+						new PlaylistPanel((PlaylistModel) applicationModel.models().get(Playlist.TYPE)));
 	}
 
 	private static List<EntityPanel.Builder> createLookupPanelBuilders() {

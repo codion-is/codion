@@ -87,7 +87,7 @@ public class EntityApplicationPanelTest {
 		}
 
 		private static List<EntityPanel> createPanels(TestApplicationModel applicationModel) {
-			return singletonList(new EntityPanel(applicationModel.entityModels().get(Employee.TYPE)));
+			return singletonList(new EntityPanel(applicationModel.models().get(Employee.TYPE)));
 		}
 	}
 }

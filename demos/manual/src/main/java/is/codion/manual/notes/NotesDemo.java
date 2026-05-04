@@ -233,7 +233,7 @@ public final class NotesDemo {
 		public NotesApplicationModel(EntityConnectionProvider connectionProvider) {
 			super(connectionProvider, List.of(new NoteModel(connectionProvider)));
 			// Refresh the table model to populate it
-			entityModels().get(Note.TYPE).tableModel().items().refresh();
+			models().get(Note.TYPE).tableModel().items().refresh();
 		}
 	}
 
@@ -242,7 +242,7 @@ public final class NotesDemo {
 		public NotesApplicationPanel(NotesApplicationModel applicationModel) {
 			super(applicationModel,
 							// Supply an instance of our NotePanel, using the model from above
-							List.of(new NotePanel(applicationModel.entityModels().get(Note.TYPE))),
+							List.of(new NotePanel(applicationModel.models().get(Note.TYPE))),
 							emptyList(), applicationPanel -> () ->
 											// Replace the default JTabbedPane based layout
 											// since we're only displaying a single panel,

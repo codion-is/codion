@@ -179,7 +179,7 @@ public final class ClientTutorial {
 		}
 
 		private static List<EntityPanel> createPanels(ApplicationModel applicationModel) {
-			SwingEntityModel artistModel = applicationModel.entityModels().get(Artist.TYPE);
+			SwingEntityModel artistModel = applicationModel.models().get(Artist.TYPE);
 			SwingEntityModel albumModel = artistModel.detail().get(Album.TYPE);
 			EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
 			EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));

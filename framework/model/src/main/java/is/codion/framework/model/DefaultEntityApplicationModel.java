@@ -93,7 +93,7 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T, R>, E 
 	}
 
 	@Override
-	public final EntityModels<M, E, T, R> entityModels() {
+	public final EntityModels<M, E, T, R> models() {
 		return models;
 	}
 

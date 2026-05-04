@@ -86,7 +86,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	/**
 	 * @return the {@link EntityModels}
 	 */
-	EntityModels<M, E, T, R> entityModels();
+	EntityModels<M, E, T, R> models();
 
 	/**
 	 * Returns file-based preferences using the domain name as identifier or {@link #PREFERENCES_KEY} if specified.

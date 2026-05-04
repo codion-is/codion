@@ -59,14 +59,14 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 	// tag::initializeEntityPanels[]
 	private static List<EntityPanel> createPanels(WorldAppModel applicationModel) {
 		CountryModel countryModel = (CountryModel)
-						applicationModel.entityModels().get(Country.TYPE);
+						applicationModel.models().get(Country.TYPE);
 		CountryPanel countryPanel = new CountryPanel(countryModel);
 
 		ContinentModel continentModel = (ContinentModel)
-						applicationModel.entityModels().get(Continent.TYPE);
+						applicationModel.models().get(Continent.TYPE);
 		ContinentPanel continentPanel = new ContinentPanel(continentModel);
 
-		SwingEntityModel lookupModel = applicationModel.entityModels().get(Lookup.TYPE);
+		SwingEntityModel lookupModel = applicationModel.models().get(Lookup.TYPE);
 		EntityPanel lookupPanel = new EntityPanel(lookupModel,
 						new LookupTablePanel(lookupModel.tableModel()));
 

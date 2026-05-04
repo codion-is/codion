@@ -38,7 +38,7 @@ public final class UpdateEmployee extends AbstractPerformer {
 
 	@Override
 	public void perform(EmployeesAppModel application) throws EntityValidationException {
-		SwingEntityModel departmentModel = application.entityModels().get(Department.TYPE);
+		SwingEntityModel departmentModel = application.models().get(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
 		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 		SwingEntityEditor editor = employeeModel.editor();

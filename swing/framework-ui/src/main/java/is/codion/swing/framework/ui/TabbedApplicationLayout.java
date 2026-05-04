@@ -62,7 +62,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 
 	/**
 	 * @return a {@link javax.swing.JPanel} using a {@link BorderLayout} containing a {@link JTabbedPane} with a tab for each root entity panel.
-	 * @see EntityApplicationPanel#entityPanels()
+	 * @see EntityApplicationPanel#panels()
 	 */
 	@Override
 	public JComponent layout() {
@@ -75,7 +75,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 						.prepareComponent(TabbedApplicationLayout::preparePanel)
 						.build();
 
-		applicationPanel.entityPanels().forEach(this::addTab);
+		applicationPanel.panels().forEach(this::addTab);
 
 		//tab pane added to a base panel for correct Look&Feel rendering
 		return borderLayoutPanel()

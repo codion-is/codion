@@ -66,11 +66,11 @@ public abstract class AbstractEntityApplicationModelTest<M extends DefaultEntity
 	public void test() {
 		M deptModel = createDepartmentModel();
 		EntityApplicationModel<M, E, T, R> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(deptModel));
-		assertNotNull(model.entityModels().get(Department.TYPE));
-		assertEquals(1, model.entityModels().get().size());
+		assertNotNull(model.models().get(Department.TYPE));
+		assertEquals(1, model.models().get().size());
 		assertEquals(UNIT_TEST_USER, model.user());
 
-		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get(Employee.TYPE));
+		assertThrows(IllegalArgumentException.class, () -> model.models().get(Employee.TYPE));
 	}
 
 	@Test
@@ -81,21 +81,21 @@ public abstract class AbstractEntityApplicationModelTest<M extends DefaultEntity
 	@Test
 	public void entityModelByEntityTypeNotFound() {
 		EntityApplicationModel<M, E, T, R> model = new DefaultEntityApplicationModel<>(connectionProvider, emptyList());
-		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get(Department.TYPE));
+		assertThrows(IllegalArgumentException.class, () -> model.models().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByEntityType() {
 		M departmentModel = createDepartmentModel();
 		EntityApplicationModel<M, E, T, R> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
-		assertEquals(departmentModel, model.entityModels().get(Department.TYPE));
+		assertEquals(departmentModel, model.models().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByClass() {
 		M departmentModel = createDepartmentModel();
 		EntityApplicationModel<M, E, T, R> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
-		assertEquals(departmentModel, model.entityModels().get((Class<? extends M>) departmentModel.getClass()));
+		assertEquals(departmentModel, model.models().get((Class<? extends M>) departmentModel.getClass()));
 	}
 
 	@Test
@@ -103,13 +103,13 @@ public abstract class AbstractEntityApplicationModelTest<M extends DefaultEntity
 		M departmentModel = createDepartmentModel();
 		EntityApplicationModel<M, E, T, R> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
 
-		assertTrue(model.entityModels().contains(Department.TYPE));
-		assertTrue(model.entityModels().contains((Class<? extends M>) departmentModel.getClass()));
-		assertTrue(model.entityModels().contains(departmentModel));
+		assertTrue(model.models().contains(Department.TYPE));
+		assertTrue(model.models().contains((Class<? extends M>) departmentModel.getClass()));
+		assertTrue(model.models().contains(departmentModel));
 
-		assertFalse(model.entityModels().contains(Employee.TYPE));
+		assertFalse(model.models().contains(Employee.TYPE));
 		M detailModel = departmentModel.detail().get(Employee.TYPE);
-		assertFalse(model.entityModels().contains(detailModel));
+		assertFalse(model.models().contains(detailModel));
 	}
 
 	protected final EntityConnectionProvider connectionProvider() {

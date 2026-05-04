@@ -44,7 +44,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 
 	private static List<EntityPanel> createPanels(StoreApplicationModel applicationModel) {
 		CustomerModel customerModel = (CustomerModel)
-						applicationModel.entityModels().get(Customer.TYPE);
+						applicationModel.models().get(Customer.TYPE);
 		CustomerAddressModel customerAddressModel = (CustomerAddressModel)
 						customerModel.detail().get(CustomerAddress.TYPE);
 
