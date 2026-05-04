@@ -27,13 +27,13 @@ public final class InvoicePanel extends EntityPanel {
 	public InvoicePanel(SwingEntityModel invoiceModel) {
 		super(invoiceModel,
 						new InvoiceEditPanel(invoiceModel.editModel(),
-										invoiceModel.detailModels().get(InvoiceLine.TYPE)),
+										invoiceModel.detail().get(InvoiceLine.TYPE)),
 						new InvoiceTablePanel(invoiceModel.tableModel()),
 						// The InvoiceLine panel is embedded in InvoiceEditPanel,
 						// so this panel doesn't need a detail panel layout.
 						config -> config.detailLayout(DetailLayout.NONE));
 		InvoiceEditPanel editPanel = (InvoiceEditPanel) editPanel();
 		// We still add the InvoiceLine panel as a detail panel for keyboard navigation
-		detailPanels().add(editPanel.invoiceLinePanel());
+		detail().add(editPanel.invoiceLinePanel());
 	}
 }

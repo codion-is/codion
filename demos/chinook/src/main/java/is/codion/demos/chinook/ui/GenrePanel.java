@@ -33,6 +33,6 @@ public final class GenrePanel extends EntityPanel {
 										.panel(entityPanel)
 										.initialDetailState(HIDDEN)
 										.build()));
-		detailPanels().add(new EntityPanel(genreModel.detailModels().get(Track.TYPE)));
+		detail().add(new EntityPanel(genreModel.detail().get(Track.TYPE)));
 	}
 }

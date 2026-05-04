@@ -41,7 +41,7 @@ public final class SwingEntityModelTest
 		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider());
 		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
 		employeeModel.editor().comboBoxModels().initialize(Employee.DEPARTMENT_FK, Employee.MGR_FK);
-		departmentModel.detailModels().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(departmentModel.link(employeeModel)
 						.active(true)
 						.build());
 		employeeModel.tableModel().query().conditionRequired().set(false);
@@ -65,7 +65,7 @@ public final class SwingEntityModelTest
 		//being set when selected in the table model, this usually happens when combo box models
 		//are being filtered on attribute value change, see EmployeeEditModel.bindEvents()
 		SwingEntityModel departmentModel = createDepartmentModel();
-		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
+		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
 		SwingEntityTableModel employeeTableModel = employeeModel.tableModel();
 
@@ -81,9 +81,9 @@ public final class SwingEntityModelTest
 	@Test
 	public void testDetailModels() throws EntityValidationException {
 		SwingEntityModel departmentModel = createDepartmentModel();
-		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
+		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 		assertNotNull(employeeModel);
-		assertTrue(departmentModel.detailModels().active().contains(employeeModel));
+		assertTrue(departmentModel.detail().active().contains(employeeModel));
 		departmentModel.tableModel().items().refresh();
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
 		EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK);
@@ -119,7 +119,7 @@ public final class SwingEntityModelTest
 	@Test
 	void getDetailModelNonExisting() {
 		SwingEntityModel departmentModel = createDepartmentModel();
-		assertThrows(IllegalArgumentException.class, () -> departmentModel.detailModels().get(EmpModel.class));
+		assertThrows(IllegalArgumentException.class, () -> departmentModel.detail().get(EmpModel.class));
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public final class SwingEntityModelTest
 			departmentModel.tableModel().items().refresh();
 			Entity department = connection.selectSingle(Department.NAME.equalTo("OPERATIONS"));
 			departmentModel.tableModel().selection().item().set(department);
-			SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
+			SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 			EntityComboBoxModel deptComboBoxModel = employeeModel.editor()
 							.comboBoxModels().get(Employee.DEPARTMENT_FK);
 			deptComboBoxModel.items().refresh();

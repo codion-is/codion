@@ -100,16 +100,16 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 	@Test
 	public void testDetailModels() throws EntityValidationException {
 		M departmentModel = createDepartmentModel();
-		assertEquals(1, departmentModel.detailModels().active().size());
-		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(false);
-		assertTrue(departmentModel.detailModels().active().isEmpty());
-		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(true);
+		assertEquals(1, departmentModel.detail().active().size());
+		departmentModel.detail().active(departmentModel.detail().get(Employee.TYPE)).set(false);
+		assertTrue(departmentModel.detail().active().isEmpty());
+		departmentModel.detail().active(departmentModel.detail().get(Employee.TYPE)).set(true);
 	}
 
 	@Test
 	public void detailModelNotFound() {
 		M departmentModel = createDepartmentModel();
-		assertThrows(IllegalArgumentException.class, () -> departmentModel.detailModels().get(Department.TYPE));
+		assertThrows(IllegalArgumentException.class, () -> departmentModel.detail().get(Department.TYPE));
 	}
 
 	@Test
@@ -121,11 +121,11 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		departmentModel.tableModel().items().refresh();
 		assertTrue(departmentModel.tableModel().items().included().size() > 0);
 
-		M employeeModel = departmentModel.detailModels().get(Employee.TYPE);
+		M employeeModel = departmentModel.detail().get(Employee.TYPE);
 		employeeModel.tableModel().items().refresh();
 		assertTrue(employeeModel.tableModel().items().included().size() > 0);
 
-		departmentModel.detailModels().get().keySet().forEach(detailModel -> detailModel.tableModel().items().clear());
+		departmentModel.detail().get().keySet().forEach(detailModel -> detailModel.tableModel().items().clear());
 		assertEquals(0, employeeModel.tableModel().items().included().size());
 
 		departmentModel.tableModel().items().clear();
@@ -155,25 +155,25 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 	@Test
 	public void detailModel() {
 		M departmentModel = createDepartmentModel();
-		departmentModel.detailModels().get((Class<? extends M>) departmentModel.detailModels().get(Employee.TYPE).getClass());
-		M detailModel = departmentModel.detailModels().get(Employee.TYPE);
-		assertTrue(departmentModel.detailModels().contains(detailModel));
-		assertEquals(1, departmentModel.detailModels()
+		departmentModel.detail().get((Class<? extends M>) departmentModel.detail().get(Employee.TYPE).getClass());
+		M detailModel = departmentModel.detail().get(Employee.TYPE);
+		assertTrue(departmentModel.detail().contains(detailModel));
+		assertEquals(1, departmentModel.detail()
 						.get()
 						.size(), "Only one detail EntityModel<EditModel, TableModel>should be in DepartmentModel");
-		assertEquals(1, departmentModel.detailModels().active().size());
+		assertEquals(1, departmentModel.detail().active().size());
 
-		departmentModel.detailModels().get(Employee.TYPE);
+		departmentModel.detail().get(Employee.TYPE);
 
-		assertTrue(departmentModel.detailModels().active().contains(departmentModel.detailModels().get(Employee.TYPE)));
-		assertNotNull(departmentModel.detailModels().get(Employee.TYPE));
+		assertTrue(departmentModel.detail().active().contains(departmentModel.detail().get(Employee.TYPE)));
+		assertNotNull(departmentModel.detail().get(Employee.TYPE));
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
 
 		departmentModel.tableModel().items().refresh();
-		departmentModel.detailModels().get(Employee.TYPE).tableModel().items().refresh();
-		assertTrue(departmentModel.detailModels().get(Employee.TYPE).tableModel().items().included().size() > 0);
+		departmentModel.detail().get(Employee.TYPE).tableModel().items().refresh();
+		assertTrue(departmentModel.detail().get(Employee.TYPE).tableModel().items().included().size() > 0);
 
 		EntityConnection connection = departmentModel.connection();
 		Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
@@ -184,7 +184,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		assertFalse(salesEmployees.isEmpty());
 		departmentModel.tableModel().selection().item().set(department);
 		Collection<Entity> employeesFromDetailModel =
-						departmentModel.detailModels().get(Employee.TYPE).tableModel().items().get();
+						departmentModel.detail().get(Employee.TYPE).tableModel().items().get();
 		assertTrue(salesEmployees.containsAll(employeesFromDetailModel), "Filtered list should contain all employees for department");
 	}
 
@@ -192,23 +192,23 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 	public void addSameDetailModelTwice() {
 		M model = createDepartmentModelWithoutDetailModel();
 		M employeeModel = createEmployeeModel();
-		assertThrows(IllegalArgumentException.class, () -> model.detailModels().add(employeeModel, employeeModel));
+		assertThrows(IllegalArgumentException.class, () -> model.detail().add(employeeModel, employeeModel));
 	}
 
 	@Test
 	public void addModelAsItsOwnDetailModel() {
 		M model = createDepartmentModelWithoutDetailModel();
-		assertThrows(IllegalArgumentException.class, () -> model.detailModels().add(model));
+		assertThrows(IllegalArgumentException.class, () -> model.detail().add(model));
 	}
 
 	@Test
 	public void activateDeactivateDetailModel() {
 		M departmentModel = createDepartmentModel();
-		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(false);
-		assertTrue(departmentModel.detailModels().active().get().isEmpty());
-		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(true);
-		assertFalse(departmentModel.detailModels().active().isEmpty());
-		assertTrue(departmentModel.detailModels().active().contains(departmentModel.detailModels().get(Employee.TYPE)));
+		departmentModel.detail().active(departmentModel.detail().get(Employee.TYPE)).set(false);
+		assertTrue(departmentModel.detail().active().get().isEmpty());
+		departmentModel.detail().active(departmentModel.detail().get(Employee.TYPE)).set(true);
+		assertFalse(departmentModel.detail().active().isEmpty());
+		assertTrue(departmentModel.detail().active().contains(departmentModel.detail().get(Employee.TYPE)));
 	}
 
 	@Test
@@ -220,7 +220,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().indexes().set(asList(1, 2));
 		M employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(departmentModel.link(employeeModel)
 						.active(true)
 						.build());
 		assertEquals(new HashSet<>(departmentModel.tableModel().selection().items().get()),
@@ -234,7 +234,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			return;
 		}
 		M employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detail().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -262,7 +262,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(departmentModel.link(employeeModel)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -297,7 +297,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			return;
 		}
 		M employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detail().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -335,7 +335,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(departmentModel.link(employeeModel)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -368,7 +368,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			return;
 		}
 		M employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detail().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(true)
 						.clearConditionOnEmptySelection(false)
@@ -394,7 +394,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(departmentModel.link(employeeModel)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -419,7 +419,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			return;
 		}
 		M employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detail().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(true)
@@ -440,7 +440,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(departmentModel.link(employeeModel)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)

@@ -68,7 +68,7 @@ public final class AlbumModelTest {
 							.toList();
 
 			// Update the tracks using the edit model
-			albumModel.detailModels().get(Track.TYPE).editor().update(modifiedTracks);
+			albumModel.detail().get(Track.TYPE).editor().update(modifiedTracks);
 
 			// Which should trigger the refresh of the album in the Album model
 			// now with the new rating as the average of the track ratings

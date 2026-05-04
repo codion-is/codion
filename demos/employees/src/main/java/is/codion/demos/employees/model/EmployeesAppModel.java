@@ -40,7 +40,7 @@ public final class EmployeesAppModel extends SwingEntityApplicationModel {
 		//in case a new manager got hired, fired or promoted
 		employeeEditModel.editor().events().persisted().addListener(employeeEditModel.editor()
 						.comboBoxModels().get(Employee.MANAGER_FK).items()::refresh);
-		departmentModel.detailModels().add(new SwingEntityModel(employeeEditModel));
+		departmentModel.detail().add(new SwingEntityModel(employeeEditModel));
 		departmentModel.tableModel().items().refresh();
 
 		return departmentModel;

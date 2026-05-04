@@ -26,6 +26,6 @@ public final class GenreModel extends SwingEntityModel {
 
 	public GenreModel(EntityConnectionProvider connectionProvider) {
 		super(Genre.TYPE, connectionProvider);
-		detailModels().add(new SwingEntityModel(new TrackTableModel(connectionProvider)));
+		detail().add(new SwingEntityModel(new TrackTableModel(connectionProvider)));
 	}
 }

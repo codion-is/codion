@@ -46,9 +46,9 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		 *       ITEMTAG
 		 */
 		SwingEntityModel categoryModel = applicationModel.entityModels().get(Category.TYPE);
-		SwingEntityModel productModel = categoryModel.detailModels().get(Product.TYPE);
-		SwingEntityModel itemModel = productModel.detailModels().get(Item.TYPE);
-		SwingEntityModel tagItemModel = itemModel.detailModels().get(TagItem.TYPE);
+		SwingEntityModel productModel = categoryModel.detail().get(Product.TYPE);
+		SwingEntityModel itemModel = productModel.detail().get(Item.TYPE);
+		SwingEntityModel tagItemModel = itemModel.detail().get(TagItem.TYPE);
 
 		EntityPanel categoryPanel = new EntityPanel(categoryModel,
 						new CategoryEditPanel(categoryModel.editModel()),
@@ -67,9 +67,9 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
 						new TagItemEditPanel(tagItemModel.editModel()));
 
-		categoryPanel.detailPanels().add(productPanel);
-		productPanel.detailPanels().add(itemPanel);
-		itemPanel.detailPanels().add(tagItemPanel);
+		categoryPanel.detail().add(productPanel);
+		productPanel.detail().add(itemPanel);
+		itemPanel.detail().add(tagItemPanel);
 
 		return List.of(categoryPanel);
 	}
@@ -105,7 +105,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 	private static EntityPanel createTagPanel(EntityConnectionProvider connectionProvider) {
 		SwingEntityModel tagModel = new SwingEntityModel(Tag.TYPE, connectionProvider);
 		SwingEntityModel tagItemModel = new SwingEntityModel(TagItem.TYPE, connectionProvider);
-		tagModel.detailModels().add(tagItemModel);
+		tagModel.detail().add(tagItemModel);
 		tagModel.tableModel().items().refresh();
 
 		EntityPanel tagPanel = new EntityPanel(tagModel,
@@ -116,7 +116,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 										.build()));
 		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
 						new TagItemEditPanel(tagItemModel.editModel()));
-		tagPanel.detailPanels().add(tagItemPanel);
+		tagPanel.detail().add(tagItemPanel);
 
 		return tagPanel;
 	}

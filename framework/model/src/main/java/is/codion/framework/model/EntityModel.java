@@ -98,7 +98,7 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	/**
 	 * @return the detail models
 	 */
-	DetailModels<M, E, T, R> detailModels();
+	DetailModels<M, E, T, R> detail();
 
 	/**
 	 * Manages the detail models for a {@link EntityModel}

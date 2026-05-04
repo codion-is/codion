@@ -27,6 +27,6 @@ public final class CountryModel extends SwingEntityModel {
 		super(new CountryTableModel(connectionProvider));
 		SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connectionProvider));
 		SwingEntityModel countryLanguageModel = new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
-		detailModels().add(cityModel, countryLanguageModel);
+		detail().add(cityModel, countryLanguageModel);
 	}
 }

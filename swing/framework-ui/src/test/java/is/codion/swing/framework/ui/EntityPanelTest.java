@@ -68,31 +68,31 @@ public final class EntityPanelTest {
 		assertThrows(IllegalStateException.class, deptPanel::tablePanel);
 
 		EntityPanel testPanel = deptPanel;
-		assertThrows(IllegalArgumentException.class, () -> testPanel.detailPanels().add(testPanel));
+		assertThrows(IllegalArgumentException.class, () -> testPanel.detail().add(testPanel));
 	}
 
 	@Test
 	void detailPanels() {
 		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
 		SwingEntityModel empModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
-		deptModel.detailModels().add(empModel);
+		deptModel.detail().add(empModel);
 
 		EntityPanel deptPanel = new EntityPanel(deptModel);
 		EntityPanel empPanel = new EntityPanel(empModel);
 
-		deptPanel.detailPanels().add(empPanel);
-		assertThrows(IllegalArgumentException.class, () -> deptPanel.detailPanels().add(empPanel));
-		assertNotNull(deptPanel.detailPanels().get(Employee.TYPE));
-		assertEquals(0, deptPanel.detailPanels().active().size());
+		deptPanel.detail().add(empPanel);
+		assertThrows(IllegalArgumentException.class, () -> deptPanel.detail().add(empPanel));
+		assertNotNull(deptPanel.detail().get(Employee.TYPE));
+		assertEquals(0, deptPanel.detail().active().size());
 
 		assertSame(deptPanel, empPanel.parentPanel().orElseThrow(IllegalStateException::new));
 
 		// activates the detail panel
 		deptPanel.initialize();
-		assertThrows(IllegalStateException.class, () -> deptPanel.detailPanels().add(empPanel));
-		assertEquals(1, deptPanel.detailPanels().active().size());
+		assertThrows(IllegalStateException.class, () -> deptPanel.detail().add(empPanel));
+		assertEquals(1, deptPanel.detail().active().size());
 
-		deptModel.detailModels().active(empModel).set(false);
-		assertEquals(0, deptPanel.detailPanels().active().size());
+		deptModel.detail().active(empModel).set(false);
+		assertEquals(0, deptPanel.detail().active().size());
 	}
 }

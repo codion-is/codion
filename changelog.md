@@ -18,6 +18,7 @@ Codion Change Log
 - AttributeDefinition.USE_LEXICAL_STRING_COMPARATOR renamed LEXICAL_STRING_COMPARATOR.
 ### is.codion.framework.model
 - PersistTask.Task removed.
+- EntityModel.detailModels() renamed detail().
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 ### is.codion.swing.framework.ui
@@ -27,6 +28,7 @@ Codion Change Log
 - EntityEditPanel.PersistCommands added.
 - EntityEditPanel.Config.USE_SAVE_CAPTION removed.
 - EntitySearchField, search task now ResultTaskHandler based.
+- EntityPanel.detailPanels() renamed detail().
 
 ## 0.18.72
 ### is.codion.common.reactive

@@ -26,7 +26,7 @@ public final class PlaylistModel extends SwingEntityModel {
 	public PlaylistModel(EntityConnectionProvider connectionProvider) {
 		super(new PlaylistTableModel(connectionProvider));
 		SwingEntityModel playlistTrackModel = new SwingEntityModel(new PlaylistTrackEditModel(connectionProvider));
-		detailModels().add(link(playlistTrackModel)
+		detail().add(link(playlistTrackModel)
 						.clearValueOnEmptySelection(true)
 						.active(true)
 						.build());

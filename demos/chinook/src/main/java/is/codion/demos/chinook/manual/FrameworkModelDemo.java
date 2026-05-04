@@ -62,7 +62,7 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
 
 		// Establish master-detail relationship
-		customerModel.detailModels().add(invoiceModel);
+		customerModel.detail().add(invoiceModel);
 		// end::entityModel[]
 	}
 
@@ -158,8 +158,8 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
 
-		customerModel.detailModels().add(invoiceModel);
-		invoiceModel.detailModels().add(invoiceLineModel);
+		customerModel.detail().add(invoiceModel);
+		invoiceModel.detail().add(invoiceLineModel);
 
 		// Selection cascades down the hierarchy
 		Entity customer = getCustomer(connectionProvider);
@@ -458,7 +458,7 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
 
-		invoiceModel.detailModels().add(invoiceLineModel);
+		invoiceModel.detail().add(invoiceLineModel);
 
 		// Configure detail model for optimal performance
 		invoiceLineModel.tableModel().query().conditionRequired().set(true); // Don't load all lines
@@ -474,8 +474,8 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
 
 		// Build hierarchy
-		customerModel.detailModels().add(invoiceModel);
-		invoiceModel.detailModels().add(invoiceLineModel);
+		customerModel.detail().add(invoiceModel);
+		invoiceModel.detail().add(invoiceLineModel);
 
 		// Configure each level
 		invoiceModel.tableModel().query().conditionRequired().set(true);
@@ -510,7 +510,7 @@ public final class FrameworkModelDemo {
 										})
 										.build();
 
-		customerModel.detailModels().add(customLink);
+		customerModel.detail().add(customLink);
 		// end::customModelLink[]
 	}
 
@@ -520,10 +520,10 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
 
 		// ForeignKeyModelLink is created automatically when foreign key is detected
-		customerModel.detailModels().add(invoiceModel);
+		customerModel.detail().add(invoiceModel);
 
 		// Or configure explicitly
-		customerModel.detailModels().add(ForeignKeyModelLink.builder(invoiceModel, Invoice.CUSTOMER_FK)
+		customerModel.detail().add(ForeignKeyModelLink.builder(invoiceModel, Invoice.CUSTOMER_FK)
 						// Clear foreign key value when master has no selection
 						.clearValueOnEmptySelection(true)
 						// Set foreign key value automatically on insert

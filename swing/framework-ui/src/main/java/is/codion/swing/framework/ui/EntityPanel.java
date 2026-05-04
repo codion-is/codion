@@ -398,7 +398,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * @return the detail panels
 	 */
-	public final DetailPanels detailPanels() {
+	public final DetailPanels detail() {
 		return detailPanels;
 	}
 
@@ -1259,7 +1259,7 @@ public class EntityPanel extends JPanel {
 		 */
 		public Collection<EntityPanel> active() {
 			return panels.stream()
-							.filter(detailPanel -> entityModel.detailModels().active().contains(detailPanel.entityModel))
+							.filter(detailPanel -> entityModel.detail().active().contains(detailPanel.entityModel))
 							.collect(toList());
 		}
 

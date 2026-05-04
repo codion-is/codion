@@ -264,7 +264,7 @@ public final class EmployeesMinimalApp {
 		private static SwingEntityModel createDepartmentModel(EntityConnectionProvider connectionProvider) {
 			SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
 			SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
-			departmentModel.detailModels().add(employeeModel);
+			departmentModel.detail().add(employeeModel);
 
 			return departmentModel;
 		}
@@ -286,13 +286,13 @@ public final class EmployeesMinimalApp {
 		private static List<EntityPanel> createPanels(EmployeesApplicationModel applicationModel) {
 			//now, let's assemble our application
 			SwingEntityModel departmentModel = applicationModel.entityModels().get(Department.TYPE);
-			SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
+			SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 
 			EntityPanel employeePanel = new EntityPanel(employeeModel,
 							new EmployeeEditPanel(employeeModel.editModel()));
 			EntityPanel departmentPanel = new EntityPanel(departmentModel,
 							new DepartmentEditPanel(departmentModel.editModel()));
-			departmentPanel.detailPanels().add(employeePanel);
+			departmentPanel.detail().add(employeePanel);
 
 			return List.of(departmentPanel);
 		}

@@ -71,7 +71,7 @@ final class ContinentPanel extends EntityPanel {
 						.build();
 
 		EntityTablePanel countryTablePanel =
-						new EntityTablePanel(model.detailModels().get(Country.TYPE).tableModel(),
+						new EntityTablePanel(model.detail().get(Country.TYPE).tableModel(),
 										config -> config
 														.includeConditions(false)
 														.includeToolBar(false));

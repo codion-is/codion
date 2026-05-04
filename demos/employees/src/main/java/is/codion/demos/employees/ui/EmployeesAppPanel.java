@@ -65,7 +65,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	private static List<EntityPanel> createPanels(EmployeesAppModel applicationModel) {
 		SwingEntityModel departmentModel = applicationModel.entityModels().get(Department.TYPE);
-		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
+		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 
 		EntityPanel employeePanel = new EntityPanel(employeeModel,
 						new EmployeeEditPanel(employeeModel.editModel()),
@@ -78,7 +78,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 										.panel(entityPanel)
 										.splitPaneResizeWeight(0.4)
 										.build()));
-		departmentPanel.detailPanels().add(employeePanel);
+		departmentPanel.detail().add(employeePanel);
 
 		return List.of(departmentPanel);
 	}

@@ -33,7 +33,7 @@ public final class InsertEmployee extends AbstractPerformer {
 	public void perform(EmployeesAppModel application) throws EntityValidationException {
 		SwingEntityModel departmentModel = application.entityModels().get(Department.TYPE);
 		selectRandomRow(departmentModel.tableModel());
-		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
+		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 		Entity employee = new DefaultEntityFactory(application.connection()).entity(Employee.TYPE);
 		employee.set(Employee.DEPARTMENT_FK, departmentModel.tableModel().selection().item().get());
 		employeeModel.editor().entity().set(employee);

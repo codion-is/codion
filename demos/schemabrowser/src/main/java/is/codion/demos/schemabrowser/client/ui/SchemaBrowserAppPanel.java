@@ -53,10 +53,10 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
 	private static List<EntityPanel> createPanels(SchemaBrowserApplicationModel applicationModel) {
 		SwingEntityModel schemaModel = applicationModel.entityModels().get(Schema.TYPE);
-		SwingEntityModel tableModel = schemaModel.detailModels().get(Table.TYPE);
-		SwingEntityModel columnModel = tableModel.detailModels().get(TableColumn.TYPE);
-		SwingEntityModel constraintModel = tableModel.detailModels().get(Constraint.TYPE);
-		SwingEntityModel columnConstraintModel = constraintModel.detailModels().get(ConstraintColumn.TYPE);
+		SwingEntityModel tableModel = schemaModel.detail().get(Table.TYPE);
+		SwingEntityModel columnModel = tableModel.detail().get(TableColumn.TYPE);
+		SwingEntityModel constraintModel = tableModel.detail().get(Constraint.TYPE);
+		SwingEntityModel columnConstraintModel = constraintModel.detail().get(ConstraintColumn.TYPE);
 
 		EntityPanel schemaPanel = new EntityPanel(schemaModel,
 						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder()
@@ -71,10 +71,10 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 		EntityPanel constraintPanel = new EntityPanel(constraintModel);
 		EntityPanel columnConstraintPanel = new EntityPanel(columnConstraintModel);
 
-		schemaPanel.detailPanels().add(tablePanel);
-		tablePanel.detailPanels().add(columnPanel);
-		tablePanel.detailPanels().add(constraintPanel);
-		constraintPanel.detailPanels().add(columnConstraintPanel);
+		schemaPanel.detail().add(tablePanel);
+		tablePanel.detail().add(columnPanel);
+		tablePanel.detail().add(constraintPanel);
+		constraintPanel.detail().add(columnConstraintPanel);
 
 		schemaModel.tableModel().items().refresh();
 
@@ -112,9 +112,9 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 			SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
 			SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connectionProvider);
 
-			schemaModel.detailModels().add(tableModel);
-			tableModel.detailModels().add(columnModel, constraintModel);
-			constraintModel.detailModels().add(constraintColumnModel);
+			schemaModel.detail().add(tableModel);
+			tableModel.detail().add(columnModel, constraintModel);
+			constraintModel.detail().add(constraintColumnModel);
 
 			return schemaModel;
 		}

@@ -185,12 +185,12 @@ The framework uses a fractal master-detail pattern:
 // Models contain detail models
 SwingEntityModel invoiceModel = new SwingEntityModel(invoiceEditModel);
 SwingEntityModel invoiceLineModel = new SwingEntityModel(invoiceLineEditModel);
-invoiceModel.detailModels().add(invoiceLineModel);
+invoiceModel.detail().add(invoiceLineModel);
 
 // Panels contain detail panels  
 EntityPanel invoicePanel = new EntityPanel(invoiceModel);
 EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel);
-invoicePanel.detailPanels().add(invoiceLinePanel);
+invoicePanel.detail().add(invoiceLinePanel);
 ```
 
 ### UI Component Builders

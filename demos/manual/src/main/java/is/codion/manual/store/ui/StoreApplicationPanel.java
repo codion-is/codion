@@ -46,7 +46,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 		CustomerModel customerModel = (CustomerModel)
 						applicationModel.entityModels().get(Customer.TYPE);
 		CustomerAddressModel customerAddressModel = (CustomerAddressModel)
-						customerModel.detailModels().get(CustomerAddress.TYPE);
+						customerModel.detail().get(CustomerAddress.TYPE);
 
 		EntityPanel customerPanel = new EntityPanel(customerModel,
 						new CustomerEditPanel(customerModel.editModel()),
@@ -54,7 +54,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 		EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
 						new CustomerAddressEditPanel(customerAddressModel.editModel()));
 
-		customerPanel.detailPanels().add(customerAddressPanel);
+		customerPanel.detail().add(customerAddressPanel);
 
 		return List.of(customerPanel);
 	}

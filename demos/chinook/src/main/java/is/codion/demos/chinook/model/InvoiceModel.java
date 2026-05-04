@@ -33,7 +33,7 @@ public final class InvoiceModel extends SwingEntityModel {
 		InvoiceLineEditModel invoiceLineEditModel = new InvoiceLineEditModel(connectionProvider);
 
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(invoiceLineEditModel);
-		detailModels().add(link(invoiceLineModel)
+		detail().add(link(invoiceLineModel)
 						// Prevents accidentally adding a new invoice line to the previously selected invoice,
 						// since the selected foreign key value persists when the master selection is cleared by default.
 						.clearValueOnEmptySelection(true)

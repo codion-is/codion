@@ -193,12 +193,12 @@ The framework uses a fractal master-detail pattern throughout:
 // Models contain detail models
 SwingEntityModel invoiceModel = new SwingEntityModel(invoiceEditModel);
 SwingEntityModel invoiceLineModel = new SwingEntityModel(invoiceLineEditModel);
-invoiceModel.detailModels().add(invoiceModel);
+invoiceModel.detail().add(invoiceModel);
 
 // Panels contain detail panels  
 EntityPanel invoicePanel = new EntityPanel(invoiceModel);
 EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel);
-invoicePanel.detailPanels().add(invoiceLinePanel);
+invoicePanel.detail().add(invoiceLinePanel);
 ```
 
 ### Observable State Management
@@ -874,7 +874,7 @@ Codion documentation follows a strict pattern for code examples to ensure they s
 ----
 SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 SwingEntityModel orderModel = new SwingEntityModel(Order.TYPE, connectionProvider);
-customerModel.detailModels().add(orderModel);
+customerModel.detail().add(orderModel);
 ----
 ```
 
@@ -900,7 +900,7 @@ void entityModel(EntityConnectionProvider connectionProvider) {
     SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
     
     // Establish master-detail relationship
-    customerModel.detailModels().add(invoiceModel);
+    customerModel.detail().add(invoiceModel);
     // end::entityModel[]
 }
 ```

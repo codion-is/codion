@@ -63,7 +63,7 @@ public final class ClientArchitecture {
 		SwingEntityModel albumModel =
 						new SwingEntityModel(Album.TYPE, connectionProvider);
 
-		artistModel.detailModels().add(albumModel);
+		artistModel.detail().add(albumModel);
 
 		return artistModel;
 	}
@@ -86,7 +86,7 @@ public final class ClientArchitecture {
 		SwingEntityTableModel artistTableModel = artistModel.tableModel();
 
 		// the album detail model
-		SwingEntityModel albumModel = artistModel.detailModels().get(Album.TYPE);
+		SwingEntityModel albumModel = artistModel.detail().get(Album.TYPE);
 
 		// create a EntityEditPanel instance, based on the artist edit model
 		EntityEditPanel artistEditPanel = new EntityEditPanel(artistEditModel) {
@@ -107,7 +107,7 @@ public final class ClientArchitecture {
 		// with a default EntityTablePanel
 		EntityPanel albumPanel = new EntityPanel(albumModel);
 
-		artistPanel.detailPanels().add(albumPanel);
+		artistPanel.detail().add(albumPanel);
 
 		return artistPanel;
 	}

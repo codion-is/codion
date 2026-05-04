@@ -100,7 +100,7 @@ public class StoreDemo {
 		SwingEntityModel addressModel =
 						new SwingEntityModel(Address.TYPE, connectionProvider);
 
-		customerModel.detailModels().add(addressModel);
+		customerModel.detail().add(addressModel);
 
 		EntityPanel customerPanel =
 						new EntityPanel(customerModel,
@@ -109,7 +109,7 @@ public class StoreDemo {
 						new EntityPanel(addressModel,
 										new AddressEditPanel(addressModel.editModel()));
 
-		customerPanel.detailPanels().add(addressPanel);
+		customerPanel.detail().add(addressPanel);
 
 		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
 		addressPanel.tablePanel()

@@ -37,7 +37,7 @@ public class StoreApplicationModel extends SwingEntityApplicationModel {
 		CustomerAddressModel customerAddressModel =
 						new CustomerAddressModel(connectionProvider);
 
-		customerModel.detailModels().add(customerAddressModel);
+		customerModel.detail().add(customerAddressModel);
 
 		//populate the model with rows from the database
 		customerModel.tableModel().items().refresh();

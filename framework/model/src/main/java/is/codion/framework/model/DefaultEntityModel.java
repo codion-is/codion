@@ -149,7 +149,7 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 	}
 
 	@Override
-	public final DetailModels<M, E, T, R> detailModels() {
+	public final DetailModels<M, E, T, R> detail() {
 		return detailModels;
 	}
 

@@ -72,8 +72,8 @@ public final class EntityPanels {
 		public CustomerPanel(SwingEntityModel entityModel) {
 			super(entityModel);
 			SwingEntityModel addressModel =
-							entityModel.detailModels().get(Address.TYPE);
-			detailPanels().add(new AddressPanel(addressModel));
+							entityModel.detail().get(Address.TYPE);
+			detail().add(new AddressPanel(addressModel));
 		}
 	}
 	// end::detailPanel[]

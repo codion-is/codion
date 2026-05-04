@@ -69,7 +69,7 @@ public final class WindowDetailLayout implements DetailLayout {
 	private WindowDetailLayout(DefaultBuilder builder) {
 		this.entityPanel = builder.entityPanel;
 		this.windowType = builder.windowType;
-		this.entityPanel.detailPanels().added().addConsumer(this::addDetailPanel);
+		this.entityPanel.detail().added().addConsumer(this::addDetailPanel);
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public final class WindowDetailLayout implements DetailLayout {
 			entityPanel.tablePanel().addPopupMenuControls(Controls.builder()
 							.caption(MESSAGES.getString(DETAIL_TABLES))
 							.icon(FrameworkIcons.instance().detail())
-							.controls(entityPanel.detailPanels().get().stream()
+							.controls(entityPanel.detail().get().stream()
 											.map(detailPanel -> Control.builder()
 															.command(windowCommand(detailPanel))
 															.caption(detailPanel.caption())
@@ -201,8 +201,8 @@ public final class WindowDetailLayout implements DetailLayout {
 				window.setVisible(false);
 			}
 			SwingEntityModel detailModel = detailPanel.model();
-			if (entityPanel.model().detailModels().contains(detailModel)) {
-				entityPanel.model().detailModels().active(detailModel).set(panelState == WINDOW);
+			if (entityPanel.model().detail().contains(detailModel)) {
+				entityPanel.model().detail().active(detailModel).set(panelState == WINDOW);
 			}
 		}
 

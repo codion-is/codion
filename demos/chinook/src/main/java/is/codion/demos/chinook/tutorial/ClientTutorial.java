@@ -165,7 +165,7 @@ public final class ClientTutorial {
 		private static SwingEntityModel createArtistModel(EntityConnectionProvider connectionProvider) {
 			SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
 			SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
-			artistModel.detailModels().add(albumModel);
+			artistModel.detail().add(albumModel);
 			artistModel.tableModel().items().refresh();
 
 			return artistModel;
@@ -180,10 +180,10 @@ public final class ClientTutorial {
 
 		private static List<EntityPanel> createPanels(ApplicationModel applicationModel) {
 			SwingEntityModel artistModel = applicationModel.entityModels().get(Artist.TYPE);
-			SwingEntityModel albumModel = artistModel.detailModels().get(Album.TYPE);
+			SwingEntityModel albumModel = artistModel.detail().get(Album.TYPE);
 			EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
 			EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));
-			artistPanel.detailPanels().add(albumPanel);
+			artistPanel.detail().add(albumPanel);
 
 			return List.of(artistPanel);
 		}

@@ -33,6 +33,6 @@ public final class CustomerModel extends SwingEntityModel {
 		ForeignKeyConditionModel customerConditionModel =
 						invoiceModel.tableModel().query().condition().get(Invoice.CUSTOMER_FK);
 		customerConditionModel.operands().in().value().link(customerConditionModel.operands().equal());
-		detailModels().add(invoiceModel);
+		detail().add(invoiceModel);
 	}
 }

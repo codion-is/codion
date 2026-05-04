@@ -33,23 +33,23 @@ final class CountryPanel extends EntityPanel {
 	CountryPanel(CountryModel countryModel) {
 		super(countryModel,
 						new CountryEditPanel(countryModel.editModel(),
-										countryModel.detailModels().get(City.TYPE).tableModel().items()),
+										countryModel.detail().get(City.TYPE).tableModel().items()),
 						new CountryTablePanel((CountryTableModel) countryModel.tableModel()),
 						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder()
 										.panel(entityPanel)
 										.splitPaneResizeWeight(0.7)
 										.build()));
 
-		SwingEntityModel cityModel = countryModel.detailModels().get(City.TYPE);
+		SwingEntityModel cityModel = countryModel.detail().get(City.TYPE);
 		EntityPanel cityPanel = new EntityPanel(cityModel,
 						new CityEditPanel((CityTableModel) cityModel.tableModel()),
 						new CityTablePanel((CityTableModel) cityModel.tableModel()));
 
-		SwingEntityModel countryLanguageModel = countryModel.detailModels().get(CountryLanguage.TYPE);
+		SwingEntityModel countryLanguageModel = countryModel.detail().get(CountryLanguage.TYPE);
 		EntityPanel countryLanguagePanel = new EntityPanel(countryLanguageModel,
 						new CountryLanguageEditPanel(countryLanguageModel.editModel()),
 						new CountryLanguageTablePanel((CountryLanguageTableModel) countryLanguageModel.tableModel()));
 
-		detailPanels().add(cityPanel, countryLanguagePanel);
+		detail().add(cityPanel, countryLanguagePanel);
 	}
 }

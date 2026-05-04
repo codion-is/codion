@@ -108,7 +108,7 @@ public abstract class AbstractEntityApplicationModelTest<M extends DefaultEntity
 		assertTrue(model.entityModels().contains(departmentModel));
 
 		assertFalse(model.entityModels().contains(Employee.TYPE));
-		M detailModel = departmentModel.detailModels().get(Employee.TYPE);
+		M detailModel = departmentModel.detail().get(Employee.TYPE);
 		assertFalse(model.entityModels().contains(detailModel));
 	}
 

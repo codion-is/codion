@@ -1032,7 +1032,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			if (editModel.editor().modified().is()) {
 				modifiedPanels.put(panel, editModel.editor().modified().attributes().get());
 			}
-			modifiedPanels.putAll(modified(panel.detailPanels().get()));
+			modifiedPanels.putAll(modified(panel.detail().get()));
 		}
 
 		return modifiedPanels;

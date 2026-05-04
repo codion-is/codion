@@ -175,7 +175,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
 		this.detailController = new TabbedDetailController(builder.enabledDetailStates, builder.initialState);
 		this.controlMap = builder.controlMap;
-		this.entityPanel.detailPanels().added().addConsumer(this::bindEvents);
+		this.entityPanel.detail().added().addConsumer(this::bindEvents);
 	}
 
 	@Override
@@ -185,7 +185,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	@Override
 	public Optional<JComponent> layout() {
-		if (entityPanel.detailPanels().get().isEmpty()) {
+		if (entityPanel.detail().get().isEmpty()) {
 			throw new IllegalStateException("EntityPanel " + entityPanel + " has no detail panels");
 		}
 		if (splitPane != null) {
@@ -193,7 +193,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 		entityPanel.display().requested().addListener(new ShowIfHidden());
 		splitPane = createSplitPane(entityPanel.defaultPanel());
-		tabbedPane = createTabbedPane(entityPanel.detailPanels().get());
+		tabbedPane = createTabbedPane(entityPanel.detail().get());
 		setupControls(entityPanel);
 		detailController.initialize();
 
@@ -317,7 +317,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			tablePanel.addPopupMenuControls(Controls.builder()
 							.caption(MESSAGES.getString(DETAIL_TABLES))
 							.icon(ICONS.detail())
-							.controls(entityPanel.detailPanels().get().stream()
+							.controls(entityPanel.detail().get().stream()
 											.map(detailPanel -> Control.builder()
 															.command(new ActivateDetailPanel(detailPanel))
 															.caption(detailPanel.caption())
@@ -552,18 +552,18 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		private void deactivateDetailModelLink(SwingEntityModel detailModel) {
 			SwingEntityModel model = entityPanel.model();
-			if (model.detailModels().contains(detailModel)) {
-				model.detailModels().active(detailModel).set(false);
+			if (model.detail().contains(detailModel)) {
+				model.detail().active(detailModel).set(false);
 			}
 		}
 
 		private void activateDetailModelLink(SwingEntityModel detailModel) {
 			SwingEntityModel model = entityPanel.model();
-			if (model.detailModels().contains(detailModel)) {
-				model.detailModels().active().get().stream()
+			if (model.detail().contains(detailModel)) {
+				model.detail().active().get().stream()
 								.filter(activeDetailModel -> activeDetailModel != detailModel)
-								.forEach(activeDetailModel -> model.detailModels().active(activeDetailModel).set(false));
-				model.detailModels().active(detailModel).set(true);
+								.forEach(activeDetailModel -> model.detail().active(activeDetailModel).set(false));
+				model.detail().active(detailModel).set(true);
 			}
 		}
 

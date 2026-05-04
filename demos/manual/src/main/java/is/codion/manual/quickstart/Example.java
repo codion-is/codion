@@ -94,7 +94,7 @@ public final class Example {
 		SwingEntityModel addressModel =
 						new SwingEntityModel(CustomerAddress.TYPE, connectionProvider);
 
-		customerModel.detailModels().add(addressModel);
+		customerModel.detail().add(addressModel);
 
 		AddressEditPanel addressEditPanel =
 						new AddressEditPanel(addressModel.editModel());
@@ -102,7 +102,7 @@ public final class Example {
 		EntityPanel addressPanel =
 						new EntityPanel(addressModel, addressEditPanel);
 
-		customerPanel.detailPanels().add(addressPanel);
+		customerPanel.detail().add(addressPanel);
 
 		//lazy initialization of UI components
 		customerPanel.initialize();

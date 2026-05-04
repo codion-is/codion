@@ -37,13 +37,13 @@ public final class PlaylistPanel extends EntityPanel {
 						config -> config.detailLayout(DetailLayout.NONE));
 
 		SwingEntityModel playlistTrackModel =
-						playlistModel.detailModels().get(PlaylistTrack.TYPE);
+						playlistModel.detail().get(PlaylistTrack.TYPE);
 		EntityPanel playlistTrackPanel =
 						new EntityPanel(playlistTrackModel,
 										new PlaylistTrackTablePanel(playlistTrackModel.tableModel()));
 
 		// We still add the detail panel, for keyboard navigation
-		detailPanels().add(playlistTrackPanel);
+		detail().add(playlistTrackPanel);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public final class PlaylistPanel extends EntityPanel {
 		setLayout(borderLayout());
 		add(splitPane()
 						.leftComponent(defaultPanel())
-						.rightComponent(detailPanels().get(PlaylistTrack.TYPE).initialize())
+						.rightComponent(detail().get(PlaylistTrack.TYPE).initialize())
 						.continuousLayout(true)
 						.build(), BorderLayout.CENTER);
 	}
