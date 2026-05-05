@@ -20,6 +20,7 @@ Codion Change Log
 - PersistTask.Task removed.
 - EntityModel.detailModels() renamed detail().
 - EntityApplicationModel.entityModels() renamed models().
+- DefaultEntityEditor persist tasks refactored.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 ### is.codion.swing.framework.ui
