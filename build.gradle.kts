@@ -1,8 +1,8 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 plugins {
-    id("org.sonarqube") version "7.2.3.7755"
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("org.sonarqube") version "7.3.0.8198"
+    id("com.github.ben-manes.versions") version "0.54.0"
     id("com.vanniktech.dependency.graph.generator") version "0.8.0"
     id("com.diffplug.spotless") version "8.4.0"
     id("org.gradlex.extra-java-module-info") version "1.14"
