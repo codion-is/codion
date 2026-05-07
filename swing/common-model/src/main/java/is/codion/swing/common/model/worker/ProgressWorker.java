@@ -669,18 +669,14 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		@Override
 		public Builder<T, V> onStarted(Runnable onStarted) {
-			if (this.onStarted == null) {
-				this.onStarted = new ArrayList<>(1);
-			}
+			this.onStarted = initialize(this.onStarted);
 			this.onStarted.add(requireNonNull(onStarted));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onDone(Runnable onDone) {
-			if (this.onDone == null) {
-				this.onDone = new ArrayList<>(1);
-			}
+			this.onDone = initialize(this.onDone);
 			this.onDone.add(requireNonNull(onDone));
 			return this;
 		}
@@ -693,54 +689,42 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		@Override
 		public Builder<T, V> onResult(Consumer<T> onResult) {
-			if (this.onResult == null) {
-				this.onResult = new ArrayList<>(1);
-			}
+			this.onResult = initialize(this.onResult);
 			this.onResult.add(requireNonNull(onResult));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onProgress(Consumer<Integer> onProgress) {
-			if (this.onProgress == null) {
-				this.onProgress = new ArrayList<>(1);
-			}
+			this.onProgress = initialize(this.onProgress);
 			this.onProgress.add(requireNonNull(onProgress));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onPublish(Consumer<List<V>> onPublish) {
-			if (this.onPublish == null) {
-				this.onPublish = new ArrayList<>(1);
-			}
+			this.onPublish = initialize(this.onPublish);
 			this.onPublish.add(requireNonNull(onPublish));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onException(Consumer<Exception> onException) {
-			if (this.onException == null) {
-				this.onException = new ArrayList<>(1);
-			}
+			this.onException = initialize(this.onException);
 			this.onException.add(requireNonNull(onException));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onCancelled(Runnable onCancelled) {
-			if (this.onCancelled == null) {
-				this.onCancelled = new ArrayList<>(1);
-			}
+			this.onCancelled = initialize(this.onCancelled);
 			this.onCancelled.add(requireNonNull(onCancelled));
 			return this;
 		}
 
 		@Override
 		public Builder<T, V> onInterrupted(Runnable onInterrupted) {
-			if (this.onInterrupted == null) {
-				this.onInterrupted = new ArrayList<>(1);
-			}
+			this.onInterrupted = initialize(this.onInterrupted);
 			this.onInterrupted.add(requireNonNull(onInterrupted));
 			return this;
 		}
@@ -788,6 +772,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		private List<Runnable> onInterrupted() {
 			return onInterrupted == null ? singletonList(INTERRUPT_CURRENT_ON_INTERRUPTED) : onInterrupted;
+		}
+
+		private static <B> List<B> initialize(@Nullable List<B> list) {
+			return list == null ? new ArrayList<>(1) : list;
 		}
 	}
 
