@@ -728,12 +728,12 @@ is/codion/swing/common/ui/dialog/SelectionDialogBuilder_is_IS.properties
 
 == codion-swing-framework-ui
 
-=== is/codion/swing/framework/ui/DefaultEntityApplication.java
+=== is/codion/swing/framework/ui/EntityApplication.java
 
 [source]
 ----
-is/codion/swing/framework/ui/DefaultEntityApplication.properties
-is/codion/swing/framework/ui/DefaultEntityApplication_is_IS.properties
+is/codion/swing/framework/ui/EntityApplication.properties
+is/codion/swing/framework/ui/EntityApplication_is_IS.properties
 ----
 
 [cols="1,1,1"]
