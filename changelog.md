@@ -22,6 +22,7 @@ Codion Change Log
 - EntityApplicationModel.entityModels() renamed models().
 - DefaultEntityEditor persist tasks refactored.
 - DefaultEntityEditor bug fixed, now updates states when instantiated.
+- EntityEditor detail editor handling added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 ### is.codion.swing.framework.ui

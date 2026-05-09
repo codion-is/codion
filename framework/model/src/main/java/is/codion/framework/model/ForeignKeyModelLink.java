@@ -35,7 +35,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * @param <R> the {@link EntityEditor} type
  */
 public interface ForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> extends ModelLink<M, E, T, R> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> extends ModelLink<M, E, T, R> {
 
 	/**
 	 * Specifies whether a linked model should automatically set the foreign key value to the entity inserted by the parent model.
@@ -106,7 +106,7 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extend
 	 * @return a {@link Builder} instance
 	 */
 	static <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor,
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
 					B extends ForeignKeyModelLink.Builder<M, E, T, R, B>>
 	ForeignKeyModelLink.Builder<M, E, T, R, B> builder(M model, ForeignKey foreignKey) {
 		return new DefaultForeignKeyModelLink.DefaultBuilder<>(model, foreignKey);
@@ -121,7 +121,7 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extend
 	 * @param <B> the builder type
 	 */
 	interface Builder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor,
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
 					B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> extends ModelLink.Builder<M, E, T, R, B> {
 
 		/**

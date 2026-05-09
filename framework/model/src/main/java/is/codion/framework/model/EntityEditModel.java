@@ -36,7 +36,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
  * @see #editor()
  */
 public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> {
 
 	/**
 	 * @return the type of the entity this edit model is based on

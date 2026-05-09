@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @param <R> the {@link EntityEditor} type
  */
 public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
-				E extends EntityEditModel<M, E, T, R>, T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> {
+				E extends EntityEditModel<M, E, T, R>, T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));

@@ -46,6 +46,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -56,7 +57,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Provides edit access to an underlying entity.
  */
-public interface EntityEditor {
+public interface EntityEditor<R extends EntityEditor<R>> {
 
 	/**
 	 * Specifies whether editors publish their insert, update and delete events to {@link PersistenceEvents}
@@ -187,6 +188,11 @@ public interface EntityEditor {
 	 * @return the {@link SearchModels} instance
 	 */
 	SearchModels searchModels();
+
+	/**
+	 * @return the {@link DetailEditors} instance
+	 */
+	DetailEditors<R> detail();
 
 	/**
 	 * @return the {@link EditorPersistence} used by this editor
@@ -367,6 +373,14 @@ public interface EntityEditor {
 		 * @throws IllegalStateException in case inserting is not enabled
 		 */
 		PersistTask<Entity> insert() throws EntityValidationException;
+
+		/**
+		 * @param before called on the entity before it is inserted
+		 * @return a task for inserting the active entity
+		 * @throws EntityValidationException in case of validation failure
+		 * @throws IllegalStateException in case inserting is not enabled
+		 */
+		PersistTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException;
 
 		/**
 		 * @param entity the entity
@@ -835,5 +849,62 @@ public interface EntityEditor {
 		 * @see #PUBLISH_PERSISTENCE_EVENTS
 		 */
 		State publishPersistenceEvents();
+	}
+
+	/**
+	 * <p>Manages detail editors for one-to-one entity composition within an {@link EntityEditor}.
+	 * <p>A detail editor represents a detail entity referenced via a foreign key pointing to the master entity.
+	 *
+	 * <p>When a detail editor is added, the foreign key to the master is declared <em>framework-managed</em>
+	 * via three coordinated configurations on the detail editor:
+	 * <ul>
+	 * <li>The foreign key value is not reset by defaults — its {@link EditorValue#persist()} is set to false,
+	 *     so it survives {@link EditorValues#defaults()}.
+	 * <li>The detail editor's validator is wrapped so a null foreign key is silently accepted during validation.
+	 *     This applies both to the reactive {@link #valid()} state (for UI binding) and to the validation gate
+	 *     in {@link PersistTasks#insert(java.util.function.Consumer)} (which must throw synchronously, before
+	 *     the framework has populated the foreign key). The wrapped validator is locked to prevent replacement.
+	 * <li>The framework sets the foreign key on the detail entity during persistence, linking it to the
+	 *     freshly-inserted master.
+	 * </ul>
+	 * <p>Together, these make the foreign key invisible to user-supplied logic — it is filled in by the framework
+	 * at persistence time and ignored everywhere else.
+	 *
+	 * <p>The detail entity is loaded from the database when the master entity changes, and the master editor's
+	 * {@link Modified} state aggregates the detail editor's state.
+	 *
+	 * <p>During master persistence, detail editors participate within the same transaction
+	 * (see {@link is.codion.framework.db.EntityConnection#transaction(is.codion.framework.db.EntityConnection,
+	 * is.codion.framework.db.EntityConnection.Transactional)} — a {@code transaction} call on a connection that
+	 * already has an open transaction joins the outer one rather than starting a new one):
+	 * <ul>
+	 * <li><b>Insert</b>: A present detail entity is inserted with the foreign key set to the newly inserted master.
+	 * <li><b>Update</b>: Depending on the detail's presence and existence, the detail is inserted, updated, or deleted.
+	 * <li><b>Delete</b>: An existing detail entity is deleted before the master.
+	 * </ul>
+	 * <p>Presence is determined by the {@link Predicate} supplied to {@link #add}. A detail that is present but does
+	 * not yet exist triggers an insert. A detail that exists but is no longer present triggers a delete. A detail
+	 * that exists, is present, and is modified triggers an update.
+	 * @param <R> {@link EntityEditor} type
+	 * @see #detail()
+	 */
+	interface DetailEditors<R extends EntityEditor<R>> {
+
+		/**
+		 * Adds a detail editor for the given foreign key.
+		 * @param detailEditor the detail editor
+		 * @param foreignKey the foreign key on the detail entity, pointing to the master
+		 * @param present a predicate determining whether the detail entity should be persisted, see class javadoc
+		 * @throws IllegalStateException in case a detail editor has already been registered for the given foreign key
+		 * @throws IllegalArgumentException in case the foreign key's referenced or owning entity types don't match
+		 */
+		void add(R detailEditor, ForeignKey foreignKey, Predicate<Entity> present);
+
+		/**
+		 * @param foreignKey the foreign key
+		 * @return the detail editor previously registered for the given foreign key
+		 * @throws IllegalStateException in case no detail editor is registered for the given foreign key
+		 */
+		R get(ForeignKey foreignKey);
 	}
 }

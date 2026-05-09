@@ -43,7 +43,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing extension of {@link DefaultEntityEditor}
  */
-public final class SwingEntityEditor extends DefaultEntityEditor {
+public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityEditor> {
 
 	private static final String NULL_ITEM_CAPTION = FilterComboBoxModel.NULL_CAPTION.getOrThrow();
 	private static final ProxyBuilder.ProxyMethod<Object> NULL_ITEM_TO_STRING = parameters -> NULL_ITEM_CAPTION;

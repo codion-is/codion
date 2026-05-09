@@ -27,6 +27,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -45,6 +46,7 @@ import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
+import is.codion.framework.domain.entity.exception.NullValueException;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -53,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -67,6 +70,7 @@ import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.Entity.groupByType;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
@@ -76,8 +80,9 @@ import static java.util.stream.Collectors.*;
 
 /**
  * A default {@link EntityEditor} implementation.
+ * @param <R> the editor type
  */
-public class DefaultEntityEditor implements EntityEditor {
+public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEditor<R> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditor.class);
 
@@ -109,6 +114,7 @@ public class DefaultEntityEditor implements EntityEditor {
 	private final Value<EntityValidator> validator;
 	private final ComponentModels componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
+	private final DefaultDetailEditors detail = new DefaultDetailEditors();
 	private final EditorPersistence persistence;
 
 	private final DefaultEditorEntity entity;
@@ -233,6 +239,11 @@ public class DefaultEntityEditor implements EntityEditor {
 	@Override
 	public final SearchModels searchModels() {
 		return searchModels;
+	}
+
+	@Override
+	public final DetailEditors<R> detail() {
+		return detail;
 	}
 
 	@Override
@@ -509,6 +520,7 @@ public class DefaultEntityEditor implements EntityEditor {
 			changing.accept(entity);
 			setOrDefaults(entity);
 			changed.accept(entity);
+			setDetail(entity);
 		}
 
 		@Override
@@ -525,6 +537,7 @@ public class DefaultEntityEditor implements EntityEditor {
 		public void replace(@Nullable Entity entity) {
 			setOrDefaults(entity == null ? null : validateType(entity));
 			replaced.accept(entity);
+			replaceDetail(entity);
 		}
 
 		@Override
@@ -537,6 +550,18 @@ public class DefaultEntityEditor implements EntityEditor {
 												.filter(instance::contains)
 												.collect(toSet()))
 								.build()));
+			}
+		}
+
+		private void setDetail(@Nullable Entity entity) {
+			for (DetailEditor detail : detail.editors.values()) {
+				detail.editor().entity().set(entity == null ? null : detail.load(entity));
+			}
+		}
+
+		private void replaceDetail(@Nullable Entity entity) {
+			for (DetailEditor detail : detail.editors.values()) {
+				detail.editor().entity().replace(entity == null ? null : detail.load(entity));
 			}
 		}
 
@@ -582,12 +607,17 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public PersistTask<Entity> insert() throws EntityValidationException {
+			return insert(e -> {});
+		}
+
+		@Override
+		public PersistTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException {
 			settings.verifyInsertEnabled();
 			validate();
 			Entity entity = entity().get().copy().mutable();
 			persistEvents.beforeInsert(entity);
 
-			return new InsertEditor(entity);
+			return detail.editors.isEmpty() ? new InsertEditor(entity, before) : new InsertDetail(entity, before);
 		}
 
 		@Override
@@ -620,7 +650,7 @@ public class DefaultEntityEditor implements EntityEditor {
 			Entity entity = entity().get().copy().mutable();
 			persistEvents.beforeUpdate(entity);
 
-			return new UpdateEditor(entity);
+			return detail.editors.isEmpty() ? new UpdateEditor(entity) : new UpdateDetail(entity);
 		}
 
 		@Override
@@ -658,7 +688,7 @@ public class DefaultEntityEditor implements EntityEditor {
 			entity.revert();// in case of a modified primary key
 			persistEvents.beforeDelete(entity);
 
-			return new DeleteEditor(entity);
+			return detail.editors.isEmpty() ? new DeleteEditor(entity) : new DeleteDetail(entity);
 		}
 
 		@Override
@@ -681,17 +711,161 @@ public class DefaultEntityEditor implements EntityEditor {
 			return new DeleteEntities(entities);
 		}
 
-		private final class InsertEditor implements PersistTask<Entity> {
+		private final class InsertDetail implements PersistTask<Entity> {
 
 			private final Entity entity;
+			private final Collection<PersistTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
+			private final Consumer<Entity> before;
 
-			private InsertEditor(Entity entity) {
+			private @Nullable Entity inserted;
+
+			private InsertDetail(Entity entity, Consumer<Entity> before) throws EntityValidationException {
 				this.entity = entity;
+				this.before = requireNonNull(before);
+				for (DetailEditor detailEditor : detail.editors.values()) {
+					if (detailEditor.present.is()) {
+						tasks.add(detailEditor.editor.tasks(connection).insert(detail -> detail.set(detailEditor.foreignKey(), inserted())));
+					}
+				}
 			}
 
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug("insert {}", entity);
+				return transaction(connection, this::insert);
+			}
+
+			private Result<Entity> insert() {
+				before.accept(entity);
+				inserted = persistence.get().insert(entity, connection);
+				Collection<Result<Entity>> detail = detail();
+				return () -> {
+					entity().replace(inserted);
+					persistEvents.afterInsert(inserted);
+					detail.forEach(Result::handle);
+
+					return inserted;
+				};
+			}
+
+			private Collection<Result<Entity>> detail() {
+				return tasks.stream()
+								.map(PersistTask::perform)
+								.collect(toList());
+			}
+
+			private @Nullable Entity inserted() {
+				return inserted;
+			}
+		}
+
+		private final class UpdateDetail implements PersistTask<Entity> {
+
+			private final Entity entity;
+			private final Collection<PersistTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
+
+			private @Nullable Entity updated;
+
+			private UpdateDetail(Entity entity) throws EntityValidationException {
+				this.entity = entity;
+				for (DetailEditor detailEditor : detail.editors.values()) {
+					if (detailEditor.updatable.insert.is()) {
+						tasks.add(detailEditor.editor.tasks(connection).insert(detail -> detail.set(detailEditor.foreignKey(), updated())));
+					}
+					else if (detailEditor.updatable.update.is()) {
+						tasks.add(detailEditor.editor.tasks(connection).update());
+					}
+					else if (detailEditor.updatable.delete.is()) {
+						tasks.add(detailEditor.editor.tasks(connection).delete());
+					}
+				}
+			}
+
+			@Override
+			public Result<Entity> perform() {
+				LOG.debug("update {}", entity);
+				return transaction(connection, this::update);
+			}
+
+			private Result<Entity> update() {
+				updated = entity;
+				if (entity.modified()) {
+					updated = persistence.get().update(entity, connection);
+				}
+				Collection<Result<Entity>> detail = detail();
+				return () -> {
+					entity().replace(updated);
+					persistEvents.afterUpdate(entity, updated);
+					detail.forEach(Result::handle);
+
+					return updated;
+				};
+			}
+
+			private Collection<Result<Entity>> detail() {
+				return tasks.stream()
+								.map(PersistTask::perform)
+								.collect(toList());
+			}
+
+			private @Nullable Entity updated() {
+				return updated;
+			}
+		}
+
+		private final class DeleteDetail implements PersistTask<Entity> {
+
+			private final Entity entity;
+			private final Collection<PersistTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
+
+			private DeleteDetail(Entity entity) {
+				this.entity = entity;
+				for (DetailEditor detailEditor : detail.editors.values()) {
+					if (detailEditor.editor.exists().is()) {
+						tasks.add(detailEditor.editor.tasks(connection).delete());
+					}
+				}
+			}
+
+			@Override
+			public Result<Entity> perform() {
+				LOG.debug("delete {}", entity);
+				return transaction(connection, this::delete);
+			}
+
+			private Result<Entity> delete() {
+				Collection<Result<Entity>> detail = detail();
+				persistence.get().delete(entity, connection);
+				return () -> {
+					entity().replace(null);
+					persistEvents.afterDelete(entity);
+					detail.forEach(Result::handle);
+
+					return entity;
+				};
+			}
+
+			private Collection<Result<Entity>> detail() {
+				return tasks.stream()
+								.map(PersistTask::perform)
+								.collect(toList());
+			}
+		}
+
+		private final class InsertEditor implements PersistTask<Entity> {
+
+			private final Entity entity;
+			private final Consumer<Entity> before;
+
+			private InsertEditor(Entity entity, Consumer<Entity> before) {
+				this.entity = entity;
+				this.before = requireNonNull(before);
+			}
+
+			@Override
+			public Result<Entity> perform() {
+				LOG.debug("insert {}", entity);
+				before.accept(entity);
 				Entity inserted = persistence.get().insert(entity, connection);
 				return () -> {
 					entity().replace(inserted);
@@ -895,6 +1069,190 @@ public class DefaultEntityEditor implements EntityEditor {
 		}
 	}
 
+	private final class DefaultDetailEditors implements DetailEditors<R> {
+
+		private final Map<ForeignKey, DetailEditor> editors = new HashMap<>();
+
+		@Override
+		public void add(R detailEditor, ForeignKey foreignKey, Predicate<Entity> present) {
+			if (editors.containsKey(requireNonNull(foreignKey))) {
+				throw new IllegalStateException("A detail editor has already been associated with for foreign key: " + foreignKey);
+			}
+			if (!entityDefinition.type().equals(foreignKey.referencedType())) {
+				throw new IllegalArgumentException("Master editor entity type " + foreignKey.referencedType() +
+								" expected, got: " + entityDefinition.type());
+			}
+			if (!foreignKey.entityType().equals(detailEditor.entityDefinition().type())) {
+				throw new IllegalArgumentException("Detail editor entity type " + foreignKey.entityType() +
+								" expected, got: " + detailEditor.entityDefinition().type());
+			}
+			editors.put(foreignKey, new DetailEditor(requireNonNull(detailEditor), foreignKey, requireNonNull(present)));
+		}
+
+		@Override
+		public R get(ForeignKey foreignKey) {
+			if (!editors.containsKey(requireNonNull(foreignKey))) {
+				throw new IllegalStateException("No detail editor is associated with foreign key: " + foreignKey);
+			}
+
+			return editors.get(foreignKey).editor();
+		}
+	}
+
+	private final class DetailEditor {
+
+		private final R editor;
+		private final ForeignKey foreignKey;
+		private final Predicate<Entity> presentPredicate;
+		private final State present = State.state();
+		private final Updatable updatable = new Updatable();
+
+		private DetailEditor(R editor, ForeignKey foreignKey, Predicate<Entity> presentPredicate) {
+			this.editor = editor;
+			this.foreignKey = foreignKey;
+			this.presentPredicate = presentPredicate;
+			editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey));
+			editor.validator().addValidator(new PreventModification());
+			editor.value(foreignKey).persist().set(false);
+			editor.values().changed().addListener(this::refreshStates);
+			editor.entity().replaced().addListener(this::refreshStates);
+			editor.modified().addListener(this::refreshStates);
+			modified().additional().add(updatable);
+		}
+
+		private R editor() {
+			return editor;
+		}
+
+		private ForeignKey foreignKey() {
+			return foreignKey;
+		}
+
+		private @Nullable Entity load(Entity master) {
+			List<Entity> entities = editor.connectionProvider().connection().select(foreignKey.equalTo(master));
+			if (entities.size() > 1) {
+				throw new IllegalStateException("Multiple detail rows found for foreign key " + foreignKey +
+								", detail editors require 0-or-1 cardinality");
+			}
+
+			return entities.isEmpty() ? null : entities.get(0);
+		}
+
+		private void refreshStates() {
+			boolean masterExists = exists().is();
+			boolean exists = editor.exists().is();
+			boolean modified = editor.modified().is();
+			present.set(presentPredicate.test(editor.entity().get()));
+			updatable.insert.set(masterExists && present.is() && !exists);
+			updatable.update.set(masterExists && present.is() && exists && modified);
+			updatable.delete.set(masterExists && !present.is() && exists);
+			DefaultEntityEditor.this.modified.update();
+		}
+
+		private final class Updatable implements ObservableState {
+
+			private final State insert = State.state();
+			private final State update = State.state();
+			private final State delete = State.state();
+
+			private final ObservableState state = State.or(insert, update, delete);
+
+			@Override
+			public boolean is() {
+				return state.is();
+			}
+
+			@Override
+			public ObservableState not() {
+				return state.not();
+			}
+
+			@Override
+			public Observer<Boolean> observer() {
+				return state.observer();
+			}
+		}
+	}
+
+	private static final class PreventModification implements Validator<EntityValidator> {
+
+		@Override
+		public void validate(@Nullable EntityValidator validator) {
+			if (!(validator instanceof DetailForeignKeyValidator)) {
+				throw new IllegalArgumentException("Detail editor validator must be set before the editor is added to a master editor");
+			}
+		}
+	}
+
+	static final class DetailForeignKeyValidator implements EntityValidator {
+
+		private final EntityValidator validator;
+		private final ForeignKey foreignKey;
+
+		private DetailForeignKeyValidator(EntityValidator validator, ForeignKey foreignKey) {
+			this.validator = validator;
+			this.foreignKey = foreignKey;
+		}
+
+		@Override
+		public boolean nullable(Entity entity, Attribute<?> attribute) {
+			return validator.nullable(entity, attribute);
+		}
+
+		@Override
+		public void validate(Entity entity, Attribute<?> attribute) throws AttributeValidationException {
+			try {
+				validator.validate(entity, attribute);
+			}
+			catch (AttributeValidationException e) {
+				if (notExcluded(e)) {
+					throw e;
+				}
+			}
+		}
+
+		@Override
+		public void validate(Entity entity) throws EntityValidationException {
+			try {
+				validator.validate(entity);
+			}
+			catch (EntityValidationException e) {
+				if (e.attributes().isEmpty()) {
+					throw e;
+				}
+				List<AttributeValidationException> filtered = e.attributes().stream()
+								.filter(this::notExcluded)
+								.collect(toList());
+				if (!filtered.isEmpty()) {
+					throw new EntityValidationException(filtered);
+				}
+			}
+		}
+
+		@Override
+		public boolean validated(Entity entity, AttributeDefinition<?> definition) {
+			return validator.validated(entity, definition);
+		}
+
+		@Override
+		public boolean strict() {
+			return validator.strict();
+		}
+
+		private boolean notExcluded(AttributeValidationException e) {
+			if (!(e instanceof NullValueException)) {
+				return true;
+			}
+			Attribute<?> attribute = e.attribute();
+			if (attribute.equals(foreignKey)) {
+				return false;
+			}
+			return foreignKey.references().stream()
+							.map(ForeignKey.Reference::column)
+							.noneMatch(column -> column.equals(attribute));
+		}
+	}
+
 	private static class DefaultEditorPersistence implements EditorPersistence {
 
 		private static final EntityPersistence DEFAULT = new EntityPersistence() {};
@@ -930,6 +1288,9 @@ public class DefaultEntityEditor implements EntityEditor {
 		@Override
 		public void revert() {
 			entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
+			for (DetailEditor detail : detail.editors.values()) {
+				detail.editor().values().revert();
+			}
 		}
 
 		@Override
@@ -1042,11 +1403,20 @@ public class DefaultEntityEditor implements EntityEditor {
 
 		private void update() {
 			boolean existing = exists.is();
-			attributes.set(existing ? editorValues.keySet().stream()
-							.filter(entity.instance::modified)
-							.collect(toSet()) : emptySet());
+			attributes.set(existing ? modifiedAttributes() : emptySet());
 			modified.set(existing && entity.instance.modified() || additional.get().stream()
 							.anyMatch(ObservableState::is));
+		}
+
+		private Set<Attribute<?>> modifiedAttributes() {
+			Set<Attribute<?>> modifiedAttributes = new HashSet<>(editorValues.keySet().stream()
+							.filter(entity.instance::modified)
+							.collect(toSet()));
+			detail.editors.values().stream()
+							.map(editor -> editor.editor.modified().attributes().get())
+							.forEach(modifiedAttributes::addAll);
+
+			return modifiedAttributes;
 		}
 
 		private void additionalChanged(Change<Set<ObservableState>> change) {

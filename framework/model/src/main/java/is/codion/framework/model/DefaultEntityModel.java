@@ -48,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  * @param <R> the {@link EntityEditor} type
  */
 public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor> implements EntityModel<M, E, T, R> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements EntityModel<M, E, T, R> {
 
 	private final E editModel;
 	private final @Nullable T tableModel;
