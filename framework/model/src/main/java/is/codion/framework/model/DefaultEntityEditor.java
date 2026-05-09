@@ -135,6 +135,7 @@ public class DefaultEntityEditor implements EntityEditor {
 						.build();
 		configurePersistentForeignKeys();
 		addEditListeners();
+		updateStates();
 	}
 
 	@Override
