@@ -18,7 +18,9 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.AbstractObserver;
+import is.codion.common.reactive.observer.Observer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -37,6 +39,7 @@ final class DefaultPersistenceEvents implements PersistenceEvents {
 	private final Inserted inserted = new DefaultInsertEvent();
 	private final Updated updated = new DefaultUpdated();
 	private final Deleted deleted = new DefaultDeleted();
+	private final Event<Collection<Entity>> persisted = Event.event();
 
 	DefaultPersistenceEvents(EntityType entityType) {
 		this.entityType = entityType;
@@ -57,6 +60,11 @@ final class DefaultPersistenceEvents implements PersistenceEvents {
 		return deleted;
 	}
 
+	@Override
+	public Observer<Collection<Entity>> persisted() {
+		return persisted.observer();
+	}
+
 	private void validate(Collection<Entity> entities) {
 		for (Entity entity : requireNonNull(entities)) {
 			if (!entity.type().equals(entityType)) {
@@ -71,6 +79,7 @@ final class DefaultPersistenceEvents implements PersistenceEvents {
 		public void accept(Collection<Entity> inserted) {
 			validate(inserted);
 			notifyListeners(inserted);
+			persisted.accept(inserted);
 		}
 	}
 
@@ -81,6 +90,7 @@ final class DefaultPersistenceEvents implements PersistenceEvents {
 			validate(requireNonNull(updated).keySet());
 			validate(updated.values());
 			notifyListeners(updated);
+			persisted.accept(updated.values());
 		}
 	}
 
@@ -90,6 +100,7 @@ final class DefaultPersistenceEvents implements PersistenceEvents {
 		public void accept(Collection<Entity> deleted) {
 			validate(deleted);
 			notifyListeners(deleted);
+			persisted.accept(deleted);
 		}
 	}
 }

@@ -62,6 +62,14 @@ public interface PersistenceEvents {
 	Deleted deleted();
 
 	/**
+	 * Notified when entities have been persited, that is, inserted, updated or delete.
+	 * @see #inserted()
+	 * @see #updated()
+	 * @see #deleted()
+	 */
+	Observer<Collection<Entity>> persisted();
+
+	/**
 	 * Notified on insert.
 	 */
 	interface Inserted extends Observer<Collection<Entity>>, Consumer<Collection<Entity>> {

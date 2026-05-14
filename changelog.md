@@ -23,6 +23,7 @@ Codion Change Log
 - DefaultEntityEditor persist tasks refactored.
 - DefaultEntityEditor bug fixed, now updates states when instantiated.
 - EntityEditor detail editor handling added.
+- PersistenceEvents.persisted() added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 ### is.codion.swing.framework.ui
