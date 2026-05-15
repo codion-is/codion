@@ -27,6 +27,7 @@ Codion Change Log
 - PersistenceEvents.persisted() added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
+- SwingEntityTableModel bug fixed, now uses replace() when updating the editor entity on table edit.
 ### is.codion.swing.framework.ui
 - EditorComponents no longer an interface.
 - EntityApplication no longer an interface.

@@ -320,7 +320,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 			Entity selected = selection().item().get();
 			EditorEntity editorEntity = editor().entity();
 			if (!editorEntity.get().equalValues(selected)) {
-				editorEntity.set(selected);
+				editorEntity.replace(selected);
 			}
 		}
 	}
