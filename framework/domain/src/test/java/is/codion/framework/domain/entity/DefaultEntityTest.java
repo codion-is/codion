@@ -817,6 +817,12 @@ public class DefaultEntityTest {
 			dept.set(Department.ID, 2);
 			Entity entity = dept.copy().builder().originalPrimaryKey().build();
 			assertEquals(1, entity.get(Department.ID));
+
+			dept.set(Department.ACTIVE, false);
+			entity = dept.copy().builder().original().build();
+			assertEquals(1, entity.get(Department.ID));
+			assertEquals("Name", entity.get(Department.NAME));
+			assertTrue(entity.get(Department.ACTIVE));
 		}
 
 		@Test

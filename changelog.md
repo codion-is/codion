@@ -16,6 +16,7 @@ Codion Change Log
 - LoginPanel, login task now ResultTaskHandler based.
 ### is.codion.framework.domain
 - AttributeDefinition.USE_LEXICAL_STRING_COMPARATOR renamed LEXICAL_STRING_COMPARATOR.
+- Entity.Builder.original() added, javadocs improved.
 ### is.codion.framework.model
 - PersistTask.Task removed.
 - EntityModel.detailModels() renamed detail().

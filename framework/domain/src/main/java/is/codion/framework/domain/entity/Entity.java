@@ -494,6 +494,21 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 
 	/**
 	 * A builder for {@link Entity} instances.
+	 * <p>
+	 * When obtained via {@link Copy#builder()}, the builder is initialized with both the current and original
+	 * values from the source entity, preserving its modification state. The builder allows mutating that state
+	 * before producing a new {@link Entity}, for example by resetting modified values back to their originals
+	 * via {@link #original()} and {@link #originalPrimaryKey()}, or by clearing values via {@link #clear(Attribute)}
+	 * and {@link #clearPrimaryKey()}.
+	 * <p>
+	 * Values supplied via {@link #with(Attribute, Object)} and {@link #withDefaults()} are applied to the
+	 * resulting entity after instantiation, so they participate in normal modification tracking (i.e. setting
+	 * a value different from the entity's original value via {@link #with(Attribute, Object)} marks the entity
+	 * as modified). Primary key columns are an exception: non-generated primary key values supplied via
+	 * {@link #with(Attribute, Object)} replace the column's default null directly on the entity, without
+	 * being recorded as a modification.
+	 * <p>
+	 * Instances are not thread safe and not intended to be reused after {@link #build()}.
 	 * {@snippet :
 	 * Store domain = new Store();
 	 *
@@ -511,16 +526,21 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	sealed interface Builder permits DefaultEntityBuilder {
 
 		/**
-		 * Adds the given attribute value to this builder
+		 * Sets the given attribute value, overriding any previous value supplied via this method for the same attribute.
+		 * The value is applied to the entity after instantiation and participates in modification tracking, except
+		 * for non-generated primary key columns, which are written directly without being recorded as a modification.
 		 * @param attribute the attribute
 		 * @param value the value
 		 * @param <T> the value type
 		 * @return this builder instance
+		 * @throws IllegalArgumentException in case {@code attribute} is a derived attribute
 		 */
 		<T> Builder with(Attribute<T> attribute, @Nullable T value);
 
 		/**
-		 * Sets the default value for all attributes which have a default value.
+		 * Sets the default value for all attributes which have a default value, as if {@link #with(Attribute, Object)}
+		 * had been called for each one. Subsequent {@link #with(Attribute, Object)} calls for the same attribute override
+		 * the default.
 		 * @return this builder instance
 		 * @see ValueAttributeDefinition#defaultValue()
 		 * @see ValueAttributeDefinition#hasDefaultValue()
@@ -528,29 +548,40 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 		Builder withDefaults();
 
 		/**
-		 * Clears the given value from this builder,
-		 * current as well as original value if any
+		 * Resets all modified attributes to their original values and discards the corresponding modification tracking,
+		 * so the resulting entity will not be {@link Entity#modified()} for those attributes.
+		 * This method is destructive: the original values are consumed from this builder, so a subsequent call has no effect.
+		 * Values supplied afterwards via {@link #with(Attribute, Object)} are layered on top of the reset state and are
+		 * recorded as new modifications against the restored originals.
+		 * @return this builder instance
+		 */
+		Builder original();
+
+		/**
+		 * Removes the value of the given attribute from this builder, including both the current value and any
+		 * original value being tracked. The resulting entity will be {@link Entity#isNull(Attribute)} for the attribute
+		 * and unaware of any prior modification.
 		 * @param attribute the attribute which value to remove
 		 * @return this builder instance
 		 */
 		Builder clear(Attribute<?> attribute);
 
 		/**
-		 * Clears the primary key values from this builder,
-		 * current as well as original values if any
+		 * Removes all primary key values from this builder, including both current values and any original values
+		 * being tracked. The resulting entity will have a null primary key and no recorded modifications for those columns.
 		 * @return this builder instance
 		 */
 		Builder clearPrimaryKey();
 
 		/**
-		 * Resets the primary to its original state,
-		 * in case the original value is available
+		 * Resets the primary key columns to their original values and discards the corresponding modification tracking.
+		 * This method is destructive: the original values are consumed from this builder, so a subsequent call has no effect.
 		 * @return this builder instance
 		 */
 		Builder originalPrimaryKey();
 
 		/**
-		 * Builds the Entity instance
+		 * Builds the Entity instance.
 		 * @return a new Entity instance
 		 */
 		Entity build();

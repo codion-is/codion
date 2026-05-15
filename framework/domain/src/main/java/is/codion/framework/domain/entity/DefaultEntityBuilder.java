@@ -21,7 +21,6 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.Entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 
@@ -95,6 +94,13 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	}
 
 	@Override
+	public Entity.Builder original() {
+		definition.attributes().get().forEach(this::original);
+
+		return this;
+	}
+
+	@Override
 	public Entity.Builder clearPrimaryKey() {
 		definition.primaryKey().columns().forEach(this::remove);
 
@@ -121,9 +127,9 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		originalValues.remove(column);
 	}
 
-	private void original(Column<?> column) {
-		if (originalValues.containsKey(column)) {
-			values.put(column, originalValues.get(column));
+	private void original(Attribute<?> attribute) {
+		if (originalValues.containsKey(attribute)) {
+			values.put(attribute, originalValues.remove(attribute));
 		}
 	}
 
