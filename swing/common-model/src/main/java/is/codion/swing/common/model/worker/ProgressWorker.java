@@ -227,6 +227,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	/**
 	 * A background task.
 	 */
+	@FunctionalInterface
 	public interface Task {
 
 		/**
@@ -240,6 +241,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * A background task producing a result.
 	 * @param <T> the task result type
 	 */
+	@FunctionalInterface
 	public interface ResultTask<T> {
 
 		/**
@@ -254,6 +256,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * A progress aware background task.
 	 * @param <V> the intermediate result type
 	 */
+	@FunctionalInterface
 	public interface ProgressTask<V> {
 
 		/**
@@ -277,6 +280,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @param <T> the task result type
 	 * @param <V> the intermediate result type
 	 */
+	@FunctionalInterface
 	public interface ProgressResultTask<T, V> {
 
 		/**
@@ -351,6 +355,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * A {@link Task} combined with {@link Handler}, for encapsulating a background task and its handlers in a single class.
 	 * @see BuilderFactory#task(Task)
 	 */
+	@FunctionalInterface
 	public interface TaskHandler extends Task, Handler {}
 
 	/**
@@ -359,6 +364,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @param <T> the task result type
 	 * @see BuilderFactory#task(ResultTask)
 	 */
+	@FunctionalInterface
 	public interface ResultTaskHandler<T> extends ResultTask<T>, Handler {
 
 		/**
@@ -396,6 +402,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @param <V> the intermediate result type
 	 * @see BuilderFactory#task(ProgressTask)
 	 */
+	@FunctionalInterface
 	public interface ProgressTaskHandler<V> extends ProgressTask<V>, ProgressHandler<V> {}
 
 	/**
@@ -405,6 +412,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @param <V> the intermediate result type
 	 * @see BuilderFactory#task(ProgressResultTask)
 	 */
+	@FunctionalInterface
 	public interface ProgressResultTaskHandler<T, V> extends ProgressResultTask<T, V>, ProgressHandler<V> {
 
 		/**

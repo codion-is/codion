@@ -167,6 +167,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	 * @param <C> the column identifier type
 	 * @param <T> the cell value type
 	 */
+	@FunctionalInterface
 	interface CellColor<R, C, T> {
 
 		/**
@@ -332,6 +333,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
+	@FunctionalInterface
 	interface Factory<R, C> {
 
 		/**

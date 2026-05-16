@@ -1259,6 +1259,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	/**
 	 * Handles laying out an EntityApplicationPanel.
 	 */
+	@FunctionalInterface
 	public interface ApplicationLayout {
 
 		/**

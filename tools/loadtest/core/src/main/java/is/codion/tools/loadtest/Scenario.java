@@ -61,6 +61,7 @@ public interface Scenario<T> {
 	 * Performs a load test scenario.
 	 * @param <T> the load test application type
 	 */
+	@FunctionalInterface
 	interface Performer<T> {
 
 		/**

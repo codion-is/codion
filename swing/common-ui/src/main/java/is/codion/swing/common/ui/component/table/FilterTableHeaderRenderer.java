@@ -44,6 +44,7 @@ public interface FilterTableHeaderRenderer extends TableCellRenderer {
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
+	@FunctionalInterface
 	interface Factory<R, C> {
 
 		/**

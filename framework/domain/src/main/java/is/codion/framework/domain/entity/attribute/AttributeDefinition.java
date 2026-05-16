@@ -298,6 +298,7 @@ public sealed interface AttributeDefinition<T>
 	 * Supplies a default value.
 	 * @param <T> the value type
 	 */
+	@FunctionalInterface
 	interface DefaultValue<T> extends Serializable {
 
 		/**

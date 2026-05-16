@@ -745,6 +745,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Specifies an action to be executed within a transaction.
 	 */
+	@FunctionalInterface
 	interface Transactional {
 
 		/**
@@ -758,6 +759,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * Specifies an action to be executed within a transaction producing a result.
 	 * @param <T> the result type
 	 */
+	@FunctionalInterface
 	interface TransactionalResult<T> {
 
 		/**

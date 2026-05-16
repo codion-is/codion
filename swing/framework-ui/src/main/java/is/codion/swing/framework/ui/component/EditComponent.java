@@ -32,6 +32,7 @@ import static java.util.Objects.requireNonNull;
  * @param <C> the component type
  * @param <T> the value type
  */
+@FunctionalInterface
 public interface EditComponent<C extends JComponent, T> {
 
 	/**

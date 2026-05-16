@@ -217,6 +217,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 * Gets a single value from a {@link ResultSet}.
 	 * @param <C> the column value type
 	 */
+	@FunctionalInterface
 	interface GetValue<C> {
 
 		/**
@@ -233,6 +234,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 * Sets a parameter value in a {@link PreparedStatement}
 	 * @param <C> the column value type
 	 */
+	@FunctionalInterface
 	interface SetParameter<C> {
 
 		/**

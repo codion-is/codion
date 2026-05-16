@@ -121,6 +121,7 @@ public interface Control extends Action {
 	/**
 	 * A command interface, allowing Controls based on method references
 	 */
+	@FunctionalInterface
 	interface Command {
 
 		/**
@@ -133,6 +134,7 @@ public interface Control extends Action {
 	/**
 	 * A command interface, allowing Controls based on {@link ActionEvent}s.
 	 */
+	@FunctionalInterface
 	interface ActionCommand {
 
 		/**

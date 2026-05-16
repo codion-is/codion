@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
  * Parses a value from a string
  * @param <T> the value type
  */
+@FunctionalInterface
 public interface Parser<T> {
 
 	/**

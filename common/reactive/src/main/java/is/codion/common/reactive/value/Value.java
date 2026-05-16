@@ -354,6 +354,7 @@ public interface Value<T> extends Observable<T> {
 	 * A {@link Validator} for {@link Value}s.
 	 * @param <T> the value type
 	 */
+	@FunctionalInterface
 	interface Validator<T> {
 
 		/**

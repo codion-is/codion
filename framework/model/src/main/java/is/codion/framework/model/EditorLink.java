@@ -78,6 +78,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 	 * {@link DetailCondition} on subsequent loads.
 	 * @see Builder#beforeInsert(BeforeInsert)
 	 */
+	@FunctionalInterface
 	interface BeforeInsert {
 
 		/**
@@ -99,6 +100,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 	 * @see Builder.LoadStep#condition(DetailCondition)
 	 * @see ForeignKeyEditorLink.Builder#condition(DetailCondition)
 	 */
+	@FunctionalInterface
 	interface DetailCondition {
 
 		/**
@@ -115,6 +117,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 	 * @see Builder.LoadStep#select(DetailSelect)
 	 * @see ForeignKeyEditorLink.Builder#select(DetailSelect)
 	 */
+	@FunctionalInterface
 	interface DetailSelect {
 
 		/**

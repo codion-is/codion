@@ -32,6 +32,7 @@ import static java.util.stream.StreamSupport.stream;
  * Provides {@link EntityObjectMapper} instances for a given domain.
  * {@link DefaultEntityObjectMapperFactory} is provided for extension.
  */
+@FunctionalInterface
 public interface EntityObjectMapperFactory {
 
 	/**

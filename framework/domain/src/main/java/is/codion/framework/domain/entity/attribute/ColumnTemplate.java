@@ -34,6 +34,7 @@ import static java.util.Objects.requireNonNull;
  *}
  * @param <T> the column type
  */
+@FunctionalInterface
 public interface ColumnTemplate<T> {
 
 	/**

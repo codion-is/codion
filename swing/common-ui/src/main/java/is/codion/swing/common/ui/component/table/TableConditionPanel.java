@@ -189,6 +189,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	/**
 	 * @param <C> the type identifying the table columns
 	 */
+	@FunctionalInterface
 	public interface Factory<C> {
 
 		/**

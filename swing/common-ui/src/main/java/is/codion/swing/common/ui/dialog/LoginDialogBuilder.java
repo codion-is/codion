@@ -105,6 +105,7 @@ public interface LoginDialogBuilder extends DialogBuilder<LoginDialogBuilder> {
 	/**
 	 * Validates a login attempt.
 	 */
+	@FunctionalInterface
 	interface LoginValidator {
 
 		/**

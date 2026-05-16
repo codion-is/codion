@@ -506,6 +506,7 @@ public final class PropertyStore {
 	/**
 	 * Formats a property value, can f.ex. be used to hide passwords and other sensitive data.
 	 */
+	@FunctionalInterface
 	public interface PropertyFormatter {
 
 		/**

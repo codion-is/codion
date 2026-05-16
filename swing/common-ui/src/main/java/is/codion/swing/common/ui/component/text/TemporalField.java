@@ -374,6 +374,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 * Parses a Temporal value from text with a provided formatter
 	 * @param <T> the Temporal type
 	 */
+	@FunctionalInterface
 	public interface DateTimeParser<T extends Temporal> {
 
 		/**

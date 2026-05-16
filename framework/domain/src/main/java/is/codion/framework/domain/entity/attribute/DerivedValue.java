@@ -129,6 +129,7 @@ import static java.util.Objects.requireNonNull;
  * @see #sourceValues(Attribute, Map)
  * @see DerivedValue.SourceValues
  */
+@FunctionalInterface
 public interface DerivedValue<T> extends Serializable {
 
 	/**

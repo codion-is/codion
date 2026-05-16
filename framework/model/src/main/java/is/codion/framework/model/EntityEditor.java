@@ -324,6 +324,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * @param <T> the result type
 	 * @see EditorTasks
 	 */
+	@FunctionalInterface
 	interface PersistTask<T> {
 
 		/**
@@ -336,6 +337,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * The task result
 		 * @param <T> the result type
 		 */
+		@FunctionalInterface
 		interface Result<T> {
 
 			/**
@@ -351,6 +353,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * A task for refreshing the active entity.
 	 * If the active entity does not exist, this task does nothing.
 	 */
+	@FunctionalInterface
 	interface RefreshTask {
 
 		/**
@@ -362,6 +365,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * The task result
 		 */
+		@FunctionalInterface
 		interface Result {
 
 			/**

@@ -79,6 +79,7 @@ public interface FilterTableCellEditor<C extends JComponent, T> extends TableCel
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
+	@FunctionalInterface
 	interface Factory<R, C> {
 
 		/**

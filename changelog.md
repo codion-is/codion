@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.73
+### is.codion
+- FunctionalInterface annotation added where applicable.
 ### is.codion.common.model
 - DefaultFilterModelItems.replace() now triggers change events for filtered and included items.
 - FilterModelItems.Builder.listener() now supports multiple listeners.

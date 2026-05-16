@@ -29,6 +29,7 @@ import static java.util.Objects.requireNonNull;
  * A {@link ResultPacker} packs the contents of a {@link ResultSet} into a {@link List}.
  * @param <T> the type of object resulting from the packing
  */
+@FunctionalInterface
 public interface ResultPacker<T> {
 
 	/**

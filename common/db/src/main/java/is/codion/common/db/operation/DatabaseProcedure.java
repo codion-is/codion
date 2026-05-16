@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
  * @param <C> the connection type required by this procedure
  * @param <P> the procedure parameter type
  */
+@FunctionalInterface
 public interface DatabaseProcedure<C, P> {
 
 	/**

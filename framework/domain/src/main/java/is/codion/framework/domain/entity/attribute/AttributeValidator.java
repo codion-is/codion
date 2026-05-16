@@ -30,6 +30,7 @@ import java.io.Serializable;
  * @see ValueAttributeDefinition.Builder#validator(AttributeValidator)
  * @see EntityDefinition.Builder#validator(EntityValidator)
  */
+@FunctionalInterface
 public interface AttributeValidator<T> extends Serializable {
 
 	/**

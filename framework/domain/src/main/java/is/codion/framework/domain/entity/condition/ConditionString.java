@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * Provides condition strings for custom conditions
  */
+@FunctionalInterface
 public interface ConditionString {
 
 	/**

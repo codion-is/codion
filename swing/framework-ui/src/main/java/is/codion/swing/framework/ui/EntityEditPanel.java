@@ -1287,6 +1287,7 @@ public abstract class EntityEditPanel extends JPanel {
 	/**
 	 * Handles displaying confirmation messages for common actions to the user.
 	 */
+	@FunctionalInterface
 	public interface Confirmer {
 
 		/**

@@ -185,6 +185,7 @@ public final class ProxyBuilder<T> {
 	 * A proxy method.
 	 * @param <T> the proxy type
 	 */
+	@FunctionalInterface
 	public interface ProxyMethod<T> {
 
 		/**

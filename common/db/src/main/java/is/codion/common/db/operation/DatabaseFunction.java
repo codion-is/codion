@@ -26,6 +26,7 @@ import org.jspecify.annotations.Nullable;
  * @param <P> the parameter type
  * @param <R> the return type
  */
+@FunctionalInterface
 public interface DatabaseFunction<C, P, R> {
 
 	/**
