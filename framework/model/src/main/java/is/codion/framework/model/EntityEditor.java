@@ -211,15 +211,15 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	EditorValues values();
 
 	/**
-	 * @return the {@link PersistTasks} instance
+	 * @return the {@link EditorTasks} instance
 	 */
-	PersistTasks tasks();
+	EditorTasks tasks();
 
 	/**
 	 * @param connection the connection to use when persisting
-	 * @return the {@link PersistTasks} instance
+	 * @return the {@link EditorTasks} instance
 	 */
-	PersistTasks tasks(EntityConnection connection);
+	EditorTasks tasks(EntityConnection connection);
 
 	/**
 	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
@@ -322,7 +322,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 *   Entity insertedEntity = result.handle();
 	 *}
 	 * @param <T> the result type
-	 * @see PersistTasks
+	 * @see EditorTasks
 	 */
 	interface PersistTask<T> {
 
@@ -348,6 +348,31 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	}
 
 	/**
+	 * A task for refreshing the active entity.
+	 * If the active entity does not exist, this task does nothing.
+	 */
+	interface RefreshTask {
+
+		/**
+		 * Performs the refresh operation. May be called on a background thread.
+		 * @return the task result
+		 */
+		Result perform();
+
+		/**
+		 * The task result
+		 */
+		interface Result {
+
+			/**
+			 * Notifies listeners that the refresh has been performed.
+			 * Must be called on the UI thread if the editor is linked to UI components.
+			 */
+			void handle();
+		}
+	}
+
+	/**
 	 * Manages the {@link EntityPersistence} used by this editor
 	 */
 	interface EditorPersistence {
@@ -366,12 +391,12 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	}
 
 	/**
-	 * <p>Provides factory methods for creating {@link PersistTask} instances.
+	 * <p>Provides factory methods for creating {@link PersistTask} and {@link RefreshTask} instances.
 	 * <p>Each factory method validates the input, captures entity state and fires "before" events.
 	 * Must be called on the UI thread if the editor is linked to UI components.
 	 * The returned task should be executed promptly, not cached for later use.
 	 */
-	interface PersistTasks {
+	interface EditorTasks {
 
 		/**
 		 * @return a task for inserting the active entity
@@ -446,6 +471,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @throws IllegalStateException in case deleting is not enabled
 		 */
 		PersistTask<Collection<Entity>> delete(Collection<Entity> entities);
+
+		/**
+		 * @return a task for refreshing the active entity
+		 */
+		RefreshTask refresh();
 	}
 
 	/**
@@ -920,7 +950,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 *     so it survives {@link EditorValues#defaults()}.
 	 * <li>The detail editor's validator is wrapped so a null foreign key is silently accepted during validation.
 	 *     This applies both to the reactive {@link #valid()} state (for UI binding) and to the validation gate
-	 *     in {@link PersistTasks#insert(java.util.function.Consumer)} (which must throw synchronously, before
+	 *     in {@link EditorTasks#insert(java.util.function.Consumer)} (which must throw synchronously, before
 	 *     the framework has populated the foreign key). The wrapped validator is locked to prevent replacement.
 	 * <li>The framework sets the foreign key on the detail entity during persistence, linking it to the
 	 *     freshly-inserted master (via the link's {@link EditorLink.BeforeInsert beforeInsert} action).

@@ -52,7 +52,7 @@ import java.util.function.Predicate;
  * <p>The link's load action — whichever {@link DetailCondition}, {@link DetailSelect} or
  * {@link DetailEntity} was supplied — is invoked on a background thread whenever the framework needs
  * to load the detail row: when the master's active entity changes and on
- * {@link EntityEditor.EditorEntity#refresh()}. Implementations should not touch UI-bound editor state
+ * {@link EntityEditor.EditorTasks#refresh()}. Implementations should not touch UI-bound editor state
  * directly.
  * <p>Presence — whether a detail row should currently exist — is observed via the detail editor's
  * {@link EntityEditor#present()} state; the link's builder configures that state at registration time
@@ -129,7 +129,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 	 * escape hatch when neither a {@link DetailCondition} nor a {@link DetailSelect} suffices (e.g.
 	 * when the detail row is computed rather than selected, or requires multiple round trips).
 	 * <p>Invoked on a background thread whenever the framework needs to load the detail row — when the
-	 * master's active entity changes and on {@link EntityEditor.EditorEntity#refresh()}.
+	 * master's active entity changes and on {@link EntityEditor.EditorTasks#refresh()}.
 	 * <p>Implementations must produce at most one entity; returning {@code null} signals "no detail row".
 	 * @see Builder.LoadStep#entity(DetailEntity)
 	 * @see ForeignKeyEditorLink.Builder#entity(DetailEntity)

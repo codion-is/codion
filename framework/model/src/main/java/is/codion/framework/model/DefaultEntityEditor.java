@@ -262,13 +262,13 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 	}
 
 	@Override
-	public final PersistTasks tasks() {
+	public final EditorTasks tasks() {
 		return tasks(connectionProvider.connection());
 	}
 
 	@Override
-	public final PersistTasks tasks(EntityConnection connection) {
-		return new DefaultPersistTasks(requireNonNull(connection));
+	public final EditorTasks tasks(EntityConnection connection) {
+		return new DefaultEditorTasks(requireNonNull(connection));
 	}
 
 	@Override
@@ -556,20 +556,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 		@Override
 		public void refresh() {
-			if (exists.is()) {
-				Entity original = entity.instance.copy().builder()
-								.original() // in case of modifications
-								.build()
-								.immutable(); // passed on to detail Select providers
-				replaceDetail(original);
-				replace(connectionProvider.connection().selectSingle(where(key(original.primaryKey()))
-								.include(entityDefinition.columns().definitions().stream()
-												.filter(definition -> !definition.selected())
-												.map(ColumnDefinition::attribute)
-												.filter(instance::contains)
-												.collect(toSet()))
-								.build()));
-			}
+			tasks().refresh().perform().handle();
 		}
 
 		private void setDetail(@Nullable Entity entity) {
@@ -630,7 +617,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 	}
 
-	private final class DefaultPersistTasks implements PersistTasks {
+	private final class DefaultEditorTasks implements EditorTasks {
 
 		private static final String NOT_MODIFIED = "Entity is not modified: ";
 		private static final String INSERT = "insert {}";
@@ -639,7 +626,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 		private final EntityConnection connection;
 
-		private DefaultPersistTasks(EntityConnection connection) {
+		private DefaultEditorTasks(EntityConnection connection) {
 			this.connection = connection;
 		}
 
@@ -747,6 +734,13 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			persistEvents.beforeDelete(entities);
 
 			return new DeleteEntities(entities);
+		}
+
+		@Override
+		public RefreshTask refresh() {
+			return new DefaultRefreshTask(entity.instance.copy().builder()
+								.original() // in case of modifications
+								.build());
 		}
 
 		private final class InsertDetail implements PersistTask<Entity> {
@@ -1105,6 +1099,35 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 					return entities;
 				};
+			}
+		}
+
+		private final class DefaultRefreshTask implements RefreshTask {
+
+			private final Entity original;
+
+			private DefaultRefreshTask(Entity original) {
+				this.original = original;
+			}
+
+			@Override
+			public Result perform() {
+				if (exists().is()) {
+					Entity selected = connection.selectSingle(where(key(original.primaryKey()))
+									.include(entityDefinition.columns().definitions().stream()
+													.filter(definition -> !definition.selected())
+													.map(ColumnDefinition::attribute)
+													.filter(entity.instance::contains)
+													.collect(toSet()))
+									.build())
+									.immutable();// passed on to detail Select providers
+					return () -> {
+						entity.setDetail(selected);
+						entity.set(selected);
+					};
+				}
+
+				return () -> {};
 			}
 		}
 	}

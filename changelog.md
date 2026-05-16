@@ -29,6 +29,7 @@ Codion Change Log
 - ForeignKeyModelLink.Builder.ModelStep and ForeignKeyStep added.
 - EntityModel.link() removed.
 - EditorLink added.
+- EntityEditor.RefreshTask added, PersistTasks renamed EditorTasks, EditorTasks.refresh() added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 - SwingEntityTableModel bug fixed, now uses replace() when updating the editor entity on table edit.
