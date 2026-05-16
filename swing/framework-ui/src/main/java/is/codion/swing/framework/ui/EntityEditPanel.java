@@ -25,6 +25,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entities;
@@ -32,6 +33,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -51,6 +53,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
+import is.codion.swing.framework.ui.EditorComponents.ComponentEntry;
 import is.codion.swing.framework.ui.EditorComponents.CreateComponents;
 import is.codion.swing.framework.ui.EditorComponents.EditorComponent;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -77,12 +80,13 @@ import java.lang.ref.WeakReference;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -92,6 +96,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.common.utilities.item.Item.item;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -160,10 +165,10 @@ public abstract class EntityEditPanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> VIEW_ENTITY = CommandControl.key("viewEntity", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
-		 * Displays the query inspector, if one is available.<br>
-		 * Default key stroke: CTRL-ALT-Q
+		 * Displays the editor inspector.<br>
+		 * Default key stroke: CTRL-ALT-R
 		 */
-		public static final ControlKey<CommandControl> INSPECT_QUERY = CommandControl.key("inspectQuery", keyStroke(VK_Q, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> INSPECT_EDITOR = CommandControl.key("inspectEditor", keyStroke(VK_R, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
@@ -193,7 +198,7 @@ public abstract class EntityEditPanel extends JPanel {
 	private final InputFocus inputFocus;
 	private final State active;
 
-	private @Nullable InsertUpdateQueryInspector queryInspector;
+	private @Nullable EditorInspector inspector;
 
 	final Config configuration;
 
@@ -237,7 +242,7 @@ public abstract class EntityEditPanel extends JPanel {
 	@Override
 	public void updateUI() {
 		super.updateUI();
-		Utilities.updateUI(queryInspector);
+		Utilities.updateUI(inspector);
 	}
 
 	@Override
@@ -270,30 +275,30 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
-	 * <p>Displays a dialog allowing the user the select an input component which should receive the keyboard focus.
-	 * <p>If only one input component is available that component is selected automatically without displaying a selection dialog.
+	 * <p>Displays a dialog allowing the user to select an input component which should receive the keyboard focus.
+	 * <p>Both master and detail editor components are included in the selection.
+	 * <p>If only one input component is available, that component is selected automatically without displaying a dialog.
 	 * <p>If no component is available, f.ex. when the panel is not visible or none of the available components is focusable, this method does nothing.
-	 * <p>Input components can be excluded from this selection using {@link Config#excludeFromSelection(Collection)}
+	 * <p>Input components can be excluded from this selection using {@link Config#excludeFromSelection(Collection)}.
 	 * @see InputFocus#request(Attribute)
+	 * @see EditorComponents#detail(ForeignKey)
 	 */
 	public final void selectInputComponent() {
-		Collection<Attribute<?>> attributes = selectComponentAttributes();
-		if (attributes.size() == 1) {
-			inputFocus.request(attributes.iterator().next());
+		Collection<ComponentEntry> entries = selectComponentEntries();
+		if (entries.size() == 1) {
+			inputFocus.request(entries.iterator().next().component().get());
 		}
-		else if (!attributes.isEmpty()) {
-			Entities entities = editModel().entities();
-			List<AttributeDefinition<?>> sortedDefinitions = attributes.stream()
-							.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
-							.sorted(new AttributeDefinitionComparator())
+		else if (!entries.isEmpty()) {
+			List<Item<ComponentEntry>> sortedItems = disambiguate(entries).stream()
+							.sorted(new EntryItemComparator())
 							.collect(toList());
 			Dialogs.select()
-							.list(sortedDefinitions)
+							.list(sortedItems)
 							.owner(this)
 							.title(FrameworkMessages.selectInputField())
 							.select()
 							.single()
-							.ifPresent(attributeDefinition -> inputFocus.request(attributeDefinition.attribute()));
+							.ifPresent(item -> inputFocus.request(item.get().component().get()));
 		}
 	}
 
@@ -511,7 +516,10 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
-	 * Displays the exception message after which the first component involved receives the focus.
+	 * Displays the exception message after which the first invalid component receives the focus.
+	 * In multi-slot detail editor configurations the source slot is identified by walking each
+	 * editor's per-attribute valid state — the focused component is the first invalid one in
+	 * focus traversal order, not just the first registered for the attribute.
 	 * @param exception the validation exception
 	 */
 	protected void onValidationException(EntityValidationException exception) {
@@ -521,13 +529,20 @@ public abstract class EntityEditPanel extends JPanel {
 			showMessageDialog(this, exception.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
 		}
 		else {
-			Attribute<?> firstAttribute = firstAttribute(attributes);
+			Optional<ComponentEntry> firstInvalid = firstInvalid(attributes);
+			Attribute<?> chosenAttribute = firstInvalid.map(ComponentEntry::attribute)
+							.orElseGet(() -> attributes.iterator().next().attribute());
 			AttributeValidationException invalidAttribute = attributes.stream()
-							.filter(invalid -> invalid.attribute().equals(firstAttribute))
+							.filter(invalid -> invalid.attribute().equals(chosenAttribute))
 							.findFirst()
 							.orElseThrow(IllegalStateException::new);
 			showMessageDialog(this, invalidAttribute.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
-			inputFocus.request(invalidAttribute.attribute());
+			if (firstInvalid.isPresent()) {
+				inputFocus.request(firstInvalid.get().component().get());
+			}
+			else {
+				inputFocus.request(invalidAttribute.attribute());
+			}
 		}
 	}
 
@@ -644,8 +659,8 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 		controlMap.control(CLEAR).set(createClearControl());
 		controlMap.control(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
-		if (configuration.includeQueryInspector) {
-			controlMap.control(INSPECT_QUERY).set(command(this::inspectQuery));
+		if (configuration.includeInspector) {
+			controlMap.control(INSPECT_EDITOR).set(command(this::inspectEditor));
 		}
 		if (configuration.includeEntityViewer) {
 			controlMap.control(VIEW_ENTITY).set(command(this::viewEntity));
@@ -681,18 +696,18 @@ public abstract class EntityEditPanel extends JPanel {
 		return command(this::selectInputComponent);
 	}
 
-	private void inspectQuery() {
-		if (queryInspector == null) {
-			queryInspector = new InsertUpdateQueryInspector(editor());
+	private void inspectEditor() {
+		if (inspector == null) {
+			inspector = new EditorInspector(components);
 		}
-		if (queryInspector.isShowing()) {
-			Ancestor.window().of(queryInspector).toFront();
+		if (inspector.isShowing()) {
+			Ancestor.window().of(inspector).toFront();
 		}
 		else {
 			Dialogs.builder()
-							.component(queryInspector)
+							.component(inspector)
 							.owner(this)
-							.title(editModel().entityDefinition().caption() + " Query")
+							.title(editModel().entityDefinition().caption())
 							.modal(false)
 							.show();
 		}
@@ -724,11 +739,11 @@ public abstract class EntityEditPanel extends JPanel {
 						.build();
 	}
 
-	private Collection<Attribute<?>> selectComponentAttributes() {
-		return components.components().keySet().stream()
-						.filter(attribute -> !configuration.excludeFromSelection.contains(attribute))
-						.filter(attribute -> componentSelectable(components.component(attribute).get()))
-						.collect(collectingAndThen(toList(), Collections::unmodifiableCollection));
+	private Collection<ComponentEntry> selectComponentEntries() {
+		return components.entries()
+						.filter(entry -> !configuration.excludeFromSelection.contains(entry.attribute()))
+						.filter(entry -> componentSelectable(entry.component().get()))
+						.collect(toList());
 	}
 
 	private void setupFocusActivation() {
@@ -741,7 +756,7 @@ public abstract class EntityEditPanel extends JPanel {
 		configuration.controlMap.keyEvent(VIEW_ENTITY).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
-		configuration.controlMap.keyEvent(INSPECT_QUERY).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(INSPECT_EDITOR).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
 		configuration.controlMap.keyEvent(SELECT_INPUT_FIELD).ifPresent(keyEvent ->
@@ -771,16 +786,61 @@ public abstract class EntityEditPanel extends JPanel {
 		onException(exception);
 	}
 
-	private Attribute<?> firstAttribute(Collection<AttributeValidationException> invalidAttributes) {
+	private Optional<ComponentEntry> firstInvalid(Collection<AttributeValidationException> invalidAttributes) {
+		// Primary path: identify the editor whose current value matches one of the rejected
+		// values. In multi-slot configurations the same attribute may report invalid in several
+		// detail editors (e.g., a non-present slot with a required attribute null); only the
+		// editor whose validator actually fired holds the value the exception carries.
+		Optional<ComponentEntry> matchedByValue = components.entries()
+						.filter(entry -> invalidAttributes.stream()
+										.anyMatch(invalid -> invalid.attribute().equals(entry.attribute()) &&
+														Objects.equals(invalid.value(), entry.source().editor().value(entry.attribute()).get())))
+						.min(EntityEditPanel::compareFocusOrder);
+		if (matchedByValue.isPresent()) {
+			return matchedByValue;
+		}
+
+		// Fallback: any editor reporting the attribute invalid. Covers cases where the value
+		// doesn't disambiguate cleanly (exotic types with surprising equals semantics, or rare
+		// timing where the editor's value mutated between throw and focus).
 		Set<Attribute<?>> attributes = invalidAttributes.stream()
 						.map(AttributeValidationException::attribute)
 						.collect(toSet());
-		return components.components().entrySet().stream()
-						.filter(entry -> attributes.contains(entry.getKey()))
-						.min(EntityEditPanel::compareFocusOrder)
-						.map(Map.Entry::getKey)
-						// Fallback to the first one, in case no component exists
-						.orElse(invalidAttributes.iterator().next().attribute());
+
+		return components.entries()
+						.filter(entry -> attributes.contains(entry.attribute()))
+						.filter(entry -> !entry.source().editor().value(entry.attribute()).valid().is())
+						.min(EntityEditPanel::compareFocusOrder);
+	}
+
+	private List<Item<ComponentEntry>> disambiguate(Collection<ComponentEntry> entries) {
+		Entities entities = editModel.entities();
+		Map<String, Long> captionCounts = entries.stream()
+						.collect(groupingBy(entry -> attributeCaption(entry, entities), counting()));
+
+		return entries.stream()
+						.map(entry -> item(entry, createLabel(entry, captionCounts, attributeCaption(entry, entities), entities)))
+						.collect(toList());
+	}
+
+	private static String attributeCaption(ComponentEntry entry, Entities entities) {
+		return entities.definition(entry.attribute().entityType())
+						.attributes()
+						.definition(entry.attribute())
+						.caption();
+	}
+
+	private static String createLabel(ComponentEntry entry, Map<String, Long> captionCounts, String caption, Entities entities) {
+		if (captionCounts.get(caption) > 1) {
+			// In multi-slot configurations the same attribute appears in multiple detail editors;
+			// disambiguate by the link's caption (which defaults to the link name). Master entries
+			// fall back to the detail entity caption (different types sharing the same attribute caption).
+			return entry.detailCaption() != null
+							? caption + " (" + entry.detailCaption() + ")"
+							: caption + " (" + entities.definition(entry.attribute().entityType()).caption() + ")";
+		}
+
+		return caption;
 	}
 
 	private void onEntityChanging(Entity entity) {
@@ -802,7 +862,7 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 
 		return modified.stream()
-						.map(attribute -> components.editor().entityDefinition().attributes().definition(attribute))
+						.map(attribute -> components.editor().entities().definition(attribute.entityType()).attributes().definition(attribute))
 						.map(AttributeDefinition::caption)
 						.collect(Collectors.joining(", ", "", "\n\n" + FrameworkMessages.modifiedWarning()));
 	}
@@ -818,8 +878,8 @@ public abstract class EntityEditPanel extends JPanel {
 		return editorComponents;
 	}
 
-	private static int compareFocusOrder(Map.Entry<Attribute<?>, EditorComponent<?>> entry1, Map.Entry<Attribute<?>, EditorComponent<?>> entry2) {
-		return LAYOUT_FOCUS_TRAVERSAL_POLICY.getComparator().compare(entry1.getValue().get(), entry2.getValue().get());
+	private static int compareFocusOrder(ComponentEntry entry1, ComponentEntry entry2) {
+		return LAYOUT_FOCUS_TRAVERSAL_POLICY.getComparator().compare(entry1.component().get(), entry2.component().get());
 	}
 
 	private static boolean componentSelectable(@Nullable JComponent component) {
@@ -863,14 +923,14 @@ public abstract class EntityEditPanel extends JPanel {
 						booleanValue(EntityEditPanel.class.getName() + ".includeEntityViewer", true);
 
 		/**
-		 * Specifies whether to include a Query Inspector on this edit panel, triggered with CTRL-ALT-Q.
+		 * Specifies whether to include an Editor Inspector on this edit panel, triggered with CTRL-ALT-R.
 		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> INCLUDE_QUERY_INSPECTOR =
-						booleanValue(EntityEditPanel.class.getName() + ".includeQueryInspector", false);
+		public static final PropertyValue<Boolean> INCLUDE_INSPECTOR =
+						booleanValue(EntityEditPanel.class.getName() + ".includeInspector", false);
 
 		/**
 		 * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus
@@ -973,7 +1033,7 @@ public abstract class EntityEditPanel extends JPanel {
 		private boolean requestFocusAfterInsert = true;
 		private boolean focusActivation = USE_FOCUS_ACTIVATION.getOrThrow();
 		private boolean includeEntityViewer = INCLUDE_ENTITY_VIEWER.getOrThrow();
-		private boolean includeQueryInspector = INCLUDE_QUERY_INSPECTOR.getOrThrow();
+		private boolean includeInspector = INCLUDE_INSPECTOR.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
 						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.getOrThrow();
 		private boolean confirmInsert = CONFIRM_INSERT.getOrThrow();
@@ -1008,7 +1068,7 @@ public abstract class EntityEditPanel extends JPanel {
 			this.updateConfirmer = config.updateConfirmer;
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeEntityViewer = config.includeEntityViewer;
-			this.includeQueryInspector = config.includeQueryInspector;
+			this.includeInspector = config.includeInspector;
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 			this.modifiedWarning = config.modifiedWarning;
 			this.validIndicator = config.validIndicator;
@@ -1076,11 +1136,11 @@ public abstract class EntityEditPanel extends JPanel {
 		}
 
 		/**
-		 * @param includeQueryInspector true if a Query Inspector should be available in this edit panel, triggered with CTRL-ALT-Q.
+		 * @param includeInspector true if an Editor Inspector should be available in this edit panel, triggered with CTRL-ALT-R.
 		 * @return this Config instance
 		 */
-		public Config includeQueryInspector(boolean includeQueryInspector) {
-			this.includeQueryInspector = includeQueryInspector;
+		public Config includeInspector(boolean includeInspector) {
+			this.includeInspector = includeInspector;
 			return this;
 		}
 
@@ -1418,7 +1478,10 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
-	 * Manages the components that should receive the input focus.
+	 * <p>Manages the components that should receive the input focus.
+	 * <p>Both master and detail editor components can be referenced by attribute,
+	 * allowing focus to be directed to any component in the edit panel.
+	 * @see EditorComponents#detail(ForeignKey)
 	 */
 	public final class InputFocus {
 
@@ -1430,11 +1493,29 @@ public abstract class EntityEditPanel extends JPanel {
 		/**
 		 * Request focus for the component associated with the given attribute.
 		 * If no component is associated with the attribute calling this method has no effect.
+		 * If the attribute appears in multiple detail editor slots (multi-slot configurations),
+		 * the slot focused is unspecified — use {@link #request(JComponent)} with a slot-resolved
+		 * component for deterministic targeting.
 		 * Uses {@link JComponent#requestFocusInWindow()}.
 		 * @param attribute the attribute of the component to select
 		 */
 		public void request(Attribute<?> attribute) {
-			components.component(attribute).optional().ifPresent(InputFocus::requestFocus);
+			requireNonNull(attribute);
+			JComponent component = components.editorComponent(attribute);
+			if (component != null) {
+				InputFocus.requestFocus(component);
+			}
+		}
+
+		/**
+		 * Request focus for the given component, bypassing attribute resolution.
+		 * Useful for multi-slot detail editor configurations where a specific slot's component
+		 * has been resolved by the caller and should receive focus deterministically.
+		 * Uses {@link JComponent#requestFocusInWindow()}.
+		 * @param component the component to focus
+		 */
+		public void request(JComponent component) {
+			InputFocus.requestFocus(requireNonNull(component));
 		}
 
 		/**
@@ -1514,7 +1595,7 @@ public abstract class EntityEditPanel extends JPanel {
 			 */
 			public void set(Attribute<?> attribute) {
 				requireNonNull(attribute);
-				set(() -> components.component(attribute).get());
+				set(() -> components.editorComponent(attribute));
 			}
 
 			/**
@@ -1562,7 +1643,7 @@ public abstract class EntityEditPanel extends JPanel {
 			 */
 			public void set(Attribute<?> attribute) {
 				requireNonNull(attribute);
-				set(() -> components.component(attribute).get());
+				set(() -> components.editorComponent(attribute));
 			}
 
 			/**
@@ -1812,6 +1893,16 @@ public abstract class EntityEditPanel extends JPanel {
 			public DeleteCommand build() {
 				return new DefaultDeleteCommand(this);
 			}
+		}
+	}
+
+	static final class EntryItemComparator implements Comparator<Item<ComponentEntry>> {
+
+		private final Collator collator = Collator.getInstance();
+
+		@Override
+		public int compare(Item<ComponentEntry> entry1, Item<ComponentEntry> entry2) {
+			return collator.compare(entry1.toString().toLowerCase(), entry2.toString().toLowerCase());
 		}
 	}
 

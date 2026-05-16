@@ -41,6 +41,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
+import is.codion.framework.model.DefaultEntityEditor.DefaultDetailEditors;
 
 import org.jspecify.annotations.Nullable;
 
@@ -123,6 +124,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * @see Exists
 	 */
 	Modified modified();
+
+	/**
+	 * @return the {@link Present} instance
+	 */
+	Present present();
 
 	/**
 	 * @return an {@link ObservableState} indicating whether the value of the entity primary key is present
@@ -520,7 +526,16 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>Populates this editor entity with the values from the given entity or sets
 		 * the default value for all attributes in case it is null.
 		 * <p>Use {@link EditorValues#clear()} in order to clear the editor of all values.
-		 * <p>Notifies that the entity is about to change via {@link #changing()}
+		 * <p>Notifies that the entity is about to change via {@link #changing()}, then notifies
+		 * change via {@link #observer()}. Detail editors registered via
+		 * {@link DetailEditors#add(EditorLink)} are reloaded via their link's load action. This is
+		 * the master-selection path — use {@link #replace(Entity)} for silent post-persist refreshes
+		 * that should not re-fire change events.
+		 * <p>For master editors with registered detail editors, the order is bottom-up:
+		 * {@link #changing()} fires before the detail subtree is touched; the detail subtree is then
+		 * set; finally {@link #observer() changed} fires once every detail editor is in its
+		 * post-set state. This makes {@link #observer() changed} the "everything done" signal for
+		 * the full master/detail tree, suitable for actions that need to inspect aggregate state.
 		 * @param entity the entity to set, if null, then defaults are set
 		 * @throws IllegalArgumentException in case the entity is not of the correct type
 		 * @see EditorValue#defaultValue()
@@ -532,6 +547,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener will cancel the change.
+		 * <p>For master editors with registered detail editors, this fires <em>before</em> the
+		 * detail subtree is set, allowing listeners to inspect the pre-change state of the entire
+		 * master/detail tree. The post-change counterpart is {@link #observer() changed}.
 		 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link EditorValues#defaults()}.
 		 * @see #set(Entity)
 		 * @see EditorValues#defaults()
@@ -539,13 +557,27 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		Observer<Entity> changing();
 
 		/**
+		 * <p>Returns an observer notified each time the entity is replaced via {@link #replace(Entity)}.
+		 * <p>For master editors with registered detail editors, this fires <em>after</em> the detail
+		 * subtree has been replaced — by the time listeners run, every detail editor is in its
+		 * post-persist state. This makes {@link #replaced()} the "everything done" signal for the
+		 * full master/detail tree, suitable for actions that need to inspect aggregate state (e.g.,
+		 * focusing the first empty detail editor, or adjusting which detail editors are visible).
 		 * @return an observer notified each time the entity is replaced via {@link #replace(Entity)}
 		 */
 		Observer<Entity> replaced();
 
 		/**
-		 * Replaces the entity without triggering entity change notifications. A null argument sets default values.
+		 * <p>Silently replaces the editor entity values without firing {@link #changing()} or
+		 * {@link #observer() changed} events; only {@link #replaced()} fires. A null argument sets
+		 * default values.
+		 * <p>If the new entity has the same primary key as the current one (the typical post-persist
+		 * refresh case), detail editors are <em>not</em> touched — their state is owned by their own
+		 * persist tasks. If the primary key changes (including null↔non-null transitions), detail
+		 * editors are reloaded via their link's load action, since the master's identity has changed.
+		 * @param entity the replacement entity, or null to set defaults
 		 * @see #replaced()
+		 * @see #set(Entity)
 		 */
 		void replace(@Nullable Entity entity);
 
@@ -555,6 +587,29 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see #exists()
 		 */
 		void refresh();
+	}
+
+	/**
+	 * <p>Indicates whether an entity is present, according to the predicate specified via
+	 * {@link #predicate()}. Presence answers the question "should a row for this entity currently
+	 * exist in the database?" and is reactive — it re-evaluates whenever the underlying entity
+	 * value changes.
+	 * <p>For standalone editors the predicate defaults to "always present" and is freely settable.
+	 * For editors registered as a detail editor via {@link DetailEditors#add(EditorLink)}, the
+	 * predicate is supplied through {@link EditorLink.Builder#present(Predicate)} at registration
+	 * time and locked thereafter — subsequent attempts to replace it via {@link #predicate()} will
+	 * fail.
+	 */
+	interface Present extends ObservableState {
+
+		/**
+		 * <p>Controls the predicate used to evaluate presence.
+		 * <p>For detail editors the predicate is set by the link builder at registration time and
+		 * cannot be replaced afterwards; supply the predicate via
+		 * {@link EditorLink.Builder#present(Predicate)} instead.
+		 * @return a {@link Value} controlling the present predicate
+		 */
+		Value<Predicate<Entity>> predicate();
 	}
 
 	/**
@@ -636,10 +691,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * Indicates which editor attributes are modified.
-		 * Note that only attributes of an existing entity are regarded as modified.
+		 * <p>Note that modified attributes are included, regardless of whether the entity exists.
 		 * @return an {@link ObservableValueSet} indicating the currently modified attributes
 		 * @see #value(Attribute)
-		 * @see #exists()
 		 */
 		ObservableValueSet<Attribute<?>> attributes();
 
@@ -737,7 +791,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * <p>Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified,
-		 * that is, if the current value differs from its default value.
+		 * that is, if the current value differs from its default value, in case of a new entity, or the original
+		 * value, in case of an exiting entity.
 		 * <p>Note that unlike {@link EditorEntity#modified()} this state does not depend on whether the underlying entity exists.
 		 * @return an {@link ObservableState} indicating the modified state of the value of the given attribute
 		 * @see EntityEditor#modified()
@@ -769,7 +824,6 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}
 		 * instances, triggering edit events. When setting values in an entity, derived values are
 		 * set directly on the entity via {@link Entity#set(Attribute, Object)}.
-		 * <p>Multiple propagations can be added for a single source attribute.
 		 * {@snippet :
 		 * // Populate billing address fields when customer changes
 		 * editor().value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
@@ -853,10 +907,14 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 	/**
 	 * <p>Manages detail editors for one-to-one entity composition within an {@link EntityEditor}.
-	 * <p>A detail editor represents a detail entity referenced via a foreign key pointing to the master entity.
+	 * <p>A detail editor represents a detail entity that is edited alongside the master and persisted
+	 * within the same transaction. The relationship between master and detail is described by an
+	 * {@link EditorLink}, which can be either {@link ForeignKeyEditorLink foreign-key based}
+	 * or {@link EditorLink condition-based}.
 	 *
-	 * <p>When a detail editor is added, the foreign key to the master is declared <em>framework-managed</em>
-	 * via three coordinated configurations on the detail editor:
+	 * <h2>Foreign-key based links</h2>
+	 * <p>When the link is a {@link ForeignKeyEditorLink}, the foreign key to the master is
+	 * declared <em>framework-managed</em> via three coordinated configurations on the detail editor:
 	 * <ul>
 	 * <li>The foreign key value is not reset by defaults — its {@link EditorValue#persist()} is set to false,
 	 *     so it survives {@link EditorValues#defaults()}.
@@ -865,11 +923,20 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 *     in {@link PersistTasks#insert(java.util.function.Consumer)} (which must throw synchronously, before
 	 *     the framework has populated the foreign key). The wrapped validator is locked to prevent replacement.
 	 * <li>The framework sets the foreign key on the detail entity during persistence, linking it to the
-	 *     freshly-inserted master.
+	 *     freshly-inserted master (via the link's {@link EditorLink.BeforeInsert beforeInsert} action).
 	 * </ul>
 	 * <p>Together, these make the foreign key invisible to user-supplied logic — it is filled in by the framework
 	 * at persistence time and ignored everywhere else.
 	 *
+	 * <h2>Condition-based links</h2>
+	 * <p>When the link has no foreign key, none of the framework-managed declarations apply. The user supplies
+	 * the {@link EditorLink.DetailCondition load condition} (how to load the detail row given the master) and
+	 * the {@link EditorLink.BeforeInsert beforeInsert} action (how to prepare the detail for insertion). It is
+	 * the user's responsibility to ensure these two stay consistent: any row created via {@code beforeInsert}
+	 * must match the load condition, otherwise the row will persist but never load back on subsequent master
+	 * selection.
+	 *
+	 * <h2>Persistence flow</h2>
 	 * <p>The detail entity is loaded from the database when the master entity changes, and the master editor's
 	 * {@link Modified} state aggregates the detail editor's state.
 	 *
@@ -878,33 +945,70 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * is.codion.framework.db.EntityConnection.Transactional)} — a {@code transaction} call on a connection that
 	 * already has an open transaction joins the outer one rather than starting a new one):
 	 * <ul>
-	 * <li><b>Insert</b>: A present detail entity is inserted with the foreign key set to the newly inserted master.
+	 * <li><b>Insert</b>: A present detail entity is inserted, with the link's
+	 *     {@link EditorLink.BeforeInsert beforeInsert} applied with the freshly-inserted master.
 	 * <li><b>Update</b>: Depending on the detail's presence and existence, the detail is inserted, updated, or deleted.
 	 * <li><b>Delete</b>: An existing detail entity is deleted before the master.
 	 * </ul>
-	 * <p>Presence is determined by the {@link Predicate} supplied to {@link #add}. A detail that is present but does
-	 * not yet exist triggers an insert. A detail that exists but is no longer present triggers a delete. A detail
-	 * that exists, is present, and is modified triggers an update.
+	 * <p>Presence is determined by the detail editor's {@link EntityEditor#present()} state, configured
+	 * at registration time via {@link EditorLink.Builder#present(Predicate)}. A detail that is present but
+	 * does not yet exist triggers an insert. A detail that exists but is no longer present triggers a
+	 * delete. A detail that exists, is present, and is modified triggers an update.
 	 * @param <R> {@link EntityEditor} type
 	 * @see #detail()
+	 * @see EditorLink
 	 */
-	interface DetailEditors<R extends EntityEditor<R>> {
+	sealed interface DetailEditors<R extends EntityEditor<R>> permits DefaultDetailEditors {
 
 		/**
-		 * Adds a detail editor for the given foreign key.
-		 * @param detailEditor the detail editor
-		 * @param foreignKey the foreign key on the detail entity, pointing to the master
-		 * @param present a predicate determining whether the detail entity should be persisted, see class javadoc
-		 * @throws IllegalStateException in case a detail editor has already been registered for the given foreign key
-		 * @throws IllegalArgumentException in case the foreign key's referenced or owning entity types don't match
+		 * <p>Registers a detail editor described by the given link.
+		 * <p>For {@link ForeignKeyEditorLink foreign-key based} links the framework-managed FK
+		 * declarations described in the class javadoc are applied to the detail editor. For
+		 * condition-based links no automatic FK management is applied — the user-supplied
+		 * {@link EditorLink.DetailCondition load condition} and
+		 * {@link EditorLink.BeforeInsert beforeInsert} drive the relationship.
+		 * @param link the detail editor link
+		 * @throws IllegalArgumentException if a detail editor with the same name is already registered,
+		 * or, for an FK-based link, if the foreign key's referenced or owning entity types
+		 * don't match the master and detail editors respectively
+		 * @see EditorLink#builder()
 		 */
-		void add(R detailEditor, ForeignKey foreignKey, Predicate<Entity> present);
+		void add(EditorLink link);
+
+		/**
+		 * <p>Looks up a previously registered detail editor by foreign key.
+		 * <p>Returns the registered {@link ForeignKeyEditorLink}-based detail editor whose foreign key
+		 * matches, regardless of any explicit name override. For multi-slot configurations where
+		 * several detail editors share the same foreign key, this method throws — use
+		 * {@link #get(String)} with an explicit name instead.
+		 * @param foreignKey the foreign key
+		 * @return the detail editor previously registered for the given foreign key
+		 * @throws IllegalStateException if no detail editor is registered for the foreign key, or if
+		 * multiple detail editors are registered for it
+		 */
+		R get(ForeignKey foreignKey);
+
+		/**
+		 * @param name the link name
+		 * @return the detail editor previously registered with the given name
+		 * @throws IllegalStateException if no detail editor is registered under the given name
+		 */
+		R get(String name);
+
+		/**
+		 * @param name the link name
+		 * @return the caption of the link registered with the given name
+		 * @throws IllegalStateException if no detail editor is registered under the given name,
+		 * or if multiple detail editors share the name (use {@link #caption(ForeignKey)})
+		 */
+		String caption(String name);
 
 		/**
 		 * @param foreignKey the foreign key
-		 * @return the detail editor previously registered for the given foreign key
-		 * @throws IllegalStateException in case no detail editor is registered for the given foreign key
+		 * @return the caption of the link registered for the given foreign key
+		 * @throws IllegalStateException if no detail editor is registered for the foreign key, or
+		 * if multiple detail editors are registered for it (use {@link #caption(String)})
 		 */
-		R get(ForeignKey foreignKey);
+		String caption(ForeignKey foreignKey);
 	}
 }

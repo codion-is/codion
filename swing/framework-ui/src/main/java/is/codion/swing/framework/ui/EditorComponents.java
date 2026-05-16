@@ -71,14 +71,15 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.temporal.Temporal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -88,6 +89,7 @@ public final class EditorComponents {
 
 	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
+	private final Map<SwingEntityEditor, DetailComponents> detail = new LinkedHashMap<>();
 
 	private final ComponentSettings settings = new ComponentSettings();
 	private final CreateComponents create;
@@ -133,8 +135,67 @@ public final class EditorComponents {
 		return (EditorComponent<T>) components.computeIfAbsent(attribute, k -> new EditorComponent<>(editor.value(attribute)));
 	}
 
-	Map<Attribute<?>, EditorComponent<?>> components() {
-		return unmodifiableMap(components);
+	/**
+	 * @param foreignKey the foreign key
+	 * @return a detail {@link EditorComponents} instance based on the given foreign key
+	 * @throws IllegalStateException if no detail editor is registered for the foreign key, or if
+	 * multiple detail editors are registered for it (use {@link #detail(String)} with an
+	 * explicit name in that case)
+	 * @see EntityEditor#detail()
+	 */
+	public EditorComponents detail(ForeignKey foreignKey) {
+		return detail.computeIfAbsent(editor.detail().get(requireNonNull(foreignKey)),
+						detailEditor -> new DetailComponents(new EditorComponents(detailEditor),
+										editor.detail().caption(foreignKey))).components;
+	}
+
+	/**
+	 * @param name the detail editor name
+	 * @return a detail {@link EditorComponents} instance based on the given name
+	 * @throws IllegalArgumentException in case no detail editor has been set for the given name
+	 * @see EntityEditor#detail()
+	 */
+	public EditorComponents detail(String name) {
+		return detail.computeIfAbsent(editor.detail().get(requireNonNull(name)),
+						detailEditor -> new DetailComponents(new EditorComponents(detailEditor),
+										editor.detail().caption(name))).components;
+	}
+
+	/**
+	 * <p>Yields a slot-aware view of all components, one entry per (editor, attribute) pair.
+	 * The master is emitted with {@code detailCaption == null}; each detail editor's components are
+	 * emitted with {@code detailCaption} set to the link's caption.
+	 * Multi-slot detail editors sharing the same attribute produce one entry per slot.
+	 * <p>Recurses through nested detail editors. For nested levels the {@code detailCaption} is a
+	 * dot-joined path of captions.
+	 */
+	Stream<ComponentEntry> entries() {
+		return entries(null);
+	}
+
+	private Stream<ComponentEntry> entries(@Nullable String captionPrefix) {
+		Stream<ComponentEntry> ownEntries = components.entrySet().stream()
+						.map(entry -> new ComponentEntry(this, captionPrefix, entry.getKey(), entry.getValue()));
+		Stream<ComponentEntry> detailEntries = detail.values().stream()
+						.flatMap(d -> d.components.entries(captionPrefix == null ? d.caption : captionPrefix + "." + d.caption));
+
+		return Stream.concat(ownEntries, detailEntries);
+	}
+
+	@Nullable JComponent editorComponent(Attribute<?> attribute) {
+		requireNonNull(attribute);
+		EditorComponent<?> editorComponent = components.get(attribute);
+		if (editorComponent != null) {
+			return editorComponent.get();
+		}
+		for (DetailComponents detailComponents : detail.values()) {
+			JComponent component = detailComponents.components.editorComponent(attribute);
+			if (component != null) {
+				return component;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -142,7 +203,71 @@ public final class EditorComponents {
 	 * @return a new {@link EditorComponents} instance
 	 */
 	public static EditorComponents editorComponents(SwingEntityEditor editor) {
-		return new EditorComponents(requireNonNull(editor));
+		return new EditorComponents(editor);
+	}
+
+	Map<SwingEntityEditor, DetailComponents> detail() {
+		return detail;
+	}
+
+	/**
+	 * A detail registration: the caption (taken from the link at registration time) and the
+	 * {@link EditorComponents} that manages the detail editor's components. Caption is a property
+	 * of the parent-child relationship, not of the child instance, so it lives here rather than on
+	 * {@link EditorComponents} itself.
+	 */
+	static final class DetailComponents {
+
+		private final EditorComponents components;
+		private final String caption;
+
+		private DetailComponents(EditorComponents components, String caption) {
+			this.components = components;
+			this.caption = caption;
+		}
+
+		EditorComponents components() {
+			return components;
+		}
+
+		String caption() {
+			return caption;
+		}
+	}
+
+	/**
+	 * A slot-aware view of a single (editor, attribute, component) entry.
+	 */
+	static final class ComponentEntry {
+
+		private final EditorComponents source;
+		private final @Nullable String detailCaption;
+		private final Attribute<?> attribute;
+		private final EditorComponent<?> component;
+
+		private ComponentEntry(EditorComponents source, @Nullable String detailCaption,
+		                       Attribute<?> attribute, EditorComponent<?> component) {
+			this.source = source;
+			this.detailCaption = detailCaption;
+			this.attribute = attribute;
+			this.component = component;
+		}
+
+		EditorComponents source() {
+			return source;
+		}
+
+		@Nullable String detailCaption() {
+			return detailCaption;
+		}
+
+		Attribute<?> attribute() {
+			return attribute;
+		}
+
+		EditorComponent<?> component() {
+			return component;
+		}
 	}
 
 	/**

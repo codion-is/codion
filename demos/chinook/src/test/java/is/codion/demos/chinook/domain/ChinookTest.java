@@ -49,6 +49,11 @@ public class ChinookTest extends DomainTest {
 	}
 
 	@Test
+	void artistTag() {
+		test(ArtistTag.TYPE);
+	}
+
+	@Test
 	void customer() {
 		test(Customer.TYPE);
 	}

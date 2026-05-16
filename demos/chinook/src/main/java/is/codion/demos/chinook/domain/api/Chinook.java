@@ -71,6 +71,19 @@ public interface Chinook {
 		Column<Integer> NUMBER_OF_TRACKS = TYPE.integerColumn("number_of_tracks");
 	}
 
+	interface ArtistTag {
+		EntityType TYPE = DOMAIN.entityType("chinook.artist_tag", ArtistTag.class);
+
+		Column<Long> ID = TYPE.longColumn("id");
+		Column<String> TAG = TYPE.stringColumn("tag");
+		Column<Long> ARTIST_ID = TYPE.longColumn("artist_id");
+
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
+
+		ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
+	}
+
 	interface Album {
 		EntityType TYPE = DOMAIN.entityType("chinook.album", Album.class);
 

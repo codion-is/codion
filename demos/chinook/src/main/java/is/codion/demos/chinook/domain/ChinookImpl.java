@@ -78,7 +78,7 @@ public final class ChinookImpl extends DomainModel {
 	// tag::proceduresFunctions[]
 	public ChinookImpl() {
 		super(DOMAIN);
-		add(artist(), album(), employee(), customer(), genre(), preferences(), mediaType(),
+		add(artist(), artistTag(), album(), employee(), customer(), genre(), preferences(), mediaType(),
 						track(), invoice(), invoiceLine(), playlist(), playlistTrack(), artistRevenue());
 		add(Customer.REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper"));
 		add(Track.RAISE_PRICE, new RaisePrice());
@@ -113,6 +113,28 @@ public final class ChinookImpl extends DomainModel {
 																		WHERE album.artist_id = artist.id"""))
 						.orderBy(ascending(Artist.NAME))
 						.formatter(Artist.NAME)
+						.build();
+	}
+
+	EntityDefinition artistTag() {
+		return ArtistTag.TYPE.as(
+										ArtistTag.ID.as()
+														.primaryKey()
+														.generator(identity()),
+										ArtistTag.ARTIST_ID.as()
+														.column()
+														.nullable(false),
+										ArtistTag.ARTIST_FK.as()
+														.foreignKey(),
+										ArtistTag.TAG.as()
+														.column()
+														.nullable(false)
+														.maximumLength(100),
+										ArtistTag.INSERT_TIME.as()
+														.column(INSERT_TIME),
+										ArtistTag.INSERT_USER.as()
+														.column(INSERT_USER))
+						.formatter(ArtistTag.TAG)
 						.build();
 	}
 

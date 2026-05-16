@@ -18,10 +18,12 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.demos.chinook.domain.api.Chinook.Preferences;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EditorComponents;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
@@ -29,8 +31,7 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Customer;
-import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static java.awt.event.KeyEvent.VK_SPACE;
@@ -75,6 +76,14 @@ public final class CustomerEditPanel extends EntityEditPanel {
 		create().comboBox(Customer.SUPPORTREP_FK)
 						.preferredWidth(120);
 
+		// Fetch an EditorComponents instance based on the preferences
+		// detail editor, for managing the preferences related components
+		EditorComponents preferences = components().detail(Preferences.CUSTOMER_FK);
+		preferences.component(Preferences.NEWSLETTER).set(new TriStateCheckBoxBuilder())
+						.altStateCycleOrder(true);
+		preferences.create().comboBox(Preferences.PREFERRED_GENRE_FK)
+						.preferredWidth(160);
+
 		JPanel firstLastNamePanel = gridLayoutPanel(1, 2)
 						.add(create().inputPanel(Customer.FIRSTNAME))
 						.add(create().inputPanel(Customer.LASTNAME))
@@ -90,7 +99,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 						.add(create().inputPanel(Customer.COUNTRY))
 						.build();
 
-		setLayout(flexibleGridLayout(4, 3));
+		setLayout(flexibleGridLayout(5, 3));
 
 		add(firstLastNamePanel);
 		addInputPanel(Customer.EMAIL);
@@ -101,6 +110,9 @@ public final class CustomerEditPanel extends EntityEditPanel {
 		addInputPanel(Customer.PHONE);
 		addInputPanel(Customer.FAX);
 		addInputPanel(Customer.SUPPORTREP_FK);
+		add(label());
+		add(preferences.create().inputPanel(Preferences.NEWSLETTER));
+		add(preferences.create().inputPanel(Preferences.PREFERRED_GENRE_FK));
 	}
 
 	private void selectState(ActionEvent event) {

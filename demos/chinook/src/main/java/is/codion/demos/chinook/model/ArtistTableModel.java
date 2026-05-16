@@ -37,7 +37,7 @@ import static java.util.Collections.singleton;
 public final class ArtistTableModel extends SwingEntityTableModel {
 
 	public ArtistTableModel(EntityConnectionProvider connectionProvider) {
-		super(Artist.TYPE, connectionProvider);
+		super(new ArtistEditModel(connectionProvider));
 	}
 
 	public CombineArtistsTask combine(List<Entity> artistsToDelete, Entity artistToKeep) {

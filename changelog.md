@@ -28,6 +28,7 @@ Codion Change Log
 - ModelLink and ForeignKeyModelLink sealed.
 - ForeignKeyModelLink.Builder.ModelStep and ForeignKeyStep added.
 - EntityModel.link() removed.
+- EditorLink added.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 - SwingEntityTableModel bug fixed, now uses replace() when updating the editor entity on table edit.
@@ -40,6 +41,8 @@ Codion Change Log
 - EntitySearchField, search task now ResultTaskHandler based.
 - EntityPanel.detailPanels() renamed detail().
 - EntityApplicationPanel.entityPanels() renamed panels().
+- EditorComponents, detail editor component handling added.
+- EditorInspector added, incorporates InsertUpdateQueryInspector.
 
 ## 0.18.72
 ### is.codion.common.reactive

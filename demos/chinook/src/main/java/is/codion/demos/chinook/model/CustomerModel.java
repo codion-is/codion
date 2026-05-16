@@ -18,7 +18,6 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.ForeignKeyConditionModel;
@@ -27,8 +26,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 public final class CustomerModel extends SwingEntityModel {
 
 	public CustomerModel(EntityConnectionProvider connectionProvider) {
-		super(Customer.TYPE, connectionProvider);
-		editor().comboBoxModels().initialize(Customer.SUPPORTREP_FK);
+		super(new CustomerEditModel(connectionProvider));
 		InvoiceModel invoiceModel = new InvoiceModel(connectionProvider);
 		ForeignKeyConditionModel customerConditionModel =
 						invoiceModel.tableModel().query().condition().get(Invoice.CUSTOMER_FK);

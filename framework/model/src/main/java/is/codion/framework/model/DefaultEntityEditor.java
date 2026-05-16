@@ -30,6 +30,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -47,6 +48,10 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.domain.entity.exception.NullValueException;
+import is.codion.framework.model.EditorLink.BeforeInsert;
+import is.codion.framework.model.EditorLink.DetailCondition;
+import is.codion.framework.model.EditorLink.DetailEntity;
+import is.codion.framework.model.EditorLink.DetailSelect;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -111,12 +116,12 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 	private final State valid = State.state();
 	private final DefaultExists exists;
 	private final DefaultModified modified;
+	private final DefaultPresent present = new DefaultPresent();
 	private final Value<EntityValidator> validator;
 	private final ComponentModels componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
 	private final DefaultDetailEditors detail = new DefaultDetailEditors();
 	private final EditorPersistence persistence;
-
 	private final DefaultEditorEntity entity;
 
 	/**
@@ -187,6 +192,11 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 	@Override
 	public final Modified modified() {
 		return modified;
+	}
+
+	@Override
+	public final Present present() {
+		return present;
 	}
 
 	@Override
@@ -315,6 +325,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 	private Map<Attribute<?>, String> updateStates() {
 		Entity instance = entity.get();
 		exists.update(instance);
+		present.update(instance);
 		modified.update();
 		primaryKeyPresent.set(!entity.instance.primaryKey().isNull());
 
@@ -518,9 +529,9 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		public void set(@Nullable Entity entity) {
 			entity = entity == null ? null : validateType(entity).immutable();
 			changing.accept(entity);
+			setDetail(entity);
 			setOrDefaults(entity);
 			changed.accept(entity);
-			setDetail(entity);
 		}
 
 		@Override
@@ -535,15 +546,23 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 		@Override
 		public void replace(@Nullable Entity entity) {
-			setOrDefaults(entity == null ? null : validateType(entity));
+			Entity validated = entity == null ? null : validateType(entity);
+			if (identityChanged(validated)) {
+				replaceDetail(validated);
+			}
+			setOrDefaults(validated);
 			replaced.accept(entity);
-			replaceDetail(entity);
 		}
 
 		@Override
 		public void refresh() {
 			if (exists.is()) {
-				replace(connectionProvider.connection().selectSingle(where(key(instance.originalPrimaryKey()))
+				Entity original = entity.instance.copy().builder()
+								.original() // in case of modifications
+								.build()
+								.immutable(); // passed on to detail Select providers
+				replaceDetail(original);
+				replace(connectionProvider.connection().selectSingle(where(key(original.primaryKey()))
 								.include(entityDefinition.columns().definitions().stream()
 												.filter(definition -> !definition.selected())
 												.map(ColumnDefinition::attribute)
@@ -554,14 +573,22 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		private void setDetail(@Nullable Entity entity) {
-			for (DetailEditor detail : detail.editors.values()) {
-				detail.editor().entity().set(entity == null ? null : detail.load(entity));
-			}
+			setDetail(entity, connectionProvider.connection());
 		}
 
 		private void replaceDetail(@Nullable Entity entity) {
+			replaceDetail(entity, connectionProvider.connection());
+		}
+
+		private void setDetail(@Nullable Entity entity, EntityConnection connection) {
 			for (DetailEditor detail : detail.editors.values()) {
-				detail.editor().entity().replace(entity == null ? null : detail.load(entity));
+				detail.editor().entity().set(entity == null ? null : detail.link.load(entity, connection));
+			}
+		}
+
+		private void replaceDetail(@Nullable Entity entity, EntityConnection connection) {
+			for (DetailEditor detail : detail.editors.values()) {
+				detail.editor().entity().replace(entity == null ? null : detail.link.load(entity, connection));
 			}
 		}
 
@@ -593,11 +620,22 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			return entity;
 		}
+
+		private boolean identityChanged(@Nullable Entity newEntity) {
+			if (newEntity == null) {
+				return !instance.primaryKey().isNull();
+			}
+
+			return !instance.primaryKey().equals(newEntity.primaryKey());
+		}
 	}
 
 	private final class DefaultPersistTasks implements PersistTasks {
 
 		private static final String NOT_MODIFIED = "Entity is not modified: ";
+		private static final String INSERT = "insert {}";
+		private static final String UPDATE = "update {}";
+		private static final String DELETE = "delete {}";
 
 		private final EntityConnection connection;
 
@@ -723,15 +761,16 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 				this.entity = entity;
 				this.before = requireNonNull(before);
 				for (DetailEditor detailEditor : detail.editors.values()) {
-					if (detailEditor.present.is()) {
-						tasks.add(detailEditor.editor.tasks(connection).insert(detail -> detail.set(detailEditor.foreignKey(), inserted())));
+					if (detailEditor.editor.present().is()) {
+						tasks.add(detailEditor.editor.tasks(connection).insert(detail ->
+										detailEditor.link.beforeInsert(detail, inserted(), connection)));
 					}
 				}
 			}
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("insert {}", entity);
+				LOG.debug(INSERT, entity);
 				return transaction(connection, this::insert);
 			}
 
@@ -740,9 +779,9 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 				inserted = persistence.get().insert(entity, connection);
 				Collection<Result<Entity>> detail = detail();
 				return () -> {
+					detail.forEach(Result::handle);
 					entity().replace(inserted);
 					persistEvents.afterInsert(inserted);
-					detail.forEach(Result::handle);
 
 					return inserted;
 				};
@@ -770,7 +809,8 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 				this.entity = entity;
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.updatable.insert.is()) {
-						tasks.add(detailEditor.editor.tasks(connection).insert(detail -> detail.set(detailEditor.foreignKey(), updated())));
+						tasks.add(detailEditor.editor.tasks(connection).insert(detail ->
+										detailEditor.link.beforeInsert(detail, updated(), connection)));
 					}
 					else if (detailEditor.updatable.update.is()) {
 						tasks.add(detailEditor.editor.tasks(connection).update());
@@ -783,7 +823,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("update {}", entity);
+				LOG.debug(UPDATE, entity);
 				return transaction(connection, this::update);
 			}
 
@@ -794,9 +834,9 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 				}
 				Collection<Result<Entity>> detail = detail();
 				return () -> {
+					detail.forEach(Result::handle);
 					entity().replace(updated);
 					persistEvents.afterUpdate(entity, updated);
-					detail.forEach(Result::handle);
 
 					return updated;
 				};
@@ -829,7 +869,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("delete {}", entity);
+				LOG.debug(DELETE, entity);
 				return transaction(connection, this::delete);
 			}
 
@@ -837,9 +877,9 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 				Collection<Result<Entity>> detail = detail();
 				persistence.get().delete(entity, connection);
 				return () -> {
+					detail.forEach(Result::handle);
 					entity().replace(null);
 					persistEvents.afterDelete(entity);
-					detail.forEach(Result::handle);
 
 					return entity;
 				};
@@ -864,7 +904,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("insert {}", entity);
+				LOG.debug(INSERT, entity);
 				before.accept(entity);
 				Entity inserted = persistence.get().insert(entity, connection);
 				return () -> {
@@ -886,7 +926,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("update {}", entity);
+				LOG.debug(UPDATE, entity);
 				Entity updated = persistence.get().update(entity, connection);
 				return () -> {
 					entity().replace(updated);
@@ -907,7 +947,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("delete {}", entity);
+				LOG.debug(DELETE, entity);
 				persistence.get().delete(entity, connection);
 				return () -> {
 					entity().replace(null);
@@ -928,7 +968,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("insert {}", entity);
+				LOG.debug(INSERT, entity);
 				Entity inserted = persistence.get().insert(entity, connection);
 				return () -> {
 					persistEvents.afterInsert(inserted);
@@ -948,7 +988,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Collection<Entity>> perform() {
-				LOG.debug("insert {}", entities);
+				LOG.debug(INSERT, entities);
 				Collection<Entity> inserted = persistence.get().insert(entities, connection);
 				return () -> {
 					persistEvents.afterInsert(inserted);
@@ -968,7 +1008,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("update {}", entity);
+				LOG.debug(UPDATE, entity);
 				Entity updated = persistence.get().update(entity, connection);
 				return () -> {
 					persistEvents.afterUpdate(entity, updated);
@@ -988,7 +1028,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Collection<Entity>> perform() {
-				LOG.debug("update {}", entities);
+				LOG.debug(UPDATE, entities);
 				Collection<Entity> updated = persistence.get().update(entities, connection);
 				return () -> {
 					persistEvents.afterUpdate(originalEntityMap(entities, updated));
@@ -1038,7 +1078,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Entity> perform() {
-				LOG.debug("delete {}", entity);
+				LOG.debug(DELETE, entity);
 				persistence.get().delete(entity, connection);
 				return () -> {
 					persistEvents.afterDelete(entity);
@@ -1058,7 +1098,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			@Override
 			public Result<Collection<Entity>> perform() {
-				LOG.debug("delete {}", entities);
+				LOG.debug(DELETE, entities);
 				persistence.get().delete(entities, connection);
 				return () -> {
 					persistEvents.afterDelete(entities);
@@ -1069,51 +1109,402 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 	}
 
-	private final class DefaultDetailEditors implements DetailEditors<R> {
+	final class DefaultDetailEditors implements DetailEditors<R> {
 
-		private final Map<ForeignKey, DetailEditor> editors = new HashMap<>();
+		private final Map<LinkKey, DetailEditor> editors = new LinkedHashMap<>();
 
 		@Override
-		public void add(R detailEditor, ForeignKey foreignKey, Predicate<Entity> present) {
-			if (editors.containsKey(requireNonNull(foreignKey))) {
-				throw new IllegalStateException("A detail editor has already been associated with for foreign key: " + foreignKey);
+		public void add(EditorLink editorLink) {
+			requireNonNull(editorLink);
+			DefaultEditorLink<R> link = (DefaultEditorLink<R>) editorLink;
+			ForeignKey foreignKey = null;
+			if (link instanceof ForeignKeyEditorLink) {
+				foreignKey = ((DefaultForeignKeyLink<R>) link).foreignKey();
+				if (!entityDefinition.type().equals(foreignKey.referencedType())) {
+					throw new IllegalArgumentException("Master editor entity type " + foreignKey.referencedType() +
+									" expected, got: " + entityDefinition.type());
+				}
+				if (!foreignKey.entityType().equals(link.editor().entityDefinition().type())) {
+					throw new IllegalArgumentException("Detail editor entity type " + foreignKey.entityType() +
+									" expected, got: " + link.editor().entityDefinition().type());
+				}
 			}
-			if (!entityDefinition.type().equals(foreignKey.referencedType())) {
-				throw new IllegalArgumentException("Master editor entity type " + foreignKey.referencedType() +
-								" expected, got: " + entityDefinition.type());
+			LinkKey key = new LinkKey(foreignKey, link.name());
+			if (editors.containsKey(key)) {
+				throw new IllegalArgumentException("Detail editor already exists for " + key);
 			}
-			if (!foreignKey.entityType().equals(detailEditor.entityDefinition().type())) {
-				throw new IllegalArgumentException("Detail editor entity type " + foreignKey.entityType() +
-								" expected, got: " + detailEditor.entityDefinition().type());
-			}
-			editors.put(foreignKey, new DetailEditor(requireNonNull(detailEditor), foreignKey, requireNonNull(present)));
+			editors.put(key, new DetailEditor(link));
 		}
 
 		@Override
 		public R get(ForeignKey foreignKey) {
-			if (!editors.containsKey(requireNonNull(foreignKey))) {
+			return findByForeignKey(foreignKey).editor();
+		}
+
+		@Override
+		public R get(String name) {
+			return findByName(name).editor();
+		}
+
+		@Override
+		public String caption(String name) {
+			return findByName(name).link.caption();
+		}
+
+		@Override
+		public String caption(ForeignKey foreignKey) {
+			return findByForeignKey(foreignKey).link.caption();
+		}
+
+		String name(ForeignKey foreignKey) {
+			return findByForeignKey(foreignKey).link.name();
+		}
+
+		private DetailEditor findByForeignKey(ForeignKey foreignKey) {
+			requireNonNull(foreignKey);
+			List<DetailEditor> matches = editors.entrySet().stream()
+							.filter(entry -> foreignKey.equals(entry.getKey().foreignKey))
+							.map(Map.Entry::getValue)
+							.collect(toList());
+			if (matches.isEmpty()) {
 				throw new IllegalStateException("No detail editor is associated with foreign key: " + foreignKey);
 			}
+			if (matches.size() > 1) {
+				throw new IllegalStateException("Multiple detail editors are associated with foreign key " +
+								foreignKey + "; use get(String) with one of: " + matches.stream()
+								.map(detail -> detail.link.name())
+								.collect(toList()));
+			}
 
-			return editors.get(foreignKey).editor();
+			return matches.get(0);
+		}
+
+		private DetailEditor findByName(String name) {
+			requireNonNull(name);
+			List<DetailEditor> matches = editors.entrySet().stream()
+							.filter(entry -> entry.getKey().name.equals(name))
+							.map(Map.Entry::getValue)
+							.collect(toList());
+			if (matches.isEmpty()) {
+				throw new IllegalStateException("No detail editor is associated with the given name: " + name);
+			}
+			if (matches.size() > 1) {
+				throw new IllegalStateException("Multiple detail editors share the name " + name +
+								"; use get(ForeignKey) with one of: " + matches.stream()
+												.map(detail -> detail.link instanceof ForeignKeyEditorLink
+																? ((DefaultForeignKeyLink<R>) detail.link).foreignKey().toString()
+																: "(non-FK link)")
+												.collect(toList()));
+			}
+
+			return matches.get(0);
+		}
+	}
+
+	private static final class LinkKey {
+
+		private final @Nullable ForeignKey foreignKey;
+		private final String name;
+
+		private LinkKey(@Nullable ForeignKey foreignKey, String name) {
+			this.foreignKey = foreignKey;
+			this.name = name;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (!(object instanceof DefaultEntityEditor.LinkKey)) {
+				return false;
+			}
+			LinkKey key = (LinkKey) object;
+
+			return Objects.equals(foreignKey, key.foreignKey) && name.equals(key.name);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(foreignKey, name);
+		}
+
+		@Override
+		public String toString() {
+			return foreignKey == null ? "name=" + name : "foreignKey=" + foreignKey + ", name=" + name;
+		}
+	}
+
+	static sealed class DefaultEditorLink<R extends EntityEditor<R>> implements EditorLink {
+
+		private final R editor;
+		private final String name;
+		private final String caption;
+		private final Predicate<Entity> present;
+		private final DetailEntity entity;
+		private final BeforeInsert beforeInsert;
+
+		private DefaultEditorLink(DefaultEditorLinkBuilder<R> builder) {
+			this.editor = builder.editor;
+			this.name = builder.name;
+			this.caption = builder.caption == null ? builder.name : builder.caption;
+			this.present = builder.present;
+			this.entity = builder.entity;
+			this.beforeInsert = builder.beforeInsert;
+			this.editor.present().predicate().set(builder.present);
+			this.editor.present().predicate().addValidator(new PreventPresentModification());
+		}
+
+		private final R editor() {
+			return editor;
+		}
+
+		private final String name() {
+			return name;
+		}
+
+		private final String caption() {
+			return caption;
+		}
+
+		private final @Nullable Entity load(Entity master, EntityConnection connection) {
+			return entity.detail(master, connection);
+		}
+
+		private final void beforeInsert(Entity detail, Entity master, EntityConnection connection) {
+			beforeInsert.apply(requireNonNull(detail), requireNonNull(master), requireNonNull(connection));
+		}
+
+		private class PreventPresentModification implements Validator<Predicate<Entity>> {
+
+			@Override
+			public void validate(Predicate<Entity> value) {
+				if (value != present) {
+					throw new IllegalStateException("Detail editor present predicate cannot be replaced after registration; " +
+									"supply it via EditorLink.Builder.present() before calling DetailEditors.add()");
+				}
+			}
+		}
+	}
+
+	static final class DefaultForeignKeyLink<R extends EntityEditor<R>>
+					extends DefaultEditorLink<R> implements ForeignKeyEditorLink {
+
+		private final ForeignKey foreignKey;
+
+		private DefaultForeignKeyLink(DefaultEditorLinkBuilder<R> builder, ForeignKey foreignKey) {
+			super(builder);
+			this.foreignKey = foreignKey;
+		}
+
+		private ForeignKey foreignKey() {
+			return foreignKey;
+		}
+	}
+
+	static class DefaultEditorLinkBuilder<R extends EntityEditor<R>>
+					implements EditorLink.Builder<R> {
+
+		static final EditorStep EDITOR = new DefaultEditorStep();
+
+		private final R editor;
+
+		protected String name;
+		protected DetailEntity entity;
+		protected @Nullable String caption;
+		private Predicate<Entity> present = entity -> true;
+		private BeforeInsert beforeInsert = (d, m, connection) -> {};
+
+		private DefaultEditorLinkBuilder(R editor, String name, DetailEntity entity) {
+			this.editor = editor;
+			this.name = name;
+			this.entity = entity;
+		}
+
+		@Override
+		public EditorLink.Builder<R> present(Predicate<Entity> present) {
+			this.present = requireNonNull(present);
+			return this;
+		}
+
+		@Override
+		public EditorLink.Builder<R> beforeInsert(BeforeInsert beforeInsert) {
+			this.beforeInsert = requireNonNull(beforeInsert);
+			return this;
+		}
+
+		@Override
+		public EditorLink.Builder<R> caption(String caption) {
+			if (nullOrEmpty(caption)) {
+				throw new IllegalArgumentException("caption must be a non-empty string");
+			}
+			this.caption = caption;
+			return this;
+		}
+
+		@Override
+		public EditorLink build() {
+			return new DefaultEditorLink<>(this);
+		}
+
+		static final class DefaultEditorStep implements EditorStep {
+
+			@Override
+			public <R extends EntityEditor<R>> ForeignKeyNameStep<R> editor(R editor) {
+				return new DefaultForeignKeyNameStep<>(requireNonNull(editor));
+			}
+		}
+
+		private static final class DefaultForeignKeyNameStep<R extends EntityEditor<R>>
+						implements ForeignKeyNameStep<R> {
+
+			private final R editor;
+
+			private DefaultForeignKeyNameStep(R editor) {
+				this.editor = editor;
+			}
+
+			@Override
+			public ForeignKeyEditorLink.Builder<R> foreignKey(ForeignKey foreignKey) {
+				return new DefaultForeignKeyEditorLinkBuilder<>(editor,
+								requireNonNull(foreignKey).name(), foreignKey, new DefaultDetailEntity(master -> Select.where(foreignKey.equalTo(master)).build()))
+								.beforeInsert((detail, master, connection) -> detail.set(foreignKey, master));
+			}
+
+			@Override
+			public LoadStep<R> name(String name) {
+				if (nullOrEmpty(name)) {
+					throw new IllegalArgumentException("Detail editor name can't be empty");
+				}
+				return new DefaultLoadStep<>(editor, name);
+			}
+		}
+
+		private static final class DefaultLoadStep<R extends EntityEditor<R>> implements LoadStep<R> {
+
+			private final R editor;
+			private final String name;
+
+			private DefaultLoadStep(R editor, String name) {
+				this.editor = editor;
+				this.name = name;
+			}
+
+			@Override
+			public EditorLink.Builder<R> condition(DetailCondition condition) {
+				requireNonNull(condition);
+				return select(master -> Select.where(condition.get(master)).build());
+			}
+
+			@Override
+			public EditorLink.Builder<R> select(DetailSelect select) {
+				requireNonNull(select);
+				return new DefaultEditorLinkBuilder<>(editor, name, new DefaultDetailEntity(select));
+			}
+
+			@Override
+			public EditorLink.Builder<R> entity(DetailEntity entity) {
+				return new DefaultEditorLinkBuilder<>(editor, name, requireNonNull(entity));
+			}
+		}
+	}
+
+	private static final class DefaultForeignKeyEditorLinkBuilder<R extends EntityEditor<R>>
+					extends DefaultEditorLinkBuilder<R> implements ForeignKeyEditorLink.Builder<R> {
+
+		private final ForeignKey foreignKey;
+
+		private DefaultForeignKeyEditorLinkBuilder(R editor, String name, ForeignKey foreignKey, DetailEntity entity) {
+			super(editor, name, entity);
+			this.foreignKey = foreignKey;
+		}
+
+		@Override
+		public ForeignKeyEditorLink.Builder<R> name(String name) {
+			if (nullOrEmpty(name)) {
+				throw new IllegalArgumentException("Detail editor name can't be empty");
+			}
+			this.name = name;
+			return this;
+		}
+
+		@Override
+		public ForeignKeyEditorLink.Builder<R> condition(DetailCondition condition) {
+			requireNonNull(condition);
+			return select(master -> Select.where(condition.get(master)).build());
+		}
+
+		@Override
+		public ForeignKeyEditorLink.Builder<R> select(DetailSelect select) {
+			requireNonNull(select);
+			return entity(new DefaultDetailEntity(select));
+		}
+
+		@Override
+		public ForeignKeyEditorLink.Builder<R> entity(DetailEntity entity) {
+			this.entity = requireNonNull(entity);
+			return this;
+		}
+
+		@Override
+		public ForeignKeyEditorLink.Builder<R> present(Predicate<Entity> present) {
+			super.present(present);
+			return this;
+		}
+
+		@Override
+		public ForeignKeyEditorLink.Builder<R> beforeInsert(BeforeInsert beforeInsert) {
+			super.beforeInsert(beforeInsert);
+			return this;
+		}
+
+		@Override
+		public ForeignKeyEditorLink.Builder<R> caption(String caption) {
+			super.caption(caption);
+			return this;
+		}
+
+		@Override
+		public ForeignKeyEditorLink build() {
+			return new DefaultForeignKeyLink<>(this, foreignKey);
+		}
+	}
+
+	private static final class DefaultDetailEntity implements DetailEntity {
+
+		private final DetailSelect select;
+
+		private DefaultDetailEntity(DetailSelect select) {
+			this.select = select;
+		}
+
+		@Override
+		public @Nullable Entity detail(Entity master, EntityConnection connection) {
+			List<Entity> entities = requireNonNull(connection).select(select.get(requireNonNull(master)));
+			if (entities.size() > 1) {
+				throw new IllegalStateException("Multiple detail rows found for master entity " + master +
+								", detail editors require 0-or-1 cardinality");
+			}
+
+			return entities.isEmpty() ? null : entities.get(0);
 		}
 	}
 
 	private final class DetailEditor {
 
 		private final R editor;
-		private final ForeignKey foreignKey;
-		private final Predicate<Entity> presentPredicate;
-		private final State present = State.state();
+		private final DefaultEditorLink<R> link;
 		private final Updatable updatable = new Updatable();
 
-		private DetailEditor(R editor, ForeignKey foreignKey, Predicate<Entity> presentPredicate) {
-			this.editor = editor;
-			this.foreignKey = foreignKey;
-			this.presentPredicate = presentPredicate;
-			editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey));
-			editor.validator().addValidator(new PreventModification());
-			editor.value(foreignKey).persist().set(false);
+		private DetailEditor(DefaultEditorLink<R> link) {
+			this.editor = link.editor();
+			this.link = link;
+			if (link instanceof ForeignKeyEditorLink) {
+				ForeignKey foreignKey = ((DefaultForeignKeyLink<R>) link).foreignKey();
+				editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey));
+				editor.validator().addValidator(new PreventValidatorModification());
+				editor.value(foreignKey).persist().set(false);
+			}
 			editor.values().changed().addListener(this::refreshStates);
 			editor.entity().replaced().addListener(this::refreshStates);
 			editor.modified().addListener(this::refreshStates);
@@ -1124,28 +1515,13 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			return editor;
 		}
 
-		private ForeignKey foreignKey() {
-			return foreignKey;
-		}
-
-		private @Nullable Entity load(Entity master) {
-			List<Entity> entities = editor.connectionProvider().connection().select(foreignKey.equalTo(master));
-			if (entities.size() > 1) {
-				throw new IllegalStateException("Multiple detail rows found for foreign key " + foreignKey +
-								", detail editors require 0-or-1 cardinality");
-			}
-
-			return entities.isEmpty() ? null : entities.get(0);
-		}
-
 		private void refreshStates() {
 			boolean masterExists = exists().is();
 			boolean exists = editor.exists().is();
 			boolean modified = editor.modified().is();
-			present.set(presentPredicate.test(editor.entity().get()));
-			updatable.insert.set(masterExists && present.is() && !exists);
-			updatable.update.set(masterExists && present.is() && exists && modified);
-			updatable.delete.set(masterExists && !present.is() && exists);
+			updatable.insert.set(masterExists && editor.present().is() && !exists);
+			updatable.update.set(masterExists && editor.present().is() && exists && modified);
+			updatable.delete.set(masterExists && !editor.present().is() && exists);
 			DefaultEntityEditor.this.modified.update();
 		}
 
@@ -1174,12 +1550,13 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 	}
 
-	private static final class PreventModification implements Validator<EntityValidator> {
+	private static final class PreventValidatorModification implements Validator<EntityValidator> {
 
 		@Override
 		public void validate(@Nullable EntityValidator validator) {
 			if (!(validator instanceof DetailForeignKeyValidator)) {
-				throw new IllegalArgumentException("Detail editor validator must be set before the editor is added to a master editor");
+				throw new IllegalArgumentException("Detail editor validator cannot be replaced after registration; " +
+								"set a custom validator before calling DetailEditors.add()");
 			}
 		}
 	}
@@ -1402,9 +1779,8 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		private void update() {
-			boolean existing = exists.is();
-			attributes.set(existing ? modifiedAttributes() : emptySet());
-			modified.set(existing && entity.instance.modified() || additional.get().stream()
+			attributes.set(modifiedAttributes());
+			modified.set(exists.is() && entity.instance.modified() || additional.get().stream()
 							.anyMatch(ObservableState::is));
 		}
 
@@ -1423,6 +1799,44 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			change.previous().forEach(state -> state.removeListener(additionalListener));
 			change.current().forEach(state -> state.addListener(additionalListener));
 			update();
+		}
+	}
+
+	private final class DefaultPresent implements Present {
+
+		private final Value<Predicate<Entity>> predicate = Value.builder()
+						.nonNull((Predicate<Entity>) entity -> true)
+						.listener(this::update)
+						.build();
+
+		private final State state = State.state();
+
+		@Override
+		public Value<Predicate<Entity>> predicate() {
+			return predicate;
+		}
+
+		@Override
+		public boolean is() {
+			return state.is();
+		}
+
+		@Override
+		public ObservableState not() {
+			return state.not();
+		}
+
+		@Override
+		public Observer<Boolean> observer() {
+			return state.observer();
+		}
+
+		private void update() {
+			update(entity.get());
+		}
+
+		private void update(Entity entity) {
+			state.set(predicate.get().test(entity));
 		}
 	}
 

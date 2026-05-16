@@ -93,8 +93,8 @@ public final class InvoiceLineEditModelTest {
 
 		return connection.insertSelect(entities.entity(Invoice.TYPE)
 						.with(Invoice.CUSTOMER_FK, connection.insertSelect(entities.entity(Customer.TYPE)
-										.with(Customer.FIRSTNAME, "Björn")
-										.with(Customer.LASTNAME, "Sigurðsson")
+										.with(Customer.FIRSTNAME, "Jack")
+										.with(Customer.LASTNAME, "Random")
 										.with(Customer.EMAIL, "email@email.com")
 										.build()))
 						.with(Invoice.DATE, LocalDate.now())

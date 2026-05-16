@@ -18,11 +18,20 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.demos.chinook.domain.api.Chinook.ArtistTag;
+import is.codion.demos.chinook.model.ArtistEditModel;
+import is.codion.swing.common.ui.component.panel.GridLayoutPanelBuilder;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EditorComponents;
+import is.codion.swing.framework.ui.EditorComponents.CreateComponents;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import javax.swing.JLabel;
+import java.awt.BorderLayout;
+
 import static is.codion.demos.chinook.domain.api.Chinook.Artist;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public final class ArtistEditPanel extends EntityEditPanel {
 
@@ -35,7 +44,24 @@ public final class ArtistEditPanel extends EntityEditPanel {
 		create().textField(Artist.NAME)
 						.columns(18);
 
-		setLayout(gridLayout(1, 1));
-		addInputPanel(Artist.NAME);
+		GridLayoutPanelBuilder tagPanel = gridLayoutPanel(3, 2);
+		for (int i = 0; i < ArtistEditModel.TAG_SLOTS; i++) {
+			addTagPanel(i, tagPanel);
+		}
+		setLayout(borderLayout());
+		addInputPanel(Artist.NAME, BorderLayout.NORTH);
+		add(tagPanel, BorderLayout.CENTER);
+	}
+
+	private void addTagPanel(int i, GridLayoutPanelBuilder tagPanel) {
+		String detailName = ArtistEditModel.TAG_PREFIX + i;
+		EditorComponents artistTag = components().detail(detailName);
+		CreateComponents create = artistTag.create();
+		create.textField(ArtistTag.TAG)
+						.columns(8);
+		JLabel label = artistTag.component(ArtistTag.TAG).label();
+		label.setText(label.getText() + " " + (i + 1));
+		tagPanel.add(create.inputPanel(ArtistTag.TAG)
+						.label(label));
 	}
 }
