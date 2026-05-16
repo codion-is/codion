@@ -23,7 +23,9 @@ import is.codion.common.reactive.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityExport;
+import is.codion.framework.model.EntityExport.ExportAttributes;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ComboBoxItems;
@@ -44,9 +46,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static is.codion.swing.framework.ui.EntityTableExportTreeModel.ENTITY_TYPE_KEY;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -90,15 +94,21 @@ final class EntityTableExportModel {
 	}
 
 	ExportTask exportToClipboard() {
-		return new ExportToClipboard(selected.is() ?
+		List<Entity> entities = selected.is() ?
 						tableModel.selection().items().get() :
-						tableModel.items().included().get());
+						tableModel.items().included().get();
+
+		return new ExportTask.ExportToClipboard(connectionProvider, tableModel.entityType(),
+						treeModel::attributes, entities.iterator(), entities.size());
 	}
 
 	ExportTask exportToFile(Path file) {
-		return new ExportToFileTask(requireNonNull(file), selected.is() ?
+		List<Entity> entities = selected.is() ?
 						tableModel.selection().items().get() :
-						tableModel.items().included().get());
+						tableModel.items().included().get();
+
+		return new ExportTask.ExportToFileTask(connectionProvider, tableModel.entityType(),
+						treeModel::attributes, requireNonNull(file), entities.iterator(), entities.size());
 	}
 
 	EntityTableExportTreeModel treeModel() {
@@ -257,79 +267,94 @@ final class EntityTableExportModel {
 
 	abstract static class ExportTask implements ProgressTask<Void> {
 
+		protected final EntityConnectionProvider connectionProvider;
+		protected final EntityType entityType;
+		protected final Consumer<ExportAttributes.Builder> attributes;
+		protected final Iterator<Entity> entities;
+		protected final int maximum;
+
 		protected final AtomicInteger counter = new AtomicInteger();
 		protected final State cancel = State.state(false);
-		protected final List<Entity> entities;
 
-		protected ExportTask(List<Entity> entities) {
+		protected ExportTask(EntityConnectionProvider connectionProvider, EntityType entityType,
+		                     Consumer<ExportAttributes.Builder> attributes,
+		                     Iterator<Entity> entities, int maximum) {
+			this.connectionProvider = connectionProvider;
+			this.entityType = entityType;
+			this.attributes = attributes;
 			this.entities = entities;
+			this.maximum = maximum;
 		}
 
 		@Override
 		public final int maximum() {
-			return entities.size();
+			return maximum;
 		}
 
 		final State cancel() {
 			return cancel;
 		}
-	}
 
-	private final class ExportToFileTask extends ExportTask {
+		private static final class ExportToFileTask extends ExportTask {
 
-		private final Path file;
+			private final Path file;
 
-		private ExportToFileTask(Path file, List<Entity> entities) {
-			super(entities);
-			this.file = file;
+			private ExportToFileTask(EntityConnectionProvider connectionProvider, EntityType entityType,
+			                         Consumer<ExportAttributes.Builder> attributes,
+			                         Path file, Iterator<Entity> entities, int maximum) {
+				super(connectionProvider, entityType, attributes, entities, maximum);
+				this.file = file;
+			}
+
+			@Override
+			public void execute(ProgressReporter<Void> progress) throws Exception {
+				try (BufferedWriter output = Files.newBufferedWriter(file)) {
+					EntityExport.builder(connectionProvider)
+									.entityType(entityType)
+									.attributes(attributes)
+									.entities(entities)
+									.output(line -> write(line, output))
+									.processed(entity -> progress.report(counter.incrementAndGet()))
+									.cancel(cancel.observable())
+									.export();
+				}
+				catch (CancelException e) {
+					Files.deleteIfExists(file);
+					throw e;
+				}
+			}
+
+			private void write(String line, BufferedWriter output) {
+				try {
+					output.write(line);
+				}
+				catch (IOException e) {
+					throw new UncheckedIOException(e);
+				}
+			}
 		}
 
-		@Override
-		public void execute(ProgressReporter<Void> progress) throws Exception {
-			try (BufferedWriter output = Files.newBufferedWriter(file)) {
+		private static final class ExportToClipboard extends ExportTask {
+
+			private ExportToClipboard(EntityConnectionProvider connectionProvider, EntityType entityType,
+			                          Consumer<ExportAttributes.Builder> attributes,
+			                          Iterator<Entity> entities, int maximum) {
+				super(connectionProvider, entityType, attributes, entities, maximum);
+			}
+
+			@Override
+			public void execute(ProgressReporter<Void> progress) {
+				StringBuilder builder = new StringBuilder();
 				EntityExport.builder(connectionProvider)
-								.entityType(tableModel.entityType())
-								.attributes(treeModel::attributes)
-								.entities(entities.iterator())
-								.output(line -> write(line, output))
+								.entityType(entityType)
+								.attributes(attributes)
+								.entities(entities)
+								.output(builder::append)
 								.processed(entity -> progress.report(counter.incrementAndGet()))
 								.cancel(cancel.observable())
 								.export();
+				Utilities.setClipboard(builder.toString());
 			}
-			catch (CancelException e) {
-				Files.deleteIfExists(file);
-				throw e;
-			}
-		}
-
-		private void write(String line, BufferedWriter output) {
-			try {
-				output.write(line);
-			}
-			catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		}
-	}
-
-	private final class ExportToClipboard extends ExportTask {
-
-		private ExportToClipboard(List<Entity> entities) {
-			super(entities);
-		}
-
-		@Override
-		public void execute(ProgressReporter<Void> progress) {
-			StringBuilder builder = new StringBuilder();
-			EntityExport.builder(connectionProvider)
-							.entityType(tableModel.entityType())
-							.attributes(treeModel::attributes)
-							.entities(entities.iterator())
-							.output(builder::append)
-							.processed(entity -> progress.report(counter.incrementAndGet()))
-							.cancel(cancel.observable())
-							.export();
-			Utilities.setClipboard(builder.toString());
 		}
 	}
 
