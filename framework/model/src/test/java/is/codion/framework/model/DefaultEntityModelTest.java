@@ -32,7 +32,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 	protected TestEntityModel createDepartmentModel() {
 		TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(Department.TYPE, connectionProvider()));
 		TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
-		deptModel.detail().add(deptModel.link(empModel)
+		deptModel.detail().add(ForeignKeyModelLink.builder()
+						.model(empModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.build());
 

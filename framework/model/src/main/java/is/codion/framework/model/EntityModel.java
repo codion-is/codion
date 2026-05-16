@@ -88,14 +88,6 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	boolean containsTableModel();
 
 	/**
-	 * @param <B> the builder type
-	 * @param model the model to link to
-	 * @return a {@link ForeignKeyModelLink.Builder}, based on a fitting foreign key
-	 * @throws IllegalArgumentException in case zero or multiple fitting foreign keys are found
-	 */
-	<B extends ForeignKeyModelLink.Builder<B>> ForeignKeyModelLink.Builder<B> link(M model);
-
-	/**
 	 * @return the detail models
 	 */
 	DetailModels<M, E, T, R> detail();

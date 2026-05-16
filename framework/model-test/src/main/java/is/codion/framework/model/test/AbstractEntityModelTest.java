@@ -220,7 +220,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().indexes().set(asList(1, 2));
 		M employeeModel = createEmployeeModel();
-		departmentModel.detail().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.build());
 		assertEquals(new HashSet<>(departmentModel.tableModel().selection().items().get()),
@@ -234,7 +236,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			return;
 		}
 		M employeeModel = createEmployeeModel();
-		departmentModel.detail().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -262,7 +266,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detail().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -297,7 +303,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			return;
 		}
 		M employeeModel = createEmployeeModel();
-		departmentModel.detail().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -335,7 +343,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detail().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -368,7 +378,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			return;
 		}
 		M employeeModel = createEmployeeModel();
-		departmentModel.detail().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(true)
 						.clearConditionOnEmptySelection(false)
@@ -394,7 +406,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detail().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -419,7 +433,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 			return;
 		}
 		M employeeModel = createEmployeeModel();
-		departmentModel.detail().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(true)
@@ -440,7 +456,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detail().add(departmentModel.link(employeeModel)
+		departmentModel.detail().add(ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)

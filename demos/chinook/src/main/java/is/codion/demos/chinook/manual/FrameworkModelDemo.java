@@ -496,7 +496,9 @@ public final class FrameworkModelDemo {
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
 
 		ModelLink customLink =
-						customerModel.link(invoiceModel)
+						ForeignKeyModelLink.builder()
+										.model(invoiceModel)
+										.foreignKey(Invoice.CUSTOMER_FK)
 										.active(true)
 										.onSelection(selectedCustomers -> {
 											// Custom selection logic
@@ -523,7 +525,9 @@ public final class FrameworkModelDemo {
 		customerModel.detail().add(invoiceModel);
 
 		// Or configure explicitly
-		customerModel.detail().add(ForeignKeyModelLink.builder(invoiceModel, Invoice.CUSTOMER_FK)
+		customerModel.detail().add(ForeignKeyModelLink.builder()
+						.model(invoiceModel)
+						.foreignKey(Invoice.CUSTOMER_FK)
 						// Clear foreign key value when master has no selection
 						.clearValueOnEmptySelection(true)
 						// Set foreign key value automatically on insert

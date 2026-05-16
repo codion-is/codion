@@ -162,8 +162,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		private boolean active = false;
 
 		DefaultBuilder(M model, ForeignKey foreignKey) {
-			this.model = requireNonNull(model);
-			this.foreignKey = requireNonNull(foreignKey);
+			this.model = model;
+			this.foreignKey = foreignKey;
 		}
 
 		@Override
@@ -229,6 +229,31 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		@Override
 		public ModelLink build() {
 			return new DefaultForeignKeyModelLink<>(this).modelLink;
+		}
+	}
+
+	static final class DefaultModelStep<B extends ForeignKeyModelLink.Builder<B>> implements Builder.ModelStep<B> {
+
+		@Override
+		public <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+						T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> Builder.ForeignKeyStep<B> model(M model) {
+			return new DefaultForeignKeyStep<>(requireNonNull(model));
+		}
+	}
+
+	private static final class DefaultForeignKeyStep<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
+					B extends ForeignKeyModelLink.Builder<B>> implements Builder.ForeignKeyStep<B> {
+
+		private final M model;
+
+		private DefaultForeignKeyStep(M model) {
+			this.model = model;
+		}
+
+		@Override
+		public Builder<B> foreignKey(ForeignKey foreignKey) {
+			return new DefaultBuilder<>(model, requireNonNull(foreignKey));
 		}
 	}
 

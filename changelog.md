@@ -26,6 +26,8 @@ Codion Change Log
 - EntityEditor detail editor handling added.
 - PersistenceEvents.persisted() added.
 - ModelLink and ForeignKeyModelLink sealed.
+- ForeignKeyModelLink.Builder.ModelStep and ForeignKeyStep added.
+- EntityModel.link() removed.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 - SwingEntityTableModel bug fixed, now uses replace() when updating the editor entity on table edit.

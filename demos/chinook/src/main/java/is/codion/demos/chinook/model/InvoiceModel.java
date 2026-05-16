@@ -21,6 +21,7 @@ package is.codion.demos.chinook.model;
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import java.util.Collection;
@@ -33,7 +34,9 @@ public final class InvoiceModel extends SwingEntityModel {
 		InvoiceLineEditModel invoiceLineEditModel = new InvoiceLineEditModel(connectionProvider);
 
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(invoiceLineEditModel);
-		detail().add(link(invoiceLineModel)
+		detail().add(ForeignKeyModelLink.builder()
+						.model(invoiceLineModel)
+						.foreignKey(InvoiceLine.INVOICE_FK)
 						// Prevents accidentally adding a new invoice line to the previously selected invoice,
 						// since the selected foreign key value persists when the master selection is cleared by default.
 						.clearValueOnEmptySelection(true)

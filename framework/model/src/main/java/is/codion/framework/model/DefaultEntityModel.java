@@ -133,22 +133,6 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 	}
 
 	@Override
-	public final <B extends ForeignKeyModelLink.Builder<B>> ForeignKeyModelLink.Builder<B> link(M model) {
-		Collection<ForeignKey> foreignKeys = requireNonNull(model).editModel()
-						.entityDefinition().foreignKeys().get(editModel.entityType());
-		if (foreignKeys.isEmpty()) {
-			throw new IllegalArgumentException("Entity " + model.editModel().entityType() +
-							" does not reference " + editModel.entityType() + " via a foreign key");
-		}
-		if (foreignKeys.size() > 1) {
-			throw new IllegalArgumentException("Entity " + model.editModel().entityType() +
-							" references " + editModel.entityType() + " via multiple foreign keys");
-		}
-
-		return ForeignKeyModelLink.builder(model, foreignKeys.iterator().next());
-	}
-
-	@Override
 	public final DetailModels<M, E, T, R> detail() {
 		return detailModels;
 	}
@@ -215,12 +199,15 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 
 		@Override
 		public void add(M detailModel) {
-			add(link(detailModel).build());
+			add(detailModel, validateForeignKeyLink(detailModel));
 		}
 
 		@Override
 		public void add(M detailModel, ForeignKey foreignKey) {
-			add(ForeignKeyModelLink.builder(requireNonNull(detailModel), requireNonNull(foreignKey)).build());
+			add(ForeignKeyModelLink.builder()
+							.model(detailModel)
+							.foreignKey(foreignKey)
+							.build());
 		}
 
 		@Override
@@ -231,6 +218,9 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 			}
 			if (models.containsKey(modelLink.model())) {
 				throw new IllegalArgumentException("Detail model " + modelLink.model() + " has already been added");
+			}
+			if (link instanceof DefaultForeignKeyModelLink<?, ?, ?, ?>) {
+				validateForeignKeyLink(((DefaultForeignKeyModelLink<?, ?, ?, ?>) link).model());
 			}
 			models.put(modelLink.model(), modelLink);
 			if (modelLink.active().is()) {
@@ -280,6 +270,20 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 							.filter(detailModel -> detailModel.entityType().equals(entityType))
 							.findFirst()
 							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + DefaultEntityModel.this));
+		}
+
+		private ForeignKey validateForeignKeyLink(EntityModel<?, ?, ?, ?> model) {
+			Collection<ForeignKey> foreignKeys = model.entityDefinition().foreignKeys().get(editModel.entityType());
+			if (foreignKeys.isEmpty()) {
+				throw new IllegalArgumentException("Entity " + model.entityType() +
+								" does not reference " + entityType() + " via a foreign key");
+			}
+			if (foreignKeys.size() > 1) {
+				throw new IllegalArgumentException("Entity " + model.entityType() +
+								" references " + entityType() + " via multiple foreign keys");
+			}
+
+			return foreignKeys.iterator().next();
 		}
 
 		private final class ActiveChanged implements Consumer<Boolean> {

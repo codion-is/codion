@@ -83,23 +83,12 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 					booleanValue(ForeignKeyModelLink.class.getName() + ".clearConditionOnEmptySelection", true);
 
 	/**
-	 * <p>Returns a new {@link Builder} instance.
-	 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
-	 * any data, via {@link EntityQueryModel#conditionRequired()}
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
-	 * @param <R> the {@link EntityEditor} type
+	 * <p>Returns a new {@link Builder.ModelStep} instance.
 	 * @param <B> the builder type
-	 * @param model the model to link
-	 * @param foreignKey the foreign key
 	 * @return a {@link Builder} instance
 	 */
-	static <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
-					B extends ForeignKeyModelLink.Builder<B>>
-	ForeignKeyModelLink.Builder<B> builder(M model, ForeignKey foreignKey) {
-		return new DefaultForeignKeyModelLink.DefaultBuilder<>(model, foreignKey);
+	static <B extends ForeignKeyModelLink.Builder<B>> Builder.ModelStep<B> builder() {
+		return new DefaultForeignKeyModelLink.DefaultModelStep<>();
 	}
 
 	/**
@@ -107,6 +96,37 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 	 * @param <B> the builder type
 	 */
 	interface Builder<B extends ForeignKeyModelLink.Builder<B>> extends ModelLink.Builder<B> {
+
+		/**
+		 * @param <B> the builder type
+		 */
+		interface ModelStep<B extends ForeignKeyModelLink.Builder<B>> {
+
+			/**
+			 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
+			 * any data, via {@link EntityQueryModel#conditionRequired()}
+			 * @param model the detail model
+			 * @param <M> the {@link EntityModel} type
+			 * @param <E> the {@link EntityEditModel} type
+			 * @param <T> the {@link EntityTableModel} type
+			 * @param <R> the {@link EntityEditor} type
+			 * @return a new {@link Builder.ForeignKeyStep}
+			 */
+			<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+							T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> ForeignKeyStep<B> model(M model);
+		}
+
+		/**
+		 * @param <B> the builder type
+		 */
+		interface ForeignKeyStep<B extends ForeignKeyModelLink.Builder<B>> {
+
+			/**
+			 * @param foreignKey the foreign key on which to base the detail link
+			 * @return a new {@link Builder} instance
+			 */
+			ForeignKeyModelLink.Builder<B> foreignKey(ForeignKey foreignKey);
+		}
 
 		/**
 		 * <p>Note that this overrides {@link #refreshOnSelection(boolean)},
