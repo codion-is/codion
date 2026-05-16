@@ -93,7 +93,7 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	 * @return a {@link ForeignKeyModelLink.Builder}, based on a fitting foreign key
 	 * @throws IllegalArgumentException in case zero or multiple fitting foreign keys are found
 	 */
-	<B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> ForeignKeyModelLink.Builder<M, E, T, R, B> link(M model);
+	<B extends ForeignKeyModelLink.Builder<B>> ForeignKeyModelLink.Builder<B> link(M model);
 
 	/**
 	 * @return the detail models
@@ -113,11 +113,10 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 		/**
 		 * @return an unmodifiable view of the detail models this model contains
 		 */
-		Map<M, ModelLink<M, E, T, R>> get();
+		Map<M, ModelLink> get();
 
 		/**
 		 * @return the active detail models, that is, those that should respond to master model selection events
-		 * @see ModelLink#active()
 		 */
 		ObservableValueSet<M> active();
 
@@ -153,7 +152,7 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 		 * @param modelLink the {@link ModelLink} to add
 		 * @throws IllegalArgumentException in case the model has already been added
 		 */
-		void add(ModelLink<M, E, T, R> modelLink);
+		void add(ModelLink modelLink);
 
 		/**
 		 * @param detailModel the detail model

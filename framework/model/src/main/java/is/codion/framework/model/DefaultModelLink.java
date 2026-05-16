@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements ModelLink<M, E, T, R> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements ModelLink {
 
 	private final M model;
 	private final State active;
@@ -50,41 +50,35 @@ final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends Entity
 		}
 	}
 
-	@Override
-	public M model() {
+	M model() {
 		return model;
 	}
 
-	@Override
-	public State active() {
+	State active() {
 		return active;
 	}
 
-	@Override
-	public void onSelection(Collection<Entity> selectedEntities) {
+	void onSelection(Collection<Entity> selectedEntities) {
 		if (active.is()) {
 			onSelection.accept(selectedEntities);
 		}
 	}
 
-	@Override
-	public void onInsert(Collection<Entity> insertedEntities) {
+	void onInsert(Collection<Entity> insertedEntities) {
 		onInsert.accept(insertedEntities);
 	}
 
-	@Override
-	public void onUpdate(Map<Entity, Entity> updatedEntities) {
+	void onUpdate(Map<Entity, Entity> updatedEntities) {
 		onUpdate.accept(updatedEntities);
 	}
 
-	@Override
-	public void onDelete(Collection<Entity> deletedEntities) {
+	void onDelete(Collection<Entity> deletedEntities) {
 		onDelete.accept(deletedEntities);
 	}
 
 	static class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends Builder<M, E, T, R, B>>
-					implements Builder<M, E, T, R, B> {
+					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends Builder<B>>
+					implements Builder<B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
@@ -131,7 +125,7 @@ final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends Entity
 		}
 
 		@Override
-		public ModelLink<M, E, T, R> build() {
+		public ModelLink build() {
 			return new DefaultModelLink<>(this);
 		}
 	}

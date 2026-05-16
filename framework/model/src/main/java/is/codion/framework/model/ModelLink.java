@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.Collection;
@@ -27,56 +26,8 @@ import java.util.function.Consumer;
 
 /**
  * Represents a link between two entity models.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
- * @param <R> the {@link EntityEditor} type
- * @see #onSelection(Collection)
- * @see #onInsert(Collection)
- * @see #onUpdate(Map)
- * @see #onDelete(Collection)
  */
-public interface ModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> {
-
-	/**
-	 * @return the linked model
-	 */
-	M model();
-
-	/**
-	 * <p>Controls the active status of this link.
-	 * <p>Active model links respond to the parent model selection via {@link #onSelection(Collection)}.
-	 * @return the {@link State} controlling the active status of this model link
-	 * @see #onSelection(Collection)
-	 */
-	State active();
-
-	/**
-	 * <p>Called when the selection changes in the parent model or when this link is activated.
-	 * <p>Note that only active links are required to handle parent model selection.
-	 * @param selectedEntities the selected entities
-	 * @see #active()
-	 */
-	void onSelection(Collection<Entity> selectedEntities);
-
-	/**
-	 * Called when insert is performed in the parent model, regardless of entity type.
-	 * @param insertedEntities the inserted entities
-	 */
-	void onInsert(Collection<Entity> insertedEntities);
-
-	/**
-	 * Called when an update is performed in the parent model, regardless of entity type.
-	 * @param updatedEntities the updated entities, mapped to their state before the update
-	 */
-	void onUpdate(Map<Entity, Entity> updatedEntities);
-
-	/**
-	 * Called when delete is performed in the parent model, regardless of entity type.
-	 * @param deletedEntities the deleted entities
-	 */
-	void onDelete(Collection<Entity> deletedEntities);
+public sealed interface ModelLink permits DefaultModelLink, ForeignKeyModelLink {
 
 	/**
 	 * <p>Returns a new {@link Builder} instance.
@@ -91,26 +42,20 @@ public interface ModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEd
 	 * @return a {@link Builder} instance
 	 */
 	static <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>, T extends EntityTableModel<M, E, T, R>,
-					B extends Builder<M, E, T, R, B>, R extends EntityEditor<R>> Builder<M, E, T, R, B> builder(M model) {
+					B extends Builder<B>, R extends EntityEditor<R>> Builder<B> builder(M model) {
 		return new DefaultModelLink.DefaultBuilder<>(model);
 	}
 
 	/**
 	 * Builds a {@link ModelLink}
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
-	 * @param <R> the {@link EntityEditor} type
 	 * @param <B> the builder type
 	 */
-	interface Builder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends Builder<M, E, T, R, B>> {
+	interface Builder<B extends Builder<B>> {
 
 		/**
 		 * Note that only active model links respond to parent model selection by default.
 		 * @param onSelection called when the selection changes in the parent model
 		 * @return this builder
-		 * @see #active()
 		 */
 		B onSelection(Consumer<Collection<Entity>> onSelection);
 
@@ -141,6 +86,6 @@ public interface ModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEd
 		/**
 		 * @return a {@link ModelLink}
 		 */
-		ModelLink<M, E, T, R> build();
+		ModelLink build();
 	}
 }

@@ -25,6 +25,7 @@ Codion Change Log
 - DefaultEntityEditor bug fixed, now updates states when instantiated.
 - EntityEditor detail editor handling added.
 - PersistenceEvents.persisted() added.
+- ModelLink and ForeignKeyModelLink sealed.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 - SwingEntityTableModel bug fixed, now uses replace() when updating the editor entity on table edit.

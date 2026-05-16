@@ -29,13 +29,8 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Represents a link between two entity models based on a foreign key.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
- * @param <R> the {@link EntityEditor} type
  */
-public interface ForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> extends ModelLink<M, E, T, R> {
+public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultForeignKeyModelLink {
 
 	/**
 	 * Specifies whether a linked model should automatically set the foreign key value to the entity inserted by the parent model.
@@ -88,11 +83,6 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extend
 					booleanValue(ForeignKeyModelLink.class.getName() + ".clearConditionOnEmptySelection", true);
 
 	/**
-	 * @return the foreign key this model link is based on
-	 */
-	ForeignKey foreignKey();
-
-	/**
 	 * <p>Returns a new {@link Builder} instance.
 	 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
 	 * any data, via {@link EntityQueryModel#conditionRequired()}
@@ -107,22 +97,16 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extend
 	 */
 	static <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
 					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
-					B extends ForeignKeyModelLink.Builder<M, E, T, R, B>>
-	ForeignKeyModelLink.Builder<M, E, T, R, B> builder(M model, ForeignKey foreignKey) {
+					B extends ForeignKeyModelLink.Builder<B>>
+	ForeignKeyModelLink.Builder<B> builder(M model, ForeignKey foreignKey) {
 		return new DefaultForeignKeyModelLink.DefaultBuilder<>(model, foreignKey);
 	}
 
 	/**
 	 * Builds a {@link ForeignKeyModelLink}
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
-	 * @param <R> the {@link EntityEditor} type
 	 * @param <B> the builder type
 	 */
-	interface Builder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
-					B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> extends ModelLink.Builder<M, E, T, R, B> {
+	interface Builder<B extends ForeignKeyModelLink.Builder<B>> extends ModelLink.Builder<B> {
 
 		/**
 		 * <p>Note that this overrides {@link #refreshOnSelection(boolean)},
@@ -162,7 +146,6 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extend
 		 * when the foreign key condition is set according to the parent model selection
 		 * @return this builder
 		 * @see ForeignKeyModelLink#REFRESH_ON_SELECTION
-		 * @see #active()
 		 */
 		B refreshOnSelection(boolean refreshOnSelection);
 
@@ -179,10 +162,5 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extend
 		 * @see ForeignKeyModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION
 		 */
 		B clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection);
-
-		/**
-		 * @return a {@link ForeignKeyModelLink}
-		 */
-		ForeignKeyModelLink<M, E, T, R> build();
 	}
 }

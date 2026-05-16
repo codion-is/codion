@@ -495,7 +495,7 @@ public final class FrameworkModelDemo {
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
 
-		ModelLink<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> customLink =
+		ModelLink customLink =
 						customerModel.link(invoiceModel)
 										.active(true)
 										.onSelection(selectedCustomers -> {

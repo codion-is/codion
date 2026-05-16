@@ -133,7 +133,7 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 	}
 
 	@Override
-	public final <B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> ForeignKeyModelLink.Builder<M, E, T, R, B> link(M model) {
+	public final <B extends ForeignKeyModelLink.Builder<B>> ForeignKeyModelLink.Builder<B> link(M model) {
 		Collection<ForeignKey> foreignKeys = requireNonNull(model).editModel()
 						.entityDefinition().foreignKeys().get(editModel.entityType());
 		if (foreignKeys.isEmpty()) {
@@ -155,7 +155,9 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 
 	private void selectionChanged() {
 		List<Entity> activeEntities = activeEntities();
-		detailModels.get().values().forEach(link -> link.onSelection(activeEntities));
+		detailModels.get().values().stream()
+						.map(DefaultModelLink.class::cast)
+						.forEach(link -> link.onSelection(activeEntities));
 	}
 
 	private List<Entity> activeEntities() {
@@ -182,20 +184,26 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {
-		detailModels.get().values().forEach(link -> link.onInsert(insertedEntities));
+		detailModels.get().values().stream()
+						.map(DefaultModelLink.class::cast)
+						.forEach(link -> link.onInsert(insertedEntities));
 	}
 
 	private void onUpdate(Map<Entity, Entity> updatedEntities) {
-		detailModels.get().values().forEach(link -> link.onUpdate(updatedEntities));
+		detailModels.get().values().stream()
+						.map(DefaultModelLink.class::cast)
+						.forEach(link -> link.onUpdate(updatedEntities));
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
-		detailModels.get().values().forEach(link -> link.onDelete(deletedEntities));
+		detailModels.get().values().stream()
+						.map(DefaultModelLink.class::cast)
+						.forEach(link -> link.onDelete(deletedEntities));
 	}
 
 	private final class DefaultDetailModels implements DetailModels<M, E, T, R> {
 
-		private final Map<M, ModelLink<M, E, T, R>> models = new HashMap<>();
+		private final Map<M, DefaultModelLink<M, E, T, R>> models = new HashMap<>();
 		private final ValueSet<M> active = ValueSet.valueSet();
 
 		@Override
@@ -216,7 +224,8 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 		}
 
 		@Override
-		public void add(ModelLink<M, E, T, R> modelLink) {
+		public void add(ModelLink link) {
+			DefaultModelLink<M, E, T, R> modelLink = (DefaultModelLink<M, E, T, R>) link;
 			if (DefaultEntityModel.this == requireNonNull(modelLink).model()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
@@ -237,7 +246,7 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 		}
 
 		@Override
-		public Map<M, ModelLink<M, E, T, R>> get() {
+		public Map<M, ModelLink> get() {
 			return unmodifiableMap(models);
 		}
 
@@ -275,9 +284,9 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 
 		private final class ActiveChanged implements Consumer<Boolean> {
 
-			private final ModelLink<M, E, T, R> modelLink;
+			private final DefaultModelLink<M, E, T, R> modelLink;
 
-			private ActiveChanged(ModelLink<M, E, T, R> modelLink) {
+			private ActiveChanged(DefaultModelLink<M, E, T, R> modelLink) {
 				this.modelLink = modelLink;
 			}
 

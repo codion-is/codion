@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.reactive.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -32,10 +31,10 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements ForeignKeyModelLink<M, E, T, R> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements ForeignKeyModelLink {
 
 	private final ForeignKey foreignKey;
-	private final ModelLink<M, E, T, R> modelLink;
+	private final DefaultModelLink<M, E, T, R> modelLink;
 
 	private final boolean clearValueOnEmptySelection;
 	private final boolean clearConditionOnEmptySelection;
@@ -44,7 +43,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 	private final boolean refreshOnSelection;
 
 	private DefaultForeignKeyModelLink(DefaultBuilder<M, E, T, R, ?> builder) {
-		this.modelLink = ModelLink.builder(builder.model)
+		this.modelLink = (DefaultModelLink<M, E, T, R>) ModelLink.builder(builder.model)
 						.onSelection(builder.onSelection == null ? new OnSelection() : builder.onSelection)
 						.onInsert(builder.onInsert == null ? new OnInsert() : builder.onInsert)
 						.onUpdate(builder.onUpdate)
@@ -62,39 +61,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		}
 	}
 
-	@Override
-	public ForeignKey foreignKey() {
-		return foreignKey;
-	}
-
-	@Override
-	public M model() {
+	M model() {
 		return modelLink.model();
-	}
-
-	@Override
-	public State active() {
-		return modelLink.active();
-	}
-
-	@Override
-	public void onSelection(Collection<Entity> selectedEntities) {
-		modelLink.onSelection(selectedEntities);
-	}
-
-	@Override
-	public void onInsert(Collection<Entity> insertedEntities) {
-		modelLink.onInsert(insertedEntities);
-	}
-
-	@Override
-	public void onUpdate(Map<Entity, Entity> updatedEntities) {
-		modelLink.onUpdate(updatedEntities);
-	}
-
-	@Override
-	public void onDelete(Collection<Entity> deletedEntities) {
-		modelLink.onDelete(deletedEntities);
 	}
 
 	private final class OnSelection implements Consumer<Collection<Entity>> {
@@ -174,7 +142,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 
 	static final class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
 					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
-					B extends ForeignKeyModelLink.Builder<M, E, T, R, B>> implements Builder<M, E, T, R, B> {
+					B extends ForeignKeyModelLink.Builder<B>> implements Builder<B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
@@ -259,8 +227,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		}
 
 		@Override
-		public ForeignKeyModelLink<M, E, T, R> build() {
-			return new DefaultForeignKeyModelLink<>(this);
+		public ModelLink build() {
+			return new DefaultForeignKeyModelLink<>(this).modelLink;
 		}
 	}
 
