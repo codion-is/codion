@@ -729,8 +729,11 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		@Override
 		public PersistTask<Collection<Entity>> delete(Collection<Entity> entities) {
 			settings.verifyDeleteEnabled();
-			entities = unmodifiableCollection(new ArrayList<>(requireNonNull(entities)));
-			entities.forEach(Entity::revert);// in case of a modified primary key
+			entities = unmodifiableCollection(requireNonNull(entities).stream()
+							.map(entity -> entity.copy().builder()
+											.original()// in case of a modified primary key
+											.build())
+							.collect(toList()));
 			persistEvents.beforeDelete(entities);
 
 			return new DeleteEntities(entities);

@@ -33,6 +33,7 @@ Codion Change Log
 - EditorLink added.
 - EntityEditor.RefreshTask added, PersistTasks renamed EditorTasks, EditorTasks.refresh() added.
 - EntityTableExportModel, minor refactoring.
+- DefaultEntityEditor.DefaultEditorTasks.delete(Collection) bug fixed, now copies entities before reverting.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.refresh(), minor refactoring.
 - SwingEntityTableModel bug fixed, now uses replace() when updating the editor entity on table edit.
