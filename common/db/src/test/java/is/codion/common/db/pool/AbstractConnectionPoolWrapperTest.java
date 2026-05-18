@@ -51,7 +51,7 @@ public final class AbstractConnectionPoolWrapperTest {
 
 	@BeforeEach
 	void setup() {
-		database = H2DatabaseFactory.createDatabase(H2_MEMORY_URL, H2_INIT_SCRIPT);
+		database = H2DatabaseFactory.create(H2_MEMORY_URL, H2_INIT_SCRIPT);
 		testUser = User.parse(TEST_USER_CREDENTIALS);
 	}
 

@@ -180,7 +180,7 @@ Alternatively, you can provide your own `Database` instance:
 [source,java]
 ----
 private static EntityConnectionProvider createConnectionProvider() {
-    Database database = H2DatabaseFactory.createDatabase("jdbc:h2:mem:testdb");
+    Database database = H2DatabaseFactory.create("jdbc:h2:mem:testdb");
     
     return LocalEntityConnectionProvider.builder()
             .domain(new WorldImpl())

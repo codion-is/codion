@@ -452,7 +452,7 @@ public class StoreDemo {
     UIManager.setLookAndFeel(new MaterialDarker());
 
     Database database = H2DatabaseFactory
-            .createDatabase("jdbc:h2:mem:h2db",
+            .create("jdbc:h2:mem:h2db",
                     "src/main/sql/create_schema_minimal.sql");
 
     EntityConnectionProvider connectionProvider =
@@ -522,7 +522,7 @@ There are three implementations available; local, which is based on a direct JDB
 [source,java]
 ----
 Database database = H2DatabaseFactory
-        .createDatabase("jdbc:h2:mem:store",
+        .create("jdbc:h2:mem:store",
                 "src/main/sql/create_schema_minimal.sql");
 
 EntityConnectionProvider connectionProvider =

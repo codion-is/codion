@@ -7,6 +7,8 @@ Codion Change Log
 ### is.codion.common.model
 - DefaultFilterModelItems.replace() now triggers change events for filtered and included items.
 - FilterModelItems.Builder.listener() now supports multiple listeners.
+### is.codion.dbms.h2
+- H2Database.createDatabase() renamed create().
 ### is.codion.swing.common.model
 - DelayedAction factory method parameters reordered.
 ### is.codion.swing.common.ui

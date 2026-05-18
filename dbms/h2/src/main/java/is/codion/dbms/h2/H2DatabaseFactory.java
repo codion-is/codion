@@ -28,8 +28,9 @@ import is.codion.common.utilities.user.User;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.Arrays;
 
+import static java.nio.charset.Charset.defaultCharset;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -59,8 +60,8 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 	 * @param initScripts initialization scripts to run on database creation
 	 * @return an H2 Database instance
 	 */
-	public static Database createDatabase(String url, String... initScripts) {
-		return new H2Database(url, initScripts == null ? emptyList() : Arrays.asList(initScripts),
+	public static Database create(String url, String... initScripts) {
+		return new H2Database(url, initScripts == null ? emptyList() : asList(initScripts),
 						Database.SELECT_FOR_UPDATE_NOWAIT.getOrThrow());
 	}
 
@@ -102,7 +103,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 		private final String jdbcUrl;
 
 		private User user = User.user(SYSADMIN_USERNAME);
-		private Charset charset = Charset.defaultCharset();
+		private Charset charset = defaultCharset();
 
 		private DefaultScriptRunner(String jdbcUrl) {
 			this.jdbcUrl = requireNonNull(jdbcUrl);

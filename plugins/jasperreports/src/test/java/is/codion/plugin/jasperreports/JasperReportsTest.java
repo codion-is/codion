@@ -53,7 +53,7 @@ public class JasperReportsTest {
 
 	private static final LocalEntityConnectionProvider CONNECTION_PROVIDER =
 					LocalEntityConnectionProvider.builder()
-									.database(H2DatabaseFactory.createDatabase("jdbc:h2:mem:JasperReportsWrapperTest",
+									.database(H2DatabaseFactory.create("jdbc:h2:mem:JasperReportsWrapperTest",
 													Database.INIT_SCRIPTS.get()))
 									.domain(new TestDomain())
 									.user(UNIT_TEST_USER)

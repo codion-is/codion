@@ -37,7 +37,7 @@ public class HikariConnectionPoolFactoryTest {
 		long startTime = System.currentTimeMillis();
 		HikariConnectionPoolFactory provider = new HikariConnectionPoolFactory();
 		ConnectionPoolWrapper pool = provider.createConnectionPool(
-						H2DatabaseFactory.createDatabase("jdbc:h2:mem:HikariConnectionPoolFactoryTest",
+						H2DatabaseFactory.create("jdbc:h2:mem:HikariConnectionPoolFactoryTest",
 										Database.INIT_SCRIPTS.get()), UNIT_TEST_USER);
 		pool.setCollectSnapshotStatistics(true);
 		assertTrue(pool.isCollectSnapshotStatistics());

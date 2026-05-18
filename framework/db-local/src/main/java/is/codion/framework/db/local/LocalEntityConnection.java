@@ -38,7 +38,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * EntityConnection implementation based on a local JDBC connection.
  * {@snippet :
  * Domain domain = new Domain();
- * Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:file:/path/to/database");
+ * Database database = new H2DatabaseFactory().create("jdbc:h2:file:/path/to/database");
  * User user = User.parse("scott:tiger");
  *
  * try (EntityConnection connection = localEntityConnection(database, domain, user)) {

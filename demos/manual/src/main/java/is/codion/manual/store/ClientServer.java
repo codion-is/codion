@@ -46,7 +46,7 @@ public final class ClientServer {
 	private static void runServer() throws RemoteException {
 		// tag::runServer[]
 		Database database = H2DatabaseFactory
-						.createDatabase("jdbc:h2:mem:testdb",
+						.create("jdbc:h2:mem:testdb",
 										"src/main/sql/create_schema.sql");
 
 		EntityServerConfiguration configuration =
@@ -80,7 +80,7 @@ public final class ClientServer {
 	private static void runServerWithHttp() throws RemoteException {
 		// tag::runServerWithHttp[]
 		Database database = H2DatabaseFactory
-						.createDatabase("jdbc:h2:mem:testdb",
+						.create("jdbc:h2:mem:testdb",
 										"src/main/sql/create_schema.sql");
 
 		EntityService.PORT.set(HTTP_PORT);
