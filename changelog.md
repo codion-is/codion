@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.74
+
 ## 0.18.73
 ### is.codion
 - FunctionalInterface annotation added where applicable.
