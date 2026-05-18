@@ -324,7 +324,7 @@ final class EntityTableExportModel {
 				}
 			}
 
-			private void write(String line, BufferedWriter output) {
+			private static void write(String line, BufferedWriter output) {
 				try {
 					output.write(line);
 				}

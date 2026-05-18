@@ -253,7 +253,7 @@ The *test* method performs insert, update, select and delete on a randomly gener
 include::{dir-source}/is/codion/manual/quickstart/StoreTest.java[tags=domainModelTest]
 ----
 
-=== Persistance
+=== Persistence
 
 The *EntityConnection* interface provides select, insert, update, and delete methods.
 It has three available implementations, one of which is based on a local JDBC connection, used below.

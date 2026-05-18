@@ -17,7 +17,7 @@ image:https://img.shields.io/badge/chat-Github%20discussions-blue[link="https://
 
 Codion is a full-stack, Java rich client desktop CRUD application framework, based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java Standard Edition] components.
 
-* <<Domain model, Domain modelling>> in plain Java code without annotations.
+* <<Domain model, Domain modeling>> in plain Java code without annotations.
 * Integrated https://github.com/junit-team/junit5[JUnit] testing of the domain model.
 * A minimal but complete {url-manual}/manual.html#_entityconnection[JDBC abstraction layer].
 * <<User interface, Assembling a Swing UI>> based on the domain model is very straight forward.
@@ -149,7 +149,8 @@ Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object 
 
 The Codion framework is based around the `Entity` class which represents a row in a table or query.
 An `Entity` maps `Attributes` to their respective values and keeps track of values that have been modified since they were first set. `Entity` instances are basically data transfer objects and are *not* managed by the framework.
-For persistance see <<Persistance>> below.
+
+For persistence see <<Persistence>> below.
 
 [source,java]
 ----
@@ -505,7 +506,7 @@ To run the above application, use the following Gradle task:
 gradlew demo-manual:runStoreDemo
 ----
 
-== Persistance
+== Persistence
 
 [cols="2,4,2"]
 |===

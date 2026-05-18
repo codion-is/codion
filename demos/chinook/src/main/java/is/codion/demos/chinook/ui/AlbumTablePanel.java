@@ -83,7 +83,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 		else {
 			Dialogs.builder()
 							.component(coverPane)
-							.owner(Ancestor.window().of(this).get())
+							.owner(this)
 							.title(title)
 							.modal(false)
 							.onClosed(dialog -> coverPane.image().clear())
