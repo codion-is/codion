@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.74
 ### is.codion.framework.db.core
 - EntityConnection, Supplier based convenience overloads added.
+### is.codion.framework.db.http
+- EntityService header parameter domainTypeName renamed domainType.
 
 ## 0.18.73
 ### is.codion

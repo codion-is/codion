@@ -74,7 +74,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	private static final String ITERATOR_ERROR_MESSAGE = "EntityConnection.iterator() is not supported on HTTP connections";
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BASIC = "Basic ";
-	private static final String DOMAIN_TYPE_NAME = "domainTypeName";
+	private static final String DOMAIN_TYPE = "domainType";
 	private static final String CLIENT_TYPE = "clientType";
 	private static final String CLIENT_ID = "clientId";
 	private static final String CLIENT_VERSION = "clientVersion";
@@ -370,7 +370,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	private static String[] initializeHeaders(DefaultBuilder builder, User user) {
 		List<String> headerList = new ArrayList<>(asList(
-						DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType must be specified").name(),
+						DOMAIN_TYPE, requireNonNull(builder.domainType, "domainType must be specified").name(),
 						CLIENT_TYPE, requireNonNull(builder.clientType, "clientType must be specified"),
 						CLIENT_ID, requireNonNull(builder.clientId, "clientId must be specified").toString(),
 						AUTHORIZATION, createAuthorizationHeader(user)

@@ -483,7 +483,7 @@ public class EntityServiceTest {
 						.uri(URI.create(baseUrl + path))
 						.POST(bodyPublisher)
 						.headers(new String[] {
-										EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.name(),
+										EntityService.DOMAIN_TYPE, TestDomain.DOMAIN.name(),
 										EntityService.CLIENT_TYPE, "EntityJavalinTest",
 										EntityService.CLIENT_ID, CLIENT_ID_STRING,
 										EntityService.CLIENT_VERSION, Version.version().toString(),

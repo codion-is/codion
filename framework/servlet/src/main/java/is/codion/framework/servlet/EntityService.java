@@ -177,7 +177,7 @@ public final class EntityService implements AuxiliaryServer {
 	 */
 	public static final PropertyValue<Boolean> JSON = booleanValue("codion.server.http.json", true);
 
-	static final String DOMAIN_TYPE_NAME = "domainTypeName";
+	static final String DOMAIN_TYPE = "domainType";
 	static final String CLIENT_TYPE = "clientType";
 	static final String CLIENT_ID = "clientId";
 	static final String CLIENT_VERSION = "clientVersion";
@@ -1026,7 +1026,7 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	private static String domainTypeName(Context context) throws ServerAuthenticationException {
-		return checkHeaderParameter(context.header(DOMAIN_TYPE_NAME), DOMAIN_TYPE_NAME);
+		return checkHeaderParameter(context.header(DOMAIN_TYPE), DOMAIN_TYPE);
 	}
 
 	private static String clientType(Context context) throws ServerAuthenticationException {
