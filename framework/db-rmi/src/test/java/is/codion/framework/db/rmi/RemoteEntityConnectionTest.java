@@ -429,6 +429,12 @@ public class RemoteEntityConnectionTest {
 		assertThrows(IllegalStateException.class, connection()::rollbackTransaction);
 	}
 
+	@Test
+	void supplier() {
+		// sanity check for calling default methods on a proxy, see RemoteEntityConnectionHandler
+		connection().select(Select.where(Employee.ID.equalTo(7)));
+	}
+
 	private static EntityConnection connection() {
 		return connectionProvider.connection();
 	}

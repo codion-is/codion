@@ -113,8 +113,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
 	private static Collection<Entity> allGenres(EntityConnectionProvider connectionProvider) {
 		return connectionProvider.connection().select(all(Genre.TYPE)
-						.orderBy(ascending(Genre.NAME))
-						.build());
+						.orderBy(ascending(Genre.NAME)));
 	}
 
 	private static final class RandomPlaylistParametersModel {

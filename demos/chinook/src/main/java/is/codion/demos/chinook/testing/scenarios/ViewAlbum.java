@@ -18,9 +18,9 @@
  */
 package is.codion.demos.chinook.testing.scenarios;
 
-import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Artist;
+import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -38,10 +38,9 @@ public final class ViewAlbum implements Performer<EntityConnectionProvider> {
 		EntityConnection connection = connectionProvider.connection();
 		Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
 		List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))
-						.limit(1)
-						.build());
+						.limit(1));
 		if (!albums.isEmpty()) {
-			connection.select(Chinook.Track.ALBUM_FK.equalTo(albums.get(0)));
+			connection.select(Track.ALBUM_FK.equalTo(albums.get(0)));
 		}
 	}
 }

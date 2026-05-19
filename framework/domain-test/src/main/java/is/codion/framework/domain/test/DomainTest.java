@@ -216,8 +216,7 @@ public class DomainTest {
 	 */
 	private static void testSelect(EntityType entityType, EntityConnection connection) {
 		connection.select(Select.all(entityType)
-						.limit(SELECT_LIMIT)
-						.build());
+						.limit(SELECT_LIMIT));
 	}
 
 	/**

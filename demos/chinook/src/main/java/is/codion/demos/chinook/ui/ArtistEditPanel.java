@@ -53,14 +53,14 @@ public final class ArtistEditPanel extends EntityEditPanel {
 		add(tagPanel, BorderLayout.CENTER);
 	}
 
-	private void addTagPanel(int i, GridLayoutPanelBuilder tagPanel) {
-		String detailName = ArtistEditModel.TAG_PREFIX + i;
+	private void addTagPanel(int index, GridLayoutPanelBuilder tagPanel) {
+		String detailName = ArtistEditModel.TAG_PREFIX + index;
 		EditorComponents artistTag = components().detail(detailName);
 		CreateComponents create = artistTag.create();
 		create.textField(ArtistTag.TAG)
 						.columns(8);
 		JLabel label = artistTag.component(ArtistTag.TAG).label();
-		label.setText(label.getText() + " " + (i + 1));
+		label.setText(label.getText() + " " + (index + 1));
 		tagPanel.add(create.inputPanel(ArtistTag.TAG)
 						.label(label));
 	}

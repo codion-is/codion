@@ -78,13 +78,11 @@ public final class EntityConnectionDemo {
 
 		List<Entity> metalTracks = connection.select(
 						Select.where(Track.GENRE_FK.equalTo(metal))
-										.orderBy(descending(Track.NAME))
-										.build());
+										.orderBy(descending(Track.NAME)));
 
 		Entity metallica = connection.selectSingle(
 						Select.where(Artist.NAME.equalTo("Metallica"))
-										.exclude(Artist.NUMBER_OF_ALBUMS, Artist.NUMBER_OF_TRACKS)
-										.build());
+										.exclude(Artist.NUMBER_OF_ALBUMS, Artist.NUMBER_OF_TRACKS));
 
 		Long classicalPlaylistId = connection.select(
 						Playlist.ID, Playlist.NAME.equalTo("Classical")).get(0);
@@ -118,8 +116,7 @@ public final class EntityConnectionDemo {
 
 		List<Entity> tracks = connection.select(
 						Select.where(Track.NAME.like("Bad%"))
-										.referenceDepth(0)
-										.build());
+										.referenceDepth(0));
 
 		Entity track = tracks.get(0);
 
@@ -139,8 +136,7 @@ public final class EntityConnectionDemo {
 
 		List<Entity> tracks = connection.select(
 						Select.where(Track.NAME.like("Bad%"))
-										.referenceDepth(Track.ALBUM_FK, 0)
-										.build());
+										.referenceDepth(Track.ALBUM_FK, 0));
 
 		Entity track = tracks.get(0);
 
@@ -279,13 +275,11 @@ public final class EntityConnectionDemo {
 
 		connection.update(
 						Update.where(Artist.NAME.equalTo("Azymuth"))
-										.set(Artist.NAME, "Azymouth")
-										.build());
+										.set(Artist.NAME, "Azymouth"));
 
 		int updateCount = connection.update(
 						Update.where(Customer.EMAIL.isNull())
-										.set(Customer.EMAIL, "<none>")
-										.build());
+										.set(Customer.EMAIL, "<none>"));
 		// end::updateCondition[]
 	}
 

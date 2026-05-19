@@ -323,8 +323,7 @@ public final class FrameworkModelDemo {
 
 			// Custom query with complex joins or database-specific features
 			return connection.select(Select.where(customComplexCondition())
-							.attributes(Customer.ADDRESS, Customer.CITY, Customer.COUNTRY)
-							.build());
+							.attributes(Customer.ADDRESS, Customer.CITY, Customer.COUNTRY));
 		});
 		// end::customQueryDataSource[]
 	}

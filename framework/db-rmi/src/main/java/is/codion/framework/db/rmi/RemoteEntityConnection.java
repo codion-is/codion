@@ -47,6 +47,9 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A remote EntityConnection.
@@ -324,6 +327,19 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	int update(Update update) throws RemoteException;
 
 	/**
+	 * Convenience overload accepting an {@link Update.Builder} or any {@link Supplier} of {@link Update},
+	 * removing the need for a trailing {@link Update.Builder#build()} call.
+	 * @param update the update supplier, typically an {@link Update.Builder}
+	 * @return the number of affected rows
+	 * @throws DatabaseException in case of a database exception
+	 * @throws RemoteException in case of a remote exception
+	 * @see #update(Update)
+	 */
+	default int update(Supplier<Update> update) throws RemoteException {
+		return update(requireNonNull(update).get());
+	}
+
+	/**
 	 * Deletes an entity according to the given primary key.
 	 * Performs a commit unless a transaction is open.
 	 * @param key the primary key of the entity to delete
@@ -397,6 +413,21 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	<T> List<T> select(Column<T> column, Select select) throws RemoteException;
 
 	/**
+	 * Convenience overload accepting a {@link Select.Builder} or any {@link Supplier} of {@link Select},
+	 * removing the need for a trailing {@link Select.Builder#build()} call.
+	 * @param column the column for which to retrieve the values
+	 * @param select the select supplier, typically a {@link Select.Builder}
+	 * @param <T> the column value type
+	 * @return the values of the given column
+	 * @throws DatabaseException in case of a database exception
+	 * @throws RemoteException in case of a remote exception
+	 * @see #select(Column, Select)
+	 */
+	default <T> List<T> select(Column<T> column, Supplier<Select> select) throws RemoteException {
+		return select(column, requireNonNull(select).get());
+	}
+
+	/**
 	 * Selects an entity by key
 	 * @param key the key of the entity to select
 	 * @return an entity having the key {@code key}
@@ -430,6 +461,21 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	Entity selectSingle(Select select) throws RemoteException;
 
 	/**
+	 * Convenience overload accepting a {@link Select.Builder} or any {@link Supplier} of {@link Select},
+	 * removing the need for a trailing {@link Select.Builder#build()} call.
+	 * @param select the select supplier, typically a {@link Select.Builder}
+	 * @return the entity based on the given select
+	 * @throws DatabaseException in case of a database exception
+	 * @throws EntityNotFoundException in case the entity was not found
+	 * @throws MultipleEntitiesFoundException in case multiple entities were found
+	 * @throws RemoteException in case of a remote exception
+	 * @see #selectSingle(Select)
+	 */
+	default Entity selectSingle(Supplier<Select> select) throws RemoteException {
+		return selectSingle(requireNonNull(select).get());
+	}
+
+	/**
 	 * Selects entities based on the given {@code keys}
 	 * @param keys the keys used in the condition
 	 * @return entities based on {@code keys}
@@ -457,6 +503,19 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	List<Entity> select(Select select) throws RemoteException;
 
 	/**
+	 * Convenience overload accepting a {@link Select.Builder} or any {@link Supplier} of {@link Select},
+	 * removing the need for a trailing {@link Select.Builder#build()} call.
+	 * @param select the select supplier, typically a {@link Select.Builder}
+	 * @return entities based on the given select
+	 * @throws DatabaseException in case of a database exception
+	 * @throws RemoteException in case of a remote exception
+	 * @see #select(Select)
+	 */
+	default List<Entity> select(Supplier<Select> select) throws RemoteException {
+		return select(requireNonNull(select).get());
+	}
+
+	/**
 	 * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes
 	 * @param entities the entities for which to retrieve dependencies
 	 * @return the entities that depend on {@code entities}
@@ -474,6 +533,19 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @throws RemoteException in case of a remote exception
 	 */
 	int count(Count count) throws RemoteException;
+
+	/**
+	 * Convenience overload accepting a {@link Count.Builder} or any {@link Supplier} of {@link Count},
+	 * removing the need for a trailing {@link Count.Builder#build()} call.
+	 * @param count the count supplier, typically a {@link Count.Builder}
+	 * @return the number of rows fitting the given count conditions
+	 * @throws DatabaseException in case of a database exception
+	 * @throws RemoteException in case of a remote exception
+	 * @see #count(Count)
+	 */
+	default int count(Supplier<Count> count) throws RemoteException {
+		return count(requireNonNull(count).get());
+	}
 
 	/**
 	 * Takes a ReportType object using a JDBC datasource and returns an initialized ReportResult object
@@ -513,4 +585,17 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @see EntityConnection#iterator(Select)
 	 */
 	RemoteEntityResultIterator iterator(Select select) throws RemoteException;
+
+	/**
+	 * Convenience overload accepting a {@link Select.Builder} or any {@link Supplier} of {@link Select},
+	 * removing the need for a trailing {@link Select.Builder#build()} call.
+	 * @param select the select supplier, typically a {@link Select.Builder}
+	 * @return an iterator for the given query select
+	 * @throws DatabaseException in case of a database exception, or in case of a communication exception with remote connections
+	 * @throws RemoteException in case of a remote exception
+	 * @see #iterator(Select)
+	 */
+	default RemoteEntityResultIterator iterator(Supplier<Select> select) throws RemoteException {
+		return iterator(requireNonNull(select).get());
+	}
 }

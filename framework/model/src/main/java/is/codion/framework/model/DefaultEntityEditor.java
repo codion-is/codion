@@ -1121,8 +1121,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 													.filter(definition -> !definition.selected())
 													.map(ColumnDefinition::attribute)
 													.filter(entity.instance::contains)
-													.collect(toSet()))
-									.build())
+													.collect(toSet())))
 									.immutable();// passed on to detail Select providers
 					return () -> {
 						entity.setDetail(selected);

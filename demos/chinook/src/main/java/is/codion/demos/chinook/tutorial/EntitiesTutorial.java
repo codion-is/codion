@@ -169,26 +169,19 @@ public final class EntitiesTutorial {
 		// for queries requiring further configuration, such as order by, we use
 		// a Select.Builder initialized with a condition specifying
 		// the attribute we're searching by, the operator and value.
-		Select selectArtists =
-						Select.where(Artist.NAME.like("An%"))
-										// and we set the order by clause
-										.orderBy(OrderBy.ascending(Artist.NAME))
-										.build();
-
-		List<Entity> artistsStartingWithAn = connection.select(selectArtists);
+		List<Entity> artistsStartingWithAn =
+						connection.select(Select.where(Artist.NAME.like("An%"))
+						// and we set the order by clause
+						.orderBy(OrderBy.ascending(Artist.NAME)));
 
 		artistsStartingWithAn.forEach(System.out::println);
 
-		// create a select
-		Select selectAlbums =
-						Select.where(Album.ARTIST_FK.in(artistsStartingWithAn))
+		List<Entity> albumsByArtistsStartingWithAn =
+						connection.select(Select.where(Album.ARTIST_FK.in(artistsStartingWithAn))
 										.orderBy(OrderBy.builder()
 														.ascending(Album.ARTIST_ID)
 														.descending(Album.TITLE)
-														.build())
-										.build();
-
-		List<Entity> albumsByArtistsStartingWithAn = connection.select(selectAlbums);
+														.build()));
 
 		albumsByArtistsStartingWithAn.forEach(System.out::println);
 	}

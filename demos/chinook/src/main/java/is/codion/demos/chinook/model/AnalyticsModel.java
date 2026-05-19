@@ -174,9 +174,9 @@ public final class AnalyticsModel {
 		}
 
 		private void refresh() {
-			List<Entity> artistRevenues = connectionProvider.connection().select(Select.all(ArtistRevenue.TYPE)
-							.limit(15)
-							.build());
+			List<Entity> artistRevenues = connectionProvider.connection()
+							.select(Select.all(ArtistRevenue.TYPE)
+											.limit(15));
 
 			dataset.clear();
 

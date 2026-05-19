@@ -567,7 +567,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				int rowCount = connection.count(deserialize(context.req()));
+				int rowCount = connection.count((Count) deserialize(context.req()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(rowCount));

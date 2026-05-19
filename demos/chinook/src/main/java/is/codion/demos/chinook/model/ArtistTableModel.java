@@ -59,8 +59,7 @@ public final class ArtistTableModel extends SwingEntityTableModel {
 			EntityConnection connection = connection();
 			transaction(connection, () -> {
 				connection.update(where(Album.ARTIST_FK.in(artistsToDelete))
-								.set(Album.ARTIST_ID, artistToKeep.primaryKey().value())
-								.build());
+								.set(Album.ARTIST_ID, artistToKeep.primaryKey().value()));
 				connection.delete(primaryKeys(artistsToDelete));
 			});
 		}

@@ -440,8 +440,7 @@ public final class WorldImpl extends DomainModel {
 		@Override
 		public Double execute(EntityConnection connection, String countryCode) {
 			return connection.select(where(City.COUNTRY_CODE.equalTo(countryCode))
-											.attributes(City.POPULATION)
-											.build()).stream()
+											.attributes(City.POPULATION)).stream()
 							.map(city -> city.get(City.POPULATION))
 							.mapToInt(Integer::intValue)
 							.average()

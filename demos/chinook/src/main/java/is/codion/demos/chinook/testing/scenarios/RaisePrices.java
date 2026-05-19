@@ -43,8 +43,7 @@ public final class RaisePrices implements Performer<EntityConnectionProvider> {
 		EntityConnection connection = connectionProvider.connection();
 		Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
 		List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))
-						.limit(1)
-						.build());
+						.limit(1));
 		if (!albums.isEmpty()) {
 			List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(albums.get(0)));
 			Collection<Long> trackIds = Entity.values(Track.ID, tracks);

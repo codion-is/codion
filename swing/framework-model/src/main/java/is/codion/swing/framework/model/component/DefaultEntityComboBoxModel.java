@@ -403,8 +403,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		public Collection<Entity> get() {
 			return connectionProvider.connection().select(where(validate(condition.getOrThrow().get()))
 							.attributes(attributes)
-							.orderBy(orderBy)
-							.build());
+							.orderBy(orderBy));
 		}
 
 		private Condition validate(Condition queryCondition) {

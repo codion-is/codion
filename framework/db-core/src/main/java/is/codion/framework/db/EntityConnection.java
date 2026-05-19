@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.integerValue;
 import static java.util.Objects.requireNonNull;
@@ -402,6 +403,18 @@ public interface EntityConnection extends AutoCloseable {
 	int update(Update update);
 
 	/**
+	 * Convenience overload accepting an {@link Update.Builder} or any {@link Supplier} of {@link Update},
+	 * removing the need for a trailing {@link Update.Builder#build()} call.
+	 * @param update the update supplier, typically an {@link Update.Builder}
+	 * @return the number of affected rows
+	 * @throws DatabaseException in case of a database exception
+	 * @see #update(Update)
+	 */
+	default int update(Supplier<Update> update) {
+		return update(requireNonNull(update).get());
+	}
+
+	/**
 	 * Deletes the entity with the given primary key.
 	 * Performs a commit unless a transaction is open.
 	 * @param key the primary key of the entity to delete
@@ -469,6 +482,20 @@ public interface EntityConnection extends AutoCloseable {
 	<T> List<T> select(Column<T> column, Select select);
 
 	/**
+	 * Convenience overload accepting a {@link Select.Builder} or any {@link Supplier} of {@link Select},
+	 * removing the need for a trailing {@link Select.Builder#build()} call.
+	 * @param column the column for which to retrieve the values
+	 * @param select the select supplier, typically a {@link Select.Builder}
+	 * @param <T> the column value type
+	 * @return the values of the given column
+	 * @throws DatabaseException in case of a database exception
+	 * @see #select(Column, Select)
+	 */
+	default <T> List<T> select(Column<T> column, Supplier<Select> select) {
+		return select(column, requireNonNull(select).get());
+	}
+
+	/**
 	 * Selects an entity by key
 	 * @param key the key of the entity to select
 	 * @return an entity having the key {@code key}
@@ -497,6 +524,20 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws MultipleEntitiesFoundException in case multiple entities were found
 	 */
 	Entity selectSingle(Select select);
+
+	/**
+	 * Convenience overload accepting a {@link Select.Builder} or any {@link Supplier} of {@link Select},
+	 * removing the need for a trailing {@link Select.Builder#build()} call.
+	 * @param select the select supplier, typically a {@link Select.Builder}
+	 * @return the entity based on the given select
+	 * @throws DatabaseException in case of a database exception
+	 * @throws EntityNotFoundException in case the entity was not found
+	 * @throws MultipleEntitiesFoundException in case multiple entities were found
+	 * @see #selectSingle(Select)
+	 */
+	default Entity selectSingle(Supplier<Select> select) {
+		return selectSingle(requireNonNull(select).get());
+	}
 
 	/**
 	 * Selects entities based on the given {@code keys}
@@ -533,21 +574,18 @@ public interface EntityConnection extends AutoCloseable {
 	 *     Select.where(Invoice.CUSTOMER_FK.equalTo(customer))
 	 *         .orderBy(OrderBy.descending(Invoice.DATE))
 	 *         .limit(10)
-	 *         .build()
 	 * );
 	 *
 	 * // Select specific attributes only
 	 * List<Entity> trackInfo = connection.select(
 	 *     Select.where(Track.ALBUM_FK.equalTo(album))
 	 *         .attributes(Track.NAME, Track.MILLISECONDS)
-	 *         .build()
 	 * );
 	 *
 	 * // Control foreign key fetching depth
 	 * List<Entity> tracks = connection.select(
 	 *     Select.where(Track.GENRE_FK.equalTo(genre))
 	 *         .referenceDepth(0)  // Don't fetch foreign keys
-	 *         .build()
 	 * );
 	 *}
 	 * @param select the select to perform
@@ -555,6 +593,18 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws DatabaseException in case of a database exception
 	 */
 	List<Entity> select(Select select);
+
+	/**
+	 * Convenience overload accepting a {@link Select.Builder} or any {@link Supplier} of {@link Select},
+	 * removing the need for a trailing {@link Select.Builder#build()} call.
+	 * @param select the select supplier, typically a {@link Select.Builder}
+	 * @return entities based on the given select
+	 * @throws DatabaseException in case of a database exception
+	 * @see #select(Select)
+	 */
+	default List<Entity> select(Supplier<Select> select) {
+		return select(requireNonNull(select).get());
+	}
 
 	/**
 	 * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes
@@ -573,6 +623,18 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws DatabaseException in case of a database exception
 	 */
 	int count(Count count);
+
+	/**
+	 * Convenience overload accepting a {@link Count.Builder} or any {@link Supplier} of {@link Count},
+	 * removing the need for a trailing {@link Count.Builder#build()} call.
+	 * @param count the count supplier, typically a {@link Count.Builder}
+	 * @return the number of rows fitting the given count conditions
+	 * @throws DatabaseException in case of a database exception
+	 * @see #count(Count)
+	 */
+	default int count(Supplier<Count> count) {
+		return count(requireNonNull(count).get());
+	}
 
 	/**
 	 * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
@@ -637,6 +699,18 @@ public interface EntityConnection extends AutoCloseable {
 	 * @see #select(Select)
 	 */
 	EntityResultIterator iterator(Select select);
+
+	/**
+	 * Convenience overload accepting a {@link Select.Builder} or any {@link Supplier} of {@link Select},
+	 * removing the need for a trailing {@link Select.Builder#build()} call.
+	 * @param select the select supplier, typically a {@link Select.Builder}
+	 * @return an iterator for the given query select
+	 * @throws DatabaseException in case of a database exception, or in case of a communication exception with remote connections
+	 * @see #iterator(Select)
+	 */
+	default EntityResultIterator iterator(Supplier<Select> select) {
+		return iterator(requireNonNull(select).get());
+	}
 
 	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
@@ -883,7 +957,6 @@ public interface EntityConnection extends AutoCloseable {
 	 * // Simple select with condition
 	 * List<Entity> metalTracks = connection.select(
 	 *     Select.where(Track.GENRE_FK.equalTo(metal))
-	 *         .build()
 	 * );
 	 *
 	 * // Complex select with multiple options
@@ -894,14 +967,12 @@ public interface EntityConnection extends AutoCloseable {
 	 *         .limit(50)
 	 *         .referenceDepth(Track.GENRE_FK, 0)  // Don't fetch genre
 	 *         .referenceDepth(Track.MEDIATYPE_FK, 1)  // Fetch media type
-	 *         .build()
 	 * );
 	 *
 	 * // Select for update (row locking)
 	 * Entity invoice = connection.selectSingle(
 	 *     Select.where(Invoice.ID.equalTo(invoiceId))
 	 *         .forUpdate()
-	 *         .build()
 	 * );
 	 *}
 	 */
@@ -989,7 +1060,6 @@ public interface EntityConnection extends AutoCloseable {
 		 * List<Entity> countries = connection.select(
 		 *     Select.all(Country.TYPE)
 		 *         .include(Country.FLAG)  // FLAG is .selected(false)
-		 *         .build()
 		 * );
 		 *
 		 * // Include lazy column with explicit attributes
@@ -997,7 +1067,6 @@ public interface EntityConnection extends AutoCloseable {
 		 *     Select.all(Country.TYPE)
 		 *         .attributes(Country.CODE, Country.NAME)
 		 *         .include(Country.FLAG)
-		 *         .build()
 		 * );
 		 *}
 		 * @return the attributes to include in addition to the base set
@@ -1017,7 +1086,6 @@ public interface EntityConnection extends AutoCloseable {
 		 * List<Entity> employees = connection.select(
 		 *     Select.all(Employee.TYPE)
 		 *         .exclude(Employee.COMPUTED_BONUS)
-		 *         .build()
 		 * );
 		 *
 		 * // Exclude multiple columns
@@ -1025,7 +1093,6 @@ public interface EntityConnection extends AutoCloseable {
 		 *     Select.all(Employee.TYPE)
 		 *         .include(Employee.PHOTO)
 		 *         .exclude(Employee.NOTES, Employee.RESUME)
-		 *         .build()
 		 * );
 		 *}
 		 * @return the attributes to exclude from the query result
@@ -1037,7 +1104,7 @@ public interface EntityConnection extends AutoCloseable {
 		/**
 		 * Builds a {@link Select}.
 		 */
-		interface Builder {
+		interface Builder extends Supplier<Select> {
 
 			/**
 			 * Sets the {@link OrderBy} for this condition
@@ -1122,14 +1189,12 @@ public interface EntityConnection extends AutoCloseable {
 			 * {@snippet :
 			 * // Include lazy FLAG column with all defaults
 			 * Select.all(Country.TYPE)
-			 *     .include(Country.FLAG)
-			 *     .build();
+			 *     .include(Country.FLAG);
 			 *
 			 * // Include lazy column with specific attributes
 			 * Select.all(Country.TYPE)
 			 *     .attributes(Country.CODE, Country.NAME)
-			 *     .include(Country.FLAG)
-			 *     .build();
+			 *     .include(Country.FLAG);
 			 *}
 			 * @param attributes the attributes to include in addition to the base set
 			 * @param <T> the attribute type
@@ -1166,14 +1231,12 @@ public interface EntityConnection extends AutoCloseable {
 			 * {@snippet :
 			 * // Exclude expensive columns
 			 * Select.all(Employee.TYPE)
-			 *     .exclude(Employee.PHOTO, Employee.RESUME)
-			 *     .build();
+			 *     .exclude(Employee.PHOTO, Employee.RESUME);
 			 *
 			 * // Include lazy, exclude others
 			 * Select.all(Employee.TYPE)
 			 *     .include(Employee.PHOTO)
-			 *     .exclude(Employee.NOTES, Employee.RESUME)
-			 *     .build();
+			 *     .exclude(Employee.NOTES, Employee.RESUME);
 			 *}
 			 * @param attributes the attributes to exclude from the query result
 			 * @param <T> the attribute type
@@ -1214,6 +1277,11 @@ public interface EntityConnection extends AutoCloseable {
 			 * @see ColumnDefinition#aggregate()
 			 */
 			Builder having(Condition having);
+
+			@Override
+			default Select get() {
+				return build();
+			}
 
 			/**
 			 * @return a new {@link Select} instance based on this builder
@@ -1268,7 +1336,7 @@ public interface EntityConnection extends AutoCloseable {
 		/**
 		 * Builds an {@link Update}.
 		 */
-		interface Builder {
+		interface Builder extends Supplier<Update> {
 
 			/**
 			 * Adds a column value to update
@@ -1279,6 +1347,11 @@ public interface EntityConnection extends AutoCloseable {
 			 * @throws IllegalStateException in case a value has already been added for the given column
 			 */
 			<T> Builder set(Column<?> column, @Nullable T value);
+
+			@Override
+			default Update get() {
+				return build();
+			}
 
 			/**
 			 * @return a new {@link Update} instance based on this builder
@@ -1325,7 +1398,7 @@ public interface EntityConnection extends AutoCloseable {
 		/**
 		 * Builds a {@link Count} instance.
 		 */
-		interface Builder {
+		interface Builder extends Supplier<Count> {
 
 			/**
 			 * Provides a {@link Builder}.
@@ -1344,6 +1417,11 @@ public interface EntityConnection extends AutoCloseable {
 			 * @return this builder instance
 			 */
 			Builder having(Condition having);
+
+			@Override
+			default Count get() {
+				return build();
+			}
 
 			/**
 			 * @return a new {@link Count} instance based on this builder

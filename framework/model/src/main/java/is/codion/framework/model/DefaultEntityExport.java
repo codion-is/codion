@@ -194,8 +194,7 @@ final class DefaultEntityExport implements EntityExport {
 			Map<Entity.Key, Entity> entityCache = foreignKeyCache.computeIfAbsent(attributes, k -> new HashMap<>());
 
 			return entityCache.computeIfAbsent(referencedKey, k -> connection.selectSingle(where(key(referencedKey))
-							.attributes(selectAttributes(referencedKey.definition(), attributes))
-							.build()));
+							.attributes(selectAttributes(referencedKey.definition(), attributes))));
 		}
 		catch (EntityNotFoundException e) {
 			String message = "Entity not found: " + referencedKey + ", foreignKey: " + foreignKey;
@@ -256,8 +255,7 @@ final class DefaultEntityExport implements EntityExport {
 			Entity.Key key = keys.next();
 			try {
 				return connection.selectSingle(where(key(key))
-								.attributes(selectAttributes(key.definition(), attributes))
-								.build());
+								.attributes(selectAttributes(key.definition(), attributes)));
 			}
 			catch (EntityNotFoundException e) {
 				String message = "Entity not found: " + key;

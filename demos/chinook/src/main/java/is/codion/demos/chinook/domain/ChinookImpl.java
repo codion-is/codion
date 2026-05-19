@@ -29,7 +29,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParamet
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.demos.chinook.migration.MigrationManager;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -643,8 +642,7 @@ public final class ChinookImpl extends DomainModel {
 												Collection<Long> invoiceIds) {
 			Collection<Entity> invoices =
 							connection.select(where(Invoice.ID.in(invoiceIds))
-											.forUpdate()
-											.build());
+											.forUpdate());
 
 			connection.update(invoices.stream()
 							.map(UpdateTotals::updateTotal)
@@ -710,8 +708,7 @@ public final class ChinookImpl extends DomainModel {
 			return connection.select(Track.ID,
 							where(Track.GENRE_FK.in(genres))
 											.orderBy(ascending(Track.RANDOM))
-											.limit(noOfTracks)
-											.build());
+											.limit(noOfTracks));
 		}
 	}
 	// end::randomPlaylist[]
@@ -721,12 +718,10 @@ public final class ChinookImpl extends DomainModel {
 
 		@Override
 		public Collection<Entity> execute(EntityConnection entityConnection,
-																			RaisePriceParameters parameters) {
-			Select select = where(Track.ID.in(parameters.trackIds()))
-							.forUpdate()
-							.build();
-
-			return entityConnection.updateSelect(entityConnection.select(select).stream()
+		                                  RaisePriceParameters parameters) {
+			return entityConnection.updateSelect(entityConnection.select(
+											where(Track.ID.in(parameters.trackIds()))
+															.forUpdate()).stream()
 							.map(track -> raisePrice(track, parameters.priceIncrease()))
 							.toList());
 		}

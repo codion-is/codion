@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.lang.reflect.InvocationHandler.invokeDefault;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -174,13 +175,16 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		}
 
 		@Override
-		public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
+		public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			String methodName = method.getName();
 			if (methodName.equals(CONNECTED)) {
 				return connected();
 			}
 			if (methodName.equals(ENTITIES)) {
 				return entities();
+			}
+			if (method.isDefault()) {
+				return invokeDefault(proxy, method, args);
 			}
 
 			Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);

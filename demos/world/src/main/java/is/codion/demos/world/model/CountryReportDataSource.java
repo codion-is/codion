@@ -56,8 +56,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 						connection.select(where(City.COUNTRY_FK.equalTo(country))
 										.attributes(City.NAME, City.POPULATION)
 										.orderBy(descending(City.POPULATION))
-										.limit(5)
-										.build());
+										.limit(5));
 
 		return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
 	}

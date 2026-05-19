@@ -75,8 +75,7 @@ final class EntityViewer {
 
 	private static Entity select(Entity.Key primaryKey, EntityConnectionProvider connectionProvider) {
 		return connectionProvider.connection().selectSingle(where(key(primaryKey))
-						.referenceDepth(1)
-						.build());
+						.referenceDepth(1));
 	}
 
 	private static final class EntityTreeModel extends DefaultTreeModel {

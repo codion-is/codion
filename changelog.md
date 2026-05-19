@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.74
+### is.codion.framework.db.core
+- EntityConnection, Supplier based convenience overloads added.
 
 ## 0.18.73
 ### is.codion

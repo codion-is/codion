@@ -92,25 +92,17 @@ final class ConditionDemo {
 
 	private static void select(EntityConnection connection, Condition liveMetallicaAlbums) {
 		// tag::select[]
-		Select selectLiveMetallicaAlbums =
-						Select.where(liveMetallicaAlbums)
-										.orderBy(OrderBy.descending(Album.NUMBER_OF_TRACKS))
-										.build();
-
 		List<Entity> albums =
-						connection.select(selectLiveMetallicaAlbums);
+						connection.select(Select.where(liveMetallicaAlbums)
+										.orderBy(OrderBy.descending(Album.NUMBER_OF_TRACKS)));
 		// end::select[]
 	}
 
 	private static void update(EntityConnection connection, Condition liveMetallicaAlbums) {
 		// tag::update[]
-		Update removeLiveMetallicaAlbumCovers =
-						Update.where(liveMetallicaAlbums)
-										.set(Album.COVER, null)
-										.build();
-
 		int updateCount =
-						connection.update(removeLiveMetallicaAlbumCovers);
+						connection.update(Update.where(liveMetallicaAlbums)
+										.set(Album.COVER, null));
 		// end::update[]
 	}
 
