@@ -175,6 +175,7 @@ public final class EditorComponents {
 
 	private Stream<ComponentEntry> entries(@Nullable String captionPrefix) {
 		Stream<ComponentEntry> ownEntries = components.entrySet().stream()
+						.filter(entry -> entry.getValue().present())
 						.map(entry -> new ComponentEntry(this, captionPrefix, entry.getKey(), entry.getValue()));
 		Stream<ComponentEntry> detailEntries = detail.values().stream()
 						.flatMap(d -> d.components.entries(captionPrefix == null ? d.caption : captionPrefix + "." + d.caption));
@@ -185,7 +186,7 @@ public final class EditorComponents {
 	@Nullable JComponent editorComponent(Attribute<?> attribute) {
 		requireNonNull(attribute);
 		EditorComponent<?> editorComponent = components.get(attribute);
-		if (editorComponent != null) {
+		if (editorComponent != null && editorComponent.present()) {
 			return editorComponent.get();
 		}
 		for (DetailComponents detailComponents : detail.values()) {
@@ -436,6 +437,10 @@ public final class EditorComponents {
 			}
 
 			return label;
+		}
+
+		private boolean present() {
+			return component != null;
 		}
 
 		private void setComponent(JComponent comp) {
