@@ -6,6 +6,8 @@ Codion Change Log
 - EntityConnection, Supplier based convenience overloads added.
 ### is.codion.framework.db.http
 - EntityService header parameter domainTypeName renamed domainType.
+### is.codion.framework.model
+- EntityQueryModel.referenceDepth() configuration added.
 ### is.codion.swing.framework.ui
 - EditorComponents.entries() and editorComponent() bug fixed, now exclude entries without a component.
 

@@ -59,7 +59,6 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 		EntityConditionModel conditionModel = queryModel.condition();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().is());
@@ -84,7 +83,6 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 		Collection<String> employeeNames = emptyList();
 		// breaks without EntityConditionModel.get(Column<T> column).
@@ -97,7 +95,6 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		ConditionModel<String> nameCondition = queryModel.condition().get(Employee.NAME);
@@ -153,7 +150,6 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 		queryModel.limit().set(1);
 		Entity employee = queryModel.query().get(0);
@@ -211,7 +207,6 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Store initial order by (may have default)
@@ -264,7 +259,6 @@ public final class DefaultEntityQueryModelTest {
 		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Test default limit from configuration
@@ -301,7 +295,6 @@ public final class DefaultEntityQueryModelTest {
 		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Default should be false
@@ -405,7 +398,6 @@ public final class DefaultEntityQueryModelTest {
 		EntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
 						.build());
 
 		// Set a limit to make results predictable
@@ -446,5 +438,47 @@ public final class DefaultEntityQueryModelTest {
 		// Query resets conditionChanged
 		queryModel.query();
 		assertFalse(queryModel.condition().modified().is());
+	}
+
+	@Test
+	void referenceDepth() {
+		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build());
+		queryModel.condition().get(Employee.JOB).set().notEqualTo("PRESIDENT");
+
+		queryModel.referenceDepth().set(0);
+		List<Entity> entities = queryModel.query();
+		for (Entity entity : entities) {
+			assertNull(entity.get(Employee.DEPARTMENT_FK));
+			assertNull(entity.get(Employee.MGR_FK));
+		}
+		queryModel.referenceDepth(Employee.DEPARTMENT_FK).set(1);
+		entities = queryModel.query();
+		for (Entity entity : entities) {
+			assertNotNull(entity.get(Employee.DEPARTMENT_FK));
+			assertNull(entity.get(Employee.MGR_FK));
+		}
+		queryModel.referenceDepth(Employee.MGR_FK).set(1);
+		entities = queryModel.query();
+		for (Entity entity : entities) {
+			assertNotNull(entity.get(Employee.DEPARTMENT_FK));
+			Entity mgr = entity.get(Employee.MGR_FK);
+			assertNotNull(mgr);
+			if (entity.get(Employee.JOB).equals("MANAGER")) {
+				assertNull(mgr.get(Employee.MGR_FK));
+			}
+		}
+		queryModel.referenceDepth(Employee.MGR_FK).set(2);
+		entities = queryModel.query();
+		for (Entity entity : entities) {
+			assertNotNull(entity.get(Employee.DEPARTMENT_FK));
+			Entity mgr = entity.get(Employee.MGR_FK);
+			assertNotNull(mgr);
+			if (!mgr.get(Employee.JOB).equals("PRESIDENT")) {
+				assertNotNull(mgr.get(Employee.MGR_FK));
+			}
+		}
 	}
 }

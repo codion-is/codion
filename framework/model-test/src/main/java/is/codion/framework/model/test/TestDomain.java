@@ -262,7 +262,7 @@ public final class TestDomain extends DomainModel {
 										Employee.MGR_FK.as()
 														.foreignKey()
 														.caption(Employee.MGR_FK.name())
-														.include(Employee.NAME),
+														.include(Employee.NAME, Employee.JOB, Employee.MGR_FK),
 										Employee.HIREDATE.as()
 														.column()
 														.caption(Employee.HIREDATE.name())

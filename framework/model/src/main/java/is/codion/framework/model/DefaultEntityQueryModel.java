@@ -29,6 +29,8 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +52,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private final Value<OrderBy> orderBy;
 	private final Value<Integer> limit = Value.nullable(LIMIT.get());
+	private final Value<Integer> referenceDepth = Value.nullable();
+	private final Map<ForeignKey, Value<Integer>> foreignKeyReferenceDepth = new HashMap<>();
 	private final Value<Function<EntityQueryModel, List<Entity>>> dataSource = Value.nonNull(new DefaultDataSource());
 
 	DefaultEntityQueryModel(EntityConditionModel conditionModel) {
@@ -106,6 +110,18 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
+	public Value<Integer> referenceDepth() {
+		return referenceDepth;
+	}
+
+	@Override
+	public Value<Integer> referenceDepth(ForeignKey foreignKey) {
+		ForeignKeyDefinition definition = entityDefinition.foreignKeys().definition(foreignKey);
+
+		return foreignKeyReferenceDepth.computeIfAbsent(foreignKey, k -> Value.nonNull(definition.referenceDepth()));
+	}
+
+	@Override
 	public State conditionRequired() {
 		return conditionRequired;
 	}
@@ -122,15 +138,19 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public Select select() {
-		return Select
+		Select.Builder builder = Select
 						.where(conditionModel.where())
 						.having(conditionModel.having())
 						.attributes(attributes.defaults.get())
 						.include(attributes.include.get())
 						.exclude(attributes.exclude.get())
 						.limit(limit.get())
-						.orderBy(orderBy.get())
-						.build();
+						.orderBy(orderBy.get());
+		referenceDepth.optional().ifPresent(builder::referenceDepth);
+		foreignKeyReferenceDepth.forEach((foreignKey, fkReferenceDepth) ->
+						fkReferenceDepth.optional().ifPresent(depth -> builder.referenceDepth(foreignKey, depth)));
+
+		return builder.build();
 	}
 
 	private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {

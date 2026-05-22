@@ -172,9 +172,10 @@ public final class DefaultEntityComboBoxModelTest {
 		assertTrue(employeeComboBoxModel.items().included().contains(null));
 		employeeComboBoxModel.items().refresh();
 		Entity entity = employeeComboBoxModel.items().included().get(1);
-		// Foreign key included attributes specified, should only contain NAME
+		// Foreign key included attributes specified, should only contain NAME, JOB (and MGR_FK)
 		assertTrue(entity.contains(Employee.NAME));
-		assertFalse(entity.contains(Employee.JOB));
+		assertTrue(entity.contains(Employee.JOB));
+		assertFalse(entity.contains(Employee.HIREDATE));
 		assertFalse(entity.contains(Employee.SALARY));
 
 		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()

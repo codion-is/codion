@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.List;
 import java.util.function.Function;
@@ -117,6 +118,21 @@ public interface EntityQueryModel {
 	 * @see EntityDefinition#orderBy()
 	 */
 	Value<OrderBy> orderBy();
+
+	/**
+	 * Controls the reference depth used when querying, set to override the default.
+	 * Setting this value to null reverts back to the default.
+	 * @return the {@link Value} controlling the reference depth
+	 */
+	Value<Integer> referenceDepth();
+
+	/**
+	 * Controls the reference depth for the given foreign key when querying, set to override the default.
+	 * Setting this value to null reverts back to the default.
+	 * @param foreignKey the foreign key
+	 * @return the {@link Value} controlling the reference depth for the given foreign key
+	 */
+	Value<Integer> referenceDepth(ForeignKey foreignKey);
 
 	/**
 	 * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
