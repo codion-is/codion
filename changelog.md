@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.74
+### is.codion.swing.common.ui
+- MenuItemBuilder, unused type parameter removed.
 ### is.codion.framework.db.core
 - EntityConnection, Supplier based convenience overloads added.
 ### is.codion.framework.db.http

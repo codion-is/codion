@@ -66,7 +66,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -127,11 +126,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param <C> the component type
 	 * @param <B> the builder type
 	 * @return a new JMenuItem builder
 	 */
-	public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem() {
+	public static <B extends MenuItemBuilder<B>> MenuItemBuilder<B> menuItem() {
 		return MenuItemBuilder.builder();
 	}
 

@@ -24,26 +24,26 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
-class DefaultMenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends AbstractButtonBuilder<C, Void, B>
-				implements MenuItemBuilder<C, B> {
+final class DefaultMenuItemBuilder<B extends MenuItemBuilder<B>> extends AbstractButtonBuilder<JMenuItem, Void, B>
+				implements MenuItemBuilder<B> {
 
 	DefaultMenuItemBuilder() {
 		horizontalAlignment(SwingConstants.LEADING);
 	}
 
 	@Override
-	protected C createButton() {
-		return (C) new JMenuItem();
+	protected JMenuItem createButton() {
+		return new JMenuItem();
 	}
 
 	@Override
-	protected final ComponentValue<C, Void> createValue(C component) {
-		return new MenuItemComponentValue<>(component);
+	protected ComponentValue<JMenuItem, Void> createValue(JMenuItem component) {
+		return new MenuItemComponentValue(component);
 	}
 
-	private static final class MenuItemComponentValue<C extends JMenuItem> extends AbstractComponentValue<C, Void> {
+	private static final class MenuItemComponentValue extends AbstractComponentValue<JMenuItem, Void> {
 
-		private MenuItemComponentValue(C component) {
+		private MenuItemComponentValue(JMenuItem component) {
 			super(component);
 		}
 

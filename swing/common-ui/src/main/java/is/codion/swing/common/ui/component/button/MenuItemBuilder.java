@@ -23,14 +23,13 @@ import javax.swing.JMenuItem;
 /**
  * Builds a JMenuItem.
  */
-public interface MenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends ButtonBuilder<C, Void, B> {
+public interface MenuItemBuilder<B extends MenuItemBuilder<B>> extends ButtonBuilder<JMenuItem, Void, B> {
 
 	/**
 	 * @param <B> the builder type
-	 * @param <C> the component type
 	 * @return a builder for a JMenuItem
 	 */
-	static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> builder() {
+	static <B extends MenuItemBuilder<B>> MenuItemBuilder<B> builder() {
 		return new DefaultMenuItemBuilder<>();
 	}
 }
