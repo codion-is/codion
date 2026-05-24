@@ -116,7 +116,7 @@ public interface Control extends Action {
 	 * @param <B> the builder type
 	 * @return a new builder
 	 */
-	<C extends Control, B extends ControlBuilder<C, B>> ControlBuilder<C, B> copy();
+	<C extends Control, B extends ControlBuilder<C, B>> B copy();
 
 	/**
 	 * A command interface, allowing Controls based on method references
