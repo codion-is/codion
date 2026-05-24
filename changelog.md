@@ -11,6 +11,7 @@ Codion Change Log
 - EntityService header parameter domainTypeName renamed domainType.
 ### is.codion.framework.model
 - EntityQueryModel.referenceDepth() configuration added.
+- DefaultEntityEditor.setDetail() and replaceDetail() refactored.
 ### is.codion.swing.framework.ui
 - EditorComponents.entries() and editorComponent() bug fixed, now exclude entries without a component.
 

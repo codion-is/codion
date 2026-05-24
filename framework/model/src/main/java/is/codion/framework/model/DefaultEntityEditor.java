@@ -559,24 +559,33 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			tasks().refresh().perform().handle();
 		}
 
-		private void setDetail(@Nullable Entity entity) {
-			setDetail(entity, connectionProvider.connection());
-		}
-
-		private void replaceDetail(@Nullable Entity entity) {
-			replaceDetail(entity, connectionProvider.connection());
-		}
-
-		private void setDetail(@Nullable Entity entity, EntityConnection connection) {
-			for (DetailEditor detail : detail.editors.values()) {
-				detail.editor().entity().set(entity == null ? null : detail.link.load(entity, connection));
+		private void setDetail(@Nullable Entity master) {
+			if (master == null) {
+				detail.editors.values().forEach(editor -> editor.editor().entity().set(null));
+			}
+			else {
+				Map<EntityEditor<?>, Entity> loaded = loadDetail(master, connectionProvider.connection());
+				loaded.forEach((editor, entity) -> editor.entity().set(entity));
 			}
 		}
 
-		private void replaceDetail(@Nullable Entity entity, EntityConnection connection) {
-			for (DetailEditor detail : detail.editors.values()) {
-				detail.editor().entity().replace(entity == null ? null : detail.link.load(entity, connection));
+		private void replaceDetail(@Nullable Entity master) {
+			if (master == null) {
+				detail.editors.values().forEach(editor -> editor.editor().entity().replace(null));
 			}
+			else {
+				Map<EntityEditor<?>, Entity> loaded = loadDetail(master, connectionProvider.connection());
+				loaded.forEach((editor, entity) -> editor.entity().replace(entity));
+			}
+		}
+
+		private Map<EntityEditor<?>, Entity> loadDetail(Entity entity, EntityConnection connection) {
+			Map<EntityEditor<?>, @Nullable Entity> loaded = new HashMap<>(detail.editors.size());
+			for (DetailEditor detail : detail.editors.values()) {
+				loaded.put(detail.editor, detail.link.load(entity, connection));
+			}
+
+			return loaded;
 		}
 
 		private void setOrDefaults(@Nullable Entity entity) {
