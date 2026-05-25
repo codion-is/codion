@@ -28,7 +28,7 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultProxyBuilderTest {
+public final class ProxyBuilderTest {
 
 	@Test
 	void test() {
@@ -108,5 +108,88 @@ public final class DefaultProxyBuilderTest {
 		listProxy.size();
 		listProxy.equals(list);
 		assertThrows(IndexOutOfBoundsException.class, () -> listProxy.get(10));
+	}
+
+	interface Counter {
+		int count();
+
+		default int doubled() {
+			return count() * 2;
+		}
+
+		default int tripled() {
+			return count() * 3;
+		}
+	}
+
+	@Test
+	void defaultMethod_noDelegate_runsDefaultBody() {
+		Counter proxy = ProxyBuilder.of(Counter.class)
+						.method("count", parameters -> 5)
+						.build();
+		assertEquals(10, proxy.doubled());
+		assertEquals(15, proxy.tripled());
+	}
+
+	@Test
+	void defaultMethod_noDelegate_defaultCallsBackThroughProxy() {
+		// doubled() calls count() — that call must re-enter the proxy
+		// and hit the proxyMethod, NOT escape to some other implementation
+		int[] callCount = {0};
+		Counter proxy = ProxyBuilder.of(Counter.class)
+						.method("count", parameters -> {
+							callCount[0]++;
+							return 7;
+						})
+						.build();
+		assertEquals(14, proxy.doubled());
+		assertEquals(1, callCount[0]);
+	}
+
+	@Test
+	void defaultMethod_noDelegate_noProxyForBaseMethod_throws() {
+		// doubled() calls count(), which has no proxy method and no delegate;
+		// the abstract method bottoms out in UnsupportedOperationException.
+		Counter proxy = ProxyBuilder.of(Counter.class).build();
+		assertThrows(UnsupportedOperationException.class, proxy::doubled);
+	}
+
+	@Test
+	void defaultMethod_withDelegate_inheritedDefault() {
+		Counter delegate = () -> 4;
+		Counter proxy = ProxyBuilder.of(Counter.class)
+						.delegate(delegate)
+						.build();
+		assertEquals(8, proxy.doubled());
+	}
+
+	@Test
+	void defaultMethod_withDelegate_delegateOverridesDefault() {
+		Counter delegate = new Counter() {
+			@Override
+			public int count() {
+				return 10;
+			}
+
+			@Override
+			public int doubled() {
+				return 999;
+			}
+		};
+		Counter proxy = ProxyBuilder.of(Counter.class)
+						.delegate(delegate)
+						.build();
+		assertEquals(999, proxy.doubled());
+	}
+
+	@Test
+	void defaultMethod_proxyMethodOverridesDefault() {
+		Counter delegate = () -> 3;
+		Counter proxy = ProxyBuilder.of(Counter.class)
+						.delegate(delegate)
+						.method("doubled", parameters -> 100)
+						.build();
+		assertEquals(100, proxy.doubled());
+		assertEquals(9, proxy.tripled());// not overridden — still uses default × delegate
 	}
 }

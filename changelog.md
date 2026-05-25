@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.74
+### is.codion.common.utilities
+- ProxyBuilder default method handling added.
 ### is.codion.swing.common.ui
 - MenuItemBuilder, unused type parameter removed.
 - Control.copy() return type fixed.

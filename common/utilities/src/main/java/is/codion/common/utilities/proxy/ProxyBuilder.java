@@ -34,6 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.reflect.InvocationHandler.invokeDefault;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -306,6 +307,9 @@ public final class ProxyBuilder<T> {
 				catch (InvocationTargetException e) {
 					throw e.getTargetException();
 				}
+			}
+			if (method.isDefault()) {
+				return invokeDefault(proxy, method, args);
 			}
 
 			throw new UnsupportedOperationException(method.toString());
