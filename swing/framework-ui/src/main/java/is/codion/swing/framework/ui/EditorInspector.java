@@ -33,6 +33,7 @@ import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityEditor;
+import is.codion.swing.framework.ui.EditorComponents.DetailComponents;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -160,7 +161,7 @@ final class EditorInspector extends JPanel {
 			components.editor().entity().replaced().addListener(attributeModel.items()::refresh);
 			components.editor().entity().addListener(attributeModel.items()::refresh);
 			TabbedPaneBuilder detailPanelsBuilder = tabbedPane();
-			for (EditorComponents.DetailComponents detail : components.detail().values()) {
+			for (DetailComponents detail : components.detail().components()) {
 				String title = detail.components().editor().entityDefinition().caption() + " " + detail.caption();
 				detailPanelsBuilder.tab(title, new EditorInspector(detail.components()));
 			}

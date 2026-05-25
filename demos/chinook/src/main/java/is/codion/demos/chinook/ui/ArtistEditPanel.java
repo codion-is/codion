@@ -55,7 +55,7 @@ public final class ArtistEditPanel extends EntityEditPanel {
 
 	private void addTagPanel(int index, GridLayoutPanelBuilder tagPanel) {
 		String detailName = ArtistEditModel.TAG_PREFIX + index;
-		EditorComponents artistTag = components().detail(detailName);
+		EditorComponents artistTag = components().detail().get(detailName);
 		CreateComponents create = artistTag.create();
 		create.textField(ArtistTag.TAG)
 						.columns(8);

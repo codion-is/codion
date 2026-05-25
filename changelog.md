@@ -14,8 +14,10 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityQueryModel.referenceDepth() configuration added.
 - DefaultEntityEditor.setDetail() and replaceDetail() refactored.
+- EntityEditor.DetailEditors.remove() added.
 ### is.codion.swing.framework.ui
 - EditorComponents.entries() and editorComponent() bug fixed, now exclude entries without a component.
+- EditorComponents.detail() added, removal implemented.
 
 ## 0.18.73
 ### is.codion

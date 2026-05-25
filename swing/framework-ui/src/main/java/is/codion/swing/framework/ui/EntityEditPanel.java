@@ -33,7 +33,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -281,7 +280,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * <p>If no component is available, f.ex. when the panel is not visible or none of the available components is focusable, this method does nothing.
 	 * <p>Input components can be excluded from this selection using {@link Config#excludeFromSelection(Collection)}.
 	 * @see InputFocus#request(Attribute)
-	 * @see EditorComponents#detail(ForeignKey)
+	 * @see EditorComponents#detail()
 	 */
 	public final void selectInputComponent() {
 		Collection<ComponentEntry> entries = selectComponentEntries();
@@ -1482,7 +1481,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * <p>Manages the components that should receive the input focus.
 	 * <p>Both master and detail editor components can be referenced by attribute,
 	 * allowing focus to be directed to any component in the edit panel.
-	 * @see EditorComponents#detail(ForeignKey)
+	 * @see EditorComponents#detail()
 	 */
 	public final class InputFocus {
 

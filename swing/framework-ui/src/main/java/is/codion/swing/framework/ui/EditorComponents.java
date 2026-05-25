@@ -70,10 +70,12 @@ import javax.swing.SpinnerListModel;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.temporal.Temporal;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -81,6 +83,7 @@ import java.util.stream.Stream;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Manages the components for a {@link SwingEntityEditor}
@@ -89,7 +92,7 @@ public final class EditorComponents {
 
 	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
-	private final Map<SwingEntityEditor, DetailComponents> detail = new LinkedHashMap<>();
+	private final DetailEditorComponents detail = new DetailEditorComponents();
 
 	private final ComponentSettings settings = new ComponentSettings();
 	private final CreateComponents create;
@@ -136,29 +139,11 @@ public final class EditorComponents {
 	}
 
 	/**
-	 * @param foreignKey the foreign key
-	 * @return a detail {@link EditorComponents} instance based on the given foreign key
-	 * @throws IllegalStateException if no detail editor is registered for the foreign key, or if
-	 * multiple detail editors are registered for it (use {@link #detail(String)} with an
-	 * explicit name in that case)
+	 * @return the {@link DetailEditorComponents} instance
 	 * @see EntityEditor#detail()
 	 */
-	public EditorComponents detail(ForeignKey foreignKey) {
-		return detail.computeIfAbsent(editor.detail().get(requireNonNull(foreignKey)),
-						detailEditor -> new DetailComponents(new EditorComponents(detailEditor),
-										editor.detail().caption(foreignKey))).components;
-	}
-
-	/**
-	 * @param name the detail editor name
-	 * @return a detail {@link EditorComponents} instance based on the given name
-	 * @throws IllegalArgumentException in case no detail editor has been set for the given name
-	 * @see EntityEditor#detail()
-	 */
-	public EditorComponents detail(String name) {
-		return detail.computeIfAbsent(editor.detail().get(requireNonNull(name)),
-						detailEditor -> new DetailComponents(new EditorComponents(detailEditor),
-										editor.detail().caption(name))).components;
+	public DetailEditorComponents detail() {
+		return detail;
 	}
 
 	/**
@@ -177,7 +162,7 @@ public final class EditorComponents {
 		Stream<ComponentEntry> ownEntries = components.entrySet().stream()
 						.filter(entry -> entry.getValue().present())
 						.map(entry -> new ComponentEntry(this, captionPrefix, entry.getKey(), entry.getValue()));
-		Stream<ComponentEntry> detailEntries = detail.values().stream()
+		Stream<ComponentEntry> detailEntries = detail.components().stream()
 						.flatMap(d -> d.components.entries(captionPrefix == null ? d.caption : captionPrefix + "." + d.caption));
 
 		return Stream.concat(ownEntries, detailEntries);
@@ -189,7 +174,7 @@ public final class EditorComponents {
 		if (editorComponent != null && editorComponent.present()) {
 			return editorComponent.get();
 		}
-		for (DetailComponents detailComponents : detail.values()) {
+		for (DetailComponents detailComponents : detail.components()) {
 			JComponent component = detailComponents.components.editorComponent(attribute);
 			if (component != null) {
 				return component;
@@ -207,8 +192,120 @@ public final class EditorComponents {
 		return new EditorComponents(editor);
 	}
 
-	Map<SwingEntityEditor, DetailComponents> detail() {
-		return detail;
+	/**
+	 * Manages detail {@link EditorComponents}.
+	 * @see EntityEditor#detail()
+	 */
+	public final class DetailEditorComponents {
+
+		private final Map<LinkKey, DetailComponents> components = new LinkedHashMap<>();
+
+		private DetailEditorComponents() {}
+
+		/**
+		 * @param foreignKey the foreign key
+		 * @return a detail {@link EditorComponents} instance based on the given foreign key
+		 * @throws IllegalStateException if no detail editor is registered for the foreign key, or if
+		 * multiple detail editors are registered for it (use {@link #get(String)} with an
+		 * explicit name in that case)
+		 * @see EntityEditor#detail()
+		 */
+		public EditorComponents get(ForeignKey foreignKey) {
+			SwingEntityEditor detailEditor = editor.detail().get(requireNonNull(foreignKey));
+
+			return components.computeIfAbsent(new LinkKey(foreignKey, editor.detail().name(foreignKey)),
+							k -> new DetailComponents(new EditorComponents(detailEditor), editor.detail().caption(foreignKey))).components;
+		}
+
+		/**
+		 * @param name the detail editor name
+		 * @return a detail {@link EditorComponents} instance based on the given name
+		 * @throws IllegalStateException in case no detail editor has been set for the given name
+		 * @see EntityEditor#detail()
+		 */
+		public EditorComponents get(String name) {
+			SwingEntityEditor detailEditor = editor.detail().get(requireNonNull(name));
+
+			return components.computeIfAbsent(new LinkKey(editor.detail().foreignKey(name), name),
+							k -> new DetailComponents(new EditorComponents(detailEditor), editor.detail().caption(name))).components;
+		}
+
+		/**
+		 * Removes the detail components associated with the given foreign key from this {@link EditorComponents} instance.
+		 * @param foreignKey the foreign key
+		 * @throws IllegalStateException if no detail components are associated with the given foreign key,
+		 * or if multiple detail components are associated with it (use {@link #remove(String)} with an
+		 * explicit name in that case)
+		 * @see EntityEditor.DetailEditors#remove(ForeignKey)
+		 */
+		public void remove(ForeignKey foreignKey) {
+			requireNonNull(foreignKey);
+			List<LinkKey> matches = components.keySet().stream()
+							.filter(key -> foreignKey.equals(key.foreignKey))
+							.collect(toList());
+			if (matches.isEmpty()) {
+				throw new IllegalStateException("No detail components associated with foreign key " + foreignKey);
+			}
+			if (matches.size() > 1) {
+				throw new IllegalStateException("Multiple detail components are associated with foreign key " +
+								foreignKey + "; use remove(String) with one of: " + matches.stream()
+								.map(key -> key.name)
+								.collect(toList()));
+			}
+			components.remove(matches.get(0));
+		}
+
+		/**
+		 * Removes the detail components associated with the given name from this {@link EditorComponents} instance.
+		 * @param name the name
+		 * @throws IllegalStateException in case no detail components are associated with the given name
+		 * @see EntityEditor.DetailEditors#remove(String)
+		 */
+		public void remove(String name) {
+			requireNonNull(name);
+			components.remove(components.keySet().stream()
+							.filter(key -> name.equals(key.name))
+							.findFirst()
+							.orElseThrow(() -> new IllegalStateException("No detail components associated with name " + name)));
+		}
+
+		Collection<DetailComponents> components() {
+			return components.values();
+		}
+	}
+
+	private static final class LinkKey {
+
+		private final @Nullable ForeignKey foreignKey;
+		private final String name;
+
+		private LinkKey(@Nullable ForeignKey foreignKey, String name) {
+			this.foreignKey = foreignKey;
+			this.name = name;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (!(object instanceof LinkKey)) {
+				return false;
+			}
+			LinkKey key = (LinkKey) object;
+
+			return Objects.equals(foreignKey, key.foreignKey) && name.equals(key.name);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(foreignKey, name);
+		}
+
+		@Override
+		public String toString() {
+			return foreignKey == null ? "name=" + name : "foreignKey=" + foreignKey + ", name=" + name;
+		}
 	}
 
 	/**

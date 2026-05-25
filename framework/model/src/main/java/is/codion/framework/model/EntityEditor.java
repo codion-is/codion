@@ -1030,6 +1030,20 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		R get(String name);
 
 		/**
+		 * Removes the detail editor associated with the given foreign key from this {@link EntityEditor} instance
+		 * @param foreignKey the foreign key
+		 * @throws IllegalStateException in case no detail editor is associated with the given foreign key
+		 */
+		void remove(ForeignKey foreignKey);
+
+		/**
+		 * Removes the detail editor associated with the given name from this {@link EntityEditor} instance
+		 * @param name the name
+		 * @throws IllegalStateException in case no detail editor is associated with the given name
+		 */
+		void remove(String name);
+
+		/**
 		 * @param name the link name
 		 * @return the caption of the link registered with the given name
 		 * @throws IllegalStateException if no detail editor is registered under the given name,
@@ -1044,5 +1058,21 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * if multiple detail editors are registered for it (use {@link #caption(String)})
 		 */
 		String caption(ForeignKey foreignKey);
+
+		/**
+		 * @param foreignKey the foreign key
+		 * @return the name of the link registered for the given foreign key
+		 * @throws IllegalStateException if no detail editor is registered for the foreign key, or
+		 * if multiple detail editors are registered for it
+		 */
+		String name(ForeignKey foreignKey);
+
+		/**
+		 * @param name the link name
+		 * @return the foreign key of the link registered with the given name, or {@code null}
+		 * if the link is not foreign-key based
+		 * @throws IllegalStateException if no detail editor is registered under the given name
+		 */
+		@Nullable ForeignKey foreignKey(String name);
 	}
 }

@@ -78,7 +78,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 
 		// Fetch an EditorComponents instance based on the preferences
 		// detail editor, for managing the preferences related components
-		EditorComponents preferences = components().detail(Preferences.CUSTOMER_FK);
+		EditorComponents preferences = components().detail().get(Preferences.CUSTOMER_FK);
 		preferences.component(Preferences.NEWSLETTER).set(new TriStateCheckBoxBuilder())
 						.altStateCycleOrder(true);
 		preferences.create().comboBox(Preferences.PREFERRED_GENRE_FK)

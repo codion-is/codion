@@ -1167,7 +1167,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			if (editors.containsKey(key)) {
 				throw new IllegalArgumentException("Detail editor already exists for " + key);
 			}
-			editors.put(key, new DetailEditor(link));
+			editors.put(key, new DetailEditor(link, key));
 		}
 
 		@Override
@@ -1181,6 +1181,16 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
+		public void remove(ForeignKey foreignKey) {
+			editors.remove(findByForeignKey(foreignKey).key());
+		}
+
+		@Override
+		public void remove(String name) {
+			editors.remove(findByName(name).key());
+		}
+
+		@Override
 		public String caption(String name) {
 			return findByName(name).link.caption();
 		}
@@ -1190,8 +1200,19 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			return findByForeignKey(foreignKey).link.caption();
 		}
 
-		String name(ForeignKey foreignKey) {
+		@Override
+		public String name(ForeignKey foreignKey) {
 			return findByForeignKey(foreignKey).link.name();
+		}
+
+		@Override
+		public @Nullable ForeignKey foreignKey(String name) {
+			DefaultEditorLink<R> link = findByName(name).link;
+			if (link instanceof ForeignKeyEditorLink) {
+				return ((DefaultForeignKeyLink<R>) link).foreignKey();
+			}
+
+			return null;
 		}
 
 		private DetailEditor findByForeignKey(ForeignKey foreignKey) {
@@ -1529,10 +1550,12 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		private final R editor;
 		private final DefaultEditorLink<R> link;
 		private final Updatable updatable = new Updatable();
+		private final LinkKey key;
 
-		private DetailEditor(DefaultEditorLink<R> link) {
+		private DetailEditor(DefaultEditorLink<R> link, LinkKey key) {
 			this.editor = link.editor();
 			this.link = link;
+			this.key = key;
 			if (link instanceof ForeignKeyEditorLink) {
 				ForeignKey foreignKey = ((DefaultForeignKeyLink<R>) link).foreignKey();
 				editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey));
@@ -1547,6 +1570,10 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 		private R editor() {
 			return editor;
+		}
+
+		private LinkKey key() {
+			return key;
 		}
 
 		private void refreshStates() {
