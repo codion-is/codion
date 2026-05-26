@@ -19,6 +19,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EditorComponents.entries() and editorComponent() bug fixed, now exclude entries without a component.
 - EditorComponents.detail() added, removal implemented.
+- EntityEditPanel.InsertCommand.Builder.clear() and requestFocus() added.
+- EntityEditPanel.UpdateCommand.Builder.requestFocus() added.
 
 ## 0.18.73
 ### is.codion

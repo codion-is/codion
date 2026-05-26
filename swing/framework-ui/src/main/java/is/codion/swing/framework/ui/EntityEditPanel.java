@@ -1363,6 +1363,20 @@ public abstract class EntityEditPanel extends JPanel {
 			Builder confirm(boolean confirm);
 
 			/**
+			 * @param requestFocus specifies whether focus is requested after the insert, default true
+			 * @return this builder instance
+			 * @see EntityEditPanel.Config#requestFocusAfterInsert(boolean)
+			 */
+			Builder requestFocus(boolean requestFocus);
+
+			/**
+			 * @param clear specifies whether the panel is cleared after insert, default true
+			 * @return this builder instance
+			 * @see EntityEditPanel.Config#clearAfterInsert(boolean)
+			 */
+			Builder clear(boolean clear);
+
+			/**
 			 * @param onInsert called after a successful insert
 			 * @return this builder instance
 			 */
@@ -1408,6 +1422,12 @@ public abstract class EntityEditPanel extends JPanel {
 			 * @return this builder instance
 			 */
 			Builder confirm(boolean confirm);
+
+			/**
+			 * @param requestFocus specifies whether focus is requested after the update, default true
+			 * @return this builder instance
+			 */
+			Builder requestFocus(boolean requestFocus);
 
 			/**
 			 * @param onUpdate called after a successful update
@@ -1673,11 +1693,15 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private final EntityEditPanel editPanel;
 		private final boolean confirm;
+		private final boolean requestFocus;
+		private final boolean clear;
 		private final Collection<Consumer<Entity>> onInsert;
 
 		private DefaultInsertCommand(DefaultBuilder builder) {
 			this.editPanel = builder.editPanel;
 			this.confirm = builder.confirm;
+			this.requestFocus = builder.requestFocus;
+			this.clear = builder.clear;
 			this.onInsert = builder.onInsert;
 		}
 
@@ -1698,10 +1722,10 @@ public abstract class EntityEditPanel extends JPanel {
 		private void handleResult(Result<Entity> result) {
 			Entity inserted = result.handle();
 			onInsert.forEach(consumer -> consumer.accept(inserted));
-			if (editPanel.configuration.clearAfterInsert) {
+			if (clear) {
 				editPanel.editor().values().defaults();
 			}
-			if (editPanel.configuration.requestFocusAfterInsert) {
+			if (requestFocus) {
 				editPanel.inputFocus.afterInsert().request();
 			}
 		}
@@ -1712,15 +1736,31 @@ public abstract class EntityEditPanel extends JPanel {
 			private final Collection<Consumer<Entity>> onInsert = new ArrayList<>(1);
 
 			private boolean confirm;
+			private boolean requestFocus;
+			private boolean clear;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
 				this.editPanel = editPanel;
 				this.confirm = editPanel.configuration.confirmInsert;
+				this.requestFocus = editPanel.configuration.requestFocusAfterInsert;
+				this.clear = editPanel.configuration.clearAfterInsert;
 			}
 
 			@Override
 			public Builder confirm(boolean confirm) {
 				this.confirm = confirm;
+				return this;
+			}
+
+			@Override
+			public Builder requestFocus(boolean requestFocus) {
+				this.requestFocus = requestFocus;
+				return this;
+			}
+
+			@Override
+			public Builder clear(boolean clear) {
+				this.clear = clear;
 				return this;
 			}
 
@@ -1753,11 +1793,13 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private final EntityEditPanel editPanel;
 		private final boolean confirm;
+		private final boolean requestFocus;
 		private final Collection<Consumer<Entity>> onUpdate;
 
 		private DefaultUpdateCommand(DefaultBuilder builder) {
 			this.editPanel = builder.editPanel;
 			this.confirm = builder.confirm;
+			this.requestFocus = builder.requestFocus;
 			this.onUpdate = builder.onUpdate;
 		}
 
@@ -1778,7 +1820,9 @@ public abstract class EntityEditPanel extends JPanel {
 		private void handleResult(Result<Entity> result) {
 			Entity updated = result.handle();
 			onUpdate.forEach(consumer -> consumer.accept(updated));
-			InputFocus.requestFocus(lastFocusedComponent);
+			if (requestFocus) {
+				InputFocus.requestFocus(lastFocusedComponent);
+			}
 		}
 
 		private static final class DefaultBuilder implements Builder {
@@ -1786,6 +1830,7 @@ public abstract class EntityEditPanel extends JPanel {
 			private final EntityEditPanel editPanel;
 			private final Collection<Consumer<Entity>> onUpdate = new ArrayList<>(1);
 			private boolean confirm;
+			private boolean requestFocus;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
 				this.editPanel = editPanel;
@@ -1795,6 +1840,12 @@ public abstract class EntityEditPanel extends JPanel {
 			@Override
 			public Builder confirm(boolean confirm) {
 				this.confirm = confirm;
+				return this;
+			}
+
+			@Override
+			public Builder requestFocus(boolean requestFocus) {
+				this.requestFocus = requestFocus;
 				return this;
 			}
 
