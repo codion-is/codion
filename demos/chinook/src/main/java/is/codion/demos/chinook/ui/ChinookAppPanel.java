@@ -265,7 +265,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		EntityTablePanel.Config.COLUMN_SELECTION.set(SelectionMode.MENU);
 		EntityTablePanel.Config.AUTO_RESIZE_MODE_SELECTION.set(SelectionMode.MENU);
 		EntityTablePanel.Config.INCLUDE_FILTERS.set(true);
-		EntityTablePanel.Config.INCLUDE_QUERY_INSPECTOR.set(true);
+		EntityTablePanel.Config.INCLUDE_INSPECTOR.set(true);
 		EntityTablePanel.Config.INCLUDE_EXPORT.set(true);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		FilterTable.ROWS_FILL_VIEWPORT.set(true);

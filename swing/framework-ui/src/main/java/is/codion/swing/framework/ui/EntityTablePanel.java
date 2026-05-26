@@ -1628,7 +1628,7 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includeEntityViewer) {
 			controlMap.control(VIEW_ENTITY).set(command(this::viewEntity));
 		}
-		if (configuration.includeQueryInspector) {
+		if (configuration.includeInspector) {
 			controlMap.control(INSPECT_QUERY).set(command(this::inspectQuery));
 		}
 		if (configuration.includePopupMenu) {
@@ -1990,8 +1990,8 @@ public class EntityTablePanel extends JPanel {
 		 * <li>Default value: false
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> INCLUDE_QUERY_INSPECTOR =
-						booleanValue(EntityTablePanel.class.getName() + ".includeQueryInspector", false);
+		public static final PropertyValue<Boolean> INCLUDE_INSPECTOR =
+						booleanValue(EntityTablePanel.class.getName() + ".includeInspector", false);
 
 		/**
 		 * Specifies whether to include a 'Clear' control in the popup menu.
@@ -2195,7 +2195,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.getOrThrow();
 		private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.getOrThrow();
 		private boolean includeEntityViewer = INCLUDE_ENTITY_VIEWER.getOrThrow();
-		private boolean includeQueryInspector = INCLUDE_QUERY_INSPECTOR.getOrThrow();
+		private boolean includeInspector = INCLUDE_INSPECTOR.getOrThrow();
 		private boolean includePopupMenu = INCLUDE_POPUP_MENU.getOrThrow();
 		private boolean includeSingleSelectionControl = false;
 		private boolean includeAddControl = true;
@@ -2256,7 +2256,7 @@ public class EntityTablePanel extends JPanel {
 			this.includeClearControl = config.includeClearControl;
 			this.includeLimitMenu = config.includeLimitMenu;
 			this.includeEntityViewer = config.includeEntityViewer;
-			this.includeQueryInspector = config.includeQueryInspector;
+			this.includeInspector = config.includeInspector;
 			this.includePopupMenu = config.includePopupMenu;
 			this.includeSingleSelectionControl = config.includeSingleSelectionControl;
 			this.includeAddControl = config.includeAddControl;
@@ -2429,11 +2429,11 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeQueryInspector true if a Query Inspector should be available in this table, triggered with CTRL-ALT-Q.
+		 * @param includeInspector true if a Query Inspector should be available in this table, triggered with CTRL-ALT-Q.
 		 * @return this Config instance
 		 */
-		public Config includeQueryInspector(boolean includeQueryInspector) {
-			this.includeQueryInspector = includeQueryInspector;
+		public Config includeInspector(boolean includeInspector) {
+			this.includeInspector = includeInspector;
 			return this;
 		}
 
