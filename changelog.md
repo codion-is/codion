@@ -21,6 +21,7 @@ Codion Change Log
 - EditorComponents.detail() added, removal implemented.
 - EntityEditPanel.InsertCommand.Builder.clear() and requestFocus() added.
 - EntityEditPanel.UpdateCommand.Builder.requestFocus() added.
+- EntityEditPanel, parentheses no longer added to detail editor caption.
 
 ## 0.18.73
 ### is.codion

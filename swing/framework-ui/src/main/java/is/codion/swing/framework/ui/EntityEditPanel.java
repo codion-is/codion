@@ -835,7 +835,7 @@ public abstract class EntityEditPanel extends JPanel {
 			// disambiguate by the link's caption (which defaults to the link name). Master entries
 			// fall back to the detail entity caption (different types sharing the same attribute caption).
 			return entry.detailCaption() != null
-							? caption + " (" + entry.detailCaption() + ")"
+							? caption + " " + entry.detailCaption()
 							: caption + " (" + entities.definition(entry.attribute().entityType()).caption() + ")";
 		}
 
