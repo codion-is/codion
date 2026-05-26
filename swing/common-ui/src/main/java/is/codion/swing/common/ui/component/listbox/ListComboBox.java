@@ -52,7 +52,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 		super(comboBoxModel);
 		this.itemValue = itemValue;
 		this.linkedValue = linkedValue;
-		this.linkedValue.link(new ListBoxItemValue<>(itemValue, comboBoxModel));
+		new ListBoxItemValue<>(itemValue, comboBoxModel).link(linkedValue);
 		KeyEvents.builder()
 						.keyCode(VK_INSERT)
 						.action(command(this::addItem))

@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - MenuItemBuilder, unused type parameter removed.
 - Control.copy() return type fixed.
+- ListComboBox bug fixed, linked value now treated as original value, no longer modified during instantiation.
 ### is.codion.framework.db.core
 - EntityConnection, Supplier based convenience overloads added.
 ### is.codion.framework.db.http
