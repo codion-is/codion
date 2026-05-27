@@ -24,6 +24,10 @@ Codion Change Log
 - EntityEditPanel.UpdateCommand.Builder.requestFocus() added.
 - EntityEditPanel, parentheses no longer added to detail editor caption.
 - EntityTablePanel.Config.includeQueryInspector() renamed includeInspector().
+### is.codion.tools.loadtest.model
+- DefaultLoadTestModel, total run count series removed from charts.
+### is.codion.tools.loadtest.ui
+- LoadTestPanel, application created column added, scenario overview chart panel no longer tabbed.
 
 ## 0.18.73
 ### is.codion

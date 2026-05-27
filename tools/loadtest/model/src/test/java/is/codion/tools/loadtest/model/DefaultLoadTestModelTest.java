@@ -23,7 +23,6 @@ import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario;
 import is.codion.tools.loadtest.Scenario.Performer;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -75,7 +74,6 @@ public class DefaultLoadTestModelTest {
 		assertEquals(2, loadTest.applications().loginDelayFactor().get());
 		loadTest.applications().loginDelayFactor().set(3);
 		assertEquals(3, loadTest.applications().loginDelayFactor().get());
-		Assertions.assertEquals(DefaultLoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.chartUpdateInterval().get());
 		assertEquals(2, loadTest.applications().batchSize().get());
 
 		assertEquals(25, loadTest.thinkTime().minimum().get());

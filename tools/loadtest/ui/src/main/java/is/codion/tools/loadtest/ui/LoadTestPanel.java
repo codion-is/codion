@@ -19,6 +19,7 @@
 package is.codion.tools.loadtest.ui;
 
 import is.codion.common.model.preferences.UserPreferences;
+import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
@@ -54,7 +55,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
@@ -105,6 +105,10 @@ public final class LoadTestPanel<T> extends JPanel {
 	private static final double RESIZE_WEIGHT = 0.8;
 	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
 	private static final NumberFormat DURATION_FORMAT = NumberFormat.getIntegerInstance();
+	private static final DateTimeFormatter CREATED_FORMAT = LocaleDateTimePattern.builder()
+						.hoursMinutesSeconds()
+						.build()
+						.formatter();
 	private static final String DEFAULT_TITLE = "Codion LoadTest";
 	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
 	private static final Runtime RUNTIME = Runtime.getRuntime();
@@ -361,10 +365,10 @@ public final class LoadTestPanel<T> extends JPanel {
 		loadTest.applications().user().set(item == null ? null : item.get());
 	}
 
-	private JTabbedPane createScenarioOverviewChartPanel() {
-		return tabbedPane()
-						.tab("Scenarios run", createScenarioChartPanel())
-						.tab("Failed runs", createFailureChartPanel())
+	private JPanel createScenarioOverviewChartPanel() {
+		return gridLayoutPanel(2, 1)
+						.add(createScenarioChartPanel())
+						.add(createFailureChartPanel())
 						.build();
 	}
 
@@ -446,6 +450,9 @@ public final class LoadTestPanel<T> extends JPanel {
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(command(this::viewException))
 						.scrollToSelectedItem(false)
+						.cellRenderer(ApplicationRow.CREATED, LocalDateTime.class, renderer -> renderer
+										.formatter(CREATED_FORMAT::format)
+										.build())
 						.cellRenderer(ApplicationRow.DURATION, Long.class, renderer -> renderer
 										.formatter(duration -> duration == null ? "" : DURATION_FORMAT.format(duration)))
 						.popupControls(table -> Controls.builder()

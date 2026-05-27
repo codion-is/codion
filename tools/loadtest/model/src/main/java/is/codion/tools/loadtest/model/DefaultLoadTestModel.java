@@ -58,7 +58,7 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
-	public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
+	private static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
 	private static final double HUNDRED = 100d;
 	private static final double THOUSAND = 1000d;
 	private static final double K = 1024;
@@ -76,8 +76,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	private final ObservableState applicationsRefreshSchedulerEnabled;
 	private final TaskScheduler chartUpdateScheduler;
 	private final TaskScheduler applicationsRefreshScheduler;
-
-	private final XYSeries scenariosRunSeries = new XYSeries("Total");
 
 	private final XYSeriesCollection scenarioFailureCollection = new XYSeriesCollection();
 
@@ -178,7 +176,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	@Override
 	public void clearCharts() {
-		scenariosRunSeries.clear();
 		minimumThinkTimeSeries.clear();
 		maximumThinkTimeSeries.clear();
 		numberOfApplicationsSeries.clear();
@@ -269,7 +266,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		memoryUsageCollection.addSeries(usedMemoryCollection);
 		systemLoadCollection.addSeries(systemLoadSeries);
 		systemLoadCollection.addSeries(processLoadSeries);
-		scenarioCollection.addSeries(scenariosRunSeries);
 		for (Scenario<T> scenario : loadTest.scenarios()) {
 			XYSeries series = new XYSeries(scenario.name());
 			scenarioCollection.addSeries(series);
@@ -318,7 +314,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			maxMemoryCollection.add(time, RUNTIME.maxMemory() / K / K);
 			systemLoadSeries.add(time, systemCpuLoad() * HUNDRED);
 			processLoadSeries.add(time, processCpuLoad() * HUNDRED);
-			scenariosRunSeries.add(time, statistics.workRequestsPerSecond());
 			for (XYSeries series : usageSeries) {
 				series.add(time, statistics.scenarioRate((String) series.getKey()));
 			}
@@ -346,14 +341,10 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		private final Map<String, AtomicInteger> scenarioRunCounts = new HashMap<>();
 		private final Map<String, AtomicInteger> scenarioFailureCounts = new HashMap<>();
 		private final Map<String, List<ExceptionTimestamp>> scenarioExceptions = new HashMap<>();
-		private final AtomicInteger workRequestCounter = new AtomicInteger();
+		private final AtomicInteger runCounter = new AtomicInteger();
+		private final AtomicInteger failureCounter = new AtomicInteger();
 
-		private double workRequestsPerSecond = 0;
 		private long time = currentTimeMillis();
-
-		private double workRequestsPerSecond() {
-			return workRequestsPerSecond;
-		}
 
 		private long minimumScenarioDuration(String scenarioName) {
 			if (!scenarioMinDurations.containsKey(scenarioName)) {
@@ -401,7 +392,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 				scenarioRunCounts.computeIfAbsent(result.scenario(), k -> new AtomicInteger()).incrementAndGet();
 			}
 			else {
-				scenarioFailureCounts.computeIfAbsent(result.scenario(), k -> new AtomicInteger()).incrementAndGet();
+				failureCounter.incrementAndGet();
+				scenarioFailureCounts.computeIfAbsent(result.scenario(), scenarioName -> new AtomicInteger()).incrementAndGet();
 				result.exception().ifPresent(exception -> {
 					List<ExceptionTimestamp> exceptions = scenarioExceptions.computeIfAbsent(result.scenario(), k -> new ArrayList<>());
 					exceptions.add(new DefaultExceptionTimestamp(result.started(), exception));
@@ -410,7 +402,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 					}
 				});
 			}
-			workRequestCounter.incrementAndGet();
+			runCounter.incrementAndGet();
 		}
 
 		private synchronized void updateRequestsPerSecond() {
@@ -420,7 +412,6 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 				scenarioAvgDurations.clear();
 				scenarioMinDurations.clear();
 				scenarioMaxDurations.clear();
-				workRequestsPerSecond = workRequestCounter.get() / elapsedSeconds;
 				for (Scenario<T> scenario : loadTest.scenarios()) {
 					scenarioRates.put(scenario.name(), (int) (scenarioRunCounts.getOrDefault(scenario.name(), ZERO).get() / elapsedSeconds));
 					scenarioFailures.put(scenario.name(), scenarioFailureCounts.getOrDefault(scenario.name(), ZERO).get());
@@ -455,7 +446,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 
 		private synchronized void reset() {
-			workRequestCounter.set(0);
+			runCounter.set(0);
+			failureCounter.set(0);
 			scenarioDurations.clear();
 			scenarioRunCounts.clear();
 			scenarioFailureCounts.clear();
