@@ -8,6 +8,7 @@ Codion Change Log
 - MenuItemBuilder, unused type parameter removed.
 - Control.copy() return type fixed.
 - ListComboBox bug fixed, linked value now treated as original value, no longer modified during instantiation.
+- DefaultTabbedPaneBuilder.PreparedTabbedPane.fireStateChange() bug fixed, now performs index check before preparing component.
 ### is.codion.framework.db.core
 - EntityConnection, Supplier based convenience overloads added.
 ### is.codion.framework.db.http

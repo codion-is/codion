@@ -189,7 +189,10 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPan
 
 		@Override
 		protected void fireStateChanged() {
-			prepareComponent.accept((JComponent) getComponentAt(getSelectedIndex()));
+			int selectedIndex = getSelectedIndex();
+			if (selectedIndex >= 0) {
+				prepareComponent.accept((JComponent) getComponentAt(selectedIndex));
+			}
 			super.fireStateChanged();
 		}
 	}
