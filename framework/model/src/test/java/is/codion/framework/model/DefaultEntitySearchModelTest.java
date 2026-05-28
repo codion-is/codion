@@ -64,11 +64,11 @@ public final class DefaultEntitySearchModelTest {
 		// Null checks
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(null, CONNECTION_PROVIDER));
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, null));
-		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns((Column<String>[]) null));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).search((Column<String>[]) null));
 		// Invalid arguments
-		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).search(emptyList()));
 		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-						.searchColumns(singleton(Department.NAME)));
+						.search(singleton(Department.NAME)));
 	}
 
 	@Test
@@ -218,7 +218,7 @@ public final class DefaultEntitySearchModelTest {
 		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singleton(Department.NAME)));
 
 		EntitySearchModel model = builder
-						.searchColumns(searchable)
+						.search(searchable)
 						.attributes(singleton(Employee.NAME))
 						.build();
 		model.search().strings().set(singleton("John"));
@@ -274,7 +274,7 @@ public final class DefaultEntitySearchModelTest {
 	void setUp() {
 		searchable = asList(Employee.NAME, Employee.JOB);
 		searchModel = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-						.searchColumns(searchable)
+						.search(searchable)
 						.build();
 
 		CONNECTION_PROVIDER.connection().startTransaction();

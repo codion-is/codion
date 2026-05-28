@@ -56,7 +56,7 @@ final class FrameworkUIDemo {
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Customer.TYPE)
 						.connectionProvider(connectionProvider)
-						.searchColumns(Customer.FIRSTNAME, Customer.EMAIL)
+						.search(Customer.FIRSTNAME, Customer.EMAIL)
 						.build();
 
 		EntitySearchField searchField = EntitySearchField.builder()

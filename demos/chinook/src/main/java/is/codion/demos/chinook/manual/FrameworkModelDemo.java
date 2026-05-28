@@ -368,7 +368,7 @@ public final class FrameworkModelDemo {
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Customer.TYPE)
 						.connectionProvider(connectionProvider)
-						.searchColumns(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL)
+						.search(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL)
 						.limit(50)
 						.build();
 
@@ -385,7 +385,7 @@ public final class FrameworkModelDemo {
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Customer.TYPE)
 						.connectionProvider(connectionProvider)
-						.searchColumns(Customer.FIRSTNAME, Customer.LASTNAME)
+						.search(Customer.FIRSTNAME, Customer.LASTNAME)
 						.build();
 
 		// Get settings for a specific column
@@ -408,7 +408,7 @@ public final class FrameworkModelDemo {
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Album.TYPE)
 						.connectionProvider(connectionProvider)
-						.searchColumns(Album.TITLE)
+						.search(Album.TITLE)
 						.build();
 
 		// Set selection programmatically
@@ -432,7 +432,7 @@ public final class FrameworkModelDemo {
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Track.TYPE)
 						.connectionProvider(connectionProvider)
-						.searchColumns(Track.NAME)
+						.search(Track.NAME)
 						.build();
 
 		// Get all selected entities

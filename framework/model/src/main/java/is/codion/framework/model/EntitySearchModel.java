@@ -213,18 +213,18 @@ public interface EntitySearchModel {
 		}
 
 		/**
-		 * @param searchColumns the columns to search by
+		 * @param columns the columns to search
 		 * @return this builder
 		 * @throws IllegalArgumentException in case {@code columns} is empty or a column is not associated with the underlying entity
 		 */
-		Builder searchColumns(Column<String>... searchColumns);
+		Builder search(Column<String>... columns);
 
 		/**
-		 * @param searchColumns the columns to search by
+		 * @param columns the columns to search
 		 * @return this builder
 		 * @throws IllegalArgumentException in case {@code columns} is empty or a column is not associated with the underlying entity
 		 */
-		Builder searchColumns(Collection<Column<String>> searchColumns);
+		Builder search(Collection<Column<String>> columns);
 
 		/**
 		 * <p>The condition supplier may not return null, doing so will cause an exception when searching.

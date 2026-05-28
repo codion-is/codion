@@ -18,6 +18,7 @@ Codion Change Log
 - DefaultEntityEditor.setDetail() and replaceDetail() refactored.
 - EntityEditor.DetailEditors.remove() added.
 - EntitySearchModel.Builder.searchColumns() overloaded with varargs parameter.
+- EntitySearchModel.Builder.searchColumns() renamed search(columns).
 ### is.codion.swing.framework.ui
 - EditorComponents.entries() and editorComponent() bug fixed, now exclude entries without a component.
 - EditorComponents.detail() added, removal implemented.
