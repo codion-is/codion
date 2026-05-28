@@ -44,7 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.util.List;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
@@ -57,7 +56,7 @@ final class FrameworkUIDemo {
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Customer.TYPE)
 						.connectionProvider(connectionProvider)
-						.searchColumns(List.of(Customer.FIRSTNAME, Customer.EMAIL))
+						.searchColumns(Customer.FIRSTNAME, Customer.EMAIL)
 						.build();
 
 		EntitySearchField searchField = EntitySearchField.builder()

@@ -52,6 +52,7 @@ import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
 import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
 import static java.text.MessageFormat.format;
+import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -368,6 +369,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			this.entityDefinition = connectionProvider.entities().definition(entityType);
 			this.searchColumns = entityDefinition.columns().searchable();
 			this.orderBy = entityDefinition.orderBy().orElse(null);
+		}
+
+		@Override
+		public Builder searchColumns(Column<String>... searchColumns) {
+			return searchColumns(asList(requireNonNull(searchColumns)));
 		}
 
 		@Override

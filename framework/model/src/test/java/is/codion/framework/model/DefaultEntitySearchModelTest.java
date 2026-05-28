@@ -64,7 +64,7 @@ public final class DefaultEntitySearchModelTest {
 		// Null checks
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(null, CONNECTION_PROVIDER));
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, null));
-		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(null));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns((Column<String>[]) null));
 		// Invalid arguments
 		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(emptyList()));
 		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
