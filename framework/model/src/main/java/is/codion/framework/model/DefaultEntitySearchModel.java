@@ -161,7 +161,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public List<Entity> result() {
+		public List<Entity> perform() {
 			List<Entity> result = connectionProvider.connection().select(select());
 			result.sort(entityDefinition.comparator());
 

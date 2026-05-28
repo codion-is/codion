@@ -607,7 +607,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public List<Entity> execute() {
-			return model.search().result();
+			return model.search().perform();
 		}
 
 		@Override

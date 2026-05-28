@@ -127,8 +127,9 @@ public interface EntitySearchModel {
 		 * @return a list containing the entities fulfilling the current condition
 		 * @throws IllegalStateException in case no search columns are specified
 		 * @see #limit()
+		 * @see #strings()
 		 */
-		List<Entity> result();
+		List<Entity> perform();
 	}
 
 	/**

@@ -376,7 +376,7 @@ public final class FrameworkModelDemo {
 		searchModel.condition().set(() -> Customer.FIRSTNAME.equalTo("john"));
 
 		// Get search result
-		List<Entity> result = searchModel.search().result();
+		List<Entity> result = searchModel.search().perform();
 		// end::basicSearchModel[]
 	}
 
