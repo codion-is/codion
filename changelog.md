@@ -20,6 +20,7 @@ Codion Change Log
 - EntitySearchModel.Builder.searchColumns() overloaded with varargs parameter.
 - EntitySearchModel.Builder.searchColumns() renamed search(columns).
 - EntitySearchModel.Search.result() renamed perform().
+- EntityPersistence.replaceable() removed, unused.
 ### is.codion.swing.framework.ui
 - EditorComponents.entries() and editorComponent() bug fixed, now exclude entries without a component.
 - EditorComponents.detail() added, removal implemented.

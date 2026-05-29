@@ -1704,9 +1704,6 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 		@Override
 		public void set(@Nullable EntityPersistence persistence) {
-			if (!instance.replaceable()) {
-				throw new IllegalStateException("Current EntityPersistence implementation is not replaceable");
-			}
 			this.instance = persistence == null ? DEFAULT : persistence;
 		}
 	}

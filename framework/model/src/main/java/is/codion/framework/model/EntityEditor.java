@@ -387,11 +387,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		EntityPersistence get();
 
 		/**
-		 * @param persistence the {@link EntityPersistence} to use, default is set if null
-		 * @throws IllegalStateException in case the current instance is not replaceable
-		 * @see EntityPersistence#replaceable()
+		 * @param persistence the {@link EntityPersistence} to use, default is used if {@code persistence} is null
 		 */
-		void set(EntityPersistence persistence);
+		void set(@Nullable EntityPersistence persistence);
 	}
 
 	/**
@@ -872,7 +870,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 *     date -> date == null ? null : date.getMonthValue());
 		 *}
 		 * @param attribute the target attribute to propagate to
-		 * @param deriver the function deriving the target value from this attribute's value
+		 * @param deriver the function deriving the target value from the source attribute's value
 		 * @param <V> the target attribute value type
 		 */
 		<V> void propagate(Attribute<V> attribute, Function<@Nullable T, @Nullable V> deriver);
