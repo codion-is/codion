@@ -1474,6 +1474,12 @@ public abstract class EntityEditPanel extends JPanel {
 			Builder confirm(boolean confirm);
 
 			/**
+			 * @param requestFocus specifies whether focus is requested after the delete, default true
+			 * @return this builder instance
+			 */
+			Builder requestFocus(boolean requestFocus);
+
+			/**
 			 * @param onDelete called after a successful delete
 			 * @return this builder instance
 			 */
@@ -1830,7 +1836,7 @@ public abstract class EntityEditPanel extends JPanel {
 			private final EntityEditPanel editPanel;
 			private final Collection<Consumer<Entity>> onUpdate = new ArrayList<>(1);
 			private boolean confirm;
-			private boolean requestFocus;
+			private boolean requestFocus = true;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
 				this.editPanel = editPanel;
@@ -1878,11 +1884,13 @@ public abstract class EntityEditPanel extends JPanel {
 
 		private final EntityEditPanel editPanel;
 		private final boolean confirm;
+		private final boolean requestFocus;
 		private final Collection<Consumer<Entity>> onDelete;
 
 		private DefaultDeleteCommand(DefaultBuilder builder) {
 			this.editPanel = builder.editPanel;
 			this.confirm = builder.confirm;
+			this.requestFocus = builder.requestFocus;
 			this.onDelete = builder.onDelete;
 		}
 
@@ -1902,7 +1910,9 @@ public abstract class EntityEditPanel extends JPanel {
 		private void handleResult(Result<Entity> result) {
 			Entity deleted = result.handle();
 			onDelete.forEach(consumer -> consumer.accept(deleted));
-			InputFocus.requestFocus(lastFocusedComponent);
+			if (requestFocus) {
+				InputFocus.requestFocus(lastFocusedComponent);
+			}
 		}
 
 		private static final class DefaultBuilder implements Builder {
@@ -1910,6 +1920,7 @@ public abstract class EntityEditPanel extends JPanel {
 			private final EntityEditPanel editPanel;
 			private final Collection<Consumer<Entity>> onDelete = new ArrayList<>(1);
 			private boolean confirm;
+			private boolean requestFocus = true;
 
 			private DefaultBuilder(EntityEditPanel editPanel) {
 				this.editPanel = editPanel;
@@ -1919,6 +1930,12 @@ public abstract class EntityEditPanel extends JPanel {
 			@Override
 			public Builder confirm(boolean confirm) {
 				this.confirm = confirm;
+				return this;
+			}
+
+			@Override
+			public Builder requestFocus(boolean requestFocus) {
+				this.requestFocus = requestFocus;
 				return this;
 			}
 
