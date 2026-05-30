@@ -431,7 +431,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private static void configureObjectInputFilter(ServerConfiguration configuration) {
 		if (configuration.objectInputFilterFactory().isPresent()) {
 			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(configuration.objectInputFilterFactory().get());
-			ObjectInputFilter objectInputFilter = inputFilterFactory.createObjectInputFilter();
+			ObjectInputFilter objectInputFilter = inputFilterFactory.create();
 			ObjectInputFilter.Config.setSerialFilter(objectInputFilter);
 			LOG.info("ObjectInputFilter {} enabled", objectInputFilter.getClass().getName());
 		}

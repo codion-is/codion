@@ -116,7 +116,7 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	private static final String CLASSPATH_PREFIX = "classpath:";
 
 	@Override
-	public ObjectInputFilter createObjectInputFilter() {
+	public ObjectInputFilter create() {
 		if (!SERIALIZATION_FILTER_DRYRUN_FILE.isNull()) {
 			int flushInterval = SERIALIZATION_FILTER_DRYRUN_FLUSH_INTERVAL.getOrThrow();
 			LOG.warn("SerializationFilterDryRun active, no filtering performed (flush interval: {}s)", flushInterval);

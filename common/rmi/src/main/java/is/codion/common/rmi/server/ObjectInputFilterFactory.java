@@ -35,7 +35,7 @@ public interface ObjectInputFilterFactory {
 	/**
 	 * @return a {@link ObjectInputFilter} instance
 	 */
-	ObjectInputFilter createObjectInputFilter();
+	ObjectInputFilter create();
 
 	/**
 	 * Returns the {@link ObjectInputFilterFactory} implementation found by the {@link ServiceLoader} of the given type.
