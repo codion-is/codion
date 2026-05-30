@@ -14,6 +14,8 @@ Codion Change Log
 - AuxiliaryServerFactory.createServer() renamed create().
 - SerializationFilterFactory.createObjectInputFilter() renamed create().
 - ServerConfiguration.auxiliaryServerFactory() renamed auxiliaryServerFactories().
+### is.codion.common.utilities
+- PropertyStore.PropertyFormatter.formatValue() renamed format().
 ### is.codion.swing.common.ui
 - MenuItemBuilder, unused type parameter removed.
 - Control.copy() return type fixed.

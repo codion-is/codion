@@ -499,7 +499,7 @@ public final class PropertyStore {
 						.filter(String.class::isInstance)
 						.map(String.class::cast)
 						.sorted()
-						.map(property -> property + ": " + formatter.formatValue(property, properties.getProperty(property)))
+						.map(property -> property + ": " + formatter.format(property, properties.getProperty(property)))
 						.collect(joining("\n"));
 	}
 
@@ -515,7 +515,7 @@ public final class PropertyStore {
 		 * @param value the value
 		 * @return the value
 		 */
-		String formatValue(String property, String value);
+		String format(String property, String value);
 	}
 
 	/**
@@ -583,7 +583,7 @@ public final class PropertyStore {
 	static final class DefaultSystemPropertyFormatter implements PropertyFormatter {
 
 		@Override
-		public String formatValue(String property, String value) {
+		public String format(String property, String value) {
 			if (classOrModulePath(property) && !value.isEmpty()) {
 				return Stream.of(value.split(File.pathSeparator))
 								.collect(joining("\n", "\n", ""));
