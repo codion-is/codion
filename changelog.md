@@ -33,6 +33,8 @@ Codion Change Log
 - DefaultLoadTestModel, total run count series removed from charts.
 ### is.codion.tools.loadtest.ui
 - LoadTestPanel, application created column added, scenario overview chart panel no longer tabbed.
+### is.codion.tools.monitor.model
+- ServerMonitor bug fixed, missing domain column added to operation and report tables.
 
 ## 0.18.73
 ### is.codion

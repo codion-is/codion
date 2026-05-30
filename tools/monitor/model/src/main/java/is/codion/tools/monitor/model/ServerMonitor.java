@@ -628,7 +628,7 @@ public final class ServerMonitor {
 		public static final String OPERATION = "Operation";
 		public static final String CLASS = "Class";
 
-		private static final List<String> IDENTIFIERS = unmodifiableList(asList(TYPE, OPERATION, CLASS));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(DOMAIN, TYPE, OPERATION, CLASS));
 
 		@Override
 		public List<String> identifiers() {
@@ -679,9 +679,7 @@ public final class ServerMonitor {
 		public static final String PATH = "Path";
 		public static final String CACHED = "Cached";
 
-		private static final List<String> IDENTIFIERS = unmodifiableList(asList(
-						REPORT, TYPE, PATH, CACHED
-		));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(DOMAIN, REPORT, TYPE, PATH, CACHED));
 
 		@Override
 		public List<String> identifiers() {
