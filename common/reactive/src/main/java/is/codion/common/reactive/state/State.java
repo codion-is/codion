@@ -300,7 +300,7 @@ public interface State extends ObservableState {
 		Builder link(State originalState);
 
 		/**
-		 * @param group the {@link Group} to add the state to
+		 * @param group a {@link Group} to add the state to
 		 * @return this builder instance
 		 */
 		Builder group(Group group);

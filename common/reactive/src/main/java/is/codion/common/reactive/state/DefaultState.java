@@ -25,6 +25,8 @@ import is.codion.common.reactive.value.Value.Validator;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -42,9 +44,7 @@ final class DefaultState implements State {
 
 	private DefaultState(DefaultBuilder builder) {
 		this.value = builder.valueBuilder.consumer(new Notifier()).build();
-		if (builder.group != null) {
-			builder.group.add(this);
-		}
+		builder.groups.forEach(group -> group.add(this));
 	}
 
 	@Override
@@ -135,7 +135,7 @@ final class DefaultState implements State {
 
 		private final Value.Builder<Boolean, ?> valueBuilder = Value.builder().nonNull(false);
 
-		private @Nullable Group group;
+		private final Collection<Group> groups = new ArrayList<>(1);
 
 		DefaultBuilder() {}
 
@@ -165,7 +165,7 @@ final class DefaultState implements State {
 
 		@Override
 		public Builder group(Group group) {
-			this.group = requireNonNull(group);
+			this.groups.add(requireNonNull(group));
 			return this;
 		}
 
