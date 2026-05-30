@@ -32,6 +32,7 @@ import is.codion.framework.domain.TestDomain.InvalidDerived;
 import is.codion.framework.domain.TestDomain.Master;
 import is.codion.framework.domain.TestDomain.NoPk;
 import is.codion.framework.domain.TestDomain.NonCachedToString;
+import is.codion.framework.domain.TestDomain.NonInsertableUpdatable;
 import is.codion.framework.domain.TestDomain.NullString;
 import is.codion.framework.domain.TestDomain.TransModifies;
 import is.codion.framework.domain.TestDomain.TransModifiesNot;
@@ -1125,6 +1126,30 @@ public class DefaultEntityTest {
 			deserialized = Serializer.deserialize(Serializer.serialize(entity));
 			assertTrue(deserialized.modified(TransModifiesNot.TRANS));
 			assertFalse(deserialized.modified());
+		}
+
+		@Test
+		@DisplayName("non-insertable column should modify entity")
+		void nonInsertableModified() {
+			Entity entity = ENTITIES.entity(NonInsertableUpdatable.TYPE)
+							.with(NonInsertableUpdatable.ID, 42)
+							.with(NonInsertableUpdatable.NOT_INSERTABLE, null)
+							.build();
+			assertFalse(entity.modified());
+			entity.set(NonInsertableUpdatable.NOT_INSERTABLE, 1);
+			assertTrue(entity.modified());
+		}
+
+		@Test
+		@DisplayName("modified when an updatable column changes alongside a non-updatable one")
+		void mixedUpdatabilityModified() {
+			Entity entity = ENTITIES.entity(NonInsertableUpdatable.TYPE)
+							.with(NonInsertableUpdatable.ID, 42)
+							.with(NonInsertableUpdatable.NOT_INSERTABLE, 1)
+							.build();
+			entity.set(NonInsertableUpdatable.ID, 43); // non-updatable PK changed
+			entity.set(NonInsertableUpdatable.NOT_INSERTABLE, 2); // updatable column changed
+			assertTrue(entity.modified());
 		}
 
 		@Test

@@ -69,6 +69,7 @@ public final class TestDomain extends DomainModel {
 		invalidDerived();
 		foreignKeyLazyColumn();
 		nonCachedToString();
+		nonInsertableUpdatable();
 	}
 
 	public interface CompositeMaster {
@@ -623,6 +624,23 @@ public final class TestDomain extends DomainModel {
 										TransModifiesNot.TRANS.as()
 														.attribute()
 														.modifies(false))
+						.build());
+	}
+
+	public interface NonInsertableUpdatable {
+		EntityType TYPE = DOMAIN.entityType("non_insertable_updatable");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> NOT_INSERTABLE = TYPE.integerColumn("not_insertable");
+	}
+
+	void nonInsertableUpdatable() {
+		add(NonInsertableUpdatable.TYPE.as(
+										NonInsertableUpdatable.ID.as()
+														.primaryKey(),
+										NonInsertableUpdatable.NOT_INSERTABLE.as()
+														.column()
+														.insertable(false))
 						.build());
 	}
 

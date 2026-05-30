@@ -9,6 +9,8 @@ Codion Change Log
 - Control.copy() return type fixed.
 - ListComboBox bug fixed, linked value now treated as original value, no longer modified during instantiation.
 - DefaultTabbedPaneBuilder.PreparedTabbedPane.fireStateChange() bug fixed, now performs index check before preparing component.
+### is.codion.framework.domain
+- DefaultEntity bug fixed, modified() no longer excludes non-insertable columns.
 ### is.codion.framework.db.core
 - EntityConnection, Supplier based convenience overloads added.
 ### is.codion.framework.db.http

@@ -280,9 +280,9 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	boolean modified(Attribute<?> attribute);
 
 	/**
-	 * Returns true if one or more writable attributes have been modified from their initial value,
-	 * non-insertable and non-updatable attributes are excluded unless they are transient and modify the entity.
-	 * @return true if one or more writable attributes have been modified since they were first set
+	 * Returns true if one or more updatable columns have been modified from their initial value.
+	 * Non-updatable columns are excluded, and transient attributes are only included if they modify the entity.
+	 * @return true if one or more updatable attributes have been modified since they were first set
 	 * @see TransientAttributeDefinition#modifies()
 	 */
 	boolean modified();

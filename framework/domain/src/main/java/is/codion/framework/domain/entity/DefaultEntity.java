@@ -115,13 +115,12 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		if (originalValues != null) {
 			for (Attribute<?> attribute : originalValues.keySet()) {
 				AttributeDefinition<?> attributeDefinition = definition.attributes().definition(attribute);
-				if (attributeDefinition instanceof ColumnDefinition) {
-					ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
-					if (columnDefinition.insertable() && columnDefinition.updatable()) {
-						return true;
-					}
+				if (attributeDefinition instanceof ColumnDefinition &&
+								(((ColumnDefinition<?>) attributeDefinition).updatable())) {
+					return true;
 				}
-				if (attributeDefinition instanceof TransientAttributeDefinition && ((TransientAttributeDefinition<?>) attributeDefinition).modifies()) {
+				if (attributeDefinition instanceof TransientAttributeDefinition &&
+								((TransientAttributeDefinition<?>) attributeDefinition).modifies()) {
 					return true;
 				}
 			}
