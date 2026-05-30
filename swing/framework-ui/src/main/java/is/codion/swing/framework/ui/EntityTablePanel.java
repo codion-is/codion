@@ -2880,7 +2880,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		@Override
-		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(Attribute<?> identifier, Format format) {
+		public <T extends Number> Optional<SummaryValues<T>> create(Attribute<?> identifier, Format format) {
 			AttributeDefinition<?> definition = entityDefinition.attributes().definition(identifier);
 			if (definition instanceof ValueAttributeDefinition<?>) {
 				ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>) definition;

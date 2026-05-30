@@ -6,6 +6,8 @@ Codion Change Log
 - ProxyBuilder default method handling added.
 ### is.codion.common.db
 - Database.USER_PROPERTY and PASSWORD_PROPERTY renamed USER and PASSWORD.
+### is.codion.common.model
+- SummaryModel.SummaryValues.Factory.createSummaryValues() renamed create().
 ### is.codion.swing.common.ui
 - MenuItemBuilder, unused type parameter removed.
 - Control.copy() return type fixed.

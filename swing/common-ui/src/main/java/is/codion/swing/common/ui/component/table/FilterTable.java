@@ -2095,7 +2095,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final class DefaultSummaryValuesFactory implements SummaryValues.Factory<C> {
 
 		@Override
-		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(C identifier, Format format) {
+		public <T extends Number> Optional<SummaryValues<T>> create(C identifier, Format format) {
 			Class<?> columnClass = tableModel.getColumnClass(identifier);
 			if (Number.class.isAssignableFrom(columnClass)) {
 				return Optional.of(new DefaultSummaryValues<>(identifier, tableModel, format));

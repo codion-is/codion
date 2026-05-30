@@ -35,11 +35,11 @@ public interface TableSummaryModel<C> {
 	Optional<SummaryModel> get(C identifier);
 
 	/**
-	 * @param summaryModelFactory the summary model factory
+	 * @param values the summary values factory
 	 * @param <C> the column identifier type
 	 * @return a new {@link TableSummaryModel} instance
 	 */
-	static <C> TableSummaryModel<C> tableSummaryModel(SummaryValues.Factory<C> summaryModelFactory) {
-		return new DefaultTableSummaryModel<>(summaryModelFactory);
+	static <C> TableSummaryModel<C> tableSummaryModel(SummaryValues.Factory<C> values) {
+		return new DefaultTableSummaryModel<>(values);
 	}
 }

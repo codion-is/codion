@@ -346,7 +346,7 @@ public class DefaultTableSummaryModelTest {
 		Format lastFormat = null;
 
 		@Override
-		public <T extends Number> Optional<SummaryValues<T>> createSummaryValues(C identifier, Format format) {
+		public <T extends Number> Optional<SummaryValues<T>> create(C identifier, Format format) {
 			callCount++;
 			lastIdentifier = identifier;
 			lastFormat = format;

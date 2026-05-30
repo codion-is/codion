@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.
+ * Provides summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.
  * <p>
  * For instances use the {@link #summaryModel(SummaryValues)} factory method.
  * @see #summaryModel(SummaryValues)
@@ -118,7 +118,7 @@ public interface SummaryModel {
 			 * @param <T> the column type
 			 * @return a summary values instance or an empty Optional, if no summary is available for the column
 			 */
-			<T extends Number> Optional<SummaryValues<T>> createSummaryValues(C identifier, Format format);
+			<T extends Number> Optional<SummaryValues<T>> create(C identifier, Format format);
 		}
 	}
 }

@@ -30,11 +30,11 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 
-	private final SummaryValues.Factory<C> summaryValuesFactory;
+	private final SummaryValues.Factory<C> values;
 	private final Map<C, SummaryModel> summaryModels = new HashMap<>();
 
-	DefaultTableSummaryModel(SummaryValues.Factory<C> summaryValuesFactory) {
-		this.summaryValuesFactory = requireNonNull(summaryValuesFactory);
+	DefaultTableSummaryModel(SummaryValues.Factory<C> values) {
+		this.values = requireNonNull(values);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
 	}
 
 	private Optional<SummaryModel> createSummaryModel(C identifier, Format format) {
-		return summaryValuesFactory.createSummaryValues(identifier, format)
+		return values.create(identifier, format)
 						.map(SummaryModel::summaryModel);
 	}
 }
