@@ -402,7 +402,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		try {
 			for (String auxiliaryServerFactory : auxiliaryServerFactories) {
 				AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactoryInstance = AuxiliaryServerFactory.instance(auxiliaryServerFactory);
-				AuxiliaryServer auxiliaryServer = auxiliaryServerFactoryInstance.createServer(this);
+				AuxiliaryServer auxiliaryServer = auxiliaryServerFactoryInstance.create(this);
 				auxiliaryServers.add(auxiliaryServer);
 				Callable<?> starter = () -> {
 					startAuxiliaryServer(auxiliaryServer);

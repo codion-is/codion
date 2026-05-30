@@ -40,7 +40,7 @@ public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin,
 	 * @param server the parent server
 	 * @return a server
 	 */
-	T createServer(Server<C, A> server);
+	T create(Server<C, A> server);
 
 	/**
 	 * Returns the {@link AuxiliaryServerFactory} implementation found by the {@link ServiceLoader} of the given type.

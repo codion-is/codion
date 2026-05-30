@@ -10,6 +10,8 @@ Codion Change Log
 - SummaryModel.SummaryValues.Factory.createSummaryValues() renamed create().
 ### is.codion.common.reactive
 - State.Builder.group() now supports multiple groups.
+### is.codion.common.rmi
+- AuxiliaryServerFactory.createServer() renamed create().
 ### is.codion.swing.common.ui
 - MenuItemBuilder, unused type parameter removed.
 - Control.copy() return type fixed.
