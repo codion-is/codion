@@ -108,7 +108,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	}
 
 	@Override
-	public Collection<String> auxiliaryServerFactory() {
+	public Collection<String> auxiliaryServerFactories() {
 		return auxiliaryServerFactories;
 	}
 

@@ -88,8 +88,8 @@ public class DefaultServerConfigurationTest {
 			assertEquals(TEST_PORT, config.port());
 			assertEquals(TEST_ADMIN_PORT, config.adminPort());
 			assertEquals(TEST_SERVER_NAME, config.serverName());
-			assertTrue(config.auxiliaryServerFactory().containsAll(auxiliaryClasses));
-			assertEquals(auxiliaryClasses.size(), config.auxiliaryServerFactory().size());
+			assertTrue(config.auxiliaryServerFactories().containsAll(auxiliaryClasses));
+			assertEquals(auxiliaryClasses.size(), config.auxiliaryServerFactories().size());
 			assertFalse(config.sslEnabled());
 			assertEquals(Optional.of(TEST_FILTER_CLASS), config.objectInputFilterFactory());
 			assertEquals(TEST_MAINTENANCE_INTERVAL, config.connectionMaintenanceInterval());
@@ -214,7 +214,7 @@ public class DefaultServerConfigurationTest {
 		void auxiliaryServers_emptyByDefault() {
 			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
 
-			assertTrue(config.auxiliaryServerFactory().isEmpty());
+			assertTrue(config.auxiliaryServerFactories().isEmpty());
 		}
 
 		@Test
@@ -226,8 +226,8 @@ public class DefaultServerConfigurationTest {
 							.auxiliaryServerFactory(classNames)
 							.build();
 
-			assertTrue(config.auxiliaryServerFactory().containsAll(classNames));
-			assertEquals(classNames.size(), config.auxiliaryServerFactory().size());
+			assertTrue(config.auxiliaryServerFactories().containsAll(classNames));
+			assertEquals(classNames.size(), config.auxiliaryServerFactories().size());
 		}
 
 		@Test
@@ -238,7 +238,7 @@ public class DefaultServerConfigurationTest {
 							.build();
 
 			assertThrows(UnsupportedOperationException.class, () ->
-							config.auxiliaryServerFactory().add("new.class"));
+							config.auxiliaryServerFactories().add("new.class"));
 		}
 
 		@Test

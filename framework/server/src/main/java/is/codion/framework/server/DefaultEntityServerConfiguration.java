@@ -83,8 +83,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
-	public Collection<String> auxiliaryServerFactory() {
-		return serverConfiguration.auxiliaryServerFactory();
+	public Collection<String> auxiliaryServerFactories() {
+		return serverConfiguration.auxiliaryServerFactories();
 	}
 
 	@Override

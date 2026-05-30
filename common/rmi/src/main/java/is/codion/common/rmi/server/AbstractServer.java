@@ -106,7 +106,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		getRuntime().addShutdownHook(new Thread(this::shutdown));
 		try {
 			configureObjectInputFilter(configuration);
-			startAuxiliaryServers(configuration.auxiliaryServerFactory());
+			startAuxiliaryServers(configuration.auxiliaryServerFactories());
 			loadAuthenticators(configuration.authenticators());
 		}
 		catch (Throwable exception) {

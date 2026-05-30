@@ -244,7 +244,7 @@ public interface ServerConfiguration {
 	/**
 	 * @return the class names of auxiliary server factories, providing the servers to run alongside this server
 	 */
-	Collection<String> auxiliaryServerFactory();
+	Collection<String> auxiliaryServerFactories();
 
 	/**
 	 * @return the class names of {@link Authenticator}s to use
