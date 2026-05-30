@@ -139,14 +139,14 @@ public interface Database extends ConnectionFactory {
 	PropertyValue<Integer> TRANSACTION_ISOLATION = integerValue("codion.db.transactionIsolation");
 
 	/**
-	 * The constant used to denote the username value in the connection properties
+	 * The key used to specify the username in connection properties
 	 */
-	String USER_PROPERTY = "user";
+	String USER = "user";
 
 	/**
-	 * The constant used to denote the password value in the connection properties
+	 * The key used to specify the password in connection properties
 	 */
-	String PASSWORD_PROPERTY = "password";
+	String PASSWORD = "password";
 
 	/**
 	 * @return a name identifying this database
@@ -209,12 +209,15 @@ public interface Database extends ConnectionFactory {
 	@Nullable String errorMessage(SQLException exception, Operation operation);
 
 	/**
-	 * Maps the given SQLException to a DatabaseException.
+	 * Wraps the given SQLException in a relevant {@link DatabaseException}.
 	 * @param exception the SQL exception
 	 * @param operation the current operation
-	 * @return a DatabaseException
+	 * @return a {@link DatabaseException}
 	 * @throws NullPointerException in case {@code exception} or {@code operation} is null
 	 * @see #errorMessage(SQLException, Operation)
+	 * @see is.codion.common.db.exception.UniqueConstraintException
+	 * @see is.codion.common.db.exception.ReferentialIntegrityException
+	 * @see is.codion.common.db.exception.QueryTimeoutException
 	 */
 	DatabaseException exception(SQLException exception, Operation operation);
 

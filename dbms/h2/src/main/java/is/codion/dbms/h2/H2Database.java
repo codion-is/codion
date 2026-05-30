@@ -228,7 +228,7 @@ final class H2Database extends AbstractDatabase {
 	private void initializeEmbeddedDatabase(List<String> scriptPaths) {
 		if ((isEmbeddedInMemory() || !databaseFileExists())) {
 			Properties properties = new Properties();
-			properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
+			properties.put(USER, SYSADMIN_USERNAME);
 			if (scriptPaths.isEmpty()) {
 				initialize(properties, ";DB_CLOSE_DELAY=-1");
 			}
