@@ -438,7 +438,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		Attribute<T> attribute = attributeDefinition.attribute();
 		boolean initialization = !values.containsKey(attribute);
 		T previousValue = (T) values.put(attribute, newValue);
-		if (!initialization && Objects.equals(previousValue, newValue)) {
+		if (!initialization && Objects.deepEquals(previousValue, newValue)) {
 			return newValue;
 		}
 		if (!initialization) {
@@ -537,6 +537,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 			if (containsValue) {
 				Object currentReferenceValue = get(reference.column());
 				Object newReferenceValue = foreignKeyValue.get(reference.foreign());
+				// deepEquals not necessary, since we're comparing reference column values
 				if (!Objects.equals(currentReferenceValue, newReferenceValue)) {
 					throw new IllegalArgumentException("Foreign key " + foreignKeyDefinition + " is not allowed to modify read-only reference: " +
 									reference.column() + " from " + currentReferenceValue + " to " + newReferenceValue);
@@ -561,6 +562,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 				ForeignKey foreignKey = foreignKeyDefinition.attribute();
 				//if the value isn't equal to the value in the foreign key,
 				//that foreign key reference is invalid and is removed
+				// deepEquals not necessary, since we're comparing reference column values
 				if (!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).foreign()))) {
 					remove(foreignKey);
 					removeCachedKey(foreignKey);
@@ -773,7 +775,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 	private <T> void updateOriginalValue(Attribute<T> attribute, @Nullable T value, @Nullable T previousValue) {
 		boolean modified = isModified(attribute);
-		if (modified && Objects.equals(originalValues.get(attribute), value)) {
+		if (modified && Objects.deepEquals(originalValues.get(attribute), value)) {
 			removeOriginalValue(attribute);//we're back to the original value
 		}
 		else if (!modified) {//only the first original value is kept
@@ -854,7 +856,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 		@Override
 		public boolean test(Map.Entry<Attribute<?>, Object> entry) {
-			return Objects.equals(entry.getValue(), get(definition.attributes().definition(entry.getKey())));
+			return Objects.deepEquals(entry.getValue(), get(definition.attributes().definition(entry.getKey())));
 		}
 	}
 

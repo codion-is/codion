@@ -11,6 +11,7 @@ Codion Change Log
 - DefaultTabbedPaneBuilder.PreparedTabbedPane.fireStateChange() bug fixed, now performs index check before preparing component.
 ### is.codion.framework.domain
 - DefaultEntity bug fixed, modified() no longer excludes non-insertable columns.
+- DefaultEntity bug fixed, now uses deepEquals() consistently.
 ### is.codion.framework.db.core
 - EntityConnection, Supplier based convenience overloads added.
 ### is.codion.framework.db.http
