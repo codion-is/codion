@@ -137,6 +137,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 	 * @see Builder.LoadStep#entity(DetailEntity)
 	 * @see ForeignKeyEditorLink.Builder#entity(DetailEntity)
 	 */
+	@FunctionalInterface
 	interface DetailEntity {
 
 		/**
