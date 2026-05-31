@@ -65,7 +65,7 @@ public final class EntityConnectionDemo {
 
 		List<Entity> nonLiveAlbums = connection.select(and(
 						Album.ARTIST_FK.in(artists),
-						Album.TITLE.likeIgnoreCase("%live%")));
+						Album.TITLE.notLikeIgnoreCase("%live%")));
 
 		Entity aliceInChains = connection.selectSingle(
 						Artist.NAME.equalTo("Alice In Chains"));

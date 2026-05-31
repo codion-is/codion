@@ -44,7 +44,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A {@link ObjectInputFilterFactory} implementation based on patterns, specified as a string via {@link #SERIALIZATION_FILTER_PATTERNS}
  * or from a file via {@link #SERIALIZATION_FILTER_PATTERN_FILE}.
- * <p>See <a href="https://docs.oracle.com/en/java/javase/23/core/java-serialization-filters.html">Java Serialization Filters</a> and
+ * <p>See <a href="https://docs.oracle.com/en/java/javase/25/core/java-serialization-filters.html">Java Serialization Filters</a> and
  * <a href="https://openjdk.org/jeps/290">JEP 290: Filter Incoming Serialization Data</a>
  */
 public final class SerializationFilterFactory implements ObjectInputFilterFactory {

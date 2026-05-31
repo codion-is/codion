@@ -179,8 +179,10 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	/**
 	 * <p>Note that in case of {@link JTextArea} the {@link KeyEvents#MENU_SHORTCUT_MASK}
 	 * modifier is added for transferring the focus forward.
+	 * <p>Any conflicting key event added via {@link #keyEvent(KeyEvents.Builder)} overrides this directive.
 	 * @param transferFocusOnEnter the transfer focus on enter to enable
 	 * @return this builder instance
+	 * @see #keyEvent(KeyEvents.Builder)
 	 */
 	B transferFocusOnEnter(TransferFocusOnEnter transferFocusOnEnter);
 
@@ -309,10 +311,11 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 
 	/**
 	 * Enables the key event defined by the given {@link KeyEvents.Builder} on the component.
-	 * Note that setting {@link #transferFocusOnEnter(boolean)} to true overrides
-	 * any conflicting key event based on {@link java.awt.event.KeyEvent#VK_ENTER} added via this method.
+	 * <p>Note that adding a key event conflicting with {@link #transferFocusOnEnter(boolean)}
+	 * disables focus transfer on Enter.
 	 * @param keyEventBuilder a key event builder to enable on the component
 	 * @return this builder instance
+	 * @see #transferFocusOnEnter(boolean)
 	 */
 	B keyEvent(KeyEvents.Builder keyEventBuilder);
 

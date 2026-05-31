@@ -516,7 +516,8 @@ public final class ChinookImpl extends DomainModel {
 										InvoiceLine.QUANTITY.as()
 														.column()
 														.nullable(false)
-														.defaultValue(1),
+														.defaultValue(1)
+														.minimum(1),
 										InvoiceLine.TOTAL.as()
 														.derived()
 														.from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
@@ -642,6 +643,7 @@ public final class ChinookImpl extends DomainModel {
 												Collection<Long> invoiceIds) {
 			Collection<Entity> invoices =
 							connection.select(where(Invoice.ID.in(invoiceIds))
+											.attributes(Invoice.TOTAL, Invoice.CALCULATED_TOTAL)
 											.forUpdate());
 
 			connection.update(invoices.stream()
@@ -717,13 +719,15 @@ public final class ChinookImpl extends DomainModel {
 	private static final class RaisePrice implements DatabaseFunction<EntityConnection, RaisePriceParameters, Collection<Entity>> {
 
 		@Override
-		public Collection<Entity> execute(EntityConnection entityConnection,
+		public Collection<Entity> execute(EntityConnection connection,
 		                                  RaisePriceParameters parameters) {
-			return entityConnection.updateSelect(entityConnection.select(
-											where(Track.ID.in(parameters.trackIds()))
-															.forUpdate()).stream()
+			List<Entity> tracks = connection.select(where(Track.ID.in(parameters.trackIds()))
+											.attributes(Track.UNITPRICE)
+											.forUpdate()).stream()
 							.map(track -> raisePrice(track, parameters.priceIncrease()))
-							.toList());
+							.toList();
+
+			return connection.updateSelect(tracks);
 		}
 
 		private static Entity raisePrice(Entity track, BigDecimal priceIncrease) {

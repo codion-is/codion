@@ -385,16 +385,12 @@ public interface EntityConnection extends AutoCloseable {
 	 * int updatedCount = connection.update(
 	 *     Update.where(Customer.EMAIL.isNull())
 	 *         .set(Customer.EMAIL, "noemail@example.com")
-	 *         .set(Customer.SUPPORTREP_ID, supportRepId)
-	 *         .build()
-	 * );
+	 *         .set(Customer.SUPPORTREP_ID, supportRepId));
 	 *
 	 * // Bulk price increase
 	 * int tracksUpdated = connection.update(
 	 *     Update.where(Track.GENRE_FK.equalTo(genre))
-	 *         .set(Track.UNITPRICE, newPrice)
-	 *         .build()
-	 * );
+	 *         .set(Track.UNITPRICE, newPrice));
 	 *}
 	 * @param update the update to perform
 	 * @return the number of affected rows
@@ -557,8 +553,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * // Select with composite condition
 	 * List<Entity> longExpensiveTracks = connection.select(and(
 	 *     Track.UNITPRICE.greaterThan(0.99),
-	 *     Track.MILLISECONDS.greaterThan(300_000)
-	 * ));
+	 *     Track.MILLISECONDS.greaterThan(300_000)));
 	 *}
 	 * @param condition the condition specifying which entities to select
 	 * @return entities based to the given condition
@@ -573,20 +568,17 @@ public interface EntityConnection extends AutoCloseable {
 	 * List<Entity> recentInvoices = connection.select(
 	 *     Select.where(Invoice.CUSTOMER_FK.equalTo(customer))
 	 *         .orderBy(OrderBy.descending(Invoice.DATE))
-	 *         .limit(10)
-	 * );
+	 *         .limit(10));
 	 *
 	 * // Select specific attributes only
 	 * List<Entity> trackInfo = connection.select(
 	 *     Select.where(Track.ALBUM_FK.equalTo(album))
-	 *         .attributes(Track.NAME, Track.MILLISECONDS)
-	 * );
+	 *         .attributes(Track.NAME, Track.MILLISECONDS));
 	 *
 	 * // Control foreign key fetching depth
 	 * List<Entity> tracks = connection.select(
 	 *     Select.where(Track.GENRE_FK.equalTo(genre))
-	 *         .referenceDepth(0)  // Don't fetch foreign keys
-	 * );
+	 *         .referenceDepth(0));  // Don't fetch foreign keys
 	 *}
 	 * @param select the select to perform
 	 * @return entities based to the given select
@@ -956,8 +948,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * {@snippet :
 	 * // Simple select with condition
 	 * List<Entity> metalTracks = connection.select(
-	 *     Select.where(Track.GENRE_FK.equalTo(metal))
-	 * );
+	 *     Select.where(Track.GENRE_FK.equalTo(metal)));
 	 *
 	 * // Complex select with multiple options
 	 * List<Entity> tracks = connection.select(
@@ -966,14 +957,12 @@ public interface EntityConnection extends AutoCloseable {
 	 *         .attributes(Track.NAME, Track.MILLISECONDS, Track.COMPOSER)
 	 *         .limit(50)
 	 *         .referenceDepth(Track.GENRE_FK, 0)  // Don't fetch genre
-	 *         .referenceDepth(Track.MEDIATYPE_FK, 1)  // Fetch media type
-	 * );
+	 *         .referenceDepth(Track.MEDIATYPE_FK, 1));  // Fetch media type
 	 *
 	 * // Select for update (row locking)
 	 * Entity invoice = connection.selectSingle(
 	 *     Select.where(Invoice.ID.equalTo(invoiceId))
-	 *         .forUpdate()
-	 * );
+	 *         .forUpdate());
 	 *}
 	 */
 	interface Select {
@@ -1059,15 +1048,13 @@ public interface EntityConnection extends AutoCloseable {
 		 * // Include a lazy blob column along with all defaults
 		 * List<Entity> countries = connection.select(
 		 *     Select.all(Country.TYPE)
-		 *         .include(Country.FLAG)  // FLAG is .selected(false)
-		 * );
+		 *         .include(Country.FLAG));  // FLAG is .selected(false)
 		 *
 		 * // Include lazy column with explicit attributes
 		 * List<Entity> countries = connection.select(
 		 *     Select.all(Country.TYPE)
 		 *         .attributes(Country.CODE, Country.NAME)
-		 *         .include(Country.FLAG)
-		 * );
+		 *         .include(Country.FLAG));
 		 *}
 		 * @return the attributes to include in addition to the base set
 		 * @see #attributes()
@@ -1085,15 +1072,13 @@ public interface EntityConnection extends AutoCloseable {
 		 * // Exclude an expensive computed column
 		 * List<Entity> employees = connection.select(
 		 *     Select.all(Employee.TYPE)
-		 *         .exclude(Employee.COMPUTED_BONUS)
-		 * );
+		 *         .exclude(Employee.COMPUTED_BONUS));
 		 *
 		 * // Exclude multiple columns
 		 * List<Entity> employees = connection.select(
 		 *     Select.all(Employee.TYPE)
 		 *         .include(Employee.PHOTO)
-		 *         .exclude(Employee.NOTES, Employee.RESUME)
-		 * );
+		 *         .exclude(Employee.NOTES, Employee.RESUME));
 		 *}
 		 * @return the attributes to exclude from the query result
 		 * @see #attributes()

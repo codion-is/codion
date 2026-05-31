@@ -1,0 +1,14 @@
+[#_entityeditor]
+= EntityEditor
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:url-javadoc: link:../api
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/CustomerEditModel.java[tags=customerEditModel]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/ArtistEditModel.java[tags=artistEditModel]
+----

@@ -7,6 +7,8 @@ include::{basedir}/manual/framework-entity-model.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-edit-model.adoc[leveloffset=+1]
 
+include::{basedir}/manual/framework-entity-editor.adoc[leveloffset=+1]
+
 include::{basedir}/manual/framework-entity-table-model.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-query-model.adoc[leveloffset=+1]
