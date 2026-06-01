@@ -37,6 +37,7 @@ Codion Change Log
 - EntitySearchModel.Search.result() renamed perform().
 - EntityPersistence.replaceable() removed, unused.
 - DefaultEntityEditor, minor refactoring.
+- DefaultSwingForeignKeyConditionModel, default operator now EQUAL if an equal operand combo box is available.
 ### is.codion.swing.framework.ui
 - EditorComponents.entries() and editorComponent() bug fixed, now exclude entries without a component.
 - EditorComponents.detail() added, removal implemented.

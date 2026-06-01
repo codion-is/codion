@@ -51,7 +51,7 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 		condition = ConditionModel.builder()
 						.valueClass(Entity.class)
 						.operators(builder.operators())
-						.operator(defaultOperator(builder))
+						.operator(equalComboBoxModel == null ? Operator.IN : Operator.EQUAL)
 						.operands(new ForeignKeyOperands())
 						.build();
 	}
@@ -92,16 +92,6 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 		}
 
 		return inSearchModel;
-	}
-
-	private static Operator defaultOperator(DefaultBuilder builder) {
-		if (builder.inSearchModel == null) {
-			return Operator.EQUAL;
-		}
-
-		boolean searchable = !builder.inSearchModel.entityDefinition().columns().searchable().isEmpty();
-
-		return searchable ? Operator.IN : Operator.EQUAL;
 	}
 
 	static final class DefaultBuilder implements Builder {
