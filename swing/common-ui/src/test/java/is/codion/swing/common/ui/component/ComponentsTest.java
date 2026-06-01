@@ -22,7 +22,6 @@ import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueList;
-import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.item.Item;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
@@ -1040,12 +1039,12 @@ public final class ComponentsTest {
 	}
 
 	@Test
-	void listBox() {
+	void listComboBox() {
 		Set<String> items = new HashSet<>(asList("one", "two", "three"));
 		ComponentValue<JComboBox<String>, Set<String>> componentValue =
-						Components.listBox()
-										.itemValue(Components.stringField().buildValue())
-										.linkedValue(ValueSet.valueSet(items))
+						Components.listComboBox()
+										.component(Components.stringField().buildValue())
+										.value(items)
 										.buildValue();
 		assertEquals(items, componentValue.get());
 	}

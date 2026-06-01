@@ -34,7 +34,7 @@ import is.codion.swing.common.ui.component.button.ToolBarBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
-import is.codion.swing.common.ui.component.listbox.ListBoxBuilder;
+import is.codion.swing.common.ui.component.listbox.ListComboBoxBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlexibleGridLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.FlowLayoutPanelBuilder;
@@ -172,16 +172,15 @@ public final class Components {
 
 	/**
 	 * Creates a {@link JComboBox} based {@link ComponentValue} instance, represented by the items
-	 * in the combo box (as opposed to the selected item). The provided {@code itemValue} supplies
-	 * new items to add to the combo box.
+	 * in the combo box (as opposed to the selected item).
 	 * <ul>
 	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value to the list
 	 * <li>{@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
 	 * </ul>
-	 * @return a new {@link ListBoxBuilder.ItemValueStep}
+	 * @return a new {@link ListComboBoxBuilder.ComponentStep}
 	 */
-	public static ListBoxBuilder.ItemValueStep listBox() {
-		return ListBoxBuilder.builder();
+	public static ListComboBoxBuilder.ComponentStep listComboBox() {
+		return ListComboBoxBuilder.builder();
 	}
 
 	/**

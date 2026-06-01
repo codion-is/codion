@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.listbox;
 
-import is.codion.common.reactive.value.ValueSet;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -32,51 +31,37 @@ import java.util.function.Function;
  * in the combo box (as opposed to the selected item)
  * @param <T> the value type
  */
-public interface ListBoxBuilder<T> extends ComponentValueBuilder<JComboBox<T>, Set<T>, ListBoxBuilder<T>> {
+public interface ListComboBoxBuilder<T> extends ComponentValueBuilder<JComboBox<T>, Set<T>, ListComboBoxBuilder<T>> {
 
 	/**
 	 * @param formatter formats an item for display in the list
 	 * @return this builder instance
 	 */
-	ListBoxBuilder<T> formatter(Function<Object, String> formatter);
+	ListComboBoxBuilder<T> formatter(Function<T, String> formatter);
 
 	/**
-	 * Provides a {@link LinkedValueBuilder}
+	 * Provides a {@link ListComboBoxBuilder}
 	 */
-	interface ItemValueStep {
+	interface ComponentStep {
 
 		/**
-		 * @param itemValue supplies new items to add to the list box.
+		 * @param component supplies new items to add to the list box.
 		 * @param <T> the item type
-		 * @return a {@link LinkedValueBuilder}
+		 * @return a {@link ListComboBoxBuilder}
 		 */
-		<T> ListBoxBuilder.LinkedValueBuilder<T> itemValue(ComponentValue<? extends JComponent, T> itemValue);
-	}
-
-	/**
-	 * Provides a {@link ListBoxBuilder}
-	 * @param <T> the item type
-	 */
-	interface LinkedValueBuilder<T> {
-
-		/**
-		 * @param linkedValue the linked value
-		 * @return a {@link ListBoxBuilder}
-		 */
-		ListBoxBuilder<T> linkedValue(ValueSet<T> linkedValue);
+		<T> ListComboBoxBuilder<T> component(ComponentValue<? extends JComponent, T> component);
 	}
 
 	/**
 	 * Creates a {@link JComboBox} based {@link ComponentValue} instance, represented by the items
-	 * in the combo box (as opposed to the selected item). The provided {@code itemValue} supplies
-	 * new items to add to the combo box.
+	 * in the combo box (as opposed to the selected item).
 	 * <ul>
 	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value whereas
 	 * <li>{@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
 	 * </ul>
 	 * @return a new {@link ComponentValue}
 	 */
-	static ItemValueStep builder() {
-		return DefaultListBoxBuilder.ITEM;
+	static ComponentStep builder() {
+		return ListComboBox.DefaultBuilder.ITEM;
 	}
 }

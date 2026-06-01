@@ -40,7 +40,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.swing.common.ui.component.Components.listBox;
+import static is.codion.swing.common.ui.component.Components.listComboBox;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 
@@ -107,9 +107,9 @@ public class EntityConditionComponents implements ConditionComponents {
 			return createInForeignKeyField((ForeignKeyConditionModel) conditionModel);
 		}
 
-		return listBox()
-						.itemValue(inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute()).buildValue())
-						.linkedValue(conditionModel.operands().in())
+		return listComboBox()
+						.component(inputComponents.component(((ColumnConditionModel<T>) conditionModel).attribute()).buildValue())
+						.link(conditionModel.operands().in())
 						.build();
 	}
 

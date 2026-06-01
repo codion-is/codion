@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.75
+### is.codion.swing.common.ui
+- ListComboBox refactored and simplified.
 
 ## 0.18.74
 ### is.codion.common.utilities

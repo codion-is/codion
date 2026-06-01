@@ -435,9 +435,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * @return a component linked to the in operands
 		 */
 		default <T> JComponent in(ConditionModel<T> conditionModel) {
-			return listBox()
-							.itemValue(createField(conditionModel).buildValue())
-							.linkedValue(conditionModel.operands().in())
+			return listComboBox()
+							.component(createField(conditionModel).buildValue())
+							.link(conditionModel.operands().in())
 							.build();
 		}
 	}
