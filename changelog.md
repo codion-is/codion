@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.75
+
 ## 0.18.74
 ### is.codion.common.utilities
 - ProxyBuilder default method handling added.
