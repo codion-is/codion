@@ -814,6 +814,7 @@ is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
 
 |deleting|Deleting|Eyði
 |inserting|Inserting|Vista
+|refreshing|Refreshing|Endurhleð
 |updating|Updating|Uppfæri
 |===
 

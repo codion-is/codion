@@ -371,8 +371,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 			/**
 			 * Notifies listeners that the refresh has been performed.
 			 * Must be called on the UI thread if the editor is linked to UI components.
+			 * @return the refreshed entity
 			 */
-			void handle();
+			Entity handle();
 		}
 	}
 
@@ -476,6 +477,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * @return a task for refreshing the active entity
+		 * @throws IllegalStateException in case the active entity does not exist
+		 * @see #exists()
 		 */
 		RefreshTask refresh();
 	}
@@ -615,7 +618,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * Refreshes the active Entity from the database, discarding all changes.
-		 * If the active Entity is new then calling this method has no effect.
+		 * @throws IllegalStateException in case the active entity does not exist
 		 * @see #exists()
 		 */
 		void refresh();

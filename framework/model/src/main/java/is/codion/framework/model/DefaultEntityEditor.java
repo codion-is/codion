@@ -629,6 +629,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 	private final class DefaultEditorTasks implements EditorTasks {
 
 		private static final String NOT_MODIFIED = "Entity is not modified: ";
+		private static final String REFRESH = "refresh {}";
 		private static final String INSERT = "insert {}";
 		private static final String UPDATE = "update {}";
 		private static final String DELETE = "delete {}";
@@ -750,9 +751,11 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 		@Override
 		public RefreshTask refresh() {
-			return new DefaultRefreshTask(entity.instance.copy().builder()
-								.original() // in case of modifications
-								.build());
+			if (!exists().is()) {
+				throw new IllegalStateException("Can not refresh a non-existing entity");
+			}
+
+			return new DefaultRefreshTask(entity.instance.originalPrimaryKey());
 		}
 
 		private final class InsertDetail implements PersistTask<Entity> {
@@ -1116,29 +1119,28 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 		private final class DefaultRefreshTask implements RefreshTask {
 
-			private final Entity original;
+			private final Entity.Key key;
 
-			private DefaultRefreshTask(Entity original) {
-				this.original = original;
+			private DefaultRefreshTask(Entity.Key key) {
+				this.key = key;
 			}
 
 			@Override
 			public Result perform() {
-				if (exists().is()) {
-					Entity selected = connection.selectSingle(where(key(original.primaryKey()))
-									.include(entityDefinition.columns().definitions().stream()
-													.filter(definition -> !definition.selected())
-													.map(ColumnDefinition::attribute)
-													.filter(entity.instance::contains)
-													.collect(toSet())))
-									.immutable();// passed on to detail Select providers
-					return () -> {
-						entity.setDetail(selected);
-						entity.set(selected);
-					};
-				}
+				LOG.debug(REFRESH, key);
+				Entity refreshed = connection.selectSingle(where(key(key))
+												.include(entityDefinition.columns().definitions().stream()
+																.filter(definition -> !definition.selected())
+																.map(ColumnDefinition::attribute)
+																.filter(entity.instance::contains)
+																.collect(toSet())))
+								.immutable();// passed on to detail Select providers
+				return () -> {
+					entity.setDetail(refreshed);
+					entity.set(refreshed);
 
-				return () -> {};
+					return refreshed;
+				};
 			}
 		}
 	}

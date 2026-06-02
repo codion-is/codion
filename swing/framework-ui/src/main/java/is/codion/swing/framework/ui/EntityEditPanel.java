@@ -41,6 +41,7 @@ import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityEditor.PersistTask;
 import is.codion.framework.model.EntityEditor.PersistTask.Result;
+import is.codion.framework.model.EntityEditor.RefreshTask;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -189,7 +190,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 	private final SwingEntityEditModel editModel;
 	private final EditorComponents components;
-	private final PersistCommands commands = new PersistCommands();
+	private final EditPanelCommands commands = new EditPanelCommands();
 	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final FocusedListener focusedListener = new FocusedListener(this);
@@ -342,6 +343,13 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
+	 * <p>Refreshes the active entity.
+	 */
+	public final void refresh() {
+		commands.refresh().execute();
+	}
+
+	/**
 	 * <p>Performs insert on the active entity.
 	 * <p>If insert confirmation is enabled, confirmation is requested first using
 	 * the {@link Confirmer} specified via {@link Config#insertConfirmer(Confirmer)}.
@@ -392,9 +400,9 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
-	 * @return the {@link PersistCommands} instance
+	 * @return the {@link EditPanelCommands} instance
 	 */
-	public final PersistCommands commands() {
+	public final EditPanelCommands commands() {
 		return commands;
 	}
 
@@ -1309,11 +1317,19 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
-	 * Provides async persist commands.
+	 * Provides async commands.
 	 */
-	public final class PersistCommands {
+	public final class EditPanelCommands {
 
-		private PersistCommands() {}
+		private EditPanelCommands() {}
+
+		/**
+		 * Returns an async refresh command builder
+		 * @return a new async refresh command builder
+		 */
+		public RefreshCommand.Builder refresh() {
+			return new DefaultRefreshCommand.DefaultBuilder(EntityEditPanel.this);
+		}
 
 		/**
 		 * Returns an async insert command builder
@@ -1337,6 +1353,43 @@ public abstract class EntityEditPanel extends JPanel {
 		 */
 		public DeleteCommand.Builder delete() {
 			return new DefaultDeleteCommand.DefaultBuilder(EntityEditPanel.this);
+		}
+	}
+
+	/**
+	 * Performs a refresh.
+	 */
+	public interface RefreshCommand extends Command {
+
+		@Override
+		void execute();
+
+		/**
+		 * Builds an async refresh command
+		 */
+		interface Builder {
+
+			/**
+			 * @param onRefresh called after a successful refresh
+			 * @return this builder instance
+			 */
+			Builder onRefresh(Runnable onRefresh);
+
+			/**
+			 * @param onRefresh called after a successful refresh
+			 * @return this builder instance
+			 */
+			Builder onRefresh(Consumer<Entity> onRefresh);
+
+			/**
+			 * Builds and executes this command
+			 */
+			void execute();
+
+			/**
+			 * @return the command
+			 */
+			RefreshCommand build();
 		}
 	}
 
@@ -1691,6 +1744,67 @@ public abstract class EntityEditPanel extends JPanel {
 				JComponent afterInsert = component.get();
 
 				return afterInsert == null ? initial.get() : afterInsert;
+			}
+		}
+	}
+
+	private static final class DefaultRefreshCommand implements RefreshCommand {
+
+		private final EntityEditPanel editPanel;
+		private final Collection<Consumer<Entity>> onRefresh;
+
+		private DefaultRefreshCommand(DefaultBuilder builder) {
+			this.editPanel = builder.editPanel;
+			this.onRefresh = builder.onRefresh;
+		}
+
+		@Override
+		public void execute() {
+			RefreshTask task = editPanel.editor().tasks().refresh();
+			Dialogs.progressWorker()
+							.task(task::perform)
+							.title(MESSAGES.getString("refreshing"))
+							.owner(editPanel)
+							.onResult(this::handleResult)
+							.onException(editPanel::handleException)
+							.execute();
+		}
+
+		private void handleResult(RefreshTask.Result result) {
+			Entity entity = result.handle();
+			onRefresh.forEach(consumer -> consumer.accept(entity));
+		}
+
+		private static final class DefaultBuilder implements Builder {
+
+			private final EntityEditPanel editPanel;
+			private final Collection<Consumer<Entity>> onRefresh = new ArrayList<>(1);
+
+			private DefaultBuilder(EntityEditPanel editPanel) {
+				this.editPanel = editPanel;
+			}
+
+			@Override
+			public Builder onRefresh(Runnable onRefresh) {
+				requireNonNull(onRefresh);
+
+				return onRefresh(refreshed -> onRefresh.run());
+			}
+
+			@Override
+			public Builder onRefresh(Consumer<Entity> onRefresh) {
+				this.onRefresh.add(requireNonNull(onRefresh));
+				return this;
+			}
+
+			@Override
+			public void execute() {
+				build().execute();
+			}
+
+			@Override
+			public RefreshCommand build() {
+				return new DefaultRefreshCommand(this);
 			}
 		}
 	}

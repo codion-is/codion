@@ -77,6 +77,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.reactive.state.State.and;
 import static is.codion.common.utilities.Configuration.*;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -221,7 +222,7 @@ public class EntityPanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
-		 * Refreshes the table.
+		 * Refreshes the table, if available, otherwise the entity being edited.
 		 */
 		public static final ControlKey<CommandControl> REFRESH = CommandControl.key("refresh");
 		/**
@@ -877,6 +878,20 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
+	 * @return a Control instance for refreshing the active entity
+	 */
+	private CommandControl createRefreshEntityControl() {
+		return Control.builder()
+						.command(editPanel::refresh)
+						.caption(Messages.refresh())
+						.enabled(and(editPanel.active(), editPanel.editor().exists()))
+						.description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
+						.mnemonic(Messages.refreshMnemonic())
+						.icon(ICONS.refresh())
+						.build();
+	}
+
+	/**
 	 * Initializes the edit panel, if one is available.
 	 */
 	protected final void initializeEditPanel() {
@@ -1145,6 +1160,9 @@ public class EntityPanel extends JPanel {
 		controlMap.control(NAVIGATE_RIGHT).set(command(new Navigate(RIGHT)));
 		if (containsTablePanel()) {
 			controlMap.control(REFRESH).set(createRefreshTableControl());
+		}
+		else if (containsEditPanel()) {
+			controlMap.control(REFRESH).set(createRefreshEntityControl());
 		}
 	}
 

@@ -164,7 +164,7 @@ public final class DefaultEntityEditModelTest {
 		connection.startTransaction();
 		try {
 			Entity employee = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
-			editor.entity().refresh();
+			assertThrows(IllegalStateException.class, () -> editor.entity().refresh());
 			editor.entity().set(employee);
 			employee.set(Employee.NAME, "NOONE");
 			connection.update(employee);
