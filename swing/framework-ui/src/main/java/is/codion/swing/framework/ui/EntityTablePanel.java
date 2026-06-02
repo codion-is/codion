@@ -43,7 +43,7 @@ import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditor.PersistTask.Result;
+import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;

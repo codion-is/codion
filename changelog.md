@@ -12,6 +12,8 @@ Codion Change Log
 - InputPanelBuilder.label(text) added.
 ### is.codion.framework.model
 - EntityEditor.tasks().refresh() now throws if the entity does not exist.
+- EntityEditor.PersistTask renamed EditorTask, RefreshTask removed.
+- DefaultEntityEditor, refresh task now loads details as well.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.RefreshCommand added.
 - EntityPanel.ControlKeys.REFRESH control now refreshes the active entity if table is not available.

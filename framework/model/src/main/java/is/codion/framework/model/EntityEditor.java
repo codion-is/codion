@@ -308,15 +308,16 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
-	 * <p>Represents a task for persisting entities, inserting, updating or deleting, split up for use with a background thread.
-	 * <p>A {@link PersistTask} captures entity state and fires "before" events at creation time.
+	 * <p>Represents a background enabled task for entities, used for inserting, updating, deleting or refreshing,
+	 * split up for use with a background thread.
+	 * <p>A {@link EditorTask} captures entity state and fires "before" events at creation time.
 	 * It should be executed promptly after creation, not cached for later use.
 	 * {@snippet :
 	 *   // Must be called on the UI thread, fires "before" events and captures entity state
-	 *   PersistTask<Entity> task = editor.tasks().insert();
+	 *   EditorTask<Entity> task = editor.tasks().insert();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   PersistTask.Result<Entity> result = task.perform();
+	 *   EditorTask.Result<Entity> result = task.perform();
 	 *
 	 *   // Must be called on the UI thread, fires "after" events
 	 *   Entity insertedEntity = result.handle();
@@ -325,10 +326,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * @see EditorTasks
 	 */
 	@FunctionalInterface
-	interface PersistTask<T> {
+	interface EditorTask<T> {
 
 		/**
-		 * Performs the persist operation. May be called on a background thread.
+		 * Performs the task. May be called on a background thread.
 		 * @return the task result
 		 */
 		Result<T> perform();
@@ -350,34 +351,6 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	}
 
 	/**
-	 * A task for refreshing the active entity.
-	 * If the active entity does not exist, this task does nothing.
-	 */
-	@FunctionalInterface
-	interface RefreshTask {
-
-		/**
-		 * Performs the refresh operation. May be called on a background thread.
-		 * @return the task result
-		 */
-		Result perform();
-
-		/**
-		 * The task result
-		 */
-		@FunctionalInterface
-		interface Result {
-
-			/**
-			 * Notifies listeners that the refresh has been performed.
-			 * Must be called on the UI thread if the editor is linked to UI components.
-			 * @return the refreshed entity
-			 */
-			Entity handle();
-		}
-	}
-
-	/**
 	 * Manages the {@link EntityPersistence} used by this editor
 	 */
 	interface EditorPersistence {
@@ -394,7 +367,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	}
 
 	/**
-	 * <p>Provides factory methods for creating {@link PersistTask} and {@link RefreshTask} instances.
+	 * <p>Provides factory methods for creating {@link EditorTask} instances.
 	 * <p>Each factory method validates the input, captures entity state and fires "before" events.
 	 * Must be called on the UI thread if the editor is linked to UI components.
 	 * The returned task should be executed promptly, not cached for later use.
@@ -406,7 +379,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled
 		 */
-		PersistTask<Entity> insert() throws EntityValidationException;
+		EditorTask<Entity> insert() throws EntityValidationException;
 
 		/**
 		 * @param before called on the entity before it is inserted
@@ -414,7 +387,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled
 		 */
-		PersistTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException;
+		EditorTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException;
 
 		/**
 		 * @param entity the entity
@@ -422,7 +395,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled
 		 */
-		PersistTask<Entity> insert(Entity entity) throws EntityValidationException;
+		EditorTask<Entity> insert(Entity entity) throws EntityValidationException;
 
 		/**
 		 * @param entities the entities
@@ -430,14 +403,14 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case inserting is not enabled
 		 */
-		PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException;
+		EditorTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * @return a task for updating the active entity
 		 * @throws EntityValidationException in case of validation failure
 		 * @throws IllegalStateException in case updating is not enabled
 		 */
-		PersistTask<Entity> update() throws EntityValidationException;
+		EditorTask<Entity> update() throws EntityValidationException;
 
 		/**
 		 * @param entity the entity
@@ -445,7 +418,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @throws IllegalStateException in case the entity is not modified or if updating is not enabled
 		 * @throws EntityValidationException in case of validation failure
 		 */
-		PersistTask<Entity> update(Entity entity) throws EntityValidationException;
+		EditorTask<Entity> update(Entity entity) throws EntityValidationException;
 
 		/**
 		 * @param entities the entities
@@ -453,34 +426,34 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @throws IllegalStateException in case the entity is not modified or if updating is not enabled
 		 * @throws EntityValidationException in case of validation failure
 		 */
-		PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException;
+		EditorTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException;
 
 		/**
 		 * @return a task for deleting the active entity
 		 * @throws IllegalStateException in case deleting is not enabled
 		 */
-		PersistTask<Entity> delete();
+		EditorTask<Entity> delete();
 
 		/**
 		 * @param entity the entity
 		 * @return a task for deleting the given entity
 		 * @throws IllegalStateException in case deleting is not enabled
 		 */
-		PersistTask<Entity> delete(Entity entity);
+		EditorTask<Entity> delete(Entity entity);
 
 		/**
 		 * @param entities the entities
 		 * @return a task for deleting the given entities
 		 * @throws IllegalStateException in case deleting is not enabled
 		 */
-		PersistTask<Collection<Entity>> delete(Collection<Entity> entities);
+		EditorTask<Collection<Entity>> delete(Collection<Entity> entities);
 
 		/**
 		 * @return a task for refreshing the active entity
 		 * @throws IllegalStateException in case the active entity does not exist
 		 * @see #exists()
 		 */
-		RefreshTask refresh();
+		EditorTask<Entity> refresh();
 	}
 
 	/**

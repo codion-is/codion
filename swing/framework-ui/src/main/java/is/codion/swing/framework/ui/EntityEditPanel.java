@@ -39,9 +39,8 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorEntity;
-import is.codion.framework.model.EntityEditor.PersistTask;
-import is.codion.framework.model.EntityEditor.PersistTask.Result;
-import is.codion.framework.model.EntityEditor.RefreshTask;
+import is.codion.framework.model.EntityEditor.EditorTask;
+import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -1760,7 +1759,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 		@Override
 		public void execute() {
-			RefreshTask task = editPanel.editor().tasks().refresh();
+			EditorTask<Entity> task = editPanel.editor().tasks().refresh();
 			Dialogs.progressWorker()
 							.task(task::perform)
 							.title(MESSAGES.getString("refreshing"))
@@ -1770,9 +1769,9 @@ public abstract class EntityEditPanel extends JPanel {
 							.execute();
 		}
 
-		private void handleResult(RefreshTask.Result result) {
-			Entity entity = result.handle();
-			onRefresh.forEach(consumer -> consumer.accept(entity));
+		private void handleResult(Result<Entity> result) {
+			Entity refreshed = result.handle();
+			onRefresh.forEach(consumer -> consumer.accept(refreshed));
 		}
 
 		private static final class DefaultBuilder implements Builder {
@@ -1828,7 +1827,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmInsert()) {
-				PersistTask<Entity> task = editPanel.editor().tasks().insert();
+				EditorTask<Entity> task = editPanel.editor().tasks().insert();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("inserting"))
@@ -1926,7 +1925,7 @@ public abstract class EntityEditPanel extends JPanel {
 		@Override
 		public void execute() throws EntityValidationException {
 			if (!confirm || editPanel.confirmUpdate()) {
-				PersistTask<Entity> task = editPanel.editor().tasks().update();
+				EditorTask<Entity> task = editPanel.editor().tasks().update();
 				Dialogs.progressWorker()
 								.task(task::perform)
 								.title(MESSAGES.getString("updating"))

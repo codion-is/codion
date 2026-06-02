@@ -458,6 +458,15 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 						});
 	}
 
+	private Map<EntityEditor<?>, Entity> loadDetail(Entity master, EntityConnection connection) {
+		Map<EntityEditor<?>, @Nullable Entity> loaded = new LinkedHashMap<>(detail.editors.size());
+		for (DetailEditor detail : detail.editors.values()) {
+			loaded.put(detail.editor, detail.link.entity.detail(master, connection));
+		}
+
+		return loaded;
+	}
+
 	private interface ValueSupplier {
 		<T> @Nullable T get(AttributeDefinition<T> attributeDefinition);
 	}
@@ -559,6 +568,11 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			tasks().refresh().perform().handle();
 		}
 
+		private void refresh(Entity entity) {
+			setOrDefaults(entity);
+			replaced.accept(entity);
+		}
+
 		private void setDetail(@Nullable Entity master) {
 			if (master == null) {
 				detail.editors.values().forEach(editor -> editor.editor.entity().set(null));
@@ -577,15 +591,6 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 				Map<EntityEditor<?>, Entity> loaded = loadDetail(master, connectionProvider.connection());
 				loaded.forEach((editor, entity) -> editor.entity().replace(entity));
 			}
-		}
-
-		private Map<EntityEditor<?>, Entity> loadDetail(Entity master, EntityConnection connection) {
-			Map<EntityEditor<?>, @Nullable Entity> loaded = new HashMap<>(detail.editors.size());
-			for (DetailEditor detail : detail.editors.values()) {
-				loaded.put(detail.editor, detail.link.entity.detail(master, connection));
-			}
-
-			return loaded;
 		}
 
 		private void setOrDefaults(@Nullable Entity entity) {
@@ -641,12 +646,12 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Entity> insert() throws EntityValidationException {
+		public EditorTask<Entity> insert() throws EntityValidationException {
 			return insert(e -> {});
 		}
 
 		@Override
-		public PersistTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException {
+		public EditorTask<Entity> insert(Consumer<Entity> before) throws EntityValidationException {
 			settings.verifyInsertEnabled();
 			validate();
 			Entity entity = entity().get().copy().mutable();
@@ -656,7 +661,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Entity> insert(Entity entity) throws EntityValidationException {
+		public EditorTask<Entity> insert(Entity entity) throws EntityValidationException {
 			settings.verifyInsertEnabled();
 			validate(requireNonNull(entity));
 			entity = entity.copy().mutable();
@@ -666,7 +671,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
+		public EditorTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
 			settings.verifyInsertEnabled();
 			validate(requireNonNull(entities));
 			entities = unmodifiableCollection(new ArrayList<>(entities));
@@ -676,7 +681,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Entity> update() throws EntityValidationException {
+		public EditorTask<Entity> update() throws EntityValidationException {
 			settings.verifyUpdateEnabled(1);
 			validate();
 			if (!modified().is()) {
@@ -689,7 +694,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Entity> update(Entity entity) throws EntityValidationException {
+		public EditorTask<Entity> update(Entity entity) throws EntityValidationException {
 			settings.verifyUpdateEnabled(1);
 			validate(requireNonNull(entity));
 			if (!entity.modified()) {
@@ -702,7 +707,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException {
+		public EditorTask<Collection<Entity>> update(Collection<Entity> entities) throws EntityValidationException {
 			settings.verifyUpdateEnabled(requireNonNull(entities).size());
 			validate(entities);
 			for (Entity entity : entities) {
@@ -717,7 +722,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Entity> delete() {
+		public EditorTask<Entity> delete() {
 			settings.verifyDeleteEnabled();
 			Entity entity = entity().get().copy().mutable();
 			entity.revert();// in case of a modified primary key
@@ -727,7 +732,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Entity> delete(Entity entity) {
+		public EditorTask<Entity> delete(Entity entity) {
 			settings.verifyDeleteEnabled();
 			entity = requireNonNull(entity).copy().mutable();
 			entity.revert();// in case of a modified primary key
@@ -737,7 +742,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public PersistTask<Collection<Entity>> delete(Collection<Entity> entities) {
+		public EditorTask<Collection<Entity>> delete(Collection<Entity> entities) {
 			settings.verifyDeleteEnabled();
 			entities = unmodifiableCollection(requireNonNull(entities).stream()
 							.map(entity -> entity.copy().builder()
@@ -750,18 +755,18 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		@Override
-		public RefreshTask refresh() {
+		public EditorTask<Entity> refresh() {
 			if (!exists().is()) {
 				throw new IllegalStateException("Can not refresh a non-existing entity");
 			}
 
-			return new DefaultRefreshTask(entity.instance.originalPrimaryKey());
+			return new RefreshEditor();
 		}
 
-		private final class InsertDetail implements PersistTask<Entity> {
+		private final class InsertDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
-			private final Collection<PersistTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
+			private final Collection<EditorTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
 			private final Consumer<Entity> before;
 
 			private @Nullable Entity inserted;
@@ -798,7 +803,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			private Collection<Result<Entity>> detail() {
 				return tasks.stream()
-								.map(PersistTask::perform)
+								.map(EditorTask::perform)
 								.collect(toList());
 			}
 
@@ -807,10 +812,10 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class UpdateDetail implements PersistTask<Entity> {
+		private final class UpdateDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
-			private final Collection<PersistTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
+			private final Collection<EditorTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
 
 			private @Nullable Entity updated;
 
@@ -853,7 +858,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			private Collection<Result<Entity>> detail() {
 				return tasks.stream()
-								.map(PersistTask::perform)
+								.map(EditorTask::perform)
 								.collect(toList());
 			}
 
@@ -862,10 +867,10 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class DeleteDetail implements PersistTask<Entity> {
+		private final class DeleteDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
-			private final Collection<PersistTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
+			private final Collection<EditorTask<Entity>> tasks = new ArrayList<>(detail.editors.size());
 
 			private DeleteDetail(Entity entity) {
 				this.entity = entity;
@@ -896,12 +901,12 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 			private Collection<Result<Entity>> detail() {
 				return tasks.stream()
-								.map(PersistTask::perform)
+								.map(EditorTask::perform)
 								.collect(toList());
 			}
 		}
 
-		private final class InsertEditor implements PersistTask<Entity> {
+		private final class InsertEditor implements EditorTask<Entity> {
 
 			private final Entity entity;
 			private final Consumer<Entity> before;
@@ -925,7 +930,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class UpdateEditor implements PersistTask<Entity> {
+		private final class UpdateEditor implements EditorTask<Entity> {
 
 			private final Entity entity;
 
@@ -946,7 +951,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class DeleteEditor implements PersistTask<Entity> {
+		private final class DeleteEditor implements EditorTask<Entity> {
 
 			private final Entity entity;
 
@@ -967,7 +972,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class InsertEntity implements PersistTask<Entity> {
+		private final class InsertEntity implements EditorTask<Entity> {
 
 			private final Entity entity;
 
@@ -987,7 +992,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class InsertEntities implements PersistTask<Collection<Entity>> {
+		private final class InsertEntities implements EditorTask<Collection<Entity>> {
 
 			private final Collection<Entity> entities;
 
@@ -1007,7 +1012,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class UpdateEntity implements PersistTask<Entity> {
+		private final class UpdateEntity implements EditorTask<Entity> {
 
 			private final Entity entity;
 
@@ -1027,7 +1032,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class UpdateEntities implements PersistTask<Collection<Entity>> {
+		private final class UpdateEntities implements EditorTask<Collection<Entity>> {
 
 			private final Collection<Entity> entities;
 
@@ -1077,7 +1082,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class DeleteEntity implements PersistTask<Entity> {
+		private final class DeleteEntity implements EditorTask<Entity> {
 
 			private final Entity entity;
 
@@ -1097,7 +1102,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class DeleteEntities implements PersistTask<Collection<Entity>> {
+		private final class DeleteEntities implements EditorTask<Collection<Entity>> {
 
 			private final Collection<Entity> entities;
 
@@ -1117,16 +1122,16 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 		}
 
-		private final class DefaultRefreshTask implements RefreshTask {
+		private final class RefreshEditor implements EditorTask<Entity> {
 
 			private final Entity.Key key;
 
-			private DefaultRefreshTask(Entity.Key key) {
-				this.key = key;
+			private RefreshEditor() {
+				this.key = entity.instance.originalPrimaryKey();
 			}
 
 			@Override
-			public Result perform() {
+			public Result<Entity> perform() {
 				LOG.debug(REFRESH, key);
 				Entity refreshed = connection.selectSingle(where(key(key))
 												.include(entityDefinition.columns().definitions().stream()
@@ -1135,9 +1140,10 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 																.filter(entity.instance::contains)
 																.collect(toSet())))
 								.immutable();// passed on to detail Select providers
+				Map<EntityEditor<?>, Entity> details = loadDetail(refreshed, connectionProvider.connection());
 				return () -> {
-					entity.setDetail(refreshed);
-					entity.set(refreshed);
+					details.forEach((detailEditor, detailEntity) -> detailEditor.entity().replace(detailEntity));
+					entity.refresh(refreshed);
 
 					return refreshed;
 				};
