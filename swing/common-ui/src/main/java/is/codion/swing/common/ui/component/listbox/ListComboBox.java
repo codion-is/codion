@@ -35,11 +35,13 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -48,6 +50,7 @@ import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Collections.emptySet;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
 
@@ -215,11 +218,12 @@ final class ListComboBox<T> extends JComboBox<T> {
 			@Override
 			protected Set<T> getComponentValue() {
 				ListComboBox<T> comboBox = (ListComboBox<T>) component();
-				Set<T> result = new LinkedHashSet<>();
-				comboBox.componentValue().optional().ifPresent(result::add);
-				result.addAll(comboBox.getModel().items().included().get());
+				List<T> items = new ArrayList<>(comboBox.getModel().getSize() + 1);
+				comboBox.componentValue().optional().ifPresent(items::add);
+				items.addAll(comboBox.getModel().items().included().get());
+				items.sort(comparing(Objects::toString));
 
-				return result;
+				return new LinkedHashSet<>(items);
 			}
 
 			@Override

@@ -8,6 +8,7 @@ Codion Change Log
 - CalendarPanel.supportedTypes() replaced with supports(class).
 - ColumnConditionPanel.ConditionComponents.supportsType() renamed supports().
 - TemporalField.Builder.incrementDecrementEnabled() renamed adjustable(), ADJUSTABLE configuration value added.
+- ListComboBox bug fixed, value order now consistent.
 
 ## 0.18.74
 ### is.codion.common.utilities
