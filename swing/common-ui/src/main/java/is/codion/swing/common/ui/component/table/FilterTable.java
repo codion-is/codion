@@ -1172,7 +1172,7 @@ public final class FilterTable<R, C> extends JTable {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			ConditionComponents components = filterComponents.getOrDefault(identifier, FILTER_COMPONENTS);
-			if (columnModel().contains(identifier) && components.supportsType(condition.valueClass())) {
+			if (columnModel().contains(identifier) && components.supports(condition.valueClass())) {
 				conditionPanels.put(identifier, ColumnConditionPanel.builder()
 								.model(condition)
 								.components(components)

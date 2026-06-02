@@ -1499,7 +1499,7 @@ public class EntityTablePanel extends JPanel {
 			Attribute<?> attribute = conditionEntry.getKey();
 			if (table.columnModel().contains(attribute)) {
 				ConditionComponents components = configuration.conditionComponents.getOrDefault(attribute, defaultComponents);
-				if (components.supportsType(attribute.type().valueClass())) {
+				if (components.supports(attribute.type().valueClass())) {
 					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, components));
 				}
 			}

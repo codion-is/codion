@@ -357,7 +357,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		@Override
 		public Builder<T> components(ConditionComponents components) {
-			if (!requireNonNull(components).supportsType(conditionModel.valueClass())) {
+			if (!requireNonNull(components).supports(conditionModel.valueClass())) {
 				throw new IllegalArgumentException("ConditionComponents does not support the value type: " + conditionModel.valueClass());
 			}
 
@@ -392,7 +392,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * @param valueClass the value class
 		 * @return true if the type is supported
 		 */
-		default boolean supportsType(Class<?> valueClass) {
+		default boolean supports(Class<?> valueClass) {
 			return SUPPORTED_COMPONENT_TYPES.contains(requireNonNull(valueClass));
 		}
 

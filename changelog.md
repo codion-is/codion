@@ -6,6 +6,7 @@ Codion Change Log
 - ListComboBox refactored and simplified.
 - TemporalFieldPanel.supports() removed.
 - CalendarPanel.supportedTypes() replaced with supports(class).
+- ColumnConditionPanel.ConditionComponents.supportsType() renamed supports().
 
 ## 0.18.74
 ### is.codion.common.utilities
