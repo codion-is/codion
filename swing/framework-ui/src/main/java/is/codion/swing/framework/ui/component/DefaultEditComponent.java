@@ -23,7 +23,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
+import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditor;
 
@@ -129,7 +129,7 @@ public class DefaultEditComponent<C extends JComponent, T> implements EditCompon
 
 	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<C, T> createTemporalComponentValue(A attribute,
 																																																										 EntityComponents inputComponents) {
-		if (TemporalFieldPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
+		if (CalendarPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
 			return (ComponentValue<C, T>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute).buildValue();
 		}
 

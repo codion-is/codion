@@ -72,12 +72,9 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.WeekFields;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -94,8 +91,6 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.time.ZoneId.getAvailableZoneIds;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableSet;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -204,9 +199,6 @@ public final class CalendarPanel extends JPanel {
 
 		private ControlKeys() {}
 	}
-
-	private static final Set<Class<? extends Temporal>> SUPPORTED_TYPES =
-					unmodifiableSet(new HashSet<>(asList(LocalDate.class, LocalDateTime.class)));
 
 	private static final int YEAR_COLUMNS = 4;
 	private static final int TIME_COLUMNS = 2;
@@ -367,10 +359,15 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	/**
-	 * @return the temporal types supported by this calendar panel
+	 * {@link CalendarPanel} supports {@link LocalDate} and {@link LocalDateTime}.
+	 * @param temporalClass the temporal type
+	 * @param <T> the temporal type
+	 * @return true if {@link CalendarPanel} supports the given type
 	 */
-	public static Collection<Class<? extends Temporal>> supportedTypes() {
-		return SUPPORTED_TYPES;
+	public static boolean supports(Class<? extends Temporal> temporalClass) {
+		requireNonNull(temporalClass);
+
+		return temporalClass.equals(LocalDate.class) || temporalClass.equals(LocalDateTime.class);
 	}
 
 	/**

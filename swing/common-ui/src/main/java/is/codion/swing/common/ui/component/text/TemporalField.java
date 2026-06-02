@@ -242,7 +242,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	private @Nullable CommandControl createCalendarControl() {
-		if (CalendarPanel.supportedTypes().contains(temporalClass)) {
+		if (CalendarPanel.supports(temporalClass)) {
 			return Control.builder()
 							.command(this::displayCalendar)
 							.caption(calendarIcon == null ? "..." : null)

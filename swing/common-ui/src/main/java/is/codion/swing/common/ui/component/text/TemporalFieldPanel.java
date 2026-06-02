@@ -39,8 +39,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.Optional;
 
@@ -50,7 +48,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A panel for a TemporalField with button for displaying a calendar
  * @param <T> the Temporal type supplied by this panel
- * @see #supports(Class)
+ * @see CalendarPanel#supports(Class)
  */
 public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
@@ -108,16 +106,6 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	@Override
 	public void setToolTipText(@Nullable String text) {
 		temporalField.setToolTipText(text);
-	}
-
-	/**
-	 * {@link TemporalFieldPanel} supports {@link LocalDate} and {@link LocalDateTime}.
-	 * @param temporalClass the temporal type
-	 * @param <T> the temporal type
-	 * @return true if {@link TemporalFieldPanel} supports the given type
-	 */
-	public static <T extends Temporal> boolean supports(Class<T> temporalClass) {
-		return CalendarPanel.supportedTypes().contains(requireNonNull(temporalClass));
 	}
 
 	/**
@@ -237,8 +225,8 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		private boolean buttonFocusable;
 
 		private DefaultBuilder(Class<T> valueClass) {
-			if (!supports(valueClass)) {
-				throw new IllegalArgumentException("Unsupported temporal type: " + valueClass);
+			if (!CalendarPanel.supports(valueClass)) {
+				throw new IllegalArgumentException("CalendarPanel does not support temporal type: " + valueClass);
 			}
 			temporalFieldBuilder = TemporalField.builder().temporalClass(valueClass);
 		}

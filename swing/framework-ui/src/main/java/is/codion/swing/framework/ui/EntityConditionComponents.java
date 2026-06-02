@@ -64,7 +64,7 @@ public class EntityConditionComponents implements ConditionComponents {
 	}
 
 	@Override
-	public boolean supportsType(Class<?> valueClass) {
+	public boolean supports(Class<?> valueClass) {
 		return SUPPORTED_TYPES.contains(requireNonNull(valueClass));
 	}
 
