@@ -7,6 +7,7 @@ Codion Change Log
 - TemporalFieldPanel.supports() removed.
 - CalendarPanel.supportedTypes() replaced with supports(class).
 - ColumnConditionPanel.ConditionComponents.supportsType() renamed supports().
+- TemporalField.Builder.incrementDecrementEnabled() renamed adjustable(), ADJUSTABLE configuration value added.
 
 ## 0.18.74
 ### is.codion.common.utilities

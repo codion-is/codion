@@ -23,6 +23,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
@@ -55,6 +56,7 @@ import java.time.temporal.Temporal;
 import java.util.Optional;
 
 import static is.codion.common.reactive.state.State.present;
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.text.TemporalField.ControlKeys.*;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -74,6 +76,19 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(TemporalField.class, getBundle(TemporalField.class.getName()));
+
+	/**
+	 * <p>Specifies whether {@link TemporalField}s are adjustable by default.
+	 * <p>The dates of adjustable fields can be adjusted using the keyboard (UP/DOWN arrows by default)
+	 * to increment/decrement the date component under the cursor
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see ControlKeys#INCREMENT
+	 * @see ControlKeys#DECREMENT
+	 */
+	public static final PropertyValue<Boolean> ADJUSTABLE = booleanValue(TemporalField.class.getName() + ".adjustable", false);
 
 	/**
 	 * The controls.
@@ -133,7 +148,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 						.enabled(valuePresent)
 						.build());
 		this.controlMap.control(DISPLAY_CALENDAR).set(createCalendarControl());
-		if (builder.incrementDecrementEnabled) {
+		if (builder.adjustable) {
 			this.controlMap.keyEvent(INCREMENT).ifPresent(keyEvent -> keyEvent.enable(this));
 			this.controlMap.keyEvent(DECREMENT).ifPresent(keyEvent -> keyEvent.enable(this));
 		}
@@ -357,10 +372,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		Builder<T> calendarIcon(ImageIcon calendarIcon);
 
 		/**
-		 * @param incrementDecrementEnabled enable increment/decrement of date component under cursor
+		 * @param adjustable whether the date can be adjusted using the keyboard
+		 * (UP/DOWN arrows by default) to increment/decrement of date component under cursor
 		 * @return this builder instance
+		 * @see #ADJUSTABLE
 		 */
-		Builder<T> incrementDecrementEnabled(boolean incrementDecrementEnabled);
+		Builder<T> adjustable(boolean adjustable);
 
 		/**
 		 * @param controlKey the control key
@@ -409,7 +426,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private DateTimeParser<T> dateTimeParser;
 		private int focusLostBehaviour = JFormattedTextField.COMMIT;
 		private @Nullable ImageIcon calendarIcon;
-		private boolean incrementDecrementEnabled = true;
+		private boolean adjustable = ADJUSTABLE.getOrThrow();
 
 		private DefaultBuilder(Class<T> temporalClass) {
 			super(temporalClass);
@@ -457,8 +474,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 
 		@Override
-		public Builder<T> incrementDecrementEnabled(boolean incrementDecrementEnabled) {
-			this.incrementDecrementEnabled = incrementDecrementEnabled;
+		public Builder<T> adjustable(boolean adjustable) {
+			this.adjustable = adjustable;
 			return this;
 		}
 
@@ -470,10 +487,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		@Override
 		protected TemporalField<T> createTextField() {
-			if (dateTimeParser == null) {
-				throw new IllegalStateException("dateTimeParser must be specified");
-			}
-
 			return new TemporalField<>(this);
 		}
 
