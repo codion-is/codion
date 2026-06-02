@@ -36,7 +36,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
@@ -679,27 +678,6 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 						.map(entity -> entity.get(attribute))
 						.filter(Objects::nonNull)
 						.collect(toSet());
-	}
-
-	/**
-	 * Maps the given entities to their primary key, assuming each entity appears only once in the given collection.
-	 * {@snippet :
-	 * List<Entity> customers = connection.select(Customer.ID.in(1, 2, 3));
-	 *
-	 * // Create a map for fast lookup by primary key
-	 * Map<Key, Entity> customerMap = Entity.primaryKeyMap(customers);
-	 *
-	 * // Later, quick lookup by key
-	 * Key customerKey = entities.primaryKey(Customer.TYPE, 2);
-	 * Entity customer = customerMap.get(customerKey);
-	 *}
-	 * @param entities the entities to map
-	 * @return the mapped entities
-	 * @throws IllegalArgumentException in case a non-unique primary key is encountered
-	 */
-	static Map<Key, Entity> primaryKeyMap(Collection<Entity> entities) {
-		return requireNonNull(entities).stream()
-						.collect(toMap(Entity::primaryKey, Function.identity(), ThrowIfNonUnique.INSTANCE));
 	}
 
 	/**

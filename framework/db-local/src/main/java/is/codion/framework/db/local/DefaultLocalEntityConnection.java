@@ -69,6 +69,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -82,7 +83,6 @@ import static is.codion.framework.domain.entity.Entity.Key;
 import static is.codion.framework.domain.entity.Entity.Key.groupByType;
 import static is.codion.framework.domain.entity.Entity.groupByType;
 import static is.codion.framework.domain.entity.Entity.originalPrimaryKeys;
-import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.*;
@@ -90,6 +90,7 @@ import static java.lang.String.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
 final class DefaultLocalEntityConnection implements LocalEntityConnection, MethodTracer.Traceable {
@@ -1114,7 +1115,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 
 		return referencedEntities.stream()
-						.collect(toMap(entity -> createKey(entity, keyColumns), Function.identity()));
+						.collect(toMap(entity -> createKey(entity, keyColumns), identity()));
 	}
 
 	private int keysPerStatement(Key key) {
@@ -1794,6 +1795,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 		return database;
 	}
+
+	private static Map<Key, Entity> primaryKeyMap(Collection<Entity> entities) {
+		return entities.stream()
+						.collect(toMap(Entity::primaryKey, identity(), ThrowIfNonUnique.INSTANCE));
+	}
+
+	private static final class ThrowIfNonUnique implements BinaryOperator<Entity> {
+
+		private static final ThrowIfNonUnique INSTANCE = new ThrowIfNonUnique();
+
+		@Override
+		public Entity apply(Entity entity, Entity other) {
+			throw new IllegalStateException("Non-unique primary key: " + entity.primaryKey());
+		}
+	}
+
 
 	private static final class DatabaseConfiguration {
 

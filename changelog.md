@@ -10,6 +10,8 @@ Codion Change Log
 - TemporalField.Builder.incrementDecrementEnabled() renamed adjustable(), ADJUSTABLE configuration value added.
 - ListComboBox bug fixed, value order now consistent.
 - InputPanelBuilder.label(text) added.
+### is.codion.framework.domain
+- Entity.primaryKeyMap() removed.
 ### is.codion.framework.model
 - EntityEditor.tasks().refresh() now throws if the entity does not exist.
 - EntityEditor.PersistTask renamed EditorTask, RefreshTask removed.

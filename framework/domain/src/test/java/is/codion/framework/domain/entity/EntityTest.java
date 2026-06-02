@@ -143,29 +143,6 @@ public final class EntityTest {
 	}
 
 	@Test
-	void primaryKeyMap() {
-		Entity dept = entities.entity(Department.TYPE)
-						.with(Department.ID, 1)
-						.build();
-		Entity emp = entities.entity(Employee.TYPE)
-						.with(Employee.ID, 3)
-						.build();
-		Entity emp2 = entities.entity(Employee.TYPE)
-						.with(Employee.ID, null)
-						.build();
-		Map<Key, Entity> entityMap = Entity.primaryKeyMap(asList(dept, emp, emp2));
-		assertSame(dept, entityMap.get(dept.primaryKey()));
-		assertSame(emp, entityMap.get(emp.primaryKey()));
-		assertSame(emp2, entityMap.get(emp2.primaryKey()));
-
-		Entity dept2 = entities.entity(Department.TYPE)
-						.with(Department.ID, 1)
-						.build();
-		assertThrows(IllegalArgumentException.class, () -> Entity.primaryKeyMap(asList(dept, dept2, emp)));
-		assertThrows(IllegalArgumentException.class, () -> Entity.primaryKeyMap(asList(emp2, emp2)));
-	}
-
-	@Test
 	void groupKeysByType() {
 		Key dept = entities.primaryKey(Department.TYPE, 1);
 		Key emp = entities.primaryKey(Employee.TYPE, 3);
