@@ -30,6 +30,12 @@ import java.util.function.Supplier;
 public interface InputPanelBuilder extends ComponentBuilder<JPanel, InputPanelBuilder> {
 
 	/**
+	 * @param text the label text
+	 * @return this builder instance
+	 */
+	InputPanelBuilder label(String text);
+
+	/**
 	 * @param labelComponent the label component
 	 * @return this builder instance
 	 */

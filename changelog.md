@@ -9,6 +9,12 @@ Codion Change Log
 - ColumnConditionPanel.ConditionComponents.supportsType() renamed supports().
 - TemporalField.Builder.incrementDecrementEnabled() renamed adjustable(), ADJUSTABLE configuration value added.
 - ListComboBox bug fixed, value order now consistent.
+- InputPanelBuilder.label(text) added.
+### is.codion.framework.model
+- EntityEditor.tasks().refresh() now throws if the entity does not exist.
+### is.codion.swing.framework.ui
+- EntityEditPanel.RefreshCommand added.
+- EntityPanel.ControlKeys.REFRESH control now refreshes the active entity if table is not available.
 
 ## 0.18.74
 ### is.codion.common.utilities
