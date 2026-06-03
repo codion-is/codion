@@ -1848,8 +1848,8 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 
 		private void update() {
 			attributes.set(modifiedAttributes());
-			modified.set(exists.is() && entity.instance.modified() || additional.get().stream()
-							.anyMatch(ObservableState::is));
+			modified.set(exists.is() && (entity.instance.modified() || additional.get().stream()
+							.anyMatch(ObservableState::is)));
 		}
 
 		private Set<Attribute<?>> modifiedAttributes() {
