@@ -361,7 +361,6 @@ public final class CalendarPanel extends JPanel {
 	/**
 	 * {@link CalendarPanel} supports {@link LocalDate} and {@link LocalDateTime}.
 	 * @param temporalClass the temporal type
-	 * @param <T> the temporal type
 	 * @return true if {@link CalendarPanel} supports the given type
 	 */
 	public static boolean supports(Class<? extends Temporal> temporalClass) {

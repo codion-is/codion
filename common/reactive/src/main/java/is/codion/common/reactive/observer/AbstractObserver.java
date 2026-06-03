@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * The {@link #observer()} method returns {@code this}, so the default methods
  * in {@link Observer} resolve directly to the concrete implementations here.
  * <p>
- * All listener management operations are synchronized using an internal lock.
+ * All listener management operations are thread-safe.
  * Dead weak references are cleaned up during add/remove operations.
  * @param <T> the type of data propagated to listeners
  * @see Observer
