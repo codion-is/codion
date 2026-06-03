@@ -122,6 +122,13 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	@Override
+	public final B label(String text) {
+		requireNonNull(text);
+
+		return label(label -> label.text(text));
+	}
+
+	@Override
 	public final B label(@Nullable JLabel label) {
 		this.label = label;
 		return self();
@@ -487,7 +494,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	/**
-	 * @return the label set via {@link #label(JLabel)} or {@link #label(Consumer)}, or null if none has been set
+	 * @return the label set via {@link #label(String)}, #label(JLabel)} or {@link #label(Consumer)}, or null if none has been set
 	 */
 	protected final @Nullable JLabel label() {
 		return label;

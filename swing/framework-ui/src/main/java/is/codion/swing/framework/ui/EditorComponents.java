@@ -525,7 +525,9 @@ public final class EditorComponents {
 		/**
 		 * @return the label associated with the component
 		 * @throws IllegalStateException in case no component has been set or if no label is associated with it
+		 * @see ComponentBuilder#label(String)
 		 * @see ComponentBuilder#label(JLabel)
+		 * @see ComponentBuilder#label(java.util.function.Consumer)
 		 */
 		public JLabel label() {
 			JLabel label = (JLabel) get().getClientProperty(CreateComponents.LABELED_BY);

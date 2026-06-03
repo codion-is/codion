@@ -10,6 +10,7 @@ Codion Change Log
 - TemporalField.Builder.incrementDecrementEnabled() renamed adjustable(), ADJUSTABLE configuration value added.
 - ListComboBox bug fixed, value order now consistent.
 - InputPanelBuilder.label(text) added.
+- InputPanelBuilder.label(text) removed, replaced with ComponentBuilder.label(text).
 ### is.codion.framework.domain
 - Entity.primaryKeyMap() removed.
 ### is.codion.framework.model

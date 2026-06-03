@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.panel;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.label.LabelBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -39,11 +38,6 @@ final class DefaultInputPanelBuilder extends AbstractComponentBuilder<JPanel, In
 	private InputPanelLayout layout = InputPanelLayout
 					.border()
 					.build();
-
-	@Override
-	public InputPanelBuilder label(String text) {
-		return label(LabelBuilder.builder(text).build());
-	}
 
 	@Override
 	public InputPanelBuilder label(JComponent labelComponent) {
