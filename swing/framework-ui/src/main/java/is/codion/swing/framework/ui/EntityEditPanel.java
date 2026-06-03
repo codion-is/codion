@@ -227,7 +227,7 @@ public abstract class EntityEditPanel extends JPanel {
 		setupFocusActivation();
 		setupKeyboardActions();
 		if (editModel.editor().exists().not().is()) {
-			editModel.editor().values().defaults();
+			editModel.editor().entity().defaults();
 		}
 	}
 
@@ -258,11 +258,11 @@ public abstract class EntityEditPanel extends JPanel {
 
 	/**
 	 * Clears the underlying edit model and requests the initial focus.
-	 * @see EntityEditor.EditorValues#defaults()
+	 * @see EntityEditor.EditorEntity#defaults()
 	 * @see #focus()
 	 */
 	public final void clearAndRequestFocus() {
-		components.editor().values().defaults();
+		components.editor().entity().defaults();
 		inputFocus.initial().request();
 	}
 
@@ -1231,7 +1231,7 @@ public abstract class EntityEditPanel extends JPanel {
 		 * @see #MODIFIED_WARNING
 		 * @see EntityEditor#modified()
 		 * @see EditorEntity#set(Entity)
-		 * @see EntityEditor.EditorValues#defaults()
+		 * @see EntityEditor.EditorEntity#defaults()
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;
@@ -1842,7 +1842,7 @@ public abstract class EntityEditPanel extends JPanel {
 			Entity inserted = result.handle();
 			onInsert.forEach(consumer -> consumer.accept(inserted));
 			if (clear) {
-				editPanel.editor().values().defaults();
+				editPanel.editor().entity().defaults();
 			}
 			if (requestFocus) {
 				editPanel.inputFocus.afterInsert().request();

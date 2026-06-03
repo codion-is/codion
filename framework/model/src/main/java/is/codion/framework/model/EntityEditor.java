@@ -76,7 +76,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see EditorValues#defaults()
+	 * @see EditorEntity#defaults()
 	 */
 	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = booleanValue(EntityEditor.class.getName() + ".persistForeignKeys", true);
 
@@ -533,7 +533,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Populates this editor entity with the values from the given entity or sets
 		 * the default value for all attributes in case it is null.
-		 * <p>Use {@link EditorValues#clear()} in order to clear the editor of all values.
+		 * <p>Use {@link EditorEntity#clear()} in order to clear the editor of all values.
 		 * <p>Notifies that the entity is about to change via {@link #changing()}, then notifies
 		 * change via {@link #observer()}. Detail editors registered via
 		 * {@link DetailEditors#add(EditorLink)} are reloaded via their link's load action. This is
@@ -558,9 +558,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>For master editors with registered detail editors, this fires <em>before</em> the
 		 * detail subtree is set, allowing listeners to inspect the pre-change state of the entire
 		 * master/detail tree. The post-change counterpart is {@link #observer() changed}.
-		 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link EditorValues#defaults()}.
+		 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link EditorEntity#defaults()}.
 		 * @see #set(Entity)
-		 * @see EditorValues#defaults()
+		 * @see EditorEntity#defaults()
 		 */
 		Observer<Entity> changing();
 
@@ -595,6 +595,21 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see #exists()
 		 */
 		void refresh();
+
+		/**
+		 * Populates this editor with default values for all non-persistent attributes.
+		 * <p>Notifies that the entity is about to change via {@link EditorEntity#changing()}
+		 * @see EditorValue#defaultValue()
+		 * @see EditorValue#persist()
+		 * @see ValueAttributeDefinition#defaultValue()
+		 * @see EditorEntity#changing()
+		 */
+		void defaults();
+
+		/**
+		 * Clears all values, disregarding the {@link EditorValue#persist()} directive.
+		 */
+		void clear();
 	}
 
 	/**
@@ -719,28 +734,13 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	interface EditorValues {
 
 		/**
-		 * Clears all values, disregarding the {@link EditorValue#persist()} directive.
-		 */
-		void clear();
-
-		/**
-		 * Populates this editor with default values for all non-persistent attributes.
-		 * <p>Notifies that the entity is about to change via {@link EditorEntity#changing()}
-		 * @see EditorValue#defaultValue()
-		 * @see EditorValue#persist()
-		 * @see ValueAttributeDefinition#defaultValue()
-		 * @see EditorEntity#changing()
-		 */
-		void defaults();
-
-		/**
 		 * Reverts all attribute value changes.
 		 */
 		void revert();
 
 		/**
 		 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}
-		 * instance or when the entity is set via {@link #clear()}, {@link EditorEntity#set(Entity)} or {@link #defaults()}.
+		 * instance or when the entity is set via {@link EditorEntity#clear()}, {@link EditorEntity#set(Entity)} or {@link EditorEntity#defaults()}.
 		 * @return an observer notified each time a value is changed
 		 */
 		Observer<Attribute<?>> changed();
@@ -777,7 +777,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.
 		 * @return a {@link State} controlling whether the given attribute value should persist when defaults are set
-		 * @see EditorValues#defaults()
+		 * @see EditorEntity#defaults()
 		 * @see EntityEditor#PERSIST_FOREIGN_KEYS
 		 */
 		State persist();
@@ -810,7 +810,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Returns an observer notified each time this value is modified via {@link EditorValue#set(Object)}.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
-		 * via {@link EditorEntity#set(Entity)}, {@link EditorValues#defaults()} or {@link EditorValues#clear()}.
+		 * via {@link EditorEntity#set(Entity)}, {@link EditorEntity#defaults()} or {@link EditorEntity#clear()}.
 		 * <p>Note that this event is only triggered if the value actually changes.
 		 * @return an observer notified when the given attribute value is edited
 		 */
@@ -819,7 +819,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Returns the {@link Value} instance controlling the default value supplier for the given attribute.
 		 * <p>Used when the underlying value is not persistent.
-		 * <p>Use {@link EditorValues#defaults()} to populate the editor with default values.
+		 * <p>Use {@link EditorEntity#defaults()} to populate the editor with default values.
 		 * @return the {@link Value} instance controlling the default value supplier
 		 * @see #persist()
 		 */
@@ -925,7 +925,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * declared <em>framework-managed</em> via three coordinated configurations on the detail editor:
 	 * <ul>
 	 * <li>The foreign key value is not reset by defaults — its {@link EditorValue#persist()} is set to false,
-	 *     so it survives {@link EditorValues#defaults()}.
+	 *     so it survives {@link EditorEntity#defaults()}.
 	 * <li>The detail editor's validator is wrapped so a null foreign key is silently accepted during validation.
 	 *     This applies both to the reactive {@link #valid()} state (for UI binding) and to the validation gate
 	 *     in {@link EditorTasks#insert(java.util.function.Consumer)} (which must throw synchronously, before

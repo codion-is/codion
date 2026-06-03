@@ -568,6 +568,16 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			tasks().refresh().perform().handle();
 		}
 
+		@Override
+		public void defaults() {
+			set(null);
+		}
+
+		@Override
+		public void clear() {
+			set(entityDefinition.entity());
+		}
+
 		private void refresh(Entity entity) {
 			setOrDefaults(entity);
 			replaced.accept(entity);
@@ -1721,16 +1731,6 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 	}
 
 	private final class DefaultEditorValues implements EditorValues {
-
-		@Override
-		public void clear() {
-			entity.set(entityDefinition.entity());
-		}
-
-		@Override
-		public void defaults() {
-			entity.set(null);
-		}
 
 		@Override
 		public void revert() {

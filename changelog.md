@@ -17,6 +17,7 @@ Codion Change Log
 - EntityEditor.PersistTask renamed EditorTask, RefreshTask removed.
 - DefaultEntityEditor, refresh task now loads details as well.
 - DefaultEntityEditor.DefaultModified bug fixed, modified state no longer active when master entity does not exist.
+- EntityEditor.EditorValues.clear() and defaults() moved to EditorEntity.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.RefreshCommand added.
 - EntityPanel.ControlKeys.REFRESH control now refreshes the active entity if table is not available.

@@ -86,7 +86,7 @@ public final class Misc {
 						.set(() -> UUID.randomUUID().toString());
 
 		//sets the defaults
-		editor.values().defaults();
+		editor.entity().defaults();
 		//set the values
 		editor.value(Customer.FIRST_NAME).set("Björn");
 		editor.value(Customer.LAST_NAME).set("Sigurðsson");

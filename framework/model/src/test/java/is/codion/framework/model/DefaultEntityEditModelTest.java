@@ -218,7 +218,7 @@ public final class DefaultEntityEditModelTest {
 		assertNull(editor.entity().get().get(Employee.DEPARTMENT_FK));
 		dept = editor.value(Employee.DEPARTMENT_FK).get();
 		assertNull(dept);
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertNotNull(editor.value(Employee.DEPARTMENT_FK).get());
 	}
 
@@ -226,11 +226,11 @@ public final class DefaultEntityEditModelTest {
 	void defaults() {
 		editor.value(Employee.NAME).defaultValue().set(() -> "Scott");
 		assertFalse(editor.value(Employee.NAME).present().is());
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertEquals("Scott", editor.value(Employee.NAME).get());
 
 		editor.value(Employee.NAME).defaultValue().set(() -> null);
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertFalse(editor.value(Employee.NAME).present().is());
 	}
 
@@ -238,11 +238,11 @@ public final class DefaultEntityEditModelTest {
 	void clear() {
 		Entity employee = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		editor.entity().set(employee);
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertTrue(editor.value(Employee.DEPARTMENT_FK).present().is());//persists
 		assertFalse(editor.value(Employee.NAME).present().is());
 		editor.entity().set(employee);
-		editor.values().clear();
+		editor.entity().clear();
 		assertFalse(editor.value(Employee.DEPARTMENT_FK).present().is());//should not persist on clear
 		assertFalse(editor.value(Employee.NAME).present().is());
 	}
@@ -278,7 +278,7 @@ public final class DefaultEntityEditModelTest {
 		assertTrue(editor.entity().get().equalValues(employee), "Active entity is not equal to the entity just set");
 		assertTrue(editor.exists().is(), "Active entity exists after an entity is set");
 		assertFalse(editor.modified().is());
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertFalse(editor.exists().is(), "Active entity exists after defaults are set");
 		assertFalse(editor.modified().is());
 		assertTrue(editor.entity().get().primaryKey().isNull(), "Active entity primary key is not null after defaults are set");
@@ -292,7 +292,7 @@ public final class DefaultEntityEditModelTest {
 		editor.value(Employee.ID).set(originalEmployeeId);
 		assertTrue(primaryKeyPresentState.is());
 
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertFalse(entityExistsState.is());
 
 		Double originalCommission = editor.value(Employee.COMMISSION).get();
@@ -333,7 +333,7 @@ public final class DefaultEntityEditModelTest {
 			assertTrue(e.getMessage().contains(attributeDefinition.minimum().map(Objects::toString).get()));
 		}
 
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertTrue(editor.entity().get().primaryKey().isNull(), "Active entity is not null after model is cleared");
 
 		employeeEditModel.editor().events().after().delete().removeConsumer(consumer);
@@ -511,11 +511,11 @@ public final class DefaultEntityEditModelTest {
 		Entity king = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("KING"));
 		editor.entity().set(king);
 		editor.value(Employee.MGR_FK).set(martin);
-		editor.values().defaults();
+		editor.entity().defaults();
 		king.set(Employee.MGR_FK, null);
 		editor.entity().set(king);
 		assertNull(editor.value(Employee.MGR_FK).get());
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertEquals(LocalDate.now(), editor.value(Employee.HIREDATE).get());
 		assertFalse(editor.entity().get().modified(Employee.HIREDATE));
 		assertFalse(editor.entity().get().modified());
@@ -552,11 +552,11 @@ public final class DefaultEntityEditModelTest {
 		editor.entity().set(king);
 		assertNotNull(editor.value(Employee.JOB).get());
 		editor.value(Employee.JOB).persist().set(true);
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertNotNull(editor.value(Employee.JOB).get());
 		editor.entity().set(king);
 		editor.value(Employee.JOB).persist().set(false);
-		editor.values().defaults();
+		editor.entity().defaults();
 		assertNull(editor.value(Employee.JOB).get());
 		assertThrows(IllegalArgumentException.class, () -> editor.value(Department.ID).persist().set(true));
 		assertThrows(IllegalArgumentException.class, () -> editor.value(Department.ID).persist().is());
