@@ -588,8 +588,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 				detail.editors.values().forEach(editor -> editor.editor.entity().set(null));
 			}
 			else {
-				Map<EntityEditor<?>, Entity> loaded = loadDetail(master, connectionProvider.connection());
-				loaded.forEach((editor, entity) -> editor.entity().set(entity));
+				populate(loadDetail(master, connectionProvider.connection()), false);
 			}
 		}
 
@@ -598,8 +597,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 				detail.editors.values().forEach(editor -> editor.editor.entity().replace(null));
 			}
 			else {
-				Map<EntityEditor<?>, Entity> loaded = loadDetail(master, connectionProvider.connection());
-				loaded.forEach((editor, entity) -> editor.entity().replace(entity));
+				populate(loadDetail(master, connectionProvider.connection()), true);
 			}
 		}
 
@@ -638,6 +636,20 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			}
 
 			return !instance.primaryKey().equals(newEntity.primaryKey());
+		}
+
+		private void populate(Map<EntityEditor<?>, Entity> details, boolean replace) {
+			details.forEach((detailEditor, detailEntity) -> {
+				if (detailEntity == null) {
+					detailEditor.entity().clear();// prevent persistent values when using defaults()
+				}
+				else if (replace) {
+					detailEditor.entity().replace(detailEntity);
+				}
+				else {
+					detailEditor.entity().set(detailEntity);
+				}
+			});
 		}
 	}
 
