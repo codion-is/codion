@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static java.util.Collections.emptySet;
+
 final class DefaultValueSet<T> extends AbstractValueCollection<T, Set<T>> implements ValueSet<T> {
 
 	private DefaultValueSet(DefaultBuilder<T> builder) {
@@ -43,7 +45,7 @@ final class DefaultValueSet<T> extends AbstractValueCollection<T, Set<T>> implem
 					implements ValueSet.Builder<T> {
 
 		DefaultBuilder() {
-			super(LinkedHashSet::new, Collections::unmodifiableSet);
+			super(emptySet(), LinkedHashSet::new, Collections::unmodifiableSet);
 		}
 
 		@Override

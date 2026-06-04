@@ -232,10 +232,10 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 		private final Supplier<C> create;
 		private final UnaryOperator<C> unmodifiable;
 
-		AbstractValueCollectionBuilder(Supplier<C> create, UnaryOperator<C> unmodifiable) {
-			super(requireNonNull(unmodifiable).apply(requireNonNull(create).get()));
-			this.create = create;
-			this.unmodifiable = unmodifiable;
+		AbstractValueCollectionBuilder(C nullValue, Supplier<C> create, UnaryOperator<C> unmodifiable) {
+			super(nullValue);
+			this.create = requireNonNull(create);
+			this.unmodifiable = requireNonNull(unmodifiable);
 		}
 
 		@Override

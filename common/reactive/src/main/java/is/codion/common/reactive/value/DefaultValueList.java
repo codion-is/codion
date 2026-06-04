@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 final class DefaultValueList<T> extends AbstractValueCollection<T, List<T>> implements ValueList<T> {
 
 	private DefaultValueList(DefaultBuilder<T> builder) {
@@ -43,7 +45,7 @@ final class DefaultValueList<T> extends AbstractValueCollection<T, List<T>> impl
 					implements ValueList.Builder<T> {
 
 		DefaultBuilder() {
-			super(ArrayList::new, Collections::unmodifiableList);
+			super(emptyList(), ArrayList::new, Collections::unmodifiableList);
 		}
 
 		@Override

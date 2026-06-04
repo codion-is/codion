@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.75
+### is.codion.common.reactive
+- AbstractValueCollection.AbstractValueCollectionBuilder, nullValue constructor parameter added.
+- DefaultValueSet and DefaultValueList now use emptySet() and emptyList() as null values.
 ### is.codion.swing.common.ui
 - ListComboBox refactored and simplified.
 - TemporalFieldPanel.supports() removed.
