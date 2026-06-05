@@ -84,12 +84,12 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
 /**
- * A default {@link EntityEditor} implementation.
+ * An abstract {@link EntityEditor} implementation.
  * @param <R> the editor type
  */
-public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEditor<R> {
+public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements EntityEditor<R> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditor.class);
 
 	private static final ValueSupplier INITIAL_VALUE = new InitialValue();
 
@@ -125,13 +125,13 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 	private final DefaultEditorEntity entity;
 
 	/**
-	 * Instantiates a new {@link DefaultEntityEditor}
+	 * Instantiates an {@link AbstractEntityEditor}
 	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
 	 * @param componentModels the editor component models
 	 */
-	public DefaultEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
-														 ComponentModels componentModels) {
+	protected AbstractEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
+																 ComponentModels componentModels) {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.settings = new DefaultSettings(entityDefinition.readOnly());
@@ -1301,7 +1301,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			if (this == object) {
 				return true;
 			}
-			if (!(object instanceof DefaultEntityEditor.LinkKey)) {
+			if (!(object instanceof LinkKey)) {
 				return false;
 			}
 			LinkKey key = (LinkKey) object;
@@ -1458,7 +1458,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			@Override
 			public EditorLink.Builder<R> condition(DetailCondition condition) {
 				requireNonNull(condition);
-				return select(master -> Select.where(condition.get(master)).build());
+				return select(master -> where(condition.get(master)).build());
 			}
 
 			@Override
@@ -1496,7 +1496,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		@Override
 		public ForeignKeyEditorLink.Builder<R> condition(DetailCondition condition) {
 			requireNonNull(condition);
-			return select(master -> Select.where(condition.get(master)).build());
+			return select(master -> where(condition.get(master)).build());
 		}
 
 		@Override
@@ -1617,7 +1617,7 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 			updatable.insert.set(masterExists && editor.present().is() && !exists);
 			updatable.update.set(masterExists && editor.present().is() && exists && modified);
 			updatable.delete.set(masterExists && !editor.present().is() && exists);
-			DefaultEntityEditor.this.modified.update();
+			AbstractEntityEditor.this.modified.update();
 		}
 
 		private final class Updatable implements ObservableState {
@@ -2088,12 +2088,12 @@ public class DefaultEntityEditor<R extends EntityEditor<R>> implements EntityEdi
 		}
 
 		private Value<String> createMessage() {
-			return Value.nullable(DefaultEntityEditor.this.createMessage(attribute, validationString()));
+			return Value.nullable(AbstractEntityEditor.this.createMessage(attribute, validationString()));
 		}
 
 		private @Nullable String validationString() {
 			try {
-				DefaultEntityEditor.this.validate(attribute);
+				AbstractEntityEditor.this.validate(attribute);
 
 				return null;
 			}

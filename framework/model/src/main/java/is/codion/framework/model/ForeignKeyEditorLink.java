@@ -22,7 +22,7 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.DefaultEntityEditor.DefaultForeignKeyLink;
+import is.codion.framework.model.AbstractEntityEditor.DefaultForeignKeyLink;
 
 import java.util.function.Predicate;
 

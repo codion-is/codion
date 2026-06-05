@@ -41,7 +41,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.model.DefaultEntityEditor.DefaultDetailEditors;
+import is.codion.framework.model.AbstractEntityEditor.DefaultDetailEditors;
 
 import org.jspecify.annotations.Nullable;
 
@@ -740,7 +740,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}
-		 * instance or when the entity is set via {@link EditorEntity#clear()}, {@link EditorEntity#set(Entity)} or {@link EditorEntity#defaults()}.
+		 * instance or when the entity is changed via {@link EditorEntity}.
 		 * @return an observer notified each time a value is changed
 		 */
 		Observer<Attribute<?>> changed();

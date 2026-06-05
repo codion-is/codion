@@ -23,6 +23,7 @@ Codion Change Log
 - DefaultEntityEditor.DefaultModified bug fixed, modified state no longer active when master entity does not exist.
 - EntityEditor.EditorValues.clear() and defaults() moved to EditorEntity.
 - DefaultEntityEditor.DefaultEditorEntity bug fixed, now uses clear() when populating empty detail editors, to bypass persistent values.
+- DefaultEntityEditor now abstract, renamed AbstractEntityEditor, constructor protected.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.RefreshCommand added.
 - EntityPanel.ControlKeys.REFRESH control now refreshes the active entity if table is not available.

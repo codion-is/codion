@@ -23,8 +23,8 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.DefaultEntityEditor.DefaultEditorLink;
-import is.codion.framework.model.DefaultEntityEditor.DefaultEditorLinkBuilder;
+import is.codion.framework.model.AbstractEntityEditor.DefaultEditorLink;
+import is.codion.framework.model.AbstractEntityEditor.DefaultEditorLinkBuilder;
 
 import org.jspecify.annotations.Nullable;
 

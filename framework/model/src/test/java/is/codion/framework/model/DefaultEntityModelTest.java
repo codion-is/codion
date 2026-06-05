@@ -64,7 +64,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		}
 	}
 
-	public static final class TestEntityEditor extends DefaultEntityEditor<TestEntityEditor> {
+	public static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
 
 		public TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(entityType, connectionProvider, new TestComponentModels() {});

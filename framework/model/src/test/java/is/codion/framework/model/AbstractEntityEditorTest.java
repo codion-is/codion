@@ -28,8 +28,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.model.DefaultEntityEditor.DefaultDetailEditors;
-import is.codion.framework.model.DefaultEntityEditor.DetailForeignKeyValidator;
+import is.codion.framework.model.AbstractEntityEditor.DefaultDetailEditors;
+import is.codion.framework.model.AbstractEntityEditor.DetailForeignKeyValidator;
 import is.codion.framework.model.DetailDomain.Department;
 import is.codion.framework.model.DetailDomain.DepartmentExtra;
 import is.codion.framework.model.DetailDomain.Employee;
@@ -44,7 +44,7 @@ import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultEntityEditorTest {
+public final class AbstractEntityEditorTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -1352,7 +1352,7 @@ public final class DefaultEntityEditorTest {
 		editor.tasks(editor.connectionProvider().connection()).delete().perform().handle();
 	}
 
-	private static final class TestEntityEditor extends DefaultEntityEditor<TestEntityEditor> {
+	private static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
 
 		private TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(entityType, connectionProvider, new TestComponentModels());

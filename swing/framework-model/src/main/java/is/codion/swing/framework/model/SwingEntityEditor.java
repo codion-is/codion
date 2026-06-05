@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
-import is.codion.framework.model.DefaultEntityEditor;
+import is.codion.framework.model.AbstractEntityEditor;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
@@ -41,9 +41,9 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Swing extension of {@link DefaultEntityEditor}
+ * A Swing {@link AbstractEntityEditor} implementation.
  */
-public final class SwingEntityEditor extends DefaultEntityEditor<SwingEntityEditor> {
+public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEditor> {
 
 	private static final String NULL_ITEM_CAPTION = FilterComboBoxModel.NULL_CAPTION.getOrThrow();
 	private static final ProxyBuilder.ProxyMethod<Object> NULL_ITEM_TO_STRING = parameters -> NULL_ITEM_CAPTION;
