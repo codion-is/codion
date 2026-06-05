@@ -334,9 +334,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		/**
 		 * Called on the Event Dispatch Thread if an exception occurred during the background task.
+		 * <p>The default implementation rethrows the exception as a {@link RuntimeException}.
+		 * Override to handle the exception, for example by displaying it.
 		 * @param exception the exception
 		 */
-		default void onException(Exception exception) {}
+		default void onException(Exception exception) {
+			throw Exceptions.runtime(exception);
+		}
 
 		/**
 		 * Called on the Event Dispatch Thread if the background task was cancelled.
@@ -345,6 +349,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		/**
 		 * Called on the Event Dispatch Thread if the background task was interrupted.
+		 * <p>The default implementation simply calls {@code Thread.currentThread().interrupt()}.
 		 */
 		default void onInterrupted() {
 			Thread.currentThread().interrupt();
