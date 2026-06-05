@@ -24,6 +24,7 @@ Codion Change Log
 - EntityEditor.EditorValues.clear() and defaults() moved to EditorEntity.
 - DefaultEntityEditor.DefaultEditorEntity bug fixed, now uses clear() when populating empty detail editors, to bypass persistent values.
 - DefaultEntityEditor now abstract, renamed AbstractEntityEditor, constructor protected.
+- AbstractEntityEditor bug fixed, RefreshEditor task now uses the connection from EditorTasks.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.RefreshCommand added.
 - EntityPanel.ControlKeys.REFRESH control now refreshes the active entity if table is not available.

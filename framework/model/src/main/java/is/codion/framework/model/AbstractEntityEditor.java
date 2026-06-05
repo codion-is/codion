@@ -1162,7 +1162,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 																.filter(entity.instance::contains)
 																.collect(toSet())))
 								.immutable();// passed on to detail Select providers
-				Map<EntityEditor<?>, Entity> details = loadDetail(refreshed, connectionProvider.connection());
+				Map<EntityEditor<?>, Entity> details = loadDetail(refreshed, connection);
 				return () -> {
 					details.forEach((detailEditor, detailEntity) -> detailEditor.entity().replace(detailEntity));
 					entity.refresh(refreshed);
