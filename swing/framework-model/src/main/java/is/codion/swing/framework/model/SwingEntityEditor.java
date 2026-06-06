@@ -20,6 +20,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -28,7 +29,10 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityEditor;
+import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
@@ -39,6 +43,7 @@ import java.util.Map;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
  * A Swing {@link AbstractEntityEditor} implementation.
@@ -49,6 +54,9 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	private static final ProxyBuilder.ProxyMethod<Object> NULL_ITEM_TO_STRING = parameters -> NULL_ITEM_CAPTION;
 
 	private final ComboBoxModels comboBoxModels = new ComboBoxModels();
+
+	private @Nullable ProgressWorker<Result<Entity>, ?> worker;
+	private @Nullable EditorTask<?> currentTask;
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditor}
@@ -80,6 +88,59 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	@Override
 	protected SwingComponentModels componentModels() {
 		return (SwingComponentModels) super.componentModels();
+	}
+
+	@Override
+	protected void execute(EditorTask<Entity> task) {
+		requireNonNull(task);
+		cancelCurrentWorker();
+		currentTask = task;
+		if (isEventDispatchThread()) {
+			worker = ProgressWorker.builder()
+							.task(new ExecutionTask(task))
+							.execute();
+		}
+		else {
+			super.execute(task);
+		}
+	}
+
+	private void cancelCurrentWorker() {
+		ProgressWorker<Result<Entity>, ?> currentWorker = worker;
+		if (currentWorker != null && !currentWorker.isDone()) {
+			// cancellation is a best-effort optimization, freeing the connection of a superseded
+			// load early; correctness is guaranteed by the activeDetailLoad generation check below
+			currentWorker.cancel(true);
+		}
+	}
+
+	private final class ExecutionTask implements ResultTaskHandler<Result<Entity>> {
+
+		private final EditorTask<Entity> task;
+
+		private ExecutionTask(EditorTask<Entity> task) {
+			this.task = task;
+		}
+
+		@Override
+		public Result<Entity> execute() throws Exception {
+			return task.perform();
+		}
+
+		@Override
+		public void onResult(Result<Entity> result) {
+			if (currentTask == task) {
+				currentTask = null;
+				result.handle();
+			}
+		}
+
+		@Override
+		public void onDone() {
+			if (currentTask == task) {
+				worker = null;
+			}
+		}
 	}
 
 	/**

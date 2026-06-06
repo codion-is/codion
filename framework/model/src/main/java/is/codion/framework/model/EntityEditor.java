@@ -454,6 +454,18 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see #exists()
 		 */
 		EditorTask<Entity> refresh();
+
+		/**
+		 * @param entity the entity to set
+		 * @return a task for setting the active entity
+		 */
+		EditorTask<Entity> set(@Nullable Entity entity);
+
+		/**
+		 * @param entity the entity to set
+		 * @return a task for replacing the active entity
+		 */
+		EditorTask<Entity> replace(@Nullable Entity entity);
 	}
 
 	/**

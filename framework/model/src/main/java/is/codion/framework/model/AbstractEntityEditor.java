@@ -313,6 +313,14 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		return componentModels;
 	}
 
+	/**
+	 * Executes the given task, by default this is done synchronously, override to provide async execution
+	 * @param task the task to execute
+	 */
+	protected void execute(EditorTask<Entity> task) {
+		requireNonNull(task).perform().handle();
+	}
+
 	private void notifyValueChange(Attribute<?> attribute, Map<Attribute<?>, String> invalidAttributes) {
 		updateAttributeStates(attribute, invalidAttributes);
 		DefaultEditorValue<?> editorValue = (DefaultEditorValue<?>) editorValues.get(attribute);
@@ -458,13 +466,12 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 						});
 	}
 
-	private Map<EntityEditor<?>, Entity> loadDetail(Entity master, EntityConnection connection) {
-		Map<EntityEditor<?>, @Nullable Entity> loaded = new LinkedHashMap<>(detail.editors.size());
-		for (DetailEditor detail : detail.editors.values()) {
-			loaded.put(detail.editor, detail.link.entity.detail(master, connection));
+	private Entity validateType(Entity entity) {
+		if (entity != null && !entityDefinition.type().equals(entity.type())) {
+			throw new IllegalStateException("Entity type mismatch for entity: " + entity);
 		}
 
-		return loaded;
+		return entity;
 	}
 
 	private interface ValueSupplier {
@@ -536,11 +543,9 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 
 		@Override
 		public void set(@Nullable Entity entity) {
-			entity = entity == null ? null : validateType(entity).immutable();
-			changing.accept(entity);
-			setDetail(entity);
-			setOrDefaults(entity);
-			changed.accept(entity);
+			Entity validated = entity == null ? null : validateType(entity).immutable();
+			changing.accept(validated);
+			execute(tasks().set(validated));
 		}
 
 		@Override
@@ -555,17 +560,12 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 
 		@Override
 		public void replace(@Nullable Entity entity) {
-			Entity validated = entity == null ? null : validateType(entity);
-			if (identityChanged(validated)) {
-				replaceDetail(validated);
-			}
-			setOrDefaults(validated);
-			replaced.accept(entity);
+			execute(tasks().replace(entity));
 		}
 
 		@Override
 		public void refresh() {
-			tasks().refresh().perform().handle();
+			execute(tasks().refresh());
 		}
 
 		@Override
@@ -576,29 +576,6 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		@Override
 		public void clear() {
 			set(entityDefinition.entity());
-		}
-
-		private void refresh(Entity entity) {
-			setOrDefaults(entity);
-			replaced.accept(entity);
-		}
-
-		private void setDetail(@Nullable Entity master) {
-			if (master == null) {
-				detail.editors.values().forEach(editor -> editor.editor.entity().set(null));
-			}
-			else {
-				populate(loadDetail(master, connectionProvider.connection()), false);
-			}
-		}
-
-		private void replaceDetail(@Nullable Entity master) {
-			if (master == null) {
-				detail.editors.values().forEach(editor -> editor.editor.entity().replace(null));
-			}
-			else {
-				populate(loadDetail(master, connectionProvider.connection()), true);
-			}
 		}
 
 		private void setOrDefaults(@Nullable Entity entity) {
@@ -620,36 +597,6 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 			}
 
 			return value(attributeDefinition.attribute()).defaultValue().getOrThrow().get();
-		}
-
-		private Entity validateType(Entity entity) {
-			if (entity != null && !entityDefinition.type().equals(entity.type())) {
-				throw new IllegalStateException("Entity type mismatch for entity: " + entity);
-			}
-
-			return entity;
-		}
-
-		private boolean identityChanged(@Nullable Entity newEntity) {
-			if (newEntity == null) {
-				return !instance.primaryKey().isNull();
-			}
-
-			return !instance.primaryKey().equals(newEntity.primaryKey());
-		}
-
-		private void populate(Map<EntityEditor<?>, Entity> details, boolean replace) {
-			details.forEach((detailEditor, detailEntity) -> {
-				if (detailEntity == null) {
-					detailEditor.entity().clear();// prevent persistent values when using defaults()
-				}
-				else if (replace) {
-					detailEditor.entity().replace(detailEntity);
-				}
-				else {
-					detailEditor.entity().set(detailEntity);
-				}
-			});
 		}
 	}
 
@@ -785,6 +732,16 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 			return new RefreshEditor();
 		}
 
+		@Override
+		public EditorTask<@Nullable Entity> set(@Nullable Entity entity) {
+			return new SetEntity(entity);
+		}
+
+		@Override
+		public EditorTask<@Nullable Entity> replace(@Nullable Entity entity) {
+			return new ReplaceEntity(entity);
+		}
+
 		private final class InsertDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
@@ -814,9 +771,10 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 				before.accept(entity);
 				inserted = persistence.get().insert(entity, connection);
 				Collection<Result<Entity>> detail = detail();
+				Result<Entity> replace = tasks(connection).replace(inserted).perform();
 				return () -> {
 					detail.forEach(Result::handle);
-					entity().replace(inserted);
+					replace.handle();
 					persistEvents.afterInsert(inserted);
 
 					return inserted;
@@ -869,9 +827,10 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 					updated = persistence.get().update(entity, connection);
 				}
 				Collection<Result<Entity>> detail = detail();
+				Result<Entity> replace = tasks(connection).replace(updated).perform();
 				return () -> {
 					detail.forEach(Result::handle);
-					entity().replace(updated);
+					replace.handle();
 					persistEvents.afterUpdate(entity, updated);
 
 					return updated;
@@ -912,9 +871,10 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 			private Result<Entity> delete() {
 				Collection<Result<Entity>> detail = detail();
 				persistence.get().delete(entity, connection);
+				Result<Entity> replace = tasks(connection).replace(null).perform();
 				return () -> {
 					detail.forEach(Result::handle);
-					entity().replace(null);
+					replace.handle();
 					persistEvents.afterDelete(entity);
 
 					return entity;
@@ -943,8 +903,9 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 				LOG.debug(INSERT, entity);
 				before.accept(entity);
 				Entity inserted = persistence.get().insert(entity, connection);
+				Result<Entity> replace = tasks(connection).replace(inserted).perform();
 				return () -> {
-					entity().replace(inserted);
+					replace.handle();
 					persistEvents.afterInsert(inserted);
 
 					return inserted;
@@ -964,8 +925,9 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 			public Result<Entity> perform() {
 				LOG.debug(UPDATE, entity);
 				Entity updated = persistence.get().update(entity, connection);
+				Result<Entity> replace = tasks(connection).replace(updated).perform();
 				return () -> {
-					entity().replace(updated);
+					replace.handle();
 					persistEvents.afterUpdate(entity, updated);
 
 					return updated;
@@ -985,8 +947,9 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 			public Result<Entity> perform() {
 				LOG.debug(DELETE, entity);
 				persistence.get().delete(entity, connection);
+				Result<Entity> replace = tasks(connection).replace(null).perform();
 				return () -> {
-					entity().replace(null);
+					replace.handle();
 					persistEvents.afterDelete(entity);
 
 					return entity;
@@ -1162,14 +1125,112 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 																.filter(entity.instance::contains)
 																.collect(toSet())))
 								.immutable();// passed on to detail Select providers
-				Map<EntityEditor<?>, Entity> details = loadDetail(refreshed, connection);
+				Result<Entity> set = tasks(connection).set(refreshed).perform();
 				return () -> {
-					details.forEach((detailEditor, detailEntity) -> detailEditor.entity().replace(detailEntity));
-					entity.refresh(refreshed);
+					set.handle();
 
 					return refreshed;
 				};
 			}
+		}
+
+		private final class SetEntity implements EditorTask<@Nullable Entity> {
+
+			private final @Nullable Entity entityToSet;
+
+			private SetEntity(@Nullable Entity entityToSet) {
+				this.entityToSet = entityToSet == null ? null : validateType(entityToSet).immutable();
+			}
+
+			@Override
+			public Result<@Nullable Entity> perform() {
+				Map<EntityEditor<?>, Entity> details = loadDetail(entityToSet, connection);
+				List<Result<Entity>> results = details.entrySet().stream()
+								.map(entry -> detailTask(entityToSet, entry))
+								.map(EditorTask::perform)
+								.collect(toList());
+				return () -> {
+					results.forEach(Result::handle);
+					entity.setOrDefaults(entityToSet);
+					entity.changed.accept(entityToSet);
+
+					return entityToSet;
+				};
+			}
+
+			private EditorTask<Entity> detailTask(@Nullable Entity entityToSet, Map.Entry<EntityEditor<?>, Entity> detail) {
+				if (entityToSet == null) {
+					return detail.getKey().tasks(connection).set(null);
+				}
+				if (detail.getValue() == null) {
+					// clear to defaults to prevent persistent values, as an inline task
+					return detail.getKey().tasks(connection).set(detail.getKey().entityDefinition().entity());
+				}
+
+				return detail.getKey().tasks(connection).set(detail.getValue());
+			}
+		}
+
+		private final class ReplaceEntity implements EditorTask<@Nullable Entity> {
+
+			private final @Nullable Entity entityToSet;
+			private final boolean identityChanged;
+
+			private ReplaceEntity(@Nullable Entity entityToSet) {
+				this.entityToSet = entityToSet == null ? null : validateType(entityToSet).immutable();
+				this.identityChanged = identityChanged(entityToSet);
+			}
+
+			@Override
+			public Result<@Nullable Entity> perform() {
+				Map<EntityEditor<?>, Entity> details = emptyMap();
+				if (identityChanged) {
+					details = loadDetail(entityToSet, connection);
+				}
+				List<Result<Entity>> results = new ArrayList<>();
+				if (identityChanged) {
+					results.addAll(details.entrySet().stream()
+									.map(entry -> detailTask(entityToSet, entry))
+									.map(EditorTask::perform)
+									.collect(toList()));
+				}
+				return () -> {
+					results.forEach(Result::handle);
+					entity.setOrDefaults(entityToSet);
+					entity.replaced.accept(entityToSet);
+
+					return entityToSet;
+				};
+			}
+
+			private EditorTask<Entity> detailTask(@Nullable Entity entityToSet, Map.Entry<EntityEditor<?>, Entity> detail) {
+				if (entityToSet == null) {
+					return detail.getKey().tasks(connection).replace(null);
+				}
+				if (detail.getValue() == null) {
+					// clear to defaults to prevent persistent values, as an inline task
+					return detail.getKey().tasks(connection).set(detail.getKey().entityDefinition().entity());
+				}
+
+				return detail.getKey().tasks(connection).replace(detail.getValue());
+			}
+
+			private boolean identityChanged(@Nullable Entity newEntity) {
+				if (newEntity == null) {
+					return !entity.instance.primaryKey().isNull();
+				}
+
+				return !entity.instance.primaryKey().equals(newEntity.primaryKey());
+			}
+		}
+
+		private Map<EntityEditor<?>, @Nullable Entity> loadDetail(@Nullable Entity master, EntityConnection connection) {
+			Map<EntityEditor<?>, @Nullable Entity> loaded = new LinkedHashMap<>(detail.editors.size());
+			for (DetailEditor detail : detail.editors.values()) {
+				loaded.put(detail.editor, master == null ? null : detail.link.entity.detail(master, connection));
+			}
+
+			return loaded;
 		}
 	}
 
