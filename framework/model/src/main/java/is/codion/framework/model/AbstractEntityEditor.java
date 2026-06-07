@@ -95,8 +95,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 
 	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 	private final DefaultPersistEvents persistEvents = new DefaultPersistEvents();
-	private final EditorValues values = new DefaultEditorValues();
-	private final Event<Attribute<?>> valueChanged = Event.event();
+	private final DefaultEditorValues values = new DefaultEditorValues();
 
 	private final Map<Attribute<?>, EditorValue<?>> editorValues = new HashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new HashMap<>();
@@ -327,7 +326,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		if (editorValue != null) {
 			editorValue.valueChanged();
 		}
-		valueChanged.accept(attribute);
+		values.changed.accept(attribute);
 	}
 
 	private Map<Attribute<?>, String> updateStates() {
@@ -576,6 +575,12 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		@Override
 		public void clear() {
 			set(entityDefinition.entity());
+		}
+
+		@Override
+		public void revert() {
+			detail.editors.values().forEach(detail -> detail.editor.entity().revert());
+			entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
 		}
 
 		private void setOrDefaults(@Nullable Entity entity) {
@@ -1803,17 +1808,13 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		}
 	}
 
-	private final class DefaultEditorValues implements EditorValues {
+	private static final class DefaultEditorValues implements EditorValues {
 
-		@Override
-		public void revert() {
-			detail.editors.values().forEach(detail -> detail.editor.values().revert());
-			entityDefinition.attributes().get().forEach(attribute -> value(attribute).revert());
-		}
+		private final Event<Attribute<?>> changed = Event.event();
 
 		@Override
 		public Observer<Attribute<?>> changed() {
-			return valueChanged.observer();
+			return changed.observer();
 		}
 	}
 

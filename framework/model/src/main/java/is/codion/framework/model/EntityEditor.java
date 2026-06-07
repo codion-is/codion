@@ -57,6 +57,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Provides edit access to an underlying entity.
+ * @param <R> the editor type
  */
 public interface EntityEditor<R extends EntityEditor<R>> {
 
@@ -622,6 +623,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * Clears all values, disregarding the {@link EditorValue#persist()} directive.
 		 */
 		void clear();
+
+		/**
+		 * Reverts all attribute value changes.
+		 */
+		void revert();
 	}
 
 	/**
@@ -744,11 +750,6 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * Provides access to the underlying values.
 	 */
 	interface EditorValues {
-
-		/**
-		 * Reverts all attribute value changes.
-		 */
-		void revert();
 
 		/**
 		 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}

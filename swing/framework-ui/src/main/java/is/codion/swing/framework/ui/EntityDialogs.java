@@ -630,7 +630,7 @@ public final class EntityDialogs {
 				editor.entity().set(entity.get());
 			}
 			else {
-				editor.values().revert();
+				editor.entity().revert();
 			}
 		}
 
@@ -746,7 +746,7 @@ public final class EntityDialogs {
 
 		@Override
 		public void run() {
-			editPanel.editor().values().revert();
+			editPanel.editor().entity().revert();
 			Ancestor.window().of(editPanel).dispose();
 		}
 	}

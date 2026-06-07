@@ -762,7 +762,7 @@ public final class DefaultEntityEditModelTest {
 		editor.value(Employee.NAME).set("another");
 		editor.value(Employee.HIREDATE).set(LocalDate.now());
 		assertTrue(editor.modified().is());
-		editor.values().revert();
+		editor.entity().revert();
 		assertFalse(editor.modified().is());
 	}
 

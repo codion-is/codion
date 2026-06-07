@@ -29,6 +29,7 @@ Codion Change Log
 - AbstractEntityEditor bug fixed, RefreshEditor task now uses the connection from EditorTasks.
 - AbstractEntityEditor, entity().set() and entity().replace() now EditorTask based.
 - AbstractEntityEditor.execute(EditorTask) added.
+- EditorValues.revert() moved to EditorEntity.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.RefreshCommand added.
 - EntityPanel.ControlKeys.REFRESH control now refreshes the active entity if table is not available.
