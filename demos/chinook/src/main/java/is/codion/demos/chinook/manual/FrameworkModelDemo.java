@@ -103,7 +103,7 @@ public final class FrameworkModelDemo {
 		// Edit model states
 		State updateEnabled = editModel.editor().settings().updateEnabled();
 		State updateMultipleEnabled = editModel.editor().settings().updateMultipleEnabled();
-		ObservableState modified = editModel.editor().modified();
+		ObservableState modified = editModel.editor().entity().modified();
 
 		// Table model states
 		ObservableState refreshing = tableModel.items().refresher().active();

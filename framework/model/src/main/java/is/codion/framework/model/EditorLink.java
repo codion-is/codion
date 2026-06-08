@@ -25,6 +25,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.AbstractEntityEditor.DefaultEditorLink;
 import is.codion.framework.model.AbstractEntityEditor.DefaultEditorLinkBuilder;
+import is.codion.framework.model.EntityEditor.EditorEntity;
 
 import org.jspecify.annotations.Nullable;
 
@@ -55,7 +56,7 @@ import java.util.function.Predicate;
  * {@link EntityEditor.EditorTasks#refresh()}. Implementations should not touch UI-bound editor state
  * directly.
  * <p>Presence — whether a detail row should currently exist — is observed via the detail editor's
- * {@link EntityEditor#present()} state; the link's builder configures that state at registration time
+ * {@link EditorEntity#present()} state; the link's builder configures that state at registration time
  * (see {@link Builder#present(Predicate)}).
  * @see EntityEditor.DetailEditors
  * @see EntityEditor.DetailEditors#add(EditorLink)
@@ -251,7 +252,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 		/**
 		 * <p>Sets the presence predicate for the detail editor.
 		 * <p>At registration time ({@link EntityEditor.DetailEditors#add(EditorLink)}) the supplied
-		 * predicate is installed on the detail editor's {@link EntityEditor#present()} state,
+		 * predicate is installed on the detail editor's {@link EditorEntity#present()} state,
 		 * <em>replacing</em> any previously-set predicate (it is not wrapped). The predicate is then
 		 * locked: subsequent attempts to replace it via {@link EntityEditor.Present#predicate()} will
 		 * fail. If a custom presence predicate is needed on a detail editor, supply it here rather

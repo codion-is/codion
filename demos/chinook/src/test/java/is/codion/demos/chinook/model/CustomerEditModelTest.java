@@ -73,7 +73,7 @@ public final class CustomerEditModelTest {
 			preferences = connection.selectSingle(Preferences.CUSTOMER_ID.equalTo(customerId));
 			assertTrue(preferences.isNull(Preferences.PREFERRED_GENRE_FK));
 
-			customerEditor.modified().addConsumer(mod -> System.out.println("Modified: " + mod));
+			customerEditor.entity().modified().addConsumer(mod -> System.out.println("Modified: " + mod));
 
 			newsletter.clear();// no longer present, should delete
 

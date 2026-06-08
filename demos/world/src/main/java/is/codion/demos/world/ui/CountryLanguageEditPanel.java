@@ -67,8 +67,8 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 
 	private void updateIsOfficial() {
 		// Only when we're editing an existing record
-		if (editor().exists().is() && // and is official is the only modified attribute
-						editor().modified().attributes().is(singleton(CountryLanguage.IS_OFFICIAL))) {
+		if (editor().entity().exists().is() && // and is official is the only modified attribute
+						editor().entity().modified().attributes().is(singleton(CountryLanguage.IS_OFFICIAL))) {
 			try {
 				commands().update()
 								.confirm(false)

@@ -884,7 +884,7 @@ public class EntityPanel extends JPanel {
 		return Control.builder()
 						.command(editPanel::refresh)
 						.caption(Messages.refresh())
-						.enabled(and(editPanel.active(), editPanel.editor().exists()))
+						.enabled(and(editPanel.active(), editPanel.editor().entity().exists()))
 						.description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
 						.mnemonic(Messages.refreshMnemonic())
 						.icon(ICONS.refresh())

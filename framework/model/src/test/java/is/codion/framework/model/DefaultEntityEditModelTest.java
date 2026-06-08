@@ -249,8 +249,8 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void test() {
-		ObservableState primaryKeyPresentState = editor.primaryKeyPresent();
-		ObservableState entityExistsState = editor.exists();
+		ObservableState primaryKeyPresentState = editor.entity().primaryKeyPresent();
+		ObservableState entityExistsState = editor.entity().exists();
 
 		assertFalse(primaryKeyPresentState.is());
 		assertFalse(entityExistsState.is());
@@ -267,8 +267,8 @@ public final class DefaultEntityEditModelTest {
 
 		assertEquals(Employee.TYPE, employeeEditModel.entityType());
 
-		assertFalse(editor.exists().is());
-		assertFalse(editor.modified().is());
+		assertFalse(editor.entity().exists().is());
+		assertFalse(editor.entity().modified().is());
 
 		Entity employee = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		editor.entity().set(employee);
@@ -276,11 +276,11 @@ public final class DefaultEntityEditModelTest {
 		assertTrue(entityExistsState.is());
 
 		assertTrue(editor.entity().get().equalValues(employee), "Active entity is not equal to the entity just set");
-		assertTrue(editor.exists().is(), "Active entity exists after an entity is set");
-		assertFalse(editor.modified().is());
+		assertTrue(editor.entity().exists().is(), "Active entity exists after an entity is set");
+		assertFalse(editor.entity().modified().is());
 		editor.entity().defaults();
-		assertFalse(editor.exists().is(), "Active entity exists after defaults are set");
-		assertFalse(editor.modified().is());
+		assertFalse(editor.entity().exists().is(), "Active entity exists after defaults are set");
+		assertFalse(editor.entity().modified().is());
 		assertTrue(editor.entity().get().primaryKey().isNull(), "Active entity primary key is not null after defaults are set");
 
 		editor.entity().set(employee);
@@ -394,7 +394,7 @@ public final class DefaultEntityEditModelTest {
 			assertTrue(employeeEditModel.editor().settings().insertEnabled().is());
 
 			employeeEditModel.editor().insert();
-			assertTrue(editor.exists().is());
+			assertTrue(editor.entity().exists().is());
 			Entity entityCopy = editor.entity().get();
 			assertFalse(entityCopy.primaryKey().isNull());
 			assertEquals(entityCopy.primaryKey(), entityCopy.originalPrimaryKey());
@@ -421,9 +421,9 @@ public final class DefaultEntityEditModelTest {
 			AtomicInteger replacedCount = new AtomicInteger();
 			editor.entity().replaced().addListener(replacedCount::incrementAndGet);
 			editor.entity().set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
-			assertFalse(editor.modified().is());
+			assertFalse(editor.entity().modified().is());
 			editor.value(Employee.NAME).set("BJORN");
-			assertTrue(editor.modified().is());
+			assertTrue(editor.entity().modified().is());
 			List<Entity> toUpdate = singletonList(editor.entity().get());
 			Consumer<Map<Entity, Entity>> consumer = updatedEntities ->
 							assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
@@ -435,7 +435,7 @@ public final class DefaultEntityEditModelTest {
 			assertTrue(employeeEditModel.editor().settings().updateEnabled().is());
 
 			employeeEditModel.editor().update();
-			assertFalse(editor.modified().is());
+			assertFalse(editor.entity().modified().is());
 			assertEquals(1, replacedCount.get());
 			employeeEditModel.editor().events().after().update().removeConsumer(consumer);
 
@@ -531,19 +531,19 @@ public final class DefaultEntityEditModelTest {
 		assertEquals(martinsManager, editor.value(Employee.MGR_FK).get());
 		editor.value(Employee.MGR_FK).clear();
 		assertEquals(martinsManager, editor.value(Employee.MGR_FK).original());
-		assertTrue(editor.modified().attributes().containsOnly(singleton(Employee.MGR_FK)));
+		assertTrue(editor.entity().modified().attributes().containsOnly(singleton(Employee.MGR_FK)));
 		editor.value(Employee.MGR_FK).revert();
 		assertEquals(martinsManager, editor.value(Employee.MGR_FK).get());
-		assertTrue(editor.modified().attributes().isEmpty());
+		assertTrue(editor.entity().modified().attributes().isEmpty());
 
 		editor.value(Employee.NAME).set("NewName");
 		assertEquals("MARTIN", editor.value(Employee.NAME).original());
-		assertTrue(editor.modified().attributes().containsOnly(singleton(Employee.NAME)));
+		assertTrue(editor.entity().modified().attributes().containsOnly(singleton(Employee.NAME)));
 		editor.value(Employee.MGR_FK).set(king);
 		assertEquals(martinsManager, editor.value(Employee.MGR_FK).original());
-		assertTrue(editor.modified().attributes().containsOnly(Arrays.asList(Employee.MGR_FK, Employee.NAME)));
+		assertTrue(editor.entity().modified().attributes().containsOnly(Arrays.asList(Employee.MGR_FK, Employee.NAME)));
 		editor.value(Employee.SALARY).set(3210d);
-		assertTrue(editor.modified().attributes().containsOnly(Arrays.asList(Employee.SALARY, Employee.NAME, Employee.MGR_FK)));
+		assertTrue(editor.entity().modified().attributes().containsOnly(Arrays.asList(Employee.SALARY, Employee.NAME, Employee.MGR_FK)));
 	}
 
 	@Test
@@ -755,36 +755,36 @@ public final class DefaultEntityEditModelTest {
 		editor.entity().set(martin);
 
 		editor.value(Employee.NAME).set("newname");
-		assertTrue(editor.modified().is());
+		assertTrue(editor.entity().modified().is());
 		editor.value(Employee.NAME).revert();
-		assertFalse(editor.modified().is());
+		assertFalse(editor.entity().modified().is());
 
 		editor.value(Employee.NAME).set("another");
 		editor.value(Employee.HIREDATE).set(LocalDate.now());
-		assertTrue(editor.modified().is());
+		assertTrue(editor.entity().modified().is());
 		editor.entity().revert();
-		assertFalse(editor.modified().is());
+		assertFalse(editor.entity().modified().is());
 	}
 
 	@Test
 	public void modified() {
 		State extraModified = State.state();
-		editor.modified().additional().add(extraModified);
+		editor.entity().modified().additional().add(extraModified);
 
 		editor.entity().set(employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN")));
-		assertFalse(editor.modified().is());
+		assertFalse(editor.entity().modified().is());
 		extraModified.set(true);
-		assertTrue(editor.modified().is());
+		assertTrue(editor.entity().modified().is());
 		extraModified.set(false);
-		assertFalse(editor.modified().is());
-		editor.modified().additional().remove(extraModified);
+		assertFalse(editor.entity().modified().is());
+		editor.entity().modified().additional().remove(extraModified);
 		State extraModified2 = State.state(false);
-		editor.modified().additional().add(extraModified2);
-		assertFalse(editor.modified().is());
+		editor.entity().modified().additional().add(extraModified2);
+		assertFalse(editor.entity().modified().is());
 		extraModified.set(true);// not listened to anymore
-		assertFalse(editor.modified().is());
+		assertFalse(editor.entity().modified().is());
 		extraModified2.set(true);
-		assertTrue(editor.modified().is());
+		assertTrue(editor.entity().modified().is());
 		// UpdateException from the EntityConnection since the entity isn't really modified
 		assertThrows(UpdateEntityException.class, () -> employeeEditModel.editor().update());
 	}
@@ -794,7 +794,7 @@ public final class DefaultEntityEditModelTest {
 		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		martin.remove(Employee.ID);// so it becomes new, in order for all attributes to be validated
 		editor.entity().set(martin);
-		assertTrue(editor.valid().is());
+		assertTrue(editor.entity().valid().is());
 		assertTrue(editor.value(Employee.NAME).valid().is());
 		assertTrue(editor.value(Employee.SALARY).valid().is());
 		editor.validator().set(new EntityValidator() {
@@ -805,7 +805,7 @@ public final class DefaultEntityEditModelTest {
 				}
 			}
 		});
-		assertFalse(editor.valid().is());
+		assertFalse(editor.entity().valid().is());
 		assertFalse(editor.value(Employee.NAME).valid().is());
 		assertFalse(editor.value(Employee.SALARY).valid().is());
 	}

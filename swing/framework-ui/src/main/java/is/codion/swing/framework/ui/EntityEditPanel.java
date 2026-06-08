@@ -226,7 +226,7 @@ public abstract class EntityEditPanel extends JPanel {
 		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
-		if (editModel.editor().exists().not().is()) {
+		if (editModel.editor().entity().exists().not().is()) {
 			editModel.editor().entity().defaults();
 		}
 	}
@@ -679,7 +679,7 @@ public abstract class EntityEditPanel extends JPanel {
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(active,
 										editor().settings().deleteEnabled(),
-										editor().exists()))
+										editor().entity().exists()))
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
 						.icon(ICONS.delete())
@@ -725,7 +725,7 @@ public abstract class EntityEditPanel extends JPanel {
 						.caption(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editor().settings().updateEnabled(),
-										editor().modified()))
+										editor().entity().modified()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
 						.icon(ICONS.update())
@@ -850,8 +850,8 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	private void onEntityChanging(Entity entity) {
-		if (configuration.modifiedWarning && components.editor().modified().is()) {
-			Set<Attribute<?>> modified = components.editor().modified().attributes().get();
+		if (configuration.modifiedWarning && components.editor().entity().modified().is()) {
+			Set<Attribute<?>> modified = components.editor().entity().modified().attributes().get();
 			if (showConfirmDialog(this, createModifiedMessage(modified),
 							FrameworkMessages.modifiedWarningTitle(), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
 				if (!modified.isEmpty()) {
@@ -1229,9 +1229,9 @@ public abstract class EntityEditPanel extends JPanel {
 		 * @param modifiedWarning specifies whether this edit panel presents a warning before discarding unsaved modifications
 		 * @return this Config instance
 		 * @see #MODIFIED_WARNING
-		 * @see EntityEditor#modified()
+		 * @see EditorEntity#modified()
 		 * @see EditorEntity#set(Entity)
-		 * @see EntityEditor.EditorEntity#defaults()
+		 * @see EditorEntity#defaults()
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;

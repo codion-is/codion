@@ -660,7 +660,7 @@ public final class EntityDialogs {
 							.caption(FrameworkMessages.update())
 							.mnemonic(FrameworkMessages.updateMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
-							.enabled(editPanel.editor().modified())
+							.enabled(editPanel.editor().entity().modified())
 							.build();
 		}
 

@@ -24,6 +24,7 @@ import is.codion.framework.db.EntityQueries;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
@@ -109,7 +110,7 @@ final class EditorInspector extends JPanel {
 	}
 
 	private String createUpdateQuery() {
-		if (editor.modified().is()) {
+		if (editor.entity().modified().is()) {
 			return queries == null ? "" : queries.update(editor.entity().get());
 		}
 
@@ -158,8 +159,9 @@ final class EditorInspector extends JPanel {
 											.refresh(true)
 											.build();
 			components.editor().values().changed().addListener(attributeModel.items()::refresh);
-			components.editor().entity().replaced().addListener(attributeModel.items()::refresh);
-			components.editor().entity().addListener(attributeModel.items()::refresh);
+			EditorEntity editorEntity = components.editor().entity();
+			editorEntity.replaced().addListener(attributeModel.items()::refresh);
+			editorEntity.addListener(attributeModel.items()::refresh);
 			TabbedPaneBuilder detailPanelsBuilder = tabbedPane();
 			for (DetailComponents detail : components.detail().components()) {
 				String title = detail.components().editor().entityDefinition().caption() + " " + detail.caption();
@@ -169,19 +171,19 @@ final class EditorInspector extends JPanel {
 							.border(emptyBorder())
 							.north(gridLayoutPanel(1, 4)
 											.add(checkBox()
-															.link(components.editor().exists())
+															.link(editorEntity.exists())
 															.text("Exists")
 															.enabled(false))
 											.add(checkBox()
-															.link(components.editor().modified())
+															.link(editorEntity.modified())
 															.text("Modified")
 															.enabled(false))
 											.add(checkBox()
-															.link(components.editor().valid())
+															.link(editorEntity.valid())
 															.text("Valid")
 															.enabled(false))
 											.add(checkBox()
-															.link(components.editor().present())
+															.link(editorEntity.present())
 															.text("Present")
 															.enabled(false))
 											.build())

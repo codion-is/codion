@@ -1029,8 +1029,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Map<EntityPanel, Collection<Attribute<?>>> modifiedPanels = new LinkedHashMap<>();
 		for (EntityPanel panel : panels) {
 			SwingEntityEditModel editModel = panel.editModel();
-			if (editModel.editor().modified().is()) {
-				modifiedPanels.put(panel, editModel.editor().modified().attributes().get());
+			if (editModel.editor().entity().modified().is()) {
+				modifiedPanels.put(panel, editModel.editor().entity().modified().attributes().get());
 			}
 			modifiedPanels.putAll(modified(panel.detail().get()));
 		}

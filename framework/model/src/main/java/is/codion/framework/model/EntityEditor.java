@@ -112,38 +112,6 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	EditorEntity entity();
 
 	/**
-	 * @return an {@link ObservableState} indicating whether the entity exists in the database
-	 * @see Exists#predicate()
-	 */
-	Exists exists();
-
-	/**
-	 * <p>Returns an {@link ObservableState} indicating whether any values have been modified.
-	 * <p>Note that only existing entities are modified, new, or non-existing entities are never modified.
-	 * @return an {@link ObservableState} indicating the modified state of this editor entity
-	 * @see Modified#additional()
-	 * @see Exists
-	 */
-	Modified modified();
-
-	/**
-	 * @return the {@link Present} instance
-	 */
-	Present present();
-
-	/**
-	 * @return an {@link ObservableState} indicating whether the value of the entity primary key is present
-	 */
-	ObservableState primaryKeyPresent();
-
-	/**
-	 * @return an {@link ObservableState} indicating the valid status of the underlying Entity.
-	 * @see #validate(Attribute)
-	 * @see EntityValidator#validate(Entity)
-	 */
-	ObservableState valid();
-
-	/**
 	 * Controls the validator used by this editor.
 	 * @return the {@link Value} controlling the validator
 	 * @see #validate(Entity)
@@ -452,7 +420,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * @return a task for refreshing the active entity
 		 * @throws IllegalStateException in case the active entity does not exist
-		 * @see #exists()
+		 * @see EditorEntity#exists()
 		 */
 		EditorTask<Entity> refresh();
 
@@ -628,6 +596,38 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * Reverts all attribute value changes.
 		 */
 		void revert();
+
+		/**
+		 * @return an {@link ObservableState} indicating whether the entity exists in the database
+		 * @see Exists#predicate()
+		 */
+		Exists exists();
+
+		/**
+		 * <p>Returns an {@link ObservableState} indicating whether any values have been modified.
+		 * <p>Note that only existing entities are modified, new, or non-existing entities are never modified.
+		 * @return an {@link ObservableState} indicating the modified state of this editor entity
+		 * @see Modified#additional()
+		 * @see Exists
+		 */
+		Modified modified();
+
+		/**
+		 * @return the {@link Present} instance
+		 */
+		Present present();
+
+		/**
+		 * @return an {@link ObservableState} indicating whether the value of the entity primary key is present
+		 */
+		ObservableState primaryKeyPresent();
+
+		/**
+		 * @return an {@link ObservableState} indicating the valid status of the underlying Entity.
+		 * @see #validate(Attribute)
+		 * @see EntityValidator#validate(Entity)
+		 */
+		ObservableState valid();
 	}
 
 	/**
@@ -816,7 +816,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * value, in case of an exiting entity.
 		 * <p>Note that unlike {@link EditorEntity#modified()} this state does not depend on whether the underlying entity exists.
 		 * @return an {@link ObservableState} indicating the modified state of the value of the given attribute
-		 * @see EntityEditor#modified()
+		 * @see EditorEntity#modified()
 		 */
 		ObservableState modified();
 
@@ -940,7 +940,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * <li>The foreign key value is not reset by defaults — its {@link EditorValue#persist()} is set to false,
 	 *     so it survives {@link EditorEntity#defaults()}.
 	 * <li>The detail editor's validator is wrapped so a null foreign key is silently accepted during validation.
-	 *     This applies both to the reactive {@link #valid()} state (for UI binding) and to the validation gate
+	 *     This applies both to the reactive {@link EditorEntity#valid()} state (for UI binding) and to the validation gate
 	 *     in {@link EditorTasks#insert(java.util.function.Consumer)} (which must throw synchronously, before
 	 *     the framework has populated the foreign key). The wrapped validator is locked to prevent replacement.
 	 * <li>The framework sets the foreign key on the detail entity during persistence, linking it to the
@@ -971,7 +971,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * <li><b>Update</b>: Depending on the detail's presence and existence, the detail is inserted, updated, or deleted.
 	 * <li><b>Delete</b>: An existing detail entity is deleted before the master.
 	 * </ul>
-	 * <p>Presence is determined by the detail editor's {@link EntityEditor#present()} state, configured
+	 * <p>Presence is determined by the detail editor's {@link EditorEntity#present()} state, configured
 	 * at registration time via {@link EditorLink.Builder#present(Predicate)}. A detail that is present but
 	 * does not yet exist triggers an insert. A detail that exists but is no longer present triggers a
 	 * delete. A detail that exists, is present, and is modified triggers an update.

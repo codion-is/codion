@@ -141,7 +141,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().indexes().set(asList(1, 2, 3));
 		assertFalse(departmentModel.tableModel().selection().empty().is());
-		assertTrue(departmentModel.editor().exists().is());
+		assertTrue(departmentModel.editor().entity().exists().is());
 		departmentModel.editor().entity().defaults();
 		assertTrue(departmentModel.tableModel().selection().empty().is());
 	}

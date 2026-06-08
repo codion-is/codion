@@ -148,7 +148,7 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 		if (tableModel != null && tableModel.selection().empty().not().is()) {
 			return tableModel.selection().items().get();
 		}
-		else if (editModel.editor().exists().not().is()) {
+		else if (editModel.editor().entity().exists().not().is()) {
 			return emptyList();
 		}
 

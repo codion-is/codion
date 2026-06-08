@@ -157,12 +157,12 @@ public final class NotesDemo {
 
 		private void insertDeleteOrUpdate() throws EntityValidationException {
 			SwingEntityEditor editor = editor();
-			if (editor.exists().not().is() && !editor.value(Note.NOTE).isNull()) {
+			if (editor.entity().exists().not().is() && !editor.value(Note.NOTE).isNull()) {
 				// A new note with a non-null text
 				commands().insert()
 								.execute();
 			}
-			else if (editor.modified().is()) {
+			else if (editor.entity().modified().is()) {
 				if (editor.value(Note.NOTE).isNull()) {
 					// An existing note with no text
 					commands().delete()

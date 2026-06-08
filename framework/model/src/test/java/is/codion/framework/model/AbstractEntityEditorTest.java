@@ -81,27 +81,27 @@ public final class AbstractEntityEditorTest {
 			salary.set(2000d);
 
 			insert(departmentEditor);
-			assertTrue(departmentEditor.exists().is());
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 
 			salary.clear();//now invalid
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 
 			employeeName.set("Test");
 			salary.set(2100d);// valid again
 
 			update(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 
 			salary.set(1990d);// present but invalid
 			assertThrows(EntityValidationException.class, () -> insert(departmentEditor));
 
 			delete(departmentEditor);
-			assertFalse(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();
@@ -145,39 +145,39 @@ public final class AbstractEntityEditorTest {
 			managerDepartment.set(10);
 
 			insert(departmentEditor);
-			assertTrue(departmentEditor.exists().is());
-			assertTrue(employeeEditor.exists().is());
-			assertTrue(managerEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
+			assertTrue(managerEditor.entity().exists().is());
 
 			employeeSalary.clear();//now invalid
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
-			assertFalse(employeeEditor.exists().is());
-			assertFalse(managerEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
+			assertFalse(managerEditor.entity().exists().is());
 
 			employeeName.set("Test");
 			employeeSalary.set(2100d);// valid again
 
 			update(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
-			assertFalse(managerEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
+			assertFalse(managerEditor.entity().exists().is());
 
 			managerName.set("TestMgr2");
 			managerSalary.set(3100d);// valid again
 			managerDepartment.set(10);
 
-			assertTrue(employeeEditor.modified().is());
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(employeeEditor.entity().modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
-			assertTrue(managerEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
+			assertTrue(managerEditor.entity().exists().is());
 
 			delete(departmentEditor);
-			assertFalse(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
-			assertFalse(managerEditor.exists().is());
+			assertFalse(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
+			assertFalse(managerEditor.entity().exists().is());
 		}
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();
@@ -199,12 +199,12 @@ public final class AbstractEntityEditorTest {
 		// Validator is wrapped in DetailForeignKeyValidator
 		assertInstanceOf(DetailForeignKeyValidator.class, employeeEditor.validator().get());
 		// Detail is initially clear
-		assertFalse(employeeEditor.exists().is());
-		assertFalse(employeeEditor.modified().is());
+		assertFalse(employeeEditor.entity().exists().is());
+		assertFalse(employeeEditor.entity().modified().is());
 		assertNull(employeeEditor.value(Employee.NAME).get());
 		assertNull(employeeEditor.value(Employee.SALARY).get());
 		// Master's modified().additional() contains the detail's updatable state
-		assertFalse(departmentEditor.modified().additional().get().isEmpty());
+		assertFalse(departmentEditor.entity().modified().additional().get().isEmpty());
 		assertThrows(IllegalArgumentException.class, () -> employeeEditor.validator().set(new EntityValidator() {}));
 	}
 
@@ -229,15 +229,15 @@ public final class AbstractEntityEditorTest {
 			// Modify two detail attributes — both should appear in master's modified attributes.
 			employeeEditor.value(Employee.NAME).set("Modified");
 			employeeEditor.value(Employee.SALARY).set(2100d);
-			assertTrue(departmentEditor.modified().attributes().get().contains(Employee.NAME));
-			assertTrue(departmentEditor.modified().attributes().get().contains(Employee.SALARY));
+			assertTrue(departmentEditor.entity().modified().attributes().get().contains(Employee.NAME));
+			assertTrue(departmentEditor.entity().modified().attributes().get().contains(Employee.SALARY));
 
 			// Revert NAME back to original, keep SALARY modified. The detail's Updatable.update
 			// state stays true (no flip — still present, exists, and modified via SALARY), but
 			// the modified-attributes set must refresh to drop NAME.
 			employeeEditor.value(Employee.NAME).set("Original");
-			assertFalse(departmentEditor.modified().attributes().get().contains(Employee.NAME));
-			assertTrue(departmentEditor.modified().attributes().get().contains(Employee.SALARY));
+			assertFalse(departmentEditor.entity().modified().attributes().get().contains(Employee.NAME));
+			assertTrue(departmentEditor.entity().modified().attributes().get().contains(Employee.SALARY));
 
 			delete(departmentEditor);
 		}
@@ -257,18 +257,18 @@ public final class AbstractEntityEditorTest {
 						.build());
 
 		// Required non-FK fields (NAME, SALARY) are unset
-		assertFalse(employeeEditor.valid().is());
+		assertFalse(employeeEditor.entity().valid().is());
 
 		// Populate the required non-FK fields. The FK is still null,
 		// but it's framework-managed so the editor is now valid.
 		employeeEditor.value(Employee.NAME).set("Test");
 		employeeEditor.value(Employee.SALARY).set(2000d);
-		assertTrue(employeeEditor.valid().is());
+		assertTrue(employeeEditor.entity().valid().is());
 
 		// Clearing a required non-FK field still makes the editor invalid —
 		// the wrapper only suppresses null-FK, not other null-required-attribute errors.
 		employeeEditor.value(Employee.NAME).clear();
-		assertFalse(employeeEditor.valid().is());
+		assertFalse(employeeEditor.entity().valid().is());
 	}
 
 	@Test
@@ -304,8 +304,8 @@ public final class AbstractEntityEditorTest {
 			employeeEditor.value(Employee.DEPARTMENT).set(61);
 
 			insert(departmentEditor);
-			assertTrue(departmentEditor.exists().is());
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			assertEquals(1, beforeInsertCalls.get());
 			assertEquals(61, employeeEditor.entity().get().get(Employee.DEPARTMENT));
 
@@ -317,11 +317,11 @@ public final class AbstractEntityEditorTest {
 											.with(Department.NAME, "Empty")
 											.build());
 			departmentEditor.entity().set(dept62);
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 
 			Entity dept61 = connection.selectSingle(Department.ID.equalTo(61));
 			departmentEditor.entity().set(dept61);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			assertEquals("Solo", employeeEditor.value(Employee.NAME).get());
 
 			// Update path
@@ -331,8 +331,8 @@ public final class AbstractEntityEditorTest {
 
 			// Delete cascades to detail
 			delete(departmentEditor);
-			assertFalse(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();
@@ -563,7 +563,7 @@ public final class AbstractEntityEditorTest {
 			employeeEditor.value(Employee.SALARY).set(2000d);
 
 			insert(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 
 			// Insert another department
 			EntityConnection connection = CONNECTION_PROVIDER.connection();
@@ -575,17 +575,17 @@ public final class AbstractEntityEditorTest {
 
 			// Set a different entity on master -> detail should load from DB (no match for dept 43)
 			departmentEditor.entity().set(dept43);
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 
 			// Set master back to original dept -> detail loads from DB
 			Entity dept42 = connection.selectSingle(Department.ID.equalTo(42));
 			departmentEditor.entity().set(dept42);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			assertEquals("Emp1", employeeEditor.value(Employee.NAME).get());
 
 			// Set master entity to null -> detail is cleared
 			departmentEditor.entity().set(null);
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();
@@ -603,31 +603,31 @@ public final class AbstractEntityEditorTest {
 						.build());
 
 		// masterExists=false -> master modified is false regardless
-		assertFalse(departmentEditor.exists().is());
+		assertFalse(departmentEditor.entity().exists().is());
 		employeeEditor.value(Employee.NAME).set("Test");
 		employeeEditor.value(Employee.SALARY).set(1000d);
-		assertFalse(departmentEditor.modified().is());
+		assertFalse(departmentEditor.entity().modified().is());
 
 		// Simulate master existing by setting an existing entity (dept 40 has no employees)
 		Entity existingDept = CONNECTION_PROVIDER.connection()
 						.selectSingle(Department.ID.equalTo(40));
 		departmentEditor.entity().set(existingDept);
-		assertTrue(departmentEditor.exists().is());
+		assertTrue(departmentEditor.entity().exists().is());
 
 		// masterExists=true, valid=true, exists=false -> insert state (detail is new and valid)
 		// The employee editor was cleared by masterChanged (dept 40 has no detail employee)
 		employeeEditor.value(Employee.NAME).set("Test");
 		employeeEditor.value(Employee.SALARY).set(2000d);
-		assertTrue(employeeEditor.valid().is());
-		assertFalse(employeeEditor.exists().is());
+		assertTrue(employeeEditor.entity().valid().is());
+		assertFalse(employeeEditor.entity().exists().is());
 		// Master should be modified because detail has pending insert
-		assertTrue(departmentEditor.modified().is());
+		assertTrue(departmentEditor.entity().modified().is());
 
 		// masterExists=true, valid=false, exists=false -> all false (nothing to do)
 		employeeEditor.value(Employee.SALARY).clear(); // now invalid
-		assertFalse(employeeEditor.valid().is());
-		assertFalse(employeeEditor.exists().is());
-		assertFalse(departmentEditor.modified().is());
+		assertFalse(employeeEditor.entity().valid().is());
+		assertFalse(employeeEditor.entity().exists().is());
+		assertFalse(departmentEditor.entity().modified().is());
 	}
 
 	@Test
@@ -649,8 +649,8 @@ public final class AbstractEntityEditorTest {
 
 			insert(departmentEditor);
 
-			assertTrue(departmentEditor.exists().is());
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			// Detail entity has FK pointing to master
 			assertEquals(1, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(50))));
@@ -679,8 +679,8 @@ public final class AbstractEntityEditorTest {
 
 			insert(departmentEditor);
 
-			assertTrue(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 			assertEquals(0, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(51))));
 		}
@@ -707,8 +707,8 @@ public final class AbstractEntityEditorTest {
 
 			insert(departmentEditor);
 
-			assertTrue(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 			assertEquals(0, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(52))));
 		}
@@ -736,19 +736,19 @@ public final class AbstractEntityEditorTest {
 			employeeEditor.value(Employee.SALARY).set(2000d);
 
 			insert(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			assertEquals(1, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(53))));
 
 			// Make detail invalid -> triggers delete path on update
 			employeeEditor.value(Employee.SALARY).clear();
-			assertFalse(employeeEditor.valid().is());
-			assertTrue(departmentEditor.modified().is());
+			assertFalse(employeeEditor.entity().valid().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
 
 			// Detail should be deleted
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 			assertEquals(0, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(53))));
 		}
@@ -774,19 +774,19 @@ public final class AbstractEntityEditorTest {
 			departmentEditor.value(Department.NAME).set("InsPath");
 
 			insert(departmentEditor);
-			assertTrue(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 
 			// Now set valid detail values
 			employeeEditor.value(Employee.NAME).set("NewEmp");
 			employeeEditor.value(Employee.SALARY).set(2500d);
-			assertTrue(employeeEditor.valid().is());
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(employeeEditor.entity().valid().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			// Update master -> detail should be inserted
 			update(departmentEditor);
 
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			assertEquals(1, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(54))));
 		}
@@ -814,19 +814,19 @@ public final class AbstractEntityEditorTest {
 			employeeEditor.value(Employee.SALARY).set(2000d);
 
 			insert(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 
 			// Modify detail salary
 			employeeEditor.value(Employee.SALARY).set(3000d);
-			assertTrue(employeeEditor.modified().is());
-			assertTrue(employeeEditor.valid().is());
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(employeeEditor.entity().modified().is());
+			assertTrue(employeeEditor.entity().valid().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
 
 			// Detail should be updated
-			assertTrue(employeeEditor.exists().is());
-			assertFalse(employeeEditor.modified().is());
+			assertTrue(employeeEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().modified().is());
 			assertEquals(3000d, employeeEditor.value(Employee.SALARY).get());
 		}
 		finally {
@@ -853,18 +853,18 @@ public final class AbstractEntityEditorTest {
 			employeeEditor.value(Employee.SALARY).set(2000d);
 
 			insert(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 
 			// Modify only master, not detail
 			departmentEditor.value(Department.NAME).set("NoOpMod");
-			assertTrue(departmentEditor.modified().is());
-			assertFalse(employeeEditor.modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
+			assertFalse(employeeEditor.entity().modified().is());
 
 			update(departmentEditor);
 
 			// Detail unchanged
-			assertTrue(employeeEditor.exists().is());
-			assertFalse(employeeEditor.modified().is());
+			assertTrue(employeeEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().modified().is());
 			assertEquals(2000d, employeeEditor.value(Employee.SALARY).get());
 			// Verify DB row unchanged
 			assertEquals(1, CONNECTION_PROVIDER.connection().count(
@@ -897,16 +897,16 @@ public final class AbstractEntityEditorTest {
 
 			// Modify only detail, not master
 			employeeEditor.value(Employee.SALARY).set(4000d);
-			assertTrue(employeeEditor.modified().is());
+			assertTrue(employeeEditor.entity().modified().is());
 			// Master's modified() should be true via Updatable additional state
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
 
 			// Detail should be updated
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			assertEquals(4000d, employeeEditor.value(Employee.SALARY).get());
-			assertFalse(employeeEditor.modified().is());
+			assertFalse(employeeEditor.entity().modified().is());
 		}
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();
@@ -932,14 +932,14 @@ public final class AbstractEntityEditorTest {
 			employeeEditor.value(Employee.SALARY).set(2000d);
 
 			insert(departmentEditor);
-			assertTrue(departmentEditor.exists().is());
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 
 			delete(departmentEditor);
 
 			// Both should be deleted and editors cleared
-			assertFalse(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 			assertEquals(0, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(58))));
 			assertEquals(0, CONNECTION_PROVIDER.connection().count(
@@ -967,13 +967,13 @@ public final class AbstractEntityEditorTest {
 			departmentEditor.value(Department.NAME).set("NoDet");
 
 			insert(departmentEditor);
-			assertTrue(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 
 			// Delete master -> should not fail even though no detail exists
 			delete(departmentEditor);
 
-			assertFalse(departmentEditor.exists().is());
+			assertFalse(departmentEditor.entity().exists().is());
 			assertEquals(0, CONNECTION_PROVIDER.connection().count(
 							Count.where(Department.ID.equalTo(59))));
 		}
@@ -1001,40 +1001,40 @@ public final class AbstractEntityEditorTest {
 			employeeEditor.value(Employee.SALARY).set(2500d);
 
 			insert(departmentEditor);
-			assertTrue(departmentEditor.exists().is());
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 
 			// 2. Modify detail -> update master -> detail updated
 			employeeEditor.value(Employee.SALARY).set(2000d);
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			assertEquals(2000d, employeeEditor.value(Employee.SALARY).get());
 
 			// 3. Invalidate detail -> update master -> detail deleted
 			employeeEditor.value(Employee.SALARY).clear();
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 			assertEquals(0, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(60))));
 
 			// 4. Set valid detail values -> update master -> detail re-inserted
 			employeeEditor.value(Employee.NAME).set("EmpReborn");
 			employeeEditor.value(Employee.SALARY).set(3000d);
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
-			assertTrue(employeeEditor.exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
 			assertEquals(1, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(60))));
 
 			// 5. Delete master -> both gone
 			delete(departmentEditor);
-			assertFalse(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 			assertEquals(0, CONNECTION_PROVIDER.connection().count(
 							Count.where(Department.ID.equalTo(60))));
 		}
@@ -1068,29 +1068,29 @@ public final class AbstractEntityEditorTest {
 			extraEditor.value(DepartmentExtra.DESCRIPTION).set("Extra info");
 
 			insert(departmentEditor);
-			assertTrue(departmentEditor.exists().is());
-			assertTrue(employeeEditor.exists().is());
-			assertTrue(extraEditor.exists().is());
+			assertTrue(departmentEditor.entity().exists().is());
+			assertTrue(employeeEditor.entity().exists().is());
+			assertTrue(extraEditor.entity().exists().is());
 
 			// Modify one detail (employee salary), invalidate other (extra description is nullable
 			// so to invalidate we use the employee; let's modify extra and invalidate employee instead)
 			extraEditor.value(DepartmentExtra.DESCRIPTION).set("Updated info");
 			employeeEditor.value(Employee.SALARY).clear(); // invalidate employee
 
-			assertTrue(departmentEditor.modified().is());
+			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);
 
 			// Employee should be deleted (invalid), extra should be updated
-			assertFalse(employeeEditor.exists().is());
-			assertTrue(extraEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
+			assertTrue(extraEditor.entity().exists().is());
 			assertEquals("Updated info", extraEditor.value(DepartmentExtra.DESCRIPTION).get());
 
 			// Delete master -> all cleaned up
 			delete(departmentEditor);
-			assertFalse(departmentEditor.exists().is());
-			assertFalse(employeeEditor.exists().is());
-			assertFalse(extraEditor.exists().is());
+			assertFalse(departmentEditor.entity().exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
+			assertFalse(extraEditor.entity().exists().is());
 		}
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();
@@ -1213,14 +1213,14 @@ public final class AbstractEntityEditorTest {
 
 			departmentEditor.entity().set(dept40);
 			Entity.Key secondPk = second.entity().get().primaryKey();
-			assertTrue(first.exists().is());
-			assertTrue(second.exists().is());
+			assertTrue(first.entity().exists().is());
+			assertTrue(second.entity().exists().is());
 
 			// Trigger delete on slot "first" by clearing its salary -> present=false, exists=true.
 			first.value(Employee.SALARY).clear();
 			update(departmentEditor);
 
-			assertFalse(first.exists().is());
+			assertFalse(first.entity().exists().is());
 			// Slot "second" must still hold BETA — without PK-stable, the loader would shift
 			// BETA into slot "first" (offset 0) and leave slot "second" empty.
 			assertEquals(secondPk, second.entity().get().primaryKey());
@@ -1259,7 +1259,7 @@ public final class AbstractEntityEditorTest {
 
 			insert(departmentEditor);
 			Entity.Key highEarnerPk = highEarnerEditor.entity().get().primaryKey();
-			assertTrue(highEarnerEditor.exists().is());
+			assertTrue(highEarnerEditor.entity().exists().is());
 
 			// Edit salary to no longer satisfy the load condition.
 			highEarnerEditor.value(Employee.SALARY).set(2500d);
@@ -1274,7 +1274,7 @@ public final class AbstractEntityEditorTest {
 			Entity dept50 = CONNECTION_PROVIDER.connection().selectSingle(Department.ID.equalTo(50));
 			departmentEditor.entity().set(null);
 			departmentEditor.entity().set(dept50);
-			assertFalse(highEarnerEditor.exists().is());
+			assertFalse(highEarnerEditor.entity().exists().is());
 		}
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();
@@ -1333,7 +1333,7 @@ public final class AbstractEntityEditorTest {
 
 			// replace(null) clears details (identity goes from real -> null).
 			departmentEditor.entity().replace(null);
-			assertFalse(employeeEditor.exists().is());
+			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();

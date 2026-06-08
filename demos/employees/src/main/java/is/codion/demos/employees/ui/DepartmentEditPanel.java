@@ -41,13 +41,13 @@ public class DepartmentEditPanel extends EntityEditPanel {
 		create().textField(Department.DEPARTMENT_NO)
 						.columns(3)
 						//don't allow editing of existing department numbers
-						.enabled(editor().exists().not());
+						.enabled(editor().entity().exists().not());
 		create().textField(Department.NAME)
 						.columns(8);
 		create().textField(Department.LOCATION)
 						.columns(12);
 
-		editor().exists().addConsumer(exists ->
+		editor().entity().exists().addConsumer(exists ->
 						focus().initial().set(exists ? Department.NAME : Department.DEPARTMENT_NO));
 
 		setLayout(borderLayout());

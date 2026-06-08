@@ -111,11 +111,6 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
 	private final DefaultSettings settings;
-	private final State primaryKeyPresent = State.state(false);
-	private final State valid = State.state();
-	private final DefaultExists exists;
-	private final DefaultModified modified;
-	private final DefaultPresent present = new DefaultPresent();
 	private final Value<EntityValidator> validator;
 	private final ComponentModels componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
@@ -137,8 +132,6 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		this.componentModels = requireNonNull(componentModels);
 		this.persistence = new DefaultEditorPersistence();
 		this.entity = new DefaultEditorEntity(createEntity(INITIAL_VALUE));
-		this.exists = new DefaultExists(entityDefinition);
-		this.modified = new DefaultModified();
 		this.validator = Value.builder()
 						.nonNull(entityDefinition.validator())
 						.listener(this::updateValidStates)
@@ -184,33 +177,8 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 	}
 
 	@Override
-	public final Exists exists() {
-		return exists;
-	}
-
-	@Override
-	public final Modified modified() {
-		return modified;
-	}
-
-	@Override
-	public final Present present() {
-		return present;
-	}
-
-	@Override
-	public final ObservableState primaryKeyPresent() {
-		return primaryKeyPresent.observable();
-	}
-
-	@Override
 	public final Value<EntityValidator> validator() {
 		return validator;
-	}
-
-	@Override
-	public final ObservableState valid() {
-		return valid.observable();
 	}
 
 	@Override
@@ -331,10 +299,10 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 
 	private Map<Attribute<?>, String> updateStates() {
 		Entity instance = entity.get();
-		exists.update(instance);
-		present.update(instance);
-		modified.update();
-		primaryKeyPresent.set(!entity.instance.primaryKey().isNull());
+		entity.exists.update(instance);
+		entity.present.update(instance);
+		entity.modified.update();
+		entity.primaryKeyPresent.set(!entity.instance.primaryKey().isNull());
 
 		return updateEntityValidState(instance);
 	}
@@ -378,12 +346,12 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 	private Map<Attribute<?>, String> updateEntityValidState(Entity instance) {
 		try {
 			validate(instance);
-			valid.set(true);
+			entity.valid.set(true);
 
 			return emptyMap();
 		}
 		catch (EntityValidationException e) {
-			valid.set(false);
+			entity.valid.set(false);
 
 			return e.attributes().stream()
 							.collect(toMap(AttributeValidationException::attribute, Throwable::getMessage));
@@ -523,11 +491,18 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		private final Event<Entity> changing = Event.event();
 		private final Event<Entity> changed = Event.event();
 		private final Event<Entity> replaced = Event.event();
+		private final State primaryKeyPresent = State.state(false);
+		private final State valid = State.state();
+		private final DefaultExists exists;
+		private final DefaultModified modified;
+		private final DefaultPresent present = new DefaultPresent();
 
 		private final Entity instance;
 
 		private DefaultEditorEntity(Entity instance) {
 			this.instance = instance;
+			this.exists = new DefaultExists(entityDefinition);
+			this.modified = new DefaultModified();
 		}
 
 		@Override
@@ -575,6 +550,31 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		@Override
 		public void clear() {
 			set(entityDefinition.entity());
+		}
+
+		@Override
+		public Exists exists() {
+			return exists;
+		}
+
+		@Override
+		public Modified modified() {
+			return modified;
+		}
+
+		@Override
+		public Present present() {
+			return present;
+		}
+
+		@Override
+		public ObservableState primaryKeyPresent() {
+			return primaryKeyPresent.observable();
+		}
+
+		@Override
+		public ObservableState valid() {
+			return valid.observable();
 		}
 
 		@Override
@@ -658,7 +658,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 		public EditorTask<Entity> update() throws EntityValidationException {
 			settings.verifyUpdateEnabled(1);
 			validate();
-			if (!modified().is()) {
+			if (!entity.modified().is()) {
 				throw new IllegalStateException(NOT_MODIFIED + entity().get());
 			}
 			Entity entity = entity().get().copy().mutable();
@@ -730,7 +730,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 
 		@Override
 		public EditorTask<Entity> refresh() {
-			if (!exists().is()) {
+			if (!entity.exists().is()) {
 				throw new IllegalStateException("Can not refresh a non-existing entity");
 			}
 
@@ -759,7 +759,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 				this.entity = entity;
 				this.before = requireNonNull(before);
 				for (DetailEditor detailEditor : detail.editors.values()) {
-					if (detailEditor.editor.present().is()) {
+					if (detailEditor.editor.entity().present().is()) {
 						tasks.add(detailEditor.editor.tasks(connection).insert(detail ->
 										detailEditor.link.beforeInsert.apply(detail, inserted(), connection)));
 					}
@@ -861,7 +861,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 			private DeleteDetail(Entity entity) {
 				this.entity = entity;
 				for (DetailEditor detailEditor : detail.editors.values()) {
-					if (detailEditor.editor.exists().is()) {
+					if (detailEditor.editor.entity().exists().is()) {
 						tasks.add(detailEditor.editor.tasks(connection).delete());
 					}
 				}
@@ -1402,8 +1402,8 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 			this.present = builder.present;
 			this.entity = builder.entity;
 			this.beforeInsert = builder.beforeInsert;
-			this.editor.present().predicate().set(builder.present);
-			this.editor.present().predicate().addValidator(new PreventPresentModification());
+			this.editor.entity().present().predicate().set(builder.present);
+			this.editor.entity().present().predicate().addValidator(new PreventPresentModification());
 		}
 
 		private class PreventPresentModification implements Validator<Predicate<Entity>> {
@@ -1672,18 +1672,18 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 			}
 			editor.values().changed().addListener(this::refreshStates);
 			editor.entity().replaced().addListener(this::refreshStates);
-			editor.modified().addListener(this::refreshStates);
-			modified().additional().add(updatable);
+			editor.entity().modified().addListener(this::refreshStates);
+			entity().modified().additional().add(updatable);
 		}
 
 		private void refreshStates() {
-			boolean masterExists = exists().is();
-			boolean exists = editor.exists().is();
-			boolean modified = editor.modified().is();
-			updatable.insert.set(masterExists && editor.present().is() && !exists);
-			updatable.update.set(masterExists && editor.present().is() && exists && modified);
-			updatable.delete.set(masterExists && !editor.present().is() && exists);
-			AbstractEntityEditor.this.modified.update();
+			boolean masterExists = entity().exists().is();
+			boolean exists = editor.entity().exists().is();
+			boolean modified = editor.entity().modified().is();
+			updatable.insert.set(masterExists && editor.entity().present().is() && !exists);
+			updatable.update.set(masterExists && editor.entity().present().is() && exists && modified);
+			updatable.delete.set(masterExists && !editor.entity().present().is() && exists);
+			AbstractEntityEditor.this.entity.modified.update();
 		}
 
 		private final class Updatable implements ObservableState {
@@ -1922,7 +1922,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 
 		private void update() {
 			attributes.set(modifiedAttributes());
-			modified.set(exists.is() && (entity.instance.modified() || additional.get().stream()
+			modified.set(entity.exists.is() && (entity.instance.modified() || additional.get().stream()
 							.anyMatch(ObservableState::is)));
 		}
 
@@ -1931,7 +1931,7 @@ public abstract class AbstractEntityEditor<R extends EntityEditor<R>> implements
 							.filter(entity.instance::modified)
 							.collect(toSet()));
 			detail.editors.values().stream()
-							.map(editor -> editor.editor.modified().attributes().get())
+							.map(editor -> editor.editor.entity().modified().attributes().get())
 							.forEach(modifiedAttributes::addAll);
 
 			return modifiedAttributes;
