@@ -65,6 +65,7 @@ public final class ArtistEditModel extends SwingEntityEditModel {
 		public Select get(Entity artist) {
 			return Select.where(ArtistTag.ARTIST_FK.equalTo(artist))
 							.orderBy(ascending(ArtistTag.TAG))
+							.referenceDepth(0)
 							.offset(index)
 							.limit(1)
 							.build();
