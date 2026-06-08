@@ -18,6 +18,8 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.reactive.state.State;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -41,6 +43,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
@@ -50,10 +53,22 @@ import static javax.swing.SwingUtilities.isEventDispatchThread;
  */
 public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEditor> {
 
+	/**
+	 * Specifies whether {@link SwingEntityEditor} instances set and replace the active entity
+	 * asynchronously, on a background thread, or on the user interface thread
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see #async()
+	 */
+	public static final PropertyValue<Boolean> ASYNC = booleanValue(SwingEntityEditor.class.getName() + ".async", true);
+
 	private static final String NULL_ITEM_CAPTION = FilterComboBoxModel.NULL_CAPTION.getOrThrow();
 	private static final ProxyBuilder.ProxyMethod<Object> NULL_ITEM_TO_STRING = parameters -> NULL_ITEM_CAPTION;
 
 	private final ComboBoxModels comboBoxModels = new ComboBoxModels();
+	private final State async = State.state(ASYNC.getOrThrow());
 
 	private @Nullable ProgressWorker<Result<Entity>, ?> worker;
 	private @Nullable EditorTask<?> currentTask;
@@ -85,6 +100,21 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		return comboBoxModels;
 	}
 
+	/**
+	 * <p>Controls whether the active entity is set and replaced asynchronously, on a background thread,
+	 * when invoked on the user interface thread. When enabled (the default), setting or replacing the
+	 * active entity loads any registered detail editors on a background thread and returns before the
+	 * change has completed.
+	 * <p>Disabling asynchronous behaviour provides predictable, synchronous set and replace, which can
+	 * be useful when orchestrating interdependent models, such as complex master/detail selection
+	 * cascades, where the order of operations must be deterministic.
+	 * @return the {@link State} controlling whether asynchronous set and replace is enabled
+	 * @see #ASYNC
+	 */
+	public State async() {
+		return async;
+	}
+
 	@Override
 	protected SwingComponentModels componentModels() {
 		return (SwingComponentModels) super.componentModels();
@@ -95,7 +125,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		requireNonNull(task);
 		cancelCurrentWorker();
 		currentTask = task;
-		if (isEventDispatchThread()) {
+		if (async.is() && isEventDispatchThread()) {
 			worker = ProgressWorker.builder()
 							.task(new ExecutionTask(task))
 							.execute();

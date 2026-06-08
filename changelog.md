@@ -32,6 +32,8 @@ Codion Change Log
 - EditorValues.revert() moved to EditorEntity.
 - EntityEditor.exists(), modified(), present(), primaryKeyPresent() and valid() moved to EditorEntity.
 - EntityEditor.EditorEntity.set() and replace() no longer accept null, defaults must be set explicitly.
+### is.codion.swing.framework.model
+- SwingEntityEditor.async() added along with ASYNC configuration property, SwingEntityEditorTest added.
 ### is.codion.swing.framework.ui
 - EntityEditPanel.RefreshCommand added.
 - EntityPanel.ControlKeys.REFRESH control now refreshes the active entity if table is not available.
