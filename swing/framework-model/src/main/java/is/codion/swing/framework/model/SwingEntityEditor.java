@@ -108,8 +108,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	private void cancelCurrentWorker() {
 		ProgressWorker<Result<Entity>, ?> currentWorker = worker;
 		if (currentWorker != null && !currentWorker.isDone()) {
-			// cancellation is a best-effort optimization, freeing the connection of a superseded
-			// load early; correctness is guaranteed by the activeDetailLoad generation check below
+			// cancellation is a best-effort optimization, freeing the connection of a superseded load early
 			currentWorker.cancel(true);
 		}
 	}

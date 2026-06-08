@@ -277,9 +277,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
-	 * <p>Represents a background enabled task for entities, used for inserting, updating, deleting or refreshing,
+	 * <p>Represents a background enabled task for entities, used for inserting, updating, deleting, refreshing, setting or replacing,
 	 * split up for use with a background thread.
-	 * <p>A {@link EditorTask} captures entity state and fires "before" events at creation time.
+	 * <p>A {@link EditorTask} captures entity state and, where applicable, fires "before" events at creation time.
 	 * It should be executed promptly after creation, not cached for later use.
 	 * {@snippet :
 	 *   // Must be called on the UI thread, fires "before" events and captures entity state
@@ -427,14 +427,16 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * @param entity the entity to set
 		 * @return a task for setting the active entity
+		 * @see EditorEntity#set(Entity)
 		 */
-		EditorTask<Entity> set(@Nullable Entity entity);
+		EditorTask<Entity> set(Entity entity);
 
 		/**
 		 * @param entity the entity to set
 		 * @return a task for replacing the active entity
+		 * @see EditorEntity#replace(Entity)
 		 */
-		EditorTask<Entity> replace(@Nullable Entity entity);
+		EditorTask<Entity> replace(Entity entity);
 	}
 
 	/**
@@ -512,63 +514,79 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		Entity get();
 
 		/**
-		 * <p>Populates this editor entity with the values from the given entity or sets
-		 * the default value for all attributes in case it is null.
-		 * <p>Use {@link EditorEntity#clear()} in order to clear the editor of all values.
-		 * <p>Notifies that the entity is about to change via {@link #changing()}, then notifies
-		 * change via {@link #observer()}. Detail editors registered via
-		 * {@link DetailEditors#add(EditorLink)} are reloaded via their link's load action. This is
-		 * the master-selection path — use {@link #replace(Entity)} for silent post-persist refreshes
-		 * that should not re-fire change events.
-		 * <p>For master editors with registered detail editors, the order is bottom-up:
-		 * {@link #changing()} fires before the detail subtree is touched; the detail subtree is then
-		 * set; finally {@link #observer() changed} fires once every detail editor is in its
-		 * post-set state. This makes {@link #observer() changed} the "everything done" signal for
-		 * the full master/detail tree, suitable for actions that need to inspect aggregate state.
-		 * @param entity the entity to set, if null, then defaults are set
+		 * <p>Populates this editor entity with the values from the given entity, making it the active
+		 * entity. Use {@link #defaults()} or {@link #clear()} to reset the editor.
+		 * <p>{@link #changing()} fires synchronously, before any loading begins; throwing a
+		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels
+		 * the operation. Detail editors registered via {@link DetailEditors#add(EditorLink)} are then
+		 * reloaded via their link's load action, and {@link #observer() changed} fires once the active
+		 * entity and the full detail subtree are in place. This is the master-selection path — use
+		 * {@link #replace(Entity)} for silent post-persist refreshes that should not re-fire change events.
+		 * <p>When the editor is bound to UI components the operation is performed asynchronously: this
+		 * method returns after {@link #changing()} has fired but before {@link #observer() changed}, so
+		 * the active entity is not yet in place when it returns. Otherwise the operation is synchronous.
+		 * <p>For master editors with registered detail editors the events are ordered bottom-up:
+		 * {@link #changing()} fires before the detail subtree is touched; each detail editor is then set
+		 * (firing {@link #observer() changed}, never {@link #changing()}); finally {@link #observer() changed}
+		 * fires on the master once every detail editor is in its post-set state. This makes
+		 * {@link #observer() changed} the "everything done" signal for the full master/detail tree,
+		 * suitable for actions that need to inspect aggregate state.
+		 * @param entity the entity to set
+		 * @throws NullPointerException in case the entity is null
 		 * @throws IllegalArgumentException in case the entity is not of the correct type
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
 		 * @see ValueAttributeDefinition#defaultValue()
 		 * @see #changing()
 		 */
-		void set(@Nullable Entity entity);
+		void set(Entity entity);
 
 		/**
-		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener will cancel the change.
-		 * <p>For master editors with registered detail editors, this fires <em>before</em> the
-		 * detail subtree is set, allowing listeners to inspect the pre-change state of the entire
+		 * <p>Fires synchronously when the active entity is about to change via {@link #set(Entity)},
+		 * {@link #defaults()} or {@link #clear()} — before any loading begins and before the detail
+		 * subtree is touched, allowing listeners to inspect the pre-change state of the entire
 		 * master/detail tree. The post-change counterpart is {@link #observer() changed}.
-		 * @return an observer notified each time the entity is about to be changed via {@link #set(Entity)} or {@link EditorEntity#defaults()}.
+		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener cancels the
+		 * change. Note that {@link #replace(Entity)} does not fire this event, nor do detail editors
+		 * when reset as part of a master operation.
+		 * @return an observer notified each time the entity is about to change
 		 * @see #set(Entity)
-		 * @see EditorEntity#defaults()
+		 * @see #defaults()
+		 * @see #clear()
 		 */
 		Observer<Entity> changing();
 
 		/**
-		 * <p>Returns an observer notified each time the entity is replaced via {@link #replace(Entity)}.
+		 * <p>Returns an observer notified each time the entity is silently replaced — via
+		 * {@link #replace(Entity)}, when the editor is reset to defaults after a delete, or when this
+		 * editor is reset as a detail editor of a master being replaced, defaulted or cleared. Unlike
+		 * {@link #observer() changed}, it is not preceded by {@link #changing()}.
 		 * <p>For master editors with registered detail editors, this fires <em>after</em> the detail
 		 * subtree has been replaced — by the time listeners run, every detail editor is in its
 		 * post-persist state. This makes {@link #replaced()} the "everything done" signal for the
 		 * full master/detail tree, suitable for actions that need to inspect aggregate state (e.g.,
 		 * focusing the first empty detail editor, or adjusting which detail editors are visible).
-		 * @return an observer notified each time the entity is replaced via {@link #replace(Entity)}
+		 * @return an observer notified each time the entity is silently replaced
+		 * @see #replace(Entity)
 		 */
 		Observer<Entity> replaced();
 
 		/**
 		 * <p>Silently replaces the editor entity values without firing {@link #changing()} or
-		 * {@link #observer() changed} events; only {@link #replaced()} fires. A null argument sets
-		 * default values.
+		 * {@link #observer() changed} events; only {@link #replaced()} fires.
 		 * <p>If the new entity has the same primary key as the current one (the typical post-persist
 		 * refresh case), detail editors are <em>not</em> touched — their state is owned by their own
-		 * persist tasks. If the primary key changes (including null↔non-null transitions), detail
-		 * editors are reloaded via their link's load action, since the master's identity has changed.
-		 * @param entity the replacement entity, or null to set defaults
+		 * persist tasks. If the primary key changes, detail editors are reloaded via their link's load
+		 * action, since the master's identity has changed; as with {@link #set(Entity)} that reload may
+		 * be performed asynchronously when the editor is bound to UI components, with {@link #replaced()}
+		 * firing once the full detail subtree is in place.
+		 * @param entity the replacement entity
+		 * @throws NullPointerException in case the entity is null
+		 * @throws IllegalArgumentException in case the entity is not of the correct type
 		 * @see #replaced()
 		 * @see #set(Entity)
 		 */
-		void replace(@Nullable Entity entity);
+		void replace(Entity entity);
 
 		/**
 		 * Refreshes the active Entity from the database, discarding all changes.
@@ -578,17 +596,28 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		void refresh();
 
 		/**
-		 * Populates this editor with default values for all non-persistent attributes.
-		 * <p>Notifies that the entity is about to change via {@link EditorEntity#changing()}
+		 * <p>Resets this editor to its default values, retaining values flagged to
+		 * {@link EditorValue#persist()}. Registered detail editors are reset to their defaults as well.
+		 * <p>Fires {@link #changing()} and then {@link #observer() changed} on this editor; throwing a
+		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels the
+		 * operation.Detail editors are reset silently, firing only {@link #replaced()}.
+		 * @see #clear()
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
 		 * @see ValueAttributeDefinition#defaultValue()
-		 * @see EditorEntity#changing()
+		 * @see #changing()
 		 */
 		void defaults();
 
 		/**
-		 * Clears all values, disregarding the {@link EditorValue#persist()} directive.
+		 * <p>Clears all values, disregarding the {@link EditorValue#persist()} directive — the difference
+		 * from {@link #defaults()}, which retains persistent values. Registered detail editors are cleared
+		 * as well.
+		 * <p>Fires {@link #changing()} and then {@link #observer() changed} on this editor; throwing a
+		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels the
+		 * operation. Detail editors are cleared silently, firing only {@link #replaced()}.
+		 * @see #defaults()
+		 * @see #changing()
 		 */
 		void clear();
 

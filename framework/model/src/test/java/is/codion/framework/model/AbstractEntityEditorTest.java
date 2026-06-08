@@ -584,7 +584,7 @@ public final class AbstractEntityEditorTest {
 			assertEquals("Emp1", employeeEditor.value(Employee.NAME).get());
 
 			// Set master entity to null -> detail is cleared
-			departmentEditor.entity().set(null);
+			departmentEditor.entity().defaults();
 			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
@@ -1272,7 +1272,7 @@ public final class AbstractEntityEditorTest {
 
 			// Master selection re-runs the loader; condition no longer matches -> slot empties.
 			Entity dept50 = CONNECTION_PROVIDER.connection().selectSingle(Department.ID.equalTo(50));
-			departmentEditor.entity().set(null);
+			departmentEditor.entity().defaults();
 			departmentEditor.entity().set(dept50);
 			assertFalse(highEarnerEditor.entity().exists().is());
 		}
@@ -1331,8 +1331,8 @@ public final class AbstractEntityEditorTest {
 			departmentEditor.entity().replace(deptBRefreshed);
 			assertEquals("MUTATED", employeeEditor.value(Employee.NAME).get());
 
-			// replace(null) clears details (identity goes from real -> null).
-			departmentEditor.entity().replace(null);
+			// clear() clears details (identity goes from real -> null).
+			departmentEditor.entity().clear();
 			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {

@@ -214,7 +214,7 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 		editModel.editor().events().after().update().addConsumer(this::onUpdate);
 		editModel.editor().events().after().delete().addConsumer(this::onDelete);
 		editModel.editor().entity().addConsumer(this::onEntityChanged);
-		selection().item().addConsumer(editModel.editor().entity()::set);
+		selection().item().addConsumer(this::onSelectionChanged);
 
 		orderQuery.addConsumer(enabled ->
 						queryModel.orderBy().set(enabled ? orderBy().orElse(null) : null));
@@ -256,6 +256,15 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	private void onEntityChanged(Entity entity) {
 		if (entity == null) {
 			selection().clear();
+		}
+	}
+
+	private void onSelectionChanged(@Nullable Entity selected) {
+		if (selected == null) {
+			editModel.editor().entity().defaults();
+		}
+		else {
+			editModel.editor().entity().set(selected);
 		}
 	}
 
