@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.76
+
 ## 0.18.75
 ### is.codion.common.reactive
 - AbstractValueCollection.AbstractValueCollectionBuilder, nullValue constructor parameter added.
