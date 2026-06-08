@@ -37,7 +37,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityEditPanel.RefreshCommand added.
 - EntityPanel.ControlKeys.REFRESH control now refreshes the active entity if table is not available.
-- SwingEntityEditor overrides execute(EditorTask) using ProgressWorker. 
+- SwingEntityEditor overrides execute(EditorTask) using ProgressWorker.
 
 ## 0.18.74
 ### is.codion.common.utilities
