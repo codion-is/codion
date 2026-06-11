@@ -538,6 +538,18 @@ public final class EditorComponents {
 			return label;
 		}
 
+		String caption() {
+			JLabel label = (JLabel) get().getClientProperty(CreateComponents.LABELED_BY);
+			if (label != null && label.isShowing()) {
+				return label.getText();
+			}
+
+			return editor.entities().definition(value.attribute().entityType())
+						.attributes()
+						.definition(value.attribute())
+						.caption();
+		}
+
 		private boolean present() {
 			return component != null;
 		}

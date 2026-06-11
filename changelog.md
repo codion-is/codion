@@ -8,6 +8,7 @@ Codion Change Log
 - AbstractEntityEditor bug fixed, clear now sets null for all attributes, modified now works as expected.
 ### is.codion.swing.framework.ui
 - EditorInspector now displays value and original value for attributes.
+- EntityEditPanel, input component selection now uses actual component label text instead of attribute caption, if available.
 
 ## 0.18.75
 ### is.codion.common.reactive

@@ -822,18 +822,11 @@ public abstract class EntityEditPanel extends JPanel {
 	private List<Item<ComponentEntry>> disambiguate(Collection<ComponentEntry> entries) {
 		Entities entities = editModel.entities();
 		Map<String, Long> captionCounts = entries.stream()
-						.collect(groupingBy(entry -> attributeCaption(entry, entities), counting()));
+						.collect(groupingBy(entry -> entry.component().caption(), counting()));
 
 		return entries.stream()
-						.map(entry -> item(entry, createLabel(entry, captionCounts, attributeCaption(entry, entities), entities)))
+						.map(entry -> item(entry, createLabel(entry, captionCounts, entry.component().caption(), entities)))
 						.collect(toList());
-	}
-
-	private static String attributeCaption(ComponentEntry entry, Entities entities) {
-		return entities.definition(entry.attribute().entityType())
-						.attributes()
-						.definition(entry.attribute())
-						.caption();
 	}
 
 	private static String createLabel(ComponentEntry entry, Map<String, Long> captionCounts, String caption, Entities entities) {
