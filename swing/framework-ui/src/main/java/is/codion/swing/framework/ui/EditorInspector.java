@@ -44,6 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
 import java.awt.Font;
 import java.util.Collection;
@@ -210,16 +211,28 @@ final class EditorInspector extends JPanel {
 		}
 
 		private static void columns(FilterTableColumn.Builder<AttributeColumn> column) {
-			if (column.identifier().equals(AttributeColumn.MESSAGE)) {
-				column.cellRenderer(FilterTableCellRenderer.builder()
-								.columnClass(String.class)
-								.toolTip(Objects::toString)
-								.build());
+			switch (column.identifier()) {
+				case VALUE:
+				case ORIGINAL:
+					column.cellRenderer(FilterTableCellRenderer.builder()
+									.columnClass(String.class)
+									.horizontalAlignment(SwingConstants.CENTER)
+									.toolTip(Objects::toString)
+									.build());
+					break;
+				case MESSAGE:
+					column.cellRenderer(FilterTableCellRenderer.builder()
+									.columnClass(String.class)
+									.toolTip(Objects::toString)
+									.build());
+					break;
+				default:
+					break;
 			}
 		}
 
 		private enum AttributeColumn {
-			ATTRIBUTE, PRESENT, VALID, MODIFIED, PERSISTS, COMPONENT, MESSAGE
+			ATTRIBUTE, PRESENT, VALID, MODIFIED, PERSISTS, COMPONENT, VALUE, ORIGINAL, MESSAGE
 		}
 
 		private static final class AttributeItems implements Supplier<Collection<AttributeRow>> {
@@ -242,7 +255,8 @@ final class EditorInspector extends JPanel {
 									EditorValue<?> value = components.editor().value(attribute.attribute());
 
 									return new AttributeRow(attribute.caption(), value.present().is(), value.valid().is(), value.modified().is(),
-													value.persist().is(), components.component(attribute.attribute()).optional().isPresent(), value.message().get());
+													value.persist().is(), components.component(attribute.attribute()).optional().isPresent(),
+													String.valueOf(value.get()), value.modified().is() ? String.valueOf(value.original()) : "", value.message().get());
 								})
 								.collect(toList());
 			}
@@ -266,6 +280,8 @@ final class EditorInspector extends JPanel {
 			public Class<?> columnClass(AttributeColumn identifier) {
 				switch (identifier) {
 					case ATTRIBUTE:
+					case VALUE:
+					case ORIGINAL:
 					case MESSAGE:
 						return String.class;
 					default:
@@ -286,6 +302,10 @@ final class EditorInspector extends JPanel {
 						return "Modified";
 					case PERSISTS:
 						return "Persists";
+					case VALUE:
+						return "Value";
+					case ORIGINAL:
+						return "Original";
 					case MESSAGE:
 						return "Message";
 					case COMPONENT:
@@ -308,6 +328,10 @@ final class EditorInspector extends JPanel {
 						return row.modified;
 					case PERSISTS:
 						return row.persists;
+					case VALUE:
+						return row.value;
+					case ORIGINAL:
+						return row.original;
 					case MESSAGE:
 						return row.message;
 					case COMPONENT:
@@ -326,16 +350,21 @@ final class EditorInspector extends JPanel {
 			private final boolean modified;
 			private final boolean persists;
 			private final boolean component;
+			private final @Nullable String value;
+			private final @Nullable String original;
 			private final @Nullable String message;
 
 			private AttributeRow(String attribute, boolean present, boolean valid, boolean modified,
-													 boolean persists, boolean component, @Nullable String message) {
+													 boolean persists, boolean component, @Nullable String value,
+			                     @Nullable String original, @Nullable String message) {
 				this.attribute = attribute;
 				this.present = present;
 				this.valid = valid;
 				this.modified = modified;
 				this.persists = persists;
 				this.component = component;
+				this.value = value;
+				this.original = original;
 				this.message = message;
 			}
 		}
