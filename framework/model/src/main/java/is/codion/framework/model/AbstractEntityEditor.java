@@ -615,8 +615,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private void resetCleared() {
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
-			setEntity(entityDefinition.entity());
+			setEntity(createEntity(DefaultEditorEntity::nullValue));
 			replaced.accept(null);
+		}
+
+		private static <T> @Nullable T nullValue(AttributeDefinition<T> attributeDefinition) {
+			return null;
 		}
 
 		private final class Defaults implements EditorTask<Entity> {
@@ -638,7 +642,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			public Result<Entity> perform() {
 				return () -> {
 					detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
-					entity.setEntity(entityDefinition.entity());
+					setEntity(createEntity(DefaultEditorEntity::nullValue));
 					entity.changed.accept(null);
 					return null;
 				};

@@ -58,6 +58,21 @@ public final class AbstractEntityEditorTest {
 					!employee.isNull(Employee.SALARY) && !employee.isNull(Employee.NAME);
 
 	@Test
+	void clearSetsNull() {
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
+		departmentEditor.entity().clear();
+		assertTrue(departmentEditor.entity().get().contains(Department.ID));
+		assertTrue(departmentEditor.entity().get().contains(Department.NAME));
+
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		employeeEditor.entity().clear();
+		assertTrue(employeeEditor.entity().get().contains(Employee.ID));
+		assertTrue(employeeEditor.entity().get().contains(Employee.NAME));
+		assertTrue(employeeEditor.entity().get().contains(Employee.SALARY));
+		assertTrue(employeeEditor.entity().get().contains(Employee.MANAGER_ID));
+	}
+
+	@Test
 	void simpleDetailEditor() throws EntityValidationException {
 		CONNECTION_PROVIDER.connection().startTransaction();
 		try {
