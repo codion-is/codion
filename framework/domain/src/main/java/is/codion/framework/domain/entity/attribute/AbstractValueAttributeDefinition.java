@@ -58,6 +58,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 
 	private static final String INVALID_ITEM_SUFFIX = MESSAGES.getString("invalid_item_suffix");
 	private static final DefaultValue<Object> NULL = new NullDefaultValue();
+	private static final DefaultValue<Boolean> FALSE = new FalseDefaultValue();
 
 	private final Collection<AttributeValidator<T>> validators;
 	private final boolean nullable;
@@ -79,7 +80,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		this.items = builder.items;
 		this.itemMap = items == null ? null : items.stream()
 						.collect(toMap(Item::get, Function.identity()));
-		this.defaultValue = builder.defaultValue;
+		this.defaultValue = builder.defaultValue();
 		this.validators = initializeValidators(builder);
 	}
 
@@ -302,6 +303,16 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 	}
 
+	private static final class FalseDefaultValue extends DefaultAttributeValue<Boolean> {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		private FalseDefaultValue() {
+			super(false);
+		}
+	}
+
 	abstract static sealed class AbstractValueAttributeDefinitionBuilder<T, B extends ValueAttributeDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements ValueAttributeDefinition.Builder<T, B>
 					permits DefaultColumnDefinitionBuilder, DefaultTransientAttributeDefinitionBuilder {
@@ -448,6 +459,14 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 			}
 
 			return null;
+		}
+
+		private <T> DefaultValue<T> defaultValue() {
+			if (defaultValue == NULL && attribute().type().isBoolean() && !nullable) {
+				return (DefaultValue<T>) FALSE;
+			}
+
+			return (DefaultValue<T>) defaultValue;
 		}
 	}
 }

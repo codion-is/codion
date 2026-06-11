@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.76
+### is.codion.framework.domain
+- AbstractValueAttributeDefinition bug fixed, now sets false as the default value for non-nullable boolean attributes, when no default value is specified.
 
 ## 0.18.75
 ### is.codion.common.reactive

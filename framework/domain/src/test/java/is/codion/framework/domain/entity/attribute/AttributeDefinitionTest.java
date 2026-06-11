@@ -256,4 +256,24 @@ public final class AttributeDefinitionTest {
 		assertTrue(attribute.validItem(null));
 		assertTrue(attribute.validItem(2));
 	}
+
+	@Test
+	void booleanAttribute() {
+		Attribute<Boolean> attribute = ENTITY_TYPE.booleanAttribute("booleanAttribute");
+		ValueAttributeDefinition<Boolean> definition = attribute.as()
+						.attribute()
+						.build();
+		assertNull(definition.defaultValue());
+		definition = attribute.as()
+						.attribute()
+						.nullable(false)
+						.build();
+		assertFalse(definition.defaultValue());
+		definition = attribute.as()
+						.attribute()
+						.nullable(false)
+						.defaultValue(true)
+						.build();
+		assertTrue(definition.defaultValue());
+	}
 }
