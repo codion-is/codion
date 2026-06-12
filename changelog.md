@@ -6,6 +6,7 @@ Codion Change Log
 - AbstractValueAttributeDefinition bug fixed, now sets false as the default value for non-nullable boolean attributes, when no default value is specified.
 ### is.codion.framework.model
 - AbstractEntityEditor bug fixed, clear now sets null for all attributes, modified now works as expected.
+- AbstractEntityEditor.DefaultEditorTasks.SetEntity and ReplaceEntity refactored, no longer try to load details for a non-existing master.
 ### is.codion.swing.framework.ui
 - EditorInspector now displays value and original value for attributes.
 - EntityEditPanel, input component selection now uses actual component label text instead of attribute caption, if available.

@@ -865,7 +865,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @return the {@link Value} instance controlling the default value supplier
 		 * @see #persist()
 		 */
-		Value<Supplier<T>> defaultValue();
+		Value<Supplier<@Nullable T>> defaultValue();
 
 		/**
 		 * <p>Adds a propagation mapping from this attribute to the given attribute.

@@ -1192,31 +1192,17 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 			@Override
 			public Result<Entity> perform() {
-				Map<AbstractEntityEditor<?>, Entity> details = loadDetail(entityToSet, connection);
-				List<Result<Entity>> results = details.entrySet().stream()
-								.map(entry -> setDetail(entityToSet, entry))
+				List<Result<Entity>> details = detail.load(entityToSet, connection).stream()
+								.map(detail -> detail.editor.populate(entityToSet, detail.entity, connection, false))
 								.map(EditorTask::perform)
 								.collect(toList());
 				return () -> {
-					results.forEach(Result::handle);
+					details.forEach(Result::handle);
 					entity.setEntity(entityToSet);
 					entity.changed.accept(entityToSet);
 
 					return entityToSet;
 				};
-			}
-
-			private EditorTask<Entity> setDetail(Entity entityToSet, Map.Entry<AbstractEntityEditor<?>, Entity> detail) {
-				if (detail.getValue() == null) {
-					// clear to prevent persistent values
-					return () -> () -> {
-						detail.getKey().entity.resetCleared();
-
-						return entityToSet;
-					};
-				}
-
-				return detail.getKey().tasks(connection).set(detail.getValue());
 			}
 		}
 
@@ -1232,19 +1218,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 			@Override
 			public Result<Entity> perform() {
-				Map<AbstractEntityEditor<?>, Entity> details = emptyMap();
+				List<Result<Entity>> details = new ArrayList<>(detail.editors.size());
 				if (identityChanged) {
-					details = loadDetail(entityToSet, connection);
-				}
-				List<Result<Entity>> results = new ArrayList<>();
-				if (identityChanged) {
-					results.addAll(details.entrySet().stream()
-									.map(entry -> setDetail(entityToSet, entry))
+					details.addAll(detail.load(entityToSet, connection).stream()
+									.map(detail -> detail.editor.populate(entityToSet, detail.entity, connection, true))
 									.map(EditorTask::perform)
 									.collect(toList()));
 				}
 				return () -> {
-					results.forEach(Result::handle);
+					details.forEach(Result::handle);
 					entity.setEntity(entityToSet);
 					entity.replaced.accept(entityToSet);
 
@@ -1252,34 +1234,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				};
 			}
 
-			private EditorTask<Entity> setDetail(Entity entityToSet, Map.Entry<AbstractEntityEditor<?>, Entity> detail) {
-				if (detail.getValue() == null) {
-					// clear to prevent persistent values
-					return () -> () -> {
-						detail.getKey().entity.resetCleared();
-
-						return entityToSet;
-					};
-				}
-
-				return detail.getKey().tasks(connection).replace(detail.getValue());
-			}
-
 			private boolean identityChanged(Entity newEntity) {
 				return !entity.instance.primaryKey().equals(newEntity.primaryKey());
 			}
-		}
-
-		private Map<AbstractEntityEditor<?>, @Nullable Entity> loadDetail(Entity master, EntityConnection connection) {
-			if (detail.editors.isEmpty()) {
-				return emptyMap();
-			}
-			Map<AbstractEntityEditor<?>, @Nullable Entity> loaded = new LinkedHashMap<>(detail.editors.size());
-			for (DetailEditor detail : detail.editors.values()) {
-				loaded.put(detail.editor, detail.link.entity.detail(master, connection));
-			}
-
-			return loaded;
 		}
 	}
 
@@ -1393,6 +1350,28 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 
 			return matches.get(0);
+		}
+
+		private List<DetailEditorEntity> load(Entity master, EntityConnection connection) {
+			if (editors.isEmpty()) {
+				return emptyList();
+			}
+
+			boolean masterExists = master.exists();
+			return editors.values().stream()
+							.map(detail -> new DetailEditorEntity(detail, masterExists ? detail.link.entity.detail(master, connection) : null))
+							.collect(toList());
+		}
+
+		private final class DetailEditorEntity {
+
+			private final DetailEditor editor;
+			private final @Nullable Entity entity;
+
+			private DetailEditorEntity(DetailEditor editor, @Nullable Entity entity) {
+				this.editor = editor;
+				this.entity = entity;
+			}
 		}
 	}
 
@@ -1730,6 +1709,19 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			AbstractEntityEditor.this.entity.modified.update();
 		}
 
+		private EditorTask<Entity> populate(Entity master, @Nullable Entity detail, EntityConnection connection, boolean replace) {
+			if (detail == null) {
+				// clear to prevent persistent values
+				return () -> () -> {
+					editor.entity.resetCleared();
+
+					return master;
+				};
+			}
+
+			return replace ? editor.tasks(connection).replace(detail) : editor.tasks(connection).set(detail);
+		}
+
 		private final class Updatable implements ObservableState {
 
 			private final State insert = State.state();
@@ -2029,7 +2021,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final class DefaultEditorValue<T> extends AbstractValue<T> implements EditorValue<T> {
 
 		private final Attribute<T> attribute;
-		private final Value<Supplier<T>> defaultValue;
+		private final Value<Supplier<@Nullable T>> defaultValue;
 		private final Map<Attribute<?>, Function<@Nullable T, ?>> propagators = new HashMap<>();
 
 		private DefaultEditorValue(Attribute<T> attribute) {
@@ -2098,7 +2090,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
-		public Value<Supplier<T>> defaultValue() {
+		public Value<Supplier<@Nullable T>> defaultValue() {
 			return defaultValue;
 		}
 
