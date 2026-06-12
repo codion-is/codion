@@ -8,6 +8,7 @@ Codion Change Log
 - AbstractEntityEditor bug fixed, clear now sets null for all attributes, modified now works as expected.
 - AbstractEntityEditor.DefaultEditorTasks.SetEntity and ReplaceEntity refactored, no longer try to load details for a non-existing master.
 - AbstractEntityEditor no longer sets default values when instantiated.
+- EditorLink.Builder.clearEmpty() added.
 ### is.codion.swing.framework.ui
 - EditorInspector now displays value and original value for attributes.
 - EntityEditPanel, input component selection now uses actual component label text instead of attribute caption, if available.

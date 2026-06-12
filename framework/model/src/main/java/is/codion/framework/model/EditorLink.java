@@ -286,6 +286,14 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 		Builder<R> caption(String caption);
 
 		/**
+		 * Specifies whether to clear all values instead of setting defaults when the detail editor
+		 * is emptied on load, when no detail entity exists.
+		 * @param clearEmpty specifies whether to clear the values when the editor is emptied
+		 * @return this builder
+		 */
+		Builder<R> clearEmpty(boolean clearEmpty);
+
+		/**
 		 * @return a new {@link EditorLink}
 		 */
 		EditorLink build();

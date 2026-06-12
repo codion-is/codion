@@ -1413,6 +1413,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final Predicate<Entity> present;
 		private final DetailEntity entity;
 		private final BeforeInsert beforeInsert;
+		private final boolean clearEmpty;
 
 		private DefaultEditorLink(DefaultEditorLinkBuilder<R> builder) {
 			this.editor = builder.editor;
@@ -1421,6 +1422,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			this.present = builder.present;
 			this.entity = builder.entity;
 			this.beforeInsert = builder.beforeInsert;
+			this.clearEmpty = builder.clearEmpty;
 			this.editor.entity().present().predicate().set(builder.present);
 			this.editor.entity().present().predicate().addValidator(new PreventPresentModification());
 		}
@@ -1464,6 +1466,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		protected @Nullable String caption;
 		private Predicate<Entity> present = entity -> true;
 		private BeforeInsert beforeInsert = (d, m, connection) -> {};
+		private boolean clearEmpty = false;
 
 		private DefaultEditorLinkBuilder(R editor, String name, DetailEntity entity) {
 			this.editor = editor;
@@ -1489,6 +1492,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				throw new IllegalArgumentException("caption must be a non-empty string");
 			}
 			this.caption = caption;
+			return this;
+		}
+
+		@Override
+		public EditorLink.Builder<R> clearEmpty(boolean clearEmpty) {
+			this.clearEmpty = clearEmpty;
 			return this;
 		}
 
@@ -1615,6 +1624,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
+		public ForeignKeyEditorLink.Builder<R> clearEmpty(boolean clearEmpty) {
+			super.clearEmpty(clearEmpty);
+			return this;
+		}
+
+		@Override
 		public ForeignKeyEditorLink build() {
 			return new DefaultForeignKeyLink<>(this, foreignKey);
 		}
@@ -1707,9 +1722,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private EditorTask<Entity> populate(Entity master, @Nullable Entity detail, EntityConnection connection, boolean replace) {
 			if (detail == null) {
-				// clear to prevent persistent values
 				return () -> () -> {
-					editor.entity.resetCleared();
+					if (link.clearEmpty) {
+						editor.entity.resetCleared();
+					}
+					else {
+						editor.entity.resetDefaults();
+					}
 
 					return master;
 				};

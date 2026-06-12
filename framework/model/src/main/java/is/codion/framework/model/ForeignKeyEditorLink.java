@@ -90,6 +90,9 @@ public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultF
 		@Override
 		Builder<R> caption(String caption);
 
+		@Override
+		Builder<R> clearEmpty(boolean clearEmpty);
+
 		/**
 		 * @return a new {@link ForeignKeyEditorLink}
 		 */
