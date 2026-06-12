@@ -54,6 +54,7 @@ public final class InvoiceLineEditModelTest {
 
 			InvoiceLineEditModel editModel = new InvoiceLineEditModel(connectionProvider);
 			SwingEntityEditor editor = editModel.editor();
+			editor.entity().defaults();
 			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
 			editor.value(InvoiceLine.TRACK_FK).set(battery);
 			Entity invoiceLineBattery = editor.insert();

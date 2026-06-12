@@ -91,8 +91,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditor.class);
 
-	private static final ValueSupplier INITIAL_VALUE = new InitialValue();
-
 	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 	private final DefaultPersistEvents persistEvents = new DefaultPersistEvents();
 	private final DefaultEditorValues values = new DefaultEditorValues();
@@ -132,7 +130,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		this.settings = new DefaultSettings(entityDefinition.readOnly());
 		this.componentModels = requireNonNull(componentModels);
 		this.persistence = new DefaultEditorPersistence();
-		this.entity = new DefaultEditorEntity(createEntity(INITIAL_VALUE));
+		this.entity = new DefaultEditorEntity();
 		this.validator = Value.builder()
 						.nonNull(entityDefinition.validator())
 						.listener(this::updateValidStates)
@@ -365,49 +363,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		messages.forEach((attribute, value) -> value.set(invalid.get(attribute)));
 	}
 
-	/**
-	 * Instantiates a new {@link Entity} using the values provided by {@code valueSupplier}.
-	 * Values are populated for {@link ValueAttributeDefinition} and its descendants.
-	 * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
-	 * skipped unless the attribute itself has a default value, which then overrides the columns default value.
-	 * @return an entity instance populated with default values
-	 * @see ValueAttributeDefinition.Builder#withDefault(boolean)
-	 * @see ValueAttributeDefinition.Builder#defaultValue(Object)
-	 */
-	private Entity createEntity(ValueSupplier valueSupplier) {
-		Entity newEntity = entityDefinition.entity();
-		addColumnValues(valueSupplier, newEntity);
-		addTransientValues(valueSupplier, newEntity);
-		addForeignKeyValues(valueSupplier, newEntity);
-
-		newEntity.save();
-
-		return newEntity;
-	}
-
-	private void addColumnValues(ValueSupplier valueSupplier, Entity newEntity) {
-		entityDefinition.columns().definitions().stream()
-						//these are set via their respective parent foreign key
-						.filter(columnDefinition -> !entityDefinition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
-						.filter(columnDefinition -> !columnDefinition.withDefault() || columnDefinition.hasDefaultValue())
-						.filter(ColumnDefinition::selected) // don't populate lazy loaded values
-						.map(columnDefinition -> (ColumnDefinition<Object>) columnDefinition)
-						.forEach(columnDefinition -> newEntity.set(columnDefinition.attribute(), valueSupplier.get(columnDefinition)));
-	}
-
-	private void addTransientValues(ValueSupplier valueSupplier, Entity newEntity) {
-		entityDefinition.attributes().definitions().stream()
-						.filter(TransientAttributeDefinition.class::isInstance)
-						.map(TransientAttributeDefinition.class::cast)
-						.map(attributeDefinition -> (TransientAttributeDefinition<Object>) attributeDefinition)
-						.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
-	}
-
-	private void addForeignKeyValues(ValueSupplier valueSupplier, Entity newEntity) {
-		entityDefinition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
-						newEntity.set(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
-	}
-
 	private void configurePersistentForeignKeys() {
 		if (PERSIST_FOREIGN_KEYS.getOrThrow()) {
 			entityDefinition.foreignKeys().get().forEach(foreignKey ->
@@ -497,11 +452,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final DefaultExists exists;
 		private final DefaultModified modified;
 		private final DefaultPresent present = new DefaultPresent();
+		private final Entity instance = createEntity(DefaultEditorEntity::nullValue);
 
-		private final Entity instance;
-
-		private DefaultEditorEntity(Entity instance) {
-			this.instance = instance;
+		private DefaultEditorEntity() {
 			this.exists = new DefaultExists(entityDefinition);
 			this.modified = new DefaultModified();
 		}
@@ -621,6 +574,49 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private static <T> @Nullable T nullValue(AttributeDefinition<T> attributeDefinition) {
 			return null;
+		}
+
+		/**
+		 * Instantiates a new {@link Entity} using the values provided by {@code valueSupplier}.
+		 * Values are populated for {@link ValueAttributeDefinition} and its descendants.
+		 * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
+		 * skipped unless the attribute itself has a default value, which then overrides the columns default value.
+		 * @return an entity instance populated with default values
+		 * @see ValueAttributeDefinition.Builder#withDefault(boolean)
+		 * @see ValueAttributeDefinition.Builder#defaultValue(Object)
+		 */
+		private Entity createEntity(ValueSupplier valueSupplier) {
+			Entity newEntity = entityDefinition.entity();
+			addColumnValues(valueSupplier, newEntity);
+			addTransientValues(valueSupplier, newEntity);
+			addForeignKeyValues(valueSupplier, newEntity);
+
+			newEntity.save();
+
+			return newEntity;
+		}
+
+		private void addColumnValues(ValueSupplier valueSupplier, Entity newEntity) {
+			entityDefinition.columns().definitions().stream()
+							//these are set via their respective parent foreign key
+							.filter(columnDefinition -> !entityDefinition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
+							.filter(columnDefinition -> !columnDefinition.withDefault() || columnDefinition.hasDefaultValue())
+							.filter(ColumnDefinition::selected) // don't populate lazy loaded values
+							.map(columnDefinition -> (ColumnDefinition<Object>) columnDefinition)
+							.forEach(columnDefinition -> newEntity.set(columnDefinition.attribute(), valueSupplier.get(columnDefinition)));
+		}
+
+		private void addTransientValues(ValueSupplier valueSupplier, Entity newEntity) {
+			entityDefinition.attributes().definitions().stream()
+							.filter(TransientAttributeDefinition.class::isInstance)
+							.map(TransientAttributeDefinition.class::cast)
+							.map(attributeDefinition -> (TransientAttributeDefinition<Object>) attributeDefinition)
+							.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+		}
+
+		private void addForeignKeyValues(ValueSupplier valueSupplier, Entity newEntity) {
+			entityDefinition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
+							newEntity.set(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
 		}
 
 		private final class Defaults implements EditorTask<Entity> {
@@ -2220,18 +2216,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		private void valueChanged() {
 			notifyObserver();
-		}
-	}
-
-	private static final class InitialValue implements ValueSupplier {
-
-		@Override
-		public <T> @Nullable T get(AttributeDefinition<T> attributeDefinition) {
-			if (attributeDefinition instanceof ValueAttributeDefinition<T>) {
-				return ((ValueAttributeDefinition<T>) attributeDefinition).defaultValue();
-			}
-
-			return null;
 		}
 	}
 
