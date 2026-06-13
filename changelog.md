@@ -13,6 +13,7 @@ Codion Change Log
 - EditorInspector now displays value and original value for attributes.
 - EntityEditPanel, input component selection now uses actual component label text instead of attribute caption, if available.
 - EditorInspector now displays the default value for attributes.
+- EditorInspector now displays foreign key reference columns.
 
 ## 0.18.75
 ### is.codion.common.reactive

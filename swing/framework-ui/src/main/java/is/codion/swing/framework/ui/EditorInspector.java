@@ -21,9 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.database.Database;
 import is.codion.common.reactive.value.Value;
 import is.codion.framework.db.EntityQueries;
-import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityEditor.EditorValue;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -190,7 +187,7 @@ final class EditorInspector extends JPanel {
 											.build())
 							.center(FilterTable.builder()
 											.model(attributeModel)
-											.visibleRows(attributeItems.attributes.size())
+											.visibleRows(attributeItems.components.editor().entityDefinition().attributes().definitions().size())
 											.columns(EditorComponentsPanel::columns)
 											.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 											.scrollPane()
@@ -238,19 +235,14 @@ final class EditorInspector extends JPanel {
 		private static final class AttributeItems implements Supplier<Collection<AttributeRow>> {
 
 			private final EditorComponents components;
-			private final Collection<AttributeDefinition<?>> attributes;
 
 			private AttributeItems(EditorComponents components) {
 				this.components = components;
-				EntityDefinition definition = components.editor().entityDefinition();
-				attributes = definition.attributes().definitions().stream()
-								.filter(attributeDefinition -> !foreignKeyColumn(attributeDefinition, definition))
-								.collect(toList());
 			}
 
 			@Override
 			public Collection<AttributeRow> get() {
-				return attributes.stream()
+				return components.editor().entityDefinition().attributes().definitions().stream()
 								.map(attribute -> {
 									EditorValue<?> value = components.editor().value(attribute.attribute());
 
@@ -260,11 +252,6 @@ final class EditorInspector extends JPanel {
 													String.valueOf(value.defaultValue().get().get()), value.message().get());
 								})
 								.collect(toList());
-			}
-
-			private static boolean foreignKeyColumn(AttributeDefinition<?> attributeDefinition, EntityDefinition definition) {
-				return attributeDefinition instanceof ColumnDefinition<?> &&
-								definition.foreignKeys().foreignKeyColumn(((ColumnDefinition<?>) attributeDefinition).attribute());
 			}
 		}
 
