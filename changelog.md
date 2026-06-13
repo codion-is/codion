@@ -9,6 +9,7 @@ Codion Change Log
 - AbstractEntityEditor.DefaultEditorTasks.SetEntity and ReplaceEntity refactored, no longer try to load details for a non-existing master.
 - AbstractEntityEditor no longer sets default values when instantiated.
 - EditorLink.Builder.clearEmpty() added.
+- DefaultEntityModel bug fixed, table selection change listener no longer relies on activeEntities().
 ### is.codion.swing.framework.ui
 - EditorInspector now displays value and original value for attributes.
 - EntityEditPanel, input component selection now uses actual component label text instead of attribute caption, if available.

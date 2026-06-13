@@ -137,11 +137,19 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 		return detailModels;
 	}
 
-	private void selectionChanged() {
-		List<Entity> activeEntities = activeEntities();
+	private void selectionChanged(Collection<Entity> entities) {
 		detailModels.get().values().stream()
 						.map(DefaultModelLink.class::cast)
-						.forEach(link -> link.onSelection(activeEntities));
+						.forEach(link -> link.onSelection(entities));
+	}
+
+	private void entityChanged() {
+		if (editModel.editor().entity().exists().is()) {
+			selectionChanged(singletonList(editModel.editor().entity().get()));
+		}
+		else {
+			selectionChanged(emptyList());
+		}
 	}
 
 	private List<Entity> activeEntities() {
@@ -160,10 +168,10 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 		editModel.editor().events().after().update().addConsumer(this::onUpdate);
 		editModel.editor().events().after().delete().addConsumer(this::onDelete);
 		if (containsTableModel()) {
-			tableModel.selection().indexes().addListener(this::selectionChanged);
+			tableModel.selection().items().addConsumer(this::selectionChanged);
 		}
 		else {
-			editModel.editor().entity().addListener(this::selectionChanged);
+			editModel.editor().entity().addListener(this::entityChanged);
 		}
 	}
 
