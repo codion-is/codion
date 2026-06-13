@@ -12,6 +12,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EditorInspector now displays value and original value for attributes.
 - EntityEditPanel, input component selection now uses actual component label text instead of attribute caption, if available.
+- EditorInspector now displays the default value for attributes.
 
 ## 0.18.75
 ### is.codion.common.reactive

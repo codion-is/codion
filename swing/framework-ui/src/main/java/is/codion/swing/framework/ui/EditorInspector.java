@@ -232,7 +232,7 @@ final class EditorInspector extends JPanel {
 		}
 
 		private enum AttributeColumn {
-			ATTRIBUTE, PRESENT, VALID, MODIFIED, PERSISTS, COMPONENT, VALUE, ORIGINAL, MESSAGE
+			ATTRIBUTE, PRESENT, VALID, MODIFIED, PERSISTS, COMPONENT, VALUE, ORIGINAL, DEFAULT, MESSAGE
 		}
 
 		private static final class AttributeItems implements Supplier<Collection<AttributeRow>> {
@@ -256,7 +256,8 @@ final class EditorInspector extends JPanel {
 
 									return new AttributeRow(attribute.caption(), value.present().is(), value.valid().is(), value.modified().is(),
 													value.persist().is(), components.component(attribute.attribute()).optional().isPresent(),
-													String.valueOf(value.get()), value.modified().is() ? String.valueOf(value.original()) : "", value.message().get());
+													String.valueOf(value.get()), value.modified().is() ? String.valueOf(value.original()) : "",
+													String.valueOf(value.defaultValue().get().get()), value.message().get());
 								})
 								.collect(toList());
 			}
@@ -282,6 +283,7 @@ final class EditorInspector extends JPanel {
 					case ATTRIBUTE:
 					case VALUE:
 					case ORIGINAL:
+					case DEFAULT:
 					case MESSAGE:
 						return String.class;
 					default:
@@ -306,6 +308,8 @@ final class EditorInspector extends JPanel {
 						return "Value";
 					case ORIGINAL:
 						return "Original";
+					case DEFAULT:
+						return "Default";
 					case MESSAGE:
 						return "Message";
 					case COMPONENT:
@@ -332,6 +336,8 @@ final class EditorInspector extends JPanel {
 						return row.value;
 					case ORIGINAL:
 						return row.original;
+					case DEFAULT:
+						return row.defaultValue;
 					case MESSAGE:
 						return row.message;
 					case COMPONENT:
@@ -352,11 +358,12 @@ final class EditorInspector extends JPanel {
 			private final boolean component;
 			private final @Nullable String value;
 			private final @Nullable String original;
+			private final @Nullable String defaultValue;
 			private final @Nullable String message;
 
 			private AttributeRow(String attribute, boolean present, boolean valid, boolean modified,
 													 boolean persists, boolean component, @Nullable String value,
-			                     @Nullable String original, @Nullable String message) {
+													 @Nullable String original, @Nullable String defaultValue, @Nullable String message) {
 				this.attribute = attribute;
 				this.present = present;
 				this.valid = valid;
@@ -365,7 +372,23 @@ final class EditorInspector extends JPanel {
 				this.component = component;
 				this.value = value;
 				this.original = original;
+				this.defaultValue = defaultValue;
 				this.message = message;
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				if (object == null || getClass() != object.getClass()) {
+					return false;
+				}
+				AttributeRow that = (AttributeRow) object;
+
+				return Objects.equals(attribute, that.attribute);
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hashCode(attribute);
 			}
 		}
 	}
