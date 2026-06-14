@@ -152,17 +152,6 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 		}
 	}
 
-	private List<Entity> activeEntities() {
-		if (tableModel != null && tableModel.selection().empty().not().is()) {
-			return tableModel.selection().items().get();
-		}
-		else if (editModel.editor().entity().exists().not().is()) {
-			return emptyList();
-		}
-
-		return singletonList(editModel.editor().entity().get());
-	}
-
 	private void bindEventsInternal() {
 		editModel.editor().events().after().insert().addConsumer(this::onInsert);
 		editModel.editor().events().after().update().addConsumer(this::onUpdate);
@@ -312,6 +301,17 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 					active.remove(modelLink.model());
 				}
 			}
+		}
+
+		private List<Entity> activeEntities() {
+			if (tableModel != null && tableModel.selection().empty().not().is()) {
+				return tableModel.selection().items().get();
+			}
+			else if (editModel.editor().entity().exists().not().is()) {
+				return emptyList();
+			}
+
+			return singletonList(editModel.editor().entity().get());
 		}
 	}
 }

@@ -20,6 +20,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.utilities.user.User;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -35,11 +36,13 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SwingUtilities;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Arrays.asList;
@@ -76,6 +79,9 @@ public final class SwingEntityEditorTest {
 	private SwingEntityEditor master;
 	private SwingEntityEditor detail;
 
+	private SwingEntityModel departmentModel;
+	private SwingEntityModel employeeModel;
+
 	@BeforeEach
 	void setUp() {
 		events.clear();
@@ -89,6 +95,11 @@ public final class SwingEntityEditorTest {
 						.entity((department, connection) -> detailToLoad.get())
 						.present(employee -> !employee.isNull(Employee.NAME))
 						.build());
+		departmentModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
+		employeeModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		departmentModel.detail().add(employeeModel);
+		departmentModel.detail().active(employeeModel).set(true);
+		departmentModel.tableModel().items().refresh();
 		record(master, "master");
 		record(detail, "detail");
 	}
@@ -159,19 +170,27 @@ public final class SwingEntityEditorTest {
 	// Layer B — asynchronous (on the EDT), validating the worker-based path
 
 	@Test
-	void asyncReturnsBeforeChanged() throws Exception {
+	void asyncAppliesValuesSynchronouslyDefersChanged() throws Exception {
 		detailToLoad.set(employee("emp"));
 		AtomicReference<@Nullable Integer> idRightAfterSet = new AtomicReference<>();
+		AtomicBoolean changedRightAfterSet = new AtomicBoolean(true);
+		AtomicBoolean changedFired = new AtomicBoolean();
 		CountDownLatch changed = new CountDownLatch(1);
-		master.entity().observer().addListener(changed::countDown);
+		master.entity().observer().addListener(() -> {
+			changedFired.set(true);
+			changed.countDown();
+		});
 		invokeLater(() -> {
 			master.entity().set(department(1));
-			// Asynchronous: set() returns before the worker applies the entity on the EDT
+			// The master's own values are applied synchronously, before the detail load is dispatched
 			idRightAfterSet.set(master.entity().get().get(Department.ID));
+			// but the changed event is deferred until the detail editors have loaded on the worker
+			changedRightAfterSet.set(changedFired.get());
 		});
 		assertTrue(changed.await(5, SECONDS));
-		assertNull(idRightAfterSet.get());// not yet applied when set() returned
-		assertEquals(1, master.entity().get().get(Department.ID));// applied once changed fired
+		assertEquals(1, idRightAfterSet.get());// applied synchronously
+		assertFalse(changedRightAfterSet.get());// changed not yet fired on return, detail still loading
+		assertEquals(1, master.entity().get().get(Department.ID));
 	}
 
 	@Test
@@ -272,6 +291,86 @@ public final class SwingEntityEditorTest {
 		finally {
 			CONNECTION_PROVIDER.connection().rollbackTransaction();
 		}
+	}
+
+	@Test
+	void sync() {
+		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		Entity research = connection.selectSingle(Department.NAME.equalTo("RESEARCH"));
+		Entity sales = connection.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
+		// Off the EDT both the detail refresh and the editor run synchronously, so the
+		// foreign key is settled by the time each assertion runs.
+
+		departmentModel.tableModel().selection().item().set(research);
+		assertEquals(research, foreignKey());
+
+		departmentModel.tableModel().selection().item().set(sales);
+		assertEquals(sales, foreignKey());
+
+		employeeModel.tableModel().selection().item().set(martin);
+
+		departmentModel.tableModel().selection().item().set(research);
+		assertEquals(research, foreignKey());
+	}
+
+	@Test
+	void async() throws Exception {
+		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		Entity research = connection.selectSingle(Department.NAME.equalTo("RESEARCH"));
+		Entity sales = connection.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
+		// On the EDT the detail refresh runs asynchronously. With Direction A the editor applies its
+		// own values (and defaults/clear) synchronously, so once the async refresh has settled the
+		// foreign key set by the link in the refresh onResult is the final value.
+
+		// Selecting a department sets the detail condition and triggers the async detail refresh,
+		// whose onResult sets the foreign key. Await the refresh, then assert the settled value.
+		awaitRefresh(() -> departmentModel.tableModel().selection().item().set(research));
+		assertForeignKey(research);
+
+		awaitRefresh(() -> departmentModel.tableModel().selection().item().set(sales));
+		assertForeignKey(sales);
+
+		// Selecting an employee populates the employee editor (values applied synchronously).
+		onEdt(() -> employeeModel.tableModel().selection().item().set(martin));
+
+		// Re-selecting a department refreshes the employee table, clearing the now-invalid employee
+		// selection (Martin is in Sales), which resets the editor to defaults. Because defaults() is
+		// synchronous, it runs before the refresh onResult, so the foreign key set by the link wins.
+		awaitRefresh(() -> departmentModel.tableModel().selection().item().set(research));
+		assertForeignKey(research);
+	}
+
+	private void awaitRefresh(Runnable gesture) throws Exception {
+		CountDownLatch refreshed = new CountDownLatch(1);
+		Runnable listener = refreshed::countDown;
+		// result() fires after the refresh has processed and the link's onResult has set the foreign key
+		employeeModel.tableModel().items().refresher().result().addListener(listener);
+		try {
+			SwingUtilities.invokeLater(gesture);
+			assertTrue(refreshed.await(10, SECONDS), "Detail refresh did not complete");
+			flushEventQueue();
+		}
+		finally {
+			employeeModel.tableModel().items().refresher().result().removeListener(listener);
+		}
+	}
+
+	private void assertForeignKey(Entity department) throws Exception {
+		onEdt(() -> assertEquals(department, foreignKey()));
+	}
+
+	private Entity foreignKey() {
+		return employeeModel.editModel().editor().value(Employee.DEPARTMENT_FK).get();
+	}
+
+	private static void onEdt(Runnable runnable) throws Exception {
+		SwingUtilities.invokeAndWait(runnable);
+	}
+
+	private static void flushEventQueue() throws Exception {
+		SwingUtilities.invokeAndWait(() -> {});
 	}
 
 	private void record(SwingEntityEditor editor, String label) {

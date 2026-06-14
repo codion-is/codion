@@ -52,6 +52,7 @@ import is.codion.framework.model.EditorLink.BeforeInsert;
 import is.codion.framework.model.EditorLink.DetailCondition;
 import is.codion.framework.model.EditorLink.DetailEntity;
 import is.codion.framework.model.EditorLink.DetailSelect;
+import is.codion.framework.model.EntityEditor.EditorTask.Result;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -287,6 +288,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		requireNonNull(task).perform().handle();
 	}
 
+	/**
+	 * Supersedes any ongoing asynchronous execution. Called before applying a synchronous state
+	 * change (defaults/clear) so that an in-flight asynchronous set or replace does not complete
+	 * afterwards and clobber it. The default implementation does nothing.
+	 */
+	protected void supersede() {}
+
 	private void notifyValueChange(Attribute<?> attribute, Map<Attribute<?>, String> invalidAttributes) {
 		updateAttributeStates(attribute, invalidAttributes);
 		DefaultEditorValue<?> editorValue = (DefaultEditorValue<?>) editorValues.get(attribute);
@@ -473,7 +481,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public void set(Entity entity) {
 			Entity validated = validateType(entity).immutable();
 			changing.accept(validated);
-			execute(tasks().set(validated));
+			setEntity(validated);
+			execute(defaultTasks().setDetails(validated));
 		}
 
 		@Override
@@ -488,7 +497,18 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void replace(Entity entity) {
-			execute(tasks().replace(entity));
+			Entity validated = validateType(entity).immutable();
+			boolean identityChanged = !instance.primaryKey().equals(validated.primaryKey());
+			setEntity(validated);
+			if (identityChanged) {
+				// the detail editors must be reloaded for the new identity, on a background thread
+				execute(defaultTasks().replaceDetails(validated));
+			}
+			else {
+				// same identity, no detail reload; supersede any in-flight load and fire replaced
+				supersede();
+				replaced.accept(validated);
+			}
 		}
 
 		@Override
@@ -499,13 +519,19 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void defaults() {
 			changing.accept(null);
-			execute(new Defaults());
+			supersede();
+			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
+			setEntity(createEntity(this::defaultValue));
+			changed.accept(null);
 		}
 
 		@Override
 		public void clear() {
 			changing.accept(null);
-			execute(new Clear());
+			supersede();
+			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
+			setEntity(createEntity(DefaultEditorEntity::nullValue));
+			changed.accept(null);
 		}
 
 		@Override
@@ -561,15 +587,21 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private void resetDefaults() {
+			supersede();
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
 			setEntity(createEntity(this::defaultValue));
 			replaced.accept(null);
 		}
 
 		private void resetCleared() {
+			supersede();
 			detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
 			setEntity(createEntity(DefaultEditorEntity::nullValue));
 			replaced.accept(null);
+		}
+
+		private DefaultEditorTasks defaultTasks() {
+			return new DefaultEditorTasks(connectionProvider.connection());
 		}
 
 		private static <T> @Nullable T nullValue(AttributeDefinition<T> attributeDefinition) {
@@ -619,31 +651,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 							newEntity.set(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
 		}
 
-		private final class Defaults implements EditorTask<Entity> {
-
-			@Override
-			public Result<Entity> perform() {
-				return () -> {
-					detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetDefaults());
-					entity.setEntity(createEntity(entity::defaultValue));
-					entity.changed.accept(null);
-					return null;
-				};
-			}
-		}
-
-		private final class Clear implements EditorTask<Entity> {
-
-			@Override
-			public Result<Entity> perform() {
-				return () -> {
-					detail.editors.values().forEach(detailEditor -> detailEditor.editor.entity.resetCleared());
-					setEntity(createEntity(DefaultEditorEntity::nullValue));
-					entity.changed.accept(null);
-					return null;
-				};
-			}
-		}
 	}
 
 	private final class DefaultEditorTasks implements EditorTasks {
@@ -1178,6 +1185,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			}
 		}
 
+		private List<Result<Entity>> loadDetails(Entity master, boolean replace) {
+			return detail.load(master, connection).stream()
+							.map(detail -> detail.editor.populate(master, detail.entity, connection, replace))
+							.map(EditorTask::perform)
+							.collect(toList());
+		}
+
 		private final class SetEntity implements EditorTask<Entity> {
 
 			private final Entity entityToSet;
@@ -1188,10 +1202,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 			@Override
 			public Result<Entity> perform() {
-				List<Result<Entity>> details = detail.load(entityToSet, connection).stream()
-								.map(detail -> detail.editor.populate(entityToSet, detail.entity, connection, false))
-								.map(EditorTask::perform)
-								.collect(toList());
+				List<Result<Entity>> details = loadDetails(entityToSet, false);
 				return () -> {
 					details.forEach(Result::handle);
 					entity.setEntity(entityToSet);
@@ -1214,13 +1225,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 			@Override
 			public Result<Entity> perform() {
-				List<Result<Entity>> details = new ArrayList<>(detail.editors.size());
-				if (identityChanged) {
-					details.addAll(detail.load(entityToSet, connection).stream()
-									.map(detail -> detail.editor.populate(entityToSet, detail.entity, connection, true))
-									.map(EditorTask::perform)
-									.collect(toList()));
-				}
+				List<Result<Entity>> details = identityChanged ? loadDetails(entityToSet, true) : emptyList();
 				return () -> {
 					details.forEach(Result::handle);
 					entity.setEntity(entityToSet);
@@ -1233,6 +1238,30 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			private boolean identityChanged(Entity newEntity) {
 				return !entity.instance.primaryKey().equals(newEntity.primaryKey());
 			}
+		}
+
+		private EditorTask<Entity> setDetails(Entity entityToSet) {
+			return () -> {
+				List<Result<Entity>> details = loadDetails(entityToSet, false);
+				return () -> {
+					details.forEach(Result::handle);
+					entity.changed.accept(entityToSet);
+
+					return entityToSet;
+				};
+			};
+		}
+
+		private EditorTask<Entity> replaceDetails(Entity entityToSet) {
+			return () -> {
+				List<Result<Entity>> details = loadDetails(entityToSet, true);
+				return () -> {
+					details.forEach(Result::handle);
+					entity.replaced.accept(entityToSet);
+
+					return entityToSet;
+				};
+			};
 		}
 	}
 

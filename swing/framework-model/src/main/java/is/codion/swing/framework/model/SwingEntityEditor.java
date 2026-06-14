@@ -54,8 +54,9 @@ import static javax.swing.SwingUtilities.isEventDispatchThread;
 public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEditor> {
 
 	/**
-	 * Specifies whether {@link SwingEntityEditor} instances set and replace the active entity
-	 * asynchronously, on a background thread, or on the user interface thread
+	 * Specifies whether {@link SwingEntityEditor} instances load registered detail editors on a background
+	 * thread when setting, replacing or refreshing the active entity. The active entity's own values are
+	 * always applied synchronously; this only governs the loading of detail editors.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
@@ -101,14 +102,14 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	}
 
 	/**
-	 * <p>Controls whether the active entity is set and replaced asynchronously, on a background thread,
-	 * when invoked on the user interface thread. When enabled (the default), setting or replacing the
-	 * active entity loads any registered detail editors on a background thread and returns before the
-	 * change has completed.
-	 * <p>Disabling asynchronous behaviour provides predictable, synchronous set and replace, which can
-	 * be useful when orchestrating interdependent models, such as complex master/detail selection
-	 * cascades, where the order of operations must be deterministic.
-	 * @return the {@link State} controlling whether asynchronous set and replace is enabled
+	 * <p>Controls whether registered detail editors are loaded on a background thread when the active
+	 * entity is set, replaced or refreshed on the user interface thread. The active entity's own values
+	 * are always applied synchronously; this governs only the loading of detail editors. When enabled
+	 * (the default), setting or replacing the active entity returns before the detail subtree is in place.
+	 * <p>Disabling makes detail loading synchronous as well, so the full detail subtree is in place before
+	 * the operation returns. This is useful in tests, or when subsequent logic must observe the loaded
+	 * detail subtree immediately rather than after {@link EditorEntity#observer() changed} fires.
+	 * @return the {@link State} controlling whether detail editors are loaded asynchronously
 	 * @see #ASYNC
 	 */
 	public State async() {
@@ -133,6 +134,14 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		else {
 			super.execute(task);
 		}
+	}
+
+	@Override
+	protected void supersede() {
+		// a synchronous reset (set/replace/defaults/clear) is about to be applied; drop any in-flight
+		// worker so its result is discarded (currentTask == null) instead of clobbering the reset
+		cancelCurrentWorker();
+		currentTask = null;
 	}
 
 	private void cancelCurrentWorker() {

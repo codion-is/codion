@@ -518,19 +518,20 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * entity. Use {@link #defaults()} or {@link #clear()} to reset the editor.
 		 * <p>{@link #changing()} fires synchronously, before any loading begins; throwing a
 		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels
-		 * the operation. Detail editors registered via {@link DetailEditors#add(EditorLink)} are then
-		 * reloaded via their link's load action, and {@link #observer() changed} fires once the active
-		 * entity and the full detail subtree are in place. This is the master-selection path — use
-		 * {@link #replace(Entity)} for silent post-persist refreshes that should not re-fire change events.
-		 * <p>When the editor is bound to UI components the operation is performed asynchronously: this
-		 * method returns after {@link #changing()} has fired but before {@link #observer() changed}, so
-		 * the active entity is not yet in place when it returns. Otherwise the operation is synchronous.
+		 * the operation. The active entity itself is then applied synchronously, after which detail editors
+		 * registered via {@link DetailEditors#add(EditorLink)} are reloaded via their link's load action,
+		 * with {@link #changed()} firing once the full detail subtree is in place.
+		 * Use {@link #replace(Entity)} for silent post-persist refreshes that should not re-fire change events.
+		 * <p>The active entity is applied synchronously, so {@link #get()} reflects the new values as soon
+		 * as this method returns. When the editor is bound to UI components only the detail editors are
+		 * loaded asynchronously, on a background thread; the method then returns before the detail subtree
+		 * is in place and before {@link #changed()} fires. Otherwise the operation is fully
+		 * synchronous.
 		 * <p>For master editors with registered detail editors the events are ordered bottom-up:
 		 * {@link #changing()} fires before the detail subtree is touched; each detail editor is then set
-		 * (firing {@link #observer() changed}, never {@link #changing()}); finally {@link #observer() changed}
+		 * (firing {@link #changed()}, never {@link #changing()}); finally {@link #changed()}
 		 * fires on the master once every detail editor is in its post-set state. This makes
-		 * {@link #observer() changed} the "everything done" signal for the full master/detail tree,
-		 * suitable for actions that need to inspect aggregate state.
+		 * {@link #changed()} the "everything done" signal for the full master/detail tree.
 		 * @param entity the entity to set
 		 * @throws NullPointerException in case the entity is null
 		 * @throws IllegalArgumentException in case the entity is not of the correct type
@@ -544,8 +545,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Fires synchronously when the active entity is about to change via {@link #set(Entity)},
 		 * {@link #defaults()} or {@link #clear()} — before any loading begins and before the detail
-		 * subtree is touched, allowing listeners to inspect the pre-change state of the entire
-		 * master/detail tree. The post-change counterpart is {@link #observer() changed}.
+		 * subtree is touched. The post-change counterpart is {@link #changed()}.
 		 * <p>Throwing a {@link is.codion.common.model.CancelException} from a listener cancels the
 		 * change. Note that {@link #replace(Entity)} does not fire this event, nor do detail editors
 		 * when reset as part of a master operation.
@@ -558,14 +558,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * <p>Returns an observer notified each time the entity is silently replaced — via
-		 * {@link #replace(Entity)}, when the editor is reset to defaults after a delete, or when this
-		 * editor is reset as a detail editor of a master being replaced, defaulted or cleared. Unlike
-		 * {@link #observer() changed}, it is not preceded by {@link #changing()}.
+		 * {@link #replace(Entity)}, Unlike {@link #changed()}, it is not preceded by {@link #changing()}.
 		 * <p>For master editors with registered detail editors, this fires <em>after</em> the detail
 		 * subtree has been replaced — by the time listeners run, every detail editor is in its
 		 * post-persist state. This makes {@link #replaced()} the "everything done" signal for the
-		 * full master/detail tree, suitable for actions that need to inspect aggregate state (e.g.,
-		 * focusing the first empty detail editor, or adjusting which detail editors are visible).
+		 * full master/detail tree.
 		 * @return an observer notified each time the entity is silently replaced
 		 * @see #replace(Entity)
 		 */
@@ -573,12 +570,13 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * <p>Silently replaces the editor entity values without firing {@link #changing()} or
-		 * {@link #observer() changed} events; only {@link #replaced()} fires.
+		 * {@link #changed()} events; only {@link #replaced()} fires.
 		 * <p>If the new entity has the same primary key as the current one (the typical post-persist
 		 * refresh case), detail editors are <em>not</em> touched — their state is owned by their own
-		 * persist tasks. If the primary key changes, detail editors are reloaded via their link's load
-		 * action, since the master's identity has changed; as with {@link #set(Entity)} that reload may
-		 * be performed asynchronously when the editor is bound to UI components, with {@link #replaced()}
+		 * persist tasks — and the replacement is fully synchronous. If the primary key changes, detail
+		 * editors are reloaded via their link's load action, since the master's identity has changed; the
+		 * entity values are applied synchronously, while as with {@link #set(Entity)} that detail reload
+		 * may be performed asynchronously when the editor is bound to UI components, with {@link #replaced()}
 		 * firing once the full detail subtree is in place.
 		 * @param entity the replacement entity
 		 * @throws NullPointerException in case the entity is null
@@ -598,9 +596,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Resets this editor to its default values, retaining values flagged to
 		 * {@link EditorValue#persist()}. Registered detail editors are reset to their defaults as well.
-		 * <p>Fires {@link #changing()} and then {@link #observer() changed} on this editor; throwing a
+		 * <p>Fires {@link #changing()} and then {@link #changed()} on this editor; throwing a
 		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels the
-		 * operation.Detail editors are reset silently, firing only {@link #replaced()}.
+		 * operation. Detail editors are reset silently, firing only {@link #replaced()}. This is an
+		 * in-memory reset and is always performed synchronously, even when the editor is bound to UI components.
 		 * @see #clear()
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
@@ -613,9 +612,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>Clears all values, disregarding the {@link EditorValue#persist()} directive — the difference
 		 * from {@link #defaults()}, which retains persistent values. Registered detail editors are cleared
 		 * as well.
-		 * <p>Fires {@link #changing()} and then {@link #observer() changed} on this editor; throwing a
+		 * <p>Fires {@link #changing()} and then {@link #changed()} on this editor; throwing a
 		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels the
-		 * operation. Detail editors are cleared silently, firing only {@link #replaced()}.
+		 * operation. Detail editors are cleared silently, firing only {@link #replaced()}. Like
+		 * {@link #defaults()}, this is an in-memory reset and is always performed synchronously.
 		 * @see #defaults()
 		 * @see #changing()
 		 */
