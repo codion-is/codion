@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.76
+### is.codion.swing.common.model
+- AbstractRefreshWorker no longer processes results if the task is no longer current.
 ### is.codion.framework.domain
 - AbstractValueAttributeDefinition bug fixed, now sets false as the default value for non-nullable boolean attributes, when no default value is specified.
 ### is.codion.framework.model

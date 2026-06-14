@@ -40,6 +40,7 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 	private final Consumer<Exception> onException;
 
 	private @Nullable ProgressWorker<Collection<T>, ?> worker;
+	private @Nullable RefreshTask currentTask;
 
 	/**
 	 * @param items supplies the items
@@ -60,8 +61,9 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 	protected final void refreshAsync(Consumer<Collection<T>> onResult) {
 		items().ifPresent(items -> {
 			cancelCurrentRefresh();
+			currentTask = new RefreshTask(items, onResult);
 			worker = ProgressWorker.builder()
-							.task(new RefreshTask(items, onResult))
+							.task(currentTask)
 							.execute();
 		});
 	}
@@ -101,6 +103,8 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 	private void cancelCurrentRefresh() {
 		ProgressWorker<?, ?> progressWorker = worker;
 		if (progressWorker != null) {
+			worker = null;
+			currentTask = null;
 			progressWorker.cancel(true);
 		}
 	}
@@ -122,17 +126,25 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 
 		@Override
 		public void onStarted() {
-			onRefreshStarted();
+			if (currentTask == this) {
+				onRefreshStarted();
+			}
 		}
 
 		@Override
 		public void onResult(Collection<T> result) {
-			onRefreshResult(result, onResult);
+			if (currentTask == this) {
+				currentTask = null;
+				onRefreshResult(result, onResult);
+			}
 		}
 
 		@Override
 		public void onException(Exception exception) {
-			AbstractRefreshWorker.this.onException(exception);
+			if (currentTask == this) {
+				currentTask = null;
+				AbstractRefreshWorker.this.onException(exception);
+			}
 		}
 	}
 
