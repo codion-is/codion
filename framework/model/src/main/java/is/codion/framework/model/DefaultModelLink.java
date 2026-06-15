@@ -76,11 +76,22 @@ final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends Entity
 		onDelete.accept(deletedEntities);
 	}
 
+	static final class DefaultModelStep implements Builder.ModelStep {
+
+		@Override
+		public <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>, T extends EntityTableModel<M, E, T, R>,
+						R extends EntityEditor<R>, B extends Builder<B>> Builder<B> model(M model) {
+			return new DefaultBuilder<>(requireNonNull(model));
+		}
+	}
+
 	static class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
 					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends Builder<B>>
 					implements Builder<B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
+
+		static final ModelStep MODEL = new DefaultModelStep();
 
 		private final M model;
 

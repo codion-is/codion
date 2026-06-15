@@ -43,7 +43,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 	private final boolean refreshOnSelection;
 
 	private DefaultForeignKeyModelLink(DefaultBuilder<M, E, T, R, ?> builder) {
-		this.modelLink = (DefaultModelLink<M, E, T, R>) ModelLink.builder(builder.model)
+		this.modelLink = (DefaultModelLink<M, E, T, R>) ModelLink.builder()
+						.model(builder.model)
 						.onSelection(builder.onSelection == null ? new OnSelection() : builder.onSelection)
 						.onInsert(builder.onInsert == null ? new OnInsert() : builder.onInsert)
 						.onUpdate(builder.onUpdate)
@@ -146,6 +147,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
+		static final ModelStep MODEL = new DefaultModelStep();
+
 		private final M model;
 		private final ForeignKey foreignKey;
 
@@ -232,11 +235,11 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		}
 	}
 
-	static final class DefaultModelStep<B extends ForeignKeyModelLink.Builder<B>> implements Builder.ModelStep<B> {
+	static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
 		public <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-						T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> Builder.ForeignKeyStep<B> model(M model) {
+						T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends ForeignKeyModelLink.Builder<B>> Builder.ForeignKeyStep<B> model(M model) {
 			return new DefaultForeignKeyStep<>(requireNonNull(model));
 		}
 	}

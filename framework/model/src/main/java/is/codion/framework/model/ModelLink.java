@@ -30,20 +30,11 @@ import java.util.function.Consumer;
 public sealed interface ModelLink permits DefaultModelLink, ForeignKeyModelLink {
 
 	/**
-	 * <p>Returns a new {@link Builder} instance.
-	 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
-	 * any data, via {@link EntityQueryModel#conditionRequired()}
-	 * @param model the model to link
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
-	 * @param <R> the {@link EntityEditor} type
-	 * @param <B> the builder type
-	 * @return a {@link Builder} instance
+	 * <p>Returns a {@link Builder.ModelStep} instance.
+	 * @return a {@link Builder.ModelStep} instance
 	 */
-	static <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>, T extends EntityTableModel<M, E, T, R>,
-					B extends Builder<B>, R extends EntityEditor<R>> Builder<B> builder(M model) {
-		return new DefaultModelLink.DefaultBuilder<>(model);
+	static Builder.ModelStep builder() {
+		return DefaultModelLink.DefaultBuilder.MODEL;
 	}
 
 	/**
@@ -51,6 +42,27 @@ public sealed interface ModelLink permits DefaultModelLink, ForeignKeyModelLink 
 	 * @param <B> the builder type
 	 */
 	interface Builder<B extends Builder<B>> {
+
+		/**
+		 * Specifies the linked detail model.
+		 */
+		interface ModelStep {
+
+			/**
+			 * <p>Returns a new {@link Builder} instance.
+			 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
+			 * any data, via {@link EntityQueryModel#conditionRequired()}
+			 * @param model the model to link
+			 * @param <M> the {@link EntityModel} type
+			 * @param <E> the {@link EntityEditModel} type
+			 * @param <T> the {@link EntityTableModel} type
+			 * @param <R> the {@link EntityEditor} type
+			 * @param <B> the builder type
+			 * @return a {@link Builder} instance
+			 */
+			<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
+							T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends Builder<B>> Builder<B> model(M model);
+		}
 
 		/**
 		 * Note that only active model links respond to parent model selection by default.

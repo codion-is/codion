@@ -84,11 +84,10 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 
 	/**
 	 * <p>Returns a new {@link Builder.ModelStep} instance.
-	 * @param <B> the builder type
-	 * @return a {@link Builder} instance
+	 * @return a {@link Builder.ModelStep} instance
 	 */
-	static <B extends ForeignKeyModelLink.Builder<B>> Builder.ModelStep<B> builder() {
-		return new DefaultForeignKeyModelLink.DefaultModelStep<>();
+	static Builder.ModelStep builder() {
+		return DefaultForeignKeyModelLink.DefaultBuilder.MODEL;
 	}
 
 	/**
@@ -98,9 +97,9 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 	interface Builder<B extends ForeignKeyModelLink.Builder<B>> extends ModelLink.Builder<B> {
 
 		/**
-		 * @param <B> the builder type
+		 * Specifies the linked detail model.
 		 */
-		interface ModelStep<B extends ForeignKeyModelLink.Builder<B>> {
+		interface ModelStep {
 
 			/**
 			 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
@@ -110,10 +109,11 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 			 * @param <E> the {@link EntityEditModel} type
 			 * @param <T> the {@link EntityTableModel} type
 			 * @param <R> the {@link EntityEditor} type
+			 * @param <B> the builder type
 			 * @return a new {@link Builder.ForeignKeyStep}
 			 */
 			<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-							T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> ForeignKeyStep<B> model(M model);
+							T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends ForeignKeyModelLink.Builder<B>> ForeignKeyStep<B> model(M model);
 		}
 
 		/**
