@@ -1003,7 +1003,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			modifiedPanel.display().request();
 			Collection<Attribute<?>> attributes = modified.get(modifiedPanel);
 			if (!attributes.isEmpty()) {// modified can be predicate based
-				SwingUtilities.invokeLater(() -> modifiedPanel.editPanel().focus().request(attributes.iterator().next()));
+				SwingUtilities.invokeLater(() -> modifiedPanel.editPanel().requestModifiedFocus(attributes.iterator().next()));
 			}
 
 			throw new CancelException();

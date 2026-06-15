@@ -848,10 +848,24 @@ public abstract class EntityEditPanel extends JPanel {
 			if (showConfirmDialog(this, createModifiedMessage(modified),
 							FrameworkMessages.modifiedWarningTitle(), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
 				if (!modified.isEmpty()) {
-					focus().request(modified.iterator().next());
+					requestModifiedFocus(modified.iterator().next());
 				}
 				throw new CancelException();
 			}
+		}
+	}
+
+	void requestModifiedFocus(Attribute<?> attribute) {
+		Optional<ComponentEntry> matched = components.entries()
+						.filter(entry -> entry.attribute().equals(attribute) &&
+										entry.source().editor().entity().exists().is() &&
+										entry.source().editor().value(attribute).modified().is())
+						.min(EntityEditPanel::compareFocusOrder);
+		if (matched.isPresent()) {
+			focus().request(matched.get().component().get());
+		}
+		else {
+			focus().request(attribute);
 		}
 	}
 
