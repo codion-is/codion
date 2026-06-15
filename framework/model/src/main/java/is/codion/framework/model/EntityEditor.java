@@ -423,20 +423,6 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see EditorEntity#exists()
 		 */
 		EditorTask<Entity> refresh();
-
-		/**
-		 * @param entity the entity to set
-		 * @return a task for setting the active entity
-		 * @see EditorEntity#set(Entity)
-		 */
-		EditorTask<Entity> set(Entity entity);
-
-		/**
-		 * @param entity the entity to set
-		 * @return a task for replacing the active entity
-		 * @see EditorEntity#replace(Entity)
-		 */
-		EditorTask<Entity> replace(Entity entity);
 	}
 
 	/**

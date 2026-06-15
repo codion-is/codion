@@ -785,13 +785,11 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			return new RefreshEditor();
 		}
 
-		@Override
-		public EditorTask<Entity> set(Entity entity) {
+		private EditorTask<Entity> set(Entity entity) {
 			return new SetEntity(entity);
 		}
 
-		@Override
-		public EditorTask<Entity> replace(Entity entity) {
+		private EditorTask<Entity> replace(Entity entity) {
 			return new ReplaceEntity(entity);
 		}
 
@@ -824,7 +822,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				before.accept(entity);
 				inserted = persistence.get().insert(entity, connection);
 				Collection<Result<Entity>> detail = detail();
-				Result<Entity> replace = tasks(connection).replace(inserted).perform();
+				Result<Entity> replace = replace(inserted).perform();
 				return () -> {
 					detail.forEach(Result::handle);
 					replace.handle();
@@ -880,7 +878,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 					updated = persistence.get().update(entity, connection);
 				}
 				Collection<Result<Entity>> detail = detail();
-				Result<Entity> replace = tasks(connection).replace(updated).perform();
+				Result<Entity> replace = replace(updated).perform();
 				return () -> {
 					detail.forEach(Result::handle);
 					replace.handle();
@@ -955,7 +953,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				LOG.debug(INSERT, entity);
 				before.accept(entity);
 				Entity inserted = persistence.get().insert(entity, connection);
-				Result<Entity> replace = tasks(connection).replace(inserted).perform();
+				Result<Entity> replace = replace(inserted).perform();
 				return () -> {
 					replace.handle();
 					persistEvents.afterInsert(inserted);
@@ -977,7 +975,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			public Result<Entity> perform() {
 				LOG.debug(UPDATE, entity);
 				Entity updated = persistence.get().update(entity, connection);
-				Result<Entity> replace = tasks(connection).replace(updated).perform();
+				Result<Entity> replace = replace(updated).perform();
 				return () -> {
 					replace.handle();
 					persistEvents.afterUpdate(entity, updated);
@@ -1176,7 +1174,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 																.filter(entity.instance::contains)
 																.collect(toSet())))
 								.immutable();// passed on to detail Select providers
-				Result<Entity> set = tasks(connection).set(refreshed).perform();
+				Result<Entity> set = set(refreshed).perform();
 				return () -> {
 					set.handle();
 
@@ -1763,7 +1761,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				};
 			}
 
-			return replace ? editor.tasks(connection).replace(detail) : editor.tasks(connection).set(detail);
+			DefaultEditorTasks tasks = (DefaultEditorTasks) editor.tasks(connection);
+
+			return replace ? tasks.replace(detail) : tasks.set(detail);
 		}
 
 		private final class Updatable implements ObservableState {
