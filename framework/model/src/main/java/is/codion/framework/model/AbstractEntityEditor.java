@@ -29,6 +29,7 @@ import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -74,6 +75,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.EntityConnection.transaction;
@@ -90,11 +92,25 @@ import static java.util.stream.Collectors.*;
  */
 public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> implements EntityEditor<R> {
 
+	/**
+	 * Specifies whether {@link AbstractEntityEditor} instances load registered detail editors on a background
+	 * thread when setting, replacing or refreshing the active entity. The active entity's own values are
+	 * always applied synchronously; this only governs the loading of detail editors.
+	 * <p>Subclasses are responsible for following this directive.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see #async()
+	 */
+	public static final PropertyValue<Boolean> ASYNC = booleanValue(AbstractEntityEditor.class.getName() + ".async", true);
+
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditor.class);
 
 	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 	private final DefaultPersistEvents persistEvents = new DefaultPersistEvents();
 	private final DefaultEditorValues values = new DefaultEditorValues();
+	private final State async = State.state(ASYNC.getOrThrow());
 
 	private final Map<Attribute<?>, EditorValue<?>> editorValues = new HashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new HashMap<>();
@@ -271,6 +287,22 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	@Override
 	public final String toString() {
 		return getClass() + ", " + entityDefinition.type();
+	}
+
+	/**
+	 * <p>Controls whether registered detail editors are loaded on a background thread when the active
+	 * entity is set, replaced or refreshed on the user interface thread. The active entity's own values
+	 * are always applied synchronously; this governs only the loading of detail editors. When enabled
+	 * (the default), setting or replacing the active entity returns before the detail subtree is in place.
+	 * <p>Disabling makes detail loading synchronous as well, so the full detail subtree is in place before
+	 * the operation returns. This is useful in tests, or when subsequent logic must observe the loaded
+	 * detail subtree immediately rather than after {@link EditorEntity#observer() changed} fires.
+	 * @return the {@link State} controlling whether detail editors are loaded asynchronously
+	 * @see #ASYNC
+	 * @see #execute(EditorTask)
+	 */
+	public final State async() {
+		return async;
 	}
 
 	/**

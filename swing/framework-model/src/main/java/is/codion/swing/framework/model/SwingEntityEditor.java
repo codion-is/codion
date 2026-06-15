@@ -18,8 +18,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.reactive.state.State;
-import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -43,7 +41,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static is.codion.common.utilities.Configuration.booleanValue;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
@@ -53,23 +50,10 @@ import static javax.swing.SwingUtilities.isEventDispatchThread;
  */
 public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEditor> {
 
-	/**
-	 * Specifies whether {@link SwingEntityEditor} instances load registered detail editors on a background
-	 * thread when setting, replacing or refreshing the active entity. The active entity's own values are
-	 * always applied synchronously; this only governs the loading of detail editors.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 * @see #async()
-	 */
-	public static final PropertyValue<Boolean> ASYNC = booleanValue(SwingEntityEditor.class.getName() + ".async", true);
-
 	private static final String NULL_ITEM_CAPTION = FilterComboBoxModel.NULL_CAPTION.getOrThrow();
 	private static final ProxyBuilder.ProxyMethod<Object> NULL_ITEM_TO_STRING = parameters -> NULL_ITEM_CAPTION;
 
 	private final ComboBoxModels comboBoxModels = new ComboBoxModels();
-	private final State async = State.state(ASYNC.getOrThrow());
 
 	private @Nullable ProgressWorker<Result<Entity>, ?> worker;
 	private @Nullable EditorTask<?> currentTask;
@@ -101,21 +85,6 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		return comboBoxModels;
 	}
 
-	/**
-	 * <p>Controls whether registered detail editors are loaded on a background thread when the active
-	 * entity is set, replaced or refreshed on the user interface thread. The active entity's own values
-	 * are always applied synchronously; this governs only the loading of detail editors. When enabled
-	 * (the default), setting or replacing the active entity returns before the detail subtree is in place.
-	 * <p>Disabling makes detail loading synchronous as well, so the full detail subtree is in place before
-	 * the operation returns. This is useful in tests, or when subsequent logic must observe the loaded
-	 * detail subtree immediately rather than after {@link EditorEntity#observer() changed} fires.
-	 * @return the {@link State} controlling whether detail editors are loaded asynchronously
-	 * @see #ASYNC
-	 */
-	public State async() {
-		return async;
-	}
-
 	@Override
 	protected SwingComponentModels componentModels() {
 		return (SwingComponentModels) super.componentModels();
@@ -126,7 +95,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		requireNonNull(task);
 		cancelCurrentWorker();
 		currentTask = task;
-		if (async.is() && isEventDispatchThread()) {
+		if (async().is() && isEventDispatchThread()) {
 			worker = ProgressWorker.builder()
 							.task(new ExecutionTask(task))
 							.execute();
