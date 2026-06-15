@@ -107,7 +107,8 @@ public final class World extends DomainModel {
 	}
 
 	static EntityDefinition countryCityView() {
-		return CountryCityView.TYPE.as(
+		return CountryCityView.TYPE.as()
+			.attributes(
 				CountryCityView.COUNTRYCODE.as()
 					.column()
 					.caption("Countrycode"),
@@ -215,7 +216,8 @@ public final class World extends DomainModel {
 	}
 
 	static EntityDefinition city() {
-		return City.TYPE.as(
+		return City.TYPE.as()
+			.attributes(
 				City.ID.as()
 					.primaryKey(),
 				City.NAME.as()
@@ -316,7 +318,8 @@ public final class World extends DomainModel {
 	}
 
 	static EntityDefinition country() {
-		return Country.TYPE.as(
+		return Country.TYPE.as()
+			.attributes(
 				Country.CODE.as()
 					.primaryKey()
 					.maximumLength(3),
@@ -421,7 +424,8 @@ public final class World extends DomainModel {
 	}
 
 	static EntityDefinition countrylanguage() {
-		return Countrylanguage.TYPE.as(
+		return Countrylanguage.TYPE.as()
+			.attributes(
 				Countrylanguage.COUNTRYCODE.as()
 					.primaryKey(0)
 					.maximumLength(3),

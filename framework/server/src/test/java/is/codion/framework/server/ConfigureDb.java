@@ -44,7 +44,9 @@ public final class ConfigureDb extends DomainModel {
 	}
 
 	EntityDefinition configured() {
-		return Configured.TYPE.as(Configured.ID.as().primaryKey()).build();
+		return Configured.TYPE.as()
+						.attributes(Configured.ID.as().primaryKey())
+						.build();
 	}
 
 	@Override

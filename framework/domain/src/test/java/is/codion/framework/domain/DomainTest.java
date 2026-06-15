@@ -46,7 +46,8 @@ public class DomainTest {
 	void keyWithSameIndex() {
 		assertThrows(IllegalArgumentException.class, () -> {
 			EntityType entityType = DOMAIN.entityType("keyWithSameIndex");
-			domain.add(entityType.as(
+			domain.add(entityType.as()
+							.attributes(
 											entityType.column("1", Integer.class).as().primaryKey(0),
 											entityType.column("2", Integer.class).as().primaryKey(1),
 											entityType.column("3", Integer.class).as().primaryKey(1))
@@ -58,7 +59,8 @@ public class DomainTest {
 	void keyWithSameIndex2() {
 		assertThrows(IllegalArgumentException.class, () -> {
 			EntityType entityType = DOMAIN.entityType("keyWithSameIndex2");
-			domain.add(entityType.as(
+			domain.add(entityType.as()
+							.attributes(
 											entityType.column("1", Integer.class).as().primaryKey(),
 											entityType.column("2", Integer.class).as().primaryKey(),
 											entityType.column("3", Integer.class).as().primaryKey())
@@ -70,8 +72,10 @@ public class DomainTest {
 	void redefine() {
 		EntityType entityType = DOMAIN.entityType("redefine");
 		Column<Integer> column = entityType.integerColumn("column");
-		domain.add(entityType.as(column.as().primaryKey()).build());
-		assertThrows(IllegalArgumentException.class, () -> domain.add(entityType.as(column.as().primaryKey()).build()));
+		domain.add(entityType.as()
+						.attributes(column.as().primaryKey()).build());
+		assertThrows(IllegalArgumentException.class, () -> domain.add(entityType.as()
+						.attributes(column.as().primaryKey()).build()));
 	}
 
 	@Test
@@ -82,9 +86,11 @@ public class DomainTest {
 		Column<Integer> refId = referencedEntityType.column("id", Integer.class);
 		Column<Integer> refIdNotPartOfEntity = referencedEntityType.column("id_none", Integer.class);
 		ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refIdNotPartOfEntity);
-		domain.add(referencedEntityType.as(refId.as().primaryKey()).build());
+		domain.add(referencedEntityType.as()
+						.attributes(refId.as().primaryKey()).build());
 
-		assertThrows(IllegalArgumentException.class, () -> domain.add(entityType.as(
+		assertThrows(IllegalArgumentException.class, () -> domain.add(entityType.as()
+						.attributes(
 										entityType.column("id", Integer.class).as().primaryKey(),
 										fkId.as().column(),
 										foreignKey.as()
@@ -101,7 +107,8 @@ public class DomainTest {
 			EntityType referencedEntityType = DOMAIN.entityType("test.referenced_entity");
 			Column<Integer> refId = referencedEntityType.column("id", Integer.class);
 			ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refId);
-			domain.add(entityType.as(
+			domain.add(entityType.as()
+							.attributes(
 											entityType.column("id", Integer.class).as().primaryKey(),
 											fkId.as().column(),
 											foreignKey.as()
@@ -119,7 +126,8 @@ public class DomainTest {
 		EntityType referencedEntityType = DOMAIN.entityType("test.referenced_entity");
 		Column<Integer> refId = referencedEntityType.column("id", Integer.class);
 		ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refId);
-		domain.add(entityType.as(
+		domain.add(entityType.as()
+						.attributes(
 										entityType.column("id", Integer.class).as().primaryKey(),
 										fkId.as().column(),
 										foreignKey.as()
@@ -161,18 +169,21 @@ public class DomainTest {
 	void condition() {
 		EntityType nullConditionString1 = DOMAIN.entityType("nullConditionString1");
 		assertThrows(NullPointerException.class, () ->
-						domain.add(nullConditionString1.as(nullConditionString1.integerColumn("id").as().primaryKey())
+						domain.add(nullConditionString1.as()
+										.attributes(nullConditionString1.integerColumn("id").as().primaryKey())
 										.condition(null, (columns, values) -> null)
 										.build()));
 		EntityType nullConditionString2 = DOMAIN.entityType("nullConditionString2");
 		assertThrows(NullPointerException.class, () ->
-						domain.add(nullConditionString2.as(nullConditionString2.integerColumn("id").as().primaryKey())
+						domain.add(nullConditionString2.as()
+										.attributes(nullConditionString2.integerColumn("id").as().primaryKey())
 										.condition(nullConditionString2.conditionType("id"), null)
 										.build()));
 		EntityType nullConditionString3 = DOMAIN.entityType("nullConditionString3");
 		ConditionType nullConditionType = nullConditionString3.conditionType("id");
 		assertThrows(IllegalStateException.class, () ->
-						domain.add(nullConditionString3.as(nullConditionString3.integerColumn("id").as().primaryKey())
+						domain.add(nullConditionString3.as()
+										.attributes(nullConditionString3.integerColumn("id").as().primaryKey())
 										.condition(nullConditionType, (columns, values) -> null)
 										.condition(nullConditionType, (columns, values) -> null)
 										.build()));

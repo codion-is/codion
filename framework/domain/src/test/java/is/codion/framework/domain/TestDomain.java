@@ -81,7 +81,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void compositeMaster() {
-		add(CompositeMaster.TYPE.as(
+		add(CompositeMaster.TYPE.as()
+						.attributes(
 										CompositeMaster.COMPOSITE_MASTER_ID.as()
 														.primaryKey(0).nullable(true),
 										CompositeMaster.COMPOSITE_MASTER_ID_2.as()
@@ -104,7 +105,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void compositeDetail() {
-		add(CompositeDetail.TYPE.as(
+		add(CompositeDetail.TYPE.as()
+						.attributes(
 										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID.as()
 														.primaryKey(0),
 										CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2.as()
@@ -125,7 +127,7 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void superEntity() {
-		add(Super.TYPE.as(Super.ID.as().primaryKey()).build());
+		add(Super.TYPE.as().attributes(Super.ID.as().primaryKey()).build());
 	}
 
 	public interface Master {
@@ -137,7 +139,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void master() {
-		add(Master.TYPE.as(
+		add(Master.TYPE.as()
+						.attributes(
 										Master.ID.as()
 														.primaryKey(),
 										Master.NAME.as()
@@ -165,7 +168,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void master2() {
-		add(Master2.TYPE.as(
+		add(Master2.TYPE.as()
+						.attributes(
 										Master2.ID_1.as().primaryKey(0),
 										Master2.ID_2.as().primaryKey(1),
 										Master2.SUPER_ID.as().column(),
@@ -208,7 +212,8 @@ public final class TestDomain extends DomainModel {
 					item(2, "Two"), item(3, "Three"));
 
 	void detail2() {
-		add(Detail2.TYPE.as(
+		add(Detail2.TYPE.as()
+						.attributes(
 										Detail2.ID.as()
 														.primaryKey(),
 										Detail2.INT.as()
@@ -311,7 +316,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void detail() {
-		add(Detail.TYPE.as(
+		add(Detail.TYPE.as()
+						.attributes(
 										Detail.ID.as()
 														.primaryKey()
 														.generator(queried("select id from dual")),
@@ -409,7 +415,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.as(
+		add(Department.TYPE.as()
+						.attributes(
 										Department.ID.as()
 														.primaryKey()
 														.caption(Department.ID.name())
@@ -468,7 +475,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.as(
+		add(Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
@@ -565,7 +573,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void keyTest() {
-		add(KeyTest.TYPE.as(
+		add(KeyTest.TYPE.as()
+						.attributes(
 										KeyTest.ID1.as()
 														.primaryKey(0),
 										KeyTest.ID2.as()
@@ -584,7 +593,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void noPKEntity() {
-		add(NoPk.TYPE.as(
+		add(NoPk.TYPE.as()
+						.attributes(
 										NoPk.COL1.as()
 														.column(),
 										NoPk.COL2.as()
@@ -602,7 +612,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void transientModifies() {
-		add(TransModifies.TYPE.as(
+		add(TransModifies.TYPE.as()
+						.attributes(
 										TransModifies.ID.as()
 														.primaryKey(),
 										TransModifies.TRANS.as()
@@ -618,7 +629,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void transientModifiesNot() {
-		add(TransModifiesNot.TYPE.as(
+		add(TransModifiesNot.TYPE.as()
+						.attributes(
 										TransModifiesNot.ID.as()
 														.primaryKey(),
 										TransModifiesNot.TRANS.as()
@@ -635,7 +647,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void nonInsertableUpdatable() {
-		add(NonInsertableUpdatable.TYPE.as(
+		add(NonInsertableUpdatable.TYPE.as()
+						.attributes(
 										NonInsertableUpdatable.ID.as()
 														.primaryKey(),
 										NonInsertableUpdatable.NOT_INSERTABLE.as()
@@ -653,7 +666,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void nullString() {
-		add(NullString.TYPE.as(
+		add(NullString.TYPE.as()
+						.attributes(
 										NullString.ID.as()
 														.primaryKey(),
 										NullString.ATTR.as()
@@ -673,7 +687,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void invalidDerived() {
-		add(InvalidDerived.TYPE.as(
+		add(InvalidDerived.TYPE.as()
+						.attributes(
 										InvalidDerived.ID.as()
 														.primaryKey(),
 										InvalidDerived.INT.as()
@@ -697,7 +712,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void foreignKeyLazyColumn() {
-		add(ForeignKeyLazyColumn.TYPE.as(
+		add(ForeignKeyLazyColumn.TYPE.as()
+						.attributes(
 										ForeignKeyLazyColumn.ID.as()
 														.primaryKey(),
 										ForeignKeyLazyColumn.DEPARTMENT_ID.as()
@@ -716,7 +732,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void nonCachedToString() {
-		add(NonCachedToString.TYPE.as(
+		add(NonCachedToString.TYPE.as()
+						.attributes(
 										NonCachedToString.ID.as()
 														.primaryKey(),
 										NonCachedToString.STRING.as()

@@ -58,7 +58,8 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition address() {
-		return Address.TYPE.as(
+		return Address.TYPE.as()
+						.attributes(
 										Address.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.address_seq"))
@@ -126,7 +127,8 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition category() {
-		return Category.TYPE.as(
+		return Category.TYPE.as()
+						.attributes(
 										Category.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.category_seq"))
@@ -168,7 +170,8 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition product() {
-		return Product.TYPE.as(
+		return Product.TYPE.as()
+						.attributes(
 										Product.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.product_seq"))
@@ -219,7 +222,8 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition sellerContactInfo() {
-		return SellerContactInfo.TYPE.as(
+		return SellerContactInfo.TYPE.as()
+						.attributes(
 										SellerContactInfo.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.sellercontactinfo_seq"))
@@ -275,7 +279,8 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition item() {
-		return Item.TYPE.as(
+		return Item.TYPE.as()
+						.attributes(
 										Item.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.item_seq"))
@@ -361,7 +366,8 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition tag() {
-		return Tag.TYPE.as(
+		return Tag.TYPE.as()
+						.attributes(
 										Tag.ID.as()
 														.primaryKey()
 														.generator(sequence("petstore.tag_seq"))
@@ -398,7 +404,8 @@ public final class Petstore extends DomainModel {
 	}
 
 	EntityDefinition tagItem() {
-		return TagItem.TYPE.as(
+		return TagItem.TYPE.as()
+						.attributes(
 										TagItem.ITEM_ID.as()
 														.primaryKey(0)
 														.name("itemid"),

@@ -1269,7 +1269,8 @@ public class DefaultEntityTest {
 			class DerivedDomain extends DomainModel {
 				DerivedDomain() {
 					super(domainType);
-					add(type.as(
+					add(type.as()
+									.attributes(
 													stringAttribute.as()
 																	.attribute(),
 													derivedAttributeCached.as()

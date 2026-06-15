@@ -117,196 +117,200 @@ public final class DerivedAttributeEnhancementTest {
 			super(DOMAIN_TYPE);
 
 			// Product entity definition
-			add(Product.TYPE.as(
-							Product.ID.as().primaryKey(),
-							Product.NAME.as().column().nullable(false),
-							Product.PRICE.as().column().nullable(false),
-							Product.QUANTITY.as().column().nullable(false),
-							Product.TAX_RATE.as().column().nullable(false),
-							Product.PURCHASE_DATE.as().column(),
+			add(Product.TYPE.as()
+							.attributes(
+											Product.ID.as().primaryKey(),
+											Product.NAME.as().column().nullable(false),
+											Product.PRICE.as().column().nullable(false),
+											Product.QUANTITY.as().column().nullable(false),
+											Product.TAX_RATE.as().column().nullable(false),
+											Product.PURCHASE_DATE.as().column(),
 
-							// Simple calculation
-							Product.TOTAL_VALUE.as()
-											.derived()
-											.from(Product.PRICE, Product.QUANTITY)
-											.with(values -> {
-												BigDecimal price = values.get(Product.PRICE);
-												Integer quantity = values.get(Product.QUANTITY);
-												if (price != null && quantity != null) {
-													return price.multiply(BigDecimal.valueOf(quantity));
-												}
-												return null;
-											}),
+											// Simple calculation
+											Product.TOTAL_VALUE.as()
+															.derived()
+															.from(Product.PRICE, Product.QUANTITY)
+															.with(values -> {
+																BigDecimal price = values.get(Product.PRICE);
+																Integer quantity = values.get(Product.QUANTITY);
+																if (price != null && quantity != null) {
+																	return price.multiply(BigDecimal.valueOf(quantity));
+																}
+																return null;
+															}),
 
-							// Derived from derived
-							Product.TAX_AMOUNT.as()
-											.derived()
-											.from(Product.TOTAL_VALUE, Product.TAX_RATE)
-											.with(values -> {
-												BigDecimal total = values.get(Product.TOTAL_VALUE);
-												BigDecimal taxRate = values.get(Product.TAX_RATE);
-												if (total != null && taxRate != null) {
-													return total.multiply(taxRate);
-												}
-												return null;
-											}),
+											// Derived from derived
+											Product.TAX_AMOUNT.as()
+															.derived()
+															.from(Product.TOTAL_VALUE, Product.TAX_RATE)
+															.with(values -> {
+																BigDecimal total = values.get(Product.TOTAL_VALUE);
+																BigDecimal taxRate = values.get(Product.TAX_RATE);
+																if (total != null && taxRate != null) {
+																	return total.multiply(taxRate);
+																}
+																return null;
+															}),
 
-							// Complex calculation
-							Product.TOTAL_WITH_TAX.as()
-											.derived()
-											.from(Product.TOTAL_VALUE, Product.TAX_AMOUNT)
-											.with(values -> {
-												BigDecimal total = values.get(Product.TOTAL_VALUE);
-												BigDecimal tax = values.get(Product.TAX_AMOUNT);
-												if (total != null && tax != null) {
-													return total.add(tax);
-												}
-												return null;
-											}),
+											// Complex calculation
+											Product.TOTAL_WITH_TAX.as()
+															.derived()
+															.from(Product.TOTAL_VALUE, Product.TAX_AMOUNT)
+															.with(values -> {
+																BigDecimal total = values.get(Product.TOTAL_VALUE);
+																BigDecimal tax = values.get(Product.TAX_AMOUNT);
+																if (total != null && tax != null) {
+																	return total.add(tax);
+																}
+																return null;
+															}),
 
-							// Date calculation
-							Product.DAYS_SINCE_PURCHASE.as()
-											.derived()
-											.from(Product.PURCHASE_DATE)
-											.with(values -> {
-												LocalDate purchaseDate = values.get(Product.PURCHASE_DATE);
-												if (purchaseDate != null) {
-													return (int) ChronoUnit.DAYS.between(purchaseDate, LocalDate.now());
-												}
-												return null;
-											}),
+											// Date calculation
+											Product.DAYS_SINCE_PURCHASE.as()
+															.derived()
+															.from(Product.PURCHASE_DATE)
+															.with(values -> {
+																LocalDate purchaseDate = values.get(Product.PURCHASE_DATE);
+																if (purchaseDate != null) {
+																	return (int) ChronoUnit.DAYS.between(purchaseDate, LocalDate.now());
+																}
+																return null;
+															}),
 
-							// String manipulation
-							Product.DISPLAY_NAME.as()
-											.derived()
-											.from(Product.NAME, Product.QUANTITY)
-											.with(values -> {
-												String name = values.get(Product.NAME);
-												Integer quantity = values.get(Product.QUANTITY);
-												if (name != null && quantity != null) {
-													return name + " (Qty: " + quantity + ")";
-												}
-												return name;
-											})
-			).build());
+											// String manipulation
+											Product.DISPLAY_NAME.as()
+															.derived()
+															.from(Product.NAME, Product.QUANTITY)
+															.with(values -> {
+																String name = values.get(Product.NAME);
+																Integer quantity = values.get(Product.QUANTITY);
+																if (name != null && quantity != null) {
+																	return name + " (Qty: " + quantity + ")";
+																}
+																return name;
+															}))
+							.build());
 
 			// Order entity definition
-			add(Order.TYPE.as(
-							Order.ID.as().primaryKey(),
-							Order.ORDER_DATE.as().column().nullable(false),
-							Order.STATUS.as().column().nullable(false)
-			).build());
+			add(Order.TYPE.as()
+							.attributes(
+											Order.ID.as().primaryKey(),
+											Order.ORDER_DATE.as().column().nullable(false),
+											Order.STATUS.as().column().nullable(false))
+							.build());
 
 			// OrderLine entity definition
-			add(OrderLine.TYPE.as(
-							OrderLine.ID.as().primaryKey(),
-							OrderLine.ORDER_ID.as().column().nullable(false),
-							OrderLine.PRODUCT_ID.as().column().nullable(false),
-							OrderLine.QUANTITY.as().column().nullable(false),
-							OrderLine.UNIT_PRICE.as().column().nullable(false),
+			add(OrderLine.TYPE.as()
+							.attributes(
+											OrderLine.ID.as().primaryKey(),
+											OrderLine.ORDER_ID.as().column().nullable(false),
+											OrderLine.PRODUCT_ID.as().column().nullable(false),
+											OrderLine.QUANTITY.as().column().nullable(false),
+											OrderLine.UNIT_PRICE.as().column().nullable(false),
 
-							OrderLine.ORDER_FK.as()
-											.foreignKey()
-											.include(Order.STATUS, Order.ORDER_DATE),
+											OrderLine.ORDER_FK.as()
+															.foreignKey()
+															.include(Order.STATUS, Order.ORDER_DATE),
 
-							OrderLine.PRODUCT_FK.as()
-											.foreignKey()
-											.include(Product.NAME),
+											OrderLine.PRODUCT_FK.as()
+															.foreignKey()
+															.include(Product.NAME),
 
-							// Derived from foreign key
-							OrderLine.PRODUCT_NAME.as()
-											.derived()
-											.from(OrderLine.PRODUCT_FK)
-											.with(values -> {
-												Entity product = values.get(OrderLine.PRODUCT_FK);
-												if (product != null) {
-													return product.get(Product.NAME);
-												}
-												return null;
-											}),
+											// Derived from foreign key
+											OrderLine.PRODUCT_NAME.as()
+															.derived()
+															.from(OrderLine.PRODUCT_FK)
+															.with(values -> {
+																Entity product = values.get(OrderLine.PRODUCT_FK);
+																if (product != null) {
+																	return product.get(Product.NAME);
+																}
+																return null;
+															}),
 
-							// Simple calculation
-							OrderLine.LINE_TOTAL.as()
-											.derived()
-											.from(OrderLine.QUANTITY, OrderLine.UNIT_PRICE)
-											.with(values -> {
-												Integer quantity = values.get(OrderLine.QUANTITY);
-												BigDecimal unitPrice = values.get(OrderLine.UNIT_PRICE);
-												if (quantity != null && unitPrice != null) {
-													return unitPrice.multiply(BigDecimal.valueOf(quantity));
-												}
-												return null;
-											}),
+											// Simple calculation
+											OrderLine.LINE_TOTAL.as()
+															.derived()
+															.from(OrderLine.QUANTITY, OrderLine.UNIT_PRICE)
+															.with(values -> {
+																Integer quantity = values.get(OrderLine.QUANTITY);
+																BigDecimal unitPrice = values.get(OrderLine.UNIT_PRICE);
+																if (quantity != null && unitPrice != null) {
+																	return unitPrice.multiply(BigDecimal.valueOf(quantity));
+																}
+																return null;
+															}),
 
-							// Derived from foreign key attributes
-							OrderLine.ORDER_STATUS.as()
-											.derived()
-											.from(OrderLine.ORDER_FK)
-											.with(values -> {
-												Entity order = values.get(OrderLine.ORDER_FK);
-												if (order != null) {
-													return order.get(Order.STATUS);
-												}
-												return null;
-											}),
+											// Derived from foreign key attributes
+											OrderLine.ORDER_STATUS.as()
+															.derived()
+															.from(OrderLine.ORDER_FK)
+															.with(values -> {
+																Entity order = values.get(OrderLine.ORDER_FK);
+																if (order != null) {
+																	return order.get(Order.STATUS);
+																}
+																return null;
+															}),
 
-							OrderLine.ORDER_DATE.as()
-											.derived()
-											.from(OrderLine.ORDER_FK)
-											.with(values -> {
-												Entity order = values.get(OrderLine.ORDER_FK);
-												if (order != null) {
-													return order.get(Order.ORDER_DATE);
-												}
-												return null;
-											})
-			).build());
+											OrderLine.ORDER_DATE.as()
+															.derived()
+															.from(OrderLine.ORDER_FK)
+															.with(values -> {
+																Entity order = values.get(OrderLine.ORDER_FK);
+																if (order != null) {
+																	return order.get(Order.ORDER_DATE);
+																}
+																return null;
+															}))
+							.build());
 
 			// Complex entity with multi-level derived
-			add(ComplexEntity.TYPE.as(
-							ComplexEntity.ID.as().primaryKey(),
-							ComplexEntity.VALUE1.as().column(),
-							ComplexEntity.VALUE2.as().column(),
-							ComplexEntity.NUMBER1.as().column(),
-							ComplexEntity.NUMBER2.as().column(),
+			add(ComplexEntity.TYPE.as()
+							.attributes(
+											ComplexEntity.ID.as().primaryKey(),
+											ComplexEntity.VALUE1.as().column(),
+											ComplexEntity.VALUE2.as().column(),
+											ComplexEntity.NUMBER1.as().column(),
+											ComplexEntity.NUMBER2.as().column(),
 
-							ComplexEntity.CONCAT_VALUES.as()
-											.derived()
-											.from(ComplexEntity.VALUE1, ComplexEntity.VALUE2)
-											.with(values -> {
-												String v1 = values.get(ComplexEntity.VALUE1);
-												String v2 = values.get(ComplexEntity.VALUE2);
-												if (v1 != null && v2 != null) {
-													return v1 + " - " + v2;
-												}
-												return v1 != null ? v1 : v2;
-											}),
+											ComplexEntity.CONCAT_VALUES.as()
+															.derived()
+															.from(ComplexEntity.VALUE1, ComplexEntity.VALUE2)
+															.with(values -> {
+																String v1 = values.get(ComplexEntity.VALUE1);
+																String v2 = values.get(ComplexEntity.VALUE2);
+																if (v1 != null && v2 != null) {
+																	return v1 + " - " + v2;
+																}
+																return v1 != null ? v1 : v2;
+															}),
 
-							ComplexEntity.SUM_NUMBERS.as()
-											.derived()
-											.from(ComplexEntity.NUMBER1, ComplexEntity.NUMBER2)
-											.with(values -> {
-												Integer n1 = values.get(ComplexEntity.NUMBER1);
-												Integer n2 = values.get(ComplexEntity.NUMBER2);
-												if (n1 != null && n2 != null) {
-													return n1 + n2;
-												}
-												return n1 != null ? n1 : n2;
-											}),
+											ComplexEntity.SUM_NUMBERS.as()
+															.derived()
+															.from(ComplexEntity.NUMBER1, ComplexEntity.NUMBER2)
+															.with(values -> {
+																Integer n1 = values.get(ComplexEntity.NUMBER1);
+																Integer n2 = values.get(ComplexEntity.NUMBER2);
+																if (n1 != null && n2 != null) {
+																	return n1 + n2;
+																}
+																return n1 != null ? n1 : n2;
+															}),
 
-							// Derived from other derived attributes
-							ComplexEntity.COMPLEX_DERIVED.as()
-											.derived()
-											.from(ComplexEntity.CONCAT_VALUES, ComplexEntity.SUM_NUMBERS)
-											.with(values -> {
-												String concat = values.get(ComplexEntity.CONCAT_VALUES);
-												Integer sum = values.get(ComplexEntity.SUM_NUMBERS);
-												if (concat != null && sum != null) {
-													return concat + " [Sum: " + sum + "]";
-												}
-												return concat;
-											})
-			).build());
+											// Derived from other derived attributes
+											ComplexEntity.COMPLEX_DERIVED.as()
+															.derived()
+															.from(ComplexEntity.CONCAT_VALUES, ComplexEntity.SUM_NUMBERS)
+															.with(values -> {
+																String concat = values.get(ComplexEntity.CONCAT_VALUES);
+																Integer sum = values.get(ComplexEntity.SUM_NUMBERS);
+																if (concat != null && sum != null) {
+																	return concat + " [Sum: " + sum + "]";
+																}
+																return concat;
+															}))
+							.build());
 		}
 	}
 
@@ -589,17 +593,18 @@ public final class DerivedAttributeEnhancementTest {
 					Column<Integer> value = type.integerColumn("value");
 					Attribute<Integer> doubled = type.integerAttribute("doubled");
 
-					add(type.as(
-									value.as().column(),
-									doubled.as()
-													.derived()
-													.from(value)
-													.with(values -> {
-														callCount.incrementAndGet();
-														Integer val = values.get(value);
-														return val != null ? val * 2 : null;
-													})
-					).build());
+					add(type.as()
+									.attributes(
+													value.as().column(),
+													doubled.as()
+																	.derived()
+																	.from(value)
+																	.with(values -> {
+																		callCount.incrementAndGet();
+																		Integer val = values.get(value);
+																		return val != null ? val * 2 : null;
+																	}))
+									.build());
 				}
 			}
 
@@ -641,19 +646,20 @@ public final class DerivedAttributeEnhancementTest {
 					Attribute<Integer> attr2 = type.integerAttribute("attr2");
 					Attribute<Integer> attr3 = type.integerAttribute("attr3");
 
-					add(type.as(
-									attr1.as()
-													.derived()
-													.from(attr3)
-													.with(values -> values.get(attr3)),
-									attr2.as()
-													.derived()
-													.from(attr1)
-													.with(values -> values.get(attr1)),
-									attr3.as()
-													.derived()
-													.from(attr2)
-													.with(values -> values.get(attr2)))
+					add(type.as()
+									.attributes(
+													attr1.as()
+																	.derived()
+																	.from(attr3)
+																	.with(values -> values.get(attr3)),
+													attr2.as()
+																	.derived()
+																	.from(attr1)
+																	.with(values -> values.get(attr1)),
+													attr3.as()
+																	.derived()
+																	.from(attr2)
+																	.with(values -> values.get(attr2)))
 									.build());
 				}
 			}
@@ -671,19 +677,20 @@ public final class DerivedAttributeEnhancementTest {
 					Column<Integer> value = type.integerColumn("value");
 					Attribute<Integer> problematic = type.integerAttribute("problematic");
 
-					add(type.as(
-									value.as().column(),
-									problematic.as()
-													.derived()
-													.from(value)
-													.with(values -> {
-														Integer val = values.get(value);
-														if (val != null && val < 0) {
-															throw new IllegalArgumentException("Negative values not allowed");
-														}
-														return val;
-													})
-					).build());
+					add(type.as()
+									.attributes(
+													value.as().column(),
+													problematic.as()
+																	.derived()
+																	.from(value)
+																	.with(values -> {
+																		Integer val = values.get(value);
+																		if (val != null && val < 0) {
+																			throw new IllegalArgumentException("Negative values not allowed");
+																		}
+																		return val;
+																	})
+									).build());
 				}
 			}
 
@@ -749,7 +756,7 @@ public final class DerivedAttributeEnhancementTest {
 										return total;
 									}));
 
-					add(type.as(definitions.toArray(new AttributeDefinition.Builder[0])).build());
+					add(type.as().attributes(definitions).build());
 				}
 			}
 

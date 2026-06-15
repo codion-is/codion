@@ -60,7 +60,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void master() {
-		add(Master.TYPE.as(
+		add(Master.TYPE.as()
+						.attributes(
 										Master.ID.as()
 														.primaryKey(),
 										Master.NAME.as()
@@ -109,7 +110,8 @@ public final class TestDomain extends DomainModel {
 					item(2, "Two"), item(3, "Three"));
 
 	void detail() {
-		add(Detail.TYPE.as(
+		add(Detail.TYPE.as()
+						.attributes(
 										Detail.ID.as()
 														.primaryKey(),
 										Detail.INT.as()
@@ -202,7 +204,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.as(
+		add(Department.TYPE.as()
+						.attributes(
 										Department.ID.as()
 														.primaryKey()
 														.caption(Department.ID.name())
@@ -243,7 +246,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.as(
+		add(Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))

@@ -58,7 +58,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition master() {
-		return Master.TYPE.as(
+		return Master.TYPE.as()
+						.attributes(
 										Master.ID.as()
 														.primaryKey(),
 										Master.NAME.as()
@@ -101,7 +102,8 @@ public final class TestDomain extends DomainModel {
 					item(2, "2"), item(3, "3"));
 
 	EntityDefinition detail() {
-		return Detail.TYPE.as(
+		return Detail.TYPE.as()
+						.attributes(
 										Detail.ID.as()
 														.primaryKey(),
 										Detail.INT.as()
@@ -177,7 +179,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition department() {
-		return Department.TYPE.as(
+		return Department.TYPE.as()
+						.attributes(
 										Department.ID.as()
 														.primaryKey()
 														.caption(Department.ID.name())
@@ -223,7 +226,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition employee() {
-		return Employee.TYPE.as(
+		return Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
@@ -296,7 +300,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition enumEntity() {
-		return EnumEntity.TYPE.as(
+		return EnumEntity.TYPE.as()
+						.attributes(
 										EnumEntity.ID.as()
 														.primaryKey(),
 										EnumEntity.ENUM_TYPE.as()
@@ -314,7 +319,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition derived() {
-		return Derived.TYPE.as(
+		return Derived.TYPE.as()
+						.attributes(
 										Derived.INT1.as()
 														.column(),
 										Derived.INT2.as()
@@ -351,7 +357,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition job() {
-		return Job.TYPE.as(
+		return Job.TYPE.as()
+						.attributes(
 										Job.JOB.as()
 														.primaryKey()
 														.groupBy(true),
@@ -392,7 +399,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition dateTimeTest() {
-		return DateTimeTest.TYPE.as(
+		return DateTimeTest.TYPE.as()
+						.attributes(
 										DateTimeTest.ID.as()
 														.primaryKey(),
 										DateTimeTest.TIME_HH_MM.as()
@@ -424,7 +432,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	EntityDefinition nongen() {
-		return NonGeneratedPK.TYPE.as(
+		return NonGeneratedPK.TYPE.as()
+						.attributes(
 										NonGeneratedPK.ID.as()
 														.primaryKey(),
 										NonGeneratedPK.NAME.as()

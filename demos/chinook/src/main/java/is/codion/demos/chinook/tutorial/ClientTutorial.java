@@ -78,7 +78,8 @@ public final class ClientTutorial {
 
 		public Chinook() {
 			super(DOMAIN);
-			add(Artist.TYPE.as(
+			add(Artist.TYPE.as()
+							.attributes(
 											Artist.ID.as()
 															.primaryKey()
 															.generator(automatic("chinook.artist")),
@@ -98,7 +99,8 @@ public final class ClientTutorial {
 							.caption("Artists")
 							.build());
 
-			add(Album.TYPE.as(
+			add(Album.TYPE.as()
+							.attributes(
 											Album.ID.as()
 															.primaryKey()
 															.generator(automatic("chinook.artist")),

@@ -68,7 +68,8 @@ class ManualDomainModel {
 		}
 
 		EntityDefinition city() {
-			return City.TYPE.as(
+			return City.TYPE.as()
+							.attributes(
 											City.ID.as()
 															.primaryKey()
 															.generator(Generator.identity()),
@@ -81,7 +82,8 @@ class ManualDomainModel {
 		}
 
 		EntityDefinition customer() {
-			return Customer.TYPE.as(
+			return Customer.TYPE.as()
+							.attributes(
 											Customer.ID.as()
 															.primaryKey()
 															.generator(Generator.identity()),

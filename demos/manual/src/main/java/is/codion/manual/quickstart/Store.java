@@ -54,7 +54,8 @@ public class Store extends DomainModel {
 
 	// tag::customerImpl[]
 	EntityDefinition customer() {
-		return Customer.TYPE.as(
+		return Customer.TYPE.as()
+						.attributes(
 										Customer.ID.as()
 														.primaryKey()
 														.generator(identity()),
@@ -87,7 +88,8 @@ public class Store extends DomainModel {
 	}
 
 	EntityDefinition address() {
-		return Address.TYPE.as(
+		return Address.TYPE.as()
+						.attributes(
 										Address.ID.as()
 														.primaryKey()
 														.generator(automatic("store.address")),
@@ -123,7 +125,8 @@ public class Store extends DomainModel {
 	}
 
 	EntityDefinition customerAddress() {
-		return CustomerAddress.TYPE.as(
+		return CustomerAddress.TYPE.as()
+						.attributes(
 										CustomerAddress.ID.as()
 														.primaryKey()
 														.generator(automatic("store.customer_address")),

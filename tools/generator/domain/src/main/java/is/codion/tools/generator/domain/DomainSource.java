@@ -674,7 +674,8 @@ public final class DomainSource {
 		String interfaceName = interfaceName(definition, true);
 		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
 		StringBuilder builder = new StringBuilder()
-						.append(RETURN).append(interfaceName).append(".TYPE.as(").append("\n")
+						.append(RETURN).append(interfaceName).append(".TYPE.as()").append("\n")
+						.append(INDENT).append(".attributes(").append("\n")
 						.append(String.join("," + "\n",
 										createAttributes(definition.attributes().definitions(), definition, interfaceName, i18n)))
 						.append(")");

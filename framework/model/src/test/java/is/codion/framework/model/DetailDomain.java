@@ -46,7 +46,8 @@ public final class DetailDomain extends DomainModel {
 	}
 
 	EntityDefinition department() {
-		return Department.TYPE.as(
+		return Department.TYPE.as()
+						.attributes(
 										Department.ID.as()
 														.primaryKey()
 														.updatable(true)
@@ -81,7 +82,8 @@ public final class DetailDomain extends DomainModel {
 	}
 
 	EntityDefinition departmentExtra() {
-		return DepartmentExtra.TYPE.as(
+		return DepartmentExtra.TYPE.as()
+						.attributes(
 										DepartmentExtra.ID.as()
 														.primaryKey()
 														.generator(identity()),
@@ -96,7 +98,8 @@ public final class DetailDomain extends DomainModel {
 	}
 
 	EntityDefinition employee() {
-		return Employee.TYPE.as(
+		return Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq")),

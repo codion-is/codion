@@ -74,7 +74,8 @@ public class Store extends DomainModel {
 		// Use the Customer.TYPE constant to define a new entity,
 		// based on attributes defined using the Column constants.
 		// This entity definition is then added to the domain model.
-		add(Customer.TYPE.as(                   // returns EntityDefinition.Builder
+		add(Customer.TYPE.as()
+						.attributes(                        // returns EntityDefinition.Builder
 										Customer.ID.as()
 														.primaryKey()       // returns ColumnDefinition.Builder
 														.generator(identity()),
@@ -108,7 +109,8 @@ public class Store extends DomainModel {
 		// Use the Address.TYPE constant to define a new entity,
 		// based on attributes defined using the Column and ForeignKey constants.
 		// This entity definition is then added to the domain model.
-		add(Address.TYPE.as(
+		add(Address.TYPE.as()
+						.attributes(
 										Address.ID.as()
 														.primaryKey()
 														.generator(identity()),
@@ -176,7 +178,8 @@ public class Store extends DomainModel {
 						.build();
 
 		EntityDefinition address =
-						Address.TYPE.as(id, customerId, customerFk, street, city)
+						Address.TYPE.as()
+										.attributes(id, customerId, customerFk, street, city)
 										.formatter(formatter)
 										.caption("Address")
 										.build();

@@ -121,7 +121,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.as(
+		add(Department.TYPE.as()
+						.attributes(
 										Department.DEPTNO.as()
 														.primaryKey()
 														.caption(Department.DEPTNO.name())
@@ -180,7 +181,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.as(
+		add(Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
@@ -251,7 +253,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void departmentFk() {
-		add(DepartmentFk.TYPE.as(
+		add(DepartmentFk.TYPE.as()
+						.attributes(
 										DepartmentFk.DEPTNO.as()
 														.primaryKey()
 														.caption(Department.DEPTNO.name()),
@@ -284,7 +287,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employeeFk() {
-		add(EmployeeFk.TYPE.as(
+		add(EmployeeFk.TYPE.as()
+						.attributes(
 										EmployeeFk.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))
@@ -353,7 +357,8 @@ public final class TestDomain extends DomainModel {
 				return true;
 			}
 		};
-		add(UUIDTestDefault.TYPE.as(
+		add(UUIDTestDefault.TYPE.as()
+						.attributes(
 										UUIDTestDefault.ID.as()
 														.primaryKey()
 														.caption("Id")
@@ -378,7 +383,8 @@ public final class TestDomain extends DomainModel {
 				entity.set(column, UUID.randomUUID());
 			}
 		};
-		add(UUIDTestNoDefault.TYPE.as(
+		add(UUIDTestNoDefault.TYPE.as()
+						.attributes(
 										UUIDTestNoDefault.ID.as()
 														.primaryKey()
 														.generator(uuidGenerator)
@@ -405,7 +411,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void job() {
-		add(Job.TYPE.as(
+		add(Job.TYPE.as()
+						.attributes(
 										Job.JOB.as()
 														.primaryKey()
 														.groupBy(true),
@@ -442,7 +449,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void noPkEntity() {
-		add(NoPrimaryKey.TYPE.as(
+		add(NoPrimaryKey.TYPE.as()
+						.attributes(
 										NoPrimaryKey.COL_1.as()
 														.column(),
 										NoPrimaryKey.COL_2.as()
@@ -466,7 +474,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void empnoDeptno() {
-		add(EmpnoDeptno.TYPE.as(
+		add(EmpnoDeptno.TYPE.as()
+						.attributes(
 										EmpnoDeptno.EMPLOYEE_NAME.as()
 														.column(),
 										EmpnoDeptno.DEPTNO.as()
@@ -494,7 +503,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void query() {
-		add(Query.TYPE.as(
+		add(Query.TYPE.as()
+						.attributes(
 										Query.EMPNO.as()
 														.column(),
 										Query.ENAME.as()
@@ -517,7 +527,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryColumnsWhereClause() {
-		add(QueryColumnsWhereClause.TYPE.as(
+		add(QueryColumnsWhereClause.TYPE.as()
+						.attributes(
 										QueryColumnsWhereClause.EMPNO.as()
 														.column(),
 										QueryColumnsWhereClause.ENAME.as()
@@ -539,7 +550,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryFromClause() {
-		add(QueryFromClause.TYPE.as(
+		add(QueryFromClause.TYPE.as()
+						.attributes(
 										QueryFromClause.EMPNO.as()
 														.column(),
 										QueryFromClause.ENAME.as()
@@ -560,7 +572,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryFromWhereClause() {
-		add(QueryFromWhereClause.TYPE.as(
+		add(QueryFromWhereClause.TYPE.as()
+						.attributes(
 										QueryFromWhereClause.EMPNO.as()
 														.column(),
 										QueryFromWhereClause.ENAME.as()
@@ -582,7 +595,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void master() {
-		add(Master.TYPE.as(
+		add(Master.TYPE.as()
+						.attributes(
 										Master.ID.as()
 														.primaryKey()
 														.generator(identity()),
@@ -603,7 +617,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void detail() {
-		add(Detail.TYPE.as(
+		add(Detail.TYPE.as()
+						.attributes(
 										Detail.ID.as()
 														.primaryKey()
 														.generator(identity()),
@@ -626,7 +641,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void masterFk() {
-		add(MasterFk.TYPE.as(
+		add(MasterFk.TYPE.as()
+						.attributes(
 										MasterFk.ID.as()
 														.primaryKey(),
 										MasterFk.NAME.as()
@@ -644,7 +660,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void detailFk() {
-		add(DetailFk.TYPE.as(
+		add(DetailFk.TYPE.as()
+						.attributes(
 										DetailFk.ID.as()
 														.primaryKey(),
 										DetailFk.MASTER_NAME.as()
@@ -662,7 +679,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employeeNonOpt() {
-		add(EmployeeNonOpt.TYPE.as(
+		add(EmployeeNonOpt.TYPE.as()
+						.attributes(
 										EmployeeNonOpt.ID.as()
 														.primaryKey(),
 										EmployeeNonOpt.NAME.as()
@@ -704,7 +722,8 @@ public final class TestDomain extends DomainModel {
 				return value;
 			}
 		}
-		add(NullConverter.TYPE.as(
+		add(NullConverter.TYPE.as()
+						.attributes(
 										NullConverter.ID.as()
 														.primaryKey(),
 										NullConverter.NAME.as()
@@ -724,7 +743,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void generatorTestWithPk() {
-		add(GeneratorTestWithPk.TYPE.as(
+		add(GeneratorTestWithPk.TYPE.as()
+						.attributes(
 										GeneratorTestWithPk.ID.as()
 														.primaryKey(0)
 														.generator(identity()),
@@ -755,7 +775,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void generatorTestWithoutPk() {
-		add(GeneratorTestWithoutPk.TYPE.as(
+		add(GeneratorTestWithoutPk.TYPE.as()
+						.attributes(
 										GeneratorTestWithoutPk.ID.as()
 														.column()
 														.generator(identity()),
@@ -786,7 +807,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void generatorNonPk() {
-		add(GeneratorNonPk.TYPE.as(
+		add(GeneratorNonPk.TYPE.as()
+						.attributes(
 										GeneratorNonPk.ID.as()
 														.primaryKey(),
 										GeneratorNonPk.GENERATED_COL.as()
@@ -805,7 +827,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void noPkIdentical() {
-		add(NoPkIdentical.TYPE.as(
+		add(NoPkIdentical.TYPE.as()
+						.attributes(
 										NoPkIdentical.DATA.as()
 														.column()
 														.maximumLength(10))
@@ -822,7 +845,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void mixedGenerated() {
-		add(MixedGenerated.TYPE.as(
+		add(MixedGenerated.TYPE.as()
+						.attributes(
 										MixedGenerated.ID.as()
 														.primaryKey(0)
 														.generator(identity()),
@@ -846,7 +870,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void partialGeneratedPk() {
-		add(PartialGeneratedPk.TYPE.as(
+		add(PartialGeneratedPk.TYPE.as()
+						.attributes(
 										PartialGeneratedPk.ID.as()
 														.primaryKey(0)
 														.generator(identity()),
@@ -867,7 +892,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryWithCte() {
-		add(QueryWithCte.TYPE.as(
+		add(QueryWithCte.TYPE.as()
+						.attributes(
 										QueryWithCte.EMPNO.as()
 														.column(),
 										QueryWithCte.ENAME.as()
@@ -893,7 +919,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryWithRecursiveCte() {
-		add(QueryWithRecursiveCte.TYPE.as(
+		add(QueryWithRecursiveCte.TYPE.as()
+						.attributes(
 										QueryWithRecursiveCte.EMPNO.as()
 														.column(),
 										QueryWithRecursiveCte.ENAME.as()
@@ -928,7 +955,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void queryWithMultipleCtes() {
-		add(QueryWithMultipleCtes.TYPE.as(
+		add(QueryWithMultipleCtes.TYPE.as()
+						.attributes(
 										QueryWithMultipleCtes.EMPNO.as()
 														.column(),
 										QueryWithMultipleCtes.ENAME.as()

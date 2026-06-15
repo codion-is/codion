@@ -62,7 +62,8 @@ public final class WorldImpl extends DomainModel {
 
 	// tag::defineCity[]
 	EntityDefinition city() {
-		return City.TYPE.as(
+		return City.TYPE.as()
+						.attributes(
 										City.ID.as()
 														.primaryKey()
 														// tag::sequence[]
@@ -112,7 +113,8 @@ public final class WorldImpl extends DomainModel {
 	// end::defineCity[]
 
 	EntityDefinition country() {
-		return Country.TYPE.as(
+		return Country.TYPE.as()
+						.attributes(
 										// tag::primaryKey[]
 										Country.CODE.as()
 														.primaryKey()
@@ -236,7 +238,8 @@ public final class WorldImpl extends DomainModel {
 	}
 
 	EntityDefinition countryLanguage() {
-		return CountryLanguage.TYPE.as(
+		return CountryLanguage.TYPE.as()
+						.attributes(
 										// tag::compositePrimaryKey[]
 										CountryLanguage.COUNTRY_CODE.as()
 														.primaryKey(0)
@@ -280,7 +283,8 @@ public final class WorldImpl extends DomainModel {
 	}
 
 	EntityDefinition lookup() {
-		return Lookup.TYPE.as(
+		return Lookup.TYPE.as()
+						.attributes(
 										Lookup.COUNTRY_CODE.as()
 														.primaryKey(0)
 														.caption("Country code"),
@@ -364,7 +368,8 @@ public final class WorldImpl extends DomainModel {
 
 	// tag::groupBy[]
 	EntityDefinition continent() {
-		return Continent.TYPE.as(
+		return Continent.TYPE.as()
+						.attributes(
 										Continent.NAME.as()
 														.column()
 														.caption("Continent")

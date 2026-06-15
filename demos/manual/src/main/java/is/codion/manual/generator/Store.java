@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static java.util.Collections.emptyList;
 
 public final class Store extends DomainModel {
 	public static final DomainType DOMAIN = domainType(Store.class);
@@ -51,10 +52,10 @@ public final class Store extends DomainModel {
 	}
 
 	static EntityDefinition customer() {
-		return Customer.TYPE.as(/* ... */).build();
+		return Customer.TYPE.as().attributes(emptyList()).build();
 	}
 
 	static EntityDefinition order() {
-		return Order.TYPE.as(/* ... */).build();
+		return Order.TYPE.as().attributes(emptyList()).build();
 	}
 }

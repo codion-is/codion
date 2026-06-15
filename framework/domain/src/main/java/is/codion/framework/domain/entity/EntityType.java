@@ -21,7 +21,6 @@ package is.codion.framework.domain.entity;
 import is.codion.common.utilities.TypeReference;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
@@ -84,7 +83,7 @@ import static java.util.Objects.requireNonNull;
  *     }
  * }
  *}
- * @see #as(AttributeDefinition.Builder...)
+ * @see #as()
  * @see DomainType#entityType(String)
  */
 public sealed interface EntityType permits DefaultEntityType {
@@ -105,52 +104,9 @@ public sealed interface EntityType permits DefaultEntityType {
 	Optional<String> resourceBundleName();
 
 	/**
-	 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
-	 * @param definitionBuilders builders for the attribute definitions comprising the entity
-	 * @return a {@link EntityDefinition.Builder} instance
-	 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
-	 * @throws IllegalArgumentException in case of a entityType mismatch
+	 * @return an {@link EntityDefinition.Builder.AttributesStep}
 	 */
-	EntityDefinition.Builder as(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders);
-
-	/**
-	 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
-	 * {@snippet :
-	 * EntityDefinition definition = Customer.TYPE.as(
-	 *         Customer.ID.as()
-	 *             .primaryKey(),
-	 *         Customer.NAME.as()
-	 *             .column()
-	 *             .caption("Customer Name")
-	 *             .nullable(false)
-	 *             .maximumLength(100),
-	 *         Customer.EMAIL.as()
-	 *             .column()
-	 *             .caption("Email Address")
-	 *             .maximumLength(255),
-	 *         Customer.BIRTH_DATE.as()
-	 *             .column()
-	 *             .caption("Date of Birth")
-	 *             .nullable(true),
-	 *         Customer.ACTIVE.as()
-	 *             .column()
-	 *             .caption("Active")
-	 *             .nullable(false)
-	 *             .defaultValue(true))
-	 *     .table("customer")
-	 *     .caption("Customer")
-	 *     .description("Customer information")
-	 *     .orderBy(ascending(Customer.NAME))
-	 *     .formatter(customer ->
-	 *         customer.get(Customer.NAME) + " (" + customer.get(Customer.EMAIL) + ")")
-	 *     .build();
-	 *}
-	 * @param definitionBuilders builders for the attribute definitions comprising the entity
-	 * @return a {@link EntityDefinition.Builder} instance
-	 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
-	 * @throws IllegalArgumentException in case of a entityType mismatch
-	 */
-	EntityDefinition.Builder as(AttributeDefinition.Builder<?, ?>... definitionBuilders);
+	EntityDefinition.Builder.AttributesStep as();
 
 	/**
 	 * Creates a new {@link Attribute}, associated with this EntityType.

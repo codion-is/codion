@@ -21,7 +21,6 @@ package is.codion.framework.domain.entity;
 import is.codion.common.utilities.TypeReference;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
@@ -36,7 +35,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,7 +45,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityType implements EntityType, Serializable {
 
@@ -88,15 +85,8 @@ final class DefaultEntityType implements EntityType, Serializable {
 	}
 
 	@Override
-	public EntityDefinition.Builder as(AttributeDefinition.Builder<?, ?>... definitionBuilders) {
-		return as(Arrays.asList(requireNonNull(definitionBuilders)));
-	}
-
-	@Override
-	public EntityDefinition.Builder as(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders) {
-		return new DefaultEntityDefinition.DefaultBuilder(this, requireNonNull(definitionBuilders).stream()
-						.map(AttributeDefinition.Builder::build)
-						.collect(toList()));
+	public EntityDefinition.Builder.AttributesStep as() {
+		return new DefaultEntityDefinition.DefaultAttributesStep(this);
 	}
 
 	@Override

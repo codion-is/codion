@@ -56,7 +56,8 @@ public class Composition {
 		}
 
 		EntityDefinition product() {
-			return Product.TYPE.as(
+			return Product.TYPE.as()
+							.attributes(
 											Product.ID.as()
 															.primaryKey(),
 											Product.NAME.as()
@@ -97,7 +98,8 @@ public class Composition {
 		}
 
 		EntityDefinition customer() {
-			return Customer.TYPE.as(
+			return Customer.TYPE.as()
+							.attributes(
 											Customer.ID.as()
 															.primaryKey(),
 											Customer.NAME.as()
@@ -106,7 +108,8 @@ public class Composition {
 		}
 
 		EntityDefinition order() {
-			return Order.TYPE.as(
+			return Order.TYPE.as()
+							.attributes(
 											Order.ID.as()
 															.primaryKey(),
 											Order.CUSTOMER_ID.as()
@@ -141,7 +144,8 @@ public class Composition {
 		}
 
 		EntityDefinition employee() {
-			return Employee.TYPE.as(
+			return Employee.TYPE.as()
+							.attributes(
 											Employee.ID.as()
 															.primaryKey(),
 											Employee.NAME.as()

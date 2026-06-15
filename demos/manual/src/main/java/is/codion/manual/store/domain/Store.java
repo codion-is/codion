@@ -88,7 +88,8 @@ public final class Store extends DomainModel {
 
 	private EntityDefinition customer() {
 		// tag::customer[]
-		return Customer.TYPE.as(
+		return Customer.TYPE.as()
+						.attributes(
 										Customer.ID.as()
 														.primaryKey()
 														.generator(new UUIDGenerator()),
@@ -121,7 +122,8 @@ public final class Store extends DomainModel {
 
 	private EntityDefinition address() {
 		// tag::address[]
-		return Address.TYPE.as(
+		return Address.TYPE.as()
+						.attributes(
 										Address.ID.as()
 														.primaryKey()
 														.generator(identity()),
@@ -154,7 +156,8 @@ public final class Store extends DomainModel {
 
 	private EntityDefinition customerAddress() {
 		// tag::customerAddress[]
-		return CustomerAddress.TYPE.as(
+		return CustomerAddress.TYPE.as()
+						.attributes(
 										CustomerAddress.ID.as()
 														.primaryKey()
 														.generator(identity()),

@@ -102,7 +102,8 @@ final class MigrationDomain extends DomainModel {
 
 	MigrationDomain() {
 		super(DOMAIN);
-		add(SchemaMigration.TYPE.as(
+		add(SchemaMigration.TYPE.as()
+						.attributes(
 										SchemaMigration.VERSION.as()
 														.primaryKey(),
 										SchemaMigration.DESCRIPTION.as()

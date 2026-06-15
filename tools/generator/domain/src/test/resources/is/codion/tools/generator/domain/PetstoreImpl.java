@@ -23,7 +23,8 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition address() {
-		return Address.TYPE.as(
+		return Address.TYPE.as()
+			.attributes(
 				Address.ADDRESS_ID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -61,7 +62,8 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition category() {
-		return Category.TYPE.as(
+		return Category.TYPE.as()
+			.attributes(
 				Category.CATEGORY_ID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -80,7 +82,8 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition contactInfo() {
-		return ContactInfo.TYPE.as(
+		return ContactInfo.TYPE.as()
+			.attributes(
 				ContactInfo.CONTACT_INFO_ID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -100,7 +103,8 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition itemTagsView() {
-		return ItemTagsView.TYPE.as(
+		return ItemTagsView.TYPE.as()
+			.attributes(
 				ItemTagsView.NAME.as()
 					.column(),
 				ItemTagsView.TAG.as()
@@ -110,7 +114,8 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition tag() {
-		return Tag.TYPE.as(
+		return Tag.TYPE.as()
+			.attributes(
 				Tag.TAG_ID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -122,7 +127,8 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition product() {
-		return Product.TYPE.as(
+		return Product.TYPE.as()
+			.attributes(
 				Product.PRODUCT_ID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -154,7 +160,8 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition item() {
-		return Item.TYPE.as(
+		return Item.TYPE.as()
+			.attributes(
 				Item.ITEM_ID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -211,7 +218,8 @@ public final class PetstoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition tagItem() {
-		return TagItem.TYPE.as(
+		return TagItem.TYPE.as()
+			.attributes(
 				TagItem.TAG_ID.as()
 					.primaryKey(0),
 				TagItem.TAG_FK.as()

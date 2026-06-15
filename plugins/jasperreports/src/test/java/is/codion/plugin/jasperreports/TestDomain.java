@@ -51,7 +51,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void department() {
-		add(Department.TYPE.as(
+		add(Department.TYPE.as()
+						.attributes(
 										Department.ID.as()
 														.primaryKey()
 														.caption(Department.ID.name())
@@ -95,7 +96,8 @@ public final class TestDomain extends DomainModel {
 	}
 
 	void employee() {
-		add(Employee.TYPE.as(
+		add(Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))

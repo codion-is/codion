@@ -97,7 +97,8 @@ public final class EntitiesTutorial {
 											.maximumLength(120);
 
 			// define an entity based on the table 'chinook.artist', with the above columns
-			EntityDefinition artist = Artist.TYPE.as(artistId, artistName)
+			EntityDefinition artist = Artist.TYPE.as()
+							.attributes(artistId, artistName)
 							.formatter(Artist.NAME)
 							.smallDataset(true)
 							.caption("Artist")
@@ -130,7 +131,8 @@ public final class EntitiesTutorial {
 											.caption("Artist");
 
 			// define an entity based on the table 'chinook.album', with the above columns and foreign key
-			EntityDefinition album = Album.TYPE.as(albumId, albumTitle, albumArtistId, albumArtist)
+			EntityDefinition album = Album.TYPE.as()
+							.attributes(albumId, albumTitle, albumArtistId, albumArtist)
 							.formatter(EntityFormatter.builder()
 											.value(Album.ARTIST_FK)
 											.text(" - ")

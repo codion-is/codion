@@ -56,7 +56,8 @@ public final class TestDomainExtended extends DomainModel {
 	}
 
 	void extended() {
-		add(T_EXTENDED.as(
+		add(T_EXTENDED.as()
+						.attributes(
 										EXTENDED_ID.as().primaryKey(),
 										EXTENDED_NAME.as().column(),
 										EXTENDED_DEPT_ID.as().column(),
@@ -101,7 +102,8 @@ public final class TestDomainExtended extends DomainModel {
 		}
 
 		void extendedSecond() {
-			add(T_SECOND_EXTENDED.as(
+			add(T_SECOND_EXTENDED.as()
+							.attributes(
 											EXTENDED_ID.as().primaryKey(),
 											EXTENDED_NAME.as().column())
 							.build());
@@ -123,7 +125,8 @@ public final class TestDomainExtended extends DomainModel {
 		}
 
 		void extendedThird() {
-			add(T_THIRD_EXTENDED.as(
+			add(T_THIRD_EXTENDED.as()
+							.attributes(
 											EXTENDED_ID.as().primaryKey(),
 											EXTENDED_NAME.as().column())
 							.build());

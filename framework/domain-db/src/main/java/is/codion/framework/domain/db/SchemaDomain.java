@@ -137,7 +137,7 @@ public final class SchemaDomain extends DomainModel {
 	private void defineEntity(MetaDataTable table, EntityType entityType, String captionName, boolean view) {
 		List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders = defineAttributes(table, entityType, new ArrayList<>(table.foreignKeys()));
 		if (!attributeDefinitionBuilders.isEmpty()) {
-			EntityDefinition.Builder entityDefinitionBuilder = entityType.as(attributeDefinitionBuilders.toArray(new AttributeDefinition.Builder[0]));
+			EntityDefinition.Builder entityDefinitionBuilder = entityType.as().attributes(attributeDefinitionBuilders);
 			entityDefinitionBuilder.caption(caption(captionName));
 			if (!nullOrEmpty(table.comment())) {
 				entityDefinitionBuilder.description(table.comment());

@@ -44,6 +44,7 @@ import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.automatic;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {
@@ -60,7 +61,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												id.as()
 																.primaryKey(),
 												name.as()
@@ -153,6 +155,7 @@ public class DefaultEntityDefinitionTest {
 				super(DOMAIN_TYPE);
 				EntityType entityType = DOMAIN_TYPE.entityType("entityWithoutAttributes");
 				add(entityType.as()
+								.attributes(emptyList())
 								.table("tableName")
 								.build());
 			}
@@ -166,7 +169,8 @@ public class DefaultEntityDefinitionTest {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				EntityType entityType = DOMAIN_TYPE.entityType("duplicateAttributes");
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												entityType.integerColumn("id").as().primaryKey(),
 												entityType.stringColumn("name").as().column(),
 												entityType.integerColumn("id").as().column())
@@ -179,7 +183,8 @@ public class DefaultEntityDefinitionTest {
 			public TestDomain2() {
 				super(DOMAIN_TYPE);
 				EntityType entityType = DOMAIN_TYPE.entityType("duplicateAttributes");
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												entityType.integerColumn("id").as().primaryKey(),
 												entityType.stringColumn("name").as().column(),
 												entityType.integerAttribute("id").as().attribute())
@@ -198,7 +203,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												entityType.integerColumn("id").as().primaryKey(),
 												name.as().column(),
 												info.as().column(),
@@ -227,7 +233,8 @@ public class DefaultEntityDefinitionTest {
 		Column<Integer> name = entityType.integerColumn("name");
 		Column<String> info = entityType.stringColumn("info");
 		Attribute<String> derived = entityType.stringAttribute("derived");
-		assertThrows(IllegalArgumentException.class, () -> entityType.as(
+		assertThrows(IllegalArgumentException.class, () -> entityType.as()
+						.attributes(
 										entityType.integerColumn("id").as().primaryKey(),
 										//name.as().column(), <- the problem
 										info.as().column(),
@@ -240,7 +247,8 @@ public class DefaultEntityDefinitionTest {
 
 	@Test
 	void invalidForeignKey() {
-		assertThrows(IllegalArgumentException.class, () -> Employee.TYPE.as(
+		assertThrows(IllegalArgumentException.class, () -> Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey(),
 //										Employee.DEPARTMENT_NO.as() <- the problem
@@ -253,7 +261,8 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void invalidDenormalizedAttribute() {
 		Attribute<String> denormalized = Employee.TYPE.stringAttribute("denormalized");
-		assertThrows(IllegalArgumentException.class, () -> Employee.TYPE.as(
+		assertThrows(IllegalArgumentException.class, () -> Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey(),
 										Employee.DEPARTMENT_NO.as()
@@ -273,7 +282,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												entityType.integerColumn("p0").as().primaryKey().aggregate(true),
 												entityType.integerColumn("p1").as().column().groupBy(true),
 												entityType.integerColumn("p2").as().column().groupBy(true))
@@ -301,7 +311,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(entityType.integerColumn("p0").as().primaryKey())
+				add(entityType.as()
+								.attributes(entityType.integerColumn("p0").as().primaryKey())
 								.selectQuery(EntitySelectQuery.builder()
 												.having(havingClause)
 												.build())
@@ -334,7 +345,8 @@ public class DefaultEntityDefinitionTest {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				validateForeignKeys(false);
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												integerColumn.as().primaryKey(),
 												foreignKey.as()
 																.foreignKey()
@@ -353,7 +365,8 @@ public class DefaultEntityDefinitionTest {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				Column<Integer> integerColumn = entityType.integerColumn("col");
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												entityType.integerColumn("pk").as().primaryKey(),
 												integerColumn.as().column(),
 												integerColumn.as().column())
@@ -373,7 +386,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												pk.as().primaryKey(),
 												column1.as().column(),
 												column2.as().column(),
@@ -398,7 +412,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(attribute.as().primaryKey()).build());
+				add(entityType.as()
+								.attributes(attribute.as().primaryKey()).build());
 			}
 		}
 		Entities entities = new TestDomain().entities();
@@ -414,7 +429,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(entityType.integerColumn("attribute").as().primaryKey())
+				add(entityType.as()
+								.attributes(entityType.integerColumn("attribute").as().primaryKey())
 								.formatter((Function<Entity, String>) null)
 								.build());
 			}
@@ -428,7 +444,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(entityType.integerColumn("attribute").as().primaryKey())
+				add(entityType.as()
+								.attributes(entityType.integerColumn("attribute").as().primaryKey())
 								.formatter(entity -> "test")
 								.build());
 			}
@@ -445,7 +462,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(entityType.integerColumn("attribute").as()
+				add(entityType.as()
+								.attributes(entityType.integerColumn("attribute").as()
 												.primaryKey()
 												.generator(null))
 								.build());
@@ -461,7 +479,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(idColumn.as()
+				add(entityType.as()
+								.attributes(idColumn.as()
 												.primaryKey().generator(automatic("table")))
 								.build());
 			}
@@ -493,7 +512,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.as(entityType.integerColumn("attribute").as().primaryKey())
+				add(entityType.as()
+								.attributes(entityType.integerColumn("attribute").as().primaryKey())
 								.captionResourceKey("test")
 								.descriptionResourceKey("test.description")
 								.build());
@@ -522,7 +542,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType1.as(entityType2.integerColumn("attribute").as().primaryKey()).build());
+				add(entityType1.as()
+								.attributes(entityType2.integerColumn("attribute").as().primaryKey()).build());
 			}
 		}
 		assertThrows(IllegalArgumentException.class, () -> new TestDomain());
@@ -530,7 +551,8 @@ public class DefaultEntityDefinitionTest {
 		class TestDomain2 extends DomainModel {
 			public TestDomain2() {
 				super(DOMAIN_TYPE);
-				add(entityType1.as(
+				add(entityType1.as()
+								.attributes(
 												entityType1.integerColumn("attribute").as().primaryKey(),
 												entityType2.integerColumn("attribute").as().column())
 								.build());

@@ -58,7 +58,8 @@ public final class CustomSelectQueries {
 		StoreDomain() {
 			super(DOMAIN);
 			// add(Album.TYPE.as(....
-			add(Track.TYPE.as(
+			add(Track.TYPE.as()
+							.attributes(
 											Track.ID.as()
 															.primaryKey(),
 											Track.NAME.as()
@@ -104,7 +105,8 @@ public final class CustomSelectQueries {
 	static class AvailableTracksDomain extends DomainModel {
 		AvailableTracksDomain() {
 			super(DOMAIN);
-			add(AvailableTrack.TYPE.as(
+			add(AvailableTrack.TYPE.as()
+							.attributes(
 											AvailableTrack.ID.as()
 															.primaryKey(),
 											AvailableTrack.TITLE.as()

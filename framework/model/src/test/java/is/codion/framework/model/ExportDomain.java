@@ -51,7 +51,8 @@ public final class ExportDomain extends DomainModel {
 	}
 
 	EntityDefinition department() {
-		return Department.TYPE.as(
+		return Department.TYPE.as()
+						.attributes(
 										Department.ID.as()
 														.primaryKey()
 														.caption("Id")
@@ -95,7 +96,8 @@ public final class ExportDomain extends DomainModel {
 	}
 
 	EntityDefinition employee() {
-		return Employee.TYPE.as(
+		return Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq"))

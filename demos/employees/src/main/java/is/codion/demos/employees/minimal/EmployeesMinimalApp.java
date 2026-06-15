@@ -95,7 +95,8 @@ public final class EmployeesMinimalApp {
 			/*
 			 * We then define the entity based on the EMPLOYEES.DEPARTMENT table
 			 */
-			add(Department.TYPE.as(
+			add(Department.TYPE.as()
+							.attributes(
 											Department.DEPARTMENT_NO.as()
 															.primaryKey(),
 											Department.DEPARTMENT_NO.as()
@@ -116,7 +117,8 @@ public final class EmployeesMinimalApp {
 			 * note the foreign keys, referencing the
 			 * department as well as the manager
 			 */
-			add(Employee.TYPE.as(
+			add(Employee.TYPE.as()
+							.attributes(
 											Employee.ID.as()
 															.primaryKey()
 															.generator(Generator.sequence("employees.emp_seq")),

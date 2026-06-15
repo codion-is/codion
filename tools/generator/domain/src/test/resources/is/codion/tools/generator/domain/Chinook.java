@@ -60,7 +60,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition artist() {
-		return Artist.TYPE.as(
+		return Artist.TYPE.as()
+			.attributes(
 				Artist.ARTISTID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -139,7 +140,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition employee() {
-		return Employee.TYPE.as(
+		return Employee.TYPE.as()
+			.attributes(
 				Employee.EMPLOYEEID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -228,7 +230,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition genre() {
-		return Genre.TYPE.as(
+		return Genre.TYPE.as()
+			.attributes(
 				Genre.GENREID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -264,7 +267,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition mediatype() {
-		return Mediatype.TYPE.as(
+		return Mediatype.TYPE.as()
+			.attributes(
 				Mediatype.MEDIATYPEID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -300,7 +304,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition playlist() {
-		return Playlist.TYPE.as(
+		return Playlist.TYPE.as()
+			.attributes(
 				Playlist.PLAYLISTID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -339,7 +344,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition users() {
-		return Users.TYPE.as(
+		return Users.TYPE.as()
+			.attributes(
 				Users.USERID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -390,7 +396,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition album() {
-		return Album.TYPE.as(
+		return Album.TYPE.as()
+			.attributes(
 				Album.ALBUMID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -475,7 +482,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition customer() {
-		return Customer.TYPE.as(
+		return Customer.TYPE.as()
+			.attributes(
 				Customer.CUSTOMERID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -583,7 +591,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition invoice() {
-		return Invoice.TYPE.as(
+		return Invoice.TYPE.as()
+			.attributes(
 				Invoice.INVOICEID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -678,7 +687,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition track() {
-		return Track.TYPE.as(
+		return Track.TYPE.as()
+			.attributes(
 				Track.TRACKID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -763,7 +773,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition invoiceline() {
-		return Invoiceline.TYPE.as(
+		return Invoiceline.TYPE.as()
+			.attributes(
 				Invoiceline.INVOICELINEID.as()
 					.primaryKey()
 					.generator(identity()),
@@ -820,7 +831,8 @@ public final class Chinook extends DomainModel {
 	}
 
 	static EntityDefinition playlisttrack() {
-		return Playlisttrack.TYPE.as(
+		return Playlisttrack.TYPE.as()
+			.attributes(
 				Playlisttrack.PLAYLISTTRACKID.as()
 					.primaryKey()
 					.generator(identity()),

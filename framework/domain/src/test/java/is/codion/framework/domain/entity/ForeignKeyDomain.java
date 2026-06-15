@@ -42,7 +42,8 @@ class ForeignKeyDomain extends DomainModel {
 	}
 
 	EntityDefinition species() {
-		return Species.TYPE.as(
+		return Species.TYPE.as()
+						.attributes(
 										Species.NO.as()
 														.primaryKey()
 														.caption("Number"),
@@ -61,7 +62,8 @@ class ForeignKeyDomain extends DomainModel {
 	}
 
 	EntityDefinition maturity() {
-		return Maturity.TYPE.as(
+		return Maturity.TYPE.as()
+						.attributes(
 										Maturity.NO.as()
 														.primaryKey(0),
 										Maturity.SPECIES_NO.as()
@@ -79,7 +81,8 @@ class ForeignKeyDomain extends DomainModel {
 	}
 
 	EntityDefinition otolithCategory() {
-		return OtolithCategory.TYPE.as(
+		return OtolithCategory.TYPE.as()
+						.attributes(
 										OtolithCategory.NO.as()
 														.primaryKey(0),
 										OtolithCategory.SPECIES_NO.as()
@@ -105,7 +108,8 @@ class ForeignKeyDomain extends DomainModel {
 	}
 
 	EntityDefinition otolith() {
-		return Otolith.TYPE.as(
+		return Otolith.TYPE.as()
+						.attributes(
 										Otolith.STATION_ID.as()
 														.primaryKey(0),
 										Otolith.SPECIES_NO.as()

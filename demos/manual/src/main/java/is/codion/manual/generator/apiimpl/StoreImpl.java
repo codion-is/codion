@@ -33,7 +33,8 @@ public final class StoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition customer() {
-		return Customer.TYPE.as(
+		return Customer.TYPE.as()
+						.attributes(
 										Customer.ID.as()
 														.primaryKey()
 														.generator(identity()),
@@ -51,7 +52,8 @@ public final class StoreImpl extends DomainModel {
 	}
 
 	static EntityDefinition order() {
-		return Order.TYPE.as(
+		return Order.TYPE.as()
+						.attributes(
 										Order.ID.as()
 														.primaryKey()
 														.generator(identity()),

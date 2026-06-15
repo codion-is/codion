@@ -153,7 +153,8 @@ public final class ConditionFrameworkEnhancementTest {
 			super(DOMAIN_TYPE);
 
 			// Company entity
-			add(Company.TYPE.as(
+			add(Company.TYPE.as()
+							.attributes(
 											Company.ID.as().primaryKey(),
 											Company.NAME.as().column().nullable(false),
 											Company.COUNTRY.as().column().nullable(false),
@@ -167,7 +168,8 @@ public final class ConditionFrameworkEnhancementTest {
 							.build());
 
 			// Department entity
-			add(Department.TYPE.as(
+			add(Department.TYPE.as()
+							.attributes(
 											Department.ID.as().primaryKey(),
 											Department.COMPANY_ID.as().column().nullable(false),
 											Department.NAME.as().column().nullable(false),
@@ -180,7 +182,8 @@ public final class ConditionFrameworkEnhancementTest {
 							.build());
 
 			// Employee entity
-			add(Employee.TYPE.as(
+			add(Employee.TYPE.as()
+							.attributes(
 											Employee.ID.as().primaryKey(),
 											Employee.DEPARTMENT_ID.as().column().nullable(false),
 											Employee.MANAGER_ID.as().column(),
@@ -203,7 +206,8 @@ public final class ConditionFrameworkEnhancementTest {
 							.build());
 
 			// Project entity
-			add(Project.TYPE.as(
+			add(Project.TYPE.as()
+							.attributes(
 											Project.ID.as().primaryKey(),
 											Project.LEAD_ID.as().column(),
 											Project.NAME.as().column().nullable(false),
@@ -224,7 +228,8 @@ public final class ConditionFrameworkEnhancementTest {
 							.build());
 
 			// Assignment entity
-			add(Assignment.TYPE.as(
+			add(Assignment.TYPE.as()
+							.attributes(
 											Assignment.ID.as().primaryKey(),
 											Assignment.EMPLOYEE_ID.as().column().nullable(false),
 											Assignment.PROJECT_ID.as().column().nullable(false),

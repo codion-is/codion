@@ -67,7 +67,8 @@ public final class Examples {
 		}
 
 		EntityDefinition customer() {
-			return Customer.TYPE.as(
+			return Customer.TYPE.as()
+							.attributes(
 											Customer.ID.as()
 															.primaryKey()
 															.generator(identity()),

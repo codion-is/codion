@@ -53,6 +53,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
+import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNull;
@@ -788,6 +789,31 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			}
 
 			return definition;
+		}
+	}
+
+	static final class DefaultAttributesStep implements Builder.AttributesStep {
+
+		private final EntityType entityType;
+
+		DefaultAttributesStep(EntityType entityType) {
+			this.entityType = entityType;
+		}
+
+		@Override
+		public Builder attributes(AttributeDefinition.Builder<?, ?> definitionBuilder, AttributeDefinition.Builder<?, ?>... additional) {
+			List<AttributeDefinition.Builder<?, ?>> attributeDefinitions = new ArrayList<>(requireNonNull(additional).length + 1);
+			attributeDefinitions.add(definitionBuilder);
+			attributeDefinitions.addAll(asList(additional));
+
+			return attributes(attributeDefinitions);
+		}
+
+		@Override
+		public Builder attributes(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders) {
+			return new DefaultBuilder(entityType, requireNonNull(definitionBuilders).stream()
+							.map(AttributeDefinition.Builder::build)
+							.collect(toList()));
 		}
 	}
 

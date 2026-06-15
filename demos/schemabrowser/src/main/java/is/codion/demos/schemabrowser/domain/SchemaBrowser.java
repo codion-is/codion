@@ -66,10 +66,10 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition schema() {
-		return Schema.TYPE.as(
-										Schema.NAME.as()
-														.primaryKey()
-														.caption("Name"))
+		return Schema.TYPE.as()
+						.attributes(Schema.NAME.as()
+										.primaryKey()
+										.caption("Name"))
 						.table(bundle.getString("t_schema"))
 						.orderBy(ascending(Schema.NAME))
 						.readOnly(true)
@@ -88,7 +88,8 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition table() {
-		EntityDefinition.Builder tableBuilder = Table.TYPE.as(
+		EntityDefinition.Builder tableBuilder = Table.TYPE.as()
+						.attributes(
 										Table.SCHEMA.as()
 														.primaryKey(0),
 										Table.SCHEMA_FK.as()
@@ -134,7 +135,8 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition tableColumn() {
-		return TableColumn.TYPE.as(
+		return TableColumn.TYPE.as()
+						.attributes(
 										TableColumn.SCHEMA.as()
 														.primaryKey(0),
 										TableColumn.TABLE_NAME.as()
@@ -175,7 +177,8 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition constraint() {
-		return Constraint.TYPE.as(
+		return Constraint.TYPE.as()
+						.attributes(
 										Constraint.SCHEMA.as()
 														.primaryKey(0),
 										Constraint.TABLE_NAME.as()
@@ -218,7 +221,8 @@ public final class SchemaBrowser extends DomainModel {
 	}
 
 	EntityDefinition constraintColumn() {
-		return ConstraintColumn.TYPE.as(
+		return ConstraintColumn.TYPE.as()
+						.attributes(
 										ConstraintColumn.SCHEMA.as()
 														.primaryKey(0),
 										ConstraintColumn.TABLE_NAME.as()

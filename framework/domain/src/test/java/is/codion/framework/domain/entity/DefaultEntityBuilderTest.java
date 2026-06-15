@@ -74,7 +74,8 @@ public final class DefaultEntityBuilderTest {
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(domainType);
-				add(entityType.as(
+				add(entityType.as()
+								.attributes(
 												id.as()
 																.primaryKey(),
 												name.as()

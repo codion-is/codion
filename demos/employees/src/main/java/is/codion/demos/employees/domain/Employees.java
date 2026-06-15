@@ -108,7 +108,8 @@ public final class Employees extends DomainModel {
 	// tag::defineDepartment[]
 	EntityDefinition department() {
 		// Defining the entity Department.TYPE
-		return Department.TYPE.as(
+		return Department.TYPE.as()
+						.attributes(
 										Department.DEPARTMENT_NO.as()
 														.primaryKey()
 														.caption("No.")
@@ -134,7 +135,8 @@ public final class Employees extends DomainModel {
 	// tag::defineEmployee[]
 	EntityDefinition employee() {
 		// Defining the entity Employee.TYPE
-		return Employee.TYPE.as(
+		return Employee.TYPE.as()
+						.attributes(
 										Employee.ID.as()
 														.primaryKey()
 														.generator(sequence("employees.employee_seq")),

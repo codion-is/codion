@@ -39,7 +39,8 @@ public final class TestKeysDomain extends DomainModel {
 	}
 
 	public void testPrimaryKeyIndexes1() {
-		add(TestPrimaryKey.TYPE.as(
+		add(TestPrimaryKey.TYPE.as()
+						.attributes(
 										TestPrimaryKey.ID1.as().primaryKey(0),
 										TestPrimaryKey.ID2.as().primaryKey(1),
 										TestPrimaryKey.ID3.as().primaryKey(3))
@@ -47,7 +48,8 @@ public final class TestKeysDomain extends DomainModel {
 	}
 
 	public void testPrimaryKeyIndexes2() {
-		add(TestPrimaryKey.TYPE.as(
+		add(TestPrimaryKey.TYPE.as()
+						.attributes(
 										TestPrimaryKey.ID1.as().primaryKey(1),
 										TestPrimaryKey.ID2.as().primaryKey(1),
 										TestPrimaryKey.ID3.as().primaryKey(2))
@@ -55,13 +57,15 @@ public final class TestKeysDomain extends DomainModel {
 	}
 
 	public void testPrimaryKeyIndexes3() {
-		add(TestPrimaryKey.TYPE.as(
+		add(TestPrimaryKey.TYPE.as()
+						.attributes(
 										TestPrimaryKey.ID1.as().primaryKey(-1))
 						.build());
 	}
 
 	public void testPrimaryKeyIndexes4() {
-		add(TestPrimaryKey.TYPE.as(
+		add(TestPrimaryKey.TYPE.as()
+						.attributes(
 										TestPrimaryKey.ID1.as().primaryKey(10))
 						.build());
 	}
@@ -85,7 +89,8 @@ public final class TestKeysDomain extends DomainModel {
 	}
 
 	public void testForeignKeys() {
-		add(TestFkMaster.TYPE.as(
+		add(TestFkMaster.TYPE.as()
+						.attributes(
 										TestFkMaster.ID1.as()
 														.primaryKey()//,
 //									here's what we're testing for, a missing fk reference property
@@ -93,7 +98,8 @@ public final class TestKeysDomain extends DomainModel {
 //            	        		.primaryKey(1)
 						)
 						.build());
-		add(TestFkMaster.TYPE.as(
+		add(TestFkMaster.TYPE.as()
+						.attributes(
 										TestFkDetail.ID.as().primaryKey(),
 										TestFkDetail.MASTER_ID1.as().column(),
 										TestFkDetail.MASTER_ID2.as().column(),

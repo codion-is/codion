@@ -95,7 +95,8 @@ public final class NotesDemo {
 
 		private Notes() {
 			super(DOMAIN);
-			add(Note.TYPE.as(
+			add(Note.TYPE.as()
+							.attributes(
 											Note.ID.as()
 															.primaryKey()
 															.generator(Generator.identity()),

@@ -8,6 +8,7 @@ Codion Change Log
 - AbstractValueAttributeDefinition bug fixed, now sets false as the default value for non-nullable boolean attributes, when no default value is specified.
 - Attribute.Type renamed DataType.
 - AttributeDefinition.DEFAULT_FRACTION_DIGITS removed.
+- EntityDefinition.Builder.AttributeStep added.
 ### is.codion.framework.model
 - AbstractEntityEditor bug fixed, clear now sets null for all attributes, modified now works as expected.
 - AbstractEntityEditor.DefaultEditorTasks.SetEntity and ReplaceEntity refactored, no longer try to load details for a non-existing master.
