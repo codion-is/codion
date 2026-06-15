@@ -43,7 +43,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 	}
 
 	@Override
-	public Type<T> type() {
+	public DataType<T> type() {
 		return attribute.type();
 	}
 

@@ -114,7 +114,7 @@ public final class EntityComponents {
 		if (itemBased(attributeDefinition)) {
 			return (ComponentValueBuilder<C, T, B>) itemComboBox(attribute);
 		}
-		Attribute.Type<T> type = attribute.type();
+		Attribute.DataType<T> type = attribute.type();
 		if (type.isTemporal()) {
 			return (ComponentValueBuilder<C, T, B>) temporalField((Attribute<Temporal>) attribute);
 		}

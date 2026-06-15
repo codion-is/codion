@@ -49,7 +49,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 	}
 
 	@Override
-	public Type<Entity> type() {
+	public DataType<Entity> type() {
 		return attribute.type();
 	}
 

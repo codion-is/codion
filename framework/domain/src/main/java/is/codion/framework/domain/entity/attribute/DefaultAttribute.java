@@ -50,7 +50,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 	private static final long serialVersionUID = 1;
 
 	private final String name;
-	private final DefaultType<T> type;
+	private final DefaultDataType<T> type;
 	private final int hashCode;
 
 	DefaultAttribute(String name, Class<T> valueClass, EntityType entityType) {
@@ -58,7 +58,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 			throw new IllegalArgumentException("name must be a non-empty string");
 		}
 		this.name = name;
-		this.type = new DefaultType<>(requireNonNull(entityType), requireNonNull(valueClass));
+		this.type = new DefaultDataType<>(requireNonNull(entityType), requireNonNull(valueClass));
 		this.hashCode = Objects.hash(name, entityType);
 	}
 
@@ -68,7 +68,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 	}
 
 	@Override
-	public Type<T> type() {
+	public DataType<T> type() {
 		return type;
 	}
 
@@ -105,7 +105,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		return type.entityType.name() + "." + name;
 	}
 
-	final class DefaultType<T> implements Type<T>, Serializable {
+	final class DefaultDataType<T> implements DataType<T>, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -113,7 +113,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		private final EntityType entityType;
 		private final Class<T> valueClass;
 
-		private DefaultType(EntityType entityType, Class<T> valueClass) {
+		private DefaultDataType(EntityType entityType, Class<T> valueClass) {
 			this.entityType = entityType;
 			this.valueClass = valueClass;
 		}

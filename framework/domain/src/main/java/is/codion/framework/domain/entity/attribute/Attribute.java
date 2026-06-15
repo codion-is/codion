@@ -23,7 +23,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column.ColumnDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
-import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultType;
+import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultDataType;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DerivedBuilder;
 import is.codion.framework.domain.entity.attribute.ForeignKey.ForeignKeyDefiner;
@@ -129,7 +129,7 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 	/**
 	 * @return the attribute type
 	 */
-	Type<T> type();
+	DataType<T> type();
 
 	/**
 	 * @return the name of this attribute.
@@ -169,7 +169,7 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 	 * Defines the data-type of an Attribute
 	 * @param <T> the attribute data type
 	 */
-	sealed interface Type<T> permits DefaultType {
+	sealed interface DataType<T> permits DefaultDataType {
 
 		/**
 		 * @return the Class representing the attribute value

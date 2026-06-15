@@ -361,7 +361,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		return null;
 	}
 
-	private static <T> boolean containsTime(Attribute.Type<T> type) {
+	private static <T> boolean containsTime(Attribute.DataType<T> type) {
 		return type.isLocalTime() || type.isLocalDateTime() || type.isOffsetDateTime();
 	}
 
