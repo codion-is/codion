@@ -24,6 +24,7 @@ Codion Change Log
 - EditorInspector now displays the default value for attributes.
 - EditorInspector now displays foreign key reference columns.
 - EntityEditPanel, requesting modified attribute focus improved for detail editors.
+- EntityPanel.Config.focusCycleRoot() added along with FOCUS_CYCLE_ROOT configuration value.
 
 ## 0.18.75
 ### is.codion.common.reactive

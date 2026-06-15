@@ -333,11 +333,11 @@ public class EntityPanel extends JPanel {
 	 */
 	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel,
 										 Consumer<Config> config) {
-		setFocusCycleRoot(true);
 		this.entityModel = requireNonNull(entityModel);
 		this.editPanel = editPanel;
 		this.tablePanel = tablePanel;
 		this.configuration = configure(config);
+		setFocusCycleRoot(configuration.focusCycleRoot);
 		this.editControlPanel = createEditControlPanel();
 		this.defaultPanel = borderLayoutPanel()
 						.minimumSize(new Dimension(0, 0))
@@ -1475,6 +1475,17 @@ public class EntityPanel extends JPanel {
 		public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
 						booleanValue(EntityPanel.class.getName() + ".includeControls", true);
 
+		/**
+		 * Specifies whether entity panels should be focusCycleRoots by default.
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 * @see JComponent#setFocusCycleRoot(boolean)
+		 */
+		public static final PropertyValue<Boolean> FOCUS_CYCLE_ROOT =
+						booleanValue(EntityPanel.class.getName() + ".focusCycleRoot", true);
+
 		private final EntityPanel entityPanel;
 		private final ControlMap controlMap;
 		private final Set<PanelState> enabledEditStates;
@@ -1489,6 +1500,7 @@ public class EntityPanel extends JPanel {
 						CONTROL_TOOLBAR_CONSTRAINTS.getOrThrow() : CONTROL_PANEL_CONSTRAINTS.getOrThrow();
 		private boolean includeControls = INCLUDE_CONTROLS.getOrThrow();
 		private boolean keyboardNavigation = KEYBOARD_NAVIGATION.getOrThrow();
+		private boolean focusCycleRoot = FOCUS_CYCLE_ROOT.getOrThrow();
 		private WindowType windowType = WINDOW_TYPE.getOrThrow();
 		private PanelState initialEditState = EMBEDDED;
 		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.getOrThrow();
@@ -1518,6 +1530,7 @@ public class EntityPanel extends JPanel {
 			this.controlComponentConstraints = config.controlComponentConstraints;
 			this.includeControls = config.includeControls;
 			this.keyboardNavigation = config.keyboardNavigation;
+			this.focusCycleRoot = config.focusCycleRoot;
 			this.initialEditState = config.initialEditState;
 			this.caption = config.caption;
 			this.description = config.description;
@@ -1684,6 +1697,15 @@ public class EntityPanel extends JPanel {
 		 */
 		public Config keyboardNavigation(boolean keyboardNavigation) {
 			this.keyboardNavigation = keyboardNavigation;
+			return this;
+		}
+
+		/**
+		 * @param focusCycleRoot true if this panel should be a focusCycleRoot
+		 * @return this Config instance
+		 */
+		public Config focusCycleRoot(boolean focusCycleRoot) {
+			this.focusCycleRoot = focusCycleRoot;
 			return this;
 		}
 
