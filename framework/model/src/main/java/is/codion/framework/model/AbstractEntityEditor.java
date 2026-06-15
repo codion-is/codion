@@ -1382,7 +1382,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 			boolean masterExists = master.exists();
 			return editors.values().stream()
-							.map(detail -> new DetailEditorEntity(detail, masterExists ? detail.link.entity.detail(master, connection) : null))
+							.map(detail -> new DetailEditorEntity(detail, masterExists ? detail.link.entity.get(master, connection) : null))
 							.collect(toList());
 		}
 
@@ -1689,7 +1689,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
-		public @Nullable Entity detail(Entity master, EntityConnection connection) {
+		public @Nullable Entity get(Entity master, EntityConnection connection) {
 			List<Entity> entities = requireNonNull(connection).select(select.get(requireNonNull(master)));
 			if (entities.size() > 1) {
 				throw new IllegalStateException("Multiple detail rows found for master entity " + master +

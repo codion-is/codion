@@ -137,6 +137,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 	 * <p>Implementations must produce at most one entity; returning {@code null} signals "no detail row".
 	 * @see Builder.LoadStep#entity(DetailEntity)
 	 * @see ForeignKeyEditorLink.Builder#entity(DetailEntity)
+	 * @see Builder#clearEmpty(boolean)
 	 */
 	@FunctionalInterface
 	interface DetailEntity {
@@ -144,9 +145,9 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 		/**
 		 * @param master the master entity
 		 * @param connection the connection to use
-		 * @return the detail entity, or {@code null} if none is available
+		 * @return the detail entity, for the given master entity, or {@code null} if none is available
 		 */
-		@Nullable Entity detail(Entity master, EntityConnection connection);
+		@Nullable Entity get(Entity master, EntityConnection connection);
 	}
 
 	/**
