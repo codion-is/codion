@@ -128,19 +128,15 @@ public sealed interface AttributeDefinition<T>
 				permits AbstractAttributeDefinition, DerivedAttributeDefinition, ForeignKeyDefinition, ValueAttributeDefinition {
 
 	/**
-	 * The default maximum fraction digits for floating point numbers
-	 */
-	int DEFAULT_FRACTION_DIGITS = 10;
-
-	/**
 	 * Specifies the default maximum number of fraction digits for double property values<br>
 	 * Note that values are rounded when set.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 10
 	 * </ul>
+	 * @see #ROUNDING_MODE
 	 */
-	PropertyValue<Integer> FRACTION_DIGITS = integerValue("codion.domain.fractionDigits", DEFAULT_FRACTION_DIGITS);
+	PropertyValue<Integer> FRACTION_DIGITS = integerValue("codion.domain.fractionDigits", 10);
 
 	/**
 	 * Specifies the default rounding mode used for decimal property values
@@ -257,7 +253,7 @@ public sealed interface AttributeDefinition<T>
 	Comparator<T> comparator();
 
 	/**
-	 * The value of a derived attribute can not be set, as it's value is derived from other values
+	 * The value of a derived attribute can not be set, as its value is derived from other values
 	 * @return true if the value of this attribute is derived from one or more values
 	 */
 	boolean derived();
