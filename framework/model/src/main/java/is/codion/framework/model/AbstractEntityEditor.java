@@ -1302,10 +1302,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public void add(EditorLink editorLink) {
 			requireNonNull(editorLink);
-			DefaultEditorLink<R> link = (DefaultEditorLink<R>) editorLink;
+			DefaultEditorLink link = (DefaultEditorLink) editorLink;
 			ForeignKey foreignKey = null;
 			if (link instanceof ForeignKeyEditorLink) {
-				foreignKey = ((DefaultForeignKeyLink<R>) link).foreignKey();
+				foreignKey = ((DefaultForeignKeyLink) link).foreignKey();
 				if (!entityDefinition.type().equals(foreignKey.referencedType())) {
 					throw new IllegalArgumentException("Master editor entity type " + foreignKey.referencedType() +
 									" expected, got: " + entityDefinition.type());
@@ -1359,9 +1359,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public @Nullable ForeignKey foreignKey(String name) {
-			DefaultEditorLink<R> link = findByName(name).link;
+			DefaultEditorLink link = findByName(name).link;
 			if (link instanceof ForeignKeyEditorLink) {
-				return ((DefaultForeignKeyLink<R>) link).foreignKey();
+				return ((DefaultForeignKeyLink) link).foreignKey();
 			}
 
 			return null;
@@ -1399,7 +1399,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				throw new IllegalStateException("Multiple detail editors share the name " + name +
 								"; use get(ForeignKey) with one of: " + matches.stream()
 												.map(detail -> detail.link instanceof ForeignKeyEditorLink
-																? ((DefaultForeignKeyLink<R>) detail.link).foreignKey().toString()
+																? ((DefaultForeignKeyLink) detail.link).foreignKey().toString()
 																: "(non-FK link)")
 												.collect(toList()));
 			}
@@ -1464,9 +1464,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
-	static sealed class DefaultEditorLink<R extends EntityEditor<R>> implements EditorLink {
+	static sealed class DefaultEditorLink implements EditorLink {
 
-		private final R editor;
+		private final AbstractEntityEditor<?> editor;
 		private final String name;
 		private final String caption;
 		private final Predicate<Entity> present;
@@ -1474,7 +1474,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final BeforeInsert beforeInsert;
 		private final boolean clearEmpty;
 
-		private DefaultEditorLink(DefaultEditorLinkBuilder<R> builder) {
+		private DefaultEditorLink(DefaultEditorLinkBuilder builder) {
 			this.editor = builder.editor;
 			this.name = builder.name;
 			this.caption = builder.caption == null ? builder.name : builder.caption;
@@ -1498,12 +1498,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
-	static final class DefaultForeignKeyLink<R extends EntityEditor<R>>
-					extends DefaultEditorLink<R> implements ForeignKeyEditorLink {
+	static final class DefaultForeignKeyLink
+					extends DefaultEditorLink implements ForeignKeyEditorLink {
 
 		private final ForeignKey foreignKey;
 
-		private DefaultForeignKeyLink(DefaultEditorLinkBuilder<R> builder, ForeignKey foreignKey) {
+		private DefaultForeignKeyLink(DefaultEditorLinkBuilder builder, ForeignKey foreignKey) {
 			super(builder);
 			this.foreignKey = foreignKey;
 		}
@@ -1513,12 +1513,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
-	static class DefaultEditorLinkBuilder<R extends EntityEditor<R>>
-					implements EditorLink.Builder<R> {
+	static class DefaultEditorLinkBuilder
+					implements EditorLink.Builder {
 
 		static final EditorStep EDITOR = new DefaultEditorStep();
 
-		private final R editor;
+		private final AbstractEntityEditor<?> editor;
 
 		protected String name;
 		protected DetailEntity entity;
@@ -1527,26 +1527,26 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private BeforeInsert beforeInsert = (d, m, connection) -> {};
 		private boolean clearEmpty = false;
 
-		private DefaultEditorLinkBuilder(R editor, String name, DetailEntity entity) {
+		private DefaultEditorLinkBuilder(AbstractEntityEditor<?> editor, String name, DetailEntity entity) {
 			this.editor = editor;
 			this.name = name;
 			this.entity = entity;
 		}
 
 		@Override
-		public EditorLink.Builder<R> present(Predicate<Entity> present) {
+		public EditorLink.Builder present(Predicate<Entity> present) {
 			this.present = requireNonNull(present);
 			return this;
 		}
 
 		@Override
-		public EditorLink.Builder<R> beforeInsert(BeforeInsert beforeInsert) {
+		public EditorLink.Builder beforeInsert(BeforeInsert beforeInsert) {
 			this.beforeInsert = requireNonNull(beforeInsert);
 			return this;
 		}
 
 		@Override
-		public EditorLink.Builder<R> caption(String caption) {
+		public EditorLink.Builder caption(String caption) {
 			if (nullOrEmpty(caption)) {
 				throw new IllegalArgumentException("caption must be a non-empty string");
 			}
@@ -1555,90 +1555,89 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
-		public EditorLink.Builder<R> clearEmpty(boolean clearEmpty) {
+		public EditorLink.Builder clearEmpty(boolean clearEmpty) {
 			this.clearEmpty = clearEmpty;
 			return this;
 		}
 
 		@Override
 		public EditorLink build() {
-			return new DefaultEditorLink<>(this);
+			return new DefaultEditorLink(this);
 		}
 
 		static final class DefaultEditorStep implements EditorStep {
 
 			@Override
-			public <R extends EntityEditor<R>> ForeignKeyNameStep<R> editor(R editor) {
-				return new DefaultForeignKeyNameStep<>(requireNonNull(editor));
+			public ForeignKeyNameStep editor(EntityEditor<?> editor) {
+				return new DefaultForeignKeyNameStep((AbstractEntityEditor<?>) requireNonNull(editor));
 			}
 		}
 
-		private static final class DefaultForeignKeyNameStep<R extends EntityEditor<R>>
-						implements ForeignKeyNameStep<R> {
+		private static final class DefaultForeignKeyNameStep implements ForeignKeyNameStep {
 
-			private final R editor;
+			private final AbstractEntityEditor<?> editor;
 
-			private DefaultForeignKeyNameStep(R editor) {
+			private DefaultForeignKeyNameStep(AbstractEntityEditor<?> editor) {
 				this.editor = editor;
 			}
 
 			@Override
-			public ForeignKeyEditorLink.Builder<R> foreignKey(ForeignKey foreignKey) {
-				return new DefaultForeignKeyEditorLinkBuilder<>(editor, requireNonNull(foreignKey).name(),
+			public ForeignKeyEditorLink.Builder foreignKey(ForeignKey foreignKey) {
+				return new DefaultForeignKeyEditorLinkBuilder(editor, requireNonNull(foreignKey).name(),
 								foreignKey, new DefaultDetailEntity(foreignKey))
 								.beforeInsert(new ForeignKeyBeforeInsert(foreignKey));
 			}
 
 			@Override
-			public LoadStep<R> name(String name) {
+			public LoadStep name(String name) {
 				if (nullOrEmpty(name)) {
 					throw new IllegalArgumentException("Detail editor name can't be empty");
 				}
-				return new DefaultLoadStep<>(editor, name);
+				return new DefaultLoadStep(editor, name);
 			}
 		}
 
-		private static final class DefaultLoadStep<R extends EntityEditor<R>> implements LoadStep<R> {
+		private static final class DefaultLoadStep implements LoadStep {
 
-			private final R editor;
+			private final AbstractEntityEditor<?> editor;
 			private final String name;
 
-			private DefaultLoadStep(R editor, String name) {
+			private DefaultLoadStep(AbstractEntityEditor<?> editor, String name) {
 				this.editor = editor;
 				this.name = name;
 			}
 
 			@Override
-			public EditorLink.Builder<R> condition(DetailCondition condition) {
+			public EditorLink.Builder condition(DetailCondition condition) {
 				requireNonNull(condition);
 				return select(master -> where(condition.get(master)).build());
 			}
 
 			@Override
-			public EditorLink.Builder<R> select(DetailSelect select) {
+			public EditorLink.Builder select(DetailSelect select) {
 				requireNonNull(select);
-				return new DefaultEditorLinkBuilder<>(editor, name, new DefaultDetailEntity(select));
+				return new DefaultEditorLinkBuilder(editor, name, new DefaultDetailEntity(select));
 			}
 
 			@Override
-			public EditorLink.Builder<R> entity(DetailEntity entity) {
-				return new DefaultEditorLinkBuilder<>(editor, name, requireNonNull(entity));
+			public EditorLink.Builder entity(DetailEntity entity) {
+				return new DefaultEditorLinkBuilder(editor, name, requireNonNull(entity));
 			}
 		}
 	}
 
-	private static final class DefaultForeignKeyEditorLinkBuilder<R extends EntityEditor<R>>
-					extends DefaultEditorLinkBuilder<R> implements ForeignKeyEditorLink.Builder<R> {
+	private static final class DefaultForeignKeyEditorLinkBuilder
+					extends DefaultEditorLinkBuilder implements ForeignKeyEditorLink.Builder {
 
 		private final ForeignKey foreignKey;
 
-		private DefaultForeignKeyEditorLinkBuilder(R editor, String name, ForeignKey foreignKey, DetailEntity entity) {
+		private DefaultForeignKeyEditorLinkBuilder(AbstractEntityEditor<?> editor, String name, ForeignKey foreignKey, DetailEntity entity) {
 			super(editor, name, entity);
 			this.foreignKey = foreignKey;
 		}
 
 		@Override
-		public ForeignKeyEditorLink.Builder<R> name(String name) {
+		public ForeignKeyEditorLink.Builder name(String name) {
 			if (nullOrEmpty(name)) {
 				throw new IllegalArgumentException("Detail editor name can't be empty");
 			}
@@ -1647,50 +1646,50 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
-		public ForeignKeyEditorLink.Builder<R> condition(DetailCondition condition) {
+		public ForeignKeyEditorLink.Builder condition(DetailCondition condition) {
 			requireNonNull(condition);
 			return select(master -> where(condition.get(master)).build());
 		}
 
 		@Override
-		public ForeignKeyEditorLink.Builder<R> select(DetailSelect select) {
+		public ForeignKeyEditorLink.Builder select(DetailSelect select) {
 			requireNonNull(select);
 			return entity(new DefaultDetailEntity(select));
 		}
 
 		@Override
-		public ForeignKeyEditorLink.Builder<R> entity(DetailEntity entity) {
+		public ForeignKeyEditorLink.Builder entity(DetailEntity entity) {
 			this.entity = requireNonNull(entity);
 			return this;
 		}
 
 		@Override
-		public ForeignKeyEditorLink.Builder<R> present(Predicate<Entity> present) {
+		public ForeignKeyEditorLink.Builder present(Predicate<Entity> present) {
 			super.present(present);
 			return this;
 		}
 
 		@Override
-		public ForeignKeyEditorLink.Builder<R> beforeInsert(BeforeInsert beforeInsert) {
+		public ForeignKeyEditorLink.Builder beforeInsert(BeforeInsert beforeInsert) {
 			super.beforeInsert(beforeInsert);
 			return this;
 		}
 
 		@Override
-		public ForeignKeyEditorLink.Builder<R> caption(String caption) {
+		public ForeignKeyEditorLink.Builder caption(String caption) {
 			super.caption(caption);
 			return this;
 		}
 
 		@Override
-		public ForeignKeyEditorLink.Builder<R> clearEmpty(boolean clearEmpty) {
+		public ForeignKeyEditorLink.Builder clearEmpty(boolean clearEmpty) {
 			super.clearEmpty(clearEmpty);
 			return this;
 		}
 
 		@Override
 		public ForeignKeyEditorLink build() {
-			return new DefaultForeignKeyLink<>(this, foreignKey);
+			return new DefaultForeignKeyLink(this, foreignKey);
 		}
 	}
 
@@ -1749,16 +1748,17 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final class DetailEditor {
 
 		private final R editor;
-		private final DefaultEditorLink<R> link;
+		private final DefaultEditorLink link;
 		private final Updatable updatable = new Updatable();
 		private final LinkKey key;
 
-		private DetailEditor(DefaultEditorLink<R> link, LinkKey key) {
-			this.editor = link.editor;
+		@SuppressWarnings("unchecked")
+		private DetailEditor(DefaultEditorLink link, LinkKey key) {
+			this.editor = (R) link.editor;
 			this.link = link;
 			this.key = key;
 			if (link instanceof ForeignKeyEditorLink) {
-				ForeignKey foreignKey = ((DefaultForeignKeyLink<R>) link).foreignKey();
+				ForeignKey foreignKey = ((DefaultForeignKeyLink) link).foreignKey();
 				editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey));
 				editor.validator().addValidator(new PreventValidatorModification());
 				editor.value(foreignKey).persist().set(false);

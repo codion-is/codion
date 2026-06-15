@@ -36,9 +36,8 @@ public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultF
 
 	/**
 	 * Builds a {@link ForeignKeyEditorLink}.
-	 * @param <R> the {@link EntityEditor} type
 	 */
-	interface Builder<R extends EntityEditor<R>> extends EditorLink.Builder<R> {
+	interface Builder extends EditorLink.Builder {
 
 		/**
 		 * <p>Overrides the auto-derived link name.
@@ -54,7 +53,7 @@ public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultF
 		 * @return this builder
 		 * @throws IllegalArgumentException if the name is null or empty
 		 */
-		Builder<R> name(String name);
+		Builder name(String name);
 
 		/**
 		 * <p>Overrides the default {@link DetailCondition}.
@@ -63,7 +62,7 @@ public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultF
 		 * @param condition the condition used to load the detail row
 		 * @return this builder
 		 */
-		Builder<R> condition(DetailCondition condition);
+		Builder condition(DetailCondition condition);
 
 		/**
 		 * <p>Overrides the default {@link DetailSelect}.
@@ -71,7 +70,7 @@ public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultF
 		 * @param select the select used to load the detail row
 		 * @return this builder
 		 */
-		Builder<R> select(DetailSelect select);
+		Builder select(DetailSelect select);
 
 		/**
 		 * <p>Overrides the default {@link DetailEntity}.
@@ -79,19 +78,19 @@ public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultF
 		 * @param entity provides the detail row when loading
 		 * @return this builder
 		 */
-		Builder<R> entity(DetailEntity entity);
+		Builder entity(DetailEntity entity);
 
 		@Override
-		Builder<R> present(Predicate<Entity> present);
+		Builder present(Predicate<Entity> present);
 
 		@Override
-		Builder<R> beforeInsert(BeforeInsert beforeInsert);
+		Builder beforeInsert(BeforeInsert beforeInsert);
 
 		@Override
-		Builder<R> caption(String caption);
+		Builder caption(String caption);
 
 		@Override
-		Builder<R> clearEmpty(boolean clearEmpty);
+		Builder clearEmpty(boolean clearEmpty);
 
 		/**
 		 * @return a new {@link ForeignKeyEditorLink}

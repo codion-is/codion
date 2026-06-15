@@ -161,9 +161,8 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 	 *     {@link LoadStep#entity(DetailEntity)} (non-FK case).
 	 * </ol>
 	 * <p>{@link #present(Predicate)} and {@link #beforeInsert(BeforeInsert)} are optional.
-	 * @param <R> the {@link EntityEditor} type
 	 */
-	interface Builder<R extends EntityEditor<R>> {
+	interface Builder {
 
 		/**
 		 * The first step — binds the detail editor that the link will describe.
@@ -172,17 +171,15 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 
 			/**
 			 * @param editor the detail editor
-			 * @param <R> the editor type
 			 * @return a builder step for choosing between a foreign-key based or named link
 			 */
-			<R extends EntityEditor<R>> ForeignKeyNameStep<R> editor(R editor);
+			ForeignKeyNameStep editor(EntityEditor<?> editor);
 		}
 
 		/**
 		 * The second step — choose whether the link is foreign-key based or named.
-		 * @param <R> the {@link EntityEditor} type
 		 */
-		interface ForeignKeyNameStep<R extends EntityEditor<R>> {
+		interface ForeignKeyNameStep {
 
 			/**
 			 * <p>Creates a {@link ForeignKeyEditorLink} backed by the given foreign key.
@@ -197,7 +194,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 			 * types don't match the master and detail editors respectively (validated at
 			 * {@link EntityEditor.DetailEditors#add(EditorLink) registration time})
 			 */
-			ForeignKeyEditorLink.Builder<R> foreignKey(ForeignKey foreignKey);
+			ForeignKeyEditorLink.Builder foreignKey(ForeignKey foreignKey);
 
 			/**
 			 * <p>Begins a non-FK link with the given name.
@@ -209,16 +206,15 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 			 * @return a step requiring a load source
 			 * @throws IllegalArgumentException if the name is null or empty
 			 */
-			LoadStep<R> name(String name);
+			LoadStep name(String name);
 		}
 
 		/**
 		 * Required after {@link ForeignKeyNameStep#name(String)} — supplies the load source for the
 		 * detail entity, expressed as a {@link DetailCondition}, {@link DetailSelect} or
 		 * {@link DetailEntity}.
-		 * @param <R> the {@link EntityEditor} type
 		 */
-		interface LoadStep<R extends EntityEditor<R>> {
+		interface LoadStep {
 
 			/**
 			 * <p>Loads the detail row using the {@link Condition} produced for each master entity.
@@ -227,7 +223,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 			 * @param condition provides the {@link Condition} used to load the detail row given the master entity
 			 * @return a builder for further configuration
 			 */
-			Builder<R> condition(DetailCondition condition);
+			Builder condition(DetailCondition condition);
 
 			/**
 			 * <p>Loads the detail row using the {@link Select} produced for each master entity.
@@ -236,7 +232,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 			 * @param select provides the {@link Select} used to load the detail row given the master entity
 			 * @return a builder for further configuration
 			 */
-			Builder<R> select(DetailSelect select);
+			Builder select(DetailSelect select);
 
 			/**
 			 * <p>Loads the detail row using a user-supplied function — the lowest-level escape hatch
@@ -247,7 +243,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 			 * @param entity provides the detail entity given the master entity
 			 * @return a builder for further configuration
 			 */
-			Builder<R> entity(DetailEntity entity);
+			Builder entity(DetailEntity entity);
 		}
 
 		/**
@@ -261,7 +257,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 		 * @param present the presence predicate
 		 * @return this builder
 		 */
-		Builder<R> present(Predicate<Entity> present);
+		Builder present(Predicate<Entity> present);
 
 		/**
 		 * <p>Overrides the {@link BeforeInsert} action.
@@ -270,7 +266,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 		 * @param beforeInsert the action applied to the detail prior to insertion
 		 * @return this builder
 		 */
-		Builder<R> beforeInsert(BeforeInsert beforeInsert);
+		Builder beforeInsert(BeforeInsert beforeInsert);
 
 		/**
 		 * <p>Sets the link caption.
@@ -284,7 +280,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 		 * @return this builder
 		 * @throws IllegalArgumentException if the caption is null or empty
 		 */
-		Builder<R> caption(String caption);
+		Builder caption(String caption);
 
 		/**
 		 * Specifies whether to clear all values instead of setting defaults when the detail editor
@@ -292,7 +288,7 @@ public sealed interface EditorLink permits DefaultEditorLink, ForeignKeyEditorLi
 		 * @param clearEmpty specifies whether to clear the values when the editor is emptied
 		 * @return this builder
 		 */
-		Builder<R> clearEmpty(boolean clearEmpty);
+		Builder clearEmpty(boolean clearEmpty);
 
 		/**
 		 * @return a new {@link EditorLink}
