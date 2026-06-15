@@ -113,7 +113,7 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 					booleanValue(FilterTableCellRenderer.class.getName() + ".alternateRowColoring", true);
 
 	/**
-	 * Specifies whether if a focused cell should be indicated with a cell border.
+	 * Specifies whether a focused cell should be indicated with a cell border.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
@@ -190,12 +190,15 @@ public interface FilterTableCellRenderer<R, C, T> extends TableCellRenderer {
 	 * @see FilterTable#ROWS_FILL_VIEWPORT
 	 * @see FilterTable.Builder#rowsFillViewport(boolean)
 	 */
+	@FunctionalInterface
 	interface Customizer<R, C> {
 
 		/**
 		 * @return true if this customizer is enabled
 		 */
-		boolean enabled();
+		default boolean enabled() {
+			return true;
+		}
 
 		/**
 		 * @param table the table

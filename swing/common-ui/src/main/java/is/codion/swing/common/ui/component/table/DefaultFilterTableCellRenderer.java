@@ -424,11 +424,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private boolean filterEnabledSet = false;
 
 		@Override
-		public boolean enabled() {
-			return true;
-		}
-
-		@Override
 		public void customize(FilterTable<R, C> table, R row, C identifier, JComponent component) {
 			if (filterEnabled(identifier, table.model())) {
 				component.setBackground(darker(component.getBackground(), DARKENING_FACTOR));
