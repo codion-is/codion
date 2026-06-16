@@ -186,7 +186,8 @@ final class EditorInspector extends JPanel {
 											.model(attributeModel)
 											.visibleRows(new AttributeItems(components).components.editor().entityDefinition().attributes().definitions().size())
 											.columns(EditorComponentsPanel::columns)
-											.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+											.autoResizeMode(JTable.AUTO_RESIZE_OFF)
+											.fitColumnHeaders(true)
 											.scrollPane()
 											.build())
 							.build();

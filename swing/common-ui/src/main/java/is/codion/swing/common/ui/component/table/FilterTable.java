@@ -64,12 +64,14 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.DropMode;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
+import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
@@ -77,6 +79,8 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -341,6 +345,8 @@ public final class FilterTable<R, C> extends JTable {
 					item(AUTO_RESIZE_ALL_COLUMNS, MESSAGES.getString("resize_all_columns")));
 	private static final int SEARCH_FIELD_MINIMUM_WIDTH = 100;
 	private static final int COLUMN_RESIZE_AMOUNT = 10;
+	private static final int MINIMUM_COLUMN_WIDTH = 75;
+	private static final int HEADER_WIDTH_PADDING = 20;
 	private static final ConditionComponents FILTER_COMPONENTS = new ConditionComponents() {};
 
 	private final FilterTableModel<R, C> tableModel;
@@ -358,6 +364,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final boolean scrollToAddedItem;
 	private final boolean rowsFillViewport;
 	private final int visibleRows;
+	private final boolean fitColumnHeaders;
 	final boolean columnToolTips;
 
 	private final ControlMap controlMap;
@@ -384,6 +391,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.columnToolTips = builder.columnToolTips;
 		this.rowsFillViewport = builder.rowsFillViewport;
 		this.visibleRows = builder.visibleRows;
+		this.fitColumnHeaders = builder.fitColumnHeaders;
 		this.sortable = State.state(builder.sortable);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
@@ -529,12 +537,17 @@ public final class FilterTable<R, C> extends JTable {
 
 	@Override
 	public Dimension getPreferredScrollableViewportSize() {
-		Dimension preferredSize = super.getPreferredScrollableViewportSize();
+		Dimension preferred = super.getPreferredScrollableViewportSize();
+		int preferredWidth = preferred.width;
+		int preferredHeight = preferred.height;
 		if (visibleRows > 0) {
-			return new Dimension(preferredSize.width, (getRowHeight() + getRowMargin()) * visibleRows);
+			preferredHeight = (getRowHeight() + getRowMargin()) * visibleRows;
+		}
+		if (fitColumnHeaders) {
+			preferredWidth = super.getPreferredSize().width;
 		}
 
-		return preferredSize;
+		return new Dimension(preferredWidth, preferredHeight);
 	}
 
 	/**
@@ -1252,10 +1265,15 @@ public final class FilterTable<R, C> extends JTable {
 		TableColumns<R, C> tableColumns = tableModel.columns();
 		List<C> identifiers = tableColumns.identifiers();
 		List<FilterTableColumn<C>> columns = new ArrayList<>(identifiers.size());
+		JLabel label = new JLabel();
+		Font font = UIManager.getDefaults().getFont("TableHeader.font");
+		FontMetrics metrics = label.getFontMetrics(font == null ? label.getFont() : font);
 		for (int i = 0; i < identifiers.size(); i++) {
 			C identifier = identifiers.get(i);
 			DefaultFilterTableColumnBuilder<C> builder = new DefaultFilterTableColumnBuilder<>(identifier, i);
-			builder.headerValue(tableColumns.caption(identifier));
+			String caption = tableColumns.caption(identifier);
+			builder.headerValue(caption)
+							.preferredWidth(Math.max(MINIMUM_COLUMN_WIDTH, metrics.stringWidth(caption) + HEADER_WIDTH_PADDING));
 			tableColumns.description(identifier).ifPresent(builder::toolTipText);
 			configure.accept(builder);
 			columns.add(builder.build());
@@ -1561,6 +1579,18 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> visibleRows(int visibleRows);
 
 		/**
+		 * <p>If true, the preferred scrollable viewport width is sized to the table's preferred width,
+		 * so that all columns are visible without a horizontal scrollbar.
+		 * <p>Since columns default to the width of their header, this fits all column headers initially;
+		 * cell content wider than its header may still be clipped.
+		 * <p>Only applies when {@link #autoResizeMode(int)} is {@link JTable#AUTO_RESIZE_OFF}, since the
+		 * other resize modes force the table to the viewport width.
+		 * @param fitColumnHeaders true if the initial preferred viewport width should fit all columns
+		 * @return this builder instance
+		 */
+		Builder<R, C> fitColumnHeaders(boolean fitColumnHeaders);
+
+		/**
 		 * @param headerless true if the table should be headerless
 		 * @return this builder instance
 		 */
@@ -1763,6 +1793,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean fillsViewportHeight = FILLS_VIEWPORT_HEIGHT.getOrThrow();
 		private boolean rowsFillViewport = ROWS_FILL_VIEWPORT.getOrThrow();
 		private int visibleRows = -1;
+		private boolean fitColumnHeaders = false;
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private @Nullable Boolean rowSelection;
@@ -1935,6 +1966,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> visibleRows(int visibleRows) {
 			this.visibleRows = visibleRows;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> fitColumnHeaders(boolean fitColumnHeaders) {
+			this.fitColumnHeaders = fitColumnHeaders;
 			return this;
 		}
 

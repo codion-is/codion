@@ -6,6 +6,8 @@ Codion Change Log
 - AbstractRefreshWorker no longer processes results if the task is no longer current.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.Customizer.enabled() default implementation added, FunctionalInterface annotation added.
+- FilterTable, default preferred column width now set according to header value, with the default column width as minimum.
+- FilterTable.Builder.fitColumnHeaders() added.
 ### is.codion.framework.domain
 - AbstractValueAttributeDefinition bug fixed, now sets false as the default value for non-nullable boolean attributes, when no default value is specified.
 - Attribute.Type renamed DataType.
