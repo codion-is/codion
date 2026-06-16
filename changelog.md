@@ -30,6 +30,7 @@ Codion Change Log
 - EditorInspector now displays foreign key reference columns.
 - EntityEditPanel, requesting modified attribute focus improved for detail editors.
 - EntityPanel.Config.focusCycleRoot() added along with FOCUS_CYCLE_ROOT configuration value.
+- EntityApplicationPanel.LEGACY_PREFERENCES now false by default.
 
 ## 0.18.75
 ### is.codion.common.reactive

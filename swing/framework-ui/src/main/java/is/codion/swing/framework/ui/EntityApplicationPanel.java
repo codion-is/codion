@@ -195,10 +195,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * with hierarchical preferences taking precedence when present.
 	 * <ul>
 	 * <li>Value type: Boolean
-	 * <li>Default value: true (for backward compatibility during transition)
+	 * <li>Default value: false
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", true);
+	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", false);
 
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
