@@ -439,7 +439,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param replacement the string to use when replacing newlines
 		 * @return this Export instance
 		 */
-		Export<C> replaceNewline(String replacement);
+		Export<C> replaceNewline(@Nullable String replacement);
 
 		/**
 		 * @return the exported table data as a String

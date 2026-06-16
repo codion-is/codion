@@ -533,7 +533,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private char delimiter = '\t';
 		private boolean header = true;
 		private boolean selected = false;
-		private String newlineReplacement = " ";
+		private @Nullable String newlineReplacement = " ";
 
 		@Override
 		public Export<C> columns(List<C> columns) {
@@ -560,7 +560,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Export<C> replaceNewline(String replacement) {
+		public Export<C> replaceNewline(@Nullable String replacement) {
 			this.newlineReplacement = replacement;
 			return this;
 		}

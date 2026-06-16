@@ -149,45 +149,42 @@ final class EditorInspector extends JPanel {
 
 		private EditorComponentsPanel(EditorComponents components) {
 			super(borderLayout());
-			AttributeItems attributeItems = new AttributeItems(components);
 			FilterTableModel<AttributeRow, AttributeColumn> attributeModel =
 							FilterTableModel.builder()
 											.columns(new AttributeColumns())
-											.items(attributeItems)
+											.items(new AttributeItems(components))
 											.refresh(true)
 											.build();
 			components.editor().values().changed().addListener(attributeModel.items()::refresh);
-			EditorEntity editorEntity = components.editor().entity();
-			editorEntity.replaced().addListener(attributeModel.items()::refresh);
-			editorEntity.addListener(attributeModel.items()::refresh);
 			TabbedPaneBuilder detailPanelsBuilder = tabbedPane();
 			for (DetailComponents detail : components.detail().components()) {
 				String title = detail.components().editor().entityDefinition().caption() + " " + detail.caption();
 				detailPanelsBuilder.tab(title, new EditorInspector(detail.components()));
 			}
+			EditorEntity entity = components.editor().entity();
 			JPanel mainPanel = borderLayoutPanel()
 							.border(emptyBorder())
 							.north(gridLayoutPanel(1, 4)
 											.add(checkBox()
-															.link(editorEntity.exists())
+															.link(entity.exists())
 															.text("Exists")
 															.enabled(false))
 											.add(checkBox()
-															.link(editorEntity.modified())
+															.link(entity.modified())
 															.text("Modified")
 															.enabled(false))
 											.add(checkBox()
-															.link(editorEntity.valid())
+															.link(entity.valid())
 															.text("Valid")
 															.enabled(false))
 											.add(checkBox()
-															.link(editorEntity.present())
+															.link(entity.present())
 															.text("Present")
 															.enabled(false))
 											.build())
 							.center(FilterTable.builder()
 											.model(attributeModel)
-											.visibleRows(attributeItems.components.editor().entityDefinition().attributes().definitions().size())
+											.visibleRows(new AttributeItems(components).components.editor().entityDefinition().attributes().definitions().size())
 											.columns(EditorComponentsPanel::columns)
 											.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 											.scrollPane()

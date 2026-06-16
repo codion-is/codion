@@ -164,7 +164,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 	DerivedValue<T> value();
 
 	/**
-	 * Note that cached attributes are included when an entity is serialized.
+	 * Note that cached attribute values are included when an entity is serialized.
 	 * @return true if the value of this derived attribute is cached, false if computed on each access
 	 */
 	boolean cached();
@@ -179,7 +179,7 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 
 		/**
 		 * Default true unless no source attributes are specified or this is a denormalized attribute.
-		 * Note that cached attributes are included when an entity is serialized.
+		 * Note that cached attribute values are included when an entity is serialized.
 		 * @param cached true if the value of this derived attribute should be cached, false if it should be computed on each access
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case this is a denormalized attribute

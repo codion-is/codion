@@ -392,7 +392,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		default void beforeInsert(Entity entity, Column<T> column, Database database, Connection connection) throws SQLException {/*for overriding*/}
 
 		/**
-		 * Prepares the given entity after insert, that is, fetches automatically values
+		 * Prepares the given entity after insert, that is, fetches automatically generated values
 		 * and populates the column value in the entity.
 		 * The default implementation does nothing, override to implement.
 		 * @param entity the inserted entity
