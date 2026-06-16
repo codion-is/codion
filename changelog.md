@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.77
+
 ## 0.18.76
 ### is.codion.swing.common.model
 - AbstractRefreshWorker no longer processes results if the task is no longer current.
