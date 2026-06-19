@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.77
 ### is.codion.common.reactive
 - ObservableState.observer() override removed.
+- State.matches(observable, predicate) added.
 
 ## 0.18.76
 ### is.codion.swing.common.model

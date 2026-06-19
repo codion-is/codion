@@ -560,6 +560,17 @@ public class StateTest {
 	}
 
 	@Test
+	void valueMatches() {
+		Value<Integer> value = Value.nullable();
+		ObservableState matches = State.matches(value, 42);
+		assertFalse(matches.is());
+		value.set(42);
+		assertTrue(matches.is());
+		value.clear();
+		assertFalse(matches.is());
+	}
+
+	@Test
 	void valueCollectionContains() {
 		AtomicInteger valueChangedCounter = new AtomicInteger(0);
 		AtomicInteger containsOneCounter = new AtomicInteger(0);

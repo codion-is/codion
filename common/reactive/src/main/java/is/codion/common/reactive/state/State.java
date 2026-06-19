@@ -24,6 +24,8 @@ import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -170,6 +172,24 @@ public interface State extends ObservableState {
 	 */
 	static <T> ObservableState present(Observable<T> observable) {
 		return new ObservableIsPresent<>(requireNonNull(observable)).observable();
+	}
+
+	/**
+	 * @param observable the observable
+	 * @param value the value to match
+	 * @return an {@link ObservableState} active when the given observable value matches the given value
+	 */
+	static <T> ObservableState matches(Observable<T> observable, @Nullable T value) {
+		return new ObservableMatches<>(requireNonNull(observable), value).observable();
+	}
+
+	/**
+	 * @param observable the observable
+	 * @param predicate the predicate
+	 * @return an {@link ObservableState} active when the given observable value matches the given predicate
+	 */
+	static <T> ObservableState matches(Observable<T> observable, Predicate<? super T> predicate) {
+		return new ObservableMatches<>(requireNonNull(observable), requireNonNull(predicate)).observable();
 	}
 
 	/**
