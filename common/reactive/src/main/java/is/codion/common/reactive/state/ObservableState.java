@@ -37,9 +37,4 @@ public interface ObservableState extends Observer<Boolean> {
 	 * @return A {@link ObservableState} instance that is always the reverse of this {@link ObservableState} instance
 	 */
 	ObservableState not();
-
-	/**
-	 * @return an {@link Observer} notified each time the observed value may have changed
-	 */
-	Observer<Boolean> observer();
 }

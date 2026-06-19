@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.77
+### is.codion.common.reactive
+- ObservableState.observer() override removed.
 
 ## 0.18.76
 ### is.codion.swing.common.model
