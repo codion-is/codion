@@ -95,12 +95,12 @@ public final class EditorComponents {
 	private final DetailEditorComponents detail = new DetailEditorComponents();
 
 	private final ComponentSettings settings = new ComponentSettings();
-	private final CreateComponents create;
+	private final ComponentFactory create;
 	private final SwingEntityEditor editor;
 
 	private EditorComponents(SwingEntityEditor editor) {
 		this.editor = requireNonNull(editor);
-		this.create = new CreateComponents(this);
+		this.create = new ComponentFactory(this);
 	}
 
 	/**
@@ -118,9 +118,9 @@ public final class EditorComponents {
 	}
 
 	/**
-	 * @return the {@link CreateComponents} instance
+	 * @return the {@link ComponentFactory} instance
 	 */
-	public CreateComponents create() {
+	public ComponentFactory create() {
 		return create;
 	}
 
@@ -530,7 +530,7 @@ public final class EditorComponents {
 		 * @see ComponentBuilder#label(java.util.function.Consumer)
 		 */
 		public JLabel label() {
-			JLabel label = (JLabel) get().getClientProperty(CreateComponents.LABELED_BY);
+			JLabel label = (JLabel) get().getClientProperty(ComponentFactory.LABELED_BY);
 			if (label == null) {
 				throw new IllegalStateException("No label associated with component: " + value.attribute());
 			}
@@ -539,7 +539,7 @@ public final class EditorComponents {
 		}
 
 		String caption() {
-			JLabel label = (JLabel) get().getClientProperty(CreateComponents.LABELED_BY);
+			JLabel label = (JLabel) get().getClientProperty(ComponentFactory.LABELED_BY);
 			if (label != null && label.isShowing()) {
 				return label.getText();
 			}
@@ -563,7 +563,7 @@ public final class EditorComponents {
 	/**
 	 * Creates {@link SwingEntityEditor} based components
 	 */
-	public static final class CreateComponents {
+	public static final class ComponentFactory {
 
 		static final String LABELED_BY = "labeledBy";
 
@@ -571,10 +571,10 @@ public final class EditorComponents {
 		private final EditorComponents components;
 
 		/**
-		 * Instantiates a new {@link CreateComponents}
+		 * Instantiates a new {@link ComponentFactory}
 		 * @param components the editor components
 		 */
-		CreateComponents(EditorComponents components) {
+		ComponentFactory(EditorComponents components) {
 			this.components = requireNonNull(components);
 			this.entityComponents = entityComponents(components.editor().entityDefinition());
 		}
@@ -601,7 +601,7 @@ public final class EditorComponents {
 		 * Creates a builder for temporal field panels.
 		 * @param attribute the attribute for which to build a temporal field panel
 		 * @param <T> the temporal type
-		 * @return a text area builder
+		 * @return a temporal field panel builder
 		 */
 		public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
 			return components.component(attribute).set(entityComponents.temporalFieldPanel(attribute));
@@ -802,7 +802,7 @@ public final class EditorComponents {
 		public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> comboBox(Column<T> column) {
 			return components.component(column)
 							.set((B) entityComponents.comboBox(column, components.editor().comboBoxModels().get(column)))
-							.onSetVisible(CreateComponents::refreshIfCleared);
+							.onSetVisible(ComponentFactory::refreshIfCleared);
 		}
 
 		/**
@@ -818,7 +818,7 @@ public final class EditorComponents {
 											.items(asList(column.type().valueClass().getEnumConstants()))
 											.includeNull(components.editor().entityDefinition().columns().definition(column).nullable())
 											.build()))
-							.onSetVisible(CreateComponents::refreshIfCleared);
+							.onSetVisible(ComponentFactory::refreshIfCleared);
 		}
 
 		/**
@@ -830,7 +830,7 @@ public final class EditorComponents {
 			EntityComboBoxModel comboBoxModel = components.editor().comboBoxModels().get(foreignKey);
 
 			return components.component(foreignKey).set(entityComponents.comboBox(foreignKey, comboBoxModel))
-							.onSetVisible(CreateComponents::refreshIfCleared);
+							.onSetVisible(ComponentFactory::refreshIfCleared);
 		}
 
 		/**

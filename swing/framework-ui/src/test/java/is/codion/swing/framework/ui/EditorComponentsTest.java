@@ -25,7 +25,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EditorComponents.CreateComponents;
+import is.codion.swing.framework.ui.EditorComponents.ComponentFactory;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
@@ -50,7 +50,7 @@ public final class EditorComponentsTest {
 	void test() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
-		CreateComponents create = new CreateComponents(components);
+		ComponentFactory create = new ComponentFactory(components);
 		create.textField(Employee.NAME);
 		assertThrows(IllegalStateException.class, () -> create.textField(Employee.NAME));
 		JTextField nameField = (JTextField) components.component(Employee.NAME).get();
@@ -69,7 +69,7 @@ public final class EditorComponentsTest {
 	void derived() {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
 		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
-		CreateComponents factory = new CreateComponents(components);
+		ComponentFactory factory = new ComponentFactory(components);
 		JTextField textField = factory.textField(Detail.INT_DERIVED).build();
 		assertFalse(textField.isEnabled());
 	}

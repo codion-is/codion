@@ -53,7 +53,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.ui.EditorComponents.ComponentEntry;
-import is.codion.swing.framework.ui.EditorComponents.CreateComponents;
+import is.codion.swing.framework.ui.EditorComponents.ComponentFactory;
 import is.codion.swing.framework.ui.EditorComponents.EditorComponent;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -427,9 +427,9 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	/**
-	 * @return the {@link CreateComponents} instance
+	 * @return the {@link ComponentFactory} instance
 	 */
-	protected final CreateComponents create() {
+	protected final ComponentFactory create() {
 		return components.create();
 	}
 
@@ -452,7 +452,7 @@ public abstract class EntityEditPanel extends JPanel {
 	/**
 	 * Adds a panel for the given attribute to this panel
 	 * @param attribute the attribute
-	 * @see CreateComponents#inputPanel(Attribute)
+	 * @see ComponentFactory#inputPanel(Attribute)
 	 */
 	protected final void addInputPanel(Attribute<?> attribute) {
 		add(components.create().inputPanel(attribute));
@@ -462,7 +462,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * Adds a panel for the given attribute to this panel using the given layout constraints
 	 * @param attribute the attribute
 	 * @param constraints the layout constraints
-	 * @see CreateComponents#inputPanel(Attribute)
+	 * @see ComponentFactory#inputPanel(Attribute)
 	 */
 	protected final void addInputPanel(Attribute<?> attribute, Object constraints) {
 		add(components.create().inputPanel(attribute), constraints);

@@ -23,7 +23,7 @@ import is.codion.demos.chinook.model.ArtistEditModel;
 import is.codion.swing.common.ui.component.panel.GridLayoutPanelBuilder;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EditorComponents;
-import is.codion.swing.framework.ui.EditorComponents.CreateComponents;
+import is.codion.swing.framework.ui.EditorComponents.ComponentFactory;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
@@ -56,7 +56,7 @@ public final class ArtistEditPanel extends EntityEditPanel {
 	private void addTagPanel(int index, GridLayoutPanelBuilder tagPanel) {
 		String detailName = ArtistEditModel.TAG_PREFIX + index;
 		EditorComponents artistTag = components().detail().get(detailName);
-		CreateComponents create = artistTag.create();
+		ComponentFactory create = artistTag.create();
 		create.textField(ArtistTag.TAG)
 						.columns(8);
 		JLabel label = artistTag.component(ArtistTag.TAG).label();

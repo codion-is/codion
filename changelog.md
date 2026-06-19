@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.reactive
 - ObservableState.observer() override removed.
 - State.matches(observable, predicate) added.
+### is.codion.swing.framework.ui
+- EditorComponents.CreateComponents renamed ComponentFactory.
 
 ## 0.18.76
 ### is.codion.swing.common.model
