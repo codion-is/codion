@@ -43,7 +43,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public boolean transactionOpen() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("isTransactionOpen")));
 			}
@@ -55,7 +55,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public void cacheQueries(boolean queryCache) {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCache))));
 			}
@@ -67,7 +67,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public boolean cacheQueries() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("isQueryCacheEnabled")));
 			}
@@ -80,7 +80,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public Collection<Entity.Key> insert(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("insert", serialize(entities))));
 			}
@@ -93,7 +93,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public Collection<Entity> insertSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("insertSelect", serialize(entities))));
 			}
@@ -106,7 +106,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public void update(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				handleResponse(execute(createRequest("update", serialize(entities))));
 			}
@@ -119,7 +119,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public Collection<Entity> updateSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("updateSelect", serialize(entities))));
 			}
@@ -132,7 +132,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public int update(Update update) {
 		requireNonNull(update);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("updateByCondition", serialize(update))));
 			}
@@ -145,7 +145,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public void delete(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				throwIfError(execute(createRequest("deleteByKey", serialize(keys))));
 			}
@@ -158,7 +158,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public int delete(Condition condition) {
 		requireNonNull(condition);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("delete", serialize(condition))));
 			}
@@ -172,7 +172,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	public <T> List<T> select(Column<T> column, Select select) {
 		requireNonNull(column);
 		requireNonNull(select);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("values", serialize(asList(column, select)))));
 			}
@@ -185,7 +185,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public List<Entity> select(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("selectByKey", serialize(keys))));
 			}
@@ -198,7 +198,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public List<Entity> select(Select select) {
 		requireNonNull(select);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("select", serialize(select))));
 			}
@@ -211,7 +211,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("dependencies", serialize(entities))));
 			}
@@ -224,7 +224,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public int count(Count count) {
 		requireNonNull(count);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("count", serialize(count))));
 			}

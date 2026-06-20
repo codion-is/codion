@@ -35,6 +35,8 @@ module is.codion.framework.db.http {
 
 	exports is.codion.framework.db.http;
 
+	uses is.codion.framework.db.http.HttpTransport.Factory;
+
 	provides is.codion.framework.db.EntityConnectionProvider.Builder
 					with is.codion.framework.db.http.DefaultHttpEntityConnectionProviderBuilder;
 }

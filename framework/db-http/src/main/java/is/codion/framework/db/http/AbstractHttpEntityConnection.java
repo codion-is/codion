@@ -40,19 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.CookieManager;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Executor;
 
 import static is.codion.common.utilities.Serializer.deserialize;
 import static is.codion.common.utilities.Serializer.serialize;
@@ -84,10 +75,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	private final User user;
 	protected final String baseurl;
-	protected final HttpClient httpClient;
+	protected final HttpTransport transport;
 	protected final Entities entities;
 	protected final String[] headers;
-	protected final Duration socketTimeout;
 
 	private boolean closed;
 
@@ -99,8 +89,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	AbstractHttpEntityConnection(DefaultBuilder builder, String path) {
 		this.user = requireNonNull(builder.user, "user must be specified");
 		this.baseurl = createBaseUrl(builder, path);
-		this.socketTimeout = Duration.ofMillis(builder.socketTimeout);
-		this.httpClient = createHttpClient(builder.connectTimeout);
+		this.transport = HttpTransport.instance(builder.connectTimeout, builder.socketTimeout);
 		this.headers = initializeHeaders(builder, user);
 		this.entities = initializeEntities();
 	}
@@ -117,14 +106,14 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	@Override
 	public final boolean connected() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			return !closed;
 		}
 	}
 
 	@Override
 	public final void close() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				handleResponse(execute(createRequest("close")));
 				closed = true;
@@ -137,7 +126,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	@Override
 	public final void startTransaction() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				handleResponse(execute(createRequest("startTransaction")));
 			}
@@ -149,7 +138,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	@Override
 	public final void rollbackTransaction() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				handleResponse(execute(createRequest("rollbackTransaction")));
 			}
@@ -161,7 +150,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	@Override
 	public final void commitTransaction() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				handleResponse(execute(createRequest("commitTransaction")));
 			}
@@ -246,7 +235,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	@Override
 	public <C extends EntityConnection, P, R> R execute(FunctionType<C, P, R> functionType, P parameter) {
 		requireNonNull(functionType);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("function", serialize(asList(functionType, parameter)))));
 			}
@@ -264,7 +253,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	@Override
 	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, P parameter) {
 		requireNonNull(procedureType);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				handleResponse(execute(createRequest("procedure", serialize(asList(procedureType, parameter)))));
 			}
@@ -277,7 +266,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	@Override
 	public <T, P, R> R report(ReportType<T, P, R> reportType, P parameter) {
 		requireNonNull(reportType);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("report", serialize(asList(reportType, parameter)))));
 			}
@@ -298,7 +287,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	private Entities initializeEntities() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleResponse(execute(createRequest("entities")));
 			}
@@ -308,43 +297,41 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		}
 	}
 
-	protected final <T> HttpResponse<T> execute(HttpRequest operation) throws IOException, InterruptedException {
-		return (HttpResponse<T>) httpClient.send(operation, BodyHandlers.ofByteArray());
+	protected final HttpTransport.Response execute(Request request) throws IOException {
+		return transport.post(request.url, headers, request.body);
 	}
 
-	protected final HttpRequest createRequest(String path) {
-		return HttpRequest.newBuilder()
-						.uri(URI.create(baseurl + path))
-						.POST(BodyPublishers.noBody())
-						.headers(headers)
-						.build();
+	protected final Request createRequest(String path) {
+		return new Request(baseurl + path, null);
 	}
 
-	protected final HttpRequest createRequest(String path, byte[] data) {
-		return HttpRequest.newBuilder()
-						.uri(URI.create(baseurl + path))
-						.POST(BodyPublishers.ofByteArray(data))
-						.headers(headers)
-						.build();
+	protected final Request createRequest(String path, byte[] data) {
+		return new Request(baseurl + path, data);
 	}
 
-	private static HttpClient createHttpClient(int connectTimeout) {
-		return HttpClient.newBuilder()
-						.executor(new SynchronousExecutor())
-						.cookieHandler(new CookieManager())
-						.connectTimeout(Duration.ofMillis(connectTimeout))
-						.build();
-	}
-
-	protected static <T> T handleResponse(HttpResponse<T> response) throws Exception {
+	protected static <T> T handleResponse(HttpTransport.Response response) throws Exception {
 		throwIfError(response);
 
-		return deserialize((byte[]) response.body());
+		return deserialize(response.body());
 	}
 
-	protected static void throwIfError(HttpResponse<?> response) throws Exception {
+	protected static void throwIfError(HttpTransport.Response response) throws Exception {
 		if (response.statusCode() != HTTP_STATUS_OK) {
-			throw (Exception) deserialize((byte[]) response.body());
+			throw (Exception) deserialize(response.body());
+		}
+	}
+
+	/**
+	 * A http request: a url and an optional body.
+	 */
+	protected static final class Request {
+
+		private final String url;
+		private final byte @Nullable [] body;
+
+		private Request(String url, byte @Nullable [] body) {
+			this.url = url;
+			this.body = body;
 		}
 	}
 
@@ -385,14 +372,6 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	private static String createAuthorizationHeader(User user) {
 		return BASIC + Base64.getEncoder().encodeToString((user.username() + ":" + String.valueOf(user.password())).getBytes());
-	}
-
-	private static final class SynchronousExecutor implements Executor {
-
-		@Override
-		public void execute(Runnable command) {
-			command.run();
-		}
 	}
 
 	static final class DefaultBuilder implements Builder {

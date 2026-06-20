@@ -7,6 +7,8 @@ Codion Change Log
 - State.matches(observable, predicate) added.
 ### is.codion.common.model
 - FilterModel.Items.sort() added.
+### is.codion.framework.db.http
+- HttpTransport and JdkHttpTransport added, service based
 ### is.codion.swing.framework.ui
 - EditorComponents.CreateComponents renamed ComponentFactory.
 

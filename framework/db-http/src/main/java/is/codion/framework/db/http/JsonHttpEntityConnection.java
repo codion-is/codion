@@ -35,10 +35,6 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +62,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public boolean transactionOpen() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("isTransactionOpen")),
 								objectMapper, Boolean.class);
@@ -79,7 +75,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public void cacheQueries(boolean queryCache) {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				handleResponse(execute(createJsonRequest("setQueryCacheEnabled",
 								objectMapper.writeValueAsString(queryCache))));
@@ -92,7 +88,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public boolean cacheQueries() {
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("isQueryCacheEnabled")),
 								objectMapper, Boolean.class);
@@ -106,7 +102,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public Collection<Entity.Key> insert(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("insert",
 								objectMapper.writeValueAsString(entities))), objectMapper, KEY_LIST_REFERENCE);
@@ -120,7 +116,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public Collection<Entity> insertSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("insertSelect",
 								objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
@@ -134,7 +130,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public void update(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				throwIfError(execute(createJsonRequest("update",
 								objectMapper.writeValueAsString(entities))));
@@ -148,7 +144,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public Collection<Entity> updateSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("updateSelect",
 								objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
@@ -162,7 +158,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public int update(Update update) {
 		requireNonNull(update);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("updateByCondition",
 								objectMapper.writeValueAsString(update))), objectMapper, Integer.class);
@@ -176,7 +172,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public void delete(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				throwIfError(execute(createJsonRequest("deleteByKey",
 								objectMapper.writeValueAsString(keys))));
@@ -190,7 +186,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public int delete(Condition condition) {
 		requireNonNull(condition);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("delete",
 								objectMapper.writeValueAsString(condition))), objectMapper, Integer.class);
@@ -209,7 +205,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		node.set("column", objectMapper.valueToTree(column.name()));
 		node.set("entityType", objectMapper.valueToTree(column.entityType().name()));
 		node.set("condition", objectMapper.valueToTree(select));
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("values", node.toString())),
 								objectMapper, objectMapper.getTypeFactory().constructCollectionType(List.class, column.type().valueClass()));
@@ -223,7 +219,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public List<Entity> select(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("selectByKey",
 								objectMapper.writeValueAsString(keys))), objectMapper, ENTITY_LIST_REFERENCE);
@@ -237,7 +233,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public List<Entity> select(Select select) {
 		requireNonNull(select);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("select",
 								objectMapper.writeValueAsString(select))), objectMapper, ENTITY_LIST_REFERENCE);
@@ -251,7 +247,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		requireNonNull(entities);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
 				DomainType domainType = entities().domainType();
@@ -271,7 +267,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public int count(Count count) {
 		requireNonNull(count);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				return handleJsonResponse(execute(createJsonRequest("count",
 								objectMapper.writeValueAsString(count))), objectMapper, Integer.class);
@@ -285,7 +281,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public <C extends EntityConnection, P, R> R execute(FunctionType<C, P, R> functionType, P parameter) {
 		requireNonNull(functionType);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				ObjectNode request = objectMapper.createObjectNode();
 				request.put("functionType", functionType.name());
@@ -304,7 +300,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public <C extends EntityConnection, P> void execute(ProcedureType<C, P> procedureType, P parameter) {
 		requireNonNull(procedureType);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				ObjectNode request = objectMapper.createObjectNode();
 				request.put("procedureType", procedureType.name());
@@ -323,7 +319,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	@Override
 	public <T, P, R> R report(ReportType<T, P, R> reportType, P parameter) {
 		requireNonNull(reportType);
-		synchronized (httpClient) {
+		synchronized (transport) {
 			try {
 				ObjectNode request = objectMapper.createObjectNode();
 				request.put("reportType", reportType.name());
@@ -339,39 +335,29 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		}
 	}
 
-	private HttpRequest createJsonRequest(String path) {
-		return HttpRequest.newBuilder()
-						.timeout(socketTimeout)
-						.uri(URI.create(baseurl + path))
-						.POST(BodyPublishers.noBody())
-						.headers(headers)
-						.build();
+	private Request createJsonRequest(String path) {
+		return createRequest(path);
 	}
 
-	private HttpRequest createJsonRequest(String path, String data) {
-		return HttpRequest.newBuilder()
-						.timeout(socketTimeout)
-						.uri(URI.create(baseurl + path))
-						.POST(BodyPublishers.ofString(data))
-						.headers(headers)
-						.build();
+	private Request createJsonRequest(String path, String data) {
+		return createRequest(path, data.getBytes(UTF_8));
 	}
 
-	private static <T> T handleJsonResponse(HttpResponse<?> response, ObjectMapper mapper, TypeReference<T> typeReference) throws Exception {
+	private static <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, TypeReference<T> typeReference) throws Exception {
 		throwIfError(response);
 
-		return mapper.readValue(new String((byte[]) response.body(), UTF_8), typeReference);
+		return mapper.readValue(new String(response.body(), UTF_8), typeReference);
 	}
 
-	private static <T> T handleJsonResponse(HttpResponse<?> response, ObjectMapper mapper, Class<T> valueClass) throws Exception {
+	private static <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, Class<T> valueClass) throws Exception {
 		throwIfError(response);
 
-		return mapper.readValue(new String((byte[]) response.body(), UTF_8), valueClass);
+		return mapper.readValue(new String(response.body(), UTF_8), valueClass);
 	}
 
-	private static <T> T handleJsonResponse(HttpResponse<?> response, ObjectMapper mapper, JavaType javaType) throws Exception {
+	private static <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, JavaType javaType) throws Exception {
 		throwIfError(response);
 
-		return mapper.readValue(new String((byte[]) response.body(), UTF_8), javaType);
+		return mapper.readValue(new String(response.body(), UTF_8), javaType);
 	}
 }
