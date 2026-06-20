@@ -82,6 +82,11 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
+	public Sort<R> sort() {
+		return sort;
+	}
+
+	@Override
 	public void refresh() {
 		refresher.refresh(null);
 	}

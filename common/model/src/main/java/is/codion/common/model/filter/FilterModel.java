@@ -87,6 +87,11 @@ public interface FilterModel<T> {
 		Refresher<T> refresher();
 
 		/**
+		 * @return the {@link Sort} instance used by this items instance
+		 */
+		Sort<T> sort();
+
+		/**
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
 		 * <br><br>
 		 * Retains the selection and filtering. Sorts the refreshed data.

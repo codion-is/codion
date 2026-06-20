@@ -64,7 +64,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
 
 	private final DefaultComboBoxSelection selection;
-	private final Sort<T> sort;
 	private final DefaultComboBoxItems modelItems;
 
 	/**
@@ -75,8 +74,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
 		selection = new DefaultComboBoxSelection(builder.translator);
 		builder.onItemSelected.forEach(selection.item()::addConsumer);
-		sort = new DefaultComboBoxSort<>(builder.comparator);
-		modelItems = new DefaultComboBoxItems(builder);
+		modelItems = new DefaultComboBoxItems(builder, new DefaultComboBoxSort<>(builder.comparator));
 		selection.item().set(builder.selectItem);
 	}
 
@@ -87,7 +85,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	@Override
 	public Sort<T> sort() {
-		return sort;
+		return modelItems.sort();
 	}
 
 	@Override
@@ -348,6 +346,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final Lock lock = new Lock() {};
 
+		private final Sort<T> sort;
 		private final AbstractRefresher<T> refresher;
 		private final DefaultIncludedItems included;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
@@ -358,10 +357,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private boolean cleared = true;
 
-		private DefaultComboBoxItems(DefaultBuilder<T> builder) {
+		private DefaultComboBoxItems(DefaultBuilder<T> builder, Sort<T> sort) {
 			this.includeNull = builder.includeNull;
 			this.nullItem = builder.nullItem;
 			this.filterSelected = builder.filterSelected;
+			this.sort = sort;
 			this.included = new DefaultIncludedItems();
 			if (includeNull) {
 				included.items.add(null);
@@ -379,6 +379,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Refresher<T> refresher() {
 			return refresher;
+		}
+
+		@Override
+		public Sort<T> sort() {
+			return sort;
 		}
 
 		@Override
