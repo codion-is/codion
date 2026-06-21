@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A selection model managing multiple selected items.
  * <p>
@@ -97,6 +99,15 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	 * @param adjusting true if subsequent selection events should be grouped
 	 */
 	void adjusting(boolean adjusting);
+
+	/**
+	 * @param items the indexed items
+	 * @return a default {@link MultiSelection} implementation
+	 * @param <T> the item type
+	 */
+	static <T> MultiSelection<T> multiSelection(IndexedItems<T> items) {
+		return new DefaultMultiSelection<>(requireNonNull(items));
+	}
 
 	/**
 	 * Manages the selected indexes.
@@ -204,5 +215,35 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * @return true if the given item is selected
 		 */
 		boolean contains(R item);
+	}
+
+	/**
+	 * Provides access to indexed items
+	 * @param <R> the item type
+	 */
+	interface IndexedItems<R> {
+
+		/**
+		 * @return the number of items
+		 */
+		int size();
+
+		/**
+		 * @param index the row index
+		 * @return the item at the given index in this model
+		 * @throws IndexOutOfBoundsException in case the index is out of bounds
+		 */
+		R get(int index);
+
+		/**
+		 * @param item the item
+		 * @return the index of the item in this model, -1 if it is not included
+		 */
+		int indexOf(R item);
+
+		/**
+		 * @return an unmodifiable view of the items
+		 */
+		List<R> get();
 	}
 }

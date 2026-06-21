@@ -20,6 +20,7 @@ package is.codion.common.model.filter;
 
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
+import is.codion.common.model.selection.MultiSelection.IndexedItems;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observable;
@@ -311,7 +312,7 @@ public interface FilterModel<T> {
 	/**
 	 * @param <T> the item type
 	 */
-	interface IncludedItems<T> extends Observable<List<T>> {
+	interface IncludedItems<T> extends Observable<List<T>>, IndexedItems<T> {
 
 		/**
 		 * @return the included items or an empty list if all items are filtered
@@ -340,12 +341,6 @@ public interface FilterModel<T> {
 		 * @return true if the item is included
 		 */
 		boolean contains(T item);
-
-		/**
-		 * @param item the item
-		 * @return the index of the item in this model, -1 if it is not included
-		 */
-		int indexOf(T item);
 
 		/**
 		 * @param index the row index
@@ -402,10 +397,6 @@ public interface FilterModel<T> {
 		 */
 		List<T> remove(int fromIndex, int toIndex);
 
-		/**
-		 * @return the number of included items
-		 */
-		int size();
 
 		/**
 		 * Sorts the included items using this {@link Sort} instance, preserving the selection.

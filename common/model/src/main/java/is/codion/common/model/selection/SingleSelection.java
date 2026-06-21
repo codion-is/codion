@@ -49,4 +49,12 @@ public interface SingleSelection<T> {
 	 * Clears the selection
 	 */
 	void clear();
+
+	/**
+	 * @return a default {@link SingleSelection} implementation
+	 * @param <T> the item type
+	 */
+	static <T> SingleSelection<T> singleSelection() {
+		return new DefaultSingleSelection<>();
+	}
 }
