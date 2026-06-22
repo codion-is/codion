@@ -29,6 +29,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
+import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -91,7 +92,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		this.baseurl = createBaseUrl(builder, path);
 		this.transport = HttpTransport.instance(builder.connectTimeout, builder.socketTimeout);
 		this.headers = initializeHeaders(builder, user);
-		this.entities = initializeEntities();
+		// An injected domain is used directly (built in-process); otherwise the entity definitions are fetched
+		// from the server — the secure default, keeping the domain implementation (table names, queries) off the client.
+		this.entities = builder.domain != null ? builder.domain.entities() : initializeEntities();
 	}
 
 	@Override
@@ -377,6 +380,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	static final class DefaultBuilder implements Builder {
 
 		private DomainType domainType;
+		private Domain domain;
 		private String hostname = HOSTNAME.get();
 		private int port = PORT.getOrThrow();
 		private int securePort = SECURE_PORT.getOrThrow();
@@ -390,9 +394,15 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		private @Nullable Version clientVersion;
 
 		@Override
-		public Builder domainType(DomainType domainType) {
+		public Builder domain(DomainType domainType) {
 			this.domainType = requireNonNull(domainType);
 			return this;
+		}
+
+		@Override
+		public Builder domain(Domain domain) {
+			this.domain = requireNonNull(domain);
+			return domain(domain.type());
 		}
 
 		@Override

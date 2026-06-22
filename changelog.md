@@ -9,7 +9,8 @@ Codion Change Log
 - FilterModel.Items.sort() added.
 - DefaultMultiSelection and DefaultSingleSelection added along with MultiSelection.IndexedItems added.
 ### is.codion.framework.db.http
-- HttpTransport and JdkHttpTransport added, service based
+- HttpEntityConnection and HttpEntityConnectionProvider.Builder.domain(Domain) added.
+- HttpEntityConnection falls back to HttpURLConnection when java.http isn't available.
 ### is.codion.swing.framework.ui
 - EditorComponents.CreateComponents renamed ComponentFactory.
 

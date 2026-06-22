@@ -20,6 +20,9 @@ package is.codion.framework.db.http;
 
 import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.Domain;
+
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -38,12 +41,19 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 	boolean json = HttpEntityConnection.JSON.getOrThrow();
 	int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.getOrThrow();
 	int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.getOrThrow();
+	@Nullable Domain domain;
 
 	/**
 	 * Instantiates a new {@link DefaultHttpEntityConnectionProviderBuilder}
 	 */
 	public DefaultHttpEntityConnectionProviderBuilder() {
 		super(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
+	}
+
+	@Override
+	public HttpEntityConnectionProvider.Builder domain(Domain domain) {
+		this.domain = requireNonNull(domain);
+		return domain(domain.type());
 	}
 
 	@Override

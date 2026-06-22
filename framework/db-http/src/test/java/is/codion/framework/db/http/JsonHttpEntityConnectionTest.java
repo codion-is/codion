@@ -30,7 +30,7 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 	public JsonHttpEntityConnectionTest() {
 		super(HttpEntityConnection.builder()
 						.json(true)
-						.domainType(TestDomain.DOMAIN)
+						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
 						.clientType("JsonHttpEntityConnectionTest")
 						.clientId(UUID.randomUUID())

@@ -21,7 +21,9 @@ package is.codion.framework.db.http;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.Domain;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +47,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 	private final boolean json;
 	private final int socketTimeout;
 	private final int connectTimeout;
+	private final @Nullable Domain domain;
 
 	DefaultHttpEntityConnectionProvider(DefaultHttpEntityConnectionProviderBuilder builder) {
 		super(builder);
@@ -55,6 +58,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 		this.json = builder.json;
 		this.socketTimeout = builder.socketTimeout;
 		this.connectTimeout = builder.connectTimeout;
+		this.domain = builder.domain;
 	}
 
 	@Override
@@ -66,9 +70,12 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 	protected EntityConnection connect() {
 		try {
 			LOG.debug("Initializing connection for {}", user());
-			return HttpEntityConnection.builder()
-							.domainType(domainType())
-							.hostname(hostname)
+			HttpEntityConnection.Builder builder = HttpEntityConnection.builder()
+							.domain(domainType());
+			if (domain != null) {
+				builder.domain(domain);
+			}
+			return builder.hostname(hostname)
 							.port(port)
 							.securePort(securePort)
 							.user(user())

@@ -46,7 +46,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private final Event<EntityConnection> connected = Event.event();
 
 	private final User user;
-	private final DomainType domain;
+	private final DomainType domainType;
 	private final UUID clientId;
 	private final String clientType;
 	private final @Nullable Version clientVersion;
@@ -61,9 +61,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	protected AbstractEntityConnectionProvider(AbstractBuilder<?, ?> builder) {
 		requireNonNull(builder);
 		this.user = requireNonNull(builder.user, "A user must be specified");
-		this.domain = requireNonNull(builder.domain, "A domain must be specified");
+		this.domainType = requireNonNull(builder.domain, "A domain must be specified");
 		this.clientId = builder.clientId;
-		this.clientType = builder.clientType == null ? domain.name() : builder.clientType;
+		this.clientType = builder.clientType == null ? domainType.name() : builder.clientType;
 		this.clientVersion = builder.clientVersion;
 		this.onClose = builder.onClose;
 	}
@@ -86,7 +86,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 	@Override
 	public final DomainType domainType() {
-		return domain;
+		return domainType;
 	}
 
 	@Override

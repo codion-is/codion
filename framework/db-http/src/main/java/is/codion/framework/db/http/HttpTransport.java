@@ -21,17 +21,15 @@ package is.codion.framework.db.http;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.ServiceLoader;
 
 /**
- * Performs the actual HTTP communication for {@link HttpEntityConnection}.
+ * Performs the actual HTTP communication for {@link HttpEntityConnection} — an internal detail of the connection.
  * <p>
- * The default implementation is based on {@link java.net.http.HttpClient}. On platforms lacking the
- * {@code java.net.http} module (such as Android), an alternative implementation can be supplied via a
- * {@link Factory} registered with the {@link ServiceLoader}; when one is found it takes precedence over
- * the default.
+ * The {@link java.net.http.HttpClient} based transport is used where that module is present, falling back to an
+ * {@link java.net.HttpURLConnection} based transport where it is not (notably Android, which lacks
+ * {@code java.net.http}).
  */
-public interface HttpTransport {
+interface HttpTransport {
 
 	/**
 	 * Sends a POST request to the given url and returns the response.
@@ -51,31 +49,32 @@ public interface HttpTransport {
 	record Response(int statusCode, byte[] body) {}
 
 	/**
-	 * Creates {@link HttpTransport} instances.
-	 */
-	interface Factory {
-
-		/**
-		 * @param connectTimeout the connect timeout in milliseconds
-		 * @param socketTimeout the socket (read) timeout in milliseconds
-		 * @return a new {@link HttpTransport} instance
-		 */
-		HttpTransport create(int connectTimeout, int socketTimeout);
-	}
-
-	/**
-	 * Returns a {@link HttpTransport} instance, based on the first {@link Factory} found via the
-	 * {@link ServiceLoader}, or the default {@link java.net.http.HttpClient} based implementation
-	 * if none is available.
+	 * Returns a {@link HttpTransport} instance: the {@link java.net.http.HttpClient} (HTTP/2) transport where that
+	 * module is present, otherwise the {@link java.net.HttpURLConnection} (HTTP/1.1) transport, which is universally
+	 * available — notably on Android.
 	 * @param connectTimeout the connect timeout in milliseconds
 	 * @param socketTimeout the socket (read) timeout in milliseconds
 	 * @return a new {@link HttpTransport} instance
 	 */
 	static HttpTransport instance(int connectTimeout, int socketTimeout) {
-		return ServiceLoader.load(Factory.class).findFirst()
-						// orElseGet, not orElse: the default factory references java.net.http, so it must
-						// only be touched when no override is present, keeping it unresolved on Android.
-						.orElseGet(JdkHttpTransport.Factory::new)
-						.create(connectTimeout, socketTimeout);
+		// JdkHttpTransport is the sole java.net.http reference, constructed only in the present-branch, so it stays
+		// unloaded — and the module unresolved — where java.net.http is unavailable.
+		if (httpClientAvailable()) {
+			return new JdkHttpTransport(connectTimeout, socketTimeout);
+		}
+
+		return new UrlConnectionTransport(connectTimeout, socketTimeout);
+	}
+
+	private static boolean httpClientAvailable() {
+		try {
+			// false: probe for the class without initializing it, avoiding any touch of java.net.http where absent.
+			Class.forName("java.net.http.HttpClient", false, HttpTransport.class.getClassLoader());
+
+			return true;
+		}
+		catch (ClassNotFoundException e) {
+			return false;
+		}
 	}
 }

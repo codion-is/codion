@@ -19,6 +19,7 @@
 package is.codion.framework.db.http;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.Domain;
 
 /**
  * A class responsible for managing a HttpEntityConnection.
@@ -44,6 +45,12 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 	 * Builds a {@link HttpEntityConnectionProvider} instance.
 	 */
 	interface Builder extends EntityConnectionProvider.Builder<HttpEntityConnectionProvider, Builder> {
+
+		/**
+		 * @param domain the domain model to base this connection on
+		 * @return this builder instance
+		 */
+		Builder domain(Domain domain);
 
 		/**
 		 * @param hostname the server hostname

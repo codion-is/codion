@@ -30,7 +30,7 @@ public final class DefaultHttpEntityConnectionTest extends AbstractHttpEntityCon
 	public DefaultHttpEntityConnectionTest() {
 		super(HttpEntityConnection.builder()
 						.json(false)
-						.domainType(TestDomain.DOMAIN)
+						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
 						.clientType("DefaultHttpEntityConnectionTest")
 						.clientId(UUID.randomUUID())

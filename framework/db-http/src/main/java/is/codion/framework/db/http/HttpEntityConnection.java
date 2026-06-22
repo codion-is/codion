@@ -22,6 +22,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 
 import java.util.UUID;
@@ -118,7 +119,13 @@ public interface HttpEntityConnection extends EntityConnection {
 		 * @param domainType the domain model type
 		 * @return this builder instance
 		 */
-		Builder domainType(DomainType domainType);
+		Builder domain(DomainType domainType);
+
+		/**
+		 * @param domain the domain model to base this connection on
+		 * @return this builder instance
+		 */
+		Builder domain(Domain domain);
 
 		/**
 		 * @param hostname the http server hostname

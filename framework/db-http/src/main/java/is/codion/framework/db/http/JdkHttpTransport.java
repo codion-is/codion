@@ -69,14 +69,6 @@ final class JdkHttpTransport implements HttpTransport {
 		}
 	}
 
-	static final class Factory implements HttpTransport.Factory {
-
-		@Override
-		public HttpTransport create(int connectTimeout, int socketTimeout) {
-			return new JdkHttpTransport(connectTimeout, socketTimeout);
-		}
-	}
-
 	private static final class SynchronousExecutor implements Executor {
 
 		@Override
