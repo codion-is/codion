@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -27,6 +28,8 @@ import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.utilities.proxy.ProxyBuilder;
+import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.exception.EntityModifiedException;
@@ -38,6 +41,7 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
@@ -163,6 +167,11 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * @return the {@link SearchModels} instance
 	 */
 	SearchModels searchModels();
+
+	/**
+	 * @return the {@link ComboBoxModels} instance
+	 */
+	ComboBoxModels comboBoxModels();
 
 	/**
 	 * @return the {@link DetailEditors} instance
@@ -669,7 +678,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	}
 
 	/**
-	 * Manages the {@link EntitySearchModel}s used by a {@link EntityEditModel}
+	 * Manages the {@link EntitySearchModel}s used by a {@link EntityEditor}
 	 */
 	interface SearchModels {
 
@@ -690,6 +699,77 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 		 */
 		EntitySearchModel create(ForeignKey foreignKey);
+	}
+
+	/**
+	 * Manages the {@link FilterComboBoxModel}s used by a {@link EntityEditor}
+	 */
+	interface ComboBoxModels {
+
+		/**
+		 * Returns the foreign key based combo box models initialized via {@link #get(ForeignKey)}.
+		 * @return an unmodifiable view of the foreign key based combo box models
+		 */
+		Map<ForeignKey, ? extends EntityComboBoxModel> foreignKey();
+
+		/**
+		 * Returns the column based combo box models initialized via {@link #get(Column)}.
+		 * @return an unmodifiable view of the column based combo box models
+		 */
+		Map<Column<?>, ? extends FilterComboBoxModel<?>> column();
+
+		/**
+		 * Creates and refreshes combo box models for the given attributes. Doing this in an edit model
+		 * constructor avoids the models being refreshed when the combo boxes using them are initialized
+		 * @param attributes the attributes for which to initialize combo box models
+		 * @see #create(Column)
+		 * @see #create(ForeignKey)
+		 */
+		void initialize(Attribute<?>... attributes);
+
+		/**
+		 * <p>Returns the {@link EntityComboBoxModel} associated with the given foreign key.
+		 * If no such combo box model exists, one is created by calling {@link #create(ForeignKey)}.
+		 * <p>This method always returns the same {@link EntityComboBoxModel} instance, once one has been created.
+		 * @param foreignKey the foreign key
+		 * @return the {@link EntityComboBoxModel} associated with the given foreign key
+		 * @see ComboBoxModels#create(ForeignKey)
+		 */
+		EntityComboBoxModel get(ForeignKey foreignKey);
+
+		/**
+		 * <p>Returns the {@link FilterComboBoxModel} associated with the given column.
+		 * If no such combo box model exists, one is created by calling {@link #create(Column)}.
+		 * <p>This method always returns the same {@link FilterComboBoxModel} instance, once one has been created.
+		 * @param column the column
+		 * @param <T> the value type
+		 * @return the {@link FilterComboBoxModel} associated with the given column
+		 * @see #create(Column)
+		 */
+		<T> FilterComboBoxModel<T> get(Column<T> column);
+
+		/**
+		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key.
+		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
+		 * @return a {@link EntityComboBoxModel} for the given foreign key
+		 * @see ComponentModels#comboBoxModel(ForeignKey, EntityConnectionProvider)
+		 * @see FilterComboBoxModel#NULL_CAPTION
+		 * @see EntityComboBoxModel.Builder#nullCaption(String)
+		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+		 * @see ValueAttributeDefinition#nullable()
+		 * @see EntityComboBoxModel.Builder#attributes(Collection)
+		 * @see ForeignKeyDefinition#attributes()
+		 */
+		EntityComboBoxModel create(ForeignKey foreignKey);
+
+		/**
+		 * Creates a combo box model containing the current values of the given column.
+		 * @param column the column
+		 * @param <T> the value type
+		 * @return a combo box model based on the given column
+		 * @see FilterComboBoxModel#NULL_CAPTION
+		 */
+		<T> FilterComboBoxModel<T> create(Column<T> column);
 	}
 
 	/**
@@ -719,6 +799,61 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 							.entityType(foreignKey.referencedType())
 							.connectionProvider(connectionProvider)
 							.build();
+		}
+
+		/**
+		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key, override to
+		 * provide a custom {@link EntityComboBoxModel} implementation.
+		 * <p>This default implementation returns a sorted {@link EntityComboBoxModel} using the default
+		 * null item caption if the underlying attribute is nullable.
+		 * <p>If the foreign key has select attributes defined, those are set in the combo box model.
+		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
+		 * @param connectionProvider the connection provider
+		 * @return a {@link EntityComboBoxModel} for the given foreign key
+		 * @see FilterComboBoxModel#NULL_CAPTION
+		 * @see EntityComboBoxModel.Builder#nullCaption(String)
+		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+		 * @see ValueAttributeDefinition#nullable()
+		 * @see EntityComboBoxModel.Builder#attributes(Collection)
+		 * @see ForeignKeyDefinition#attributes()
+		 */
+		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+			return EntityComboBoxModel.builder()
+							.entityType(requireNonNull(foreignKey).referencedType())
+							.connectionProvider(requireNonNull(connectionProvider))
+							.build();
+		}
+
+		/**
+		 * Creates a combo box model containing the current values of the given column.
+		 * This default implementation returns a sorted {@link FilterComboBoxModel} using the default
+		 * null item caption if the underlying column is nullable
+		 * @param column the column
+		 * @param connectionProvider the connection provider
+		 * @param <T> the value type
+		 * @return a combo box model based on the given column
+		 * @see FilterComboBoxModel#NULL_CAPTION
+		 */
+		default <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnectionProvider connectionProvider) {
+			EntityDefinition entityDefinition = requireNonNull(connectionProvider).entities()
+							.definition(requireNonNull(column).entityType());
+			boolean nullable = entityDefinition.columns().definition(column).nullable();
+
+			return FilterComboBoxModel.builder()
+							.items(() -> connectionProvider.connection().select(column))
+							.nullItem(nullable ? createNullItem(column) : null)
+							.includeNull(nullable)
+							.build();
+		}
+
+		static <T> @Nullable T createNullItem(Column<T> column) {
+			requireNonNull(column);
+
+			ProxyMethod<Object> nullItemToString = parameters -> FilterComboBoxModel.NULL_CAPTION.getOrThrow();
+
+			return column.type().valueClass().isInterface() ? ProxyBuilder.of(column.type().valueClass())
+							.method("toString", (ProxyMethod<T>) nullItemToString)
+							.build() : null;
 		}
 	}
 

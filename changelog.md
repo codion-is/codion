@@ -15,6 +15,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditor.EditorValue.editable() added.
 - EntityComboBoxModel migrated from swing-framework-model.
+- EntityEditor.ComboBoxModels added, related refactoring.
 ### is.codion.swing.framework.ui
 - EditorComponents.CreateComponents renamed ComponentFactory.
 

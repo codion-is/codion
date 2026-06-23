@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
@@ -130,6 +131,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final Value<EntityValidator> validator;
 	private final ComponentModels componentModels;
 	private final SearchModels searchModels = new DefaultSearchModels();
+	private final ComboBoxModels comboBoxModels;
 	private final DefaultDetailEditors detail = new DefaultDetailEditors();
 	private final EditorPersistence persistence;
 
@@ -143,10 +145,23 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 */
 	protected AbstractEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
 																 ComponentModels componentModels) {
+		this(entityType, connectionProvider, componentModels, DefaultComboBoxModels::new);
+	}
+
+	/**
+	 * Instantiates an {@link AbstractEntityEditor}
+	 * @param entityType the entity type
+	 * @param connectionProvider the connection provider
+	 * @param componentModels the editor component models
+	 * @param comboBoxModels supplies the {@link ComboBoxModels} instance to use
+	 */
+	protected AbstractEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
+																 ComponentModels componentModels, Function<AbstractEntityEditor<R>, ComboBoxModels> comboBoxModels) {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.settings = new DefaultSettings(entityDefinition.readOnly());
 		this.componentModels = requireNonNull(componentModels);
+		this.comboBoxModels = requireNonNull(comboBoxModels).apply(this);
 		this.persistence = new DefaultEditorPersistence();
 		this.entity = new DefaultEditorEntity();
 		this.validator = Value.builder()
@@ -233,6 +248,19 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	@Override
 	public final SearchModels searchModels() {
 		return searchModels;
+	}
+
+	/**
+	 * Returns the {@link ComboBoxModels} instance.
+	 * <p>Intentionally non-final, unlike the other editor sub-model accessors: combo box models are the only
+	 * editor sub-model with toolkit-specific variants, so subclasses may narrow the return type — for example
+	 * {@code SwingEntityEditor} narrows it to {@code SwingComboBoxModels}. To supply a custom {@link ComboBoxModels}
+	 * implementation, pass a factory to the protected constructor rather than overriding this accessor's behaviour.
+	 * @return the {@link ComboBoxModels} instance
+	 */
+	@Override
+	public ComboBoxModels comboBoxModels() {
+		return comboBoxModels;
 	}
 
 	@Override
@@ -1955,6 +1983,99 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public EntitySearchModel create(ForeignKey foreignKey) {
 			return componentModels.searchModel(foreignKey, connectionProvider);
+		}
+	}
+
+	/**
+	 * Provides default ComboBoxModel management.
+	 * <p>Parameterized on the two combo box model families so toolkit layers can narrow the foreign key based
+	 * models ({@code F}) and the map accessors without re-casting: a Swing subclass simply parameterizes this
+	 * with its toolkit types and only the column based {@code get}/{@code create} need narrowing overrides (Java
+	 * can't express "the {@code C} family at element type {@code T}" as a type parameter).
+	 * @param <F> the foreign key based combo box model type
+	 * @param <C> the column based combo box model type
+	 */
+	protected static class DefaultComboBoxModels<F extends EntityComboBoxModel, C extends FilterComboBoxModel<?>> implements ComboBoxModels {
+
+		private final AbstractEntityEditor<?> editor;
+		private final Map<ForeignKey, F> foreignKeyComboBoxModels = new HashMap<>();
+		private final Map<Column<?>, C> columnComboBoxModels = new HashMap<>();
+
+		/**
+		 * @param editor the editor
+		 */
+		protected DefaultComboBoxModels(AbstractEntityEditor<?> editor) {
+			this.editor = requireNonNull(editor);
+		}
+
+		@Override
+		public Map<ForeignKey, F> foreignKey() {
+			synchronized (foreignKeyComboBoxModels) {
+				return unmodifiableMap(foreignKeyComboBoxModels);
+			}
+		}
+
+		@Override
+		public Map<Column<?>, C> column() {
+			synchronized (columnComboBoxModels) {
+				return unmodifiableMap(columnComboBoxModels);
+			}
+		}
+
+		@Override
+		public final void initialize(Attribute<?>... attributes) {
+			for (Attribute<?> attribute : requireNonNull(attributes)) {
+				if (attribute instanceof ForeignKey) {
+					get((ForeignKey) attribute).items().refresh();
+				}
+				else if (attribute instanceof Column<?>) {
+					get((Column<?>) attribute).items().refresh();
+				}
+			}
+		}
+
+		@Override
+		public F get(ForeignKey foreignKey) {
+			editor.entityDefinition.foreignKeys().definition(foreignKey);
+			synchronized (foreignKeyComboBoxModels) {
+				// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+				// box models, create() may for example call this function
+				// see javadoc: must not attempt to update any other mappings of this map
+				F comboBoxModel = foreignKeyComboBoxModels.get(foreignKey);
+				if (comboBoxModel == null) {
+					comboBoxModel = create(requireNonNull(foreignKey));
+					foreignKeyComboBoxModels.put(foreignKey, comboBoxModel);
+				}
+
+				return comboBoxModel;
+			}
+		}
+
+		@Override
+		public <T> FilterComboBoxModel<T> get(Column<T> column) {
+			editor.entityDefinition.columns().definition(column);
+			synchronized (columnComboBoxModels) {
+				// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+				// box models, create() may for example call this function
+				// see javadoc: must not attempt to update any other mappings of this map
+				FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) columnComboBoxModels.get(column);
+				if (comboBoxModel == null) {
+					comboBoxModel = create(requireNonNull(column));
+					columnComboBoxModels.put(column, (C) comboBoxModel);
+				}
+
+				return comboBoxModel;
+			}
+		}
+
+		@Override
+		public F create(ForeignKey foreignKey) {
+			return (F) editor.componentModels.comboBoxModel(requireNonNull(foreignKey), editor.connectionProvider);
+		}
+
+		@Override
+		public <T> FilterComboBoxModel<T> create(Column<T> column) {
+			return editor.componentModels.comboBoxModel(requireNonNull(column), editor.connectionProvider);
 		}
 	}
 
