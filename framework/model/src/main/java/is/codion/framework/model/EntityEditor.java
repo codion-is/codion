@@ -786,6 +786,14 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		Attribute<T> attribute();
 
 		/**
+		 * @throws IllegalStateException in case the value is not editable
+		 * @param value the value
+		 * @see #editable()
+		 */
+		@Override
+		void set(@Nullable T value);
+
+		/**
 		 * @return the original value, or the current one if not modified
 		 * @see #modified()
 		 */
@@ -843,6 +851,14 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @return an observer notified when the given attribute value is edited
 		 */
 		Observer<T> edited();
+
+		/**
+		 * <p>Returns an {@link ObservableState} instance controlling whether the value of the given attribute is editable.
+		 * Non-editable values throw an exception on {@link EditorValue#set(Object)}
+		 * @return an {@link ObservableState} controlling the editable state of the value of the given attribute
+		 * @see EditorEntity#modified()
+		 */
+		State editable();
 
 		/**
 		 * <p>Returns the {@link Value} instance controlling the default value supplier for the given attribute.

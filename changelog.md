@@ -11,6 +11,8 @@ Codion Change Log
 ### is.codion.framework.db.http
 - HttpEntityConnection and HttpEntityConnectionProvider.Builder.domain(Domain) added.
 - HttpEntityConnection falls back to HttpURLConnection when java.http isn't available.
+### is.codion.framework.model
+- EntityEditor.EditorValue.editable() added.
 ### is.codion.swing.framework.ui
 - EditorComponents.CreateComponents renamed ComponentFactory.
 

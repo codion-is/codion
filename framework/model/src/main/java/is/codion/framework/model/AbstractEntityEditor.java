@@ -117,6 +117,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
 	private final Map<Attribute<?>, State> attributePresent = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
+	private final Map<Attribute<?>, State> attributeEditable = new HashMap<>();
 	private final Map<Attribute<?>, Value<String>> messages = new HashMap<>();
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
@@ -2166,6 +2167,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		@Override
+		public State editable() {
+			return attributeEditable.computeIfAbsent(attribute,
+							k -> State.state(true));
+		}
+
+		@Override
 		public Value<Supplier<@Nullable T>> defaultValue() {
 			return defaultValue;
 		}
@@ -2190,6 +2197,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		protected void setValue(@Nullable T value) {
+			if (!editable().is()) {
+				throw new IllegalStateException("Attribute is not editable");
+			}
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
 			T previousValue = entity.instance.set(attribute, value);
 			if (!Objects.deepEquals(value, previousValue)) {
