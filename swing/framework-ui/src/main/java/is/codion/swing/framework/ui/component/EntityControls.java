@@ -29,7 +29,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -213,9 +213,9 @@ final class EntityControls {
 
 	private static class EntityComboBoxOnInsert implements Consumer<Entity> {
 
-		private final EntityComboBoxModel comboBoxModel;
+		private final SwingEntityComboBoxModel comboBoxModel;
 
-		private EntityComboBoxOnInsert(EntityComboBoxModel comboBoxModel) {
+		private EntityComboBoxOnInsert(SwingEntityComboBoxModel comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
 		}
 
@@ -242,9 +242,9 @@ final class EntityControls {
 
 	private static final class EntityComboBoxOnUpdate implements Consumer<Entity> {
 
-		private final EntityComboBoxModel comboBoxModel;
+		private final SwingEntityComboBoxModel comboBoxModel;
 
-		private EntityComboBoxOnUpdate(EntityComboBoxModel comboBoxModel) {
+		private EntityComboBoxOnUpdate(SwingEntityComboBoxModel comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
 		}
 

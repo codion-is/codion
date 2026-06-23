@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
@@ -47,7 +47,7 @@ import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -223,7 +223,7 @@ public final class EntityComponents {
 	 * @return a foreign key JComboBox builder
 	 */
 	public EntityComboBox.Builder comboBox(ForeignKey foreignKey,
-																				 EntityComboBoxModel comboBoxModel) {
+																				 SwingEntityComboBoxModel comboBoxModel) {
 		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
 
 		return EntityComboBox.builder()
@@ -239,7 +239,7 @@ public final class EntityComponents {
 	 * @return a foreign key combo box panel builder
 	 */
 	public EntityComboBoxPanel.Builder comboBoxPanel(ForeignKey foreignKey,
-																									 EntityComboBoxModel comboBoxModel,
+																									 SwingEntityComboBoxModel comboBoxModel,
 																									 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = definition(foreignKey);
 
@@ -681,8 +681,8 @@ public final class EntityComponents {
 						((ValueAttributeDefinition<?>) attributeDefinition).maximumLength() : -1;
 	}
 
-	private static <T> FilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
-		return FilterComboBoxModel.builder()
+	private static <T> SwingComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
+		return SwingComboBoxModel.builder()
 						.items(asList(attribute.type().valueClass().getEnumConstants()))
 						.includeNull(nullable)
 						.build();

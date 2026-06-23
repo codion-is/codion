@@ -24,12 +24,12 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditions;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Swing {@link ConditionModel} supplier using {@link EntityComboBoxModel} for foreign keys based on small datasets
+ * A Swing {@link ConditionModel} supplier using {@link SwingEntityComboBoxModel} for foreign keys based on small datasets
  */
 public class SwingEntityConditions extends EntityConditions {
 
@@ -58,8 +58,8 @@ public class SwingEntityConditions extends EntityConditions {
 	 * @param foreignKey the foreign key
 	 * @return a combo box model to use for the equal value
 	 */
-	protected EntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
-		return EntityComboBoxModel.builder()
+	protected SwingEntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
+		return SwingEntityComboBoxModel.builder()
 						.entityType(requireNonNull(foreignKey).referencedType())
 						.connectionProvider(connectionProvider())
 						.includeNull(true)

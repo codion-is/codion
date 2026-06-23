@@ -16,8 +16,9 @@
  *
  * Copyright (c) 2008 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.framework.model.component;
+package is.codion.framework.model;
 
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
@@ -30,8 +31,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.PersistenceEvents;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
 

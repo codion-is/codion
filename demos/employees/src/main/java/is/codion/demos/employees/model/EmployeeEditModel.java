@@ -23,7 +23,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import java.util.Objects;
 
@@ -46,7 +46,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 	// time a combo box is required for editing multiple entities via the table panel
 	private void configureManagerComboBoxModel() {
 		//hide the employee being edited to prevent an employee from being made her own manager
-		EntityComboBoxModel comboBoxModel = editor().comboBoxModels().get(Employee.MANAGER_FK);
+		SwingEntityComboBoxModel comboBoxModel = editor().comboBoxModels().get(Employee.MANAGER_FK);
 		editor().entity().addConsumer(employee ->
 						comboBoxModel.filter().predicate().set(manager ->
 										!Objects.equals(manager, employee)));
@@ -62,9 +62,9 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 		// tag::createComboBoxModel[]
 		// Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president
 		@Override
-		public EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+		public SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
 			if (foreignKey.equals(Employee.MANAGER_FK)) {
-				return EntityComboBoxModel.builder()
+				return SwingEntityComboBoxModel.builder()
 								.foreignKey(foreignKey)
 								.connectionProvider(connectionProvider)
 								//Customize the null value caption so that it displays 'None'

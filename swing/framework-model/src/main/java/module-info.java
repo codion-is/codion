@@ -23,7 +23,7 @@
  * <li>{@link is.codion.swing.framework.model.SwingEntityEditModel}
  * <li>{@link is.codion.swing.framework.model.SwingEntityTableModel}
  * <li>{@link is.codion.swing.framework.model.SwingEntityApplicationModel}
- * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel}
+ * <li>{@link is.codion.swing.framework.model.component.SwingEntityComboBoxModel}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

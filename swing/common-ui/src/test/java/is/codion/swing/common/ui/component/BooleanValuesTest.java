@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -31,7 +31,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JToggleButton;
 
-import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.booleanItems;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanValuesTest {
@@ -51,8 +50,8 @@ public class BooleanValuesTest {
 
 	@Test
 	void booleanComboBox() {
-		FilterComboBoxModel<Item<Boolean>> model = FilterComboBoxModel.builder()
-						.items(booleanItems())
+		SwingComboBoxModel<Item<Boolean>> model = SwingComboBoxModel.builder()
+						.items(SwingComboBoxModel.booleanItems())
 						.build();
 		model.setSelectedItem(false);
 		ComponentValue<JComboBox<Item<Boolean>>, Boolean> componentValue = Components.itemComboBox()

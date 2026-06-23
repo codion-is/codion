@@ -16,28 +16,8 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.list;
-
-import is.codion.common.model.filter.FilterModel;
-
 /**
- * Handles the column sorting states for a {@link FilterListModel}.
- * @param <T> the type representing a row in the table model
+ * <p>A UI-agnostic list model based on {@link is.codion.common.model.filter.FilterModel}.
  */
-public interface FilterListSort<T> extends FilterModel.Sort<T> {
-
-	/**
-	 * Sorts ascending
-	 */
-	void ascending();
-
-	/**
-	 * Sorts descending
-	 */
-	void descending();
-
-	/**
-	 * Clears the sort
-	 */
-	void clear();
-}
+@org.jspecify.annotations.NullMarked
+package is.codion.common.model.component.list;

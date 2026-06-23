@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.model.component.list.SwingListModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -29,7 +29,7 @@ import javax.swing.ListSelectionModel;
 final class DefaultFilterListSelectedItemBuilder<T> extends AbstractFilterListBuilder<T, T, FilterList.Builder.SelectedItem<T>>
 				implements FilterList.Builder.SelectedItem<T> {
 
-	DefaultFilterListSelectedItemBuilder(FilterListModel<T> listModel) {
+	DefaultFilterListSelectedItemBuilder(SwingListModel<T> listModel) {
 		super(listModel);
 	}
 

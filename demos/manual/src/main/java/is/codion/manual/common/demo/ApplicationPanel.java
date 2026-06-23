@@ -18,14 +18,14 @@
  */
 package is.codion.manual.common.demo;
 
+import is.codion.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.plugin.flatlaf.intellij.themes.dracula.Dracula;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.indicator.ValidIndicator;
@@ -238,7 +238,7 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		FilterComboBoxModel<Item<Integer>> integerItemComboBoxModel = model.createIntegerItemComboBoxModel();
+		SwingComboBoxModel<Item<Integer>> integerItemComboBoxModel = model.createIntegerItemComboBoxModel();
 		Value<Integer> integerItemSelector = integerItemComboBoxModel.selector(new IntegerItemFinder());
 		NumberField<Integer> integerItemSelectorField = integerField()
 						.link(integerItemSelector)
@@ -439,7 +439,7 @@ public final class ApplicationPanel extends JPanel {
 		}
 	}
 
-	private static Control createSelectRandomItemControl(FilterComboBoxModel<Item<Integer>> integerItemComboBoxModel) {
+	private static Control createSelectRandomItemControl(SwingComboBoxModel<Item<Integer>> integerItemComboBoxModel) {
 		Random random = new Random();
 		return Control.builder()
 						.command(() -> integerItemComboBoxModel.setSelectedItem(

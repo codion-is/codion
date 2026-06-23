@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -78,8 +79,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-
-import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.booleanItems;
 
 /**
  * A factory for {@link ComponentBuilder} instances.
@@ -153,7 +152,7 @@ public final class Components {
 	 * @return a boolean based {@link ItemComboBoxBuilder}
 	 */
 	public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
-		return ItemComboBoxBuilder.builder().items(booleanItems());
+		return ItemComboBoxBuilder.builder().items(SwingComboBoxModel.booleanItems());
 	}
 
 	/**

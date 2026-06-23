@@ -23,22 +23,22 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.DefaultSwingForeignKeyConditionModel.DefaultBuilder;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A condition model using a {@link EntityComboBoxModel} for the {@link Operator#EQUAL} operand
+ * A condition model using a {@link SwingEntityComboBoxModel} for the {@link Operator#EQUAL} operand
  * and a {@link EntitySearchModel} for the {@link Operator#IN} operands.
  * @see SwingForeignKeyConditionModel#builder()
  */
 public interface SwingForeignKeyConditionModel extends ForeignKeyConditionModel {
 
 	/**
-	 * @return an {@link EntityComboBoxModel} to use for the EQUAL operand
+	 * @return an {@link SwingEntityComboBoxModel} to use for the EQUAL operand
 	 * @throws IllegalStateException in case no such model is available
 	 */
-	EntityComboBoxModel equalComboBoxModel();
+	SwingEntityComboBoxModel equalComboBoxModel();
 
 	/**
 	 * @param foreignKey the foreign key
@@ -59,7 +59,7 @@ public interface SwingForeignKeyConditionModel extends ForeignKeyConditionModel 
 		 * @param equalComboBoxModel the combo box model to use for the EQUAl operator
 		 * @return this builder
 		 */
-		Builder equalComboBoxModel(EntityComboBoxModel equalComboBoxModel);
+		Builder equalComboBoxModel(SwingEntityComboBoxModel equalComboBoxModel);
 
 		/**
 		 * @throws UnsupportedOperationException

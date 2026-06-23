@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.model.component.list;
 
-import is.codion.common.model.filter.FilterModel;
+import is.codion.common.model.component.list.FilterListModel;
 
 import org.jspecify.annotations.Nullable;
 
@@ -31,28 +31,31 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * <p>A {@link ListModel} based on {@link FilterModel}.
- * <p>For instances use @link #builder()}.
+ * A Swing {@link ListModel} based on the UI-agnostic
+ * {@link is.codion.common.model.component.list.FilterListModel}, adding the {@link ListModel}
+ * interface — mirroring how {@code FilterTableModel} extends {@code TableModel}. The rich model logic
+ * (items, selection, filtering, sorting) lives in the common module; this only adds the Swing coat,
+ * with {@link #selection()} narrowed to a {@link FilterListSelection} (a {@code javax.swing.ListSelectionModel}).
  * @param <T> the item type
  * @see #builder()
  */
-public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
+public interface SwingListModel<T> extends FilterListModel<T>, ListModel<T> {
 
 	@Override
 	FilterListSelection<T> selection();
-
-	@Override
-	FilterListSort<T> sort();
 
 	/**
 	 * @return a {@link Builder.ItemsStep} instance
 	 */
 	static Builder.ItemsStep builder() {
-		return DefaultFilterListModel.DefaultBuilder.ITEMS;
+		return DefaultSwingListModel.DefaultBuilder.ITEMS;
 	}
 
 	/**
-	 * Builds a {@link FilterListModel}
+	 * Builds a {@link SwingListModel} — the same options as the common
+	 * {@link is.codion.common.model.component.list.FilterListModel.Builder} (the selection is a
+	 * {@code javax.swing.ListSelectionModel} based one and the refresher a {@code ProgressWorker} based one),
+	 * but the chain stays Swing-typed so {@code build()} yields a {@link ListModel}.
 	 * @param <T> the item type
 	 */
 	interface Builder<T> {
@@ -66,21 +69,21 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 			 * @param <T> the item type
 			 * @return a new {@link Builder} instance
 			 */
-			<T> FilterListModel.Builder<T> items();
+			<T> Builder<T> items();
 
 			/**
 			 * @param <T> the item type
 			 * @param items the items to add to the model
 			 * @return a new {@link Builder} instance
 			 */
-			<T> FilterListModel.Builder<T> items(Collection<T> items);
+			<T> Builder<T> items(Collection<T> items);
 
 			/**
 			 * @param <T> the item type
 			 * @param items the item supplier
-			 * @return a new {@link FilterListModel.Builder} instance
+			 * @return a new {@link Builder} instance
 			 */
-			<T> FilterListModel.Builder<T> items(Supplier<Collection<T>> items);
+			<T> Builder<T> items(Supplier<Collection<T>> items);
 		}
 
 		/**
@@ -140,14 +143,8 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 		Builder<T> onIndexesSelected(Consumer<List<Integer>> indexes);
 
 		/**
-		 * @param selection receives the list model selection instance
-		 * @return this builder instance
+		 * @return a new {@link SwingListModel} instance
 		 */
-		Builder<T> selection(Consumer<FilterListSelection<T>> selection);
-
-		/**
-		 * @return a new {@link FilterListModel} instance
-		 */
-		FilterListModel<T> build();
+		SwingListModel<T> build();
 	}
 }

@@ -26,7 +26,7 @@ import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -72,7 +72,7 @@ public final class SwingEntityModelTest
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
 		SwingEntityTableModel employeeTableModel = employeeModel.tableModel();
 
-		EntityComboBoxModel comboBoxModel = employeeEditModel.editor().comboBoxModels().get(Employee.MGR_FK);
+		SwingEntityComboBoxModel comboBoxModel = employeeEditModel.editor().comboBoxModels().get(Employee.MGR_FK);
 		comboBoxModel.selection().item().link(employeeEditModel.editor().value(Employee.MGR_FK));
 		employeeTableModel.items().refresh();
 		for (Entity employee : employeeTableModel.items().get()) {
@@ -89,7 +89,7 @@ public final class SwingEntityModelTest
 		assertTrue(departmentModel.detail().active().contains(employeeModel));
 		departmentModel.tableModel().items().refresh();
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
-		EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK);
+		SwingEntityComboBoxModel departmentsComboBoxModel = employeeEditModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK);
 		departmentsComboBoxModel.items().refresh();
 		Entity.Key primaryKey = connectionProvider().entities().primaryKey(Department.TYPE, 40);//operations, no employees
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey));
@@ -135,7 +135,7 @@ public final class SwingEntityModelTest
 			Entity department = connection.selectSingle(Department.NAME.equalTo("OPERATIONS"));
 			departmentModel.tableModel().selection().item().set(department);
 			SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
-			EntityComboBoxModel deptComboBoxModel = employeeModel.editor()
+			SwingEntityComboBoxModel deptComboBoxModel = employeeModel.editor()
 							.comboBoxModels().get(Employee.DEPARTMENT_FK);
 			deptComboBoxModel.items().refresh();
 			deptComboBoxModel.setSelectedItem(department);

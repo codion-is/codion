@@ -16,8 +16,9 @@
  *
  * Copyright (c) 2024 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.framework.model.component;
+package is.codion.framework.model;
 
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
@@ -30,14 +31,11 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.PersistenceEvents;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.event.ListDataListener;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -117,10 +115,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		validateType(requireNonNull(primaryKey), entityItems.entityDefinition.type());
 		Optional<Entity> entity = find(primaryKey);
 		if (entity.isPresent()) {
-			setSelectedItem(entity.get());
+			selection().item().set(entity.get());
 		}
 		else {
-			filteredEntity(primaryKey).ifPresent(this::setSelectedItem);
+			filteredEntity(primaryKey).ifPresent(selection().item()::set);
 		}
 	}
 
@@ -168,31 +166,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	@Override
 	public Sort<Entity> sort() {
 		return comboBoxModel.sort();
-	}
-
-	@Override
-	public void setSelectedItem(Object selectedItem) {
-		comboBoxModel.setSelectedItem(selectedItem);
-	}
-
-	@Override
-	public int getSize() {
-		return comboBoxModel.getSize();
-	}
-
-	@Override
-	public Entity getElementAt(int index) {
-		return comboBoxModel.getElementAt(index);
-	}
-
-	@Override
-	public void addListDataListener(ListDataListener listener) {
-		comboBoxModel.addListDataListener(listener);
-	}
-
-	@Override
-	public void removeListDataListener(ListDataListener listener) {
-		comboBoxModel.removeListDataListener(listener);
 	}
 
 	private Optional<Entity> find(Entity.Key primaryKey) {

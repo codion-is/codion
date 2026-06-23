@@ -16,8 +16,9 @@
  *
  * Copyright (c) 2008 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.combobox;
+package is.codion.common.model.component.combobox;
 
+import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
@@ -26,13 +27,11 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -44,7 +43,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -65,11 +63,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final DefaultComboBoxSelection selection;
 	private final DefaultComboBoxItems modelItems;
-
-	/**
-	 * Due to a java.util.ConcurrentModificationException in OSX
-	 */
-	private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
 	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
 		selection = new DefaultComboBoxSelection(builder.translator);
@@ -103,45 +96,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public void setSelectedItem(@Nullable Object item) {
-		selection.selected.setSelectedItem(item);
-	}
-
-	@Override
-	public void addListDataListener(ListDataListener listener) {
-		listDataListeners.add(requireNonNull(listener));
-	}
-
-	@Override
-	public void removeListDataListener(ListDataListener listener) {
-		listDataListeners.remove(requireNonNull(listener));
-	}
-
-	@Override
-	public @Nullable T getElementAt(int index) {
-		T element = modelItems.included.items.get(index);
-		if (element == null) {
-			return modelItems.nullItem;
-		}
-
-		return element;
-	}
-
-	@Override
-	public int getSize() {
-		return modelItems.included.items.size();
-	}
-
-	@Override
 	public <V> Value<V> selector(ItemFinder<T, V> itemFinder) {
 		return new SelectorValue<>(itemFinder);
-	}
-
-	private void fireContentsChanged() {
-		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
-		for (ListDataListener dataListener : listDataListeners) {
-			dataListener.contentsChanged(event);
-		}
 	}
 
 	private static final class DefaultItemsStep implements Builder.ItemsStep {
@@ -172,8 +128,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
-		private boolean async = ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;
+		private @Nullable Function<ComboBoxItems<T>, FilterModel.Refresher<T>> refresherFactory;
 		private boolean filterSelected;
 		private boolean includeNull;
 		private @Nullable T nullItem;
@@ -229,14 +185,14 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Builder<T> async(boolean async) {
-			this.async = async;
+		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
+			this.onRefreshException = requireNonNull(onRefreshException);
 			return this;
 		}
 
 		@Override
-		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
-			this.onRefreshException = requireNonNull(onRefreshException);
+		public Builder<T> refresher(Function<ComboBoxItems<T>, FilterModel.Refresher<T>> refresher) {
+			this.refresherFactory = requireNonNull(refresher);
 			return this;
 		}
 
@@ -347,7 +303,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final Lock lock = new Lock() {};
 
 		private final Sort<T> sort;
-		private final AbstractRefresher<T> refresher;
+		private final Refresher<T> refresher;
 		private final DefaultIncludedItems included;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
@@ -370,7 +326,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (builder.items != null) {
 				set(builder.items);
 			}
-			refresher = new DefaultRefreshWorker(builder.supplier, builder.async, builder.onRefreshException);
+			refresher = builder.refresherFactory != null
+							? builder.refresherFactory.apply(this)
+							: new DefaultRefresher<>(builder.supplier, this::set, builder.onRefreshException);
 			if (builder.items == null && builder.refresh) {
 				refresher.refresh(null);
 			}
@@ -595,6 +553,16 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return cleared;
 		}
 
+		@Override
+		public boolean includesNull() {
+			return includeNull;
+		}
+
+		@Override
+		public @Nullable T nullItem() {
+			return nullItem;
+		}
+
 		private void filterInternal() {
 			Predicate<T> predicate = included.predicate.get();
 			if (predicate != null) {
@@ -611,10 +579,10 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private void updateSelectedItem(T removedItem) {
 			if (Objects.equals(selection.selected.item, removedItem)) {
 				if (modelItems.nullItem != null) {
-					setSelectedItem(null);
+					selection.selected.setSelectedItem(null);
 				}
 				else if (!modelItems.included.items.isEmpty()) {
-					setSelectedItem(modelItems.included.items.get(0));
+					selection.selected.setSelectedItem(modelItems.included.items.get(0));
 				}
 			}
 		}
@@ -631,19 +599,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private boolean include(T item) {
 			return included.predicate.isNull() || included.predicate.getOrThrow().test(item);
-		}
-
-		private final class DefaultRefreshWorker extends AbstractRefreshWorker<T> {
-
-			private DefaultRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async,
-																	 @Nullable Consumer<Exception> onException) {
-				super(supplier, async, onException);
-			}
-
-			@Override
-			protected void processResult(Collection<T> result) {
-				set(result);
-			}
 		}
 
 		private final class DefaultIncludedItems implements IncludedItems<T> {
@@ -769,7 +724,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private void notifyChanges() {
-				fireContentsChanged();
 				changed.accept(get());
 			}
 		}
@@ -850,7 +804,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private SelectedItem(Function<Object, T> translator) {
 			this.translator = translator;
-			addListener(DefaultFilterComboBoxModel.this::fireContentsChanged);
 		}
 
 		@Override
@@ -899,7 +852,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected void setValue(@Nullable V value) {
-			setSelectedItem(value == null ? null : itemFinder.findItem(modelItems.included.get(), value).orElse(null));
+			selection.selected.setSelectedItem(value == null ? null : itemFinder.findItem(modelItems.included.get(), value).orElse(null));
 		}
 	}
 
@@ -920,6 +873,67 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		protected void setValue(@Nullable Predicate<R> predicate) {
 			this.predicate = predicate;
+		}
+	}
+
+	/**
+	 * A UI-agnostic synchronous {@link FilterModel.Refresher} — the default when no refresher factory is supplied.
+	 * The Swing and Android layers plug in their own (ProgressWorker / coroutine) refreshers via
+	 * {@link Builder#refresher(Function)}.
+	 */
+	private static final class DefaultRefresher<T> extends FilterModel.AbstractRefresher<T> {
+
+		private final Consumer<Collection<T>> applier;
+		private final Consumer<Exception> onException;
+
+		private DefaultRefresher(@Nullable Supplier<Collection<T>> supplier, Consumer<Collection<T>> applier,
+		                         @Nullable Consumer<Exception> onException) {
+			super(supplier, false);
+			this.applier = applier;
+			this.onException = onException == null ? new RethrowHandler() : onException;
+		}
+
+		@Override
+		protected boolean isUserInterfaceThread() {
+			return false;
+		}
+
+		@Override
+		protected void refreshAsync(@Nullable Consumer<Collection<T>> onResult) {
+			refreshSync(onResult);
+		}
+
+		@Override
+		protected void refreshSync(@Nullable Consumer<Collection<T>> onResult) {
+			items().ifPresent(supplier -> {
+				setActive(true);
+				try {
+					Collection<T> result = supplier.get();
+					setActive(false);
+					processResult(result);
+					if (onResult != null) {
+						onResult.accept(result);
+					}
+					notifyResult(result);
+				}
+				catch (Exception e) {
+					setActive(false);
+					onException.accept(e);
+				}
+			});
+		}
+
+		@Override
+		protected void processResult(Collection<T> result) {
+			applier.accept(result);
+		}
+
+		private static final class RethrowHandler implements Consumer<Exception> {
+
+			@Override
+			public void accept(Exception exception) {
+				throw Exceptions.runtime(exception);
+			}
 		}
 	}
 

@@ -22,7 +22,7 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
 
@@ -109,8 +109,8 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	}
 
 	@Override
-	public FilterComboBoxModel<Item<LookAndFeelEnabler>> getModel() {
-		return (FilterComboBoxModel<Item<LookAndFeelEnabler>>) super.getModel();
+	public SwingComboBoxModel<Item<LookAndFeelEnabler>> getModel() {
+		return (SwingComboBoxModel<Item<LookAndFeelEnabler>>) super.getModel();
 	}
 
 	/**
@@ -282,8 +282,8 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		return new DefaultLookAndFeelEnabler(new LookAndFeelInfo(lookAndFeel.getName(), lookAndFeel.getClass().getName()));
 	}
 
-	private static FilterComboBoxModel<Item<LookAndFeelEnabler>> createLookAndFeelComboBoxModel() {
-		return FilterComboBoxModel.builder()
+	private static SwingComboBoxModel<Item<LookAndFeelEnabler>> createLookAndFeelComboBoxModel() {
+		return SwingComboBoxModel.builder()
 						.items(lookAndFeels().stream()
 										.map(provider -> item(provider, provider.lookAndFeelInfo().getName()))
 										.collect(toList()))

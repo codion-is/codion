@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.i18n.Messages;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -63,10 +63,10 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 	protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel) {
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		value((T) comboBoxModel.getSelectedItem());
-		if (comboBoxModel instanceof FilterComboBoxModel) {
+		if (comboBoxModel instanceof SwingComboBoxModel) {
 			popupControls((comboBox, controls) ->
 							controls.control(Control.builder()
-											.command(new RefreshCommand((FilterComboBoxModel<?>) comboBoxModel))
+											.command(new RefreshCommand((SwingComboBoxModel<?>) comboBoxModel))
 											.caption(Messages.refresh())
 											.build()));
 		}
@@ -156,8 +156,8 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 							.normalize(normalize)
 							.enable(comboBox);
 		}
-		if (comboBoxModel instanceof FilterComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
-			((FilterComboBoxModel<T>) comboBoxModel).selection().item().addConsumer(new MoveCaretToStart<>(comboBox));
+		if (comboBoxModel instanceof SwingComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
+			((SwingComboBoxModel<T>) comboBoxModel).selection().item().addConsumer(new MoveCaretToStart<>(comboBox));
 		}
 		if (renderer != null) {
 			comboBox.setRenderer(renderer);
@@ -215,9 +215,9 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 
 	private static final class RefreshCommand implements Control.Command {
 
-		private final FilterComboBoxModel<?> comboBoxModel;
+		private final SwingComboBoxModel<?> comboBoxModel;
 
-		private RefreshCommand(FilterComboBoxModel<?> comboBoxModel) {
+		private RefreshCommand(SwingComboBoxModel<?> comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
 		}
 

@@ -27,8 +27,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorValue;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.list.SwingListModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
@@ -52,7 +52,7 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditor;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
 import is.codion.swing.framework.ui.component.EntityComponents;
@@ -814,7 +814,7 @@ public final class EditorComponents {
 		 * @return a combo box builder
 		 */
 		public <T extends Enum<T>, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> enumComboBox(Column<T> column) {
-			return components.component(column).set((B) entityComponents.comboBox(column, FilterComboBoxModel.builder()
+			return components.component(column).set((B) entityComponents.comboBox(column, SwingComboBoxModel.builder()
 											.items(asList(column.type().valueClass().getEnumConstants()))
 											.includeNull(components.editor().entityDefinition().columns().definition(column).nullable())
 											.build()))
@@ -827,7 +827,7 @@ public final class EditorComponents {
 		 * @return a foreign key combo box builder
 		 */
 		public EntityComboBox.Builder comboBox(ForeignKey foreignKey) {
-			EntityComboBoxModel comboBoxModel = components.editor().comboBoxModels().get(foreignKey);
+			SwingEntityComboBoxModel comboBoxModel = components.editor().comboBoxModels().get(foreignKey);
 
 			return components.component(foreignKey).set(entityComponents.comboBox(foreignKey, comboBoxModel))
 							.onSetVisible(ComponentFactory::refreshIfCleared);
@@ -841,7 +841,7 @@ public final class EditorComponents {
 		 */
 		public EntityComboBoxPanel.Builder comboBoxPanel(ForeignKey foreignKey,
 																										 Supplier<EntityEditPanel> editPanel) {
-			EntityComboBoxModel comboBoxModel = components.editor().comboBoxModels().get(foreignKey);
+			SwingEntityComboBoxModel comboBoxModel = components.editor().comboBoxModels().get(foreignKey);
 
 			return components.component(foreignKey).set(entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
 							.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
@@ -887,7 +887,7 @@ public final class EditorComponents {
 		 * @param <T> the value type
 		 * @return a list builder factory
 		 */
-		public <T> FilterListBuilderFactory<T> list(FilterListModel<T> listModel) {
+		public <T> FilterListBuilderFactory<T> list(SwingListModel<T> listModel) {
 			return new FilterListBuilderFactory<>(listModel);
 		}
 
@@ -924,7 +924,7 @@ public final class EditorComponents {
 
 			private final FilterList.Builder.Factory<T> builderFactory;
 
-			private FilterListBuilderFactory(FilterListModel<T> listModel) {
+			private FilterListBuilderFactory(SwingListModel<T> listModel) {
 				this.builderFactory = FilterList.builder().model(listModel);
 			}
 
@@ -967,8 +967,8 @@ public final class EditorComponents {
 
 		private static void refreshIfCleared(JComboBox<?> comboBox) {
 			ComboBoxModel<?> model = comboBox.getModel();
-			if (model instanceof FilterComboBoxModel) {
-				FilterComboBoxModel<?> comboBoxModel = (FilterComboBoxModel<?>) model;
+			if (model instanceof SwingComboBoxModel) {
+				SwingComboBoxModel<?> comboBoxModel = (SwingComboBoxModel<?>) model;
 				if (comboBoxModel.items().cleared()) {
 					comboBoxModel.items().refresh();
 				}

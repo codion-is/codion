@@ -27,7 +27,7 @@ import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
@@ -115,7 +115,7 @@ public class EntityConditionComponents implements ConditionComponents {
 
 	private JComponent createEqualForeignKeyField(ForeignKeyConditionModel conditionModel) {
 		if (conditionModel instanceof SwingForeignKeyConditionModel) {
-			EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) conditionModel).equalComboBoxModel();
+			SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) conditionModel).equalComboBoxModel();
 
 			return inputComponents.comboBox(conditionModel.attribute(), comboBoxModel)
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
@@ -155,7 +155,7 @@ public class EntityConditionComponents implements ConditionComponents {
 	}
 
 	private static void refreshIfCleared(EntityComboBox comboBox) {
-		EntityComboBoxModel model = comboBox.model();
+		SwingEntityComboBoxModel model = comboBox.model();
 		if (model.items().cleared()) {
 			model.items().refresh();
 		}

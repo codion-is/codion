@@ -31,8 +31,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.action.DelayedAction;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.list.SwingListModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
@@ -705,7 +705,7 @@ public final class EntitySearchField extends HintTextField {
 				items.add(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
 				columnBasePanelBuilder.add(createSettingsPanel(entry.getValue()), entry.getKey().name());
 			}
-			FilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = FilterComboBoxModel.builder()
+			SwingComboBoxModel<Item<Column<String>>> columnComboBoxModel = SwingComboBoxModel.builder()
 							.items(items)
 							.build();
 			JPanel columnBasePanel = columnBasePanelBuilder.build();
@@ -844,7 +844,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(List<Entity> entities) {
-			FilterListModel<Entity> listModel = list.model();
+			SwingListModel<Entity> listModel = list.model();
 			requireNonNull(entities).forEach(listModel.items()::add);
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
 			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
@@ -865,7 +865,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private FilterList<Entity> createList(EntitySearchField searchField) {
-			FilterListModel<Entity> listModel = FilterListModel.builder()
+			SwingListModel<Entity> listModel = SwingListModel.builder()
 							.<Entity>items()
 							.build();
 

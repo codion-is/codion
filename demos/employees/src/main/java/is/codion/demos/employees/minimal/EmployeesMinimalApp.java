@@ -31,7 +31,7 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -184,8 +184,8 @@ public final class EmployeesMinimalApp {
 			 * so that is only shows managers.
 			 */
 			@Override
-			public EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-				EntityComboBoxModel comboBoxModel = SwingComponentModels.super.comboBoxModel(foreignKey, connectionProvider);
+			public SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+				SwingEntityComboBoxModel comboBoxModel = SwingComponentModels.super.comboBoxModel(foreignKey, connectionProvider);
 				if (foreignKey.equals(Employee.MANAGER_FK)) {
 					comboBoxModel.condition().set(() -> Employee.JOB.in("Manager", "President"));
 				}

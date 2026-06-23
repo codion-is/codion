@@ -20,7 +20,7 @@ package is.codion.manual.keybinding;
 
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
@@ -50,11 +50,11 @@ final class KeyBindingModel {
 	private static final String PRESSED = "pressed ";
 	private static final String RELEASED = "released ";
 
-	private final FilterComboBoxModel<String> componentModel;
+	private final SwingComboBoxModel<String> componentModel;
 	private final FilterTableModel<KeyBindingRow, String> tableModel;
 
-	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
-		this.componentModel = FilterComboBoxModel.builder()
+	KeyBindingModel(SwingComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
+		this.componentModel = SwingComboBoxModel.builder()
 						.items(new ComponentItems(lookAndFeelModel))
 						.refresh(true)
 						.build();
@@ -65,7 +65,7 @@ final class KeyBindingModel {
 		bindEvents(lookAndFeelModel);
 	}
 
-	FilterComboBoxModel<String> componentModel() {
+	SwingComboBoxModel<String> componentModel() {
 		return componentModel;
 	}
 
@@ -73,7 +73,7 @@ final class KeyBindingModel {
 		return tableModel;
 	}
 
-	private void bindEvents(FilterComboBoxModel<?> lookAndFeelModel) {
+	private void bindEvents(SwingComboBoxModel<?> lookAndFeelModel) {
 		// Refresh the component combo box when a look and feel is selected
 		lookAndFeelModel.selection().item().addListener(componentModel.items()::refresh);
 		// Refresh the table model when the component combo box has been refreshed
@@ -123,9 +123,9 @@ final class KeyBindingModel {
 	// Provides the items when populating the component combo box model
 	private static final class ComponentItems implements Supplier<Collection<String>> {
 
-		private final FilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel;
+		private final SwingComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel;
 
-		private ComponentItems(FilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
+		private ComponentItems(SwingComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
 			this.lookAndFeelModel = lookAndFeelModel;
 		}
 

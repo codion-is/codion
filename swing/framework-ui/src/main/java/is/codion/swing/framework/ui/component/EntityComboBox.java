@@ -18,9 +18,9 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder;
@@ -29,7 +29,7 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import org.jspecify.annotations.Nullable;
@@ -53,8 +53,8 @@ import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A UI component based on the {@link EntityComboBoxModel}.
- * @see EntityComboBoxModel
+ * A UI component based on the {@link SwingEntityComboBoxModel}.
+ * @see SwingEntityComboBoxModel
  */
 public final class EntityComboBox extends JComboBox<Entity> {
 
@@ -95,14 +95,14 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	@Override
-	public EntityComboBoxModel getModel() {
-		return (EntityComboBoxModel) super.getModel();
+	public SwingEntityComboBoxModel getModel() {
+		return (SwingEntityComboBoxModel) super.getModel();
 	}
 
 	/**
-	 * @return the underlying {@link EntityComboBoxModel}
+	 * @return the underlying {@link SwingEntityComboBoxModel}
 	 */
-	public EntityComboBoxModel model() {
+	public SwingEntityComboBoxModel model() {
 		return getModel();
 	}
 
@@ -192,7 +192,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 			 * @param model the combo box model
 			 * @return a builder for a {@link EntityComboBox}
 			 */
-			Builder model(EntityComboBoxModel model);
+			Builder model(SwingEntityComboBoxModel model);
 		}
 
 		/**
@@ -307,7 +307,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	private static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
-		public Builder model(EntityComboBoxModel model) {
+		public Builder model(SwingEntityComboBoxModel model) {
 			return new DefaultBuilder(model);
 		}
 	}
@@ -322,7 +322,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		private boolean confirmAdd;
 		private boolean confirmEdit;
 
-		private DefaultBuilder(EntityComboBoxModel comboBoxModel) {
+		private DefaultBuilder(SwingEntityComboBoxModel comboBoxModel) {
 			super(comboBoxModel);
 		}
 
@@ -355,8 +355,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 			return this;
 		}
 
-		private EntityComboBoxModel comboBoxModel() {
-			return (EntityComboBoxModel) comboBoxModel;
+		private SwingEntityComboBoxModel comboBoxModel() {
+			return (SwingEntityComboBoxModel) comboBoxModel;
 		}
 	}
 }

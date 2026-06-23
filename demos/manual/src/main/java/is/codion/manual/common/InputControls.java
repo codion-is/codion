@@ -21,7 +21,7 @@ package is.codion.manual.common;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
@@ -413,8 +413,8 @@ public final class InputControls {
 		Supplier<Collection<String>> items = () ->
 						List.of("One", "Two", "Three");
 
-		FilterComboBoxModel<String> model =
-						FilterComboBoxModel.builder()
+		SwingComboBoxModel<String> model =
+						SwingComboBoxModel.builder()
 										.items(items)
 										.nullItem("-")
 										.build();
@@ -440,8 +440,8 @@ public final class InputControls {
 
 	static void comboBoxCompletion() {
 		// tag::comboBoxCompletion[]
-		FilterComboBoxModel<String> model =
-						FilterComboBoxModel.builder()
+		SwingComboBoxModel<String> model =
+						SwingComboBoxModel.builder()
 										.items(List.of("Jon", "Jón", "Jónsi"))
 										.nullItem("-")
 										.build();

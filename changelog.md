@@ -8,11 +8,13 @@ Codion Change Log
 ### is.codion.common.model
 - FilterModel.Items.sort() added.
 - DefaultMultiSelection and DefaultSingleSelection added along with MultiSelection.IndexedItems added.
+- FilterComboBoxModel and FilterListModel migrated from swing-common-model.
 ### is.codion.framework.db.http
 - HttpEntityConnection and HttpEntityConnectionProvider.Builder.domain(Domain) added.
 - HttpEntityConnection falls back to HttpURLConnection when java.http isn't available.
 ### is.codion.framework.model
 - EntityEditor.EditorValue.editable() added.
+- EntityComboBoxModel migrated from swing-framework-model.
 ### is.codion.swing.framework.ui
 - EditorComponents.CreateComponents renamed ComponentFactory.
 

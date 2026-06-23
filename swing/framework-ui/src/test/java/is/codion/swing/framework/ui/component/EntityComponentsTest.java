@@ -26,7 +26,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.model.EntityEditor.EditorValue;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
@@ -148,7 +148,7 @@ public final class EntityComponentsTest {
 										.transferFocusOnEnter(true)
 										.link(editor.value(Detail.BOOLEAN_NULLABLE))
 										.buildValue();
-		FilterComboBoxModel<Item<Boolean>> boxModel = (FilterComboBoxModel<Item<Boolean>>) componentValue.component().getModel();
+		SwingComboBoxModel<Item<Boolean>> boxModel = (SwingComboBoxModel<Item<Boolean>>) componentValue.component().getModel();
 		assertTrue(boxModel.selection().item().getOrThrow().getOrThrow());
 		boxModel.setSelectedItem(null);
 		assertNull(editor.value(Detail.BOOLEAN_NULLABLE).get());
@@ -166,7 +166,7 @@ public final class EntityComponentsTest {
 										.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 
-		FilterComboBoxModel<Item<Integer>> model = (FilterComboBoxModel<Item<Integer>>) comboBox.getModel();
+		SwingComboBoxModel<Item<Integer>> model = (SwingComboBoxModel<Item<Integer>>) comboBox.getModel();
 		assertEquals(0, model.items().included().indexOf(null));
 		assertTrue(model.items().contains(null));
 
@@ -187,7 +187,7 @@ public final class EntityComponentsTest {
 						entityComponents.itemComboBox(Detail.INT_ITEMS)
 										.sorted(false)
 										.buildValue();
-		FilterComboBoxModel<Item<Integer>> model = (FilterComboBoxModel<Item<Integer>>) componentValue.component().getModel();
+		SwingComboBoxModel<Item<Integer>> model = (SwingComboBoxModel<Item<Integer>>) componentValue.component().getModel();
 
 		//null item should be first, regardless of sorting
 		assertEquals(0, model.items().included().indexOf(null));
@@ -218,7 +218,7 @@ public final class EntityComponentsTest {
 	@Test
 	void enumComboBox() {
 		JComboBox<?> comboBox = (JComboBox<?>) entityComponents.component(Detail.ENUM_TYPE).build();
-		FilterComboBoxModel<EnumType> comboBoxModel = (FilterComboBoxModel<EnumType>) comboBox.getModel();
+		SwingComboBoxModel<EnumType> comboBoxModel = (SwingComboBoxModel<EnumType>) comboBox.getModel();
 		comboBoxModel.items().refresh();
 		assertEquals(4, comboBoxModel.getSize());
 		for (EnumType enumType : EnumType.values()) {

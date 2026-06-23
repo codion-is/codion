@@ -16,9 +16,8 @@
  *
  * Copyright (c) 2008 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.combobox;
+package is.codion.common.model.component.combobox;
 
-import is.codion.common.i18n.Messages;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.value.Value;
@@ -27,7 +26,6 @@ import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.ComboBoxModel;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -38,17 +36,17 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Configuration.stringValue;
-import static is.codion.common.utilities.item.Item.item;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A combo box model based on {@link FilterModel}.
+ * A UI-agnostic combo box model based on {@link FilterModel}. The Swing-specific
+ * {@code is.codion.swing.common.model.component.combobox.FilterComboBoxModel} extends this with
+ * {@code javax.swing.ComboBoxModel} (mirroring how {@code FilterTableModel} extends {@code TableModel}).
  * @param <T> the type of values in this combo box model
  * @see #builder()
  * @see IncludedItems#predicate()
  */
-public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T> {
+public interface FilterComboBoxModel<T> extends FilterModel<T> {
 
 	/**
 	 * Specifies the caption used by default to represent the null item in combo box models.
@@ -84,39 +82,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	}
 
 	/**
-	 * @return items for null, true and false, using the default captions
-	 * @see FilterComboBoxModel#NULL_CAPTION
-	 * @see Messages#yes()
-	 * @see Messages#no()
-	 */
-	static List<Item<Boolean>> booleanItems() {
-		return booleanItems(NULL_CAPTION.getOrThrow());
-	}
-
-	/**
-	 * @param nullCaption the caption for the null value
-	 * @return items for null, true and false, using the given null caption and the default true/false captions
-	 * @see Messages#yes()
-	 * @see Messages#no()
-	 */
-	static List<Item<Boolean>> booleanItems(String nullCaption) {
-		return booleanItems(nullCaption, Messages.yes(), Messages.no());
-	}
-
-	/**
-	 * @param nullCaption the caption for null
-	 * @param trueCaption the caption for true
-	 * @param falseCaption the caption for false
-	 * @return items for null, true and false
-	 */
-	static List<Item<Boolean>> booleanItems(String nullCaption, String trueCaption, String falseCaption) {
-		return asList(
-						item(null, requireNonNull(nullCaption)),
-						item(true, requireNonNull(trueCaption)),
-						item(false, requireNonNull(falseCaption)));
-	}
-
-	/**
 	 * Builds a {@link FilterComboBoxModel}
 	 * @param <T> the item type
 	 */
@@ -146,9 +111,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 			 * @param items the items to display in the model
 			 * @param <T> the item type
 			 * @return a new {@link ItemComboBoxModelBuilder}
-			 * @see FilterComboBoxModel#booleanItems()
-			 * @see FilterComboBoxModel#booleanItems(String)
-			 * @see FilterComboBoxModel#booleanItems(String, String, String)
 			 */
 			<T> ItemComboBoxModelBuilder<T> items(List<Item<T>> items);
 		}
@@ -204,18 +166,21 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		Builder<T> onItemSelected(Consumer<@Nullable T> item);
 
 		/**
-		 * @param async true if async refresh should be enabled
-		 * @return this builder instance
-		 */
-		Builder<T> async(boolean async);
-
-		/**
 		 * By default, exceptions during refresh are rethrown,
 		 * use this method to handle async exceptions differently
 		 * @param onRefreshException the exception handler to use during refresh
 		 * @return this builder instance
 		 */
 		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
+
+		/**
+		 * Provides the {@link FilterModel.Refresher} for this model, given its {@link ComboBoxItems}.
+		 * The default is a UI-agnostic synchronous refresher; the Swing layer plugs a {@code ProgressWorker}
+		 * based one and Android a coroutine based one — mirroring {@link FilterModel.Items.Builder.RefresherStep}.
+		 * @param refresher the refresher factory
+		 * @return this builder instance
+		 */
+		Builder<T> refresher(Function<ComboBoxItems<T>, FilterModel.Refresher<T>> refresher);
 
 		/**
 		 * Default false.
@@ -282,6 +247,19 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @return true if the items have been cleared and need to be refreshed
 		 */
 		boolean cleared();
+
+		/**
+		 * @return true if a null item is included, shown as the first item
+		 * @see FilterComboBoxModel.Builder#includeNull(boolean)
+		 * @see FilterComboBoxModel.Builder#nullItem(Object)
+		 */
+		boolean includesNull();
+
+		/**
+		 * @return the item representing null, possibly null itself (then rendered using {@link #NULL_CAPTION})
+		 * @see FilterComboBoxModel.Builder#nullItem(Object)
+		 */
+		@Nullable T nullItem();
 	}
 
 	/**

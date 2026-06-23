@@ -1,0 +1,289 @@
+/*
+ * This file is part of Codion.
+ *
+ * Codion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Codion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2008 - 2026, Björn Darri Sigurðsson.
+ */
+package is.codion.swing.common.model.component.combobox;
+
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.common.model.filter.FilterModel;
+import is.codion.common.model.selection.SingleSelection;
+import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.item.Item;
+import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
+
+import org.jspecify.annotations.Nullable;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
+
+/**
+ * A Swing {@link javax.swing.ComboBoxModel} coat over the UI-agnostic
+ * {@link is.codion.common.model.component.combobox.FilterComboBoxModel}: delegates the rich model surface to a
+ * common instance and adds the {@link javax.swing.ListModel}/{@code ComboBoxModel} methods, firing
+ * {@link ListDataEvent}s off the common model's own observable items + selection.
+ */
+final class DefaultSwingComboBoxModel<T> implements SwingComboBoxModel<T> {
+
+	/**
+	 * Due to a java.util.ConcurrentModificationException in OSX
+	 */
+	private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
+
+	private final FilterComboBoxModel<T> model;
+
+	private DefaultSwingComboBoxModel(FilterComboBoxModel<T> model) {
+		this.model = model;
+		// Bridge the common model's observables to Swing list-data events.
+		model.items().included().observer().addListener(this::fireContentsChanged);
+		model.selection().item().addListener(this::fireContentsChanged);
+	}
+
+	static <T> SwingComboBoxModel<T> model(FilterComboBoxModel<T> model) {
+		return new DefaultSwingComboBoxModel<>(model);
+	}
+
+	@Override
+	public ComboBoxItems<T> items() {
+		return model.items();
+	}
+
+	@Override
+	public Sort<T> sort() {
+		return model.sort();
+	}
+
+	@Override
+	public SingleSelection<T> selection() {
+		return model.selection();
+	}
+
+	@Override
+	public @Nullable T getSelectedItem() {
+		return model.getSelectedItem();
+	}
+
+	@Override
+	public <V> Value<V> selector(ItemFinder<T, V> itemFinder) {
+		return model.selector(itemFinder);
+	}
+
+	@Override
+	public void setSelectedItem(@Nullable Object item) {
+		// The common selection applies the translator + null-item handling via its Object-aware setValue.
+		model.selection().item().set((T) item);
+	}
+
+	@Override
+	public int getSize() {
+		ComboBoxItems<T> items = model.items();
+		return items.included().size() + (items.includesNull() ? 1 : 0);
+	}
+
+	@Override
+	public @Nullable T getElementAt(int index) {
+		ComboBoxItems<T> items = model.items();
+		if (items.includesNull()) {
+			return index == 0 ? items.nullItem() : items.included().get().get(index - 1);
+		}
+
+		return items.included().get().get(index);
+	}
+
+	@Override
+	public void addListDataListener(ListDataListener listener) {
+		listDataListeners.add(requireNonNull(listener));
+	}
+
+	@Override
+	public void removeListDataListener(ListDataListener listener) {
+		listDataListeners.remove(requireNonNull(listener));
+	}
+
+	private void fireContentsChanged() {
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
+		for (ListDataListener dataListener : listDataListeners) {
+			dataListener.contentsChanged(event);
+		}
+	}
+
+	private static final class DefaultItemsStep implements Builder.ItemsStep {
+
+		@Override
+		public <T> Builder<T> items(Collection<T> items) {
+			return new DefaultBuilder<>(is.codion.common.model.component.combobox.FilterComboBoxModel.builder().items(items), null);
+		}
+
+		@Override
+		public <T> Builder<T> items(Supplier<Collection<T>> items) {
+			return new DefaultBuilder<>(is.codion.common.model.component.combobox.FilterComboBoxModel.builder().items(items), items);
+		}
+
+		@Override
+		public <T> ItemComboBoxModelBuilder<T> items(List<Item<T>> items) {
+			return new DefaultItemComboBoxModelBuilder<>(is.codion.common.model.component.combobox.FilterComboBoxModel.builder().items(items));
+		}
+	}
+
+	static final class DefaultBuilder<T> implements Builder<T> {
+
+		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
+
+		private final is.codion.common.model.component.combobox.FilterComboBoxModel.Builder<T> builder;
+		private final @Nullable Supplier<Collection<T>> supplier;
+
+		private boolean async = FilterModel.ASYNC.getOrThrow();
+		private @Nullable Consumer<Exception> onRefreshException;
+
+		private DefaultBuilder(is.codion.common.model.component.combobox.FilterComboBoxModel.Builder<T> builder,
+		                       @Nullable Supplier<Collection<T>> supplier) {
+			this.builder = builder;
+			this.supplier = supplier;
+		}
+
+		@Override
+		public Builder<T> comparator(@Nullable Comparator<T> comparator) {
+			builder.comparator(comparator);
+			return this;
+		}
+
+		@Override
+		public Builder<T> includeNull(boolean includeNull) {
+			builder.includeNull(includeNull);
+			return this;
+		}
+
+		@Override
+		public Builder<T> nullItem(@Nullable T nullItem) {
+			builder.nullItem(nullItem);
+			return this;
+		}
+
+		@Override
+		public Builder<T> select(@Nullable T item) {
+			builder.select(item);
+			return this;
+		}
+
+		@Override
+		public Builder<T> translator(Function<Object, T> translator) {
+			builder.translator(translator);
+			return this;
+		}
+
+		@Override
+		public Builder<T> filterSelected(boolean filterSelected) {
+			builder.filterSelected(filterSelected);
+			return this;
+		}
+
+		@Override
+		public Builder<T> onItemSelected(Consumer<@Nullable T> item) {
+			builder.onItemSelected(item);
+			return this;
+		}
+
+		@Override
+		public Builder<T> async(boolean async) {
+			this.async = async;
+			return this;
+		}
+
+		@Override
+		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
+			this.onRefreshException = requireNonNull(onRefreshException);
+			builder.onRefreshException(onRefreshException);
+			return this;
+		}
+
+		@Override
+		public Builder<T> refresh(boolean refresh) {
+			builder.refresh(refresh);
+			return this;
+		}
+
+		@Override
+		public SwingComboBoxModel<T> build() {
+			builder.refresher(items -> new ComboBoxRefreshWorker<>(supplier, async, onRefreshException, items));
+
+			return new DefaultSwingComboBoxModel<>(builder.build());
+		}
+	}
+
+	static final class DefaultItemComboBoxModelBuilder<T> implements ItemComboBoxModelBuilder<T> {
+
+		private final is.codion.common.model.component.combobox.FilterComboBoxModel.ItemComboBoxModelBuilder<T> builder;
+
+		private DefaultItemComboBoxModelBuilder(
+						is.codion.common.model.component.combobox.FilterComboBoxModel.ItemComboBoxModelBuilder<T> builder) {
+			this.builder = builder;
+		}
+
+		@Override
+		public ItemComboBoxModelBuilder<T> sorted(boolean sorted) {
+			builder.sorted(sorted);
+			return this;
+		}
+
+		@Override
+		public ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator) {
+			builder.sorted(comparator);
+			return this;
+		}
+
+		@Override
+		public ItemComboBoxModelBuilder<T> selected(@Nullable T selected) {
+			builder.selected(selected);
+			return this;
+		}
+
+		@Override
+		public ItemComboBoxModelBuilder<T> selected(Item<T> selected) {
+			builder.selected(selected);
+			return this;
+		}
+
+		@Override
+		public SwingComboBoxModel<Item<T>> build() {
+			return new DefaultSwingComboBoxModel<>(builder.build());
+		}
+	}
+
+	private static final class ComboBoxRefreshWorker<T> extends AbstractRefreshWorker<T> {
+
+		private final ComboBoxItems<T> items;
+
+		private ComboBoxRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async,
+		                              @Nullable Consumer<Exception> onException, ComboBoxItems<T> items) {
+			super(supplier, async, onException);
+			this.items = items;
+		}
+
+		@Override
+		protected void processResult(Collection<T> result) {
+			items.set(result);
+		}
+	}
+}

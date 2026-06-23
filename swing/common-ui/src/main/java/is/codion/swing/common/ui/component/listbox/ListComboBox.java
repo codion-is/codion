@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.listbox;
 
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -59,7 +59,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 	private final ComponentValue<? extends JComponent, T> componentValue;
 
 	private ListComboBox(DefaultBuilder<T> builder) {
-		super(FilterComboBoxModel.builder()
+		super(SwingComboBoxModel.builder()
 						.items(Collections.<T>emptyList())
 						.build());
 		this.componentValue = builder.componentValue;
@@ -82,8 +82,8 @@ final class ListComboBox<T> extends JComboBox<T> {
 	}
 
 	@Override
-	public FilterComboBoxModel<T> getModel() {
-		return (FilterComboBoxModel<T>) super.getModel();
+	public SwingComboBoxModel<T> getModel() {
+		return (SwingComboBoxModel<T>) super.getModel();
 	}
 
 	ComponentValue<? extends JComponent, T> componentValue() {
@@ -91,7 +91,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 	}
 
 	private void addItem() {
-		FilterComboBoxModel<T> comboBoxModel = getModel();
+		SwingComboBoxModel<T> comboBoxModel = getModel();
 		if (!componentValue.isNull() && !comboBoxModel.items().contains(componentValue.getOrThrow())) {
 			comboBoxModel.items().add(componentValue.getOrThrow());
 			componentValue.clear();
@@ -103,7 +103,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 	}
 
 	private void removeItem() {
-		FilterComboBoxModel<T> comboBoxModel = getModel();
+		SwingComboBoxModel<T> comboBoxModel = getModel();
 		int index = getSelectedIndex();
 		if (index != -1) {
 			T selecteditem = comboBoxModel.getSelectedItem();

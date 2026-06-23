@@ -26,7 +26,7 @@ import is.codion.swing.common.ui.component.indicator.ValidIndicator;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import org.jspecify.annotations.Nullable;
@@ -96,7 +96,7 @@ public final class EntityComboBoxPanel extends JPanel {
 			 * @param model the search model
 			 * @return a {@link EditPanelStep}
 			 */
-			EditPanelStep model(EntityComboBoxModel model);
+			EditPanelStep model(SwingEntityComboBoxModel model);
 		}
 
 		/**
@@ -179,16 +179,16 @@ public final class EntityComboBoxPanel extends JPanel {
 	private static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
-		public Builder.EditPanelStep model(EntityComboBoxModel model) {
+		public Builder.EditPanelStep model(SwingEntityComboBoxModel model) {
 			return new DefaultEditPanelStep(requireNonNull(model));
 		}
 	}
 
 	private static class DefaultEditPanelStep implements Builder.EditPanelStep {
 
-		private final EntityComboBoxModel comboBoxModel;
+		private final SwingEntityComboBoxModel comboBoxModel;
 
-		private DefaultEditPanelStep(EntityComboBoxModel comboBoxModel) {
+		private DefaultEditPanelStep(SwingEntityComboBoxModel comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
 		}
 
@@ -209,7 +209,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		private boolean buttonsFocusable;
 		private String buttonLocation = defaultButtonLocation();
 
-		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier) {
+		private DefaultBuilder(SwingEntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier) {
 			this.entityComboBoxBuilder = EntityComboBox.builder()
 							.model(comboBoxModel)
 							.editPanel(editPanelSupplier);

@@ -14,25 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2009 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.framework.model;
 
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Employee;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
-import is.codion.swing.framework.ui.TestDomain;
-import is.codion.swing.framework.ui.TestDomain.Department;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public final class EntityComboBoxPanelTest {
+/**
+ * Tests the Swing {@code ComboBoxModel} coat of {@link SwingEntityComboBoxModel} — the entity logic is tested in
+ * {@code is.codion.framework.model.DefaultEntityComboBoxModelTest}.
+ */
+public final class DefaultSwingEntityComboBoxModelTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -43,24 +46,24 @@ public final class EntityComboBoxPanelTest {
 					.build();
 
 	@Test
-	void test() {
+	void comboBoxModelCoat() {
 		SwingEntityComboBoxModel model = SwingEntityComboBoxModel.builder()
-						.entityType(Department.TYPE)
+						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
+						.includeNull(true)
 						.build();
 		model.items().refresh();
-		ComponentValue<EntityComboBoxPanel, Entity> value = EntityComboBoxPanel.builder()
-						.model(model)
-						.editPanel(() -> null)
-						.buildValue();
-		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
-						Department.NAME.equalTo("SALES"));
-		model.selection().item().set(sales);
-		assertEquals(sales, value.get());
-		value.clear();
-		Entity entity = model.selection().item().get();
-		assertNull(entity);
-		value.set(sales);
-		assertEquals(sales, model.selection().item().get());
+		// getSize/getElementAt expose the null item + the entities, the ListModel surface a JComboBox needs
+		assertEquals(model.items().included().size() + 1, model.getSize());// + null item
+		assertEquals("-", model.getElementAt(0).toString());// null item first
+		Entity first = model.items().included().get().get(0);
+		assertEquals(first, model.getElementAt(1));
+		// the Object-based ComboBoxModel setter delegates to the wrapped model
+		model.setSelectedItem(first);
+		assertEquals(first, model.selection().item().get());
+		assertEquals(first, model.getSelectedItem());
+		model.setSelectedItem(null);
+		assertNull(model.selection().item().get());
+		assertEquals("-", model.getSelectedItem().toString());// the null item representation
 	}
 }

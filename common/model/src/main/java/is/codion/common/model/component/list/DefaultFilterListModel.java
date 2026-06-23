@@ -16,52 +16,57 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.list;
+package is.codion.common.model.component.list;
 
+import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
+import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.AbstractListModel;
-import javax.swing.SortOrder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static javax.swing.SortOrder.*;
 
-final class DefaultFilterListModel<T> extends AbstractListModel<T> implements FilterListModel<T> {
+final class DefaultFilterListModel<T> implements FilterListModel<T> {
 
 	private final Items<T> items;
-	private final FilterListSelection<T> selection;
+	private final MultiSelection<T> selection;
 	private final FilterListSort<T> sort;
 
 	DefaultFilterListModel(DefaultBuilder<T> builder) {
 		this.sort = new DefaultListSort(builder.comparator);
-		this.items = Items.<T>builder()
-						.refresher(builder::createRefresher)
-						.selection(DefaultListSelection::new)
-						.sort(sort)
-						.listener(new ListModelAdapter())
-						.build();
+		Function<Items<T>, Refresher<T>> refresherFactory = builder.refresherFactory != null
+						? builder.refresherFactory
+						: modelItems -> new DefaultRefresher<>(builder.supplier, modelItems, builder.onRefreshException);
+		Function<IncludedItems<T>, MultiSelection<T>> selectionFactory = builder.selectionFactory != null
+						? builder.selectionFactory
+						: MultiSelection::multiSelection;
+		FilterModel.Items.Builder<T> itemsBuilder = FilterModel.Items.<T>builder()
+						.refresher(refresherFactory)
+						.selection(selectionFactory)
+						.sort(sort);
+		builder.itemsListeners.forEach(itemsBuilder::listener);
+		this.items = itemsBuilder.build();
 		this.items.included().predicate().set(builder.included);
-		this.selection = (FilterListSelection<T>) items.included().selection();
+		this.selection = (MultiSelection<T>) items.included().selection();
 		builder.selectionListeners.forEach(selection.indexes()::addListener);
 		builder.itemSelectedListeners.forEach(selection.item()::addConsumer);
 		builder.itemsSelectedListeners.forEach(selection.items()::addConsumer);
 		builder.indexSelectedListeners.forEach(selection.index()::addConsumer);
 		builder.indexesSelectedListeners.forEach(selection.indexes()::addConsumer);
-		builder.selectionConsumers.forEach(selectionConsumer ->
-						selectionConsumer.accept(selection));
 		this.items.set(builder.items);
 		this.items.included().sort();
 	}
@@ -72,7 +77,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 	}
 
 	@Override
-	public FilterListSelection<T> selection() {
+	public MultiSelection<T> selection() {
 		return selection;
 	}
 
@@ -81,47 +86,17 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		return sort;
 	}
 
-	@Override
-	public int getSize() {
-		return items.included().size();
+	private enum Order {
+		ASCENDING, DESCENDING, UNSORTED
 	}
 
-	@Override
-	public T getElementAt(int index) {
-		return items.included().get(index);
-	}
-
-	private class ListModelAdapter implements ItemsListener {
-
-		@Override
-		public void inserted(int firstIndex, int lastIndex) {
-			fireIntervalAdded(this, firstIndex, lastIndex);
-		}
-
-		@Override
-		public void updated(int firstIndex, int lastIndex) {
-			fireIntervalRemoved(this, firstIndex, lastIndex);
-			fireIntervalAdded(this, firstIndex, lastIndex);
-		}
-
-		@Override
-		public void deleted(int firstIndex, int lastIndex) {
-			fireIntervalRemoved(this, firstIndex, lastIndex);
-		}
-
-		@Override
-		public void changed() {
-			fireContentsChanged(this, 0, getSize());
-		}
-	}
-
-	private class DefaultListSort implements FilterListSort<T> {
+	private final class DefaultListSort implements FilterListSort<T> {
 
 		private final @Nullable Comparator<T> comparator;
 		private final Event<Boolean> changed = Event.event();
-		private final Value<SortOrder> sortOrder = Value.builder()
-						.nonNull(ASCENDING)
-						.consumer(order -> changed.accept(order != UNSORTED))
+		private final Value<Order> order = Value.builder()
+						.nonNull(Order.ASCENDING)
+						.consumer(sortOrder -> changed.accept(sortOrder != Order.UNSORTED))
 						.build();
 
 		private DefaultListSort(@Nullable Comparator<T> comparator) {
@@ -133,7 +108,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 			if (comparator == null) {
 				return 0;
 			}
-			switch (sortOrder.getOrThrow()) {
+			switch (order.getOrThrow()) {
 				case ASCENDING:
 					return comparator.compare(o1, o2);
 				case DESCENDING:
@@ -145,22 +120,22 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 		@Override
 		public void ascending() {
-			sortOrder.set(ASCENDING);
+			order.set(Order.ASCENDING);
 		}
 
 		@Override
 		public void descending() {
-			sortOrder.set(DESCENDING);
+			order.set(Order.DESCENDING);
 		}
 
 		@Override
 		public void clear() {
-			sortOrder.set(UNSORTED);
+			order.set(Order.UNSORTED);
 		}
 
 		@Override
 		public boolean sorted() {
-			return comparator != null && sortOrder.getOrThrow() != UNSORTED;
+			return comparator != null && order.getOrThrow() != Order.UNSORTED;
 		}
 
 		@Override
@@ -198,12 +173,13 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		private final List<Consumer<List<T>>> itemsSelectedListeners = new ArrayList<>();
 		private final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
 		private final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
-		private final List<Consumer<FilterListSelection<T>>> selectionConsumers = new ArrayList<>();
+		private final List<ItemsListener> itemsListeners = new ArrayList<>();
 
 		private @Nullable Comparator<T> comparator;
-		private boolean async = ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;
 		private @Nullable Predicate<T> included;
+		private @Nullable Function<Items<T>, Refresher<T>> refresherFactory;
+		private @Nullable Function<IncludedItems<T>, MultiSelection<T>> selectionFactory;
 
 		private DefaultBuilder(Collection<T> items, @Nullable Supplier<? extends Collection<T>> supplier) {
 			this.items = items;
@@ -213,12 +189,6 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		@Override
 		public Builder<T> comparator(@Nullable Comparator<T> comparator) {
 			this.comparator = comparator;
-			return this;
-		}
-
-		@Override
-		public Builder<T> async(boolean async) {
-			this.async = async;
 			return this;
 		}
 
@@ -265,8 +235,20 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 
 		@Override
-		public Builder<T> selection(Consumer<FilterListSelection<T>> selection) {
-			selectionConsumers.add(requireNonNull(selection));
+		public Builder<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection) {
+			this.selectionFactory = requireNonNull(selection);
+			return this;
+		}
+
+		@Override
+		public Builder<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
+			this.refresherFactory = requireNonNull(refresher);
+			return this;
+		}
+
+		@Override
+		public Builder<T> listener(ItemsListener itemsListener) {
+			itemsListeners.add(requireNonNull(itemsListener));
 			return this;
 		}
 
@@ -274,25 +256,60 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		public FilterListModel<T> build() {
 			return new DefaultFilterListModel<>(this);
 		}
+	}
 
-		private Refresher<T> createRefresher(Items<T> items) {
-			return new DefaultRefreshWorker<>(supplier, items, async, onRefreshException);
+	private static final class DefaultRefresher<R> extends FilterModel.AbstractRefresher<R> {
+
+		private final Items<R> items;
+		private final Consumer<Exception> onException;
+
+		private DefaultRefresher(@Nullable Supplier<? extends Collection<R>> supplier, Items<R> items,
+		                         @Nullable Consumer<Exception> onException) {
+			super((Supplier<Collection<R>>) supplier, false);
+			this.items = items;
+			this.onException = onException == null ? new RethrowHandler() : onException;
 		}
 
-		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {
+		@Override
+		protected boolean isUserInterfaceThread() {
+			return false;
+		}
 
-			private final Items<R> items;
+		@Override
+		protected void refreshAsync(@Nullable Consumer<Collection<R>> onResult) {
+			refreshSync(onResult);
+		}
 
-			private DefaultRefreshWorker(@Nullable Supplier<? extends Collection<R>> supplier,
-																	 Items<R> items, boolean async,
-																	 @Nullable Consumer<Exception> onException) {
-				super((Supplier<Collection<R>>) supplier, async, onException);
-				this.items = items;
-			}
+		@Override
+		protected void refreshSync(@Nullable Consumer<Collection<R>> onResult) {
+			items().ifPresent(supplier -> {
+				setActive(true);
+				try {
+					Collection<R> result = supplier.get();
+					setActive(false);
+					processResult(result);
+					if (onResult != null) {
+						onResult.accept(result);
+					}
+					notifyResult(result);
+				}
+				catch (Exception e) {
+					setActive(false);
+					onException.accept(e);
+				}
+			});
+		}
+
+		@Override
+		protected void processResult(Collection<R> result) {
+			items.set(result);
+		}
+
+		private static final class RethrowHandler implements Consumer<Exception> {
 
 			@Override
-			protected void processResult(Collection<R> result) {
-				items.set(result);
+			public void accept(Exception exception) {
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}

@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -30,10 +31,10 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityEditor;
 import is.codion.framework.model.EntityEditor.EditorTask.Result;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
 
@@ -155,8 +156,8 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	 */
 	public final class ComboBoxModels {
 
-		private final Map<ForeignKey, EntityComboBoxModel> foreignKeyComboBoxModels = new HashMap<>();
-		private final Map<Column<?>, FilterComboBoxModel<?>> columnComboBoxModels = new HashMap<>();
+		private final Map<ForeignKey, SwingEntityComboBoxModel> foreignKeyComboBoxModels = new HashMap<>();
+		private final Map<Column<?>, SwingComboBoxModel<?>> columnComboBoxModels = new HashMap<>();
 
 		private ComboBoxModels() {}
 
@@ -164,7 +165,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		 * Returns the foreign key based combo box models initialized via {@link #get(ForeignKey)}.
 		 * @return an unmodifiable view of the foreign key based combo box models
 		 */
-		public Map<ForeignKey, EntityComboBoxModel> foreignKey() {
+		public Map<ForeignKey, SwingEntityComboBoxModel> foreignKey() {
 			synchronized (foreignKeyComboBoxModels) {
 				return unmodifiableMap(foreignKeyComboBoxModels);
 			}
@@ -174,7 +175,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		 * Returns the column based combo box models initialized via {@link #get(Column)}.
 		 * @return an unmodifiable view of the column based combo box models
 		 */
-		public Map<Column<?>, FilterComboBoxModel<?>> column() {
+		public Map<Column<?>, SwingComboBoxModel<?>> column() {
 			synchronized (columnComboBoxModels) {
 				return unmodifiableMap(columnComboBoxModels);
 			}
@@ -199,20 +200,20 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		}
 
 		/**
-		 * <p>Returns the {@link EntityComboBoxModel} associated with the given foreign key.
+		 * <p>Returns the {@link SwingEntityComboBoxModel} associated with the given foreign key.
 		 * If no such combo box model exists, one is created by calling {@link #create(ForeignKey)}.
-		 * <p>This method always returns the same {@link EntityComboBoxModel} instance, once one has been created.
+		 * <p>This method always returns the same {@link SwingEntityComboBoxModel} instance, once one has been created.
 		 * @param foreignKey the foreign key
-		 * @return the {@link EntityComboBoxModel} associated with the given foreign key
+		 * @return the {@link SwingEntityComboBoxModel} associated with the given foreign key
 		 * @see ComboBoxModels#create(ForeignKey)
 		 */
-		public EntityComboBoxModel get(ForeignKey foreignKey) {
+		public SwingEntityComboBoxModel get(ForeignKey foreignKey) {
 			entityDefinition().foreignKeys().definition(foreignKey);
 			synchronized (foreignKeyComboBoxModels) {
 				// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
 				// box models, create() may for example call this function
 				// see javadoc: must not attempt to update any other mappings of this map
-				EntityComboBoxModel comboBoxModel = foreignKeyComboBoxModels.get(foreignKey);
+				SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModels.get(foreignKey);
 				if (comboBoxModel == null) {
 					comboBoxModel = create(requireNonNull(foreignKey));
 					foreignKeyComboBoxModels.put(foreignKey, comboBoxModel);
@@ -223,21 +224,21 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		}
 
 		/**
-		 * <p>Returns the {@link FilterComboBoxModel} associated with the given column.
+		 * <p>Returns the {@link SwingComboBoxModel} associated with the given column.
 		 * If no such combo box model exists, one is created by calling {@link #create(Column)}.
-		 * <p>This method always returns the same {@link FilterComboBoxModel} instance, once one has been created.
+		 * <p>This method always returns the same {@link SwingComboBoxModel} instance, once one has been created.
 		 * @param column the column
 		 * @param <T> the value type
-		 * @return the {@link FilterComboBoxModel} associated with the given column
+		 * @return the {@link SwingComboBoxModel} associated with the given column
 		 * @see #create(Column)
 		 */
-		public <T> FilterComboBoxModel<T> get(Column<T> column) {
+		public <T> SwingComboBoxModel<T> get(Column<T> column) {
 			entityDefinition().columns().definition(column);
 			synchronized (columnComboBoxModels) {
 				// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
 				// box models, create() may for example call this function
 				// see javadoc: must not attempt to update any other mappings of this map
-				FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) columnComboBoxModels.get(column);
+				SwingComboBoxModel<T> comboBoxModel = (SwingComboBoxModel<T>) columnComboBoxModels.get(column);
 				if (comboBoxModel == null) {
 					comboBoxModel = create(requireNonNull(column));
 					columnComboBoxModels.put(column, comboBoxModel);
@@ -248,18 +249,18 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		}
 
 		/**
-		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key.
-		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
-		 * @return a {@link EntityComboBoxModel} for the given foreign key
+		 * <p>Creates a new {@link SwingEntityComboBoxModel} for the given foreign key.
+		 * @param foreignKey the foreign key for which to create a {@link SwingEntityComboBoxModel}
+		 * @return a {@link SwingEntityComboBoxModel} for the given foreign key
 		 * @see SwingComponentModels#comboBoxModel(ForeignKey, EntityConnectionProvider)
-		 * @see FilterComboBoxModel#NULL_CAPTION
-		 * @see EntityComboBoxModel.Builder#nullCaption(String)
-		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+		 * @see SwingComboBoxModel#NULL_CAPTION
+		 * @see SwingEntityComboBoxModel.Builder#nullCaption(String)
+		 * @see SwingEntityComboBoxModel.Builder#includeNull(boolean)
 		 * @see ValueAttributeDefinition#nullable()
-		 * @see EntityComboBoxModel.Builder#attributes(Collection)
+		 * @see SwingEntityComboBoxModel.Builder#attributes(Collection)
 		 * @see ForeignKeyDefinition#attributes()
 		 */
-		public EntityComboBoxModel create(ForeignKey foreignKey) {
+		public SwingEntityComboBoxModel create(ForeignKey foreignKey) {
 			return componentModels().comboBoxModel(requireNonNull(foreignKey), connectionProvider());
 		}
 
@@ -268,38 +269,38 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		 * @param column the column
 		 * @param <T> the value type
 		 * @return a combo box model based on the given column
-		 * @see FilterComboBoxModel#NULL_CAPTION
+		 * @see SwingComboBoxModel#NULL_CAPTION
 		 */
-		public <T> FilterComboBoxModel<T> create(Column<T> column) {
+		public <T> SwingComboBoxModel<T> create(Column<T> column) {
 			return componentModels().comboBoxModel(requireNonNull(column), connectionProvider());
 		}
 	}
 
 	/**
 	 * <p>A {@link SwingComponentModels} extension providing foreign key based
-	 * {@link EntityComboBoxModel} and column based {@link FilterComboBoxModel}.
+	 * {@link SwingEntityComboBoxModel} and column based {@link SwingComboBoxModel}.
 	 * <p>Override to customize combo box model creation.
 	 */
 	public interface SwingComponentModels extends ComponentModels {
 
 		/**
-		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key, override to
-		 * provide a custom {@link EntityComboBoxModel} implementation.
-		 * <p>This default implementation returns a sorted {@link EntityComboBoxModel} using the default
+		 * <p>Creates a new {@link SwingEntityComboBoxModel} for the given foreign key, override to
+		 * provide a custom {@link SwingEntityComboBoxModel} implementation.
+		 * <p>This default implementation returns a sorted {@link SwingEntityComboBoxModel} using the default
 		 * null item caption if the underlying attribute is nullable.
 		 * <p>If the foreign key has select attributes defined, those are set in the combo box model.
-		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
+		 * @param foreignKey the foreign key for which to create a {@link SwingEntityComboBoxModel}
 		 * @param connectionProvider the connection provider
-		 * @return a {@link EntityComboBoxModel} for the given foreign key
-		 * @see FilterComboBoxModel#NULL_CAPTION
-		 * @see EntityComboBoxModel.Builder#nullCaption(String)
-		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
+		 * @return a {@link SwingEntityComboBoxModel} for the given foreign key
+		 * @see SwingComboBoxModel#NULL_CAPTION
+		 * @see SwingEntityComboBoxModel.Builder#nullCaption(String)
+		 * @see SwingEntityComboBoxModel.Builder#includeNull(boolean)
 		 * @see ValueAttributeDefinition#nullable()
-		 * @see EntityComboBoxModel.Builder#attributes(Collection)
+		 * @see SwingEntityComboBoxModel.Builder#attributes(Collection)
 		 * @see ForeignKeyDefinition#attributes()
 		 */
-		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-			return EntityComboBoxModel.builder()
+		default SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+			return SwingEntityComboBoxModel.builder()
 							.foreignKey(foreignKey)
 							.connectionProvider(requireNonNull(requireNonNull(connectionProvider)))
 							.build();
@@ -307,20 +308,20 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 
 		/**
 		 * Creates a combo box model containing the current values of the given column.
-		 * This default implementation returns a sorted {@link FilterComboBoxModel} using the default
+		 * This default implementation returns a sorted {@link SwingComboBoxModel} using the default
 		 * null item caption if the underlying column is nullable
 		 * @param column the column
 		 * @param connectionProvider the connection provider
 		 * @param <T> the value type
 		 * @return a combo box model based on the given column
-		 * @see FilterComboBoxModel#NULL_CAPTION
+		 * @see SwingComboBoxModel#NULL_CAPTION
 		 */
-		default <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnectionProvider connectionProvider) {
+		default <T> SwingComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnectionProvider connectionProvider) {
 			EntityDefinition entityDefinition = requireNonNull(connectionProvider).entities()
 							.definition(requireNonNull(column).entityType());
 			boolean nullable = entityDefinition.columns().definition(column).nullable();
 
-			return FilterComboBoxModel.builder()
+			return SwingComboBoxModel.builder()
 							.items(() -> connectionProvider.connection().select(column))
 							.nullItem(nullable ? createNullItem(column) : null)
 							.includeNull(nullable)

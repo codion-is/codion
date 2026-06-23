@@ -23,7 +23,7 @@ import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
@@ -114,7 +114,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private static final Runtime RUNTIME = Runtime.getRuntime();
 
 	private final LoadTestModel<T> loadTestModel;
-	private final FilterComboBoxModel<Item<User>> userComboBoxModel = FilterComboBoxModel.builder()
+	private final SwingComboBoxModel<Item<User>> userComboBoxModel = SwingComboBoxModel.builder()
 					.<Item<User>>items(Collections::emptyList)
 					.nullItem(item(null, "-"))
 					.build();

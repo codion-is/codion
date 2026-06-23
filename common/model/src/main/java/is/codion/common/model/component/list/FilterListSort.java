@@ -14,14 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
+package is.codion.common.model.component.list;
+
+import is.codion.common.model.filter.FilterModel;
+
 /**
- * <p>ComboBox model implementations with filtering support and null handling.
- * <p>Package configuration values:
- * <ul>
- * <li>{@link is.codion.common.model.component.combobox.FilterComboBoxModel#NULL_CAPTION}
- * </ul>
+ * Handles the sorting state for a {@link FilterListModel}.
+ * @param <T> the list item type
  */
-@org.jspecify.annotations.NullMarked
-package is.codion.swing.common.model.component.combobox;
+public interface FilterListSort<T> extends FilterModel.Sort<T> {
+
+	/**
+	 * Sorts ascending
+	 */
+	void ascending();
+
+	/**
+	 * Sorts descending
+	 */
+	void descending();
+
+	/**
+	 * Clears the sort
+	 */
+	void clear();
+}

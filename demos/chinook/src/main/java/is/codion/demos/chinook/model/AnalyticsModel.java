@@ -26,7 +26,7 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -121,10 +121,10 @@ public final class AnalyticsModel {
 	public final class TopArtists {
 
 		private final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		private final EntityComboBoxModel genreComboBoxModel;
+		private final SwingEntityComboBoxModel genreComboBoxModel;
 
 		private TopArtists() {
-			this.genreComboBoxModel = EntityComboBoxModel.builder()
+			this.genreComboBoxModel = SwingEntityComboBoxModel.builder()
 							.entityType(Chinook.Genre.TYPE)
 							.connectionProvider(connectionProvider)
 							.onItemSelected(this::refresh)
@@ -133,7 +133,7 @@ public final class AnalyticsModel {
 							.build();
 		}
 
-		public EntityComboBoxModel genreComboBoxModel() {
+		public SwingEntityComboBoxModel genreComboBoxModel() {
 			return genreComboBoxModel;
 		}
 

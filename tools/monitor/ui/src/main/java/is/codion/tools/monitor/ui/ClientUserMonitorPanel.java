@@ -19,7 +19,7 @@
 package is.codion.tools.monitor.ui;
 
 import is.codion.plugin.flatlaf.indicator.FlatLafValidIndicator;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -153,7 +153,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 	private JComponent createMaintenanceIntervalComponent() throws RemoteException {
 		return comboBox()
-						.model(FilterComboBoxModel.builder()
+						.model(SwingComboBoxModel.builder()
 										.items(MAINTENANCE_INTERVAL_VALUES)
 										.select(model.getMaintenanceInterval())
 										.onItemSelected(this::setMaintenanceInterval)

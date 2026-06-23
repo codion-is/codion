@@ -31,7 +31,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 
 import javax.swing.BorderFactory;
@@ -104,7 +104,7 @@ public final class ClientUI {
 		// fetch the Value representing the album artist from the editor
 		Value<Entity> editModelArtistValue = editor.value(Album.ARTIST_FK);
 
-		EntityComboBoxModel artistComboBoxModel = editor.comboBoxModels().get(Album.ARTIST_FK);
+		SwingEntityComboBoxModel artistComboBoxModel = editor.comboBoxModels().get(Album.ARTIST_FK);
 
 		// create a combobox for selecting the album artist
 		// based on a combobox model supplied by the edit model

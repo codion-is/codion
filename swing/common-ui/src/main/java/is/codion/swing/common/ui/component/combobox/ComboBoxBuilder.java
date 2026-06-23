@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
@@ -112,7 +112,7 @@ public interface ComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBoxBu
 	 * When a JComboBox is editable, and a long item is selected, the caret is moved to the end, hiding
 	 * the start of the selected item. Enabling this moves the caret to the front on selection, thereby
 	 * showing the start of the selected item.
-	 * Note that this only works in conjunction with a {@link FilterComboBoxModel}.
+	 * Note that this only works in conjunction with a {@link SwingComboBoxModel}.
 	 * This is enabled by default.
 	 * @param moveCaretToFrontOnSelection if true the caret is moved to the front of the editor component on selection,
 	 * displaying the start of the selected item, instead of the end

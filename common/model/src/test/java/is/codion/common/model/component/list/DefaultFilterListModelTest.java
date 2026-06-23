@@ -16,14 +16,12 @@
  *
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.list;
+package is.codion.common.model.component.list;
 
 import is.codion.common.utilities.Text;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -33,6 +31,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the UI-agnostic logic of {@link FilterListModel} — the {@code ListModel} coat is tested in
+ * {@code is.codion.swing.common.model.component.list.DefaultSwingListModelTest}.
+ */
 final class DefaultFilterListModelTest {
 
 	private static final String ONE = "One";
@@ -45,7 +47,6 @@ final class DefaultFilterListModelTest {
 		List<String> items = asList(ONE, TWO, THREE);
 		FilterListModel<String> unsorted = FilterListModel.builder()
 						.items(() -> items)
-						.async(false)
 						.comparator(null)
 						.build();
 		assertFalse(unsorted.sort().sorted());
@@ -60,12 +61,12 @@ final class DefaultFilterListModelTest {
 						.build();
 		model.selection().item().set(TWO);
 		assertEquals(items.size(), model.items().size());
-		assertEquals(items.size(), model.getSize());
+		assertEquals(items.size(), model.items().included().size());
 		assertTrue(model.sort().sorted());
 		model.sort().descending();
 		assertTrue(model.sort().sorted());
 		assertEquals(0, model.items().included().indexOf(TWO));
-		assertEquals(THREE, model.getElementAt(1));
+		assertEquals(THREE, model.items().included().get(1));
 		assertEquals(TWO, model.selection().item().get());
 		model.sort().ascending();
 		assertEquals(2, model.items().included().indexOf(TWO));
@@ -76,7 +77,7 @@ final class DefaultFilterListModelTest {
 		assertEquals(0, model.items().included().indexOf(ONE));
 
 		model.items().replace(TWO, FOUR);
-		assertEquals(FOUR, model.getElementAt(2));
+		assertEquals(FOUR, model.items().included().get(2));
 		assertEquals(FOUR, model.selection().item().get());
 
 		model.items().included().predicate().set(string -> !string.startsWith("T"));
@@ -119,43 +120,10 @@ final class DefaultFilterListModelTest {
 	}
 
 	@Test
-	void listDataEvents() {
-		List<String> items = new ArrayList<>(asList(ONE, TWO, THREE));
-		FilterListModel<String> model = FilterListModel.builder()
-						.items(items).build();
-
-		TestListDataListener listener = new TestListDataListener();
-		model.addListDataListener(listener);
-
-		// Add item
-		model.items().add(FOUR);
-		assertEquals(1, listener.intervalAddedCount);
-		assertEquals(3, listener.lastAddedIndex);
-
-		// Remove item
-		model.items().remove(TWO);
-		assertEquals(1, listener.intervalRemovedCount);
-
-		// Update/replace item
-		model.items().replace(ONE, "ONE_UPDATED");
-		assertEquals(2, listener.intervalRemovedCount);
-		assertEquals(2, listener.intervalAddedCount);
-
-		// Clear all
-		model.items().clear();
-		assertTrue(listener.intervalRemovedCount > 2); // Should fire remove events
-
-		// Add new items after clear
-		model.items().add(asList("New1", "New2"));
-		assertEquals(2, model.getSize()); // 2 new items
-	}
-
-	@Test
 	void concurrentModification() throws Exception {
 		List<String> items = new ArrayList<>(asList(ONE, TWO, THREE, FOUR));
 		FilterListModel<String> model = FilterListModel.<String>builder()
 						.items(() -> new ArrayList<>(items))
-						.async(false)
 						.build();
 
 		CountDownLatch latch = new CountDownLatch(2);
@@ -186,7 +154,7 @@ final class DefaultFilterListModelTest {
 		Thread selectionThread = new Thread(() -> {
 			try {
 				for (int i = 0; i < 100; i++) {
-					int size = model.getSize();
+					int size = model.items().included().size();
 					if (size > 0) {
 						int index = i % size;
 						model.selection().index().set(index);
@@ -215,7 +183,6 @@ final class DefaultFilterListModelTest {
 						.<String>items()
 						.build();
 
-		assertEquals(0, model.getSize());
 		assertEquals(0, model.items().size());
 		assertEquals(0, model.items().included().size());
 		assertEquals(0, model.items().filtered().size());
@@ -227,7 +194,7 @@ final class DefaultFilterListModelTest {
 
 		// Add items to empty model
 		model.items().add(asList(ONE, TWO));
-		assertEquals(2, model.getSize());
+		assertEquals(2, model.items().included().size());
 	}
 
 	@Test
@@ -254,19 +221,6 @@ final class DefaultFilterListModelTest {
 
 	@Test
 	void builderConfiguration() {
-		// Test various builder configurations
-		FilterListModel<String> asyncModel = FilterListModel.builder()
-						.<String>items()
-						.async(true)
-						.build();
-		assertTrue(asyncModel.items().refresher().async().is());
-
-		FilterListModel<String> syncModel = FilterListModel.builder()
-						.<String>items()
-						.async(false)
-						.build();
-		assertFalse(syncModel.items().refresher().async().is());
-
 		// With predicate
 		FilterListModel<String> filteredModel = FilterListModel.builder()
 						.items(asList(ONE, TWO, THREE, FOUR))
@@ -315,34 +269,10 @@ final class DefaultFilterListModelTest {
 
 		model.items().remove(TWO);
 		// Selection might move to another item or be cleared
-		assertEquals(2, model.getSize());
+		assertEquals(2, model.items().included().size());
 		// If selection moved, it should be to a remaining item
 		if (!model.selection().empty().is()) {
 			assertTrue(model.items().included().contains(model.selection().item().get()));
-		}
-	}
-
-
-	private static class TestListDataListener implements ListDataListener {
-		int intervalAddedCount = 0;
-		int intervalRemovedCount = 0;
-		int contentsChangedCount = 0;
-		int lastAddedIndex = -1;
-
-		@Override
-		public void intervalAdded(ListDataEvent e) {
-			intervalAddedCount++;
-			lastAddedIndex = e.getIndex0();
-		}
-
-		@Override
-		public void intervalRemoved(ListDataEvent e) {
-			intervalRemovedCount++;
-		}
-
-		@Override
-		public void contentsChanged(ListDataEvent e) {
-			contentsChangedCount++;
 		}
 	}
 }

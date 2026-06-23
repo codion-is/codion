@@ -19,7 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel#PERSISTENCE_AWARE}
+ * <li>{@link is.codion.framework.model.EntityComboBoxModel#PERSISTENCE_AWARE}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

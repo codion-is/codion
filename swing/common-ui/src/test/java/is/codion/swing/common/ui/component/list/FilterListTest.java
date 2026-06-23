@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.common.utilities.Text;
-import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.model.component.list.SwingListModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ final class FilterListTest {
 	@Test
 	void test() {
 		List<String> items = asList(ONE, TWO, THREE);
-		FilterListModel<String> model = FilterListModel.builder()
+		SwingListModel<String> model = SwingListModel.builder()
 						.items(items)
 						.comparator(Text.collator())
 						.build();

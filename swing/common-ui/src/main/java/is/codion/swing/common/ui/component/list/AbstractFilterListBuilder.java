@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.model.component.list.SwingListModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T, B>>
 				extends AbstractComponentValueBuilder<FilterList<T>, V, B> implements FilterList.Builder<V, T, B> {
 
-	private final FilterListModel<T> listModel;
+	private final SwingListModel<T> listModel;
 	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
 
 	private @Nullable ListCellRenderer<T> cellRenderer;
@@ -48,7 +48,7 @@ abstract class AbstractFilterListBuilder<V, T, B extends FilterList.Builder<V, T
 	private int fixedCellHeight = -1;
 	private int fixedCellWidth = -1;
 
-	AbstractFilterListBuilder(FilterListModel<T> listModel) {
+	AbstractFilterListBuilder(SwingListModel<T> listModel) {
 		this.listModel = requireNonNull(listModel);
 	}
 

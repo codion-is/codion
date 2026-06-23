@@ -26,7 +26,7 @@ import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
 
@@ -41,7 +41,7 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 
 	private final ForeignKey foreignKey;
 	private final ConditionModel<Entity> condition;
-	private final @Nullable EntityComboBoxModel equalComboBoxModel;
+	private final @Nullable SwingEntityComboBoxModel equalComboBoxModel;
 	private final @Nullable EntitySearchModel inSearchModel;
 
 	private DefaultSwingForeignKeyConditionModel(DefaultBuilder builder) {
@@ -72,7 +72,7 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	}
 
 	@Override
-	public EntityComboBoxModel equalComboBoxModel() {
+	public SwingEntityComboBoxModel equalComboBoxModel() {
 		if (equalComboBoxModel == null) {
 			throw new IllegalStateException("No EntityComboBoxModel is available for the EQUAL operand");
 		}
@@ -98,7 +98,7 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 
 		private final ForeignKey foreignKey;
 
-		private @Nullable EntityComboBoxModel equalComboBoxModel;
+		private @Nullable SwingEntityComboBoxModel equalComboBoxModel;
 		private @Nullable EntitySearchModel inSearchModel;
 
 		DefaultBuilder(ForeignKey foreignKey) {
@@ -106,7 +106,7 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 		}
 
 		@Override
-		public Builder equalComboBoxModel(EntityComboBoxModel equalComboBoxModel) {
+		public Builder equalComboBoxModel(SwingEntityComboBoxModel equalComboBoxModel) {
 			this.equalComboBoxModel = requireNonNull(equalComboBoxModel);
 			return this;
 		}
