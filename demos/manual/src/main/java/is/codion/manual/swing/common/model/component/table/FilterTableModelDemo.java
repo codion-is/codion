@@ -24,8 +24,8 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.SwingTableModel;
-import is.codion.swing.common.model.component.table.SwingTableModel.RowEditor;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel.RowEditor;
 
 import java.util.Collection;
 import java.util.List;
@@ -89,7 +89,7 @@ public final class FilterTableModelDemo {
 		// row since the row objects are records and thereby immutable
 		private final IncludedItems<Person> items;
 
-		private PersonEditor(SwingTableModel<Person, String> tableModel) {
+		private PersonEditor(SwingFilterTableModel<Person, String> tableModel) {
 			this.items = tableModel.items().included();
 		}
 
@@ -109,7 +109,7 @@ public final class FilterTableModelDemo {
 	}
 	// end::personEditor[]
 
-	public static SwingTableModel<Person, String> createFilterTableModel() {
+	public static SwingFilterTableModel<Person, String> createFilterTableModel() {
 		// tag::filterTableModel[]
 		// Implement an item supplier responsible for supplying
 		// the data when the table items are refreshed.
@@ -122,8 +122,8 @@ public final class FilterTableModelDemo {
 
 		// Build the table model, providing the TableColumns
 		// implementation along with the item supplier and row editor.
-		SwingTableModel<Person, String> tableModel =
-						SwingTableModel.builder()
+		SwingFilterTableModel<Person, String> tableModel =
+						SwingFilterTableModel.builder()
 										.columns(new PersonColumns())
 										.items(items)
 										.rowEditor(PersonEditor::new)
@@ -135,7 +135,7 @@ public final class FilterTableModelDemo {
 		return tableModel;
 	}
 
-	static void filter(SwingTableModel<Person, String> tableModel) {
+	static void filter(SwingFilterTableModel<Person, String> tableModel) {
 		// tag::filters[]
 		TableConditionModel<String> filters = tableModel.filters();
 
@@ -161,7 +161,7 @@ public final class FilterTableModelDemo {
 		// end::filters[]
 	}
 
-	static void select(SwingTableModel<Person, String> tableModel) {
+	static void select(SwingFilterTableModel<Person, String> tableModel) {
 		// tag::selection[]
 		FilterListSelection<Person> selection = tableModel.selection();
 
@@ -199,7 +199,7 @@ public final class FilterTableModelDemo {
 		// end::selection[]
 	}
 
-	static void sort(SwingTableModel<Person, String> tableModel) {
+	static void sort(SwingFilterTableModel<Person, String> tableModel) {
 		// tag::sort[]
 		FilterTableSort<Person, String> sort = tableModel.sort();
 
@@ -218,7 +218,7 @@ public final class FilterTableModelDemo {
 		// end::sort[]
 	}
 
-	static void export(SwingTableModel<Person, String> tableModel) {
+	static void export(SwingFilterTableModel<Person, String> tableModel) {
 		// tag::export[]
 		String tabDelimited = tableModel.export()
 						// Specify columns (default all, so not really necessary here)

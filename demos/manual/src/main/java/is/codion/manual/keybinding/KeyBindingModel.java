@@ -21,8 +21,8 @@ package is.codion.manual.keybinding;
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.ActionMap;
@@ -50,30 +50,30 @@ final class KeyBindingModel {
 	private static final String PRESSED = "pressed ";
 	private static final String RELEASED = "released ";
 
-	private final SwingComboBoxModel<String> componentModel;
-	private final SwingTableModel<KeyBindingRow, String> tableModel;
+	private final SwingFilterComboBoxModel<String> componentModel;
+	private final SwingFilterTableModel<KeyBindingRow, String> tableModel;
 
-	KeyBindingModel(SwingComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
-		this.componentModel = SwingComboBoxModel.builder()
+	KeyBindingModel(SwingFilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
+		this.componentModel = SwingFilterComboBoxModel.builder()
 						.items(new ComponentItems(lookAndFeelModel))
 						.refresh(true)
 						.build();
-		this.tableModel = SwingTableModel.builder()
+		this.tableModel = SwingFilterTableModel.builder()
 						.columns(new KeyBindingColumns())
 						.items(new KeyBindingItems())
 						.build();
 		bindEvents(lookAndFeelModel);
 	}
 
-	SwingComboBoxModel<String> componentModel() {
+	SwingFilterComboBoxModel<String> componentModel() {
 		return componentModel;
 	}
 
-	SwingTableModel<KeyBindingRow, String> tableModel() {
+	SwingFilterTableModel<KeyBindingRow, String> tableModel() {
 		return tableModel;
 	}
 
-	private void bindEvents(SwingComboBoxModel<?> lookAndFeelModel) {
+	private void bindEvents(SwingFilterComboBoxModel<?> lookAndFeelModel) {
 		// Refresh the component combo box when a look and feel is selected
 		lookAndFeelModel.selection().item().addListener(componentModel.items()::refresh);
 		// Refresh the table model when the component combo box has been refreshed
@@ -123,9 +123,9 @@ final class KeyBindingModel {
 	// Provides the items when populating the component combo box model
 	private static final class ComponentItems implements Supplier<Collection<String>> {
 
-		private final SwingComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel;
+		private final SwingFilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel;
 
-		private ComponentItems(SwingComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
+		private ComponentItems(SwingFilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
 			this.lookAndFeelModel = lookAndFeelModel;
 		}
 

@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.EntityComboBoxModel;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
 
@@ -41,17 +41,17 @@ import java.util.function.Supplier;
 
 /**
  * The Swing {@code ComboBoxModel} coat over a {@link EntityComboBoxModel}: the entity logic lives in the wrapped
- * model, the {@code ComboBoxModel}/{@code ListModel} surface comes from a {@link SwingComboBoxModel} wrapping the
- * same model ({@link SwingComboBoxModel#model(is.codion.common.model.component.combobox.FilterComboBoxModel)}).
+ * model, the {@code ComboBoxModel}/{@code ListModel} surface comes from a {@link SwingFilterComboBoxModel} wrapping the
+ * same model ({@link SwingFilterComboBoxModel#model(is.codion.common.model.component.combobox.FilterComboBoxModel)}).
  */
 final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel {
 
 	private final EntityComboBoxModel model;
-	private final SwingComboBoxModel<Entity> coat;
+	private final SwingFilterComboBoxModel<Entity> coat;
 
 	private DefaultSwingEntityComboBoxModel(EntityComboBoxModel model) {
 		this.model = model;
-		this.coat = SwingComboBoxModel.model(model);
+		this.coat = SwingFilterComboBoxModel.model(model);
 	}
 
 	@Override

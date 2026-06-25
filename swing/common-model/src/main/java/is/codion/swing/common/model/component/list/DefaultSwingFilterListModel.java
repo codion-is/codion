@@ -42,12 +42,12 @@ import static java.util.Objects.requireNonNull;
  * ({@link DefaultListSelection}) and a {@code ProgressWorker} based refresher — and adds the
  * {@link javax.swing.ListModel} methods, firing {@code ListDataEvent}s off the common model's items.
  */
-final class DefaultSwingListModel<T> extends AbstractListModel<T> implements SwingListModel<T> {
+final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implements SwingFilterListModel<T> {
 
 	private final FilterListModel<T> model;
 	private final FilterListSelection<T> selection;
 
-	private DefaultSwingListModel(DefaultBuilder<T> builder) {
+	private DefaultSwingFilterListModel(DefaultBuilder<T> builder) {
 		this.model = builder.builder
 						.selection(DefaultListSelection::new)
 						.refresher(modelItems -> new ListRefreshWorker<>(builder.supplier, builder.async, builder.onRefreshException, modelItems))
@@ -195,8 +195,8 @@ final class DefaultSwingListModel<T> extends AbstractListModel<T> implements Swi
 		}
 
 		@Override
-		public SwingListModel<T> build() {
-			return new DefaultSwingListModel<>(this);
+		public SwingFilterListModel<T> build() {
+			return new DefaultSwingFilterListModel<>(this);
 		}
 	}
 

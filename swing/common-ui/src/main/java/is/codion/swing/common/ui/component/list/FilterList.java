@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.swing.common.model.component.list.SwingListModel;
+import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * A {@link JList} based on a {@link SwingListModel}
+ * A {@link JList} based on a {@link SwingFilterListModel}
  * @param <T> the item type
  */
 public final class FilterList<T> extends JList<T> {
@@ -44,7 +44,7 @@ public final class FilterList<T> extends JList<T> {
 	 * Instantiates a new {@link FilterList}
 	 * @param listModel the list model
 	 */
-	FilterList(SwingListModel<T> listModel) {
+	FilterList(SwingFilterListModel<T> listModel) {
 		super(listModel);
 		super.setSelectionModel((listModel).selection());
 		listModel.selection().indexes().addConsumer(new ScrollToSelected());
@@ -53,13 +53,13 @@ public final class FilterList<T> extends JList<T> {
 	/**
 	 * @return the list model
 	 */
-	public SwingListModel<T> model() {
+	public SwingFilterListModel<T> model() {
 		return getModel();
 	}
 
 	@Override
-	public SwingListModel<T> getModel() {
-		return (SwingListModel<T>) super.getModel();
+	public SwingFilterListModel<T> getModel() {
+		return (SwingFilterListModel<T>) super.getModel();
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public final class FilterList<T> extends JList<T> {
 			 * @param <T> the list item type
 			 * @return a {@link Factory}
 			 */
-			<T> Factory<T> model(SwingListModel<T> listModel);
+			<T> Factory<T> model(SwingFilterListModel<T> listModel);
 		}
 
 		/**

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.swing.common.model.component.list.SwingListModel;
+import is.codion.swing.common.model.component.list.SwingFilterListModel;
 
 import static java.util.Objects.requireNonNull;
 
@@ -26,9 +26,9 @@ final class DefaultFilterListBuilderFactory<T> implements FilterList.Builder.Fac
 
 	static final FilterList.Builder.ModelStep MODEL = new DefaultModelStep();
 
-	private final SwingListModel<T> listModel;
+	private final SwingFilterListModel<T> listModel;
 
-	private DefaultFilterListBuilderFactory(SwingListModel<T> listModel) {
+	private DefaultFilterListBuilderFactory(SwingFilterListModel<T> listModel) {
 		this.listModel = requireNonNull(listModel);
 	}
 
@@ -50,7 +50,7 @@ final class DefaultFilterListBuilderFactory<T> implements FilterList.Builder.Fac
 	private static final class DefaultModelStep implements FilterList.Builder.ModelStep {
 
 		@Override
-		public <T> FilterList.Builder.Factory<T> model(SwingListModel<T> listModel) {
+		public <T> FilterList.Builder.Factory<T> model(SwingFilterListModel<T> listModel) {
 			return new DefaultFilterListBuilderFactory<>(listModel);
 		}
 	}

@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -45,7 +45,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	private final List<Item<T>> items;
 	private final List<ItemListener> itemListeners = new ArrayList<>();
 
-	private @Nullable SwingComboBoxModel<Item<T>> comboBoxModel;
+	private @Nullable SwingFilterComboBoxModel<Item<T>> comboBoxModel;
 	private @Nullable Comparator<Item<T>> comparator;
 	private boolean sorted = false;
 	private boolean nullable;
@@ -62,7 +62,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 		this.items = new ArrayList<>(requireNonNull(items));
 	}
 
-	DefaultItemComboBoxBuilder(SwingComboBoxModel<Item<T>> comboBoxModel) {
+	DefaultItemComboBoxBuilder(SwingFilterComboBoxModel<Item<T>> comboBoxModel) {
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		this.items = Collections.emptyList();
 		value(comboBoxModel.getSelectedItem() == null ? null : comboBoxModel.getSelectedItem().get());
@@ -154,7 +154,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 
 	@Override
 	protected JComboBox<Item<T>> createComponent() {
-		SwingComboBoxModel<Item<T>> itemComboBoxModel = comboBoxModel == null ? createItemComboBoxModel() : comboBoxModel;
+		SwingFilterComboBoxModel<Item<T>> itemComboBoxModel = comboBoxModel == null ? createItemComboBoxModel() : comboBoxModel;
 		JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
 		if (editor == null) {
 			Completion.builder()
@@ -191,25 +191,25 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 		return new SelectedItemValue<>(component);
 	}
 
-	private SwingComboBoxModel<Item<T>> createItemComboBoxModel() {
-		Item<T> nullItem = Item.item(null, SwingComboBoxModel.NULL_CAPTION.getOrThrow());
+	private SwingFilterComboBoxModel<Item<T>> createItemComboBoxModel() {
+		Item<T> nullItem = Item.item(null, SwingFilterComboBoxModel.NULL_CAPTION.getOrThrow());
 		if (nullable && !items.contains(nullItem)) {
 			items.add(0, nullItem);
 		}
 		if (comparator != null) {
-			comboBoxModel = SwingComboBoxModel.builder()
+			comboBoxModel = SwingFilterComboBoxModel.builder()
 							.items(items)
 							.sorted(comparator)
 							.build();
 		}
 		else if (sorted) {
-			comboBoxModel = SwingComboBoxModel.builder()
+			comboBoxModel = SwingFilterComboBoxModel.builder()
 							.items(items)
 							.sorted(true)
 							.build();
 		}
 		else {
-			comboBoxModel = SwingComboBoxModel.builder()
+			comboBoxModel = SwingFilterComboBoxModel.builder()
 							.items(items)
 							.build();
 		}
@@ -234,7 +234,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	private static final class DefaultBuilderFactory implements BuilderFactory {
 
 		@Override
-		public <T> ItemComboBoxBuilder<T> model(SwingComboBoxModel<Item<T>> comboBoxModel) {
+		public <T> ItemComboBoxBuilder<T> model(SwingFilterComboBoxModel<Item<T>> comboBoxModel) {
 			return new DefaultItemComboBoxBuilder<>(comboBoxModel);
 		}
 

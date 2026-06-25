@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -32,9 +32,9 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
 
 	SelectedValue(C comboBox) {
 		super(comboBox);
-		if (comboBox.getModel() instanceof SwingComboBoxModel) {
+		if (comboBox.getModel() instanceof SwingFilterComboBoxModel) {
 			//ItemListener does not get notified when null values are selected/deselected
-			((SwingComboBoxModel<T>) comboBox.getModel()).selection().item().addListener(this::notifyObserver);
+			((SwingFilterComboBoxModel<T>) comboBox.getModel()).selection().item().addListener(this::notifyObserver);
 		}
 		else {
 			comboBox.addItemListener(new NotifyOnItemSelectedListener());
@@ -44,8 +44,8 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
 	@Override
 	protected @Nullable T getComponentValue() {
 		ComboBoxModel<T> comboBoxModel = component().getModel();
-		if (comboBoxModel instanceof SwingComboBoxModel) {
-			return ((SwingComboBoxModel<T>) comboBoxModel).selection().item().get();
+		if (comboBoxModel instanceof SwingFilterComboBoxModel) {
+			return ((SwingFilterComboBoxModel<T>) comboBoxModel).selection().item().get();
 		}
 
 		return (T) comboBoxModel.getSelectedItem();

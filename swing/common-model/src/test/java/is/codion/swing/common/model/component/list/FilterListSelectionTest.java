@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,8 +39,8 @@ public class FilterListSelectionTest {
 
 	public FilterListSelectionTest() {
 		List<String> data = asList("A", "B", "C");
-		SwingTableModel<String, Integer> tableModel =
-						SwingTableModel.builder()
+		SwingFilterTableModel<String, Integer> tableModel =
+						SwingFilterTableModel.builder()
 										.columns(new TableColumns<String, Integer>() {
 											@Override
 											public List<Integer> identifiers() {

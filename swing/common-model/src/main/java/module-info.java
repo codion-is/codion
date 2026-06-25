@@ -19,9 +19,9 @@
 /**
  * Common Swing model classes, such as:
  * <ul>
- * <li>{@link is.codion.swing.common.model.component.combobox.SwingComboBoxModel}
+ * <li>{@link is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel}
  * <li>{@link is.codion.swing.common.model.component.list.FilterListSelection}
- * <li>{@link is.codion.swing.common.model.component.table.SwingTableModel}
+ * <li>{@link is.codion.swing.common.model.component.table.SwingFilterTableModel}
  * <li>{@link is.codion.swing.common.model.worker.ProgressWorker}
  * </ul>
  */

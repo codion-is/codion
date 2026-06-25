@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
@@ -506,7 +506,7 @@ final class DefaultFilterTableCellEditor<C extends JComponent, T> extends Abstra
 
 			@Override
 			public ComponentValue<JComboBox<T>, T> get() {
-				return comboBox().model(SwingComboBoxModel.builder()
+				return comboBox().model(SwingFilterComboBoxModel.builder()
 								.items(asList(columnClass.getEnumConstants()))
 								.build()).buildValue();
 			}

@@ -21,8 +21,8 @@ package is.codion.swing.common.ui.component.logging;
 import is.codion.common.i18n.Messages;
 import is.codion.common.utilities.logging.LoggerProxy;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
@@ -85,14 +85,14 @@ public final class LogLevelPanel extends JPanel {
 					messageBundle(LogLevelPanel.class, getBundle(LogLevelPanel.class.getName()));
 
 	private final LoggerProxy loggerProxy;
-	private final SwingTableModel<LogLevelRow, LogLevelColumn> tableModel;
+	private final SwingFilterTableModel<LogLevelRow, LogLevelColumn> tableModel;
 	private final FilterTable<LogLevelRow, LogLevelColumn> table;
 	private final JTextField filterField;
 
 	private LogLevelPanel(LoggerProxy loggerProxy) {
 		super(borderLayout());
 		this.loggerProxy = loggerProxy;
-		tableModel = SwingTableModel.builder()
+		tableModel = SwingFilterTableModel.builder()
 						.columns(new LogLevelColumns())
 						.items(new LogLevelItems())
 						.rowEditor(LogLevelEditor::new)
@@ -107,7 +107,7 @@ public final class LogLevelPanel extends JPanel {
 						.columns(LogLevelPanel::configureColumns)
 						.cellEditor(LogLevelColumn.LEVEL, FilterTableCellEditor.builder()
 										.component(() -> comboBox()
-														.model(SwingComboBoxModel.builder()
+														.model(SwingFilterComboBoxModel.builder()
 																		.items(loggerProxy.levels())
 																		.comparator(null)
 																		.build())
@@ -205,11 +205,11 @@ public final class LogLevelPanel extends JPanel {
 		}
 	}
 
-	private final class LogLevelEditor implements SwingTableModel.RowEditor<LogLevelRow, LogLevelColumn> {
+	private final class LogLevelEditor implements SwingFilterTableModel.RowEditor<LogLevelRow, LogLevelColumn> {
 
-		private final SwingTableModel<LogLevelRow, LogLevelColumn> tableModel;
+		private final SwingFilterTableModel<LogLevelRow, LogLevelColumn> tableModel;
 
-		private LogLevelEditor(SwingTableModel<LogLevelRow, LogLevelColumn> tableModel) {
+		private LogLevelEditor(SwingFilterTableModel<LogLevelRow, LogLevelColumn> tableModel) {
 			this.tableModel = tableModel;
 		}
 
@@ -263,7 +263,7 @@ public final class LogLevelPanel extends JPanel {
 		}
 	}
 
-	private static class LogLevelColumns implements SwingTableModel.TableColumns<LogLevelRow, LogLevelColumn> {
+	private static class LogLevelColumns implements SwingFilterTableModel.TableColumns<LogLevelRow, LogLevelColumn> {
 
 		private static final List<LogLevelColumn> IDENTIFIERS = asList(LogLevelColumn.values());
 

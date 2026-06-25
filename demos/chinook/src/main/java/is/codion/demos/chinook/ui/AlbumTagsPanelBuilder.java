@@ -20,7 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.ui.AlbumTagsPanelBuilder.AlbumTagsPanel;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.swing.common.model.component.list.SwingListModel;
+import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
@@ -66,7 +66,7 @@ final class AlbumTagsPanelBuilder extends AbstractComponentValueBuilder<AlbumTag
 
 		private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
-		private final SwingListModel<String> model = SwingListModel.builder()
+		private final SwingFilterListModel<String> model = SwingFilterListModel.builder()
 						.<String>items()
 						.build();
 		private final ComponentValue<FilterList<String>, List<String>> value = FilterList.builder()

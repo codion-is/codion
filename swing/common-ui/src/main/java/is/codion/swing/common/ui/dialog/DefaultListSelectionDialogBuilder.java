@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.State;
-import is.codion.swing.common.model.component.list.SwingListModel;
+import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.control.Control;
@@ -152,7 +152,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 		}
 
 		private FilterList<T> createList(boolean singleSelection) {
-			SwingListModel<T> model = SwingListModel.builder()
+			SwingFilterListModel<T> model = SwingFilterListModel.builder()
 							.items(values)
 							.comparator(comparator)
 							.build();

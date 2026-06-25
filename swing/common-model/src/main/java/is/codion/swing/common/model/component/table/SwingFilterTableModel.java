@@ -44,7 +44,7 @@ import java.util.function.Supplier;
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @see #builder()
  */
-public interface SwingTableModel<R, C> extends FilterTableModel<R, C>, TableModel {
+public interface SwingFilterTableModel<R, C> extends FilterTableModel<R, C>, TableModel {
 
 	/**
 	 * @return the {@link FilterListSelection} instance used by this table model
@@ -75,11 +75,11 @@ public interface SwingTableModel<R, C> extends FilterTableModel<R, C>, TableMode
 	 * @return a {@link Builder.ColumnsStep} instance
 	 */
 	static Builder.ColumnsStep builder() {
-		return DefaultSwingTableModel.DefaultBuilder.COLUMNS;
+		return DefaultSwingFilterTableModel.DefaultBuilder.COLUMNS;
 	}
 
 	/**
-	 * Builds a {@link SwingTableModel} — the same options as the common
+	 * Builds a {@link SwingFilterTableModel} — the same options as the common
 	 * {@link is.codion.common.model.component.table.FilterTableModel.Builder} (the selection is a
 	 * {@code javax.swing.ListSelectionModel} based one and the refresher a {@code ProgressWorker} based one),
 	 * adding {@link #async(boolean)} and {@link #rowEditor(Function)}, with the chain staying Swing-typed
@@ -141,7 +141,7 @@ public interface SwingTableModel<R, C> extends FilterTableModel<R, C>, TableMode
 		 * @param rowEditor supplies the row editor
 		 * @return this builder instance
 		 */
-		Builder<R, C> rowEditor(Function<SwingTableModel<R, C>, RowEditor<R, C>> rowEditor);
+		Builder<R, C> rowEditor(Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> rowEditor);
 
 		/**
 		 * @param included the {@link Predicate} controlling which items should be included
@@ -187,9 +187,9 @@ public interface SwingTableModel<R, C> extends FilterTableModel<R, C>, TableMode
 		Builder<R, C> onIndexesSelected(Consumer<List<Integer>> indexes);
 
 		/**
-		 * @return a new {@link SwingTableModel} instance.
+		 * @return a new {@link SwingFilterTableModel} instance.
 		 */
-		SwingTableModel<R, C> build();
+		SwingFilterTableModel<R, C> build();
 	}
 
 	/**

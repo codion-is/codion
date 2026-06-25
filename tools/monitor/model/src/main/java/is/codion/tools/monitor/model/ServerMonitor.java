@@ -34,7 +34,7 @@ import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -96,18 +96,18 @@ public final class ServerMonitor {
 
 	private final Value<Integer> connectionCountValue = Value.nullable(0);
 	private final Value<String> memoryUsageValue = Value.nullable("");
-	private final SwingTableModel<DomainEntityDefinition, String> domainTableModel =
-					SwingTableModel.builder()
+	private final SwingFilterTableModel<DomainEntityDefinition, String> domainTableModel =
+					SwingFilterTableModel.builder()
 									.columns(new DomainColumns())
 									.items(new DomainTableItems())
 									.build();
-	private final SwingTableModel<DomainReport, String> reportTableModel =
-					SwingTableModel.builder()
+	private final SwingFilterTableModel<DomainReport, String> reportTableModel =
+					SwingFilterTableModel.builder()
 									.columns(new ReportColumns())
 									.items(new ReportTableItems())
 									.build();
-	private final SwingTableModel<DomainOperation, String> operationTableModel =
-					SwingTableModel.builder()
+	private final SwingFilterTableModel<DomainOperation, String> operationTableModel =
+					SwingFilterTableModel.builder()
 									.columns(new OperationColumns())
 									.items(new OperationTableItems())
 									.build();
@@ -381,21 +381,21 @@ public final class ServerMonitor {
 	/**
 	 * @return the table model for viewing the domain models
 	 */
-	public SwingTableModel<DomainEntityDefinition, String> domainTableModel() {
+	public SwingFilterTableModel<DomainEntityDefinition, String> domainTableModel() {
 		return domainTableModel;
 	}
 
 	/**
 	 * @return the table model for viewing reports
 	 */
-	public SwingTableModel<DomainReport, String> reportTableModel() {
+	public SwingFilterTableModel<DomainReport, String> reportTableModel() {
 		return reportTableModel;
 	}
 
 	/**
 	 * @return the table model for viewing operations
 	 */
-	public SwingTableModel<DomainOperation, String> operationTableModel() {
+	public SwingFilterTableModel<DomainOperation, String> operationTableModel() {
 		return operationTableModel;
 	}
 

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.common.utilities.item.Item.item;
-import static is.codion.swing.common.model.component.combobox.SwingComboBoxModel.booleanItems;
+import static is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel.booleanItems;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * the rich model logic is tested in
  * {@code is.codion.common.model.component.combobox.DefaultFilterComboBoxModelTest}.
  */
-public class DefaultSwingComboBoxModelTest {
+public class DefaultSwingFilterComboBoxModelTest {
 
 	private static final String NULL = "nullitem";
 	private static final String ANNA = "anna";
@@ -49,7 +49,7 @@ public class DefaultSwingComboBoxModelTest {
 
 	private static final List<String> ITEMS = asList(ANNA, KALLI, SIGGI, TOMAS, BJORN);
 
-	private SwingComboBoxModel<String> testModel;
+	private SwingFilterComboBoxModel<String> testModel;
 
 	@Test
 	void getSize() {
@@ -113,7 +113,7 @@ public class DefaultSwingComboBoxModelTest {
 		Item<Integer> aOne = item(1, "AOne");
 		Item<Integer> bTwo = item(2, "BTwo");
 		List<Item<Integer>> items = asList(nullItem, bTwo, aOne);
-		SwingComboBoxModel<Item<Integer>> model = SwingComboBoxModel.builder()
+		SwingFilterComboBoxModel<Item<Integer>> model = SwingFilterComboBoxModel.builder()
 						.items(items)
 						.build();
 		model.setSelectedItem(1);//raw value -> aOne
@@ -129,7 +129,7 @@ public class DefaultSwingComboBoxModelTest {
 	@Test
 	void booleanItemComboBoxModel() {
 		List<Item<Boolean>> items = booleanItems();
-		SwingComboBoxModel<Item<Boolean>> model = SwingComboBoxModel.builder()
+		SwingFilterComboBoxModel<Item<Boolean>> model = SwingFilterComboBoxModel.builder()
 						.items(items)
 						.build();
 		assertSame(items.get(0), model.getSelectedItem());
@@ -144,7 +144,7 @@ public class DefaultSwingComboBoxModelTest {
 
 	@BeforeEach
 	void setUp() {
-		testModel = SwingComboBoxModel.builder()
+		testModel = SwingFilterComboBoxModel.builder()
 						.items(ITEMS)
 						.nullItem(NULL)
 						.build();

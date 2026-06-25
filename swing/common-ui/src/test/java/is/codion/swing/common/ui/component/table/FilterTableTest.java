@@ -23,7 +23,7 @@ import is.codion.common.model.component.table.FilterTableSort;
 import is.codion.common.model.filter.SortOrder;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
@@ -88,8 +88,8 @@ public class FilterTableTest {
 		return FilterTable.builder().model(createTestModel(customComparator)).build();
 	}
 
-	private static SwingTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
-		return SwingTableModel.builder()
+	private static SwingFilterTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
+		return SwingFilterTableModel.builder()
 						.columns(new TableColumns<TestRow, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
@@ -130,7 +130,7 @@ public class FilterTableTest {
 
 	@Test
 	void searchField() {
-		TableColumns<List<String>, Integer> columns = new TableColumns<List<String>, Integer>() {
+		SwingFilterTableModel.TableColumns<List<String>, Integer> columns = new SwingFilterTableModel.TableColumns<List<String>, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return asList(0, 1);
@@ -147,8 +147,8 @@ public class FilterTableTest {
 			}
 		};
 
-		SwingTableModel<List<String>, Integer> tableModel =
-						SwingTableModel.builder()
+		SwingFilterTableModel<List<String>, Integer> tableModel =
+						SwingFilterTableModel.builder()
 										.columns(columns)
 										.items(() -> asList(
 														asList("darri", "hidden"),
@@ -220,9 +220,9 @@ public class FilterTableTest {
 						new Row(4, "e")
 		);
 
-		SwingTableModel<Row, Integer> testModel =
-						SwingTableModel.builder()
-										.columns(new TableColumns<Row, Integer>() {
+		SwingFilterTableModel<Row, Integer> testModel =
+						SwingFilterTableModel.builder()
+										.columns(new SwingFilterTableModel.TableColumns<Row, Integer>() {
 											@Override
 											public List<Integer> identifiers() {
 												return asList(0, 1);
@@ -352,7 +352,7 @@ public class FilterTableTest {
 	@Test
 	void sorting() {
 		FilterTable<TestRow, Integer> table = createTestTable();
-		SwingTableModel<TestRow, Integer> tableModel = table.model();
+		SwingFilterTableModel<TestRow, Integer> tableModel = table.model();
 		AtomicInteger actionsPerformed = new AtomicInteger();
 		Runnable consumer = actionsPerformed::incrementAndGet;
 		table.model().sort().observer().addListener(consumer);
@@ -397,7 +397,7 @@ public class FilterTableTest {
 	@Test
 	void customSorting() {
 		FilterTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
-		SwingTableModel<TestRow, Integer> tableModel = table.model();
+		SwingFilterTableModel<TestRow, Integer> tableModel = table.model();
 		tableModel.items().refresh();
 		FilterTableSort<TestRow, Integer> sortModel = table.model().sort();
 		sortModel.order(0).set(SortOrder.ASCENDING);
@@ -409,7 +409,7 @@ public class FilterTableTest {
 	@Test
 	void selectionAndSorting() {
 		FilterTable<TestRow, Integer> table = createTestTable();
-		SwingTableModel<TestRow, Integer> tableModel = table.model();
+		SwingFilterTableModel<TestRow, Integer> tableModel = table.model();
 		tableModel.items().refresh();
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
@@ -450,7 +450,7 @@ public class FilterTableTest {
 	void cellRenderers() {
 		final class Row {}
 
-		TableColumns<Row, Integer> columns = new TableColumns<>() {
+		SwingFilterTableModel.TableColumns<Row, Integer> columns = new SwingFilterTableModel.TableColumns<>() {
 			@Override
 			public List<Integer> identifiers() {
 				return List.of(0, 1);
@@ -467,7 +467,7 @@ public class FilterTableTest {
 			}
 		};
 
-		SwingTableModel<Row, Integer> model = SwingTableModel.builder()
+		SwingFilterTableModel<Row, Integer> model = SwingFilterTableModel.builder()
 						.columns(columns)
 						.build();
 		model.items().add(new Row());
@@ -505,7 +505,7 @@ public class FilterTableTest {
 						.build();
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setPreferredSize(new Dimension(200, 200));
-		SwingTableModel<TestRow, Integer> model = table.model();
+		SwingFilterTableModel<TestRow, Integer> model = table.model();
 		List<TestRow> rows = IntStream.range(0, 100)
 						.mapToObj(i -> new TestRow("" + i))
 						.collect(toList());
@@ -594,7 +594,7 @@ public class FilterTableTest {
 			}
 		}
 
-		TableColumns<Row, Integer> columns = new TableColumns<Row, Integer>() {
+		SwingFilterTableModel.TableColumns<Row, Integer> columns = new SwingFilterTableModel.TableColumns<Row, Integer>() {
 
 			private static final List<Integer> IDENTIFIERS = IntStream.range(0, 14).boxed().collect(toList());
 
@@ -649,7 +649,7 @@ public class FilterTableTest {
 				}
 			}
 		};
-		SwingTableModel.RowEditor<Row, Integer> rowEditor = new SwingTableModel.RowEditor<Row, Integer>() {
+		SwingFilterTableModel.RowEditor<Row, Integer> rowEditor = new SwingFilterTableModel.RowEditor<Row, Integer>() {
 
 			@Override
 			public boolean editable(Row row, Integer identifier) {
@@ -707,7 +707,7 @@ public class FilterTableTest {
 			}
 		};
 
-		SwingTableModel<Row, Integer> model = SwingTableModel.builder()
+		SwingFilterTableModel<Row, Integer> model = SwingFilterTableModel.builder()
 						.columns(columns)
 						.rowEditor(m -> rowEditor)
 						.items(() -> asList(
@@ -738,7 +738,7 @@ public class FilterTableTest {
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
-	                                             SwingTableModel<TestRow, Integer> model) {
+																							 SwingFilterTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {
 			if (includeFiltered) {
 				if (!model.items().contains(row)) {

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -152,7 +152,7 @@ public final class Components {
 	 * @return a boolean based {@link ItemComboBoxBuilder}
 	 */
 	public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
-		return ItemComboBoxBuilder.builder().items(SwingComboBoxModel.booleanItems());
+		return ItemComboBoxBuilder.builder().items(SwingFilterComboBoxModel.booleanItems());
 	}
 
 	/**

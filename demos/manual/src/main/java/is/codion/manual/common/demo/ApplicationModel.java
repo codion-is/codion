@@ -22,8 +22,8 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueList;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.list.SwingListModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.model.component.list.SwingFilterListModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
@@ -175,8 +175,8 @@ public final class ApplicationModel {
 		return new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
 	}
 
-	public SwingComboBoxModel<Item<Integer>> createIntegerItemComboBoxModel() {
-		return SwingComboBoxModel.builder()
+	public SwingFilterComboBoxModel<Item<Integer>> createIntegerItemComboBoxModel() {
+		return SwingFilterComboBoxModel.builder()
 						.items(List.of(
 										item(1, "One"), item(2, "Two"), item(3, "Three"),
 										item(4, "Four"), item(5, "Five"), item(6, "Six"),
@@ -203,8 +203,8 @@ public final class ApplicationModel {
 		));
 	}
 
-	public SwingListModel<String> createStringListModel() {
-		return SwingListModel.builder()
+	public SwingFilterListModel<String> createStringListModel() {
+		return SwingFilterListModel.builder()
 						.items(List.of(
 										"Here", "Are", "A",
 										"Few", "Elements", "To",

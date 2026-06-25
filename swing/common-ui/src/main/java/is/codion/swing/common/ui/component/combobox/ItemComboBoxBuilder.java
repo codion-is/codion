@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
@@ -129,7 +129,7 @@ public interface ItemComboBoxBuilder<T> extends ComponentValueBuilder<JComboBox<
 		 * @param <T> the item type
 		 * @return a {@link ItemComboBoxBuilder}
 		 */
-		<T> ItemComboBoxBuilder<T> model(SwingComboBoxModel<Item<T>> comboBoxModel);
+		<T> ItemComboBoxBuilder<T> model(SwingFilterComboBoxModel<Item<T>> comboBoxModel);
 
 		/**
 		 * @param items the items

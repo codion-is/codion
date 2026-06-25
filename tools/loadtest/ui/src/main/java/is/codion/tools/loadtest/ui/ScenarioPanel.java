@@ -21,8 +21,8 @@ package is.codion.tools.loadtest.ui;
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.reactive.value.ObservableValueList;
 import is.codion.common.reactive.value.ValueList;
-import is.codion.swing.common.model.component.table.SwingTableModel;
-import is.codion.swing.common.model.component.table.SwingTableModel.RowEditor;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel.RowEditor;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -50,13 +50,13 @@ final class ScenarioPanel<T> extends JPanel {
 
 	private final ItemRandomizer<Scenario<T>> itemRandomizer;
 	private final Collection<RandomItem<Scenario<T>>> scenarioRows;
-	private final SwingTableModel<RandomItem<Scenario<T>>, String> scenarioTableModel;
+	private final SwingFilterTableModel<RandomItem<Scenario<T>>, String> scenarioTableModel;
 	private final ValueList<Scenario<T>> selected = ValueList.<Scenario<T>>builder().build();
 
 	ScenarioPanel(ItemRandomizer<Scenario<T>> randomizer) {
 		this.itemRandomizer = requireNonNull(randomizer);
 		this.scenarioRows = createRows();
-		this.scenarioTableModel = SwingTableModel.builder()
+		this.scenarioTableModel = SwingFilterTableModel.builder()
 						.columns(new ScenarioColumns())
 						.rowEditor(ScenarioEditor::new)
 						.items(() -> scenarioRows)
@@ -156,9 +156,9 @@ final class ScenarioPanel<T> extends JPanel {
 
 	private final class ScenarioEditor implements RowEditor<RandomItem<Scenario<T>>, String> {
 
-		private final SwingTableModel<RandomItem<Scenario<T>>, String> tableModel;
+		private final SwingFilterTableModel<RandomItem<Scenario<T>>, String> tableModel;
 
-		private ScenarioEditor(SwingTableModel<RandomItem<Scenario<T>>, String> tableModel) {
+		private ScenarioEditor(SwingFilterTableModel<RandomItem<Scenario<T>>, String> tableModel) {
 			this.tableModel = tableModel;
 		}
 

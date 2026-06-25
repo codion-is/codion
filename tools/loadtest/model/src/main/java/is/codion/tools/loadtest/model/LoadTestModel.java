@@ -20,7 +20,7 @@ package is.codion.tools.loadtest.model;
 
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario.Result;
 
@@ -45,7 +45,7 @@ public interface LoadTestModel<T> {
 	/**
 	 * @return a table model for displaying the active application instances
 	 */
-	SwingTableModel<ApplicationRow, String> applicationTableModel();
+	SwingFilterTableModel<ApplicationRow, String> applicationTableModel();
 
 	/**
 	 * @return the {@link Value} controlling the chart data update interval in milliseconds

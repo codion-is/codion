@@ -31,8 +31,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.action.DelayedAction;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.list.SwingListModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
@@ -705,7 +705,7 @@ public final class EntitySearchField extends HintTextField {
 				items.add(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
 				columnBasePanelBuilder.add(createSettingsPanel(entry.getValue()), entry.getKey().name());
 			}
-			SwingComboBoxModel<Item<Column<String>>> columnComboBoxModel = SwingComboBoxModel.builder()
+			SwingFilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = SwingFilterComboBoxModel.builder()
 							.items(items)
 							.build();
 			JPanel columnBasePanel = columnBasePanelBuilder.build();
@@ -844,7 +844,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(List<Entity> entities) {
-			SwingListModel<Entity> listModel = list.model();
+			SwingFilterListModel<Entity> listModel = list.model();
 			requireNonNull(entities).forEach(listModel.items()::add);
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
 			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
@@ -865,7 +865,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private FilterList<Entity> createList(EntitySearchField searchField) {
-			SwingListModel<Entity> listModel = SwingListModel.builder()
+			SwingFilterListModel<Entity> listModel = SwingFilterListModel.builder()
 							.<Entity>items()
 							.build();
 

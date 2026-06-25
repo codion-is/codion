@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityEditor;
 import is.codion.framework.model.EntityEditor.EditorTask.Result;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
@@ -145,42 +145,42 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		Map<ForeignKey, SwingEntityComboBoxModel> foreignKey();
 
 		@Override
-		Map<Column<?>, SwingComboBoxModel<?>> column();
+		Map<Column<?>, SwingFilterComboBoxModel<?>> column();
 
 		@Override
 		SwingEntityComboBoxModel get(ForeignKey foreignKey);
 
 		@Override
-		<T> SwingComboBoxModel<T> get(Column<T> column);
+		<T> SwingFilterComboBoxModel<T> get(Column<T> column);
 
 		@Override
 		SwingEntityComboBoxModel create(ForeignKey foreignKey);
 
 		@Override
-		<T> SwingComboBoxModel<T> create(Column<T> column);
+		<T> SwingFilterComboBoxModel<T> create(Column<T> column);
 	}
 
 	private static final class DefaultSwingComboBoxModels
-					extends DefaultComboBoxModels<SwingEntityComboBoxModel, SwingComboBoxModel<?>> implements SwingComboBoxModels {
+					extends DefaultComboBoxModels<SwingEntityComboBoxModel, SwingFilterComboBoxModel<?>> implements SwingComboBoxModels {
 
 		private DefaultSwingComboBoxModels(AbstractEntityEditor<?> editor) {
 			super(editor);
 		}
 
 		@Override
-		public <T> SwingComboBoxModel<T> get(Column<T> column) {
-			return (SwingComboBoxModel<T>) super.get(column);
+		public <T> SwingFilterComboBoxModel<T> get(Column<T> column) {
+			return (SwingFilterComboBoxModel<T>) super.get(column);
 		}
 
 		@Override
-		public <T> SwingComboBoxModel<T> create(Column<T> column) {
-			return (SwingComboBoxModel<T>) super.create(column);
+		public <T> SwingFilterComboBoxModel<T> create(Column<T> column) {
+			return (SwingFilterComboBoxModel<T>) super.create(column);
 		}
 	}
 
 	/**
 	 * <p>A {@link SwingComponentModels} extension providing foreign key based
-	 * {@link SwingEntityComboBoxModel} and column based {@link SwingComboBoxModel}.
+	 * {@link SwingEntityComboBoxModel} and column based {@link SwingFilterComboBoxModel}.
 	 * <p>Override to customize combo box model creation.
 	 */
 	public interface SwingComponentModels extends ComponentModels {
@@ -194,12 +194,12 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 		}
 
 		@Override
-		default <T> SwingComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnectionProvider connectionProvider) {
+		default <T> SwingFilterComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnectionProvider connectionProvider) {
 			EntityDefinition entityDefinition = requireNonNull(connectionProvider).entities()
 							.definition(requireNonNull(column).entityType());
 			boolean nullable = entityDefinition.columns().definition(column).nullable();
 
-			return SwingComboBoxModel.builder()
+			return SwingFilterComboBoxModel.builder()
 							.items(() -> connectionProvider.connection().select(column))
 							.nullItem(nullable ? ComponentModels.createNullItem(column) : null)
 							.includeNull(nullable)

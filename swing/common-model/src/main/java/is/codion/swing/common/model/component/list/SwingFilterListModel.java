@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * @param <T> the item type
  * @see #builder()
  */
-public interface SwingListModel<T> extends FilterListModel<T>, ListModel<T> {
+public interface SwingFilterListModel<T> extends FilterListModel<T>, ListModel<T> {
 
 	@Override
 	FilterListSelection<T> selection();
@@ -48,11 +48,11 @@ public interface SwingListModel<T> extends FilterListModel<T>, ListModel<T> {
 	 * @return a {@link Builder.ItemsStep} instance
 	 */
 	static Builder.ItemsStep builder() {
-		return DefaultSwingListModel.DefaultBuilder.ITEMS;
+		return DefaultSwingFilterListModel.DefaultBuilder.ITEMS;
 	}
 
 	/**
-	 * Builds a {@link SwingListModel} — the same options as the common
+	 * Builds a {@link SwingFilterListModel} — the same options as the common
 	 * {@link is.codion.common.model.component.list.FilterListModel.Builder} (the selection is a
 	 * {@code javax.swing.ListSelectionModel} based one and the refresher a {@code ProgressWorker} based one),
 	 * but the chain stays Swing-typed so {@code build()} yields a {@link ListModel}.
@@ -143,8 +143,8 @@ public interface SwingListModel<T> extends FilterListModel<T>, ListModel<T> {
 		Builder<T> onIndexesSelected(Consumer<List<Integer>> indexes);
 
 		/**
-		 * @return a new {@link SwingListModel} instance
+		 * @return a new {@link SwingFilterListModel} instance
 		 */
-		SwingListModel<T> build();
+		SwingFilterListModel<T> build();
 	}
 }

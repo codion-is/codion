@@ -28,7 +28,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityExport;
 import is.codion.framework.model.EntityExport.ExportAttributes;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.Utilities;
@@ -69,7 +69,7 @@ final class EntityTableExportModel {
 	private final EntityTableModel<?, ?, ?, ?> tableModel;
 
 	private final EntityConnectionProvider connectionProvider;
-	private final SwingComboBoxModel<ConfigurationFile> configurationFiles;
+	private final SwingFilterComboBoxModel<ConfigurationFile> configurationFiles;
 	private final EntityTableExportTreeModel treeModel;
 	private final State selected;
 	private final State all;
@@ -80,7 +80,7 @@ final class EntityTableExportModel {
 		this.tableModel = tableModel;
 		this.connectionProvider = tableModel.connectionProvider();
 		this.treeModel = new EntityTableExportTreeModel(tableModel.entityDefinition().type(), tableModel.connectionProvider().entities());
-		this.configurationFiles = SwingComboBoxModel.builder()
+		this.configurationFiles = SwingFilterComboBoxModel.builder()
 						.items(this::refreshConfigurationFiles)
 						.nullItem(NULL_CONFIGURATION_FILE)
 						.onItemSelected(this::configurationFileSelected)
@@ -115,7 +115,7 @@ final class EntityTableExportModel {
 		return treeModel;
 	}
 
-	SwingComboBoxModel<ConfigurationFile> configurationFiles() {
+	SwingFilterComboBoxModel<ConfigurationFile> configurationFiles() {
 		return configurationFiles;
 	}
 

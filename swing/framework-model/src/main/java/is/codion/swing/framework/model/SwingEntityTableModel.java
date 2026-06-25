@@ -30,7 +30,7 @@ import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 
@@ -54,7 +54,7 @@ import static javax.swing.SwingUtilities.isEventDispatchThread;
  * A TableModel implementation for displaying and working with entities.
  */
 public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityModel, SwingEntityEditModel,
-				SwingEntityTableModel, SwingEntityEditor> implements SwingTableModel<Entity, Attribute<?>> {
+				SwingEntityTableModel, SwingEntityEditor> implements SwingFilterTableModel<Entity, Attribute<?>> {
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
@@ -226,8 +226,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	}
 
 	@Override
-	protected final SwingTableModel<Entity, Attribute<?>> filterModel() {
-		return (SwingTableModel<Entity, Attribute<?>>) super.filterModel();
+	protected final SwingFilterTableModel<Entity, Attribute<?>> filterModel() {
+		return (SwingFilterTableModel<Entity, Attribute<?>>) super.filterModel();
 	}
 
 	@Override
@@ -276,8 +276,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 		}
 	}
 
-	private static SwingTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditor editor) {
-		return SwingTableModel.builder()
+	private static SwingFilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditor editor) {
+		return SwingFilterTableModel.builder()
 						.columns(tableColumns(editor.entityDefinition()))
 						.filters(filterConditions(editor.entityDefinition()))
 						.validator(itemValidator(editor.entityDefinition().type()))

@@ -30,7 +30,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.manual.store.domain.Store.Customer;
 import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.TemporalField;
 
@@ -46,7 +46,7 @@ public final class DesignAndStyle {
 	public static void main(String[] args) {
 		LocalEntityConnectionProvider connectionProvider = null;
 		Entity entity = null;
-		SwingTableModel<List<String>, Integer> tableModel = null;
+		SwingFilterTableModel<List<String>, Integer> tableModel = null;
 		FilterTable<List<String>, Integer> table = null;
 
 		//tag::factories[]

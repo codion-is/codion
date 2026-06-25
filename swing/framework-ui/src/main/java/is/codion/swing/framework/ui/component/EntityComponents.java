@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
@@ -681,8 +681,8 @@ public final class EntityComponents {
 						((ValueAttributeDefinition<?>) attributeDefinition).maximumLength() : -1;
 	}
 
-	private static <T> SwingComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
-		return SwingComboBoxModel.builder()
+	private static <T> SwingFilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
+		return SwingFilterComboBoxModel.builder()
 						.items(asList(attribute.type().valueClass().getEnumConstants()))
 						.includeNull(nullable)
 						.build();

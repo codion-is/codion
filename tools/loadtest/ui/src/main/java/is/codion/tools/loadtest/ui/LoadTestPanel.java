@@ -23,8 +23,8 @@ import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
@@ -114,7 +114,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private static final Runtime RUNTIME = Runtime.getRuntime();
 
 	private final LoadTestModel<T> loadTestModel;
-	private final SwingComboBoxModel<Item<User>> userComboBoxModel = SwingComboBoxModel.builder()
+	private final SwingFilterComboBoxModel<Item<User>> userComboBoxModel = SwingFilterComboBoxModel.builder()
 					.<Item<User>>items(Collections::emptyList)
 					.nullItem(item(null, "-"))
 					.build();
@@ -443,7 +443,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private FilterTable<ApplicationRow, String> createApplicationsTable() {
-		SwingTableModel<ApplicationRow, String> tableModel = model().applicationTableModel();
+		SwingFilterTableModel<ApplicationRow, String> tableModel = model().applicationTableModel();
 
 		return FilterTable.builder()
 						.model(tableModel)

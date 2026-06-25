@@ -31,8 +31,8 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.swing.common.model.component.table.SwingTableModel;
-import is.codion.swing.common.model.component.table.SwingTableModel.RowEditor;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel.RowEditor;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTaskHandler;
 import is.codion.tools.generator.domain.DomainSource;
@@ -108,15 +108,15 @@ public final class DomainGeneratorModel {
 	private static final String VIEW_PREFIX = "viewPrefix";
 	private static final String LOWER_CASE_IDENTIFIERS = "lowerCaseIdentifiers";
 
-	private final SwingTableModel<SchemaRow, String> schemaTableModel =
-					SwingTableModel.builder()
+	private final SwingFilterTableModel<SchemaRow, String> schemaTableModel =
+					SwingFilterTableModel.builder()
 									.columns(new SchemaColumns())
 									.items(new SchemaItems())
 									.onSelectionChanged(this::schemaSelectionChanged)
 									.build();
 	private final State populatedSchemaSelected = State.state();
-	private final SwingTableModel<EntityRow, String> entityTableModel =
-					SwingTableModel.builder()
+	private final SwingFilterTableModel<EntityRow, String> entityTableModel =
+					SwingFilterTableModel.builder()
 									.columns(new EntityColumns())
 									.items(new EntityItems())
 									.onItemSelected(this::search)
@@ -187,11 +187,11 @@ public final class DomainGeneratorModel {
 		schemaTableModel.items().refresh();
 	}
 
-	public SwingTableModel<SchemaRow, String> schemaModel() {
+	public SwingFilterTableModel<SchemaRow, String> schemaModel() {
 		return schemaTableModel;
 	}
 
-	public SwingTableModel<EntityRow, String> entityModel() {
+	public SwingFilterTableModel<EntityRow, String> entityModel() {
 		return entityTableModel;
 	}
 
@@ -532,7 +532,7 @@ public final class DomainGeneratorModel {
 
 		private final IncludedItems<EntityRow> items;
 
-		private EntityEditor(SwingTableModel<EntityRow, String> tableModel) {
+		private EntityEditor(SwingFilterTableModel<EntityRow, String> tableModel) {
 			items = tableModel.items().included();
 		}
 

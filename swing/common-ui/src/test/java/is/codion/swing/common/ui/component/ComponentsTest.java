@@ -23,8 +23,8 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueList;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.list.SwingListModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -568,8 +568,8 @@ public final class ComponentsTest {
 										.transferFocusOnEnter(true)
 										.link(value)
 										.buildValue();
-		SwingComboBoxModel<Item<Boolean>> boxModel =
-						(SwingComboBoxModel<Item<Boolean>>) componentValue.component().getModel();
+		SwingFilterComboBoxModel<Item<Boolean>> boxModel =
+						(SwingFilterComboBoxModel<Item<Boolean>>) componentValue.component().getModel();
 		assertTrue(boxModel.selection().item().getOrThrow().getOrThrow());
 		boxModel.setSelectedItem(null);
 		assertNull(value.get());
@@ -592,7 +592,7 @@ public final class ComponentsTest {
 						.nullable(true)
 						.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
-		SwingComboBoxModel<Item<Integer>> model = (SwingComboBoxModel<Item<Integer>>) comboBox.getModel();
+		SwingFilterComboBoxModel<Item<Integer>> model = (SwingFilterComboBoxModel<Item<Integer>>) comboBox.getModel();
 		assertEquals(0, model.items().included().indexOf(null));
 		assertTrue(model.items().contains(null));
 
@@ -903,7 +903,7 @@ public final class ComponentsTest {
 
 	@Test
 	void listSelectedItems() {
-		SwingListModel<String> listModel = SwingListModel.builder()
+		SwingFilterListModel<String> listModel = SwingFilterListModel.builder()
 						.items(asList("one", "two", "three"))
 						.build();
 
@@ -930,7 +930,7 @@ public final class ComponentsTest {
 		listBuilder.scrollPane().build();
 
 		componentValue = FilterList.builder()
-						.model(SwingListModel.builder()
+						.model(SwingFilterListModel.builder()
 										.items(asList("one", "two", "three"))
 										.build())
 						.selectedItems()
@@ -945,7 +945,7 @@ public final class ComponentsTest {
 
 	@Test
 	void listSelectedItem() {
-		SwingListModel<String> listModel = SwingListModel.builder()
+		SwingFilterListModel<String> listModel = SwingFilterListModel.builder()
 						.items(asList("one", "two", "three"))
 						.build();
 
@@ -978,7 +978,7 @@ public final class ComponentsTest {
 	void listItems() {
 		ValueList<String> textValue = ValueList.valueList(asList("one", "two", "three"));
 		FilterList.Builder.Items<String> listBuilder = FilterList.builder()
-						.model(SwingListModel.builder()
+						.model(SwingFilterListModel.builder()
 										.items(asList("one", "two", "three"))
 										.build())
 						.items()
@@ -991,7 +991,7 @@ public final class ComponentsTest {
 		assertEquals(asList("one", "two", "three"), componentValue.get());
 		textValue.add("four");
 		assertEquals(asList("one", "two", "three", "four"), componentValue.get());
-		SwingListModel<String> listModel = componentValue.component().getModel();
+		SwingFilterListModel<String> listModel = componentValue.component().getModel();
 		listModel.items().remove("two");
 		assertEquals(asList("one", "three", "four"), componentValue.get());
 		listModel.items().remove("one");
@@ -1002,7 +1002,7 @@ public final class ComponentsTest {
 
 		// Nullable
 		componentValue = FilterList.builder()
-						.model(SwingListModel.builder()
+						.model(SwingFilterListModel.builder()
 										.<String>items()
 										.build())
 						.items()

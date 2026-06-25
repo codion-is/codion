@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.swing.common.model.component.table.SwingTableModel;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -54,8 +54,8 @@ public class FilterTableColumnComponentPanelTest {
 
 	@Test
 	void wrongColumn() {
-		SwingTableModel<Object, Integer> tableModel =
-						SwingTableModel.builder()
+		SwingFilterTableModel<Object, Integer> tableModel =
+						SwingFilterTableModel.builder()
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =
@@ -70,8 +70,8 @@ public class FilterTableColumnComponentPanelTest {
 
 	@Test
 	void setColumnVisible() {
-		SwingTableModel<Object, Integer> tableModel =
-						SwingTableModel.builder()
+		SwingFilterTableModel<Object, Integer> tableModel =
+						SwingFilterTableModel.builder()
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =
@@ -96,8 +96,8 @@ public class FilterTableColumnComponentPanelTest {
 
 	@Test
 	void width() {
-		SwingTableModel<Object, Integer> tableModel =
-						SwingTableModel.builder()
+		SwingFilterTableModel<Object, Integer> tableModel =
+						SwingFilterTableModel.builder()
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =

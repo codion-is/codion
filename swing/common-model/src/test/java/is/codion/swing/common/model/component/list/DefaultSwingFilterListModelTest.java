@@ -31,10 +31,10 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests the Swing {@code ListModel} coat of {@link SwingListModel} — the UI-agnostic logic is tested in
+ * Tests the Swing {@code ListModel} coat of {@link SwingFilterListModel} — the UI-agnostic logic is tested in
  * {@code is.codion.common.model.component.list.DefaultFilterListModelTest}.
  */
-final class DefaultSwingListModelTest {
+final class DefaultSwingFilterListModelTest {
 
 	private static final String ONE = "One";
 	private static final String TWO = "Two";
@@ -44,7 +44,7 @@ final class DefaultSwingListModelTest {
 	@Test
 	void listModelCoat() {
 		List<String> items = asList(ONE, TWO, THREE);
-		SwingListModel<String> model = SwingListModel.builder()
+		SwingFilterListModel<String> model = SwingFilterListModel.builder()
 						.items(items)
 						.comparator(Text.collator())
 						.build();
@@ -65,13 +65,13 @@ final class DefaultSwingListModelTest {
 	@Test
 	void async() {
 		// the Swing builder's async option is forwarded to the ProgressWorker based refresher
-		SwingListModel<String> asyncModel = SwingListModel.builder()
+		SwingFilterListModel<String> asyncModel = SwingFilterListModel.builder()
 						.<String>items()
 						.async(true)
 						.build();
 		assertTrue(asyncModel.items().refresher().async().is());
 
-		SwingListModel<String> syncModel = SwingListModel.builder()
+		SwingFilterListModel<String> syncModel = SwingFilterListModel.builder()
 						.<String>items()
 						.async(false)
 						.build();
@@ -81,7 +81,7 @@ final class DefaultSwingListModelTest {
 	@Test
 	void listDataEvents() {
 		List<String> items = new ArrayList<>(asList(ONE, TWO, THREE));
-		SwingListModel<String> model = SwingListModel.builder()
+		SwingFilterListModel<String> model = SwingFilterListModel.builder()
 						.items(items).build();
 
 		TestListDataListener listener = new TestListDataListener();

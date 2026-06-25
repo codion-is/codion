@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  * common instance and adds the {@link javax.swing.ListModel}/{@code ComboBoxModel} methods, firing
  * {@link ListDataEvent}s off the common model's own observable items + selection.
  */
-final class DefaultSwingComboBoxModel<T> implements SwingComboBoxModel<T> {
+final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxModel<T> {
 
 	/**
 	 * Due to a java.util.ConcurrentModificationException in OSX
@@ -54,15 +54,15 @@ final class DefaultSwingComboBoxModel<T> implements SwingComboBoxModel<T> {
 
 	private final FilterComboBoxModel<T> model;
 
-	private DefaultSwingComboBoxModel(FilterComboBoxModel<T> model) {
+	private DefaultSwingFilterComboBoxModel(FilterComboBoxModel<T> model) {
 		this.model = model;
 		// Bridge the common model's observables to Swing list-data events.
 		model.items().included().observer().addListener(this::fireContentsChanged);
 		model.selection().item().addListener(this::fireContentsChanged);
 	}
 
-	static <T> SwingComboBoxModel<T> model(FilterComboBoxModel<T> model) {
-		return new DefaultSwingComboBoxModel<>(model);
+	static <T> SwingFilterComboBoxModel<T> model(FilterComboBoxModel<T> model) {
+		return new DefaultSwingFilterComboBoxModel<>(model);
 	}
 
 	@Override
@@ -225,10 +225,10 @@ final class DefaultSwingComboBoxModel<T> implements SwingComboBoxModel<T> {
 		}
 
 		@Override
-		public SwingComboBoxModel<T> build() {
+		public SwingFilterComboBoxModel<T> build() {
 			builder.refresher(items -> new ComboBoxRefreshWorker<>(supplier, async, onRefreshException, items));
 
-			return new DefaultSwingComboBoxModel<>(builder.build());
+			return new DefaultSwingFilterComboBoxModel<>(builder.build());
 		}
 	}
 
@@ -266,8 +266,8 @@ final class DefaultSwingComboBoxModel<T> implements SwingComboBoxModel<T> {
 		}
 
 		@Override
-		public SwingComboBoxModel<Item<T>> build() {
-			return new DefaultSwingComboBoxModel<>(builder.build());
+		public SwingFilterComboBoxModel<Item<T>> build() {
+			return new DefaultSwingFilterComboBoxModel<>(builder.build());
 		}
 	}
 

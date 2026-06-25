@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +53,7 @@ public class SwingEntityEditModelTest {
 
 	@Test
 	void comboBoxModel() {
-		SwingComboBoxModel<String> model = employeeEditModel.editor().comboBoxModels().get(Employee.JOB);
+		SwingFilterComboBoxModel<String> model = employeeEditModel.editor().comboBoxModels().get(Employee.JOB);
 		assertNotNull(model);
 		assertEquals(model, employeeEditModel.editor().comboBoxModels().get(Employee.JOB));
 		employeeEditModel.editor().comboBoxModels().get(Employee.JOB).items().clear();

@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.PersistenceEvents;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 
 import org.jspecify.annotations.Nullable;
 
@@ -41,13 +41,13 @@ import java.util.function.Supplier;
 
 /**
  * <p>A Swing {@link javax.swing.ComboBoxModel} based on an Entity — the Swing coat over the UI-agnostic
- * {@link EntityComboBoxModel}, adding the {@link SwingComboBoxModel} interface (mirroring how
+ * {@link EntityComboBoxModel}, adding the {@link SwingFilterComboBoxModel} interface (mirroring how
  * {@code SwingComboBoxModel} relates to {@code FilterComboBoxModel}). All the entity logic (querying, filtering,
  * persistence-awareness) lives in {@link EntityComboBoxModel}; this only adds the Swing surface and a Swing-typed builder.
  * <p>To filter use {@link #filter()} to set a {@link Predicate} or configure {@link ForeignKey} based filtering.
  * @see #builder()
  */
-public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingComboBoxModel<Entity> {
+public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilterComboBoxModel<Entity> {
 
 	/**
 	 * @return a {@link Builder.EntityTypeStep} instance

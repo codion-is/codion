@@ -27,8 +27,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityEditor.EditorValue;
-import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.list.SwingListModel;
+import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
+import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
@@ -814,7 +814,7 @@ public final class EditorComponents {
 		 * @return a combo box builder
 		 */
 		public <T extends Enum<T>, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> enumComboBox(Column<T> column) {
-			return components.component(column).set((B) entityComponents.comboBox(column, SwingComboBoxModel.builder()
+			return components.component(column).set((B) entityComponents.comboBox(column, SwingFilterComboBoxModel.builder()
 											.items(asList(column.type().valueClass().getEnumConstants()))
 											.includeNull(components.editor().entityDefinition().columns().definition(column).nullable())
 											.build()))
@@ -887,7 +887,7 @@ public final class EditorComponents {
 		 * @param <T> the value type
 		 * @return a list builder factory
 		 */
-		public <T> FilterListBuilderFactory<T> list(SwingListModel<T> listModel) {
+		public <T> FilterListBuilderFactory<T> list(SwingFilterListModel<T> listModel) {
 			return new FilterListBuilderFactory<>(listModel);
 		}
 
@@ -924,7 +924,7 @@ public final class EditorComponents {
 
 			private final FilterList.Builder.Factory<T> builderFactory;
 
-			private FilterListBuilderFactory(SwingListModel<T> listModel) {
+			private FilterListBuilderFactory(SwingFilterListModel<T> listModel) {
 				this.builderFactory = FilterList.builder().model(listModel);
 			}
 
@@ -967,8 +967,8 @@ public final class EditorComponents {
 
 		private static void refreshIfCleared(JComboBox<?> comboBox) {
 			ComboBoxModel<?> model = comboBox.getModel();
-			if (model instanceof SwingComboBoxModel) {
-				SwingComboBoxModel<?> comboBoxModel = (SwingComboBoxModel<?>) model;
+			if (model instanceof SwingFilterComboBoxModel) {
+				SwingFilterComboBoxModel<?> comboBoxModel = (SwingFilterComboBoxModel<?>) model;
 				if (comboBoxModel.items().cleared()) {
 					comboBoxModel.items().refresh();
 				}

@@ -50,16 +50,16 @@ import static java.util.Objects.requireNonNull;
  * {@code ProgressWorker} based refresher — and adds the {@link javax.swing.table.TableModel} methods
  * and cell editing (via {@link RowEditor}), firing {@code TableModelEvent}s off the common model's items.
  */
-final class DefaultSwingTableModel<R, C> extends AbstractTableModel implements SwingTableModel<R, C> {
+final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implements SwingFilterTableModel<R, C> {
 
 	private final FilterTableModel<R, C> model;
 	private final FilterListSelection<R> selection;
-	private final Function<SwingTableModel<R, C>, RowEditor<R, C>> rowEditorFactory;
+	private final Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory;
 	private final RemoveSelectionListener removeSelectionListener;
 
 	private @Nullable RowEditor<R, C> rowEditor;
 
-	private DefaultSwingTableModel(DefaultBuilder<R, C> builder) {
+	private DefaultSwingFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.rowEditorFactory = builder.rowEditorFactory;
 		this.model = builder.builder
 						.selection(FilterListSelection::filterListSelection)
@@ -210,10 +210,10 @@ final class DefaultSwingTableModel<R, C> extends AbstractTableModel implements S
 		public void set(@Nullable Object value, int rowIndex, R row, C identifier) {}
 	}
 
-	private static final class DefaultRowEditorFactory<R, C> implements Function<SwingTableModel<R, C>, RowEditor<R, C>> {
+	private static final class DefaultRowEditorFactory<R, C> implements Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> {
 
 		@Override
-		public RowEditor<R, C> apply(SwingTableModel<R, C> tableModel) {
+		public RowEditor<R, C> apply(SwingFilterTableModel<R, C> tableModel) {
 			return new DefaultRowEditor<>();
 		}
 	}
@@ -235,7 +235,7 @@ final class DefaultSwingTableModel<R, C> extends AbstractTableModel implements S
 		private @Nullable Supplier<? extends Collection<R>> itemSupplier;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;
-		private Function<SwingTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
+		private Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 		private boolean refresh = false;
 
 		private DefaultBuilder(FilterTableModel.Builder<R, C> builder) {
@@ -273,7 +273,7 @@ final class DefaultSwingTableModel<R, C> extends AbstractTableModel implements S
 		}
 
 		@Override
-		public Builder<R, C> rowEditor(Function<SwingTableModel<R, C>, RowEditor<R, C>> rowEditor) {
+		public Builder<R, C> rowEditor(Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> rowEditor) {
 			this.rowEditorFactory = requireNonNull(rowEditor);
 			return this;
 		}
@@ -321,8 +321,8 @@ final class DefaultSwingTableModel<R, C> extends AbstractTableModel implements S
 		}
 
 		@Override
-		public SwingTableModel<R, C> build() {
-			return new DefaultSwingTableModel<>(this);
+		public SwingFilterTableModel<R, C> build() {
+			return new DefaultSwingFilterTableModel<>(this);
 		}
 	}
 

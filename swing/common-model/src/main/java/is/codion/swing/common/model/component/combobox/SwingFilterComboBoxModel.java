@@ -44,13 +44,13 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the type of values in this combo box model
  * @see #builder()
  */
-public interface SwingComboBoxModel<T> extends FilterComboBoxModel<T>, ComboBoxModel<T> {
+public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, ComboBoxModel<T> {
 
 	/**
 	 * @return a new {@link Builder.ItemsStep} instance
 	 */
 	static Builder.ItemsStep builder() {
-		return DefaultSwingComboBoxModel.DefaultBuilder.ITEMS;
+		return DefaultSwingFilterComboBoxModel.DefaultBuilder.ITEMS;
 	}
 
 	/**
@@ -58,10 +58,10 @@ public interface SwingComboBoxModel<T> extends FilterComboBoxModel<T>, ComboBoxM
 	 * an already-built common model (e.g. an entity combo box model) its {@code ComboBoxModel} surface without rebuilding it.
 	 * @param model the model to wrap
 	 * @param <T> the item type
-	 * @return a new {@link SwingComboBoxModel} delegating to the given model
+	 * @return a new {@link SwingFilterComboBoxModel} delegating to the given model
 	 */
-	static <T> SwingComboBoxModel<T> model(FilterComboBoxModel<T> model) {
-		return DefaultSwingComboBoxModel.model(model);
+	static <T> SwingFilterComboBoxModel<T> model(FilterComboBoxModel<T> model) {
+		return DefaultSwingFilterComboBoxModel.model(model);
 	}
 
 	/**
@@ -96,7 +96,7 @@ public interface SwingComboBoxModel<T> extends FilterComboBoxModel<T>, ComboBoxM
 	}
 
 	/**
-	 * Builds a Swing {@link SwingComboBoxModel} — the same options as the common
+	 * Builds a Swing {@link SwingFilterComboBoxModel} — the same options as the common
 	 * {@link is.codion.common.model.component.combobox.FilterComboBoxModel.Builder} (the refresher is managed
 	 * internally as a {@code ProgressWorker} based one), but the chain stays Swing-typed so {@code build()}
 	 * yields a {@link ComboBoxModel}.
@@ -182,13 +182,13 @@ public interface SwingComboBoxModel<T> extends FilterComboBoxModel<T>, ComboBoxM
 		Builder<T> refresh(boolean refresh);
 
 		/**
-		 * @return a new {@link SwingComboBoxModel} instance
+		 * @return a new {@link SwingFilterComboBoxModel} instance
 		 */
-		SwingComboBoxModel<T> build();
+		SwingFilterComboBoxModel<T> build();
 	}
 
 	/**
-	 * Builds a Swing {@link SwingComboBoxModel} based on the {@link Item} class.
+	 * Builds a Swing {@link SwingFilterComboBoxModel} based on the {@link Item} class.
 	 * @param <T> the item type
 	 */
 	interface ItemComboBoxModelBuilder<T> {
@@ -214,8 +214,8 @@ public interface SwingComboBoxModel<T> extends FilterComboBoxModel<T>, ComboBoxM
 		ItemComboBoxModelBuilder<T> selected(Item<T> selected);
 
 		/**
-		 * @return a new {@link SwingComboBoxModel}
+		 * @return a new {@link SwingFilterComboBoxModel}
 		 */
-		SwingComboBoxModel<Item<T>> build();
+		SwingFilterComboBoxModel<Item<T>> build();
 	}
 }

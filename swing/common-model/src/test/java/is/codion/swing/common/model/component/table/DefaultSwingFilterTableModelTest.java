@@ -22,6 +22,7 @@ import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.reactive.state.State;
 import is.codion.swing.common.model.component.list.FilterListSelection;
+import is.codion.swing.common.model.component.table.SwingFilterTableModel.RowEditor;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Date: 25.7.2010
  * Time: 13:54:59
  */
-public final class DefaultSwingTableModelTest {
+public final class DefaultSwingFilterTableModelTest {
 
 	private static final TestRow A = new TestRow("a");
 	private static final TestRow B = new TestRow("b");
@@ -58,7 +59,7 @@ public final class DefaultSwingTableModelTest {
 	private static final TestRow G = new TestRow("g");
 	private static final List<TestRow> ITEMS = unmodifiableList(asList(A, B, C, D, E));
 
-	private SwingTableModel<TestRow, Integer> tableModel;
+	private SwingFilterTableModel<TestRow, Integer> tableModel;
 
 	private static final class TestRow {
 		private final String value;
@@ -104,8 +105,8 @@ public final class DefaultSwingTableModelTest {
 		}
 	}
 
-	private static SwingTableModel<TestRow, Integer> createTestModel() {
-		return SwingTableModel.builder()
+	private static SwingFilterTableModel<TestRow, Integer> createTestModel() {
+		return SwingFilterTableModel.builder()
 						.columns(new TestColumns())
 						.items(() -> ITEMS)
 						.build();
@@ -118,7 +119,7 @@ public final class DefaultSwingTableModelTest {
 
 	@Test
 	void nonUniqueColumnIdentifiers() {
-		assertThrows(IllegalArgumentException.class, () -> SwingTableModel.builder()
+		assertThrows(IllegalArgumentException.class, () -> SwingFilterTableModel.builder()
 						.columns(new TableColumns<Object, Object>() {
 							@Override
 							public List<Object> identifiers() {
@@ -178,13 +179,13 @@ public final class DefaultSwingTableModelTest {
 
 	@Test
 	void nullColumns() {
-		assertThrows(NullPointerException.class, () -> SwingTableModel.<String, Integer>builder().columns(null));
+		assertThrows(NullPointerException.class, () -> SwingFilterTableModel.<String, Integer>builder().columns(null));
 	}
 
 	@Test
 	void noColumns() {
 		assertThrows(IllegalArgumentException.class, () ->
-						SwingTableModel.builder().columns(new TableColumns<String, Integer>() {
+						SwingFilterTableModel.builder().columns(new TableColumns<String, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return emptyList();
@@ -224,8 +225,8 @@ public final class DefaultSwingTableModelTest {
 		AtomicInteger selectionChangeEvents = new AtomicInteger();
 
 		List<TestRow> items = new ArrayList<>(ITEMS);
-		SwingTableModel<TestRow, Integer> testModel =
-						SwingTableModel.builder()
+		SwingFilterTableModel<TestRow, Integer> testModel =
+						SwingFilterTableModel.builder()
 										.columns(new TestColumns())
 										.items(() -> items)
 										.build();
@@ -804,7 +805,7 @@ public final class DefaultSwingTableModelTest {
 
 	@Test
 	void export() {
-		SwingTableModel<TestRow, Integer> table = createTestModel();
+		SwingFilterTableModel<TestRow, Integer> table = createTestModel();
 		table.items().refresh();
 
 		String expected = "0\n" +
@@ -854,11 +855,11 @@ public final class DefaultSwingTableModelTest {
 
 	@Test
 	void editor() {
-		class ItemEditor implements SwingTableModel.RowEditor<TestRow, Integer> {
+		class ItemEditor implements RowEditor<TestRow, Integer> {
 
 			private final Items<TestRow> items;
 
-			private ItemEditor(SwingTableModel<TestRow, Integer> model) {
+			private ItemEditor(SwingFilterTableModel<TestRow, Integer> model) {
 				items = model.items();
 			}
 
@@ -872,7 +873,7 @@ public final class DefaultSwingTableModelTest {
 				items.replace(row, new TestRow((String) value));
 			}
 		}
-		SwingTableModel<TestRow, Integer> model = SwingTableModel.builder()
+		SwingFilterTableModel<TestRow, Integer> model = SwingFilterTableModel.builder()
 						.columns(new TestColumns())
 						.items(() -> ITEMS)
 						.rowEditor(ItemEditor::new)
@@ -891,7 +892,7 @@ public final class DefaultSwingTableModelTest {
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
-	                                             SwingTableModel<TestRow, Integer> model) {
+																							 SwingFilterTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {
 			if (includeFiltered) {
 				if (!model.items().contains(row)) {
