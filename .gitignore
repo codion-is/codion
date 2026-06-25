@@ -6,3 +6,4 @@ logs/
 out/
 #ignore all vscode build folders
 bin/
+.claude/
