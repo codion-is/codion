@@ -379,7 +379,7 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals(Employee.TYPE, comboBoxModel.entityDefinition().type());
 		comboBoxModel.toString();
 		assertEquals(0, comboBoxModel.items().included().size());
-		assertNull(comboBoxModel.getSelectedItem());
+		assertNull(comboBoxModel.selectedItem());
 		comboBoxModel.items().refresh();
 		assertTrue(comboBoxModel.items().included().size() > 0);
 		assertFalse(comboBoxModel.items().cleared());
@@ -453,7 +453,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.build();
 		model.items().refresh();
 		assertTrue(model.items().contains(null));
-		assertEquals("-", model.getSelectedItem().toString());
+		assertEquals("-", model.selectedItem().toString());
 		assertNull(model.selection().item().get());
 	}
 }

@@ -65,7 +65,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 	DefaultItemComboBoxBuilder(SwingFilterComboBoxModel<Item<T>> comboBoxModel) {
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		this.items = Collections.emptyList();
-		value(comboBoxModel.getSelectedItem() == null ? null : comboBoxModel.getSelectedItem().get());
+		value(comboBoxModel.selectedItem() == null ? null : comboBoxModel.selectedItem().get());
 	}
 
 	@Override

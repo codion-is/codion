@@ -149,8 +149,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public @Nullable Entity getSelectedItem() {
-		return comboBoxModel.getSelectedItem();
+	public @Nullable Entity selectedItem() {
+		return comboBoxModel.selectedItem();
 	}
 
 	@Override
@@ -321,7 +321,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			selection().item().addConsumer(selected -> select(filterModel, selected));
 			items().refresher().result().addListener(filterModel.items()::refresh);
 			// Select the correct foreign key item according to the selected item after refresh
-			filterModel.items().refresher().result().addListener(() -> select(filterModel, getSelectedItem()));
+			filterModel.items().refresher().result().addListener(() -> select(filterModel, selectedItem()));
 		}
 
 		private void select(EntityComboBoxModel filterModel, @Nullable Entity selected) {

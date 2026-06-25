@@ -94,14 +94,14 @@ public class DefaultSwingFilterComboBoxModelTest {
 	}
 
 	@Test
-	void setSelectedItem() {
+	void selectedItem() {
 		//the Object-based ComboBoxModel setter, incl. null-item handling
 		testModel.setSelectedItem(BJORN);
-		assertEquals(BJORN, testModel.getSelectedItem());
+		assertEquals(BJORN, testModel.selectedItem());
 		assertEquals(BJORN, testModel.selection().item().get());
 		testModel.setSelectedItem(NULL);//the null item clears the selection
 		assertNull(testModel.selection().item().get());
-		assertEquals(NULL, testModel.getSelectedItem());
+		assertEquals(NULL, testModel.selectedItem());
 		testModel.setSelectedItem(null);
 		assertNull(testModel.selection().item().get());
 	}
@@ -117,13 +117,13 @@ public class DefaultSwingFilterComboBoxModelTest {
 						.items(items)
 						.build();
 		model.setSelectedItem(1);//raw value -> aOne
-		assertSame(aOne, model.getSelectedItem());
+		assertSame(aOne, model.selectedItem());
 		assertEquals(1, model.selection().item().getOrThrow().get());
 		model.setSelectedItem(2);
-		assertSame(bTwo, model.getSelectedItem());
+		assertSame(bTwo, model.selectedItem());
 		model.setSelectedItem(null);
 		assertNull(model.selection().item().get());
-		assertSame(nullItem, model.getSelectedItem());
+		assertSame(nullItem, model.selectedItem());
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class DefaultSwingFilterComboBoxModelTest {
 		SwingFilterComboBoxModel<Item<Boolean>> model = SwingFilterComboBoxModel.builder()
 						.items(items)
 						.build();
-		assertSame(items.get(0), model.getSelectedItem());
+		assertSame(items.get(0), model.selectedItem());
 		assertNull(model.selection().item().get());
 		model.setSelectedItem(false);
 		assertEquals(false, model.selection().item().getOrThrow().get());

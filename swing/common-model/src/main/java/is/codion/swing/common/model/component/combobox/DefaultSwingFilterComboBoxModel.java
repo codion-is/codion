@@ -81,13 +81,18 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 	}
 
 	@Override
-	public @Nullable T getSelectedItem() {
-		return model.getSelectedItem();
+	public @Nullable T selectedItem() {
+		return model.selectedItem();
 	}
 
 	@Override
 	public <V> Value<V> selector(ItemFinder<T, V> itemFinder) {
 		return model.selector(itemFinder);
+	}
+
+	@Override
+	public @Nullable Object getSelectedItem() {
+		return selectedItem();
 	}
 
 	@Override

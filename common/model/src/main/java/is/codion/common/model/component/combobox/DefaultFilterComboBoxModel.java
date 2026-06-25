@@ -87,7 +87,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public @Nullable T getSelectedItem() {
+	public @Nullable T selectedItem() {
 		if (selection.selected.item == null) {
 			return modelItems.nullItem;
 		}

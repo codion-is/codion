@@ -10,6 +10,7 @@ Codion Change Log
 - DefaultMultiSelection and DefaultSingleSelection added along with MultiSelection.IndexedItems added.
 - FilterComboBoxModel and FilterListModel migrated from swing-common-model.
 - FilterTableModel and friends migrated from swing-common-model.
+- FilterComboBoxModel.getSelectedItem() renamed selectedItem().
 ### is.codion.swing.common.model
 - SwingTableModel, SwingComboBoxModel and SwingListModel renamed SwingFilterTableModel, SwingFilterComboBoxModel and SwingFilterListModel.
 ### is.codion.framework.db.http

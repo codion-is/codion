@@ -61,9 +61,9 @@ public final class DefaultSwingEntityComboBoxModelTest {
 		// the Object-based ComboBoxModel setter delegates to the wrapped model
 		model.setSelectedItem(first);
 		assertEquals(first, model.selection().item().get());
-		assertEquals(first, model.getSelectedItem());
+		assertEquals(first, model.selectedItem());
 		model.setSelectedItem(null);
 		assertNull(model.selection().item().get());
-		assertEquals("-", model.getSelectedItem().toString());// the null item representation
+		assertEquals("-", model.selectedItem().toString());// the null item representation
 	}
 }

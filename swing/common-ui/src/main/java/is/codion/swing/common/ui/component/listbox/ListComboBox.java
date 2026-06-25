@@ -106,7 +106,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 		SwingFilterComboBoxModel<T> comboBoxModel = getModel();
 		int index = getSelectedIndex();
 		if (index != -1) {
-			T selecteditem = comboBoxModel.getSelectedItem();
+			T selecteditem = comboBoxModel.selectedItem();
 			comboBoxModel.items().remove(selecteditem);
 			setSelectedIndex(Math.min(index, comboBoxModel.getSize() - 1));
 		}

@@ -65,7 +65,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
 	 * via {@link Builder#nullItem(Object)}, {@link SingleSelection#item()} is usually what you want
 	 */
-	@Nullable T getSelectedItem();
+	@Nullable T selectedItem();
 
 	/**
 	 * @param itemFinder responsible for finding the item to select

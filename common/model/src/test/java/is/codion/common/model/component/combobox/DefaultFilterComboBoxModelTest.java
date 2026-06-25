@@ -99,13 +99,13 @@ public final class DefaultFilterComboBoxModelTest {
 		assertEquals(2, selectionChangedCounter.get());
 		testModel.selection().item().set(BJORN);
 		assertEquals(3, selectionChangedCounter.get());
-		assertEquals(BJORN, testModel.getSelectedItem());
+		assertEquals(BJORN, testModel.selectedItem());
 		assertEquals(BJORN, testModel.selection().item().get());
 		assertFalse(testModel.selection().empty().is());
 		testModel.selection().item().set(null);
 		assertTrue(testModel.selection().empty().is());
 		assertEquals(4, selectionChangedCounter.get());
-		assertEquals(NULL, testModel.getSelectedItem());
+		assertEquals(NULL, testModel.selectedItem());
 		assertTrue(testModel.selection().empty().is());
 		assertNull(testModel.selection().item().get());
 		testModel.selection().item().set(SIGGI);
@@ -126,7 +126,7 @@ public final class DefaultFilterComboBoxModelTest {
 						.build();
 		assertTrue(model.selection().item().is(BJORN));
 		model.items().included().predicate().set(hideBjorn);
-		assertEquals(NULL, model.getSelectedItem());
+		assertEquals(NULL, model.selectedItem());
 		assertNull(model.selection().item().get());
 
 		model = FilterComboBoxModel.builder()
@@ -136,7 +136,7 @@ public final class DefaultFilterComboBoxModelTest {
 						.select(BJORN)
 						.build();
 		model.items().included().predicate().set(hideBjorn);
-		assertNotNull(model.getSelectedItem());
+		assertNotNull(model.selectedItem());
 		assertEquals(BJORN, model.selection().item().get());
 	}
 
@@ -298,10 +298,10 @@ public final class DefaultFilterComboBoxModelTest {
 		testModel.items().refresh();
 		assertEquals(5, testModel.items().included().size());
 		testModel.selection().item().set(null);
-		assertEquals(NULL, testModel.getSelectedItem());
+		assertEquals(NULL, testModel.selectedItem());
 		assertNull(testModel.selection().item().get());
 		testModel.selection().item().set(NULL);
-		assertEquals(NULL, testModel.getSelectedItem());
+		assertEquals(NULL, testModel.selectedItem());
 		assertNull(testModel.selection().item().get());
 	}
 
@@ -322,7 +322,7 @@ public final class DefaultFilterComboBoxModelTest {
 						.nullItem("-")
 						.build();
 		assertTrue(model.items().contains(null));
-		assertEquals("-", model.getSelectedItem());
+		assertEquals("-", model.selectedItem());
 		model.selection().item().set("-");
 		assertNull(model.selection().item().get());
 	}
@@ -344,7 +344,7 @@ public final class DefaultFilterComboBoxModelTest {
 		testModel.selection().item().set(ANNA);
 		assertEquals('a', selectorValue.get());
 		selectorValue.set('k');
-		assertEquals(KALLI, testModel.getSelectedItem());
+		assertEquals(KALLI, testModel.selectedItem());
 		selectorValue.clear();
 		assertNull(testModel.selection().item().get());
 		testModel.selection().item().set(BJORN);

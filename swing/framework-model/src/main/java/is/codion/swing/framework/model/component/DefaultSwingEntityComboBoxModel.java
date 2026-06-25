@@ -109,13 +109,18 @@ final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel 
 	}
 
 	@Override
-	public @Nullable Entity getSelectedItem() {
-		return coat.getSelectedItem();
+	public @Nullable Entity selectedItem() {
+		return coat.selectedItem();
 	}
 
 	@Override
 	public <V> Value<V> selector(ItemFinder<Entity, V> itemFinder) {
 		return coat.selector(itemFinder);
+	}
+
+	@Override
+	public @Nullable Object getSelectedItem() {
+		return selectedItem();
 	}
 
 	@Override

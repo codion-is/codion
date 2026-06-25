@@ -664,7 +664,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	private void selectNextOperator() {
 		SwingFilterComboBoxModel<Item<Operator>> itemComboBoxModel = (SwingFilterComboBoxModel<Item<Operator>>) operatorCombo.getModel();
 		List<Item<Operator>> includedItems = itemComboBoxModel.items().included().get();
-		int index = includedItems.indexOf(itemComboBoxModel.getSelectedItem());
+		int index = includedItems.indexOf(itemComboBoxModel.selectedItem());
 		if (index < itemComboBoxModel.items().included().size() - 1) {
 			itemComboBoxModel.setSelectedItem(includedItems.get(index + 1));
 		}
@@ -681,7 +681,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	private void selectPreviousOperator() {
 		SwingFilterComboBoxModel<Item<Operator>> itemComboBoxModel = (SwingFilterComboBoxModel<Item<Operator>>) operatorCombo.getModel();
 		List<Item<Operator>> includedItems = itemComboBoxModel.items().included().get();
-		int index = includedItems.indexOf(itemComboBoxModel.getSelectedItem());
+		int index = includedItems.indexOf(itemComboBoxModel.selectedItem());
 		if (index > 0) {
 			itemComboBoxModel.setSelectedItem(includedItems.get(index - 1));
 		}
