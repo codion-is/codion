@@ -11,6 +11,7 @@ Codion Change Log
 - FilterComboBoxModel and FilterListModel migrated from swing-common-model.
 - FilterTableModel and friends migrated from swing-common-model.
 - FilterComboBoxModel.getSelectedItem() renamed selectedItem().
+- FilterModel.refresher() added.
 ### is.codion.swing.common.model
 - SwingTableModel, SwingComboBoxModel and SwingListModel renamed SwingFilterTableModel, SwingFilterComboBoxModel and SwingFilterListModel.
 - SwingFilterComboBoxModel.ItemComboBoxModelBuilder renamed SwingItemComboBoxModelBuilder.

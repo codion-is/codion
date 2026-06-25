@@ -27,7 +27,6 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
-import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.item.Item;
 
 import org.jspecify.annotations.Nullable;
@@ -328,7 +327,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 			refresher = builder.refresherFactory != null
 							? builder.refresherFactory.apply(this)
-							: new DefaultRefresher<>(builder.supplier, this::set, builder.onRefreshException);
+							: FilterModel.refresher(builder.supplier, this::set, builder.onRefreshException);
 			if (builder.items == null && builder.refresh) {
 				refresher.refresh(null);
 			}
@@ -873,67 +872,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		protected void setValue(@Nullable Predicate<R> predicate) {
 			this.predicate = predicate;
-		}
-	}
-
-	/**
-	 * A UI-agnostic synchronous {@link FilterModel.Refresher} — the default when no refresher factory is supplied.
-	 * The Swing and Android layers plug in their own (ProgressWorker / coroutine) refreshers via
-	 * {@link Builder#refresher(Function)}.
-	 */
-	private static final class DefaultRefresher<T> extends FilterModel.AbstractRefresher<T> {
-
-		private final Consumer<Collection<T>> applier;
-		private final Consumer<Exception> onException;
-
-		private DefaultRefresher(@Nullable Supplier<Collection<T>> supplier, Consumer<Collection<T>> applier,
-		                         @Nullable Consumer<Exception> onException) {
-			super(supplier, false);
-			this.applier = applier;
-			this.onException = onException == null ? new RethrowHandler() : onException;
-		}
-
-		@Override
-		protected boolean isUserInterfaceThread() {
-			return false;
-		}
-
-		@Override
-		protected void refreshAsync(@Nullable Consumer<Collection<T>> onResult) {
-			refreshSync(onResult);
-		}
-
-		@Override
-		protected void refreshSync(@Nullable Consumer<Collection<T>> onResult) {
-			super.items().ifPresent(supplier -> {
-				setActive(true);
-				try {
-					Collection<T> result = supplier.get();
-					setActive(false);
-					processResult(result);
-					if (onResult != null) {
-						onResult.accept(result);
-					}
-					notifyResult(result);
-				}
-				catch (Exception e) {
-					setActive(false);
-					onException.accept(e);
-				}
-			});
-		}
-
-		@Override
-		protected void processResult(Collection<T> result) {
-			applier.accept(result);
-		}
-
-		private static final class RethrowHandler implements Consumer<Exception> {
-
-			@Override
-			public void accept(Exception exception) {
-				throw Exceptions.runtime(exception);
-			}
 		}
 	}
 

@@ -24,7 +24,6 @@ import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value;
-import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
 
@@ -50,7 +49,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		this.sort = new DefaultListSort(builder.comparator);
 		Function<Items<T>, Refresher<T>> refresherFactory = builder.refresherFactory != null
 						? builder.refresherFactory
-						: modelItems -> new DefaultRefresher<>(builder.supplier, modelItems, builder.onRefreshException);
+						: modelItems -> FilterModel.refresher(builder.supplier, modelItems::set, builder.onRefreshException);
 		Function<IncludedItems<T>, MultiSelection<T>> selectionFactory = builder.selectionFactory != null
 						? builder.selectionFactory
 						: MultiSelection::multiSelection;
@@ -167,7 +166,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		static final Builder.ItemsStep ITEMS = new DefaultItemsStep();
 
 		private final Collection<T> items;
-		private final @Nullable Supplier<? extends Collection<T>> supplier;
+		private final @Nullable Supplier<Collection<T>> supplier;
 		private final List<Runnable> selectionListeners = new ArrayList<>();
 		private final List<Consumer<T>> itemSelectedListeners = new ArrayList<>();
 		private final List<Consumer<List<T>>> itemsSelectedListeners = new ArrayList<>();
@@ -181,7 +180,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		private @Nullable Function<Items<T>, Refresher<T>> refresherFactory;
 		private @Nullable Function<IncludedItems<T>, MultiSelection<T>> selectionFactory;
 
-		private DefaultBuilder(Collection<T> items, @Nullable Supplier<? extends Collection<T>> supplier) {
+		private DefaultBuilder(Collection<T> items, @Nullable Supplier<Collection<T>> supplier) {
 			this.items = items;
 			this.supplier = supplier;
 		}
@@ -255,62 +254,6 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		@Override
 		public FilterListModel<T> build() {
 			return new DefaultFilterListModel<>(this);
-		}
-	}
-
-	private static final class DefaultRefresher<R> extends FilterModel.AbstractRefresher<R> {
-
-		private final Items<R> items;
-		private final Consumer<Exception> onException;
-
-		private DefaultRefresher(@Nullable Supplier<? extends Collection<R>> supplier, Items<R> items,
-		                         @Nullable Consumer<Exception> onException) {
-			super((Supplier<Collection<R>>) supplier, false);
-			this.items = items;
-			this.onException = onException == null ? new RethrowHandler() : onException;
-		}
-
-		@Override
-		protected boolean isUserInterfaceThread() {
-			return false;
-		}
-
-		@Override
-		protected void refreshAsync(@Nullable Consumer<Collection<R>> onResult) {
-			refreshSync(onResult);
-		}
-
-		@Override
-		protected void refreshSync(@Nullable Consumer<Collection<R>> onResult) {
-			super.items().ifPresent(supplier -> {
-				setActive(true);
-				try {
-					Collection<R> result = supplier.get();
-					setActive(false);
-					processResult(result);
-					if (onResult != null) {
-						onResult.accept(result);
-					}
-					notifyResult(result);
-				}
-				catch (Exception e) {
-					setActive(false);
-					onException.accept(e);
-				}
-			});
-		}
-
-		@Override
-		protected void processResult(Collection<R> result) {
-			items.set(result);
-		}
-
-		private static final class RethrowHandler implements Consumer<Exception> {
-
-			@Override
-			public void accept(Exception exception) {
-				throw Exceptions.runtime(exception);
-			}
 		}
 	}
 }

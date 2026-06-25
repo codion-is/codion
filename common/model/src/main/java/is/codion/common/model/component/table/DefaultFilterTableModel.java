@@ -24,7 +24,6 @@ import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.value.AbstractValue;
-import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
 
@@ -74,7 +73,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		this.sort = new DefaultFilterTableSort<>(columns);
 		Function<Items<R>, Refresher<R>> refresherFactory = builder.refresherFactory != null
 						? builder.refresherFactory
-						: modelItems -> new DefaultRefresher<>(builder.itemSupplier, modelItems, builder.onRefreshException);
+						: modelItems -> FilterModel.refresher(builder.supplier, modelItems::set, builder.onRefreshException);
 		Function<IncludedItems<R>, MultiSelection<R>> selectionFactory = builder.selectionFactory != null
 						? builder.selectionFactory
 						: MultiSelection::multiSelection;
@@ -262,7 +261,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		private final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
 		private final List<ItemsListener> itemsListeners = new ArrayList<>();
 
-		private @Nullable Supplier<? extends Collection<R>> itemSupplier;
+		private @Nullable Supplier<Collection<R>> supplier;
 		private Predicate<R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private @Nullable Consumer<Exception> onRefreshException;
@@ -286,8 +285,8 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 
 		@Override
-		public Builder<R, C> items(Supplier<? extends Collection<R>> items) {
-			this.itemSupplier = requireNonNull(items);
+		public Builder<R, C> items(Supplier<Collection<R>> items) {
+			this.supplier = requireNonNull(items);
 			return this;
 		}
 
@@ -381,62 +380,6 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 			@Override
 			public boolean test(R r) {
 				return true;
-			}
-		}
-	}
-
-	private static final class DefaultRefresher<R> extends FilterModel.AbstractRefresher<R> {
-
-		private final Items<R> items;
-		private final Consumer<Exception> onException;
-
-		private DefaultRefresher(@Nullable Supplier<? extends Collection<R>> supplier, Items<R> items,
-		                         @Nullable Consumer<Exception> onException) {
-			super((Supplier<Collection<R>>) supplier, false);
-			this.items = items;
-			this.onException = onException == null ? new RethrowHandler() : onException;
-		}
-
-		@Override
-		protected boolean isUserInterfaceThread() {
-			return false;
-		}
-
-		@Override
-		protected void refreshAsync(@Nullable Consumer<Collection<R>> onResult) {
-			refreshSync(onResult);
-		}
-
-		@Override
-		protected void refreshSync(@Nullable Consumer<Collection<R>> onResult) {
-			super.items().ifPresent(supplier -> {
-				setActive(true);
-				try {
-					Collection<R> result = supplier.get();
-					setActive(false);
-					processResult(result);
-					if (onResult != null) {
-						onResult.accept(result);
-					}
-					notifyResult(result);
-				}
-				catch (Exception e) {
-					setActive(false);
-					onException.accept(e);
-				}
-			});
-		}
-
-		@Override
-		protected void processResult(Collection<R> result) {
-			items.set(result);
-		}
-
-		private static final class RethrowHandler implements Consumer<Exception> {
-
-			@Override
-			public void accept(Exception exception) {
-				throw Exceptions.runtime(exception);
 			}
 		}
 	}

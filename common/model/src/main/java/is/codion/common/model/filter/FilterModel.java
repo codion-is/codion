@@ -77,6 +77,19 @@ public interface FilterModel<T> {
 	Sort<T> sort();
 
 	/**
+	 * @param items supplies the items during refresh
+	 * @param onResult the refresh result handler
+	 * @param onException the exception handler
+	 * @return a default synchronous {@link Refresher}
+	 * @param <T> the item type
+	 */
+	static <T> Refresher<T> refresher(@Nullable Supplier<Collection<T>> items,
+																		@Nullable Consumer<Collection<T>> onResult,
+	                                  @Nullable Consumer<Exception> onException) {
+		return new DefaultRefresher<>(items, onResult, onException);
+	}
+
+	/**
 	 * Manages the items in {@link FilterModel}.
 	 * @param <T> the item type
 	 */
