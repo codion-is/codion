@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A Swing {@link javax.swing.ComboBoxModel} coat over the UI-agnostic
- * {@link is.codion.common.model.component.combobox.FilterComboBoxModel}: delegates the rich model surface to a
+ * {@link FilterComboBoxModel}: delegates the rich model surface to a
  * common instance and adds the {@link javax.swing.ListModel}/{@code ComboBoxModel} methods, firing
  * {@link ListDataEvent}s off the common model's own observable items + selection.
  */
@@ -138,17 +138,17 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 
 		@Override
 		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultBuilder<>(is.codion.common.model.component.combobox.FilterComboBoxModel.builder().items(items), null);
+			return new DefaultBuilder<>(FilterComboBoxModel.builder().items(items), null);
 		}
 
 		@Override
 		public <T> Builder<T> items(Supplier<Collection<T>> items) {
-			return new DefaultBuilder<>(is.codion.common.model.component.combobox.FilterComboBoxModel.builder().items(items), items);
+			return new DefaultBuilder<>(FilterComboBoxModel.builder().items(items), items);
 		}
 
 		@Override
-		public <T> ItemComboBoxModelBuilder<T> items(List<Item<T>> items) {
-			return new DefaultItemComboBoxModelBuilder<>(is.codion.common.model.component.combobox.FilterComboBoxModel.builder().items(items));
+		public <T> SwingItemComboBoxModelBuilder<T> items(List<Item<T>> items) {
+			return new DefaultItemComboBoxModelBuilder<>(FilterComboBoxModel.builder().items(items));
 		}
 	}
 
@@ -156,13 +156,13 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 
 		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
 
-		private final is.codion.common.model.component.combobox.FilterComboBoxModel.Builder<T> builder;
+		private final FilterComboBoxModel.Builder<T> builder;
 		private final @Nullable Supplier<Collection<T>> supplier;
 
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;
 
-		private DefaultBuilder(is.codion.common.model.component.combobox.FilterComboBoxModel.Builder<T> builder,
+		private DefaultBuilder(FilterComboBoxModel.Builder<T> builder,
 		                       @Nullable Supplier<Collection<T>> supplier) {
 			this.builder = builder;
 			this.supplier = supplier;
@@ -237,35 +237,34 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 		}
 	}
 
-	static final class DefaultItemComboBoxModelBuilder<T> implements ItemComboBoxModelBuilder<T> {
+	static final class DefaultItemComboBoxModelBuilder<T> implements SwingItemComboBoxModelBuilder<T> {
 
-		private final is.codion.common.model.component.combobox.FilterComboBoxModel.ItemComboBoxModelBuilder<T> builder;
+		private final ItemComboBoxModelBuilder<T> builder;
 
-		private DefaultItemComboBoxModelBuilder(
-						is.codion.common.model.component.combobox.FilterComboBoxModel.ItemComboBoxModelBuilder<T> builder) {
+		private DefaultItemComboBoxModelBuilder(ItemComboBoxModelBuilder<T> builder) {
 			this.builder = builder;
 		}
 
 		@Override
-		public ItemComboBoxModelBuilder<T> sorted(boolean sorted) {
+		public SwingItemComboBoxModelBuilder<T> sorted(boolean sorted) {
 			builder.sorted(sorted);
 			return this;
 		}
 
 		@Override
-		public ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator) {
+		public SwingItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator) {
 			builder.sorted(comparator);
 			return this;
 		}
 
 		@Override
-		public ItemComboBoxModelBuilder<T> selected(@Nullable T selected) {
+		public SwingItemComboBoxModelBuilder<T> selected(@Nullable T selected) {
 			builder.selected(selected);
 			return this;
 		}
 
 		@Override
-		public ItemComboBoxModelBuilder<T> selected(Item<T> selected) {
+		public SwingItemComboBoxModelBuilder<T> selected(Item<T> selected) {
 			builder.selected(selected);
 			return this;
 		}

@@ -905,7 +905,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected void refreshSync(@Nullable Consumer<Collection<T>> onResult) {
-			items().ifPresent(supplier -> {
+			super.items().ifPresent(supplier -> {
 				setActive(true);
 				try {
 					Collection<T> result = supplier.get();

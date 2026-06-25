@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.logging;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.utilities.logging.LoggerProxy;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
@@ -263,7 +264,7 @@ public final class LogLevelPanel extends JPanel {
 		}
 	}
 
-	private static class LogLevelColumns implements SwingFilterTableModel.TableColumns<LogLevelRow, LogLevelColumn> {
+	private static class LogLevelColumns implements TableColumns<LogLevelRow, LogLevelColumn> {
 
 		private static final List<LogLevelColumn> IDENTIFIERS = asList(LogLevelColumn.values());
 

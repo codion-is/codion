@@ -409,7 +409,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 
 		@Override
 		protected void refreshSync(@Nullable Consumer<Collection<R>> onResult) {
-			items().ifPresent(supplier -> {
+			super.items().ifPresent(supplier -> {
 				setActive(true);
 				try {
 					Collection<R> result = supplier.get();

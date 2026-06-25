@@ -13,6 +13,7 @@ Codion Change Log
 - FilterComboBoxModel.getSelectedItem() renamed selectedItem().
 ### is.codion.swing.common.model
 - SwingTableModel, SwingComboBoxModel and SwingListModel renamed SwingFilterTableModel, SwingFilterComboBoxModel and SwingFilterListModel.
+- SwingFilterComboBoxModel.ItemComboBoxModelBuilder renamed SwingItemComboBoxModelBuilder.
 ### is.codion.framework.db.http
 - HttpEntityConnection and HttpEntityConnectionProvider.Builder.domain(Domain) added.
 - HttpEntityConnection falls back to HttpURLConnection when java.http isn't available.

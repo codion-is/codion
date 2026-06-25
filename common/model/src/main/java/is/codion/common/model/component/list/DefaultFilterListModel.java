@@ -282,7 +282,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 
 		@Override
 		protected void refreshSync(@Nullable Consumer<Collection<R>> onResult) {
-			items().ifPresent(supplier -> {
+			super.items().ifPresent(supplier -> {
 				setActive(true);
 				try {
 					Collection<R> result = supplier.get();

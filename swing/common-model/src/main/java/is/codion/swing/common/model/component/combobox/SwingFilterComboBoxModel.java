@@ -126,9 +126,9 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 			/**
 			 * @param items the items to display in the model
 			 * @param <T> the item type
-			 * @return a new {@link ItemComboBoxModelBuilder}
+			 * @return a new {@link SwingItemComboBoxModelBuilder}
 			 */
-			<T> ItemComboBoxModelBuilder<T> items(List<Item<T>> items);
+			<T> SwingItemComboBoxModelBuilder<T> items(List<Item<T>> items);
 		}
 
 		/**
@@ -191,27 +191,27 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 	 * Builds a Swing {@link SwingFilterComboBoxModel} based on the {@link Item} class.
 	 * @param <T> the item type
 	 */
-	interface ItemComboBoxModelBuilder<T> {
+	interface SwingItemComboBoxModelBuilder<T> {
 
 		/**
 		 * @param sorted true if the items should be sorted @return this builder
 		 */
-		ItemComboBoxModelBuilder<T> sorted(boolean sorted);
+		SwingItemComboBoxModelBuilder<T> sorted(boolean sorted);
 
 		/**
 		 * @param comparator the comparator to sort by @return this builder
 		 */
-		ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator);
+		SwingItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator);
 
 		/**
 		 * @param selected the item to select initially @return this builder
 		 */
-		ItemComboBoxModelBuilder<T> selected(@Nullable T selected);
+		SwingItemComboBoxModelBuilder<T> selected(@Nullable T selected);
 
 		/**
 		 * @param selected the item to select initially @return this builder
 		 */
-		ItemComboBoxModelBuilder<T> selected(Item<T> selected);
+		SwingItemComboBoxModelBuilder<T> selected(Item<T> selected);
 
 		/**
 		 * @return a new {@link SwingFilterComboBoxModel}
