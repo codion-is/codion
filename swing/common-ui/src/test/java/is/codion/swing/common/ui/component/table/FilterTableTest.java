@@ -18,10 +18,12 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.common.model.component.table.FilterTableSort;
+import is.codion.common.model.filter.SortOrder;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableSort;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
@@ -33,7 +35,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
-import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import java.awt.Dimension;
 import java.math.BigDecimal;
@@ -87,9 +88,9 @@ public class FilterTableTest {
 		return FilterTable.builder().model(createTestModel(customComparator)).build();
 	}
 
-	private static FilterTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
-		return FilterTableModel.builder()
-						.columns(new FilterTableModel.TableColumns<TestRow, Integer>() {
+	private static SwingTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
+		return SwingTableModel.builder()
+						.columns(new TableColumns<TestRow, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return singletonList(0);
@@ -115,7 +116,7 @@ public class FilterTableTest {
 									return customComparator;
 								}
 
-								return FilterTableModel.TableColumns.super.comparator(integer);
+								return TableColumns.super.comparator(integer);
 							}
 						})
 						.items(() -> ITEMS)
@@ -129,7 +130,7 @@ public class FilterTableTest {
 
 	@Test
 	void searchField() {
-		FilterTableModel.TableColumns<List<String>, Integer> columns = new FilterTableModel.TableColumns<List<String>, Integer>() {
+		TableColumns<List<String>, Integer> columns = new TableColumns<List<String>, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return asList(0, 1);
@@ -146,8 +147,8 @@ public class FilterTableTest {
 			}
 		};
 
-		FilterTableModel<List<String>, Integer> tableModel =
-						FilterTableModel.builder()
+		SwingTableModel<List<String>, Integer> tableModel =
+						SwingTableModel.builder()
 										.columns(columns)
 										.items(() -> asList(
 														asList("darri", "hidden"),
@@ -219,9 +220,9 @@ public class FilterTableTest {
 						new Row(4, "e")
 		);
 
-		FilterTableModel<Row, Integer> testModel =
-						FilterTableModel.builder()
-										.columns(new FilterTableModel.TableColumns<Row, Integer>() {
+		SwingTableModel<Row, Integer> testModel =
+						SwingTableModel.builder()
+										.columns(new TableColumns<Row, Integer>() {
 											@Override
 											public List<Integer> identifiers() {
 												return asList(0, 1);
@@ -351,7 +352,7 @@ public class FilterTableTest {
 	@Test
 	void sorting() {
 		FilterTable<TestRow, Integer> table = createTestTable();
-		FilterTableModel<TestRow, Integer> tableModel = table.model();
+		SwingTableModel<TestRow, Integer> tableModel = table.model();
 		AtomicInteger actionsPerformed = new AtomicInteger();
 		Runnable consumer = actionsPerformed::incrementAndGet;
 		table.model().sort().observer().addListener(consumer);
@@ -396,7 +397,7 @@ public class FilterTableTest {
 	@Test
 	void customSorting() {
 		FilterTable<TestRow, Integer> table = createTestTable(Comparator.reverseOrder());
-		FilterTableModel<TestRow, Integer> tableModel = table.model();
+		SwingTableModel<TestRow, Integer> tableModel = table.model();
 		tableModel.items().refresh();
 		FilterTableSort<TestRow, Integer> sortModel = table.model().sort();
 		sortModel.order(0).set(SortOrder.ASCENDING);
@@ -408,7 +409,7 @@ public class FilterTableTest {
 	@Test
 	void selectionAndSorting() {
 		FilterTable<TestRow, Integer> table = createTestTable();
-		FilterTableModel<TestRow, Integer> tableModel = table.model();
+		SwingTableModel<TestRow, Integer> tableModel = table.model();
 		tableModel.items().refresh();
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
@@ -449,7 +450,7 @@ public class FilterTableTest {
 	void cellRenderers() {
 		final class Row {}
 
-		FilterTableModel.TableColumns<Row, Integer> columns = new FilterTableModel.TableColumns<>() {
+		TableColumns<Row, Integer> columns = new TableColumns<>() {
 			@Override
 			public List<Integer> identifiers() {
 				return List.of(0, 1);
@@ -466,7 +467,7 @@ public class FilterTableTest {
 			}
 		};
 
-		FilterTableModel<Row, Integer> model = FilterTableModel.builder()
+		SwingTableModel<Row, Integer> model = SwingTableModel.builder()
 						.columns(columns)
 						.build();
 		model.items().add(new Row());
@@ -504,7 +505,7 @@ public class FilterTableTest {
 						.build();
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setPreferredSize(new Dimension(200, 200));
-		FilterTableModel<TestRow, Integer> model = table.model();
+		SwingTableModel<TestRow, Integer> model = table.model();
 		List<TestRow> rows = IntStream.range(0, 100)
 						.mapToObj(i -> new TestRow("" + i))
 						.collect(toList());
@@ -593,7 +594,7 @@ public class FilterTableTest {
 			}
 		}
 
-		FilterTableModel.TableColumns<Row, Integer> columns = new FilterTableModel.TableColumns<Row, Integer>() {
+		TableColumns<Row, Integer> columns = new TableColumns<Row, Integer>() {
 
 			private static final List<Integer> IDENTIFIERS = IntStream.range(0, 14).boxed().collect(toList());
 
@@ -648,7 +649,7 @@ public class FilterTableTest {
 				}
 			}
 		};
-		FilterTableModel.RowEditor<Row, Integer> rowEditor = new FilterTableModel.RowEditor<Row, Integer>() {
+		SwingTableModel.RowEditor<Row, Integer> rowEditor = new SwingTableModel.RowEditor<Row, Integer>() {
 
 			@Override
 			public boolean editable(Row row, Integer identifier) {
@@ -706,7 +707,7 @@ public class FilterTableTest {
 			}
 		};
 
-		FilterTableModel<Row, Integer> model = FilterTableModel.builder()
+		SwingTableModel<Row, Integer> model = SwingTableModel.builder()
 						.columns(columns)
 						.rowEditor(m -> rowEditor)
 						.items(() -> asList(
@@ -737,7 +738,7 @@ public class FilterTableTest {
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
-																							 FilterTableModel<TestRow, Integer> model) {
+	                                             SwingTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {
 			if (includeFiltered) {
 				if (!model.items().contains(row)) {

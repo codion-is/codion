@@ -16,23 +16,23 @@
  *
  * Copyright (c) 2013 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.common.model.component.table;
 
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.common.model.filter.SortOrder;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
-import javax.swing.SortOrder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.common.model.filter.SortOrder.*;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static javax.swing.SortOrder.*;
 
 final class DefaultFilterTableSort<R, C> implements FilterTableSort<R, C> {
 

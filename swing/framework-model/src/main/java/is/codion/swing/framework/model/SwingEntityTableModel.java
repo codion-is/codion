@@ -18,27 +18,19 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableSort;
-import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 
@@ -47,28 +39,22 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
  * A TableModel implementation for displaying and working with entities.
  */
 public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityModel, SwingEntityEditModel,
-				SwingEntityTableModel, SwingEntityEditor> implements FilterTableModel<Entity, Attribute<?>> {
+				SwingEntityTableModel, SwingEntityEditor> implements SwingTableModel<Entity, Attribute<?>> {
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
@@ -190,33 +176,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	}
 
 	@Override
-	public final Items<Entity> items() {
-		return filterModel().items();
-	}
-
-	@Override
-	public final ColumnValues<Attribute<?>> values() {
-		return filterModel().values();
-	}
-
-	@Override
-	public final Class<?> getColumnClass(Attribute<?> attribute) {
-		return filterModel().getColumnClass(attribute);
-	}
-
-	@Override
 	public final FilterListSelection<Entity> selection() {
 		return filterModel().selection();
-	}
-
-	@Override
-	public final TableConditionModel<Attribute<?>> filters() {
-		return filterModel().filters();
-	}
-
-	@Override
-	public final FilterTableSort<Entity, Attribute<?>> sort() {
-		return filterModel().sort();
 	}
 
 	@Override
@@ -245,16 +206,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	}
 
 	@Override
-	public final TableColumns<Entity, Attribute<?>> columns() {
-		return filterModel().columns();
-	}
-
-	@Override
-	public final Export<Attribute<?>> export() {
-		return filterModel().export();
-	}
-
-	@Override
 	public final SwingEntityRowEditor rowEditor() {
 		return (SwingEntityRowEditor) filterModel().rowEditor();
 	}
@@ -275,8 +226,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	}
 
 	@Override
-	protected final FilterTableModel<Entity, Attribute<?>> filterModel() {
-		return (FilterTableModel<Entity, Attribute<?>>) super.filterModel();
+	protected final SwingTableModel<Entity, Attribute<?>> filterModel() {
+		return (SwingTableModel<Entity, Attribute<?>>) super.filterModel();
 	}
 
 	@Override
@@ -325,11 +276,11 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 		}
 	}
 
-	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditor editor) {
-		return FilterTableModel.builder()
-						.columns(new EntityTableColumns(editor.entityDefinition()))
-						.filters(new EntityFilters(editor.entityDefinition()))
-						.validator(new EntityItemValidator(editor.entityDefinition().type()))
+	private static SwingTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditor editor) {
+		return SwingTableModel.builder()
+						.columns(tableColumns(editor.entityDefinition()))
+						.filters(filterConditions(editor.entityDefinition()))
+						.validator(itemValidator(editor.entityDefinition().type()))
 						.rowEditor(tableModel -> new SwingEntityRowEditor(editor));
 	}
 
@@ -354,65 +305,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 		@Override
 		public void set(@Nullable Object value, int rowIndex, Entity entity, Attribute<?> identifier) {
 			super.set(value, entity, (Attribute<Object>) identifier);
-		}
-	}
-
-	private static final class EntityTableColumns implements TableColumns<Entity, Attribute<?>> {
-
-		private final EntityDefinition entityDefinition;
-		private final List<Attribute<?>> identifiers;
-
-		private EntityTableColumns(EntityDefinition entityDefinition) {
-			this.entityDefinition = entityDefinition;
-			this.identifiers = unmodifiableList(entityDefinition.attributes().definitions().stream()
-							.filter(attributeDefinition -> !attributeDefinition.hidden())
-							.map(AttributeDefinition::attribute)
-							.collect(toList()));
-			if (this.identifiers.isEmpty()) {
-				throw new IllegalArgumentException("No visible attributes found for entity '" +
-								entityDefinition.type() + "'. Ensure at least one attribute has a caption() " +
-								"defined to make it visible in table views. Attributes without captions are " +
-								"hidden by default.");
-			}
-		}
-
-		@Override
-		public List<Attribute<?>> identifiers() {
-			return identifiers;
-		}
-
-		@Override
-		public String caption(Attribute<?> identifier) {
-			return entityDefinition.attributes().definition(identifier).caption();
-		}
-
-		@Override
-		public Optional<String> description(Attribute<?> identifier) {
-			return entityDefinition.attributes().definition(identifier).description();
-		}
-
-		@Override
-		public Class<?> columnClass(Attribute<?> identifier) {
-			return requireNonNull(identifier).type().valueClass();
-		}
-
-		@Override
-		public @Nullable Object value(Entity entity, Attribute<?> attribute) {
-			return requireNonNull(entity).get(attribute);
-		}
-
-		@Override
-		public String formatted(Entity entity, Attribute<?> attribute) {
-			return requireNonNull(entity).formatted(attribute);
-		}
-
-		@Override
-		public Comparator<?> comparator(Attribute<?> attribute) {
-			if (attribute instanceof ForeignKey) {
-				return entityDefinition.foreignKeys().referencedBy((ForeignKey) attribute).comparator();
-			}
-
-			return entityDefinition.attributes().definition(attribute).comparator();
 		}
 	}
 
@@ -442,63 +334,4 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 		}
 	}
 
-	private static final class EntityFilters implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
-
-		private final EntityDefinition entityDefinition;
-
-		private EntityFilters(EntityDefinition entityDefinition) {
-			this.entityDefinition = requireNonNull(entityDefinition);
-		}
-
-		@Override
-		public Map<Attribute<?>, ConditionModel<?>> get() {
-			return entityDefinition.attributes().definitions().stream()
-							.filter(EntityFilters::include)
-							.collect(toMap(AttributeDefinition::attribute, EntityFilters::condition));
-		}
-
-		private static ConditionModel<?> condition(AttributeDefinition<?> definition) {
-			if (useStringCondition(definition)) {
-				// Covers foreign keys
-				return ConditionModel.builder()
-								.valueClass(String.class)
-								.build();
-			}
-
-			ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>) definition;
-			return ConditionModel.builder()
-							.valueClass(attributeDefinition.attribute().type().valueClass())
-							.format(attributeDefinition.format().orElse(null))
-							.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
-							.build();
-		}
-
-		private static boolean include(AttributeDefinition<?> definition) {
-			return !definition.hidden() && (definition instanceof ForeignKeyDefinition || definition instanceof ValueAttributeDefinition<?>);
-		}
-
-		private static boolean useStringCondition(AttributeDefinition<?> definition) {
-			return definition.attribute().type().isEntity() || // entities
-							itemBased(definition) || // items
-							!Comparable.class.isAssignableFrom(definition.attribute().type().valueClass()); // non-comparables
-		}
-
-		private static boolean itemBased(AttributeDefinition<?> definition) {
-			return definition instanceof ValueAttributeDefinition<?> && !((ValueAttributeDefinition<?>) definition).items().isEmpty();
-		}
-	}
-
-	private static final class EntityItemValidator implements Predicate<Entity> {
-
-		private final EntityType entityType;
-
-		private EntityItemValidator(EntityType entityType) {
-			this.entityType = requireNonNull(entityType);
-		}
-
-		@Override
-		public boolean test(Entity entity) {
-			return entity.type().equals(entityType);
-		}
-	}
 }

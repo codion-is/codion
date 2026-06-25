@@ -18,6 +18,7 @@
  */
 package is.codion.tools.monitor.model;
 
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
@@ -28,8 +29,7 @@ import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +75,8 @@ public final class ClientUserMonitor {
 	private final ClientMonitor clientMonitor;
 	private final Value<String> maintenanceTimeFormatted = Value.nonNull("");
 	private final State maintenanceOnTime = State.state(true);
-	private final FilterTableModel<UserInfo, String> userHistoryTableModel =
-					FilterTableModel.builder()
+	private final SwingTableModel<UserInfo, String> userHistoryTableModel =
+					SwingTableModel.builder()
 									.columns(new UserHistoryColumns())
 									.items(new UserHistoryItems())
 									.build();
@@ -117,7 +117,7 @@ public final class ClientUserMonitor {
 	/**
 	 * @return a TableModel for displaying the user connection history
 	 */
-	public FilterTableModel<?, String> userHistoryTableModel() {
+	public SwingTableModel<?, String> userHistoryTableModel() {
 		return userHistoryTableModel;
 	}
 

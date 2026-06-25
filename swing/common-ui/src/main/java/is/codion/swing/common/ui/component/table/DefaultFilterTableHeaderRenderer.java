@@ -18,10 +18,11 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.model.component.table.FilterTableSort.ColumnSort;
+import is.codion.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSort;
-import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
+import is.codion.common.model.filter.SortOrder;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 
 import org.jspecify.annotations.Nullable;
@@ -31,7 +32,6 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.SortOrder;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;

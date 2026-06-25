@@ -16,11 +16,13 @@
  *
  * Copyright (c) 2014 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.common.model.component.table;
+
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.common.model.filter.SortOrder;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.SortOrder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DefaultFilterTableSortTest {
 
-	DefaultFilterTableSort<Row, Integer> model = new DefaultFilterTableSort<>(new FilterTableModel.TableColumns<Row, Integer>() {
+	DefaultFilterTableSort<Row, Integer> model = new DefaultFilterTableSort<>(new TableColumns<Row, Integer>() {
 
 		@Override
 		public List<Integer> identifiers() {
@@ -144,7 +146,7 @@ public class DefaultFilterTableSortTest {
 
 	@Test
 	void nonComparableColumnClass() {
-		DefaultFilterTableSort<ArrayList<Object>, Integer> sortModel = new DefaultFilterTableSort<>(new FilterTableModel.TableColumns<ArrayList<Object>, Integer>() {
+		DefaultFilterTableSort<ArrayList<Object>, Integer> sortModel = new DefaultFilterTableSort<>(new TableColumns<ArrayList<Object>, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return Collections.singletonList(0);

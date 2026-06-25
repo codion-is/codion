@@ -18,11 +18,11 @@
  */
 package is.codion.manual.keybinding;
 
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.item.Item;
 import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.ActionMap;
@@ -51,14 +51,14 @@ final class KeyBindingModel {
 	private static final String RELEASED = "released ";
 
 	private final SwingComboBoxModel<String> componentModel;
-	private final FilterTableModel<KeyBindingRow, String> tableModel;
+	private final SwingTableModel<KeyBindingRow, String> tableModel;
 
 	KeyBindingModel(SwingComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
 		this.componentModel = SwingComboBoxModel.builder()
 						.items(new ComponentItems(lookAndFeelModel))
 						.refresh(true)
 						.build();
-		this.tableModel = FilterTableModel.builder()
+		this.tableModel = SwingTableModel.builder()
 						.columns(new KeyBindingColumns())
 						.items(new KeyBindingItems())
 						.build();
@@ -69,7 +69,7 @@ final class KeyBindingModel {
 		return componentModel;
 	}
 
-	FilterTableModel<KeyBindingRow, String> tableModel() {
+	SwingTableModel<KeyBindingRow, String> tableModel() {
 		return tableModel;
 	}
 

@@ -47,7 +47,7 @@ import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
@@ -342,7 +342,7 @@ public class EntityTablePanel extends JPanel {
 		public static final ControlKey<ToggleControl> SINGLE_SELECTION = ToggleControl.key("singleSelection");
 		/**
 		 * A {@link Control} for clearing the data from the table.
-		 * @see FilterTableModel.Items#clear()
+		 * @see SwingTableModel.Items#clear()
 		 */
 		public static final ControlKey<CommandControl> CLEAR = CommandControl.key("clear");
 		/**
@@ -2872,9 +2872,9 @@ public class EntityTablePanel extends JPanel {
 	private static final class EntitySummaryValuesFactory implements SummaryValues.Factory<Attribute<?>> {
 
 		private final EntityDefinition entityDefinition;
-		private final FilterTableModel<?, Attribute<?>> tableModel;
+		private final SwingTableModel<?, Attribute<?>> tableModel;
 
-		private EntitySummaryValuesFactory(EntityDefinition entityDefinition, FilterTableModel<?, Attribute<?>> tableModel) {
+		private EntitySummaryValuesFactory(EntityDefinition entityDefinition, SwingTableModel<?, Attribute<?>> tableModel) {
 			this.entityDefinition = requireNonNull(entityDefinition);
 			this.tableModel = requireNonNull(tableModel);
 		}

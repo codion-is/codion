@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 /**
  * <p>A UI-agnostic list model based on {@link FilterModel}. The Swing-specific
  * {@code is.codion.swing.common.model.component.list.SwingListModel} extends this with
- * {@code javax.swing.ListModel} (mirroring how {@code FilterTableModel} extends {@code TableModel}).
+ * {@code javax.swing.ListModel} (mirroring how {@code SwingTableModel} extends {@code TableModel}).
  * @param <T> the item type
  * @see #builder()
  */

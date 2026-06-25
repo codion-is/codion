@@ -18,8 +18,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.filter.FilterModel;
-import is.codion.common.model.selection.MultiSelection;
+import is.codion.common.model.component.table.FilterTableModel;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
@@ -49,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  * @param <R> the {@link EntityEditor} type
  */
 public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> extends FilterModel<Entity> {
+				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> extends FilterTableModel<Entity, Attribute<?>> {
 
 	/**
 	 * Specifies the default action a table model takes when entities are inserted via its edit model.
@@ -165,11 +164,6 @@ public interface EntityTableModel<M extends EntityModel<M, E, T, R>, E extends E
 	 * @return the {@link State} controlling whether the current sort order should be used as a basis for the query order by clause
 	 */
 	State orderQuery();
-
-	/**
-	 * @return the {@link MultiSelection} instance
-	 */
-	MultiSelection<Entity> selection();
 
 	/**
 	 * @return the underlying query model

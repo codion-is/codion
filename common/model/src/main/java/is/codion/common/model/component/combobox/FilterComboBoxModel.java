@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A UI-agnostic combo box model based on {@link FilterModel}. The Swing-specific
  * {@code is.codion.swing.common.model.component.combobox.FilterComboBoxModel} extends this with
- * {@code javax.swing.ComboBoxModel} (mirroring how {@code FilterTableModel} extends {@code TableModel}).
+ * {@code javax.swing.ComboBoxModel} (mirroring how {@code SwingTableModel} extends {@code TableModel}).
  * @param <T> the type of values in this combo box model
  * @see #builder()
  * @see IncludedItems#predicate()

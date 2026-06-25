@@ -16,12 +16,12 @@
  *
  * Copyright (c) 2013 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.common.model.component.table;
 
 import is.codion.common.model.filter.FilterModel;
+import is.codion.common.model.filter.SortOrder;
 import is.codion.common.reactive.state.State;
 
-import javax.swing.SortOrder;
 import java.util.List;
 
 /**

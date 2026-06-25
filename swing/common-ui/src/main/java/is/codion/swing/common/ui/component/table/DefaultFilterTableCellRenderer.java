@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
-import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.Results;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -430,7 +430,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 		}
 
-		private boolean filterEnabled(C identifier, FilterTableModel<R, C> tableModel) {
+		private boolean filterEnabled(C identifier, SwingTableModel<R, C> tableModel) {
 			if (filterEnabledSet) {
 				return filterEnabled != null && filterEnabled.is();
 			}
@@ -757,7 +757,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			requireNonNull(identifier);
 			requireNonNull(table);
 
-			return (FilterTableCellRenderer<R, C, ?>) new DefaultBuilder<>(table.model().getColumnClass(identifier)).build();
+			return (FilterTableCellRenderer<R, C, ?>) new DefaultBuilder<>(table.model().columns().columnClass(identifier)).build();
 		}
 	}
 

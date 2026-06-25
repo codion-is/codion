@@ -18,7 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FilterTableColumnComponentPanelTest {
 
-	private final FilterTableModel.TableColumns<Object, Integer> columns = new FilterTableModel.TableColumns<>() {
+	private final TableColumns<Object, Integer> columns = new TableColumns<>() {
 		@Override
 		public List<Integer> identifiers() {
 			return asList(0, 1, 2);
@@ -53,8 +54,8 @@ public class FilterTableColumnComponentPanelTest {
 
 	@Test
 	void wrongColumn() {
-		FilterTableModel<Object, Integer> tableModel =
-						FilterTableModel.builder()
+		SwingTableModel<Object, Integer> tableModel =
+						SwingTableModel.builder()
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =
@@ -69,8 +70,8 @@ public class FilterTableColumnComponentPanelTest {
 
 	@Test
 	void setColumnVisible() {
-		FilterTableModel<Object, Integer> tableModel =
-						FilterTableModel.builder()
+		SwingTableModel<Object, Integer> tableModel =
+						SwingTableModel.builder()
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =
@@ -95,8 +96,8 @@ public class FilterTableColumnComponentPanelTest {
 
 	@Test
 	void width() {
-		FilterTableModel<Object, Integer> tableModel =
-						FilterTableModel.builder()
+		SwingTableModel<Object, Integer> tableModel =
+						SwingTableModel.builder()
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =

@@ -22,7 +22,7 @@ import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 
 import org.jspecify.annotations.Nullable;
 
@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
-	private final FilterTableModel<?, C> tableModel;
+	private final SwingTableModel<?, C> tableModel;
 	private final FilterTableColumnModel<C> columnModel;
 	private final DefaultResults results = new DefaultResults();
 	private final State caseSensitive = State.builder()
@@ -63,7 +63,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 					.listener(searchString::clear)
 					.build();
 
-	DefaultFilterTableSearchModel(FilterTableModel<?, C> tableModel, FilterTableColumnModel<C> columnModel) {
+	DefaultFilterTableSearchModel(SwingTableModel<?, C> tableModel, FilterTableColumnModel<C> columnModel) {
 		this.tableModel = requireNonNull(tableModel);
 		this.columnModel = requireNonNull(columnModel);
 		bindEvents();

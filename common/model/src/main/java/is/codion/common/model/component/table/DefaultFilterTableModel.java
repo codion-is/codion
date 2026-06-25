@@ -16,22 +16,18 @@
  *
  * Copyright (c) 2010 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
+import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.value.AbstractValue;
-import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
-import is.codion.swing.common.model.component.list.FilterListSelection;
+import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -53,7 +49,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements FilterTableModel<R, C> {
+final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 
 	/**
 	 * A Comparator for comparing {@link Comparable} instances.
@@ -68,41 +64,38 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Items<R> items;
 	private final TableColumns<R, C> columns;
 	private final TableConditionModel<C> filters;
-	private final FilterListSelection<R> selection;
+	private final MultiSelection<R> selection;
 	private final DefaultFilterTableSort<R, C> sort;
 	private final DefaultColumnValues columnValues = new DefaultColumnValues();
-	private final Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory;
-	private final RemoveSelectionListener removeSelectionListener;
-
-	private @Nullable RowEditor<R, C> rowEditor;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = builder.columns;
 		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
-		this.rowEditorFactory = builder.rowEditorFactory;
-		this.items = Items.builder()
-						.refresher(builder::createRefresher)
-						.selection(FilterListSelection::filterListSelection)
+		Function<Items<R>, Refresher<R>> refresherFactory = builder.refresherFactory != null
+						? builder.refresherFactory
+						: modelItems -> new DefaultRefresher<>(builder.itemSupplier, modelItems, builder.onRefreshException);
+		Function<IncludedItems<R>, MultiSelection<R>> selectionFactory = builder.selectionFactory != null
+						? builder.selectionFactory
+						: MultiSelection::multiSelection;
+		Items.Builder<R> itemsBuilder = Items.<R>builder()
+						.refresher(refresherFactory)
+						.selection(selectionFactory)
 						.sort(sort)
 						.validator(builder.validator)
-						.include(new DefaultInclude<>(builder.columns, filters))
-						.listener(new TableModelAdapter())
-						.build();
+						.include(new DefaultInclude<>(builder.columns, filters));
+		builder.itemsListeners.forEach(itemsBuilder::listener);
+		this.items = itemsBuilder.build();
 		this.items.included().predicate().set(builder.included);
-		this.selection = (FilterListSelection<R>) items.included().selection();
-		this.removeSelectionListener = new RemoveSelectionListener();
+		this.selection = (MultiSelection<R>) items.included().selection();
 		builder.selectionListeners.forEach(selection.indexes()::addListener);
 		builder.itemSelectedListeners.forEach(selection.item()::addConsumer);
 		builder.itemsSelectedListeners.forEach(selection.items()::addConsumer);
 		builder.indexSelectedListeners.forEach(selection.index()::addConsumer);
 		builder.indexesSelectedListeners.forEach(selection.indexes()::addConsumer);
-		builder.selectionConsumers.forEach(selectionConsumer ->
-						selectionConsumer.accept(selection));
 		if (builder.refresh) {
 			items.refresh();
 		}
-		addTableModelListener(removeSelectionListener);
 	}
 
 	@Override
@@ -116,17 +109,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public int getColumnCount() {
-		return columns.identifiers().size();
-	}
-
-	@Override
-	public int getRowCount() {
-		return items.included().size();
-	}
-
-	@Override
-	public FilterListSelection<R> selection() {
+	public MultiSelection<R> selection() {
 		return selection;
 	}
 
@@ -141,31 +124,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Class<?> getColumnClass(C identifier) {
-		return columns.columnClass(requireNonNull(identifier));
-	}
-
-	@Override
-	public Class<?> getColumnClass(int columnIndex) {
-		return columns.columnClass(columns.identifier(columnIndex));
-	}
-
-	@Override
-	public @Nullable Object getValueAt(int rowIndex, int columnIndex) {
-		return columnValues.value(rowIndex, columns.identifier(columnIndex));
-	}
-
-	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return rowEditor().editable(items.included().get(rowIndex), columns.identifier(columnIndex));
-	}
-
-	@Override
-	public void setValueAt(@Nullable Object value, int rowIndex, int columnIndex) {
-		rowEditor().set(value, rowIndex, items.included().get(rowIndex), columns.identifier(columnIndex));
-	}
-
-	@Override
 	public TableColumns<R, C> columns() {
 		return columns;
 	}
@@ -173,66 +131,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public Export<C> export() {
 		return new DefaultExport();
-	}
-
-	@Override
-	public RowEditor<R, C> rowEditor() {
-		if (rowEditor == null) {
-			rowEditor = rowEditorFactory.apply(this);
-		}
-
-		return rowEditor;
-	}
-
-	@Override
-	public void addTableModelListener(TableModelListener listener) {
-		super.addTableModelListener(listener);
-		if (listener instanceof JTable) {
-			// JTable handles removing the selected indexes on row removal
-			removeTableModelListener(removeSelectionListener);
-		}
-	}
-
-	@Override
-	public void removeTableModelListener(TableModelListener listener) {
-		super.removeTableModelListener(listener);
-		if (listener instanceof JTable) {
-			// JTable handles removing the selected indexes on row removal
-			addTableModelListener(removeSelectionListener);
-		}
-	}
-
-	private final class RemoveSelectionListener implements TableModelListener {
-
-		@Override
-		public void tableChanged(TableModelEvent e) {
-			if (e.getType() == TableModelEvent.DELETE) {
-				selection().removeIndexInterval(e.getFirstRow(), e.getLastRow());
-			}
-		}
-	}
-
-	private final class TableModelAdapter implements ItemsListener {
-
-		@Override
-		public void inserted(int firstIndex, int lastIndex) {
-			fireTableRowsInserted(firstIndex, lastIndex);
-		}
-
-		@Override
-		public void updated(int firstIndex, int lastIndex) {
-			fireTableRowsUpdated(firstIndex, lastIndex);
-		}
-
-		@Override
-		public void deleted(int firstIndex, int lastIndex) {
-			fireTableRowsDeleted(firstIndex, lastIndex);
-		}
-
-		@Override
-		public void changed() {
-			fireTableDataChanged();
-		}
 	}
 
 	private final class DefaultColumnValues implements ColumnValues<C> {
@@ -342,25 +240,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private static final class DefaultRowEditor<R, C> implements RowEditor<R, C> {
-
-		@Override
-		public boolean editable(R row, C identifier) {
-			return false;
-		}
-
-		@Override
-		public void set(@Nullable Object value, int rowIndex, R row, C identifier) {}
-	}
-
-	private static final class DefaultRowEditorFactory<R, C> implements Function<FilterTableModel<R, C>, RowEditor<R, C>> {
-
-		@Override
-		public RowEditor<R, C> apply(FilterTableModel<R, C> tableModel) {
-			return new DefaultRowEditor<>();
-		}
-	}
-
 	static final class DefaultColumnsStep implements Builder.ColumnsStep {
 
 		@Override
@@ -381,16 +260,16 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private final List<Consumer<List<R>>> itemsSelectedListeners = new ArrayList<>();
 		private final List<Consumer<Integer>> indexSelectedListeners = new ArrayList<>();
 		private final List<Consumer<List<Integer>>> indexesSelectedListeners = new ArrayList<>();
-		private final List<Consumer<FilterListSelection<R>>> selectionConsumers = new ArrayList<>();
+		private final List<ItemsListener> itemsListeners = new ArrayList<>();
 
 		private @Nullable Supplier<? extends Collection<R>> itemSupplier;
 		private Predicate<R> validator = (Predicate<R>) DEFAULT_VALID_PREDICATE;
 		private Supplier<Map<C, ConditionModel<?>>> filters;
-		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;
-		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 		private @Nullable Predicate<R> included;
 		private boolean refresh = false;
+		private @Nullable Function<Items<R>, Refresher<R>> refresherFactory;
+		private @Nullable Function<IncludedItems<R>, MultiSelection<R>> selectionFactory;
 
 		private DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
@@ -419,20 +298,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> async(boolean async) {
-			this.async = async;
-			return this;
-		}
-
-		@Override
 		public Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException) {
 			this.onRefreshException = requireNonNull(onRefreshException);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor) {
-			this.rowEditorFactory = requireNonNull(rowEditor);
 			return this;
 		}
 
@@ -479,8 +346,20 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> selection(Consumer<FilterListSelection<R>> selection) {
-			selectionConsumers.add(requireNonNull(selection));
+		public Builder<R, C> selection(Function<IncludedItems<R>, MultiSelection<R>> selection) {
+			this.selectionFactory = requireNonNull(selection);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> refresher(Function<Items<R>, Refresher<R>> refresher) {
+			this.refresherFactory = requireNonNull(refresher);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> listener(ItemsListener itemsListener) {
+			itemsListeners.add(requireNonNull(itemsListener));
 			return this;
 		}
 
@@ -497,32 +376,67 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			return columns;
 		}
 
-		private Refresher<R> createRefresher(Items<R> items) {
-			return new DefaultRefreshWorker<>(itemSupplier, items, async, onRefreshException);
-		}
-
-		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {
-
-			private final Items<R> items;
-
-			private DefaultRefreshWorker(@Nullable Supplier<? extends Collection<R>> supplier,
-																	 Items<R> items, boolean async,
-																	 @Nullable Consumer<Exception> onException) {
-				super((Supplier<Collection<R>>) supplier, async, onException);
-				this.items = items;
-			}
-
-			@Override
-			protected void processResult(Collection<R> result) {
-				items.set(result);
-			}
-		}
-
 		private static final class ValidPredicate<R> implements Predicate<R> {
 
 			@Override
 			public boolean test(R r) {
 				return true;
+			}
+		}
+	}
+
+	private static final class DefaultRefresher<R> extends FilterModel.AbstractRefresher<R> {
+
+		private final Items<R> items;
+		private final Consumer<Exception> onException;
+
+		private DefaultRefresher(@Nullable Supplier<? extends Collection<R>> supplier, Items<R> items,
+		                         @Nullable Consumer<Exception> onException) {
+			super((Supplier<Collection<R>>) supplier, false);
+			this.items = items;
+			this.onException = onException == null ? new RethrowHandler() : onException;
+		}
+
+		@Override
+		protected boolean isUserInterfaceThread() {
+			return false;
+		}
+
+		@Override
+		protected void refreshAsync(@Nullable Consumer<Collection<R>> onResult) {
+			refreshSync(onResult);
+		}
+
+		@Override
+		protected void refreshSync(@Nullable Consumer<Collection<R>> onResult) {
+			items().ifPresent(supplier -> {
+				setActive(true);
+				try {
+					Collection<R> result = supplier.get();
+					setActive(false);
+					processResult(result);
+					if (onResult != null) {
+						onResult.accept(result);
+					}
+					notifyResult(result);
+				}
+				catch (Exception e) {
+					setActive(false);
+					onException.accept(e);
+				}
+			});
+		}
+
+		@Override
+		protected void processResult(Collection<R> result) {
+			items.set(result);
+		}
+
+		private static final class RethrowHandler implements Consumer<Exception> {
+
+			@Override
+			public void accept(Exception exception) {
+				throw Exceptions.runtime(exception);
 			}
 		}
 	}

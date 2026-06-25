@@ -16,16 +16,16 @@
  *
  * Copyright (c) 2010 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
-import is.codion.swing.common.model.component.list.FilterListSelection;
+import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
+import is.codion.common.model.selection.MultiSelection;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -36,30 +36,25 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.model.component.table.DefaultFilterTableModel.COMPARABLE_COMPARATOR;
-import static is.codion.swing.common.model.component.table.DefaultFilterTableModel.STRING_COMPARATOR;
+import static is.codion.common.model.component.table.DefaultFilterTableModel.COMPARABLE_COMPARATOR;
+import static is.codion.common.model.component.table.DefaultFilterTableModel.STRING_COMPARATOR;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Specifies a table model supporting selection as well as filtering.
+ * <p>A UI-agnostic table model based on {@link FilterModel}, supporting selection, filtering and sorting.
  * A {@link FilterTableModel} can not contain null items.
+ * <p>The Swing-specific {@code is.codion.swing.common.model.component.table.SwingTableModel} extends this with
+ * {@code javax.swing.table.TableModel}, adding cell editing and the {@code fireTableXxx} surface.
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @see #builder()
  */
-public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
+public interface FilterTableModel<R, C> extends FilterModel<R> {
 
 	/**
 	 * @return the table columns
 	 */
 	TableColumns<R, C> columns();
-
-	/**
-	 * Returns the class of the column with the given identifier
-	 * @param identifier the column identifier
-	 * @return the Class representing the given column
-	 */
-	Class<?> getColumnClass(C identifier);
 
 	/**
 	 * Provides access to column values
@@ -68,9 +63,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	ColumnValues<C> values();
 
 	/**
-	 * @return the {@link FilterListSelection} instance used by this table model
+	 * @return the {@link MultiSelection} instance used by this table model
 	 */
-	FilterListSelection<R> selection();
+	@Override
+	MultiSelection<R> selection();
 
 	/**
 	 * @return the {@link TableConditionModel} used to filter this table model
@@ -80,31 +76,13 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * @return the sort
 	 */
+	@Override
 	FilterTableSort<R, C> sort();
 
 	/**
 	 * @return a {@link Export} instance for exporting the table model data
 	 */
 	Export<C> export();
-
-	/**
-	 * @return the {@link RowEditor} providing the row editing functionality
-	 */
-	RowEditor<R, C> rowEditor();
-
-	/**
-	 * Notifies all listeners that all cell values in the table's rows may have changed.
-	 * The number of rows may also have changed and the JTable should redraw the table from scratch.
-	 * The structure of the table (as in the order of the columns) is assumed to be the same.
-	 */
-	void fireTableDataChanged();
-
-	/**
-	 * Notifies all listeners that the given rows have changed
-	 * @param fromIndex the from index
-	 * @param toIndex the to index
-	 */
-	void fireTableRowsUpdated(int fromIndex, int toIndex);
 
 	/**
 	 * @return a {@link Builder.ColumnsStep} instance
@@ -196,24 +174,12 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> validator(Predicate<R> validator);
 
 		/**
-		 * @param async true if async refresh should be enabled
-		 * @return this builder instance
-		 */
-		Builder<R, C> async(boolean async);
-
-		/**
 		 * By default, exceptions during refresh are rethrown,
 		 * use this method to handle async exceptions differently
 		 * @param onRefreshException the exception handler to use during refresh
 		 * @return this builder instance
 		 */
 		Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException);
-
-		/**
-		 * @param rowEditor supplies the row editor
-		 * @return this builder instance
-		 */
-		Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor);
 
 		/**
 		 * @param included the {@link Predicate} controlling which items should be included
@@ -259,10 +225,30 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> onIndexesSelected(Consumer<List<Integer>> indexes);
 
 		/**
-		 * @param selection receives the table model selection instance
+		 * Provides the {@link MultiSelection} for this model, given its {@link IncludedItems}.
+		 * The default is the pure-Java {@link MultiSelection#multiSelection(MultiSelection.IndexedItems)};
+		 * the Swing layer plugs a {@code javax.swing.ListSelectionModel} based one.
+		 * @param selection the selection factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> selection(Consumer<FilterListSelection<R>> selection);
+		Builder<R, C> selection(Function<IncludedItems<R>, MultiSelection<R>> selection);
+
+		/**
+		 * Provides the {@link FilterModel.Refresher} for this model, given its {@link Items}.
+		 * The default is a UI-agnostic synchronous refresher; the Swing layer plugs a {@code ProgressWorker}
+		 * based one and Android a coroutine based one.
+		 * @param refresher the refresher factory
+		 * @return this builder instance
+		 */
+		Builder<R, C> refresher(Function<Items<R>, Refresher<R>> refresher);
+
+		/**
+		 * Adds an {@link ItemsListener} notified of fine-grained changes to the included items, allowing
+		 * toolkit layers to bridge to their table change notifications (e.g. {@code TableModelEvent}s).
+		 * @param itemsListener the {@link ItemsListener} to add
+		 * @return this builder instance
+		 */
+		Builder<R, C> listener(ItemsListener itemsListener);
 
 		/**
 		 * @return a new {@link FilterTableModel} instance.
@@ -370,35 +356,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 
 			return STRING_COMPARATOR;
 		}
-	}
-
-	/**
-	 * Handles the editing of rows
-	 * @param <R> the row type
-	 * @param <C> the column identifier type
-	 */
-	interface RowEditor<R, C> {
-
-		/**
-		 * @param row the row
-		 * @param identifier the column identifier
-		 * @return true if the given cell is editable
-		 * @see TableModel#isCellEditable(int, int)
-		 */
-		boolean editable(R row, C identifier);
-
-		/**
-		 * <p>Sets the value of the given column and row.
-		 * <p>This method is responsible for notifying the model of the change.
-		 * @param value the value to set
-		 * @param rowIndex the row index
-		 * @param row the row object
-		 * @param identifier the column identifier
-		 * @throws IllegalStateException in case the cell is not editable
-		 * @see TableModel#setValueAt(Object, int, int)
-		 * @see #editable(Object, Object)
-		 */
-		void set(@Nullable Object value, int rowIndex, R row, C identifier);
 	}
 
 	/**

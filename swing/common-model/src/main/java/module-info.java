@@ -21,7 +21,7 @@
  * <ul>
  * <li>{@link is.codion.swing.common.model.component.combobox.SwingComboBoxModel}
  * <li>{@link is.codion.swing.common.model.component.list.FilterListSelection}
- * <li>{@link is.codion.swing.common.model.component.table.FilterTableModel}
+ * <li>{@link is.codion.swing.common.model.component.table.SwingTableModel}
  * <li>{@link is.codion.swing.common.model.worker.ProgressWorker}
  * </ul>
  */

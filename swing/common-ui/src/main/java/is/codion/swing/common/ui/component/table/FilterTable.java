@@ -19,7 +19,10 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.filter.SortOrder;
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.model.summary.TableSummaryModel;
 import is.codion.common.reactive.event.Event;
@@ -31,9 +34,7 @@ import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -70,7 +71,6 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.SortOrder;
 import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -132,7 +132,7 @@ import static java.util.stream.Collectors.toList;
 import static javax.swing.KeyStroke.getKeyStrokeForEvent;
 
 /**
- * A JTable implementation for {@link FilterTableModel}.
+ * A JTable implementation for {@link SwingTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
  * For instances use the builder {@link #builder()}
  * @param <R> the type representing rows
@@ -349,7 +349,7 @@ public final class FilterTable<R, C> extends JTable {
 	private static final int HEADER_WIDTH_PADDING = 20;
 	private static final ConditionComponents FILTER_COMPONENTS = new ConditionComponents() {};
 
-	private final FilterTableModel<R, C> tableModel;
+	private final SwingTableModel<R, C> tableModel;
 	private final FilterTableSearchModel searchModel;
 	private final TableSummaryModel<C> summaryModel;
 
@@ -471,14 +471,14 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	@Override
-	public FilterTableModel<R, C> getModel() {
-		return (FilterTableModel<R, C>) super.getModel();
+	public SwingTableModel<R, C> getModel() {
+		return (SwingTableModel<R, C>) super.getModel();
 	}
 
 	/**
 	 * @return the table model
 	 */
-	public FilterTableModel<R, C> model() {
+	public SwingTableModel<R, C> model() {
 		return getModel();
 	}
 
@@ -499,13 +499,13 @@ public final class FilterTable<R, C> extends JTable {
 		if (this.tableModel != null) {
 			throw new IllegalStateException("Table model has already been set");
 		}
-		if (!(dataModel instanceof FilterTableModel)) {
-			throw new IllegalArgumentException("FilterTable model must be a FilterTableModel instance");
+		if (!(dataModel instanceof SwingTableModel)) {
+			throw new IllegalArgumentException("FilterTable model must be a SwingTableModel instance");
 		}
-		List<R> selection = ((FilterTableModel<R, C>) dataModel).selection().items().get();
+		List<R> selection = ((SwingTableModel<R, C>) dataModel).selection().items().get();
 		super.setModel(dataModel);
 		if (!selection.isEmpty()) {
-			((FilterTableModel<R, C>) dataModel).selection().items().set(selection);
+			((SwingTableModel<R, C>) dataModel).selection().items().set(selection);
 		}
 	}
 
@@ -855,7 +855,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * @param <C> the column identifier type
 	 * @return a new {@link SummaryValues} instance
 	 */
-	public static <T extends Number, C> SummaryValues<T> summaryValues(C identifier, FilterTableModel<?, C> tableModel, Format format) {
+	public static <T extends Number, C> SummaryValues<T> summaryValues(C identifier, SwingTableModel<?, C> tableModel, Format format) {
 		return new DefaultSummaryValues<>(identifier, tableModel, format);
 	}
 
@@ -1261,7 +1261,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private static <R, C> List<FilterTableColumn<C>> createColumns(Consumer<FilterTableColumn.Builder<C>> configure,
-																																 FilterTableModel<R, C> tableModel) {
+	                                                               SwingTableModel<R, C> tableModel) {
 		TableColumns<R, C> tableColumns = tableModel.columns();
 		List<C> identifiers = tableColumns.identifiers();
 		List<FilterTableColumn<C>> columns = new ArrayList<>(identifiers.size());
@@ -1402,7 +1402,7 @@ public final class FilterTable<R, C> extends JTable {
 			 * @param model the table model
 			 * @return a {@link Builder} based on the given columns
 			 */
-			<R, C> Builder<R, C> model(FilterTableModel<R, C> model);
+			<R, C> Builder<R, C> model(SwingTableModel<R, C> model);
 		}
 
 		/**
@@ -1755,7 +1755,7 @@ public final class FilterTable<R, C> extends JTable {
 	private static class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
-		public <R, C> Builder<R, C> model(FilterTableModel<R, C> model) {
+		public <R, C> Builder<R, C> model(SwingTableModel<R, C> model) {
 			return new DefaultBuilder<>(requireNonNull(model));
 		}
 	}
@@ -1767,7 +1767,7 @@ public final class FilterTable<R, C> extends JTable {
 		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 		private static final BiPredicate<?, ?> CELL_EDITABLE = new DefaultCellEditable<>();
 
-		private final FilterTableModel<R, C> tableModel;
+		private final SwingTableModel<R, C> tableModel;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 		private final Map<C, FilterTableCellRenderer<R, C, ?>> cellRenderers = new HashMap<>();
 		private final Map<C, FilterTableCellEditor<?, ?>> cellEditors = new HashMap<>();
@@ -1817,7 +1817,7 @@ public final class FilterTable<R, C> extends JTable {
 		private @Nullable Boolean dragEnabled;
 		private @Nullable DropMode dropMode;
 
-		private DefaultBuilder(FilterTableModel<R, C> tableModel) {
+		private DefaultBuilder(SwingTableModel<R, C> tableModel) {
 			this.tableModel = tableModel;
 			this.cellRendererFactory = FilterTableCellRenderer.factory();
 			this.headerRendererFactory = FilterTableHeaderRenderer.factory();
@@ -2133,7 +2133,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public <T extends Number> Optional<SummaryValues<T>> create(C identifier, Format format) {
-			Class<?> columnClass = tableModel.getColumnClass(identifier);
+			Class<?> columnClass = tableModel.columns().columnClass(identifier);
 			if (Number.class.isAssignableFrom(columnClass)) {
 				return Optional.of(new DefaultSummaryValues<>(identifier, tableModel, format));
 			}
@@ -2151,11 +2151,11 @@ public final class FilterTable<R, C> extends JTable {
 	private static final class DefaultSummaryValues<T extends Number, C> implements SummaryValues<T> {
 
 		private final C identifier;
-		private final FilterTableModel<?, C> tableModel;
+		private final SwingTableModel<?, C> tableModel;
 		private final Format format;
 		private final Event<?> valuesChanged = Event.event();
 
-		private DefaultSummaryValues(C identifier, FilterTableModel<?, C> tableModel, Format format) {
+		private DefaultSummaryValues(C identifier, SwingTableModel<?, C> tableModel, Format format) {
 			this.identifier = requireNonNull(identifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);

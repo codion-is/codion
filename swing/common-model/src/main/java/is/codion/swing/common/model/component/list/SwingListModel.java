@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 /**
  * A Swing {@link ListModel} based on the UI-agnostic
  * {@link is.codion.common.model.component.list.FilterListModel}, adding the {@link ListModel}
- * interface — mirroring how {@code FilterTableModel} extends {@code TableModel}. The rich model logic
+ * interface — mirroring how {@code SwingTableModel} extends {@code TableModel}. The rich model logic
  * (items, selection, filtering, sorting) lives in the common module; this only adds the Swing coat,
  * with {@link #selection()} narrowed to a {@link FilterListSelection} (a {@code javax.swing.ListSelectionModel}).
  * @param <T> the item type

@@ -18,12 +18,12 @@
  */
 package is.codion.tools.loadtest.model;
 
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.scheduler.TaskScheduler;
-import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.LoadTest.ApplicationRunner;
 import is.codion.tools.loadtest.Scenario;
@@ -68,7 +68,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	private final LoadTest<T> loadTest;
 
-	private final FilterTableModel<ApplicationRow, String> applicationTableModel;
+	private final SwingTableModel<ApplicationRow, String> applicationTableModel;
 	private final Statistics statistics = new Statistics();
 	private final State chartStatistics = State.state();
 	private final State autoRefreshApplications = State.state(true);
@@ -101,7 +101,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	DefaultLoadTestModel(LoadTest<T> loadTest) {
 		this.loadTest = requireNonNull(loadTest);
-		applicationTableModel = FilterTableModel.builder()
+		applicationTableModel = SwingTableModel.builder()
 						.columns(new ApplicationColumns())
 						.items(new ApplicationItems())
 						.build();
@@ -132,7 +132,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	@Override
-	public FilterTableModel<ApplicationRow, String> applicationTableModel() {
+	public SwingTableModel<ApplicationRow, String> applicationTableModel() {
 		return applicationTableModel;
 	}
 

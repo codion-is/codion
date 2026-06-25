@@ -19,12 +19,12 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.reactive.value.Value;
 import is.codion.framework.db.EntityQueries;
 import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityEditor.EditorValue;
-import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -149,8 +149,8 @@ final class EditorInspector extends JPanel {
 
 		private EditorComponentsPanel(EditorComponents components) {
 			super(borderLayout());
-			FilterTableModel<AttributeRow, AttributeColumn> attributeModel =
-							FilterTableModel.builder()
+			SwingTableModel<AttributeRow, AttributeColumn> attributeModel =
+							SwingTableModel.builder()
 											.columns(new AttributeColumns())
 											.items(new AttributeItems(components))
 											.refresh(true)

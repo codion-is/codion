@@ -19,6 +19,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.filter.SortOrder;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -33,7 +34,6 @@ import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.SortOrder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

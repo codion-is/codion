@@ -24,7 +24,7 @@ import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
 import is.codion.swing.common.model.component.combobox.SwingComboBoxModel;
-import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
@@ -443,7 +443,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private FilterTable<ApplicationRow, String> createApplicationsTable() {
-		FilterTableModel<ApplicationRow, String> tableModel = model().applicationTableModel();
+		SwingTableModel<ApplicationRow, String> tableModel = model().applicationTableModel();
 
 		return FilterTable.builder()
 						.model(tableModel)

@@ -18,7 +18,10 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.filter.FilterModel;
+import is.codion.common.model.component.table.FilterTableModel;
+import is.codion.common.model.component.table.FilterTableSort;
+import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
@@ -30,20 +33,26 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
 
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static java.util.Collections.singleton;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -59,7 +68,7 @@ import static java.util.stream.Collectors.toMap;
 public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
 				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements EntityTableModel<M, E, T, R> {
 
-	private final FilterModel<Entity> filterModel;
+	private final FilterTableModel<Entity, Attribute<?>> filterModel;
 	private final E editModel;
 	private final EntityQueryModel queryModel;
 	private final State removeDeleted = State.state(true);
@@ -73,7 +82,7 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	 * @param editModel the edit model
 	 * @param filterModel the filter model
 	 */
-	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel) {
+	protected AbstractEntityTableModel(E editModel, FilterTableModel<Entity, Attribute<?>> filterModel) {
 		this(editModel, new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(editModel.entityType())
 						.connectionProvider(editModel.connectionProvider())
@@ -86,7 +95,7 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	 * @param queryModel the table query model
 	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
 	 */
-	protected AbstractEntityTableModel(E editModel, EntityQueryModel queryModel, FilterModel<Entity> filterModel) {
+	protected AbstractEntityTableModel(E editModel, EntityQueryModel queryModel, FilterTableModel<Entity, Attribute<?>> filterModel) {
 		this.editModel = requireNonNull(editModel);
 		this.queryModel = requireNonNull(queryModel);
 		this.filterModel = requireNonNull(filterModel);
@@ -168,11 +177,65 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 		selection().items().set(new SelectByKeyPredicate(requireNonNull(keys)));
 	}
 
+	@Override
+	public final Items<Entity> items() {
+		return filterModel.items();
+	}
+
+	@Override
+	public final ColumnValues<Attribute<?>> values() {
+		return filterModel.values();
+	}
+
+	@Override
+	public final TableColumns<Entity, Attribute<?>> columns() {
+		return filterModel.columns();
+	}
+
+	@Override
+	public final TableConditionModel<Attribute<?>> filters() {
+		return filterModel.filters();
+	}
+
+	@Override
+	public final FilterTableSort<Entity, Attribute<?>> sort() {
+		return filterModel.sort();
+	}
+
+	@Override
+	public final Export<Attribute<?>> export() {
+		return filterModel.export();
+	}
+
 	/**
 	 * @return the underlying model
 	 */
-	protected FilterModel<Entity> filterModel() {
+	protected FilterTableModel<Entity, Attribute<?>> filterModel() {
 		return filterModel;
+	}
+
+	/**
+	 * @param entityDefinition the entity definition
+	 * @return {@link TableColumns} based on the visible attributes of the given entity definition
+	 */
+	protected static TableColumns<Entity, Attribute<?>> tableColumns(EntityDefinition entityDefinition) {
+		return new EntityTableColumns(entityDefinition);
+	}
+
+	/**
+	 * @param entityDefinition the entity definition
+	 * @return a {@link Supplier} providing the filter condition models based on the given entity definition
+	 */
+	protected static Supplier<Map<Attribute<?>, ConditionModel<?>>> filterConditions(EntityDefinition entityDefinition) {
+		return new EntityFilters(entityDefinition);
+	}
+
+	/**
+	 * @param entityType the entity type
+	 * @return a {@link Predicate} validating that items are of the given entity type
+	 */
+	protected static Predicate<Entity> itemValidator(EntityType entityType) {
+		return new EntityItemValidator(entityType);
 	}
 
 	/**
@@ -368,6 +431,125 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 			}
 
 			return false;
+		}
+	}
+
+	private static final class EntityTableColumns implements TableColumns<Entity, Attribute<?>> {
+
+		private final EntityDefinition entityDefinition;
+		private final List<Attribute<?>> identifiers;
+
+		private EntityTableColumns(EntityDefinition entityDefinition) {
+			this.entityDefinition = entityDefinition;
+			this.identifiers = unmodifiableList(entityDefinition.attributes().definitions().stream()
+							.filter(attributeDefinition -> !attributeDefinition.hidden())
+							.map(AttributeDefinition::attribute)
+							.collect(toList()));
+			if (this.identifiers.isEmpty()) {
+				throw new IllegalArgumentException("No visible attributes found for entity '" +
+								entityDefinition.type() + "'. Ensure at least one attribute has a caption() " +
+								"defined to make it visible in table views. Attributes without captions are " +
+								"hidden by default.");
+			}
+		}
+
+		@Override
+		public List<Attribute<?>> identifiers() {
+			return identifiers;
+		}
+
+		@Override
+		public String caption(Attribute<?> identifier) {
+			return entityDefinition.attributes().definition(identifier).caption();
+		}
+
+		@Override
+		public Optional<String> description(Attribute<?> identifier) {
+			return entityDefinition.attributes().definition(identifier).description();
+		}
+
+		@Override
+		public Class<?> columnClass(Attribute<?> identifier) {
+			return requireNonNull(identifier).type().valueClass();
+		}
+
+		@Override
+		public @Nullable Object value(Entity entity, Attribute<?> attribute) {
+			return requireNonNull(entity).get(attribute);
+		}
+
+		@Override
+		public String formatted(Entity entity, Attribute<?> attribute) {
+			return requireNonNull(entity).formatted(attribute);
+		}
+
+		@Override
+		public Comparator<?> comparator(Attribute<?> attribute) {
+			if (attribute instanceof ForeignKey) {
+				return entityDefinition.foreignKeys().referencedBy((ForeignKey) attribute).comparator();
+			}
+
+			return entityDefinition.attributes().definition(attribute).comparator();
+		}
+	}
+
+	private static final class EntityFilters implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
+
+		private final EntityDefinition entityDefinition;
+
+		private EntityFilters(EntityDefinition entityDefinition) {
+			this.entityDefinition = requireNonNull(entityDefinition);
+		}
+
+		@Override
+		public Map<Attribute<?>, ConditionModel<?>> get() {
+			return entityDefinition.attributes().definitions().stream()
+							.filter(EntityFilters::include)
+							.collect(toMap(AttributeDefinition::attribute, EntityFilters::condition));
+		}
+
+		private static ConditionModel<?> condition(AttributeDefinition<?> definition) {
+			if (useStringCondition(definition)) {
+				// Covers foreign keys
+				return ConditionModel.builder()
+								.valueClass(String.class)
+								.build();
+			}
+
+			ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>) definition;
+			return ConditionModel.builder()
+							.valueClass(attributeDefinition.attribute().type().valueClass())
+							.format(attributeDefinition.format().orElse(null))
+							.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
+							.build();
+		}
+
+		private static boolean include(AttributeDefinition<?> definition) {
+			return !definition.hidden() && (definition instanceof ForeignKeyDefinition || definition instanceof ValueAttributeDefinition<?>);
+		}
+
+		private static boolean useStringCondition(AttributeDefinition<?> definition) {
+			return definition.attribute().type().isEntity() || // entities
+							itemBased(definition) || // items
+							!Comparable.class.isAssignableFrom(definition.attribute().type().valueClass()); // non-comparables
+		}
+
+		private static boolean itemBased(AttributeDefinition<?> definition) {
+			return definition instanceof ValueAttributeDefinition<?> && !((ValueAttributeDefinition<?>) definition).items().isEmpty();
+		}
+	}
+
+	private static final class EntityItemValidator implements Predicate<Entity> {
+
+		private final EntityType entityType;
+
+		private EntityItemValidator(EntityType entityType) {
+			this.entityType = requireNonNull(entityType);
+		}
+
+		@Override
+		public boolean test(Entity entity) {
+			return entity.type().equals(entityType);
 		}
 	}
 }

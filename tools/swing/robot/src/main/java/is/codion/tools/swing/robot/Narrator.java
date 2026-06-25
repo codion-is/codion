@@ -18,10 +18,10 @@
  */
 package is.codion.tools.swing.robot;
 
+import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.component.table.SwingTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.frame.Frames;
@@ -77,8 +77,8 @@ public final class Narrator {
 					.lineWrap(true)
 					.wrapStyleWord(true)
 					.build();
-	private final FilterTableModel<KeyStrokeDescription, Integer> keyStrokeModel =
-					FilterTableModel.builder()
+	private final SwingTableModel<KeyStrokeDescription, Integer> keyStrokeModel =
+					SwingTableModel.builder()
 									.columns(new KeyStrokeColumns())
 									.build();
 	private final FilterTable<KeyStrokeDescription, Integer> keyStrokeTable =

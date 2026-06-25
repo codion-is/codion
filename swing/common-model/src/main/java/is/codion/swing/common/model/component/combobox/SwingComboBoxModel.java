@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing {@link ComboBoxModel} based on the UI-agnostic
  * {@link is.codion.common.model.component.combobox.FilterComboBoxModel}, adding the {@link ComboBoxModel}
- * interface — mirroring how {@code FilterTableModel} extends {@code TableModel}. The rich model logic
+ * interface — mirroring how {@code SwingTableModel} extends {@code TableModel}. The rich model logic
  * (items, selection, filtering) lives in the common module; this only adds the Swing coat.
  * @param <T> the type of values in this combo box model
  * @see #builder()
