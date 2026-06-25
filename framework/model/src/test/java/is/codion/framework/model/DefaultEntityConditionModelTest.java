@@ -79,7 +79,7 @@ public class DefaultEntityConditionModelTest {
 		//no search columns defined for master entity
 		ForeignKeyConditionModel masterModel = model.get(Detail.MASTER_FK);
 		assertThrows(IllegalStateException.class, () ->
-						masterModel.equalSearchModel().search().perform());
+						masterModel.equalSearchModel().orElseThrow().search().perform());
 	}
 
 	@Test

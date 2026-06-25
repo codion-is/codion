@@ -22,11 +22,11 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.model.ColumnConditionModel;
+import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ConditionComponents;
-import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComponents;
@@ -39,6 +39,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.Components.listComboBox;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
@@ -114,27 +115,22 @@ public class EntityConditionComponents implements ConditionComponents {
 	}
 
 	private JComponent createEqualForeignKeyField(ForeignKeyConditionModel conditionModel) {
-		if (conditionModel instanceof SwingForeignKeyConditionModel) {
-			SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) conditionModel).equalComboBoxModel();
-
-			return inputComponents.comboBox(conditionModel.attribute(), comboBoxModel)
+		Optional<EntityComboBoxModel> equalComboBoxModel = conditionModel.equalComboBoxModel();
+		if (equalComboBoxModel.isPresent()) {
+			// SwingEntityConditions always supplies a SwingEntityComboBoxModel for the EQUAL operand
+			return inputComponents.comboBox(conditionModel.attribute(), (SwingEntityComboBoxModel) equalComboBoxModel.get())
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
 							.onSetVisible(EntityConditionComponents::refreshIfCleared)
 							.build();
 		}
-		if (conditionModel instanceof ForeignKeyConditionModel) {
-			EntitySearchModel searchModel = conditionModel.equalSearchModel();
 
-			return inputComponents.searchField(conditionModel.attribute(), searchModel)
-							.singleSelection()
-							.build();
-		}
-
-		throw new IllegalArgumentException("Unknown foreign key condition model type: " + conditionModel);
+		return inputComponents.searchField(conditionModel.attribute(), conditionModel.equalSearchModel().orElseThrow())
+						.singleSelection()
+						.build();
 	}
 
 	private JComponent createInForeignKeyField(ForeignKeyConditionModel conditionModel) {
-		EntitySearchModel searchModel = searchModel(conditionModel);
+		EntitySearchModel searchModel = conditionModel.inSearchModel().orElseThrow();
 
 		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
 
@@ -144,14 +140,6 @@ public class EntityConditionComponents implements ConditionComponents {
 						.searchHintEnabled(searchable)
 						.build();
 
-	}
-
-	private static EntitySearchModel searchModel(ConditionModel<Entity> conditionModel) {
-		if (conditionModel instanceof ForeignKeyConditionModel) {
-			return ((ForeignKeyConditionModel) conditionModel).inSearchModel();
-		}
-
-		throw new IllegalArgumentException("Unknown foreign key condition model type: " + conditionModel);
 	}
 
 	private static void refreshIfCleared(EntityComboBox comboBox) {

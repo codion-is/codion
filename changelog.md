@@ -16,6 +16,10 @@ Codion Change Log
 - EntityEditor.EditorValue.editable() added.
 - EntityComboBoxModel migrated from swing-framework-model.
 - EntityEditor.ComboBoxModels added, related refactoring.
+- ForeignKeyConditionModel.Builder.operator() added.
+- ForeignKeyConditionModel, all operand model accessors now Optional based.
+### is.codion.swing.framework.model
+- SwingForeignKeyConditionModel removed.
 ### is.codion.swing.framework.ui
 - EditorComponents.CreateComponents renamed ComponentFactory.
 

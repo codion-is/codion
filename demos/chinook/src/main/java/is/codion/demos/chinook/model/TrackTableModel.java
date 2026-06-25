@@ -28,7 +28,6 @@ import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.framework.model.SwingEntityConditions;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -105,7 +104,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		@Override
 		protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
 			if (foreignKey.equals(Track.MEDIATYPE_FK)) {
-				return SwingForeignKeyConditionModel.builder(foreignKey)
+				return ForeignKeyConditionModel.builder(foreignKey)
 								.equalComboBoxModel(createEqualComboBoxModel(Track.MEDIATYPE_FK))
 								.build();
 			}

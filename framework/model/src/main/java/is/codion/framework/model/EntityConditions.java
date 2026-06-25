@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -101,6 +102,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 		return ForeignKeyConditionModel.builder(foreignKey)
 						.equalSearchModel(createEqualSearchModel(foreignKey))
 						.inSearchModel(createInSearchModel(foreignKey))
+						.operator(Operator.IN)
 						.build();
 	}
 

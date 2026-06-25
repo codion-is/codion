@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -38,16 +39,19 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	private final ForeignKey foreignKey;
 	private final ConditionModel<Entity> condition;
 	private final @Nullable EntitySearchModel equalSearchModel;
+	private final @Nullable EntityComboBoxModel equalComboBoxModel;
 	private final @Nullable EntitySearchModel inSearchModel;
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
 		foreignKey = builder.foreignKey;
 		equalSearchModel = builder.equalSearchModel;
+		equalComboBoxModel = builder.equalComboBoxModel;
 		inSearchModel = builder.inSearchModel;
+		List<Operator> operators = builder.operators();
 		condition = ConditionModel.builder()
 						.valueClass(Entity.class)
-						.operators(builder.operators())
-						.operator(inSearchModel == null ? Operator.EQUAL : Operator.IN)
+						.operators(operators)
+						.operator(builder.operator == null ? operators.get(0) : builder.operator)
 						.operands(new ForeignKeyOperands())
 						.build();
 	}
@@ -68,21 +72,18 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	}
 
 	@Override
-	public EntitySearchModel equalSearchModel() {
-		if (equalSearchModel == null) {
-			throw new IllegalStateException("No EntitySearchModel available for the EQUAL operand");
-		}
-
-		return equalSearchModel;
+	public Optional<EntitySearchModel> equalSearchModel() {
+		return Optional.ofNullable(equalSearchModel);
 	}
 
 	@Override
-	public EntitySearchModel inSearchModel() {
-		if (inSearchModel == null) {
-			throw new IllegalStateException("No EntitySearchModel available for the IN operand");
-		}
+	public Optional<EntityComboBoxModel> equalComboBoxModel() {
+		return Optional.ofNullable(equalComboBoxModel);
+	}
 
-		return inSearchModel;
+	@Override
+	public Optional<EntitySearchModel> inSearchModel() {
+		return Optional.ofNullable(inSearchModel);
 	}
 
 	static final class DefaultBuilder implements Builder {
@@ -90,7 +91,9 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		private final ForeignKey foreignKey;
 
 		private @Nullable EntitySearchModel equalSearchModel;
+		private @Nullable EntityComboBoxModel equalComboBoxModel;
 		private @Nullable EntitySearchModel inSearchModel;
+		private @Nullable Operator operator;
 
 		DefaultBuilder(ForeignKey foreignKey) {
 			this.foreignKey = foreignKey;
@@ -103,8 +106,20 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		}
 
 		@Override
+		public Builder equalComboBoxModel(EntityComboBoxModel equalComboBoxModel) {
+			this.equalComboBoxModel = requireNonNull(equalComboBoxModel);
+			return this;
+		}
+
+		@Override
 		public Builder inSearchModel(EntitySearchModel inSearchModel) {
 			this.inSearchModel = requireNonNull(inSearchModel);
+			return this;
+		}
+
+		@Override
+		public Builder operator(Operator operator) {
+			this.operator = requireNonNull(operator);
 			return this;
 		}
 
@@ -114,13 +129,17 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		}
 
 		private List<Operator> operators() {
-			if (equalSearchModel == null && inSearchModel == null) {
+			if (equalSearchModel != null && equalComboBoxModel != null) {
+				throw new IllegalStateException("The EQUAL operand can not be based on both a search model and a combo box model");
+			}
+			boolean equal = equalSearchModel != null || equalComboBoxModel != null;
+			if (!equal && inSearchModel == null) {
 				throw new IllegalStateException("Neither EQUAL nor IN operator specified");
 			}
-			if (equalSearchModel != null && inSearchModel != null) {
+			if (equal && inSearchModel != null) {
 				return asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);
 			}
-			if (equalSearchModel != null) {
+			if (equal) {
 				return asList(Operator.EQUAL, Operator.NOT_EQUAL);
 			}
 
@@ -132,7 +151,14 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 
 		@Override
 		public Value<Entity> equal() {
-			return equalSearchModel == null ? Operands.super.equal() : equalSearchModel.selection().entity();
+			if (equalComboBoxModel != null) {
+				return equalComboBoxModel.selection().item();
+			}
+			if (equalSearchModel != null) {
+				return equalSearchModel.selection().entity();
+			}
+
+			return Operands.super.equal();
 		}
 
 		@Override

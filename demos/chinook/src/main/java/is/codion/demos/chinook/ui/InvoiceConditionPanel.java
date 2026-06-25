@@ -210,7 +210,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				setBorder(createTitledBorder(createEmptyBorder(),
 								tableModel.entityDefinition().attributes().definition(Invoice.CUSTOMER_FK).caption()));
 				searchField = EntitySearchField.builder()
-								.model(conditionModel.inSearchModel())
+								.model(conditionModel.inSearchModel().orElseThrow())
 								.multiSelection()
 								.columns(25)
 								.build();

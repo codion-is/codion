@@ -66,8 +66,8 @@ public final class CountryTableModel extends SwingEntityTableModel {
 		ForeignKeyConditionModel capitalCondition =
 						query().condition().get(Country.CAPITAL_FK);
 		CapitalCondition cityIsCapital = new CapitalCondition();
-		capitalCondition.equalSearchModel().condition().set(cityIsCapital);
-		capitalCondition.inSearchModel().condition().set(cityIsCapital);
+		capitalCondition.equalSearchModel().orElseThrow().condition().set(cityIsCapital);
+		capitalCondition.inSearchModel().orElseThrow().condition().set(cityIsCapital);
 	}
 
 	private final class CapitalCondition implements Supplier<Condition> {
