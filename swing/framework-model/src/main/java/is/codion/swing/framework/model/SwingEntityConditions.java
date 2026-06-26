@@ -19,7 +19,6 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.utilities.Operator;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -46,10 +45,10 @@ public class SwingEntityConditions extends EntityConditions {
 	@Override
 	protected ForeignKeyConditionModel condition(ForeignKey foreignKey) {
 		if (definition(requireNonNull(foreignKey).referencedType()).smallDataset()) {
+			// A combo box for the EQUAL operand, so the model defaults to EQUAL (the intuitive single pick)
 			return ForeignKeyConditionModel.builder(foreignKey)
 							.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
 							.inSearchModel(createInSearchModel(foreignKey))
-							.operator(Operator.EQUAL)
 							.build();
 		}
 

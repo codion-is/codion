@@ -24,6 +24,7 @@ Codion Change Log
 - EntityEditor.ComboBoxModels added, related refactoring.
 - ForeignKeyConditionModel.Builder.operator() added.
 - ForeignKeyConditionModel, all operand model accessors now Optional based.
+- ForeignKeyConditionModel default operator now inferred from the available operands; EQUAL given a combo box model, otherwise IN when an IN search model is available.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel removed.
 ### is.codion.swing.framework.ui

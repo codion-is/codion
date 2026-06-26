@@ -51,7 +51,7 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		condition = ConditionModel.builder()
 						.valueClass(Entity.class)
 						.operators(operators)
-						.operator(builder.operator == null ? operators.get(0) : builder.operator)
+						.operator(builder.operator == null ? builder.defaultOperator(operators) : builder.operator)
 						.operands(new ForeignKeyOperands())
 						.build();
 	}
@@ -126,6 +126,22 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		@Override
 		public ForeignKeyConditionModel build() {
 			return new DefaultForeignKeyConditionModel(this);
+		}
+
+		/**
+		 * The default operator hinges on how the EQUAL operand is selected: a combo box is the most intuitive way to pick a
+		 * single item, so it defaults to {@link Operator#EQUAL}. Without a combo box, selection happens via a search field,
+		 * which is no simpler single- than multi-select, so the more powerful {@link Operator#IN} is preferred when available.
+		 */
+		private Operator defaultOperator(List<Operator> operators) {
+			if (equalComboBoxModel != null) {
+				return Operator.EQUAL;
+			}
+			if (inSearchModel != null) {
+				return Operator.IN;
+			}
+
+			return operators.get(0);
 		}
 
 		private List<Operator> operators() {
