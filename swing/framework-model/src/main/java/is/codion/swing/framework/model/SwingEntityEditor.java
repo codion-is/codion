@@ -72,6 +72,18 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	}
 
 	@Override
+	public SwingEntityEditor create(EntityType entityType) {
+		return create(entityType, new SwingComponentModels() {});
+	}
+
+	@Override
+	public SwingEntityEditor create(EntityType entityType, ComponentModels componentModels) {
+		// The cast is safe by construction: a SwingEntityEditor only ever receives a SwingComponentModels, supplied
+		// by the application's own (single-platform) binding (e.g. via a shared edit config's componentModels() hook).
+		return new SwingEntityEditor(entityType, connectionProvider(), (SwingComponentModels) componentModels);
+	}
+
+	@Override
 	protected SwingComponentModels componentModels() {
 		return (SwingComponentModels) super.componentModels();
 	}

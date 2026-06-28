@@ -1370,7 +1370,21 @@ public final class AbstractEntityEditorTest {
 	private static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
 
 		private TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			super(entityType, connectionProvider, new TestComponentModels());
+			this(entityType, connectionProvider, new TestComponentModels());
+		}
+
+		private TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider, TestComponentModels componentModels) {
+			super(entityType, connectionProvider, componentModels);
+		}
+
+		@Override
+		public TestEntityEditor create(EntityType entityType) {
+			return new TestEntityEditor(entityType, connectionProvider());
+		}
+
+		@Override
+		public TestEntityEditor create(EntityType entityType, ComponentModels componentModels) {
+			return new TestEntityEditor(entityType, connectionProvider(), (TestComponentModels) componentModels);
 		}
 	}
 

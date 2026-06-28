@@ -37,6 +37,7 @@ import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -284,6 +285,19 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	 * @see EntityEditor.Settings#deleteEnabled()
 	 */
 	Collection<Entity> delete(Collection<Entity> entities);
+
+	/**
+	 * @param entityType the entity type
+	 * @return an editor based on the given type
+	 */
+	R create(EntityType entityType);
+
+	/**
+	 * @param entityType the entity type
+	 * @param componentModels the component models
+	 * @return an editor based on the given type
+	 */
+	R create(EntityType entityType, ComponentModels componentModels);
 
 	/**
 	 * <p>Represents a background enabled task for entities, used for inserting, updating, deleting, refreshing, setting or replacing,
