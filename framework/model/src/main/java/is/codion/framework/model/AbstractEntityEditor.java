@@ -2061,6 +2061,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) columnComboBoxModels.get(column);
 				if (comboBoxModel == null) {
 					comboBoxModel = create(requireNonNull(column));
+					addPersistenceListener(comboBoxModel, column);
 					columnComboBoxModels.put(column, (C) comboBoxModel);
 				}
 
@@ -2076,6 +2077,17 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public <T> FilterComboBoxModel<T> create(Column<T> column) {
 			return editor.componentModels.comboBoxModel(requireNonNull(column), editor.connectionProvider);
+		}
+
+		private static <T> void addPersistenceListener(FilterComboBoxModel<T> comboBoxModel, Column<T> column) {
+			PersistenceEvents events = persistenceEvents(column.entityType());
+			events.inserted().addListener(comboBoxModel.items()::refresh);
+			events.deleted().addListener(comboBoxModel.items()::refresh);
+			events.updated().addConsumer(entities -> {
+				if (entities.keySet().stream().anyMatch(track -> track.modified(column))) {
+					comboBoxModel.items().refresh();
+				}
+			});
 		}
 	}
 

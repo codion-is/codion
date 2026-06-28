@@ -27,6 +27,7 @@ Codion Change Log
 - ForeignKeyConditionModel default operator now inferred from the available operands; EQUAL given a combo box model, otherwise IN when an IN search model is available.
 - EntityEditor.create() added.
 - EntityEditor.ComponentModels.comboBoxModel() now uses foreignKey().
+- AbstractEntityEditor, column combo box refresh moved from SwingEntityEditModel, improved.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel removed.
 ### is.codion.swing.framework.ui
