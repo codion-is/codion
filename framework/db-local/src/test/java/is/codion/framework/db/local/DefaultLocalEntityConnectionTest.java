@@ -305,7 +305,7 @@ public class DefaultLocalEntityConnectionTest {
 						.build();
 
 		Entity.Key key = connection.insert(noPk);
-		assertFalse(key.isNull());
+		assertTrue(key.present());
 		assertFalse(key.primary());
 	}
 
@@ -1170,7 +1170,7 @@ public class DefaultLocalEntityConnectionTest {
 					Entity next = iterator.next();
 					assertFalse(next.contains(Employee.DEPARTMENT_FK));
 					assertTrue(next.contains(Employee.MGR_FK));
-					if (!next.isNull(Employee.MGR_FK)) {// President has no mgr
+					if (next.present(Employee.MGR_FK)) {// President has no mgr
 						assertTrue(next.get(Employee.MGR_FK).contains(Employee.MGR_FK));
 					}
 				}
@@ -2140,7 +2140,7 @@ public class DefaultLocalEntityConnectionTest {
 		entity = connection.updateSelect(entity);
 		entity.set(NullConverter.NAME, "null");
 		entity = connection.updateSelect(entity);
-		assertTrue(entity.isNull(NullConverter.NAME));
+		assertFalse(entity.present(NullConverter.NAME));
 	}
 
 	@Test

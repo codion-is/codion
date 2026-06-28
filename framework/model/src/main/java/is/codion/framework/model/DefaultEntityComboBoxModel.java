@@ -325,7 +325,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		private void select(EntityComboBoxModel filterModel, @Nullable Entity selected) {
-			if (selected != null && !selected.isNull(foreignKey)) {
+			if (selected != null && selected.present(foreignKey)) {
 				filterModel.select(selected.key(foreignKey));
 			}
 		}

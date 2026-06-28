@@ -230,7 +230,7 @@ public final class EntityTest {
 			if (!definition.attribute().equals(Department.ID)) {
 				assertFalse(dept.contains(definition.attribute()));
 			}
-			assertTrue(dept.isNull(definition.attribute()));
+			assertFalse(dept.present(definition.attribute()));
 		}
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
 			dept.set(definition.attribute(), null);
@@ -239,7 +239,7 @@ public final class EntityTest {
 		assertFalse(dept.modified());
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
 			assertTrue(dept.contains(definition.attribute()));
-			assertTrue(dept.isNull(definition.attribute()));
+			assertFalse(dept.present(definition.attribute()));
 		}
 	}
 
@@ -281,7 +281,7 @@ public final class EntityTest {
 						.with(NoPk.COL3, 3)
 						.build();
 		Collection<Key> keys = Entity.primaryKeys(singletonList(noPk));
-		assertFalse(keys.iterator().next().isNull());
+		assertTrue(keys.iterator().next().present());
 		assertFalse(keys.iterator().next().primary());
 	}
 }

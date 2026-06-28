@@ -370,7 +370,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		entity.exists.update(instance);
 		entity.present.update(instance);
 		entity.modified.update();
-		entity.primaryKeyPresent.set(!entity.instance.primaryKey().isNull());
+		entity.primaryKeyPresent.set(entity.instance.primaryKey().present());
 
 		return updateEntityValidState(instance);
 	}
@@ -378,7 +378,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private void updateAttributeStates(Attribute<?> attribute, Map<Attribute<?>, String> invalid) {
 		State presentState = attributePresent.get(attribute);
 		if (presentState != null) {
-			presentState.set(!entity.instance.isNull(attribute));
+			presentState.set(entity.instance.present(attribute));
 		}
 		State validState = attributeValid.get(attribute);
 		if (validState != null) {
@@ -2279,7 +2279,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public ObservableState present() {
 			return attributePresent.computeIfAbsent(attribute,
-							k -> State.state(!entity.instance.isNull(attribute))).observable();
+							k -> State.state(entity.instance.present(attribute))).observable();
 		}
 
 		@Override

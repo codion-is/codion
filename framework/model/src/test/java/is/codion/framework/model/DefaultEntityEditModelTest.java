@@ -195,7 +195,7 @@ public final class DefaultEntityEditModelTest {
 		editor.entity().set(employee);
 		Entity copyWithPrimaryKeyValue = editor.entity().get();
 		assertEquals(employee, copyWithPrimaryKeyValue);
-		assertFalse(copyWithPrimaryKeyValue.primaryKey().isNull());
+		assertTrue(copyWithPrimaryKeyValue.primaryKey().present());
 	}
 
 	@Test
@@ -281,10 +281,10 @@ public final class DefaultEntityEditModelTest {
 		editor.entity().defaults();
 		assertFalse(editor.entity().exists().is(), "Active entity exists after defaults are set");
 		assertFalse(editor.entity().modified().is());
-		assertTrue(editor.entity().get().primaryKey().isNull(), "Active entity primary key is not null after defaults are set");
+		assertFalse(editor.entity().get().primaryKey().present(), "Active entity primary key is not null after defaults are set");
 
 		editor.entity().set(employee);
-		assertFalse(editor.entity().get().primaryKey().isNull(), "Active entity primary key is null after entity is set");
+		assertTrue(editor.entity().get().primaryKey().present(), "Active entity primary key is null after entity is set");
 
 		Integer originalEmployeeId = editor.value(Employee.ID).get();
 		editor.value(Employee.ID).clear();
@@ -334,7 +334,7 @@ public final class DefaultEntityEditModelTest {
 		}
 
 		editor.entity().defaults();
-		assertTrue(editor.entity().get().primaryKey().isNull(), "Active entity is not null after model is cleared");
+		assertFalse(editor.entity().get().primaryKey().present(), "Active entity is not null after model is cleared");
 
 		employeeEditModel.editor().events().after().delete().removeConsumer(consumer);
 		employeeEditModel.editor().events().after().insert().removeConsumer(consumer);
@@ -396,7 +396,7 @@ public final class DefaultEntityEditModelTest {
 			employeeEditModel.editor().insert();
 			assertTrue(editor.entity().exists().is());
 			Entity entityCopy = editor.entity().get();
-			assertFalse(entityCopy.primaryKey().isNull());
+			assertTrue(entityCopy.primaryKey().present());
 			assertEquals(entityCopy.primaryKey(), entityCopy.originalPrimaryKey());
 
 			editor.value(Employee.NAME).set("Bobby");
@@ -570,7 +570,7 @@ public final class DefaultEntityEditModelTest {
 			Entity james = connection
 							.selectSingle(Employee.NAME.equalTo("JAMES"));
 			editor.entity().set(james);
-			assertTrue(editor.entity().get().entity(Employee.MGR_FK).isNull(Employee.COMMISSION));
+			assertFalse(editor.entity().get().entity(Employee.MGR_FK).present(Employee.COMMISSION));
 			TestEntityEditModel blakeEditModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 			blakeEditModel.editor().entity().set(connection
 							.selectSingle(Employee.NAME.equalTo("BLAKE")));

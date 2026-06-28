@@ -93,7 +93,7 @@ public final class SwingEntityEditorTest {
 						.foreignKey(Employee.DEPARTMENT_FK)
 						// Stubbed load: returns the controllable in-memory detail, never queries
 						.entity((department, connection) -> detailToLoad.get())
-						.present(employee -> !employee.isNull(Employee.NAME))
+						.present(employee -> employee.present(Employee.NAME))
 						.build());
 		departmentModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
 		employeeModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
@@ -164,7 +164,7 @@ public final class SwingEntityEditorTest {
 		// The change was vetoed before loading: no changed events, the entity is untouched
 		assertFalse(events.contains("master.changed"));
 		assertFalse(events.contains("detail.changed"));
-		assertTrue(master.entity().get().primaryKey().isNull());
+		assertFalse(master.entity().get().primaryKey().present());
 	}
 
 	// Layer B — asynchronous (on the EDT), validating the worker-based path

@@ -204,15 +204,15 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	@Nullable <T> T remove(Attribute<T> attribute);
 
 	/**
-	 * Returns true if a null value is mapped to the given attribute or if no mapping is found.
+	 * Returns true if a non-null value is mapped to the given attribute.
 	 * <p>In case of foreign keys the value of the underlying reference column(s) is checked.
-	 * If the key is a single column key, true is returned if the associated value is null,
-	 * but in case of composite keys then true is returned if one or more non-nullable key columns
-	 * are associated with a null value.
+	 * If the key is a single column key, true is returned if the associated value is non-null,
+	 * but in case of composite keys then true is returned only if all non-nullable key columns
+	 * are associated with a non-null value.
 	 * @param attribute the attribute
-	 * @return true if the value mapped to the given attribute is null or no value is mapped
+	 * @return true if a non-null value is mapped to the given attribute, false if null or no value is mapped
 	 */
-	boolean isNull(Attribute<?> attribute);
+	boolean present(Attribute<?> attribute);
 
 	/**
 	 * Returns true if this Entity contains a value for the given attribute, that value can be null.
@@ -558,7 +558,7 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 
 		/**
 		 * Removes the value of the given attribute from this builder, including both the current value and any
-		 * original value being tracked. The resulting entity will be {@link Entity#isNull(Attribute)} for the attribute
+		 * original value being tracked. The resulting entity will not be {@link Entity#present(Attribute)} for the attribute
 		 * and unaware of any prior modification.
 		 * @param attribute the attribute which value to remove
 		 * @return this builder instance
@@ -756,16 +756,17 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 		boolean primary();
 
 		/**
-		 * @return true if this key contains no values or if it contains a null value for a non-nullable key attribute
+		 * @return true if this key contains a non-null value for every non-nullable key attribute,
+		 * false if it contains no values or a null value for a non-nullable key attribute
 		 */
-		boolean isNull();
+		boolean present();
 
 		/**
-		 * Returns true if a null value is mapped to the given column or no mapping exists.
+		 * Returns true if a non-null value is mapped to the given column.
 		 * @param column the column
-		 * @return true if the value mapped to the given column is null or none exists
+		 * @return true if a non-null value is mapped to the given column, false if null or none exists
 		 */
-		boolean isNull(Column<?> column);
+		boolean present(Column<?> column);
 
 		/**
 		 * Returns this keys column. Note that this method throws an exception if this key is a composite key.

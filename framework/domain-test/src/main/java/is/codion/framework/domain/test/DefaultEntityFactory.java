@@ -317,7 +317,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	}
 
 	private static Entity insertOrSelect(Entity entity, EntityConnection connection) {
-		if (!entity.primaryKey().isNull()) {
+		if (entity.primaryKey().present()) {
 			Collection<Entity> selected = connection.select(singletonList(entity.primaryKey()));
 			if (!selected.isEmpty()) {
 				return selected.iterator().next();

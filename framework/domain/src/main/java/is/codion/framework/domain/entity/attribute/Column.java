@@ -350,7 +350,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 *     @Override
 	 *     public void beforeInsert(Entity entity, Column<String> column, Database database, Connection connection) {
 	 *         // Only generate if not already set
-	 *         if (entity.primaryKey().isNull()) {
+	 *         if (!entity.primaryKey().present()) {
 	 *             String uuid = UUID.randomUUID().toString();
 	 *             entity.set(column, uuid);
 	 *         }

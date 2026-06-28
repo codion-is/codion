@@ -146,7 +146,7 @@ final class CompositeColumnKey implements Entity.Key, Serializable {
 			return false;
 		}
 		Entity.Key entityKey = (Entity.Key) object;
-		if (isNull() || entityKey.isNull()) {
+		if (!present() || !entityKey.present()) {
 			return false;
 		}
 		if (object instanceof CompositeColumnKey) {
@@ -184,18 +184,18 @@ final class CompositeColumnKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public boolean isNull() {
+	public boolean present() {
 		if (hashCodeDirty) {
 			cachedHashCode = computeHashCode();
 			hashCodeDirty = false;
 		}
 
-		return cachedHashCode == null;
+		return cachedHashCode != null;
 	}
 
 	@Override
-	public boolean isNull(Column<?> column) {
-		return get(column) == null;
+	public boolean present(Column<?> column) {
+		return get(column) != null;
 	}
 
 	private @Nullable Integer computeHashCode() {

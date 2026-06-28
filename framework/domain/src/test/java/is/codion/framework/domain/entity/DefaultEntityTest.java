@@ -626,7 +626,7 @@ public class DefaultEntityTest {
 			assertEquals(3, detail2.get(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2));
 
 			detail2.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, null);
-			assertTrue(detail2.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+			assertFalse(detail2.present(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 			assertNull(detail2.key(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 		}
 
@@ -640,13 +640,13 @@ public class DefaultEntityTest {
 							.with(Employee.ID, -10)
 							.build();
 
-			assertTrue(employee.isNull(Employee.DEPARTMENT_FK));
+			assertFalse(employee.present(Employee.DEPARTMENT_FK));
 			assertNull(employee.get(Employee.DEPARTMENT_FK));
 			assertNull(employee.get(Employee.DEPARTMENT_NO));
 
 			employee.set(Employee.DEPARTMENT_FK, department);
 
-			assertFalse(employee.isNull(Employee.DEPARTMENT_FK));
+			assertTrue(employee.present(Employee.DEPARTMENT_FK));
 			assertNotNull(employee.get(Employee.DEPARTMENT_FK));
 			assertNotNull(employee.get(Employee.DEPARTMENT_NO));
 		}
@@ -728,13 +728,13 @@ public class DefaultEntityTest {
 
 			// Remove species, maturity should be removed
 			otolith.set(Otolith.SPECIES_FK, null);
-			assertTrue(otolith.isNull(Otolith.MATURITY_FK), "Maturity FK should be null");
-			assertFalse(otolith.isNull(Otolith.MATURITY_NO), "Maturity NO should remain");
+			assertFalse(otolith.present(Otolith.MATURITY_FK), "Maturity FK should be null");
+			assertTrue(otolith.present(Otolith.MATURITY_NO), "Maturity NO should remain");
 
 			// Set species to haddock
 			otolith.set(Otolith.SPECIES_FK, haddock);
 			otolith.set(Otolith.MATURITY_FK, haddockMaturity10);
-			assertFalse(otolith.isNull(Otolith.MATURITY_FK));
+			assertTrue(otolith.present(Otolith.MATURITY_FK));
 
 			// Set species back to cod, haddock maturity should be removed
 			otolith.set(Otolith.SPECIES_FK, cod);
@@ -756,11 +756,11 @@ public class DefaultEntityTest {
 							.build();
 
 			Entity.Key key = noPk.primaryKey();
-			assertFalse(key.isNull());
+			assertTrue(key.present());
 			assertFalse(key.primary());
 
 			Entity.Key originalKey = noPk.originalPrimaryKey();
-			assertFalse(originalKey.isNull());
+			assertTrue(originalKey.present());
 			assertFalse(originalKey.primary());
 		}
 
@@ -785,7 +785,7 @@ public class DefaultEntityTest {
 			assertEquals(referencedEntityValue, testEntity.get(Detail.MASTER_FK));
 			assertEquals(TEST_MASTER_NAME, testEntity.get(Detail.MASTER_NAME));
 			assertEquals(7, testEntity.get(Detail.MASTER_CODE));
-			assertFalse(testEntity.isNull(Detail.MASTER_ID));
+			assertTrue(testEntity.present(Detail.MASTER_ID));
 
 			testEntity.key(Detail.MASTER_FK);
 
@@ -843,28 +843,28 @@ public class DefaultEntityTest {
 			Entity testEntity = detailEntity(TEST_DETAIL_ID, TEST_DETAIL_INT, TEST_DETAIL_DOUBLE,
 							TEST_DETAIL_STRING, testDetailDate, testDetailTimestamp, TEST_DETAIL_BOOLEAN, null);
 
-			assertTrue(testEntity.isNull(Detail.MASTER_ID));
-			assertTrue(testEntity.isNull(Detail.MASTER_FK));
+			assertFalse(testEntity.present(Detail.MASTER_ID));
+			assertFalse(testEntity.present(Detail.MASTER_FK));
 
 			testEntity.set(Detail.MASTER_ID, 10L);
 
 			assertNull(testEntity.get(Detail.MASTER_FK));
 			Entity referencedEntityValue = testEntity.entity(Detail.MASTER_FK);
 			assertEquals(10L, referencedEntityValue.get(Master.ID));
-			assertFalse(testEntity.isNull(Detail.MASTER_FK));
-			assertFalse(testEntity.isNull(Detail.MASTER_ID));
+			assertTrue(testEntity.present(Detail.MASTER_FK));
+			assertTrue(testEntity.present(Detail.MASTER_ID));
 
 			// Composite key null checks
 			Entity composite = ENTITIES.entity(CompositeDetail.TYPE).build();
 			composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, null);
-			assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+			assertFalse(composite.present(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 
 			composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, 1);
-			assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+			assertFalse(composite.present(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 
 			composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, 1);
 			composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 2);
-			assertFalse(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+			assertTrue(composite.present(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 		}
 
 		@Test
@@ -879,7 +879,7 @@ public class DefaultEntityTest {
 
 			testEntity.set(null);
 
-			assertTrue(testEntity.primaryKey().isNull());
+			assertFalse(testEntity.primaryKey().present());
 			assertFalse(testEntity.contains(Detail.DATE));
 			assertFalse(testEntity.contains(Detail.STRING));
 			assertFalse(testEntity.contains(Detail.BOOLEAN));
@@ -893,11 +893,11 @@ public class DefaultEntityTest {
 							.with(Employee.ID, null)
 							.build();
 
-			assertTrue(emp.originalPrimaryKey().isNull());
+			assertFalse(emp.originalPrimaryKey().present());
 			assertFalse(emp.exists());
 
 			emp.set(Employee.ID, 1);
-			assertTrue(emp.originalPrimaryKey().isNull());
+			assertFalse(emp.originalPrimaryKey().present());
 			assertFalse(emp.exists());
 
 			emp.save();

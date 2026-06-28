@@ -55,8 +55,8 @@ public final class CustomerEditModel extends SwingEntityEditModel {
 		@Override
 		public boolean test(Entity preferences) {
 			// Preferences without both preferred genre and newsletter are deleted
-			return !preferences.isNull(Preferences.PREFERRED_GENRE_FK) ||
-							!preferences.isNull(Preferences.NEWSLETTER);
+			return preferences.present(Preferences.PREFERRED_GENRE_FK) ||
+							preferences.present(Preferences.NEWSLETTER);
 		}
 	}
 }

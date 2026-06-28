@@ -172,8 +172,8 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 	}
 
 	private void validateNull(Entity entity, boolean nullable) throws AttributeValidationException {
-		if (!nullable && entity.isNull(attribute())) {
-			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attribute() instanceof ForeignKey)) {
+		if (!nullable && !entity.present(attribute())) {
+			if ((!entity.primaryKey().present() || !entity.originalPrimaryKey().present()) && !(attribute() instanceof ForeignKey)) {
 				//a new entity being inserted, allow null for columns with default values and generated primary key values
 				boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue();
 				boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn();

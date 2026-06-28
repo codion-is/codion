@@ -168,7 +168,7 @@ final class EntityViewer {
 
 			@Override
 			public boolean isLeaf() {
-				return entity().isNull(attributeDefinition().attribute());
+				return !entity().present(attributeDefinition().attribute());
 			}
 
 			@Override

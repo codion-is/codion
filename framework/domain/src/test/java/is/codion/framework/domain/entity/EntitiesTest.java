@@ -257,7 +257,7 @@ public final class EntitiesTest {
 
 			assertEquals(0, key.hashCode());
 			assertTrue(key.columns().isEmpty());
-			assertTrue(key.isNull());
+			assertFalse(key.present());
 		}
 
 		@Test
@@ -283,7 +283,7 @@ public final class EntitiesTest {
 							.with(KeyTest.ID3, 3)
 							.build();
 
-			assertFalse(key.isNull());
+			assertTrue(key.present());
 			assertEquals(6, key.hashCode());
 			assertTrue(key.optional(KeyTest.ID1).isPresent());
 
@@ -293,24 +293,24 @@ public final class EntitiesTest {
 
 			// Set value to null
 			key = key.copy().with(KeyTest.ID3, null).build();
-			assertFalse(key.isNull());
+			assertTrue(key.present());
 			assertEquals(4, key.hashCode());
 
 			// Set another value to null making key null
 			key = key.copy().with(KeyTest.ID2, null).build();
-			assertTrue(key.isNull());
+			assertFalse(key.present());
 			assertFalse(key.optional(KeyTest.ID2).isPresent());
 			assertEquals(0, key.hashCode());
 
 			// Add value back
 			key = key.copy().with(KeyTest.ID2, 4).build();
 			assertTrue(key.optional(KeyTest.ID2).isPresent());
-			assertFalse(key.isNull());
+			assertTrue(key.present());
 			assertEquals(5, key.hashCode());
 
 			// Update to different value
 			key = key.copy().with(KeyTest.ID2, 42).build();
-			assertFalse(key.isNull());
+			assertTrue(key.present());
 			assertEquals(43, key.hashCode());
 		}
 

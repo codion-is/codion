@@ -92,7 +92,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
 		if (!includeForeignKeyValues && attributeDefinition instanceof ForeignKeyDefinition) {
 			return false;
 		}
-		if (!includeNullValues && entity.isNull(attributeDefinition.attribute())) {
+		if (!includeNullValues && !entity.present(attributeDefinition.attribute())) {
 			return false;
 		}
 

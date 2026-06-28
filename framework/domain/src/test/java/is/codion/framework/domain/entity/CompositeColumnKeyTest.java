@@ -37,35 +37,35 @@ public final class CompositeColumnKeyTest {
 	@Test
 	void compositeKeyNull() {
 		Entity master = ENTITIES.entity(CompositeMaster.TYPE).build();
-		assertTrue(master.primaryKey().isNull());
+		assertFalse(master.primaryKey().present());
 
 		master.set(CompositeMaster.COMPOSITE_MASTER_ID_2, 2);
 		master.set(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
-		assertFalse(master.primaryKey().isNull());
+		assertTrue(master.primaryKey().present());
 
 		master.set(CompositeMaster.COMPOSITE_MASTER_ID, null);
-		assertFalse(master.primaryKey().isNull());
+		assertTrue(master.primaryKey().present());
 
 		master.set(CompositeMaster.COMPOSITE_MASTER_ID, 2);
 		master.set(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
-		assertTrue(master.primaryKey().isNull());
+		assertFalse(master.primaryKey().present());
 
 		master.set(CompositeMaster.COMPOSITE_MASTER_ID, null);
-		assertTrue(master.primaryKey().isNull());
+		assertFalse(master.primaryKey().present());
 	}
 
 	@Test
 	void singleKeyNull() {
 		Entity.Key key = ENTITIES.key(Detail.TYPE).build();
-		assertTrue(key.isNull());
+		assertFalse(key.present());
 		key = key.copy()
 						.with(Detail.ID, null)
 						.build();
-		assertTrue(key.isNull());
+		assertFalse(key.present());
 		key = key.copy()
 						.with(Detail.ID, 1L)
 						.build();
-		assertFalse(key.isNull());
+		assertTrue(key.present());
 	}
 
 	@Test

@@ -174,7 +174,7 @@ public final class EntityFormatter {
 
 		@Override
 		public String apply(Entity entity) {
-			if (entity.isNull(attribute)) {
+			if (!entity.present(attribute)) {
 				return "";
 			}
 
@@ -200,7 +200,7 @@ public final class EntityFormatter {
 
 		@Override
 		public String apply(Entity entity) {
-			if (entity.isNull(foreignKey)) {
+			if (!entity.present(foreignKey)) {
 				return "";
 			}
 

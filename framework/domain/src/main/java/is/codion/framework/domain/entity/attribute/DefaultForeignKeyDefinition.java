@@ -90,7 +90,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 
 	@Override
 	public void validate(Entity entity, boolean nullable) throws AttributeValidationException {
-		if (!nullable && entity.isNull(attribute())) {
+		if (!nullable && !entity.present(attribute())) {
 			throw createNullValidationException(attribute(), caption());
 		}
 	}

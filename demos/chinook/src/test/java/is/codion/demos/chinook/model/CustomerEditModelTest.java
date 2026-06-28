@@ -35,7 +35,8 @@ import is.codion.swing.framework.model.SwingEntityEditor;
 import org.junit.jupiter.api.Test;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class CustomerEditModelTest {
 
@@ -71,7 +72,7 @@ public final class CustomerEditModelTest {
 			customerEditor.update();
 
 			preferences = connection.selectSingle(Preferences.CUSTOMER_ID.equalTo(customerId));
-			assertTrue(preferences.isNull(Preferences.PREFERRED_GENRE_FK));
+			assertFalse(preferences.present(Preferences.PREFERRED_GENRE_FK));
 
 			customerEditor.entity().modified().addConsumer(mod -> System.out.println("Modified: " + mod));
 
@@ -84,7 +85,7 @@ public final class CustomerEditModelTest {
 			customerEditor.update();
 
 			preferences = connection.selectSingle(Preferences.CUSTOMER_ID.equalTo(customerId));
-			assertTrue(preferences.isNull(Preferences.PREFERRED_GENRE_FK));
+			assertFalse(preferences.present(Preferences.PREFERRED_GENRE_FK));
 			assertFalse(preferences.get(Preferences.NEWSLETTER));
 
 			customerEditor.delete();

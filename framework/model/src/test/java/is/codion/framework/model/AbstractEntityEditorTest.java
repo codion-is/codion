@@ -55,7 +55,7 @@ public final class AbstractEntityEditorTest {
 					.build();
 
 	private static final Predicate<Entity> EMPLOYEE_PRESENT = employee ->
-					!employee.isNull(Employee.SALARY) && !employee.isNull(Employee.NAME);
+					employee.present(Employee.SALARY) && employee.present(Employee.NAME);
 
 	@Test
 	void clearSetsNull() {

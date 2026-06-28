@@ -74,15 +74,15 @@ final class SingleColumnKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public boolean isNull() {
-		return value == null;
+	public boolean present() {
+		return value != null;
 	}
 
 	@Override
-	public boolean isNull(Column<?> column) {
+	public boolean present(Column<?> column) {
 		validate(column);
 
-		return isNull();
+		return present();
 	}
 
 	@Override
@@ -128,7 +128,7 @@ final class SingleColumnKey implements Entity.Key, Serializable {
 			return false;
 		}
 		Entity.Key entityKey = (Entity.Key) object;
-		if (isNull() || entityKey.isNull()) {
+		if (!present() || !entityKey.present()) {
 			return false;
 		}
 		if (object instanceof SingleColumnKey) {

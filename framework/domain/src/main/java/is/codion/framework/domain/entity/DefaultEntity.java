@@ -145,8 +145,8 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	@Override
-	public final boolean isNull(Attribute<?> attribute) {
-		return isNull(definition.attributes().definition(attribute));
+	public final boolean present(Attribute<?> attribute) {
+		return !isNull(definition.attributes().definition(attribute));
 	}
 
 	@Override
@@ -475,13 +475,13 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	private boolean isReferenceNull(ForeignKey foreignKey) {
 		List<ForeignKey.Reference<?>> references = foreignKey.references();
 		if (references.size() == 1) {
-			return isNull(references.get(0).column());
+			return !present(references.get(0).column());
 		}
 		EntityDefinition referencedEntity = definition.foreignKeys().referencedBy(foreignKey);
 		for (int i = 0; i < references.size(); i++) {
 			ForeignKey.Reference<?> reference = references.get(i);
 			ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.foreign());
-			if (!referencedColumn.nullable() && isNull(reference.column())) {
+			if (!referencedColumn.nullable() && !present(reference.column())) {
 				return true;
 			}
 		}

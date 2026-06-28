@@ -51,7 +51,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		selection().items().addConsumer(displayLocationEvent);
 		selection().items().addConsumer(cities ->
 						cityWithoutLocationSelected.set(cities.stream()
-										.anyMatch(city -> city.isNull(City.LOCATION))));
+										.anyMatch(city -> !city.present(City.LOCATION))));
 		items().included().addConsumer(this::refreshChartDataset);
 	}
 
@@ -83,7 +83,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 
 		private PopulateLocationTask() {
 			cities = selection().items().get().stream()
-							.filter(city -> city.isNull(City.LOCATION))
+							.filter(city -> !city.present(City.LOCATION))
 							.toList();
 		}
 
