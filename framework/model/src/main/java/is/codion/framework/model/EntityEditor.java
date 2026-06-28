@@ -833,7 +833,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 */
 		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
 			return EntityComboBoxModel.builder()
-							.entityType(requireNonNull(foreignKey).referencedType())
+							.foreignKey(foreignKey)
 							.connectionProvider(requireNonNull(connectionProvider))
 							.build();
 		}
