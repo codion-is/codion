@@ -24,7 +24,7 @@ FilterTableModel --o TableSelection
 FilterTableModel --o FilterTableSortModel
 -------------------------------------------
 
-The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/FilterTableModel.html[FilterTableModel] is a table model central to the framework.
+The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/SwingFilterTableModel.html[SwingFilterTableModel] is a table model central to the framework.
 
 [source,java,indent=0]
 ----

@@ -112,7 +112,7 @@ We override *createComboBoxModel* in order to provide a specialized combo box mo
 
 NOTE: The foreign key (Employee.MANAGER_FK) is used when referring to the manager attribute, very rarely do we have to worry about the underlying reference attribute (Employee.MANAGER_ID).
 
-We create a {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/component/EntityComboBoxModel.html[EntityComboBoxModel] for the Employee.MANAGER_FK attribute, using the static *builder()* method, configured to only display employees with the job PRESIDENT or MANAGER.
+We create a {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/component/SwingEntityComboBoxModel.html[SwingEntityComboBoxModel] for the Employee.MANAGER_FK attribute, using the static *builder()* method, configured to only display employees with the job PRESIDENT or MANAGER.
 
 [source,java]
 ----
