@@ -22,6 +22,7 @@ import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -72,8 +73,9 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 			LOG.debug("Initializing connection for {}", user());
 			HttpEntityConnection.Builder builder = HttpEntityConnection.builder()
 							.domain(domainType());
-			if (domain != null) {
-				builder.domain(domain);
+			Domain localDomain = domain != null ? domain : localDomain(domainType());
+			if (localDomain != null) {
+				builder.domain(localDomain);
 			}
 			return builder.hostname(hostname)
 							.port(port)
@@ -91,6 +93,13 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 		catch (Exception e) {
 			throw Exceptions.runtime(e);
 		}
+	}
+
+	private static @Nullable Domain localDomain(DomainType domainType) {
+		return Domain.domains().stream()
+						.filter(domain -> domain.type().equals(domainType))
+						.findAny()
+						.orElse(null);
 	}
 
 	@Override

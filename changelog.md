@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.78
+### is.codion.framework.db.http
+- HttpEntityConnectionProvider now uses a locally registered domain when available.
 ### is.codion.framework.model
 - AbstractEntityEditor, foreign key based detail editor no longer validates non-present detail entities.
 - AttributeOperands added, AbstractEntityTableModel.EntityFilters now initialize boolean conditions correctly.
