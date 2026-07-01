@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.Column.GetValue;
@@ -29,6 +30,8 @@ import org.jspecify.annotations.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Specifies an attribute definition based on a table column.
@@ -81,6 +84,20 @@ import java.sql.SQLException;
  * @see Column#as()
  */
 public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> permits DefaultColumnDefinition {
+
+	/**
+	 * Specifies whether temporal columns are read using the pre-JDBC-4.2 {@code java.sql} accessors
+	 * ({@link ResultSet#getTimestamp(int)} etc.) instead of {@link ResultSet#getObject(int, Class)}, for platforms
+	 * whose {@code java.sql.ResultSet} predates JDBC 4.2 — notably Android, whose {@code ResultSet} does not declare
+	 * {@code getObject(int, Class)}. Leaves every other column type unchanged.
+	 * <p>Read once, when the first {@link ColumnDefinition} is created (as the domain model is instantiated), so it
+	 * must be set <b>before the domain is loaded</b> — e.g. at application startup, before the connection is created.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	PropertyValue<Boolean> LEGACY_JDBC = booleanValue("codion.column.legacyJdbc", false);
 
 	@Override
 	Column<T> attribute();
