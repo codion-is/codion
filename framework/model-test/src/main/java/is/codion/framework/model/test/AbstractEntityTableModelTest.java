@@ -189,6 +189,15 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 	}
 
 	@Test
+	public void filterBooleanOperand() {
+		// A non-nullable boolean filter operand starts at 'false', not null, so a fresh filter matches false rather than
+		// an unsatisfiable null on a non-null column — mirroring the search condition model (via AttributeOperands).
+		assertEquals(false, testModel.filters().get(Detail.BOOLEAN).operands().equal().get());
+		// A nullable boolean stays null until set.
+		assertNull(testModel.filters().get(Detail.BOOLEAN_NULLABLE).operands().equal().get());
+	}
+
+	@Test
 	public void deleteNotEnabled() {
 		testModel.editor().settings().deleteEnabled().set(false);
 		testModel.items().refresh();

@@ -20,11 +20,8 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.observer.Observer;
-import is.codion.common.reactive.value.Value;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-
-import static is.codion.common.reactive.value.Value.Notify.SET;
 
 final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 
@@ -37,7 +34,7 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 						.valueClass(column.type().valueClass())
 						.format(builder.columnDefinition.format().orElse(null))
 						.dateTimePattern(builder.columnDefinition.dateTimePattern().orElse(null))
-						.operands(new ColumnOperands<>(builder.columnDefinition))
+						.operands(new AttributeOperands<>(builder.columnDefinition))
 						.build();
 	}
 
@@ -67,27 +64,6 @@ final class DefaultColumnConditionModel<T> implements ColumnConditionModel<T> {
 		@Override
 		public ColumnConditionModel<T> build() {
 			return new DefaultColumnConditionModel<>(this);
-		}
-	}
-
-	private static final class ColumnOperands<T> implements Operands<T> {
-
-		private final ColumnDefinition<T> definition;
-
-		private ColumnOperands(ColumnDefinition<T> definition) {
-			this.definition = definition;
-		}
-
-		@Override
-		public Value<T> equal() {
-			if (definition.attribute().type().isBoolean() && !definition.nullable()) {
-				return (Value<T>) Value.builder()
-								.nonNull(false)
-								.notify(SET)
-								.build();
-			}
-
-			return Operands.super.equal();
 		}
 	}
 }

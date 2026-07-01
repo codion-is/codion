@@ -516,11 +516,15 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 								.build();
 			}
 
-			ValueAttributeDefinition<?> attributeDefinition = (ValueAttributeDefinition<?>) definition;
+			return valueCondition((ValueAttributeDefinition<?>) definition);
+		}
+
+		private static <T> ConditionModel<T> valueCondition(ValueAttributeDefinition<T> definition) {
 			return ConditionModel.builder()
-							.valueClass(attributeDefinition.attribute().type().valueClass())
-							.format(attributeDefinition.format().orElse(null))
-							.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
+							.valueClass(definition.attribute().type().valueClass())
+							.format(definition.format().orElse(null))
+							.dateTimePattern(definition.dateTimePattern().orElse(null))
+							.operands(new AttributeOperands<>(definition))
 							.build();
 		}
 
