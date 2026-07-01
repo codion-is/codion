@@ -267,17 +267,20 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	}
 
 	private static Map<Integer, GetValue<?>> createGetters() {
+		// The temporal getters read via JDBC 4.2's ResultSet.getObject(int, Class); a legacy platform whose
+		// java.sql.ResultSet predates 4.2 (Android) opts into the pre-4.2 java.sql accessors via ColumnDefinition.LEGACY_JDBC.
+		boolean legacy = ColumnDefinition.LEGACY_JDBC.getOrThrow();
 		Map<Integer, GetValue<?>> getters = new HashMap<>();
 		getters.put(Types.SMALLINT, new GetShort());
 		getters.put(Types.INTEGER, new GetInteger());
 		getters.put(Types.BIGINT, new GetLong());
 		getters.put(Types.DOUBLE, new GetDouble());
 		getters.put(Types.DECIMAL, new GetBigDecimal());
-		getters.put(Types.DATE, new GetLocalDate());
-		getters.put(Types.TIMESTAMP, new GetLocalDateTime());
-		getters.put(Types.TIME, new GetLocalTime());
-		getters.put(Types.TIMESTAMP_WITH_TIMEZONE, new GetOffsetDateTime());
-		getters.put(Types.TIME_WITH_TIMEZONE, new GetOffsetTime());
+		getters.put(Types.DATE, legacy ? new GetLocalDateLegacy() : new GetLocalDate());
+		getters.put(Types.TIMESTAMP, legacy ? new GetLocalDateTimeLegacy() : new GetLocalDateTime());
+		getters.put(Types.TIME, legacy ? new GetLocalTimeLegacy() : new GetLocalTime());
+		getters.put(Types.TIMESTAMP_WITH_TIMEZONE, legacy ? new GetOffsetDateTimeLegacy() : new GetOffsetDateTime());
+		getters.put(Types.TIME_WITH_TIMEZONE, legacy ? new GetOffsetTimeLegacy() : new GetOffsetTime());
 		getters.put(Types.VARCHAR, new GetString());
 		getters.put(Types.BOOLEAN, new GetBoolean());
 		getters.put(Types.CHAR, new GetCharacter());
@@ -596,6 +599,61 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		@Override
 		public @Nullable OffsetTime get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getObject(index, OffsetTime.class);
+		}
+	}
+
+	// Pre-JDBC-4.2 temporal getters (ColumnDefinition.LEGACY_JDBC) for a platform whose java.sql predates 4.2 — notably
+	// Android, whose ResultSet lacks getObject(int, Class) AND whose java.sql.Timestamp/Date/Time lack the java.time
+	// bridges (toLocalDateTime() etc.). We rebuild the java.time value from the deprecated java.util.Date field
+	// accessors (getYear()/getMonth()/getDate()/getHours()/... plus Timestamp.getNanos()), which ARE present on
+	// Android — this is exactly what the missing toLocalDate()/toLocalDateTime()/toLocalTime() bridges do internally.
+	// The Offset types have no such field accessors, so they fall back to getObject(int) + cast (best-effort; a modern
+	// driver returns the java.time type directly).
+
+	private static final class GetLocalDateLegacy implements GetValue<LocalDate> {
+
+		@Override
+		public @Nullable LocalDate get(ResultSet resultSet, int index) throws SQLException {
+			java.sql.Date value = resultSet.getDate(index);
+
+			return value == null ? null : LocalDate.of(value.getYear() + 1900, value.getMonth() + 1, value.getDate());
+		}
+	}
+
+	private static final class GetLocalDateTimeLegacy implements GetValue<LocalDateTime> {
+
+		@Override
+		public @Nullable LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
+			Timestamp value = resultSet.getTimestamp(index);
+
+			return value == null ? null : LocalDateTime.of(value.getYear() + 1900, value.getMonth() + 1, value.getDate(),
+							value.getHours(), value.getMinutes(), value.getSeconds(), value.getNanos());
+		}
+	}
+
+	private static final class GetLocalTimeLegacy implements GetValue<LocalTime> {
+
+		@Override
+		public @Nullable LocalTime get(ResultSet resultSet, int index) throws SQLException {
+			Time value = resultSet.getTime(index);
+
+			return value == null ? null : LocalTime.of(value.getHours(), value.getMinutes(), value.getSeconds());
+		}
+	}
+
+	private static final class GetOffsetDateTimeLegacy implements GetValue<OffsetDateTime> {
+
+		@Override
+		public @Nullable OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
+			return (OffsetDateTime) resultSet.getObject(index);
+		}
+	}
+
+	private static final class GetOffsetTimeLegacy implements GetValue<OffsetTime> {
+
+		@Override
+		public @Nullable OffsetTime get(ResultSet resultSet, int index) throws SQLException {
+			return (OffsetTime) resultSet.getObject(index);
 		}
 	}
 
