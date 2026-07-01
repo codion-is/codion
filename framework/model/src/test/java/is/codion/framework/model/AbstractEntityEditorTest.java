@@ -265,25 +265,30 @@ public final class AbstractEntityEditorTest {
 	void detailEditorValidReflectsContext() {
 		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
 		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		// Present iff NAME is set — lets us reach a "present, but SALARY (a required non-FK field) missing" state.
 		departmentEditor.detail().add(EditorLink.builder()
 						.editor(employeeEditor)
 						.foreignKey(Employee.DEPARTMENT_FK)
-						.present(EMPLOYEE_PRESENT)
+						.present(employee -> employee.present(Employee.NAME))
 						.build());
 
-		// Required non-FK fields (NAME, SALARY) are unset
+		// Not present (NAME unset): the detail will not be created, so it is valid despite its required fields being empty.
+		assertFalse(employeeEditor.entity().present().is());
+		assertTrue(employeeEditor.entity().valid().is());
+
+		// Present (NAME set) but SALARY (a required non-FK field) still missing -> invalid: a present detail validates.
+		employeeEditor.value(Employee.NAME).set("Test");
+		assertTrue(employeeEditor.entity().present().is());
 		assertFalse(employeeEditor.entity().valid().is());
 
-		// Populate the required non-FK fields. The FK is still null,
-		// but it's framework-managed so the editor is now valid.
-		employeeEditor.value(Employee.NAME).set("Test");
+		// SALARY set too -> present and valid: the master FK is null but framework-managed, so exempt.
 		employeeEditor.value(Employee.SALARY).set(2000d);
 		assertTrue(employeeEditor.entity().valid().is());
 
-		// Clearing a required non-FK field still makes the editor invalid —
-		// the wrapper only suppresses null-FK, not other null-required-attribute errors.
+		// Clearing NAME makes it not present again -> valid, even though SALARY alone leaves the required NAME empty.
 		employeeEditor.value(Employee.NAME).clear();
-		assertFalse(employeeEditor.entity().valid().is());
+		assertFalse(employeeEditor.entity().present().is());
+		assertTrue(employeeEditor.entity().valid().is());
 	}
 
 	@Test
@@ -638,9 +643,11 @@ public final class AbstractEntityEditorTest {
 		// Master should be modified because detail has pending insert
 		assertTrue(departmentEditor.entity().modified().is());
 
-		// masterExists=true, valid=false, exists=false -> all false (nothing to do)
-		employeeEditor.value(Employee.SALARY).clear(); // now invalid
-		assertFalse(employeeEditor.entity().valid().is());
+		// Clearing SALARY makes the detail not present (EMPLOYEE_PRESENT needs NAME && SALARY): a detail that will not be
+		// created is valid and has nothing to do -> not existing, master not modified.
+		employeeEditor.value(Employee.SALARY).clear();
+		assertFalse(employeeEditor.entity().present().is());
+		assertTrue(employeeEditor.entity().valid().is());
 		assertFalse(employeeEditor.entity().exists().is());
 		assertFalse(departmentEditor.entity().modified().is());
 	}
@@ -755,9 +762,10 @@ public final class AbstractEntityEditorTest {
 			assertEquals(1, CONNECTION_PROVIDER.connection().count(
 							Count.where(Employee.DEPARTMENT.equalTo(53))));
 
-			// Make detail invalid -> triggers delete path on update
+			// Clearing SALARY makes the detail not present -> update() deletes it (present=false, exists=true). A not-present
+			// detail is valid (it will not be created); the delete path is driven by present/exists, not by validity.
 			employeeEditor.value(Employee.SALARY).clear();
-			assertFalse(employeeEditor.entity().valid().is());
+			assertTrue(employeeEditor.entity().valid().is());
 			assertTrue(departmentEditor.entity().modified().is());
 
 			update(departmentEditor);

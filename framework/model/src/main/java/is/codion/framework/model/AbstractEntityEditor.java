@@ -1788,7 +1788,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			this.key = key;
 			if (link instanceof ForeignKeyEditorLink) {
 				ForeignKey foreignKey = ((DefaultForeignKeyLink) link).foreignKey();
-				editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey));
+				editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey, editor.entity().present()));
 				editor.validator().addValidator(new PreventValidatorModification());
 				editor.value(foreignKey).persist().set(false);
 			}
@@ -1863,14 +1863,26 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
+	/**
+	 * Wraps a detail editor's validator with two detail-specific exemptions:
+	 * <ul>
+	 * <li>A detail that is not {@link EditorEntity#present() present} will not be created, so it is not validated at all —
+	 * an absent detail's empty required fields are not errors (its {@code present()} predicate typically keys on exactly
+	 * such a field). Validation resumes as normal once it becomes present.
+	 * <li>While present, a {@link NullValueException} on the master {@link ForeignKey} (and its reference columns) is still
+	 * exempt — it is null during editing and populated from the master at insert.
+	 * </ul>
+	 */
 	static final class DetailForeignKeyValidator implements EntityValidator {
 
 		private final EntityValidator validator;
 		private final ForeignKey foreignKey;
+		private final ObservableState present;
 
-		private DetailForeignKeyValidator(EntityValidator validator, ForeignKey foreignKey) {
+		private DetailForeignKeyValidator(EntityValidator validator, ForeignKey foreignKey, ObservableState present) {
 			this.validator = validator;
 			this.foreignKey = foreignKey;
+			this.present = present;
 		}
 
 		@Override
@@ -1880,6 +1892,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void validate(Entity entity, Attribute<?> attribute) throws AttributeValidationException {
+			if (!present.is()) {
+				return;
+			}
 			try {
 				validator.validate(entity, attribute);
 			}
@@ -1892,6 +1907,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void validate(Entity entity) throws EntityValidationException {
+			if (!present.is()) {
+				return;
+			}
 			try {
 				validator.validate(entity);
 			}

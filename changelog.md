@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.78
+### is.codion.framework.model
+- AbstractEntityEditor, foreign key based detail editor no longer validates non-present detail entities.
 
 ## 0.18.77
 ### is.codion.common.reactive
