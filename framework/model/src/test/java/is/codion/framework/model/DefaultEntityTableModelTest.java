@@ -24,7 +24,6 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityEditor.ComponentModels;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
@@ -32,7 +31,6 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.keys;
@@ -129,11 +127,6 @@ public final class DefaultEntityTableModelTest extends
 
 		@Override
 		protected void onRowsUpdated(int fromIndex, int toIndex) {}
-
-		@Override
-		protected Optional<OrderBy> orderBy() {
-			return Optional.empty();
-		}
 
 		private static FilterTableModel<Entity, Attribute<?>> filterModel(TestEntityEditModel editModel,
 		                                                                  Supplier<Collection<Entity>> items) {
