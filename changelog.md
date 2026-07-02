@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.78
+### is.codion.common.model
+- ConditionModel bug fixed, case-insensitive NOT_EQUAL now filters correctly.
 ### is.codion.framework.db.http
 - HttpEntityConnectionProvider now uses a locally registered domain when available.
 ### is.codion.framework.model
