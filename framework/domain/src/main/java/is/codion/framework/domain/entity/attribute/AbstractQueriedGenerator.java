@@ -48,7 +48,7 @@ abstract class AbstractQueriedGenerator<T> implements Generator<T> {
 			}
 			ColumnDefinition<T> columnDefinition = entity.definition().columns().definition(column);
 			entity.remove(columnDefinition.attribute());
-			entity.set(columnDefinition.attribute(), columnDefinition.get(resultSet, 1));
+			entity.set(columnDefinition.attribute(), columnDefinition.get(resultSet, 1, database));
 		}
 		catch (SQLException e) {
 			LOG.error("Exception during selectAndPopulate {}", e.getMessage(), e);

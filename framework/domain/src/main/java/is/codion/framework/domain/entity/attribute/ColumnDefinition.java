@@ -18,11 +18,11 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.utilities.property.PropertyValue;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.GetValue;
+import is.codion.common.db.database.SetValue;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
-import is.codion.framework.domain.entity.attribute.Column.GetValue;
-import is.codion.framework.domain.entity.attribute.Column.SetParameter;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
 
 import org.jspecify.annotations.Nullable;
@@ -30,8 +30,6 @@ import org.jspecify.annotations.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
  * Specifies an attribute definition based on a table column.
@@ -84,20 +82,6 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * @see Column#as()
  */
 public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> permits DefaultColumnDefinition {
-
-	/**
-	 * Specifies whether temporal columns are read using the pre-JDBC-4.2 {@code java.sql} accessors
-	 * ({@link ResultSet#getTimestamp(int)} etc.) instead of {@link ResultSet#getObject(int, Class)}, for platforms
-	 * whose {@code java.sql.ResultSet} predates JDBC 4.2 — notably Android, whose {@code ResultSet} does not declare
-	 * {@code getObject(int, Class)}. Leaves every other column type unchanged.
-	 * <p>Read once, when the first {@link ColumnDefinition} is created (as the domain model is instantiated), so it
-	 * must be set <b>before the domain is loaded</b> — e.g. at application startup, before the connection is created.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: false
-	 * </ul>
-	 */
-	PropertyValue<Boolean> LEGACY_JDBC = booleanValue("codion.column.legacyJdbc", false);
 
 	@Override
 	Column<T> attribute();
@@ -195,27 +179,30 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 	 * Fetches a value for this column from a {@link ResultSet}
 	 * @param resultSet the {@link ResultSet}
 	 * @param index this columns index in the result
+	 * @param database the {@link Database} providing the default value getters
 	 * @return a single value fetched from the given {@link ResultSet}
 	 * @throws SQLException in case of an exception
 	 */
-	@Nullable T get(ResultSet resultSet, int index) throws SQLException;
+	@Nullable T get(ResultSet resultSet, int index, Database database) throws SQLException;
 
 	/**
 	 * Fetches a value for this column from a {@link ResultSet} by name
 	 * @param resultSet the {@link ResultSet}
+	 * @param database the {@link Database} providing the default value getters
 	 * @return a single value fetched from the given {@link ResultSet}
 	 * @throws SQLException in case of an exception
 	 */
-	@Nullable T get(ResultSet resultSet) throws SQLException;
+	@Nullable T get(ResultSet resultSet, Database database) throws SQLException;
 
 	/**
 	 * Sets a parameter for this column in a {@link PreparedStatement}
 	 * @param statement the statement
 	 * @param index the parameter index
 	 * @param value the value to set, may be null
+	 * @param database the {@link Database} providing the default parameter setters
 	 * @throws SQLException in case of an exception
 	 */
-	void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException;
+	void set(PreparedStatement statement, int index, @Nullable T value, Database database) throws SQLException;
 
 	/**
 	 * Builds a {@link ColumnDefinition}
@@ -257,10 +244,10 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 		 * @param <C> the column type
 		 * @param columnClass the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
-		 * @param setParameter the setter to use when setting parameters in a {@link PreparedStatement}
+		 * @param setValue the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B converter(Class<C> columnClass, Converter<T, C> converter, SetParameter<C> setParameter);
+		<C> B converter(Class<C> columnClass, Converter<T, C> converter, SetValue<C> setValue);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
@@ -268,10 +255,10 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 		 * @param columnClass the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
 		 * @param getValue the getter to use to retrieve the value from a {@link ResultSet}
-		 * @param setParameter the setter to use when setting parameters in a {@link PreparedStatement}
+		 * @param setValue the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B converter(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue, SetParameter<C> setParameter);
+		<C> B converter(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue, SetValue<C> setValue);
 
 		/**
 		 * Sets the actual string used as column name when inserting and updating.

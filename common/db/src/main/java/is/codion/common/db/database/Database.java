@@ -139,6 +139,18 @@ public interface Database extends ConnectionFactory {
 	PropertyValue<Integer> TRANSACTION_ISOLATION = integerValue("codion.db.transactionIsolation");
 
 	/**
+	 * Specifies whether temporal columns are read using the pre-JDBC-4.2 {@code java.sql} accessors
+	 * ({@link java.sql.ResultSet#getTimestamp(int)} etc.) instead of {@link java.sql.ResultSet#getObject(int, Class)}, for
+	 * platforms whose {@code java.sql.ResultSet} predates JDBC 4.2 — notably Android, whose {@code ResultSet} does not
+	 * declare {@code getObject(int, Class)}. Leaves every other column type unchanged.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	PropertyValue<Boolean> LEGACY_JDBC = booleanValue("codion.db.legacyJdbc", false);
+
+	/**
 	 * The key used to specify the username in connection properties
 	 */
 	String USER = "user";
@@ -152,6 +164,23 @@ public interface Database extends ConnectionFactory {
 	 * @return a name identifying this database
 	 */
 	String name();
+
+	/**
+	 * Returns the {@link GetValue} for reading a value of the given {@link java.sql.Types SQL type} from a {@link java.sql.ResultSet}.
+	 * @param sqlType the {@link java.sql.Types SQL type}
+	 * @return the {@link GetValue} for the given SQL type
+	 * @throws IllegalArgumentException in case no getter is available for the given type
+	 * @see #LEGACY_JDBC
+	 */
+	GetValue<?> getter(int sqlType);
+
+	/**
+	 * Returns the {@link SetValue} for setting a value of the given {@link java.sql.Types SQL type} on a {@link java.sql.PreparedStatement}.
+	 * @param sqlType the {@link java.sql.Types SQL type}
+	 * @return the {@link SetValue} for the given SQL type
+	 * @throws IllegalArgumentException in case no setter is available for the given type
+	 */
+	SetValue<?> setter(int sqlType);
 
 	/**
 	 * Returns a query string for retrieving the last automatically generated id from the given id source
