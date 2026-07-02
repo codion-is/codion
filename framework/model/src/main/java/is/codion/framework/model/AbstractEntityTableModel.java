@@ -308,6 +308,23 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 										.builder()
 										.originalPrimaryKey()
 										.build(), Map.Entry::getValue)));
+		syncEditor(updatedEntities);
+	}
+
+	// Syncs the editor's active entity when the currently selected row is among those updated, so the edit form
+	// reflects a value changed via the table (bulk or inline editing). A modified editor is left
+	// untouched so unsaved edits are never overwritten.
+	private void syncEditor(Map<Entity, Entity> updatedEntities) {
+		EntityEditor.EditorEntity editorEntity = editModel.editor().entity();
+		if (editorEntity.modified().is()) {
+			return;
+		}
+		Entity selected = selection().item().get();
+		if (selected != null && updatedEntities.values().stream()
+						.anyMatch(updated -> updated.primaryKey().equals(selected.primaryKey()))
+						&& !editorEntity.get().equalValues(selected)) {
+			editorEntity.replace(selected);
+		}
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
