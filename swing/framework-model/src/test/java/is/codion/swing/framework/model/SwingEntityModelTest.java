@@ -82,7 +82,7 @@ public final class SwingEntityModelTest
 	}
 
 	@Test
-	public void testDetailModels() throws EntityValidationException {
+	public void masterEditsUpdateDetailComboBox() throws EntityValidationException {
 		SwingEntityModel departmentModel = createDepartmentModel();
 		SwingEntityModel employeeModel = departmentModel.detail().get(Employee.TYPE);
 		assertNotNull(employeeModel);
@@ -126,7 +126,7 @@ public final class SwingEntityModelTest
 	}
 
 	@Test
-	public void test() {
+	public void masterDeleteUpdatesDetailComboBox() {
 		SwingEntityModel departmentModel = createDepartmentModel();
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();

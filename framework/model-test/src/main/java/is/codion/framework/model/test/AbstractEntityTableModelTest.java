@@ -19,8 +19,11 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.filter.SortOrder;
+import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.user.User;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -29,6 +32,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityEditor;
+import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -42,6 +46,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -206,14 +211,6 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 	}
 
 	@Test
-	public void testTheRest() {
-		assertNotNull(testModel.connectionProvider());
-		assertNotNull(testModel.editModel());
-		assertFalse(testModel.editor().settings().readOnly().is());
-		testModel.items().refresh();
-	}
-
-	@Test
 	public void attributes() {
 		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		tableModel.query().attributes().exclude().addAll(Employee.COMMISSION, Employee.DEPARTMENT_FK);
@@ -265,7 +262,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 	}
 
 	@Test
-	public void testSearchState() {
+	public void searchState() {
 		T empModel = createTableModel(Employee.TYPE, connectionProvider);
 		assertFalse(empModel.query().condition().modified().is());
 		ConditionModel<String> jobModel =
@@ -282,6 +279,356 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 
 	protected final EntityConnectionProvider connectionProvider() {
 		return connectionProvider;
+	}
+
+	@Test
+	public void refreshOnForeignKeyConditionValuesSet() {
+		T employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
+		assertEquals(0, employeeTableModel.items().included().size());
+		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
+		employeeTableModel.query().condition().get(Employee.DEPARTMENT_FK).set().in(accounting);
+		employeeTableModel.items().refresh();
+		assertEquals(7, employeeTableModel.items().included().size());
+	}
+
+	@Test
+	public void filtering() {
+		testModel.items().refresh();
+		ConditionModel<String> filterModel = testModel.filters().get(Detail.STRING);
+		filterModel.operands().equal().set("a");
+		testModel.items().filter();
+		assertEquals(4, testModel.items().filtered().size());
+		testModel.filters().get(Detail.MASTER_FK);
+	}
+
+	@Test
+	public void validItems() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		Entity dept = tableModel.entities().entity(Department.TYPE)
+						.with(Department.ID, 1)
+						.with(Department.NAME, "dept")
+						.build();
+		assertThrows(IllegalArgumentException.class, () -> tableModel.items().add(singletonList(dept)));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.items().included().add(0, singletonList(dept)));
+
+		assertThrows(NullPointerException.class, () -> tableModel.items().add(singletonList(null)));
+		assertThrows(NullPointerException.class, () -> tableModel.items().included().add(0, singletonList(null)));
+	}
+
+	@Test
+	public void conditionChanged() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		ConditionModel<String> nameCondition = tableModel.query().condition().get(Employee.NAME);
+		nameCondition.operands().equal().set("JONES");
+		assertTrue(tableModel.query().condition().modified().is());
+		tableModel.items().refresh();
+		assertFalse(tableModel.query().condition().modified().is());
+		nameCondition.enabled().set(false);
+		assertTrue(tableModel.query().condition().modified().is());
+		nameCondition.enabled().set(true);
+		assertFalse(tableModel.query().condition().modified().is());
+	}
+
+	@Test
+	public void isConditionEnabled() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		EntityQueryModel queryModel = tableModel.query();
+		queryModel.conditionEnabled().set(queryModel.condition().get(Employee.MGR_FK).enabled());
+		tableModel.items().refresh();
+		assertEquals(16, tableModel.items().included().size());
+		queryModel.conditionRequired().set(true);
+		tableModel.items().refresh();
+		assertEquals(0, tableModel.items().included().size());
+		ConditionModel<Entity> mgrCondition = queryModel.condition().get(Employee.MGR_FK);
+		mgrCondition.operands().equal().set(null);
+		mgrCondition.enabled().set(true);
+		tableModel.items().refresh();
+		assertEquals(1, tableModel.items().included().size());
+		mgrCondition.enabled().set(false);
+		tableModel.items().refresh();
+		assertEquals(0, tableModel.items().included().size());
+	}
+
+	@Test
+	public void persistenceEvents() throws EntityValidationException {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		E employeeEditModel = tableModel.editModel();
+		employeeEditModel.editor().entity().set(tableModel.items().included().get(0));
+		String newName = "new name";
+		employeeEditModel.editor().value(Employee.NAME).set(newName);
+		E departmentEditModel = createEditModel(Department.TYPE, connectionProvider());
+		departmentEditModel.editor().entity().set(employeeEditModel.editor().value(Employee.DEPARTMENT_FK).get());
+		departmentEditModel.editor().value(Department.NAME).set(newName);
+		EntityConnection connection = tableModel.connectionProvider().connection();
+		connection.startTransaction();
+		try {
+			employeeEditModel.editor().update();
+			assertEquals(newName, tableModel.items().included().get(0).get(Employee.NAME));
+			departmentEditModel.editor().update();
+			assertEquals(newName, tableModel.items().included().get(0).get(Employee.DEPARTMENT_FK).get(Department.NAME));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	public void editorSyncedOnUpdate() throws EntityValidationException {
+		// When the selected row is updated via the table (bulk/inline editing), the editor's active entity is
+		// refreshed to the new values so the edit form reflects them (AbstractEntityTableModel.onUpdate).
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		E editModel = tableModel.editModel();
+		tableModel.selection().index().set(0);
+		Entity selected = tableModel.selection().item().get();
+		assertEquals(selected.get(Employee.NAME), editModel.editor().value(Employee.NAME).get());
+
+		EntityConnection connection = tableModel.connectionProvider().connection();
+		connection.startTransaction();
+		try {
+			// Update the selected row via a copy, as table editing does (not the editor's own active entity).
+			Entity edited = selected.copy().mutable();
+			editModel.editor().value(Employee.NAME).set(edited, "synced");
+			editModel.editor().tasks().update(singletonList(edited)).perform().handle();
+			assertEquals("synced", editModel.editor().value(Employee.NAME).get());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	public void editorNotSyncedOnUpdateWhenModified() throws EntityValidationException {
+		// A modified editor is left untouched by a table-driven update, so unsaved edits are never overwritten.
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		E editModel = tableModel.editModel();
+		tableModel.selection().index().set(0);
+		Entity selected = tableModel.selection().item().get();
+		editModel.editor().value(Employee.NAME).set("dirty");// unsaved edit in the editor
+
+		EntityConnection connection = tableModel.connectionProvider().connection();
+		connection.startTransaction();
+		try {
+			Entity edited = selected.copy().mutable();
+			editModel.editor().value(Employee.NAME).set(edited, "synced");
+			editModel.editor().tasks().update(singletonList(edited)).perform().handle();
+			assertEquals("dirty", editModel.editor().value(Employee.NAME).get());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	public void replaceByKey() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.query().attributes().exclude().set(asList(Employee.JOB, Employee.SALARY));
+		tableModel.items().refresh();
+		Entity.Key jonesKey = tableModel.entities().primaryKey(Employee.TYPE, 3);
+		tableModel.refresh(singleton(jonesKey));
+		tableModel.select(singleton(jonesKey));
+		Entity selected = tableModel.selection().item().get();
+		assertTrue(selected.contains(Employee.NAME));
+		assertTrue(selected.contains(Employee.COMMISSION));
+		assertFalse(selected.contains(Employee.JOB));
+		assertFalse(selected.contains(Employee.SALARY));
+	}
+
+	@Test
+	public void selectionItemsFreshAfterReplace() {
+		// selection().item()/items() derive from the selected index, so replacing a selected row's entity in place must
+		// surface the new values — the invariant behind the bulk-edit and editor-sync fixes.
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		tableModel.selection().index().set(0);
+		Entity selected = tableModel.selection().item().get();
+		String originalName = selected.get(Employee.NAME);
+		Entity replacement = selected.copy().mutable();
+		replacement.set(Employee.NAME, "replaced");
+		tableModel.replace(singletonList(replacement));
+		assertEquals("replaced", tableModel.selection().item().get().get(Employee.NAME));
+		assertEquals("replaced", tableModel.selection().items().get().get(0).get(Employee.NAME));
+		assertNotEquals(originalName, tableModel.selection().item().get().get(Employee.NAME));
+	}
+
+	@Test
+	public void selectionAfterFilter() {
+		// Filtering a selected row out of the included set drops it from the selection; still-included rows stay selected.
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		tableModel.selection().selectAll();
+		Entity jones = tableModel.selection().items().get().stream()
+						.filter(employee -> "JONES".equals(employee.get(Employee.NAME)))
+						.findFirst()
+						.orElseThrow(IllegalStateException::new);
+		tableModel.filters().get(Employee.NAME).operands().equal().set("JONES");
+		tableModel.items().filter();
+		assertTrue(tableModel.selection().items().get().contains(jones));
+		tableModel.selection().items().get().forEach(selected ->
+						assertTrue(tableModel.items().included().contains(selected)));
+	}
+
+	@Test
+	public void selectionAfterSort() {
+		// Sorting keeps the same entity selected (selection follows its row); its index reflects the new position.
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		tableModel.selection().index().set(0);
+		Entity selected = tableModel.selection().item().get();
+		tableModel.sort().descending(Employee.NAME);
+		assertEquals(selected, tableModel.selection().item().get());
+		tableModel.sort().ascending(Employee.NAME);
+		assertEquals(selected, tableModel.selection().item().get());
+		assertEquals(tableModel.items().included().indexOf(selected), tableModel.selection().index().get().intValue());
+	}
+
+	@Test
+	public void singleAndMultipleSelection() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		MultiSelection<Entity> selection = tableModel.selection();
+		assertTrue(selection.empty().is());
+		assertEquals(0, selection.count());
+		assertFalse(selection.single().is());
+		assertFalse(selection.multiple().is());
+
+		selection.index().set(0);
+		assertFalse(selection.empty().is());
+		assertTrue(selection.single().is());
+		assertFalse(selection.multiple().is());
+		assertEquals(1, selection.count());
+
+		selection.indexes().set(asList(0, 1, 2));
+		assertTrue(selection.multiple().is());
+		assertFalse(selection.single().is());
+		assertEquals(3, selection.count());
+
+		selection.clear();
+		assertTrue(selection.empty().is());
+		assertEquals(0, selection.count());
+	}
+
+	@Test
+	public void selectionNavigation() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		MultiSelection<Entity> selection = tableModel.selection();
+
+		selection.selectAll();
+		assertEquals(tableModel.items().included().size(), selection.count());
+		selection.clear();
+		assertTrue(selection.empty().is());
+
+		selection.index().set(0);
+		selection.indexes().increment();
+		assertEquals(1, selection.index().get().intValue());
+		selection.indexes().decrement();
+		assertEquals(0, selection.index().get().intValue());
+
+		selection.indexes().add(2);
+		assertTrue(selection.indexes().contains(2));
+		assertEquals(asList(0, 2), selection.indexes().get());
+		selection.indexes().remove(0);
+		assertFalse(selection.indexes().contains(0));
+		assertEquals(singletonList(2), selection.indexes().get());
+	}
+
+	@Test
+	public void sortAscendingDescending() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		tableModel.sort().ascending(Employee.NAME);
+		assertSortedByName(tableModel.items().included().get(), true);
+		tableModel.sort().descending(Employee.NAME);
+		assertSortedByName(tableModel.items().included().get(), false);
+	}
+
+	@Test
+	public void sortClear() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		tableModel.sort().ascending(Employee.NAME);
+		assertEquals(SortOrder.ASCENDING, tableModel.sort().columns().get(Employee.NAME).sortOrder());
+		tableModel.sort().clear();
+		assertEquals(SortOrder.UNSORTED, tableModel.sort().columns().get(Employee.NAME).sortOrder());
+		assertTrue(tableModel.sort().columns().get().isEmpty());
+	}
+
+	@Test
+	public void sortPriority() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		tableModel.sort().order(Employee.JOB).set(SortOrder.ASCENDING);
+		tableModel.sort().order(Employee.NAME).add(SortOrder.DESCENDING);
+		// JOB is the primary sort column (priority 0), NAME the secondary (priority 1).
+		assertEquals(0, tableModel.sort().columns().get(Employee.JOB).priority());
+		assertEquals(1, tableModel.sort().columns().get(Employee.NAME).priority());
+		assertEquals(2, tableModel.sort().columns().get().size());
+		assertEquals(Employee.JOB, tableModel.sort().columns().get().get(0).identifier());
+		// Rows are ordered by JOB ascending, then NAME descending within an equal JOB.
+		List<Entity> items = tableModel.items().included().get();
+		for (int i = 1; i < items.size(); i++) {
+			Entity previous = items.get(i - 1);
+			Entity current = items.get(i);
+			int jobComparison = previous.get(Employee.JOB).compareTo(current.get(Employee.JOB));
+			assertTrue(jobComparison <= 0);
+			if (jobComparison == 0) {
+				assertTrue(previous.get(Employee.NAME).compareTo(current.get(Employee.NAME)) >= 0);
+			}
+		}
+	}
+
+	@Test
+	public void filterNotEqual() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		int total = tableModel.items().included().size();
+		ConditionModel<String> jobFilter = tableModel.filters().get(Employee.JOB);
+		jobFilter.operator().set(Operator.NOT_EQUAL);
+		jobFilter.operands().equal().set("SALESMAN");
+		tableModel.items().filter();
+		assertTrue(tableModel.items().included().size() < total);
+		tableModel.items().included().get().forEach(employee ->
+						assertNotEquals("SALESMAN", employee.get(Employee.JOB)));
+	}
+
+	@Test
+	public void filterEnabled() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		int total = tableModel.items().included().size();
+		ConditionModel<String> jobFilter = tableModel.filters().get(Employee.JOB);
+		jobFilter.operands().equal().set("CLERK");
+		tableModel.items().filter();
+		assertTrue(tableModel.items().included().size() < total);
+		jobFilter.enabled().set(false);
+		tableModel.items().filter();
+		assertEquals(total, tableModel.items().included().size());
+	}
+
+	private static void assertSortedByName(List<Entity> items, boolean ascending) {
+		for (int i = 1; i < items.size(); i++) {
+			int comparison = items.get(i - 1).get(Employee.NAME).compareTo(items.get(i).get(Employee.NAME));
+			assertTrue(ascending ? comparison <= 0 : comparison >= 0);
+		}
+	}
+
+	@Test
+	public void replace() {
+		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		tableModel.items().refresh();
+		Entity employee = tableModel.items().included().get().get(0);
+		Entity replacement = employee.copy().mutable();
+		replacement.set(Employee.NAME, "REPLACED");
+		tableModel.replace(singletonList(replacement));
+		Entity updated = tableModel.items().included().get().stream()
+						.filter(entity -> entity.primaryKey().equals(employee.primaryKey()))
+						.findFirst()
+						.orElseThrow(IllegalStateException::new);
+		assertEquals("REPLACED", updated.get(Employee.NAME));
 	}
 
 	/**

@@ -117,6 +117,30 @@ public class DefaultConditionModelTest {
 	}
 
 	@Test
+	void caseInsensitiveNotEqual() {
+		// A case-insensitive NOT_EQUAL condition must reject a value that equals the operand ignoring case; a
+		// regression fence for the isNotEqual ordering bug where the operand's lowercasing was discarded by the
+		// subsequent equalWithWildcards() call, leaving NOT_EQUAL matching everything.
+		ConditionModel<String> model = ConditionModel.builder()
+						.valueClass(String.class)
+						.build();
+		model.caseSensitive().set(false);
+		model.operator().set(Operator.NOT_EQUAL);
+		model.operands().equal().set("SCOTT");
+
+		// Direct comparison (no wildcards)
+		model.operands().wildcard().set(Wildcard.NONE);
+		assertFalse(model.accepts("scott"));
+		assertFalse(model.accepts("SCOTT"));
+		assertTrue(model.accepts("king"));
+
+		// Wildcard path
+		model.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
+		assertFalse(model.accepts("scott"));
+		assertTrue(model.accepts("king"));
+	}
+
+	@Test
 	void testMisc() {
 		ConditionModel<String> model = ConditionModel.builder()
 						.valueClass(String.class).build();

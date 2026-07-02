@@ -65,7 +65,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 					.build();
 
 	@Test
-	public void testUpdatePrimaryKey() throws EntityValidationException {
+	public void updatePrimaryKey() throws EntityValidationException {
 		M departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
@@ -98,7 +98,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 	}
 
 	@Test
-	public void testDetailModels() throws EntityValidationException {
+	public void detailModels() throws EntityValidationException {
 		M departmentModel = createDepartmentModel();
 		assertEquals(1, departmentModel.detail().active().size());
 		departmentModel.detail().active(departmentModel.detail().get(Employee.TYPE)).set(false);
@@ -147,7 +147,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 	}
 
 	@Test
-	public void test() {
+	public void editModel() {
 		M departmentModel = createDepartmentModel();
 		assertNotNull(departmentModel.editModel());
 	}
