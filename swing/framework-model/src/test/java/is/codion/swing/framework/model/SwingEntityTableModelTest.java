@@ -18,15 +18,11 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.filter.SortOrder;
-import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -37,9 +33,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<
@@ -73,31 +66,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		return new SwingEntityEditModel(entityType, connectionProvider);
 	}
 
-	@Test
-	void refreshOnForeignKeyConditionValuesSet() {
-		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
-		assertEquals(0, employeeTableModel.items().included().size());
-		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
-		employeeTableModel.query().condition().get(Employee.DEPARTMENT_FK).set().in(accounting);
-		employeeTableModel.items().refresh();
-		assertEquals(7, employeeTableModel.items().included().size());
-	}
 
 	@Test
 	void nullConditionModel() {
 		assertThrows(NullPointerException.class, () -> new SwingEntityTableModel(Employee.TYPE, null));
 	}
 
-	@Test
-	void testFiltering() {
-		testModel.items().refresh();
-		ConditionModel<String> filterModel =
-						testModel.filters().get(Detail.STRING);
-		filterModel.operands().equal().set("a");
-		testModel.items().filter();
-		assertEquals(4, testModel.items().filtered().size());
-		testModel.filters().get(Detail.MASTER_FK);
-	}
 
 	@Test
 	void getValueAt() {
@@ -146,127 +120,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(Entity.class, testModel.getColumnClass(7));
 	}
 
-	@Test
-	void validItems() {
-		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
-		Entity dept = tableModel.entities().entity(Department.TYPE)
-						.with(Department.ID, 1)
-						.with(Department.NAME, "dept")
-						.build();
-		assertThrows(IllegalArgumentException.class, () -> tableModel.items().add(singletonList(dept)));
-		assertThrows(IllegalArgumentException.class, () -> tableModel.items().included().add(0, singletonList(dept)));
 
-		assertThrows(NullPointerException.class, () -> tableModel.items().add(singletonList(null)));
-		assertThrows(NullPointerException.class, () -> tableModel.items().included().add(0, singletonList(null)));
-	}
 
-	@Test
-	void conditionChanged() {
-		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
-		tableModel.items().refresh();
-		ConditionModel<String> nameCondition = tableModel.query().condition().get(Employee.NAME);
-		nameCondition.operands().equal().set("JONES");
-		assertTrue(tableModel.query().condition().modified().is());
-		tableModel.items().refresh();
-		assertFalse(tableModel.query().condition().modified().is());
-		nameCondition.enabled().set(false);
-		assertTrue(tableModel.query().condition().modified().is());
-		nameCondition.enabled().set(true);
-		assertFalse(tableModel.query().condition().modified().is());
-	}
 
-	@Test
-	void isConditionEnabled() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		EntityQueryModel queryModel = tableModel.query();
-		queryModel.conditionEnabled().set(queryModel.condition().get(Employee.MGR_FK).enabled());
-		tableModel.items().refresh();
-		assertEquals(16, tableModel.items().included().size());
-		queryModel.conditionRequired().set(true);
-		tableModel.items().refresh();
-		assertEquals(0, tableModel.items().included().size());
-		ConditionModel<Entity> mgrCondition = queryModel.condition().get(Employee.MGR_FK);
-		mgrCondition.operands().equal().set(null);
-		mgrCondition.enabled().set(true);
-		tableModel.items().refresh();
-		assertEquals(1, tableModel.items().included().size());
-		mgrCondition.enabled().set(false);
-		tableModel.items().refresh();
-		assertEquals(0, tableModel.items().included().size());
-	}
 
-	@Test
-	void persistenceEvents() throws EntityValidationException {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		tableModel.items().refresh();
-		SwingEntityEditModel employeeEditModel = tableModel.editModel();
-		employeeEditModel.editor().entity().set(tableModel.items().included().get(0));
-		String newName = "new name";
-		employeeEditModel.editor().value(Employee.NAME).set(newName);
-		SwingEntityEditModel departmentEditModel = new SwingEntityEditModel(Department.TYPE, testModel.connectionProvider());
-		departmentEditModel.editor().entity().set(employeeEditModel.editor().value(Employee.DEPARTMENT_FK).get());
-		departmentEditModel.editor().value(Department.NAME).set(newName);
-		EntityConnection connection = tableModel.connectionProvider().connection();
-		connection.startTransaction();
-		try {
-			employeeEditModel.editor().update();
-			assertEquals(newName, tableModel.items().included().get(0).get(Employee.NAME));
-			departmentEditModel.editor().update();
-			assertEquals(newName, tableModel.items().included().get(0).get(Employee.DEPARTMENT_FK).get(Department.NAME));
-		}
-		finally {
-			connection.rollbackTransaction();
-		}
-	}
-
-	@Test
-	void editorSyncedOnUpdate() throws EntityValidationException {
-		// When the selected row is updated via the table (bulk/inline editing), the editor's active entity is
-		// refreshed to the new values so the edit form reflects them. Handled in the common AbstractEntityTableModel
-		// (previously only in Swing, triggered by a JTable TableModelEvent).
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		tableModel.items().refresh();
-		SwingEntityEditModel editModel = tableModel.editModel();
-		tableModel.selection().index().set(0);
-		Entity selected = tableModel.selection().item().get();
-		assertEquals(selected.get(Employee.NAME), editModel.editor().value(Employee.NAME).get());
-
-		EntityConnection connection = tableModel.connectionProvider().connection();
-		connection.startTransaction();
-		try {
-			// Update the selected row via a copy, as table editing does (not the editor's own active entity).
-			Entity edited = selected.copy().mutable();
-			editModel.editor().value(Employee.NAME).set(edited, "synced");
-			editModel.editor().tasks().update(singletonList(edited)).perform().handle();
-			assertEquals("synced", editModel.editor().value(Employee.NAME).get());
-		}
-		finally {
-			connection.rollbackTransaction();
-		}
-	}
-
-	@Test
-	void editorNotSyncedOnUpdateWhenModified() throws EntityValidationException {
-		// A modified editor is left untouched by a table-driven update, so unsaved edits are never overwritten.
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		tableModel.items().refresh();
-		SwingEntityEditModel editModel = tableModel.editModel();
-		tableModel.selection().index().set(0);
-		Entity selected = tableModel.selection().item().get();
-		editModel.editor().value(Employee.NAME).set("dirty");// unsaved edit in the editor
-
-		EntityConnection connection = tableModel.connectionProvider().connection();
-		connection.startTransaction();
-		try {
-			Entity edited = selected.copy().mutable();
-			editModel.editor().value(Employee.NAME).set(edited, "synced");
-			editModel.editor().tasks().update(singletonList(edited)).perform().handle();
-			assertEquals("dirty", editModel.editor().value(Employee.NAME).get());
-		}
-		finally {
-			connection.rollbackTransaction();
-		}
-	}
 
 	@Test
 	void orderQuery() {
@@ -315,20 +172,6 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 	}
 
-	@Test
-	void replaceByKey() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
-		tableModel.query().attributes().exclude().set(asList(Employee.JOB, Employee.SALARY));
-		tableModel.items().refresh();
-		Entity.Key jonesKey = tableModel.entities().primaryKey(Employee.TYPE, 3);
-		tableModel.refresh(singleton(jonesKey));
-		tableModel.select(singleton(jonesKey));
-		Entity selected = tableModel.selection().item().get();
-		assertTrue(selected.contains(Employee.NAME));
-		assertTrue(selected.contains(Employee.COMMISSION));
-		assertFalse(selected.contains(Employee.JOB));
-		assertFalse(selected.contains(Employee.SALARY));
-	}
 
 //	@Test
 //	void replacePerformance() {

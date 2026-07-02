@@ -10,6 +10,8 @@ Codion Change Log
 - AbstractEntityEditor, foreign key based detail editor no longer validates non-present detail entities.
 - AttributeOperands added, AbstractEntityTableModel.EntityFilters now initialize boolean conditions correctly.
 - AbstractEntityTableModel now handles syncing the editor.
+### is.codion.framework.model.test
+- Platform agnostic unit tests improved.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel, editor sync via table model events removed.
 

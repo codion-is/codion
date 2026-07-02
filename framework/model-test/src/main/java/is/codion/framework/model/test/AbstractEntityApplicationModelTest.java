@@ -63,7 +63,7 @@ public abstract class AbstractEntityApplicationModelTest<M extends DefaultEntity
 	}
 
 	@Test
-	public void test() {
+	public void applicationModel() {
 		M deptModel = createDepartmentModel();
 		EntityApplicationModel<M, E, T, R> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(deptModel));
 		assertNotNull(model.models().get(Department.TYPE));
