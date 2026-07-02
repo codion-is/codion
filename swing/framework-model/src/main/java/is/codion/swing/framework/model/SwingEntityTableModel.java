@@ -27,7 +27,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityConditionModel;
-import is.codion.framework.model.EntityEditor.EditorEntity;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
@@ -36,7 +35,6 @@ import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.util.Collection;
 import java.util.List;
@@ -125,7 +123,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 		super(requireNonNull(editModel), queryModel, tableModelBuilder(editModel.editor())
 						.items(requireNonNull(queryModel)::query)
 						.build());
-		addTableModelListener(this::onTableModelEvent);
 	}
 
 	private SwingEntityTableModel(SwingEntityEditModel editModel, Collection<Entity> items) {
@@ -258,22 +255,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 		});
 
 		return Optional.of(builder.build());
-	}
-
-	private void onTableModelEvent(TableModelEvent tableModelEvent) {
-		// Syncs the editor when the selected row is updated via the table (e.g. inline cell or multi item editing).
-		// The equalValues() guard prevents a redundant editor set when the update originated
-		// from the editor itself, since the editor already holds the updated entity.
-		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selection().index()
-						.optional()
-						.orElse(-1)
-						.intValue()) {
-			Entity selected = selection().item().get();
-			EditorEntity editorEntity = editor().entity();
-			if (!editorEntity.get().equalValues(selected)) {
-				editorEntity.replace(selected);
-			}
-		}
 	}
 
 	private static SwingFilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditor editor) {

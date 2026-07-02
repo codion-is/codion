@@ -220,6 +220,55 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	}
 
 	@Test
+	void editorSyncedOnUpdate() throws EntityValidationException {
+		// When the selected row is updated via the table (bulk/inline editing), the editor's active entity is
+		// refreshed to the new values so the edit form reflects them. Handled in the common AbstractEntityTableModel
+		// (previously only in Swing, triggered by a JTable TableModelEvent).
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
+		tableModel.items().refresh();
+		SwingEntityEditModel editModel = tableModel.editModel();
+		tableModel.selection().index().set(0);
+		Entity selected = tableModel.selection().item().get();
+		assertEquals(selected.get(Employee.NAME), editModel.editor().value(Employee.NAME).get());
+
+		EntityConnection connection = tableModel.connectionProvider().connection();
+		connection.startTransaction();
+		try {
+			// Update the selected row via a copy, as table editing does (not the editor's own active entity).
+			Entity edited = selected.copy().mutable();
+			editModel.editor().value(Employee.NAME).set(edited, "synced");
+			editModel.editor().tasks().update(singletonList(edited)).perform().handle();
+			assertEquals("synced", editModel.editor().value(Employee.NAME).get());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void editorNotSyncedOnUpdateWhenModified() throws EntityValidationException {
+		// A modified editor is left untouched by a table-driven update, so unsaved edits are never overwritten.
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
+		tableModel.items().refresh();
+		SwingEntityEditModel editModel = tableModel.editModel();
+		tableModel.selection().index().set(0);
+		Entity selected = tableModel.selection().item().get();
+		editModel.editor().value(Employee.NAME).set("dirty");// unsaved edit in the editor
+
+		EntityConnection connection = tableModel.connectionProvider().connection();
+		connection.startTransaction();
+		try {
+			Entity edited = selected.copy().mutable();
+			editModel.editor().value(Employee.NAME).set(edited, "synced");
+			editModel.editor().tasks().update(singletonList(edited)).perform().handle();
+			assertEquals("dirty", editModel.editor().value(Employee.NAME).get());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void orderQuery() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		OrderBy orderBy = tableModel.query().orderBy().getOrThrow();
