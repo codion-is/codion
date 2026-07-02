@@ -50,7 +50,7 @@ final class IdentityGenerator<T> implements Identity<T> {
 			ColumnDefinition<T> columnDefinition = entity.definition().columns().definition(column);
 			entity.remove(columnDefinition.attribute());
 			// must fetch value by column name, since some databases (PostgreSQL for example), return all columns, not just generated ones
-			entity.set(columnDefinition.attribute(), columnDefinition.get(generatedKeys));
+			entity.set(columnDefinition.attribute(), columnDefinition.get(generatedKeys, database));
 		}
 	}
 }

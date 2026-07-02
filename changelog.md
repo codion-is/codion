@@ -2,10 +2,15 @@ Codion Change Log
 =================
 
 ## 0.18.78
+### is.codion.common.db
+- Database.getter() and setter() added.
 ### is.codion.common.model
 - ConditionModel bug fixed, case-insensitive NOT_EQUAL now filters correctly.
 ### is.codion.framework.db.http
 - HttpEntityConnectionProvider now uses a locally registered domain when available.
+### is.codion.framework.domain
+- Column.GetValue and SetParameter moved to common.db as GetValue and SetValue.
+- ColumnDefinition.LEGACY_JDBC moved to Database.
 ### is.codion.framework.model
 - AbstractEntityEditor, foreign key based detail editor no longer validates non-present detail entities.
 - AttributeOperands added, AbstractEntityTableModel.EntityFilters now initialize boolean conditions correctly.

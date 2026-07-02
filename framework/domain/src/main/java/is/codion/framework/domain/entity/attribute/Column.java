@@ -28,8 +28,6 @@ import is.codion.framework.domain.entity.condition.ColumnConditions;
 import org.jspecify.annotations.Nullable;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -211,40 +209,6 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * @return a new {@link ColumnDefinition.Builder}
 		 */
 		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery);
-	}
-
-	/**
-	 * Gets a single value from a {@link ResultSet}.
-	 * @param <C> the column value type
-	 */
-	@FunctionalInterface
-	interface GetValue<C> {
-
-		/**
-		 * Fetches a single value from a ResultSet
-		 * @param resultSet the ResultSet
-		 * @param index the index of the column to fetch
-		 * @return a single value fetched from the given ResultSet
-		 * @throws java.sql.SQLException in case of an exception
-		 */
-		@Nullable C get(ResultSet resultSet, int index) throws SQLException;
-	}
-
-	/**
-	 * Sets a parameter value in a {@link PreparedStatement}
-	 * @param <C> the column value type
-	 */
-	@FunctionalInterface
-	interface SetParameter<C> {
-
-		/**
-		 * Sets a parameter value in a {@link PreparedStatement}
-		 * @param statement the statement
-		 * @param index the parameter index
-		 * @param value the value to set, may be null
-		 * @throws SQLException in case of an exception
-		 */
-		void set(PreparedStatement statement, int index, @Nullable C value) throws SQLException;
 	}
 
 	/**

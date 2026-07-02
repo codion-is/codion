@@ -18,6 +18,7 @@
  */
 package is.codion.framework.db.local;
 
+import is.codion.common.db.database.Database;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -51,14 +52,17 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 	private final List<ColumnDefinition<?>> columnDefinitions;
 	private final List<AttributeDefinition<?>> transientAttributes;
 	private final boolean customSelectColumns;
+	private final Database database;
 
 	/**
 	 * @param entityDefinition the entity definition
 	 * @param columnDefinitions the column definitions
+	 * @param database the {@link Database} providing the default value getters
 	 */
-	EntityResultPacker(EntityDefinition entityDefinition, List<ColumnDefinition<?>> columnDefinitions) {
+	EntityResultPacker(EntityDefinition entityDefinition, List<ColumnDefinition<?>> columnDefinitions, Database database) {
 		this.entityDefinition = entityDefinition;
 		this.columnDefinitions = columnDefinitions;
+		this.database = database;
 		this.transientAttributes = TRANSIENT_ATTRIBUTES.computeIfAbsent(entityDefinition, INIT_TRANSIENT_ATTRIBUTES);
 		this.customSelectColumns = entityDefinition.selectQuery()
 						.map(query -> query.columns() != null)
@@ -80,8 +84,8 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 			ColumnDefinition<Object> columnDefinition = (ColumnDefinition<Object>) columnDefinitions.get(i);
 			try {
 				values.put(columnDefinition.attribute(), customSelectColumns ?
-								columnDefinition.get(resultSet) :
-								columnDefinition.get(resultSet, i + 1));
+								columnDefinition.get(resultSet, database) :
+								columnDefinition.get(resultSet, i + 1, database));
 			}
 			catch (Exception e) {
 				throw new SQLException("Exception fetching: " + columnDefinition + ", entity: " +

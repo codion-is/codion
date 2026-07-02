@@ -80,6 +80,8 @@ public abstract class AbstractDatabase implements Database {
 	private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.getOrThrow();
 	private final @Nullable Integer transactionIsolation = TRANSACTION_ISOLATION.get();
 	private final DefaultQueryCounter queryCounter = new DefaultQueryCounter();
+	private final Map<Integer, GetValue<?>> getters = ColumnValues.getters(LEGACY_JDBC.getOrThrow());
+	private final Map<Integer, SetValue<?>> setters = ColumnValues.setters();
 	private final String url;
 
 	private ConnectionProvider connectionProvider = new ConnectionProvider() {};
@@ -208,6 +210,26 @@ public abstract class AbstractDatabase implements Database {
 	@Override
 	public final void connectionProvider(ConnectionProvider connectionProvider) {
 		this.connectionProvider = requireNonNull(connectionProvider);
+	}
+
+	@Override
+	public GetValue<?> getter(int sqlType) {
+		GetValue<?> getter = getters.get(sqlType);
+		if (getter == null) {
+			throw new IllegalArgumentException("No getter available for SQL type: " + sqlType);
+		}
+
+		return getter;
+	}
+
+	@Override
+	public SetValue<?> setter(int sqlType) {
+		SetValue<?> setter = setters.get(sqlType);
+		if (setter == null) {
+			throw new IllegalArgumentException("No setter available for SQL type: " + sqlType);
+		}
+
+		return setter;
 	}
 
 	@Override

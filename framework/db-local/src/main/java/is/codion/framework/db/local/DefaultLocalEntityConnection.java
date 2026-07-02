@@ -1148,7 +1148,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues);
 
 			return new DefaultEntityResultIterator(statement, resultSet,
-							new EntityResultPacker(entityDefinition, queryBuilder.selectedColumns()));
+							new EntityResultPacker(entityDefinition, queryBuilder.selectedColumns(), database));
 		}
 		catch (SQLException e) {
 			closeSilently(resultSet);
@@ -1165,7 +1165,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		int affectedRows = 0;
 		tracer.enter(EXECUTE_UPDATE, statementValues);
 		try {
-			affectedRows = setParameterValues(statement, statementColumns, statementValues).executeUpdate();
+			affectedRows = setParameterValues(statement, statementColumns, statementValues, database).executeUpdate();
 
 			return affectedRows;
 		}
@@ -1187,7 +1187,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		SQLException exception = null;
 		tracer.enter(EXECUTE_QUERY, statementValues);
 		try {
-			return setParameterValues(statement, statementColumns, statementValues).executeQuery();
+			return setParameterValues(statement, statementColumns, statementValues, database).executeQuery();
 		}
 		catch (SQLException e) {
 			exception = e;
@@ -1301,7 +1301,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		tracer.enter(PACK_RESULT);
 		try {
 			while (resultSet.next()) {
-				result.add(columnDefinition.get(resultSet, 1));
+				result.add(columnDefinition.get(resultSet, 1, database));
 			}
 
 			return result;
@@ -1590,7 +1590,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private static PreparedStatement setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,
-																											List<?> statementValues) throws SQLException {
+																											List<?> statementValues, Database database) throws SQLException {
 		if (statementColumns.isEmpty()) {
 			return statement;
 		}
@@ -1600,16 +1600,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 
 		for (int i = 0; i < statementColumns.size(); i++) {
-			setParameterValue(statement, (ColumnDefinition<Object>) statementColumns.get(i), statementValues.get(i), i + 1);
+			setParameterValue(statement, (ColumnDefinition<Object>) statementColumns.get(i), statementValues.get(i), i + 1, database);
 		}
 
 		return statement;
 	}
 
 	private static <T> void setParameterValue(PreparedStatement statement, ColumnDefinition<T> columnDefinition,
-																						T value, int parameterIndex) throws SQLException {
+																						T value, int parameterIndex, Database database) throws SQLException {
 		try {
-			columnDefinition.set(statement, parameterIndex, value);
+			columnDefinition.set(statement, parameterIndex, value, database);
 		}
 		catch (SQLException e) {
 			LOG.error("Unable to set parameter: {}, value: {}, value class: {}", columnDefinition, value, value == null ? "null" : value.getClass(), e);

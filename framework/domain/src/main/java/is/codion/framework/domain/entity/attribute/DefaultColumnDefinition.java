@@ -18,10 +18,11 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.GetValue;
+import is.codion.common.db.database.SetValue;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
-import is.codion.framework.domain.entity.attribute.Column.GetValue;
-import is.codion.framework.domain.entity.attribute.Column.SetParameter;
 
 import org.jspecify.annotations.Nullable;
 
@@ -41,9 +42,7 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static is.codion.common.utilities.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<T> implements ColumnDefinition<T> {
@@ -53,8 +52,6 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	private static final Converter<Object, Object> DEFAULT_CONVERTER = new DefaultConverter();
 	private static final Map<Class<?>, Integer> TYPE_MAP = createTypeMap();
-	private static final Map<Integer, GetValue<?>> GETTERS = createGetters();
-	private static final Map<Integer, SetParameter<?>> SETTERS = new ConcurrentHashMap<>();
 
 	private final int type;
 	private final int keyIndex;
@@ -69,8 +66,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	private final transient String name;
 	private final transient String expression;
-	private final transient GetValue<Object> getValue;
-	private final transient SetParameter<Object> setParameter;
+	private final transient @Nullable GetValue<Object> getValue;
+	private final transient @Nullable SetValue<Object> setValue;
 	private final transient Converter<T, Object> converter;
 	private final transient @Nullable Generator<T> generator;
 
@@ -85,7 +82,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		this.name = builder.name;
 		this.expression = builder.expression == null ? builder.name : builder.expression;
 		this.getValue = builder.getValue;
-		this.setParameter = builder.setParameter;
+		this.setValue = builder.setValue;
 		this.converter = builder.converter;
 		this.generator = builder.generator;
 		this.generated = builder.generator != null;
@@ -184,8 +181,9 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	}
 
 	@Override
-	public @Nullable T get(ResultSet resultSet, int index) throws SQLException {
-		Object value = getValue.get(resultSet, index);
+	public @Nullable T get(ResultSet resultSet, int index, Database database) throws SQLException {
+		GetValue<Object> reader = getValue != null ? getValue : (GetValue<Object>) database.getter(type);
+		Object value = reader.get(resultSet, index);
 		if (value != null || converter.handlesNull()) {
 			return converter.fromColumn(value);
 		}
@@ -194,13 +192,14 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 	}
 
 	@Override
-	public @Nullable T get(ResultSet resultSet) throws SQLException {
-		return get(resultSet, resultSet.findColumn(name));
+	public @Nullable T get(ResultSet resultSet, Database database) throws SQLException {
+		return get(resultSet, resultSet.findColumn(name), database);
 	}
 
 	@Override
-	public void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException {
-		setParameter.set(statement, index, columnValue(value, statement));
+	public void set(PreparedStatement statement, int index, @Nullable T value, Database database) throws SQLException {
+		SetValue<Object> writer = setValue != null ? setValue : (SetValue<Object>) database.setter(type);
+		writer.set(statement, index, columnValue(value, statement));
 	}
 
 	private @Nullable Object columnValue(@Nullable T value, PreparedStatement statement) throws SQLException {
@@ -209,25 +208,6 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		}
 
 		return null;
-	}
-
-	private static final class DefaultSetParameter implements SetParameter<Object> {
-
-		private final int type;
-
-		private DefaultSetParameter(int type) {
-			this.type = type;
-		}
-
-		@Override
-		public void set(PreparedStatement statement, int index, @Nullable Object value) throws SQLException {
-			if (value == null) {
-				statement.setNull(index, type);
-			}
-			else {
-				statement.setObject(index, value, type);
-			}
-		}
 	}
 
 	private static final class DefaultConverter implements Converter<Object, Object> {
@@ -266,29 +246,6 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		return typeMap;
 	}
 
-	private static Map<Integer, GetValue<?>> createGetters() {
-		// The temporal getters read via JDBC 4.2's ResultSet.getObject(int, Class); a legacy platform whose
-		// java.sql.ResultSet predates 4.2 (Android) opts into the pre-4.2 java.sql accessors via ColumnDefinition.LEGACY_JDBC.
-		boolean legacy = ColumnDefinition.LEGACY_JDBC.getOrThrow();
-		Map<Integer, GetValue<?>> getters = new HashMap<>();
-		getters.put(Types.SMALLINT, new GetShort());
-		getters.put(Types.INTEGER, new GetInteger());
-		getters.put(Types.BIGINT, new GetLong());
-		getters.put(Types.DOUBLE, new GetDouble());
-		getters.put(Types.DECIMAL, new GetBigDecimal());
-		getters.put(Types.DATE, legacy ? new GetLocalDateLegacy() : new GetLocalDate());
-		getters.put(Types.TIMESTAMP, legacy ? new GetLocalDateTimeLegacy() : new GetLocalDateTime());
-		getters.put(Types.TIME, legacy ? new GetLocalTimeLegacy() : new GetLocalTime());
-		getters.put(Types.TIMESTAMP_WITH_TIMEZONE, legacy ? new GetOffsetDateTimeLegacy() : new GetOffsetDateTime());
-		getters.put(Types.TIME_WITH_TIMEZONE, legacy ? new GetOffsetTimeLegacy() : new GetOffsetTime());
-		getters.put(Types.VARCHAR, new GetString());
-		getters.put(Types.BOOLEAN, new GetBoolean());
-		getters.put(Types.CHAR, new GetCharacter());
-		getters.put(Types.BLOB, new GetByteArray());
-
-		return getters;
-	}
-
 	static sealed class DefaultColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
 					extends AbstractValueAttributeDefinitionBuilder<T, B> implements ColumnDefinition.Builder<T, B>
 					permits AbstractReadOnlyColumnDefinitionBuilder {
@@ -302,8 +259,8 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		private boolean searchable;
 		private String name;
 		private @Nullable String expression;
-		private GetValue<Object> getValue;
-		private SetParameter<Object> setParameter;
+		private @Nullable GetValue<Object> getValue;
+		private @Nullable SetValue<Object> setValue;
 		private Converter<T, Object> converter;
 		private boolean groupBy;
 		private boolean aggregate;
@@ -324,7 +281,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 			this.searchable = false;
 			this.name = column.name();
 			this.getValue = (GetValue<Object>) getter(this.type, column);
-			this.setParameter = (SetParameter<Object>) setter(this.type);
+			this.setValue = null;
 			this.converter = (Converter<T, Object>) DEFAULT_CONVERTER;
 			this.groupBy = false;
 			this.aggregate = false;
@@ -347,7 +304,7 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = getter(this.type, (Column<Object>) super.attribute());
-			this.setParameter = new DefaultSetParameter(this.type);
+			this.setValue = null;
 			return self();
 		}
 
@@ -357,27 +314,27 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);
-			this.setParameter = new DefaultSetParameter(this.type);
+			this.setValue = null;
 			return self();
 		}
 
 		@Override
 		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter,
-																 SetParameter<C> setParameter) {
+																 SetValue<C> setValue) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = getter(this.type, (Column<Object>) super.attribute());
-			this.setParameter = (SetParameter<Object>) requireNonNull(setParameter);
+			this.setValue = (SetValue<Object>) requireNonNull(setValue);
 			return self();
 		}
 
 		@Override
 		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter,
-																 GetValue<C> getValue, SetParameter<C> setParameter) {
+																 GetValue<C> getValue, SetValue<C> setValue) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);
-			this.setParameter = (SetParameter<Object>) requireNonNull(setParameter);
+			this.setValue = (SetValue<Object>) requireNonNull(setValue);
 			return self();
 		}
 
@@ -456,20 +413,14 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 			return TYPE_MAP.getOrDefault(requireNonNull(clazz), Types.OTHER);
 		}
 
-		private static <T> GetValue<T> getter(int columnType, Column<T> column) {
+		// A column-specific getter for the raw column value, or null to resolve the default getter for the SQL type
+		// from the Database at read time. Types.OTHER reads via getObject(index, valueClass), which needs the value class.
+		private static <T> @Nullable GetValue<T> getter(int columnType, Column<T> column) {
 			if (columnType == Types.OTHER) {
 				return (GetValue<T>) new GetObject(column.type().valueClass());
 			}
-			if (!GETTERS.containsKey(columnType)) {
-				throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
-								", column: " + column + ", valueClass: " + column.type().valueClass());
-			}
 
-			return (GetValue<T>) GETTERS.get(columnType);
-		}
-
-		private static SetParameter<?> setter(int columnType) {
-			return SETTERS.computeIfAbsent(columnType, DefaultSetParameter::new);
+			return null;
 		}
 	}
 
@@ -509,190 +460,6 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 		@Override
 		public B expression(String expression) {
 			throw new UnsupportedOperationException("Column expression can not be set on a subquery column: " + super.attribute());
-		}
-	}
-
-	private static final class GetShort implements GetValue<Short> {
-
-		@Override
-		public @Nullable Short get(ResultSet resultSet, int index) throws SQLException {
-			short value = resultSet.getShort(index);
-
-			return value == 0 && resultSet.wasNull() ? null : value;
-		}
-	}
-
-	private static final class GetInteger implements GetValue<Integer> {
-
-		@Override
-		public @Nullable Integer get(ResultSet resultSet, int index) throws SQLException {
-			int value = resultSet.getInt(index);
-
-			return value == 0 && resultSet.wasNull() ? null : value;
-		}
-	}
-
-	private static final class GetLong implements GetValue<Long> {
-
-		@Override
-		public @Nullable Long get(ResultSet resultSet, int index) throws SQLException {
-			long value = resultSet.getLong(index);
-
-			return value == 0L && resultSet.wasNull() ? null : value;
-		}
-	}
-
-	private static final class GetDouble implements GetValue<Double> {
-
-		@Override
-		public @Nullable Double get(ResultSet resultSet, int index) throws SQLException {
-			double value = resultSet.getDouble(index);
-
-			return Double.compare(value, 0d) == 0 && resultSet.wasNull() ? null : value;
-		}
-	}
-
-	private static final class GetBigDecimal implements GetValue<BigDecimal> {
-
-		@Override
-		public @Nullable BigDecimal get(ResultSet resultSet, int index) throws SQLException {
-			BigDecimal value = resultSet.getBigDecimal(index);
-
-			return value == null ? null : value.stripTrailingZeros();
-		}
-	}
-
-	private static final class GetLocalDate implements GetValue<LocalDate> {
-
-		@Override
-		public @Nullable LocalDate get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getObject(index, LocalDate.class);
-		}
-	}
-
-	private static final class GetLocalDateTime implements GetValue<LocalDateTime> {
-
-		@Override
-		public @Nullable LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getObject(index, LocalDateTime.class);
-		}
-	}
-
-	private static final class GetOffsetDateTime implements GetValue<OffsetDateTime> {
-
-		@Override
-		public @Nullable OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getObject(index, OffsetDateTime.class);
-		}
-	}
-
-	private static final class GetLocalTime implements GetValue<LocalTime> {
-
-		@Override
-		public @Nullable LocalTime get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getObject(index, LocalTime.class);
-		}
-	}
-
-	private static final class GetOffsetTime implements GetValue<OffsetTime> {
-
-		@Override
-		public @Nullable OffsetTime get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getObject(index, OffsetTime.class);
-		}
-	}
-
-	// Pre-JDBC-4.2 temporal getters (ColumnDefinition.LEGACY_JDBC) for a platform whose java.sql predates 4.2 — notably
-	// Android, whose ResultSet lacks getObject(int, Class) AND whose java.sql.Timestamp/Date/Time lack the java.time
-	// bridges (toLocalDateTime() etc.). We rebuild the java.time value from the deprecated java.util.Date field
-	// accessors (getYear()/getMonth()/getDate()/getHours()/... plus Timestamp.getNanos()), which ARE present on
-	// Android — this is exactly what the missing toLocalDate()/toLocalDateTime()/toLocalTime() bridges do internally.
-	// The Offset types have no such field accessors, so they fall back to getObject(int) + cast (best-effort; a modern
-	// driver returns the java.time type directly).
-
-	private static final class GetLocalDateLegacy implements GetValue<LocalDate> {
-
-		@Override
-		public @Nullable LocalDate get(ResultSet resultSet, int index) throws SQLException {
-			java.sql.Date value = resultSet.getDate(index);
-
-			return value == null ? null : LocalDate.of(value.getYear() + 1900, value.getMonth() + 1, value.getDate());
-		}
-	}
-
-	private static final class GetLocalDateTimeLegacy implements GetValue<LocalDateTime> {
-
-		@Override
-		public @Nullable LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
-			Timestamp value = resultSet.getTimestamp(index);
-
-			return value == null ? null : LocalDateTime.of(value.getYear() + 1900, value.getMonth() + 1, value.getDate(),
-							value.getHours(), value.getMinutes(), value.getSeconds(), value.getNanos());
-		}
-	}
-
-	private static final class GetLocalTimeLegacy implements GetValue<LocalTime> {
-
-		@Override
-		public @Nullable LocalTime get(ResultSet resultSet, int index) throws SQLException {
-			Time value = resultSet.getTime(index);
-
-			return value == null ? null : LocalTime.of(value.getHours(), value.getMinutes(), value.getSeconds());
-		}
-	}
-
-	private static final class GetOffsetDateTimeLegacy implements GetValue<OffsetDateTime> {
-
-		@Override
-		public @Nullable OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
-			return (OffsetDateTime) resultSet.getObject(index);
-		}
-	}
-
-	private static final class GetOffsetTimeLegacy implements GetValue<OffsetTime> {
-
-		@Override
-		public @Nullable OffsetTime get(ResultSet resultSet, int index) throws SQLException {
-			return (OffsetTime) resultSet.getObject(index);
-		}
-	}
-
-	private static final class GetString implements GetValue<String> {
-
-		@Override
-		public @Nullable String get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getString(index);
-		}
-	}
-
-	private static final class GetBoolean implements GetValue<Boolean> {
-
-		@Override
-		public @Nullable Boolean get(ResultSet resultSet, int index) throws SQLException {
-			boolean value = resultSet.getBoolean(index);
-
-			return !value && resultSet.wasNull() ? null : value;
-		}
-	}
-
-	private static final class GetCharacter implements GetValue<Character> {
-
-		@Override
-		public @Nullable Character get(ResultSet resultSet, int index) throws SQLException {
-			String string = resultSet.getString(index);
-			if (nullOrEmpty(string)) {
-				return null;
-			}
-
-			return Character.valueOf(string.charAt(0));
-		}
-	}
-
-	private static final class GetByteArray implements GetValue<byte[]> {
-
-		@Override
-		public @Nullable byte[] get(ResultSet resultSet, int index) throws SQLException {
-			return resultSet.getBytes(index);
 		}
 	}
 
