@@ -18,13 +18,10 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityQueryModel;
@@ -37,15 +34,12 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.event.TableModelListener;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
@@ -230,31 +224,6 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityM
 	@Override
 	protected final void onRowsUpdated(int fromIndex, int toIndex) {
 		fireTableRowsUpdated(fromIndex, toIndex);
-	}
-
-	@Override
-	protected final Optional<OrderBy> orderBy() {
-		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = sort().columns().get().stream()
-						.filter(sortOrder -> sortOrder.identifier() instanceof Column)
-						.collect(toList());
-		if (columnSortOrder.isEmpty()) {
-			return Optional.empty();
-		}
-		OrderBy.Builder builder = OrderBy.builder();
-		columnSortOrder.forEach(sortOrder -> {
-			switch (sortOrder.sortOrder()) {
-				case ASCENDING:
-					builder.ascending((Column<?>) sortOrder.identifier());
-					break;
-				case DESCENDING:
-					builder.descending((Column<?>) sortOrder.identifier());
-					break;
-				default:
-					break;
-			}
-		});
-
-		return Optional.of(builder.build());
 	}
 
 	private static SwingFilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(SwingEntityEditor editor) {

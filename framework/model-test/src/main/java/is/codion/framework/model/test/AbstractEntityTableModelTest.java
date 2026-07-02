@@ -67,6 +67,10 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 					.domain(new TestDomain())
 					.build();
 
+	private static final String JONES = "JONES";
+	private static final String SYNCED = "synced";
+	private static final String REPLACED = "replaced";
+
 	private final EntityConnectionProvider connectionProvider;
 
 	protected final List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
@@ -320,7 +324,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
 		tableModel.items().refresh();
 		ConditionModel<String> nameCondition = tableModel.query().condition().get(Employee.NAME);
-		nameCondition.operands().equal().set("JONES");
+		nameCondition.operands().equal().set(JONES);
 		assertTrue(tableModel.query().condition().modified().is());
 		tableModel.items().refresh();
 		assertFalse(tableModel.query().condition().modified().is());
@@ -390,9 +394,9 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 		try {
 			// Update the selected row via a copy, as table editing does (not the editor's own active entity).
 			Entity edited = selected.copy().mutable();
-			editModel.editor().value(Employee.NAME).set(edited, "synced");
+			editModel.editor().value(Employee.NAME).set(edited, SYNCED);
 			editModel.editor().tasks().update(singletonList(edited)).perform().handle();
-			assertEquals("synced", editModel.editor().value(Employee.NAME).get());
+			assertEquals(SYNCED, editModel.editor().value(Employee.NAME).get());
 		}
 		finally {
 			connection.rollbackTransaction();
@@ -413,7 +417,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 		connection.startTransaction();
 		try {
 			Entity edited = selected.copy().mutable();
-			editModel.editor().value(Employee.NAME).set(edited, "synced");
+			editModel.editor().value(Employee.NAME).set(edited, SYNCED);
 			editModel.editor().tasks().update(singletonList(edited)).perform().handle();
 			assertEquals("dirty", editModel.editor().value(Employee.NAME).get());
 		}
@@ -447,10 +451,10 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 		Entity selected = tableModel.selection().item().get();
 		String originalName = selected.get(Employee.NAME);
 		Entity replacement = selected.copy().mutable();
-		replacement.set(Employee.NAME, "replaced");
+		replacement.set(Employee.NAME, REPLACED);
 		tableModel.replace(singletonList(replacement));
-		assertEquals("replaced", tableModel.selection().item().get().get(Employee.NAME));
-		assertEquals("replaced", tableModel.selection().items().get().get(0).get(Employee.NAME));
+		assertEquals(REPLACED, tableModel.selection().item().get().get(Employee.NAME));
+		assertEquals(REPLACED, tableModel.selection().items().get().get(0).get(Employee.NAME));
 		assertNotEquals(originalName, tableModel.selection().item().get().get(Employee.NAME));
 	}
 
@@ -461,10 +465,10 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<?, 
 		tableModel.items().refresh();
 		tableModel.selection().selectAll();
 		Entity jones = tableModel.selection().items().get().stream()
-						.filter(employee -> "JONES".equals(employee.get(Employee.NAME)))
+						.filter(employee -> JONES.equals(employee.get(Employee.NAME)))
 						.findFirst()
 						.orElseThrow(IllegalStateException::new);
-		tableModel.filters().get(Employee.NAME).operands().equal().set("JONES");
+		tableModel.filters().get(Employee.NAME).operands().equal().set(JONES);
 		tableModel.items().filter();
 		assertTrue(tableModel.selection().items().get().contains(jones));
 		tableModel.selection().items().get().forEach(selected ->

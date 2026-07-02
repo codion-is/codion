@@ -34,6 +34,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.ValueAttributeDefinition;
@@ -246,11 +247,6 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 	protected abstract void onRowsUpdated(int fromIndex, int toIndex);
 
 	/**
-	 * @return a {@link OrderBy} instance based on the sort order according to the {@link #sort()} model, an empty {@link Optional} if unsorted
-	 */
-	protected abstract Optional<OrderBy> orderBy();
-
-	/**
 	 * Called when entities of the type referenced by the given foreign key are updated
 	 * @param foreignKey the foreign key
 	 * @param entities the updated entities, mapped to their original primary key
@@ -270,6 +266,33 @@ public abstract class AbstractEntityTableModel<M extends EntityModel<M, E, T, R>
 				}
 			}
 		}
+	}
+
+	/**
+	 * @return a {@link OrderBy} instance based on the sort order according to the {@link #sort()} model, an empty {@link Optional} if unsorted
+	 */
+	private Optional<OrderBy> orderBy() {
+		List<FilterTableSort.ColumnSortOrder<Attribute<?>>> columnSortOrder = sort().columns().get().stream()
+						.filter(sortOrder -> sortOrder.identifier() instanceof Column)
+						.collect(toList());
+		if (columnSortOrder.isEmpty()) {
+			return Optional.empty();
+		}
+		OrderBy.Builder builder = OrderBy.builder();
+		columnSortOrder.forEach(sortOrder -> {
+			switch (sortOrder.sortOrder()) {
+				case ASCENDING:
+					builder.ascending((Column<?>) sortOrder.identifier());
+					break;
+				case DESCENDING:
+					builder.descending((Column<?>) sortOrder.identifier());
+					break;
+				default:
+					break;
+			}
+		});
+
+		return Optional.of(builder.build());
 	}
 
 	private void bindEvents() {
