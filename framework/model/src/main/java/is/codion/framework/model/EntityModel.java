@@ -36,8 +36,8 @@ import java.util.Map;
  * @param <T> the {@link EntityTableModel} type
  * @param <R> the {@link EntityEditor} type
  */
-public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> {
+public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> {
 
 	/**
 	 * @return the type of the entity this entity model is based on
@@ -99,8 +99,8 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	 * @param <T> the {@link EntityTableModel} type
 	 * @param <R> the {@link EntityEditor} type
 	 */
-	interface DetailModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> {
+	interface DetailModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+					T extends EntityTableModel<E, R>, R extends EntityEditor<R>> {
 
 		/**
 		 * @return an unmodifiable view of the detail models this model contains

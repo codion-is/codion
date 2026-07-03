@@ -28,13 +28,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link EntityEditModel} implementation
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
  * @param <R> the {@link EntityEditor} type
  */
-public class DefaultEntityEditModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements EntityEditModel<M, E, T, R> {
+public class DefaultEntityEditModel<R extends EntityEditor<R>> implements EntityEditModel<R> {
 
 	private final R editor;
 

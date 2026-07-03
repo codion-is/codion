@@ -30,8 +30,8 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements ForeignKeyModelLink {
+final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements ForeignKeyModelLink {
 
 	private final ForeignKey foreignKey;
 	private final DefaultModelLink<M, E, T, R> modelLink;
@@ -141,8 +141,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		}
 	}
 
-	static final class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
+	static final class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+					T extends EntityTableModel<E, R>, R extends EntityEditor<R>,
 					B extends ForeignKeyModelLink.Builder<B>> implements Builder<B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
@@ -238,14 +238,14 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 	static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
-		public <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-						T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends ForeignKeyModelLink.Builder<B>> Builder.ForeignKeyStep<B> model(M model) {
+		public <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+						T extends EntityTableModel<E, R>, R extends EntityEditor<R>, B extends ForeignKeyModelLink.Builder<B>> Builder.ForeignKeyStep<B> model(M model) {
 			return new DefaultForeignKeyStep<>(requireNonNull(model));
 		}
 	}
 
-	private static final class DefaultForeignKeyStep<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>,
+	private static final class DefaultForeignKeyStep<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+					T extends EntityTableModel<E, R>, R extends EntityEditor<R>,
 					B extends ForeignKeyModelLink.Builder<B>> implements Builder.ForeignKeyStep<B> {
 
 		private final M model;

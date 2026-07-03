@@ -51,7 +51,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		return new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
 	}
 
-	public static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
+	public static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityEditor> {
 
 		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(new TestEntityEditor(entityType, connectionProvider));
@@ -87,5 +87,5 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
 	public interface TestComponentModels extends ComponentModels {}
 
-	public interface TestEntityTableModel extends EntityTableModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {}
+	public interface TestEntityTableModel extends EntityTableModel<TestEntityEditModel, TestEntityEditor> {}
 }

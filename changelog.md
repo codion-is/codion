@@ -16,6 +16,7 @@ Codion Change Log
 - AttributeOperands added, AbstractEntityTableModel.EntityFilters now initialize boolean conditions correctly.
 - AbstractEntityTableModel now handles syncing the editor.
 - AbstractEntityTableModel.orderBy() now private and implemented.
+- EntityEditModel and EntityTableModel type parameters reduced.
 ### is.codion.framework.model.test
 - Platform agnostic unit tests improved.
 ### is.codion.swing.framework.model

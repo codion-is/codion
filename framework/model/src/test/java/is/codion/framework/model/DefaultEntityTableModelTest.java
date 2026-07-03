@@ -77,8 +77,7 @@ public final class DefaultEntityTableModelTest extends
 	 * (synchronous) refresher, an empty {@link #orderBy()} and no-op {@link #onRowsUpdated}. Mirrors the shape of
 	 * {@code AndroidEntityTableModel}, the real minimal implementation.
 	 */
-	public static final class TestEntityTableModel extends AbstractEntityTableModel<
-					TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
+	public static final class TestEntityTableModel extends AbstractEntityTableModel<TestEntityEditModel, TestEntityEditor> {
 
 		private final EntityRowEditor rowEditor;
 
@@ -142,7 +141,7 @@ public final class DefaultEntityTableModelTest extends
 		}
 	}
 
-	public static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
+	public static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityEditor> {
 
 		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(new TestEntityEditor(entityType, connectionProvider));
