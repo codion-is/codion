@@ -556,7 +556,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		@Override
 		public void publish(V... chunks) {
-			ProgressWorker.this.publish(chunks);
 			if (!onPublish.isEmpty()) {
 				invokeLater(() -> onPublish.forEach(c -> c.accept(asList(chunks))));
 			}

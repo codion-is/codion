@@ -6,6 +6,8 @@ Codion Change Log
 - Database.getter() and setter() added.
 ### is.codion.common.model
 - ConditionModel bug fixed, case-insensitive NOT_EQUAL now filters correctly.
+### is.codion.swing.common.model
+- ProgressWorker, redundant call to super.publish() removed.
 ### is.codion.framework.db.http
 - HttpEntityConnectionProvider now uses a locally registered domain when available.
 ### is.codion.framework.domain
