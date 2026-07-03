@@ -39,8 +39,8 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the {@link EntityTableModel} type
  * @param <R> the {@link EntityEditor} type
  */
-public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements EntityApplicationModel<M, E, T, R> {
+public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements EntityApplicationModel<M, E, T, R> {
 
 	private final EntityConnectionProvider connectionProvider;
 	private final DefaultEntityModels<M, E, T, R> models;
@@ -102,8 +102,8 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T, R>, E 
 		return preferences;
 	}
 
-	private final class DefaultEntityModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements EntityModels<M, E, T, R> {
+	private final class DefaultEntityModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+					T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements EntityModels<M, E, T, R> {
 
 		private final Collection<M> entityModels;
 

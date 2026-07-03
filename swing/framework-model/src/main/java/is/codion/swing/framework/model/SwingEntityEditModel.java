@@ -27,8 +27,7 @@ import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 /**
  * A Swing implementation of {@link EntityEditModel}.
  */
-public class SwingEntityEditModel extends DefaultEntityEditModel<SwingEntityModel,
-				SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
+public class SwingEntityEditModel extends DefaultEntityEditModel<SwingEntityEditor> {
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.

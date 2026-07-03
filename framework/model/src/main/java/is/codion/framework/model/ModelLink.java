@@ -60,8 +60,8 @@ public sealed interface ModelLink permits DefaultModelLink, ForeignKeyModelLink 
 			 * @param <B> the builder type
 			 * @return a {@link Builder} instance
 			 */
-			<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-							T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends Builder<B>> Builder<B> model(M model);
+			<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+							T extends EntityTableModel<E, R>, R extends EntityEditor<R>, B extends Builder<B>> Builder<B> model(M model);
 		}
 
 		/**

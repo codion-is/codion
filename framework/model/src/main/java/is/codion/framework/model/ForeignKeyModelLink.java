@@ -112,8 +112,8 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 			 * @param <B> the builder type
 			 * @return a new {@link Builder.ForeignKeyStep}
 			 */
-			<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-							T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends ForeignKeyModelLink.Builder<B>> ForeignKeyStep<B> model(M model);
+			<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+							T extends EntityTableModel<E, R>, R extends EntityEditor<R>, B extends ForeignKeyModelLink.Builder<B>> ForeignKeyStep<B> model(M model);
 		}
 
 		/**

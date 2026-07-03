@@ -29,14 +29,10 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 /**
  * Specifies a class for editing an {@link Entity} instance.
  * The underlying attribute values are available via {@link EntityEditor#value(Attribute)}.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
  * @param <R> the {@link EntityEditor} type
  * @see #editor()
  */
-public interface EntityEditModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> {
+public interface EntityEditModel<R extends EntityEditor<R>> {
 
 	/**
 	 * @return the type of the entity this edit model is based on

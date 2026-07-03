@@ -1404,12 +1404,12 @@ public final class AbstractEntityEditorTest {
 		}
 	}
 
-	private static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
+	private static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityEditor> {
 
 		private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(new TestEntityEditor(entityType, connectionProvider));
 		}
 	}
 
-	private interface TestEntityTableModel extends EntityTableModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {}
+	private interface TestEntityTableModel extends EntityTableModel<TestEntityEditModel, TestEntityEditor> {}
 }

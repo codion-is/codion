@@ -27,8 +27,8 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-				T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>> implements ModelLink {
+final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements ModelLink {
 
 	private final M model;
 	private final State active;
@@ -79,14 +79,14 @@ final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends Entity
 	static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
-		public <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>, T extends EntityTableModel<M, E, T, R>,
+		public <M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>, T extends EntityTableModel<E, R>,
 						R extends EntityEditor<R>, B extends Builder<B>> Builder<B> model(M model) {
 			return new DefaultBuilder<>(requireNonNull(model));
 		}
 	}
 
-	static class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<M, E, T, R>,
-					T extends EntityTableModel<M, E, T, R>, R extends EntityEditor<R>, B extends Builder<B>>
+	static class DefaultBuilder<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+					T extends EntityTableModel<E, R>, R extends EntityEditor<R>, B extends Builder<B>>
 					implements Builder<B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
