@@ -506,7 +506,7 @@ public class EntityServiceTest {
 	private static EntityServerConfiguration configure() {
 		Clients.SERVER_HOSTNAME.set("localhost");
 		Clients.resolveTrustStore();
-		EntityService.SERALIZATION.set(true);
+		EntityService.SERIALIZATION.set(true);
 		EntityService.SECURE.set(false);
 
 		return EntityServerConfiguration.builder(3223, 3221)
