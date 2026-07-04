@@ -24,6 +24,7 @@ Codion Change Log
 - AbstractEntityTableModel now handles syncing the editor.
 - AbstractEntityTableModel.orderBy() now private and implemented.
 - EntityEditModel and EntityTableModel type parameters reduced.
+- AbstractEntityEditor.createMessage(), html tag fixed.
 ### is.codion.framework.model.test
 - Platform agnostic unit tests improved.
 ### is.codion.swing.framework.model

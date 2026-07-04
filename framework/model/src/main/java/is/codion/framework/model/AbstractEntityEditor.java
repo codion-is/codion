@@ -404,7 +404,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		return Stream.of(validationMessage, description)
-						.collect(joining("<br>", "<html>", "</html"));
+						.collect(joining("<br>", "<html>", "</html>"));
 	}
 
 	private Map<Attribute<?>, String> updateEntityValidState() {
