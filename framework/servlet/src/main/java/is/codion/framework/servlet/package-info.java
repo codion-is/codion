@@ -26,7 +26,7 @@
  * <li>{@link is.codion.framework.servlet.EntityService#KEYSTORE_PATH}
  * <li>{@link is.codion.framework.servlet.EntityService#KEYSTORE_PASSWORD}
  * <li>{@link is.codion.framework.servlet.EntityService#JSON}
- * <li>{@link is.codion.framework.servlet.EntityService#SERALIZATION}
+ * <li>{@link is.codion.framework.servlet.EntityService#SERIALIZATION}
  * </ul>
  */
 package is.codion.framework.servlet;

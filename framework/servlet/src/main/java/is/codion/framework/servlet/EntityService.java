@@ -166,7 +166,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> SERALIZATION = booleanValue("codion.server.http.serialization", false);
+	public static final PropertyValue<Boolean> SERIALIZATION = booleanValue("codion.server.http.serialization", false);
 
 	/**
 	 * Specifies whether json based services should be enabled.
@@ -219,7 +219,7 @@ public final class EntityService implements AuxiliaryServer {
 	private final Javalin javalin;
 	private final int port;
 	private final int securePort;
-	private final boolean serialization = SERALIZATION.getOrThrow();
+	private final boolean serialization = SERIALIZATION.getOrThrow();
 	private final boolean json = JSON.getOrThrow();
 	private final boolean sslEnabled;
 	private final boolean useVirtualThreads;
