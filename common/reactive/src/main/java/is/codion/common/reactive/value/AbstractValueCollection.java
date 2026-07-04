@@ -94,6 +94,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
+	@SafeVarargs
 	public final boolean addAll(T... values) {
 		return addAll(asList(values));
 	}
@@ -120,6 +121,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
+	@SafeVarargs
 	public final boolean removeAll(T... values) {
 		return removeAll(asList(values));
 	}
@@ -214,15 +216,18 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 		}
 
 		@Override
-		protected synchronized @Nullable T getValue() {
-			C collection = AbstractValueCollection.this.getOrThrow();
-
-			return collection.isEmpty() ? null : collection.iterator().next();
+		protected @Nullable T getValue() {
+			synchronized (AbstractValueCollection.this) {
+				C collection = AbstractValueCollection.this.getOrThrow();
+				return collection.isEmpty() ? null : collection.iterator().next();
+			}
 		}
 
 		@Override
-		protected synchronized void setValue(@Nullable T value) {
-			AbstractValueCollection.this.set(value == null ? emptyList() : singleton(value));
+		protected void setValue(@Nullable T value) {
+			synchronized (AbstractValueCollection.this) {
+				AbstractValueCollection.this.set(value == null ? emptyList() : singleton(value));
+			}
 		}
 	}
 
