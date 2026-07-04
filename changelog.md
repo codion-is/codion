@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.78
+### is.codion.common.reactive
+- AbstractValueCollection.SingleValue synchronization corrected.
 ### is.codion.common.db
 - Database.getter() and setter() added.
 ### is.codion.common.model
