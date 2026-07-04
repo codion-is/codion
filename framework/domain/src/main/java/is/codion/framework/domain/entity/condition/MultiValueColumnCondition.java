@@ -83,9 +83,9 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		String identifier = columnExpression;
 		boolean caseInsensitiveString = column().type().isString() && !caseSensitive();
 		if (caseInsensitiveString) {
-			identifier = "upper(" + identifier + ")";
+			identifier = "UPPER(" + identifier + ")";
 		}
-		String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
+		String valuePlaceholder = caseInsensitiveString ? "UPPER(?)" : "?";
 
 		return createInList(identifier, valuePlaceholder, values().size(), notIn);
 	}
