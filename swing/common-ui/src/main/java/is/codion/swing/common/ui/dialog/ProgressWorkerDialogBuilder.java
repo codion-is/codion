@@ -20,6 +20,14 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTaskHandler;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
+import is.codion.swing.common.model.worker.ProgressWorker.Task;
+import is.codion.swing.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;
@@ -47,7 +55,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * These delays can be customized via {@link #delay(int, int)} or the system properties.
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result this {@link ProgressWorker} produces.
- * @see ProgressWorker.ProgressResultTask#execute(ProgressWorker.ProgressReporter) to indicate work progress
+ * @see ProgressResultTask#execute(ProgressWorker.ProgressReporter) to indicate work progress
  * @see #delay(int, int)
  */
 public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>> {
@@ -88,36 +96,36 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	interface BuilderFactory {
 
 		/**
-		 * @param task the task to run, if it implements {@link ProgressWorker.TaskHandler} its handler methods are wired automatically
+		 * @param task the task to run, if it implements {@link TaskHandler} its handler methods are wired automatically
 		 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 		 */
-		ProgressWorkerDialogBuilder<?, ?> task(ProgressWorker.Task task);
+		ProgressWorkerDialogBuilder<?, ?> task(Task task);
 
 		/**
-		 * @param task the task to run, if it implements {@link ProgressWorker.ResultTaskHandler} its handler methods are wired automatically
+		 * @param task the task to run, if it implements {@link ResultTaskHandler} its handler methods are wired automatically
 		 * @param <T> the worker result type
 		 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 		 */
-		<T> ProgressWorkerDialogBuilder<T, ?> task(ProgressWorker.ResultTask<T> task);
+		<T> ProgressWorkerDialogBuilder<T, ?> task(ResultTask<T> task);
 
 		/**
 		 * Note, also sets the progress bar type to 'determinate'.
-		 * @param task the task to run, if it implements {@link ProgressWorker.ProgressTaskHandler} its handler methods are wired automatically
+		 * @param task the task to run, if it implements {@link ProgressTaskHandler} its handler methods are wired automatically
 		 * @param <V> the worker intermediate result type
 		 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
 		 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
 		 */
-		<V> ProgressWorkerDialogBuilder<?, V> task(ProgressWorker.ProgressTask<V> task);
+		<V> ProgressWorkerDialogBuilder<?, V> task(ProgressTask<V> task);
 
 		/**
 		 * Note, also sets the progress bar type to 'determinate'.
-		 * @param task the task to run, if it implements {@link ProgressWorker.ProgressResultTaskHandler} its handler methods are wired automatically
+		 * @param task the task to run, if it implements {@link ProgressResultTaskHandler} its handler methods are wired automatically
 		 * @param <T> the worker result type
 		 * @param <V> the worker intermediate result type
 		 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
 		 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
 		 */
-		<T, V> ProgressWorkerDialogBuilder<T, V> task(ProgressWorker.ProgressResultTask<T, V> task);
+		<T, V> ProgressWorkerDialogBuilder<T, V> task(ProgressResultTask<T, V> task);
 	}
 
 	/**
