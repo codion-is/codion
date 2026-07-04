@@ -43,12 +43,14 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
 
 	private final Entities entities;
 	private final EntityObjectMapper entityObjectMapper;
+	private final boolean strictDeserialization;
 	private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
 
 	EntityDeserializer(Entities entities, EntityObjectMapper entityObjectMapper) {
 		super(Entity.class);
 		this.entities = entities;
 		this.entityObjectMapper = entityObjectMapper;
+		this.strictDeserialization = Entities.STRICT_DESERIALIZATION.getOrThrow();
 	}
 
 	@Override
@@ -81,11 +83,20 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
 	private Map<Attribute<?>, Object> attributeValueMap(EntityDefinition definition, JsonNode values) {
 		Map<Attribute<?>, Object> valueMap = new HashMap<>();
 		for (Map.Entry<String, JsonNode> field : values.properties()) {
-			Attribute<?> attribute = definition.attributes().getOrThrow(field.getKey());
-			Object value = entityObjectMapper.convertValue(field.getValue(), attribute.type().valueClass());
-			valueMap.put(attribute, value);
+			Attribute<?> attribute = attribute(definition, field.getKey());
+			if (attribute != null) {
+				valueMap.put(attribute, entityObjectMapper.convertValue(field.getValue(), attribute.type().valueClass()));
+			}
 		}
 
 		return valueMap;
+	}
+
+	private Attribute<?> attribute(EntityDefinition definition, String attributeName) {
+		if (strictDeserialization) {
+			return definition.attributes().getOrThrow(attributeName);
+		}
+
+		return definition.attributes().get(attributeName);
 	}
 }

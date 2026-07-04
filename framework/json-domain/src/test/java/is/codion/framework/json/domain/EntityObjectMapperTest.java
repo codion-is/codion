@@ -29,6 +29,7 @@ import is.codion.framework.json.TestDomain.TestEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -92,6 +93,33 @@ public final class EntityObjectMapperTest {
 		assertTrue(entityModified.modified());
 		assertTrue(entityModified.modified(TestEntity.BOOLEAN));
 		assertFalse(entityModified.get(TestEntity.ENTITY).mutable());
+	}
+
+	@Test
+	void strictDeserialization() throws Exception {
+		Entity dept = entities.entity(Department.TYPE)
+						.with(Department.DEPTNO, 1)
+						.with(Department.NAME, "Name")
+						.build();
+		// Inject an attribute the domain does not know into the serialized values.
+		ObjectNode node = (ObjectNode) mapper.readTree(mapper.writeValueAsString(dept));
+		((ObjectNode) node.get("values")).put("unknown_attribute", 42);
+		String json = mapper.writeValueAsString(node);
+
+		// Strict (the default) rejects the unknown attribute, mirroring the java-serialization path.
+		assertThrows(Exception.class, () -> mapper.readValue(json, Entity.class));
+
+		// Lenient drops the unknown attribute and deserializes the rest. STRICT_DESERIALIZATION is read at deserializer
+		// construction, so the mapper is built after flipping it.
+		Entities.STRICT_DESERIALIZATION.set(false);
+		try {
+			Entity lenient = new EntityObjectMapper(entities).readValue(json, Entity.class);
+			assertEquals(1, lenient.get(Department.DEPTNO));
+			assertEquals("Name", lenient.get(Department.NAME));
+		}
+		finally {
+			Entities.STRICT_DESERIALIZATION.set(true);
+		}
 	}
 
 	@Test
