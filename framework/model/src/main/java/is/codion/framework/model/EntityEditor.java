@@ -911,7 +911,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	}
 
 	/**
-	 * Provides access to the underlying values.
+	 * Provides a value change listener.
 	 */
 	interface EditorValues {
 
