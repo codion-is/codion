@@ -15,6 +15,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - Column.GetValue and SetParameter moved to common.db as GetValue and SetValue.
 - ColumnDefinition.LEGACY_JDBC moved to Database.
+- MultiValueCondition, upper(val) now uppercase.
 ### is.codion.framework.servlet
 - EntityService.SERIALIZATION config param typo fixed.
 ### is.codion.framework.model
