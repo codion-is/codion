@@ -37,10 +37,12 @@ Codion Change Log
 - AbstractEntityTableModel.orderBy() now private and implemented.
 - EntityEditModel and EntityTableModel type parameters reduced.
 - AbstractEntityEditor.createMessage(), html tag fixed.
+- AbstractEntityEditor now executes editor tasks asynchronously via ProgressWorker, gated by Dispatcher.
 ### is.codion.framework.model.test
 - Platform agnostic unit tests improved.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel, editor sync via table model events removed.
+- SwingEntityEditor.execute() override removed, editor task execution folded into AbstractEntityEditor.
 ### is.codion.swing.framework.ui
 - EntityEditorInspector added, a UiInspector exposing the edit model state.
 - EntityTableModelInspector added, a UiInspector exposing the table model row count and selection.
