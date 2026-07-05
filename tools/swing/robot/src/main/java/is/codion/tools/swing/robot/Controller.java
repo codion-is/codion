@@ -324,7 +324,7 @@ public final class Controller {
 	 * means any exception thrown while processing the event is handled by the application's event dispatch
 	 * thread just as it would be for real input, instead of propagating back here.
 	 */
-	private void dispatch(int modifiers, int keyCode) {
+	private static void dispatch(int modifiers, int keyCode) {
 		onEventDispatchThread(() -> {
 			Component focusOwner = focusOwner();
 			long when = currentTimeMillis();
@@ -335,7 +335,7 @@ public final class Controller {
 		barrier();
 	}
 
-	private void dispatchTyped(char character) {
+	private static void dispatchTyped(char character) {
 		onEventDispatchThread(() -> {
 			Component focusOwner = focusOwner();
 			getDefaultToolkit().getSystemEventQueue()
