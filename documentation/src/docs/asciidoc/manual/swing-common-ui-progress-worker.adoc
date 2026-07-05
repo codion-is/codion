@@ -3,62 +3,60 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-{url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.html[ProgressWorker] is a https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html[SwingWorker] extension, providing a fluent API for constructing background task workers for a variety of task types.
+{url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.html[ProgressWorker] provides a fluent API for constructing background task workers for a variety of task types.
 
-All handlers get called on the https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html[EventDispatchThread].
+NOTE: ProgressWorker instances can **not** be reused. Tasks, on the other hand, can be made stateful and reusable if required.
 
-NOTE: Like https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html[SwingWorker], ProgressWorker instances can **not** be reused. Tasks, on the other hand, can be made stateful and reusable if required.
-
-== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.Task.html[Task]
+== {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.Task.html[Task]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=taskWorker]
+include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=taskWorker]
 ----
 
-== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.TaskHandler.html[TaskHandler]
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=taskHandler]
-----
-
-== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ResultTask.html[ResultTask]
+== {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.TaskHandler.html[TaskHandler]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=resultTaskWorker]
+include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=taskHandler]
 ----
 
-== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ResultTaskHandler.html[ResultTaskHandler]
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=resultTaskHandler]
-----
-
-== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ProgressTask.html[ProgressTask]
+== {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ResultTask.html[ResultTask]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressTaskWorker]
+include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=resultTaskWorker]
 ----
 
-== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ProgressTaskHandler.html[ProgressTaskHandler]
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressTaskHandler]
-----
-
-== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ProgressResultTask.html[ProgressResultTask]
+== {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ResultTaskHandler.html[ResultTaskHandler]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressResultWorker]
+include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=resultTaskHandler]
+----
+
+== {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ProgressTask.html[ProgressTask]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=progressTaskWorker]
+----
+
+== {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ProgressTaskHandler.html[ProgressTaskHandler]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=progressTaskHandler]
+----
+
+== {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ProgressResultTask.html[ProgressResultTask]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=progressResultWorker]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressResultTask1;progressResultTask2]
+include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=progressResultTask1;progressResultTask2]
 ----

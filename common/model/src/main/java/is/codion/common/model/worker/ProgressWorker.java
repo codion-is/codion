@@ -148,14 +148,14 @@ public final class ProgressWorker<T, V> {
 	/**
 	 * @return true if this task was cancelled before it completed
 	 */
-	public boolean isCancelled() {
+	public boolean cancelled() {
 		return future.isCancelled();
 	}
 
 	/**
 	 * @return true if this task has completed, whether normally, via an exception or cancellation
 	 */
-	public boolean isDone() {
+	public boolean done() {
 		return future.isDone();
 	}
 
