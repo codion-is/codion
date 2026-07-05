@@ -19,6 +19,8 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.item.Item;
@@ -34,8 +36,6 @@ import is.codion.swing.common.model.action.DelayedAction;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;

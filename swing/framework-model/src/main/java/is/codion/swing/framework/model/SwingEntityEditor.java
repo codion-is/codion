@@ -18,6 +18,8 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -27,8 +29,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityEditor;
 import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
-import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
 import org.jspecify.annotations.Nullable;

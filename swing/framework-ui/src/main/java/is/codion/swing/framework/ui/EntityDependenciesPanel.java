@@ -18,12 +18,12 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;

@@ -17,7 +17,11 @@
  * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
  */
 /**
- * <p>Swing implementation of {@link is.codion.common.model.worker.Dispatcher}.
+ * <p>Executing background tasks with progress reporting.
+ * <ul>
+ * <li>{@link is.codion.common.model.worker.ProgressWorker}
+ * <li>{@link is.codion.common.model.worker.Dispatcher}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
-package is.codion.swing.common.model.worker;
+package is.codion.common.model.worker;

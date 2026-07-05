@@ -18,16 +18,16 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
+import is.codion.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.common.model.worker.ProgressWorker.ProgressTaskHandler;
+import is.codion.common.model.worker.ProgressWorker.ResultTask;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
+import is.codion.common.model.worker.ProgressWorker.Task;
+import is.codion.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTaskHandler;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
-import is.codion.swing.common.model.worker.ProgressWorker.Task;
-import is.codion.swing.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;

@@ -18,6 +18,7 @@
  */
 package is.codion.demos.chinook.model;
 
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -25,7 +26,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.framework.model.SwingEntityConditions;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 

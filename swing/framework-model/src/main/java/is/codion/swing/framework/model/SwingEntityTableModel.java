@@ -18,6 +18,8 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -27,8 +29,6 @@ import is.codion.framework.model.EntityConditionModel;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
-import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 
 import org.jspecify.annotations.Nullable;
 

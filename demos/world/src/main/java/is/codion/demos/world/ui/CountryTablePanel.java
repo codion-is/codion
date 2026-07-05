@@ -18,10 +18,10 @@
  */
 package is.codion.demos.world.ui;
 
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryTableModel;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.ui.component.image.ImagePane;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;

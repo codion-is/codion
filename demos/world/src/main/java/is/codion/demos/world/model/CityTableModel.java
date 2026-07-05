@@ -18,6 +18,8 @@
  */
 package is.codion.demos.world.model;
 
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
@@ -27,8 +29,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;

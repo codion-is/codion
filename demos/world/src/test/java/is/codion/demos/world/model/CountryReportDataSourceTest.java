@@ -18,6 +18,7 @@
  */
 package is.codion.demos.world.model;
 
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.world.domain.WorldImpl;
@@ -28,7 +29,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;

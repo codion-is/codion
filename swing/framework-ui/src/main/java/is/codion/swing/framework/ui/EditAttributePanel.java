@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.resource.MessageBundle;
@@ -29,7 +30,6 @@ import is.codion.framework.domain.entity.exception.AttributeValidationException;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor.EditorTask;
 import is.codion.framework.model.EntityEditor.EditorTask.Result;
-import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;

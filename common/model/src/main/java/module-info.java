@@ -46,4 +46,7 @@ module is.codion.common.model {
 	exports is.codion.common.model.preferences;
 	exports is.codion.common.model.selection;
 	exports is.codion.common.model.summary;
+	exports is.codion.common.model.worker;
+
+	uses is.codion.common.model.worker.Dispatcher;
 }

@@ -20,9 +20,9 @@ package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.AbstractRefresher;
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.utilities.exceptions.Exceptions;
-import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 
 import org.jspecify.annotations.Nullable;
 
