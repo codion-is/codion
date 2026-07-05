@@ -178,6 +178,10 @@ public final class SwingMcpServer {
 											"type": "integer",
 											"description": "Number of times to repeat 'key' (default: 1)"
 										},
+										"wait": {
+											"type": "integer",
+											"description": "Milliseconds to wait before the next step, to let asynchronous application work (a table refresh, master-detail selection) settle, e.g. after an insert or navigation"
+										},
 										"description": {
 											"type": "string",
 											"description": "Optional description of the step"
@@ -246,7 +250,7 @@ public final class SwingMcpServer {
 
 	/**
 	 * Runs an ordered batch of interactions, stopping at the first that does not go through.
-	 * @param steps the interactions, each with either 'key' (optionally repeated) or 'text'
+	 * @param steps the interactions, each with 'key' (optionally repeated), 'text' or 'wait' (milliseconds)
 	 * @return {@code {ok:true, executed:n}} if all went through, otherwise
 	 * {@code {ok:false, failedAt:i, step, ...}} for the first {@code MISSED} or failed step
 	 */
@@ -256,12 +260,19 @@ public final class SwingMcpServer {
 		List<Map<String, Object>> fellThrough = new ArrayList<>();
 		for (int i = 0; i < steps.size(); i++) {
 			Map<String, Object> step = steps.get(i);
+			Object wait = step.get("wait");
+			if (wait instanceof Number) {
+				// let asynchronous application work (a refresh, master-detail selection) settle before the next step
+				controller.pause(((Number) wait).intValue());
+				continue;
+			}
 			Interaction interaction;
 			try {
 				interaction = execute(step);
 			}
 			catch (RuntimeException e) {
-				return failed(i, step, Map.<String, Object>of("error", String.valueOf(e.getMessage())));
+				return failed(i, step, Map.<String, Object>of("error",
+								e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage()));
 			}
 			if (interaction.delivery() == Interaction.Delivery.MISSED) {
 				return failed(i, step, interaction(interaction));
@@ -290,7 +301,7 @@ public final class SwingMcpServer {
 			return controller.key((String) key, integerParam(step, "repeat", 1), (String) step.get("description"));
 		}
 
-		throw new IllegalArgumentException("Each interaction requires 'text' or 'key': " + step);
+		throw new IllegalArgumentException("Each interaction requires 'text', 'key' or 'wait': " + step);
 	}
 
 	private static Map<String, Object> failed(int index, Map<String, Object> step, Map<String, Object> detail) {

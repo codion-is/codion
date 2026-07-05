@@ -44,6 +44,7 @@ Codion Change Log
 - model_state tool added, exposes the edit model state behind the focused component.
 - Key and type tools now return the Interaction verdict.
 - interactions tool added, runs a batch of key events in one call, stopping at the first miss.
+- interactions tool 'wait' step added, pauses between steps to let asynchronous application work settle.
 
 ## 0.18.77
 ### is.codion.common.reactive
