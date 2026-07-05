@@ -167,11 +167,6 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 		Builder<T> onItemSelected(Consumer<@Nullable T> item);
 
 		/**
-		 * @param async true if async refresh should be enabled @return this builder
-		 */
-		Builder<T> async(boolean async);
-
-		/**
 		 * @param onRefreshException the refresh exception handler @return this builder
 		 */
 		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);

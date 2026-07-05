@@ -49,7 +49,11 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		this.sort = new DefaultListSort(builder.comparator);
 		Function<Items<T>, Refresher<T>> refresherFactory = builder.refresherFactory != null
 						? builder.refresherFactory
-						: modelItems -> FilterModel.refresher(builder.supplier, modelItems::set, builder.onRefreshException);
+						: modelItems -> Refresher.<T>builder()
+						.items(builder.supplier)
+						.onResult(modelItems::set)
+						.onException(builder.onRefreshException)
+						.build();
 		Function<IncludedItems<T>, MultiSelection<T>> selectionFactory = builder.selectionFactory != null
 						? builder.selectionFactory
 						: MultiSelection::multiSelection;

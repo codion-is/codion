@@ -18,7 +18,6 @@
  */
 package is.codion.common.model.component.combobox;
 
-import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
@@ -128,7 +127,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
 		private @Nullable Consumer<Exception> onRefreshException;
-		private @Nullable Function<ComboBoxItems<T>, FilterModel.Refresher<T>> refresherFactory;
+		private @Nullable Function<ComboBoxItems<T>, Refresher<T>> refresherFactory;
 		private boolean filterSelected;
 		private boolean includeNull;
 		private @Nullable T nullItem;
@@ -190,7 +189,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Builder<T> refresher(Function<ComboBoxItems<T>, FilterModel.Refresher<T>> refresher) {
+		public Builder<T> refresher(Function<ComboBoxItems<T>, Refresher<T>> refresher) {
 			this.refresherFactory = requireNonNull(refresher);
 			return this;
 		}
@@ -327,7 +326,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 			refresher = builder.refresherFactory != null
 							? builder.refresherFactory.apply(this)
-							: FilterModel.refresher(builder.supplier, this::set, builder.onRefreshException);
+							: Refresher.<T>builder()
+							.items(builder.supplier)
+							.onResult(this::set)
+							.onException(builder.onRefreshException)
+							.build();
 			if (builder.items == null && builder.refresh) {
 				refresher.refresh(null);
 			}

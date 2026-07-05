@@ -62,7 +62,12 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 		this.rowEditorFactory = builder.rowEditorFactory;
 		this.model = builder.builder
 						.selection(FilterListSelection::filterListSelection)
-						.refresher(modelItems -> new TableRefreshWorker<>(builder.itemSupplier, builder.async, builder.onRefreshException, modelItems))
+						.refresher(modelItems -> Refresher.<R>builder()
+										.items(builder.itemSupplier)
+										.onResult(modelItems::set)
+										.onException(builder.onRefreshException)
+										.async(builder.async)
+										.build())
 						.listener(new TableModelAdapter())
 						.build();
 		this.selection = (FilterListSelection<R>) model.selection();
@@ -231,7 +236,7 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 
 		private final FilterTableModel.Builder<R, C> builder;
 
-		private @Nullable Supplier<? extends Collection<R>> itemSupplier;
+		private @Nullable Supplier<Collection<R>> itemSupplier;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;
 		private Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
@@ -249,7 +254,7 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 
 		@Override
 		public Builder<R, C> items(Supplier<? extends Collection<R>> items) {
-			this.itemSupplier = requireNonNull(items);
+			this.itemSupplier = (Supplier<Collection<R>>) requireNonNull(items);
 			return this;
 		}
 
@@ -322,22 +327,6 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 		@Override
 		public SwingFilterTableModel<R, C> build() {
 			return new DefaultSwingFilterTableModel<>(this);
-		}
-	}
-
-	private static final class TableRefreshWorker<R> extends FilterModel.AbstractRefresher<R> {
-
-		private final Items<R> items;
-
-		private TableRefreshWorker(@Nullable Supplier<? extends Collection<R>> supplier, boolean async,
-		                           @Nullable Consumer<Exception> onException, Items<R> items) {
-			super((Supplier<Collection<R>>) supplier, async, onException);
-			this.items = items;
-		}
-
-		@Override
-		protected void processResult(Collection<R> result) {
-			items.set(result);
 		}
 	}
 }

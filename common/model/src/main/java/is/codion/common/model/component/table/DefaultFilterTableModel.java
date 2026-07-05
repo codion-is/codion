@@ -20,7 +20,6 @@ package is.codion.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.value.AbstractValue;
@@ -73,7 +72,11 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		this.sort = new DefaultFilterTableSort<>(columns);
 		Function<Items<R>, Refresher<R>> refresherFactory = builder.refresherFactory != null
 						? builder.refresherFactory
-						: modelItems -> FilterModel.refresher(builder.supplier, modelItems::set, builder.onRefreshException);
+						: modelItems -> Refresher.<R>builder()
+						.items(builder.supplier)
+						.onResult(modelItems::set)
+						.onException(builder.onRefreshException)
+						.build();
 		Function<IncludedItems<R>, MultiSelection<R>> selectionFactory = builder.selectionFactory != null
 						? builder.selectionFactory
 						: MultiSelection::multiSelection;
