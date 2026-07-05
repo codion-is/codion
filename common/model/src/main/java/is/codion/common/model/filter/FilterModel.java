@@ -22,12 +22,15 @@ import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.selection.MultiSelection.IndexedItems;
 import is.codion.common.model.selection.SingleSelection;
+import is.codion.common.model.worker.Dispatcher;
+import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.NonNull;
@@ -80,7 +83,7 @@ public interface FilterModel<T> {
 	 * @param items supplies the items during refresh
 	 * @param onResult the refresh result handler
 	 * @param onException the exception handler
-	 * @return a default synchronous {@link Refresher}
+	 * @return a default {@link Refresher}
 	 * @param <T> the item type
 	 */
 	static <T> Refresher<T> refresher(@Nullable Supplier<Collection<T>> items,
@@ -539,14 +542,29 @@ public interface FilterModel<T> {
 		private final State active = State.state();
 		private final @Nullable Supplier<Collection<T>> items;
 		private final State async;
+		private final Consumer<Exception> onException;
+
+		private @Nullable ProgressWorker<Collection<T>, ?> worker;
+		private @Nullable RefreshTask currentTask;
 
 		/**
 		 * @param items supplies the items when refreshing
 		 * @param async true if async refresh should be used
 		 */
 		protected AbstractRefresher(@Nullable Supplier<Collection<T>> items, boolean async) {
+			this(items, async, null);
+		}
+
+		/**
+		 * @param items supplies the items when refreshing
+		 * @param async true if async refresh should be used
+		 * @param onException the refresh exception handler, rethrows by default
+		 */
+		protected AbstractRefresher(@Nullable Supplier<Collection<T>> items, boolean async,
+																@Nullable Consumer<Exception> onException) {
 			this.items = items;
 			this.async = State.state(async);
+			this.onException = onException == null ? new RethrowExceptionHandler() : onException;
 		}
 
 		@Override
@@ -603,21 +621,41 @@ public interface FilterModel<T> {
 		/**
 		 * @return true if we're running on a UI thread
 		 */
-		protected abstract boolean isUserInterfaceThread();
+		protected boolean isUserInterfaceThread() {
+			return Dispatcher.instance().isUserInterfaceThread();
+		}
 
 		/**
-		 * <p>Performes an async refresh
+		 * <p>Performs an async refresh using a {@link ProgressWorker}.
 		 * <p>This method must be called on the UI thread.
-		 * @param onResult if specified will be called on the EDT with the result after a successful refresh
+		 * @param onResult if specified will be called on the UI thread with the result after a successful refresh
 		 */
-		protected abstract void refreshAsync(@Nullable Consumer<Collection<T>> onResult);
+		protected void refreshAsync(@Nullable Consumer<Collection<T>> onResult) {
+			items().ifPresent(items -> {
+				cancelCurrentRefresh();
+				currentTask = new RefreshTask(items, onResult);
+				worker = ProgressWorker.builder()
+								.task(currentTask)
+								.execute();
+			});
+		}
 
 		/**
-		 * <p>Performs a sync refresh
+		 * <p>Performs a sync refresh.
 		 * <p>This method must be called on the UI thread.
 		 * @param onResult if specified will be called with the result after a successful refresh
 		 */
-		protected abstract void refreshSync(@Nullable Consumer<Collection<T>> onResult);
+		protected void refreshSync(@Nullable Consumer<Collection<T>> onResult) {
+			items().ifPresent(items -> {
+				setActive(true);
+				try {
+					onRefreshResult(items.get(), onResult);
+				}
+				catch (Exception e) {
+					onRefreshException(e);
+				}
+			});
+		}
 
 		/**
 		 * <p>Processes the refresh result, by replacing the current model items by the result items.
@@ -625,5 +663,77 @@ public interface FilterModel<T> {
 		 * @param result the items resulting from the refresh operation
 		 */
 		protected abstract void processResult(Collection<T> result);
+
+		private void onRefreshException(Exception exception) {
+			worker = null;
+			setActive(false);
+			onException.accept(exception);
+		}
+
+		private void onRefreshResult(Collection<T> result, @Nullable Consumer<Collection<T>> onResult) {
+			worker = null;
+			setActive(false);
+			processResult(result);
+			if (onResult != null) {
+				onResult.accept(result);
+			}
+			notifyResult(result);
+		}
+
+		private void cancelCurrentRefresh() {
+			ProgressWorker<?, ?> progressWorker = worker;
+			if (progressWorker != null) {
+				worker = null;
+				currentTask = null;
+				progressWorker.cancel(true);
+			}
+		}
+
+		private final class RefreshTask implements ProgressWorker.ResultTaskHandler<Collection<T>> {
+
+			private final Supplier<Collection<T>> items;
+			private final @Nullable Consumer<Collection<T>> onResult;
+
+			private RefreshTask(Supplier<Collection<T>> items, @Nullable Consumer<Collection<T>> onResult) {
+				this.items = items;
+				this.onResult = onResult;
+			}
+
+			@Override
+			public Collection<T> execute() throws Exception {
+				return items.get();
+			}
+
+			@Override
+			public void onStarted() {
+				if (currentTask == this) {
+					setActive(true);
+				}
+			}
+
+			@Override
+			public void onResult(Collection<T> result) {
+				if (currentTask == this) {
+					currentTask = null;
+					onRefreshResult(result, onResult);
+				}
+			}
+
+			@Override
+			public void onException(Exception exception) {
+				if (currentTask == this) {
+					currentTask = null;
+					onRefreshException(exception);
+				}
+			}
+		}
+
+		private static final class RethrowExceptionHandler implements Consumer<Exception> {
+
+			@Override
+			public void accept(Exception exception) {
+				throw Exceptions.runtime(exception);
+			}
+		}
 	}
 }

@@ -24,7 +24,6 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
-import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
 import org.jspecify.annotations.Nullable;
@@ -326,7 +325,7 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 		}
 	}
 
-	private static final class TableRefreshWorker<R> extends AbstractRefreshWorker<R> {
+	private static final class TableRefreshWorker<R> extends FilterModel.AbstractRefresher<R> {
 
 		private final Items<R> items;
 

@@ -26,8 +26,8 @@ import java.util.ServiceLoader;
 import java.util.concurrent.Executor;
 
 /**
- * <p>Resolves the platform's UI thread, for running {@link ProgressWorker} handlers and controlling
- * {@link is.codion.common.model.filter.FilterModel.Refresher} behaviour.
+ * <p>Resolves the platform's UI thread, for running {@link ProgressWorker} handlers and for
+ * determining whether a model refresh should run asynchronously.
  * <p>The implementation is provided via {@link ServiceLoader}, defaulting to {@link #SYNCHRONOUS}
  * same-thread dispatch when no implementation is available.
  * @see #instance()

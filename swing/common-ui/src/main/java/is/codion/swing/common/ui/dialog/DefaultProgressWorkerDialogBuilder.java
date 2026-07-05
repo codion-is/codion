@@ -85,7 +85,6 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	@Override
 	public ProgressWorkerDialogBuilder<T, V> maximum(int maximum) {
 		progressDialogBuilder.maximum(maximum);
-		progressWorkerBuilder.maximum(maximum);
 		return this;
 	}
 

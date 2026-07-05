@@ -9,10 +9,14 @@ Codion Change Log
 ### is.codion.common.model
 - ConditionModel bug fixed, case-insensitive NOT_EQUAL now filters correctly.
 - ProgressWorker migrated from swing-common-model, no longer based on SwingWorker.
+- ProgressWorker.Builder.maximum() removed, the progress scale is specified by the task and read by the progress dialog.
 - Dispatcher added, resolves the platform UI thread for ProgressWorker, located via ServiceLoader.
+- FilterModel.AbstractRefresher now provides async refresh via ProgressWorker, gated by Dispatcher.
+- DefaultRefresher now async by default, respecting FilterModel.ASYNC.
 ### is.codion.swing.common.model
 - ProgressWorker, redundant call to super.publish() removed.
 - SwingDispatcher added, a Dispatcher running tasks on the Event Dispatch Thread.
+- AbstractRefreshWorker removed, folded into FilterModel.AbstractRefresher.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.setName() added, overridable for composite components.
 - UiInspector added, describes UI state for tooling, located via ServiceLoader.

@@ -19,7 +19,6 @@
 package is.codion.common.model.filter;
 
 import is.codion.common.model.filter.FilterModel.AbstractRefresher;
-import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
 
@@ -30,58 +29,18 @@ import java.util.function.Supplier;
 final class DefaultRefresher<T> extends AbstractRefresher<T> {
 
 	private final @Nullable Consumer<Collection<T>> onResult;
-	private final Consumer<Exception> onException;
 
 	DefaultRefresher(@Nullable Supplier<Collection<T>> items,
 									 @Nullable Consumer<Collection<T>> onResult,
 	                 @Nullable Consumer<Exception> onException) {
-		super(items, false);
+		super(items, FilterModel.ASYNC.getOrThrow(), onException);
 		this.onResult = onResult;
-		this.onException = onException == null ? new RethrowHandler() : onException;
-	}
-
-	@Override
-	protected boolean isUserInterfaceThread() {
-		return false;
-	}
-
-	@Override
-	protected void refreshAsync(@Nullable Consumer<Collection<T>> onResult) {
-		refreshSync(onResult);
-	}
-
-	@Override
-	protected void refreshSync(@Nullable Consumer<Collection<T>> onResult) {
-		super.items().ifPresent(items -> {
-			setActive(true);
-			try {
-				Collection<T> result = items.get();
-				setActive(false);
-				processResult(result);
-				if (onResult != null) {
-					onResult.accept(result);
-				}
-				notifyResult(result);
-			}
-			catch (Exception e) {
-				setActive(false);
-				onException.accept(e);
-			}
-		});
 	}
 
 	@Override
 	protected void processResult(Collection<T> result) {
 		if (onResult != null) {
 			onResult.accept(result);
-		}
-	}
-
-	private static final class RethrowHandler implements Consumer<Exception> {
-
-		@Override
-		public void accept(Exception exception) {
-			throw Exceptions.runtime(exception);
 		}
 	}
 }

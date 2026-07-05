@@ -86,7 +86,6 @@ public final class ProgressWorker<T, V> {
 	private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new DaemonThreadFactory());
 
 	private final Object task;
-	private final int maximum;
 	private final List<Runnable> onStarted;
 	private final List<Runnable> onDone;
 	private final List<Consumer<T>> onResult;
@@ -107,7 +106,6 @@ public final class ProgressWorker<T, V> {
 
 	private ProgressWorker(DefaultBuilder<T, V> builder) {
 		this.task = builder.task;
-		this.maximum = builder.maximum;
 		this.onStarted = builder.onStarted();
 		this.onDone = builder.onDone();
 		this.onResult = builder.onResult();
@@ -513,15 +511,6 @@ public final class ProgressWorker<T, V> {
 	public sealed interface Builder<T, V> {
 
 		/**
-		 * Overrides any maximum progress specified by the task itself.
-		 * @param maximum the maximum progress, {@link #DEFAULT_MAXIMUM} (100) by default
-		 * @return this builder instance
-		 * @see ProgressTask#maximum()
-		 * @see ProgressResultTask#maximum()
-		 */
-		Builder<T, V> maximum(int maximum);
-
-		/**
 		 * Adds a handler called on the UI thread before background processing is started.
 		 * @param onStarted the handler to add
 		 * @return this builder instance
@@ -706,7 +695,6 @@ public final class ProgressWorker<T, V> {
 
 		private final Object task;
 
-		private int maximum = DEFAULT_MAXIMUM;
 		private @Nullable List<Runnable> onStarted;
 		private @Nullable List<Runnable> onDone;
 		private @Nullable List<Consumer<T>> onResult;
@@ -723,7 +711,6 @@ public final class ProgressWorker<T, V> {
 
 		private DefaultBuilder(ProgressTask<V> progressTask) {
 			this.task = requireNonNull(progressTask);
-			this.maximum = progressTask.maximum();
 		}
 
 		private DefaultBuilder(ResultTask<T> resultTask) {
@@ -732,16 +719,6 @@ public final class ProgressWorker<T, V> {
 
 		private DefaultBuilder(ProgressResultTask<T, V> progressResultTask) {
 			this.task = requireNonNull(progressResultTask);
-			this.maximum = progressResultTask.maximum();
-		}
-
-		@Override
-		public Builder<T, V> maximum(int maximum) {
-			if (maximum < 0) {
-				throw new IllegalArgumentException("Maximum progress must be a positive integer");
-			}
-			this.maximum = maximum;
-			return this;
 		}
 
 		@Override
