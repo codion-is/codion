@@ -278,6 +278,13 @@ public final class EntityComboBoxPanel extends JPanel {
 			validIndicator.enable(component.comboBox, valid);
 		}
 
+		@Override
+		protected void setName(String name, EntityComboBoxPanel component) {
+			super.setName(name, component);
+			component.comboBox.setName(name);
+			component.comboBox.getEditor().getEditorComponent().setName(name);
+		}
+
 		private EntityComboBox createComboBox() {
 			return entityComboBoxBuilder.build();
 		}

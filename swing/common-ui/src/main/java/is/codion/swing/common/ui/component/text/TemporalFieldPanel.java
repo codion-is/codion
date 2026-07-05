@@ -288,6 +288,12 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 			validIndicator.enable(component.temporalField, valid);
 		}
 
+		@Override
+		protected void setName(String name, TemporalFieldPanel<T> component) {
+			super.setName(name, component);
+			component.temporalField.setName(name);
+		}
+
 		private TemporalField<T> createTemporalField() {
 			return temporalFieldBuilder.build();
 		}
