@@ -18,33 +18,24 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.worker.ProgressWorker;
-import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityEditor;
-import is.codion.framework.model.EntityEditor.EditorTask.Result;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
 
-import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
-import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
  * A Swing {@link AbstractEntityEditor} implementation.
  */
 public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEditor> {
-
-	private @Nullable ProgressWorker<Result<Entity>, ?> worker;
-	private @Nullable EditorTask<?> currentTask;
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditor}
@@ -86,66 +77,6 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	@Override
 	protected SwingComponentModels componentModels() {
 		return (SwingComponentModels) super.componentModels();
-	}
-
-	@Override
-	protected void execute(EditorTask<Entity> task) {
-		requireNonNull(task);
-		cancelCurrentWorker();
-		currentTask = task;
-		if (async().is() && isEventDispatchThread()) {
-			worker = ProgressWorker.builder()
-							.task(new ExecutionTask(task))
-							.execute();
-		}
-		else {
-			super.execute(task);
-		}
-	}
-
-	@Override
-	protected void supersede() {
-		// a synchronous reset (set/replace/defaults/clear) is about to be applied; drop any in-flight
-		// worker so its result is discarded (currentTask == null) instead of clobbering the reset
-		cancelCurrentWorker();
-		currentTask = null;
-	}
-
-	private void cancelCurrentWorker() {
-		ProgressWorker<Result<Entity>, ?> currentWorker = worker;
-		if (currentWorker != null && !currentWorker.isDone()) {
-			// cancellation is a best-effort optimization, freeing the connection of a superseded load early
-			currentWorker.cancel(true);
-		}
-	}
-
-	private final class ExecutionTask implements ResultTaskHandler<Result<Entity>> {
-
-		private final EditorTask<Entity> task;
-
-		private ExecutionTask(EditorTask<Entity> task) {
-			this.task = task;
-		}
-
-		@Override
-		public Result<Entity> execute() throws Exception {
-			return task.perform();
-		}
-
-		@Override
-		public void onResult(Result<Entity> result) {
-			if (currentTask == task) {
-				currentTask = null;
-				result.handle();
-			}
-		}
-
-		@Override
-		public void onDone() {
-			if (currentTask == task) {
-				worker = null;
-			}
-		}
 	}
 
 	/**

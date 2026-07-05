@@ -18,10 +18,6 @@
  */
 package is.codion.common.model.worker;
 
-import is.codion.common.utilities.exceptions.Exceptions;
-
-import java.util.Iterator;
-import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.concurrent.Executor;
 
@@ -69,16 +65,6 @@ public interface Dispatcher {
 	 * @return the {@link Dispatcher} implementation to use
 	 */
 	static Dispatcher instance() {
-		try {
-			Iterator<Dispatcher> iterator = ServiceLoader.load(Dispatcher.class).iterator();
-			if (iterator.hasNext()) {
-				return iterator.next();
-			}
-
-			return SYNCHRONOUS;
-		}
-		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e, ServiceConfigurationError.class);
-		}
+		return DispatcherHolder.INSTANCE;
 	}
 }

@@ -19,6 +19,9 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.common.model.worker.Dispatcher;
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Change;
 import is.codion.common.reactive.observer.Observable;
@@ -112,6 +115,9 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final DefaultPersistEvents persistEvents = new DefaultPersistEvents();
 	private final DefaultEditorValues values = new DefaultEditorValues();
 	private final State async = State.state(ASYNC.getOrThrow());
+
+	private @Nullable ProgressWorker<Result<Entity>, ?> worker;
+	private @Nullable EditorTask<Entity> currentTask;
 
 	private final Map<Attribute<?>, EditorValue<?>> editorValues = new HashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new HashMap<>();
@@ -328,7 +334,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	 * detail subtree immediately rather than after {@link EditorEntity#observer() changed} fires.
 	 * @return the {@link State} controlling whether detail editors are loaded asynchronously
 	 * @see #ASYNC
-	 * @see #execute(EditorTask)
 	 */
 	public final State async() {
 		return async;
@@ -342,19 +347,72 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	}
 
 	/**
-	 * Executes the given task, by default this is done synchronously, override to provide async execution
+	 * Executes the given task, asynchronously via a {@link ProgressWorker} when {@link #async()} is enabled and
+	 * called on the UI thread (as determined by {@link Dispatcher}), otherwise synchronously on the calling thread.
 	 * @param task the task to execute
 	 */
-	protected void execute(EditorTask<Entity> task) {
-		requireNonNull(task).perform().handle();
+	private void execute(EditorTask<Entity> task) {
+		requireNonNull(task);
+		cancelCurrentWorker();
+		currentTask = task;
+		if (async().is() && Dispatcher.instance().isUserInterfaceThread()) {
+			worker = ProgressWorker.builder()
+							.task(new ExecutionTask(task))
+							.execute();
+		}
+		else {
+			task.perform().handle();
+		}
 	}
 
 	/**
 	 * Supersedes any ongoing asynchronous execution. Called before applying a synchronous state
 	 * change (defaults/clear) so that an in-flight asynchronous set or replace does not complete
-	 * afterwards and clobber it. The default implementation does nothing.
+	 * afterwards and clobber it.
 	 */
-	protected void supersede() {}
+	private void supersede() {
+		// a synchronous reset (set/replace/defaults/clear) is about to be applied; drop any in-flight
+		// worker so its result is discarded (currentTask == null) instead of clobbering the reset
+		cancelCurrentWorker();
+		currentTask = null;
+	}
+
+	private void cancelCurrentWorker() {
+		ProgressWorker<Result<Entity>, ?> currentWorker = worker;
+		if (currentWorker != null && !currentWorker.isDone()) {
+			// cancellation is a best-effort optimization, freeing the connection of a superseded load early
+			currentWorker.cancel(true);
+		}
+	}
+
+	private final class ExecutionTask implements ResultTaskHandler<Result<Entity>> {
+
+		private final EditorTask<Entity> task;
+
+		private ExecutionTask(EditorTask<Entity> task) {
+			this.task = task;
+		}
+
+		@Override
+		public Result<Entity> execute() throws Exception {
+			return task.perform();
+		}
+
+		@Override
+		public void onResult(Result<Entity> result) {
+			if (currentTask == task) {
+				currentTask = null;
+				result.handle();
+			}
+		}
+
+		@Override
+		public void onDone() {
+			if (currentTask == task) {
+				worker = null;
+			}
+		}
+	}
 
 	private void notifyValueChange(Attribute<?> attribute, Map<Attribute<?>, String> invalidAttributes) {
 		updateAttributeStates(attribute, invalidAttributes);

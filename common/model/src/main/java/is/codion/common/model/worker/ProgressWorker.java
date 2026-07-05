@@ -45,6 +45,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>Executes a task on a background thread, invoking its lifecycle handlers on the UI thread as resolved by
  * {@link Dispatcher}. Instances of this class are not reusable.</p>
+ * <p>Each execution runs on its own thread from a shared pool of daemon threads, created as needed and reaped
+ * when idle, so {@code N} simultaneous executions use {@code N} threads.</p>
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
  * those directly to the {@code onProgress} and {@code onPublish} handlers on the UI thread.</p>
  * <p>The {@code onStarted} handlers are guaranteed to be called on the UI thread before the background task executes,
@@ -125,7 +127,9 @@ public final class ProgressWorker<T, V> {
 	}
 
 	/**
-	 * Executes this worker, running the task on a background thread.
+	 * Executes this worker, running the task on a background thread and its handlers on the UI thread.
+	 * <p>Must be called on the UI thread, since the {@link Dispatcher} handler executor is resolved for the
+	 * current context at this point (relevant for platforms with a per-context UI thread).
 	 */
 	public void execute() {
 		uiExecutor = dispatcher.executor();
