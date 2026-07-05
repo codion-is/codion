@@ -28,6 +28,7 @@ import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
 import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -61,6 +62,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	public EmployeesAppPanel(EmployeesAppModel applicationModel) {
 		super(applicationModel, createPanels(applicationModel), emptyList());
+		mcpController.set(true);
 	}
 
 	private static List<EntityPanel> createPanels(EmployeesAppModel applicationModel) {
@@ -133,10 +135,11 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 	// tag::main[]
 	public static void main(String[] args) {
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
+		TemporalField.ADJUSTABLE.set(true);
 		EntityApplication.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
 						.domain(Employees.DOMAIN)
 						.defaultLookAndFeel(Arc.class)
-						.defaultUser(User.parse("scott:tiger"))
+						.user(User.parse("scott:tiger"))
 						.connectionInfoUpperCase(false)
 						.start();
 	}

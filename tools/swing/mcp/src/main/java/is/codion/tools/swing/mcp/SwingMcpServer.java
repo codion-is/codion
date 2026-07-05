@@ -22,9 +22,11 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.version.Version;
 import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.swing.common.ui.inspect.UiInspector;
 import is.codion.tools.swing.mcp.SwingMcpHttpServer.HttpTool;
 import is.codion.tools.swing.robot.Controller;
 import is.codion.tools.swing.robot.Controller.FocusLostException;
+import is.codion.tools.swing.robot.Interaction;
 import is.codion.tools.swing.robot.Narrator;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -42,8 +44,10 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import java.awt.AWTEvent;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -57,13 +61,17 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -71,6 +79,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
 import static java.awt.AWTEvent.WINDOW_EVENT_MASK;
 import static java.awt.event.WindowEvent.*;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.stream.Collectors.toList;
@@ -103,6 +112,7 @@ public final class SwingMcpServer {
 	static final String TYPE_TEXT = "type_text";
 	static final String KEY_COMBO = "key";
 	static final String CLEAR_FIELD = "clear_field";
+	static final String MODEL_STATE = "model_state";
 	static final String APP_SCREENSHOT = "app_screenshot";
 	static final String ACTIVE_WINDOW_SCREENSHOT = "active_window_screenshot";
 	static final String APP_WINDOW_BOUNDS = "app_window_bounds";
@@ -152,6 +162,7 @@ public final class SwingMcpServer {
 
 	private ExecutorService executor;
 	private Controller controller;
+	private List<UiInspector> inspectors = emptyList();
 	private Narrator narrator;
 	private SwingMcpHttpServer httpServer;
 	private WindowEventListener windowEventListener;
@@ -173,12 +184,14 @@ public final class SwingMcpServer {
 	/**
 	 * Type text into the currently focused field
 	 * @param text the text to type
+	 * @return the {@link Interaction} verdict for the typed text
 	 * @throws FocusLostException in case the application has lost the input focus
 	 */
-	void type(String text) {
+	Interaction type(String text) {
 		LOG.debug("Typing text: {}", text);
 		focusActiveWindow();
-		controller.type(text);
+
+		return controller.type(text);
 	}
 
 	/**
@@ -189,10 +202,11 @@ public final class SwingMcpServer {
 	 * @param description a description of the action associated with the keystroke
 	 * @throws FocusLostException in case the application has lost the input focus
 	 */
-	void key(String keystroke, int repeat, @Nullable String description) {
+	Interaction key(String keystroke, int repeat, @Nullable String description) {
 		LOG.debug("Key combo: {}", keystroke);
 		focusActiveWindow();
-		controller.key(keystroke, repeat, description);
+
+		return controller.key(keystroke, repeat, description);
 	}
 
 	/**
@@ -203,6 +217,54 @@ public final class SwingMcpServer {
 		focusActiveWindow();
 		controller.key("ctrl A");
 		controller.key("DELETE");
+	}
+
+	/**
+	 * @return the model state behind the focused component, as reported by the available {@link UiInspector}s
+	 */
+	Map<String, Object> modelState() {
+		focusActiveWindow();
+
+		return onEventDispatchThread(() -> {
+			Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+			if (focusOwner == null) {
+				return Map.<String, Object>of("error", "No focused component");
+			}
+			for (UiInspector inspector : inspectors) {
+				Optional<Map<String, Object>> state = inspector.state(focusOwner);
+				if (state.isPresent()) {
+					return state.get();
+				}
+			}
+			String focusOwnerName = focusOwner.getName();
+
+			return Map.<String, Object>of(
+							"focusOwner", focusOwner.getClass().getSimpleName() +
+											(focusOwnerName == null ? "" : "[" + focusOwnerName + "]"),
+							"note", "No model state available for the focused component");
+		});
+	}
+
+	private static <T> T onEventDispatchThread(Supplier<T> supplier) {
+		if (SwingUtilities.isEventDispatchThread()) {
+			return supplier.get();
+		}
+		AtomicReference<T> result = new AtomicReference<>();
+		try {
+			SwingUtilities.invokeAndWait(() -> result.set(supplier.get()));
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e);
+		}
+		catch (InvocationTargetException e) {
+			if (e.getCause() instanceof RuntimeException) {
+				throw (RuntimeException) e.getCause();
+			}
+			throw new RuntimeException(e.getCause());
+		}
+
+		return result.get();
 	}
 
 	/**
@@ -324,8 +386,8 @@ public final class SwingMcpServer {
 	}
 
 	private void initializeServer() {
-		Window window = applicationWindow.get();
-		this.controller = window == null ? Controller.controller() : Controller.controller(window.getGraphicsConfiguration().getDevice());
+		this.controller = Controller.controller(Controller.Transport.EDT);
+		this.inspectors = UiInspector.instances();
 		this.narrator = includeNarrator ? Narrator.narrator(controller) : null;
 		this.windowEventListener = new WindowEventListener();
 		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);
@@ -341,34 +403,21 @@ public final class SwingMcpServer {
 	private void registerHttpTools(SwingMcpHttpServer httpServer) {
 		// Type text tool
 		httpServer.addTool(new HttpTool(
-						TYPE_TEXT, "Type text into the currently focused field",
+						TYPE_TEXT, "Type text into the currently focused field. Returns the observed delivery " +
+						"(CONSUMED = a component received it, FELL_THROUGH = it did nothing, MISSED = it did not go through) " +
+						"and the receiving component.",
 						createSchema(TEXT, STRING, "The text to type"),
-						arguments -> {
-							String text = (String) arguments.get(TEXT);
-							type(text);
-
-							return "Text typed successfully";
-						}
+						arguments -> interaction(type((String) arguments.get(TEXT)))
 		));
 
 		// Key combination tool - handles all keyboard input
 		httpServer.addTool(new HttpTool(
-						KEY_COMBO, "Press a key combination using AWT KeyStroke format",
+						KEY_COMBO, "Press a key combination using AWT KeyStroke format. Returns the observed delivery " +
+						"(CONSUMED = a component handled it, FELL_THROUGH = it did nothing, MISSED = it did not go through), " +
+						"the receiving component and the bound action, if any.",
 						KEY_SCHEMA,
-						arguments -> {
-							String combo = (String) arguments.get("combo");
-							int repeat = integerParam(arguments, "repeat", 1);
-							String description = (String) arguments.get("description");
-							key(combo, repeat, description);
-
-							String message = repeat > 1
-											? String.format("Key combination '%s' pressed %d times", combo, repeat)
-											: String.format("Key combination '%s' pressed", combo);
-							if (description != null) {
-								message += " (" + description + ")";
-							}
-							return message;
-						}
+						arguments -> interaction(key((String) arguments.get("combo"),
+										integerParam(arguments, "repeat", 1), (String) arguments.get("description")))
 		));
 
 
@@ -423,6 +472,15 @@ public final class SwingMcpServer {
 						}
 		));
 
+		// Model state tool - reads the edit model behind the focused component (cheap text, no screenshot)
+		httpServer.addTool(new HttpTool(
+						MODEL_STATE, "Read the state of the edit model behind the focused component: per-attribute " +
+						"value, valid, modified and validation message, plus entity-level exists/modified/valid. " +
+						"Cheap structured feedback for verifying state after edits, instead of a screenshot.",
+						INPUT_SCHEMA,
+						arguments -> modelState()
+		));
+
 		// Narrator tools (only added if narrator is available)
 		if (narratorAvailable()) {
 			// Narrate tool
@@ -465,6 +523,20 @@ public final class SwingMcpServer {
 							}
 			));
 		}
+	}
+
+	private static Map<String, Object> interaction(Interaction interaction) {
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put("keyStroke", interaction.keyStroke());
+		result.put("delivery", interaction.delivery().name());
+		if (interaction.component() != null) {
+			result.put("component", interaction.component());
+		}
+		if (interaction.action() != null) {
+			result.put("action", interaction.action());
+		}
+
+		return result;
 	}
 
 	private static Map<String, Object> screenshotToBase64(Map<String, Object> arguments, BufferedImage screenshot) {
