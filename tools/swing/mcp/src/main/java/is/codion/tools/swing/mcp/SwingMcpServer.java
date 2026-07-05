@@ -62,6 +62,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Iterator;
@@ -111,6 +112,7 @@ public final class SwingMcpServer {
 	// Tool names
 	static final String TYPE_TEXT = "type_text";
 	static final String KEY_COMBO = "key";
+	static final String INTERACTIONS = "interactions";
 	static final String CLEAR_FIELD = "clear_field";
 	static final String MODEL_STATE = "model_state";
 	static final String APP_SCREENSHOT = "app_screenshot";
@@ -152,6 +154,39 @@ public final class SwingMcpServer {
 							}
 						},
 						"required": ["combo"]
+					}
+					""";
+	private static final String INTERACTIONS_SCHEMA = """
+					{
+						"type": "object",
+						"properties": {
+							"interactions": {
+								"type": "array",
+								"description": "Ordered interactions to run in one batch, e.g. to fill a whole form. Each item has either 'key' (an AWT keystroke, optionally repeated) or 'text' (to type).",
+								"items": {
+									"type": "object",
+									"properties": {
+										"key": {
+											"type": "string",
+											"description": "Key combination in AWT keystroke format, e.g. 'ENTER', 'ctrl S', 'TAB', 'alt A'"
+										},
+										"text": {
+											"type": "string",
+											"description": "Text to type into the currently focused field"
+										},
+										"repeat": {
+											"type": "integer",
+											"description": "Number of times to repeat 'key' (default: 1)"
+										},
+										"description": {
+											"type": "string",
+											"description": "Optional description of the step"
+										}
+									}
+								}
+							}
+						},
+						"required": ["interactions"]
 					}
 					""";
 
@@ -207,6 +242,65 @@ public final class SwingMcpServer {
 		focusActiveWindow();
 
 		return controller.key(keystroke, repeat, description);
+	}
+
+	/**
+	 * Runs an ordered batch of interactions, stopping at the first that does not go through.
+	 * @param steps the interactions, each with either 'key' (optionally repeated) or 'text'
+	 * @return {@code {ok:true, executed:n}} if all went through, otherwise
+	 * {@code {ok:false, failedAt:i, step, ...}} for the first {@code MISSED} or failed step
+	 */
+	Map<String, Object> interactions(List<Map<String, Object>> steps) {
+		LOG.debug("Running {} interactions", steps.size());
+		focusActiveWindow();
+		List<Map<String, Object>> fellThrough = new ArrayList<>();
+		for (int i = 0; i < steps.size(); i++) {
+			Map<String, Object> step = steps.get(i);
+			Interaction interaction;
+			try {
+				interaction = execute(step);
+			}
+			catch (RuntimeException e) {
+				return failed(i, step, Map.<String, Object>of("error", String.valueOf(e.getMessage())));
+			}
+			if (interaction.delivery() == Interaction.Delivery.MISSED) {
+				return failed(i, step, interaction(interaction));
+			}
+			if (interaction.delivery() == Interaction.Delivery.FELL_THROUGH) {
+				fellThrough.add(interaction(interaction));
+			}
+		}
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put("ok", true);
+		result.put("executed", steps.size());
+		if (!fellThrough.isEmpty()) {
+			result.put("fellThrough", fellThrough);
+		}
+
+		return result;
+	}
+
+	private Interaction execute(Map<String, Object> step) {
+		Object text = step.get(TEXT);
+		if (text != null) {
+			return controller.type((String) text);
+		}
+		Object key = step.get("key");
+		if (key != null) {
+			return controller.key((String) key, integerParam(step, "repeat", 1), (String) step.get("description"));
+		}
+
+		throw new IllegalArgumentException("Each interaction requires 'text' or 'key': " + step);
+	}
+
+	private static Map<String, Object> failed(int index, Map<String, Object> step, Map<String, Object> detail) {
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put("ok", false);
+		result.put("failedAt", index);
+		result.put("step", step);
+		result.putAll(detail);
+
+		return result;
 	}
 
 	/**
@@ -418,6 +512,16 @@ public final class SwingMcpServer {
 						KEY_SCHEMA,
 						arguments -> interaction(key((String) arguments.get("combo"),
 										integerParam(arguments, "repeat", 1), (String) arguments.get("description")))
+		));
+
+		// Interactions batch tool - runs a whole flow in one round-trip, stopping at the first miss
+		httpServer.addTool(new HttpTool(
+						INTERACTIONS, "Run an ordered batch of interactions (e.g. fill a whole form) in a single call, " +
+						"stopping at the first that does not go through. Returns {ok:true, executed:n} on success, or " +
+						"{ok:false, failedAt:i, step, delivery, component} at the first MISSED step, localizing the failure. " +
+						"Use model_state afterwards to assert the resulting state.",
+						INTERACTIONS_SCHEMA,
+						arguments -> interactions((List<Map<String, Object>>) arguments.get(INTERACTIONS))
 		));
 
 
