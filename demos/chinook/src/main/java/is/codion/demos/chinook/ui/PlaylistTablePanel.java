@@ -18,11 +18,11 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.model.PlaylistTableModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;

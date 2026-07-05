@@ -19,12 +19,12 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.common.model.worker.ProgressWorker.ResultTask;
+import is.codion.common.model.worker.ProgressWorker.Task;
 import is.codion.swing.common.model.action.DelayedAction;
-import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
-import is.codion.swing.common.model.worker.ProgressWorker.Task;
 import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;

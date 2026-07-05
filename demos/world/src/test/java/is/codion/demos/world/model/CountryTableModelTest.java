@@ -18,12 +18,12 @@
  */
 package is.codion.demos.world.model;
 
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.world.domain.WorldImpl;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 
 import org.junit.jupiter.api.Test;
 

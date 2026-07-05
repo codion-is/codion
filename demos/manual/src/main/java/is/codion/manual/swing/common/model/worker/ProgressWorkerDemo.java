@@ -19,12 +19,12 @@
 package is.codion.manual.swing.common.model.worker;
 
 import is.codion.common.model.CancelException;
-import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTaskHandler;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
-import is.codion.swing.common.model.worker.ProgressWorker.TaskHandler;
+import is.codion.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.common.model.worker.ProgressWorker.ProgressResultTaskHandler;
+import is.codion.common.model.worker.ProgressWorker.ProgressTaskHandler;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
+import is.codion.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;

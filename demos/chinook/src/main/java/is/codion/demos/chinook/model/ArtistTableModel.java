@@ -18,12 +18,12 @@
  */
 package is.codion.demos.chinook.model;
 
+import is.codion.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.util.List;

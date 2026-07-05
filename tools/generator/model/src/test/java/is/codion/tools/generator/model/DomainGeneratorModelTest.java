@@ -19,8 +19,8 @@
 package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.utilities.user.User;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.tools.generator.model.DomainGeneratorModel.SchemaColumns;
 
 import org.junit.jupiter.api.Test;

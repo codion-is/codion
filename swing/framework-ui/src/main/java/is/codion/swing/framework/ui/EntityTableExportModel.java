@@ -20,6 +20,8 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.model.component.combobox.FilterComboBoxModel.ComboBoxItems;
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.common.reactive.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -29,8 +31,6 @@ import is.codion.framework.model.EntityExport;
 import is.codion.framework.model.EntityExport.ExportAttributes;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.Utilities;
 
 import org.json.JSONArray;

@@ -18,7 +18,7 @@
  */
 package is.codion.tools.swing.robot;
 
-import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.common.model.worker.ProgressWorker;
 import is.codion.tools.swing.robot.Controller.FocusLostException;
 
 import org.slf4j.Logger;

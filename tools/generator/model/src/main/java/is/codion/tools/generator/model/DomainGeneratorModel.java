@@ -21,6 +21,8 @@ package is.codion.tools.generator.model;
 import is.codion.common.db.database.Database;
 import is.codion.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.common.model.worker.ProgressWorker.ProgressTaskHandler;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
@@ -33,8 +35,6 @@ import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel.RowEditor;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTaskHandler;
 import is.codion.tools.generator.domain.DomainSource;
 
 import org.json.JSONObject;

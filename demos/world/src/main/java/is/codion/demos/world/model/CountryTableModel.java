@@ -18,12 +18,12 @@
  */
 package is.codion.demos.world.model;
 
+import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import net.sf.jasperreports.engine.JasperPrint;

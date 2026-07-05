@@ -20,6 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Text;
@@ -31,7 +32,6 @@ import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.model.EntityApplicationModel;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;

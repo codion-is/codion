@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2021 - 2026, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.worker;
+package is.codion.common.model.worker;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.value.Value;

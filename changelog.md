@@ -8,8 +8,11 @@ Codion Change Log
 - Database.getter() and setter() added.
 ### is.codion.common.model
 - ConditionModel bug fixed, case-insensitive NOT_EQUAL now filters correctly.
+- ProgressWorker migrated from swing-common-model, no longer based on SwingWorker.
+- Dispatcher added, resolves the platform UI thread for ProgressWorker, located via ServiceLoader.
 ### is.codion.swing.common.model
 - ProgressWorker, redundant call to super.publish() removed.
+- SwingDispatcher added, a Dispatcher running tasks on the Event Dispatch Thread.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.setName() added, overridable for composite components.
 - UiInspector added, describes UI state for tooling, located via ServiceLoader.
