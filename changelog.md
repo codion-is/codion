@@ -12,6 +12,7 @@ Codion Change Log
 - ProgressWorker, redundant call to super.publish() removed.
 ### is.codion.swing.common.ui
 - AbstractComponentBuilder.setName() added, overridable for composite components.
+- UiInspector added, describes UI state for tooling, located via ServiceLoader.
 ### is.codion.framework.db.http
 - HttpEntityConnectionProvider now uses a locally registered domain when available.
 ### is.codion.framework.domain
@@ -33,6 +34,14 @@ Codion Change Log
 - Platform agnostic unit tests improved.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel, editor sync via table model events removed.
+### is.codion.swing.framework.ui
+- EntityEditorInspector added, a UiInspector exposing the edit model state.
+### is.codion.tools.swing.robot
+- Controller.key() and type() now return an Interaction, the keystroke verified via the KeyboardFocusManager.
+- Controller.Transport added, EDT dispatches keystrokes deterministically on the event dispatch thread.
+### is.codion.tools.swing.mcp
+- model_state tool added, exposes the edit model state behind the focused component.
+- Key and type tools now return the Interaction verdict.
 
 ## 0.18.77
 ### is.codion.common.reactive

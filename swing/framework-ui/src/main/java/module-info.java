@@ -48,4 +48,6 @@ module is.codion.swing.framework.ui {
 
 	provides is.codion.swing.framework.ui.icon.FrameworkIcons
 					with is.codion.swing.framework.ui.icon.DefaultFrameworkIcons;
+	provides is.codion.swing.common.ui.inspect.UiInspector
+					with is.codion.swing.framework.ui.inspect.EntityEditorInspector;
 }
