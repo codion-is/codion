@@ -13,6 +13,7 @@ Codion Change Log
 - Dispatcher added, resolves the platform UI thread for ProgressWorker, located via ServiceLoader.
 - FilterModel.AbstractRefresher now provides async refresh via ProgressWorker, gated by Dispatcher.
 - DefaultRefresher now async by default, respecting FilterModel.ASYNC.
+- ProgressWorker.isCancelled() and isDone() renamed cancelled() and done().
 ### is.codion.swing.common.model
 - ProgressWorker, redundant call to super.publish() removed.
 - SwingDispatcher added, a Dispatcher running tasks on the Event Dispatch Thread.

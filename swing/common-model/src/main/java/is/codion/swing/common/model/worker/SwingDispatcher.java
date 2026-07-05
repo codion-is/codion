@@ -20,9 +20,9 @@ package is.codion.swing.common.model.worker;
 
 import is.codion.common.model.worker.Dispatcher;
 
+import javax.swing.SwingUtilities;
 import java.util.concurrent.Executor;
 
-import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
@@ -30,7 +30,7 @@ import static javax.swing.SwingUtilities.isEventDispatchThread;
  */
 public final class SwingDispatcher implements Dispatcher {
 
-	private static final Executor EXECUTOR = command -> invokeLater(command);
+	private static final Executor EXECUTOR = SwingUtilities::invokeLater;
 
 	@Override
 	public Executor executor() {

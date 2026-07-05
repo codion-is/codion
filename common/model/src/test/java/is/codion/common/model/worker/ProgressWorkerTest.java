@@ -148,7 +148,7 @@ public final class ProgressWorkerTest {
 		assertTrue(onDoneCalled.get());
 		assertTrue(onCancelledCalled.get());
 		assertFalse(onResultCalled.get());
-		assertTrue(worker.isCancelled());
+		assertTrue(worker.cancelled());
 	}
 
 	@Test
