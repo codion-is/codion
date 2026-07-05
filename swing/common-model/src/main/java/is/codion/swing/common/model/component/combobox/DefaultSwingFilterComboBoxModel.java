@@ -19,7 +19,6 @@
 package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
@@ -158,7 +157,6 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 		private final FilterComboBoxModel.Builder<T> builder;
 		private final @Nullable Supplier<Collection<T>> supplier;
 
-		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private @Nullable Consumer<Exception> onRefreshException;
 
 		private DefaultBuilder(FilterComboBoxModel.Builder<T> builder,
@@ -210,12 +208,6 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 		}
 
 		@Override
-		public Builder<T> async(boolean async) {
-			this.async = async;
-			return this;
-		}
-
-		@Override
 		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
 			this.onRefreshException = requireNonNull(onRefreshException);
 			builder.onRefreshException(onRefreshException);
@@ -230,7 +222,11 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 
 		@Override
 		public SwingFilterComboBoxModel<T> build() {
-			builder.refresher(items -> new ComboBoxRefreshWorker<>(supplier, async, onRefreshException, items));
+			builder.refresher(items -> Refresher.<T>builder()
+							.items(supplier)
+							.onResult(items::set)
+							.onException(onRefreshException)
+							.build());
 
 			return new DefaultSwingFilterComboBoxModel<>(builder.build());
 		}
@@ -271,22 +267,6 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 		@Override
 		public SwingFilterComboBoxModel<Item<T>> build() {
 			return new DefaultSwingFilterComboBoxModel<>(builder.build());
-		}
-	}
-
-	private static final class ComboBoxRefreshWorker<T> extends FilterModel.AbstractRefresher<T> {
-
-		private final ComboBoxItems<T> items;
-
-		private ComboBoxRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async,
-		                              @Nullable Consumer<Exception> onException, ComboBoxItems<T> items) {
-			super(supplier, async, onException);
-			this.items = items;
-		}
-
-		@Override
-		protected void processResult(Collection<T> result) {
-			items.set(result);
 		}
 	}
 }

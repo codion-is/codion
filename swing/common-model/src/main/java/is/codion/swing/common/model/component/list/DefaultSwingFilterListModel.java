@@ -50,7 +50,12 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 	private DefaultSwingFilterListModel(DefaultBuilder<T> builder) {
 		this.model = builder.builder
 						.selection(DefaultListSelection::new)
-						.refresher(modelItems -> new ListRefreshWorker<>(builder.supplier, builder.async, builder.onRefreshException, modelItems))
+						.refresher(modelItems -> Refresher.<T>builder()
+										.items(builder.supplier)
+										.onResult(modelItems::set)
+										.onException(builder.onRefreshException)
+										.async(builder.async)
+										.build())
 						.listener(new ListModelAdapter())
 						.build();
 		this.selection = (FilterListSelection<T>) model.selection();
@@ -197,22 +202,6 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 		@Override
 		public SwingFilterListModel<T> build() {
 			return new DefaultSwingFilterListModel<>(this);
-		}
-	}
-
-	private static final class ListRefreshWorker<T> extends FilterModel.AbstractRefresher<T> {
-
-		private final Items<T> items;
-
-		private ListRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async,
-															@Nullable Consumer<Exception> onException, Items<T> items) {
-			super(supplier, async, onException);
-			this.items = items;
-		}
-
-		@Override
-		protected void processResult(Collection<T> result) {
-			items.set(result);
 		}
 	}
 }

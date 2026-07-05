@@ -21,6 +21,7 @@ package is.codion.common.model.filter;
 import is.codion.common.model.filter.FilterModel.IncludePredicate;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.Items;
+import is.codion.common.model.filter.FilterModel.Refresher;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
@@ -76,7 +77,7 @@ public class DefaultFilterModelItemsTest {
 			selection = new TestMultiSelection();
 
 			items = Items.builder()
-							.<String>refresher(i -> new TestRefresher())
+							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> selection)
 							.sort(new TestSort())
 							.include(includePredicate)
@@ -243,7 +244,7 @@ public class DefaultFilterModelItemsTest {
 			TestMultiSelection selection = new TestMultiSelection();
 
 			items = Items.builder()
-							.<String>refresher(i -> new TestRefresher())
+							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> selection)
 							.sort(new TestSort())
 							.include(includePredicate)
@@ -288,7 +289,7 @@ public class DefaultFilterModelItemsTest {
 			sort.setComparator(Comparator.reverseOrder());
 
 			items = Items.builder()
-							.<String>refresher(i -> new TestRefresher())
+							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> new TestMultiSelection())
 							.sort(sort)
 							.include(includePredicate)
@@ -308,20 +309,21 @@ public class DefaultFilterModelItemsTest {
 	@DisplayName("Refresh")
 	class RefreshTest {
 
+		private final List<String> source = new ArrayList<>();
+
 		private Items<String> items;
-		private TestRefresher refresher;
 
 		@BeforeEach
 		void setUp() {
-			refresher = new TestRefresher();
-
 			items = Items.builder()
-							.<String>refresher(i -> refresher)
+							.<String>refresher(modelItems -> Refresher.<String>builder()
+											.items(() -> new ArrayList<>(source))
+											.onResult(modelItems::set)
+											.async(false)
+											.build())
 							.selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
-
-			refresher.setTargetItems(items);
 		}
 
 		@Test
@@ -329,7 +331,7 @@ public class DefaultFilterModelItemsTest {
 		void refresh_clearStrategy_replacesAll() {
 			items.add(asList("old1", "old2", "old3"));
 
-			refresher.setItems(asList("new1", "new2", "new3", "new4"));
+			source.addAll(asList("new1", "new2", "new3", "new4"));
 			items.refresh();
 
 			assertEquals(4, items.size());
@@ -345,7 +347,7 @@ public class DefaultFilterModelItemsTest {
 		@Test
 		@DisplayName("Refresh with callback")
 		void refresh_withCallback_shouldNotifyResult() {
-			refresher.setItems(asList("a", "b", "c"));
+			source.addAll(asList("a", "b", "c"));
 
 			CountDownLatch latch = new CountDownLatch(1);
 			List<String> result = new ArrayList<>();
@@ -377,7 +379,7 @@ public class DefaultFilterModelItemsTest {
 			sort = new TestSort();
 
 			items = Items.builder()
-							.<String>refresher(i -> new TestRefresher())
+							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> new TestMultiSelection())
 							.sort(sort)
 							.build();
@@ -423,7 +425,7 @@ public class DefaultFilterModelItemsTest {
 		@BeforeEach
 		void setUp() {
 			items = Items.builder()
-							.<String>refresher(i -> new TestRefresher())
+							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(v -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
@@ -493,7 +495,7 @@ public class DefaultFilterModelItemsTest {
 			Predicate<String> validator = item -> !item.contains("invalid");
 
 			Items<String> items = Items.builder()
-							.<String>refresher(i -> new TestRefresher())
+							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.validator(validator)
@@ -510,7 +512,7 @@ public class DefaultFilterModelItemsTest {
 		@DisplayName("Default validator accepts all")
 		void defaultValidator_acceptsAll() {
 			Items<String> items = Items.builder()
-							.<String>refresher(i -> new TestRefresher())
+							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
@@ -537,7 +539,7 @@ public class DefaultFilterModelItemsTest {
 		@BeforeEach
 		void setUp() {
 			items = Items.builder()
-							.<String>refresher(i -> new TestRefresher())
+							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
@@ -741,49 +743,6 @@ public class DefaultFilterModelItemsTest {
 		@Override
 		public Observer<Boolean> observer() {
 			return Event.event();
-		}
-	}
-
-	private static class TestRefresher extends FilterModel.AbstractRefresher<String> {
-		private List<String> items = new ArrayList<>();
-		private Items<String> targetItems;
-
-		TestRefresher() {
-			super(null, false); // No supplier, sync refresh
-		}
-
-		void setItems(List<String> items) {
-			this.items = new ArrayList<>(items);
-		}
-
-		void setTargetItems(Items<String> targetItems) {
-			this.targetItems = targetItems;
-		}
-
-		@Override
-		protected boolean isUserInterfaceThread() {
-			return true; // For test simplicity
-		}
-
-		@Override
-		protected void refreshAsync(Consumer<Collection<String>> onResult) {
-			refreshSync(onResult); // Delegate to sync for tests
-		}
-
-		@Override
-		protected void refreshSync(Consumer<Collection<String>> onResult) {
-			Collection<String> result = new ArrayList<>(items);
-			processResult(result);
-			if (onResult != null) {
-				onResult.accept(result);
-			}
-		}
-
-		@Override
-		protected void processResult(Collection<String> result) {
-			if (targetItems != null) {
-				targetItems.set(result);
-			}
 		}
 	}
 
