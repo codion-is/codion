@@ -192,6 +192,12 @@ public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBo
 		return (C) new FocusableComboBox<>(comboBoxModel);
 	}
 
+	@Override
+	protected void setName(String name, C component) {
+		super.setName(name, component);
+		component.getEditor().getEditorComponent().setName(name);
+	}
+
 	static boolean systemOrCrossPlatformLookAndFeelEnabled() {
 		String lookAndFeelClassName = getLookAndFeel().getClass().getName();
 

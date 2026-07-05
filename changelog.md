@@ -10,6 +10,8 @@ Codion Change Log
 - ConditionModel bug fixed, case-insensitive NOT_EQUAL now filters correctly.
 ### is.codion.swing.common.model
 - ProgressWorker, redundant call to super.publish() removed.
+### is.codion.swing.common.ui
+- AbstractComponentBuilder.setName() added, overridable for composite components.
 ### is.codion.framework.db.http
 - HttpEntityConnectionProvider now uses a locally registered domain when available.
 ### is.codion.framework.domain

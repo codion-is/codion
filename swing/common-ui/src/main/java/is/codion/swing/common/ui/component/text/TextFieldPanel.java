@@ -408,6 +408,12 @@ public final class TextFieldPanel extends JPanel {
 		protected void enable(ValidIndicator validIndicator, TextFieldPanel component, ObservableState valid) {
 			validIndicator.enable(component.textField, valid);
 		}
+
+		@Override
+		protected void setName(String name, TextFieldPanel component) {
+			super.setName(name, component);
+			component.textField.setName(name);
+		}
 	}
 
 	private static class TextFieldPanelValue extends AbstractComponentValue<TextFieldPanel, String> {

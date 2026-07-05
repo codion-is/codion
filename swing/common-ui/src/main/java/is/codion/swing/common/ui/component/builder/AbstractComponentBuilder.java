@@ -489,6 +489,15 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		modifiedIndicator.enable(component, modified);
 	}
 
+	/**
+	 * Sets the component name, override this method to set the name of composite components
+	 * @param name the name
+	 * @param component the component
+	 */
+	protected void setName(String name, C component) {
+		component.setName(name);
+	}
+
 	protected final B self() {
 		return (B) this;
 	}
@@ -511,7 +520,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 			Utilities.focusable(focusableObservable, component);
 		}
 		if (name != null) {
-			component.setName(name);
+			setName(name, component);
 		}
 		setSizes(component);
 		if (border != null) {

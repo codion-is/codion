@@ -192,6 +192,12 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<
 		return new SelectedItemValue<>(component);
 	}
 
+	@Override
+	protected void setName(String name, JComboBox<Item<T>> component) {
+		super.setName(name, component);
+		component.getEditor().getEditorComponent().setName(name);
+	}
+
 	private SwingFilterComboBoxModel<Item<T>> createItemComboBoxModel() {
 		Item<T> nullItem = Item.item(null, FilterComboBoxModel.NULL_CAPTION.getOrThrow());
 		if (nullable && !items.contains(nullItem)) {

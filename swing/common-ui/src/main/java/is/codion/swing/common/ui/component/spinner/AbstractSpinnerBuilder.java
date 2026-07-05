@@ -127,6 +127,15 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 		return new JSpinner(spinnerModel);
 	}
 
+	@Override
+	protected void setName(String name, JSpinner component) {
+		super.setName(name, component);
+		JComponent editor = component.getEditor();
+		if (editor instanceof JSpinner.DefaultEditor) {
+			((JSpinner.DefaultEditor) editor).getTextField().setName(name);
+		}
+	}
+
 	/**
 	 * Hack to preserve the horizontal alignment through UI changes, since the BasicSpinnerUI.createEditor()
 	 * gets called, which updates the editor alignment screwing up any previously set alignment value.

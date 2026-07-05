@@ -2224,6 +2224,7 @@ public class EntityTablePanel extends JPanel {
 			this.entityDefinition = tablePanel.tableModel.entityDefinition();
 			this.tableBuilder = FilterTable.builder()
 							.model(tablePanel.tableModel)
+							.name(entityDefinition.type().toString())
 							.summaryValues(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
 							.cellRenderers(new EntityTableCellRenderers())
 							.headerRenderers(new EntityTableHeaderRenderers())
