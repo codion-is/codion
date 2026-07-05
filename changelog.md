@@ -36,6 +36,7 @@ Codion Change Log
 - SwingEntityTableModel, editor sync via table model events removed.
 ### is.codion.swing.framework.ui
 - EntityEditorInspector added, a UiInspector exposing the edit model state.
+- EntityTableModelInspector added, a UiInspector exposing the table model row count and selection.
 ### is.codion.tools.swing.robot
 - Controller.key() and type() now return an Interaction, the keystroke verified via the KeyboardFocusManager.
 - Controller.Transport added, EDT dispatches keystrokes deterministically on the event dispatch thread.

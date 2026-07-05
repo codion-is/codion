@@ -32,10 +32,12 @@ public final class EntityEditorInspectorTest {
 	@Test
 	void locatedViaServiceLoader() {
 		assertTrue(UiInspector.instances().stream().anyMatch(EntityEditorInspector.class::isInstance));
+		assertTrue(UiInspector.instances().stream().anyMatch(EntityTableModelInspector.class::isInstance));
 	}
 
 	@Test
-	void notApplicableWithoutEntityPanel() {
+	void notApplicableWithoutPanel() {
 		assertFalse(new EntityEditorInspector().state(new JTextField()).isPresent());
+		assertFalse(new EntityTableModelInspector().state(new JTextField()).isPresent());
 	}
 }
