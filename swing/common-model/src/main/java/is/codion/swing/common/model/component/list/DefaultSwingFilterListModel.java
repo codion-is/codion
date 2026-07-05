@@ -200,7 +200,7 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 		}
 	}
 
-	private static final class ListRefreshWorker<T> extends AbstractRefreshWorker<T> {
+	private static final class ListRefreshWorker<T> extends FilterModel.AbstractRefresher<T> {
 
 		private final Items<T> items;
 

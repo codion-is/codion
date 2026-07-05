@@ -23,7 +23,6 @@ import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.item.Item;
-import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 
 import org.jspecify.annotations.Nullable;
 
@@ -275,7 +274,7 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 		}
 	}
 
-	private static final class ComboBoxRefreshWorker<T> extends AbstractRefreshWorker<T> {
+	private static final class ComboBoxRefreshWorker<T> extends FilterModel.AbstractRefresher<T> {
 
 		private final ComboBoxItems<T> items;
 
