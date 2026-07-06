@@ -59,7 +59,7 @@ public interface Item<T> {
 	}
 
 	/**
-	 * Returns an {@link Item}, with the caption as item.toString() or an empty string in case of a null value
+	 * Returns an {@link Item}, with the caption as value.toString() or an empty string in case of a null value
 	 * @param value the value, may be null
 	 * @param <T> the value type
 	 * @return an {@link Item} based on the given value

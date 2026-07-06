@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.79
 ### is.codion.common.reactive
 - javadocs updated, some minor api improvements.
+### is.codion.common.utilities
+- javadocs updated, some minor api improvements.
 ### is.codion.framework.model
 - AbstractEntityEditor.execute() and supersede() protected again.
 - DefaultEntityModel, DefaultEntityEditModel and DefaultEntityApplicationModel renamed AbstractEntityModel, AbstractEntityEditModel and AbstractEntityApplicationModel, now abstract, consistent with the other Abstract* extension bases.

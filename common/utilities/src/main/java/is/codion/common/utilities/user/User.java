@@ -41,6 +41,8 @@ public sealed interface User permits DefaultUser {
 	 * <li>Value type: Integer
 	 * <li>Default value: 256
 	 * </ul>
+	 * Note that this value is captured once when the {@link User} implementation is first loaded;
+	 * set it before then for it to take effect.
 	 */
 	PropertyValue<Integer> MAXIMUM_USERNAME_LENGTH = integerValue(User.class.getName() + ".maximumUsernameLength", 256);
 
@@ -50,6 +52,8 @@ public sealed interface User permits DefaultUser {
 	 * <li>Value type: Integer
 	 * <li>Default value: 1024
 	 * </ul>
+	 * Note that this value is captured once when the {@link User} implementation is first loaded;
+	 * set it before then for it to take effect.
 	 */
 	PropertyValue<Integer> MAXIMUM_PASSWORD_LENGTH = integerValue(User.class.getName() + ".maximumPasswordLength", 1024);
 
@@ -98,8 +102,8 @@ public sealed interface User permits DefaultUser {
 
 	/**
 	 * Parses a User from a string, containing a username and password with a single ':' as delimiter, i.e. "user:pass"
-	 * or "user:" for en empty password. If no delimiter is found the whole string is assumed to be the username
-	 * and the password empty. The username portion is trimmed. Any delimeters beyond the initial one are assumed
+	 * or "user:" for an empty password. If no delimiter is found the whole string is assumed to be the username
+	 * and the password empty. The username portion is trimmed. Any delimiters beyond the initial one are assumed
 	 * to be part of the password.
 	 * @param userPassword the username and password string
 	 * @return a User with the given username and password

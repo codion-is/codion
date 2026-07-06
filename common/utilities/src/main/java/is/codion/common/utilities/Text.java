@@ -60,10 +60,10 @@ public final class Text {
 	private Text() {}
 
 	/**
-	 * Sorts the string representations of the list contents, using the space aware collator
+	 * Sorts the given list in place, comparing the string representations of the list contents using the space aware collator.
 	 * @param values the list to sort (collate)
 	 * @param <T> the list element type
-	 * @return the sorted list
+	 * @return the given list, sorted in place
 	 * @see Text#collator()
 	 */
 	public static <T> List<T> collate(List<T> values) {
@@ -74,7 +74,9 @@ public final class Text {
 
 	/**
 	 * Returns a Comparator which compares the string representations of the objects
-	 * using the default Collator, taking spaces into account.
+	 * using the Collator for the {@link #COLLATOR_LANGUAGE} language, taking spaces into account.
+	 * <p>Note that the collator language is captured on first use; changing {@link #COLLATOR_LANGUAGE}
+	 * afterwards has no effect.
 	 * @param <T> the type of the objects to compare
 	 * @return a space aware collator
 	 * @see #COLLATOR_LANGUAGE
@@ -85,11 +87,10 @@ public final class Text {
 
 	/**
 	 * Creates a Comparator which compares the string representations of the objects
-	 * using the default Collator, taking spaces into account.
+	 * using the Collator for the given locale, taking spaces into account.
 	 * @param <T> the type of the objects to compare
 	 * @param locale the collator locale
 	 * @return a space aware collator
-	 * @see #COLLATOR_LANGUAGE
 	 */
 	public static <T> Comparator<T> collator(Locale locale) {
 		return new SpaceAwareComparator<>(requireNonNull(locale));
@@ -120,6 +121,7 @@ public final class Text {
 	/**
 	 * Splits and trims the given comma separated string.
 	 * Returns an empty list in case of null or empty string argument.
+	 * Empty segments are dropped, so {@code "a,,b"} yields {@code [a, b]}.
 	 * @param csv a String with comma separated values
 	 * @return the trimmed values
 	 */

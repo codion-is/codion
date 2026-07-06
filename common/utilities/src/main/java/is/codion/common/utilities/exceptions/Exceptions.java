@@ -35,6 +35,7 @@ public final class Exceptions {
 	 * <p>Note that if a new wrapper RuntimeException is created, it has the stacktrace of the original throwable,
 	 * as well as its message, while keeping the original throwable as its cause.
 	 * @param throwable the throwable
+	 * @return the throwable itself if it is a RuntimeException, otherwise a RuntimeException wrapping it
 	 */
 	public static RuntimeException runtime(Throwable throwable) {
 		if (requireNonNull(throwable) instanceof RuntimeException) {
@@ -52,14 +53,17 @@ public final class Exceptions {
 	 * <p>Note that if a new wrapper RuntimeException is created, it has the stacktrace of the unwrapped throwable,
 	 * as well as its message, while keeping the unwrapped throwable as its cause.
 	 * @param throwable the throwable
-	 * @param unwrap unwraps these exceptions
+	 * @param unwrap the exception types to unwrap before wrapping
+	 * @return the unwrapped throwable itself if it is a RuntimeException, otherwise a RuntimeException wrapping it
 	 */
+	@SafeVarargs
 	public static RuntimeException runtime(Throwable throwable, Class<? extends Throwable>... unwrap) {
 		return runtime(unwrap(throwable, asList(requireNonNull(unwrap))));
 	}
 
 	/**
-	 * Unwraps the given throwable.
+	 * Unwraps the given throwable, following the cause chain while each cause's exact class is one of
+	 * the given types. Note that matching is by exact class; subclasses of a listed type are not unwrapped.
 	 * @param throwable the exception to unwrap
 	 * @param unwrap the exception types to unwrap
 	 * @return the unwrapped exception

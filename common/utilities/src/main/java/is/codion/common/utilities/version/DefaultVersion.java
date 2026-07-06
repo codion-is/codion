@@ -167,8 +167,8 @@ final class DefaultVersion implements Version, Serializable {
 		}
 
 		@Override
-		public Builder build(@Nullable String build) {
-			this.build = build;
+		public Builder buildInfo(@Nullable String buildInfo) {
+			this.build = buildInfo;
 			return this;
 		}
 
