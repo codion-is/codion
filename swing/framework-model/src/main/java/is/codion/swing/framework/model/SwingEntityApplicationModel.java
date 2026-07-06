@@ -19,7 +19,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.model.DefaultEntityApplicationModel;
+import is.codion.framework.model.AbstractEntityApplicationModel;
 
 import java.util.Collection;
 import java.util.prefs.Preferences;
@@ -28,7 +28,7 @@ import java.util.prefs.Preferences;
  * A Swing implementation of {@link is.codion.framework.model.EntityApplicationModel}
  */
 public class SwingEntityApplicationModel
-				extends DefaultEntityApplicationModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
+				extends AbstractEntityApplicationModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel, SwingEntityEditor> {
 
 	/**
 	 * Instantiates a new {@link SwingEntityApplicationModel}

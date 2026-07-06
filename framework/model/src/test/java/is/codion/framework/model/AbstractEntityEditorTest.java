@@ -1397,19 +1397,4 @@ public final class AbstractEntityEditorTest {
 	}
 
 	private static final class TestComponentModels implements EntityEditor.ComponentModels {}
-
-	private static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
-		private TestEntityModel(TestEntityEditModel editModel) {
-			super(editModel);
-		}
-	}
-
-	private static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityEditor> {
-
-		private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			super(new TestEntityEditor(entityType, connectionProvider));
-		}
-	}
-
-	private interface TestEntityTableModel extends EntityTableModel<TestEntityEditModel, TestEntityEditor> {}
 }

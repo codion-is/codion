@@ -20,14 +20,14 @@ package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.model.DefaultEntityEditModel;
+import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
 
 /**
  * A Swing implementation of {@link EntityEditModel}.
  */
-public class SwingEntityEditModel extends DefaultEntityEditModel<SwingEntityEditor> {
+public class SwingEntityEditModel extends AbstractEntityEditModel<SwingEntityEditor> {
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.

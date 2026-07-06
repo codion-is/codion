@@ -30,15 +30,15 @@ import static java.util.Objects.requireNonNull;
  * A default {@link EntityEditModel} implementation
  * @param <R> the {@link EntityEditor} type
  */
-public class DefaultEntityEditModel<R extends EntityEditor<R>> implements EntityEditModel<R> {
+public abstract class AbstractEntityEditModel<R extends EntityEditor<R>> implements EntityEditModel<R> {
 
 	private final R editor;
 
 	/**
-	 * Instantiates a new {@link DefaultEntityEditModel} based on the given editor
+	 * Instantiates a new {@link AbstractEntityEditModel} based on the given editor
 	 * @param editor the editor
 	 */
-	public DefaultEntityEditModel(R editor) {
+	protected AbstractEntityEditModel(R editor) {
 		this.editor = requireNonNull(editor);
 	}
 

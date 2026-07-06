@@ -77,7 +77,7 @@ public final class DefaultEntityEditModelTest {
 					.build();
 	private static final PersistenceEvents EMPLOYEE_PERSISTENCE_EVENTS = PersistenceEvents.persistenceEvents(Employee.TYPE);
 
-	private DefaultEntityEditModel<?> employeeEditModel;
+	private AbstractEntityEditModel<?> employeeEditModel;
 	private EntityEditor<?> editor;
 
 	@BeforeEach
