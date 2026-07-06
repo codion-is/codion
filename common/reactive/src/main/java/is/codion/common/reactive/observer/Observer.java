@@ -144,7 +144,8 @@ public interface Observer<T> {
 	}
 
 	/**
-	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with a value satisfying the given predicate
+	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with a value satisfying the given predicate.
+	 * <p>The predicate is tested with each triggering value, including null, and must tolerate null input.
 	 * @param predicate the predicate on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
@@ -162,7 +163,8 @@ public interface Observer<T> {
 	Observer<T> observer();
 
 	/**
-	 * Builds an {@link Observer}
+	 * A base builder for adding listeners and consumers, extended by the builders of observable
+	 * types; there is no factory for a standalone {@link Observer} builder.
 	 * @param <T> the observed type
 	 * @param <B> the builder type
 	 */
@@ -198,7 +200,7 @@ public interface Observer<T> {
 		 * @param listener the listener
 		 * @return this builder instance
 		 */
-		B when(T value, Runnable listener);
+		B when(@Nullable T value, Runnable listener);
 
 		/**
 		 * Adds a conditional consumer
@@ -206,23 +208,25 @@ public interface Observer<T> {
 		 * @param consumer the consumer
 		 * @return this builder instance
 		 */
-		B when(T value, Consumer<? super T> consumer);
+		B when(@Nullable T value, Consumer<? super T> consumer);
 
 		/**
 		 * Adds a conditional listener
+		 * <p>The predicate is tested with each triggering value, including null, and must tolerate null input.
 		 * @param predicate the predicate on which to run
-		 * @param listener the runnable
+		 * @param listener the listener
 		 * @return this builder instance
 		 */
-		B when(Predicate<T> predicate, Runnable listener);
+		B when(Predicate<? super T> predicate, Runnable listener);
 
 		/**
 		 * Adds a conditional consumer
+		 * <p>The predicate is tested with each triggering value, including null, and must tolerate null input.
 		 * @param predicate the predicate on which to consume the value
 		 * @param consumer the consumer to use
 		 * @return this builder instance
 		 */
-		B when(Predicate<T> predicate, Consumer<? super T> consumer);
+		B when(Predicate<? super T> predicate, Consumer<? super T> consumer);
 
 		/**
 		 * @return an {@link Observer} based on this builder

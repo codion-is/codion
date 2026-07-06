@@ -27,7 +27,7 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 
 /**
- * <p>An observable wrapper for an orderered Set of values.
+ * <p>An observable wrapper for an ordered Set of values.
  * <p>A factory for {@link ValueSet} instances.
  * <p>All implementations are thread-safe and support concurrent access.
  * <p>This set maintains item ordering and can be sorted via {@link #sort(Comparator)},

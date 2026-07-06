@@ -200,8 +200,8 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder when(boolean value, Runnable runnable) {
-			valueBuilder.when(value, runnable);
+		public Builder when(boolean value, Runnable listener) {
+			valueBuilder.when(value, listener);
 			return this;
 		}
 
@@ -212,8 +212,8 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder when(Predicate<Boolean> predicate, Runnable runnable) {
-			valueBuilder.when(predicate, runnable);
+		public Builder when(Predicate<Boolean> predicate, Runnable listener) {
+			valueBuilder.when(predicate, listener);
 			return this;
 		}
 

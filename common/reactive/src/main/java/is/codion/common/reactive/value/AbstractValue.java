@@ -26,7 +26,7 @@ import java.util.function.UnaryOperator;
  * <p>An abstract {@link Value} implementation handling everything except the value itself.
  * <p>The constructor parameter {@code notify} specifies whether this {@link AbstractValue} instance should call
  * {@link #notifyObserver()} each time the value is set ({@link Notify#SET}) or only when it changes
- * ({@link Notify#CHANGED}), which is determined using {@link Object#equals(Object)}.
+ * ({@link Notify#CHANGED}), which is determined using {@link java.util.Objects#deepEquals(Object, Object)}.
  * <p>Implementations that want to handle notifications manually should use the
  * {@link AbstractValue#AbstractValue()} or {@link AbstractValue#AbstractValue(Object)} constructors.
  * @param <T> the value type

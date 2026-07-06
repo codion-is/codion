@@ -146,6 +146,9 @@ public interface Observable<T> extends Observer<T> {
 	/**
 	 * The default implementation returns a new {@link Observer} instance on each call,
 	 * but subclasses are free to return the same instance.
+	 * <p>Note that when a new instance is returned per call, a listener added through one
+	 * {@code changed()} instance can only be removed through that same instance; retain it
+	 * if the listener must later be removed.
 	 * @return an {@link Observer} instance notified when this observable has changed
 	 */
 	default Observer<Change<T>> changed() {

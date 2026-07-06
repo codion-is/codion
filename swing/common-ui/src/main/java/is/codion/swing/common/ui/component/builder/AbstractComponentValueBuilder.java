@@ -159,25 +159,25 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 	}
 
 	@Override
-	public final B when(T value, Runnable listener) {
+	public final B when(@Nullable T value, Runnable listener) {
 		listeners.when(value, listener);
 		return self();
 	}
 
 	@Override
-	public final B when(T value, Consumer<? super T> consumer) {
+	public final B when(@Nullable T value, Consumer<? super T> consumer) {
 		listeners.when(value, consumer);
 		return self();
 	}
 
 	@Override
-	public final B when(Predicate<T> predicate, Runnable listener) {
+	public final B when(Predicate<? super T> predicate, Runnable listener) {
 		listeners.when(predicate, listener);
 		return self();
 	}
 
 	@Override
-	public final B when(Predicate<T> predicate, Consumer<? super T> consumer) {
+	public final B when(Predicate<? super T> predicate, Consumer<? super T> consumer) {
 		listeners.when(predicate, consumer);
 		return self();
 	}

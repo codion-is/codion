@@ -85,7 +85,7 @@ public interface State extends ObservableState {
 	 * Note that after a call to this method this state is the same as {@code originalState}.
 	 * @param originalState the original state to link this state to
 	 * @throws IllegalStateException in case the states are already linked or if a cycle is detected
-	 * @throws IllegalArgumentException in case the original state is not valid according to this states validators
+	 * @throws IllegalArgumentException in case the original state is not valid according to this state's validators
 	 */
 	void link(State originalState);
 
@@ -100,15 +100,15 @@ public interface State extends ObservableState {
 	 * Adds a validator to this {@link State}.
 	 * Adding the same validator again has no effect.
 	 * @param validator the validator
-	 * @return true if this value did not already contain the specified validator
+	 * @return true if this state did not already contain the specified validator
 	 * @throws IllegalArgumentException in case the current value is invalid according to the validator
 	 */
 	boolean addValidator(Validator<? super Boolean> validator);
 
 	/**
-	 * Removes the given validator from this value
+	 * Removes the given validator from this state
 	 * @param validator the validator
-	 * @return true if this value contained the specified validator
+	 * @return true if this state contained the specified validator
 	 */
 	boolean removeValidator(Validator<? super Boolean> validator);
 
@@ -167,6 +167,8 @@ public interface State extends ObservableState {
 	}
 
 	/**
+	 * @param <T> the value type
+	 * @param observable the observable
 	 * @return an {@link ObservableState} active when the given observable
 	 * has a value present, determined by {@link Observable#optional()}.
 	 */
@@ -175,6 +177,7 @@ public interface State extends ObservableState {
 	}
 
 	/**
+	 * @param <T> the value type
 	 * @param observable the observable
 	 * @param value the value to match
 	 * @return an {@link ObservableState} active when the given observable value matches the given value
@@ -184,6 +187,7 @@ public interface State extends ObservableState {
 	}
 
 	/**
+	 * @param <T> the value type
 	 * @param observable the observable
 	 * @param predicate the predicate
 	 * @return an {@link ObservableState} active when the given observable value matches the given predicate
@@ -208,18 +212,18 @@ public interface State extends ObservableState {
 	 *   <li>Once the returned {@link State} is no longer reachable and is garbage collected,
 	 *       the synchronization is automatically cleaned up</li>
 	 * </ul>
-	 * <pre>
-	 * ValueSet&lt;String&gt; tags = ValueSet.valueSet();
+	 * {@snippet :
+	 * ValueSet<String> tags = ValueSet.valueSet();
 	 * State containsImportant = State.contains(tags, "important");
 	 *
 	 * // State → Set
 	 * containsImportant.set(true);
-	 * assertTrue(tags.contains("important"));
+	 * tags.contains("important"); // true
 	 *
 	 * // Set → State
 	 * tags.remove("important");
-	 * assertFalse(containsImportant.is());
-	 * </pre>
+	 * containsImportant.is(); // false
+	 *}
 	 * @param <T> the value type
 	 * @param valueSet the value set
 	 * @param value the value
@@ -231,7 +235,7 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using AND.
-	 * @param observableStates the state observers to base this state combination on
+	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
 	static ObservableState and(ObservableState... observableStates) {
@@ -240,7 +244,7 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using AND.
-	 * @param observableStates the state observers to base this state combination on
+	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
 	static ObservableState and(Collection<? extends ObservableState> observableStates) {
@@ -249,7 +253,7 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using OR.
-	 * @param observableStates the state observers to base this state combination on
+	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
 	static ObservableState or(ObservableState... observableStates) {
@@ -258,7 +262,7 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using OR.
-	 * @param observableStates the state observers to base this state combination on
+	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
 	static ObservableState or(Collection<? extends ObservableState> observableStates) {
@@ -358,10 +362,10 @@ public interface State extends ObservableState {
 		/**
 		 * Adds a conditional listener
 		 * @param value the value on which to run
-		 * @param runnable the runnable to run
+		 * @param listener the listener
 		 * @return this builder instance
 		 */
-		Builder when(boolean value, Runnable runnable);
+		Builder when(boolean value, Runnable listener);
 
 		/**
 		 * Adds a conditional consumer
@@ -374,10 +378,10 @@ public interface State extends ObservableState {
 		/**
 		 * Adds a conditional listener
 		 * @param predicate the predicate on which to run
-		 * @param runnable the runnable to run
+		 * @param listener the listener
 		 * @return this builder instance
 		 */
-		Builder when(Predicate<Boolean> predicate, Runnable runnable);
+		Builder when(Predicate<Boolean> predicate, Runnable listener);
 
 		/**
 		 * Adds a conditional consumer

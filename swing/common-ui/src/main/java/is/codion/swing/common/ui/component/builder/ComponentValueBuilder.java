@@ -189,7 +189,7 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * @param listener the listener
 	 * @return this builder instance
 	 */
-	B when(T value, Runnable listener);
+	B when(@Nullable T value, Runnable listener);
 
 	/**
 	 * Adds a conditional consumer
@@ -197,23 +197,25 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 * @param consumer the consumer
 	 * @return this builder instance
 	 */
-	B when(T value, Consumer<? super T> consumer);
+	B when(@Nullable T value, Consumer<? super T> consumer);
 
 	/**
 	 * Adds a conditional listener
+	 * <p>The predicate is tested with each triggering value, including null, and must tolerate null input.
 	 * @param predicate the predicate on which to run
-	 * @param listener the runnable
+	 * @param listener the listener
 	 * @return this builder instance
 	 */
-	B when(Predicate<T> predicate, Runnable listener);
+	B when(Predicate<? super T> predicate, Runnable listener);
 
 	/**
 	 * Adds a conditional consumer
+	 * <p>The predicate is tested with each triggering value, including null, and must tolerate null input.
 	 * @param predicate the predicate on which to consume the value
 	 * @param consumer the consumer to use
 	 * @return this builder instance
 	 */
-	B when(Predicate<T> predicate, Consumer<? super T> consumer);
+	B when(Predicate<? super T> predicate, Consumer<? super T> consumer);
 
 	/**
 	 * @param onBuildValue called when the component value has been built.

@@ -21,7 +21,7 @@ package is.codion.common.reactive.value;
 import java.util.List;
 
 /**
- * A read only value list observable
+ * A read-only observable value list.
  * @param <T> the value type
  */
 public interface ObservableValueList<T> extends ObservableValueCollection<T, List<T>> {}
