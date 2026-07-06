@@ -197,7 +197,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final void closeConnectionPools() {
-		for (ConnectionPoolWrapper pool : connectionPools.values()) {
+		for (ConnectionPoolWrapper pool : new ArrayList<>(connectionPools.values())) {
 			closeConnectionPool(pool.user().username());
 		}
 	}

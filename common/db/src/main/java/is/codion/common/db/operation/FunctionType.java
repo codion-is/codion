@@ -19,6 +19,7 @@
 package is.codion.common.db.operation;
 
 /**
+ * Identifies a database function.
  * @param <C> the connection type
  * @param <P> the function parameter type
  * @param <R> the function result type
@@ -31,7 +32,7 @@ public interface FunctionType<C, P, R> {
 	String name();
 
 	/**
-	 * Creates a {@link FunctionType} with the given name and types.
+	 * Creates a {@link FunctionType} with the given name.
 	 * @param name the name
 	 * @param <C> the connection type
 	 * @param <P> the function parameter type

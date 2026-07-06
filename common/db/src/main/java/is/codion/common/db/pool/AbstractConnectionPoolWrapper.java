@@ -56,8 +56,10 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	private final User user;
 	private final DefaultConnectionPoolCounter counter;
 
+	private volatile boolean closed = false;
+
 	/**
-	 * Instantiates a new AbstractConnectionPool instance.
+	 * Instantiates a new AbstractConnectionPoolWrapper instance.
 	 * @param connectionFactory the connection factory
 	 * @param user the connection pool user
 	 * @param dataSource the data source
@@ -80,8 +82,12 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	@Override
 	public final Connection connection(User user) {
 		requireNonNull(user, "user");
+		if (closed) {
+			throw new IllegalStateException("Connection pool for user '" + this.user.username() + "' has been closed");
+		}
 		checkConnectionPoolCredentials(user);
-		long startTime = counter.isCollectCheckOutTimes() ? System.nanoTime() : 0;
+		boolean collectCheckOutTime = counter.isCollectCheckOutTimes();
+		long startTime = collectCheckOutTime ? System.nanoTime() : 0;
 		try {
 			counter.incrementRequestCounter();
 
@@ -92,7 +98,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 			throw new DatabaseException(e, "Failed to fetch connection from pool for user: " + user.username());
 		}
 		finally {
-			if (counter.isCollectCheckOutTimes() && startTime > 0L) {
+			if (collectCheckOutTime) {
 				counter.addCheckOutTime((int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
 			}
 		}
@@ -180,11 +186,12 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	}
 
 	/**
-	 * Cleans up statistics collection resources to prevent resource leaks.
-	 * This method should be called by concrete implementations in their close() methods
-	 * before shutting down the actual connection pool.
+	 * Marks this pool as closed (causing subsequent {@link #connection(User)} calls to throw
+	 * {@link IllegalStateException}) and cleans up statistics collection resources to prevent resource leaks.
+	 * This method should be called by concrete implementations in their close() methods.
 	 */
 	protected final void closeStatisticsCollection() {
+		closed = true;
 		counter.close();
 	}
 

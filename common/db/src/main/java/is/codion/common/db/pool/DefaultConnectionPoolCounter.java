@@ -144,12 +144,11 @@ final class DefaultConnectionPoolCounter {
 		statistics.destroyed(connectionsDestroyed.get());
 		statistics.requests(connectionRequests.get());
 		statistics.failedRequests(connectionRequestsFailed.get());
-		double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
-		requestsPerSecondTime.set(current);
-		statistics.requestsPerSecond((int) (requestsPerSecondCounter.get() / seconds));
-		requestsPerSecondCounter.set(0);
-		statistics.failedRequestsPerSecond((int) (requestsFailedPerSecondCounter.get() / seconds));
-		requestsFailedPerSecondCounter.set(0);
+		double seconds = (current - requestsPerSecondTime.getAndSet(current)) / THOUSAND;
+		if (seconds > 0) {
+			statistics.requestsPerSecond((int) (requestsPerSecondCounter.getAndSet(0) / seconds));
+			statistics.failedRequestsPerSecond((int) (requestsFailedPerSecondCounter.getAndSet(0) / seconds));
+		}
 		if (!checkOutTimes.isEmpty()) {
 			populateCheckOutTime(statistics);
 		}

@@ -20,12 +20,17 @@ package is.codion.common.db.exception;
 
 import org.jspecify.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.util.Optional;
 
 /**
  * An exception coming from a database-layer.
+ * <p>Note that the underlying {@link SQLException} is not preserved as the cause ({@link #getCause()}
+ * returns null); instead its stack trace is copied and its error code and sql state captured. This keeps
+ * the exception deserializable on a client without the database driver classes on its classpath.
  */
 public class DatabaseException extends RuntimeException {
 
@@ -47,7 +52,7 @@ public class DatabaseException extends RuntimeException {
 	 * The underlying error code, if any, transient so that it's not
 	 * available client side if running in a server/client environment
 	 */
-	private final transient int errorCode;
+	private transient int errorCode;
 
 	/**
 	 * The underlying sql state, if any, transient so that it's not
@@ -115,7 +120,7 @@ public class DatabaseException extends RuntimeException {
 	/**
 	 * Returns the sql statement causing this exception, if available, note that this is only
 	 * available when running with a local database connection.
-	 * @return the sql statement which caused the exception, an empty Optional if not avialable
+	 * @return the sql statement which caused the exception, an empty Optional if not available
 	 */
 	public final Optional<String> statement() {
 		return Optional.ofNullable(this.statement);
@@ -142,5 +147,12 @@ public class DatabaseException extends RuntimeException {
 	@Override
 	public final void setStackTrace(StackTraceElement[] stackTrace) {
 		super.setStackTrace(stackTrace);
+	}
+
+	@Serial
+	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+		stream.defaultReadObject();
+		// errorCode is transient and deserializes to 0; normalize to the documented "not available" value
+		errorCode = -1;
 	}
 }

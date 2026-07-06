@@ -33,6 +33,11 @@ import static is.codion.common.utilities.Configuration.*;
 
 /**
  * Defines DBMS specific functionality as well as basic database configuration settings.
+ * <p>Note that the {@link PropertyValue} configuration settings declared here are read once, when the
+ * {@link Database} implementation is loaded or constructed; changing them afterwards has no effect.
+ * <p>Connection pool management ({@link #createConnectionPool}, {@link #closeConnectionPool},
+ * {@link #closeConnectionPools}) is expected to be performed at application startup from a single thread
+ * and is not synchronized.
  * @see Database#instance()
  * @see DatabaseFactory#instance()
  * @see DatabaseFactory#instance(String)
@@ -95,7 +100,6 @@ public interface Database extends ConnectionFactory {
 	 * <li>Value type: Integer
 	 * <li>Default value: 2 seconds
 	 * <li>Property name: codion.db.validityCheckTimeout
-	 * <li>Valid range: 1-30 seconds (typically 2-10 seconds for most networks)
 	 * </ul>
 	 */
 	PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = integerValue("codion.db.validityCheckTimeout", 2);
@@ -121,6 +125,8 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * Specifies the default login timeout (in seconds).
+	 * <p>Applied JVM-wide via {@link java.sql.DriverManager#setLoginTimeout(int)} when the {@link Database}
+	 * implementation is loaded, affecting all JDBC usage in the process, not only Codion's.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 2
@@ -186,7 +192,7 @@ public interface Database extends ConnectionFactory {
 	 * Returns a query string for retrieving the last automatically generated id from the given id source
 	 * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table auto generating the value
 	 * @return a query string for retrieving the last auto-increment value from idSource
-	 * @throws NullPointerException in case {@code idSource} is required and is null
+	 * @throws NullPointerException in case {@code idSource} is null
 	 */
 	String autoIncrementQuery(String idSource);
 
@@ -221,8 +227,8 @@ public interface Database extends ConnectionFactory {
 	boolean subqueryRequiresAlias();
 
 	/**
-	 * Returns the maximum number of prepared statement parameters, supported by this database.
-	 * The default implementation simply returns {@link Integer#MAX_VALUE}, as in, no limit.
+	 * Returns the maximum number of prepared statement parameters supported by this database,
+	 * {@link Integer#MAX_VALUE} indicating no limit.
 	 * @return the maximum number of prepared statement parameters, supported by this database.
 	 */
 	int maximumParameters();
@@ -296,20 +302,24 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * Creates a connection pool for the given user in this database.
+	 * The pool is keyed on the username, case-insensitively.
 	 * @param connectionPoolFactory the ConnectionPoolFactory implementation to use
 	 * @param poolUser the user for which to create a connection pool
 	 * @return a new {@link ConnectionPoolWrapper}
 	 * @throws DatabaseException in case of a database exception
+	 * @throws IllegalStateException in case a connection pool already exists for the given user
 	 */
 	ConnectionPoolWrapper createConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser);
 
 	/**
+	 * The username is case-insensitive.
 	 * @param username the username
 	 * @return true if a connection pool exists for the given username
 	 */
 	boolean containsConnectionPool(String username);
 
 	/**
+	 * The username is case-insensitive.
 	 * @param username the username
 	 * @return the connection pool for the given user
 	 * @throws IllegalArgumentException in case no connection pool exists for the given user
@@ -317,12 +327,14 @@ public interface Database extends ConnectionFactory {
 	ConnectionPoolWrapper connectionPool(String username);
 
 	/**
+	 * Note that the returned usernames are lower case.
 	 * @return the usernames of all available connection pools
 	 */
 	Collection<String> connectionPoolUsernames();
 
 	/**
-	 * Closes and removes the pool associated with the given user
+	 * Closes and removes the pool associated with the given user.
+	 * The username is case-insensitive.
 	 * @param username the username of the pool that should be removed
 	 */
 	void closeConnectionPool(String username);
@@ -349,7 +361,7 @@ public interface Database extends ConnectionFactory {
 	 * Subsequent changes to {@link Database#URL} will cause an exception to be thrown
 	 * unless {@link #URL_SCOPED_INSTANCE} is enabled, then a new instance is created and returned.
 	 * @return a Database instance based on the current jdbc url
-	 * @throws IllegalArgumentException in case an unsupported database type is specified
+	 * @throws IllegalStateException in case an unsupported database type is specified
 	 * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
 	 * @throws DatabaseException in case {@link Database#URL} has changed and {@link #URL_SCOPED_INSTANCE} is not enabled
 	 * @see Database#URL

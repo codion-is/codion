@@ -48,6 +48,8 @@ public interface ConnectionProvider {
 
 	/**
 	 * Returns a JDBC {@link Connection} instance based on the given database and user.
+	 * <p>Note that the password is necessarily converted to a String here for the {@link DriverManager} /
+	 * {@link Properties} API, ending the {@code char[]} password discipline at the JDBC boundary.
 	 * @param user the user
 	 * @param url the jdbc url
 	 * @return a JDBC {@link Connection} instance

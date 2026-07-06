@@ -38,6 +38,7 @@ public abstract class AbstractReport<T, P, R> implements Report<T, P, R> {
 	private final boolean cacheReport;
 
 	private @Nullable T cachedReport;
+	private @Nullable String cachedFullReportPath;
 
 	/**
 	 * Instantiates a new AbstractReport.
@@ -51,17 +52,17 @@ public abstract class AbstractReport<T, P, R> implements Report<T, P, R> {
 
 	@Override
 	public final String toString() {
-		return fullReportPath();
+		return cachedFullReportPath();
 	}
 
 	@Override
 	public final boolean equals(Object obj) {
-		return obj instanceof AbstractReport && ((AbstractReport<?, ?, ?>) obj).fullReportPath().equals(fullReportPath());
+		return obj instanceof AbstractReport && ((AbstractReport<?, ?, ?>) obj).cachedFullReportPath().equals(cachedFullReportPath());
 	}
 
 	@Override
 	public final int hashCode() {
-		return fullReportPath().hashCode();
+		return cachedFullReportPath().hashCode();
 	}
 
 	@Override
@@ -80,6 +81,18 @@ public abstract class AbstractReport<T, P, R> implements Report<T, P, R> {
 	 */
 	protected String fullReportPath() {
 		return Report.fullReportPath(reportPath);
+	}
+
+	/**
+	 * Resolves {@link #fullReportPath()} once and caches it, so that {@link #toString()}, {@link #equals(Object)}
+	 * and {@link #hashCode()} remain stable even if {@link Report#REPORT_PATH} changes after first use.
+	 */
+	private synchronized String cachedFullReportPath() {
+		if (cachedFullReportPath == null) {
+			cachedFullReportPath = fullReportPath();
+		}
+
+		return cachedFullReportPath;
 	}
 
 	/**

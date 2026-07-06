@@ -33,12 +33,12 @@ public interface ReportType<T, P, R> {
 	String name();
 
 	/**
-	 * Instantiates a new Report instance with the given name.
+	 * Instantiates a new ReportType instance with the given name.
 	 * @param name the report name
 	 * @param <T> the report type
 	 * @param <P> the report parameters type
 	 * @param <R> the report result type
-	 * @return a report
+	 * @return a report type
 	 */
 	static <T, P, R> ReportType<T, P, R> reportType(String name) {
 		return new DefaultReportType<>(name);
