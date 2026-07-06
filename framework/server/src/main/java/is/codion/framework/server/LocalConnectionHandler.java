@@ -23,7 +23,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.utilities.logging.MethodTrace;
-import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
@@ -40,15 +39,13 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static is.codion.framework.db.local.LocalEntityConnection.TRACES;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.tracer.MethodTracer.methodTracer;
 import static java.lang.System.currentTimeMillis;
+import static java.lang.System.nanoTime;
 
 final class LocalConnectionHandler implements InvocationHandler {
 
@@ -60,8 +57,6 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private static final String RETURN_CONNECTION = "returnConnection";
 	private static final String CREATE_CONNECTION = "createConnection";
 	private static final String ENTITIES = "entities";
-
-	static final RequestCounter REQUEST_COUNTER = new RequestCounter();
 
 	private final Domain domain;
 	private final RemoteClient remoteClient;
@@ -98,6 +93,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		active.set(true);
 		lastAccessTime = currentTimeMillis();
 		Exception exception = null;
+		long startNanoseconds = nanoTime();
 		logEntry(methodName, args);
 		try {
 			prepareConnection();
@@ -116,6 +112,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		finally {
 			returnConnection();
 			logExit(methodName, exception);
+			ServerMetrics.INSTANCE.record(methodName, nanoTime() - startNanoseconds);
 			active.set(false);
 		}
 	}
@@ -123,6 +120,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private Entities entities() {
 		active.set(true);
 		lastAccessTime = currentTimeMillis();
+		long startNanoseconds = nanoTime();
 		try {
 			logEntry(ENTITIES, null);
 
@@ -130,13 +128,13 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 		finally {
 			logExit(ENTITIES, null);
+			ServerMetrics.INSTANCE.record(ENTITIES, nanoTime() - startNanoseconds);
 			active.set(false);
 		}
 	}
 
 	private void logEntry(String methodName, Object[] args) {
 		MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
-		REQUEST_COUNTER.incrementRequestsPerSecondCounter();
 		if (args == null || args.length == 0) {
 			tracer.enter(methodName);
 		}
@@ -327,40 +325,5 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	synchronized boolean isTracingEnabled() {
 		return tracer != MethodTracer.NO_OP;
-	}
-
-	static final class RequestCounter {
-
-		private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
-
-		private static final double THOUSAND = 1000d;
-
-		private final AtomicLong requestsPerSecondTime = new AtomicLong(currentTimeMillis());
-		private final AtomicInteger requestsPerSecond = new AtomicInteger();
-		private final AtomicInteger requestsPerSecondCounter = new AtomicInteger();
-
-		private RequestCounter() {
-			TaskScheduler.builder()
-							.task(this::updateRequestsPerSecond)
-							.interval(DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS)
-							.name("Request counter")
-							.start();
-		}
-
-		int requestsPerSecond() {
-			return requestsPerSecond.get();
-		}
-
-		private void updateRequestsPerSecond() {
-			long current = currentTimeMillis();
-			double seconds = (current - requestsPerSecondTime.getAndSet(current)) / THOUSAND;
-			if (seconds > 0) {
-				requestsPerSecond.set((int) (requestsPerSecondCounter.getAndSet(0) / seconds));
-			}
-		}
-
-		private void incrementRequestsPerSecondCounter() {
-			requestsPerSecondCounter.incrementAndGet();
-		}
 	}
 }

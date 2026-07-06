@@ -84,6 +84,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	private final boolean methodTracing;
 	private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
+	private MetricsMBeans metricsMBeans;
 	private int idleConnectionTimeout;
 
 	/**
@@ -109,6 +110,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			setIdleConnectionTimeout(configuration.idleConnectionTimeout());
 			setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
 			createConnectionPools(configuration.database(), configuration.connectionPoolFactory(), configuration.connectionPoolUsers());
+			if (EntityServerConfiguration.JMX.getOrThrow()) {
+				metricsMBeans = MetricsMBeans.register(this);
+			}
 			registry().rebind(information().name(), this);
 		}
 		catch (Throwable t) {
@@ -532,6 +536,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 		@Override
 		public void run() {
+			if (metricsMBeans != null) {
+				metricsMBeans.unregister();
+			}
 			database.close();
 		}
 	}

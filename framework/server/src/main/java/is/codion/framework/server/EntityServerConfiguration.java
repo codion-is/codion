@@ -77,6 +77,18 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	PropertyValue<Boolean> METHOD_TRACING = booleanValue("codion.server.methodTracing", false);
 
 	/**
+	 * Specifies whether the server should register its metrics as JMX MBeans on the platform MBean server,
+	 * making them available to standard tooling (Prometheus/Grafana via the JMX exporter, JConsole, VisualVM).
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see EntityServerMetricsMXBean
+	 * @see ConnectionPoolMetricsMXBean
+	 */
+	PropertyValue<Boolean> JMX = booleanValue("codion.server.jmx", false);
+
+	/**
 	 * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
 	 * Example: scott:tiger,john:foo,paul:bar
 	 */

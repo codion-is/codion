@@ -1,0 +1,68 @@
+# Prometheus JMX Exporter configuration for a Codion EntityServer.
+#
+# Start the server with JMX enabled and the exporter agent attached:
+#   -Dcodion.server.jmx=true
+#   -javaagent:/path/to/jmx_prometheus_javaagent-0.20.0.jar=9940:/path/to/jmx_exporter.yaml
+# then point Prometheus at http://<server-host>:9940/metrics
+#
+# Verified with jmx_prometheus_javaagent 0.20.x.
+lowercaseOutputLabelNames: false
+lowercaseOutputName: false
+rules:
+  # ---- Codion server ----
+  - pattern: 'is.codion<type=EntityServer><>RequestCount'
+    name: codion_server_requests_total
+    help: 'Total requests served since server startup'
+    type: COUNTER
+  - pattern: 'is.codion<type=EntityServer><>ConnectionCount'
+    name: codion_server_connections
+    help: 'Currently connected clients'
+    type: GAUGE
+  - pattern: 'is.codion<type=EntityServer><>ConnectionLimit'
+    name: codion_server_connection_limit
+    help: 'Maximum concurrent connections, -1 if unlimited'
+    type: GAUGE
+  # ---- Codion connection pools (one series per username) ----
+  - pattern: 'is.codion<type=ConnectionPool, username=(.+)><>Requests'
+    name: codion_connection_pool_requests_total
+    labels: { username: "$1" }
+    type: COUNTER
+  - pattern: 'is.codion<type=ConnectionPool, username=(.+)><>FailedRequests'
+    name: codion_connection_pool_failed_requests_total
+    labels: { username: "$1" }
+    type: COUNTER
+  - pattern: 'is.codion<type=ConnectionPool, username=(.+)><>Created'
+    name: codion_connection_pool_created_total
+    labels: { username: "$1" }
+    type: COUNTER
+  - pattern: 'is.codion<type=ConnectionPool, username=(.+)><>Destroyed'
+    name: codion_connection_pool_destroyed_total
+    labels: { username: "$1" }
+    type: COUNTER
+  - pattern: 'is.codion<type=ConnectionPool, username=(.+)><>Size'
+    name: codion_connection_pool_size
+    labels: { username: "$1" }
+    type: GAUGE
+  - pattern: 'is.codion<type=ConnectionPool, username=(.+)><>Available'
+    name: codion_connection_pool_available
+    labels: { username: "$1" }
+    type: GAUGE
+  - pattern: 'is.codion<type=ConnectionPool, username=(.+)><>InUse'
+    name: codion_connection_pool_in_use
+    labels: { username: "$1" }
+    type: GAUGE
+  - pattern: 'is.codion<type=ConnectionPool, username=(.+)><>AverageCheckOutTime'
+    name: codion_connection_pool_checkout_time_seconds
+    labels: { username: "$1" }
+    valueFactor: 0.000001
+    type: GAUGE
+  # ---- Codion operation latency histogram (seconds) ----
+  - pattern: 'is.codion<type=OperationLatency, operation=(.+), key=(.+)><>Buckets'
+    name: codion_operation_latency_seconds_bucket
+    labels: { operation: "$1", le: "$2" }
+  - pattern: 'is.codion<type=OperationLatency, operation=(.+)><>Count'
+    name: codion_operation_latency_seconds_count
+    labels: { operation: "$1" }
+  - pattern: 'is.codion<type=OperationLatency, operation=(.+)><>Sum'
+    name: codion_operation_latency_seconds_sum
+    labels: { operation: "$1" }

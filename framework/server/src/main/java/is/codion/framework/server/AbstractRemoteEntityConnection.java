@@ -225,7 +225,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	}
 
 	static int requestsPerSecond() {
-		return LocalConnectionHandler.REQUEST_COUNTER.requestsPerSecond();
+		return ServerMetrics.INSTANCE.requestsPerSecond();
 	}
 
 	private final class DefaultRemoteEntityResultIterator extends UnicastRemoteObject implements RemoteEntityResultIterator {
