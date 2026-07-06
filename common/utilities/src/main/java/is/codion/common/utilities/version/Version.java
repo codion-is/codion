@@ -94,10 +94,10 @@ public interface Version extends Comparable<Version> {
 		Builder metadata(@Nullable String metadata);
 
 		/**
-		 * @param build the build information version component
+		 * @param buildInfo the build information version component
 		 * @return this builder instance
 		 */
-		Builder build(@Nullable String build);
+		Builder buildInfo(@Nullable String buildInfo);
 
 		/**
 		 * @return a new {@link Version} instance based on this builder
@@ -113,7 +113,7 @@ public interface Version extends Comparable<Version> {
 	}
 
 	/**
-	 * @return a string containing the framework version number, without any version metadata (fx. build no.)
+	 * @return a string containing the framework version number, without any version metadata (e.g. build no.)
 	 */
 	static String versionString() {
 		String versionString = versionAndMetadataString();
@@ -189,7 +189,7 @@ public interface Version extends Comparable<Version> {
 						.minor(minor)
 						.patch(patch)
 						.metadata(metadata)
-						.build(build)
+						.buildInfo(build)
 						.build();
 	}
 

@@ -52,8 +52,8 @@ import static java.util.stream.Collectors.toList;
  *     .hoursMinutes()
  *     .build();
  *
- * Locale iceland = new Locale("is", "IS");
- * Locale us = new Locale("en", "US");
+ * Locale iceland = Locale.of("is", "IS");
+ * Locale us = Locale.of("en", "US");
  *
  * pattern.datePattern(iceland);    // "dd-MM-yyyy"
  * pattern.datePattern(us);         // "MM-dd-yyyy"

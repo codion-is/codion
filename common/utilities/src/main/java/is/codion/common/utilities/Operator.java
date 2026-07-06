@@ -67,11 +67,11 @@ public enum Operator {
 	 */
 	BETWEEN,
 	/**
-	 * {@code x > α > y}
+	 * {@code α ≤ x ∨ α ≥ y}
 	 */
 	NOT_BETWEEN_EXCLUSIVE,
 	/**
-	 * {@code x ≥ α ≥ y}
+	 * {@code α < x ∨ α > y}
 	 */
 	NOT_BETWEEN;
 
@@ -82,6 +82,8 @@ public enum Operator {
 	}
 
 	/**
+	 * Note that the description is resolved from a resource bundle when this enum is loaded,
+	 * so a {@link java.util.Locale} change afterwards has no effect.
 	 * @return the operator description
 	 */
 	public String description() {

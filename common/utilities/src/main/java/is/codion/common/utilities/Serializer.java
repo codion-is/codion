@@ -28,6 +28,7 @@ import java.io.ObjectOutputStream;
 
 /**
  * Utility class for serialization.
+ * <p>Note that {@link #deserialize(byte[])} applies no deserialization filter and is intended for trusted data only.
  */
 public final class Serializer {
 
@@ -44,7 +45,9 @@ public final class Serializer {
 	public static byte[] serialize(@Nullable Object object) throws IOException {
 		if (object != null) {
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			new ObjectOutputStream(byteArrayOutputStream).writeObject(object);
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+			objectOutputStream.writeObject(object);
+			objectOutputStream.flush();
 
 			return byteArrayOutputStream.toByteArray();
 		}
@@ -59,7 +62,8 @@ public final class Serializer {
 	 * @return the deserialized object, null in case of an empty {@code bytes} array
 	 * @throws IOException in case of an exception
 	 * @throws ClassNotFoundException in case the deserialized class is not found
-	 * @throws ClassCastException if the deserialized object cannot be cast to type T
+	 * @throws ClassCastException if the deserialized object cannot be cast to type T; due to type erasure this
+	 * is thrown at the call site rather than within this method
 	 */
 	public static <T> @Nullable T deserialize(byte @Nullable [] bytes) throws IOException, ClassNotFoundException {
 		if (bytes != null && bytes.length > 0) {

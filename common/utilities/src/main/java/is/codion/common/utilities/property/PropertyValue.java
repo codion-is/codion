@@ -29,6 +29,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A Value associated with a named property.
+ * <p>Every value set is mirrored into the backing {@link java.util.Properties} store and into the
+ * corresponding {@link System#setProperty(String, String) system property}; clearing or
+ * {@link #remove() removing} it clears both.
  * @param <T> the value type
  */
 public final class PropertyValue<T> extends AbstractValue<T> {
@@ -60,7 +63,10 @@ public final class PropertyValue<T> extends AbstractValue<T> {
 	}
 
 	/**
-	 * Sets this value to null as well as removing it from the underlying store and clearing the system property.
+	 * Removes this property entirely: sets the underlying value to null, removes it from the backing store
+	 * and clears the system property. This is a privileged operation that bypasses validators and the
+	 * {@link #locked() lock}. Note that for a value created with a default, {@link #get()} subsequently
+	 * returns that default (the null-substitute), not null.
 	 */
 	public void remove() {
 		boolean wasNotNull = value != null;

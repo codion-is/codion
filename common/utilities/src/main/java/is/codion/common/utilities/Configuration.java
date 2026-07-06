@@ -21,6 +21,8 @@ package is.codion.common.utilities;
 import is.codion.common.utilities.property.PropertyStore;
 import is.codion.common.utilities.property.PropertyValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -189,7 +191,7 @@ public final class Configuration {
 	 * @param defaultValue the default value
 	 * @return a configuration value builder
 	 */
-	public static PropertyValue<String> stringValue(String key, String defaultValue) {
+	public static PropertyValue<String> stringValue(String key, @Nullable String defaultValue) {
 		return STORE.stringValue(key, defaultValue);
 	}
 
@@ -212,54 +214,58 @@ public final class Configuration {
 	 * @param <T> the enum type
 	 * @return a configuration value builder
 	 */
-	public static <T extends Enum<T>> PropertyValue<T> enumValue(String key, Class<T> enumClass, T defaultValue) {
+	public static <T extends Enum<T>> PropertyValue<T> enumValue(String key, Class<T> enumClass, @Nullable T defaultValue) {
 		return STORE.enumValue(key, enumClass, defaultValue);
 	}
 
 	/**
-	 * Creates a list configuration value
+	 * Creates a list configuration value.
+	 * <p>Each value is stored using its {@code toString()} representation, which must be parseable by {@code decoder}.
 	 * @param key the configuration value key
-	 * @param parser the parser used to parse a string representation of the value
+	 * @param decoder a decoder for decoding the value from a string
 	 * @param <T> the value type
 	 * @return a configuration value builder
 	 */
-	public static <T> PropertyValue<List<T>> listValue(String key, Function<String, T> parser) {
-		return listValue(key, parser, emptyList());
+	public static <T> PropertyValue<List<T>> listValue(String key, Function<String, T> decoder) {
+		return listValue(key, decoder, emptyList());
 	}
 
 	/**
-	 * Creates a list configuration value
+	 * Creates a list configuration value.
+	 * <p>Each value is stored using its {@code toString()} representation, which must be parseable by {@code decoder}.
 	 * @param key the configuration value key
-	 * @param parser the parser used to parse a string representation of the value
+	 * @param decoder a decoder for decoding the value from a string
 	 * @param defaultValue the default value
 	 * @param <T> the value type
 	 * @return a configuration value builder
 	 */
-	public static <T> PropertyValue<List<T>> listValue(String key, Function<String, T> parser, List<T> defaultValue) {
-		return STORE.listValue(key, parser, Objects::toString, defaultValue);
+	public static <T> PropertyValue<List<T>> listValue(String key, Function<String, T> decoder, List<T> defaultValue) {
+		return STORE.listValue(key, decoder, Objects::toString, defaultValue);
 	}
 
 	/**
-	 * Creates a configuration value
+	 * Creates a configuration value.
+	 * <p>The value is stored using its {@code toString()} representation, which must be parseable by {@code decoder}.
 	 * @param key the configuration value key
-	 * @param parser the parser used to parse a string representation of the value
+	 * @param decoder a decoder for decoding the value from a string
 	 * @param <T> the value type
 	 * @return a configuration value builder
 	 */
-	public static <T> PropertyValue<T> value(String key, Function<String, T> parser) {
-		return STORE.value(key, parser, Objects::toString);
+	public static <T> PropertyValue<T> value(String key, Function<String, T> decoder) {
+		return STORE.value(key, decoder, Objects::toString);
 	}
 
 	/**
-	 * Creates a configuration value
+	 * Creates a configuration value.
+	 * <p>The value is stored using its {@code toString()} representation, which must be parseable by {@code decoder}.
 	 * @param key the configuration value key
-	 * @param parser the parser used to parse a string representation of the value
+	 * @param decoder a decoder for decoding the value from a string
 	 * @param defaultValue the default value
 	 * @param <T> the value type
 	 * @return a configuration value builder
 	 */
-	public static <T> PropertyValue<T> value(String key, Function<String, T> parser, T defaultValue) {
-		return STORE.value(key, parser, Objects::toString, defaultValue);
+	public static <T> PropertyValue<T> value(String key, Function<String, T> decoder, @Nullable T defaultValue) {
+		return STORE.value(key, decoder, Objects::toString, defaultValue);
 	}
 
 	private static PropertyStore loadConfiguration() {

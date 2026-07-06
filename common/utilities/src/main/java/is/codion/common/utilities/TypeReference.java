@@ -22,7 +22,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * A basic TypeReference implementation.
+ * A basic TypeReference implementation, capturing a generic type via an anonymous subclass:
+ * {@snippet :
+ * TypeReference<List<String>> reference = new TypeReference<>() {};
+ *}
+ * <p>The captured type {@code T} must itself be a parameterized type; for plain classes use the
+ * available {@code Class<T>} based overloads instead. A non-parameterized {@code T}
+ * (e.g. {@code new TypeReference<String>() {}}) throws {@link IllegalArgumentException}.
  * @param <T> the type represented by this type reference.
  */
 public abstract class TypeReference<T> {
@@ -31,9 +37,13 @@ public abstract class TypeReference<T> {
 
 	/**
 	 * Instantiates a new {@link TypeReference}
+	 * @throws IllegalArgumentException in case the subclass is raw (no type argument) or {@code T} is not a parameterized type
 	 */
 	protected TypeReference() {
 		Type superClass = getClass().getGenericSuperclass();
+		if (!(superClass instanceof ParameterizedType)) {
+			throw new IllegalArgumentException("TypeReference must be created with a type argument, e.g. new TypeReference<List<String>>() {}");
+		}
 		type = ((ParameterizedType) superClass).getActualTypeArguments()[0];
 		if (!(type instanceof ParameterizedType)) {
 			throw new IllegalArgumentException("Not a parameterized type");

@@ -31,7 +31,8 @@ public final class Nulls {
 	private Nulls() {}
 
 	/**
-	 * Included to skip the array creation in the varargs version
+	 * Returns true if the given object is non-null.
+	 * Included to skip the array creation in the varargs version.
 	 * @param object the object to check
 	 * @return true if the object is non-null
 	 */
@@ -40,8 +41,11 @@ public final class Nulls {
 	}
 
 	/**
+	 * Returns true if none of the given objects are null, false if the array itself is null,
+	 * and true if no objects are provided.
 	 * @param objects the objects to check
-	 * @return true if none of the given objects are null
+	 * @return true if none of the given objects are null, false if the array itself is null,
+	 * true if no objects are provided
 	 */
 	public static boolean nonNull(@Nullable Object... objects) {
 		if (objects == null) {

@@ -19,7 +19,7 @@
 package is.codion.common.utilities.resource;
 
 /**
- * Provides overidden resource messages.
+ * Provides overridden resource messages.
  */
 public interface Resources {
 
