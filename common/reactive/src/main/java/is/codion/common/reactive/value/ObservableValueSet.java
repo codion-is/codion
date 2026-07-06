@@ -21,7 +21,7 @@ package is.codion.common.reactive.value;
 import java.util.Set;
 
 /**
- * A read only value set observable
+ * A read-only observable value set.
  * @param <T> the value type
  */
 public interface ObservableValueSet<T> extends ObservableValueCollection<T, Set<T>> {}

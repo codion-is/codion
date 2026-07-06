@@ -100,7 +100,7 @@ abstract class AbstractValueCollection<T, C extends Collection<T>> extends BaseV
 	}
 
 	@Override
-	public final synchronized boolean addAll(Collection<T> values) {
+	public final synchronized boolean addAll(Collection<? extends T> values) {
 		requireNonNull(values);
 		C newValues = create.get();
 		newValues.addAll(getOrThrow());

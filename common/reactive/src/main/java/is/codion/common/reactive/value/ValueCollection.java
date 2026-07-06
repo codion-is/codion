@@ -27,7 +27,8 @@ import java.util.Optional;
 
 /**
  * <p>An observable wrapper for one or more values.
- * <p>All implementations are thread-safe and support concurrent access.
+ * <p>Unlike {@link Value}, whose modifications are not thread-safe, all {@link ValueCollection}
+ * implementations synchronize their mutators and fully support concurrent access.
  * @param <T> the value type
  * @param <C> the collection type
  * @see ValueSet
@@ -71,7 +72,7 @@ public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, O
 	 * @return true if a value was added
 	 * @see Collection#addAll(Collection)
 	 */
-	boolean addAll(Collection<T> values);
+	boolean addAll(Collection<? extends T> values);
 
 	/**
 	 * Removes a single instance of the given value from this {@link ValueCollection} instance.

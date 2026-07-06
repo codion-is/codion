@@ -82,7 +82,7 @@ public interface Value<T> extends Observable<T> {
 		SET,
 		/**
 		 * Notify listeners when the underlying value is changed via {@link Value#set(Object)},
-		 * that is, only when the new value differs from the previous value, determined by {@link Object#equals(Object)}.
+		 * that is, only when the new value differs from the previous value, determined by {@link java.util.Objects#deepEquals(Object, Object)}.
 		 */
 		CHANGED
 	}
@@ -91,7 +91,9 @@ public interface Value<T> extends Observable<T> {
 	 * Sets the value. Note that change listener notifications depend on the {@link Notify} policy associated with this value.
 	 * @param value the value
 	 * @throws IllegalArgumentException in case the given value is invalid
+	 * @throws IllegalStateException in case this value is {@link #locked() locked} and the given value differs from the current one
 	 * @see #addValidator(Validator)
+	 * @see #locked()
 	 */
 	void set(@Nullable T value);
 
@@ -103,7 +105,7 @@ public interface Value<T> extends Observable<T> {
 	/**
 	 * Updates the value with the result of applying the given function to the current value.
 	 * {@snippet :
-	 * Value<Integer> value = Value.value(0);
+	 * Value<Integer> value = Value.nullable(0);
 	 *
 	 * // increment the value by one
 	 * value.update(currentValue -> currentValue + 1);
@@ -135,7 +137,7 @@ public interface Value<T> extends Observable<T> {
 	 * Note that after a call to this method this value is the same as {@code originalValue}.
 	 * @param originalValue the original value to link this value to
 	 * @throws IllegalStateException in case the values are already linked or if a cycle is detected
-	 * @throws IllegalArgumentException in case the original value is not valid according to this values validators
+	 * @throws IllegalArgumentException in case the original value is not valid according to this value's validators
 	 */
 	void link(Value<T> originalValue);
 
@@ -151,7 +153,7 @@ public interface Value<T> extends Observable<T> {
 	 * so that changes in the observable are reflected in this one.
 	 * Note that after a call to this method the value of this value is the same as the observable.
 	 * @param observable the observable to link this value to
-	 * @throws IllegalArgumentException in case the observable is not valid according to this values validators
+	 * @throws IllegalArgumentException in case the observable is not valid according to this value's validators
 	 */
 	void link(Observable<T> observable);
 
@@ -335,7 +337,9 @@ public interface Value<T> extends Observable<T> {
 
 	/**
 	 * <p>Controls whether a {@link Value} instance is locked.
-	 * <p>Locking a value prevents it from being changed, it does not prevent it from being set.
+	 * <p>Locking a value prevents it from being changed, it does not prevent it from being set:
+	 * attempting to change a locked value throws {@link IllegalStateException}, whereas setting a
+	 * locked value to its current value is a no-op (and still notifies under {@link Notify#SET}).
 	 */
 	interface Locked {
 

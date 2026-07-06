@@ -21,6 +21,7 @@ package is.codion.common.reactive.value;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -29,6 +30,9 @@ import static java.util.Objects.requireNonNull;
  * <p>An observable wrapper for a List of values.
  * <p>A factory for {@link ValueList} instances.
  * <p>All implementations are thread-safe and support concurrent access.
+ * <p>This list maintains item ordering and can be sorted via {@link #sort(Comparator)};
+ * unlike {@link ValueSet}, sorting triggers a change event, since item ordering
+ * factors into List equality.</p>
  * @param <T> the value type
  */
 public interface ValueList<T> extends ValueCollection<T, List<T>> {
