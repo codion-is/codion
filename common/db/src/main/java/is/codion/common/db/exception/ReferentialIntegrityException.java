@@ -27,7 +27,7 @@ import java.sql.SQLException;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An exception indication a referential integrity failure
+ * An exception indicating a referential integrity failure
  */
 public final class ReferentialIntegrityException extends DatabaseException {
 

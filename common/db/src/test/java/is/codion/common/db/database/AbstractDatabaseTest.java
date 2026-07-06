@@ -215,6 +215,27 @@ public final class AbstractDatabaseTest {
 			// Pool no longer exists
 			assertFalse(db.containsConnectionPool("ScotT"));
 		}
+
+		@Test
+		@DisplayName("closeConnectionPools closes multiple pools without error")
+		void closeConnectionPools_multiplePools_shouldNotThrow() throws SQLException {
+			Database db = new TestDatabase();
+			// Open an admin (sa) connection first, so the fresh in-memory DB is owned by sa, then register
+			// a second user. The open connection keeps the DB alive while both pools are created.
+			try (Connection admin = db.createConnection(User.user(SA_USER))) {
+				admin.createStatement().execute("CREATE USER IF NOT EXISTS scott PASSWORD 'tiger'");
+
+				db.createConnectionPool(ConnectionPoolFactory.instance(), User.user(SA_USER));
+				db.createConnectionPool(ConnectionPoolFactory.instance(), User.parse(TEST_USER_CREDENTIALS));
+
+				assertEquals(2, db.connectionPoolUsernames().size());
+
+				// Two or more pools previously triggered a ConcurrentModificationException here
+				assertDoesNotThrow(db::closeConnectionPools);
+
+				assertTrue(db.connectionPoolUsernames().isEmpty());
+			}
+		}
 	}
 
 	/**

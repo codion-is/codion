@@ -50,9 +50,9 @@ public interface DatabaseFactory {
 
 	/**
 	 * @return a {@link DatabaseFactory} implementation for {@link Database#URL}
-	 * @throws IllegalStateException in case {@link Database#URL} ('codion.db.url') is not specified.
+	 * @throws java.util.NoSuchElementException in case {@link Database#URL} ('codion.db.url') is not specified.
 	 * @throws SQLException in case loading of the database driver failed
-	 * @throws IllegalArgumentException in case no implementation exists for the configured jdbc url
+	 * @throws IllegalStateException in case no implementation exists for the configured jdbc url
 	 */
 	static DatabaseFactory instance() throws SQLException {
 		return instance(Database.URL.getOrThrow("codion.db.url must be specified before discovering DatabaseFactories"));
@@ -62,7 +62,7 @@ public interface DatabaseFactory {
 	 * @param url the jdbc url
 	 * @return a {@link DatabaseFactory} implementation for the given jdbc url
 	 * @throws SQLException in case loading of database driver failed
-	 * @throws IllegalArgumentException in case no implementation exists for the given jdbc url
+	 * @throws IllegalStateException in case no implementation exists for the given jdbc url
 	 */
 	static DatabaseFactory instance(String url) throws SQLException {
 		String driver = driverClassName(url);
@@ -70,7 +70,7 @@ public interface DatabaseFactory {
 			return stream(ServiceLoader.load(DatabaseFactory.class).spliterator(), false)
 							.filter(factory -> factory.driverCompatible(driver))
 							.findFirst()
-							.orElseThrow(() -> new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver));
+							.orElseThrow(() -> new IllegalStateException("No DatabaseFactory implementation available for driver: " + driver));
 		}
 		catch (ServiceConfigurationError e) {
 			throw Exceptions.runtime(e, ServiceConfigurationError.class);

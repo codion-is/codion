@@ -40,7 +40,6 @@ public interface ConnectionPoolWrapper {
 	 * <li>Value type: Integer
 	 * <li>Default value: 8
 	 * <li>Property name: codion.db.pool.maximumPoolSize
-	 * <li>Valid range: 1-1000 (typically 5-50 for most applications)
 	 * </ul>
 	 */
 	PropertyValue<Integer> MAXIMUM_POOL_SIZE = integerValue("codion.db.pool.maximumPoolSize", 8);
@@ -53,7 +52,6 @@ public interface ConnectionPoolWrapper {
 	 * <li>Value type: Integer
 	 * <li>Default value: 4
 	 * <li>Property name: codion.db.pool.minimumPoolSize
-	 * <li>Valid range: 0 to maximum pool size (typically 2-10 for most applications)
 	 * </ul>
 	 */
 	PropertyValue<Integer> MINIMUM_POOL_SIZE = integerValue("codion.db.pool.minimumPoolSize", 4);
@@ -64,9 +62,8 @@ public interface ConnectionPoolWrapper {
 	 * Lower values free up database resources faster but may cause more connection churn.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 60.000 (1 minute)
+	 * <li>Default value: 60000 (1 minute)
 	 * <li>Property name: codion.db.pool.idleTimeout
-	 * <li>Valid range: 1000-3600000 (1 second to 1 hour, typically 30-300 seconds)
 	 * </ul>
 	 */
 	PropertyValue<Integer> IDLE_TIMEOUT = integerValue("codion.db.pool.idleTimeout", 60_000);
@@ -77,9 +74,8 @@ public interface ConnectionPoolWrapper {
 	 * Lower values fail faster but may cause premature timeouts under load.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 30.000 (30 seconds)
+	 * <li>Default value: 30000 (30 seconds)
 	 * <li>Property name: codion.db.pool.checkOutTimeout
-	 * <li>Valid range: 1000-300000 (1 second to 5 minutes, typically 10-60 seconds)
 	 * </ul>
 	 */
 	PropertyValue<Integer> CHECK_OUT_TIMEOUT = integerValue("codion.db.pool.checkOutTimeout", 30_000);
@@ -88,6 +84,8 @@ public interface ConnectionPoolWrapper {
 	 * Specifies whether connections should be validated when checked out from the pool.
 	 * Enables additional safety by checking connection validity before use, at the cost of performance.
 	 * Recommended for production environments with unreliable network connections.
+	 * <p>Note that this value is captured once, when the pool implementation is loaded, and applies to
+	 * every pool for the life of the JVM.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false (disabled for performance)
@@ -99,9 +97,13 @@ public interface ConnectionPoolWrapper {
 
 	/**
 	 * Fetches a connection from the pool. Close the connection to return it to the pool.
-	 * @param user the user credentials
+	 * <p>Note that {@code user} is a credentials check, not a selector: the pool serves a single {@link #user()},
+	 * and the given credentials are verified against it (username case-insensitively, password exactly) before a
+	 * connection is handed out.
+	 * @param user the credentials to verify against the pool user
 	 * @return a database connection retrieved from the pool
 	 * @throws DatabaseException in case of an exception while fetching the connection
+	 * @throws is.codion.common.db.exception.AuthenticationException in case the given credentials do not match the pool user
 	 * @throws IllegalStateException if the pool is closed
 	 * @see #setMaximumCheckOutTime(int)
 	 * @see Connection#close()
@@ -119,8 +121,11 @@ public interface ConnectionPoolWrapper {
 	void close();
 
 	/**
-	 * Retrieves usage statistics for the connection pool since time {@code since}.
-	 * @param since the time from which statistics should be retrieved
+	 * Retrieves usage statistics for the connection pool.
+	 * <p>Note that this is a destructive read: it resets the per-second counters and consumes the collected
+	 * check-out times. The {@code since} parameter only filters the snapshot statistics list; the counters
+	 * ignore it. Concurrent monitoring clients polling the same pool will steal each other's data.
+	 * @param since the time from which the snapshot statistics should be retrieved
 	 * @return connection pool usage statistics
 	 */
 	ConnectionPoolStatistics statistics(long since);
@@ -232,7 +237,6 @@ public interface ConnectionPoolWrapper {
 	/**
 	 * Sets the maximum time to wait for a connection checkout in milliseconds.
 	 * Lower values fail faster under load, higher values may cause application timeouts.
-	 * Note that this also modifies the new connection threshold, keeping its value to 1/4 of this one.
 	 * @param maximumCheckOutTime the maximum number of milliseconds to retry connection checkout (typically 10000-60000)
 	 * @throws IllegalArgumentException if the value is less than 0
 	 */

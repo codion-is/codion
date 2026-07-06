@@ -33,7 +33,7 @@ public interface DatabaseFunction<C, P, R> {
 	 * Executes this function using the given connection
 	 * @param connection the connection to use
 	 * @param parameter the function parameter, if any
-	 * @return the function return parameter
+	 * @return the function return value
 	 */
 	@Nullable R execute(C connection, @Nullable P parameter);
 }

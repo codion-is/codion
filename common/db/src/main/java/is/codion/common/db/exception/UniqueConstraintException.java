@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 import java.sql.SQLException;
 
 /**
- * An exception indication a unique constraint failure
+ * An exception indicating a unique constraint failure
  */
 public final class UniqueConstraintException extends DatabaseException {
 

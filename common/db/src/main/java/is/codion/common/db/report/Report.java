@@ -38,6 +38,10 @@ public interface Report<T, P, R> {
 
 	/**
 	 * The report path used for file based report generation.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
 	 */
 	PropertyValue<String> REPORT_PATH = stringValue("codion.report.path");
 
@@ -78,10 +82,10 @@ public interface Report<T, P, R> {
 
 	/**
 	 * @return the value associated with {@link Report#REPORT_PATH}
-	 * @throws IllegalStateException in case it is not specified
+	 * @throws java.util.NoSuchElementException in case it is not specified
 	 */
 	static String reportPath() {
-		return REPORT_PATH.getOrThrow();
+		return REPORT_PATH.getOrThrow("codion.report.path is not specified");
 	}
 
 	/**
@@ -89,7 +93,7 @@ public interface Report<T, P, R> {
 	 * and the given report path.
 	 * @param reportPath the report path relative to {@link Report#REPORT_PATH}.
 	 * @return a full report path
-	 * @throws IllegalStateException in case {@link Report#REPORT_PATH} is not specified
+	 * @throws java.util.NoSuchElementException in case {@link Report#REPORT_PATH} is not specified
 	 */
 	static String fullReportPath(String reportPath) {
 		requireNonNull(reportPath);

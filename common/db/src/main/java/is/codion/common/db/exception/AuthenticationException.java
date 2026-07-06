@@ -21,7 +21,7 @@ package is.codion.common.db.exception;
 import org.jspecify.annotations.Nullable;
 
 /**
- * An exception indication an authentication failure
+ * An exception indicating an authentication failure
  */
 public final class AuthenticationException extends DatabaseException {
 
