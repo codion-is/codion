@@ -51,14 +51,14 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		return new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
 	}
 
-	public static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityEditor> {
+	public static final class TestEntityEditModel extends AbstractEntityEditModel<TestEntityEditor> {
 
 		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(new TestEntityEditor(entityType, connectionProvider));
 		}
 	}
 
-	public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
+	public static final class TestEntityModel extends AbstractEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {
 		public TestEntityModel(TestEntityEditModel editModel) {
 			super(editModel);
 		}

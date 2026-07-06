@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the {@link EntityTableModel} type
  * @param <R> the {@link EntityEditor} type
  */
-public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
 				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements EntityModel<M, E, T, R> {
 
 	private final E editModel;
@@ -55,20 +55,20 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 	private final DetailModels<M, E, T, R> detailModels = new DefaultDetailModels();
 
 	/**
-	 * Instantiates a new {@link DefaultEntityModel}, without a table model
+	 * Instantiates a new {@link AbstractEntityModel}, without a table model
 	 * @param editModel the edit model
 	 */
-	public DefaultEntityModel(E editModel) {
+	protected AbstractEntityModel(E editModel) {
 		this.editModel = requireNonNull(editModel);
 		this.tableModel = null;
 		bindEventsInternal();
 	}
 
 	/**
-	 * Instantiates a new {@link DefaultEntityModel}
+	 * Instantiates a new {@link AbstractEntityModel}
 	 * @param tableModel the table model
 	 */
-	public DefaultEntityModel(T tableModel) {
+	protected AbstractEntityModel(T tableModel) {
 		this.editModel = requireNonNull(tableModel).editModel();
 		this.tableModel = tableModel;
 		bindEventsInternal();
@@ -210,7 +210,7 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 		@Override
 		public void add(ModelLink link) {
 			DefaultModelLink<M, E, T, R> modelLink = (DefaultModelLink<M, E, T, R>) link;
-			if (DefaultEntityModel.this == requireNonNull(modelLink).model()) {
+			if (AbstractEntityModel.this == requireNonNull(modelLink).model()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
 			if (models.containsKey(modelLink.model())) {
@@ -257,7 +257,7 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 			return (C) models.keySet().stream()
 							.filter(detailModel -> detailModel.getClass().equals(modelClass))
 							.findFirst()
-							.orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + DefaultEntityModel.this));
+							.orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + AbstractEntityModel.this));
 		}
 
 		@Override
@@ -266,7 +266,7 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T, R>, E extends Ent
 			return models.keySet().stream()
 							.filter(detailModel -> detailModel.entityType().equals(entityType))
 							.findFirst()
-							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + DefaultEntityModel.this));
+							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + AbstractEntityModel.this));
 		}
 
 		private ForeignKey validateForeignKeyLink(EntityModel<?, ?, ?, ?> model) {

@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the {@link EntityTableModel} type
  * @param <R> the {@link EntityEditor} type
  */
-public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
+public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
 				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements EntityApplicationModel<M, E, T, R> {
 
 	private final EntityConnectionProvider connectionProvider;
@@ -47,25 +47,25 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T, R>, E 
 	private final Preferences preferences;
 
 	/**
-	 * Instantiates a new DefaultEntityApplicationModel, using the default file based preferences.
+	 * Instantiates a new AbstractEntityApplicationModel, using the default file based preferences.
 	 * @param connectionProvider the EntityConnectionProvider instance
 	 * @param entityModels the entity models
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
-	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider,
+	protected AbstractEntityApplicationModel(EntityConnectionProvider connectionProvider,
 																			 Collection<? extends M> entityModels) {
 		this(connectionProvider, entityModels, filePreferences(PREFERENCES_KEY.optional()
 						.orElse(connectionProvider.domainType().name())));
 	}
 
 	/**
-	 * Instantiates a new DefaultEntityApplicationModel
+	 * Instantiates a new AbstractEntityApplicationModel
 	 * @param connectionProvider the EntityConnectionProvider instance
 	 * @param entityModels the entity models
 	 * @param preferences the {@link Preferences} instance to use
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
-	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider,
+	protected AbstractEntityApplicationModel(EntityConnectionProvider connectionProvider,
 																			 Collection<? extends M> entityModels, Preferences preferences) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.models = new DefaultEntityModels<>(requireNonNull(entityModels));
@@ -152,7 +152,7 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T, R>, E 
 				}
 			}
 
-			throw new IllegalArgumentException("EntityModel for type " + entityType + " not  found in model: " + DefaultEntityApplicationModel.this);
+			throw new IllegalArgumentException("EntityModel for type " + entityType + " not  found in model: " + AbstractEntityApplicationModel.this);
 		}
 	}
 }

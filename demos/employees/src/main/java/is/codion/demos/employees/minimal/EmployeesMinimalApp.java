@@ -253,7 +253,7 @@ public final class EmployeesMinimalApp {
 	}
 
 	/**
-	 * Then we extend the DefaultEntityApplicationModel class, implementing the
+	 * Then we extend the AbstractEntityApplicationModel class, implementing the
 	 * loadDomainModel method, by simply instantiating our domain class, which
 	 * initializes the entities it defines.
 	 */

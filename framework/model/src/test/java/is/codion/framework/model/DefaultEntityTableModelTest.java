@@ -141,7 +141,7 @@ public final class DefaultEntityTableModelTest extends
 		}
 	}
 
-	public static final class TestEntityEditModel extends DefaultEntityEditModel<TestEntityEditor> {
+	public static final class TestEntityEditModel extends AbstractEntityEditModel<TestEntityEditor> {
 
 		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(new TestEntityEditor(entityType, connectionProvider));
@@ -170,6 +170,4 @@ public final class DefaultEntityTableModelTest extends
 	}
 
 	public interface TestComponentModels extends ComponentModels {}
-
-	public interface TestEntityModel extends EntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel, TestEntityEditor> {}
 }
