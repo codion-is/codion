@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.79
+
 ## 0.18.78
 ### is.codion.common.reactive
 - AbstractValueCollection.SingleValue synchronization corrected.
