@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.79
+### is.codion.framework.model
+- AbstractEntityEditor.execute() and supersede() protected again.
 
 ## 0.18.78
 ### is.codion.common.reactive
