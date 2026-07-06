@@ -13,6 +13,7 @@ The Codion server provides RMI and HTTP connection options to clients.
 * Integrated web server for serving HTTP client connections, based on https://github.com/javalin/javalin[Javalin] and https://github.com/eclipse/jetty.project[Jetty]
 * All user authentication left to the database by default
 * Comprehensive administration and monitoring facilities via the <<server-monitor.adoc#_server_monitor, ServerMonitor>>
+* Optional JMX metrics for Prometheus/Grafana and standard JMX tooling
 * Featherweight server with moderate memory and CPU usage
 
 == Security
@@ -327,6 +328,45 @@ Clients select their connection type via configuration:
 ----
 codion.client.http.json=true   # Default: true (JSON), false for serialization
 ----
+
+== Monitoring
+
+Beyond the <<server-monitor.adoc#_server_monitor, ServerMonitor>>, the server can register its runtime metrics
+as JMX MBeans on the platform MBean server, making them available to standard tooling — Prometheus and Grafana
+via the https://github.com/prometheus/jmx_exporter[Prometheus JMX Exporter], as well as JConsole and VisualVM.
+This runs alongside, not instead of, the Swing server monitor.
+
+The MBeans are opt-in and off by default; enable them with:
+
+[source]
+----
+codion.server.jmx=true   # Default: false
+----
+
+This registers three kinds of MBean on the platform MBean server:
+
+[cols="2,3", options="header"]
+|===
+|ObjectName |Attributes
+
+|`is.codion:type=EntityServer`
+|`RequestCount`, `ConnectionCount`, `ConnectionLimit`
+
+|`is.codion:type=ConnectionPool,username=<user>`
+|`Size`, `Available`, `InUse`, `Requests`, `FailedRequests`, `Created`, `Destroyed`, `AverageCheckOutTime`
+
+|`is.codion:type=OperationLatency,operation=<op>`
+|`Count`, `Sum`, `Buckets` (a duration histogram, one MBean per operation type as it is first served)
+|===
+
+The JVM's own thread/GC/CPU/memory numbers are standard platform MXBeans, exported separately by the agent, so
+they are not duplicated here. The MBeans are local to the JVM — nothing is exposed until the exporter agent is
+attached, and no JMX remote connector is involved.
+
+The `framework/server/src/main/monitoring` directory contains a ready-to-use JMX Exporter configuration
+(`jmx_exporter.yaml`), a starter Grafana dashboard (`grafana-dashboard.json`), and a step-by-step guide
+(`README.md`) covering the exporter agent, the Prometheus scrape config, the Grafana import and the full
+metrics reference.
 
 == Configuration
 

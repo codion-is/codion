@@ -25,6 +25,7 @@
  * </ul>
  */
 module is.codion.framework.server {
+	requires java.management;
 	requires org.slf4j;
 	requires is.codion.tools.jul.classpath;
 	requires is.codion.framework.db.local;
