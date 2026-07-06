@@ -346,6 +346,45 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		return componentModels;
 	}
 
+	/**
+	 * Executes the given task, asynchronously via a {@link ProgressWorker} when {@link #async()} is enabled and
+	 * called on the UI thread (as determined by {@link Dispatcher}), otherwise synchronously on the calling thread.
+	 * @param task the task to execute
+	 */
+	protected void execute(EditorTask<Entity> task) {
+		requireNonNull(task);
+		cancelCurrentWorker();
+		currentTask = task;
+		if (async().is() && Dispatcher.instance().isUserInterfaceThread()) {
+			worker = ProgressWorker.builder()
+							.task(new ExecutionTask(task))
+							.execute();
+		}
+		else {
+			task.perform().handle();
+		}
+	}
+
+	/**
+	 * Supersedes any ongoing asynchronous execution. Called before applying a synchronous state
+	 * change (defaults/clear) so that an in-flight asynchronous set or replace does not complete
+	 * afterwards and clobber it.
+	 */
+	protected void supersede() {
+		// a synchronous reset (set/replace/defaults/clear) is about to be applied; drop any in-flight
+		// worker so its result is discarded (currentTask == null) instead of clobbering the reset
+		cancelCurrentWorker();
+		currentTask = null;
+	}
+
+	private void cancelCurrentWorker() {
+		ProgressWorker<Result<Entity>, ?> currentWorker = worker;
+		if (currentWorker != null && !currentWorker.done()) {
+			// cancellation is a best-effort optimization, freeing the connection of a superseded load early
+			currentWorker.cancel(true);
+		}
+	}
+
 	private final class ExecutionTask implements ResultTaskHandler<Result<Entity>> {
 
 		private final EditorTask<Entity> task;
@@ -729,45 +768,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private void addForeignKeyValues(ValueSupplier valueSupplier, Entity newEntity) {
 			entityDefinition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
 							newEntity.set(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
-		}
-
-		/**
-		 * Executes the given task, asynchronously via a {@link ProgressWorker} when {@link #async()} is enabled and
-		 * called on the UI thread (as determined by {@link Dispatcher}), otherwise synchronously on the calling thread.
-		 * @param task the task to execute
-		 */
-		private void execute(EditorTask<Entity> task) {
-			requireNonNull(task);
-			cancelCurrentWorker();
-			currentTask = task;
-			if (async().is() && Dispatcher.instance().isUserInterfaceThread()) {
-				worker = ProgressWorker.builder()
-								.task(new ExecutionTask(task))
-								.execute();
-			}
-			else {
-				task.perform().handle();
-			}
-		}
-
-		/**
-		 * Supersedes any ongoing asynchronous execution. Called before applying a synchronous state
-		 * change (defaults/clear) so that an in-flight asynchronous set or replace does not complete
-		 * afterwards and clobber it.
-		 */
-		private void supersede() {
-			// a synchronous reset (set/replace/defaults/clear) is about to be applied; drop any in-flight
-			// worker so its result is discarded (currentTask == null) instead of clobbering the reset
-			cancelCurrentWorker();
-			currentTask = null;
-		}
-
-		private void cancelCurrentWorker() {
-			ProgressWorker<Result<Entity>, ?> currentWorker = worker;
-			if (currentWorker != null && !currentWorker.done()) {
-				// cancellation is a best-effort optimization, freeing the connection of a superseded load early
-				currentWorker.cancel(true);
-			}
 		}
 	}
 
