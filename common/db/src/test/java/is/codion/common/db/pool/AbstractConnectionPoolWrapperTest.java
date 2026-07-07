@@ -84,6 +84,22 @@ public final class AbstractConnectionPoolWrapperTest {
 		}
 	}
 
+	@Test
+	@DisplayName("ConnectionPoolState copy is independent of the source")
+	void connectionPoolStateCopyIsIndependent() {
+		DefaultConnectionPoolState state = new DefaultConnectionPoolState();
+		state.set(1000L, 5, 3, 1);
+		DefaultConnectionPoolState copy = new DefaultConnectionPoolState(state);
+		assertEquals(1000L, copy.timestamp());
+		assertEquals(5, copy.size());
+		assertEquals(3, copy.inUse());
+		assertEquals(1, copy.waiting());
+		//mutating the live source (as the collector thread does) must not change the copied snapshot
+		state.set(2000L, 9, 9, 9);
+		assertEquals(1000L, copy.timestamp());
+		assertEquals(5, copy.size());
+	}
+
 	@Nested
 	@DisplayName("ConnectionPoolWrapper tests")
 	class ConnectionPoolWrapperTests {
@@ -200,6 +216,21 @@ public final class AbstractConnectionPoolWrapperTest {
 			assertTrue(state.inUse() >= 0);
 			assertTrue(state.waiting() >= 0);
 			assertTrue(state.timestamp() > 0);
+		}
+
+		@Test
+		@DisplayName("statistics(0) excludes pre-allocated empty snapshot states")
+		void statisticsSinceEpochExcludesEmptyStates() throws SQLException, InterruptedException {
+			poolWrapper.setCollectSnapshotStatistics(true);
+			for (int i = 0; i < 3; i++) {
+				poolWrapper.connection(testUser).close();
+				Thread.sleep(20);
+			}
+			ConnectionPoolStatistics statistics = poolWrapper.statistics(0);
+			//a since-epoch snapshot must not leak the pre-allocated empty (timestamp 0) ring states
+			for (ConnectionPoolState state : statistics.snapshot()) {
+				assertTrue(state.timestamp() > 0);
+			}
 		}
 
 		@Test

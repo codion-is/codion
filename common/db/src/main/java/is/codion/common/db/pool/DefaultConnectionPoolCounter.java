@@ -127,6 +127,9 @@ final class DefaultConnectionPoolCounter {
 		connectionsDestroyed.set(0);
 		connectionRequests.set(0);
 		connectionRequestsFailed.set(0);
+		requestsPerSecondCounter.set(0);
+		requestsFailedPerSecondCounter.set(0);
+		requestsPerSecondTime.set(System.currentTimeMillis());
 		synchronized (checkOutTimes) {
 			checkOutTimes.clear();
 		}
@@ -149,13 +152,12 @@ final class DefaultConnectionPoolCounter {
 			statistics.requestsPerSecond((int) (requestsPerSecondCounter.getAndSet(0) / seconds));
 			statistics.failedRequestsPerSecond((int) (requestsFailedPerSecondCounter.getAndSet(0) / seconds));
 		}
-		if (!checkOutTimes.isEmpty()) {
-			populateCheckOutTime(statistics);
-		}
+		populateCheckOutTime(statistics);
 		if (collectSnapshotStatistics && since >= 0) {
 			synchronized (snapshotStatistics) {
 				statistics.snapshot(snapshotStatistics.stream()
-								.filter(state -> state.timestamp() >= since)
+								.filter(state -> state.timestamp() > 0 && state.timestamp() >= since)
+								.map(DefaultConnectionPoolState::new)
 								.collect(toList()));
 			}
 		}
@@ -168,6 +170,9 @@ final class DefaultConnectionPoolCounter {
 		int min = -1;
 		int max = -1;
 		synchronized (checkOutTimes) {
+			if (checkOutTimes.isEmpty()) {
+				return;
+			}
 			for (Integer time : checkOutTimes) {
 				total += time;
 				if (min == -1) {

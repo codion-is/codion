@@ -24,7 +24,6 @@ import is.codion.common.utilities.user.User;
 
 import java.sql.Connection;
 
-import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
@@ -79,21 +78,6 @@ public interface ConnectionPoolWrapper {
 	 * </ul>
 	 */
 	PropertyValue<Integer> CHECK_OUT_TIMEOUT = integerValue("codion.db.pool.checkOutTimeout", 30_000);
-
-	/**
-	 * Specifies whether connections should be validated when checked out from the pool.
-	 * Enables additional safety by checking connection validity before use, at the cost of performance.
-	 * Recommended for production environments with unreliable network connections.
-	 * <p>Note that this value is captured once, when the pool implementation is loaded, and applies to
-	 * every pool for the life of the JVM.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: false (disabled for performance)
-	 * <li>Property name: codion.db.pool.validateConnectionsOnCheckout
-	 * <li>Performance impact: Small overhead per connection checkout (~1-5ms)
-	 * </ul>
-	 */
-	PropertyValue<Boolean> VALIDATE_CONNECTIONS_ON_CHECKOUT = booleanValue("codion.db.pool.validateConnectionsOnCheckout", false);
 
 	/**
 	 * Fetches a connection from the pool. Close the connection to return it to the pool.

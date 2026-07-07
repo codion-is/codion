@@ -46,8 +46,6 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	private static final String GET_CONNECTION = "getConnection";
 	private static final String CLOSE = "close";
 
-	private static final boolean VALIDATE = VALIDATE_CONNECTIONS_ON_CHECKOUT.getOrThrow();
-
 	/**
 	 * The actual connection pool object
 	 */
@@ -91,7 +89,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 		try {
 			counter.incrementRequestCounter();
 
-			return validate(fetchConnection());
+			return fetchConnection();
 		}
 		catch (SQLException e) {
 			counter.incrementFailedRequestCounter();
@@ -132,19 +130,6 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	@Override
 	public final ConnectionPoolStatistics statistics(long since) {
 		return counter.collectStatistics(since);
-	}
-
-	private Connection validate(Connection connection) throws SQLException {
-		if (VALIDATE && !connectionFactory.connectionValid(connection)) {
-			try {
-				connection.close();
-			}
-			catch (SQLException ignored) {/*ignored*/}
-			throw new SQLException("Connection validation failed: Retrieved invalid connection from pool '" +
-							user.username() + "' at " + connectionFactory.url());
-		}
-
-		return connection;
 	}
 
 	/**

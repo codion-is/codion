@@ -13,6 +13,11 @@ Codion Change Log
 - javadocs updated, some minor api improvements.
 ### is.codion.common.db
 - javadocs updated, some minor improvements.
+- AbstractConnectionPoolWrapper, the redundant wrapper-level checkout validation and the codion.db.pool.validateConnectionsOnCheckout property removed; both pool implementations validate natively.
+- DefaultConnectionPoolCounter, snapshot statistics now return copies of the pool states instead of aliasing the live ring buffer mutated by the collector thread.
+- DefaultConnectionPoolCounter.statistics(0) no longer includes the pre-allocated empty ring states.
+- DefaultConnectionPoolCounter, the check-out time average division is now guarded inside the lock, no longer racing a concurrent clear.
+- DefaultConnectionPoolCounter.resetStatistics() now also resets the per-second request window.
 ### is.codion.common.model
 - javadocs updated, some minor improvements.
 - DefaultFilterModelItems.replace(), now fires a delete event when a replaced item moves from included to filtered.
@@ -97,6 +102,10 @@ Codion Change Log
 - javadocs updated, some improvements and fixes.
 ### is.codion.swing.framework.ui
 - javadocs updated, some improvements and fixes.
+### is.codion.plugin.hikari.pool
+- HikariConnectionPoolWrapper.close() now marks the pool closed and stops the statistics collector even if shutdown() is interrupted.
+### is.codion.plugin.tomcat.pool
+- TomcatConnectionPoolFactory, the idle timeout now maps to minEvictableIdleTimeMillis (idle eviction) instead of suspectTimeout (a connection leak warning threshold).
 
 ## 0.18.78
 ### is.codion.common.reactive
