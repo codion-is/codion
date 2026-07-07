@@ -189,6 +189,51 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
+		@DisplayName("Replace moving an included item to filtered fires a structural delete (F1)")
+		void replace_itemMovingToExcluded_firesDeleted() {
+			RangeRecorder recorder = new RangeRecorder();
+			TestInclude include = new TestInclude();
+			Items<String> model = Items.builder()
+							.<String>refresher(i -> Refresher.<String>builder().build())
+							.selection(included -> new TestMultiSelection())
+							.sort(new TestSort())
+							.included(include)
+							.listener(recorder)
+							.build();
+			model.add(asList("a", "b", "c")); // all included, at 0, 1, 2
+			//once replaced, "b" -> "b_x" no longer passes the include predicate
+			include.setPredicate(item -> !item.equals("b_x"));
+			recorder.clear();
+
+			model.replace("b", "b_x");
+
+			//the row at index 1 must be reported deleted so the table row count stays in sync
+			assertEquals(1, recorder.deleted.size());
+			assertArrayEquals(new int[] {1, 1}, recorder.deleted.get(0));
+			assertTrue(model.filtered().contains("b_x"));
+			assertEquals(2, model.included().size());
+		}
+
+		@Test
+		@DisplayName("Adding N items fires an inclusive inserted range (F2)")
+		void add_firesInclusiveInsertedRange() {
+			RangeRecorder recorder = new RangeRecorder();
+			Items<String> model = Items.builder()
+							.<String>refresher(i -> Refresher.<String>builder().build())
+							.selection(included -> new TestMultiSelection())
+							.sort(new TestSort())
+							.included(new TestInclude())
+							.listener(recorder)
+							.build();
+
+			model.add(asList("a", "b", "c")); // 3 items at 0, 1, 2
+
+			//the inclusive range for 3 items starting at 0 is [0, 2], not [0, 3]
+			assertEquals(1, recorder.inserted.size());
+			assertArrayEquals(new int[] {0, 2}, recorder.inserted.get(0));
+		}
+
+		@Test
 		@DisplayName("Clear all items")
 		void clear_shouldRemoveAll() {
 			items.add(asList("a", "b", "c"));
@@ -578,6 +623,37 @@ public class DefaultFilterModelItemsTest {
 	}
 
 	// Test implementations
+
+	private static final class RangeRecorder implements IncludedItems.ItemsListener {
+
+		private final List<int[]> inserted = new ArrayList<>();
+		private final List<int[]> updated = new ArrayList<>();
+		private final List<int[]> deleted = new ArrayList<>();
+
+		@Override
+		public void inserted(int firstIndex, int lastIndex) {
+			inserted.add(new int[] {firstIndex, lastIndex});
+		}
+
+		@Override
+		public void updated(int firstIndex, int lastIndex) {
+			updated.add(new int[] {firstIndex, lastIndex});
+		}
+
+		@Override
+		public void deleted(int firstIndex, int lastIndex) {
+			deleted.add(new int[] {firstIndex, lastIndex});
+		}
+
+		@Override
+		public void changed() {}
+
+		private void clear() {
+			inserted.clear();
+			updated.clear();
+			deleted.clear();
+		}
+	}
 
 	private static class TestInclude implements IncludePredicate<String> {
 		private final Value<Predicate<String>> predicate = Value.nullable(item -> true);

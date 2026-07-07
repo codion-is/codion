@@ -405,28 +405,31 @@ public interface FilterModel<T> {
 		void sort();
 
 		/**
-		 * Provides a way to respond to changes to the included items
+		 * Provides a way to respond to changes to the included items.
+		 * <p>
+		 * The index ranges reported are <b>both indices inclusive</b>, matching the standard
+		 * table-model {@code fireTableRowsInserted/Updated/Deleted} contract.
 		 */
 		interface ItemsListener {
 
 			/**
 			 * Called when included items are inserted
-			 * @param firstIndex the first index
-			 * @param lastIndex the last index
+			 * @param firstIndex the first index, inclusive
+			 * @param lastIndex the last index, inclusive
 			 */
 			void inserted(int firstIndex, int lastIndex);
 
 			/**
 			 * Called when included items are updated
-			 * @param firstIndex the first index
-			 * @param lastIndex the last index
+			 * @param firstIndex the first index, inclusive
+			 * @param lastIndex the last index, inclusive
 			 */
 			void updated(int firstIndex, int lastIndex);
 
 			/**
 			 * Called when included items are deleted
-			 * @param firstIndex the first index
-			 * @param lastIndex the last index
+			 * @param firstIndex the first index, inclusive
+			 * @param lastIndex the last index, inclusive
 			 */
 			void deleted(int firstIndex, int lastIndex);
 
