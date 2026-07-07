@@ -20,8 +20,6 @@ package is.codion.framework.db.exception;
 
 import is.codion.common.db.exception.DatabaseException;
 
-import org.jspecify.annotations.Nullable;
-
 /**
  * An exception indicating a failed insert operation
  */
@@ -31,7 +29,7 @@ public final class InsertEntityException extends DatabaseException {
 	 * Instantiates a new {@link InsertEntityException}
 	 * @param message the message
 	 */
-	public InsertEntityException(@Nullable String message) {
+	public InsertEntityException(String message) {
 		super(message);
 	}
 }

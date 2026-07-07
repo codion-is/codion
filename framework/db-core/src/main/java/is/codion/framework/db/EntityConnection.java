@@ -447,7 +447,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param <T> the value type
 	 * @return the values of the given column
 	 * @throws DatabaseException in case of a database exception
-	 * @throws IllegalArgumentException in case the given column has not associated with a table column
+	 * @throws IllegalArgumentException in case the given column is not associated with a table column
 	 * @throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
 	 */
 	<T> List<T> select(Column<T> column);
@@ -504,7 +504,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Selects a single entity based on the specified condition
 	 * @param condition the condition specifying the entity to select
-	 * @return the entities based on the given condition
+	 * @return the entity based on the given condition
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityNotFoundException in case the entity was not found
 	 * @throws MultipleEntitiesFoundException in case multiple entities were found
@@ -514,7 +514,7 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Selects a single entity based on the specified select
 	 * @param select the select to perform
-	 * @return the entities based on the given select
+	 * @return the entity based on the given select
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityNotFoundException in case the entity was not found
 	 * @throws MultipleEntitiesFoundException in case multiple entities were found
@@ -556,7 +556,7 @@ public interface EntityConnection extends AutoCloseable {
 	 *     Track.MILLISECONDS.greaterThan(300_000)));
 	 *}
 	 * @param condition the condition specifying which entities to select
-	 * @return entities based to the given condition
+	 * @return entities based on the given condition
 	 * @throws DatabaseException in case of a database exception
 	 */
 	List<Entity> select(Condition condition);
@@ -581,7 +581,7 @@ public interface EntityConnection extends AutoCloseable {
 	 *         .referenceDepth(0));  // Don't fetch foreign keys
 	 *}
 	 * @param select the select to perform
-	 * @return entities based to the given select
+	 * @return entities based on the given select
 	 * @throws DatabaseException in case of a database exception
 	 */
 	List<Entity> select(Select select);
@@ -786,7 +786,7 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * Creates a new {@link BatchCopy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
-	 * Performs a commit after each {code batchSize} number of inserts, unless the destination connection has an open transaction.
+	 * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
 	 * Call {@link BatchCopy.Builder#execute()} to perform the copy operation.
 	 * @param source the source connection
 	 * @param destination the destination connection
@@ -797,9 +797,9 @@ public interface EntityConnection extends AutoCloseable {
 	}
 
 	/**
-	 * Creates a new {@link BatchInsert} instance based on the given iterator, with a default batch size of 100.
+	 * Creates a new {@link BatchInsert.Builder} instance based on the given iterator, with a default batch size of 100.
 	 * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
-	 * Call {@link BatchInsert#execute()} to perform the insert operation.
+	 * Call {@link BatchInsert.Builder#execute()} to perform the insert operation.
 	 * @param connection the entity connection to use when inserting
 	 * @param entities the entities to insert
 	 * @return a new {@link BatchInsert.Builder} instance
@@ -815,7 +815,7 @@ public interface EntityConnection extends AutoCloseable {
 	interface Transactional {
 
 		/**
-		 * Executes the given transactional.
+		 * Executes this transactional.
 		 * @throws Exception in case of an exception
 		 */
 		void execute() throws Exception;
@@ -829,7 +829,7 @@ public interface EntityConnection extends AutoCloseable {
 	interface TransactionalResult<T> {
 
 		/**
-		 * Executes the given transactional.
+		 * Executes this transactional.
 		 * @return the result
 		 * @throws Exception in case of an exception
 		 */
@@ -868,7 +868,7 @@ public interface EntityConnection extends AutoCloseable {
 
 			/**
 			 * @param batchSize the commit batch size
-			 * @return this buildr instance
+			 * @return this builder instance
 			 * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
 			 */
 			Builder batchSize(int batchSize);
@@ -913,6 +913,7 @@ public interface EntityConnection extends AutoCloseable {
 			/**
 			 * @param batchSize the commit batch size
 			 * @return this builder instance
+			 * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
 			 */
 			Builder batchSize(int batchSize);
 
@@ -942,9 +943,9 @@ public interface EntityConnection extends AutoCloseable {
 	}
 
 	/**
-	 * A class encapsulating select query parameters.
+	 * An interface encapsulating select query parameters.
 	 * A factory for {@link Builder} instances via
-	 * {@link Select#all(EntityType)}, {@link Select#where(Condition)}.
+	 * {@link Select#all(EntityType)}, {@link Select#where(Condition)} and {@link Select#having(Condition)}.
 	 * {@snippet :
 	 * // Simple select with condition
 	 * List<Entity> metalTracks = connection.select(
@@ -1114,7 +1115,7 @@ public interface EntityConnection extends AutoCloseable {
 			 * Marks the Select instance as a FOR UPDATE query, this means the resulting rows
 			 * will be locked by the given connection until unlocked by running another (non-select for update)
 			 * query on the same connection or performing an update.
-			 * Note that marking this Select instance as for update, sets the {@link #referenceDepth()} to zero, which can
+			 * Note that marking this Select instance as for update, sets the {@link #referenceDepth(int)} to zero, which can
 			 * then be modified by setting it after setting forUpdate.
 			 * @return this builder instance
 			 */
@@ -1132,12 +1133,9 @@ public interface EntityConnection extends AutoCloseable {
 			Builder referenceDepth(int referenceDepth);
 
 			/**
-			 * Returns the depth limit for a specific foreign key traversal.
-			 * <ul>
-			 *   <li>{@code OptionalInt.empty()} means use the global {@link #referenceDepth()} value</li>
-			 *   <li>{@code 0} means do not fetch the referenced entity</li>
-			 *   <li>{@code -1} means unlimited depth (avoid with circular references)</li>
-			 * </ul>
+			 * Limits the levels of foreign key values to fetch for a specific foreign key,
+			 * with 0 meaning the referenced entity should not be fetched and -1 unlimited depth.
+			 * <p>
 			 * <b>Caution:</b> Unlimited depth (-1) can cause infinite recursion with self-referential
 			 * or circular foreign key relationships. Use bounded depth for safety.
 			 * @param foreignKey the foreign key
@@ -1147,7 +1145,8 @@ public interface EntityConnection extends AutoCloseable {
 			Builder referenceDepth(ForeignKey foreignKey, int referenceDepth);
 
 			/**
-			 * Sets the attributes to include in the query result. An empty array means all attributes should be included.
+			 * Sets the attributes to include in the query result. An empty array means the default attributes
+			 * should be used (those marked with {@code .selected(true)}).
 			 * Note that primary key attribute values are always included.
 			 * @param attributes the attributes to include
 			 * @param <T> the attribute type
@@ -1156,7 +1155,8 @@ public interface EntityConnection extends AutoCloseable {
 			<T extends Attribute<?>> Builder attributes(T... attributes);
 
 			/**
-			 * Sets the attributes to include in the query result. An empty Collection means all attributes should be included.
+			 * Sets the attributes to include in the query result. An empty Collection means the default attributes
+			 * should be used (those marked with {@code .selected(true)}).
 			 * Note that primary key attribute values are always included.
 			 * @param attributes the attributes to include
 			 * @return this builder instance
@@ -1302,7 +1302,7 @@ public interface EntityConnection extends AutoCloseable {
 	}
 
 	/**
-	 * A class encapsulating a where clause along with columns and their associated values for update.
+	 * An interface encapsulating a where clause along with columns and their associated values for update.
 	 * A factory for {@link Builder} instances via
 	 * {@link Update#all(EntityType)}, {@link Update#where(Condition)}.
 	 */
@@ -1330,8 +1330,9 @@ public interface EntityConnection extends AutoCloseable {
 			 * @param <T> the value type
 			 * @return this builder
 			 * @throws IllegalStateException in case a value has already been added for the given column
+			 * @throws IllegalArgumentException in case {@code value} is of a type incompatible with the column
 			 */
-			<T> Builder set(Column<?> column, @Nullable T value);
+			<T> Builder set(Column<T> column, @Nullable T value);
 
 			@Override
 			default Update get() {
@@ -1363,7 +1364,7 @@ public interface EntityConnection extends AutoCloseable {
 	}
 
 	/**
-	 * A class encapsulating count query parameters.
+	 * An interface encapsulating count query parameters.
 	 * A factory for {@link Count} instances via {@link Count#all(EntityType)},
 	 * {@link Count#where(Condition)} and {@link Count#having(Condition)}.
 	 * A factory for {@link Count.Builder} instances via {@link Count#builder()}.

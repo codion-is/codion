@@ -20,8 +20,6 @@ package is.codion.framework.db.exception;
 
 import is.codion.common.db.exception.DatabaseException;
 
-import org.jspecify.annotations.Nullable;
-
 /**
  * An exception indicating a failed update operation
  */
@@ -31,7 +29,7 @@ public class UpdateEntityException extends DatabaseException {
 	 * Instantiates a new {@link UpdateEntityException}
 	 * @param message the message
 	 */
-	public UpdateEntityException(@Nullable String message) {
+	public UpdateEntityException(String message) {
 		super(message);
 	}
 }

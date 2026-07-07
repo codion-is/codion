@@ -20,18 +20,16 @@ package is.codion.framework.db.exception;
 
 import is.codion.common.db.exception.DatabaseException;
 
-import org.jspecify.annotations.Nullable;
-
 /**
  * Exception used when one entity was expected but many were found.
  */
 public class MultipleEntitiesFoundException extends DatabaseException {
 
 	/**
-	 * Instantiates a new MultipleFoundException
+	 * Instantiates a new MultipleEntitiesFoundException
 	 * @param message the exception message
 	 */
-	public MultipleEntitiesFoundException(@Nullable String message) {
+	public MultipleEntitiesFoundException(String message) {
 		super(message);
 	}
 }

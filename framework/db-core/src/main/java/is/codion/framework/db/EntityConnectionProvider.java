@@ -55,13 +55,13 @@ import static java.util.stream.StreamSupport.stream;
  * {@snippet :
  * // Local connection
  * EntityConnectionProvider provider = LocalEntityConnectionProvider.builder()
- *     .domainType(DOMAIN)
+ *     .domain(DOMAIN)
  *     .user(User.parse("scott:tiger"))
  *     .build();
  *
  * // Remote connection
  * EntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
- *     .domainType(DOMAIN)
+ *     .domain(DOMAIN)
  *     .hostname("localhost")
  *     .port(2223)
  *     .registryPort(1099)
@@ -139,9 +139,9 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	Entities entities();
 
 	/**
-	 * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,
+	 * Provides an EntityConnection object, is responsible for returning a healthy EntityConnection object,
 	 * that is, it must reconnect an invalid connection whether remotely or locally
-	 * @return a EntityConnection instance
+	 * @return an EntityConnection instance
 	 */
 	EntityConnection connection();
 
@@ -152,7 +152,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	Optional<String> description();
 
 	/**
-	 * @return true if a connection has been establised and the connection is in a valid state
+	 * @return true if a connection has been established and the connection is in a valid state
 	 */
 	boolean connectionValid();
 
@@ -232,7 +232,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * {@snippet :
 	 * // Local connection with full configuration
 	 * EntityConnectionProvider local = LocalEntityConnectionProvider.builder()
-	 *     .domain(new MyDomain())
+	 *     .domain(MyDomain.DOMAIN)
 	 *     .user(User.parse("scott:tiger"))
 	 *     .clientId(UUID.randomUUID())
 	 *     .clientType("MyApplication")
