@@ -82,7 +82,8 @@ public enum ColumnSummary implements SummaryModel.Summary {
 			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble average = values.stream()
-								.mapToDouble(value -> value == null ? 0d : value.doubleValue())
+								.filter(Objects::nonNull)
+								.mapToDouble(Number::doubleValue)
 								.average();
 				if (average.isPresent()) {
 					return addSubsetIndicator(summaryValues.format(average.getAsDouble()), summaryValues.subset());

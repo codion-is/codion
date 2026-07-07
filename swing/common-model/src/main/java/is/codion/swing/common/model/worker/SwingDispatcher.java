@@ -38,7 +38,7 @@ public final class SwingDispatcher implements Dispatcher {
 	}
 
 	@Override
-	public boolean isUserInterfaceThread() {
+	public boolean userInterfaceThread() {
 		return isEventDispatchThread();
 	}
 }

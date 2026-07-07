@@ -18,7 +18,13 @@
  */
 package is.codion.common.model;
 
+import java.io.Serial;
+
 /**
  * Used when actions must be cancelled from deep within a call stack.
  */
-public class CancelException extends RuntimeException {}
+public class CancelException extends RuntimeException {
+
+	@Serial
+	private static final long serialVersionUID = 1;
+}

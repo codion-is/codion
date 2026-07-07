@@ -85,7 +85,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 						.selection(selectionFactory)
 						.sort(sort)
 						.validator(builder.validator)
-						.include(new DefaultInclude<>(builder.columns, filters));
+						.included(new DefaultInclude<>(builder.columns, filters));
 		builder.itemsListeners.forEach(itemsBuilder::listener);
 		this.items = itemsBuilder.build();
 		this.items.included().predicate().set(builder.included);

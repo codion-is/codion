@@ -49,8 +49,8 @@ public interface TableConditionModel<C> {
 	<T> ConditionModel<T> get(C identifier);
 
 	/**
-	 * Clears the search state of all non-persistant condition models, disables them and
-	 * resets the operator to {@link is.codion.common.utilities.Operator#EQUAL}.
+	 * Clears the search state of all non-persistent condition models, disables them and
+	 * resets the operator to its initial one.
 	 * @see #persist()
 	 */
 	void clear();

@@ -40,8 +40,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A UI-agnostic combo box model based on {@link FilterModel}. The Swing-specific
- * {@code is.codion.swing.common.model.component.combobox.FilterComboBoxModel} extends this with
- * {@code javax.swing.ComboBoxModel} (mirroring how {@code SwingTableModel} extends {@code TableModel}).
+ * {@code is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel} extends this with
+ * {@code javax.swing.ComboBoxModel} (mirroring how {@code SwingFilterTableModel} extends {@code TableModel}).
  * @param <T> the type of values in this combo box model
  * @see #builder()
  * @see IncludedItems#predicate()
@@ -153,8 +153,8 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		 * If true, the selection is cleared when the selected item is excluded from
 		 * the model, otherwise the selected item can potentially represent a value
 		 * which is not currently included in the model
-		 * <p>This is false by default.
-		 * @param filterSelected true if the select item should be filtered
+		 * @param filterSelected true if the selected item should be filtered, false by default
+		 * @return this builder instance
 		 * @see IncludedItems#predicate()
 		 */
 		Builder<T> filterSelected(boolean filterSelected);
@@ -183,8 +183,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		Builder<T> refresher(Function<ComboBoxItems<T>, FilterModel.Refresher<T>> refresher);
 
 		/**
-		 * Default false.
-		 * @param refresh true if the model items should be refreshed on initialization
+		 * @param refresh true if the model items should be refreshed on initialization, false by default
 		 * @return this builder instance
 		 */
 		Builder<T> refresh(boolean refresh);
@@ -204,8 +203,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 	interface ItemComboBoxModelBuilder<T> {
 
 		/**
-		 * Default false.
-		 * @param sorted true if the items should be sorted
+		 * @param sorted true if the items should be sorted, false by default
 		 * @return this builder instance
 		 */
 		ItemComboBoxModelBuilder<T> sorted(boolean sorted);
@@ -217,7 +215,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator);
 
 		/**
-		 * Sets the initally selected item
+		 * Sets the initially selected item
 		 * @param selected the item to select initially
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the model does not contain the given item
@@ -225,7 +223,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		ItemComboBoxModelBuilder<T> selected(@Nullable T selected);
 
 		/**
-		 * Sets the initally selected item
+		 * Sets the initially selected item
 		 * @param selected the item to select initially
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the model does not contain the given item

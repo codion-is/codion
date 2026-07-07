@@ -77,7 +77,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 
 	@Override
 	public void refresh(@Nullable Consumer<Collection<T>> onResult) {
-		if (async.is() && Dispatcher.instance().isUserInterfaceThread()) {
+		if (async.is() && Dispatcher.instance().userInterfaceThread()) {
 			refreshAsync(onResult);
 		}
 		else {

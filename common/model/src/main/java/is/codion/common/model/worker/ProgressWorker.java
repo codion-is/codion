@@ -82,6 +82,10 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ProgressWorker<T, V> {
 
+	/**
+	 * The default progress maximum, 100.
+	 * @see ProgressTask#maximum()
+	 */
 	public static final int DEFAULT_MAXIMUM = 100;
 
 	private static final BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
@@ -90,6 +94,7 @@ public final class ProgressWorker<T, V> {
 	private final Object task;
 	private final List<Runnable> onStarted;
 	private final List<Runnable> onDone;
+	private final List<Runnable> onSuccess;
 	private final List<Consumer<T>> onResult;
 	private final List<Consumer<Integer>> onProgress;
 	private final List<Consumer<List<V>>> onPublish;
@@ -110,6 +115,7 @@ public final class ProgressWorker<T, V> {
 		this.task = builder.task;
 		this.onStarted = builder.onStarted();
 		this.onDone = builder.onDone();
+		this.onSuccess = builder.onSuccess();
 		this.onResult = builder.onResult();
 		this.onProgress = builder.onProgress();
 		this.onPublish = builder.onPublish();
@@ -130,8 +136,12 @@ public final class ProgressWorker<T, V> {
 	 * Executes this worker, running the task on a background thread and its handlers on the UI thread.
 	 * <p>Must be called on the UI thread, since the {@link Dispatcher} handler executor is resolved for the
 	 * current context at this point (relevant for platforms with a per-context UI thread).
+	 * @throws IllegalStateException if called off the UI thread (except when using {@link Dispatcher#SYNCHRONOUS})
 	 */
 	public void execute() {
+		if (dispatcher != Dispatcher.SYNCHRONOUS && !dispatcher.userInterfaceThread()) {
+			throw new IllegalStateException("ProgressWorker.execute() must be called on the UI thread");
+		}
 		uiExecutor = dispatcher.executor();
 		EXECUTOR.execute(future);
 	}
@@ -161,6 +171,7 @@ public final class ProgressWorker<T, V> {
 
 	/**
 	 * Waits if necessary for the task to complete, and returns its result.
+	 * <p>Always returns null for {@link Task} and {@link ProgressTask} workers, which produce no result.
 	 * @return the task result
 	 * @throws InterruptedException if the current thread was interrupted while waiting
 	 * @throws ExecutionException if the task threw an exception
@@ -194,6 +205,7 @@ public final class ProgressWorker<T, V> {
 		onDone.forEach(Runnable::run);
 		try {
 			T result = get();
+			onSuccess.forEach(Runnable::run);
 			onResult.forEach(c -> c.accept(result));
 		}
 		catch (CancellationException e) {
@@ -701,6 +713,7 @@ public final class ProgressWorker<T, V> {
 
 		private @Nullable List<Runnable> onStarted;
 		private @Nullable List<Runnable> onDone;
+		private @Nullable List<Runnable> onSuccess;
 		private @Nullable List<Consumer<T>> onResult;
 		private @Nullable List<Consumer<Integer>> onProgress;
 		private @Nullable List<Consumer<List<V>>> onPublish;
@@ -741,8 +754,9 @@ public final class ProgressWorker<T, V> {
 
 		@Override
 		public Builder<T, V> onSuccess(Runnable onSuccess) {
-			requireNonNull(onSuccess);
-			return onResult(result -> onSuccess.run());
+			this.onSuccess = initialize(this.onSuccess);
+			this.onSuccess.add(requireNonNull(onSuccess));
+			return this;
 		}
 
 		@Override
@@ -812,6 +826,10 @@ public final class ProgressWorker<T, V> {
 
 		private List<Runnable> onDone() {
 			return onDone == null ? emptyList() : onDone;
+		}
+
+		private List<Runnable> onSuccess() {
+			return onSuccess == null ? emptyList() : onSuccess;
 		}
 
 		private List<Consumer<T>> onResult() {

@@ -41,9 +41,12 @@ import static java.util.Objects.requireNonNull;
  * <p>A file-based preferences implementation without length restrictions.
  * <p>Supports hierarchical preferences through nested JSON structure.
  * <p>Clearing the preferences instance and flushing deletes the underlying file.
+ * <p>Note that, unlike the {@link AbstractPreferences} contract, {@link java.util.prefs.PreferenceChangeListener}s
+ * are not notified of {@link #put(String, String)} calls.
  * @see #filePreferences(String)
  * @see #PREFERENCES_LOCATION
  * @see #PRETTY_PRINT
+ * @see UserPreferences
  */
 public final class FilePreferences extends AbstractPreferences {
 
@@ -62,6 +65,8 @@ public final class FilePreferences extends AbstractPreferences {
 
 	/**
 	 * Specifies whether JSON preference files are pretty-printed, causes significant size increase.
+	 * <p>Note that this value is captured when a file based preferences instance is created; changing it
+	 * afterwards has no effect on that instance.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
@@ -98,6 +103,9 @@ public final class FilePreferences extends AbstractPreferences {
 		requireNonNull(key, "key cannot be null");
 		requireNonNull(value, "value cannot be null");
 		synchronized (lock) {
+			if (isRemoved()) {
+				throw new IllegalStateException("Node has been removed.");
+			}
 			putSpi(key, value);
 		}
 	}
