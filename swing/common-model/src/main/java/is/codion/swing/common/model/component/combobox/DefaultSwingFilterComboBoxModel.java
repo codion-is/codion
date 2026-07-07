@@ -56,7 +56,7 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 		this.model = model;
 		// Bridge the common model's observables to Swing list-data events.
 		model.items().included().observer().addListener(this::fireContentsChanged);
-		model.selection().item().addListener(this::fireContentsChanged);
+		model.selection().item().addListener(this::fireSelectionChanged);
 	}
 
 	static <T> SwingFilterComboBoxModel<T> model(FilterComboBoxModel<T> model) {
@@ -126,7 +126,15 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 	}
 
 	private void fireContentsChanged() {
-		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
+		fireListDataEvent(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE));
+	}
+
+	private void fireSelectionChanged() {
+		//the Swing convention for a combo box selection change is (-1, -1), not a full-list invalidation
+		fireListDataEvent(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, -1, -1));
+	}
+
+	private void fireListDataEvent(ListDataEvent event) {
 		for (ListDataListener dataListener : listDataListeners) {
 			dataListener.contentsChanged(event);
 		}
@@ -136,12 +144,12 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 
 		@Override
 		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultBuilder<>(FilterComboBoxModel.builder().items(items), null);
+			return new DefaultBuilder<>(FilterComboBoxModel.builder().items(items));
 		}
 
 		@Override
 		public <T> Builder<T> items(Supplier<Collection<T>> items) {
-			return new DefaultBuilder<>(FilterComboBoxModel.builder().items(items), items);
+			return new DefaultBuilder<>(FilterComboBoxModel.builder().items(items));
 		}
 
 		@Override
@@ -155,14 +163,9 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
 
 		private final FilterComboBoxModel.Builder<T> builder;
-		private final @Nullable Supplier<Collection<T>> supplier;
 
-		private @Nullable Consumer<Exception> onRefreshException;
-
-		private DefaultBuilder(FilterComboBoxModel.Builder<T> builder,
-		                       @Nullable Supplier<Collection<T>> supplier) {
+		private DefaultBuilder(FilterComboBoxModel.Builder<T> builder) {
 			this.builder = builder;
-			this.supplier = supplier;
 		}
 
 		@Override
@@ -209,8 +212,7 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 
 		@Override
 		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
-			this.onRefreshException = requireNonNull(onRefreshException);
-			builder.onRefreshException(onRefreshException);
+			builder.onRefreshException(requireNonNull(onRefreshException));
 			return this;
 		}
 
@@ -222,12 +224,6 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 
 		@Override
 		public SwingFilterComboBoxModel<T> build() {
-			builder.refresher(items -> Refresher.<T>builder()
-							.items(supplier)
-							.onResult(items::set)
-							.onException(onRefreshException)
-							.build());
-
 			return new DefaultSwingFilterComboBoxModel<>(builder.build());
 		}
 	}

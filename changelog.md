@@ -14,6 +14,15 @@ Codion Change Log
 - DefaultFilterModelItems, item listener insert/remove/sort ranges corrected to be inclusive.
 - DefaultRefresher, a synchronous refresh no longer clobbers an in-flight asynchronous refresh worker.
 - DefaultRefresher, exceptions from result consumers now propagate on the synchronous path instead of being reported as refresh failures.
+- DefaultFilterComboBoxModel.replace(Map), now updates the selected item when it is among those replaced.
+- DefaultFilterComboBoxModel.set(), now clears the selection when filterSelected is enabled and the selected item is excluded.
+- DefaultFilterComboBoxModel.set(), now rejects null items, null being the reserved null item sentinel.
+- DefaultFilterComboBoxModel, ItemComboBoxModel.selected() no longer rejects the null item.
+- DefaultFilterComboBoxModel.add(), an item no longer ends up in both the included and filtered partitions.
+- DefaultFilterComboBoxModel, the selection is now cleared when the selected item is the last one removed.
+- DefaultFilterComboBoxModel.Builder.includeNull(false) now clears any previously set null item.
+- DefaultFilterComboBoxModel, item change events no longer publish a live view of the underlying items.
+- DefaultFilterComboBoxModel.selector() now searches all items, not just the included ones.
 ### is.codion.common.rmi
 - javadocs updated, some minor improvements.
 ### is.codion.framework.domain
@@ -49,6 +58,8 @@ Codion Change Log
 - DefaultListSelection, the adjusting protocol is now reentrant, no longer breaking a caller's grouping.
 - DefaultListSelection, selection facades now notify only when their value actually changes.
 - DefaultListSelection.items().set(Collection), now enforces locking and validators, consistent with the set(List) overload.
+- DefaultSwingFilterComboBoxModel, a selection change now fires a (-1, -1) list data event instead of invalidating the whole list.
+- DefaultSwingFilterComboBoxModel, the redundant refresher override removed, the common model's Dispatcher based refresher is used directly.
 ### is.codion.swing.common.ui
 - javadocs updated, some improvements and fixes.
 ### is.codion.swing.framework.model
