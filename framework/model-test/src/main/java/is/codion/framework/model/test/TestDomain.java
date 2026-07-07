@@ -40,6 +40,12 @@ import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
 
+/**
+ * The test domain the {@code AbstractEntity*Test} contract classes run against, shared by the
+ * Swing and Android model test tiers. Defines Master/Detail, Department/Employee and a handful
+ * of entities exercising specific features (derived and enum attributes, temporal columns,
+ * non-generated keys).
+ */
 public final class TestDomain extends DomainModel {
 
 	public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);

@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * A base class for testing {@link EntityTableModel} subclasses.
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
- * @param <R>> the {@link EntityEditor} type
+ * @param <R> the {@link EntityEditor} type
  */
 public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> {

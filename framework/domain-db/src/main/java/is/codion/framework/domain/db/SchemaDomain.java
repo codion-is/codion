@@ -46,6 +46,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
 /**
+ * A {@link DomainModel} generated from a database schema's {@link DatabaseMetaData}, with an
+ * {@link is.codion.framework.domain.entity.EntityDefinition} per table and foreign keys derived
+ * from the schema's referential constraints. The basis for the domain generator tooling.
  * For instances use the available factory methods.
  * @see #schemaDomain(DatabaseMetaData, String)
  * @see #schemaDomain(DatabaseMetaData, String, SchemaSettings)
