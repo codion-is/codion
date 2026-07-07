@@ -52,14 +52,13 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 		properties.setUrl(connectionFactory.url());
 		properties.setDefaultAutoCommit(false);
 		properties.setName(user.username());
-		//Codion does not validate connections coming from a connection pool
 		properties.setTestOnBorrow(true);
 		properties.setValidator(new ConnectionValidator(connectionFactory));
 		properties.setMaxActive(ConnectionPoolWrapper.MAXIMUM_POOL_SIZE.getOrThrow());
 		properties.setInitialSize(ConnectionPoolWrapper.MINIMUM_POOL_SIZE.getOrThrow());
 		properties.setMaxIdle(ConnectionPoolWrapper.MAXIMUM_POOL_SIZE.getOrThrow());
 		properties.setMinIdle(ConnectionPoolWrapper.MINIMUM_POOL_SIZE.getOrThrow());
-		properties.setSuspectTimeout(ConnectionPoolWrapper.IDLE_TIMEOUT.getOrThrow() / 1000);
+		properties.setMinEvictableIdleTimeMillis(ConnectionPoolWrapper.IDLE_TIMEOUT.getOrThrow());
 		properties.setMaxWait(ConnectionPoolWrapper.CHECK_OUT_TIMEOUT.getOrThrow());
 
 		return new DataSource(properties);
@@ -94,12 +93,12 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 
 		@Override
 		public int getIdleTimeout() {
-			return connectionPool().getSuspectTimeout() * 1000;
+			return connectionPool().getMinEvictableIdleTimeMillis();
 		}
 
 		@Override
 		public void setIdleTimeout(int idleTimeout) {
-			connectionPool().setSuspectTimeout(idleTimeout / 1000);
+			connectionPool().setMinEvictableIdleTimeMillis(idleTimeout);
 		}
 
 		@Override

@@ -34,6 +34,15 @@ final class DefaultConnectionPoolState implements ConnectionPoolState, Serializa
 	private int inUse = -1;
 	private int waiting = -1;
 
+	DefaultConnectionPoolState() {}
+
+	DefaultConnectionPoolState(DefaultConnectionPoolState state) {
+		this.timestamp = state.timestamp;
+		this.size = state.size;
+		this.inUse = state.inUse;
+		this.waiting = state.waiting;
+	}
+
 	DefaultConnectionPoolState set(long timestamp, int size, int inUse, int waiting) {
 		this.timestamp = timestamp;
 		this.size = size;
