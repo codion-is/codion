@@ -274,11 +274,13 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 	interface ItemFinder<T, V> {
 
 		/**
-		 * Returns the value representing the given item
+		 * Returns the value representing the given item.
+		 * <p>Note that a null return value is ambiguous between "nothing selected" and
+		 * "the selected item has a null value", see {@link #selector(ItemFinder)}.
 		 * @param item the item, never null
-		 * @return the value representing the given item
+		 * @return the value representing the given item, possibly null
 		 */
-		V value(T item);
+		@Nullable V value(T item);
 
 		/**
 		 * Returns the {@link Predicate} to use when searching for an item represented by the given value

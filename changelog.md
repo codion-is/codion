@@ -23,6 +23,7 @@ Codion Change Log
 - DefaultFilterComboBoxModel.Builder.includeNull(false) now clears any previously set null item.
 - DefaultFilterComboBoxModel, item change events no longer publish a live view of the underlying items.
 - DefaultFilterComboBoxModel.selector() now searches all items, not just the included ones.
+- FilterComboBoxModel.ItemFinder.value() return value is now @Nullable, item values may legitimately be null.
 ### is.codion.common.rmi
 - javadocs updated, some minor improvements.
 ### is.codion.framework.domain
@@ -42,6 +43,9 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityEditor.execute() and supersede() protected again.
 - DefaultEntityModel, DefaultEntityEditModel and DefaultEntityApplicationModel renamed AbstractEntityModel, AbstractEntityEditModel and AbstractEntityApplicationModel, now abstract, consistent with the other Abstract* extension bases.
+- EntityComboBoxModel.Builder now yields independent models on repeated build() calls, no longer sharing query state.
+- EntityComboBoxModel.ForeignKeyFilter.link(), pre-set filter keys are no longer wiped when linking a master that has not been refreshed.
+- EntityComboBoxModel.Builder.attributes() now defensively copies the given collection.
 - javadocs updated, some improvements and fixes.
 ### is.codion.framework.model.test
 - javadocs updated.
