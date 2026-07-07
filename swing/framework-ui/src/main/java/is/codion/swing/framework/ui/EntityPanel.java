@@ -107,7 +107,7 @@ import static javax.swing.SwingConstants.HORIZONTAL;
 import static javax.swing.SwingConstants.VERTICAL;
 
 /**
- * A panel representing an Entity via a EntityModel, which facilitates browsing and editing of records.
+ * A panel representing an Entity via an EntityModel, which facilitates browsing and editing of records.
  * {@snippet :
  *   EntityConnectionProvider connectionProvider = createConnectionProvider();
  *   SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
