@@ -908,6 +908,13 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void selectValuesDefaultOrdering() {
+		//select(Column, Select) with no order by should default to ordering by the selected column
+		List<Integer> deptnos = connection.select(Department.DEPTNO, Select.all(Department.TYPE).build());
+		assertEquals(asList(10, 20, 30, 40), deptnos);
+	}
+
+	@Test
 	void selectForUpdateModified() throws SQLException {
 		LocalEntityConnection connection = createConnection();
 		LocalEntityConnection connection2 = createConnection();

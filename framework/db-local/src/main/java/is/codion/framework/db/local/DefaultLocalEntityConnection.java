@@ -114,6 +114,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private final Domain domain;
 	private final User user;
 	private final Database database;
+	private final Lock lock = new Lock();
 	private final SelectQueries selectQueries;
 	private final Map<EntityType, Boolean> generatedKeysCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> generatedColumnsCache = new HashMap<>();
@@ -178,21 +179,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public boolean connected() {
-		synchronized (database) {
+		synchronized (lock) {
 			return connectionValid();
 		}
 	}
 
 	@Override
 	public void close() {
-		synchronized (database) {
+		synchronized (lock) {
 			closeConnection();
 		}
 	}
 
 	@Override
 	public void startTransaction() {
-		synchronized (database) {
+		synchronized (lock) {
 			tracer.enter("startTransaction");
 			SQLException exception = null;
 			try {
@@ -215,14 +216,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public boolean transactionOpen() {
-		synchronized (database) {
+		synchronized (lock) {
 			return transactionOpen;
 		}
 	}
 
 	@Override
 	public void rollbackTransaction() {
-		synchronized (database) {
+		synchronized (lock) {
 			tracer.enter("rollbackTransaction");
 			SQLException exception = null;
 			try {
@@ -245,7 +246,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public void commitTransaction() {
-		synchronized (database) {
+		synchronized (lock) {
 			tracer.enter("commitTransaction");
 			SQLException exception = null;
 			try {
@@ -268,7 +269,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public void cacheQueries(boolean cacheQueries) {
-		synchronized (database) {
+		synchronized (lock) {
 			this.cacheQueries = cacheQueries;
 			if (!cacheQueries) {
 				queryCache.clear();
@@ -278,7 +279,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public boolean cacheQueries() {
-		synchronized (database) {
+		synchronized (lock) {
 			return cacheQueries;
 		}
 	}
@@ -349,7 +350,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		String updateQuery = createUpdateQuery(update, statementColumns, statementValues);
-		synchronized (database) {
+		synchronized (lock) {
 			try (PreparedStatement statement = prepareStatement(updateQuery)) {
 				int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
 				commitIfTransactionIsNotOpen();
@@ -372,7 +373,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<?> statementValues = condition.values();
 		List<ColumnDefinition<?>> statementColumns = definitions(condition.columns());
 		String deleteQuery = deleteQuery(entityDefinition.table(), condition.string(entityDefinition));
-		synchronized (database) {
+		synchronized (lock) {
 			try (PreparedStatement statement = prepareStatement(deleteQuery)) {
 				int deleteCount = executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
 				commitIfTransactionIsNotOpen();
@@ -404,7 +405,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<ColumnDefinition<?>> statementColumns = emptyList();
 		Condition condition = null;
 		String deleteQuery = null;
-		synchronized (database) {
+		synchronized (lock) {
 			try {
 				int deleteCount = 0;
 				for (Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
@@ -464,7 +465,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			return emptyList();
 		}
 
-		synchronized (database) {
+		synchronized (lock) {
 			try {
 				List<Entity> result = new ArrayList<>();
 				for (List<Key> entityTypeKeys : groupByType(keys).values()) {
@@ -490,7 +491,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public List<Entity> select(Select select) {
 		requireNonNull(select, SELECT_MAY_NOT_BE_NULL);
-		synchronized (database) {
+		synchronized (lock) {
 			try {
 				List<Entity> result = query(select);
 				if (!select.forUpdate()) {
@@ -533,15 +534,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			throw new UnsupportedOperationException("Selecting column values is not implemented for aggregate function values");
 		}
 		Condition combinedCondition = and(select.where(), column.isNotNull());
-		String selectQuery = selectQueries.builder(entityDefinition)
+		SelectQueries.Builder queryBuilder = selectQueries.builder(entityDefinition)
 						.select(select, false)
 						.columns(columnDefinition.expression())
 						.where(combinedCondition)
-						.groupBy(columnDefinition.expression())
-						.build();
+						.groupBy(columnDefinition.expression());
+		if (select.orderBy().isEmpty()) {
+			//default to ordering by the selected column, consistent with the other select(Column...) overloads
+			queryBuilder.orderBy(columnDefinition.expression());
+		}
+		String selectQuery = queryBuilder.build();
 		List<Object> statementValues = statementValues(combinedCondition, select.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(combinedCondition, select.having());
-		synchronized (database) {
+		synchronized (lock) {
 			try (PreparedStatement statement = prepareStatement(selectQuery);
 					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
 				List<T> result = packResult(columnDefinition, resultSet);
@@ -566,7 +571,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						.build();
 		List<Object> statementValues = statementValues(count.where(), count.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(count.where(), count.having());
-		synchronized (database) {
+		synchronized (lock) {
 			try (PreparedStatement statement = prepareStatement(selectQuery);
 					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
 				if (!resultSet.next()) {
@@ -599,7 +604,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 
 		Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
-		synchronized (database) {
+		synchronized (lock) {
 			try {
 				for (ForeignKeyDefinition foreignKeyReference : hardForeignKeyReferences(entityTypes.iterator().next())) {
 					List<Entity> dependencies = query(where(foreignKeyReference.attribute().in(entities)).build(), 0);//bypass caching
@@ -630,7 +635,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		Exception exception = null;
 		tracer.enter(EXECUTE, functionType, parameter);
 		try {
-			synchronized (database) {
+			synchronized (lock) {
 				return domain.function(functionType).execute((C) this, parameter);
 			}
 		}
@@ -656,7 +661,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		Exception exception = null;
 		tracer.enter(EXECUTE, procedureType, parameter);
 		try {
-			synchronized (database) {
+			synchronized (lock) {
 				domain.procedure(procedureType).execute((C) this, parameter);
 			}
 		}
@@ -677,7 +682,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
 		tracer.enter(REPORT, reportType, parameter);
-		synchronized (database) {
+		synchronized (lock) {
 			try {
 				R result = domain.report(reportType).fill(verifyOpenConnection(), parameter);
 				commitIfTransactionIsNotOpen();
@@ -704,7 +709,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public EntityResultIterator iterator(Select select) {
-		synchronized (database) {
+		synchronized (lock) {
 			try {
 				EntityResultIterator iterator = resultIterator(select);
 				if (noForeignKeysToPopulate(select)) {
@@ -736,49 +741,49 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public boolean optimisticLocking() {
-		synchronized (database) {
+		synchronized (lock) {
 			return optimisticLocking;
 		}
 	}
 
 	@Override
 	public void optimisticLocking(boolean optimisticLocking) {
-		synchronized (database) {
+		synchronized (lock) {
 			this.optimisticLocking = optimisticLocking;
 		}
 	}
 
 	@Override
 	public int iteratorBufferSize() {
-		synchronized (database) {
+		synchronized (lock) {
 			return iteratorBufferSize;
 		}
 	}
 
 	@Override
 	public void iteratorBufferSize(int iteratorBufferSize) {
-		synchronized (database) {
+		synchronized (lock) {
 			this.iteratorBufferSize = iteratorBufferSize;
 		}
 	}
 
 	@Override
 	public boolean limitReferenceDepth() {
-		synchronized (database) {
+		synchronized (lock) {
 			return limitReferenceDepth;
 		}
 	}
 
 	@Override
 	public void limitReferenceDepth(boolean limitReferenceDepth) {
-		synchronized (database) {
+		synchronized (lock) {
 			this.limitReferenceDepth = limitReferenceDepth;
 		}
 	}
 
 	@Override
 	public int queryTimeout() {
-		synchronized (database) {
+		synchronized (lock) {
 			return queryTimeout;
 		}
 	}
@@ -788,7 +793,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		if (queryTimeout < 0) {
 			throw new IllegalArgumentException("queryTimeout must be >= 0");
 		}
-		synchronized (database) {
+		synchronized (lock) {
 			this.queryTimeout = queryTimeout;
 		}
 	}
@@ -796,21 +801,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public void tracer(MethodTracer tracer) {
 		requireNonNull(tracer);
-		synchronized (database) {
+		synchronized (lock) {
 			this.tracer = tracer;
 		}
 	}
 
 	@Override
 	public void setConnection(@Nullable Connection connection) {
-		synchronized (database) {
+		synchronized (lock) {
 			this.connection = connection;
 		}
 	}
 
 	@Override
 	public @Nullable Connection getConnection() {
-		synchronized (database) {
+		synchronized (lock) {
 			return connection;
 		}
 	}
@@ -823,7 +828,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		Map<EntityType, Set<Column<?>>> lazyColumns = new HashMap<>();
 		String insertQuery = null;
-		synchronized (database) {
+		synchronized (lock) {
 			try {
 				for (Entity entity : entities) {
 					EntityDefinition entityDefinition = definition(entity.type());
@@ -897,7 +902,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		String updateQuery = null;
-		synchronized (database) {
+		synchronized (lock) {
 			try {
 				if (optimisticLocking) {
 					performOptimisticLocking(entitiesByEntityType);
@@ -1810,6 +1815,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			throw new IllegalStateException("Non-unique primary key: " + entity.primaryKey());
 		}
 	}
+
+	/**
+	 * A private monitor guarding this connection's statements, so that a connection shared
+	 * between threads (such as a Swing worker and the EDT) does not interleave statements.
+	 * Note that this is per-connection, connections do not synchronize against each other.
+	 */
+	private static final class Lock {}
 
 
 	private static final class DatabaseConfiguration {

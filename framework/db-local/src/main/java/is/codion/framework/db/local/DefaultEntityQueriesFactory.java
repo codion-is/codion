@@ -22,8 +22,16 @@ import is.codion.common.db.database.Database;
 import is.codion.framework.db.EntityQueries;
 import is.codion.framework.domain.entity.Entities;
 
+/**
+ * The default {@link EntityQueries.Factory} implementation, providing {@link DefaultEntityQueries} instances.
+ */
 public final class DefaultEntityQueriesFactory implements EntityQueries.Factory {
 
+	/**
+	 * @param database the database
+	 * @param entities the domain entities
+	 * @return a new {@link EntityQueries} instance
+	 */
 	@Override
 	public EntityQueries create(Database database, Entities entities) {
 		return new DefaultEntityQueries(database, entities);

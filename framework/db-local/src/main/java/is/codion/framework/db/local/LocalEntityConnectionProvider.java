@@ -27,7 +27,7 @@ import is.codion.framework.domain.Domain;
 import static is.codion.common.utilities.Configuration.booleanValue;
 
 /**
- * A class responsible for managing a local EntityConnection.
+ * An interface responsible for managing a local EntityConnection.
  * @see LocalEntityConnectionProvider#builder()
  */
 public interface LocalEntityConnectionProvider extends EntityConnectionProvider, EntityConnectionTracer {
@@ -39,7 +39,7 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider,
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	PropertyValue<Boolean> TRACING = booleanValue("codion.db.local.tracing", false);
+	PropertyValue<Boolean> TRACING = booleanValue("codion.db.tracing", false);
 
 	/**
 	 * @return the underlying domain model
@@ -82,7 +82,7 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider,
 		Builder domain(Domain domain);
 
 		/**
-		 * @param queryTimeout the default query timeout
+		 * @param queryTimeout the default query timeout in seconds
 		 * @return this builder instance
 		 */
 		Builder queryTimeout(int queryTimeout);
