@@ -85,7 +85,6 @@ final class EntitySerializer {
 		stream.writeObject(key.column().name());
 		stream.writeObject(key.value);
 		stream.writeBoolean(key.primaryKey);
-		stream.writeInt(key.hashCode);
 	}
 
 	void deserialize(SingleColumnKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
@@ -93,7 +92,8 @@ final class EntitySerializer {
 		key.column = (Column<Object>) key.definition.attributes().getOrThrow((String) stream.readObject());
 		key.value = stream.readObject();
 		key.primaryKey = stream.readBoolean();
-		key.hashCode = stream.readInt();
+		//recompute rather than trust a stored hash, so the stored form can never diverge from the formula
+		key.hashCode = SingleColumnKey.computeHashCode(key.value);
 	}
 
 	private void deserializeValues(DefaultEntity entity, ObjectInputStream stream) throws IOException, ClassNotFoundException {
@@ -125,10 +125,8 @@ final class EntitySerializer {
 		for (int i = 0; i < valueCount; i++) {
 			Column<Object> attribute = (Column<Object>) key.definition.attributes().getOrThrow((String) stream.readObject());
 			Object value = stream.readObject();
-			if (attribute != null) {
-				key.columns.add(attribute);
-				key.values.put(attribute, attribute.type().validateType(value));
-			}
+			key.columns.add(attribute);
+			key.values.put(attribute, attribute.type().validateType(value));
 		}
 		key.columns = unmodifiableList(key.columns);
 		key.values = unmodifiableMap(key.values);

@@ -28,6 +28,14 @@ Codion Change Log
 - javadocs updated, some minor improvements.
 ### is.codion.framework.domain
 - javadocs updated, some improvements and fixes.
+- ImmutableEntity now precomputes cached derived values during construction, keeping shared immutable instances genuinely read only and thread safe.
+- ImmutableEntity and EmptyEntity no longer re-serialize the payload already written by the DefaultEntity layer, halving the serialized size of foreign key reference graphs.
+- ImmutableEntity now deduplicates referenced entities by source instance identity, fixing unbounded recursion on cyclic unsaved graphs and the collapse of distinct instances sharing a key.
+- Entity.equalValues() no longer changes its answer for a derived attribute depending on whether it has been read.
+- DefaultEntity, changing or removing a foreign key reference column now invalidates the cached referenced key even when the foreign key entity value is not loaded.
+- DefaultEntity.remove() now clears the derived, toString and foreign key key caches, consistent with set().
+- SingleColumnKey and a single-column CompositeColumnKey now produce equal hash codes, honouring the equals/hashCode contract across the two implementations.
+- SingleColumnKey.hashCode is now recomputed on deserialization rather than read from the stream.
 ### is.codion.framework.domain.db
 - javadocs updated.
 ### is.codion.framework.db.core

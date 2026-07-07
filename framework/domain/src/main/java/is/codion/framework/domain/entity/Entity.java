@@ -120,6 +120,9 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 
 	/**
 	 * Sets the value of the given attribute, returning the previous value if any
+	 * <p>Note that setting a value for an attribute not currently present (for example a lazily loaded column
+	 * that was not selected) is an initialization, not a modification, so it does not mark the entity modified
+	 * and is therefore not written by a subsequent {@code EntityConnection.update()}.
 	 * @param attribute the attribute
 	 * @param value the value
 	 * @param <T> the value type
@@ -480,6 +483,8 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 
 		/**
 		 * Returns a mutable copy of this entity.
+		 * <p>Note that this is a shallow copy; foreign key referenced entity instances are shared with the
+		 * source entity, they are not themselves copied (and may be immutable).
 		 * @return a mutable copy of this entity
 		 */
 		Entity mutable();
@@ -538,8 +543,9 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 
 		/**
 		 * Sets the default value for all attributes which have a default value, as if {@link #with(Attribute, Object)}
-		 * had been called for each one. Subsequent {@link #with(Attribute, Object)} calls for the same attribute override
-		 * the default.
+		 * had been called for each one. Values are applied in call order, so the last call for a given attribute wins:
+		 * a {@link #with(Attribute, Object)} call after this one overrides the default, and calling this after
+		 * {@link #with(Attribute, Object)} for a defaulted attribute overwrites the earlier value.
 		 * @return this builder instance
 		 * @see ValueAttributeDefinition#defaultValue()
 		 * @see ValueAttributeDefinition#hasDefaultValue()

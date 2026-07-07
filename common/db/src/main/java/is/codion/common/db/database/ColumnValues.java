@@ -141,6 +141,8 @@ final class ColumnValues {
 		public @Nullable BigDecimal get(ResultSet resultSet, int index) throws SQLException {
 			BigDecimal value = resultSet.getBigDecimal(index);
 
+			//strip trailing zeros to match DefaultEntity.adjustDecimalFractionDigits, which strips them on set;
+			//BigDecimal equality is scale-sensitive, so the load and set paths must normalize identically
 			return value == null ? null : value.stripTrailingZeros();
 		}
 	}

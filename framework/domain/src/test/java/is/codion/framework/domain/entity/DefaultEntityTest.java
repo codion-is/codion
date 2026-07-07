@@ -40,6 +40,7 @@ import is.codion.framework.domain.entity.ForeignKeyDomain.Maturity;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Otolith;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Species;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -1322,6 +1323,98 @@ public class DefaultEntityTest {
 						.with(Master.NAME, name)
 						.with(Master.CODE, code)
 						.build();
+	}
+
+	@Nested
+	@DisplayName("Entity core audit regressions")
+	class EntityCoreAuditRegressions {
+
+		@Test
+		void equalValuesStableAcrossDerivedRead() {
+			Entity detail1 = ENTITIES.entity(Detail.TYPE).with(Detail.INT, 5).build();
+			Entity detail2 = ENTITIES.entity(Detail.TYPE).with(Detail.INT, 5).build();
+			//read the cached derived value on one entity only
+			assertEquals(50, detail1.get(Detail.INT_DERIVED));
+			//equalValues must not flip just because a derived value has been read (cached) on one side
+			assertTrue(detail1.equalValues(detail2));
+			assertTrue(detail2.equalValues(detail1));
+		}
+
+		@Test
+		void immutableDerivedValueIsCorrect() {
+			Entity immutable = ENTITIES.entity(Detail.TYPE).with(Detail.INT, 7).build().immutable();
+			//the cached derived value is precomputed during construction; reading it here does not mutate the immutable
+			assertEquals(70, immutable.get(Detail.INT_DERIVED));
+		}
+
+		@Test
+		void immutableDoesNotCollapseDistinctInstancesSharingKey() {
+			Entity manager = ENTITIES.entity(Employee.TYPE)
+							.with(Employee.ID, 1)
+							.with(Employee.NAME, "NEW")
+							.build();
+			Entity middle = ENTITIES.entity(Employee.TYPE)
+							.with(Employee.ID, 1)
+							.with(Employee.NAME, "OLD")
+							.with(Employee.MANAGER_FK, manager)
+							.build();
+			Entity top = ENTITIES.entity(Employee.TYPE)
+							.with(Employee.ID, 10)
+							.with(Employee.NAME, "TOP")
+							.with(Employee.MANAGER_FK, middle)
+							.build();
+
+			Entity immutableTop = top.immutable();
+			Entity immutableMiddle = immutableTop.get(Employee.MANAGER_FK);
+			Entity immutableManager = immutableMiddle.get(Employee.MANAGER_FK);
+			assertEquals("OLD", immutableMiddle.get(Employee.NAME));
+			//distinct instances sharing a primary key must not collapse to whichever registered first
+			assertEquals("NEW", immutableManager.get(Employee.NAME));
+		}
+
+		@Test
+		void cachedForeignKeyKeyInvalidatedOnReferenceColumnChange() {
+			//the foreign key entity is not loaded, only the reference column
+			Entity employee = ENTITIES.entity(Employee.TYPE).with(Employee.MGR, 10).build();
+			assertEquals(10, employee.key(Employee.MANAGER_FK).get(Employee.ID));//caches the derived key
+			employee.set(Employee.MGR, 20);
+			//the cached key must be invalidated even though the foreign key entity value was never loaded
+			assertEquals(20, employee.key(Employee.MANAGER_FK).get(Employee.ID));
+		}
+
+		@Test
+		void singleColumnKeyHashCodeMatchesCompositeForSingleValue() {
+			EntityDefinition definition = ENTITIES.definition(Employee.TYPE);
+			SingleColumnKey single = new SingleColumnKey(definition, Employee.NAME, "abc", false);
+			Map<Column<?>, Object> values = new HashMap<>();
+			values.put(Employee.NAME, "abc");
+			CompositeColumnKey composite = new CompositeColumnKey(definition, values, false);
+			//equal keys (a single-column composite and its SingleColumnKey copy) must have equal hash codes
+			assertEquals(single, composite);
+			assertEquals(composite, single);
+			assertEquals(single.hashCode(), composite.hashCode());
+		}
+
+		@Test
+		void emptyEntitySerializationRoundTrip() throws Exception {
+			//EmptyEntity now serializes only its toString, relying on the DefaultEntity stratum for the (empty) payload
+			Entity empty = ENTITIES.definition(Master.TYPE).entity("the caption");
+			Entity deserialized = Serializer.deserialize(Serializer.serialize(empty));
+			assertEquals("the caption", deserialized.toString());
+			assertFalse(deserialized.contains(Master.ID));
+		}
+
+		@Test
+		void immutableWithForeignKeySerializationRoundTrip() throws Exception {
+			Entity detail = createTestDetail();
+			Entity deserialized = Serializer.deserialize(Serializer.serialize(detail.immutable()));
+			assertEquals(detail.get(Detail.STRING), deserialized.get(Detail.STRING));
+			assertEquals(detail.get(Detail.INT), deserialized.get(Detail.INT));
+			Entity master = detail.get(Detail.MASTER_FK);
+			Entity deserializedMaster = deserialized.get(Detail.MASTER_FK);
+			assertEquals(master.get(Master.ID), deserializedMaster.get(Master.ID));
+			assertEquals(master.get(Master.NAME), deserializedMaster.get(Master.NAME));
+		}
 	}
 
 	private Entity createTestDetail() {

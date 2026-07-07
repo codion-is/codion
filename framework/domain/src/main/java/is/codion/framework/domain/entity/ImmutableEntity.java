@@ -20,17 +20,11 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 
-import org.jspecify.annotations.Nullable;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
-
-import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 
 sealed class ImmutableEntity extends DefaultEntity implements Serializable permits EmptyEntity {
 
@@ -40,19 +34,22 @@ sealed class ImmutableEntity extends DefaultEntity implements Serializable permi
 	private static final String ERROR_MESSAGE = "This entity instance is immutable";
 
 	ImmutableEntity(DefaultEntity entity) {
-		this(entity.definition, entity.values, entity.originalValues, new HashMap<>());
+		this(entity, new IdentityHashMap<>());
 	}
 
-	ImmutableEntity(EntityDefinition definition, Map<Attribute<?>, Object> valueMap,
-									@Nullable Map<Attribute<?>, Object> originalValueMap, Map<Key, ImmutableEntity> immutables) {
-		super(definition);
-		values = new HashMap<>(valueMap);
-		immutables.put(primaryKey(), this);
+	private ImmutableEntity(DefaultEntity entity, Map<DefaultEntity, ImmutableEntity> immutables) {
+		super(entity.definition);
+		values = new HashMap<>(entity.values);
+		//keyed on source instance identity, not primary key, so that cyclic graphs of unsaved
+		//(non-present key) entities terminate and distinct instances sharing a key are not collapsed
+		immutables.put(entity, this);
 		replace(values, immutables);
-		if (originalValueMap != null) {
-			originalValues = new HashMap<>(originalValueMap);
+		if (entity.originalValues != null) {
+			originalValues = new HashMap<>(entity.originalValues);
 			replace(originalValues, immutables);
 		}
+		//precompute all cached derived values now, while single-threaded, so the values map is never written again
+		populateCachedDerivedValues();
 	}
 
 	@Override
@@ -90,18 +87,7 @@ sealed class ImmutableEntity extends DefaultEntity implements Serializable permi
 		throw new UnsupportedOperationException(ERROR_MESSAGE);
 	}
 
-	@Serial
-	private void writeObject(ObjectOutputStream stream) throws IOException {
-		stream.writeObject(definition.type().domainType().name());
-		EntitySerializer.serialize(this, stream);
-	}
-
-	@Serial
-	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
-	}
-
-	private static void replace(Map<Attribute<?>, Object> valueMap, Map<Key, ImmutableEntity> immutables) {
+	private static void replace(Map<Attribute<?>, Object> valueMap, Map<DefaultEntity, ImmutableEntity> immutables) {
 		for (Map.Entry<Attribute<?>, Object> attributeValue : valueMap.entrySet()) {
 			Object value = attributeValue.getValue();
 			if (value instanceof DefaultEntity && !(value instanceof ImmutableEntity)) {
@@ -110,10 +96,10 @@ sealed class ImmutableEntity extends DefaultEntity implements Serializable permi
 		}
 	}
 
-	private static ImmutableEntity immutable(DefaultEntity entity, Map<Key, ImmutableEntity> immutables) {
-		ImmutableEntity immutable = immutables.get(entity.primaryKey());
+	private static ImmutableEntity immutable(DefaultEntity entity, Map<DefaultEntity, ImmutableEntity> immutables) {
+		ImmutableEntity immutable = immutables.get(entity);
 		if (immutable == null) {
-			immutable = new ImmutableEntity(entity.definition, entity.values, entity.originalValues, immutables);
+			immutable = new ImmutableEntity(entity, immutables);
 		}
 
 		return immutable;
