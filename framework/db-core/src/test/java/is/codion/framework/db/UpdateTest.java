@@ -28,7 +28,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -71,7 +70,7 @@ public final class UpdateTest {
 		@Test
 		@DisplayName("update with multiple values builds correctly")
 		void update_multipleValues_buildsCorrectly() {
-			LocalDate now = LocalDate.now();
+			LocalDateTime now = LocalDateTime.now();
 			Update update = Update.where(Employee.ID.equalTo(1))
 							.set(Employee.NAME, "John Doe")
 							.set(Employee.SALARY, 60000d)

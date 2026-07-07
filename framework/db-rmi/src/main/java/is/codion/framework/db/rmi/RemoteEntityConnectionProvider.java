@@ -21,7 +21,7 @@ package is.codion.framework.db.rmi;
 import is.codion.framework.db.EntityConnectionProvider;
 
 /**
- * A class responsible for managing a remote entity connection.
+ * An interface responsible for managing a remote entity connection.
  * @see RemoteEntityConnectionProvider#builder()
  */
 public interface RemoteEntityConnectionProvider extends EntityConnectionProvider {
@@ -30,12 +30,6 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
 	 * A key for specifying the domain type required by a remote client
 	 */
 	String REMOTE_CLIENT_DOMAIN_TYPE = "codion.client.domainType";
-
-	/**
-	 * @return the name of the host of the server providing the connection
-	 * @see RemoteEntityConnectionProvider.Builder#hostname(String)
-	 */
-	String hostname();
 
 	/**
 	 * Instantiates a new builder instance.

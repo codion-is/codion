@@ -22,10 +22,11 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 
 /**
- * A class responsible for managing a HttpEntityConnection.
+ * An interface responsible for managing an HttpEntityConnection.
  * @see HttpEntityConnectionProvider#builder()
  * @see HttpEntityConnection#HOSTNAME
  * @see HttpEntityConnection#PORT
+ * @see HttpEntityConnection#SECURE_PORT
  * @see HttpEntityConnection#SECURE
  * @see HttpEntityConnection#JSON
  * @see HttpEntityConnection#SOCKET_TIMEOUT
@@ -47,8 +48,11 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 	interface Builder extends EntityConnectionProvider.Builder<HttpEntityConnectionProvider, Builder> {
 
 		/**
+		 * Specifies a local domain instance, in which case its entity definitions are used directly
+		 * instead of being fetched from the server.
 		 * @param domain the domain model to base this connection on
 		 * @return this builder instance
+		 * @see EntityConnectionProvider.Builder#domain(is.codion.framework.domain.DomainType)
 		 */
 		Builder domain(Domain domain);
 
@@ -71,7 +75,7 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 		Builder securePort(int securePort);
 
 		/**
-		 * @param https true if https should be enabled
+		 * @param https true if https should be used
 		 * @return this builder instance
 		 */
 		Builder https(boolean https);

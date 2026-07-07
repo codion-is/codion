@@ -472,7 +472,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		}
 
 		@Override
-		public EntityConnection build() {
+		public HttpEntityConnection build() {
 			return json ? new JsonHttpEntityConnection(this) : new DefaultHttpEntityConnection(this);
 		}
 	}

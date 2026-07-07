@@ -82,14 +82,6 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		return Optional.of(DESCRIPTION.optional().orElse(serverName + "@" + hostname));
 	}
 
-	/**
-	 * @return the name of the host of the server providing the connection
-	 */
-	@Override
-	public String hostname() {
-		return hostname;
-	}
-
 	@Override
 	protected EntityConnection connect() {
 		if (!truststoreResolved) {

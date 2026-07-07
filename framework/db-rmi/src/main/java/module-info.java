@@ -24,6 +24,7 @@
  * </ul>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.db.rmi {
 	requires org.slf4j;
 	requires transitive is.codion.common.rmi;

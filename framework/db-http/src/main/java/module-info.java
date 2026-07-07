@@ -24,6 +24,7 @@
  * </ul>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.db.http {
 	requires org.slf4j;
 	requires java.net.http;
