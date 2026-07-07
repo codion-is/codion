@@ -39,6 +39,12 @@ public interface EntityResultIterator extends Iterator<Entity>, Iterable<Entity>
 	@Override
 	void close();
 
+	/**
+	 * Returns this iterator, enabling use in a for-each loop.
+	 * Note that this iterator is single-use; a new iterator must be
+	 * obtained in order to iterate the results again.
+	 * @return this iterator
+	 */
 	@Override
 	default Iterator<Entity> iterator() {
 		return this;

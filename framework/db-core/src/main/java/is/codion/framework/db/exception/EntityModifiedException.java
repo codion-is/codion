@@ -40,13 +40,13 @@ public final class EntityModifiedException extends UpdateEntityException {
 	private final Collection<Column<?>> columns;
 
 	/**
-	 * Instantiates a new ModifiedException
+	 * Instantiates a new EntityModifiedException
 	 * @param entity the entity being updated
 	 * @param modified the current (modified) version of the entity, null if it has been deleted
 	 * @param columns the modified columns, an empty collection in case the entity has been deleted
 	 * @param message a message describing the modification
 	 */
-	public EntityModifiedException(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns, @Nullable String message) {
+	public EntityModifiedException(Entity entity, @Nullable Entity modified, Collection<Column<?>> columns, String message) {
 		super(message);
 		this.entity = requireNonNull(entity);
 		this.modified = modified;

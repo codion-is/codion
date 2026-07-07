@@ -91,11 +91,11 @@ final class DefaultUpdate implements Update, Serializable {
 		}
 
 		@Override
-		public <T> Builder set(Column<?> column, @Nullable T value) {
+		public <T> Builder set(Column<T> column, @Nullable T value) {
 			if (values.containsKey(requireNonNull(column))) {
 				throw new IllegalStateException("Update already contains a value for column: " + column);
 			}
-			values.put(column, value);
+			values.put(column, column.type().validateType(value));
 
 			return this;
 		}

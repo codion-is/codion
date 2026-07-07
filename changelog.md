@@ -14,6 +14,8 @@ Codion Change Log
 - javadocs updated, some minor improvements.
 ### is.codion.framework.domain
 - javadocs updated, some improvements and fixes.
+### is.codion.framework.db.core
+- javadocs updated, some improvements and fixes.
 ### is.codion.framework.model
 - AbstractEntityEditor.execute() and supersede() protected again.
 - DefaultEntityModel, DefaultEntityEditModel and DefaultEntityApplicationModel renamed AbstractEntityModel, AbstractEntityEditModel and AbstractEntityApplicationModel, now abstract, consistent with the other Abstract* extension bases.
