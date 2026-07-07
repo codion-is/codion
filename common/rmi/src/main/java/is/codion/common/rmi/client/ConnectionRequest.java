@@ -50,12 +50,12 @@ public interface ConnectionRequest {
 	String clientType();
 
 	/**
-	 * @return the client locale
+	 * @return the client locale, captured from the client JVM default when the request is built
 	 */
 	Locale locale();
 
 	/**
-	 * @return the client time zone
+	 * @return the client time zone, captured from the client JVM default when the request is built
 	 */
 	ZoneId timeZone();
 
@@ -92,19 +92,19 @@ public interface ConnectionRequest {
 	interface Builder {
 
 		/**
-		 * @param user the user
+		 * @param user the user, required
 		 * @return this Builder instance
 		 */
 		Builder user(User user);
 
 		/**
-		 * @param clientId the client id
+		 * @param clientId the client id, a random {@link UUID} by default
 		 * @return this Builder instance
 		 */
 		Builder clientId(UUID clientId);
 
 		/**
-		 * @param clientType the client type
+		 * @param clientType the client type, required
 		 * @return this Builder instance
 		 */
 		Builder clientType(String clientType);
@@ -124,6 +124,7 @@ public interface ConnectionRequest {
 
 		/**
 		 * @return a new ConnectionRequest instance
+		 * @throws NullPointerException in case the user or client type have not been specified
 		 */
 		ConnectionRequest build();
 	}

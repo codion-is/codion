@@ -65,7 +65,7 @@ public interface Authenticator {
 	 * method the authenticator should be regarded as unusable.
 	 * This method should be called by a server using this authenticator on shutdown,
 	 * giving the authenticator a chance to release resources in an orderly manner.
-	 * Any exception thrown by this method is ignored.
+	 * Any exception thrown by this method is logged and ignored.
 	 */
 	default void close() {}
 

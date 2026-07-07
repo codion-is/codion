@@ -22,7 +22,6 @@ import is.codion.common.utilities.property.PropertyStore;
 import is.codion.common.utilities.user.User;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,9 +48,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base server admin implementation.
  */
-public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdmin {
+public class AbstractServerAdmin extends UnicastRemoteObject implements ServerAdmin {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultServerAdmin.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractServerAdmin.class);
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -64,12 +63,12 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	private final transient LinkedList<GcEvent> gcEventList = new LinkedList<>();
 
 	/**
-	 * Instantiates a new DefaultServerAdmin instance.
+	 * Instantiates a new AbstractServerAdmin instance.
 	 * @param server the server to administer
 	 * @param configuration the server configuration
 	 * @throws RemoteException in case of an exception
 	 */
-	public DefaultServerAdmin(AbstractServer<?, ? extends ServerAdmin> server, ServerConfiguration configuration) throws RemoteException {
+	protected AbstractServerAdmin(AbstractServer<?, ? extends ServerAdmin> server, ServerConfiguration configuration) throws RemoteException {
 		super(requireNonNull(configuration).adminPort(),
 						configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
 		this.server = requireNonNull(server);
@@ -88,13 +87,13 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	}
 
 	@Override
-	public final @Nullable String serializationFilterPatterns() {
+	public final String serializationFilterPatterns() {
 		if (configuration.objectInputFilterFactory().isPresent() &&
 						SerializationFilterFactory.class.getName().equals(configuration.objectInputFilterFactory().get())) {
 			return SerializationFilterFactory.createPatterns();
 		}
 
-		return null;
+		return "";
 	}
 
 	@Override

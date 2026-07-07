@@ -18,7 +18,6 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.utilities.Text;
 import is.codion.common.utilities.property.PropertyValue;
 
 import org.jspecify.annotations.Nullable;
@@ -36,7 +35,6 @@ import static is.codion.common.utilities.Configuration.*;
  * Configuration values for a {@link Server}.
  * @see #builder(int)
  * @see #builder(int, int)
- * @see #builderFromSystemProperties()
  */
 public interface ServerConfiguration {
 
@@ -67,7 +65,7 @@ public interface ServerConfiguration {
 
 	/**
 	 * Specifies the rmi server hostname<br>
-	 * Note that this is the standard Java property 'java.rmi.server.hostname
+	 * Note that this is the standard Java property 'java.rmi.server.hostname'
 	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: localhost
@@ -106,7 +104,8 @@ public interface ServerConfiguration {
 
 	/**
 	 * The rmi ssl keystore to use on the classpath, this will be resolved to a temporary file and set
-	 * as the javax.net.ssl.keyStore system property on server start
+	 * as the javax.net.ssl.keyStore system property (JVM-wide) the first time a {@link ServerConfiguration}
+	 * builder is created
 	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null
@@ -146,13 +145,14 @@ public interface ServerConfiguration {
 	 * Specifies a username:password combination representing the server admin user<br>
 	 * Example: scott:tiger<br>
 	 * <ul>
+	 * <li>Value type: String
 	 * <li>Default value: none
 	 * </ul>
 	 */
 	PropertyValue<String> ADMIN_USER = stringValue("codion.server.admin.user");
 
 	/**
-	 * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off
+	 * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
@@ -164,14 +164,14 @@ public interface ServerConfiguration {
 	 * Specifies the default idle client connection timeout in milliseconds.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 120.000ms (2 minutes)
+	 * <li>Default value: 120_000ms (2 minutes)
 	 * </ul>
 	 */
 	PropertyValue<Integer> IDLE_CONNECTION_TIMEOUT = integerValue("codion.server.idleConnectionTimeout", DEFAULT_IDLE_CONNECTION_TIMEOUT);
 
 	/**
 	 * A comma separated list of auxiliary server factories, providing servers to run alongside this Server<br>
-	 * Those must extend {@link AuxiliaryServerFactory}
+	 * Those must implement {@link AuxiliaryServerFactory}
 	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: none
@@ -220,6 +220,7 @@ public interface ServerConfiguration {
 	PropertyValue<Boolean> SYSTEM_PROPERTIES = booleanValue("codion.server.systemProperties", false);
 
 	/**
+	 * Note that the configured server name supplier is evaluated on each call.
 	 * @return the server name
 	 * @throws IllegalArgumentException in case the supplied server name is null or empty
 	 * @see Builder#serverName(Supplier)
@@ -366,7 +367,7 @@ public interface ServerConfiguration {
 		 * @param systemProperties specifies whether the server should provide its system properties via the admin interface
 		 * @return this builder instance
 		 * @see ServerConfiguration#SYSTEM_PROPERTIES
-		 * @see ServerConfiguration.Builder#systemProperties(boolean)
+		 * @see ServerAdmin#systemProperties()
 		 */
 		B systemProperties(boolean systemProperties);
 
@@ -382,7 +383,7 @@ public interface ServerConfiguration {
 	 * @return a default server configuration
 	 */
 	static <B extends Builder<B>> Builder<B> builder(int serverPort) {
-		return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, Registry.REGISTRY_PORT);
+		return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, REGISTRY_PORT.getOrThrow());
 	}
 
 	/**
@@ -393,18 +394,5 @@ public interface ServerConfiguration {
 	 */
 	static <B extends Builder<B>> Builder<B> builder(int serverPort, int registryPort) {
 		return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, registryPort);
-	}
-
-	/**
-	 * Returns a Builder initialized with values from system properties.
-	 * @param <B> the builder type
-	 * @return a server configuration builder initialized with values from system properties.
-	 */
-	static <B extends Builder<B>> Builder<B> builderFromSystemProperties() {
-		return (Builder<B>) builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactory(Text.parseCSV(AUXILIARY_SERVER_FACTORIES.get()))
-						.adminPort(ADMIN_PORT.getOrThrow())
-						.sslEnabled(SSL_ENABLED.getOrThrow())
-						.connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.getOrThrow());
 	}
 }

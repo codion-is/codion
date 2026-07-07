@@ -24,8 +24,6 @@ import is.codion.common.utilities.Text;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -47,7 +45,6 @@ import static java.util.stream.Collectors.toList;
  */
 final class DefaultEntityServerConfiguration implements EntityServerConfiguration {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityServerConfiguration.class);
 
 	private final ServerConfiguration serverConfiguration;
 
@@ -182,39 +179,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		return clientTypeIdleConnectionTimeouts;
 	}
 
-	static EntityServerConfiguration.Builder builderFromSystemProperties() {
-		Builder builder = new DefaultBuilder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactory(Text.parseCSV(AUXILIARY_SERVER_FACTORIES.get()))
-						.sslEnabled(SSL_ENABLED.getOrThrow())
-						.adminPort(ADMIN_PORT.getOrThrow())
-						.connectionLimit(CONNECTION_LIMIT.getOrThrow())
-						.database(Database.instance())
-						.domainClasses(Text.parseCSV(DOMAIN_CLASSES.get()))
-						.connectionPoolUsers(Text.parseCSV(CONNECTION_POOL_USERS.get()).stream()
-										.map(User::parse)
-										.collect(toList()));
-		Map<String, Integer> clientTypeIdleConnectionTimeoutMap = new HashMap<>();
-		for (String clientTimeout : Text.parseCSV(CLIENT_CONNECTION_TIMEOUT.get())) {
-			String[] split = clientTimeout.split(":");
-			if (split.length < 2) {
-				throw new IllegalArgumentException("Expecting a ':' delimiter");
-			}
-			clientTypeIdleConnectionTimeoutMap.put(split[0], Integer.parseInt(split[1]));
-		}
-		builder.clientTypeIdleConnectionTimeouts(clientTypeIdleConnectionTimeoutMap);
-		String adminUserString = ADMIN_USER.get();
-		User adminUser = nullOrEmpty(adminUserString) ? null : User.parse(adminUserString);
-		if (adminUser == null) {
-			LOG.info("No admin user specified");
-		}
-		else {
-			LOG.info("Admin user: {}", adminUser);
-			builder.adminUser(adminUser);
-		}
-
-		return builder;
-	}
-
 	static final class DefaultBuilder implements Builder {
 
 		private final ServerConfiguration.Builder<?> serverConfigurationBuilder;
@@ -243,6 +207,31 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 				return serverNamePrefix + " " +
 								Version.versionString() + "@" + database.name().toUpperCase();
 			});
+			// Seed the remaining defaults from the corresponding system properties (the database is resolved
+			// explicitly, typically at server startup, see EntityServer)
+			connectionLimit(CONNECTION_LIMIT.getOrThrow());
+			domainClasses(Text.parseCSV(DOMAIN_CLASSES.get()));
+			connectionPoolUsers(Text.parseCSV(CONNECTION_POOL_USERS.get()).stream()
+							.map(User::parse)
+							.collect(toList()));
+			clientTypeIdleConnectionTimeouts(parseClientTypeIdleConnectionTimeouts());
+			String adminUserString = ADMIN_USER.get();
+			if (!nullOrEmpty(adminUserString)) {
+				adminUser(User.parse(adminUserString));
+			}
+		}
+
+		private static Map<String, Integer> parseClientTypeIdleConnectionTimeouts() {
+			Map<String, Integer> timeouts = new HashMap<>();
+			for (String clientTimeout : Text.parseCSV(CLIENT_CONNECTION_TIMEOUT.get())) {
+				String[] split = clientTimeout.split(":");
+				if (split.length < 2) {
+					throw new IllegalArgumentException("Expecting a ':' delimiter");
+				}
+				timeouts.put(split[0], Integer.parseInt(split[1]));
+			}
+
+			return timeouts;
 		}
 
 		@Override

@@ -43,12 +43,16 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	String CLIENT_HOST = "clientHost";
 
 	/**
-	 * Establishes a connection to this Server
+	 * Establishes a connection to this Server.
+	 * <p>If a connection already exists for the request's {@link ConnectionRequest#clientId() clientId},
+	 * that existing connection is returned after re-validating the supplied credentials (username
+	 * case-insensitively, password exactly), rather than establishing a new one.
 	 * @param connectionRequest the information required for establishing a connection
 	 * @return a remote connection instance
 	 * @throws RemoteException in case of a communication error
 	 * @throws ConnectionNotAvailableException in case the server isn't accepting more connections
-	 * @throws LoginException in case the login fails
+	 * @throws LoginException in case the login fails, or if the server is shutting down
+	 * @throws NullPointerException in case the request, or its user, clientId or clientType, is null
 	 */
 	C connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException, LoginException;
 
@@ -86,11 +90,11 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	interface Locator {
 
 		/**
-		 * Retrieves a Server from a registry running on the given host, using the
-		 * given server name prefix as a condition. Returns the first server satisfying the condition.
+		 * Retrieves a Server from the registry, using the configured hostname, registry port and server
+		 * name prefix. Returns the first server satisfying the condition.
 		 * @param <C> the Remote connection type served by the server
 		 * @param <A> the server admin type supplied by the server
-		 * @return the servers having a name with the given prefix
+		 * @return the first server whose name has the configured prefix
 		 * @throws RemoteException in case of a remote exception
 		 * @throws NotBoundException in case no such server is found
 		 */

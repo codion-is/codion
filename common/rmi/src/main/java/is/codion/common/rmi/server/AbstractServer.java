@@ -44,8 +44,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,6 +76,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private final Collection<Authenticator> sharedAuthenticators = new ArrayList<>();
 	private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 	private final TaskScheduler connectionMaintenanceScheduler;
+	private final Thread shutdownHook;
 
 	private final ServerConfiguration configuration;
 	private final ServerInformation serverInformation;
@@ -86,7 +89,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private @Nullable A admin;
 
 	/**
-	 * Instantiates a new AbstractServer
+	 * Instantiates a new AbstractServer.
+	 * <p>Note that this constructor starts the connection maintenance scheduler, registers a JVM shutdown
+	 * hook and creates the configured auxiliary servers (passing {@code this}), all before any subclass
+	 * constructor body runs. Subclass constructors must therefore complete quickly and must not assume that
+	 * maintenance, shutdown or auxiliary-server callbacks observe fully initialized subclass state.
 	 * @param configuration the configuration
 	 * @throws RemoteException in case of an exception
 	 */
@@ -103,7 +110,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 						.name("Connection maintenance")
 						.start();
 		setConnectionLimit(configuration.connectionLimit());
-		getRuntime().addShutdownHook(new Thread(this::shutdown));
+		this.shutdownHook = new Thread(this::shutdown);
+		getRuntime().addShutdownHook(shutdownHook);
 		try {
 			configureObjectInputFilter(configuration);
 			startAuxiliaryServers(configuration.auxiliaryServerFactories());
@@ -240,6 +248,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			return;
 		}
 		shuttingDown = true;
+		removeShutdownHook();
 		connectionMaintenanceScheduler.stop();
 		unexportSilently(asList(registry, this, admin));
 		new ArrayList<>(connections.keySet()).forEach(this::disconnect);
@@ -352,14 +361,15 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	/**
-	 * @return an unmodifiable view of the auxialiary servers running along-side this server
+	 * @return an unmodifiable view of the auxiliary servers running alongside this server
 	 */
 	protected final Collection<AuxiliaryServer> auxiliaryServers() {
 		return unmodifiableCollection(auxiliaryServers);
 	}
 
 	/**
-	 * Validates the given user credentials
+	 * Validates the given user credentials.
+	 * <p>Usernames are compared case-insensitively, passwords byte-exactly.
 	 * @param userToCheck the credentials to check
 	 * @param requiredUser the required credentials
 	 * @throws ServerAuthenticationException in case either User instance is null or if the username or password do not match
@@ -374,6 +384,16 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	long lastMaintenance() {
 		return lastMaintenance;
+	}
+
+	private void removeShutdownHook() {
+		// Not when running in the hook itself (JVM shutting down), removeShutdownHook would throw
+		if (Thread.currentThread() != shutdownHook) {
+			try {
+				getRuntime().removeShutdownHook(shutdownHook);
+			}
+			catch (IllegalStateException e) {/* JVM already shutting down */}
+		}
 	}
 
 	private boolean maximumNumberOfConnectionsReached() {
@@ -503,19 +523,28 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	private void loadAuthenticators(Collection<String> authenticatorClassNames) {
+		Set<Class<?>> loaded = new HashSet<>();
 		Authenticator.authenticators().forEach(authenticator -> {
 			String clientType = authenticator.clientType().orElse(null);
 			LOG.info("Server loading authenticator '{}' as service, {}", authenticator.getClass()
 							.getName(), clientType == null ? "shared" : "clientType: '" + clientType + "'");
 			addAuthenticator(authenticator);
+			loaded.add(authenticator.getClass());
 		});
 		authenticatorClassNames.forEach(className -> {
 			try {
-				Authenticator authenticator = (Authenticator) Class.forName(className).getDeclaredConstructor().newInstance();
-				String clientType = authenticator.clientType().orElse(null);
-				LOG.info("Server loading authenticator '{}' from classpath, {}", className,
-								clientType == null ? "shared" : "clientType: '" + clientType + "'");
-				addAuthenticator(authenticator);
+				Class<?> authenticatorClass = Class.forName(className);
+				// Skip if already loaded as a service, to avoid double registration
+				if (loaded.add(authenticatorClass)) {
+					Authenticator authenticator = (Authenticator) authenticatorClass.getDeclaredConstructor().newInstance();
+					String clientType = authenticator.clientType().orElse(null);
+					LOG.info("Server loading authenticator '{}' from classpath, {}", className,
+									clientType == null ? "shared" : "clientType: '" + clientType + "'");
+					addAuthenticator(authenticator);
+				}
+				else {
+					LOG.info("Authenticator '{}' already loaded as a service, skipping", className);
+				}
 			}
 			catch (Exception e) {
 				LOG.error("Exception while instantiating authenticator: {}", className, e);

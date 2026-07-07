@@ -96,7 +96,7 @@ public interface ServerAdmin extends Remote {
 	String systemProperties() throws RemoteException;
 
 	/**
-	 * @return the active serialization filter patterns
+	 * @return the active serialization filter patterns, or an empty string if serialization filtering is not configured
 	 * @throws RemoteException in case of an exception
 	 */
 	String serializationFilterPatterns() throws RemoteException;
@@ -149,12 +149,12 @@ public interface ServerAdmin extends Remote {
 		int requestsPerSecond();
 
 		/**
-		 * @return the system cpu load
+		 * @return the system cpu load, a fraction between 0.0 and 1.0, or a negative value if not available
 		 */
 		double systemCpuLoad();
 
 		/**
-		 * @return the process cpu load
+		 * @return the process cpu load, a fraction between 0.0 and 1.0, or a negative value if not available
 		 */
 		double processCpuLoad();
 
@@ -180,7 +180,7 @@ public interface ServerAdmin extends Remote {
 		int threadCount();
 
 		/**
-		 * @return the number daemon threads
+		 * @return the number of daemon threads
 		 */
 		int daemonThreadCount();
 
@@ -206,7 +206,7 @@ public interface ServerAdmin extends Remote {
 		String gcName();
 
 		/**
-		 * @return event duration
+		 * @return the event duration in milliseconds
 		 */
 		long duration();
 	}

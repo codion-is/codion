@@ -372,11 +372,11 @@ public class DefaultServerConfigurationTest {
 	class SystemPropertiesBuilderTest {
 
 		@Test
-		@DisplayName("Builder from system properties works")
+		@DisplayName("Builder seeds defaults from system properties")
 		void systemProperties_builderWorks() {
-			// This test verifies the method exists and creates a builder
+			// The plain builder seeds its remaining defaults from system properties
 			// The actual system property values are environment-dependent
-			ServerConfiguration.Builder<?> builder = ServerConfiguration.builderFromSystemProperties();
+			ServerConfiguration.Builder<?> builder = ServerConfiguration.builder(12345);
 
 			assertNotNull(builder);
 
