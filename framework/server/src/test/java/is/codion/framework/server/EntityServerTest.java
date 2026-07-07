@@ -34,6 +34,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.db.rmi.RemoteEntityResultIterator;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.OrderBy;
@@ -99,6 +100,41 @@ public class EntityServerTest {
 		connection.select(condition);
 
 		connection.close();
+	}
+
+	@Test
+	void remoteIteratorPooledConnection() throws Exception {
+		//UNIT_TEST_USER is a pooled user (see configure()), so this exercises the pooled iterator path:
+		//the checked-out connection must stay pinned to the handler while the iterator is open, rather than
+		//being returned to the pool the moment iterator() returns (which would close the streaming ResultSet).
+		new TestDomain();
+		RemoteEntityConnection connection = server.connect(ConnectionRequest.builder()
+						.user(UNIT_TEST_USER)
+						.clientType("ClientType")
+						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build());
+		try {
+			Select select = Select.all(Employee.TYPE).build();
+			int expected = connection.select(select).size();
+			assertTrue(expected > 0);
+
+			int count = 0;
+			RemoteEntityResultIterator iterator = connection.iterator(select);
+			try {
+				while (iterator.hasNext()) {
+					assertNotNull(iterator.next());
+					count++;
+				}
+			}
+			finally {
+				iterator.close();
+			}
+			assertEquals(expected, count);
+			//the connection must be usable again after the iterator is closed (returned to the pool)
+			assertEquals(expected, connection.select(select).size());
+		}
+		finally {
+			connection.close();
+		}
 	}
 
 	@Test

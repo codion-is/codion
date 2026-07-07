@@ -34,6 +34,10 @@ Codion Change Log
 - javadocs updated.
 ### is.codion.framework.server
 - EntityServer, jmx runtime metrics added along with prometheus and grafana config examples.
+- Pooled remote iterators no longer stream on a connection returned to the pool; the underlying connection is now pinned to the client until the iterator is closed or times out.
+- LocalConnectionHandler.invoke() now throws IllegalStateException for calls received after the connection has been closed, instead of executing against a discarded connection.
+- LocalConnectionHandler.methodTraces() now synchronizes consistently with the other tracer accessors, no longer synchronizing on the swappable tracer field.
+- DefaultRemoteEntityResultIterator.lastAccessTime is now volatile, safely published to the connection maintenance thread.
 ### is.codion.swing.common.ui
 - javadocs updated, some improvements and fixes.
 ### is.codion.swing.framework.model
