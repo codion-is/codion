@@ -175,8 +175,9 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 
 		/**
 		 * Provides the {@link FilterModel.Refresher} for this model, given its {@link ComboBoxItems}.
-		 * The default is a UI-agnostic synchronous refresher; the Swing layer plugs a {@code ProgressWorker}
-		 * based one and Android a coroutine based one — mirroring {@link FilterModel.Items.Builder.RefresherStep}.
+		 * The default {@link FilterModel.Refresher.Builder#build()} refresher is async-capable via the
+		 * {@link is.codion.common.model.worker.Dispatcher} SPI wherever a UI provider is on the classpath;
+		 * override this only to supply a custom refresher (for example Android's coroutine based one).
 		 * @param refresher the refresher factory
 		 * @return this builder instance
 		 */
@@ -237,6 +238,11 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 	}
 
 	/**
+	 * The items of a {@link FilterComboBoxModel}.
+	 * <p>
+	 * Note that the {@link #included()} items do not support indexed mutation - the index based
+	 * {@code add}, {@code set} and {@code remove} methods throw {@link UnsupportedOperationException},
+	 * since a combo box model manages its own item order (including the null item sentinel).
 	 * @param <T> the item type
 	 */
 	interface ComboBoxItems<T> extends Items<T> {

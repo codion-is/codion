@@ -148,6 +148,10 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Builder<T> includeNull(boolean includeNull) {
 			this.includeNull = includeNull;
+			if (!includeNull) {
+				//keep the two settings consistent, a null item is meaningless without includeNull
+				this.nullItem = null;
+			}
 			return this;
 		}
 
@@ -244,10 +248,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public ItemComboBoxModelBuilder<T> selected(Item<T> selected) {
-			if (!items.contains(requireNonNull(selected))) {
+			requireNonNull(selected);
+			//the null item is extracted into nullItem, so it is a valid selection even though items no longer contains it
+			if (!items.contains(selected) && !Objects.equals(selected, nullItem)) {
 				throw new IllegalArgumentException("Model does not contain item: " + selected);
 			}
-			this.selected = requireNonNull(selected);
+			this.selected = selected;
 			return this;
 		}
 
@@ -274,6 +280,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final class DefaultComboBoxSort<T> implements Sort<T> {
 
 		private final Comparator<T> comparator;
+		//the comparator is immutable so the sort never changes, this event is never fired
 		private final Event<Boolean> event = Event.event();
 
 		private DefaultComboBoxSort(Comparator<T> comparator) {
@@ -373,7 +380,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void set(Collection<T> items) {
-			requireNonNull(items);
+			//null is the reserved sentinel (see includeNull), it must not appear among the actual items
+			requireNonNull(items).forEach(item -> requireNonNull(item, "The item collection may not contain null"));
 			synchronized (lock) {
 				filtered.items.clear();
 				included.items.clear();
@@ -383,6 +391,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				//remove duplicates while preserving the original order
 				included.items.addAll(new LinkedHashSet<>(items));
 				filterInternal();
+				if (filterSelected
+								&& selection.selected.item != null
+								&& !included.items.contains(selection.selected.item)) {
+					selection.selected.setSelectedItem(null);
+				}
 				replaceSelectedItem();
 				cleared = items.isEmpty();
 				included.sortInternal();
@@ -397,15 +410,25 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			synchronized (lock) {
 				if (include(item)) {
 					if (!included.items.contains(item)) {
+						//an item can linger in filtered if its stateful predicate flipped without predicate.set(),
+						//remove it so it does not end up in both partitions
+						boolean wasFiltered = filtered.items.remove(item);
 						included.items.add(item);
 						included.sortInternal();
 						included.added.accept(singleton(item));
 						included.notifyChanges();
+						if (wasFiltered) {
+							filtered.notifyChanges();
+						}
 					}
 				}
-				else {
+				else if (!filtered.items.contains(item)) {
+					boolean wasIncluded = included.items.remove(item);
 					filtered.items.add(item);
 					filtered.notifyChanges();
+					if (wasIncluded) {
+						included.notifyChanges();
+					}
 				}
 			}
 		}
@@ -506,9 +529,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public void replace(T item, T replacement) {
 			replace(singletonMap(requireNonNull(item), requireNonNull(replacement)));
-			if (Objects.equals(selection.selected.item, item)) {
-				selection.selected.replaceWith(replacement);
-			}
 		}
 
 		@Override
@@ -544,9 +564,14 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						}
 					}
 				}
+				//update the selection if the selected item was among those replaced, and sort before notifying
+				T selectedItem = selection.selected.item;
+				if (selectedItem != null && items.containsKey(selectedItem)) {
+					selection.selected.replaceWith(items.get(selectedItem));
+				}
+				included.sortInternal();
 				included.notifyChanges();
 				filtered.notifyChanges();
-				included.sort();
 			}
 		}
 
@@ -580,11 +605,16 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private void updateSelectedItem(T removedItem) {
 			if (Objects.equals(selection.selected.item, removedItem)) {
-				if (modelItems.nullItem != null) {
+				if (modelItems.nullItem != null || includeNull) {
+					//select the null item / sentinel when the model includes null
 					selection.selected.setSelectedItem(null);
 				}
 				else if (!modelItems.included.items.isEmpty()) {
 					selection.selected.setSelectedItem(modelItems.included.items.get(0));
+				}
+				else {
+					//no items remain and there is no null item, clear the now-stale selection
+					selection.selected.setSelectedItem(null);
 				}
 			}
 		}
@@ -726,7 +756,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private void notifyChanges() {
-				changed.accept(get());
+				//publish a snapshot, get() returns a live view over the backing list
+				changed.accept(unmodifiableList(new ArrayList<>(get())));
 			}
 		}
 
@@ -762,7 +793,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private void notifyChanges() {
-				changed.accept(get());
+				//publish a snapshot, get() returns a live view over the backing set
+				changed.accept(unmodifiableCollection(new ArrayList<>(items)));
 			}
 		}
 	}
@@ -854,7 +886,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected void setValue(@Nullable V value) {
-			selection.selected.setSelectedItem(value == null ? null : itemFinder.findItem(modelItems.included.get(), value).orElse(null));
+			//search all items, not just included ones, since the selection tolerates filtered items (filterSelected=false)
+			selection.selected.setSelectedItem(value == null ? null : itemFinder.findItem(modelItems.get(), value).orElse(null));
 		}
 	}
 

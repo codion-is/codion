@@ -211,7 +211,8 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Filters the items according to the {@link IncludedItems#predicate()}.
 		 * <p>If no predicate is specified calling this method has no effect.
-		 * <p>This method does not interfere with the internal ordering of the included items.
+		 * <p>In a sorted model the included items retain their sorted order. In an unsorted model, items
+		 * that are re-included by a filter change are appended and therefore may lose their original position.
 		 * @see IncludedItems#predicate()
 		 */
 		void filter();

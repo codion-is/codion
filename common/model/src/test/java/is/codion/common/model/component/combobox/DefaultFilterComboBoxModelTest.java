@@ -241,6 +241,8 @@ public final class DefaultFilterComboBoxModelTest {
 		assertTrue(testModel.items().contains(karl));
 		assertFalse(testModel.items().contains(BJORN));
 		assertTrue(testModel.items().contains(bjorn));
+		//the replace(Map) overload must also update the selected item (BJORN was selected, replaced with bjorn)
+		assertSame(bjorn, testModel.selection().item().get());
 
 		//filter karl and BJORN and replace karl and bjorn with KALLI an BJORN
 		testModel.items().included().predicate().set(testRow -> testRow != karl && testRow != BJORN);
@@ -445,6 +447,50 @@ public final class DefaultFilterComboBoxModelTest {
 		assertEquals(2, unsortedModel.items().included().indexOf(bTwo));
 		assertEquals(3, unsortedModel.items().included().indexOf(aOne));
 		assertEquals(4, unsortedModel.items().included().indexOf(dFour));
+	}
+
+	@Test
+	void addItemNotDuplicatedAcrossPartitions() {
+		//F7g: an item lingering in filtered whose stateful predicate flips must not end up in both partitions
+		boolean[] hideKalli = {true};
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
+						.items(asList(ANNA, KALLI))
+						.build();
+		model.items().included().predicate().set(item -> !(hideKalli[0] && item.equals(KALLI)));
+		assertTrue(model.items().filtered().contains(KALLI));
+
+		//external state changes so KALLI now passes, without a predicate.set(), then re-add it
+		hideKalli[0] = false;
+		model.items().add(KALLI);
+		assertTrue(model.items().included().contains(KALLI));
+		assertFalse(model.items().filtered().contains(KALLI));
+	}
+
+	@Test
+	void removeLastItemClearsSelection() {
+		//F7h: removing the selected last item with no null item must clear the selection, not leave it stale
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
+						.items(asList(ANNA))
+						.build();
+		model.selection().item().set(ANNA);
+		assertEquals(ANNA, model.selectedItem());
+
+		model.items().remove(ANNA);
+		assertNull(model.selectedItem());
+		assertNull(model.selection().item().get());
+	}
+
+	@Test
+	void includeNullFalseClearsNullItem() {
+		//F7i: nullItem(x) followed by includeNull(false) must not leave a phantom null item
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder()
+						.items(ITEMS)
+						.nullItem(NULL)
+						.includeNull(false)
+						.build();
+		assertFalse(model.items().includesNull());
+		assertNull(model.items().nullItem());
+		assertNull(model.selectedItem());
 	}
 
 	@BeforeEach
