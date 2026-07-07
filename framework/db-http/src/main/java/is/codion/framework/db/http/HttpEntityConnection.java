@@ -30,9 +30,13 @@ import java.util.UUID;
 import static is.codion.common.utilities.Configuration.*;
 
 /**
- * A factory for http based EntityConnection builder.
+ * A factory for http based {@link EntityConnection} instances.
+ * <p>
+ * <b>Limitations:</b> {@code iterator(Condition)} and {@code iterator(Select)} are not
+ * supported on http connections; they throw {@link UnsupportedOperationException}.
  * @see #HOSTNAME
  * @see #PORT
+ * @see #SECURE_PORT
  * @see #SECURE
  * @see #JSON
  * @see #SOCKET_TIMEOUT
@@ -50,9 +54,9 @@ public interface HttpEntityConnection extends EntityConnection {
 	PropertyValue<String> HOSTNAME = stringValue("codion.client.http.hostname", "localhost");
 
 	/**
-	 * The port which the http client should use.<br>
+	 * The port which the http client should use.
 	 * <ul>
-	 * <li>Value type: Integer<br>
+	 * <li>Value type: Integer
 	 * <li>Default value: 8080
 	 * </ul>
 	 */
@@ -70,16 +74,16 @@ public interface HttpEntityConnection extends EntityConnection {
 	/**
 	 * Specifies whether https should be used
 	 * <ul>
-	 * <li>Value type: boolean
+	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
 	 */
 	PropertyValue<Boolean> SECURE = booleanValue("codion.client.http.secure", true);
 
 	/**
-	 * Specifies whether json serialization should be used instead of standard Java serialization
-	 * Value types: Boolean
+	 * Specifies whether json serialization should be used instead of standard Java serialization.
 	 * <ul>
+	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
 	 */
@@ -116,14 +120,19 @@ public interface HttpEntityConnection extends EntityConnection {
 	interface Builder {
 
 		/**
+		 * Specifies the domain type, in which case the entity definitions are fetched from the server.
 		 * @param domainType the domain model type
 		 * @return this builder instance
+		 * @see #domain(Domain)
 		 */
 		Builder domain(DomainType domainType);
 
 		/**
+		 * Specifies a local domain instance, in which case its entity definitions are used directly
+		 * instead of being fetched from the server.
 		 * @param domain the domain model to base this connection on
 		 * @return this builder instance
+		 * @see #domain(DomainType)
 		 */
 		Builder domain(Domain domain);
 
@@ -194,8 +203,8 @@ public interface HttpEntityConnection extends EntityConnection {
 		Builder clientVersion(Version clientVersion);
 
 		/**
-		 * @return a http based EntityConnection
+		 * @return a http based {@link HttpEntityConnection}
 		 */
-		EntityConnection build();
+		HttpEntityConnection build();
 	}
 }

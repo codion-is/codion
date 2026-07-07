@@ -294,10 +294,10 @@ public interface EntityConnection extends AutoCloseable {
 	Entity insertSelect(Entity entity);
 
 	/**
-	 * Inserts the given entities, returning the primary keys.
+	 * Inserts the given entities, returning the primary keys in the same order as they were received.
 	 * Performs a commit unless a transaction is open.
 	 * @param entities the entities to insert
-	 * @return the primary keys of the inserted entities
+	 * @return the primary keys of the inserted entities, in the same order as they were received
 	 * @throws DatabaseException in case of a database exception
 	 */
 	Collection<Entity.Key> insert(Collection<Entity> entities);
@@ -663,6 +663,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param condition the query condition
 	 * @return an iterator for the given query condition
 	 * @throws DatabaseException in case of a database exception, or in case of a communication exception with remote connections
+	 * @throws UnsupportedOperationException in case of an HTTP connection, which does not support iteration
 	 * @see #select(Condition)
 	 */
 	EntityResultIterator iterator(Condition condition);
@@ -688,6 +689,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param select the query select
 	 * @return an iterator for the given query select
 	 * @throws DatabaseException in case of a database exception, or in case of a communication exception with remote connections
+	 * @throws UnsupportedOperationException in case of an HTTP connection, which does not support iteration
 	 * @see #select(Select)
 	 */
 	EntityResultIterator iterator(Select select);
