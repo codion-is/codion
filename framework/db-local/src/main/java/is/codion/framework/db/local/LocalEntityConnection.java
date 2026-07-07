@@ -36,8 +36,9 @@ import static is.codion.common.utilities.Configuration.integerValue;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.
+ * A factory for {@link LocalEntityConnection} instances.
  * {@snippet :
- * Domain domain = new Domain();
+ * Domain domain = new Store();
  * Database database = new H2DatabaseFactory().create("jdbc:h2:file:/path/to/database");
  * User user = User.parse("scott:tiger");
  *
@@ -45,7 +46,6 @@ import static is.codion.common.utilities.Configuration.integerValue;
  *   List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
  * }
  *}
- * A factory for LocalEntityConnection instances.
  */
 public interface LocalEntityConnection extends EntityConnection {
 
@@ -77,24 +77,27 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * Note that buffering is only performed when there are foreign keys to populate.
 	 * If the select does not include any foreign keys (or all have reference depth 0),
 	 * the iterator returns entities directly without buffering, minimizing memory overhead.
-	 * @see EntityConnection#iterator(Select)
-	 * @see EntityConnection#iterator(Condition)
-	 * @see #iteratorBufferSize()
-	 * @see #iteratorBufferSize(int)
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 200
 	 * </ul>
+	 * @see EntityConnection#iterator(Select)
+	 * @see EntityConnection#iterator(Condition)
+	 * @see #iteratorBufferSize()
+	 * @see #iteratorBufferSize(int)
 	 */
 	PropertyValue<Integer> ITERATOR_BUFFER_SIZE = integerValue("codion.db.iteratorBufferSize", 200);
 
 	/**
 	 * Specifies whether optimistic locking should be performed, that is, if entities should
-	 * be selected for update and checked for modification before being updated
+	 * be selected for update and checked for modification before being updated.
+	 * This is the connection-level switch; the per-entity default is specified by
+	 * {@link is.codion.framework.domain.entity.EntityDefinition#OPTIMISTIC_LOCKING}.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
+	 * @see is.codion.framework.domain.entity.EntityDefinition#OPTIMISTIC_LOCKING
 	 */
 	PropertyValue<Boolean> OPTIMISTIC_LOCKING = booleanValue("codion.db.optimisticLocking", true);
 
@@ -109,8 +112,11 @@ public interface LocalEntityConnection extends EntityConnection {
 	PropertyValue<Boolean> LIMIT_REFERENCE_DEPTH = booleanValue("codion.db.limitReferenceDepth", true);
 
 	/**
+	 * Returns the underlying connection, throwing in case it is closed.
+	 * Use {@link #getConnection()} for the non-throwing variant, which returns null when closed.
 	 * @return the underlying connection
 	 * @throws DatabaseException in case this connection is closed
+	 * @see #getConnection()
 	 */
 	Connection connection();
 

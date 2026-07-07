@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * This is an internal class not for general usage.
+ * This is an internal interface not for general usage.
  */
 public interface MethodTracer {
 

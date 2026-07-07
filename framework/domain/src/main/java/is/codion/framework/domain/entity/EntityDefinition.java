@@ -101,7 +101,9 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
-	 * Specifies whether optimistic locking should be enabled by default for entities
+	 * Specifies whether optimistic locking should be enabled by default for entities.
+	 * This is the per-entity default; the connection-level switch is the separate
+	 * {@code codion.db.optimisticLocking} property on {@code LocalEntityConnection}.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
