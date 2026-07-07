@@ -111,7 +111,7 @@ final class CompositeColumnKey implements Entity.Key, Serializable {
 			throw new IllegalArgumentException("Column " + column + " is not part of key: " + definition.type());
 		}
 
-		return (T) values.get(definition.columns().definition(column).attribute());
+		return (T) values.get(column);
 	}
 
 	@Override

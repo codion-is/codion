@@ -50,7 +50,7 @@ final class SingleColumnKey implements Entity.Key, Serializable {
 		this.column = column;
 		this.value = value;
 		this.primaryKey = primaryKey;
-		this.hashCode = value instanceof Integer ? (int) value : Objects.hash(value, column);
+		this.hashCode = computeHashCode(value);
 	}
 
 	@Override
@@ -148,6 +148,17 @@ final class SingleColumnKey implements Entity.Key, Serializable {
 	@Override
 	public int hashCode() {
 		return hashCode;
+	}
+
+	/**
+	 * Must match {@code CompositeColumnKey.computeSingleValueHashCode}: a single-column key hashes on its value
+	 * alone (the integer value directly for integer keys), since {@code key.copy()} converts a single-column
+	 * composite key to a {@link SingleColumnKey} and the two must agree - equal keys must have equal hash codes.
+	 * @param value the key value
+	 * @return the hash code for the given single-column key value
+	 */
+	static int computeHashCode(@Nullable Object value) {
+		return value instanceof Integer ? (int) value : value == null ? 0 : value.hashCode();
 	}
 
 	@Override

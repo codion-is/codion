@@ -62,6 +62,8 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();
 
 	protected EntityDefinition definition;
+	//placeholder only, every constructor path replaces this with a mutable map before any mutation;
+	//safe solely because AbstractMap.clear()/remove() no-op on the empty immutable map
 	protected Map<Attribute<?>, @Nullable Object> values = EMPTY_MAP;
 	protected @Nullable Map<Attribute<?>, @Nullable Object> originalValues;
 
@@ -229,8 +231,15 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 				primaryKey = null;
 			}
 			if (attribute instanceof Column) {
-				definition.foreignKeys().definitions((Column<?>) attribute).forEach(foreignKey -> remove(foreignKey.attribute()));
+				definition.foreignKeys().definitions((Column<?>) attribute)
+								.forEach(foreignKeyDefinition -> {
+									//the cached key is derived from the reference column, invalidate it and drop any now-invalid entity value
+									removeCachedKey(foreignKeyDefinition.attribute());
+									remove(foreignKeyDefinition.attribute());
+								});
 			}
+			clearDerivedCache(attribute);
+			toStringCache = null;
 		}
 
 		return value;
@@ -422,6 +431,20 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		return (T) values.get(attributeDefinition.attribute());
 	}
 
+	/**
+	 * Forces every cached derived value into the values map. Called during {@link ImmutableEntity} construction
+	 * (single-threaded) so that {@link #derivedCached} never has to write the map afterwards, keeping shared
+	 * immutable instances genuinely read-only and therefore thread-safe.
+	 */
+	final void populateCachedDerivedValues() {
+		for (AttributeDefinition<?> attributeDefinition : definition.attributes().definitions()) {
+			if (attributeDefinition instanceof DerivedAttributeDefinition
+							&& ((DerivedAttributeDefinition<?>) attributeDefinition).cached()) {
+				cached(attributeDefinition);
+			}
+		}
+	}
+
 	private @Nullable <T> T original(AttributeDefinition<T> attributeDefinition) {
 		if (attributeDefinition.derived()) {
 			return derivedOriginal((DerivedAttributeDefinition<T>) attributeDefinition);
@@ -557,17 +580,18 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 	private <T> void removeInvalidForeignKeyValues(Column<T> column, @Nullable T value) {
 		for (ForeignKeyDefinition foreignKeyDefinition : definition.foreignKeys().definitions(column)) {
+			ForeignKey foreignKey = foreignKeyDefinition.attribute();
 			Entity foreignKeyEntity = get(foreignKeyDefinition);
-			if (foreignKeyEntity != null) {
-				ForeignKey foreignKey = foreignKeyDefinition.attribute();
-				//if the value isn't equal to the value in the foreign key,
-				//that foreign key reference is invalid and is removed
-				// deepEquals not necessary, since we're comparing reference column values
-				if (!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).foreign()))) {
-					remove(foreignKey);
-					removeCachedKey(foreignKey);
-				}
+			if (foreignKeyEntity != null &&
+							//if the value isn't equal to the value in the foreign key,
+							//that foreign key reference is invalid and is removed
+							// deepEquals not necessary, since we're comparing reference column values
+							!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).foreign()))) {
+				remove(foreignKey);
 			}
+			//the cached key is derived from the reference column values, so it is stale once the column changes,
+			//whether or not the foreign key entity value itself is loaded
+			removeCachedKey(foreignKey);
 		}
 	}
 
@@ -784,6 +808,11 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private boolean valueEqual(Entity entity, Attribute<?> attribute) {
+		if (definition.attributes().definition(attribute).derived()) {
+			//a derived value is computed on demand and its presence in the values map is a caching detail,
+			//so compare by value alone, not by contains() symmetry which flips once the value has been read
+			return Objects.deepEquals(get(attribute), entity.get(attribute));
+		}
 		if (contains(attribute) != entity.contains(attribute)) {
 			return false;
 		}
@@ -838,6 +867,9 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 								valueAttrDef.roundingMode());
 			}
 			if (value instanceof BigDecimal) {
+				//strip trailing zeros to match ColumnValues (common/db), which strips them on load; BigDecimal equality
+				//is scale-sensitive, so both the set and load paths must normalize identically for equalValues to work.
+				//Note that the JSON/HTTP tier deserializes BigDecimals through neither path.
 				return (T) ((BigDecimal) value).setScale(valueAttrDef.fractionDigits(),
 												valueAttrDef.roundingMode())
 								.stripTrailingZeros();

@@ -48,6 +48,8 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	DefaultEntityBuilder(EntityDefinition definition) {
 		this.definition = definition;
 		this.values = new HashMap<>();
+		//safe only because originalValues is never mutated in place while empty; a defaulted original
+		//value replaces it with a mutable map first (see setOriginalValue)
 		this.originalValues = EMPTY_MAP;
 		initialize();
 	}

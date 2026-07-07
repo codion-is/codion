@@ -23,7 +23,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 
-import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 import static java.util.Objects.requireNonNull;
 
 final class EmptyEntity extends ImmutableEntity {
@@ -45,14 +44,11 @@ final class EmptyEntity extends ImmutableEntity {
 
 	@Serial
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		stream.writeObject(definition.type().domainType().name());
-		EntitySerializer.serialize(this, stream);
 		stream.writeObject(toString);
 	}
 
 	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
 		toString = (String) stream.readObject();
 	}
 }
