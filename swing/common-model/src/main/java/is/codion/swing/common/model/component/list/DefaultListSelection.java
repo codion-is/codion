@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -102,7 +103,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 	@Override
 	public void selectAll() {
-		setSelectionInterval(0, items.size() - 1);
+		if (items.size() > 0) {
+			setSelectionInterval(0, items.size() - 1);
+		}
 	}
 
 	@Override
@@ -134,14 +137,23 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
-	public void insertIndexInterval(int fromIndex, int length, boolean before) {
+	public void setLeadSelectionIndex(int leadIndex) {
+		//shift+click and shift+arrow extension go through here (JTable.changeSelection with extend=true),
+		//changing the anchor-to-lead selection range, so it must fire the changing() veto point too
 		changing.run();
+		super.setLeadSelectionIndex(leadIndex);
+	}
+
+	@Override
+	public void insertIndexInterval(int fromIndex, int length, boolean before) {
+		//structural re-indexing (rows inserted/removed in the model), the selected items don't change,
+		//their indices shift under them, so this is not a selection change and must not fire changing()
 		super.insertIndexInterval(fromIndex, length, before);
 	}
 
 	@Override
 	public void removeIndexInterval(int fromIndex, int toIndex) {
-		changing.run();
+		//structural re-indexing, see insertIndexInterval
 		super.removeIndexInterval(fromIndex, toIndex);
 	}
 
@@ -202,6 +214,8 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 	private final class SelectedIndex extends AbstractValue<Integer> {
 
+		private @Nullable Integer lastNotified;
+
 		@Override
 		protected @Nullable Integer getValue() {
 			int index = getMinSelectionIndex();
@@ -210,7 +224,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		@Override
-		protected void setValue(Integer index) {
+		protected void setValue(@Nullable Integer index) {
 			if (index == null) {
 				clearSelection();
 			}
@@ -221,11 +235,18 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void onChanged() {
-			notifyObserver();
+			//only notify when this facade's value actually changed, honoring the Notify.CHANGED contract
+			Integer current = getValue();
+			if (!Objects.equals(lastNotified, current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 	}
 
 	private final class SelectedIndexes extends AbstractValue<List<Integer>> implements Indexes {
+
+		private List<Integer> lastNotified = emptyList();
 
 		private SelectedIndexes() {
 			super(emptyList());
@@ -267,6 +288,8 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 			}
 
 			changing.run();
+			//save/restore so a caller already grouping (adjusting == true) is not terminated early
+			boolean wasAdjusting = getValueIsAdjusting();
 			setValueIsAdjusting(true);
 			for (Integer index : indexesToRemove) {
 				DefaultListSelection.super.removeSelectionInterval(index, index);
@@ -274,7 +297,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 			for (Integer index : indexesToAdd) {
 				DefaultListSelection.super.addSelectionInterval(index, index);
 			}
-			setValueIsAdjusting(false);
+			setValueIsAdjusting(wasAdjusting);
 		}
 
 		@Override
@@ -303,11 +326,12 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 				return;
 			}
 			checkIndexes(indexes);
+			boolean wasAdjusting = getValueIsAdjusting();
 			setValueIsAdjusting(true);
 			for (Integer index : indexes) {
 				addSelectionInterval(index, index);
 			}
-			setValueIsAdjusting(false);
+			setValueIsAdjusting(wasAdjusting);
 		}
 
 		@Override
@@ -364,11 +388,17 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		void onChanged() {
-			notifyObserver();
+			List<Integer> current = getValue();
+			if (!lastNotified.equals(current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 	}
 
 	private final class DefaultItem extends AbstractValue<R> {
+
+		private @Nullable R lastNotified;
 
 		@Override
 		protected @Nullable R getValue() {
@@ -391,11 +421,17 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void onChanged() {
-			notifyObserver();
+			R current = getValue();
+			if (!Objects.equals(lastNotified, current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 	}
 
 	private final class DefaultItems extends AbstractValue<List<R>> implements Items<R> {
+
+		private List<R> lastNotified = emptyList();
 
 		private DefaultItems() {
 			super(emptyList());
@@ -412,7 +448,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void set(Collection<R> items) {
-			setValue(new ArrayList<>(requireNonNull(items)));
+			//route through Value.set (the List overload) so locked() and validators are enforced,
+			//consistent with the set(List) convenience overload
+			set(new ArrayList<>(requireNonNull(items)));
 		}
 
 		@Override
@@ -453,7 +491,12 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void remove(Collection<R> itemsToRemove) {
-			rejectNulls(itemsToRemove).forEach(item -> selectedIndexes.remove(items.indexOf(item)));
+			//filter out items not currently included (indexOf == -1), removing an absent item is a no-op
+			selectedIndexes.remove(rejectNulls(itemsToRemove).stream()
+							.mapToInt(items::indexOf)
+							.filter(index -> index >= 0)
+							.boxed()
+							.collect(toList()));
 		}
 
 		@Override
@@ -493,7 +536,11 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void onChanged() {
-			notifyObserver();
+			List<R> current = getValue();
+			if (!lastNotified.equals(current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 
 		private <T> Collection<T> rejectNulls(Collection<T> items) {
