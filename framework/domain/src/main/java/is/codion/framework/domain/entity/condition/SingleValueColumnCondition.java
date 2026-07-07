@@ -40,10 +40,10 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 	private static final String NOT_EQUAL = " <> ";
 	private static final String LIKE = " LIKE ";
 	private static final String NOT_LIKE = " NOT LIKE ";
-	private static final String LESS_THAN = " < ?";
-	private static final String LESS_THAN_OR_EQUAL = " <= ?";
-	private static final String GREATER_THAN = " > ?";
-	private static final String GREATER_THAN_OR_EQUAL = " >= ?";
+	private static final String LESS_THAN = " < ";
+	private static final String LESS_THAN_OR_EQUAL = " <= ";
+	private static final String GREATER_THAN = " > ";
+	private static final String GREATER_THAN_OR_EQUAL = " >= ";
 	private static final String PLACEHOLDER = "?";
 	private static final String PLACEHOLDER_UPPER = "UPPER(?)";
 
@@ -98,13 +98,13 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 			case NOT_EQUAL:
 				return notEqualString(columnExpression);
 			case LESS_THAN:
-				return columnExpression + LESS_THAN;
+				return identifier(columnExpression) + LESS_THAN + placeholder();
 			case LESS_THAN_OR_EQUAL:
-				return columnExpression + LESS_THAN_OR_EQUAL;
+				return identifier(columnExpression) + LESS_THAN_OR_EQUAL + placeholder();
 			case GREATER_THAN:
-				return columnExpression + GREATER_THAN;
+				return identifier(columnExpression) + GREATER_THAN + placeholder();
 			case GREATER_THAN_OR_EQUAL:
-				return columnExpression + GREATER_THAN_OR_EQUAL;
+				return identifier(columnExpression) + GREATER_THAN_OR_EQUAL + placeholder();
 			default:
 				throw new IllegalStateException("Unsupported single value operator: " + operator());
 		}

@@ -109,6 +109,25 @@ public final class SelectQueriesTest {
 	}
 
 	@Test
+	void orderByIgnoreCaseKeepsDirectionAndNullOrder() {
+		Select descending = Select.all(Employee.TYPE)
+						.orderBy(OrderBy.builder().descendingIgnoreCase(Employee.NAME).build())
+						.build();
+		String descendingQuery = queries.builder(employeeDefinition).select(descending).build();
+		//a case-insensitive order by must retain its direction
+		assertTrue(descendingQuery.contains("UPPER("), descendingQuery);
+		assertTrue(descendingQuery.contains(") DESC"), descendingQuery);
+
+		Select nullsLast = Select.all(Employee.TYPE)
+						.orderBy(OrderBy.builder().ascendingIgnoreCase(OrderBy.NullOrder.NULLS_LAST, Employee.NAME).build())
+						.build();
+		String nullsLastQuery = queries.builder(employeeDefinition).select(nullsLast).build();
+		//and its null ordering
+		assertTrue(nullsLastQuery.contains("UPPER("), nullsLastQuery);
+		assertTrue(nullsLastQuery.contains("NULLS LAST"), nullsLastQuery);
+	}
+
+	@Test
 	void testBasicSelectQuery() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Select select = Select.all(Employee.TYPE).build();

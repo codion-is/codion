@@ -36,6 +36,9 @@ Codion Change Log
 - DefaultEntity.remove() now clears the derived, toString and foreign key key caches, consistent with set().
 - SingleColumnKey and a single-column CompositeColumnKey now produce equal hash codes, honouring the equals/hashCode contract across the two implementations.
 - SingleColumnKey.hashCode is now recomputed on deserialization rather than read from the stream.
+- Condition combinations consisting solely of empty conditions now stringify to an empty string instead of an invalid "()".
+- Case-insensitive String conditions now apply UPPER() to the order operators (<, <=, >, >=) as well, not just equality.
+- Chunked IN clauses now join with uppercase AND/OR keywords.
 ### is.codion.framework.domain.db
 - javadocs updated.
 ### is.codion.framework.db.core
@@ -50,6 +53,9 @@ Codion Change Log
 - DefaultLocalEntityConnection.iterator(), foreign key population now runs under the connection monitor.
 - DefaultLocalEntityConnection.connection() now reads the connection under the connection monitor.
 - Entity result iterators now map SQLExceptions through the database dialect.
+- Case-insensitive order by clauses now retain their direction and null ordering, no longer silently dropping DESC and NULLS.
+- Update.all() now produces valid SQL, no longer appending a dangling WHERE clause.
+- The select column order is now stable across JVM runs.
 ### is.codion.framework.db.rmi
 ### is.codion.framework.db.http
 - javadocs updated, some improvements and fixes.

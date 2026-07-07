@@ -150,6 +150,8 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 
 		/**
 		 * Specifies the where clause to use, without the WHERE keyword.
+		 * <p>Note that this clause must not contain {@code ?} parameter placeholders; it is inserted verbatim and the
+		 * binding layer is unaware of it, so any placeholders would misalign the positional condition values.
 		 * @param where the where clause
 		 * @return this Builder instance
 		 */
@@ -164,6 +166,8 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 
 		/**
 		 * Specifies the having clause to use, without the HAVING keyword.
+		 * <p>Note that this clause must not contain {@code ?} parameter placeholders; it is inserted verbatim and the
+		 * binding layer is unaware of it, so any placeholders would misalign the positional condition values.
 		 * @param having the having clause
 		 * @return this Builder instance
 		 */

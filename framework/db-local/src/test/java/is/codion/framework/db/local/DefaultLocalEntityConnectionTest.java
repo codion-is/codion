@@ -847,6 +847,21 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void updateAll() {
+		int employeeCount = connection.count(Count.all(Employee.TYPE));
+		assertTrue(employeeCount > 0);
+		connection.startTransaction();
+		try {
+			//Update.all must produce valid SQL, without a dangling WHERE clause
+			int updated = connection.update(Update.all(Employee.TYPE).set(Employee.SALARY, 1000d).build());
+			assertEquals(employeeCount, updated);
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
 	void updateWithConditionNoRows() {
 		Update update = Update.where(Employee.ID.isNull())
 						.set(Employee.SALARY, 4200d)

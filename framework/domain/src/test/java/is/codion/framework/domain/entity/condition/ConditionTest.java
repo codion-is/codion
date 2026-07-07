@@ -19,6 +19,7 @@
 package is.codion.framework.domain.entity.condition;
 
 import is.codion.common.utilities.Conjunction;
+import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -249,6 +250,19 @@ public final class ConditionTest {
 			assertEquals("((string = ? AND int = ?) OR (double = ? AND UPPER(string) LIKE UPPER(?)))",
 							combination3.string(detailDefinition));
 		}
+
+		@Test
+		@DisplayName("combinations of empty conditions produce no parentheses")
+		void emptyCombinationsProduceNoParentheses() {
+			EntityDefinition detailDefinition = entities.definition(Detail.TYPE);
+			//a combination of only all() conditions stringifies to empty, not "()"
+			assertEquals("", Condition.and(Condition.all(Detail.TYPE), Condition.all(Detail.TYPE)).string(detailDefinition));
+			//a nested empty combination must not poison the enclosing one (no "()" survives the parent filter)
+			Combination nested = Condition.and(
+							Condition.or(Condition.all(Detail.TYPE), Condition.all(Detail.TYPE)),
+							Detail.STRING.equalTo("x"));
+			assertEquals("string = ?", nested.string(detailDefinition));
+		}
 	}
 
 	@Nested
@@ -263,6 +277,15 @@ public final class ConditionTest {
 			assertEquals("loc = ?",
 							condition.string(entities.definition(Department.TYPE)));
 			assertNotNull(condition);
+		}
+
+		@Test
+		@DisplayName("case-insensitive order operator applies UPPER to both sides")
+		void caseInsensitiveOrderOperatorAppliesUpper() {
+			EntityDefinition detailDefinition = entities.definition(Detail.TYPE);
+			SingleValueColumnCondition<String> condition =
+							new SingleValueColumnCondition<>(Detail.STRING, "x", Operator.LESS_THAN, false, false);
+			assertEquals("UPPER(string) < UPPER(?)", condition.string(detailDefinition));
 		}
 	}
 
