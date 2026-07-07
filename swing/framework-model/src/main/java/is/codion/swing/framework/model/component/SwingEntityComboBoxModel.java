@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.model.component;
 
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -116,6 +117,7 @@ public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilt
 
 		/**
 		 * <p>If {@code condition} is null, the default condition, specifying all underlying entities is used.
+		 * <p>The condition supplier may not return null, doing so will cause an exception when refreshing the model items.
 		 * @param condition the condition supplier to use when querying data, may not return null
 		 * @return this builder instance
 		 */
@@ -129,8 +131,9 @@ public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilt
 		Builder attributes(Collection<Attribute<?>> attributes);
 
 		/**
-		 * @param includeNull if true then the null item is enabled using the default null item caption
+		 * @param includeNull if true then the null item is enabled using the default null item caption ({@link FilterComboBoxModel#NULL_CAPTION})
 		 * @return this builder instance
+		 * @see FilterComboBoxModel#NULL_CAPTION
 		 */
 		Builder includeNull(boolean includeNull);
 

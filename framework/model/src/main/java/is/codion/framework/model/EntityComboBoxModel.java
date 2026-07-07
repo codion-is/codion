@@ -150,6 +150,9 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * Specifies the {@link OrderBy} to use when selecting entities for this model.
+		 * <p>Note that when {@code orderBy} is specified the model is left unsorted and the database order is used.
+		 * That order is retained across refreshes, but only survives until the first foreign key filter transition,
+		 * after which re-included items are appended (in an unsorted model) rather than restored to their original position.
 		 * @param orderBy the {@link OrderBy} to use when selecting
 		 * @return this builder instance
 		 */
@@ -309,6 +312,9 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * Links the given combo box model representing foreign key entities to this combo box model
 		 * so that selection in the foreign key model filters this model.
 		 * Note that {@code filterModel} is automatically refreshed each time this combo box model is refreshed.
+		 * <p>Linking a single-selection {@code filterModel} to a filter with multiple keys already set narrows
+		 * the filter to the master's single selection. Pre-set filter keys are only synced into the master if it
+		 * has already been refreshed; otherwise they are preserved until the master selection changes.
 		 * @param filterModel the combo box model filtering this model
 		 */
 		void link(EntityComboBoxModel filterModel);

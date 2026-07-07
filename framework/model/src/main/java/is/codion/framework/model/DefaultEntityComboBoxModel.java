@@ -36,6 +36,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -71,13 +72,20 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	DefaultEntityComboBoxModel(DefaultBuilder builder) {
-		this.entityItems = builder.items;
-		this.comboBoxModel = builder.modelBuilder
+		//a fresh copy per build() so that reusing the builder yields independent models
+		this.entityItems = new EntityItems(builder.items);
+		FilterComboBoxModel.Builder<Entity> modelBuilder = FilterComboBoxModel.builder()
+						.items(entityItems)
 						// otherwise the sorting overrides the order by
 						.comparator(entityItems.orderBy == null ? builder.comparator : null)
 						.filterSelected(builder.filterSelected)
 						.select(builder.selectEntity)
-						.build();
+						.nullItem(builder.nullItem)
+						.refresh(builder.refresh);
+		if (builder.onItemSelected != null) {
+			modelBuilder.onItemSelected(builder.onItemSelected);
+		}
+		this.comboBoxModel = modelBuilder.build();
 		this.filter = new DefaultFilter();
 		builder.filterLinks.forEach((foreignKey, filterModel) ->
 						filter.get(foreignKey).link(filterModel));
@@ -113,13 +121,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	@Override
 	public void select(Entity.Key primaryKey) {
 		validateType(requireNonNull(primaryKey), entityItems.entityDefinition.type());
-		Optional<Entity> entity = find(primaryKey);
-		if (entity.isPresent()) {
-			selection().item().set(entity.get());
-		}
-		else {
-			filteredEntity(primaryKey).ifPresent(selection().item()::set);
-		}
+		find(primaryKey).ifPresent(selection().item()::set);
 	}
 
 	/**
@@ -170,13 +172,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	private Optional<Entity> find(Entity.Key primaryKey) {
 		return items().get().stream()
-						.filter(Objects::nonNull)
-						.filter(entity -> entity.primaryKey().equals(primaryKey))
-						.findFirst();
-	}
-
-	private Optional<Entity> filteredEntity(Entity.Key primaryKey) {
-		return items().filtered().get().stream()
 						.filter(entity -> entity.primaryKey().equals(primaryKey))
 						.findFirst();
 	}
@@ -277,7 +272,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 				return !strict.is();
 			}
 
-			return foreignKeys.isEmpty() || foreignKeys.contains(key);
+			return foreignKeys.contains(key);
 		}
 
 		@Override
@@ -313,10 +308,16 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			validateLink(foreignKey, filterModel);
 			//if foreign key filter keys have been set previously, initialize with one of those
 			Collection<Entity.Key> filterKeys = get();
-			if (!filterKeys.isEmpty()) {
+			boolean hadFilterKeys = !filterKeys.isEmpty();
+			if (hadFilterKeys) {
 				filterModel.select(filterKeys.iterator().next());
 			}
-			set(filterModel.selection().item().get());
+			Entity masterSelection = filterModel.selection().item().get();
+			//preserve any pre-set filter keys when the master has no selection to sync from,
+			//e.g. it has not been refreshed yet, instead of wiping them via set(null)
+			if (masterSelection != null || !hadFilterKeys) {
+				set(masterSelection);
+			}
 			filterModel.selection().item().addConsumer(this::set);
 			selection().item().addConsumer(selected -> select(filterModel, selected));
 			items().refresher().result().addListener(filterModel.items()::refresh);
@@ -370,6 +371,15 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			this.entityDefinition = entityDefinition;
 			this.connectionProvider = connectionProvider;
 			this.condition = Value.nonNull(new DefaultConditionSupplier(entityDefinition.type()));
+		}
+
+		private EntityItems(EntityItems entityItems) {
+			this.entityDefinition = entityItems.entityDefinition;
+			this.connectionProvider = entityItems.connectionProvider;
+			this.condition = Value.nonNull(new DefaultConditionSupplier(entityDefinition.type()));
+			this.condition.set(entityItems.condition.get());
+			this.orderBy = entityItems.orderBy;
+			this.attributes = entityItems.attributes;
 		}
 
 		@Override
@@ -470,7 +480,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
-		private final FilterComboBoxModel.Builder<Entity> modelBuilder;
 		private final EntityItems items;
 		private final EntityDefinition entityDefinition;
 		private final Map<ForeignKey, EntityComboBoxModel> filterLinks = new HashMap<>();
@@ -479,12 +488,14 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private boolean persistenceAware = PERSISTENCE_AWARE.getOrThrow();
 		private boolean filterSelected = false;
 		private @Nullable Entity selectEntity;
+		private @Nullable Entity nullItem;
+		private @Nullable Consumer<@Nullable Entity> onItemSelected;
+		private boolean refresh = false;
 
 		private DefaultBuilder(EntityType entityType, @Nullable ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
 			this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
 			this.items = new EntityItems(entityDefinition, connectionProvider);
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();
-			this.modelBuilder = FilterComboBoxModel.builder().items(items);
 			if (foreignKey != null) {
 				ForeignKeys foreignKeys = connectionProvider.entities().definition(foreignKey.entityType()).foreignKeys();
 				includeNull(foreignKeys.nullable(foreignKey));
@@ -517,18 +528,18 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + items.entityDefinition.type());
 				}
 			}
-			items.attributes = attributes;
+			items.attributes = new ArrayList<>(attributes);
 			return this;
 		}
 
 		@Override
 		public Builder includeNull(boolean includeNull) {
-			return nullCaption(includeNull ? FilterComboBoxModel.NULL_CAPTION.get() : null);
+			return nullCaption(includeNull ? FilterComboBoxModel.NULL_CAPTION.getOrThrow() : null);
 		}
 
 		@Override
 		public Builder nullCaption(@Nullable String nullCaption) {
-			modelBuilder.nullItem(createNullItem(nullCaption, items.entityDefinition));
+			this.nullItem = createNullItem(nullCaption, items.entityDefinition);
 			return this;
 		}
 
@@ -560,13 +571,13 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public Builder onItemSelected(Consumer<@Nullable Entity> item) {
-			modelBuilder.onItemSelected(item);
+			this.onItemSelected = requireNonNull(item);
 			return this;
 		}
 
 		@Override
 		public Builder refresh(boolean refresh) {
-			modelBuilder.refresh(refresh);
+			this.refresh = refresh;
 			return this;
 		}
 

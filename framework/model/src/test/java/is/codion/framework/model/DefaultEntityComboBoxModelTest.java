@@ -26,15 +26,19 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -86,6 +90,78 @@ public final class DefaultEntityComboBoxModelTest {
 
 		persistenceEvents.deleted().accept(singletonList(temp));
 		assertFalse(comboBoxModel.items().included().contains(temp));
+	}
+
+	@Test
+	void builderReuseProducesIndependentModels() {
+		EntityComboBoxModel.Builder builder = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER);
+		EntityComboBoxModel modelA = builder.build();
+		EntityComboBoxModel modelB = builder.build();
+		//each built model gets its own query state, they must not share the condition Value
+		assertNotSame(modelA.condition(), modelB.condition());
+		modelA.condition().set(() -> Employee.JOB.equalTo("MANAGER"));
+		modelA.items().refresh();
+		modelB.items().refresh();
+		assertEquals(3, modelA.items().included().size());//three managers
+		assertEquals(16, modelB.items().included().size());//all employees, unaffected by modelA's condition
+	}
+
+	@Test
+	void persistenceUpdateRefreshesSelection() {
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
+		comboBoxModel.items().refresh();
+		Entity blake = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
+		comboBoxModel.select(blake.primaryKey());
+		Entity selected = comboBoxModel.selection().item().getOrThrow();
+
+		Entity updated = selected.copy().mutable();
+		updated.set(Employee.NAME, "BLAKISH");
+
+		Map<Entity, Entity> updateMap = new HashMap<>();
+		updateMap.put(selected, updated);
+		persistenceEvents(Employee.TYPE).updated().accept(updateMap);
+		//the selected item reflects the update in place, without re-selecting
+		assertEquals("BLAKISH", comboBoxModel.selection().item().getOrThrow().get(Employee.NAME));
+	}
+
+	@Test
+	void linkPreservesPresetKeysWhenMasterUnrefreshed() {
+		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER).build();
+		employeeComboBoxModel.items().refresh();
+		Entity.Key accountingKey = ENTITIES.primaryKey(Department.TYPE, 10);
+		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(accountingKey);
+		assertEquals(7, employeeComboBoxModel.items().included().size());//seven in accounting
+		//link an unrefreshed (empty, no selection) master, the pre-set keys must survive
+		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER).build();
+		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(departmentComboBoxModel);
+		assertEquals(new HashSet<>(singleton(accountingKey)),
+						new HashSet<>(employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).get()));
+		assertEquals(7, employeeComboBoxModel.items().included().size());
+	}
+
+	@Test
+	void attributesDefensivelyCopied() {
+		List<Attribute<?>> attributes = new ArrayList<>();
+		attributes.add(Employee.NAME);
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.attributes(attributes)
+						.build();
+		attributes.add(Employee.JOB);//mutate the caller's collection after build
+		comboBoxModel.items().refresh();
+		Entity employee = comboBoxModel.items().get().iterator().next();
+		assertTrue(employee.contains(Employee.NAME));
+		assertFalse(employee.contains(Employee.JOB));//unaffected by the post-build mutation
 	}
 
 	@Test
