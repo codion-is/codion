@@ -122,7 +122,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	}
 
 	/**
-	 * <p>A {@link SwingComponentModels} extension providing foreign key based
+	 * <p>A {@link ComponentModels} extension providing foreign key based
 	 * {@link SwingEntityComboBoxModel} and column based {@link SwingFilterComboBoxModel}.
 	 * <p>Override to customize combo box model creation.
 	 */

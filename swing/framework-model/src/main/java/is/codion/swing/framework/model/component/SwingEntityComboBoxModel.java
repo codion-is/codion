@@ -42,10 +42,11 @@ import java.util.function.Supplier;
 /**
  * <p>A Swing {@link javax.swing.ComboBoxModel} based on an Entity — the Swing coat over the UI-agnostic
  * {@link EntityComboBoxModel}, adding the {@link SwingFilterComboBoxModel} interface (mirroring how
- * {@code SwingComboBoxModel} relates to {@code FilterComboBoxModel}). All the entity logic (querying, filtering,
+ * {@code SwingFilterComboBoxModel} relates to {@code FilterComboBoxModel}). All the entity logic (querying, filtering,
  * persistence-awareness) lives in {@link EntityComboBoxModel}; this only adds the Swing surface and a Swing-typed builder.
  * <p>To filter use {@link #filter()} to set a {@link Predicate} or configure {@link ForeignKey} based filtering.
  * @see #builder()
+ * @see SwingFilterComboBoxModel#model(is.codion.common.model.component.combobox.FilterComboBoxModel)
  */
 public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilterComboBoxModel<Entity> {
 
@@ -93,7 +94,7 @@ public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilt
 		interface ConnectionProviderStep {
 
 			/**
-			 * @param connectionProvider a EntityConnectionProvider instance
+			 * @param connectionProvider an EntityConnectionProvider instance
 			 * @return a new {@link SwingEntityComboBoxModel.Builder} instance
 			 */
 			Builder connectionProvider(EntityConnectionProvider connectionProvider);
@@ -166,6 +167,7 @@ public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilt
 		 * so that selection in the foreign key model filters this model.
 		 * @param foreignKey the foreign key
 		 * @param filterModel the combo box model filtering this model
+		 * @return this builder instance
 		 * @see ForeignKeyFilter#link(EntityComboBoxModel)
 		 */
 		Builder filter(ForeignKey foreignKey, SwingEntityComboBoxModel filterModel);

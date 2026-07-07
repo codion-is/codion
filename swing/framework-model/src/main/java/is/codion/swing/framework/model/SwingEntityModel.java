@@ -33,7 +33,7 @@ public class SwingEntityModel extends AbstractEntityModel<SwingEntityModel,
 	/**
 	 * Instantiates a new SwingEntityModel with default SwingEntityEditModel and SwingEntityTableModel implementations.
 	 * @param entityType the type of the entity to base this SwingEntityModel on
-	 * @param connectionProvider a EntityConnectionProvider
+	 * @param connectionProvider an EntityConnectionProvider
 	 */
 	public SwingEntityModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		this(new SwingEntityEditModel(requireNonNull(entityType), requireNonNull(connectionProvider)));
