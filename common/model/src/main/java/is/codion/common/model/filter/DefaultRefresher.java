@@ -98,12 +98,17 @@ final class DefaultRefresher<T> implements Refresher<T> {
 	private void refreshSync(@Nullable Consumer<Collection<T>> onResult) {
 		items().ifPresent(items -> {
 			active.set(true);
+			Collection<T> result;
 			try {
-				onRefreshResult(items.get(), onResult);
+				//only the refresh itself is guarded; a result consumer throwing must propagate,
+				//as it does on the async path, rather than being reported as a refresh failure
+				result = items.get();
 			}
 			catch (Exception e) {
 				onRefreshException(e);
+				return;
 			}
+			onRefreshResult(result, onResult);
 		});
 	}
 
@@ -112,13 +117,11 @@ final class DefaultRefresher<T> implements Refresher<T> {
 	}
 
 	private void onRefreshException(Exception exception) {
-		worker = null;
 		active.set(false);
 		onException.accept(exception);
 	}
 
 	private void onRefreshResult(Collection<T> result, @Nullable Consumer<Collection<T>> onResult) {
-		worker = null;
 		active.set(false);
 		if (this.onResult != null) {
 			this.onResult.accept(result);
@@ -164,6 +167,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		public void onResult(Collection<T> result) {
 			if (currentTask == this) {
 				currentTask = null;
+				worker = null;
 				onRefreshResult(result, onResult);
 			}
 		}
@@ -172,6 +176,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		public void onException(Exception exception) {
 			if (currentTask == this) {
 				currentTask = null;
+				worker = null;
 				onRefreshException(exception);
 			}
 		}

@@ -12,6 +12,8 @@ Codion Change Log
 - javadocs updated, some minor improvements.
 - DefaultFilterModelItems.replace(), now fires a delete event when a replaced item moves from included to filtered.
 - DefaultFilterModelItems, item listener insert/remove/sort ranges corrected to be inclusive.
+- DefaultRefresher, a synchronous refresh no longer clobbers an in-flight asynchronous refresh worker.
+- DefaultRefresher, exceptions from result consumers now propagate on the synchronous path instead of being reported as refresh failures.
 ### is.codion.common.rmi
 - javadocs updated, some minor improvements.
 ### is.codion.framework.domain
