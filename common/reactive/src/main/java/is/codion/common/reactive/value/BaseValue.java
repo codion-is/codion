@@ -96,10 +96,21 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 	@Override
 	public void set(@Nullable T value) {
 		T newValue = value == null ? nullValue : value;
+		boolean changing = !deepEquals(get(), newValue);
+		//reject a locked change before running validators, so their side effects don't execute for a refused mutation
+		if (changing && isLocked()) {
+			throw new IllegalStateException("Value is locked and can not be changed");
+		}
 		for (Validator<? super T> validator : validators()) {
 			validator.validate(newValue);
 		}
-		setAndNotify(newValue);
+		setValue(newValue);
+		if (notify == Notify.CHANGED && changing) {
+			notifyObserver();
+		}
+		if (notify == Notify.SET) {
+			notifyObserver();
+		}
 	}
 
 	@Override
@@ -168,6 +179,9 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 		requireNonNull(observable);
 		if (linkedObservables == null) {
 			linkedObservables = new LinkedHashMap<>(1);
+		}
+		if (linkedObservables.containsKey(observable)) {
+			throw new IllegalStateException("Values are already linked");
 		}
 		set(observable.get());
 		linkedObservables.put(observable, new ObservableLink(observable));
@@ -246,21 +260,6 @@ abstract class BaseValue<T> extends AbstractObserver<T> implements Value<T> {
 
 	private void setInitialValue(@Nullable T initialValue) {
 		setValue(initialValue);
-	}
-
-	private void setAndNotify(@Nullable T newValue) {
-		T previousValue = get();
-		boolean changing = !deepEquals(previousValue, newValue);
-		if (changing && isLocked()) {
-			throw new IllegalStateException("Value is locked and can not be changed");
-		}
-		setValue(newValue);
-		if (notify == Notify.CHANGED && changing) {
-			notifyObserver();
-		}
-		if (notify == Notify.SET) {
-			notifyObserver();
-		}
 	}
 
 	private boolean isLocked() {

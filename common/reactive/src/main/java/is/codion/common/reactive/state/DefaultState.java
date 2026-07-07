@@ -33,8 +33,9 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Thread-safe implementation of State.
- * All state operations are synchronized on the internal value.
+ * Implementation of State. Listener management is thread-safe; state modification and notification
+ * are single-thread by design (typically an application UI thread). The internal synchronization guards
+ * lazy field initialization and listener bookkeeping, not concurrent modification.
  */
 final class DefaultState implements State {
 
