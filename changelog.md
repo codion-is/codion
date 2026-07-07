@@ -10,6 +10,8 @@ Codion Change Log
 - javadocs updated, some minor improvements.
 ### is.codion.common.model
 - javadocs updated, some minor improvements.
+- DefaultFilterModelItems.replace(), now fires a delete event when a replaced item moves from included to filtered.
+- DefaultFilterModelItems, item listener insert/remove/sort ranges corrected to be inclusive.
 ### is.codion.common.rmi
 - javadocs updated, some minor improvements.
 ### is.codion.framework.domain

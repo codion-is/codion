@@ -227,13 +227,18 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				R item = iterator.next();
 				R replacement = toReplace.remove(item);
 				if (replacement != null) {
+					int index = iterator.previousIndex();
 					if (included.predicate.test(replacement)) {
 						iterator.set(replacement);
-						notifyUpdated(iterator.previousIndex(), iterator.previousIndex());
+						notifyUpdated(index, index);
 					}
 					else {
+						//the replacement no longer passes the include predicate, move it to filtered.
+						//notify per-item as we go: previousIndex() tracks the live shrinking list, so
+						//each deleted(index, index) is valid at fire time (as in remove(Collection))
 						iterator.remove();
 						filtered.items.add(replacement);
+						notifyDeleted(index, index);
 					}
 				}
 			}
@@ -345,7 +350,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 		if (!includedItems.isEmpty()) {
 			included.items.addAll(index, includedItems);
-			notifyInserted(index, index + includedItems.size());
+			notifyInserted(index, index + includedItems.size() - 1);
 			included.notifyChanges();
 			included.sort();
 			included.notifyAdded(includedItems);
@@ -494,7 +499,10 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				List<R> subList = items.subList(fromIndex, toIndex);
 				List<R> removedItems = new ArrayList<>(subList);
 				subList.clear();
-				notifyDeleted(fromIndex, toIndex);
+				if (toIndex > fromIndex) {
+					//toIndex is exclusive, the ItemsListener range is inclusive
+					notifyDeleted(fromIndex, toIndex - 1);
+				}
 				notifyChanges();
 
 				return removedItems;
@@ -514,7 +522,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				List<R> selectedItems = selection.items().get();
 				synchronized (lock) {
 					items.sort(sort);
-					notifyUpdated(0, items.size());
+					if (!items.isEmpty()) {
+						notifyUpdated(0, items.size() - 1);
+					}
 					notifyChanges();
 				}
 				selection.items().set(selectedItems);
