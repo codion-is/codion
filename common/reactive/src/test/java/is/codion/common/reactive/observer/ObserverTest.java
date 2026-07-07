@@ -120,4 +120,18 @@ public final class ObserverTest {
 		assertEquals(2, trueCounter.get());
 		assertEquals(2, falseCounter.get());
 	}
+
+	@Test
+	void changeArrayValueEqualsAndHashCode() {
+		//equal array-valued changes (deepEquals) must hash equally
+		Change<byte[]> a = Change.change(new byte[] {1, 2, 3}, null);
+		Change<byte[]> b = Change.change(new byte[] {1, 2, 3}, null);
+		assertEquals(a, b);
+		assertEquals(a.hashCode(), b.hashCode());
+
+		Change<int[]> c = Change.change(new int[] {4}, new int[] {5, 6});
+		Change<int[]> d = Change.change(new int[] {4}, new int[] {5, 6});
+		assertEquals(c, d);
+		assertEquals(c.hashCode(), d.hashCode());
+	}
 }

@@ -3,6 +3,11 @@ Codion Change Log
 
 ## 0.18.79
 ### is.codion.common.reactive
+- Value.link(), a chain of value links no longer falsely reports a cyclical link; genuine transitive cycles are still detected.
+- Value.link(Observable) now rejects a duplicate link instead of silently leaking an unremovable feeder, consistent with link(Value).
+- Value.set() now rejects a locked change before running validators, so validator side effects no longer execute for a refused mutation.
+- Value, State and ValueLink javadocs corrected to state the actual contract, listener management is thread-safe while mutation and notification are single-thread by design.
+- Change.hashCode() now uses deep hashing, consistent with its deepEquals based equals, so array-valued changes that are equal also hash equally.
 - javadocs updated, some minor api improvements.
 ### is.codion.common.utilities
 - javadocs updated, some minor api improvements.

@@ -25,7 +25,9 @@ import java.util.function.Consumer;
 
 /**
  * A class for linking two values.
- * Thread safety: Uses volatile flags to prevent update cycles in concurrent environments.
+ * <p>The reciprocal update flags prevent a single-threaded update from cycling back on itself; linking, like
+ * value modification in general, is single-thread by design (typically an application UI thread) and is not
+ * safe under concurrent updates from multiple threads.
  * @param <T> the type of the value
  */
 final class ValueLink<T> {
@@ -78,7 +80,8 @@ final class ValueLink<T> {
 			if (linkedValues.contains(linkedValue)) {
 				throw new IllegalStateException("Cyclical value link detected");
 			}
-			linkedValues.forEach(value -> preventLinkCycle(value, originalValue));
+			//walk up the origin chain, keeping the candidate linkedValue fixed, to detect a transitive cycle
+			linkedValues.forEach(value -> preventLinkCycle(linkedValue, value));
 		}
 	}
 

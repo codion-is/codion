@@ -89,6 +89,10 @@ public interface Value<T> extends Observable<T> {
 
 	/**
 	 * Sets the value. Note that change listener notifications depend on the {@link Notify} policy associated with this value.
+	 * <p>Do not call {@link #set(Object)} from within a plain listener or consumer (the normalize-in-listener pattern,
+	 * such as trimming or clamping); notification delivers a single value snapshot, so a nested set leaves the
+	 * remaining listeners hearing the stale value and can fire a spurious reversed {@link #changed() change} event.
+	 * Normalize the value in {@link #set(Object)}'s override, a {@link Validator}, or a non-null replacement instead.
 	 * @param value the value
 	 * @throws IllegalArgumentException in case the given value is invalid
 	 * @throws IllegalStateException in case this value is {@link #locked() locked} and the given value differs from the current one

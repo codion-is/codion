@@ -392,6 +392,31 @@ public class ValueTest {
 	}
 
 	@Test
+	void linkChainDoesNotFalselyDetectCycle() {
+		Value<Integer> value1 = Value.nullable();
+		Value<Integer> value2 = Value.nullable();
+		Value<Integer> value3 = Value.nullable();
+		value1.link(value2);//value1 mirrors value2
+		//linking value3 to value1, which is itself already linked, is a legitimate chain (value3 <- value1 <- value2), not a cycle
+		assertDoesNotThrow(() -> value3.link(value1));
+		value2.set(7);
+		assertEquals(7, value1.get());
+		assertEquals(7, value3.get());
+		//a genuine transitive cycle is still detected
+		assertThrows(IllegalStateException.class, () -> value2.link(value3));
+	}
+
+	@Test
+	void linkObservableRejectsDuplicate() {
+		Value<Integer> value = Value.nullable();
+		Value<Integer> source = Value.nullable();
+		Observable<Integer> observable = source.observable();
+		value.link(observable);
+		//re-linking the same observable must be rejected rather than silently leaking a feeder
+		assertThrows(IllegalStateException.class, () -> value.link(observable));
+	}
+
+	@Test
 	void valueAsConsumer() {
 		Value<Integer> value = Value.nullable();
 		Value<Integer> listeningValue = Value.nullable();

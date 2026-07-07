@@ -20,6 +20,7 @@ package is.codion.common.reactive.observer;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 final class DefaultChange<T> implements Change<T> {
@@ -54,6 +55,8 @@ final class DefaultChange<T> implements Change<T> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(previous, current);
+		//deepHashCode to stay consistent with the deepEquals in equals, so array-valued changes that are
+		//equal also hash equally (arrays hash by content, matching Objects.deepEquals element handling)
+		return Arrays.deepHashCode(new Object[] {previous, current});
 	}
 }

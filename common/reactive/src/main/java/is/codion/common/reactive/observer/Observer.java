@@ -43,6 +43,8 @@ public interface Observer<T> {
 	/**
 	 * Adds {@code listener} to this {@link Observer}.
 	 * Adding the same listener a second time has no effect.
+	 * <p>Note that if the listener is already registered (whether strongly or via {@link #addWeakListener}) this
+	 * returns false and retains the existing registration kind; it does not upgrade a weak registration to strong.
 	 * @param listener the listener to add
 	 * @return true if this observer did not already contain the specified listener
 	 * @throws NullPointerException in case listener is null
@@ -53,6 +55,8 @@ public interface Observer<T> {
 
 	/**
 	 * Removes {@code listener} from this {@link Observer}
+	 * <p>Note that this matches by referent regardless of how the listener was registered, so a listener added
+	 * as a consumer may be removed via this method if it is the same instance.
 	 * @param listener the listener to remove
 	 * @return true if this observer contained the specified listener
 	 */
@@ -136,6 +140,8 @@ public interface Observer<T> {
 
 	/**
 	 * Returns a new conditional {@link Observer} notified when this observer instance is triggered with the given value
+	 * <p>Note that each call registers a new conditional observer on this observer with no removal path, so avoid
+	 * calling this repeatedly (for example per row or per component) on a long-lived observer.
 	 * @param value the value on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */

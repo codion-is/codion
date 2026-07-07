@@ -49,7 +49,9 @@ import static java.util.Objects.requireNonNull;
  * ObservableState opposite = state.not();
  *}
  * A factory for {@link State} instances.
- * <p>Listener management (add/remove) and state modifications are thread-safe
+ * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
+ * However, state modifications via {@link #set(boolean)} and notification are NOT thread-safe and should be
+ * performed from a single thread (such as an application UI thread).
  * @see #state()
  * @see #state(boolean)
  * @see #builder()
@@ -235,6 +237,7 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using AND.
+	 * <p>Note that an empty combination evaluates to {@code false} (not vacuous-truth {@code true}).
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
@@ -244,6 +247,7 @@ public interface State extends ObservableState {
 
 	/**
 	 * Creates a new {@link ObservableState} instance using AND.
+	 * <p>Note that an empty combination evaluates to {@code false} (not vacuous-truth {@code true}).
 	 * @param observableStates the observable states to base this state combination on
 	 * @return a new {@link ObservableState} instance
 	 */
@@ -303,8 +307,11 @@ public interface State extends ObservableState {
 		Builder value(boolean value);
 
 		/**
+		 * Note that with {@link Notify#SET} the {@link ObservableState} observers (and {@link State#not()} and
+		 * {@link State#observer()}) are notified on every {@link State#set(boolean)}, not only on genuine transitions.
 		 * @param notify the notify policy for this state, default {@link Notify#CHANGED}
 		 * @return this builder instance
+		 * @see Notify#SET
 		 */
 		Builder notify(Notify notify);
 
