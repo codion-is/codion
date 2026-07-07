@@ -42,6 +42,13 @@ Codion Change Log
 - LocalConnectionHandler.invoke() now throws IllegalStateException for calls received after the connection has been closed, instead of executing against a discarded connection.
 - LocalConnectionHandler.methodTraces() now synchronizes consistently with the other tracer accessors, no longer synchronizing on the swappable tracer field.
 - DefaultRemoteEntityResultIterator.lastAccessTime is now volatile, safely published to the connection maintenance thread.
+### is.codion.swing.common.model
+- DefaultListSelection.items().remove(), removing an item not in the selection is now a no-op instead of throwing.
+- DefaultListSelection, setLeadSelectionIndex() now fires the changing() event, extending selection change coverage to shift based extension.
+- DefaultListSelection, structural re-indexing no longer fires the changing() event.
+- DefaultListSelection, the adjusting protocol is now reentrant, no longer breaking a caller's grouping.
+- DefaultListSelection, selection facades now notify only when their value actually changes.
+- DefaultListSelection.items().set(Collection), now enforces locking and validators, consistent with the set(List) overload.
 ### is.codion.swing.common.ui
 - javadocs updated, some improvements and fixes.
 ### is.codion.swing.framework.model

@@ -334,11 +334,31 @@ public class FilterListSelectionTest {
 		testModel.removeSelectionInterval(0, 2);
 		assertEquals(3, changingCounter.get());
 
+		//structural re-indexing is not a selection change and must not fire changing()
 		testModel.insertIndexInterval(0, 1, true);
-		assertEquals(4, changingCounter.get());
+		assertEquals(3, changingCounter.get());
 
 		testModel.removeIndexInterval(0, 1);
+		assertEquals(3, changingCounter.get());
+
+		//shift-extension goes through setLeadSelectionIndex, which must fire changing()
+		testModel.setSelectionInterval(0, 0);
+		assertEquals(4, changingCounter.get());
+		testModel.setLeadSelectionIndex(2);
 		assertEquals(5, changingCounter.get());
+	}
+
+	@Test
+	void removeAbsentItemIsNoOp() {
+		//removing an item not currently included must be a no-op, not throw IndexOutOfBoundsException
+		testModel.items().set(asList("A", "B"));
+		assertEquals(asList("A", "B"), testModel.items().get());
+
+		assertDoesNotThrow(() -> testModel.items().remove("Z")); // never in the model
+		assertEquals(asList("A", "B"), testModel.items().get());
+
+		assertDoesNotThrow(() -> testModel.items().remove(asList("Z", "A"))); // mix of absent and present
+		assertEquals(singletonList("B"), testModel.items().get()); // only "A" was removed
 	}
 
 	@Test

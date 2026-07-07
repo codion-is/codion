@@ -36,6 +36,10 @@ public interface SingleSelection<T> {
 
 	/**
 	 * To prevent a selection change, add a listener throwing a {@link CancelException}.
+	 * <p>
+	 * Note that this is a best-effort warning mechanism, not a transactional revert: throwing a
+	 * {@link CancelException} lets a listener react before the change (for example to save unsaved edits),
+	 * but does not roll the selection or model back to a consistent state - temporary inconsistency is tolerated.
 	 * @return an observer notified when the selection is about to change
 	 */
 	Observer<?> changing();
