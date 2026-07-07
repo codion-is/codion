@@ -28,6 +28,9 @@ import javax.swing.SwingUtilities;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A FlatLaf based {@link ValidIndicator} implementation, using the FlatLaf 'outline' client property.
+ */
 public final class FlatLafValidIndicator implements ValidIndicator {
 
 	@Override

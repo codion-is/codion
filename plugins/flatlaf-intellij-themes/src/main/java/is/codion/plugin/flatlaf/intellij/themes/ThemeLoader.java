@@ -26,10 +26,17 @@ import java.io.UncheckedIOException;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Loads an {@link IntelliJTheme} from an {@code .theme.json} resource stream.
+ */
 public final class ThemeLoader {
 
 	private ThemeLoader() {}
 
+	/**
+	 * @param inputStream the stream to load the theme from
+	 * @return an {@link IntelliJTheme} loaded from the given stream
+	 */
 	public static IntelliJTheme load(InputStream inputStream) {
 		requireNonNull(inputStream);
 		try {

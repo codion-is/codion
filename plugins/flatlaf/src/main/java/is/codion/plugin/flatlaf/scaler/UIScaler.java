@@ -22,6 +22,9 @@ import is.codion.swing.common.ui.scaler.Scaler;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A FlatLaf based {@link Scaler} implementation.
+ */
 public final class UIScaler implements Scaler {
 
 	public UIScaler() {}

@@ -35,7 +35,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Specifies a class for running multiple application instances for load testing purposes.
+ * Runs multiple application instances for load testing purposes.
  * @param <T> the type of application used by this load test.
  */
 public interface LoadTest<T> {

@@ -91,6 +91,10 @@ import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.*;
 
+/**
+ * A UI for the domain generator, presenting the database schemas and their tables and generating
+ * the corresponding domain source code.
+ */
 public final class DomainGeneratorPanel extends JPanel {
 
 	/**

@@ -20,6 +20,10 @@ package is.codion.tools.generator.model;
 
 import is.codion.framework.domain.entity.EntityDefinition;
 
+/**
+ * Represents a generated entity in the domain generator, wrapping its {@link EntityDefinition}
+ * along with the underlying table type and whether a DTO should be generated.
+ */
 public final class EntityRow {
 
 	final String tableType;

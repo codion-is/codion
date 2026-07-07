@@ -25,6 +25,9 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents a database schema in the domain generator, providing its catalog, name and populated state.
+ */
 public final class SchemaRow {
 
 	private final String catalog;
