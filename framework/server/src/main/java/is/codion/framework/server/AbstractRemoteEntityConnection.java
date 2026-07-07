@@ -237,7 +237,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
 		private final long timeout = ITERATOR_TIMEOUT.getOrThrow();
 
-		private long lastAccessTime = currentTimeMillis();
+		private volatile long lastAccessTime = currentTimeMillis();
 
 		private DefaultRemoteEntityResultIterator(int port, RMIClientSocketFactory clientSocketFactory,
 																							RMIServerSocketFactory serverSocketFactory,
@@ -268,7 +268,10 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 			}
 			catch (Exception ignored) {/*ignored*/}
 			unexportObject(this, true);
-			remoteIterators.remove(this);
+			if (remoteIterators.remove(this)) {
+				//only the first close decrements, so double-close (client + maintenance) is safe
+				connectionHandler.iteratorClosed();
+			}
 		}
 
 		boolean timedOut() {

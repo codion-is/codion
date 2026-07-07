@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.utilities.logging.MethodTrace;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
@@ -70,6 +71,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private MethodTracer tracer = MethodTracer.NO_OP;
 	private boolean traceToFile = false;
+	private int openIterators = 0;
 	private volatile long lastAccessTime = creationTime;
 	private volatile boolean closed = false;
 
@@ -86,6 +88,9 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	@Override
 	public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
+		if (closed) {
+			throw new IllegalStateException("Connection closed: " + remoteClient);
+		}
 		String methodName = method.getName();
 		if (methodName.equals(ENTITIES)) {
 			return entities();
@@ -97,8 +102,13 @@ final class LocalConnectionHandler implements InvocationHandler {
 		logEntry(methodName, args);
 		try {
 			prepareConnection();
+			Object result = method.invoke(entityConnection, args);
+			if (result instanceof EntityResultIterator) {
+				//pin the connection until the iterator is closed, see returnConnection()/iteratorClosed()
+				openIterators++;
+			}
 
-			return method.invoke(entityConnection, args);
+			return result;
 		}
 		catch (InvocationTargetException e) {
 			//Wrapped exception has already been logged during the actual method call
@@ -175,10 +185,8 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 	}
 
-	List<MethodTrace> methodTraces() {
-		synchronized (tracer) {
-			return tracer.entries();
-		}
+	synchronized List<MethodTrace> methodTraces() {
+		return tracer.entries();
 	}
 
 	RemoteClient remoteClient() {
@@ -243,10 +251,24 @@ final class LocalConnectionHandler implements InvocationHandler {
 	}
 
 	/**
+	 * Notifies this handler that a remote iterator has been closed, returning the pooled connection
+	 * once the last open iterator is closed (and no transaction is open).
+	 */
+	synchronized void iteratorClosed() {
+		if (openIterators > 0) {
+			openIterators--;
+			if (openIterators == 0) {
+				returnConnection();
+			}
+		}
+	}
+
+	/**
 	 * Returns the pooled connection to a connection pool if the connection is not within an open transaction
+	 * and no remote iterators are still open (see {@link #iteratorClosed()})
 	 */
 	private void returnConnection() {
-		if (connectionPool == null || entityConnection.transactionOpen()) {
+		if (connectionPool == null || entityConnection.transactionOpen() || openIterators > 0) {
 			return;
 		}
 		Exception exception = null;
