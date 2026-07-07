@@ -49,7 +49,8 @@ import java.sql.SQLException;
  *     Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
  * }
  *
- * Product.TYPE.as(
+ * Product.TYPE.as()
+ *     .attributes(
  *         // Primary key with auto-generation
  *         Product.ID.as()
  *             .primaryKey()
@@ -99,7 +100,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 	String expression();
 
 	/**
-	 * @return the sql data type of the underlying column ({@link java.sql.Types}.
+	 * @return the sql data type of the underlying column ({@link java.sql.Types}).
 	 */
 	int type();
 
@@ -118,7 +119,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 
 	/**
 	 * Note: returns null when used in a remote connection context.
-	 * @param <C> the colum value type
+	 * @param <C> the column value type
 	 * @return the {@link Converter} for this column.
 	 */
 	<C> Converter<C, T> converter();
@@ -215,7 +216,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 
 		/**
 		 * Specifies that this column value is generated automatically.
-		 * @param generator the key generator
+		 * @param generator the value generator
 		 * @return this builder
 		 */
 		B generator(Generator<T> generator);
@@ -318,7 +319,7 @@ public sealed interface ColumnDefinition<T> extends ValueAttributeDefinition<T> 
 		B aggregate(boolean aggregate);
 
 		/**
-		 * <p>Specifies whether this column should be inlucluded by default when selecting.
+		 * <p>Specifies whether this column should be included by default when selecting.
 		 * <p>Default true.
 		 * @param selected false if this column should not be selected by default
 		 * @return this instance

@@ -38,7 +38,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * Typically accessed through a domain instance:
  * {@snippet :
  * // Define a domain
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *     public static final DomainType DOMAIN = domainType(Store.class);
  *
  *     public Store() {
@@ -65,11 +65,9 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * {@snippet :
  * EntityConnectionProvider connectionProvider = connectionProvider();
  *
- * Entities entities = connection.entities();
- *
  * EntityConnection connection = connectionProvider.connection();
  *
- * entities = connection.entities();
+ * Entities entities = connection.entities();
  *}
  * @see #entity(EntityType)
  * @see #key(EntityType)

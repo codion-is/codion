@@ -28,7 +28,7 @@ import is.codion.framework.domain.entity.attribute.Column;
  * such as equality, comparison, pattern matching, and range operations. String conditions
  * support case-sensitive and case-insensitive variants.
  * <p>
- * Column conditions are typically created through the Column.Factory interface, which
+ * Column conditions are typically created through the ColumnConditions interface, which
  * all Column instances implement:
  * {@snippet :
  * // Equality conditions

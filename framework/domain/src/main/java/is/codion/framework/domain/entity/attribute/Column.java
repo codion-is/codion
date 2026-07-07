@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * Columns inherit from {@link ColumnConditions} to provide condition creation methods:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -57,7 +57,8 @@ import static java.util.Objects.requireNonNull;
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.as(
+ *         Customer.TYPE.as()
+ *             .attributes(
  *                 Customer.ID.as()
  *                     .primaryKey()
  *                     .generator(Generator.identity()),
@@ -90,7 +91,7 @@ import static java.util.Objects.requireNonNull;
  *     }
  * }
  *
- * // Query condition usage (inherited from ColumnCondition.Factory)
+ * // Query condition usage (inherited from ColumnConditions)
  * List<Entity> activeCustomers = connection.select(
  *     Customer.ACTIVE.equalTo(true));
  *
@@ -253,21 +254,21 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 * <p>
 	 * Generators fall into two categories:
 	 * <ol>
-	 *   <li><strong>Pre-insert generators</strong> - Fetch or generate the primary key value before the row is inserted
-	 *   <li><strong>Post-insert generators</strong> - The database automatically sets the primary key value on insert (identity columns, triggers)
+	 *   <li><strong>Pre-insert generators</strong> - Fetch or generate the column value before the row is inserted
+	 *   <li><strong>Post-insert generators</strong> - The database automatically sets the column value on insert (identity columns, triggers)
 	 * </ol>
 	 * <p>
 	 * Implementations should override either {@code beforeInsert()} or {@code afterInsert()}:
 	 * <ul>
-	 *   <li>If {@link #inserted()} returns true, the primary key value is included in the insert statement
+	 *   <li>If {@link #inserted()} returns true, the generated value is included in the insert statement
 	 *       and {@link #beforeInsert(Entity, Column, Database, Connection)} should be used
-	 *   <li>If {@link #inserted()} returns false, the database generates the primary key automatically
+	 *   <li>If {@link #inserted()} returns false, the database generates the value automatically
 	 *       and {@link #afterInsert(Entity, Column, Database, Statement)} should be used
 	 * </ul>
 	 * <p>
-	 * Common key generator types and usage patterns:
+	 * Common generator types and usage patterns:
 	 * {@snippet :
-	 * public class Store extends DefaultDomain {
+	 * public class Store extends DomainModel {
 	 *
 	 *     interface Customer {
 	 *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -286,21 +287,24 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	 *
 	 *     void defineEntities() {
 	 *         // Identity column (database auto-increment)
-	 *         Customer.TYPE.as(
+	 *         Customer.TYPE.as()
+	 *             .attributes(
 	 *                 Customer.ID.as()
 	 *                     .primaryKey()
 	 *                     .generator(Generator.identity()))
 	 *             .build();
 	 *
 	 *         // Sequence-based key generation (Oracle, PostgreSQL)
-	 *         Product.TYPE.as(
+	 *         Product.TYPE.as()
+	 *             .attributes(
 	 *                 Product.ID.as()
 	 *                     .primaryKey()
 	 *                     .generator(Generator.sequence("product_seq")))
 	 *             .build();
 	 *
 	 *         // Custom query-based key generation
-	 *         Order.TYPE.as(
+	 *         Order.TYPE.as()
+	 *             .attributes(
 	 *                 Order.ID.as()
 	 *                     .primaryKey()
 	 *                     .generator(Generator.queried("SELECT 'ORD-' || NEXT VALUE FOR order_seq")))
@@ -336,8 +340,8 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 
 		/**
 		 * The default implementation returns true.
-		 * @return true if the key value should be included in the
-		 * insert query when entities using this key generator is inserted
+		 * @return true if the generated value should be included in the
+		 * insert query when entities using this generator are inserted
 		 */
 		default boolean inserted() {
 			return true;
@@ -382,16 +386,17 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		}
 
 		/**
-		 * Indicates an identity column based key generator.
+		 * Indicates an identity column based generator.
 		 * @param <T> the column type
 		 */
 		sealed interface Identity<T> extends Generator<T> permits IdentityGenerator {}
 
 		/**
-		 * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert.
+		 * Instantiates a generator which fetches column values from a sequence prior to insert.
 		 * {@snippet :
 		 * // Oracle or PostgreSQL sequence
-		 * Product.TYPE.as(
+		 * Product.TYPE.as()
+		 *     .attributes(
 		 *         Product.ID.as()
 		 *             .primaryKey()
 		 *             .generator(Generator.sequence("product_seq")))
@@ -409,24 +414,26 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 *}
 		 * @param <T> the generated column type
 		 * @param sequenceName the sequence name
-		 * @return a sequence based primary key generator
+		 * @return a sequence based generator
 		 */
 		static <T> Generator<T> sequence(String sequenceName) {
 			return new SequenceGenerator<>(sequenceName);
 		}
 
 		/**
-		 * Instantiates a primary key generator which fetches primary key values using the given query prior to insert.
+		 * Instantiates a generator which fetches column values using the given query prior to insert.
 		 * {@snippet :
 		 * // Custom query-based key generation
-		 * Order.TYPE.as(
+		 * Order.TYPE.as()
+		 *     .attributes(
 		 *         Order.ID.as()
 		 *             .primaryKey()
 		 *             .generator(Generator.queried("SELECT 'ORD-' || NEXT VALUE FOR order_seq")))
 		 *     .build();
 		 *
 		 * // Another example with date-based keys
-		 * Invoice.TYPE.as(
+		 * Invoice.TYPE.as()
+		 *     .attributes(
 		 *         Invoice.ID.as()
 		 *             .primaryKey()
 		 *             .generator(Generator.queried(
@@ -451,7 +458,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		}
 
 		/**
-		 * Instantiates a primary key generator which fetches automatically incremented column values after insert.
+		 * Instantiates a generator which fetches automatically incremented column values after insert.
 		 * @param <T> the generated column type
 		 * @param valueSource the value source, whether a sequence or a table name
 		 * @return an auto-increment based column value generator
@@ -464,7 +471,8 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * Returns a column value generator based on an IDENTITY type column.
 		 * {@snippet :
 		 * // SQL Server, MySQL auto-increment, or similar
-		 * Customer.TYPE.as(
+		 * Customer.TYPE.as()
+		 *     .attributes(
 		 *         Customer.ID.as()
 		 *             .primaryKey()
 		 *             .generator(Generator.identity()))

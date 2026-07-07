@@ -50,9 +50,10 @@ import java.util.List;
  * }
  *
  * // Register custom conditions in entity definition
- * Track.TYPE.as(
+ * Track.TYPE.as()
+ *     .attributes(
  *         // ... attribute definitions
- *         )
+ *     )
  *     .condition(Track.NOT_IN_PLAYLIST, (columns, values) -> {
  *         // Dynamic subquery with parameter placeholders
  *         return new StringBuilder()

@@ -38,14 +38,13 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Defines an Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
- * A factory for {@link EntityType} instances.
  * <p>
  * EntityType instances are the foundation of the domain model, representing database tables or queries.
  * They serve as factories for creating typed attributes (columns, foreign keys, derived attributes)
  * and provide the starting point for defining entity structure.
  * <p>
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *     public static final DomainType DOMAIN = domainType(Store.class);
  *
  *     // Define entity types as interfaces for organization
@@ -121,8 +120,8 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * Creates a new {@link Attribute}, associated with this EntityType.
 	 * @param name the attribute name
 	 * @param typeReference the {@link TypeReference} representing the attribute value type
-	 * @param <T> the column type
-	 * @return a new {@link Column}
+	 * @param <T> the attribute type
+	 * @return a new {@link Attribute}
 	 */
 	<T> Attribute<T> attribute(String name, TypeReference<T> typeReference);
 
@@ -363,7 +362,8 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * }
 	 *
 	 * // Usage in entity definition
-	 * Order.TYPE.as(
+	 * Order.TYPE.as()
+	 *     .attributes(
 	 *         Order.ID.as()
 	 *             .primaryKey(),
 	 *         Order.CUSTOMER_ID.as()
@@ -421,8 +421,8 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * @param firstColumn the first column
 	 * @param firstReferencedColumn the first referenced column
 	 * @param secondColumn the second column
-	 * @param secondReferencedColumn the third referenced column
-	 * @param thirdColumn the second column
+	 * @param secondReferencedColumn the second referenced column
+	 * @param thirdColumn the third column
 	 * @param thirdReferencedColumn the third referenced column
 	 * @param <A> the first column type
 	 * @param <B> the second column type

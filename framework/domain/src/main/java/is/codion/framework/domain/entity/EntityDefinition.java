@@ -61,7 +61,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * <p>
  * Entity definitions are typically created using the builder pattern during domain initialization:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     // Define entity types
  *     interface Customer {
@@ -74,7 +74,8 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  *
  *     // Define the entity structure
  *     void defineCustomer() {
- *         EntityDefinition definition = Customer.TYPE.as(
+ *         EntityDefinition definition = Customer.TYPE.as()
+ *             .attributes(
  *                 Customer.ID.as()
  *                     .primaryKey(),
  *                 Customer.NAME.as()
@@ -183,7 +184,8 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	 * Returns the formatter responsible for providing toString values for this entity type.
 	 * {@snippet :
 	 * // Define custom string representation
-	 * Customer.TYPE.as(
+	 * Customer.TYPE.as()
+	 *     .attributes(
 	 *         Customer.ID.as()
 	 *             .primaryKey(),
 	 *         Customer.FIRST_NAME.as()
@@ -331,8 +333,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 			 * @param definitionBuilder builder for an attribute definition
 			 * @param additional additional builders for the attribute definitions comprising the entity
 			 * @return a {@link EntityDefinition.Builder} instance
-			 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
-			 * @throws IllegalArgumentException in case of a entityType mismatch
+			 * @throws IllegalArgumentException in case of an entityType mismatch
 			 */
 			Builder attributes(AttributeDefinition.Builder<?, ?> definitionBuilder, AttributeDefinition.Builder<?, ?>... additional);
 
@@ -341,7 +342,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 			 * @param definitionBuilders builders for the attribute definitions comprising the entity
 			 * @return a {@link EntityDefinition.Builder} instance
 			 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
-			 * @throws IllegalArgumentException in case of a entityType mismatch
+			 * @throws IllegalArgumentException in case of an entityType mismatch
 			 */
 			Builder attributes(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders);
 		}

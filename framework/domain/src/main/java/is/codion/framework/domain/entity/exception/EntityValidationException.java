@@ -54,7 +54,7 @@ public final class EntityValidationException extends Exception {
 
 	/**
 	 * @param exceptions the invalid attribute exceptions
-	 * @throws IllegalArgumentException in case the attribute exceptions are not all from the same entity
+	 * @throws IllegalArgumentException in case {@code exceptions} is empty, or the attribute exceptions are not all from the same entity
 	 */
 	public EntityValidationException(Collection<AttributeValidationException> exceptions) {
 		super(createMessage(exceptions));
@@ -68,7 +68,7 @@ public final class EntityValidationException extends Exception {
 	}
 
 	/**
-	 * @return the invalid attributes, may be empty in case of a genaral validation exception
+	 * @return the invalid attributes, may be empty in case of a general validation exception
 	 */
 	public Collection<AttributeValidationException> attributes() {
 		return attributes;

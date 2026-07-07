@@ -539,12 +539,12 @@ public final class ConditionTest {
 			assertEquals("(" + columnDefinition.expression() + " >= ? AND " + columnDefinition.expression() + " <= ?)",
 							condition.string(departmentDefinition));
 
-			// Not between conditions
+			// Not between conditions (true complements: notBetween excludes the bounds, notBetweenExclusive includes them)
 			condition = Department.NAME.notBetweenExclusive("upper", "lower");
-			assertEquals("(" + columnDefinition.expression() + " < ? OR " + columnDefinition.expression() + " > ?)",
+			assertEquals("(" + columnDefinition.expression() + " <= ? OR " + columnDefinition.expression() + " >= ?)",
 							condition.string(departmentDefinition));
 			condition = Department.NAME.notBetween("upper", "lower");
-			assertEquals("(" + columnDefinition.expression() + " <= ? OR " + columnDefinition.expression() + " >= ?)",
+			assertEquals("(" + columnDefinition.expression() + " < ? OR " + columnDefinition.expression() + " > ?)",
 							condition.string(departmentDefinition));
 
 			// Case-sensitive vs case-insensitive

@@ -35,7 +35,7 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  * <p>
  * Transient attributes are useful for UI state, temporary calculations, and derived values:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -54,7 +54,8 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.as(
+ *         Customer.TYPE.as()
+ *             .attributes(
  *                 // Database columns
  *                 Customer.ID.as()
  *                     .primaryKey(),

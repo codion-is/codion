@@ -554,20 +554,22 @@ public class DefaultConditionModelTest {
 		assertFalse(condition.accepts(11));
 		assertFalse(condition.accepts(5));
 
+		// NOT_BETWEEN is the true complement of BETWEEN [6, 10]: the bounds are excluded from the match
 		condition.operator().set(Operator.NOT_BETWEEN);
-		assertFalse(condition.accepts(null));
-		assertTrue(condition.accepts(6));
-		assertFalse(condition.accepts(7));
-		assertFalse(condition.accepts(9));
-		assertTrue(condition.accepts(10));
-		assertTrue(condition.accepts(11));
-		assertTrue(condition.accepts(5));
-		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
 		assertFalse(condition.accepts(null));
 		assertFalse(condition.accepts(6));
 		assertFalse(condition.accepts(7));
 		assertFalse(condition.accepts(9));
 		assertFalse(condition.accepts(10));
+		assertTrue(condition.accepts(11));
+		assertTrue(condition.accepts(5));
+		// NOT_BETWEEN_EXCLUSIVE is the true complement of BETWEEN_EXCLUSIVE (6, 10): the bounds are included
+		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
+		assertFalse(condition.accepts(null));
+		assertTrue(condition.accepts(6));
+		assertFalse(condition.accepts(7));
+		assertFalse(condition.accepts(9));
+		assertTrue(condition.accepts(10));
 		assertTrue(condition.accepts(11));
 		assertTrue(condition.accepts(5));
 

@@ -38,7 +38,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * requiring type-specific validation, formatting, and constraints.
  * <p>
  * Contrast with {@link ForeignKeyDefinition} which holds Entity references and delegates
- * formatting to the referenced entity's stringFactory.
+ * formatting to the referenced entity's formatter.
  * @param <T> the value type
  * @see AttributeDefinition
  * @see ColumnDefinition

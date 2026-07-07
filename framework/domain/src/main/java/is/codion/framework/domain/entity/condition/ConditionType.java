@@ -56,7 +56,8 @@ import java.util.List;
  *
  * // In the entity definition, provide the SQL generation logic
  * EntityDefinition track() {
- *     return Track.TYPE.as(
+ *     return Track.TYPE.as()
+ *         .attributes(
  *             Track.ID.as()
  *                 .primaryKey(),
  *             Track.NAME.as()

@@ -353,15 +353,15 @@ public final class ConditionFrameworkEnhancementTest {
 							LocalDate.of(2020, 1, 1), LocalDate.of(2021, 1, 1));
 			assertEquals("(hire_date > ? AND hire_date < ?)", condition.string(empDef));
 
-			// NOT between inclusive
+			// NOT between inclusive (true complement of BETWEEN, bounds excluded)
 			condition = Employee.SALARY.notBetween(
 							new BigDecimal("30000"), new BigDecimal("40000"));
-			assertEquals("(salary <= ? OR salary >= ?)", condition.string(empDef));
+			assertEquals("(salary < ? OR salary > ?)", condition.string(empDef));
 
-			// NOT between exclusive
+			// NOT between exclusive (true complement of BETWEEN_EXCLUSIVE, bounds included)
 			condition = Employee.SALARY.notBetweenExclusive(
 							new BigDecimal("30000"), new BigDecimal("40000"));
-			assertEquals("(salary < ? OR salary > ?)", condition.string(empDef));
+			assertEquals("(salary <= ? OR salary >= ?)", condition.string(empDef));
 		}
 	}
 
