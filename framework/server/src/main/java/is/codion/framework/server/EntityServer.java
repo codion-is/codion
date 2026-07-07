@@ -67,7 +67,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
+ * A remote server serving {@link is.codion.framework.db.rmi.RemoteEntityConnection} instances to clients.
  */
 public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection, EntityServerAdmin> {
 

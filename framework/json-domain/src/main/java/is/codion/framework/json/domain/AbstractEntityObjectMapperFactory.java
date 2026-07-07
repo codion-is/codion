@@ -23,11 +23,11 @@ import is.codion.framework.domain.DomainType;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link EntityObjectMapperFactory} implementation, extend to add custom serialisers/deserializers.
+ * An abstract {@link EntityObjectMapperFactory} implementation, extend to add custom serializers/deserializers.
  * <p>
  * Subclasses should be exposed as a service.
  */
-public class DefaultEntityObjectMapperFactory implements EntityObjectMapperFactory {
+public abstract class AbstractEntityObjectMapperFactory implements EntityObjectMapperFactory {
 
 	private final DomainType domainType;
 
@@ -35,7 +35,7 @@ public class DefaultEntityObjectMapperFactory implements EntityObjectMapperFacto
 	 * Instantiates a new instance compatible with the given domain type.
 	 * @param domainType the domain type
 	 */
-	protected DefaultEntityObjectMapperFactory(DomainType domainType) {
+	protected AbstractEntityObjectMapperFactory(DomainType domainType) {
 		this.domainType = requireNonNull(domainType);
 	}
 

@@ -112,7 +112,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * @param includeForeignKeyValues if true then the foreign key graph is included in serialized entities
 	 * @return this {@link EntityObjectMapper} instance
 	 */
-	public EntityObjectMapper setIncludeForeignKeyValues(boolean includeForeignKeyValues) {
+	public EntityObjectMapper includeForeignKeyValues(boolean includeForeignKeyValues) {
 		entitySerializer.setIncludeForeignKeyValues(includeForeignKeyValues);
 		return this;
 	}
@@ -121,7 +121,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * @param includeNullValues true if null values should be included in exported entities
 	 * @return this {@link EntityObjectMapper} instance
 	 */
-	public EntityObjectMapper setIncludeNullValues(boolean includeNullValues) {
+	public EntityObjectMapper includeNullValues(boolean includeNullValues) {
 		entitySerializer.setIncludeNullValues(includeNullValues);
 		return this;
 	}

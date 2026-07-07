@@ -22,7 +22,7 @@ import is.codion.demos.world.domain.api.World;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.domain.api.World.Location;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.json.domain.DefaultEntityObjectMapperFactory;
+import is.codion.framework.json.domain.AbstractEntityObjectMapperFactory;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JacksonException;
@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 
 // tag::customSerializer[]
-public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFactory {
+public final class WorldObjectMapperFactory extends AbstractEntityObjectMapperFactory {
 
 	private static final String LATITUDE = "latitude";
 	private static final String LONGITUDE = "longitude";
