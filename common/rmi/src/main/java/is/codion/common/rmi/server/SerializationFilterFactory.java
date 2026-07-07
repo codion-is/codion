@@ -20,7 +20,6 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.utilities.property.PropertyValue;
 
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,18 +52,30 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 
 	/**
 	 * <p>The serialization patterns to use.
-	 * <p>Is overridden by {@link #SERIALIZATION_FILTER_PATTERNS}.
+	 * <p>Is overridden by {@link #SERIALIZATION_FILTER_PATTERN_FILE}.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
 	 */
 	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERNS = stringValue("codion.server.serialization.filter.patterns");
 
 	/**
 	 * <p>The path to the serialization pattern file to use.
 	 * <p>Supports 'classpath:' prefix for a pattern file in the classpath root.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
 	 */
 	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERN_FILE = stringValue("codion.server.serialization.filter.patternFile");
 
 	/**
 	 * If specified then a list of all deserialized classes is written to the given file on server shutdown. Note this overwrites the file if it already exists.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
 	 */
 	public static final PropertyValue<String> SERIALIZATION_FILTER_DRYRUN_FILE = stringValue("codion.server.serialization.filter.dryRunFile");
 
@@ -81,7 +92,7 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	 * The maximum number of bytes in the input stream to prevent resource exhaustion attacks.
 	 * <ul>
 	 * <li>Value type: Long
-	 * <li>Default value: 10.485.760 (10 MB)
+	 * <li>Default value: 10_485_760 (10 MB)
 	 * </ul>
 	 */
 	public static final PropertyValue<Long> SERIALIZATION_FILTER_MAX_BYTES = longValue("codion.server.serialization.filter.maxBytes", 10_485_760L);
@@ -90,7 +101,7 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	 * The maximum array size allowed to prevent resource exhaustion attacks.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 100.000
+	 * <li>Default value: 100_000
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_ARRAY = integerValue("codion.server.serialization.filter.maxArray", 100_000);
@@ -108,7 +119,7 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	 * The maximum number of object references to prevent resource exhaustion attacks.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 1.000.000
+	 * <li>Default value: 1_000_000
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_REFS = integerValue("codion.server.serialization.filter.maxRefs", 1_000_000);
@@ -129,14 +140,14 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 		if (!SERIALIZATION_FILTER_PATTERNS.isNull()) {
 			LOG.info("Serialization filter created from patterns: {}", patterns);
 		}
-		if (patterns == null) {
+		if (patterns.isEmpty()) {
 			throw new IllegalStateException("No serialization filter pattern configuration available");
 		}
 
 		return ObjectInputFilter.Config.createFilter(patterns);
 	}
 
-	static @Nullable String createPatterns() {
+	static String createPatterns() {
 		if (!SERIALIZATION_FILTER_PATTERN_FILE.isNull()) {
 			return addLimitsAndExcludeAll(readPattern(SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow()));
 		}
@@ -144,7 +155,7 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 			return addLimitsAndExcludeAll(SERIALIZATION_FILTER_PATTERNS.getOrThrow());
 		}
 
-		return null;
+		return "";
 	}
 
 	private static String addLimitsAndExcludeAll(String patterns) {

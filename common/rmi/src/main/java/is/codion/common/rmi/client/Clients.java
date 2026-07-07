@@ -88,8 +88,8 @@ public final class Clients {
 	 * system truststore, writes the combined truststore to a temporary file and sets 'javax.net.ssl.trustStore'
 	 * so that it points to that file and 'javax.net.ssl.trustStorePassword' to the given password.
 	 * If no password is provided, the default 'changeit' password is used.
-	 * If no truststore is specified or the file is not found, this method has no effect.
-	 * @throws IllegalArgumentException in case a truststore is specified but no password
+	 * If no truststore is specified this method has no effect; if one is specified but can be resolved neither
+	 * in the filesystem nor on the classpath, a {@link RuntimeException} is thrown.
 	 * @see Clients#TRUSTSTORE
 	 * @see Clients#TRUSTSTORE_PASSWORD
 	 */

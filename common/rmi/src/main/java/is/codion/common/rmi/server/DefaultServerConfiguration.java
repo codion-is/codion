@@ -40,6 +40,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
+import static is.codion.common.utilities.Text.parseCSV;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 
@@ -181,6 +182,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		DefaultBuilder(int serverPort, int registryPort) {
 			this.serverPort = serverPort;
 			this.registryPort = registryPort;
+			// Seed the remaining defaults from the corresponding system properties
+			auxiliaryServerFactory(parseCSV(AUXILIARY_SERVER_FACTORIES.get()));
+			adminPort(ADMIN_PORT.getOrThrow());
+			sslEnabled(SSL_ENABLED.getOrThrow());
+			connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.getOrThrow());
 		}
 
 		@Override

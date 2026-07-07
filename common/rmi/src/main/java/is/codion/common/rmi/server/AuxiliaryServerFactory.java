@@ -31,12 +31,12 @@ import static java.util.stream.StreamSupport.stream;
  * Provides a {@link AuxiliaryServer} implementation.
  * @param <C> the remote connection type provided by the parent server
  * @param <A> the admin connection type provided by the parent server
- * @param <T> the parent server type
+ * @param <T> the auxiliary server type
  */
 public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin, T extends AuxiliaryServer> {
 
 	/**
-	 * Creates a server instance using the given configuration.
+	 * Creates an auxiliary server connected to the given parent server.
 	 * @param server the parent server
 	 * @return a server
 	 */

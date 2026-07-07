@@ -20,7 +20,7 @@ package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
-import is.codion.common.rmi.server.DefaultServerAdmin;
+import is.codion.common.rmi.server.AbstractServerAdmin;
 import is.codion.common.utilities.logging.LoggerProxy;
 import is.codion.common.utilities.logging.MethodTrace;
 
@@ -38,7 +38,7 @@ import java.util.UUID;
 /**
  * Implements the EntityServerAdmin interface, providing admin access to a EntityServer instance.
  */
-final class DefaultEntityServerAdmin extends DefaultServerAdmin implements EntityServerAdmin {
+final class DefaultEntityServerAdmin extends AbstractServerAdmin implements EntityServerAdmin {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityServerAdmin.class);
 
