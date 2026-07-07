@@ -124,7 +124,7 @@ public final class EntityObjectMapperTest {
 
 	@Test
 	void entityForeignKeys() throws JsonProcessingException {
-		EntityObjectMapper mapper = new EntityObjectMapper(entities).setIncludeForeignKeyValues(true);
+		EntityObjectMapper mapper = new EntityObjectMapper(entities).includeForeignKeyValues(true);
 
 		Entity dept = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
@@ -245,7 +245,7 @@ public final class EntityObjectMapperTest {
 		jsonString = mapper.writeValueAsString(singletonList(emp1));
 		assertTrue(emp1.equalValues(mapper.deserializeEntities(jsonString).get(0)));
 
-		mapper.setIncludeForeignKeyValues(true);
+		mapper.includeForeignKeyValues(true);
 
 		jsonString = mapper.writeValueAsString(singletonList(emp1));
 		Entity emp1Deserialized = mapper.deserializeEntities(jsonString).get(0);
@@ -288,7 +288,7 @@ public final class EntityObjectMapperTest {
 						.with(Employee.SALARY, BigDecimal.valueOf(3500.5))
 						.build();
 
-		mapper.setIncludeForeignKeyValues(true);
+		mapper.includeForeignKeyValues(true);
 
 		List<Entity> entityList = asList(emp1, emp2);
 		jsonString = mapper.writeValueAsString(entityList);
@@ -322,8 +322,8 @@ public final class EntityObjectMapperTest {
 						.with(Employee.SALARY, null)
 						.build();
 
-		mapper.setIncludeForeignKeyValues(false);
-		mapper.setIncludeNullValues(false);
+		mapper.includeForeignKeyValues(false);
+		mapper.includeNullValues(false);
 
 		Entity emp3Parsed = mapper.deserializeEntities(mapper.writeValueAsString(singletonList(emp3))).get(0);
 		assertFalse(emp3Parsed.contains(Employee.HIREDATE));

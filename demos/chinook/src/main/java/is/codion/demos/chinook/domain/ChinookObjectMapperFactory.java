@@ -26,13 +26,13 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParamet
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.json.domain.DefaultEntityObjectMapperFactory;
+import is.codion.framework.json.domain.AbstractEntityObjectMapperFactory;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 // tag::procedureFunction[]
-public final class ChinookObjectMapperFactory extends DefaultEntityObjectMapperFactory {
+public final class ChinookObjectMapperFactory extends AbstractEntityObjectMapperFactory {
 
 	public ChinookObjectMapperFactory() {
 		super(Chinook.DOMAIN);

@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 
-public final class CustomEntityObjectMapperFactory extends DefaultEntityObjectMapperFactory {
+public final class CustomEntityObjectMapperFactory extends AbstractEntityObjectMapperFactory {
 
 	public CustomEntityObjectMapperFactory() {
 		super(TestDomain.DOMAIN);
