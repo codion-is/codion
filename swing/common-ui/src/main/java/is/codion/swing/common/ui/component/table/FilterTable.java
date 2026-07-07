@@ -134,7 +134,7 @@ import static javax.swing.KeyStroke.getKeyStrokeForEvent;
 /**
  * A JTable implementation for {@link SwingFilterTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
- * For instances use the builder {@link #builder()}
+ * Use {@link #builder()} for {@link Builder} instances.
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
  * @see #builder()
@@ -500,7 +500,7 @@ public final class FilterTable<R, C> extends JTable {
 			throw new IllegalStateException("Table model has already been set");
 		}
 		if (!(dataModel instanceof SwingFilterTableModel)) {
-			throw new IllegalArgumentException("FilterTable model must be a SwingTableModel instance");
+			throw new IllegalArgumentException("FilterTable model must be a SwingFilterTableModel instance");
 		}
 		List<R> selection = ((SwingFilterTableModel<R, C>) dataModel).selection().items().get();
 		super.setModel(dataModel);

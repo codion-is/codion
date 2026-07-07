@@ -83,37 +83,37 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * All configuration is done via an Observable/Value-based API, allowing reactive UI updates.
  * <b>Image</b>
  * <p>An image is loaded via the builder or controlled via the {@link #image()} Value:</p>
- * <pre>
+ * {@snippet :
  * ImagePane pane = ImagePane.builder()
  *     .image(bufferedImage)
  *     .build();
  *
  * // Or change the image reactively
  * pane.image().set(newImage);
- * </pre>
+ *}
  * When an image is set, it is initially painted centered in the component at the largest possible size,
  * fully visible, with its aspect ratio preserved. This is defined as 100% of the image size and
  * its corresponding zoom level is 1.0.
  * <b>Zooming</b>
  * Zooming can be controlled interactively using either the mouse scroll wheel (default) or mouse buttons,
  * or programmatically via the {@link #zoom()} Value. To change the zoom device:
- * <pre>
+ * {@snippet :
  * ImagePane pane = ImagePane.builder()
  *     .zoomDevice(ZoomDevice.MOUSE_BUTTON)
  *     .build();
  *
  * // Or change reactively
  * pane.zoomDevice().set(ZoomDevice.NONE);
- * </pre>
+ *}
  * When using {@code ZoomDevice.MOUSE_BUTTON}, the left mouse button toggles between zooming in and out modes,
  * and the right button zooms by one increment (default 20%). The zoom increment can be controlled:
- * <pre>
+ * {@snippet :
  * pane.zoomIncrement().set(0.3); // 30% increment
- * </pre>
+ *}
  * For programmatic zoom control, set the zoom device to {@code ZoomDevice.NONE} and use the {@link #zoom()} Value:
- * <pre>
+ * {@snippet :
  * pane.zoom().set(2.0); // Zoom to 200%
- * </pre>
+ *}
  * Mouse wheel zooming is always around the point the mouse pointer is currently at, ensuring that
  * the area being zoomed into remains visible. Programmatic zooming via {@code zoom().set()} zooms
  * around the center of the pane.
@@ -121,14 +121,14 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * There are no lower or upper zoom level limits.
  * <b>Auto-Resize</b>
  * When auto-resize is enabled, the image automatically re-fits to the pane whenever the pane is resized:
- * <pre>
+ * {@snippet :
  * ImagePane pane = ImagePane.builder()
  *     .autoResize(true)
  *     .build();
  *
  * // Or toggle reactively
  * pane.autoResize().set(true);
- * </pre>
+ *}
  * When auto-resize is enabled, the image will reset to fit the pane dimensions on every resize event,
  * regardless of the current zoom level. This is useful for responsive layouts where you want the image
  * to always fill the available space.
@@ -137,18 +137,18 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * in the upper left corner. The navigation image is a small replica of the main image. Clicking on any point
  * of the navigation image displays that part of the image in the pane, centered. The navigation image can
  * be enabled/disabled via the {@link #navigable()} State:
- * <pre>
+ * {@snippet :
  * ImagePane pane = ImagePane.builder()
  *     .navigable(true)
  *     .build();
  *
  * // Or toggle reactively
  * pane.navigable().set(false);
- * </pre>
+ *}
  * The image can be dragged with the left mouse button when {@link #movable()} is enabled (default):
- * <pre>
+ * {@snippet :
  * pane.movable().set(false); // Disable dragging
- * </pre>
+ *}
  * For programmatic navigation, use {@link #center()}.
  * <b>Coordinate Conversion</b>
  * The pane provides coordinate translation between pane and image coordinate spaces via {@link #coordinates()}.
@@ -163,16 +163,16 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * <p>
  * The {@link #origin()} Value provides access to the current image origin (top-left corner position in pane coordinates),
  * which can be used to programmatically position the image to make specific regions visible:
- * <pre>
+ * {@snippet :
  * // Move image to show a specific region
  * pane.origin().set(new Point(-200, -100));
  *
  * // React to origin changes
- * pane.origin().addConsumer(origin -&gt;
+ * pane.origin().addConsumer(origin ->
  *     System.out.println("Image origin: " + origin));
- * </pre>
+ *}
  * <b>Example Usage</b>
- * <pre>
+ * {@snippet :
  * BufferedImage image = ImageIO.read(new File("photo.jpg"));
  *
  * ImagePane imagePane = ImagePane.builder()
@@ -193,9 +193,9 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
  * pane.zoom().set(1.5);
  *
  * // React to zoom changes
- * pane.zoom().addConsumer(zoom -&gt;
+ * pane.zoom().addConsumer(zoom ->
  *     System.out.println("Zoom level: " + zoom));
- * </pre>
+ *}
  * <p>
  * Originally based on <a href="http://today.java.net/pub/a/today/2007/03/27/navigable-image-pane.html">http://today.java.net/pub/a/today/2007/03/27/navigable-image-pane.html</a>
  * Included with express permission from the author, 2019.
@@ -352,7 +352,7 @@ public final class ImagePane extends JPanel {
 	 * The origin is typically negative when the image is zoomed in and larger than the pane,
 	 * representing how much of the image is scrolled off the top-left edge of the pane.
 	 * <b>Example Usage</b>
-	 * <pre>
+	 * {@snippet :
 	 * // Move image to show a region at image coordinates (500, 300)
 	 * Point2D.Double imagePoint = new Point2D.Double(500, 300);
 	 * Point2D.Double panePoint = pane.toPaneCoordinates(imagePoint);
@@ -365,9 +365,9 @@ public final class ImagePane extends JPanel {
 	 *     centerY - (int) panePoint.y));
 	 *
 	 * // React to origin changes (e.g., when user drags the image)
-	 * pane.origin().addConsumer(origin -&gt;
+	 * pane.origin().addConsumer(origin ->
 	 *     updateVisibleRegionIndicator(origin));
-	 * </pre>
+	 *}
 	 * @return the {@link Value} controlling the image origin in pane coordinates
 	 */
 	public Value<Point> origin() {
@@ -492,13 +492,13 @@ public final class ImagePane extends JPanel {
 		 * The overlay painter receives the Graphics2D context for drawing and the ImagePane for accessing
 		 * coordinate conversion methods and pane state.
 		 * <b>Example - Drawing Grid Lines</b>
-		 * <pre>
+		 * {@snippet :
 		 * ImagePane imagePane = ImagePane.builder()
 		 *     .image(image)
-		 *     .overlay((g2d, pane) -&gt; {
+		 *     .overlay((g2d, pane) -> {
 		 *         g2d.setColor(new Color(255, 255, 255, 100));
 		 *         // Draw grid lines every 100 image pixels
-		 *         for (int x = 0; x &lt; image.getWidth(); x += 100) {
+		 *         for (int x = 0; x < image.getWidth(); x += 100) {
 		 *             Point2D.Double top = pane.toPaneCoordinates(new Point2D.Double(x, 0));
 		 *             Point2D.Double bottom = pane.toPaneCoordinates(
 		 *                 new Point2D.Double(x, image.getHeight()));
@@ -506,14 +506,14 @@ public final class ImagePane extends JPanel {
 		 *         }
 		 *     })
 		 *     .build();
-		 * </pre>
+		 *}
 		 * <b>Example - Highlighting Regions</b>
-		 * <pre>
-		 * List&lt;Rectangle&gt; taggedRegions = getTaggedRegions();
+		 * {@snippet :
+		 * List<Rectangle> taggedRegions = getTaggedRegions();
 		 *
 		 * ImagePane imagePane = ImagePane.builder()
 		 *     .image(image)
-		 *     .overlay((g2d, pane) -&gt; {
+		 *     .overlay((g2d, pane) -> {
 		 *         g2d.setColor(new Color(255, 0, 0, 128));
 		 *         for (Rectangle region : taggedRegions) {
 		 *             // Convert image coordinates to pane coordinates
@@ -528,7 +528,7 @@ public final class ImagePane extends JPanel {
 		 *         }
 		 *     })
 		 *     .build();
-		 * </pre>
+		 *}
 		 * The overlay is redrawn automatically whenever the pane repaints (e.g., when zooming, panning, or resizing).
 		 * @param overlay the overlay painter, receives Graphics2D for drawing and ImagePane for coordinate conversion
 		 * @return this builder

@@ -80,7 +80,7 @@ public interface Controls extends Control {
 
 	/**
 	 * @param defaults the default controls layout
-	 * @return a new Config instance
+	 * @return a new {@link Layout} instance
 	 */
 	static Layout layout(List<ControlKey<?>> defaults) {
 		return new DefaultLayout(defaults);

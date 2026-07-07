@@ -23,7 +23,6 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.swing.common.ui.control.CommandControl.CommandControlBuilder;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
@@ -35,7 +34,25 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 /**
- * A beefed up Action.
+ * An {@link Action} with a reactive enabled state and {@link Optional}-based accessors.
+ * <p>
+ * Unlike a plain {@link Action}, a {@link Control}'s enabled state is controlled through an
+ * {@link ObservableState} supplied when building it ({@link ControlBuilder#enabled(ObservableState)});
+ * {@link #setEnabled(boolean)} throws {@link UnsupportedOperationException}. Its properties
+ * (caption, mnemonic, icons, colors, ...) are exposed via {@link Optional} accessors.
+ * <p>
+ * Controls come in two flavors: a {@link Command}/{@link ActionCommand} based {@link CommandControl}
+ * and a {@link Value}/{@link State} based {@link ToggleControl}.
+ * {@snippet :
+ * State selectionEmpty = // ...
+ *
+ * CommandControl delete = Control.builder()
+ *     .command(this::deleteSelected)
+ *     .caption("Delete")
+ *     .mnemonic('D')
+ *     .enabled(selectionEmpty.not())
+ *     .build();
+ *}
  * @see #command(Command)
  * @see #action(ActionCommand)
  * @see #toggle(Value)
@@ -97,7 +114,7 @@ public interface Control extends Action {
 
 	/**
 	 * @return the keys for values that have been set for this control
-	 * @see AbstractAction#getKeys()
+	 * @see javax.swing.Action#getValue(String)
 	 */
 	Collection<String> keys();
 
@@ -157,7 +174,7 @@ public interface Control extends Action {
 	/**
 	 * Creates a control based on a {@link Control.ActionCommand}
 	 * @param actionCommand the {@link Control.ActionCommand} on which to base the control
-	 * @return a Control for calling the given {@link Control.Command}
+	 * @return a Control for calling the given {@link Control.ActionCommand}
 	 */
 	static CommandControl action(ActionCommand actionCommand) {
 		return builder().action(actionCommand).build();

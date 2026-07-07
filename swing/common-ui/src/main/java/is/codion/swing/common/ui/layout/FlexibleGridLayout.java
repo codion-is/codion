@@ -36,12 +36,13 @@ import static java.util.Objects.requireNonNull;
  * Designed in Codion style with a fluent builder API.
  * <p>
  * Features:
- * - Optional fixed row heights or column widths.
- * - Custom horizontal and vertical gaps.
- * - Maintains preferred component sizes when not fixed.
- * - Safe for variable component counts and nested containers.
- * <p>
- * Author: Björn Darri Sigurðsson (with help)
+ * <ul>
+ * <li>Optional fixed row heights or column widths.
+ * <li>Custom horizontal and vertical gaps.
+ * <li>Maintains preferred component sizes when not fixed.
+ * <li>Safe for variable component counts and nested containers.
+ * </ul>
+ * @author Björn Darri Sigurðsson (with help)
  */
 public final class FlexibleGridLayout implements LayoutManager2 {
 
