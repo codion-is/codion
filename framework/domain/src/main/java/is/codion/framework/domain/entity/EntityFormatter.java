@@ -60,7 +60,8 @@ import static java.util.stream.Collectors.joining;
  *             .value(Employee.NAME)
  *             .text(", Department='")
  *             .value(Employee.DEPARTMENT_FK, Department.NAME)
- *             .text("'");
+ *             .text("'")
+ *             .build();
  *
  *  		System.out.println(formatter.apply(employee));
  * }

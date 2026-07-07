@@ -68,7 +68,8 @@ import static java.util.Objects.requireNonNull;
  * }
  *
  * // Usage in domain definition
- * Customer.TYPE.as(
+ * Customer.TYPE.as()
+ *     .attributes(
  *         Customer.EMAIL.as()
  *             .column(),
  *         Customer.ACTIVE.as()

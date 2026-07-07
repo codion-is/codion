@@ -38,7 +38,7 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	ColumnCondition<T> equalTo(@Nullable T value);
 
 	/**
-	 * Returns a 'equalTo' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
+	 * Returns a 'notEqualTo' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
 	 * @param value the value to use in the condition
 	 * @return a {@link ColumnCondition}
 	 */
@@ -80,7 +80,7 @@ public sealed interface ColumnConditions<T> permits DefaultColumnConditions, Col
 	ColumnCondition<String> like(@Nullable String value);
 
 	/**
-	 * Returns a 'like' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
+	 * Returns a 'notLike' {@link ColumnCondition} or 'isNotNull' in case {@code value} is null.
 	 * @param value the value to use in the condition
 	 * @return a {@link ColumnCondition}
 	 */

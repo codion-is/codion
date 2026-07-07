@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  * Attributes are typically created through entity type factory methods and then configured
  * using the {@link #as()} method to create attribute definitions:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -65,7 +65,8 @@ import static java.util.Objects.requireNonNull;
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.as(
+ *         Customer.TYPE.as()
+ *             .attributes(
  *                 // Column attributes
  *                 Customer.ID.as()
  *                     .primaryKey(),
@@ -111,7 +112,7 @@ import static java.util.Objects.requireNonNull;
  *
  * // Attribute type information
  * Class<String> nameType = Customer.NAME.type().valueClass(); // String.class
- * boolean isNumerical = Customer.ID.type().isNumerical();     // true
+ * boolean isNumeric = Customer.ID.type().isNumeric();     // true
  * boolean isTemporal = Customer.BIRTH_DATE.type().isTemporal(); // true
  *}
  * @param <T> the attribute type

@@ -32,7 +32,7 @@ import java.util.Collection;
  * They provide type-safe filtering using entity instances or collections of entities,
  * automatically handling primary key extraction and null value cases.
  * <p>
- * Foreign key conditions are typically created through the ForeignKey.Factory interface,
+ * Foreign key conditions are typically created through the ForeignKeyConditions interface,
  * which all ForeignKey instances implement:
  * {@snippet :
  * // Find albums by specific artist
@@ -134,7 +134,7 @@ public sealed interface ForeignKeyConditions permits ForeignKey, DefaultForeignK
 	 * Returns a 'notIn' condition.
 	 * @param values the values to use in the condition
 	 * @return a {@link Condition}
-	 * @throws IllegalArgumentException in case {@code values} is null
+	 * @throws NullPointerException in case {@code values} is null
 	 */
 	Condition notIn(Collection<Entity> values);
 

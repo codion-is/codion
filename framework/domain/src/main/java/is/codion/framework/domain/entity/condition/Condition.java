@@ -73,8 +73,9 @@ import static java.util.stream.Collectors.toMap;
  *
  * // Key-based conditions
  * Entity.Key artistKey = entities.primaryKey(Artist.TYPE, 1);
- * List<Entity> albumsByKey = connection.select(
- *     Album.ARTIST_FK.equalTo(Condition.key(artistKey)));
+ * Entity artist = connection.selectSingle(Condition.key(artistKey));
+ * List<Entity> albumsByArtist = connection.select(
+ *     Album.ARTIST_FK.equalTo(artist));
  *
  * // Multiple key conditions
  * List<Entity.Key> trackKeys = entities.primaryKeys(Track.TYPE, 1, 2, 3);
@@ -96,7 +97,7 @@ import static java.util.stream.Collectors.toMap;
  *
  * // Custom conditions for advanced queries
  * List<Entity> customQuery = connection.select(
- *     Artist.CUSTOM_CONDITION.get("searchParam", searchValue));
+ *     Artist.CUSTOM_CONDITION.get(List.of(searchValue)));
  *}
  * @see #all(EntityType)
  * @see #key(Entity.Key)

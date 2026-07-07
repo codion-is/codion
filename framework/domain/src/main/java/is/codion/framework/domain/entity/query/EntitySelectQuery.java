@@ -91,14 +91,14 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 		 * CTEs are prepended to the query using the WITH clause.
 		 * <p>
 		 * Example:
-		 * <pre>{@code
+		 * {@snippet :
 		 * EntitySelectQuery.builder()
 		 *     .with("active_customers")
 		 *     .as("SELECT * FROM customer WHERE active = true")
 		 *     .from("active_customers")
 		 *     .columns("id, name")
-		 *     .build()
-		 * }</pre>
+		 *     .build();
+		 *}
 		 * Generates:
 		 * <pre>{@code
 		 * WITH active_customers AS (SELECT * FROM customer WHERE active = true)
@@ -131,7 +131,6 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 		/**
 		 * @param name the CTE name, must be unique within this query
 		 * @return this Builder instance
-		 * @throws IllegalArgumentException if query contains the WITH keyword
 		 */
 		WithAsStep with(String name);
 

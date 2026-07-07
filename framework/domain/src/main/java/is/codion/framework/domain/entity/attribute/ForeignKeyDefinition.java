@@ -38,7 +38,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * <p>
  * Foreign key definitions control the loading strategy and behavior of entity relationships:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -67,7 +67,8 @@ import static is.codion.common.utilities.Configuration.integerValue;
  *     }
  *
  *     void defineEntities() {
- *         Order.TYPE.as(
+ *         Order.TYPE.as()
+ *             .attributes(
  *                 Order.ID.as()
  *                     .primaryKey(),
  *                 Order.CUSTOMER_ID.as()
@@ -83,7 +84,8 @@ import static is.codion.common.utilities.Configuration.integerValue;
  *                     .caption("Customer"))
  *             .build();
  *
- *         OrderLine.TYPE.as(
+ *         OrderLine.TYPE.as()
+ *             .attributes(
  *                 OrderLine.ORDER_ID.as()
  *                     .primaryKey(),
  *                 OrderLine.PRODUCT_ID.as()

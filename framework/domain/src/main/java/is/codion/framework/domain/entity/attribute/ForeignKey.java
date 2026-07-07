@@ -35,7 +35,7 @@ import java.util.List;
  * <p>
  * Foreign keys inherit from {@link ForeignKeyConditions} to provide condition creation methods:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -46,6 +46,7 @@ import java.util.List;
  *     interface Order {
  *         EntityType TYPE = DOMAIN.entityType("store.order");
  *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<Integer> LINE_NUMBER = TYPE.integerColumn("line_number");
  *         Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
  *         Column<LocalDateTime> ORDER_DATE = TYPE.localDateTimeColumn("order_date");
  *
@@ -66,7 +67,8 @@ import java.util.List;
  *     }
  *
  *     void defineOrder() {
- *         Order.TYPE.as(
+ *         Order.TYPE.as()
+ *             .attributes(
  *                 Order.ID.as()
  *                     .primaryKey(),
  *                 Order.CUSTOMER_ID.as()

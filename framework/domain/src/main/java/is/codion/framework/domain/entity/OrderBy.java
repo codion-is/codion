@@ -32,7 +32,7 @@ import java.util.List;
  * <p>
  * OrderBy can be used in entity definitions as default ordering, or in queries for custom sorting:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -44,7 +44,8 @@ import java.util.List;
  *
  *     void defineCustomer() {
  *         // Default ordering for the entity
- *         Customer.TYPE.as(
+ *         Customer.TYPE.as()
+ *             .attributes(
  *                 Customer.LAST_NAME.as()
  *                     .column(),
  *                 Customer.FIRST_NAME.as()
@@ -271,7 +272,7 @@ public sealed interface OrderBy permits DefaultOrderBy {
 	 *         .build());
 	 *
 	 * // Usage in entity definition as default ordering
-	 * Customer.TYPE.as(
+	 * Customer.TYPE.as().attributes(
 	 *         Customer.LAST_NAME.as()
 	 *             .column(),
 	 *         Customer.FIRST_NAME.as()

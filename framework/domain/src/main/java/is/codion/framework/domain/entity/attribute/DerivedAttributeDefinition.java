@@ -33,7 +33,7 @@ import java.util.List;
  * <p>
  * Derived attributes can be cached for performance or computed on-demand:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -52,7 +52,8 @@ import java.util.List;
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.as(
+ *         Customer.TYPE.as()
+ *             .attributes(
  *                 Customer.FIRST_NAME.as()
  *                     .column(),
  *                 Customer.LAST_NAME.as()

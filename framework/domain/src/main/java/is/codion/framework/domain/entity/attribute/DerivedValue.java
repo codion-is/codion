@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  * Derived attributes are defined using value providers that receive source values
  * and compute the derived result:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
@@ -54,7 +54,8 @@ import static java.util.Objects.requireNonNull;
  *     }
  *
  *     void defineCustomer() {
- *         Customer.TYPE.as(
+ *         Customer.TYPE.as()
+ *             .attributes(
  *                 Customer.FIRST_NAME.as()
  *                     .column(),
  *                 Customer.LAST_NAME.as()

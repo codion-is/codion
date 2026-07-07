@@ -408,17 +408,17 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		if (lower == null) {
-			return comparable.compareTo(upper) > 0;
+			return comparable.compareTo(upper) >= 0;
 		}
 
 		if (upper == null) {
-			return comparable.compareTo(lower) < 0;
+			return comparable.compareTo(lower) <= 0;
 		}
 
 		int lowerCompareResult = comparable.compareTo(lower);
 		int upperCompareResult = comparable.compareTo(upper);
 
-		return lowerCompareResult < 0 || upperCompareResult > 0;
+		return lowerCompareResult <= 0 || upperCompareResult >= 0;
 	}
 
 	private boolean isNotBetween(@Nullable Comparable<T> comparable) {
@@ -433,17 +433,17 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		if (lower == null) {
-			return comparable.compareTo(upper) >= 0;
+			return comparable.compareTo(upper) > 0;
 		}
 
 		if (upper == null) {
-			return comparable.compareTo(lower) <= 0;
+			return comparable.compareTo(lower) < 0;
 		}
 
 		int lowerCompareResult = comparable.compareTo(lower);
 		int upperCompareResult = comparable.compareTo(upper);
 
-		return lowerCompareResult <= 0 || upperCompareResult >= 0;
+		return lowerCompareResult < 0 || upperCompareResult > 0;
 	}
 
 	private boolean isIn(@Nullable Comparable<T> comparable) {

@@ -51,7 +51,7 @@ import static is.codion.common.utilities.Configuration.*;
  * <p>
  * AttributeDefinitions are created using the builder pattern through attribute definers:
  * {@snippet :
- * public class Store extends DefaultDomain {
+ * public class Store extends DomainModel {
  *
  *     interface Product {
  *         EntityType TYPE = DOMAIN.entityType("store.product");
@@ -66,7 +66,8 @@ import static is.codion.common.utilities.Configuration.*;
  *     }
  *
  *     void defineProduct() {
- *         Product.TYPE.as(
+ *         Product.TYPE.as()
+ *             .attributes(
  *                 Product.ID.as()
  *                     .primaryKey()
  *                     .generator(Generator.identity())
@@ -128,7 +129,7 @@ public sealed interface AttributeDefinition<T>
 				permits AbstractAttributeDefinition, DerivedAttributeDefinition, ForeignKeyDefinition, ValueAttributeDefinition {
 
 	/**
-	 * Specifies the default maximum number of fraction digits for double property values<br>
+	 * Specifies the default maximum number of fraction digits for double attribute values<br>
 	 * Note that values are rounded when set.
 	 * <ul>
 	 * <li>Value type: Integer
@@ -139,7 +140,7 @@ public sealed interface AttributeDefinition<T>
 	PropertyValue<Integer> FRACTION_DIGITS = integerValue("codion.domain.fractionDigits", 10);
 
 	/**
-	 * Specifies the default rounding mode used for decimal property values
+	 * Specifies the default rounding mode used for decimal attribute values
 	 * <ul>
 	 * <li>Value type: {@link RoundingMode}
 	 * <li>Default value: {@link RoundingMode#HALF_EVEN}
@@ -267,7 +268,7 @@ public sealed interface AttributeDefinition<T>
 
 	/**
 	 * @return the rounding mode to use when working with decimal values
-	 * @see ValueAttributeDefinition#ROUNDING_MODE
+	 * @see AttributeDefinition#ROUNDING_MODE
 	 * @see #fractionDigits()
 	 */
 	RoundingMode roundingMode();
@@ -304,7 +305,7 @@ public sealed interface AttributeDefinition<T>
 	}
 
 	/**
-	 * Builds a attribute definition instance
+	 * Builds an attribute definition instance
 	 * @param <T> the value type
 	 * @param <B> the builder type
 	 */
@@ -313,7 +314,7 @@ public sealed interface AttributeDefinition<T>
 					DerivedBuilder, ForeignKeyDefinition.Builder, ValueAttributeDefinition.Builder {
 
 		/**
-		 * @return the underying attribute
+		 * @return the underlying attribute
 		 */
 		Attribute<T> attribute();
 
@@ -325,7 +326,7 @@ public sealed interface AttributeDefinition<T>
 		 * @return this builder instance
 		 * @see #hidden(boolean)
 		 */
-		B caption(String caption);
+		B caption(@Nullable String caption);
 
 		/**
 		 * Specifies the key to use when retrieving the caption for this attribute from the entity resource bundle,
@@ -417,7 +418,7 @@ public sealed interface AttributeDefinition<T>
 		B format(Format format);
 
 		/**
-		 * Sets the date/time format pattern used when presenting and inputtind values
+		 * Sets the date/time format pattern used when presenting and inputting values
 		 * @param dateTimePattern the format pattern
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case the pattern is invalid
@@ -450,7 +451,7 @@ public sealed interface AttributeDefinition<T>
 		B mnemonic(char mnemonic);
 
 		/**
-		 * Sets the description for this attribute, used for tooltips f.ex.
+		 * Sets the description for this attribute, used for tooltips, e.g.
 		 * @param description a String describing this attribute
 		 * @return this builder instance
 		 */
@@ -469,7 +470,7 @@ public sealed interface AttributeDefinition<T>
 		B descriptionResource(String descriptionResourceKey);
 
 		/**
-		 * Specifies the key to use when retrieving the description for this attribute from the entity resource bundle,
+		 * Specifies the key to use when retrieving the description for this attribute from the given resource bundle,
 		 * in case it differs from {@link Attribute#name()} + {@link #DESCRIPTION_RESOURCE_SUFFIX}, which is the default value.
 		 * @param resourceBundleName the resource bundle name
 		 * @param descriptionResourceKey the description resource bundle key
