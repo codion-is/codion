@@ -81,7 +81,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
 /**
- * Builds a and starts an application.
+ * Builds and starts an application.
  * @param <M> the application model type
  * @param <P> the application panel type
  * @see #builder(Class, Class)

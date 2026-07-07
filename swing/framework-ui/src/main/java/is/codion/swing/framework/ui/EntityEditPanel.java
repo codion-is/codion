@@ -114,7 +114,32 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
- * A UI component based on a {@link EntityEditModel}.
+ * An abstract UI component for editing a single entity, based on a {@link SwingEntityEditModel}.
+ * <p>
+ * The edit model is a thin context-carrier; the panel's working surface is the {@link SwingEntityEditor}
+ * (accessible via {@link #editor()}) — it holds the edited values, the validation state and the
+ * insert/update/delete tasks. Subclasses implement {@link #initializeUI()} to create and lay out
+ * the input components.
+ * {@snippet :
+ *   public class CustomerEditPanel extends EntityEditPanel {
+ *
+ *       public CustomerEditPanel(SwingEntityEditModel editModel) {
+ *           super(editModel);
+ *       }
+ *
+ *       protected void initializeUI() {
+ *           create().textField(Customer.NAME);
+ *           create().textField(Customer.EMAIL);
+ *
+ *           setLayout(new GridLayout(2, 1, 5, 5));
+ *
+ *           addInputPanel(Customer.NAME);
+ *           addInputPanel(Customer.EMAIL);
+ *       }
+ *   }
+ *}
+ * @see #editor()
+ * @see #initializeUI()
  */
 public abstract class EntityEditPanel extends JPanel {
 
