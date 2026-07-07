@@ -68,7 +68,11 @@ final class Queries {
 			}
 		}
 
-		return queryBuilder.append(NEWLINE).append(WHERE_SPACE_POSTFIX).append(conditionString).toString();
+		if (!conditionString.isEmpty()) {
+			queryBuilder.append(NEWLINE).append(WHERE_SPACE_POSTFIX).append(conditionString);
+		}
+
+		return queryBuilder.toString();
 	}
 
 	/**

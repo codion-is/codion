@@ -34,7 +34,7 @@ import is.codion.framework.domain.entity.query.EntitySelectQuery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +61,8 @@ final class SelectQueries {
 	}
 
 	static Collection<Attribute<?>> attributes(Select select, EntityDefinition definition) {
-		Collection<Attribute<?>> selectAttributes = new HashSet<>(select.attributes().isEmpty() ?
+		//LinkedHashSet, so the resulting column order is stable across JVM runs (ColumnDefinitions are identity-hashed)
+		Collection<Attribute<?>> selectAttributes = new LinkedHashSet<>(select.attributes().isEmpty() ?
 						definition.attributes().selected() : select.attributes());
 		selectAttributes.addAll(select.include());
 		select.exclude().forEach(exclude -> {
@@ -165,8 +166,9 @@ final class SelectQueries {
 		}
 
 		Builder count(Count count) {
-			// For COUNT queries, we build a subquery that selects only the primary key columns
-			// This allows us to count distinct rows while respecting WHERE and HAVING conditions
+			// For COUNT queries, we build a subquery that selects only the primary key columns (or the GROUP BY output)
+			// and count over it, which respects WHERE and HAVING and yields correct counts for aggregate entities.
+			// The rows are unique by construction (primary key / GROUP BY), there is no explicit DISTINCT.
 			return columns(COUNT).from("(" + builder(definition)
 							.select(Select.where(count.where())
 											.having(count.having())
@@ -319,7 +321,9 @@ final class SelectQueries {
 		private String from() {
 			// Use custom FROM clause if provided by EntitySelectQuery, otherwise use appropriate table name
 			if (from == null) {
-				// For UPDATE operations, use the base table; for SELECT, use the view/table optimized for reading
+				// For a FOR UPDATE select we select from the base table, otherwise from the (possibly view based) select table.
+				// Note that this means an entity combining optimistic locking with a select table must keep its column
+				// expressions valid against the base table as well, since the FROM switches but the column clause does not.
 				return forUpdate ? definition.table() : definition.selectTable();
 			}
 
@@ -329,7 +333,8 @@ final class SelectQueries {
 		private List<ColumnDefinition<?>> columnsToSelect(Select select) {
 			Collection<Attribute<?>> selectAttributes = attributes(select, definition);
 			// Always include primary key columns to ensure entities can be properly constructed
-			Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKey().definitions());
+			//LinkedHashSet, so the resulting column order is stable across JVM runs (ColumnDefinitions are identity-hashed)
+			Set<ColumnDefinition<?>> columnsToSelect = new LinkedHashSet<>(definition.primaryKey().definitions());
 			// Add columns for each requested attribute
 			selectAttributes.forEach(attribute -> {
 				if (attribute instanceof ForeignKey) {
@@ -419,7 +424,7 @@ final class SelectQueries {
 			// Build ORDER BY clause for a single column (e.g., "UPPER(e.ename) DESC NULLS LAST")
 			String columnExpression = entityDefinition.columns().definition(orderByColumn.column()).expression();
 
-			return orderByColumn.ignoreCase() ? "UPPER(" + columnExpression + ")" : columnExpression +
+			return (orderByColumn.ignoreCase() ? "UPPER(" + columnExpression + ")" : columnExpression) +
 							(orderByColumn.ascending() ? "" : " DESC") +
 							nullOrderString(orderByColumn.nullOrder());
 		}

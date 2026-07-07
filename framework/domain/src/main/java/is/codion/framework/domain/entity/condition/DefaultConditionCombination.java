@@ -63,17 +63,18 @@ final class DefaultConditionCombination extends AbstractCondition implements Com
 	@Override
 	public String string(EntityDefinition definition) {
 		requireNonNull(definition);
-		if (conditions.isEmpty()) {
-			return "";
-		}
-		if (conditions.size() == 1) {
-			return conditions.get(0).string(definition);
-		}
-
-		return conditions.stream()
+		List<String> strings = conditions.stream()
 						.map(condition -> condition.string(definition))
 						.filter(string -> !string.isEmpty())
-						.collect(joining(toString(conjunction), "(", ")"));
+						.collect(toList());
+		if (strings.isEmpty()) {
+			return "";
+		}
+		if (strings.size() == 1) {
+			return strings.get(0);
+		}
+
+		return strings.stream().collect(joining(toString(conjunction), "(", ")"));
 	}
 
 	@Override

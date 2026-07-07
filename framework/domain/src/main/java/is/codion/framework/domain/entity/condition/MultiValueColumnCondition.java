@@ -98,7 +98,7 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		for (int i = 0; i < valueCount; i++) {
 			stringBuilder.append(valuePlaceholder);
 			if (cnt++ == IN_CLAUSE_LIMIT && i < valueCount - 1) {
-				stringBuilder.append(negated ? ") and " : ") or ").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
+				stringBuilder.append(negated ? ") AND " : ") OR ").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
 				cnt = 1;
 			}
 			else if (i < valueCount - 1) {
