@@ -82,6 +82,7 @@ import java.time.OffsetDateTime;
 
 /**
  * A factory for {@link ComponentBuilder} instances.
+ * @see is.codion.swing.common.ui.dialog.Dialogs
  */
 public final class Components {
 

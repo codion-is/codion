@@ -73,14 +73,14 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B name(@Nullable String name);
 
 	/**
-	 * Is overridden by subsequent calls to {@link #label(JLabel)} or {@link #label(Consumer)}.
+	 * Overridden by {@link #label(JLabel)} and {@link #label(Consumer)}.
 	 * @param text the label text
 	 * @return this builder instance
 	 */
 	B label(String text);
 
 	/**
-	 * Is overridden by subsequent calls to {@link #label(String)} or {@link #label(Consumer)}.
+	 * Overridden by {@link #label(String)} and {@link #label(Consumer)}.
 	 * @param label the label for the component
 	 * @return this builder instance
 	 * @see JLabel#setLabelFor(Component)
@@ -88,7 +88,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B label(@Nullable JLabel label);
 
 	/**
-	 * Is overridden by subsequent calls to {@link #label(String)} or {@link #label(JLabel)}.
+	 * Overridden by {@link #label(String)} and {@link #label(JLabel)}.
 	 * @param label configures the component label builder
 	 * @return this builder instance
 	 * @see JLabel#setLabelFor(Component)
@@ -105,6 +105,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B focusable(boolean focusable);
 
 	/**
+	 * Overrides {@link #focusable(boolean)}.
 	 * @param focusable the state controlling the component focusable state
 	 * @return this builder instance
 	 * @see JComponent#setFocusable(boolean)
@@ -178,7 +179,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	/**
 	 * <p>Note that in case of {@link JTextArea} the {@link KeyEvents#MENU_SHORTCUT_MASK}
 	 * modifier is added for transferring the focus forward.
-	 * @param transferFocusOnEnter if true then the compnent transfers focus on enter (shift-enter for backwards)
+	 * @param transferFocusOnEnter if true then the component transfers focus on enter (shift-enter for backwards)
 	 * @return this builder instance
 	 */
 	B transferFocusOnEnter(boolean transferFocusOnEnter);
@@ -194,6 +195,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B transferFocusOnEnter(TransferFocusOnEnter transferFocusOnEnter);
 
 	/**
+	 * Overridden by {@link #toolTipText(Observable)}.
 	 * @param toolTipText a static tool tip text
 	 * @return this builder instance
 	 * @see #toolTipText(Observable)
@@ -202,7 +204,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B toolTipText(@Nullable String toolTipText);
 
 	/**
-	 * Overrides {@link #toolTipText(String)}
+	 * Overrides {@link #toolTipText(String)}.
 	 * @param toolTipText a dynamic tool tip text
 	 * @return this builder instance
 	 * @see JComponent#setToolTipText(String)
@@ -219,18 +221,21 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B enabled(boolean enabled);
 
 	/**
+	 * Overrides {@link #enabled(boolean)}.
 	 * @param enabled the state controlling the component enabled status
 	 * @return this builder instance
 	 */
 	B enabled(@Nullable ObservableState enabled);
 
 	/**
+	 * Overridden by {@link #popupMenu(Function)}.
 	 * @param popupMenuControl a function, receiving the component being built, providing a control to add to the popup menu
 	 * @return this builder instance
 	 */
 	B popupControl(Function<C, Control> popupMenuControl);
 
 	/**
+	 * Overridden by {@link #popupMenu(Function)}.
 	 * @param popupMenuControls a function, receiving the component being built, providing controls to add to the popup menu
 	 * @return this builder instance
 	 */
@@ -238,6 +243,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 
 	/**
 	 * Use {@link ControlsBuilder#removeAll()} in order to clear any previously added controls.
+	 * Overridden by {@link #popupMenu(Function)}.
 	 * @param popupMenuControl a function, receiving the component being built and the {@link ControlsBuilder} on which to base the popup menu.
 	 * @return this builder instance
 	 * @see #popupControl(Function)
@@ -246,7 +252,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B popupControls(BiConsumer<C, ControlsBuilder> popupMenuControl);
 
 	/**
-	 * Overrides {@link #popupControls(Function)}, {@link #popupControls(BiConsumer)} and {@link #popupControl(Function)}
+	 * Overrides {@link #popupControls(Function)}, {@link #popupControls(BiConsumer)} and {@link #popupControl(Function)}.
 	 * @param popupMenu a function, receiving the component being built, providing the popup menu
 	 * @return this builder instance
 	 * @see JComponent#setComponentPopupMenu(JPopupMenu)
@@ -264,7 +270,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	/**
 	 * Derives the component font from its default font.
 	 * The operator is applied to the component's default font during build.
-	 * <p>Is overridden by a font set via {@link #font(Font)}.
+	 * <p>Overridden by {@link #font(Font)}.
 	 * @param font provides the font to use, given the component's default font
 	 * @return this builder instance
 	 * @see JComponent#setFont(Font)
@@ -303,6 +309,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B visible(boolean visible);
 
 	/**
+	 * Overrides {@link #visible(boolean)}.
 	 * @param visible the state controlling the component visible state
 	 * @return this builder instance
 	 * @see JComponent#setVisible(boolean)

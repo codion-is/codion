@@ -23,6 +23,7 @@ import is.codion.swing.common.ui.dialog.OkCancelDialogBuilder.OkCancelDialogComp
 
 /**
  * A utility class for displaying Dialogs.
+ * @see is.codion.swing.common.ui.component.Components
  */
 public final class Dialogs {
 
