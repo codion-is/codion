@@ -78,7 +78,7 @@ public final class DatabaseObjectMapperTest {
 		assertEquals(select.include(), readCondition.include());
 		assertEquals(select.exclude(), readCondition.exclude());
 		assertTrue(readCondition.forUpdate());
-		assertEquals(42, readCondition.timeout());
+		assertEquals(42, readCondition.timeout().orElseThrow());
 		assertEquals(select, readCondition);
 
 		select = Select.where(Employee.EMPNO.equalTo(1)).build();

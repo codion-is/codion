@@ -159,6 +159,9 @@ public interface LocalEntityConnection extends EntityConnection {
 	boolean limitReferenceDepth();
 
 	/**
+	 * Note that disabling the reference depth limit (or specifying a reference depth of -1) removes the only
+	 * bound on foreign key population; a cyclic foreign key reference in the data then causes unbounded
+	 * recursion and a {@link StackOverflowError}, since no cycle detection is performed.
 	 * @param limitReferenceDepth false to override the reference depth limit specified by conditions or entities
 	 * @see Select.Builder#referenceDepth(int)
 	 */
@@ -179,6 +182,8 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * on the connection and auto-commit is assumed to be disabled. The connection is simply used 'as is'.
 	 * Note that setting the connection to null causes all methods requiring it to throw a {@link DatabaseException}
 	 * until a non-null connection is set.
+	 * Note that this does not reset the transaction state; the caller is responsible for ensuring no transaction
+	 * is considered open when swapping the underlying connection.
 	 * @param connection the connection
 	 */
 	void setConnection(@Nullable Connection connection);

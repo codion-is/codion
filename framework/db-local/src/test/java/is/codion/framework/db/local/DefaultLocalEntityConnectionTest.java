@@ -1390,6 +1390,59 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void insertSelectIncludesAllLoadedLazyColumns() {
+		Random random = new Random();
+		byte[] lazy1 = new byte[512];
+		byte[] lazy2 = new byte[512];
+		random.nextBytes(lazy1);
+		random.nextBytes(lazy2);
+		Entity employee = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.NAME, "lazyboth")
+						.with(Employee.DEPARTMENT, 10)
+						.with(Employee.SALARY, 1300d)
+						.with(Employee.DATA_LAZY, lazy1)
+						.with(Employee.DATA_LAZY2, lazy2)
+						.build();
+		connection.startTransaction();
+		try {
+			Entity inserted = connection.insertSelect(employee);
+			//both loaded lazy columns must be returned, not just the first one
+			assertArrayEquals(lazy1, inserted.get(Employee.DATA_LAZY));
+			assertArrayEquals(lazy2, inserted.get(Employee.DATA_LAZY2));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void deleteDuplicateKeys() {
+		Entity employee = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.NAME, "todelete")
+						.with(Employee.DEPARTMENT, 10)
+						.with(Employee.SALARY, 1300d)
+						.build();
+		connection.startTransaction();
+		try {
+			Entity inserted = connection.insertSelect(employee);
+			//duplicate keys must not cause a spurious DeleteEntityException
+			connection.delete(asList(inserted.primaryKey(), inserted.primaryKey()));
+			assertTrue(connection.select(Employee.ID.equalTo(inserted.get(Employee.ID))).isEmpty());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void functionLeavingTransactionOpenIsRolledBackAndThrows() {
+		//a function that opens a transaction and returns without closing it is a bug in the function,
+		//the boundary rolls the abandoned transaction back and surfaces an IllegalStateException
+		assertThrows(IllegalStateException.class, () -> connection.execute(FUNCTION_LEAK_TRANSACTION));
+		assertFalse(connection.transactionOpen());
+	}
+
+	@Test
 	void testUUIDPrimaryKeyColumnWithDefaultValue() {
 		Entity entity = ENTITIES.entity(UUIDTestDefault.TYPE)
 						.with(UUIDTestDefault.DATA, "test")

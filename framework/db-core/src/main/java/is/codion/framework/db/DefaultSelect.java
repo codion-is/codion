@@ -56,7 +56,7 @@ final class DefaultSelect implements Select, Serializable {
 	private final boolean forUpdate;
 	private final @Nullable Integer limit;
 	private final @Nullable Integer offset;
-	private final int timeout;
+	private final @Nullable Integer timeout;
 
 	private DefaultSelect(DefaultBuilder builder) {
 		this.where = builder.where;
@@ -126,8 +126,8 @@ final class DefaultSelect implements Select, Serializable {
 	}
 
 	@Override
-	public int timeout() {
-		return timeout;
+	public OptionalInt timeout() {
+		return timeout == null ? OptionalInt.empty() : OptionalInt.of(timeout);
 	}
 
 	@Override
@@ -204,7 +204,7 @@ final class DefaultSelect implements Select, Serializable {
 		private boolean forUpdate;
 		private @Nullable Integer limit;
 		private @Nullable Integer offset;
-		private int timeout = 120;
+		private @Nullable Integer timeout;
 
 		DefaultBuilder(Condition where, Condition having) {
 			this.where = requireNonNull(where);

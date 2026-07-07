@@ -64,6 +64,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -398,7 +400,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		if (requireNonNull(keys, "keys may not be null").isEmpty()) {
 			return;
 		}
-		Map<EntityType, List<Key>> keysByEntityType = groupByType(keys);
+		Collection<Key> distinctKeys = keys instanceof Set ? keys : new LinkedHashSet<>(keys);
+		Map<EntityType, List<Key>> keysByEntityType = groupByType(distinctKeys);
 		throwIfReadOnly(keysByEntityType.keySet());
 
 		List<?> statementValues = emptyList();
@@ -422,8 +425,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						}
 					}
 				}
-				if (keys.size() != deleteCount) {
-					throw new DeleteEntityException(deleteCount + " rows deleted, expected " + keys.size());
+				if (distinctKeys.size() != deleteCount) {
+					throw new DeleteEntityException(deleteCount + " rows deleted, expected " + distinctKeys.size());
 				}
 				commitIfTransactionIsNotOpen();
 			}
@@ -469,7 +472,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			try {
 				List<Entity> result = new ArrayList<>();
 				for (List<Key> entityTypeKeys : groupByType(keys).values()) {
-					result.addAll(query(where(keys(entityTypeKeys)).build()));
+					int keysPerStatement = keysPerStatement(entityTypeKeys.get(0));
+					for (int i = 0; i < entityTypeKeys.size(); i += keysPerStatement) {
+						result.addAll(query(where(keys(entityTypeKeys.subList(i, Math.min(i + keysPerStatement, entityTypeKeys.size())))).build()));
+					}
 				}
 				commitIfTransactionIsNotOpen();
 
@@ -606,10 +612,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
 		synchronized (lock) {
 			try {
+				List<Entity> entityList = new ArrayList<>(entities);
 				for (ForeignKeyDefinition foreignKeyReference : hardForeignKeyReferences(entityTypes.iterator().next())) {
-					List<Entity> dependencies = query(where(foreignKeyReference.attribute().in(entities)).build(), 0);//bypass caching
-					if (!dependencies.isEmpty()) {
-						dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
+					int entitiesPerStatement = entitiesPerStatement(foreignKeyReference.attribute().references().size());
+					for (int i = 0; i < entityList.size(); i += entitiesPerStatement) {
+						List<Entity> batch = entityList.subList(i, Math.min(i + entitiesPerStatement, entityList.size()));
+						List<Entity> dependencies = query(where(foreignKeyReference.attribute().in(batch)).build(), 0);//bypass caching
+						if (!dependencies.isEmpty()) {
+							dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
+						}
 					}
 				}
 				commitIfTransactionIsNotOpen();
@@ -636,14 +647,24 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		tracer.enter(EXECUTE, functionType, parameter);
 		try {
 			synchronized (lock) {
-				return domain.function(functionType).execute((C) this, parameter);
+				boolean transactionWasOpen = transactionOpen;
+				try {
+					R result = domain.function(functionType).execute((C) this, parameter);
+					commitIfTransactionIsNotOpen();
+					if (!transactionWasOpen && transactionOpen) {
+						throw new IllegalStateException("Function " + functionType.name() + " returned without closing the transaction it opened");
+					}
+
+					return result;
+				}
+				catch (Exception e) {
+					exception = e;
+					rollbackOnFailure(transactionWasOpen);
+					LOG.error(createLogMessage(functionType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
+					throwDatabaseException(e, OTHER);
+					throw Exceptions.runtime(e);
+				}
 			}
-		}
-		catch (Exception e) {
-			exception = e;
-			LOG.error(createLogMessage(functionType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
-			throwDatabaseException(e, OTHER);
-			throw Exceptions.runtime(e);
 		}
 		finally {
 			tracer.exit(EXECUTE, exception);
@@ -662,15 +683,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		tracer.enter(EXECUTE, procedureType, parameter);
 		try {
 			synchronized (lock) {
-				domain.procedure(procedureType).execute((C) this, parameter);
+				boolean transactionWasOpen = transactionOpen;
+				try {
+					domain.procedure(procedureType).execute((C) this, parameter);
+					commitIfTransactionIsNotOpen();
+					if (!transactionWasOpen && transactionOpen) {
+						throw new IllegalStateException("Procedure " + procedureType.name() + " returned without closing the transaction it opened");
+					}
+				}
+				catch (Exception e) {
+					exception = e;
+					rollbackOnFailure(transactionWasOpen);
+					LOG.error(createLogMessage(procedureType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
+					throwDatabaseException(e, OTHER);
+					throw Exceptions.runtime(e);
+				}
 			}
-		}
-		catch (Exception e) {
-			exception = e;
-			rollbackQuietlyIfTransactionIsNotOpen();
-			LOG.error(createLogMessage(procedureType.name(), parameter instanceof List ? (List<?>) parameter : singletonList(parameter), emptyList(), e), e);
-			throwDatabaseException(e, OTHER);
-			throw Exceptions.runtime(e);
 		}
 		finally {
 			tracer.exit(EXECUTE, exception);
@@ -726,11 +754,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public Connection connection() {
-		try {
-			return verifyOpenConnection();
-		}
-		catch (SQLException e) {
-			throw new DatabaseException(e);
+		synchronized (lock) {
+			try {
+				return verifyOpenConnection();
+			}
+			catch (SQLException e) {
+				throw new DatabaseException(e);
+			}
 		}
 	}
 
@@ -963,7 +993,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	/**
 	 * Selects the given entities for update (if that is supported by the underlying dbms)
 	 * and checks if they have been modified by comparing the attribute values to the current values in the database.
-	 * Note that this does not include BLOB columns or columns that are readOnly.
+	 * Note that read-only columns are excluded, and lazily loaded columns (such as BLOBs) are only compared
+	 * when they have been loaded into the entities being checked.
 	 * The calling method is responsible for releasing the select for update lock.
 	 * @param entitiesByEntityType the entities to check, mapped to entityType
 	 * @throws SQLException in case of exception
@@ -1041,6 +1072,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 
 		return result;
+	}
+
+	/**
+	 * Synchronized entry point for {@link BufferedEntityResultIterator}, whose iteration runs outside the
+	 * connection monitor. Serializes the foreign key population queries against other operations sharing the connection.
+	 * @param entities the entities for which to set the foreign key entity values
+	 * @param select the select
+	 * @throws SQLException in case of a database exception
+	 */
+	void populateForeignKeysLocked(List<Entity> entities, Select select) throws SQLException {
+		synchronized (lock) {
+			populateForeignKeys(entities, select, 0);
+		}
 	}
 
 	/**
@@ -1124,11 +1168,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private int keysPerStatement(Key key) {
+		return valuesPerStatement(key.columns().size());
+	}
+
+	private int entitiesPerStatement(int referencesPerEntity) {
+		return valuesPerStatement(referencesPerEntity);
+	}
+
+	private int valuesPerStatement(int columnsPerValue) {
 		if (database.maximumParameters() == Integer.MAX_VALUE) {
 			return Integer.MAX_VALUE;
 		}
+		if (columnsPerValue == 0) {
+			throw new IllegalArgumentException("Can not batch statements for a keyless entity");
+		}
 
-		return database.maximumParameters() / key.columns().size();
+		return Math.max(1, database.maximumParameters() / columnsPerValue);
 	}
 
 	private Key createKey(Entity entity, Collection<Column<?>> keyColumns) {
@@ -1149,11 +1204,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<Object> statementValues = statementValues(select.where(), select.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(select.where(), select.having());
 		try {
-			statement = prepareStatement(selectQuery, false, select.timeout());
+			statement = prepareStatement(selectQuery, false, select.timeout().orElse(queryTimeout));
 			resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues);
 
 			return new DefaultEntityResultIterator(statement, resultSet,
-							new EntityResultPacker(entityDefinition, queryBuilder.selectedColumns(), database));
+							new EntityResultPacker(entityDefinition, queryBuilder.selectedColumns(), database), database);
 		}
 		catch (SQLException e) {
 			closeSilently(resultSet);
@@ -1396,6 +1451,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 	}
 
+	private void rollbackOnFailure(boolean transactionWasOpen) {
+		if (!transactionWasOpen && transactionOpen) {
+			//the operation opened a transaction and abandoned it, roll it back
+			//instead of leaving the connection stuck inside it for the next caller
+			rollbackTransaction();
+		}
+		else {
+			rollbackQuietlyIfTransactionIsNotOpen();
+		}
+	}
+
 	private String createLogMessage(@Nullable String sqlStatement, List<?> values, List<ColumnDefinition<?>> columnDefinitions, @Nullable Exception exception) {
 		StringBuilder logMessage = new StringBuilder(user().toString()).append("\n");
 		String valueString = "[" + createValueString(values, columnDefinitions) + "]";
@@ -1467,7 +1533,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private static User user(Connection connection) {
 		validate(connection);
 		try {
-			return META_DATA_USERS.computeIfAbsent(connection.getMetaData().getUserName(), User::user);
+			String username = connection.getMetaData().getUserName();
+			if (username == null) {
+				throw new DatabaseException("The database did not provide a username via connection metadata");
+			}
+
+			return META_DATA_USERS.computeIfAbsent(username, User::user);
 		}
 		catch (SQLException e) {
 			throw new DatabaseException(e, "Failed to retrieve database username from connection metadata. Connection may be invalid or database may not support getUserName()");
@@ -1523,11 +1594,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			if (lazyColumns.isEmpty()) {
 				break;
 			}
-			for (Column<?> column : lazyColumns) {
+			for (Iterator<Column<?>> iterator = lazyColumns.iterator(); iterator.hasNext(); ) {
+				Column<?> column = iterator.next();
 				if (entity.contains(column)) {
 					included.add(column);
-					lazyColumns.remove(column);
-					break;
+					iterator.remove();
 				}
 			}
 		}
