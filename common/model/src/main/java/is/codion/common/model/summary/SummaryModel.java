@@ -81,7 +81,7 @@ public interface SummaryModel {
 	}
 
 	/**
-	 * Provides the values on which to base the summary .
+	 * Provides the values on which to base the summary.
 	 * @param <T> the value type
 	 */
 	interface SummaryValues<T extends Number> {
@@ -98,7 +98,7 @@ public interface SummaryModel {
 		Collection<T> values();
 
 		/**
-		 * @return true if the values provided by {@link #values()} is a subset of the total available values
+		 * @return true if the values provided by {@link #values()} are a subset of the total available values
 		 */
 		boolean subset();
 

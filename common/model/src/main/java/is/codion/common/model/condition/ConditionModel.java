@@ -55,7 +55,7 @@ public interface ConditionModel<T> {
 	 * Specifies whether wildcards are added to string values
 	 * <ul>
 	 * <li>Value type: {@link Wildcard}
-	 * <li>Default value: {@link Wildcard#POSTFIX}
+	 * <li>Default value: {@link Wildcard#PREFIX_AND_POSTFIX}
 	 * </ul>
 	 */
 	PropertyValue<Wildcard> WILDCARD =
@@ -81,7 +81,7 @@ public interface ConditionModel<T> {
 		 */
 		NONE,
 		/**
-		 * Wildard added at front
+		 * Wildcard added at front
 		 */
 		PREFIX,
 		/**
@@ -100,6 +100,8 @@ public interface ConditionModel<T> {
 		}
 
 		/**
+		 * Note that the description is resolved from a resource bundle when this enum is loaded,
+		 * so a {@link java.util.Locale} change afterwards has no effect.
 		 * @return a description
 		 */
 		public String description() {
@@ -155,7 +157,7 @@ public interface ConditionModel<T> {
 	void clear();
 
 	/**
-	 * @return a {@link Value} controlling on the operator
+	 * @return a {@link Value} controlling the operator
 	 */
 	Value<Operator> operator();
 
@@ -190,6 +192,8 @@ public interface ConditionModel<T> {
 
 	/**
 	 * Provides condition operands.
+	 * <p>Note that each method is called exactly once, during model construction, and the returned
+	 * instance becomes the model's operand; a reference retained and mutated afterwards is not seen by the model.
 	 * @param <T> the value type
 	 */
 	interface Operands<T> {
@@ -339,7 +343,7 @@ public interface ConditionModel<T> {
 		boolean in(Collection<T> values);
 
 		/**
-		 * <p>Sets the operator to {@link Operator#IN} and the operands to {@code values}.
+		 * <p>Sets the operator to {@link Operator#NOT_IN} and the operands to {@code values}.
 		 * <p>Enables the condition if {@code values} is not empty, otherwise disables it.
 		 * @param values the operands
 		 * @return true if the condition state changed
@@ -445,14 +449,13 @@ public interface ConditionModel<T> {
 		Builder<T> dateTimePattern(@Nullable String dateTimePattern);
 
 		/**
-		 * @param caseSensitive true if the model should be case-sensitive
+		 * @param caseSensitive true if the model should be case-sensitive, {@link ConditionModel#CASE_SENSITIVE} by default
 		 * @return this builder instance
 		 */
 		Builder<T> caseSensitive(boolean caseSensitive);
 
 		/**
-		 * Default true.
-		 * @param autoEnable true if the model should auto-enable
+		 * @param autoEnable true if the model should auto-enable, true by default
 		 * @return this builder instance
 		 */
 		Builder<T> autoEnable(boolean autoEnable);

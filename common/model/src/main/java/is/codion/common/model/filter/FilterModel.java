@@ -104,7 +104,7 @@ public interface FilterModel<T> {
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
 		 * <br><br>
 		 * Retains the selection and filtering. Sorts the refreshed data.
-		 * @param onResult called on the EDT after a successful refresh
+		 * @param onResult called on the UI thread after a successful refresh
 		 * @see Refresher#active()
 		 * @see Refresher#result()
 		 * @see Refresher#async()
@@ -117,7 +117,7 @@ public interface FilterModel<T> {
 		Collection<T> get();
 
 		/**
-		 * It is up to the implementation whether the included items are sorted when the items are set.
+		 * Sets the items, replacing the current ones.
 		 * @param items the items
 		 */
 		void set(Collection<T> items);
@@ -134,7 +134,7 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>Adds the given items to this model.
-		 * <p>Items that pass the {@link IncludedItems#predicate()} are is appended
+		 * <p>Items that pass the {@link IncludedItems#predicate()} are appended
 		 * to the included items, which are then sorted if sorting is enabled.
 		 * <p>If no items pass the {@link IncludedItems#predicate()}, they will
 		 * be filtered right away.
@@ -163,7 +163,7 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Replaces the first occurrence of the given item. If the item is not found this method has no effect.
 		 * <p>Note that this method respects the include predicate, so a
-		 * currently filtered item may be replaced with an included item and vice verse.
+		 * currently filtered item may be replaced with an included item and vice versa.
 		 * <p>If the included items change they are sorted if sorting is enabled.
 		 * @param item the item to replace
 		 * @param replacement the replacement item
@@ -174,9 +174,9 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Replaces the given map keys with their respective values.
 		 * <p>Note that this method respects the include predicate, so a
-		 * currently filtered item may be replaced with an included item and vice verse.
+		 * currently filtered item may be replaced with an included item and vice versa.
 		 * <p>If the included items change they are sorted if sorting is enabled.
-		 * @param replacements
+		 * @param replacements the items to replace mapped to their replacements
 		 */
 		void replace(Map<T, T> replacements);
 
@@ -196,7 +196,7 @@ public interface FilterModel<T> {
 		FilteredItems<T> filtered();
 
 		/**
-		 * Returns true if the model contain the given item, as included or filtered.
+		 * Returns true if the model contains the given item, as included or filtered.
 		 * @param item the item
 		 * @return true if this model contains the item
 		 */
@@ -242,6 +242,7 @@ public interface FilterModel<T> {
 			}
 
 			/**
+			 * Provides a {@link SortStep}
 			 * @param <T> the item type
 			 */
 			interface SelectionStep<T> {
@@ -254,6 +255,7 @@ public interface FilterModel<T> {
 			}
 
 			/**
+			 * Provides a {@link Builder}
 			 * @param <T> the item type
 			 */
 			interface SortStep<T> {
@@ -272,10 +274,10 @@ public interface FilterModel<T> {
 			Builder<T> validator(Predicate<T> validator);
 
 			/**
-			 * @param include the include predicate
+			 * @param included the include predicate
 			 * @return this builder
 			 */
-			Builder<T> include(IncludePredicate<T> include);
+			Builder<T> included(IncludePredicate<T> included);
 
 			/**
 			 * @param itemsListener the {@link ItemsListener} to add
@@ -489,7 +491,7 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
-		 * @param onResult called on the EDT with the result after a successful refresh, may be null
+		 * @param onResult called on the UI thread with the result after a successful refresh, may be null
 		 * @see #active()
 		 * @see #result()
 		 * @see #async()

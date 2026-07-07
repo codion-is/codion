@@ -41,7 +41,7 @@ public interface Dispatcher {
 		}
 
 		@Override
-		public boolean isUserInterfaceThread() {
+		public boolean userInterfaceThread() {
 			return false;
 		}
 	};
@@ -57,7 +57,7 @@ public interface Dispatcher {
 	/**
 	 * @return true if the calling thread is the UI thread
 	 */
-	boolean isUserInterfaceThread();
+	boolean userInterfaceThread();
 
 	/**
 	 * Returns the {@link Dispatcher} implementation, as provided via {@link ServiceLoader},

@@ -80,7 +80,7 @@ public class DefaultFilterModelItemsTest {
 							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> selection)
 							.sort(new TestSort())
-							.include(includePredicate)
+							.included(includePredicate)
 							.build();
 		}
 
@@ -247,7 +247,7 @@ public class DefaultFilterModelItemsTest {
 							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> selection)
 							.sort(new TestSort())
-							.include(includePredicate)
+							.included(includePredicate)
 							.build();
 		}
 
@@ -292,7 +292,7 @@ public class DefaultFilterModelItemsTest {
 							.<String>refresher(i -> Refresher.<String>builder().build())
 							.selection(included -> new TestMultiSelection())
 							.sort(sort)
-							.include(includePredicate)
+							.included(includePredicate)
 							.build();
 
 			items.add(asList("a", "b", "c", "d"));

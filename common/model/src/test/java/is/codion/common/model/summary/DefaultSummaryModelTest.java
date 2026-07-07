@@ -91,7 +91,8 @@ public class DefaultSummaryModelTest {
 	@Test
 	void intAverage() {
 		testIntModel.summary().set(ColumnSummary.AVERAGE);
-		assertEquals(numberFormat.format(2.5), testIntModel.summaryText().get());
+		// null is excluded, mean of [1, 2, 3, 4, 5] = 3
+		assertEquals(numberFormat.format(3.0), testIntModel.summaryText().get());
 	}
 
 	@Test
@@ -121,7 +122,8 @@ public class DefaultSummaryModelTest {
 	@Test
 	void doubleAverage() {
 		testDoubleModel.summary().set(ColumnSummary.AVERAGE);
-		assertEquals(numberFormat.format(2.75), testDoubleModel.summaryText().get());
+		// null is excluded, mean of [1.1, 2.2, 3.3, 4.4, 5.5] = 3.3
+		assertEquals(numberFormat.format(3.3), testDoubleModel.summaryText().get());
 	}
 
 	@Test

@@ -355,7 +355,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		requireNonNull(task);
 		cancelCurrentWorker();
 		currentTask = task;
-		if (async().is() && Dispatcher.instance().isUserInterfaceThread()) {
+		if (async().is() && Dispatcher.instance().userInterfaceThread()) {
 			worker = ProgressWorker.builder()
 							.task(new ExecutionTask(task))
 							.execute();

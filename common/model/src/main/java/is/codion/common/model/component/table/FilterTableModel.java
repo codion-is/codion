@@ -43,7 +43,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>A UI-agnostic table model based on {@link FilterModel}, supporting selection, filtering and sorting.
  * A {@link FilterTableModel} can not contain null items.
- * <p>The Swing-specific {@code is.codion.swing.common.model.component.table.SwingTableModel} extends this with
+ * <p>The Swing-specific {@code is.codion.swing.common.model.component.table.SwingFilterTableModel} extends this with
  * {@code javax.swing.table.TableModel}, adding cell editing and the {@code fireTableXxx} surface.
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
@@ -135,7 +135,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 	/**
 	 * A builder for a {@link FilterTableModel}.
 	 * @param <R> the row type
-	 * @param <C> the column identifer type
+	 * @param <C> the column identifier type
 	 */
 	interface Builder<R, C> {
 
@@ -149,7 +149,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 			 * @param <C> the type used to identify columns
 			 * @param columns the columns
 			 * @return a {@link Builder} based on the given columns
-			 * @throws NullPointerException in case {@code columnValues} is null
+			 * @throws NullPointerException in case {@code columns} is null
 			 */
 			<R, C> Builder<R, C> columns(TableColumns<R, C> columns);
 		}
@@ -188,8 +188,7 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		Builder<R, C> included(Predicate<R> included);
 
 		/**
-		 * Default false.
-		 * @param refresh true if the model items should be refreshed on init
+		 * @param refresh true if the model items should be refreshed on initialization, false by default
 		 * @return this builder instance
 		 */
 		Builder<R, C> refresh(boolean refresh);
@@ -389,10 +388,10 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 
 		/**
 		 * <p>Replaces newlines inside strings.
-		 * <p>Note that strings are always trimmed so newlines at the
-		 * beginning and end of strings are trimmed before replacement is performed.
+		 * <p>Note that strings are always trimmed, regardless of this setting, so newlines at the
+		 * beginning and end of strings are removed before replacement is performed.
 		 * <p>Default replacement is a single whitespace (" ").
-		 * <p>Set to null to keep newlines in place.
+		 * <p>Set to null to keep internal newlines in place.
 		 * @param replacement the string to use when replacing newlines
 		 * @return this Export instance
 		 */

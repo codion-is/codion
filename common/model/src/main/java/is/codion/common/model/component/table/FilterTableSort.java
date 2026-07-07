@@ -108,19 +108,19 @@ public interface FilterTableSort<R, C> extends FilterModel.Sort<R> {
 		 * @param sortOrder the sorting order
 		 * @throws IllegalStateException in case sorting is locked for this column
 		 * @see #add(SortOrder)
-		 * @see #columns()
+		 * @see FilterTableSort#columns()
 		 * @see #locked()
 		 */
 		void set(SortOrder sortOrder);
 
 		/**
 		 * Adds the given column sorting order to the currently sorted columns.
-		 * If no column sorting is enabled, this call is the equivilent to using
+		 * If no column sorting is enabled, this call is the equivalent to using
 		 * {@link #set(SortOrder)}.
 		 * @param sortOrder the sorting order
 		 * @throws IllegalStateException in case sorting is locked for this column
 		 * @see #set(SortOrder)
-		 * @see #columns()
+		 * @see FilterTableSort#columns()
 		 * @see #locked()
 		 */
 		void add(SortOrder sortOrder);

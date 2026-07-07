@@ -27,6 +27,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for working with {@code Preferences.userRoot()}.
+ * <p>See {@link FilePreferences} for a file-based JSON alternative without the {@link java.util.prefs.Preferences} length restrictions.
  */
 public final class UserPreferences {
 
@@ -57,7 +58,7 @@ public final class UserPreferences {
 	 * @param value the preference value to associate with the given key
 	 */
 	public static void put(String key, String value) {
-		preferences().put(requireNonNull(key), value);
+		preferences().put(requireNonNull(key), requireNonNull(value));
 	}
 
 	/**

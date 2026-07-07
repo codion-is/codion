@@ -67,7 +67,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private DefaultFilterModelItems(DefaultBuilder<R> builder) {
 		this.sort = builder.sort;
 		this.validator = builder.validator;
-		this.included = new DefaultIncludedItems(builder.include);
+		this.included = new DefaultIncludedItems(builder.included);
 		this.filtered = new DefaultFilteredItems();
 		this.refresher = builder.refresher.apply(this);
 		this.selection = builder.selection.apply(included);
@@ -614,7 +614,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		private final Collection<ItemsListener> listeners = new ArrayList<>(1);
 		private final Sort<T> sort;
 
-		private IncludePredicate<T> include = new DefaultIncludePredicate<>();
+		private IncludePredicate<T> included = new DefaultIncludePredicate<>();
 		private Predicate<T> validator = new ValidPredicate<>();
 
 		private DefaultBuilder(Function<IncludedItems<T>, MultiSelection<T>> selection,
@@ -631,8 +631,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public Builder<T> include(IncludePredicate<T> include) {
-			this.include = requireNonNull(include);
+		public Builder<T> included(IncludePredicate<T> included) {
+			this.included = requireNonNull(included);
 			return this;
 		}
 
