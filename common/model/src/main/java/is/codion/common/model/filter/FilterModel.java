@@ -104,7 +104,8 @@ public interface FilterModel<T> {
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
 		 * <br><br>
 		 * Retains the selection and filtering. Sorts the refreshed data.
-		 * @param onResult called on the UI thread after a successful refresh
+		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks.
+		 * @param onResult called after a successful refresh (on the UI thread when refreshed asynchronously)
 		 * @see Refresher#active()
 		 * @see Refresher#result()
 		 * @see Refresher#async()
@@ -481,20 +482,23 @@ public interface FilterModel<T> {
 		State async();
 
 		/**
-		 * <p>Changes to this state are always triggered on the UI thread.
+		 * <p>Changes to this state are triggered on the UI thread when refreshed asynchronously,
+		 * otherwise on the calling thread (see {@link #refresh(Consumer)}).
 		 * @return an observable indicating that a refresh is in progress
 		 */
 		ObservableState active();
 
 		/**
-		 * <p>This event is always triggered on the UI thread.
+		 * <p>This event is triggered on the UI thread when refreshed asynchronously,
+		 * otherwise on the calling thread (see {@link #refresh(Consumer)}).
 		 * @return an observer notified with the result after a successful refresh
 		 */
 		Observer<Collection<T>> result();
 
 		/**
 		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
-		 * @param onResult called on the UI thread with the result after a successful refresh, may be null
+		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks.
+		 * @param onResult called with the result after a successful refresh, may be null (on the UI thread when refreshed asynchronously)
 		 * @see #active()
 		 * @see #result()
 		 * @see #async()
