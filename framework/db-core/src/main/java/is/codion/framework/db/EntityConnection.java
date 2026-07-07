@@ -200,6 +200,9 @@ public interface EntityConnection extends AutoCloseable {
 	 * Queries are cached on a {@link Select}
 	 * basis, but never when selecting for update.
 	 * The cache is cleared when disabled.
+	 * <p>Note that cached results are shared as-is and are not invalidated by writes or rollbacks on the connection,
+	 * so a cached result may reflect data that has since been modified or rolled back. Intended for short, scoped
+	 * populate operations rather than long-lived connections.
 	 * @param queryCache true to turn on the query cache, false to clear and disable the cache
 	 */
 	void cacheQueries(boolean queryCache);
@@ -313,7 +316,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * it will be included in the select for <i>all</i> of them. This means that if one entity has a lazy attribute
 	 * with a value, that attribute will be loaded for all entities in the batch, even those where it wasn't contained.
 	 * @param entities the entities to insert
-	 * @return the inserted entities
+	 * @return the inserted entities, in no particular order
 	 * @throws DatabaseException in case of a database exception
 	 * @throws InsertEntityException in case of no insertable values or if there is a mismatch between expected and actual number of inserted rows
 	 */
@@ -651,6 +654,9 @@ public interface EntityConnection extends AutoCloseable {
 	 * <p><b>Remote Connection Resource Management:</b> Iterators over remote connections that
 	 * remain idle for longer than the configured timeout ({@code codion.db.remote.iteratorTimeout},
 	 * default 5 minutes) are automatically closed server-side.
+	 * <p><b>Local Connection Sharing:</b> A local iterator drives a live result set outside the connection
+	 * monitor, so do not perform other operations on the same connection while iterating, and on databases whose
+	 * cursors do not survive a commit (such as PostgreSQL) wrap the iteration in a transaction to keep the cursor open.
 	 * <p>Always use try-with-resources to ensure proper cleanup:
 	 * {@snippet :
 	 * try (EntityResultIterator iterator = connection.iterator(condition)) {
@@ -677,6 +683,9 @@ public interface EntityConnection extends AutoCloseable {
 	 * <p><b>Remote Connection Resource Management:</b> Iterators over remote connections that
 	 * remain idle for longer than the configured timeout ({@code codion.db.remote.iteratorTimeout},
 	 * default 5 minutes) are automatically closed server-side.
+	 * <p><b>Local Connection Sharing:</b> A local iterator drives a live result set outside the connection
+	 * monitor, so do not perform other operations on the same connection while iterating, and on databases whose
+	 * cursors do not survive a commit (such as PostgreSQL) wrap the iteration in a transaction to keep the cursor open.
 	 * <p>Always use try-with-resources to ensure proper cleanup:
 	 * {@snippet :
 	 * try (EntityResultIterator iterator = connection.iterator(select)) {
@@ -1001,9 +1010,11 @@ public interface EntityConnection extends AutoCloseable {
 		boolean forUpdate();
 
 		/**
-		 * @return the query timeout
+		 * @return the query timeout in seconds, an empty {@link OptionalInt} if none has been
+		 * specified, in which case the connection's default query timeout is used (only applicable to local connections)
+		 * @see Builder#timeout(int)
 		 */
-		int timeout();
+		OptionalInt timeout();
 
 		/**
 		 * @return the global reference depth limit for this condition, an empty Optional if none has been specified
@@ -1250,8 +1261,8 @@ public interface EntityConnection extends AutoCloseable {
 			Builder exclude(Collection<? extends Attribute<?>> attributes);
 
 			/**
-			 * Default 120 seconds.
-			 * @param timeout the query timeout, 0 for no timeout
+			 * By default no per-select timeout is specified and the connection's query timeout is used.
+			 * @param timeout the query timeout in seconds, 0 for no timeout
 			 * @return this builder instance
 			 */
 			Builder timeout(int timeout);

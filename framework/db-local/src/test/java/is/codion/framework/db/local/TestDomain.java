@@ -60,6 +60,7 @@ public final class TestDomain extends DomainModel {
 
 	public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 	public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
+	public static final FunctionType<EntityConnection, Object, Object> FUNCTION_LEAK_TRANSACTION = FunctionType.functionType("functionLeakTransaction");
 
 	public TestDomain() {
 		super(DOMAIN);
@@ -171,6 +172,7 @@ public final class TestDomain extends DomainModel {
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 		Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
 		Column<byte[]> DATA_LAZY = TYPE.byteArrayColumn("data_lazy");
+		Column<byte[]> DATA_LAZY2 = TYPE.byteArrayColumn("data_lazy2");
 		Column<byte[]> DATA = TYPE.byteArrayColumn("data");
 
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
@@ -233,6 +235,9 @@ public final class TestDomain extends DomainModel {
 														.using(Department.LOC)
 														.caption(Department.LOC.name()),
 										Employee.DATA_LAZY.as()
+														.column()
+														.selected(false),
+										Employee.DATA_LAZY2.as()
 														.column()
 														.selected(false),
 										Employee.DATA.as()
@@ -398,6 +403,11 @@ public final class TestDomain extends DomainModel {
 	private void operations() {
 		add(PROCEDURE_ID, (connection, parameter) -> {});
 		add(FUNCTION_ID, (connection, parameter) -> null);
+		//opens a transaction and returns without closing it, to exercise leaked-transaction detection
+		add(FUNCTION_LEAK_TRANSACTION, (connection, parameter) -> {
+			connection.startTransaction();
+			return null;
+		});
 	}
 
 	public interface Job {

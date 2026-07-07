@@ -120,11 +120,11 @@ public final class SelectTest {
 							.timeout(30)
 							.build();
 
-			assertEquals(30, select.timeout());
+			assertEquals(30, select.timeout().orElseThrow());
 
-			// Default timeout
+			// No timeout specified, falls back to the connection query timeout
 			select = Select.all(Department.TYPE).build();
-			assertEquals(120, select.timeout());
+			assertTrue(select.timeout().isEmpty());
 		}
 	}
 

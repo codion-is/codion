@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.entity.Entity;
@@ -27,6 +26,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static is.codion.common.db.database.Database.Operation.SELECT;
 
 /**
  * An {@link EntityResultIterator} wrapper that buffers entities in batches and populates
@@ -75,7 +76,7 @@ final class BufferedEntityResultIterator implements EntityResultIterator {
 			return buffer.get(bufferIndex++);
 		}
 		catch (SQLException e) {
-			throw new DatabaseException(e);
+			throw connection.database().exception(e, SELECT);
 		}
 	}
 
@@ -92,7 +93,9 @@ final class BufferedEntityResultIterator implements EntityResultIterator {
 			buffer.add(iterator.next());
 		}
 		if (!buffer.isEmpty()) {
-			connection.populateForeignKeys(buffer, select, 0);
+			//population issues further queries on the shared connection; run it under the connection
+			//monitor since iteration itself happens outside it (see EntityConnection.iterator javadoc)
+			connection.populateForeignKeysLocked(buffer, select);
 		}
 	}
 }

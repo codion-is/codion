@@ -18,7 +18,7 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.entity.Entity;
@@ -28,19 +28,23 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.NoSuchElementException;
 
+import static is.codion.common.db.database.Database.Operation.SELECT;
+
 final class DefaultEntityResultIterator implements EntityResultIterator {
 
 	private final Statement statement;
 	private final ResultSet resultSet;
 	private final ResultPacker<Entity> resultPacker;
+	private final Database database;
 
 	private boolean hasNext;
 	private boolean hasNextCalled;
 
-	DefaultEntityResultIterator(Statement statement, ResultSet resultSet, ResultPacker<Entity> resultPacker) {
+	DefaultEntityResultIterator(Statement statement, ResultSet resultSet, ResultPacker<Entity> resultPacker, Database database) {
 		this.statement = statement;
 		this.resultSet = resultSet;
 		this.resultPacker = resultPacker;
+		this.database = database;
 	}
 
 	@Override
@@ -55,7 +59,7 @@ final class DefaultEntityResultIterator implements EntityResultIterator {
 			return hasNext;
 		}
 		catch (SQLException e) {
-			throw new DatabaseException(e);
+			throw database.exception(e, SELECT);
 		}
 	}
 
@@ -70,7 +74,7 @@ final class DefaultEntityResultIterator implements EntityResultIterator {
 			return resultPacker.get(resultSet);
 		}
 		catch (SQLException e) {
-			throw new DatabaseException(e);
+			throw database.exception(e, SELECT);
 		}
 	}
 

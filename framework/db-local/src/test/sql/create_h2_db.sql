@@ -19,6 +19,7 @@ CREATE TABLE employees.employee (
   comm DECIMAL(7, 2) DEFAULT 200,
   deptno INT NOT NULL,
   data_lazy blob,
+  data_lazy2 blob,
   data blob,
   constraint emp_pk primary key (empno),
   constraint emp_dept_fk foreign key (deptno) references employees.department(deptno),

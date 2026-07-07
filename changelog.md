@@ -32,8 +32,16 @@ Codion Change Log
 - javadocs updated.
 ### is.codion.framework.db.core
 - javadocs updated, some improvements and fixes.
+- EntityConnection.Select.timeout() now returns OptionalInt, an absent timeout falls back to the connection query timeout, so entity selects now honor queryTimeout and codion.db.queryTimeout.
 ### is.codion.framework.db.local
 - javadocs updated, some improvements and fixes.
+- DefaultLocalEntityConnection.insertSelect()/updateSelect(), all loaded lazy columns are now re-selected, not just the first one per entity.
+- DefaultLocalEntityConnection.execute(FunctionType) now commits on success and rolls back on failure, consistent with execute(ProcedureType) and report(); an operation abandoning a transaction is rolled back and reported.
+- DefaultLocalEntityConnection.select(Collection) and dependencies() now chunk by the maximum parameter count, consistent with delete(Collection).
+- DefaultLocalEntityConnection.delete(Collection) now deduplicates keys, duplicates no longer trigger a spurious DeleteEntityException.
+- DefaultLocalEntityConnection.iterator(), foreign key population now runs under the connection monitor.
+- DefaultLocalEntityConnection.connection() now reads the connection under the connection monitor.
+- Entity result iterators now map SQLExceptions through the database dialect.
 ### is.codion.framework.db.rmi
 ### is.codion.framework.db.http
 - javadocs updated, some improvements and fixes.
