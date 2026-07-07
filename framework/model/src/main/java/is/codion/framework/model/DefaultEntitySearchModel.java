@@ -415,7 +415,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public Builder limit(int limit) {
+		public Builder limit(@Nullable Integer limit) {
 			this.limit = limit;
 			return this;
 		}

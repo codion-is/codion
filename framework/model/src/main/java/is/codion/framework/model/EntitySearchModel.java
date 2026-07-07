@@ -32,6 +32,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +100,7 @@ public interface EntitySearchModel {
 	Value<Integer> limit();
 
 	/**
-	 * <p>Controls the additional search condition supplier used when performing the next search data.
+	 * <p>Controls the additional search condition supplier used when performing the next search.
 	 * <p>The supplied condition is AND'ed to the actual search condition.
 	 * <p>NOTE, this does not affect the currently selected value(s), if any.
 	 * <p>The condition supplier may not return null, doing so will cause an exception when searching.
@@ -195,7 +197,7 @@ public interface EntitySearchModel {
 		interface EntityTypeStep {
 
 			/**
-			 * @param entityType the type of the entity this combo box model should represent
+			 * @param entityType the type of the entity this search model should represent
 			 * @return a new {@link ConnectionProviderStep} instance
 			 */
 			ConnectionProviderStep entityType(EntityType entityType);
@@ -207,7 +209,7 @@ public interface EntitySearchModel {
 		interface ConnectionProviderStep {
 
 			/**
-			 * @param connectionProvider a EntityConnectionProvider instance
+			 * @param connectionProvider an EntityConnectionProvider instance
 			 * @return a new {@link Builder} instance
 			 */
 			Builder connectionProvider(EntityConnectionProvider connectionProvider);
@@ -256,10 +258,10 @@ public interface EntitySearchModel {
 		Builder persistenceAware(boolean persistenceAware);
 
 		/**
-		 * @param limit the search result limit
+		 * @param limit the search result limit, null for no limit
 		 * @return this builder
 		 */
-		Builder limit(int limit);
+		Builder limit(@Nullable Integer limit);
 
 		/**
 		 * @return a new {@link EntitySearchModel} based on this builder

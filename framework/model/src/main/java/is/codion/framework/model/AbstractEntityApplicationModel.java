@@ -33,7 +33,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A central application model class.
+ * An abstract {@link EntityApplicationModel} implementation.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
@@ -152,7 +152,7 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 				}
 			}
 
-			throw new IllegalArgumentException("EntityModel for type " + entityType + " not  found in model: " + AbstractEntityApplicationModel.this);
+			throw new IllegalArgumentException("EntityModel for type " + entityType + " not found in model: " + AbstractEntityApplicationModel.this);
 		}
 	}
 }

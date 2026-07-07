@@ -32,7 +32,7 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
 
 /**
- * A central application model class.
+ * A central application model, coordinating the {@link EntityModel} instances of an application.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
@@ -108,13 +108,13 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 
 		/**
 		 * @param modelClass the application model class
-		 * @return true if this model contains a EntityModel instance of the given class
+		 * @return true if this model contains an EntityModel instance of the given class
 		 */
 		boolean contains(Class<? extends M> modelClass);
 
 		/**
 		 * @param entityType the entityType
-		 * @return true if this model contains a EntityModel for the given entityType
+		 * @return true if this model contains an EntityModel for the given entityType
 		 */
 		boolean contains(EntityType entityType);
 
@@ -134,12 +134,14 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 		 * @param <C> the model type
 		 * @param modelClass the model class
 		 * @return the EntityModel of the given type
+		 * @throws IllegalArgumentException in case this model does not contain an EntityModel of the given type
 		 */
 		<C extends M> C get(Class<C> modelClass);
 
 		/**
 		 * @param entityType the entityType
 		 * @return the EntityModel based on the given entityType
+		 * @throws IllegalArgumentException in case this model does not contain an EntityModel for the given entityType
 		 */
 		M get(EntityType entityType);
 	}

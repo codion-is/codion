@@ -34,7 +34,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * Use {@link EntityConditionModel#builder()} for instance.
+ * Manages the condition models associated with an entity's attributes, providing the combined
+ * WHERE and HAVING conditions used when querying entities.
+ * Use {@link EntityConditionModel#builder()} for an instance.
  */
 public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
 
@@ -122,7 +124,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 		ConditionValue where();
 
 		/**
-		 * Controls the additional WHERE condition. The condition supplier may return null in case of no condition.
+		 * Controls the additional HAVING condition. The condition supplier may return null in case of no condition.
 		 * Note that in order for the {@link #changed()} {@link is.codion.common.reactive.observer.Observer} to indicate
 		 * a changed condition, the additional condition must be set via {@link ConditionValue#set(Object)},
 		 * changing the return value of the underlying {@link Supplier} instance does not trigger a changed condition.

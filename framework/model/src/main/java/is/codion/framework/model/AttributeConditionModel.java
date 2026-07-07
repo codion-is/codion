@@ -24,11 +24,14 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Operator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 
+import org.jspecify.annotations.Nullable;
+
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
 
 /**
+ * A {@link ConditionModel} associated with an {@link Attribute}, delegating to an underlying condition model.
  * @param <T> the attribute type
  */
 public interface AttributeConditionModel<T> extends ConditionModel<T> {
@@ -104,7 +107,7 @@ public interface AttributeConditionModel<T> extends ConditionModel<T> {
 	}
 
 	@Override
-	default boolean accepts(Comparable<T> value) {
+	default boolean accepts(@Nullable Comparable<T> value) {
 		return condition().accepts(value);
 	}
 }

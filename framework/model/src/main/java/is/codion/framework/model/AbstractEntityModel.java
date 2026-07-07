@@ -41,7 +41,7 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link EntityModel} implementation.
+ * An abstract {@link EntityModel} implementation.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type

@@ -52,7 +52,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
 public interface EntityQueryModel {
 
 	/**
-	 * Specifes a default {@link #limit()} to set for query models.
+	 * Specifies a default {@link #limit()} to set for query models.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: null

@@ -142,7 +142,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		interface ConnectionProviderStep {
 
 			/**
-			 * @param connectionProvider a EntityConnectionProvider instance
+			 * @param connectionProvider an EntityConnectionProvider instance
 			 * @return a new {@link EntityComboBoxModel.Builder} instance
 			 */
 			Builder connectionProvider(EntityConnectionProvider connectionProvider);
@@ -150,7 +150,6 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * Specifies the {@link OrderBy} to use when selecting entities for this model.
-		 * in the combo box model.
 		 * @param orderBy the {@link OrderBy} to use when selecting
 		 * @return this builder instance
 		 */
@@ -257,7 +256,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * Controls the additional filter predicate, which is tested for items that pass all foreign key filters
-		 * @return the {@link Value} controlling the addition filter predicate
+		 * @return the {@link Value} controlling the additional filter predicate
 		 */
 		Value<Predicate<Entity>> predicate();
 

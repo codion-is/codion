@@ -418,9 +418,9 @@ public final class AbstractEntityEditorTest {
 		assertEquals("Manager", detail.name(Employee.DEPARTMENT_FK));
 
 		// Unregistered FK throws
-		assertThrows(IllegalStateException.class,
+		assertThrows(IllegalArgumentException.class,
 						() -> detail.get(DepartmentExtra.DEPARTMENT_FK));
-		assertThrows(IllegalStateException.class,
+		assertThrows(IllegalArgumentException.class,
 						() -> detail.name(DepartmentExtra.DEPARTMENT_FK));
 	}
 
@@ -498,7 +498,7 @@ public final class AbstractEntityEditorTest {
 		assertEquals("Plain Caption", detail.caption("plain"));
 
 		// Unknown name throws
-		assertThrows(IllegalStateException.class,
+		assertThrows(IllegalArgumentException.class,
 						() -> detail.caption("unknown"));
 
 		// Empty/null caption rejected

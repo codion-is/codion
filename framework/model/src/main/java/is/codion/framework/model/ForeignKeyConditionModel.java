@@ -91,8 +91,8 @@ public interface ForeignKeyConditionModel extends AttributeConditionModel<Entity
 		Builder inSearchModel(EntitySearchModel inSearchModel);
 
 		/**
-		 * Sets the initial operator, the one {@link #clear()} reverts to. Defaults to the first of the available
-		 * {@link #operators()} — {@link Operator#EQUAL} when an EQUAL operand is available, otherwise {@link Operator#IN}.
+		 * Sets the initial operator, the one {@link ForeignKeyConditionModel#clear()} reverts to. Defaults to the first of the available
+		 * {@link ForeignKeyConditionModel#operators()} — {@link Operator#EQUAL} when an EQUAL operand is available, otherwise {@link Operator#IN}.
 		 * @param operator the initial operator, must be one of the available operators
 		 * @return this builder
 		 */

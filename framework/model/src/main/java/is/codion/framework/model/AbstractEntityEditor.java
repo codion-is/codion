@@ -1391,7 +1391,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			DefaultEditorLink link = (DefaultEditorLink) editorLink;
 			ForeignKey foreignKey = null;
 			if (link instanceof ForeignKeyEditorLink) {
-				foreignKey = ((DefaultForeignKeyLink) link).foreignKey();
+				foreignKey = ((DefaultForeignKeyEditorLink) link).foreignKey();
 				if (!entityDefinition.type().equals(foreignKey.referencedType())) {
 					throw new IllegalArgumentException("Master editor entity type " + foreignKey.referencedType() +
 									" expected, got: " + entityDefinition.type());
@@ -1447,7 +1447,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public @Nullable ForeignKey foreignKey(String name) {
 			DefaultEditorLink link = findByName(name).link;
 			if (link instanceof ForeignKeyEditorLink) {
-				return ((DefaultForeignKeyLink) link).foreignKey();
+				return ((DefaultForeignKeyEditorLink) link).foreignKey();
 			}
 
 			return null;
@@ -1460,7 +1460,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 							.map(Map.Entry::getValue)
 							.collect(toList());
 			if (matches.isEmpty()) {
-				throw new IllegalStateException("No detail editor is associated with foreign key: " + foreignKey);
+				throw new IllegalArgumentException("No detail editor is associated with foreign key: " + foreignKey);
 			}
 			if (matches.size() > 1) {
 				throw new IllegalStateException("Multiple detail editors are associated with foreign key " +
@@ -1479,13 +1479,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 							.map(Map.Entry::getValue)
 							.collect(toList());
 			if (matches.isEmpty()) {
-				throw new IllegalStateException("No detail editor is associated with the given name: " + name);
+				throw new IllegalArgumentException("No detail editor is associated with the given name: " + name);
 			}
 			if (matches.size() > 1) {
 				throw new IllegalStateException("Multiple detail editors share the name " + name +
 								"; use get(ForeignKey) with one of: " + matches.stream()
 												.map(detail -> detail.link instanceof ForeignKeyEditorLink
-																? ((DefaultForeignKeyLink) detail.link).foreignKey().toString()
+																? ((DefaultForeignKeyEditorLink) detail.link).foreignKey().toString()
 																: "(non-FK link)")
 												.collect(toList()));
 			}
@@ -1584,12 +1584,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
-	static final class DefaultForeignKeyLink
+	static final class DefaultForeignKeyEditorLink
 					extends DefaultEditorLink implements ForeignKeyEditorLink {
 
 		private final ForeignKey foreignKey;
 
-		private DefaultForeignKeyLink(DefaultEditorLinkBuilder builder, ForeignKey foreignKey) {
+		private DefaultForeignKeyEditorLink(DefaultEditorLinkBuilder builder, ForeignKey foreignKey) {
 			super(builder);
 			this.foreignKey = foreignKey;
 		}
@@ -1775,7 +1775,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public ForeignKeyEditorLink build() {
-			return new DefaultForeignKeyLink(this, foreignKey);
+			return new DefaultForeignKeyEditorLink(this, foreignKey);
 		}
 	}
 
@@ -1844,7 +1844,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			this.link = link;
 			this.key = key;
 			if (link instanceof ForeignKeyEditorLink) {
-				ForeignKey foreignKey = ((DefaultForeignKeyLink) link).foreignKey();
+				ForeignKey foreignKey = ((DefaultForeignKeyEditorLink) link).foreignKey();
 				editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey, editor.entity().present()));
 				editor.validator().addValidator(new PreventValidatorModification());
 				editor.value(foreignKey).persist().set(false);

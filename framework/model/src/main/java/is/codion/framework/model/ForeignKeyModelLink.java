@@ -63,9 +63,9 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 					booleanValue(ForeignKeyModelLink.class.getName() + ".refreshOnSelection", true);
 
 	/**
-	 * Specifies whether a linked model sets the parent foreign key value to null when null or no value is selected in a parent model<br>
+	 * Specifies whether a linked model sets the parent foreign key value to null when null or no value is selected in a parent model
 	 * <ul>
-	 * <li>Value type: Boolean<br>
+	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
 	 */
@@ -73,9 +73,9 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 					booleanValue(ForeignKeyModelLink.class.getName() + ".clearValueOnEmptySelection", false);
 
 	/**
-	 * Specifies whether a linked model clears the foreign key search condition when null or no value is selected in a parent model<br>
+	 * Specifies whether a linked model clears the foreign key search condition when null or no value is selected in a parent model
 	 * <ul>
-	 * <li>Value type: Boolean<br>
+	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
 	 */

@@ -29,6 +29,11 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * A framework-wide event bus for entity persistence, keyed per {@link EntityType}.
+ * <p>
+ * Instances are static and shared per entity type (see {@link #persistenceEvents(EntityType)}).
+ * The {@link Inserted}, {@link Updated} and {@link Deleted} events extend {@link Consumer},
+ * so any code - not just the editor - may publish persistence events.
  * @see EntityEditor#PUBLISH_PERSISTENCE_EVENTS
  * @see EntityEditor.Settings#publishPersistenceEvents()
  * @see #persistenceEvents(EntityType)
@@ -62,7 +67,7 @@ public interface PersistenceEvents {
 	Deleted deleted();
 
 	/**
-	 * Notified when entities have been persited, that is, inserted, updated or delete.
+	 * Notified when entities have been persisted, that is, inserted, updated or deleted.
 	 * @see #inserted()
 	 * @see #updated()
 	 * @see #deleted()

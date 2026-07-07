@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 
 /**
- * Specifies a class for editing an {@link Entity} instance.
+ * Represents the context for editing an {@link Entity} instance.
  * The underlying attribute values are available via {@link EntityEditor#value(Attribute)}.
  * @param <R> the {@link EntityEditor} type
  * @see #editor()
