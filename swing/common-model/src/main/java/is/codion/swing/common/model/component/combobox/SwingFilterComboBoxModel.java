@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing {@link ComboBoxModel} based on the UI-agnostic
  * {@link is.codion.common.model.component.combobox.FilterComboBoxModel}, adding the {@link ComboBoxModel}
- * interface — mirroring how {@code SwingTableModel} extends {@code TableModel}. The rich model logic
+ * interface — mirroring how {@code SwingFilterTableModel} extends {@code TableModel}. The rich model logic
  * (items, selection, filtering) lives in the common module; this only adds the Swing coat.
  * @param <T> the type of values in this combo box model
  * @see #builder()
@@ -132,47 +132,56 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 		}
 
 		/**
-		 * @param comparator the comparator, null for unsorted @return this builder
+		 * @param comparator the comparator, null for unsorted
+		 * @return this builder
 		 */
 		Builder<T> comparator(@Nullable Comparator<T> comparator);
 
 		/**
-		 * @param includeNull true if a null item should be included @return this builder
+		 * @param includeNull true if a null item should be included
+		 * @return this builder
 		 */
 		Builder<T> includeNull(boolean includeNull);
 
 		/**
-		 * @param nullItem the item representing null @return this builder
+		 * @param nullItem the item representing null
+		 * @return this builder
 		 */
 		Builder<T> nullItem(@Nullable T nullItem);
 
 		/**
-		 * @param item the item to select initially @return this builder
+		 * @param item the item to select initially
+		 * @return this builder
 		 */
 		Builder<T> select(@Nullable T item);
 
 		/**
-		 * @param translator the selected item translator @return this builder
+		 * @param translator the selected item translator
+		 * @return this builder
 		 */
 		Builder<T> translator(Function<Object, T> translator);
 
 		/**
-		 * @param filterSelected true if the selected item should be filtered @return this builder
+		 * @param filterSelected true if the selected item should be filtered
+		 * @return this builder
 		 */
 		Builder<T> filterSelected(boolean filterSelected);
 
 		/**
-		 * @param item receives the selected item, possibly null @return this builder
+		 * @param item receives the selected item, possibly null
+		 * @return this builder
 		 */
 		Builder<T> onItemSelected(Consumer<@Nullable T> item);
 
 		/**
-		 * @param onRefreshException the refresh exception handler @return this builder
+		 * @param onRefreshException the refresh exception handler
+		 * @return this builder
 		 */
 		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
 
 		/**
-		 * @param refresh true if the model items should be refreshed on initialization @return this builder
+		 * @param refresh true if the model items should be refreshed on initialization
+		 * @return this builder
 		 */
 		Builder<T> refresh(boolean refresh);
 
@@ -189,22 +198,26 @@ public interface SwingFilterComboBoxModel<T> extends FilterComboBoxModel<T>, Com
 	interface SwingItemComboBoxModelBuilder<T> {
 
 		/**
-		 * @param sorted true if the items should be sorted @return this builder
+		 * @param sorted true if the items should be sorted
+		 * @return this builder
 		 */
 		SwingItemComboBoxModelBuilder<T> sorted(boolean sorted);
 
 		/**
-		 * @param comparator the comparator to sort by @return this builder
+		 * @param comparator the comparator to sort by
+		 * @return this builder
 		 */
 		SwingItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator);
 
 		/**
-		 * @param selected the item to select initially @return this builder
+		 * @param selected the item to select initially
+		 * @return this builder
 		 */
 		SwingItemComboBoxModelBuilder<T> selected(@Nullable T selected);
 
 		/**
-		 * @param selected the item to select initially @return this builder
+		 * @param selected the item to select initially
+		 * @return this builder
 		 */
 		SwingItemComboBoxModelBuilder<T> selected(Item<T> selected);
 

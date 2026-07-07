@@ -226,6 +226,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * Note that {@code filterModel} is automatically refreshed each time this combo box model is refreshed.
 		 * @param foreignKey the foreign key
 		 * @param filterModel the combo box model filtering this model
+		 * @return this builder instance
 		 * @see ForeignKeyFilter#link(EntityComboBoxModel)
 		 */
 		Builder filter(ForeignKey foreignKey, EntityComboBoxModel filterModel);

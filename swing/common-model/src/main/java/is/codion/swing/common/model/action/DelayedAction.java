@@ -32,14 +32,14 @@ import static java.util.Objects.requireNonNull;
  * prevents the action from executing.
  * <p>
  * Example usage:
- * <pre>{@code
+ * {@snippet :
  * DelayedAction showProgress = delayedAction(() -> {
  *     progressBar.setVisible(true);
  * }, 300);
  *
  * // Later, if operation completes quickly:
  * showProgress.cancel();
- * }</pre>
+ *}
  * @see #delayedAction(Runnable, int)
  */
 public interface DelayedAction {

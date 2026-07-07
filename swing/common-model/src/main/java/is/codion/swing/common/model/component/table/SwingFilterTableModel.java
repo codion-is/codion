@@ -36,7 +36,7 @@ import java.util.function.Supplier;
 /**
  * A Swing {@link TableModel} based on the UI-agnostic
  * {@link is.codion.common.model.component.table.FilterTableModel}, adding the {@link TableModel}
- * interface along with cell editing (via {@link RowEditor}) — mirroring how {@code SwingListModel}
+ * interface along with cell editing (via {@link RowEditor}) — mirroring how {@code SwingFilterListModel}
  * extends {@code ListModel}. The rich model logic (items, selection, filtering, sorting, export) lives
  * in the common module; this only adds the Swing coat, with {@link #selection()} narrowed to a
  * {@link FilterListSelection} (a {@code javax.swing.ListSelectionModel}).
@@ -85,7 +85,7 @@ public interface SwingFilterTableModel<R, C> extends FilterTableModel<R, C>, Tab
 	 * adding {@link #async(boolean)} and {@link #rowEditor(Function)}, with the chain staying Swing-typed
 	 * so {@code build()} yields a {@link TableModel}.
 	 * @param <R> the row type
-	 * @param <C> the column identifer type
+	 * @param <C> the column identifier type
 	 */
 	interface Builder<R, C> {
 
@@ -99,7 +99,7 @@ public interface SwingFilterTableModel<R, C> extends FilterTableModel<R, C>, Tab
 			 * @param <C> the type used to identify columns
 			 * @param columns the columns
 			 * @return a {@link Builder} based on the given columns
-			 * @throws NullPointerException in case {@code columnValues} is null
+			 * @throws NullPointerException in case {@code columns} is null
 			 */
 			<R, C> Builder<R, C> columns(TableColumns<R, C> columns);
 		}

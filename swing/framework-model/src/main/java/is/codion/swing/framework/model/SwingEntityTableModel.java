@@ -58,8 +58,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	/**
-	 * Instantiates a new SwingEntityTableModel containing the given entites.
-	 * @param entities the entities to populate with model with
+	 * Instantiates a new SwingEntityTableModel containing the given entities.
+	 * @param entities the entities to populate the model with
 	 * @param connectionProvider the connection provider
 	 * @throws IllegalArgumentException in case {@code entities} is empty
 	 */
@@ -68,9 +68,9 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	/**
-	 * Instantiates a new SwingEntityTableModel containing the given entites.
+	 * Instantiates a new SwingEntityTableModel containing the given entities.
 	 * @param entityType the entity type
-	 * @param entities the entities to populate with model with
+	 * @param entities the entities to populate the model with
 	 * @param connectionProvider the connection provider
 	 * @throws IllegalArgumentException in case {@code entities} is empty
 	 */
@@ -111,7 +111,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param editModel the edit model
 	 * @param queryModel the table query model
-	 * @throws IllegalArgumentException in case the edit model and query model entity type is not the same
+	 * @throws IllegalArgumentException in case the edit model and query model entity types are not the same
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
 		super(requireNonNull(editModel), queryModel, tableModelBuilder(editModel.editor())
@@ -125,7 +125,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	/**
-	 * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code> is editable.
+	 * Returns true if the cell at {@code rowIndex} and {@code modelColumnIndex} is editable.
 	 * @param rowIndex the row to edit
 	 * @param modelColumnIndex the model index of the column to edit
 	 * @return true if the cell is editable

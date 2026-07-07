@@ -32,6 +32,8 @@ Codion Change Log
 - EntityServer, jmx runtime metrics added along with prometheus and grafana config examples.
 ### is.codion.swing.common.ui
 - javadocs updated, some improvements and fixes.
+### is.codion.swing.framework.model
+- javadocs updated, some improvements and fixes.
 
 ## 0.18.78
 ### is.codion.common.reactive
