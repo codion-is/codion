@@ -201,7 +201,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	EditorTasks tasks(EntityConnection connection);
 
 	/**
-	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Note: This method must be called on the UI thread in case a panel has been based on this editor.
 	 * Performs an insert on the active entity, sets the primary key values of the active entity
 	 * according to the primary key of the inserted entity
 	 * @return the inserted entity
@@ -216,7 +216,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	Entity insert() throws EntityValidationException;
 
 	/**
-	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Note: This method must be called on the UI thread in case a panel has been based on this editor.
 	 * Performs an insert on the given entities.
 	 * @param entities the entities to insert
 	 * @return a list containing the inserted entities
@@ -231,14 +231,14 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	Collection<Entity> insert(Collection<Entity> entities) throws EntityValidationException;
 
 	/**
-	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Note: This method must be called on the UI thread in case a panel has been based on this editor.
 	 * Performs an update on the active entity
 	 * @return the updated entity
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityModifiedException in case the entity has been modified since it was loaded
 	 * @throws EntityValidationException in case validation fails
-	 * @throws IllegalStateException in case updating is not enabled
-	 * @throws UpdateEntityException in case the active entity is not modified
+	 * @throws IllegalStateException in case updating is not enabled, or the active entity is not modified
+	 * @throws UpdateEntityException in case there is a mismatch between expected and actual number of updated rows
 	 * @see PersistEvents.BeforePersist#update()
 	 * @see PersistEvents.AfterPersist#update()
 	 * @see EntityEditor.Settings#updateEnabled()
@@ -247,15 +247,15 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	Entity update() throws EntityValidationException;
 
 	/**
-	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Note: This method must be called on the UI thread in case a panel has been based on this editor.
 	 * Updates the given entities.
 	 * @param entities the entities to update
 	 * @return the updated entities
 	 * @throws DatabaseException in case of a database exception
 	 * @throws EntityModifiedException in case an entity has been modified since it was loaded
 	 * @throws EntityValidationException in case validation fails
-	 * @throws IllegalStateException in case updating is not enabled
-	 * @throws UpdateEntityException in case any of the given entities are not modified
+	 * @throws IllegalStateException in case updating is not enabled, or any of the given entities are not modified
+	 * @throws UpdateEntityException in case there is a mismatch between expected and actual number of updated rows
 	 * @see PersistEvents.BeforePersist#update()
 	 * @see PersistEvents.AfterPersist#update()
 	 * @see EntityEditor.Settings#updateEnabled()
@@ -264,7 +264,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	Collection<Entity> update(Collection<Entity> entities) throws EntityValidationException;
 
 	/**
-	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Note: This method must be called on the UI thread in case a panel has been based on this editor.
+	 * Performs a delete on the active entity.
 	 * @return the deleted entity
 	 * @throws DatabaseException in case of a database exception
 	 * @throws IllegalStateException in case deleting is not enabled
@@ -275,7 +276,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	Entity delete();
 
 	/**
-	 * Note: This method must be called on the UI thread in case a panel has been based on this model.
+	 * Note: This method must be called on the UI thread in case a panel has been based on this editor.
+	 * Deletes the given entities.
 	 * @param entities the entities to delete
 	 * @return the deleted entities
 	 * @throws DatabaseException in case of a database exception
@@ -860,6 +862,15 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 							.build();
 		}
 
+		/**
+		 * Creates a null item for a combo box based on the given column, for use as the {@link FilterComboBoxModel} null item.
+		 * For interface-typed columns this is a proxy whose {@code toString()} returns {@link FilterComboBoxModel#NULL_CAPTION};
+		 * for other types null is returned, since no toString() override is required.
+		 * @param column the column
+		 * @param <T> the value type
+		 * @return a null item for the given column, or null if the column value type is not an interface
+		 * @see FilterComboBoxModel#NULL_CAPTION
+		 */
 		static <T> @Nullable T createNullItem(Column<T> column) {
 			requireNonNull(column);
 
@@ -985,7 +996,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		/**
 		 * <p>Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified,
 		 * that is, if the current value differs from its default value, in case of a new entity, or the original
-		 * value, in case of an exiting entity.
+		 * value, in case of an existing entity.
 		 * <p>Note that unlike {@link EditorEntity#modified()} this state does not depend on whether the underlying entity exists.
 		 * @return an {@link ObservableState} indicating the modified state of the value of the given attribute
 		 * @see EditorEntity#modified()
@@ -1184,53 +1195,56 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * {@link #get(String)} with an explicit name instead.
 		 * @param foreignKey the foreign key
 		 * @return the detail editor previously registered for the given foreign key
-		 * @throws IllegalStateException if no detail editor is registered for the foreign key, or if
-		 * multiple detail editors are registered for it
+		 * @throws IllegalArgumentException if no detail editor is registered for the foreign key
+		 * @throws IllegalStateException if multiple detail editors are registered for it
 		 */
 		R get(ForeignKey foreignKey);
 
 		/**
 		 * @param name the link name
 		 * @return the detail editor previously registered with the given name
-		 * @throws IllegalStateException if no detail editor is registered under the given name
+		 * @throws IllegalArgumentException if no detail editor is registered under the given name
+		 * @throws IllegalStateException if multiple detail editors share the name
 		 */
 		R get(String name);
 
 		/**
 		 * Removes the detail editor associated with the given foreign key from this {@link EntityEditor} instance
 		 * @param foreignKey the foreign key
-		 * @throws IllegalStateException in case no detail editor is associated with the given foreign key
+		 * @throws IllegalArgumentException in case no detail editor is associated with the given foreign key
+		 * @throws IllegalStateException if multiple detail editors are registered for it
 		 */
 		void remove(ForeignKey foreignKey);
 
 		/**
 		 * Removes the detail editor associated with the given name from this {@link EntityEditor} instance
 		 * @param name the name
-		 * @throws IllegalStateException in case no detail editor is associated with the given name
+		 * @throws IllegalArgumentException in case no detail editor is associated with the given name
+		 * @throws IllegalStateException if multiple detail editors share the name
 		 */
 		void remove(String name);
 
 		/**
 		 * @param name the link name
 		 * @return the caption of the link registered with the given name
-		 * @throws IllegalStateException if no detail editor is registered under the given name,
-		 * or if multiple detail editors share the name (use {@link #caption(ForeignKey)})
+		 * @throws IllegalArgumentException if no detail editor is registered under the given name
+		 * @throws IllegalStateException if multiple detail editors share the name (use {@link #caption(ForeignKey)})
 		 */
 		String caption(String name);
 
 		/**
 		 * @param foreignKey the foreign key
 		 * @return the caption of the link registered for the given foreign key
-		 * @throws IllegalStateException if no detail editor is registered for the foreign key, or
-		 * if multiple detail editors are registered for it (use {@link #caption(String)})
+		 * @throws IllegalArgumentException if no detail editor is registered for the foreign key
+		 * @throws IllegalStateException if multiple detail editors are registered for it (use {@link #caption(String)})
 		 */
 		String caption(ForeignKey foreignKey);
 
 		/**
 		 * @param foreignKey the foreign key
 		 * @return the name of the link registered for the given foreign key
-		 * @throws IllegalStateException if no detail editor is registered for the foreign key, or
-		 * if multiple detail editors are registered for it
+		 * @throws IllegalArgumentException if no detail editor is registered for the foreign key
+		 * @throws IllegalStateException if multiple detail editors are registered for it
 		 */
 		String name(ForeignKey foreignKey);
 
@@ -1238,7 +1252,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @param name the link name
 		 * @return the foreign key of the link registered with the given name, or {@code null}
 		 * if the link is not foreign-key based
-		 * @throws IllegalStateException if no detail editor is registered under the given name
+		 * @throws IllegalArgumentException if no detail editor is registered under the given name
+		 * @throws IllegalStateException if multiple detail editors share the name
 		 */
 		@Nullable ForeignKey foreignKey(String name);
 	}

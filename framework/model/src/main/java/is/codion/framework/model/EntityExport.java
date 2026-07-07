@@ -26,7 +26,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.DefaultEntityExport.DefaultEntityTypeStep;
-import is.codion.framework.model.EntityExport.Builder.EntitiesStep;
 import is.codion.framework.model.EntityExport.Builder.EntityTypeStep;
 
 import java.util.Collection;
@@ -39,13 +38,15 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * Exports entity data to delimited text, optionally traversing foreign keys to include
+ * denormalized reference values.
  * @see #builder(EntityConnectionProvider)
  */
 public interface EntityExport {
 
 	/**
 	 * @param connectionProvider the connection provider
-	 * @return a new {@link EntitiesStep}
+	 * @return a new {@link EntityTypeStep}
 	 */
 	static EntityTypeStep builder(EntityConnectionProvider connectionProvider) {
 		return new DefaultEntityTypeStep(requireNonNull(connectionProvider));
@@ -82,7 +83,7 @@ public interface EntityExport {
 
 			/**
 			 * @param entityType the entity type
-			 * @return the {@link EntitiesStep}
+			 * @return the {@link ExportAttributesStep}
 			 */
 			ExportAttributesStep entityType(EntityType entityType);
 		}

@@ -22,7 +22,7 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.AbstractEntityEditor.DefaultForeignKeyLink;
+import is.codion.framework.model.AbstractEntityEditor.DefaultForeignKeyEditorLink;
 
 import java.util.function.Predicate;
 
@@ -32,7 +32,7 @@ import java.util.function.Predicate;
  * declared <em>framework-managed</em> on the detail editor — see {@link EntityEditor.DetailEditors}
  * for the coordinated configuration applied.
  */
-public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultForeignKeyLink {
+public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultForeignKeyEditorLink {
 
 	/**
 	 * Builds a {@link ForeignKeyEditorLink}.
@@ -66,6 +66,7 @@ public sealed interface ForeignKeyEditorLink extends EditorLink permits DefaultF
 
 		/**
 		 * <p>Overrides the default {@link DetailSelect}.
+		 * <p>Note that this overrides {@link #condition(DetailCondition)}.
 		 * Useful when the relationship is the FK plus an additional filter (e.g., {@code FK = master AND JOB = MANAGER}).
 		 * @param select the select used to load the detail row
 		 * @return this builder

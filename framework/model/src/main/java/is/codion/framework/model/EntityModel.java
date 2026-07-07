@@ -30,7 +30,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import java.util.Map;
 
 /**
- * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
+ * Coordinates, among other things, an {@link EntityEditModel} and an {@link EntityTableModel}.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
@@ -156,7 +156,7 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 		 * Returns the first detail model of the given type
 		 * @param <C> the model type
 		 * @param modelClass the type of the required {@link EntityModel}
-		 * @return the detail model of type {@code entityModelClass}
+		 * @return the detail model of type {@code modelClass}
 		 * @throws IllegalArgumentException in case this model does not contain a detail model of the given type
 		 */
 		<C extends M> C get(Class<C> modelClass);
@@ -164,7 +164,7 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 		/**
 		 * Returns a detail model of the given type
 		 * @param entityType the entityType of the required EntityModel
-		 * @return the detail model of type {@code entityModelClass}
+		 * @return the detail model for the given {@code entityType}
 		 * @throws IllegalArgumentException in case this model does not contain a detail model for the entityType
 		 */
 		M get(EntityType entityType);

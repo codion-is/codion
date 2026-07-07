@@ -24,6 +24,7 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * An {@link AttributeConditionModel} associated with a {@link Column}.
  * @param <T> the column type
  */
 public interface ColumnConditionModel<T> extends AttributeConditionModel<T> {

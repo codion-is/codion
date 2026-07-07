@@ -37,6 +37,12 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  * A default {@link ConditionModel} factory for Entity based condition models.
+ * <p>
+ * Extend and override the protected hooks to customize which conditions are created and how:
+ * {@link #include(Column)}/{@link #include(ForeignKey)} to control which attributes get a
+ * condition model, {@link #condition(Column)}/{@link #condition(ForeignKey)} to customize the
+ * created models, and {@link #createEqualSearchModel(ForeignKey)}/{@link #createInSearchModel(ForeignKey)}
+ * to customize the foreign key search models.
  */
 public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
 

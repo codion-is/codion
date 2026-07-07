@@ -60,7 +60,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * An abstract {@link EntityTableModel} implementation
+ * An abstract {@link EntityTableModel} implementation.
  * @param <E> the {@link EntityEditModel} type
  * @param <R> the {@link EntityEditor} type
  */
