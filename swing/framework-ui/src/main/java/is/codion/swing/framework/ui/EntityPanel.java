@@ -349,6 +349,7 @@ public class EntityPanel extends JPanel {
 		this.editPanelStateMapper = panelStateMapper(configuration.enabledEditStates);
 		this.editPanelState = Value.builder()
 						.nonNull(configuration.initialEditState)
+						.validator(this::validateEditState)
 						.consumer(this::updateEditState)
 						.build();
 		createControls();
@@ -756,7 +757,8 @@ public class EntityPanel extends JPanel {
 				}
 			}
 			if (containsEditPanel()) {
-				updateEditState(configuration.initialEditState);
+				//honor a pre-initialize editPanelState().set(...) instead of the config constant
+				updateEditState(editPanelState.getOrThrow());
 			}
 		}
 		finally {
@@ -992,6 +994,18 @@ public class EntityPanel extends JPanel {
 		editPanel().selectInputComponent();
 	}
 
+	private void validateEditState(PanelState editState) {
+		if (editPanel == null) {
+			//no edit panel to embed/window/hide, only the initial (no-op) state is valid
+			if (editState != configuration.initialEditState) {
+				throw new IllegalArgumentException("Edit panel state can not be set on a panel without an edit panel");
+			}
+		}
+		else if (!configuration.enabledEditStates.contains(editState)) {
+			throw new IllegalArgumentException("Edit panel state not enabled: " + editState);
+		}
+	}
+
 	private void updateEditState(PanelState newState) {
 		switch (newState) {
 			case HIDDEN:
@@ -1000,7 +1014,7 @@ public class EntityPanel extends JPanel {
 				break;
 			case EMBEDDED:
 				disposeEditWindow();
-				defaultPanel.add(editControlPanel, configuration.editPanelContstraints);
+				defaultPanel.add(editControlPanel, configuration.editPanelConstraints);
 				break;
 			case WINDOW:
 				displayEditWindow();
@@ -1029,7 +1043,12 @@ public class EntityPanel extends JPanel {
 						.title(configuration.caption)
 						.icon(configuration.icon)
 						.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-						.onClosed(windowEvent -> editPanelState.set(HIDDEN))
+						.onClosed(windowEvent -> {
+							//the window can be closed when embedding the panel, don't hide if that's the case
+							if (editPanelState.isNot(EMBEDDED)) {
+								editPanelState.set(HIDDEN);
+							}
+						})
 						.show();
 	}
 
@@ -1044,7 +1063,12 @@ public class EntityPanel extends JPanel {
 						.icon(configuration.icon)
 						.modal(false)
 						.disposeOnEscape(configuration.disposeEditDialogOnEscape)
-						.onClosed(windowEvent -> editPanelState.set(HIDDEN))
+						.onClosed(windowEvent -> {
+							//the window can be closed when embedding the panel, don't hide if that's the case
+							if (editPanelState.isNot(EMBEDDED)) {
+								editPanelState.set(HIDDEN);
+							}
+						})
 						.show();
 	}
 
@@ -1458,7 +1482,7 @@ public class EntityPanel extends JPanel {
 		/**
 		 * Specifies where the edit panel should be placed in a BorderLayout
 		 * <ul>
-		 * <li>Value type: Boolean
+		 * <li>Value type: String
 		 * <li>Default value: BorderLayout.NORTH
 		 * </ul>
 		 */
@@ -1503,7 +1527,7 @@ public class EntityPanel extends JPanel {
 		private boolean focusCycleRoot = FOCUS_CYCLE_ROOT.getOrThrow();
 		private WindowType windowType = WINDOW_TYPE.getOrThrow();
 		private PanelState initialEditState = EMBEDDED;
-		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.getOrThrow();
+		private String editPanelConstraints = EDIT_PANEL_CONSTRAINTS.getOrThrow();
 		private @Nullable Border border = createEmptyBorder(Layouts.GAP.getOrThrow(), 0, 0, 0);
 
 		private String caption;
@@ -1537,7 +1561,7 @@ public class EntityPanel extends JPanel {
 			this.icon = config.icon;
 			this.disposeEditDialogOnEscape = config.disposeEditDialogOnEscape;
 			this.windowType = config.windowType;
-			this.editPanelContstraints = config.editPanelContstraints;
+			this.editPanelConstraints = config.editPanelConstraints;
 			this.border = config.border;
 		}
 
@@ -1659,7 +1683,7 @@ public class EntityPanel extends JPanel {
 		 * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
 		 */
 		public Config editPanelConstraints(String editPanelConstraints) {
-			this.editPanelContstraints = validateBorderLayoutConstraints(editPanelConstraints);
+			this.editPanelConstraints = validateBorderLayoutConstraints(editPanelConstraints);
 			return this;
 		}
 
@@ -1762,7 +1786,7 @@ public class EntityPanel extends JPanel {
 			}
 			List<PanelState> states = asList(editStates);
 			if (!states.contains(initialEditState)) {
-				throw new IllegalArgumentException("Initial edit state has already been set to: " + initialEditState);
+				throw new IllegalArgumentException("The enabled edit states must include the initial edit state: " + initialEditState);
 			}
 			this.enabledEditStates.clear();
 			this.enabledEditStates.addAll(asList(editStates));

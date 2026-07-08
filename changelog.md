@@ -34,6 +34,11 @@ Codion Change Log
 - EntityEditPanel, the CLEAR control now routes exceptions to onException() like its insert/update/delete siblings, and configureControls() now rejects calls made after the panel is initialized.
 - EntityEditPanel.refresh()/update() javadocs now document the synchronous IllegalStateException thrown for a non-existing/unmodified active entity.
 - EditorComponents, the EditorComponent.set(JComponent) and set(ComponentValue) guards now also reject a pending component builder, closing a one-component-per-attribute invariant bypass.
+- EntityPanel, the edit-window close handler no longer yanks a just-embedded edit panel to HIDDEN; it now carries the same embed-transition guard as the detail-window sibling.
+- EntityPanel.editPanelState() now validates against the enabled edit states and rejects state changes on a panel without an edit panel, instead of silently desyncing or throwing an obscure NPE. defaultPanel() now honors a pre-initialize editPanelState() set rather than the configuration constant.
+- EntityPanel, EDIT_PANEL_CONSTRAINTS javadoc value type corrected to String, the editPanelConstraints field typo fixed, and the enabledEditStates() IllegalArgumentException message corrected to describe the actual rule.
+- TabbedDetailLayout, the enabledDetailStates() IllegalArgumentException message corrected, and the divider resize now clamps to the minimum divider location for left/right symmetry.
+- WindowDetailLayout, navigation into a windowed detail now actually shows the window; WindowDetailController implements display()/activate() instead of relying on empty interface defaults. A detail window is no longer created just to hide it, and the RejectEmbedded message names the correct class.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui
