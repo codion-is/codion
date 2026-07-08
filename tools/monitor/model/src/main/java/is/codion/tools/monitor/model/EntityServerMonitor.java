@@ -45,7 +45,7 @@ public final class EntityServerMonitor {
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE =
-					integerValue("codion.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
+					integerValue("codion.tools.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
 
 	private final Event<String> hostAddedEvent = Event.event();
 

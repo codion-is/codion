@@ -56,7 +56,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * <li>Default value: 50
 	 * </ul>
 	 */
-	PropertyValue<Integer> TRACES = integerValue("codion.db.traces", 50);
+	PropertyValue<Integer> TRACES = integerValue("codion.db.tracing.retained", 50);
 
 	/**
 	 * Specifies the query timeout in seconds

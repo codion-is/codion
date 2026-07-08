@@ -67,11 +67,11 @@ application {
     applicationDefaultJvmArgs = listOf(
         "-Xmx256m",
         "-Dcodion.db.url=jdbc:h2:mem:h2db",
-        "-Dcodion.domain.generator.domainPackage=com.example.domain",
+        "-Dcodion.tools.generator.domainPackage=com.example.domain",
         // Output directories (relative or absolute paths)
-        "-Dcodion.domain.generator.combinedSourceDirectory=combined",
-        "-Dcodion.domain.generator.apiSourceDirectory=api",
-        "-Dcodion.domain.generator.implSourceDirectory=impl"
+        "-Dcodion.tools.generator.combinedSourceDirectory=combined",
+        "-Dcodion.tools.generator.apiSourceDirectory=api",
+        "-Dcodion.tools.generator.implSourceDirectory=impl"
     )
 }
 ----
@@ -94,31 +94,31 @@ The generator is configured through system properties set via JVM arguments:
 |JDBC connection URL
 |Required
 
-|`codion.domain.generator.domainPackage`
+|`codion.tools.generator.domainPackage`
 |Base package for generated code
 |`none`
 
-|`codion.domain.generator.combinedSourceDirectory`
+|`codion.tools.generator.combinedSourceDirectory`
 |Output directory for combined mode (relative or absolute path)
 |Current directory
 
-|`codion.domain.generator.apiSourceDirectory`
+|`codion.tools.generator.apiSourceDirectory`
 |Output directory for API sources when using API/Impl mode (relative or absolute path)
 |Current directory
 
-|`codion.domain.generator.implSourceDirectory`
+|`codion.tools.generator.implSourceDirectory`
 |Output directory for implementation sources when using API/Impl mode (relative or absolute path)
 |Current directory
 
-|`codion.domain.generator.userRequired`
+|`codion.tools.generator.userRequired`
 |Specifies whether the database requires a login
 |true
 
-|`codion.domain.generator.user`
+|`codion.tools.generator.user`
 |Database user including password `user:pass` for direct login without login dialog
 |None
 
-|`codion.domain.generator.defaultUser`
+|`codion.tools.generator.defaultUser`
 |Default database credentials to display in the login dialog
 |None
 
@@ -131,10 +131,10 @@ The generator is configured through system properties set via JVM arguments:
 [source,bash]
 ----
 -Dcodion.db.url=jdbc:postgresql://localhost:5432/mydb
--Dcodion.domain.generator.domainPackage=com.example.domain
--Dcodion.domain.generator.combinedSourceDirectory=generated
--Dcodion.domain.generator.apiSourceDirectory=api
--Dcodion.domain.generator.implSourceDirectory=impl
+-Dcodion.tools.generator.domainPackage=com.example.domain
+-Dcodion.tools.generator.combinedSourceDirectory=generated
+-Dcodion.tools.generator.apiSourceDirectory=api
+-Dcodion.tools.generator.implSourceDirectory=impl
 ----
 
 TIP: Use relative paths like `"api"`, `"impl"`, or `"../domain-api"` for convenience. When using the directory selector in the UI, paths are automatically converted to relative paths from the current working directory.
@@ -265,7 +265,7 @@ Customer.INSERT_USER.as()
 
 . **Authenticate** (if required)
 +
-Enter database credentials in the login dialog. Set `codion.domain.generator.user` to pre-fill the username field.
+Enter database credentials in the login dialog. Set `codion.tools.generator.user` to pre-fill the username field.
 
 . **Select a schema**
 +

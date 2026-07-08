@@ -13,7 +13,7 @@ The Codion Swing MCP server enables AI assistants to control Swing applications 
 ## Prerequisites
 
 1. **Running Codion Application**: Any Codion demo application with MCP server enabled
-2. **MCP Server Active**: Verify the server is running on port 8080 (configurable via `codion.swing.mcp.http.port`)
+2. **MCP Server Active**: Verify the server is running on port 8080 (configurable via `codion.tools.mcp.port`)
 3. **Client Help Reference**: Familiarize yourself with the [Codion Client Help](../../asciidoc/help/client.adoc) for application-specific shortcuts and patterns
 
 ## Available MCP Tools
@@ -276,7 +276,7 @@ Currently, menus and popups may not be captured by standard screenshot tools:
 
 Default port is 8080, configurable via:
 ```
--Dcodion.swing.mcp.http.port=8080
+-Dcodion.tools.mcp.port=8080
 ```
 
 ### Logging

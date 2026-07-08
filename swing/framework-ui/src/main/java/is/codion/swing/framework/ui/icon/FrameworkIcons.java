@@ -55,7 +55,7 @@ public interface FrameworkIcons {
 	/**
 	 * Specifies the name of the {@link FrameworkIcons} implementation class to use.
 	 */
-	PropertyValue<String> FRAMEWORK_ICONS = stringValue(FrameworkIcons.class.getName() + ".frameworkIconsName", DefaultFrameworkIcons.class.getName());
+	PropertyValue<String> FRAMEWORK_ICONS = stringValue(FrameworkIcons.class.getName() + ".implementation", DefaultFrameworkIcons.class.getName());
 
 	/**
 	 * Identifies the filter icon.
