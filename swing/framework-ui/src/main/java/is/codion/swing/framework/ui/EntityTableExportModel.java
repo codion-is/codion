@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.CancelException;
 import is.codion.common.model.component.combobox.FilterComboBoxModel.ComboBoxItems;
 import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.model.worker.ProgressWorker.ProgressTask;
@@ -87,25 +86,23 @@ final class EntityTableExportModel {
 						.build();
 		this.selected = State.state(!tableModel.selection().empty().is());
 		this.all = State.state(!selected.is());
-		State.group(selected, all);
+		State.group(selected, all).fallback(all);
 		this.tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
 		this.treeModel.includeNone();
 		this.treeModel.includeAll();
 	}
 
 	ExportTask exportToClipboard() {
-		List<Entity> entities = selected.is() ?
-						tableModel.selection().items().get() :
-						tableModel.items().included().get();
+		//snapshot the rows, the task drains the iterator on a background thread while the EDT keeps
+		//pumping events, and the all-rows path would otherwise iterate a live view of the table items
+		List<Entity> entities = exportEntities();
 
 		return new ExportTask.ExportToClipboard(connectionProvider, tableModel.entityType(),
 						treeModel::attributes, entities.iterator(), entities.size());
 	}
 
 	ExportTask exportToFile(Path file) {
-		List<Entity> entities = selected.is() ?
-						tableModel.selection().items().get() :
-						tableModel.items().included().get();
+		List<Entity> entities = exportEntities();
 
 		return new ExportTask.ExportToFileTask(connectionProvider, tableModel.entityType(),
 						treeModel::attributes, requireNonNull(file), entities.iterator(), entities.size());
@@ -219,6 +216,12 @@ final class EntityTableExportModel {
 		configurationFiles.selection().item().set(configurationFile);
 	}
 
+	private List<Entity> exportEntities() {
+		return new ArrayList<>(selected.is() ?
+						tableModel.selection().items().get() :
+						tableModel.items().included().get());
+	}
+
 	JSONObject createPreferences() {
 		JSONObject json = new JSONObject();
 		if (!configurationFiles.items().get().isEmpty()) {
@@ -318,7 +321,7 @@ final class EntityTableExportModel {
 									.cancel(cancel.observable())
 									.export();
 				}
-				catch (CancelException e) {
+				catch (Exception e) {
 					Files.deleteIfExists(file);
 					throw e;
 				}
@@ -419,7 +422,10 @@ final class EntityTableExportModel {
 
 		@Override
 		public String filename() {
-			return file.getName().substring(0, file.getName().length() - JSON.length() - 1);
+			String name = file.getName();
+			String suffix = "." + JSON;
+
+			return name.toLowerCase().endsWith(suffix) ? name.substring(0, name.length() - suffix.length()) : name;
 		}
 
 		@Override

@@ -43,6 +43,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingInt;
 import static java.util.function.Function.identity;
@@ -197,9 +198,12 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 		}
 
 		void move(List<AttributeNode> nodes, int index) {
-			TreeNode referenceNode = index < children.size() ? children.get(index) : null;
+			//count the children before the drop index that are not themselves being moved, so dropping a node
+			//onto its own position (indexOf after removeAll would return -1) no longer throws
+			int insertIndex = (int) children.subList(0, Math.min(index, children.size())).stream()
+							.filter(child -> !nodes.contains(child))
+							.count();
 			children.removeAll(nodes);
-			int insertIndex = referenceNode != null ? children.indexOf(referenceNode) : children.size();
 			children.addAll(insertIndex, nodes);
 			treeModel.nodeStructureChanged(this);
 		}
@@ -293,8 +297,11 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 								.map(AttributeNode.class::cast)
 								.collect(toMap(AttributeNode::definition, identity()));
 				removeAllChildren();
-				attributeNodes().stream()
-								.map(node -> nodeMap.getOrDefault(node.definition(), node))
+				Stream.concat(
+								attributeNodes().stream()
+												.map(node -> nodeMap.getOrDefault(node.definition(), node)),
+								//preserve included nodes the show-hidden filter would otherwise drop, along with their include state
+								nodes.stream().filter(node -> node.hidden() && !treeModel.showHidden.is() && includesData(node)))
 								.sorted(NODE_COMPARATOR)
 								.filter(node -> displayNode(node, hideExcluded))
 								.sorted(comparingInt(node -> {
@@ -310,11 +317,11 @@ final class EntityTableExportTreeModel extends DefaultTreeModel {
 		}
 
 		private static boolean displayNode(AttributeNode node, boolean hideExcluded) {
-			if (node.include().is() || (node instanceof MutableForeignKeyNode && ((MutableForeignKeyNode) node).includedCount() > 0)) {
-				return true;
-			}
+			return includesData(node) || !hideExcluded;
+		}
 
-			return !hideExcluded;
+		private static boolean includesData(AttributeNode node) {
+			return node.include().is() || (node instanceof MutableForeignKeyNode && ((MutableForeignKeyNode) node).includedCount() > 0);
 		}
 
 		private List<AttributeNode> attributeNodes() {

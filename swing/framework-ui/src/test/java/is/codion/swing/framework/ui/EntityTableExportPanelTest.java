@@ -23,15 +23,20 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableExportTreeModel.AttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportTreeModel.EntityNode;
 import is.codion.swing.framework.ui.EntityTableExportTreeModel.MutableForeignKeyNode;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.tree.TreeNode;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.prefs.Preferences;
 
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityTableExportPanelTest {
@@ -107,5 +112,42 @@ public final class EntityTableExportPanelTest {
 		// Expand again (manager's manager's manager)
 		nestedMgrNode.populate();
 		assertTrue(nestedMgrNode.getChildCount() > 0, "After second expansion should have children");
+	}
+
+	@Test
+	void moveOntoOwnPositionDoesNotThrow() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
+		EntityNode root = tablePanel.exportPanel().model().treeModel().getRoot();
+
+		List<AttributeNode> before = childNodes(root);
+		assertTrue(before.size() > 3);
+		AttributeNode third = before.get(2);
+		//dropping a node exactly where it already sits (drop index == its own index) must not throw
+		root.move(singletonList(third), 2);
+		assertEquals(before, childNodes(root));
+	}
+
+	@Test
+	void rowSelectionFallsBackToAll() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		tableModel.items().refresh();
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
+		EntityTableExportModel model = tablePanel.exportPanel().model();
+
+		tableModel.selection().index().set(0);
+		assertTrue(model.selected().is());
+		assertFalse(model.all().is());
+
+		tableModel.selection().clear();
+		//clearing the selection deactivates 'selected'; the group must fall back to 'all', not leave both off
+		assertFalse(model.selected().is());
+		assertTrue(model.all().is());
+	}
+
+	private static List<AttributeNode> childNodes(EntityNode node) {
+		return Collections.list(node.children()).stream()
+						.map(AttributeNode.class::cast)
+						.collect(toList());
 	}
 }
