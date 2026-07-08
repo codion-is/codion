@@ -54,6 +54,13 @@ Codion Change Log
 - EntityApplicationPanel.DefaultApplicationPanelFactory now looks up the panel constructor by the declared model class rather than the runtime model class, so a model factory returning a subclass no longer fails with NoSuchMethodException.
 - EntityApplicationPanel, the SQL trace viewer consumer now appends to its own viewer rather than the field, and exit()'s JVM-wide window disposal is now documented.
 - ApplicationPreferences, corrupt on-disk preferences (e.g. a malformed frame size) no longer crash application startup; parsing failures are logged and defaults used, matching EntityTablePanelPreferences.
+- EntityTableExport, the all-rows export now snapshots the table items before draining them on the background thread, instead of iterating a live view that a concurrent refresh or persist event could mutate mid-export.
+- EntityTableExport, dropping a dragged node onto its own position no longer throws IndexOutOfBoundsException; the insert index is recomputed after the moved nodes are removed.
+- EntityTableExport, moving is now gated on a shared parent rather than a shared tree depth, so a mixed-parent selection can no longer corrupt the tree or throw during a keyboard/drag move.
+- EntityTableExport, toggling show-hidden off no longer silently drops included hidden attributes from the export; included nodes are preserved across the filter.
+- EntityTableExport, the all-rows/selected-rows radio group now falls back to all-rows when the table selection is cleared, instead of leaving neither selected.
+- EntityTableExport, ConfigurationFile.filename() no longer garbles or throws on a configuration file not ending in .json, and the export/configuration save dialogs append the .tsv/.json extension when the user typed none.
+- EntityTableExport, a failed (not only cancelled) file export now removes the truncated output file, and the configuration-file list renderer reuses a single panel rather than allocating one per cell paint.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui

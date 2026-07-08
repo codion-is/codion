@@ -44,7 +44,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -69,6 +68,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -105,8 +105,8 @@ final class EntityTableExportPanel extends JPanel {
 	private final JTree exportTree;
 	private final State refreshingNodes = State.state();
 	private final State singleSelection = State.state();
-	private final State singleLevelSelection = State.state();
-	private final ObservableState moveEnabled = State.or(refreshingNodes, singleLevelSelection);
+	private final State singleParentSelection = State.state();
+	private final ObservableState moveEnabled = State.or(refreshingNodes, singleParentSelection);
 
 	private final Control saveConfiguration = Control.builder()
 					.command(this::saveConfiguration)
@@ -203,12 +203,12 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void exportToFile() {
-		ExportTask task = model.exportToFile(Dialogs.select()
+		ExportTask task = model.exportToFile(withExtension(Dialogs.select()
 						.files()
 						.owner(this)
 						.filter(new FileNameExtensionFilter(TSV, TSV))
 						.selectFileToSave(model.defaultExportFileName())
-						.toPath());
+						.toPath(), TSV));
 		Dialogs.progressWorker()
 						.task(task)
 						.owner(this)
@@ -342,12 +342,23 @@ final class EntityTableExportPanel extends JPanel {
 
 	private void saveConfiguration() {
 		ConfigurationFile configurationFile = model.configurationFiles().selection().item().get();
-		model.writeConfig(Dialogs.select()
+		model.writeConfig(withExtension(Dialogs.select()
 						.files()
 						.owner(this)
 						.startDirectory(destinationDirectory(configurationFile))
 						.filter(CONFIGURATION_FILE)
-						.selectFileToSave(defaultFileName(configurationFile)));
+						.selectFileToSave(defaultFileName(configurationFile))
+						.toPath(), JSON).toFile());
+	}
+
+	//the file chooser filter suggests but does not enforce the extension, append it when the user typed none
+	private static Path withExtension(Path path, String extension) {
+		String fileName = path.getFileName().toString();
+		if (fileName.indexOf('.') == -1) {
+			return path.resolveSibling(fileName + "." + extension);
+		}
+
+		return path;
 	}
 
 	private static @Nullable String destinationDirectory(@Nullable ConfigurationFile configurationFile) {
@@ -533,9 +544,11 @@ final class EntityTableExportPanel extends JPanel {
 	private final class SingleLevelSelectionListener implements TreeSelectionListener {
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
-			singleLevelSelection.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
+			//require a shared parent, not merely a shared depth: the move operations manipulate a single
+			//parent's child list, and mixed-parent selections would corrupt the tree or throw
+			singleParentSelection.set(!exportTree.isSelectionEmpty() && Stream.of(exportTree.getSelectionPaths())
 							.filter(exportTree::isPathSelected)
-							.map(TreePath::getPathCount)
+							.map(TreePath::getParentPath)
 							.distinct()
 							.count() == 1);
 			singleSelection.set(!exportTree.isSelectionEmpty() && exportTree.getSelectionPaths().length == 1);
@@ -593,7 +606,7 @@ final class EntityTableExportPanel extends JPanel {
 
 		@Override
 		protected Transferable createTransferable(JComponent component) {
-			return new TransferableAttributeNodes(singleLevelSelection.is() ? selectedNodes(exportTree.getSelectionPaths()) : emptyList());
+			return new TransferableAttributeNodes(singleParentSelection.is() ? selectedNodes(exportTree.getSelectionPaths()) : emptyList());
 		}
 
 		@Override
@@ -657,19 +670,22 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final class ConfigurationFileRenderer extends JPanel implements ListCellRenderer<ConfigurationFile> {
 
-		private static final DefaultListCellRenderer FILENAME = new DefaultListCellRenderer();
-		private static final DefaultListCellRenderer PATH = new DefaultListCellRenderer();
+		private final DefaultListCellRenderer filename = new DefaultListCellRenderer();
+		private final DefaultListCellRenderer path = new DefaultListCellRenderer();
 
-		static {
-			FILENAME.setHorizontalAlignment(SwingConstants.LEFT);
-			PATH.setHorizontalAlignment(SwingConstants.RIGHT);
+		private ConfigurationFileRenderer() {
+			super(new BorderLayout());
+			filename.setHorizontalAlignment(SwingConstants.LEFT);
+			path.setHorizontalAlignment(SwingConstants.RIGHT);
+			add(filename, BorderLayout.WEST);
+			add(path, BorderLayout.CENTER);
 		}
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends ConfigurationFile> list, ConfigurationFile value,
 																									int index, boolean isSelected, boolean cellHasFocus) {
-			JLabel filename = (JLabel) FILENAME.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-			JLabel path = (JLabel) PATH.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			filename.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			path.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			if (value == NULL_CONFIGURATION_FILE) {
 				filename.setText("-");
 				path.setText("");
@@ -679,11 +695,7 @@ final class EntityTableExportPanel extends JPanel {
 				path.setText(value.file().getParentFile().getAbsolutePath());
 			}
 
-			return borderLayoutPanel()
-							.layout(new BorderLayout())
-							.west(filename)
-							.center(path)
-							.build();
+			return this;
 		}
 	}
 
