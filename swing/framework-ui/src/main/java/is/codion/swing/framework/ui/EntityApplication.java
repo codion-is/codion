@@ -757,12 +757,13 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 			return connectionProvider;
 		}
 		User connectionUser = user == null ? userSupplier.apply(defaultUser).get() : user;
-		if (connectionProviderFunction != null) {
-			return connectionProviderFunction.apply(connectionUser);
-		}
+		//the default login validator connects when validating, reuse that provider instead of connecting again
 		if (userSupplier instanceof EntityApplication.DefaultUserSupplier &&
 						((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider != null) {
 			return ((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider;
+		}
+		if (connectionProviderFunction != null) {
+			return connectionProviderFunction.apply(connectionUser);
 		}
 
 		return createConnectionProvider(connectionUser);
@@ -846,7 +847,10 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 		@Override
 		public void validate(User user) {
-			connectionProvider = createConnectionProvider(user);
+			//validate through the configured provider function when present, so the validated
+			//provider is the one the application actually uses, see initializeConnectionProvider()
+			connectionProvider = connectionProviderFunction == null ?
+							createConnectionProvider(user) : connectionProviderFunction.apply(user);
 			try {
 				connectionProvider.connection();//throws exception if the server is not reachable
 			}
@@ -876,7 +880,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		@Override
 		public P apply(M model) {
 			try {
-				return applicationPanelClass.getConstructor(model.getClass()).newInstance(model);
+				return applicationPanelClass.getConstructor(applicationModelClass).newInstance(model);
 			}
 			catch (Exception e) {
 				throw Exceptions.runtime(e, InvocationTargetException.class);
