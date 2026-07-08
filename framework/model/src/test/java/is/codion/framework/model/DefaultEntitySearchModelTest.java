@@ -83,6 +83,25 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
+	void selectionSingle() {
+		assertTrue(searchModel.selection().empty().is());
+		assertFalse(searchModel.selection().single().is());
+
+		searchModel.search().strings().set(singleton("joh"));
+		List<Entity> result = searchModel.search().perform();
+
+		searchModel.selection().entities().set(singletonList(result.get(0)));
+		assertTrue(searchModel.selection().single().is());
+
+		searchModel.selection().entities().set(result);
+		assertTrue(result.size() > 1);
+		assertFalse(searchModel.selection().single().is());
+
+		searchModel.selection().clear();
+		assertFalse(searchModel.selection().single().is());
+	}
+
+	@Test
 	void searchModel() {
 		searchModel.search().strings().set(singleton("joh"));
 		assertTrue(searchModel.selection().empty().is());

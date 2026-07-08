@@ -155,6 +155,11 @@ public interface EntitySearchModel {
 		ObservableState empty();
 
 		/**
+		 * @return an {@link ObservableState} indicating whether a single entity is selected
+		 */
+		ObservableState single();
+
+		/**
 		 * Clears the selection
 		 */
 		void clear();
