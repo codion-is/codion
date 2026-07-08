@@ -30,6 +30,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -243,13 +244,12 @@ public abstract class EntityEditPanel extends JPanel {
 	 */
 	protected EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
 		this.editModel = requireNonNull(editModel);
-		this.configuration = configure(config);
+		this.configuration = configure(config, editModel.entityDefinition());
 		this.components = createEditorComponents(editModel.editor());
 		this.active = State.state(!configuration.focusActivation);
 		this.controlsLayout = createControlsLayout();
 		this.inputFocus = new InputFocus();
 		createControls();
-		setupFocusActivation();
 		setupKeyboardActions();
 		if (editModel.editor().entity().exists().not().is()) {
 			editModel.editor().entity().defaults();
@@ -368,6 +368,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 	/**
 	 * <p>Refreshes the active entity.
+	 * @throws IllegalStateException in case the active entity does not exist (thrown synchronously)
 	 */
 	public final void refresh() {
 		commands.refresh().execute();
@@ -401,6 +402,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * <p>If update confirmation is enabled, confirmation is requested first using
 	 * the {@link Confirmer} specified via {@link Config#updateConfirmer(Confirmer)}.
 	 * @throws EntityValidationException in case of validation failure
+	 * @throws IllegalStateException in case the active entity is unmodified (thrown synchronously)
 	 * @see Config#confirmUpdate(boolean)
 	 * @see Config#updateConfirmer(Confirmer)
 	 */
@@ -633,9 +635,13 @@ public abstract class EntityEditPanel extends JPanel {
 	 *   <li>{@link ControlKeys#CLEAR ControlKeys#CLEAR}
 	 * </ul>
 	 * @param controlsConfig provides access to the controls configuration
+	 * @throws IllegalStateException in case the panel has already been initialized
 	 * @see Controls.Layout#clear()
 	 */
 	protected final void configureControls(Consumer<Controls.Layout> controlsConfig) {
+		if (initialized) {
+			throw new IllegalStateException("Method must be called before the panel is initialized");
+		}
 		requireNonNull(controlsConfig).accept(controlsLayout);
 	}
 
@@ -720,6 +726,7 @@ public abstract class EntityEditPanel extends JPanel {
 						.description(Messages.clearTip() + ALT_PREFIX + Messages.clearMnemonic() + ")")
 						.mnemonic(Messages.clearMnemonic())
 						.icon(ICONS.clear())
+						.onException(this::onException)
 						.build();
 	}
 
@@ -777,9 +784,21 @@ public abstract class EntityEditPanel extends JPanel {
 						.collect(toList());
 	}
 
-	private void setupFocusActivation() {
+	@Override
+	public void addNotify() {
+		super.addNotify();
 		if (configuration.focusActivation) {
+			//join the active-panel group only while displayable, so a discarded panel
+			//(e.g. a cancelled dialog edit panel) does not linger in the static group forever
 			ACTIVE_STATE_GROUP.add(active);
+		}
+	}
+
+	@Override
+	public void removeNotify() {
+		super.removeNotify();
+		if (configuration.focusActivation) {
+			ACTIVE_STATE_GROUP.remove(active);
 		}
 	}
 
@@ -799,8 +818,8 @@ public abstract class EntityEditPanel extends JPanel {
 		EntityViewer.view(editor().entity().get(), editModel().connectionProvider(), this);
 	}
 
-	private static Config configure(Consumer<Config> configuration) {
-		Config config = new Config();
+	private static Config configure(Consumer<Config> configuration, EntityDefinition entityDefinition) {
+		Config config = new Config(entityDefinition);
 		requireNonNull(configuration).accept(config);
 
 		return new Config(config);
@@ -1089,11 +1108,15 @@ public abstract class EntityEditPanel extends JPanel {
 
 		final ControlMap controlMap;
 
-		private Config() {
+		private final EntityDefinition entityDefinition;
+
+		private Config(EntityDefinition entityDefinition) {
+			this.entityDefinition = entityDefinition;
 			this.controlMap = controlMap(ControlKeys.class);
 		}
 
 		private Config(Config config) {
+			this.entityDefinition = config.entityDefinition;
 			this.controlMap = config.controlMap.copy();
 			this.clearAfterInsert = config.clearAfterInsert;
 			this.requestFocusAfterInsert = config.requestFocusAfterInsert;
@@ -1253,6 +1276,7 @@ public abstract class EntityEditPanel extends JPanel {
 		 * @see #selectInputComponent()
 		 */
 		public Config excludeFromSelection(Collection<Attribute<?>> excludeFromSelection) {
+			requireNonNull(excludeFromSelection).forEach(attribute -> entityDefinition.attributes().definition(attribute));
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(excludeFromSelection));
 			return this;
 		}
@@ -2184,7 +2208,8 @@ public abstract class EntityEditPanel extends JPanel {
 			}
 		}
 
-		private static synchronized void setLastFocusedComponent(@Nullable JComponent focusedComponent) {
+		private static void setLastFocusedComponent(@Nullable JComponent focusedComponent) {
+			//only ever accessed on the EDT
 			lastFocusedComponent = focusedComponent;
 		}
 

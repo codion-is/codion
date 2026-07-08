@@ -137,6 +137,32 @@ public class StateTest {
 	}
 
 	@Test
+	void groupRemove() {
+		State one = State.state();
+		State two = State.state();
+		State three = State.state();
+		State.Group group = State.group(one, two, three);
+
+		group.remove(two);
+		assertFalse(two.is());//remove does not change the value
+
+		one.set(true);
+		assertTrue(one.is());
+		assertFalse(three.is());
+
+		//two was removed: activating it must neither be disabled by the group
+		//nor, via a lingering listener, disable the remaining members
+		two.set(true);
+		assertTrue(one.is());
+		assertTrue(two.is());
+
+		//the group still works for the remaining members
+		three.set(true);
+		assertFalse(one.is());
+		assertTrue(two.is());//still unaffected
+	}
+
+	@Test
 	void groupVarargsCreation() {
 		State one = State.state(true);
 		State two = State.state(true);

@@ -24,11 +24,13 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityEditPanelTest {
@@ -64,6 +66,26 @@ public final class EntityEditPanelTest {
 		assertNotNull(editPanel.control(UPDATE));
 		assertNotNull(editPanel.control(DELETE));
 		assertNotNull(editPanel.control(CLEAR));
+	}
+
+	@Test
+	void excludeFromSelectionValidatesAttributes() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		//an attribute belonging to the entity is accepted
+		new ConfigEditPanel(editModel, config -> config.excludeFromSelection(singletonList(Employee.NAME)));
+		//an attribute from another entity is rejected, as the javadoc advertises
+		assertThrows(IllegalArgumentException.class, () ->
+						new ConfigEditPanel(editModel, config -> config.excludeFromSelection(singletonList(Department.NAME))));
+	}
+
+	private static final class ConfigEditPanel extends EntityEditPanel {
+
+		private ConfigEditPanel(SwingEntityEditModel editModel, java.util.function.Consumer<Config> config) {
+			super(editModel, config);
+		}
+
+		@Override
+		protected void initializeUI() {}
 	}
 
 	private static final class TestEditPanel extends EntityEditPanel {

@@ -444,7 +444,7 @@ public final class EditorComponents {
 		 */
 		public void set(JComponent component) {
 			requireNonNull(component);
-			if (this.component != null) {
+			if (componentBuilders.containsKey(value.attribute()) || this.component != null) {
 				throw new IllegalStateException("Component has already been set for: " + value.attribute());
 			}
 			this.component = component;
