@@ -119,7 +119,9 @@ public class RemoteEntityConnectionProviderTest {
 		ServerConfiguration.KEYSTORE.set("../server/src/main/config/keystore.jks");
 		ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
 
-		return EntityServerConfiguration.builder(3223, 3221)
+		return EntityServerConfiguration.builder()
+						.port(3223)
+						.registryPort(3221)
 						.adminPort(3223)
 						.adminUser(User.parse("scott:tiger"))
 						.database(Database.instance())

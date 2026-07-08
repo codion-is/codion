@@ -50,7 +50,9 @@ public final class MetricsMBeansTest {
 		ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
 		EntityServerConfiguration.JMX.set(true);
 
-		EntityServerConfiguration configuration = EntityServerConfiguration.builder(3334, 3332)
+		EntityServerConfiguration configuration = EntityServerConfiguration.builder()
+						.port(3334)
+						.registryPort(3332)
 						.adminPort(3335)
 						.adminUser(ADMIN_USER)
 						.database(Database.instance())

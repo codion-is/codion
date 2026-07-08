@@ -41,7 +41,8 @@ public class DefaultServerLocatorTest {
 
 	private static final String SERVER_NAME = "DefaultServerLocatorTestServer";
 
-	private final ServerConfiguration configuration = ServerConfiguration.builder(12345)
+	private final ServerConfiguration configuration = ServerConfiguration.builder()
+					.port(12345)
 					.serverName(SERVER_NAME)
 					.sslEnabled(false)
 					.objectInputFilterFactoryRequired(false)

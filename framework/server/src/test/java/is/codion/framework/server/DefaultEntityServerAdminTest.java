@@ -50,7 +50,9 @@ public final class DefaultEntityServerAdminTest {
 		ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
 		Report.REPORT_PATH.set("a/report/path");
 
-		EntityServerConfiguration configuration = EntityServerConfiguration.builder(3224, 3222)
+		EntityServerConfiguration configuration = EntityServerConfiguration.builder()
+						.port(3224)
+						.registryPort(3222)
 						.adminPort(3225)
 						.adminUser(ADMIN_USER)
 						.database(Database.instance())

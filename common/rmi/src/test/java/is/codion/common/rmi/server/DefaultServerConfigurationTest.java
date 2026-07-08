@@ -53,7 +53,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Basic builder with port creates configuration")
 		void builder_withPort_createsConfiguration() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			assertEquals(TEST_PORT, config.port());
 			assertEquals(Registry.REGISTRY_PORT, config.registryPort());
@@ -64,10 +64,17 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Builder with port and registry port creates configuration")
 		void builder_withPortAndRegistryPort_createsConfiguration() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT, TEST_REGISTRY_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).registryPort(TEST_REGISTRY_PORT).build();
 
 			assertEquals(TEST_PORT, config.port());
 			assertEquals(TEST_REGISTRY_PORT, config.registryPort());
+		}
+
+		@Test
+		@DisplayName("Builder without a port rejects build")
+		void builder_withoutPort_rejectsBuild() {
+			assertThrows(IllegalStateException.class, () -> ServerConfiguration.builder().build());
+			assertThrows(IllegalStateException.class, () -> ServerConfiguration.builder().port(-1).build());
 		}
 
 		@Test
@@ -75,7 +82,7 @@ public class DefaultServerConfigurationTest {
 		void builder_fluentInterface_worksCorrectly() {
 			Collection<String> auxiliaryClasses = Arrays.asList(TEST_AUXILIARY_CLASS);
 
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.adminPort(TEST_ADMIN_PORT)
 							.serverName(TEST_SERVER_NAME)
 							.auxiliaryServerFactory(auxiliaryClasses)
@@ -104,7 +111,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("String server name is stored correctly")
 		void serverName_withString_isStoredCorrectly() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.serverName(TEST_SERVER_NAME)
 							.build();
 
@@ -114,7 +121,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Supplier server name is stored correctly")
 		void serverName_withSupplier_isStoredCorrectly() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.serverName(() -> TEST_SERVER_NAME)
 							.build();
 
@@ -125,27 +132,27 @@ public class DefaultServerConfigurationTest {
 		@DisplayName("Null string server name throws exception")
 		void serverName_withNullString_throwsException() {
 			assertThrows(IllegalArgumentException.class, () ->
-							ServerConfiguration.builder(TEST_PORT).serverName((String) null));
+							ServerConfiguration.builder().port(TEST_PORT).serverName((String) null));
 		}
 
 		@Test
 		@DisplayName("Empty string server name throws exception")
 		void serverName_withEmptyString_throwsException() {
 			assertThrows(IllegalArgumentException.class, () ->
-							ServerConfiguration.builder(TEST_PORT).serverName(""));
+							ServerConfiguration.builder().port(TEST_PORT).serverName(""));
 		}
 
 		@Test
 		@DisplayName("Null supplier throws NPE")
 		void serverName_withNullSupplier_throwsNPE() {
 			assertThrows(NullPointerException.class, () ->
-							ServerConfiguration.builder(TEST_PORT).serverName((java.util.function.Supplier<String>) null));
+							ServerConfiguration.builder().port(TEST_PORT).serverName((java.util.function.Supplier<String>) null));
 		}
 
 		@Test
 		@DisplayName("Supplier returning null throws exception on access")
 		void serverName_supplierReturningNull_throwsExceptionOnAccess() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.serverName(() -> null)
 							.build();
 
@@ -155,7 +162,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Supplier returning empty string throws exception on access")
 		void serverName_supplierReturningEmpty_throwsExceptionOnAccess() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.serverName(() -> "")
 							.build();
 
@@ -170,7 +177,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("SSL enabled by default")
 		void ssl_enabledByDefault() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			assertTrue(config.sslEnabled());
 			assertTrue(config.rmiClientSocketFactory().isPresent());
@@ -182,7 +189,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("SSL can be disabled")
 		void ssl_canBeDisabled() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.sslEnabled(false)
 							.build();
 
@@ -194,7 +201,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("SSL re-enabled after being disabled")
 		void ssl_reEnabledAfterDisabling() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.sslEnabled(false)
 							.sslEnabled(true)
 							.build();
@@ -212,7 +219,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Empty auxiliary server list by default")
 		void auxiliaryServers_emptyByDefault() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			assertTrue(config.auxiliaryServerFactories().isEmpty());
 		}
@@ -222,7 +229,7 @@ public class DefaultServerConfigurationTest {
 		void auxiliaryServers_classNamesStored() {
 			Collection<String> classNames = Arrays.asList("com.example.Server1", "com.example.Server2");
 
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.auxiliaryServerFactory(classNames)
 							.build();
 
@@ -233,7 +240,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Auxiliary server collection is immutable")
 		void auxiliaryServers_collectionIsImmutable() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.auxiliaryServerFactory(Arrays.asList(TEST_AUXILIARY_CLASS))
 							.build();
 
@@ -245,7 +252,7 @@ public class DefaultServerConfigurationTest {
 		@DisplayName("Null auxiliary server collection throws NPE")
 		void auxiliaryServers_nullCollection_throwsNPE() {
 			assertThrows(NullPointerException.class, () ->
-							ServerConfiguration.builder(TEST_PORT).auxiliaryServerFactory(null));
+							ServerConfiguration.builder().port(TEST_PORT).auxiliaryServerFactory(null));
 		}
 	}
 
@@ -256,7 +263,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Server port is stored correctly")
 		void port_serverPortStored() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			assertEquals(TEST_PORT, config.port());
 		}
@@ -264,7 +271,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Registry port defaults to standard port")
 		void port_registryPortDefaultsToStandard() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			assertEquals(Registry.REGISTRY_PORT, config.registryPort());
 		}
@@ -272,7 +279,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Custom registry port is stored")
 		void port_customRegistryPortStored() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT, TEST_REGISTRY_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).registryPort(TEST_REGISTRY_PORT).build();
 
 			assertEquals(TEST_REGISTRY_PORT, config.registryPort());
 		}
@@ -280,7 +287,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Admin port defaults to 0")
 		void port_adminPortDefaultsToZero() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			assertEquals(0, config.adminPort());
 		}
@@ -288,7 +295,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Custom admin port is stored")
 		void port_customAdminPortStored() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.adminPort(TEST_ADMIN_PORT)
 							.build();
 
@@ -303,7 +310,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Object input filter factory class name is optional")
 		void filter_objectInputFilterOptional() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			// May be present due to system property, but test that it's at least accessible
 			assertNotNull(config.objectInputFilterFactory());
@@ -312,7 +319,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Custom object input filter factory class name is stored")
 		void filter_customObjectInputFilterStored() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.objectInputFilterFactory(TEST_FILTER_CLASS)
 							.build();
 
@@ -322,7 +329,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Null object input filter factory class name clears value")
 		void filter_nullObjectInputFilterClears() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.objectInputFilterFactory(null)
 							.build();
 
@@ -332,7 +339,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Connection maintenance interval has default")
 		void maintenance_intervalHasDefault() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			assertEquals(ServerConfiguration.DEFAULT_CONNECTION_MAINTENANCE_INTERVAL,
 							config.connectionMaintenanceInterval());
@@ -341,7 +348,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Custom connection maintenance interval is stored")
 		void maintenance_customIntervalStored() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.connectionMaintenanceInterval(TEST_MAINTENANCE_INTERVAL)
 							.build();
 
@@ -351,7 +358,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Connection limit defaults to -1")
 		void limit_connectionLimitDefaultsToNegativeOne() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT).build();
 
 			assertEquals(-1, config.connectionLimit());
 		}
@@ -359,7 +366,7 @@ public class DefaultServerConfigurationTest {
 		@Test
 		@DisplayName("Custom connection limit is stored")
 		void limit_customConnectionLimitStored() {
-			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
+			ServerConfiguration config = ServerConfiguration.builder().port(TEST_PORT)
 							.connectionLimit(TEST_CONNECTION_LIMIT)
 							.build();
 
@@ -376,7 +383,7 @@ public class DefaultServerConfigurationTest {
 		void systemProperties_builderWorks() {
 			// The plain builder seeds its remaining defaults from system properties
 			// The actual system property values are environment-dependent
-			ServerConfiguration.Builder<?> builder = ServerConfiguration.builder(12345);
+			ServerConfiguration.Builder<?> builder = ServerConfiguration.builder().port(12345);
 
 			assertNotNull(builder);
 

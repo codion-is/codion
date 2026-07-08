@@ -192,8 +192,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		private final Collection<User> connectionPoolUsers = new HashSet<>();
 		private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
-		DefaultBuilder(int serverPort, int registryPort) {
-			serverConfigurationBuilder = ServerConfiguration.builder(serverPort, registryPort);
+		DefaultBuilder() {
+			serverConfigurationBuilder = ServerConfiguration.builder();
 			serverConfigurationBuilder.serverName(() -> {
 				if (database == null) {
 					throw new IllegalStateException("Database must be set before initializing server name");
@@ -279,6 +279,18 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		@Override
 		public Builder connectionMaintenanceInterval(int connectionMaintenanceInterval) {
 			serverConfigurationBuilder.connectionMaintenanceInterval(connectionMaintenanceInterval);
+			return this;
+		}
+
+		@Override
+		public Builder port(int port) {
+			serverConfigurationBuilder.port(port);
+			return this;
+		}
+
+		@Override
+		public Builder registryPort(int registryPort) {
+			serverConfigurationBuilder.registryPort(registryPort);
 			return this;
 		}
 

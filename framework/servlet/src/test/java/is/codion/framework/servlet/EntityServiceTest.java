@@ -509,7 +509,9 @@ public class EntityServiceTest {
 		EntityService.SERIALIZATION.set(true);
 		EntityService.SECURE.set(false);
 
-		return EntityServerConfiguration.builder(3223, 3221)
+		return EntityServerConfiguration.builder()
+						.port(3223)
+						.registryPort(3221)
 						.adminPort(3223)
 						.adminUser(User.parse("scott:tiger"))
 						.domainClasses(singletonList(TestDomain.class.getName()))

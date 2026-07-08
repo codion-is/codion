@@ -164,8 +164,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 			resolveClasspathKeyStore();
 		}
 
-		private final int serverPort;
-		private final int registryPort;
+		private int serverPort;
+		private int registryPort;
 		private final Collection<String> auxiliaryServerFactories = new HashSet<>();
 		private final Collection<String> authenticators = new HashSet<>();
 		private int serverAdminPort;
@@ -173,20 +173,34 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private Supplier<String> serverName = new DefaultServerName();
 		private @Nullable RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
 		private @Nullable RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
-		private @Nullable String objectInputFilterFactory = OBJECT_INPUT_FILTER_FACTORY.get();
-		private boolean objectInputFilterFactoryRequired = OBJECT_INPUT_FILTER_FACTORY_REQUIRED.getOrThrow();
+		private @Nullable String objectInputFilterFactory;
+		private boolean objectInputFilterFactoryRequired;
 		private Integer connectionMaintenanceInterval = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 		private int connectionLimit = -1;
-		private boolean systemProperties = SYSTEM_PROPERTIES.getOrThrow();
+		private boolean systemProperties;
 
-		DefaultBuilder(int serverPort, int registryPort) {
-			this.serverPort = serverPort;
-			this.registryPort = registryPort;
-			// Seed the remaining defaults from the corresponding system properties
+		DefaultBuilder() {
+			port(SERVER_PORT.getOrThrow());
+			registryPort(REGISTRY_PORT.getOrThrow());
 			auxiliaryServerFactory(parseCSV(AUXILIARY_SERVER_FACTORIES.get()));
 			adminPort(ADMIN_PORT.getOrThrow());
 			sslEnabled(SSL_ENABLED.getOrThrow());
 			connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.getOrThrow());
+			objectInputFilterFactory(OBJECT_INPUT_FILTER_FACTORY.get());
+			objectInputFilterFactoryRequired(OBJECT_INPUT_FILTER_FACTORY_REQUIRED.getOrThrow());
+			systemProperties(SYSTEM_PROPERTIES.getOrThrow());
+		}
+
+		@Override
+		public DefaultBuilder port(int port) {
+			this.serverPort = port;
+			return this;
+		}
+
+		@Override
+		public DefaultBuilder registryPort(int registryPort) {
+			this.registryPort = registryPort;
+			return this;
 		}
 
 		@Override
@@ -268,6 +282,10 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 		@Override
 		public ServerConfiguration build() {
+			if (serverPort < 0) {
+				throw new IllegalStateException("Server port must be specified, see " + SERVER_PORT.name());
+			}
+
 			return new DefaultServerConfiguration(this);
 		}
 

@@ -2,6 +2,11 @@ Codion Change Log
 =================
 
 ## 0.18.80
+### is.codion.common.rmi
+- ServerConfiguration.builder() no longer takes port parameters, the server and registry ports are now builder methods defaulting to SERVER_PORT and REGISTRY_PORT respectively.
+- ServerConfiguration.Builder.build() now rejects a negative server port with a clear message instead of deferring to an obscure RMI error, catching a missing SERVER_PORT configuration early.
+### is.codion.framework.server
+- EntityServerConfiguration.builder() no longer takes port parameters, consistent with ServerConfiguration.builder().
 
 ## 0.18.79
 ### is.codion.common.reactive

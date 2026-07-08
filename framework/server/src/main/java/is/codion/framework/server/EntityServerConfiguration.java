@@ -32,7 +32,7 @@ import static is.codion.common.utilities.Configuration.*;
 
 /**
  * Configuration values for a {@link EntityServer}.
- * @see #builder(int, int)
+ * @see #builder()
  */
 public interface EntityServerConfiguration extends ServerConfiguration {
 
@@ -199,11 +199,9 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	}
 
 	/**
-	 * @param serverPort the server port
-	 * @param registryPort the registry port
 	 * @return a default entity connection server configuration builder
 	 */
-	static EntityServerConfiguration.Builder builder(int serverPort, int registryPort) {
-		return new DefaultEntityServerConfiguration.DefaultBuilder(serverPort, registryPort);
+	static EntityServerConfiguration.Builder builder() {
+		return new DefaultEntityServerConfiguration.DefaultBuilder();
 	}
 }
