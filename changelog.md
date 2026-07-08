@@ -61,6 +61,11 @@ Codion Change Log
 - EntityTableExport, the all-rows/selected-rows radio group now falls back to all-rows when the table selection is cleared, instead of leaving neither selected.
 - EntityTableExport, ConfigurationFile.filename() no longer garbles or throws on a configuration file not ending in .json, and the export/configuration save dialogs append the .tsv/.json extension when the user typed none.
 - EntityTableExport, a failed (not only cancelled) file export now removes the truncated output file, and the configuration-file list renderer reuses a single panel rather than allocating one per cell paint.
+- EntityDialogs, the add-entity dialog now clears the editor to defaults before the dialog is built rather than in its shown-callback, so a modified-warning veto simply prevents the dialog opening instead of throwing an uncaught CancelException over a visible dialog, matching the edit-entity sibling.
+- EntityTablePanel.containsConditionPanel() added; the selection dialog now uses it instead of probing condition() via try/catch IllegalStateException.
+- EntityComponents.toggleButton() now rejects nullable attributes with the same guard as checkBox(), a two-state toggle can not represent a three-state attribute.
+- EntityComponents, the "no dateTimePattern defined" exception now names the offending attribute.
+- EntityComboBox.addFocusListener() javadoc now documents that the editor-component routing is based on editability at call time.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui

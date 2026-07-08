@@ -83,8 +83,7 @@ import static java.util.Objects.requireNonNull;
 public final class EntityComponents {
 
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
-	private static final Supplier<IllegalStateException> DATE_TIME_PATTERN_MISSING =
-					() -> new IllegalStateException("Attribute has no dateTimePattern defined");
+	private static final String ATTRIBUTE = "Attribute:";
 
 	private final EntityDefinition entityDefinition;
 
@@ -153,7 +152,7 @@ public final class EntityComponents {
 			return (ComponentValueBuilder<C, T, B>) byteArrayInputPanel((Attribute<byte[]>) attribute);
 		}
 
-		throw new IllegalArgumentException("Attribute: " + attribute + " (type: " + type.valueClass() + ") not supported");
+		throw new IllegalArgumentException(ATTRIBUTE + " " + attribute + " (type: " + type.valueClass() + ") not supported");
 	}
 
 	/**
@@ -166,7 +165,7 @@ public final class EntityComponents {
 		AttributeDefinition<Boolean> attributeDefinition = definition(attribute);
 		if (attributeDefinition instanceof ValueAttributeDefinition<Boolean> &&
 						((ValueAttributeDefinition<Boolean>) attributeDefinition).nullable()) {
-			throw new IllegalArgumentException("Attribute: " + attribute + " is nullable, use nullableCheckBox()");
+			throw new IllegalArgumentException(ATTRIBUTE + " " + attribute + " is nullable, use nullableCheckBox()");
 		}
 
 		return Components.checkBox()
@@ -194,9 +193,14 @@ public final class EntityComponents {
 	 * @param attribute the attribute
 	 * @param <B> the builder type
 	 * @return a JToggleButton builder
+	 * @throws IllegalArgumentException in case the attribute is nullable
 	 */
 	public <B extends ButtonBuilder<JToggleButton, Boolean, B>> ButtonBuilder<JToggleButton, Boolean, B> toggleButton(Attribute<Boolean> attribute) {
 		AttributeDefinition<Boolean> attributeDefinition = definition(attribute);
+		if (attributeDefinition instanceof ValueAttributeDefinition<Boolean> &&
+						((ValueAttributeDefinition<Boolean>) attributeDefinition).nullable()) {
+			throw new IllegalArgumentException(ATTRIBUTE + " " + attribute + " is nullable, use nullableCheckBox()");
+		}
 
 		return (ButtonBuilder<JToggleButton, Boolean, B>) Components.toggleButton()
 						.toolTipText(attributeDefinition.description().orElse(null))
@@ -340,7 +344,7 @@ public final class EntityComponents {
 
 		return Components.temporalFieldPanel()
 						.temporalClass(attribute.type().valueClass())
-						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
+						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(() -> dateTimePatternMissing(attributeDefinition)))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar().large());
 	}
@@ -397,7 +401,7 @@ public final class EntityComponents {
 		}
 		if (attribute.type().isTemporal()) {
 			return (TextFieldBuilder<C, T, B>) temporalField((Attribute<Temporal>) attribute)
-							.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
+							.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(() -> dateTimePatternMissing(attributeDefinition)))
 							.toolTipText(attributeDefinition.description().orElse(null))
 							.calendarIcon(ICONS.calendar().large());
 		}
@@ -426,7 +430,7 @@ public final class EntityComponents {
 
 		return Components.temporalField()
 						.temporalClass(attributeDefinition.attribute().type().valueClass())
-						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
+						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(() -> dateTimePatternMissing(attributeDefinition)))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar().large());
 	}
@@ -654,6 +658,10 @@ public final class EntityComponents {
 	private static boolean nullable(AttributeDefinition<?> attributeDefinition) {
 		return attributeDefinition instanceof ValueAttributeDefinition<?> &&
 						((ValueAttributeDefinition<?>) attributeDefinition).nullable();
+	}
+
+	private static IllegalStateException dateTimePatternMissing(AttributeDefinition<?> attributeDefinition) {
+		return new IllegalStateException("Attribute " + attributeDefinition.attribute() + " has no dateTimePattern defined");
 	}
 
 	private static boolean itemBased(AttributeDefinition<?> definition) {
