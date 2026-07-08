@@ -146,6 +146,13 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>When this combo box is editable the listener is also added to the editor component, so that
+	 * focus events from the editor are observed. Note that this routing is based on the editability
+	 * at the time of the call, toggling editability between {@link #addFocusListener(FocusListener)}
+	 * and {@link #removeFocusListener(FocusListener)} can strand a listener on the editor component.
+	 */
 	@Override
 	public synchronized void addFocusListener(FocusListener listener) {
 		super.addFocusListener(listener);

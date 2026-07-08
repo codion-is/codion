@@ -342,13 +342,7 @@ public final class EntityDialogs {
 
 		private DefaultEntitySelectionDialogBuilder(EntityTablePanel tablePanel) {
 			this.tablePanel = requireNonNull(tablePanel);
-			try {
-				tablePanel.condition();
-				includeSearchButton = true;
-			}
-			catch (IllegalStateException e) {
-				includeSearchButton = false;
-			}
+			this.includeSearchButton = tablePanel.containsConditionPanel();
 		}
 
 		@Override
@@ -502,6 +496,9 @@ public final class EntityDialogs {
 		@Override
 		public void show() {
 			SwingEntityEditModel editModel = editPanel.editModel();
+			//clear to defaults before the dialog is built, fires the veto-able changing event so a
+			//veto (e.g. the modified warning) simply prevents the dialog opening, as in the edit sibling
+			editPanel.editor().entity().defaults();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
 			Dialogs.action()
 							.component(borderLayoutPanel()
@@ -562,7 +559,8 @@ public final class EntityDialogs {
 
 			@Override
 			public void accept(JDialog dialog) {
-				editPanel.clearAndRequestFocus();
+				//the clear happened in show() before the dialog was built, only the focus request needs a visible dialog
+				editPanel.focus().initial().request();
 				onShownConsumers.forEach(onShown -> onShown.accept(editPanel));
 			}
 		}

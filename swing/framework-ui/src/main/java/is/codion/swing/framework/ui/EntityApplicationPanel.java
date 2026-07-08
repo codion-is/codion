@@ -1220,7 +1220,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 	}
 
-	private LogViewer createTraceViewer(EntityConnectionTracer tracer) {
+	private static LogViewer createTraceViewer(EntityConnectionTracer tracer) {
 		LogViewer logViewer = LogViewer.logViewer();
 		logViewer.setBorder(emptyBorder());
 		tracer.trace().addConsumer(trace -> {

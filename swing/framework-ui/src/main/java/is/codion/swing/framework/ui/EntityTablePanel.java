@@ -574,6 +574,15 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
+	 * @return true if a condition panel is available
+	 * @see #condition()
+	 * @see Config#includeConditions(boolean)
+	 */
+	public final boolean containsConditionPanel() {
+		return tableConditionPanel != null;
+	}
+
+	/**
 	 * @return the {@link State} controlling whether the summary panel is visible
 	 */
 	public final State summaryPanelVisible() {

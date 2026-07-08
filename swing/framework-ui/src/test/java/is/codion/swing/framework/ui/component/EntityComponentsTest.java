@@ -110,6 +110,9 @@ public final class EntityComponentsTest {
 
 		editor.value(Detail.BOOLEAN).set(true);
 		assertTrue(box.isSelected());
+
+		//a two-state toggle can not represent a nullable (three-state) attribute
+		assertThrows(IllegalArgumentException.class, () -> entityComponents.toggleButton(Detail.BOOLEAN_NULLABLE));
 	}
 
 	@Test
