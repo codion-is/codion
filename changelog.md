@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.80
+### is.codion.common.reactive
+- State.Group.remove(State) added, allowing a state to leave a group; DefaultStateGroup now removes the associated listener so a removed state no longer participates or is retained.
 ### is.codion.common.rmi
 - ServerConfiguration.builder() no longer takes port parameters, the server and registry ports are now builder methods defaulting to SERVER_PORT and REGISTRY_PORT respectively.
 - ServerConfiguration.Builder.build() now rejects a negative server port with a clear message instead of deferring to an obscure RMI error, catching a missing SERVER_PORT configuration early.
@@ -27,6 +29,11 @@ Codion Change Log
 - EntityTablePanel.Config copy constructor no longer drops the editable-attributes validator and no longer shares the FilterTable.Builder with the original, closing a post-build mutation gap.
 - EntityTablePanel, various javadoc corrections (editAttributeSelection/SelectionMode, TOGGLE_SUMMARIES, EXPORT, RefreshButtonVisible, auto-resize-mode selection) and internal deduplication of the constructors and export()/exportPanel().
 - EntityTablePanel.ControlKeys.COPY_CELL and COPY_COLUMN no longer declare default keystrokes they never bound; the keystrokes are owned by the underlying FilterTable.ControlKeys, now noted in their javadoc, matching the keystroke-less COPY_ROWS sibling.
+- EntityEditPanel no longer leaks its active-panel state into a static group forever; membership now tracks displayability via addNotify()/removeNotify(), so discarded dialog edit panels are cleaned up and focus switching no longer walks dead states.
+- EntityEditPanel.Config.excludeFromSelection() now validates that the attributes belong to the underlying entity, as its javadoc has always advertised, instead of silently ignoring foreign attributes.
+- EntityEditPanel, the CLEAR control now routes exceptions to onException() like its insert/update/delete siblings, and configureControls() now rejects calls made after the panel is initialized.
+- EntityEditPanel.refresh()/update() javadocs now document the synchronous IllegalStateException thrown for a non-existing/unmodified active entity.
+- EditorComponents, the EditorComponent.set(JComponent) and set(ComponentValue) guards now also reject a pending component builder, closing a one-component-per-attribute invariant bypass.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui

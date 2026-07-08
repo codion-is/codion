@@ -136,6 +136,14 @@ public interface State extends ObservableState {
 		void add(Collection<State> states);
 
 		/**
+		 * <p>Removes a state from this {@link State.Group}.
+		 * If the given state is not in the group, this method has no effect.
+		 * <p>Removing a state does not change its value.
+		 * @param state the {@link State} instance to remove
+		 */
+		void remove(State state);
+
+		/**
 		 * Sets a fallback state to activate when the last active state in the group is deactivated.
 		 * The fallback state must be a member of this group.
 		 * @param state the fallback {@link State}

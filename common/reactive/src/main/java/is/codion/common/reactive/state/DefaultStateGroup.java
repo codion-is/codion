@@ -23,13 +23,16 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultStateGroup implements State.Group {
 
 	private final List<State> members = new ArrayList<>();
+	private final Map<State, Runnable> listeners = new IdentityHashMap<>();
 
 	private @Nullable State fallback;
 	private boolean disabling = false;
@@ -50,10 +53,12 @@ final class DefaultStateGroup implements State.Group {
 		synchronized (members) {
 			if (!members.contains(state)) {
 				members.add(state);
+				Runnable listener = new StateListener(state);
+				listeners.put(state, listener);
 				if (state.is()) {
 					disableOthers(state);
 				}
-				state.addListener(new StateListener(state));
+				state.addListener(listener);
 			}
 		}
 	}
@@ -61,6 +66,22 @@ final class DefaultStateGroup implements State.Group {
 	@Override
 	public void add(Collection<State> states) {
 		requireNonNull(states).forEach(this::add);
+	}
+
+	@Override
+	public void remove(State state) {
+		requireNonNull(state);
+		synchronized (members) {
+			if (members.remove(state)) {
+				Runnable listener = listeners.remove(state);
+				if (listener != null) {
+					state.removeListener(listener);
+				}
+				if (state == fallback) {
+					fallback = null;
+				}
+			}
+		}
 	}
 
 	@Override
