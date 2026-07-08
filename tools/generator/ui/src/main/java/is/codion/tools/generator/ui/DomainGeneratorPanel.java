@@ -237,6 +237,8 @@ public final class DomainGeneratorPanel extends JPanel {
 								case EntityColumns.DTO:
 									column.fixedWidth(80);
 									break;
+								default:
+									break;
 							}
 						})
 						.columnReordering(false)

@@ -1894,7 +1894,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	 */
 	private static final class Lock {}
 
-
 	private static final class DatabaseConfiguration {
 
 		private static final Set<DatabaseConfiguration> CONFIGURED_DATABASES = new HashSet<>();
