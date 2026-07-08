@@ -70,12 +70,12 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 	}
 
 	@Override
-	public Object getLogLevel(String logger) throws RemoteException {
+	public Object logLevel(String logger) throws RemoteException {
 		return loggerProxy.getLogLevel(logger);
 	}
 
 	@Override
-	public void setLogLevel(String logger, Object level) throws RemoteException {
+	public void logLevel(String logger, Object level) throws RemoteException {
 		LOG.info("setLogLevel({}, {})", logger, level);
 		loggerProxy.setLogLevel(logger, level);
 	}
@@ -96,14 +96,14 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 	}
 
 	@Override
-	public int getMaintenanceInterval() {
-		return server.getMaintenanceInterval();
+	public int maintenanceInterval() {
+		return server.maintenanceInterval();
 	}
 
 	@Override
-	public void setMaintenanceInterval(int interval) {
-		LOG.info("setMaintenanceInterval({})", interval);
-		server.setMaintenanceInterval(interval);
+	public void maintenanceInterval(int interval) {
+		LOG.info("maintenanceInterval({})", interval);
+		server.maintenanceInterval(interval);
 	}
 
 	@Override
@@ -125,25 +125,25 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 	}
 
 	@Override
-	public boolean isCollectPoolSnapshotStatistics(String username) {
-		return server.database().connectionPool(username).isCollectSnapshotStatistics();
+	public boolean collectPoolSnapshotStatistics(String username) {
+		return server.database().connectionPool(username).collectSnapshotStatistics();
 	}
 
 	@Override
-	public void setCollectPoolSnapshotStatistics(String username, boolean snapshotStatistics) {
-		LOG.info("setCollectPoolSnapshotStatistics({}, {})", username, snapshotStatistics);
-		server.database().connectionPool(username).setCollectSnapshotStatistics(snapshotStatistics);
+	public void collectPoolSnapshotStatistics(String username, boolean snapshotStatistics) {
+		LOG.info("collectPoolSnapshotStatistics({}, {})", username, snapshotStatistics);
+		server.database().connectionPool(username).collectSnapshotStatistics(snapshotStatistics);
 	}
 
 	@Override
-	public boolean isCollectPoolCheckOutTimes(String username) throws RemoteException {
-		return server.database().connectionPool(username).isCollectCheckOutTimes();
+	public boolean collectPoolCheckOutTimes(String username) throws RemoteException {
+		return server.database().connectionPool(username).collectCheckOutTimes();
 	}
 
 	@Override
-	public void setCollectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException {
-		LOG.info("setCollectPoolCheckOutTimes({}, {})", username, collectCheckOutTimes);
-		server.database().connectionPool(username).setCollectCheckOutTimes(collectCheckOutTimes);
+	public void collectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException {
+		LOG.info("collectPoolCheckOutTimes({}, {})", username, collectCheckOutTimes);
+		server.database().connectionPool(username).collectCheckOutTimes(collectCheckOutTimes);
 	}
 
 	@Override
@@ -162,58 +162,58 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 	}
 
 	@Override
-	public int getConnectionPoolCleanupInterval(String username) {
-		return server.database().connectionPool(username).getCleanupInterval();
+	public int connectionPoolCleanupInterval(String username) {
+		return server.database().connectionPool(username).cleanupInterval();
 	}
 
 	@Override
-	public void setConnectionPoolCleanupInterval(String username, int poolCleanupInterval) {
-		LOG.info("setConnectionPoolCleanupInterval({}, {})", username, poolCleanupInterval);
-		server.database().connectionPool(username).setCleanupInterval(poolCleanupInterval);
+	public void connectionPoolCleanupInterval(String username, int poolCleanupInterval) {
+		LOG.info("connectionPoolCleanupInterval({}, {})", username, poolCleanupInterval);
+		server.database().connectionPool(username).cleanupInterval(poolCleanupInterval);
 	}
 
 	@Override
-	public int getMaximumConnectionPoolSize(String username) {
-		return server.database().connectionPool(username).getMaximumPoolSize();
+	public int maximumConnectionPoolSize(String username) {
+		return server.database().connectionPool(username).maximumPoolSize();
 	}
 
 	@Override
-	public void setMaximumConnectionPoolSize(String username, int value) {
-		LOG.info("setMaximumConnectionPoolSize({}, {})", username, value);
-		server.database().connectionPool(username).setMaximumPoolSize(value);
+	public void maximumConnectionPoolSize(String username, int value) {
+		LOG.info("maximumConnectionPoolSize({}, {})", username, value);
+		server.database().connectionPool(username).maximumPoolSize(value);
 	}
 
 	@Override
-	public int getMinimumConnectionPoolSize(String username) {
-		return server.database().connectionPool(username).getMinimumPoolSize();
+	public int minimumConnectionPoolSize(String username) {
+		return server.database().connectionPool(username).minimumPoolSize();
 	}
 
 	@Override
-	public void setMinimumConnectionPoolSize(String username, int value) {
-		LOG.info("setMinimumConnectionPoolSize({}, {})", username, value);
-		server.database().connectionPool(username).setMinimumPoolSize(value);
+	public void minimumConnectionPoolSize(String username, int value) {
+		LOG.info("minimumConnectionPoolSize({}, {})", username, value);
+		server.database().connectionPool(username).minimumPoolSize(value);
 	}
 
 	@Override
-	public int getPooledConnectionIdleTimeout(String username) {
-		return server.database().connectionPool(username).getIdleTimeout();
+	public int pooledConnectionIdleTimeout(String username) {
+		return server.database().connectionPool(username).idleTimeout();
 	}
 
 	@Override
-	public void setPooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) {
-		LOG.info("setPooledConnectionIdleTimeout({}, {})", username, pooledConnectionIdleTimeout);
-		server.database().connectionPool(username).setIdleTimeout(pooledConnectionIdleTimeout);
+	public void pooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) {
+		LOG.info("pooledConnectionIdleTimeout({}, {})", username, pooledConnectionIdleTimeout);
+		server.database().connectionPool(username).idleTimeout(pooledConnectionIdleTimeout);
 	}
 
 	@Override
-	public int getMaximumPoolCheckOutTime(String username) {
-		return server.database().connectionPool(username).getMaximumCheckOutTime();
+	public int maximumPoolCheckOutTime(String username) {
+		return server.database().connectionPool(username).maximumCheckOutTime();
 	}
 
 	@Override
-	public void setMaximumPoolCheckOutTime(String username, int value) {
-		LOG.info("setMaximumPoolCheckOutTime({}, {})", username, value);
-		server.database().connectionPool(username).setMaximumCheckOutTime(value);
+	public void maximumPoolCheckOutTime(String username, int value) {
+		LOG.info("maximumPoolCheckOutTime({}, {})", username, value);
+		server.database().connectionPool(username).maximumCheckOutTime(value);
 	}
 
 	@Override
@@ -222,36 +222,36 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 	}
 
 	@Override
-	public boolean isTraceToFile(UUID clientId) {
-		return server.isTraceToFile(clientId);
+	public boolean traceToFile(UUID clientId) {
+		return server.traceToFile(clientId);
 	}
 
 	@Override
-	public void setTraceToFile(UUID clientId, boolean traceToFile) {
-		LOG.info("setTraceToFile({}, {})", clientId, traceToFile);
-		server.setTraceToFile(clientId, traceToFile);
+	public void traceToFile(UUID clientId, boolean traceToFile) {
+		LOG.info("traceToFile({}, {})", clientId, traceToFile);
+		server.traceToFile(clientId, traceToFile);
 	}
 
 	@Override
-	public boolean isTracingEnabled(UUID clientId) {
-		return server.isTracingEnabled(clientId);
+	public boolean tracingEnabled(UUID clientId) {
+		return server.tracingEnabled(clientId);
 	}
 
 	@Override
-	public void setTracingEnabled(UUID clientId, boolean tracingEnabled) {
-		LOG.info("setTracingEnabled({}, {})", clientId, tracingEnabled);
-		server.setTracingEnabled(clientId, tracingEnabled);
+	public void tracingEnabled(UUID clientId, boolean tracingEnabled) {
+		LOG.info("tracingEnabled({}, {})", clientId, tracingEnabled);
+		server.tracingEnabled(clientId, tracingEnabled);
 	}
 
 	@Override
-	public int getIdleConnectionTimeout() {
-		return server.getIdleConnectionTimeout();
+	public int idleConnectionTimeout() {
+		return server.idleConnectionTimeout();
 	}
 
 	@Override
-	public void setIdleConnectionTimeout(int idleConnectionTimeout) {
-		LOG.info("setIdleConnectionTimeout({})", idleConnectionTimeout);
-		server.setIdleConnectionTimeout(idleConnectionTimeout);
+	public void idleConnectionTimeout(int idleConnectionTimeout) {
+		LOG.info("idleConnectionTimeout({})", idleConnectionTimeout);
+		server.idleConnectionTimeout(idleConnectionTimeout);
 	}
 
 	@Override

@@ -89,7 +89,7 @@ public interface ConnectionPoolWrapper {
 	 * @throws DatabaseException in case of an exception while fetching the connection
 	 * @throws is.codion.common.db.exception.AuthenticationException in case the given credentials do not match the pool user
 	 * @throws IllegalStateException if the pool is closed
-	 * @see #setMaximumCheckOutTime(int)
+	 * @see #maximumCheckOutTime(int)
 	 * @see Connection#close()
 	 */
 	Connection connection(User user);
@@ -125,7 +125,7 @@ public interface ConnectionPoolWrapper {
 	 * @see #statistics(long)
 	 * @see ConnectionPoolStatistics#snapshot()
 	 */
-	boolean isCollectSnapshotStatistics();
+	boolean collectSnapshotStatistics();
 
 	/**
 	 * Specifies whether to collect usage statistics for a snapshot.
@@ -133,28 +133,28 @@ public interface ConnectionPoolWrapper {
 	 * @see #statistics(long)
 	 * @see ConnectionPoolStatistics#snapshot()
 	 */
-	void setCollectSnapshotStatistics(boolean collectSnapshotStatistics);
+	void collectSnapshotStatistics(boolean collectSnapshotStatistics);
 
 	/**
 	 * Returns true if connection check out times are being collected.
 	 * @return true if connection check out times should be collected
 	 * @see #statistics(long)
 	 */
-	boolean isCollectCheckOutTimes();
+	boolean collectCheckOutTimes();
 
 	/**
 	 * Specifies whether to collect connection check out times.
 	 * @param collectCheckOutTimes the value
 	 * @see #statistics(long)
 	 */
-	void setCollectCheckOutTimes(boolean collectCheckOutTimes);
+	void collectCheckOutTimes(boolean collectCheckOutTimes);
 
 	/**
 	 * Returns the pool cleanup interval in milliseconds.
 	 * This determines how often the pool checks for and removes idle/expired connections.
 	 * @return the pool cleanup interval in milliseconds
 	 */
-	int getCleanupInterval();
+	int cleanupInterval();
 
 	/**
 	 * Sets the pool cleanup interval in milliseconds.
@@ -162,14 +162,14 @@ public interface ConnectionPoolWrapper {
 	 * @param poolCleanupInterval the pool cleanup interval in milliseconds (typically 30000-300000)
 	 * @throws IllegalArgumentException if the value is less than 1000
 	 */
-	void setCleanupInterval(int poolCleanupInterval);
+	void cleanupInterval(int poolCleanupInterval);
 
 	/**
 	 * Returns the connection idle timeout in milliseconds.
 	 * This is the time a connection can remain idle before being eligible for eviction.
 	 * @return the pooled connection timeout in milliseconds
 	 */
-	int getIdleTimeout();
+	int idleTimeout();
 
 	/**
 	 * Sets the connection idle timeout in milliseconds.
@@ -177,14 +177,14 @@ public interface ConnectionPoolWrapper {
 	 * @param idleTimeout the pooled connection timeout in milliseconds (typically 30000-300000)
 	 * @throws IllegalArgumentException if the value is less than 1000
 	 */
-	void setIdleTimeout(int idleTimeout);
+	void idleTimeout(int idleTimeout);
 
 	/**
 	 * Returns the minimum number of connections to keep in the pool.
 	 * These connections remain open even when idle to reduce connection creation overhead.
 	 * @return the minimum number of connections to keep in the pool
 	 */
-	int getMinimumPoolSize();
+	int minimumPoolSize();
 
 	/**
 	 * Sets the minimum number of connections to keep in the pool.
@@ -192,14 +192,14 @@ public interface ConnectionPoolWrapper {
 	 * @param minimumPoolSize the minimum number of connections to keep in the pool (typically 1-10)
 	 * @throws IllegalArgumentException if the value is less than 0 or larger than maximum pool size
 	 */
-	void setMinimumPoolSize(int minimumPoolSize);
+	void minimumPoolSize(int minimumPoolSize);
 
 	/**
 	 * Returns the maximum number of connections this pool can create.
 	 * This limits the total number of concurrent database connections to prevent resource exhaustion.
 	 * @return the maximum number of connections this pool can create
 	 */
-	int getMaximumPoolSize();
+	int maximumPoolSize();
 
 	/**
 	 * Sets the maximum number of connections to keep in this pool.
@@ -209,14 +209,14 @@ public interface ConnectionPoolWrapper {
 	 * @param maximumPoolSize the maximum number of connections this pool can create (typically 5-50)
 	 * @throws IllegalArgumentException if the value is less than 1 or less than minimum pool size
 	 */
-	void setMaximumPoolSize(int maximumPoolSize);
+	void maximumPoolSize(int maximumPoolSize);
 
 	/**
 	 * Returns the maximum time to wait for a connection checkout in milliseconds.
 	 * This prevents threads from waiting indefinitely when the pool is exhausted.
 	 * @return the maximum number of milliseconds to retry connection checkout before throwing an exception
 	 */
-	int getMaximumCheckOutTime();
+	int maximumCheckOutTime();
 
 	/**
 	 * Sets the maximum time to wait for a connection checkout in milliseconds.
@@ -224,5 +224,5 @@ public interface ConnectionPoolWrapper {
 	 * @param maximumCheckOutTime the maximum number of milliseconds to retry connection checkout (typically 10000-60000)
 	 * @throws IllegalArgumentException if the value is less than 0
 	 */
-	void setMaximumCheckOutTime(int maximumCheckOutTime);
+	void maximumCheckOutTime(int maximumCheckOutTime);
 }

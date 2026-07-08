@@ -107,7 +107,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			if (serverAdmin != null) {
 				setAdmin(serverAdmin);
 			}
-			setIdleConnectionTimeout(configuration.idleConnectionTimeout());
+			idleConnectionTimeout(configuration.idleConnectionTimeout());
 			setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
 			createConnectionPools(configuration.database(), configuration.connectionPoolFactory(), configuration.connectionPoolUsers());
 			if (EntityServerConfiguration.JMX.getOrThrow()) {
@@ -195,7 +195,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	/**
 	 * @return the idle connection timeout in milliseconds
 	 */
-	final int getIdleConnectionTimeout() {
+	final int idleConnectionTimeout() {
 		return idleConnectionTimeout;
 	}
 
@@ -203,7 +203,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @param idleConnectionTimeout the new idle connection timeout value in milliseconds
 	 * @throws IllegalArgumentException in case timeout is less than zero
 	 */
-	final void setIdleConnectionTimeout(int idleConnectionTimeout) {
+	final void idleConnectionTimeout(int idleConnectionTimeout) {
 		if (idleConnectionTimeout < 0) {
 			throw new IllegalArgumentException("Idle connection timeout must be a positive integer");
 		}
@@ -308,7 +308,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @param clientId the client id
 	 * @return true if method traces are written to file for the given client
 	 */
-	final boolean isTraceToFile(UUID clientId) {
+	final boolean traceToFile(UUID clientId) {
 		return connection(clientId).isTraceToFile();
 	}
 
@@ -316,7 +316,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @param clientId the client id
 	 * @param traceToFile true if method traces should be written to file
 	 */
-	final void setTraceToFile(UUID clientId, boolean traceToFile) {
+	final void traceToFile(UUID clientId, boolean traceToFile) {
 		connection(clientId).setTraceToFile(traceToFile);
 	}
 
@@ -324,7 +324,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @param clientId the client id
 	 * @return true if method tracing is enabled for the given client
 	 */
-	final boolean isTracingEnabled(UUID clientId) {
+	final boolean tracingEnabled(UUID clientId) {
 		return connection(clientId).isTracingEnabled();
 	}
 
@@ -332,7 +332,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @param clientId the client id
 	 * @param tracingEnabled the new tracing status
 	 */
-	final void setTracingEnabled(UUID clientId, boolean tracingEnabled) {
+	final void tracingEnabled(UUID clientId, boolean tracingEnabled) {
 		connection(clientId).setTracingEnabled(tracingEnabled);
 	}
 

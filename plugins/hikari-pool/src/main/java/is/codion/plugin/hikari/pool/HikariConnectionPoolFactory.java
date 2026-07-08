@@ -90,40 +90,40 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 		}
 
 		@Override
-		public int getCleanupInterval() {
+		public int cleanupInterval() {
 			return 0;
 		}
 
 		@Override
-		public void setCleanupInterval(int poolCleanupInterval) {/*non-configurable, com.zaxxer.hikari.housekeeping.periodMs*/}
+		public void cleanupInterval(int poolCleanupInterval) {/*non-configurable, com.zaxxer.hikari.housekeeping.periodMs*/}
 
 		@Override
-		public int getIdleTimeout() {
+		public int idleTimeout() {
 			return (int) config.getIdleTimeout();
 		}
 
 		@Override
-		public void setIdleTimeout(int idleTimeout) {
+		public void idleTimeout(int idleTimeout) {
 			config.setIdleTimeout(idleTimeout);
 		}
 
 		@Override
-		public int getMinimumPoolSize() {
+		public int minimumPoolSize() {
 			return config.getMinimumIdle();
 		}
 
 		@Override
-		public void setMinimumPoolSize(int minimumPoolSize) {
+		public void minimumPoolSize(int minimumPoolSize) {
 			config.setMinimumIdle(minimumPoolSize);
 		}
 
 		@Override
-		public int getMaximumPoolSize() {
+		public int maximumPoolSize() {
 			return config.getMaximumPoolSize();
 		}
 
 		@Override
-		public void setMaximumPoolSize(int maximumPoolSize) {
+		public void maximumPoolSize(int maximumPoolSize) {
 			config.setMaximumPoolSize(maximumPoolSize);
 		}
 
@@ -138,12 +138,12 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 		}
 
 		@Override
-		public int getMaximumCheckOutTime() {
+		public int maximumCheckOutTime() {
 			return (int) config.getConnectionTimeout();
 		}
 
 		@Override
-		public void setMaximumCheckOutTime(int maximumCheckOutTime) {
+		public void maximumCheckOutTime(int maximumCheckOutTime) {
 			config.setConnectionTimeout(maximumCheckOutTime);
 		}
 

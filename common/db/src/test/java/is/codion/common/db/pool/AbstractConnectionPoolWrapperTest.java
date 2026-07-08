@@ -117,18 +117,18 @@ public final class AbstractConnectionPoolWrapperTest {
 			assertEquals(testUser, poolWrapper.user());
 
 			// Test snapshot statistics configuration
-			poolWrapper.setCollectSnapshotStatistics(true);
-			assertTrue(poolWrapper.isCollectSnapshotStatistics());
+			poolWrapper.collectSnapshotStatistics(true);
+			assertTrue(poolWrapper.collectSnapshotStatistics());
 
-			poolWrapper.setCollectSnapshotStatistics(false);
-			assertFalse(poolWrapper.isCollectSnapshotStatistics());
+			poolWrapper.collectSnapshotStatistics(false);
+			assertFalse(poolWrapper.collectSnapshotStatistics());
 		}
 
 		@Test
 		@DisplayName("Pool wrapper handles multiple connections correctly")
 		void poolWrapper_multipleConnections_shouldHandleCorrectly() throws SQLException {
 			// Enable statistics collection
-			poolWrapper.setCollectSnapshotStatistics(true);
+			poolWrapper.collectSnapshotStatistics(true);
 
 			// Get and close multiple connections
 			for (int i = 0; i < CONNECTION_TEST_COUNT; i++) {
@@ -143,7 +143,7 @@ public final class AbstractConnectionPoolWrapperTest {
 		@DisplayName("Pool statistics are collected correctly")
 		void poolWrapper_statistics_shouldBeCollected() throws SQLException, InterruptedException {
 			long startTime = System.currentTimeMillis();
-			poolWrapper.setCollectSnapshotStatistics(true);
+			poolWrapper.collectSnapshotStatistics(true);
 
 			// Perform some operations
 			for (int i = 0; i < 10; i++) {
@@ -166,7 +166,7 @@ public final class AbstractConnectionPoolWrapperTest {
 		@DisplayName("Pool statistics accessors work correctly")
 		void poolStatistics_accessors_shouldWork() throws SQLException, InterruptedException {
 			long startTime = System.currentTimeMillis();
-			poolWrapper.setCollectSnapshotStatistics(true);
+			poolWrapper.collectSnapshotStatistics(true);
 
 			// Generate some activity
 			poolWrapper.connection(testUser).close();
@@ -194,7 +194,7 @@ public final class AbstractConnectionPoolWrapperTest {
 		@Test
 		@DisplayName("Pool snapshot statistics are collected when enabled")
 		void poolWrapper_snapshotStatistics_shouldBeCollected() throws SQLException, InterruptedException {
-			poolWrapper.setCollectSnapshotStatistics(true);
+			poolWrapper.collectSnapshotStatistics(true);
 			long startTime = System.currentTimeMillis();
 
 			// Generate activity
@@ -221,7 +221,7 @@ public final class AbstractConnectionPoolWrapperTest {
 		@Test
 		@DisplayName("statistics(0) excludes pre-allocated empty snapshot states")
 		void statisticsSinceEpochExcludesEmptyStates() throws SQLException, InterruptedException {
-			poolWrapper.setCollectSnapshotStatistics(true);
+			poolWrapper.collectSnapshotStatistics(true);
 			for (int i = 0; i < 3; i++) {
 				poolWrapper.connection(testUser).close();
 				Thread.sleep(20);
@@ -236,7 +236,7 @@ public final class AbstractConnectionPoolWrapperTest {
 		@Test
 		@DisplayName("Statistics reset works correctly")
 		void poolWrapper_resetStatistics_shouldWork() throws SQLException {
-			poolWrapper.setCollectSnapshotStatistics(true);
+			poolWrapper.collectSnapshotStatistics(true);
 
 			// Generate some statistics
 			for (int i = 0; i < 5; i++) {

@@ -119,7 +119,7 @@ public class AbstractServerAdmin extends UnicastRemoteObject implements ServerAd
 
 	@Override
 	public final ServerStatistics statistics(long since) throws RemoteException {
-		return new DefaultServerStatistics(System.currentTimeMillis(), connectionCount(), getConnectionLimit(),
+		return new DefaultServerStatistics(System.currentTimeMillis(), connectionCount(), connectionLimit(),
 						usedMemory(), maxMemory(), totalMemory(), requestsPerSecond(), systemCpuLoad(),
 						processCpuLoad(), threadStatistics(), gcEvents(since));
 	}
@@ -135,14 +135,14 @@ public class AbstractServerAdmin extends UnicastRemoteObject implements ServerAd
 	}
 
 	@Override
-	public final int getConnectionLimit() {
-		return server.getConnectionLimit();
+	public final int connectionLimit() {
+		return server.connectionLimit();
 	}
 
 	@Override
-	public final void setConnectionLimit(int value) {
-		LOG.info("setConnectionLimit({})", value);
-		server.setConnectionLimit(value);
+	public final void connectionLimit(int value) {
+		LOG.info("connectionLimit({})", value);
+		server.connectionLimit(value);
 	}
 
 	/**

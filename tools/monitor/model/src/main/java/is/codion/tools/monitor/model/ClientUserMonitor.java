@@ -144,16 +144,16 @@ public final class ClientUserMonitor {
 	 * @param interval the maintenance interval in seconds
 	 * @throws RemoteException in case of an exception
 	 */
-	public void setMaintenanceInterval(int interval) throws RemoteException {
-		server.setMaintenanceInterval(interval * THOUSAND);
+	public void maintenanceInterval(int interval) throws RemoteException {
+		server.maintenanceInterval(interval * THOUSAND);
 	}
 
 	/**
 	 * @return the server's connection maintenance interval in seconds
 	 * @throws RemoteException in case of an exception
 	 */
-	public int getMaintenanceInterval() throws RemoteException {
-		return server.getMaintenanceInterval() / THOUSAND;
+	public int maintenanceInterval() throws RemoteException {
+		return server.maintenanceInterval() / THOUSAND;
 	}
 
 	/**
@@ -193,7 +193,7 @@ public final class ClientUserMonitor {
 
 	private int getIdleConnectionTimeout() {
 		try {
-			return server.getIdleConnectionTimeout() / THOUSAND;
+			return server.idleConnectionTimeout() / THOUSAND;
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -209,7 +209,7 @@ public final class ClientUserMonitor {
 			throw new IllegalArgumentException("Idle connection timeout must be a positive integer");
 		}
 		try {
-			server.setIdleConnectionTimeout(idleConnectionTimeout * THOUSAND);
+			server.idleConnectionTimeout(idleConnectionTimeout * THOUSAND);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -225,7 +225,7 @@ public final class ClientUserMonitor {
 				maintenanceTimeFormatted.set(maintenanceTime.format(MAINTENANCE_TIME_FORMATTER));
 				// Maintenance is not on time if the last maintenance was started more than two intervals ago
 				maintenanceOnTime.set(ZonedDateTime.now(serverTimeZone)
-								.minusSeconds(getMaintenanceInterval() * 2L)
+								.minusSeconds(maintenanceInterval() * 2L)
 								.isBefore(maintenanceTime.atZone(serverTimeZone)));
 			}
 		}

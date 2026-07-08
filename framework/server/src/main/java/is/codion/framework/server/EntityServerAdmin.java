@@ -45,14 +45,14 @@ public interface EntityServerAdmin extends ServerAdmin {
 	 * that is, when inactive clients are purged
 	 * @throws RemoteException in case of a communication error
 	 */
-	int getMaintenanceInterval() throws RemoteException;
+	int maintenanceInterval() throws RemoteException;
 
 	/**
 	 * @param interval the number of ms that should pass between maintenance cycles,
 	 * that is, when inactive clients are purged
 	 * @throws RemoteException in case of a communication error
 	 */
-	void setMaintenanceInterval(int interval) throws RemoteException;
+	void maintenanceInterval(int interval) throws RemoteException;
 
 	/**
 	 * @param clientId the id of the client for which to retrieve the log
@@ -66,14 +66,14 @@ public interface EntityServerAdmin extends ServerAdmin {
 	 * @return true if method traces are written to file for the given client
 	 * @throws RemoteException in case of a communication error
 	 */
-	boolean isTraceToFile(UUID clientId) throws RemoteException;
+	boolean traceToFile(UUID clientId) throws RemoteException;
 
 	/**
 	 * @param clientId the client id
 	 * @param traceToFile true if method traces should be written to file
 	 * @throws RemoteException in case of a communication error
 	 */
-	void setTraceToFile(UUID clientId, boolean traceToFile) throws RemoteException;
+	void traceToFile(UUID clientId, boolean traceToFile) throws RemoteException;
 
 	/**
 	 * Returns true if logging is enabled for the given connection
@@ -81,7 +81,7 @@ public interface EntityServerAdmin extends ServerAdmin {
 	 * @return true if method tracing is enabled for the given connection
 	 * @throws RemoteException in case of a communication error
 	 */
-	boolean isTracingEnabled(UUID clientId) throws RemoteException;
+	boolean tracingEnabled(UUID clientId) throws RemoteException;
 
 	/**
 	 * Sets the method tracing status for the given connection
@@ -89,21 +89,21 @@ public interface EntityServerAdmin extends ServerAdmin {
 	 * @param tracingEnabled the new tracing status
 	 * @throws RemoteException in case of a communication error
 	 */
-	void setTracingEnabled(UUID clientId, boolean tracingEnabled) throws RemoteException;
+	void tracingEnabled(UUID clientId, boolean tracingEnabled) throws RemoteException;
 
 	/**
 	 * @param logger the logger
 	 * @return the log level
 	 * @throws RemoteException in case of a communication error
 	 */
-	Object getLogLevel(String logger) throws RemoteException;
+	Object logLevel(String logger) throws RemoteException;
 
 	/**
 	 * @param logger the logger
 	 * @param level the log level
 	 * @throws RemoteException in case of a communication error
 	 */
-	void setLogLevel(String logger, Object level) throws RemoteException;
+	void logLevel(String logger, Object level) throws RemoteException;
 
 	/**
 	 * @return the root logger name
@@ -128,7 +128,7 @@ public interface EntityServerAdmin extends ServerAdmin {
 	 * @return the idle connection timeout in ms
 	 * @throws RemoteException in case of a communication error
 	 */
-	int getIdleConnectionTimeout() throws RemoteException;
+	int idleConnectionTimeout() throws RemoteException;
 
 	/**
 	 * Sets the idle connection timeout in ms
@@ -136,7 +136,7 @@ public interface EntityServerAdmin extends ServerAdmin {
 	 * @throws RemoteException in case of a communication error
 	 * @throws IllegalArgumentException in case timeout is less than zero
 	 */
-	void setIdleConnectionTimeout(int idleConnectionTimeout) throws RemoteException;
+	void idleConnectionTimeout(int idleConnectionTimeout) throws RemoteException;
 
 	/**
 	 * @return a collection containing usernames backed by a connection pool
@@ -184,28 +184,28 @@ public interface EntityServerAdmin extends ServerAdmin {
 	 * @return true if snapshot statistics should be collected for the given connection pool
 	 * @throws RemoteException in case of an exception
 	 */
-	boolean isCollectPoolSnapshotStatistics(String username) throws RemoteException;
+	boolean collectPoolSnapshotStatistics(String username) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @param snapshotStatistics true if statistics should be collected for a snapshot of the given connection pool
 	 * @throws RemoteException in case of an exception
 	 */
-	void setCollectPoolSnapshotStatistics(String username, boolean snapshotStatistics) throws RemoteException;
+	void collectPoolSnapshotStatistics(String username, boolean snapshotStatistics) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @return true if check out times statistics should be collected for the given connection pool
 	 * @throws RemoteException in case of an exception
 	 */
-	boolean isCollectPoolCheckOutTimes(String username) throws RemoteException;
+	boolean collectPoolCheckOutTimes(String username) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @param collectCheckOutTimes true if check out times should be collected for the given connection pool
 	 * @throws RemoteException in case of an exception
 	 */
-	void setCollectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException;
+	void collectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException;
 
 	/**
 	 * @return a map containing each domain name and its entity definitions
@@ -236,70 +236,70 @@ public interface EntityServerAdmin extends ServerAdmin {
 	 * @return the pool cleanup interval in ms
 	 * @throws RemoteException in case of an exception
 	 */
-	int getConnectionPoolCleanupInterval(String username) throws RemoteException;
+	int connectionPoolCleanupInterval(String username) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @param poolCleanupInterval the pool cleanup interval in ms
 	 * @throws RemoteException in case of an exception
 	 */
-	void setConnectionPoolCleanupInterval(String username, int poolCleanupInterval) throws RemoteException;
+	void connectionPoolCleanupInterval(String username, int poolCleanupInterval) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @return the pooled connection timeout in ms
 	 * @throws RemoteException in case of an exception
 	 */
-	int getPooledConnectionIdleTimeout(String username) throws RemoteException;
+	int pooledConnectionIdleTimeout(String username) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @param pooledConnectionIdleTimeout the pooled connection timeout in ms
 	 * @throws RemoteException in case of an exception
 	 */
-	void setPooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) throws RemoteException;
+	void pooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @return the maximum time in ms to retry checking out a connection before throwing an exception
 	 * @throws RemoteException in case of an exception
 	 */
-	int getMaximumPoolCheckOutTime(String username) throws RemoteException;
+	int maximumPoolCheckOutTime(String username) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @param value the maximum time in ms to retry checking out a connection before throwing an exception
 	 * @throws RemoteException in case of an exception
 	 */
-	void setMaximumPoolCheckOutTime(String username, int value) throws RemoteException;
+	void maximumPoolCheckOutTime(String username, int value) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @return the maximum connection pool size
 	 * @throws RemoteException in case of an exception
 	 */
-	int getMaximumConnectionPoolSize(String username) throws RemoteException;
+	int maximumConnectionPoolSize(String username) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @param value the maximum connection pool size
 	 * @throws RemoteException in case of an exception
 	 */
-	void setMaximumConnectionPoolSize(String username, int value) throws RemoteException;
+	void maximumConnectionPoolSize(String username, int value) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @return the minimum connection pool size
 	 * @throws RemoteException in case of an exception
 	 */
-	int getMinimumConnectionPoolSize(String username) throws RemoteException;
+	int minimumConnectionPoolSize(String username) throws RemoteException;
 
 	/**
 	 * @param username the username
 	 * @param value the minimum connection pool size
 	 * @throws RemoteException in case of an exception
 	 */
-	void setMinimumConnectionPoolSize(String username, int value) throws RemoteException;
+	void minimumConnectionPoolSize(String username, int value) throws RemoteException;
 
 	/**
 	 * Basic information about an entity definition.

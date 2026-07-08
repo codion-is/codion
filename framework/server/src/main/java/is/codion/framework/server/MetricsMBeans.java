@@ -158,7 +158,7 @@ final class MetricsMBeans {
 
 		@Override
 		public int getConnectionLimit() {
-			return server.getConnectionLimit();
+			return server.connectionLimit();
 		}
 	}
 
