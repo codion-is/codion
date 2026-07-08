@@ -67,6 +67,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private static final String WILDCARD_SINGLE = "_";
 
 	private final State selectionEmpty = State.state(true);
+	private final State selectionSingle = State.state(false);
 
 	private final EntityDefinition entityDefinition;
 	private final Collection<Column<String>> columns;
@@ -231,7 +232,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final ValueSet<Entity> entities = ValueSet.<Entity>builder()
 						.notify(Notify.SET)
 						.validator(new EntityValidator())
-						.consumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()))
+						.consumer(selectedEntities -> {
+							selectionEmpty.set(selectedEntities.isEmpty());
+							selectionSingle.set(selectedEntities.size() == 1);
+						})
 						.build();
 
 		@Override
@@ -247,6 +251,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public ObservableState empty() {
 			return selectionEmpty.observable();
+		}
+
+		@Override
+		public ObservableState single() {
+			return selectionSingle.observable();
 		}
 
 		@Override

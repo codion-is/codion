@@ -127,6 +127,24 @@ public class EntitySearchFieldTest {
 	}
 
 	@Test
+	void separatorWithRegexMetacharacter() {
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
+		EntitySearchField field = EntitySearchField.builder()
+						.model(searchModel)
+						.multiSelection()
+						.separator("|")//regex metacharacter
+						.build();
+		field.setText("foo|bar");
+		Set<String> strings = searchModel.search().strings().get();
+		assertEquals(2, strings.size());
+		assertTrue(strings.contains("foo"));
+		assertTrue(strings.contains("bar"));
+	}
+
+	@Test
 	void formatter() {
 		EntitySearchModel model = EntitySearchModel.builder()
 						.entityType(Employee.TYPE)

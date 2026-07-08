@@ -16,6 +16,8 @@ Codion Change Log
 - EntityServerAdmin get/set/is accessors (maintenanceInterval, idleConnectionTimeout, logLevel, traceToFile, tracingEnabled, and the per-pool collect/cleanup/timeout/size methods) de-beanified to the house name()/name(value) style. The underlying LoggerProxy and per-connection tracing methods retain their names.
 ### is.codion.framework.db.local
 - LocalEntityConnection.TRACES configuration key renamed from codion.db.traces to codion.db.tracing.retained, nested under codion.db.tracing to read as a pair and no longer a one-letter typo away from it.
+### is.codion.framework.model
+- EntitySearchModel.Selection.single() added, an ObservableState indicating whether exactly one entity is selected.
 ### is.codion.swing.common.ui
 - ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
 - Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.
@@ -39,6 +41,10 @@ Codion Change Log
 - EntityPanel, EDIT_PANEL_CONSTRAINTS javadoc value type corrected to String, the editPanelConstraints field typo fixed, and the enabledEditStates() IllegalArgumentException message corrected to describe the actual rule.
 - TabbedDetailLayout, the enabledDetailStates() IllegalArgumentException message corrected, and the divider resize now clamps to the minimum divider location for left/right symmetry.
 - WindowDetailLayout, navigation into a windowed detail now actually shows the window; WindowDetailController implements display()/activate() instead of relying on empty interface defaults. A detail window is no longer created just to hide it, and the RejectEmbedded message names the correct class.
+- EntitySearchField edit control is now enabled only when a single entity is selected, no longer editing an arbitrary entity and silently collapsing a multi-selection.
+- EntitySearchField, a superseded search worker's onDone() no longer clears the state of a newer worker; the cleanup is now identity-guarded.
+- EntitySearchField, a builder-supplied separator containing regex metacharacters now splits correctly; the separator is quoted before use as a split pattern.
+- EntitySearchField.Builder.singleSelection() no longer clobbers an explicitly configured selectionToolTip; the tooltip default is resolved at build time. Duplicate selector-table key binding and a dead result-limit-message line removed.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui

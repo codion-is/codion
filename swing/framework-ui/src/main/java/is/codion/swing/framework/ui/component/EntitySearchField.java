@@ -96,6 +96,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static is.codion.common.utilities.Configuration.enumValue;
@@ -250,7 +251,8 @@ public final class EntitySearchField extends HintTextField {
 			setEditable(false);
 		}
 		searchOnFocusLost = builder.searchOnFocusLost;
-		selectionToolTip = builder.selectionToolTip;
+		//explicit configuration wins, otherwise the tooltip is enabled for multi-selection only
+		selectionToolTip = builder.selectionToolTip != null ? builder.selectionToolTip : !builder.singleSelection;
 		singleSelection = builder.singleSelection;
 		searchIndicator = createSearchIndicator(builder.searchIndicator);
 		searchRefreshProgressBarDelay = builder.searchProgressBarDelay;
@@ -523,7 +525,7 @@ public final class EntitySearchField extends HintTextField {
 			model.search().strings().clear();
 		}
 		else {
-			model.search().strings().set(singleSelection ? singleton(text) : asList(text.split(separator)));
+			model.search().strings().set(singleSelection ? singleton(text) : asList(text.split(Pattern.quote(separator))));
 		}
 	}
 
@@ -591,15 +593,20 @@ public final class EntitySearchField extends HintTextField {
 		}
 		else {
 			cancelCurrentSearch();
+			SearchTask searchTask = new SearchTask(promptUser);
 			searchWorker = ProgressWorker.builder()
-							.task(new SearchTask(promptUser))
+							.task(searchTask)
 							.execute();
+			//assigned after execute() so onDone can identity-guard the cleanup against a superseded worker
+			searchTask.worker = searchWorker;
 		}
 	}
 
 	private final class SearchTask implements ResultTaskHandler<List<Entity>> {
 
 		private final boolean promptUser;
+
+		private @Nullable ProgressWorker<List<Entity>, ?> worker;
 
 		private SearchTask(boolean promptUser) {
 			this.promptUser = promptUser;
@@ -617,8 +624,11 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void onDone() {
-			searchWorker = null;
-			searching.set(false);
+			//a cancelled worker's onDone still runs, guard against clobbering a newer worker's state
+			if (searchWorker == worker) {
+				searchWorker = null;
+				searching.set(false);
+			}
 		}
 
 		@Override
@@ -989,10 +999,6 @@ public final class EntitySearchField extends HintTextField {
 											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.action(selectControl))
 							.keyEvent(KeyEvents.builder()
-											.keyCode(VK_ENTER)
-											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-											.action(selectControl))
-							.keyEvent(KeyEvents.builder()
 											.keyCode(VK_F)
 											.modifiers(MENU_SHORTCUT_MASK)
 											.action(command(this::requestSearchFieldFocus)))
@@ -1002,6 +1008,7 @@ public final class EntitySearchField extends HintTextField {
 											.enable(t.searchField()))
 							.build();
 
+			//sort ascending by the first search column (definition-ordered by default)
 			filterTable.model().sort().ascending(searchField.model.columns().iterator().next());
 			filterTable.columnModel().visible().set(searchField.model.columns().toArray(new Attribute[0]));
 
@@ -1025,7 +1032,6 @@ public final class EntitySearchField extends HintTextField {
 		boolean resultLimitReached = limit == resultSize;
 		if (resultLimitReached) {
 			label.setText(MessageFormat.format(MESSAGES.getString("result_limited"), limit));
-			label.setVisible(true);
 		}
 		label.setVisible(resultLimitReached);
 	}
@@ -1258,7 +1264,7 @@ public final class EntitySearchField extends HintTextField {
 		private boolean editable = true;
 		private boolean searchHintEnabled = true;
 		private boolean searchOnFocusLost = true;
-		private boolean selectionToolTip = true;
+		private @Nullable Boolean selectionToolTip;
 		private boolean singleSelection = false;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.getOrThrow();
 		private int searchProgressBarDelay = SEARCH_PROGRESS_BAR_DELAY.getOrThrow();
@@ -1333,7 +1339,6 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public B singleSelection(boolean singleSelection) {
 			this.singleSelection = singleSelection;
-			this.selectionToolTip = !singleSelection;
 			return (B) this;
 		}
 
