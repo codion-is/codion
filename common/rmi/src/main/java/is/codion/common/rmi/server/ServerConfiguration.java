@@ -33,8 +33,7 @@ import static is.codion.common.utilities.Configuration.*;
 
 /**
  * Configuration values for a {@link Server}.
- * @see #builder(int)
- * @see #builder(int, int)
+ * @see #builder()
  */
 public interface ServerConfiguration {
 
@@ -299,6 +298,20 @@ public interface ServerConfiguration {
 	interface Builder<B extends Builder<B>> {
 
 		/**
+		 * @param port the port on which the server is made available to clients
+		 * @return this builder instance
+		 * @see ServerConfiguration#SERVER_PORT
+		 */
+		B port(int port);
+
+		/**
+		 * @param registryPort the port on which to locate the server registry
+		 * @return this builder instance
+		 * @see ServerConfiguration#REGISTRY_PORT
+		 */
+		B registryPort(int registryPort);
+
+		/**
 		 * @param adminPort the port on which to make the server admin interface accessible
 		 * @return this builder instance
 		 */
@@ -378,21 +391,10 @@ public interface ServerConfiguration {
 	}
 
 	/**
-	 * @param serverPort the server port
 	 * @param <B> the builder type
-	 * @return a default server configuration
+	 * @return a default server configuration builder
 	 */
-	static <B extends Builder<B>> Builder<B> builder(int serverPort) {
-		return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, REGISTRY_PORT.getOrThrow());
-	}
-
-	/**
-	 * @param serverPort the server port
-	 * @param registryPort the registry port
-	 * @param <B> the builder type
-	 * @return a default server configuration
-	 */
-	static <B extends Builder<B>> Builder<B> builder(int serverPort, int registryPort) {
-		return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, registryPort);
+	static <B extends Builder<B>> Builder<B> builder() {
+		return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder();
 	}
 }

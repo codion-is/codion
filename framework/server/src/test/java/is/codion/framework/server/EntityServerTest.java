@@ -351,7 +351,9 @@ public class EntityServerTest {
 		ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
 		SerializationFilterFactory.SERIALIZATION_FILTER_PATTERN_FILE.set("classpath:serialization-whitelist-test.txt");
 
-		return EntityServerConfiguration.builder(3223, 3221)
+		return EntityServerConfiguration.builder()
+						.port(3223)
+						.registryPort(3221)
 						.adminPort(3223)
 						.adminUser(User.parse("scott:tiger"))
 						.database(Database.instance())

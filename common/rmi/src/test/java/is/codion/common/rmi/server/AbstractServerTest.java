@@ -237,11 +237,11 @@ public class AbstractServerTest {
 
 	@Test
 	void emptyServerName() {
-		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder(PORT).serverName((String) null).build());
-		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder(PORT).serverName("").build());
+		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder().port(PORT).serverName((String) null).build());
+		assertThrows(IllegalArgumentException.class, () -> ServerConfiguration.builder().port(PORT).serverName("").build());
 
-		assertThrows(IllegalArgumentException.class, () -> new TestServer(ServerConfiguration.builder(PORT).serverName(() -> null).build()));
-		assertThrows(IllegalArgumentException.class, () -> new TestServer(ServerConfiguration.builder(PORT).serverName(() -> "").build()));
+		assertThrows(IllegalArgumentException.class, () -> new TestServer(ServerConfiguration.builder().port(PORT).serverName(() -> null).build()));
+		assertThrows(IllegalArgumentException.class, () -> new TestServer(ServerConfiguration.builder().port(PORT).serverName(() -> "").build()));
 	}
 
 	private static class ServerTestImpl implements ServerTest {
@@ -263,7 +263,8 @@ public class AbstractServerTest {
 	}
 
 	private static ServerConfiguration configuration() {
-		return ServerConfiguration.builder(PORT)
+		return ServerConfiguration.builder()
+						.port(PORT)
 						.serverName("remoteServerTestServer")
 						.objectInputFilterFactoryRequired(false)
 						.authenticator(TestAuthenticator.class.getName())

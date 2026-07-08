@@ -48,7 +48,9 @@ public final class EmployeeServerTest {
 					ConnectionNotAvailableException {
 		ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
-		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+		EntityServerConfiguration configuration = EntityServerConfiguration.builder()
+						.port(SERVER_PORT)
+						.registryPort(REGISTRY_PORT)
 						.adminPort(SERVER_ADMIN_PORT)
 						.database(Database.instance())
 						.idleConnectionTimeout(60_000)

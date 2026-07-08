@@ -441,8 +441,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @throws RemoteException in case of an exception
 	 */
 	public static EntityServer startServer() throws RemoteException {
-		return startServer(EntityServerConfiguration.builder(ServerConfiguration.SERVER_PORT.getOrThrow(),
-										ServerConfiguration.REGISTRY_PORT.getOrThrow())
+		return startServer(EntityServerConfiguration.builder()
 						.database(Database.instance()).build());
 	}
 
@@ -490,9 +489,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 */
 	static synchronized void shutdownServer() throws ServerAuthenticationException {
 		Clients.resolveTrustStore();
-		EntityServerConfiguration configuration =
-						EntityServerConfiguration.builder(ServerConfiguration.SERVER_PORT.getOrThrow(),
-														ServerConfiguration.REGISTRY_PORT.getOrThrow())
+		EntityServerConfiguration configuration = EntityServerConfiguration.builder()
 						.database(Database.instance()).build();
 		String serverName = configuration.serverName();
 		int registryPort = configuration.registryPort();

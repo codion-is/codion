@@ -50,7 +50,9 @@ public final class ClientServer {
 										"src/main/sql/create_schema.sql");
 
 		EntityServerConfiguration configuration =
-						EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+						EntityServerConfiguration.builder()
+										.port(SERVER_PORT)
+										.registryPort(REGISTRY_PORT)
 										.domainClasses(List.of(Store.class.getName()))
 										.database(database)
 										.sslEnabled(false)
@@ -86,7 +88,9 @@ public final class ClientServer {
 		EntityService.PORT.set(HTTP_PORT);
 
 		EntityServerConfiguration configuration =
-						EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+						EntityServerConfiguration.builder()
+										.port(SERVER_PORT)
+										.registryPort(REGISTRY_PORT)
 										.domainClasses(List.of(Store.class.getName()))
 										.database(database)
 										.sslEnabled(false)

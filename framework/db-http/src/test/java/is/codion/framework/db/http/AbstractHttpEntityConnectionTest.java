@@ -381,7 +381,9 @@ abstract class AbstractHttpEntityConnectionTest {
 		EntityService.KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
 		EntityService.KEYSTORE_PASSWORD.set("crappypass");
 
-		return EntityServerConfiguration.builder(3223, 3221)
+		return EntityServerConfiguration.builder()
+						.port(3223)
+						.registryPort(3221)
 						.adminPort(3223)
 						.database(Database.instance())
 						.domainClasses(singletonList(TestDomain.class.getName()))

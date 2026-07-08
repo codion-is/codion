@@ -88,7 +88,9 @@ public class EntityServerMonitorPanelTest {
 		Clients.SERVER_HOSTNAME.set("localhost");
 		ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
-		return EntityServerConfiguration.builder(3223, 3221)
+		return EntityServerConfiguration.builder()
+						.port(3223)
+						.registryPort(3221)
 						.adminPort(3223)
 						.adminUser(User.parse("scott:tiger"))
 						.connectionPoolUsers(Collections.singletonList(UNIT_TEST_USER))
