@@ -127,6 +127,18 @@ public final class WindowDetailLayout implements DetailLayout {
 			return detailWindow(detailPanel).panelState;
 		}
 
+		@Override
+		public void display(EntityPanel detailPanel) {
+			detailWindow(detailPanel).panelState.set(WINDOW);
+		}
+
+		@Override
+		public void activate(EntityPanel detailPanel) {
+			//model-link activation happens in DetailWindow.updateDetailState when the state becomes WINDOW;
+			//the Notify.SET panelState re-shows and re-fronts the window on a repeated set
+			detailWindow(detailPanel).panelState.set(WINDOW);
+		}
+
 		private DetailWindow detailWindow(EntityPanel detailPanel) {
 			DetailWindow detailWindow = panelWindows.get(requireNonNull(detailPanel));
 			if (detailWindow == null) {
@@ -184,10 +196,10 @@ public final class WindowDetailLayout implements DetailLayout {
 		}
 
 		private void updateDetailState(PanelState panelState) {
-			if (window == null) {
-				window = createDetailWindow();
-			}
 			if (panelState == WINDOW) {
+				if (window == null) {
+					window = createDetailWindow();
+				}
 				detailPanel.initialize();
 				if (!initialized) {
 					window.pack();
@@ -197,7 +209,7 @@ public final class WindowDetailLayout implements DetailLayout {
 				window.setVisible(true);
 				window.toFront();
 			}
-			else {
+			else if (window != null) {
 				window.setVisible(false);
 			}
 			SwingEntityModel detailModel = detailPanel.model();
@@ -266,7 +278,7 @@ public final class WindowDetailLayout implements DetailLayout {
 		@Override
 		public void validate(PanelState panelState) {
 			if (panelState == EMBEDDED) {
-				throw new IllegalArgumentException("WindowedDetailLayout does not support the EMBEDDED PanelState");
+				throw new IllegalArgumentException("WindowDetailLayout does not support the EMBEDDED PanelState");
 			}
 		}
 	}

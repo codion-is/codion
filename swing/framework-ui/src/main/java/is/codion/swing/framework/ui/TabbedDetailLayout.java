@@ -460,7 +460,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 								splitPane.getMaximumDividerLocation()));
 			}
 			else {
-				splitPane.setDividerLocation(Math.max(splitPane.getDividerLocation() - RESIZE_AMOUNT, 0));
+				splitPane.setDividerLocation(Math.max(splitPane.getDividerLocation() - RESIZE_AMOUNT,
+								splitPane.getMinimumDividerLocation()));
 			}
 		}
 	}
@@ -706,7 +707,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			}
 			List<PanelState> states = asList(panelStates);
 			if (!states.contains(initialState)) {
-				throw new IllegalArgumentException("Detail state has already been set to: " + initialState);
+				throw new IllegalArgumentException("The enabled detail states must include the initial detail state: " + initialState);
 			}
 			this.enabledDetailStates.clear();
 			this.enabledDetailStates.addAll(states);

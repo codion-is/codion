@@ -22,6 +22,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
@@ -69,6 +70,21 @@ public final class EntityPanelTest {
 
 		EntityPanel testPanel = deptPanel;
 		assertThrows(IllegalArgumentException.class, () -> testPanel.detail().add(testPanel));
+	}
+
+	@Test
+	void editPanelStateValidator() {
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
+		//a disabled edit state is rejected instead of silently desyncing the value from the UI
+		EntityPanel panel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {
+			@Override
+			protected void initializeUI() {}
+		}, config -> config.enabledEditStates(PanelState.EMBEDDED, PanelState.WINDOW));
+		assertThrows(IllegalArgumentException.class, () -> panel.editPanelState().set(PanelState.HIDDEN));
+
+		//a panel without an edit panel rejects an edit state change instead of an obscure NPE
+		EntityPanel tableOnly = new EntityPanel(deptModel, null, (EntityTablePanel) null);
+		assertThrows(IllegalArgumentException.class, () -> tableOnly.editPanelState().set(PanelState.HIDDEN));
 	}
 
 	@Test
