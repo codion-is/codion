@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.80
+
 ## 0.18.79
 ### is.codion.common.reactive
 - Value.link(), a chain of value links no longer falsely reports a cyclical link; genuine transitive cycles are still detected.
