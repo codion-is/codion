@@ -108,22 +108,22 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	}
 
 	@Override
-	public final boolean isCollectSnapshotStatistics() {
+	public final boolean collectSnapshotStatistics() {
 		return counter.isCollectSnapshotStatistics();
 	}
 
 	@Override
-	public final void setCollectSnapshotStatistics(boolean collectSnapshotStatistics) {
+	public final void collectSnapshotStatistics(boolean collectSnapshotStatistics) {
 		counter.setCollectSnapshotStatistics(collectSnapshotStatistics);
 	}
 
 	@Override
-	public final boolean isCollectCheckOutTimes() {
+	public final boolean collectCheckOutTimes() {
 		return counter.isCollectCheckOutTimes();
 	}
 
 	@Override
-	public final void setCollectCheckOutTimes(boolean collectCheckOutTimes) {
+	public final void collectCheckOutTimes(boolean collectCheckOutTimes) {
 		counter.setCollectCheckOutTimes(collectCheckOutTimes);
 	}
 

@@ -67,7 +67,7 @@ public interface ConnectionPoolMetricsMXBean {
 
 	/**
 	 * The average connection check-out time in microseconds, 0 unless check-out time collection is
-	 * enabled via {@link EntityServerAdmin#setCollectPoolCheckOutTimes(String, boolean)}.
+	 * enabled via {@link EntityServerAdmin#collectPoolCheckOutTimes(String, boolean)}.
 	 * @return the average check-out time in microseconds
 	 */
 	long getAverageCheckOutTime();

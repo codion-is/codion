@@ -6,8 +6,12 @@ Codion Change Log
 - ServerConfiguration.builder() no longer takes port parameters, the server and registry ports are now builder methods defaulting to SERVER_PORT and REGISTRY_PORT respectively.
 - ServerConfiguration.Builder.build() now rejects a negative server port with a clear message instead of deferring to an obscure RMI error, catching a missing SERVER_PORT configuration early.
 - Clients.SERVER_HOSTNAME configuration key renamed from codion.server.hostname to codion.client.hostname, it is a client-side setting and now sits under codion.client.* consistent with codion.client.http.hostname.
+- ServerAdmin.getConnectionLimit()/setConnectionLimit() renamed to connectionLimit()/connectionLimit(int), de-beanified to the house name()/name(value) style. AbstractServer follows suit, along with getMaintenanceInterval()/setMaintenanceInterval(); the protected getAdmin()/setAdmin() are left as-is to avoid clashing with the admin(User) authentication method.
+### is.codion.common.db
+- ConnectionPoolWrapper get/set/is accessors (cleanupInterval, idleTimeout, minimumPoolSize, maximumPoolSize, maximumCheckOutTime, collectSnapshotStatistics, collectCheckOutTimes) de-beanified to the house name()/name(value) style, consistent with the interface's own user()/statistics() methods. The JMX metric MXBeans retain bean naming, as required by the JMX attribute contract.
 ### is.codion.framework.server
 - EntityServerConfiguration.builder() no longer takes port parameters, consistent with ServerConfiguration.builder().
+- EntityServerAdmin get/set/is accessors (maintenanceInterval, idleConnectionTimeout, logLevel, traceToFile, tracingEnabled, and the per-pool collect/cleanup/timeout/size methods) de-beanified to the house name()/name(value) style. The underlying LoggerProxy and per-connection tracing methods retain their names.
 ### is.codion.framework.db.local
 - LocalEntityConnection.TRACES configuration key renamed from codion.db.traces to codion.db.tracing.retained, nested under codion.db.tracing to read as a pair and no longer a one-letter typo away from it.
 ### is.codion.swing.common.ui

@@ -186,10 +186,10 @@ public class EntityServerTest {
 		RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
 		assertTrue(remoteConnectionOne.connected());
 		assertEquals(1, admin.connectionCount());
-		admin.setPooledConnectionIdleTimeout(UNIT_TEST_USER.username(), 60005);
-		assertEquals(60005, admin.getPooledConnectionIdleTimeout(UNIT_TEST_USER.username()));
-		admin.setMaximumPoolCheckOutTime(UNIT_TEST_USER.username(), 2005);
-		assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER.username()));
+		admin.pooledConnectionIdleTimeout(UNIT_TEST_USER.username(), 60005);
+		assertEquals(60005, admin.pooledConnectionIdleTimeout(UNIT_TEST_USER.username()));
+		admin.maximumPoolCheckOutTime(UNIT_TEST_USER.username(), 2005);
+		assertEquals(2005, admin.maximumPoolCheckOutTime(UNIT_TEST_USER.username()));
 
 		try {
 			server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientType("ClientType").build());
@@ -212,10 +212,10 @@ public class EntityServerTest {
 						.clientType("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
-		admin.setTracingEnabled(connectionRequestTwo.clientId(), true);
-		assertTrue(admin.isTracingEnabled(connectionRequestOne.clientId()));
-		assertThrows(IllegalArgumentException.class, () -> admin.isTracingEnabled(UUID.randomUUID()));
-		assertThrows(IllegalArgumentException.class, () -> admin.setTracingEnabled(UUID.randomUUID(), true));
+		admin.tracingEnabled(connectionRequestTwo.clientId(), true);
+		assertTrue(admin.tracingEnabled(connectionRequestOne.clientId()));
+		assertThrows(IllegalArgumentException.class, () -> admin.tracingEnabled(UUID.randomUUID()));
+		assertThrows(IllegalArgumentException.class, () -> admin.tracingEnabled(UUID.randomUUID(), true));
 		assertTrue(remoteConnectionTwo.connected());
 		assertEquals(2, admin.connectionCount());
 		assertEquals(2, admin.clients().size());
@@ -245,7 +245,7 @@ public class EntityServerTest {
 		server.disconnect(connectionRequestTwo.clientId());
 		assertEquals(0, admin.connectionCount());
 
-		admin.setConnectionLimit(1);
+		admin.connectionLimit(1);
 		server.connect(connectionRequestOne);
 		try {
 			server.connect(connectionRequestTwo);
@@ -254,7 +254,7 @@ public class EntityServerTest {
 		catch (ConnectionNotAvailableException ignored) {/*ignored*/}
 
 		assertEquals(1, admin.connectionCount());
-		admin.setConnectionLimit(2);
+		admin.connectionLimit(2);
 		server.connect(connectionRequestTwo);
 		assertEquals(2, admin.connectionCount());
 
@@ -264,8 +264,8 @@ public class EntityServerTest {
 		assertEquals(0, admin.connectionCount());
 
 		//testing with the TestAuthenticator
-		admin.setConnectionLimit(3);
-		assertEquals(3, admin.getConnectionLimit());
+		admin.connectionLimit(3);
+		assertEquals(3, admin.connectionLimit());
 		String testClientType = "TestAuthenticator";
 		User john = User.parse("john:hello");
 		ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()

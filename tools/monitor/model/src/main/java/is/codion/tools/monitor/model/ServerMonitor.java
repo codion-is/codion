@@ -447,7 +447,7 @@ public final class ServerMonitor {
 
 	private int getConnectionLimit() {
 		try {
-			return server.getConnectionLimit();
+			return server.connectionLimit();
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -462,7 +462,7 @@ public final class ServerMonitor {
 			throw new IllegalArgumentException("Connection limit must be -1 or above");
 		}
 		try {
-			server.setConnectionLimit(value);
+			server.connectionLimit(value);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -574,7 +574,7 @@ public final class ServerMonitor {
 		@Override
 		public Object getLogLevel(String logger) {
 			try {
-				return server.getLogLevel(logger);
+				return server.logLevel(logger);
 			}
 			catch (RemoteException e) {
 				throw new RuntimeException(e);
@@ -584,7 +584,7 @@ public final class ServerMonitor {
 		@Override
 		public void setLogLevel(String logger, Object level) {
 			try {
-				server.setLogLevel(logger, level);
+				server.logLevel(logger, level);
 			}
 			catch (RemoteException e) {
 				throw new RuntimeException(e);

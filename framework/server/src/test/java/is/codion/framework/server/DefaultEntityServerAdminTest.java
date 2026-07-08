@@ -69,42 +69,42 @@ public final class DefaultEntityServerAdminTest {
 							.build();
 			server.connect(connectionRequest);
 			EntityServerAdmin admin = new DefaultEntityServerAdmin(server, configuration);
-			admin.setTracingEnabled(connectionRequest.clientId(), true);
-			assertTrue(admin.isTracingEnabled(connectionRequest.clientId()));
+			admin.tracingEnabled(connectionRequest.clientId(), true);
+			assertTrue(admin.tracingEnabled(connectionRequest.clientId()));
 			admin.resetConnectionPoolStatistics(SCOTT);
-			admin.setCollectPoolSnapshotStatistics(SCOTT, true);
-			assertTrue(admin.isCollectPoolSnapshotStatistics(SCOTT));
-			admin.setCollectPoolCheckOutTimes(SCOTT, true);
-			assertTrue(admin.isCollectPoolCheckOutTimes(SCOTT));
+			admin.collectPoolSnapshotStatistics(SCOTT, true);
+			assertTrue(admin.collectPoolSnapshotStatistics(SCOTT));
+			admin.collectPoolCheckOutTimes(SCOTT, true);
+			assertTrue(admin.collectPoolCheckOutTimes(SCOTT));
 			assertNotNull(admin.connectionPoolStatistics(SCOTT, System.currentTimeMillis()));
-			admin.setConnectionPoolCleanupInterval(SCOTT, 10);
-			assertEquals(0, admin.getConnectionPoolCleanupInterval(SCOTT));//not configurable for hikari
-			admin.setMinimumConnectionPoolSize(SCOTT, 2);
-			assertEquals(2, admin.getMinimumConnectionPoolSize(SCOTT));
-			admin.setMaximumConnectionPoolSize(SCOTT, 11);
-			assertEquals(11, admin.getMaximumConnectionPoolSize(SCOTT));
-			admin.setMaximumPoolCheckOutTime(SCOTT, 300);
-			assertEquals(300, admin.getMaximumPoolCheckOutTime(SCOTT));
-			admin.setPooledConnectionIdleTimeout(SCOTT, 1000);
-			assertEquals(1000, admin.getPooledConnectionIdleTimeout(SCOTT));
+			admin.connectionPoolCleanupInterval(SCOTT, 10);
+			assertEquals(0, admin.connectionPoolCleanupInterval(SCOTT));//not configurable for hikari
+			admin.minimumConnectionPoolSize(SCOTT, 2);
+			assertEquals(2, admin.minimumConnectionPoolSize(SCOTT));
+			admin.maximumConnectionPoolSize(SCOTT, 11);
+			assertEquals(11, admin.maximumConnectionPoolSize(SCOTT));
+			admin.maximumPoolCheckOutTime(SCOTT, 300);
+			assertEquals(300, admin.maximumPoolCheckOutTime(SCOTT));
+			admin.pooledConnectionIdleTimeout(SCOTT, 1000);
+			assertEquals(1000, admin.pooledConnectionIdleTimeout(SCOTT));
 			admin.methodTraces(connectionRequest.clientId());
 
-			admin.setIdleConnectionTimeout(30);
+			admin.idleConnectionTimeout(30);
 			try {
-				admin.setIdleConnectionTimeout(-1);
+				admin.idleConnectionTimeout(-1);
 				fail();
 			}
 			catch (IllegalArgumentException ignored) {/*ignored*/}
-			assertEquals(30, admin.getIdleConnectionTimeout());
+			assertEquals(30, admin.idleConnectionTimeout());
 			admin.databaseStatistics();
 			admin.databaseUrl();
 			admin.connectionPoolUsernames();
-			admin.setMaintenanceInterval(500);
+			admin.maintenanceInterval(500);
 			admin.domainEntityDefinitions();
 			assertEquals(1, admin.domainReports().get("TestDomain").size());
 			assertEquals(2, admin.domainOperations().get("TestDomain").size());
 			admin.clearReportCache();
-			assertEquals(500, admin.getMaintenanceInterval());
+			assertEquals(500, admin.maintenanceInterval());
 			admin.serverInformation();
 			admin.systemProperties();
 			admin.serializationFilterPatterns();

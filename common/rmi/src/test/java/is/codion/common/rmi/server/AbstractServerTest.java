@@ -87,12 +87,12 @@ public class AbstractServerTest {
 	void testConnectionLimitReached() throws RemoteException, ServerException {
 		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
-		server.setConnectionLimit(1);
-		assertEquals(1, server.getConnectionLimit());
+		server.connectionLimit(1);
+		assertEquals(1, server.connectionLimit());
 		server.connect(connectionRequest);
 		assertThrows(ConnectionNotAvailableException.class, () -> server.connect(connectionRequest2));
 		server.disconnect(connectionRequest.clientId());
-		server.setConnectionLimit(-1);
+		server.connectionLimit(-1);
 	}
 
 	@Test
@@ -201,8 +201,8 @@ public class AbstractServerTest {
 	void admin() throws RemoteException {
 		ServerAdmin admin = server.getAdmin();
 		admin.clients();
-		admin.setConnectionLimit(10);
-		admin.getConnectionLimit();
+		admin.connectionLimit(10);
+		admin.connectionLimit();
 		admin.users();
 		admin.systemProperties();
 		ServerInformation serverInformation = admin.serverInformation();

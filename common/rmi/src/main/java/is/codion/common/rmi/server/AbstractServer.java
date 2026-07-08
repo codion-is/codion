@@ -109,7 +109,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 						.initialDelay(configuration.connectionMaintenanceInterval())
 						.name("Connection maintenance")
 						.start();
-		setConnectionLimit(configuration.connectionLimit());
+		connectionLimit(configuration.connectionLimit());
 		this.shutdownHook = new Thread(this::shutdown);
 		getRuntime().addShutdownHook(shutdownHook);
 		try {
@@ -154,7 +154,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @return the maximum number of concurrent connections accepted by this server,
 	 * a negative number means no limit while 0 means the server is closed.
 	 */
-	public final int getConnectionLimit() {
+	public final int connectionLimit() {
 		return connectionLimit;
 	}
 
@@ -162,21 +162,21 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @param connectionLimit the maximum number of concurrent connections accepted by this server,
 	 * a negative number means no limit while 0 means the server is closed.
 	 */
-	public final void setConnectionLimit(int connectionLimit) {
+	public final void connectionLimit(int connectionLimit) {
 		this.connectionLimit = connectionLimit;
 	}
 
 	/**
 	 * @return the maintenance check interval in ms
 	 */
-	public final int getMaintenanceInterval() {
+	public final int maintenanceInterval() {
 		return connectionMaintenanceScheduler.interval().getOrThrow();
 	}
 
 	/**
 	 * @param maintenanceInterval the new maintenance interval in ms
 	 */
-	public final void setMaintenanceInterval(int maintenanceInterval) {
+	public final void maintenanceInterval(int maintenanceInterval) {
 		connectionMaintenanceScheduler.interval().set(maintenanceInterval);
 	}
 

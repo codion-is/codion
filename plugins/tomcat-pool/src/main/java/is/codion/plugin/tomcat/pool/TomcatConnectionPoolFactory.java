@@ -82,53 +82,53 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 		}
 
 		@Override
-		public int getCleanupInterval() {
+		public int cleanupInterval() {
 			return connectionPool().getTimeBetweenEvictionRunsMillis();
 		}
 
 		@Override
-		public void setCleanupInterval(int poolCleanupInterval) {
+		public void cleanupInterval(int poolCleanupInterval) {
 			connectionPool().setTimeBetweenEvictionRunsMillis(poolCleanupInterval);
 		}
 
 		@Override
-		public int getIdleTimeout() {
+		public int idleTimeout() {
 			return connectionPool().getMinEvictableIdleTimeMillis();
 		}
 
 		@Override
-		public void setIdleTimeout(int idleTimeout) {
+		public void idleTimeout(int idleTimeout) {
 			connectionPool().setMinEvictableIdleTimeMillis(idleTimeout);
 		}
 
 		@Override
-		public int getMinimumPoolSize() {
+		public int minimumPoolSize() {
 			return connectionPool().getMinIdle();
 		}
 
 		@Override
-		public void setMinimumPoolSize(int minimumPoolSize) {
+		public void minimumPoolSize(int minimumPoolSize) {
 			connectionPool().setMinIdle(minimumPoolSize);
 		}
 
 		@Override
-		public int getMaximumPoolSize() {
+		public int maximumPoolSize() {
 			return connectionPool().getMaxActive();
 		}
 
 		@Override
-		public void setMaximumPoolSize(int maximumPoolSize) {
+		public void maximumPoolSize(int maximumPoolSize) {
 			connectionPool().setMaxActive(maximumPoolSize);
 			connectionPool().setMaxIdle(maximumPoolSize);
 		}
 
 		@Override
-		public int getMaximumCheckOutTime() {
+		public int maximumCheckOutTime() {
 			return connectionPool().getMaxWait();
 		}
 
 		@Override
-		public void setMaximumCheckOutTime(int maximumCheckOutTime) {
+		public void maximumCheckOutTime(int maximumCheckOutTime) {
 			connectionPool().setMaxWait(maximumCheckOutTime);
 		}
 

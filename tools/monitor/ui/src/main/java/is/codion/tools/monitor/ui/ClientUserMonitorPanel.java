@@ -155,7 +155,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 		return comboBox()
 						.model(SwingFilterComboBoxModel.builder()
 										.items(MAINTENANCE_INTERVAL_VALUES)
-										.select(model.getMaintenanceInterval())
+										.select(model.maintenanceInterval())
 										.onItemSelected(this::setMaintenanceInterval)
 										.build())
 						.build();
@@ -163,7 +163,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 	private void setMaintenanceInterval(Integer interval) {
 		try {
-			model.setMaintenanceInterval(interval);
+			model.maintenanceInterval(interval);
 		}
 		catch (RemoteException ex) {
 			onException(ex);
