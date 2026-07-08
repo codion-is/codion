@@ -11,7 +11,7 @@ can act and self-verify without a screenshot after every step — reserving scre
 ## Architecture
 
 1. **SwingMcpPlugin** — integrates with a Codion application; starts the HTTP server on port 8080
-   (`codion.swing.mcp.http.port`). Toggle at runtime via `SwingMcpPlugin.mcpServer(panel)` (a `State`).
+   (`codion.tools.mcp.port`). Toggle at runtime via `SwingMcpPlugin.mcpServer(panel)` (a `State`).
 2. **SwingMcpServer** — the tool implementations. Drives the UI through a `Controller`
    (`is.codion.tools.swing.robot`) using the **EDT transport** (`Controller.Transport.EDT`), and reads model
    state through the `UiInspector` SPI (`is.codion.swing.common.ui.inspect`, located via `ServiceLoader`). Uses
@@ -143,7 +143,7 @@ curl -X POST http://localhost:8080/mcp/tools/call -H "Content-Type: application/
 
 ## Configuration / limitations
 
-- `codion.swing.mcp.http.port` (default 8080).
+- `codion.tools.mcp.port` (default 8080).
 - One application at a time; fixed port; no authentication (local-development use).
 
 ## Future ideas

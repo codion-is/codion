@@ -75,7 +75,7 @@ public final class Completion {
 	 * </ul>
 	 */
 	public static final PropertyValue<Mode> COMPLETION_MODE =
-					enumValue(Completion.class.getName() + ".completionMode", Mode.class, Mode.MAXIMUM_MATCH);
+					enumValue(Completion.class.getName() + ".mode", Mode.class, Mode.MAXIMUM_MATCH);
 
 	/**
 	 * Specifies whether strings are normalized during completion by default.

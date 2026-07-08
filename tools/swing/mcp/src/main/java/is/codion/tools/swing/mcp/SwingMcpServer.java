@@ -93,7 +93,7 @@ import static java.util.stream.Collectors.toList;
  * Claude Desktop connects via a Java bridge that translates STDIO to HTTP.
  * <p>
  * Configure with system properties:
- * -Dcodion.swing.mcp.http.port=8080      (HTTP server port, default 8080)
+ * -Dcodion.tools.mcp.port=8080      (HTTP server port, default 8080)
  * @see #builder()
  */
 public final class SwingMcpServer {
@@ -107,7 +107,7 @@ public final class SwingMcpServer {
 	 * <li>Default value: 8080
 	 * </ul>
 	 */
-	public static final PropertyValue<Integer> HTTP_PORT = integerValue("codion.swing.mcp.http.port", 8080);
+	public static final PropertyValue<Integer> HTTP_PORT = integerValue("codion.tools.mcp.port", 8080);
 
 	// Tool names
 	static final String TYPE_TEXT = "type_text";

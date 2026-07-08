@@ -39,7 +39,7 @@ public interface ValidIndicator {
 	 * <p>Default {@link BackgroundColorValidIndicator}
 	 */
 	PropertyValue<String> INDICATOR_CLASS =
-					stringValue(ValidIndicator.class.getName() + ".indicatorClass", BackgroundColorValidIndicator.class.getName());
+					stringValue(ValidIndicator.class.getName() + ".implementation", BackgroundColorValidIndicator.class.getName());
 
 	/**
 	 * Enables the valid indicator for the given component, based on the given valid state

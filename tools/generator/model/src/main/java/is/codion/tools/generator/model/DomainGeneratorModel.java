@@ -74,28 +74,28 @@ public final class DomainGeneratorModel {
 	 * The default domain package.
 	 */
 	public static final PropertyValue<String> DOMAIN_PACKAGE =
-					stringValue("codion.domain.generator.domainPackage", "none");
+					stringValue("codion.tools.generator.domainPackage", "none");
 
 	/**
 	 * The combined source directory, relative to the user directory.
 	 * <p>Default none.
 	 */
 	public static final PropertyValue<String> COMBINED_SOURCE_DIRECTORY =
-					stringValue("codion.domain.generator.combinedSourceDirectory", "");
+					stringValue("codion.tools.generator.combinedSourceDirectory", "");
 
 	/**
 	 * The api source directory, relative to the user directory, used when saving the domain files when split into api/impl
 	 * <p>Default "api".
 	 */
 	public static final PropertyValue<String> API_SOURCE_DIRECTORY =
-					stringValue("codion.domain.generator.apiSourceDirectory", "api");
+					stringValue("codion.tools.generator.apiSourceDirectory", "api");
 
 	/**
 	 * The implementation source directory, relative to the user directory, used when saving the domain files when split into api/impl
 	 * <p>Default "impl".
 	 */
 	public static final PropertyValue<String> IMPL_SOURCE_DIRECTORY =
-					stringValue("codion.domain.generator.implSourceDirectory", "impl");
+					stringValue("codion.tools.generator.implSourceDirectory", "impl");
 
 	private static final Preferences PREFERENCES = filePreferences(DomainGeneratorModel.class.getName());
 	private static final Pattern PACKAGE_PATTERN =

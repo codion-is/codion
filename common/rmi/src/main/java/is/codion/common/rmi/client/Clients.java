@@ -76,7 +76,7 @@ public final class Clients {
 	 * <li>Default value: localhost
 	 * </ul>
 	 */
-	public static final PropertyValue<String> SERVER_HOSTNAME = stringValue("codion.server.hostname", "localhost");
+	public static final PropertyValue<String> SERVER_HOSTNAME = stringValue("codion.client.hostname", "localhost");
 
 	private static final String DEFAULT_TRUSTSTORE_PASSWORD = "changeit";
 

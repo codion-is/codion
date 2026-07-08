@@ -41,7 +41,7 @@ public interface ModifiedIndicator {
 	 * @see UnderlineModifiedIndicator
 	 */
 	PropertyValue<String> INDICATOR_CLASS =
-					stringValue(ModifiedIndicator.class.getName() + ".indicatorClass", UnderlineModifiedIndicator.class.getName());
+					stringValue(ModifiedIndicator.class.getName() + ".implementation", UnderlineModifiedIndicator.class.getName());
 
 	/**
 	 * Enables the modified indicator for the given component, based on the given modified state

@@ -43,6 +43,6 @@ public enum ReferentialIntegrityErrorHandling {
 	 * </ul>
 	 */
 	public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING =
-					enumValue(ReferentialIntegrityErrorHandling.class.getName() + ".referentialIntegrityErrorHandling",
+					enumValue(ReferentialIntegrityErrorHandling.class.getName() + ".handling",
 									ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.DISPLAY_ERROR);
 }

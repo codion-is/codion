@@ -59,7 +59,7 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 	 * </ul>
 	 */
 	PropertyValue<PersistMenu> PERSIST_MENU =
-					enumValue(ToggleMenuItemBuilder.class.getName() + ".ToggleMenuItemBuilder.persistMenu",
+					enumValue(ToggleMenuItemBuilder.class.getName() + ".persistMenu",
 									PersistMenu.class, PersistMenu.ALWAYS);
 
 	/**

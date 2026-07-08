@@ -5,8 +5,26 @@ Codion Change Log
 ### is.codion.common.rmi
 - ServerConfiguration.builder() no longer takes port parameters, the server and registry ports are now builder methods defaulting to SERVER_PORT and REGISTRY_PORT respectively.
 - ServerConfiguration.Builder.build() now rejects a negative server port with a clear message instead of deferring to an obscure RMI error, catching a missing SERVER_PORT configuration early.
+- Clients.SERVER_HOSTNAME configuration key renamed from codion.server.hostname to codion.client.hostname, it is a client-side setting and now sits under codion.client.* consistent with codion.client.http.hostname.
 ### is.codion.framework.server
 - EntityServerConfiguration.builder() no longer takes port parameters, consistent with ServerConfiguration.builder().
+### is.codion.framework.db.local
+- LocalEntityConnection.TRACES configuration key renamed from codion.db.traces to codion.db.tracing.retained, nested under codion.db.tracing to read as a pair and no longer a one-letter typo away from it.
+### is.codion.swing.common.ui
+- ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
+- Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.
+- ModifiedIndicator.INDICATOR_CLASS and ValidIndicator.INDICATOR_CLASS configuration key suffixes changed from indicatorClass to implementation, no longer restating the class name.
+### is.codion.swing.framework.ui
+- ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING configuration key suffix shortened to handling, no longer restating the full class name.
+- FrameworkIcons.FRAMEWORK_ICONS configuration key suffix changed from frameworkIconsName to implementation, no longer restating the full class name.
+### is.codion.tools.generator.model
+- Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
+### is.codion.tools.generator.ui
+- Generator UI, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
+### is.codion.tools.monitor.model
+- EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE configuration key moved from codion.server.monitor.updateRate to codion.tools.monitor.updateRate.
+### is.codion.tools.swing.mcp
+- SwingMcpServer.HTTP_PORT configuration key moved from codion.swing.mcp.http.port to codion.tools.mcp.port.
 
 ## 0.18.79
 ### is.codion.common.reactive

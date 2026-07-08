@@ -106,7 +106,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * </ul>
 	 */
 	public static final PropertyValue<String> USER =
-					stringValue("codion.domain.generator.user");
+					stringValue("codion.tools.generator.user");
 
 	/**
 	 * The default user credentials to present in the login dialog, on the form username:password or just username.
@@ -116,7 +116,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * </ul>
 	 */
 	public static final PropertyValue<String> DEFAULT_USER =
-					stringValue("codion.domain.generator.defaultUser");
+					stringValue("codion.tools.generator.defaultUser");
 
 	/**
 	 * Specifies whether a user is required for connecting to the database.
@@ -126,7 +126,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> USER_REQUIRED =
-					booleanValue("codion.domain.generator.userRequired", true);
+					booleanValue("codion.tools.generator.userRequired", true);
 
 
 	private static final SVGIcon LOGO = SVGIcon.svgIcon(DomainGeneratorPanel.class.getResource("logo.svg"), 68, Color.BLACK);
