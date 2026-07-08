@@ -18,6 +18,7 @@ Codion Change Log
 - LocalEntityConnection.TRACES configuration key renamed from codion.db.traces to codion.db.tracing.retained, nested under codion.db.tracing to read as a pair and no longer a one-letter typo away from it.
 ### is.codion.framework.model
 - EntitySearchModel.Selection.single() added, an ObservableState indicating whether exactly one entity is selected.
+- AbstractEntityApplicationModel, the custom-Preferences constructor javadoc now notes that startup preferences (frame size, look and feel, default username) are read from the default root before the model exists.
 ### is.codion.swing.common.ui
 - ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
 - Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.
@@ -45,6 +46,14 @@ Codion Change Log
 - EntitySearchField, a superseded search worker's onDone() no longer clears the state of a newer worker; the cleanup is now identity-guarded.
 - EntitySearchField, a builder-supplied separator containing regex metacharacters now splits correctly; the separator is quoted before use as a split pattern.
 - EntitySearchField.Builder.singleSelection() no longer clobbers an explicitly configured selectionToolTip; the tooltip default is resolved at build time. Duplicate selector-table key binding and a dead result-limit-message line removed.
+- EntityApplicationPanel.ApplicationLayout.display() is now abstract and the interface is no longer @FunctionalInterface; a lambda layout can no longer silently inherit a no-op display() that drops keyboard navigation and display().request().
+- EntityApplication, the login validator no longer leaks a connected provider when a connectionProvider(Function) is configured; the validator now validates through that function, and the reuse branch precedes the function branch.
+- EntityApplicationPanel, handleUnsavedModifications() no longer throws IllegalStateException mid-exit when a modified panel has no edit panel; the edit-panel access is now guarded.
+- EntityApplicationPanel, a maximized frame no longer stores the screen size as its restore size, so un-maximizing after a restart no longer leaves the window full-screen.
+- EntityApplicationPanel, open non-cached auxiliary panels now have their preferences stored during store() rather than only on window-close, which runs after the final preferences flush at exit.
+- EntityApplicationPanel.DefaultApplicationPanelFactory now looks up the panel constructor by the declared model class rather than the runtime model class, so a model factory returning a subclass no longer fails with NoSuchMethodException.
+- EntityApplicationPanel, the SQL trace viewer consumer now appends to its own viewer rather than the field, and exit()'s JVM-wide window disposal is now documented.
+- ApplicationPreferences, corrupt on-disk preferences (e.g. a malformed frame size) no longer crash application startup; parsing failures are logged and defaults used, matching EntityTablePanelPreferences.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui

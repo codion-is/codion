@@ -52,6 +52,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -244,11 +245,17 @@ public final class NotesDemo {
 			super(applicationModel,
 							// Supply an instance of our NotePanel, using the model from above
 							List.of(new NotePanel(applicationModel.models().get(Note.TYPE))),
-							emptyList(), applicationPanel -> () ->
-											// Replace the default JTabbedPane based layout
-											// since we're only displaying a single panel,
-											// simply return our main panel, initialized
-											applicationPanel.entityPanel(Note.TYPE).initialize());
+							// Replace the default JTabbedPane based layout, since we're only
+							// displaying a single panel, simply return our main panel, initialized
+							emptyList(), applicationPanel -> new EntityApplicationPanel.ApplicationLayout() {
+								@Override
+								public JComponent layout() {
+									return applicationPanel.entityPanel(Note.TYPE).initialize();
+								}
+
+								@Override
+								public void display(EntityPanel entityPanel) {/* Only one panel, always displayed */}
+							});
 			setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
 		}
 	}

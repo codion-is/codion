@@ -89,10 +89,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -238,6 +240,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final boolean userPreferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow();
 
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
+	private final Set<EntityPanel> displayedEntityPanels = new LinkedHashSet<>();
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
@@ -345,6 +348,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	/**
 	 * Exits this application. Calls {@link System#exit(int)} in case {@link #SYSTEM_EXIT} is true.
+	 * <p>Disposes all windows in the JVM so that it can end naturally when {@link #SYSTEM_EXIT} is false,
+	 * note that this closes the windows of any other Codion application sharing the JVM.
 	 * @throws CancelException if the exit is cancelled
 	 * @see #exiting()
 	 * @see EntityEditPanel.Config#MODIFIED_WARNING
@@ -461,6 +466,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		storeApplicationPreferences(preferences);
 		storeEntityPanelPreferences(preferences);
 		storeCachedPanelPreferences(preferences);
+		storeDisplayedPanelPreferences(preferences);
 	}
 
 	/**
@@ -745,6 +751,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			Ancestor.window().of(entityPanel).toFront();
 		}
 		else {
+			displayedEntityPanels.add(entityPanel);
 			Frames.builder()
 							.component(createEmptyBorderBasePanel(entityPanel))
 							.locationRelativeTo(this)
@@ -775,6 +782,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			Ancestor.window().of(entityPanel).toFront();
 		}
 		else {
+			displayedEntityPanels.add(entityPanel);
 			Dialogs.builder()
 							.component(createEmptyBorderBasePanel(entityPanel))
 							.owner(Ancestor.window().of(this).get())
@@ -930,6 +938,21 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 	}
 
+	private void storeDisplayedPanelPreferences(Preferences preferences) {
+		for (EntityPanel entityPanel : displayedEntityPanels) {
+			//cached panels are already stored above, and exit() disposes windows after this,
+			//so the windowClosed store() would run after the final preferences flush
+			if (!cachedEntityPanels.containsValue(entityPanel)) {
+				try {
+					entityPanel.store(preferences.node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
+				}
+				catch (Exception e) {
+					LOG.error("Error storing preferences for auxiliary panel: {}", entityPanel.preferencesKey(), e);
+				}
+			}
+		}
+	}
+
 	private void storeApplicationPreferences(Preferences preferences) {
 		try {
 			preferences.put(APPLICATION_PANEL_KEY, createApplicationPreferences().preferences().toString());
@@ -941,12 +964,14 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private ApplicationPreferences createApplicationPreferences() {
 		JFrame parentFrame = Ancestor.ofType(JFrame.class).of(this).get();
+		boolean maximized = parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH;
 
 		return new ApplicationPreferences(
 						saveDefaultUsername ? applicationModel.connectionProvider().user().username() : null,
 						getLookAndFeel().getClass().getName(), Scaler.SCALING.getOrThrow(),
-						parentFrame == null ? null : parentFrame.getSize(),
-						parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH);
+						//when maximized parentFrame.getSize() is the screen size, not the frame size to restore when un-maximized
+						parentFrame == null || maximized ? null : parentFrame.getSize(),
+						maximized);
 	}
 
 	private Control createLookupPanelControl(EntityPanel.Builder panelBuilder) {
@@ -997,12 +1022,12 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						createModifiedMessage(modified, applicationModel.entities()), FrameworkMessages.modifiedWarningTitle(),
 						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
 			EntityPanel modifiedPanel = modified.keySet().stream()
-							.filter(entityPanel -> entityPanel.editPanel().active().is())
+							.filter(entityPanel -> entityPanel.containsEditPanel() && entityPanel.editPanel().active().is())
 							.findFirst()
 							.orElse(modified.keySet().iterator().next());
 			modifiedPanel.display().request();
 			Collection<Attribute<?>> attributes = modified.get(modifiedPanel);
-			if (!attributes.isEmpty()) {// modified can be predicate based
+			if (modifiedPanel.containsEditPanel() && !attributes.isEmpty()) {// modified can be predicate based
 				SwingUtilities.invokeLater(() -> modifiedPanel.editPanel().requestModifiedFocus(attributes.iterator().next()));
 			}
 
@@ -1201,7 +1226,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		tracer.trace().addConsumer(trace -> {
 			StringBuilder logBuilder = new StringBuilder();
 			trace.appendTo(logBuilder);
-			sqlTraceViewer.append(logBuilder.toString());
+			logViewer.append(logBuilder.toString());
 		});
 
 		return logViewer;
@@ -1227,6 +1252,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {
+		displayedEntityPanels.remove(entityPanel);
 		entityPanel.store(applicationModel.preferences().node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
 		if (LEGACY_PREFERENCES.getOrThrow()) {
 			entityPanel.writePreferences(legacyPreferences());
@@ -1259,7 +1285,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	/**
 	 * Handles laying out an EntityApplicationPanel.
 	 */
-	@FunctionalInterface
 	public interface ApplicationLayout {
 
 		/**
@@ -1276,6 +1301,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		 * @param entityPanel the entity panel to display
 		 * @see EntityPanel#display()
 		 */
-		default void display(EntityPanel entityPanel) {}
+		void display(EntityPanel entityPanel);
 	}
 }

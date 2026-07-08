@@ -60,6 +60,9 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 
 	/**
 	 * Instantiates a new AbstractEntityApplicationModel
+	 * <p>Note that the associated application panel reads startup preferences (frame size, look and feel,
+	 * default username) from the default file based preferences root before the model is instantiated,
+	 * so those specific preferences are not read from or stored under the given {@link Preferences} instance.
 	 * @param connectionProvider the EntityConnectionProvider instance
 	 * @param entityModels the entity models
 	 * @param preferences the {@link Preferences} instance to use

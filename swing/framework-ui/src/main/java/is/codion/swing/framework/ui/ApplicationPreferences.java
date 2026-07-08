@@ -24,6 +24,8 @@ import is.codion.framework.domain.DomainType;
 
 import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Dimension;
 import java.util.prefs.Preferences;
@@ -33,6 +35,8 @@ import static is.codion.framework.model.EntityApplicationModel.PREFERENCES_KEY;
 import static java.lang.Integer.parseInt;
 
 final class ApplicationPreferences {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ApplicationPreferences.class);
 
 	private static final String DEFAULT_USERNAME_KEY = "defaultUsername";
 	private static final String LOOK_AND_FEEL_KEY = "lookAndFeel";
@@ -106,14 +110,21 @@ final class ApplicationPreferences {
 	}
 
 	static ApplicationPreferences fromString(String preferences) {
-		JSONObject jsonObject = new JSONObject(preferences);
+		try {
+			JSONObject jsonObject = new JSONObject(preferences);
 
-		return new ApplicationPreferences(
-						jsonObject.has(DEFAULT_USERNAME_KEY) ? jsonObject.getString(DEFAULT_USERNAME_KEY) : null,
-						jsonObject.has(LOOK_AND_FEEL_KEY) ? jsonObject.getString(LOOK_AND_FEEL_KEY) : null,
-						jsonObject.has(SCALING_KEY) ? jsonObject.getInt(SCALING_KEY) : 100,
-						jsonObject.has(FRAME_SIZE_KEY) ? parseFrameSize(jsonObject.getString(FRAME_SIZE_KEY)) : null,
-						jsonObject.has(FRAME_MAXIMIZED_KEY) && jsonObject.getBoolean(FRAME_MAXIMIZED_KEY));
+			return new ApplicationPreferences(
+							jsonObject.has(DEFAULT_USERNAME_KEY) ? jsonObject.getString(DEFAULT_USERNAME_KEY) : null,
+							jsonObject.has(LOOK_AND_FEEL_KEY) ? jsonObject.getString(LOOK_AND_FEEL_KEY) : null,
+							jsonObject.has(SCALING_KEY) ? jsonObject.getInt(SCALING_KEY) : 100,
+							jsonObject.has(FRAME_SIZE_KEY) ? parseFrameSize(jsonObject.getString(FRAME_SIZE_KEY)) : null,
+							jsonObject.has(FRAME_MAXIMIZED_KEY) && jsonObject.getBoolean(FRAME_MAXIMIZED_KEY));
+		}
+		catch (Exception e) {
+			LOG.error("Error parsing application preferences, reverting to defaults", e);
+
+			return new ApplicationPreferences(null, null, 100, null, false);
+		}
 	}
 
 	private static @Nullable Dimension parseFrameSize(String userPreference) {
