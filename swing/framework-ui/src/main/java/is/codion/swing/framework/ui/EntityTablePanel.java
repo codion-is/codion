@@ -309,7 +309,7 @@ public class EntityTablePanel extends JPanel {
 		public static final ControlKey<CommandControl> VIEW_DEPENDENCIES = CommandControl.key("viewDependencies");
 		/**
 		 * A {@link Controls} instance containing edit controls for all editable attributes.
-		 * @see Config#editAttributeSelection(EditAttributeSelection)
+		 * @see Config#editAttributeSelection(SelectionMode)
 		 */
 		public static final ControlKey<Controls> EDIT_ATTRIBUTE_CONTROLS = Controls.key("editAttributeControls");
 		/**
@@ -367,15 +367,17 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> CLEAR_SELECTION = CommandControl.key("clearSelection");
 		/**
-		 * A {@link Control} for copying the selected cell data.<br>
-		 * Default key stroke: CTRL-ALT-C
+		 * A {@link Control} for copying the selected cell data.
+		 * <p>The keystroke is owned by {@link FilterTable.ControlKeys#COPY_CELL} on the underlying table;
+		 * remap it there via {@code config.table(builder -> builder.keyStroke(FilterTable.ControlKeys.COPY_CELL, ...))}.
 		 */
-		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell");
 		/**
-		 * A {@link Control} for copying the selected column data.<br>
-		 * Default key stroke: CTRL-ALT-SHIFT-C
+		 * A {@link Control} for copying the selected column data.
+		 * <p>The keystroke is owned by {@link FilterTable.ControlKeys#COPY_COLUMN} on the underlying table;
+		 * remap it there via {@code config.table(builder -> builder.keyStroke(FilterTable.ControlKeys.COPY_COLUMN, ...))}.
 		 */
-		public static final ControlKey<CommandControl> COPY_COLUMN = CommandControl.key("copyColumn", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COPY_COLUMN = CommandControl.key("copyColumn");
 		/**
 		 * A {@link Control} for copying the table rows with header.
 		 */
@@ -495,19 +497,7 @@ public class EntityTablePanel extends JPanel {
 	 * @param config provides access to the table panel configuration
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> config) {
-		this.tableModel = requireNonNull(tableModel);
-		this.editPanel = null;
-		this.conditionRefreshControl = createConditionRefreshControl();
-		this.configuration = configure(config);
-		this.table = configuration.buildTable();
-		this.tableConditionPanel = createTableConditionPanel();
-		this.refreshButtonToolBar = createRefreshButtonToolBar();
-		this.popupMenuLayout = createPopupMenuLayout();
-		this.toolBarLayout = createToolBarLayout();
-		this.exportModel = new EntityTableExportModel(tableModel);
-		initializeConditionsAndFilters();
-		createControls();
-		configureExcludedColumns();
+		this(tableModel, config, null);
 	}
 
 	/**
@@ -526,8 +516,12 @@ public class EntityTablePanel extends JPanel {
 	 * @param config provides access to the table panel configuration
 	 */
 	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> config) {
+		this(tableModel, config, requireNonNull(editPanel));
+	}
+
+	private EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> config, @Nullable EntityEditPanel editPanel) {
 		this.tableModel = requireNonNull(tableModel);
-		this.editPanel = validateEditModel(requireNonNull(editPanel));
+		this.editPanel = editPanel == null ? null : validateEditModel(editPanel);
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
 		this.table = configuration.buildTable();
@@ -682,10 +676,10 @@ public class EntityTablePanel extends JPanel {
 	public final void deleteSelected() {
 		Dialogs.progressWorker()
 						.task(tableModel.editor().tasks().delete(tableModel.selection().items().get())::perform)
-						.title(MESSAGES.getString("deleting"))
+						.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 						.owner(this)
 						.onResult(Result::handle)
-						.onException(this::onException)
+						.onException(this::onDeleteException)
 						.execute();
 	}
 
@@ -845,7 +839,7 @@ public class EntityTablePanel extends JPanel {
 	 *}
 	 * Defaults:
 	 * <ul>
-	 *   <li>{@link ControlKeys#TOGGLE_SUMMARIES ControlKeys#TOGGLE_SUMMARY_PANEL}
+	 *   <li>{@link ControlKeys#TOGGLE_SUMMARIES ControlKeys#TOGGLE_SUMMARIES}
 	 * 	 <li>{@link ControlKeys#TOGGLE_CONDITION_VIEW ControlKeys#TOGGLE_CONDITION_VIEW}
 	 * 	 <li>{@link ControlKeys#TOGGLE_FILTER_VIEW ControlKeys#TOGGLE_FILTER_VIEW}
 	 * 	 <li>Separator
@@ -904,7 +898,7 @@ public class EntityTablePanel extends JPanel {
 	 *   <li>Separator
 	 *   <li>{@link ControlKeys#FILTER_CONTROLS ControlKeys#FILTER_CONTROLS}
 	 *   <li>Separator
-	 *   <li>{@link ControlKeys#EXPORT ControlKeys#EXPORT_DATA}
+	 *   <li>{@link ControlKeys#EXPORT ControlKeys#EXPORT}
 	 *   <li>Separator
 	 *   <li>{@link ControlKeys#COPY_CONTROLS ControlKeys#COPY_CONTROLS}
 	 * </ul>
@@ -1399,11 +1393,9 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void export() {
-		if (exportPanel == null) {
-			exportPanel = createExportPanel();
-		}
-		if (exportPanel != null) {
-			exportPanel.show(this);
+		EntityTableExportPanel panel = exportPanel();
+		if (panel != null) {
+			panel.show(this);
 		}
 	}
 
@@ -1560,6 +1552,11 @@ public class EntityTablePanel extends JPanel {
 	private void setupComponents() {
 		tableScrollPane.setViewportView(table());
 		tablePanel.initialize();
+		if (summaryPanel == null) {
+			//a summary panel may be absent even when SUMMARY_PANEL_VISIBLE defaults to true,
+			//downgrade before arming the validator, which validates the current value immediately
+			summaryPanelVisibleState.set(false);
+		}
 		summaryPanelVisibleState.addValidator(new ComponentAvailableValidator(summaryPanel, "summary"));
 	}
 
@@ -1570,6 +1567,11 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includeFilters) {
 			table().filters().view().set(configuration.filterView);
 		}
+	}
+
+	private void onDeleteException(Exception exception) {
+		LOG.error(exception.getMessage(), exception);
+		onException(exception);
 	}
 
 	private void createControls() {
@@ -1702,12 +1704,10 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void onConditionChanged() {
-		if (table != null) {
-			if (table.getTableHeader() != null) {
-				table.getTableHeader().repaint();
-			}
-			table.repaint();
+		if (table.getTableHeader() != null) {
+			table.getTableHeader().repaint();
 		}
+		table.repaint();
 	}
 
 	private void setConditionViewHidden(JScrollPane scrollPane, Value<ConditionView> conditionView) {
@@ -1822,21 +1822,7 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public void execute() {
-			if (!configuration.confirmDelete || confirmDelete()) {
-				List<Entity> selectedItems = tableModel().selection().items().get();
-				Dialogs.progressWorker()
-								.task(tableModel.editor().tasks().delete(selectedItems)::perform)
-								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
-								.owner(EntityTablePanel.this)
-								.onException(this::onException)
-								.onResult(Result::handle)
-								.execute();
-			}
-		}
-
-		private void onException(Exception exception) {
-			LOG.error(exception.getMessage(), exception);
-			EntityTablePanel.this.onException(exception);
+			deleteSelectedWithConfirmation();
 		}
 	}
 
@@ -2027,7 +2013,7 @@ public class EntityTablePanel extends JPanel {
 		 * Specifies whether to include a filter panel.
 		 * <ul>
 		 * <li>Value type: Boolean
-		 * <li>Default value: true
+		 * <li>Default value: false
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_FILTERS =
@@ -2077,7 +2063,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Specifies whether the refresh button should always be visible or only when the condition panel is visible
 		 * <ul>
-		 * <li>Value type: Boolean
+		 * <li>Value type: {@link RefreshButtonVisible}
 		 * <li>Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
 		 * </ul>
 		 */
@@ -2096,7 +2082,7 @@ public class EntityTablePanel extends JPanel {
 						enumValue(EntityTablePanel.class.getName() + ".columnSelection", SelectionMode.class, SelectionMode.DIALOG);
 
 		/**
-		 * Specifies how column selection is presented to the user.
+		 * Specifies how the auto-resize-mode selection is presented to the user.
 		 * <ul>
 		 * <li>Value type: {@link SelectionMode}
 		 * <li>Default value: {@link SelectionMode#DIALOG}
@@ -2243,9 +2229,13 @@ public class EntityTablePanel extends JPanel {
 		private Config(Config config) {
 			this.tablePanel = config.tablePanel;
 			this.entityDefinition = config.entityDefinition;
+			//transfer builder ownership to the copy, so a leaked original can no longer
+			//mutate the builder after this copy has built and discarded it
 			this.tableBuilder = config.tableBuilder;
+			config.tableBuilder = null;
 			this.controlMap = config.controlMap.copy();
 			this.editable = valueSet(config.editable.get());
+			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
 			this.includeSouthPanel = config.includeSouthPanel;
 			this.includeExport = config.includeExport;
 			this.includeConditions = config.includeConditions;
@@ -2477,7 +2467,7 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * @param includeEditAttributeControl true if an 'Edit' attribute control should be included
 		 * @return this Config instance
-		 * @see #editAttributeSelection(EditAttributeSelection)
+		 * @see #editAttributeSelection(SelectionMode)
 		 */
 		public Config includeEditAttributeControl(boolean includeEditAttributeControl) {
 			this.includeEditAttributeControl = includeEditAttributeControl;

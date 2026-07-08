@@ -21,6 +21,12 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING configuration key suffix shortened to handling, no longer restating the full class name.
 - FrameworkIcons.FRAMEWORK_ICONS configuration key suffix changed from frameworkIconsName to implementation, no longer restating the full class name.
+- EntityTablePanel, a summary-visible state of true on a panel that ends up without a summary panel no longer throws during initialize() and permanently bricks the panel; it is silently downgraded before the availability validator is armed.
+- EntityTablePanel.deleteSelected() progress dialog is no longer titled "!deleting!"; it now uses the correct edit-panel message bundle and logs the exception, unified with the DeleteCommand control path.
+- EntityTablePanel.Config.INCLUDE_FILTERS javadoc corrected to state the actual default of false.
+- EntityTablePanel.Config copy constructor no longer drops the editable-attributes validator and no longer shares the FilterTable.Builder with the original, closing a post-build mutation gap.
+- EntityTablePanel, various javadoc corrections (editAttributeSelection/SelectionMode, TOGGLE_SUMMARIES, EXPORT, RefreshButtonVisible, auto-resize-mode selection) and internal deduplication of the constructors and export()/exportPanel().
+- EntityTablePanel.ControlKeys.COPY_CELL and COPY_COLUMN no longer declare default keystrokes they never bound; the keystrokes are owned by the underlying FilterTable.ControlKeys, now noted in their javadoc, matching the keystroke-less COPY_ROWS sibling.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui
