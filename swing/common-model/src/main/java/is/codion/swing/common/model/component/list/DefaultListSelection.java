@@ -145,19 +145,6 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
-	public void insertIndexInterval(int fromIndex, int length, boolean before) {
-		//structural re-indexing (rows inserted/removed in the model), the selected items don't change,
-		//their indices shift under them, so this is not a selection change and must not fire changing()
-		super.insertIndexInterval(fromIndex, length, before);
-	}
-
-	@Override
-	public void removeIndexInterval(int fromIndex, int toIndex) {
-		//structural re-indexing, see insertIndexInterval
-		super.removeIndexInterval(fromIndex, toIndex);
-	}
-
-	@Override
 	public Observer<?> changing() {
 		return changing.observer();
 	}

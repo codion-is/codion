@@ -62,8 +62,6 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();
 
 	protected EntityDefinition definition;
-	//placeholder only, every constructor path replaces this with a mutable map before any mutation;
-	//safe solely because AbstractMap.clear()/remove() no-op on the empty immutable map
 	protected Map<Attribute<?>, @Nullable Object> values = EMPTY_MAP;
 	protected @Nullable Map<Attribute<?>, @Nullable Object> originalValues;
 
