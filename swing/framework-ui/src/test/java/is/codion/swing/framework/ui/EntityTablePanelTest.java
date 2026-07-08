@@ -97,6 +97,18 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
+	void summaryPanelVisibleWithoutSummaryPanelDoesNotBrick() {
+		//a summary-visible state of true on a panel that ends up without a summary panel
+		//must not throw during initialize() and permanently brick the panel
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeSummaries(false));
+		tablePanel.summaryPanelVisible().set(true);
+		assertDoesNotThrow(tablePanel::initialize);
+		//downgraded to false since no summary panel is available
+		assertFalse(tablePanel.summaryPanelVisible().is());
+	}
+
+	@Test
 	void editableAttributesExcludesDerivedAndDenormalizedAttributes() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
 		new EntityTablePanel(tableModel, config -> config.editable(attributes -> {
