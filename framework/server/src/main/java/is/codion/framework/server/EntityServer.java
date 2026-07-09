@@ -341,17 +341,18 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @see #timedOut(AbstractRemoteEntityConnection)
 	 */
 	final void disconnectClients(boolean timedOutOnly) {
-		List<RemoteClient> clients = new ArrayList<>(connections().keySet());
-		for (RemoteClient client : clients) {
-			AbstractRemoteEntityConnection connection = connection(client.clientId());
+		//use the snapshot's connections, a client disconnecting between the snapshot and the
+		//lookup would make connection(clientId) throw and abort the rest of the sweep
+		for (Map.Entry<RemoteClient, AbstractRemoteEntityConnection> entry : new ArrayList<>(connections().entrySet())) {
+			AbstractRemoteEntityConnection connection = entry.getValue();
 			if (timedOutOnly) {
 				boolean active = connection.active();
 				if (!active && timedOut(connection)) {
-					disconnect(client.clientId());
+					disconnect(entry.getKey().clientId());
 				}
 			}
 			else {
-				disconnect(client.clientId());
+				disconnect(entry.getKey().clientId());
 			}
 		}
 	}
@@ -388,8 +389,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		if (domainTypeName == null) {
 			throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
 		}
+		Domain domain = domainModels.get(DomainType.domainTypeByName(domainTypeName));
+		if (domain == null) {
+			throw new IllegalArgumentException("Domain not found on this server: " + domainTypeName
+							+ ", hosted domains: " + domainModels.keySet());
+		}
 
-		return domainModels.get(DomainType.domainTypeByName(domainTypeName));
+		return domain;
 	}
 
 	private static void configureDatabase(Collection<Domain> domainModels, Database database) {
@@ -408,7 +414,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			for (String className : domainModelClasses) {
 				LOG.info("Server loading domain model '{}' from classpath", className);
 				Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
-				domains.put(domain.type(), domain);
+				Domain previous = domains.put(domain.type(), domain);
+				if (previous != null) {
+					LOG.warn("Domain model '{}' loaded from classpath overrides the service loaded '{}'",
+									className, previous.getClass().getName());
+				}
 			}
 
 			return unmodifiableMap(domains);

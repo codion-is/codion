@@ -205,7 +205,16 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	}
 
 	final RemoteEntityResultIterator remoteIterator(EntityResultIterator iterator) throws RemoteException {
-		return new DefaultRemoteEntityResultIterator(connectionPort, clientSocketFactory, serverSocketFactory, iterator);
+		try {
+			return new DefaultRemoteEntityResultIterator(connectionPort, clientSocketFactory, serverSocketFactory, iterator);
+		}
+		catch (RemoteException e) {
+			//the connection was pinned when the iterator was created, but the export failed, so the
+			//iterator never reached remoteIterators and nothing else will ever close it
+			closeIterator(iterator);
+			connectionHandler.iteratorClosed();
+			throw e;
+		}
 	}
 
 	final void cleanupIterators() {
@@ -217,6 +226,15 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	private void close(RemoteEntityResultIterator iterator) {
 		try {
 			LOG.debug("Closing iterator for {}", user());
+			iterator.close();
+		}
+		catch (Exception e) {
+			LOG.error("Failed to close iterator for {}: {}", user(), e.getMessage(), e);
+		}
+	}
+
+	private void closeIterator(EntityResultIterator iterator) {
+		try {
 			iterator.close();
 		}
 		catch (Exception e) {
@@ -247,30 +265,38 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 			remoteIterators.add(this);
 		}
 
+		//the iterator holds a live ResultSet on the same JDBC connection the connection proxy uses,
+		//so these calls must serialize against it, just like every DefaultRemoteEntityConnection method
 		@Override
 		public boolean hasNext() throws RemoteException {
-			lastAccessTime = currentTimeMillis();
+			synchronized (connectionProxy) {
+				lastAccessTime = currentTimeMillis();
 
-			return iterator.hasNext();
+				return iterator.hasNext();
+			}
 		}
 
 		@Override
 		public Entity next() throws RemoteException {
-			lastAccessTime = currentTimeMillis();
+			synchronized (connectionProxy) {
+				lastAccessTime = currentTimeMillis();
 
-			return iterator.next();
+				return iterator.next();
+			}
 		}
 
 		@Override
 		public void close() throws RemoteException {
-			try {
-				iterator.close();
-			}
-			catch (Exception ignored) {/*ignored*/}
-			unexportObject(this, true);
-			if (remoteIterators.remove(this)) {
-				//only the first close decrements, so double-close (client + maintenance) is safe
-				connectionHandler.iteratorClosed();
+			synchronized (connectionProxy) {
+				try {
+					iterator.close();
+				}
+				catch (Exception ignored) {/*ignored*/}
+				unexportObject(this, true);
+				if (remoteIterators.remove(this)) {
+					//only the first close decrements, so double-close (client + maintenance) is safe
+					connectionHandler.iteratorClosed();
+				}
 			}
 		}
 

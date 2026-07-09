@@ -45,6 +45,7 @@ import java.rmi.ConnectException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,13 +139,39 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 			LOG.info("{} was unreachable, {} - {} reconnecting...", serverName, user(), clientId());
 			unreachable = true;
 		}
-		if (server == null || unreachable) {
-			//if server is not reachable, try to reconnect once and return
+		if (server == null) {
 			connectToServer();
+			LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverName);
+		}
+		else if (unreachable) {
+			//if server is not reachable, try to reconnect once and return
+			reconnectToServer();
 			LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverName);
 		}
 
 		return this.server;
+	}
+
+	/**
+	 * A server holding this client's live session accepts it back even when full, since existing
+	 * connections are exempt from the connection limit. Server discovery filters out servers with no
+	 * connections available, hiding exactly that server, so look it up by name and let connect() decide.
+	 */
+	private void reconnectToServer() throws RemoteException, NotBoundException {
+		if (serverName != null) {
+			try {
+				Server<RemoteEntityConnection, ServerAdmin> namedServer = (Server<RemoteEntityConnection, ServerAdmin>)
+								LocateRegistry.getRegistry(hostname, registryPort).lookup(serverName);
+				namedServer.information();//just to check the connection
+				server = namedServer;
+
+				return;
+			}
+			catch (Exception e) {
+				LOG.info("Unable to reconnect to {} by name, searching for a server", serverName, e);
+			}
+		}
+		connectToServer();
 	}
 
 	private void connectToServer() throws RemoteException, NotBoundException {
@@ -316,8 +343,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 				return iterator.hasNext();
 			}
 			catch (RemoteException e) {
-				LOG.error(e.getMessage(), e);
-				throw new DatabaseException("Remote iterator call failed");
+				throw iteratorCallFailed(e);
 			}
 		}
 
@@ -327,8 +353,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 				return iterator.next();
 			}
 			catch (RemoteException e) {
-				LOG.error(e.getMessage(), e);
-				throw new DatabaseException("Remote iterator call failed");
+				throw iteratorCallFailed(e);
 			}
 		}
 
@@ -340,6 +365,15 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 			catch (RemoteException e) {
 				LOG.error(e.getMessage(), e);
 			}
+		}
+
+		private static DatabaseException iteratorCallFailed(RemoteException exception) {
+			LOG.error(exception.getMessage(), exception);
+			DatabaseException databaseException = new DatabaseException("Remote iterator call failed");
+			//DatabaseException only chains a SQLException cause, without this the client side trace dead-ends here
+			databaseException.initCause(exception);
+
+			return databaseException;
 		}
 	}
 }
