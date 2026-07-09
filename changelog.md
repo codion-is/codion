@@ -34,6 +34,7 @@ Codion Change Log
 - RemoteEntityConnection.cacheQueries(boolean)/cacheQueries() removed from the wire protocol; query caching is now performed client-side in the connection proxy, so a cache hit no longer costs a network round-trip and serialization.
 - RemoteEntityConnectionProvider now reconnects to an unreachable-but-cached server by registry name, letting connect() decide; server discovery filters out servers with no connections available, which hid the very server still holding the client's session (existing sessions being exempt from the connection limit).
 - RemoteEntityResultIteratorWrapper now chains the RemoteException as the cause of the DatabaseException it throws, instead of discarding it.
+- RemoteEntityConnection client-side query cache now also serves selectSingle(Condition)/selectSingle(Select) and select(Key), sharing cache entries with the equivalent select(), consistent with the local and http tiers where these all route through select(Select).
 ### is.codion.framework.db.http
 - HTTP query caching moved client-side, a cache hit no longer costs a round-trip. The setQueryCacheEnabled/isQueryCacheEnabled requests are removed.
 ### is.codion.framework.servlet

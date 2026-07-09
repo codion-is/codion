@@ -26,6 +26,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityResultIterator;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.rmi.TestDomain.Department;
 import is.codion.framework.db.rmi.TestDomain.Employee;
 import is.codion.framework.domain.entity.Entity;
@@ -449,6 +450,41 @@ public class RemoteEntityConnectionTest {
 		//the cache is cleared and caching disabled on close, each select round-trips again
 		assertNotSame(connection.select(Department.ID.greaterThanOrEqualTo(20L)),
 						connection.select(Department.ID.greaterThanOrEqualTo(20L)));
+	}
+
+	@Test
+	void cacheQueriesSelectSingle() {
+		EntityConnection connection = connection();
+		try (QueryCache cache = connection.cacheQueries()) {
+			//a selectSingle cache hit returns the identical Entity instance, no server round-trip
+			Entity department = connection.selectSingle(Department.ID.equalTo(10L));
+			assertSame(department, connection.selectSingle(Department.ID.equalTo(10L)));
+			assertFalse(department.mutable());
+
+			//select(Key) normalizes to the same cache key, as it does in the local and http tiers
+			assertSame(department, connection.select(department.primaryKey()));
+
+			//and the equivalent list select is served from the same entry
+			List<Entity> selected = connection.select(Department.ID.equalTo(10L));
+			assertEquals(1, selected.size());
+			assertSame(department, selected.get(0));
+
+			//a cached multi row result still yields MultipleEntitiesFoundException from selectSingle
+			connection.select(Department.ID.greaterThanOrEqualTo(20L));
+			assertThrows(MultipleEntitiesFoundException.class,
+							() -> connection.selectSingle(Department.ID.greaterThanOrEqualTo(20L)));
+
+			//forUpdate selects bypass the cache and return mutable entities
+			Select forUpdate = Select.where(Department.ID.equalTo(10L))
+							.forUpdate()
+							.build();
+			assertTrue(connection.selectSingle(forUpdate).mutable());
+			assertNotSame(connection.selectSingle(forUpdate), connection.selectSingle(forUpdate));
+		}
+
+		//the cache is cleared and caching disabled on close, each selectSingle round-trips again
+		assertNotSame(connection.selectSingle(Department.ID.equalTo(10L)),
+						connection.selectSingle(Department.ID.equalTo(10L)));
 	}
 
 	@Test
