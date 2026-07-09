@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.function.Predicate;
@@ -208,6 +209,8 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
 	private final class SelectedIndex extends AbstractValue<Integer> {
 
+		private @Nullable Integer lastNotified;
+
 		@Override
 		protected @Nullable Integer getValue() {
 			int index = minSelectionIndex();
@@ -231,11 +234,18 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private void onChanged() {
-			notifyObserver();
+			//only notify when this facade's value actually changed, honoring the Notify.CHANGED contract
+			Integer current = getValue();
+			if (!Objects.equals(lastNotified, current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 	}
 
 	private final class SelectedIndexes extends AbstractValue<List<Integer>> implements Indexes {
+
+		private List<Integer> lastNotified = emptyList();
 
 		private SelectedIndexes() {
 			super(emptyList());
@@ -349,11 +359,17 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private void onChanged() {
-			notifyObserver();
+			List<Integer> current = getValue();
+			if (!lastNotified.equals(current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 	}
 
 	private final class SelectedItem extends AbstractValue<R> {
+
+		private @Nullable R lastNotified;
 
 		@Override
 		protected @Nullable R getValue() {
@@ -376,11 +392,17 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private void onChanged() {
-			notifyObserver();
+			R current = getValue();
+			if (!Objects.equals(lastNotified, current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 	}
 
 	private final class SelectedItems extends AbstractValue<List<R>> implements Items<R> {
+
+		private List<R> lastNotified = emptyList();
 
 		private SelectedItems() {
 			super(emptyList());
@@ -478,7 +500,11 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 		}
 
 		private void onChanged() {
-			notifyObserver();
+			List<R> current = getValue();
+			if (!lastNotified.equals(current)) {
+				lastNotified = current;
+				notifyObserver();
+			}
 		}
 	}
 
