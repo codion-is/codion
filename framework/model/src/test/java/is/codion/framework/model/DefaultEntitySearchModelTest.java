@@ -35,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -287,6 +288,35 @@ public final class DefaultEntitySearchModelTest {
 
 		persistenceEvents.deleted().accept(singletonList(temp));
 		assertTrue(searchModel.selection().empty().is());
+	}
+
+	@Test
+	void persistenceAwareUpdateIsSinglePhase() {
+		Entity one = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.ID, -42)
+						.with(Employee.NAME, "Noname")
+						.build();
+		Entity two = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.ID, -43)
+						.with(Employee.NAME, "Another")
+						.build();
+		searchModel.selection().entities().set(asList(one, two));
+
+		one.set(Employee.NAME, "Newname");
+		Entity oneUpdated = one.copy().mutable();
+		oneUpdated.save(Employee.NAME);
+
+		//the selection set is a live condition operand, a remove followed by an add would notify
+		//consumers with an intermediate selection missing the updated entity
+		List<Integer> notifiedSizes = new ArrayList<>();
+		searchModel.selection().entities().addConsumer(entities -> notifiedSizes.add(entities.size()));
+
+		Map<Entity, Entity> updated = new HashMap<>();
+		updated.put(one, oneUpdated);
+		PersistenceEvents.persistenceEvents(Employee.TYPE).updated().accept(updated);
+
+		assertEquals(singletonList(2), notifiedSizes);
+		assertEquals(2, searchModel.selection().entities().get().size());
 	}
 
 	@BeforeEach

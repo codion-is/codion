@@ -76,6 +76,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	//we keep a reference to this listener, since it will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 
+	//set while onInsert() restores the selection, suppressing the spurious selection to editor sync
+	private boolean restoringSelection = false;
+
 	/**
 	 * @param editModel the edit model
 	 * @param filterModel the filter model
@@ -97,9 +100,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		this.editModel = requireNonNull(editModel);
 		this.queryModel = requireNonNull(queryModel);
 		this.filterModel = requireNonNull(filterModel);
-		if (queryModel != null && !editModel.entityType().equals(queryModel.entityType())) {
+		if (!editModel.entityType().equals(queryModel.entityType())) {
 			throw new IllegalArgumentException("Entity type mismatch, edit model: " +
-							editModel.entities() + ", query model: " + queryModel.entityType());
+							editModel.entityType() + ", query model: " + queryModel.entityType());
 		}
 		bindEvents();
 	}
@@ -244,7 +247,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	protected abstract void onRowsUpdated(int fromIndex, int toIndex);
 
 	/**
-	 * Called when entities of the type referenced by the given foreign key are updated
+	 * Called when entities of the type referenced by the given foreign key are updated.
+	 * <p>The foreign key values are replaced in place on the affected rows, which are then repainted.
+	 * Note that the rows are neither re-sorted nor re-filtered, so a table sorted or filtered by the
+	 * given foreign key retains its order and membership until the next sort or refresh.
 	 * @param foreignKey the foreign key
 	 * @param entities the updated entities, mapped to their original primary key
 	 */
@@ -317,8 +323,21 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 						.collect(toList());
 		OnInsert onInsertAction = onInsert.getOrThrow();
 		if (onInsertAction != OnInsert.DO_NOTHING && !entitiesToAdd.isEmpty()) {
-			selection().clear();
-			items().included().add(onInsertAction == OnInsert.PREPEND ? 0 : items().included().size(), entitiesToAdd);
+			// The inserted rows do not invalidate the selection, but an indexed insert does not shift the
+			// selected indexes, so the selection is restored by item. The selection notifies unconditionally,
+			// so the editor sync is suppressed meanwhile, the selection did not actually change and defaulting
+			// the editor here would discard the inserted entity, overriding the UI's clear-after-insert setting.
+			List<Entity> selectedItems = selection().items().get();
+			restoringSelection = true;
+			selection().adjusting(true);
+			try {
+				items().included().add(onInsertAction == OnInsert.PREPEND ? 0 : items().included().size(), entitiesToAdd);
+				selection().items().set(selectedItems);
+			}
+			finally {
+				selection().adjusting(false);
+				restoringSelection = false;
+			}
 		}
 	}
 
@@ -360,6 +379,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	}
 
 	private void onSelectionChanged(@Nullable Entity selected) {
+		if (restoringSelection) {
+			return;
+		}
 		if (selected == null) {
 			editModel.editor().entity().defaults();
 		}

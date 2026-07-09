@@ -159,7 +159,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		public void validate(Set<Attribute<?>> attributes) {
 			for (Attribute<?> attribute : attributes) {
 				if (!attribute.entityType().equals(conditionModel.entityType())) {
-					throw new IllegalArgumentException(attribute + " is not part of entity:  " + conditionModel.entityType());
+					throw new IllegalArgumentException(attribute + " is not part of entity: " + conditionModel.entityType());
 				}
 			}
 		}

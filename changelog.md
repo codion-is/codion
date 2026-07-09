@@ -43,6 +43,14 @@ Codion Change Log
 ### is.codion.framework.model
 - EntitySearchModel.Selection.single() added, an ObservableState indicating whether exactly one entity is selected.
 - AbstractEntityApplicationModel, the custom-Preferences constructor javadoc now notes that startup preferences (frame size, look and feel, default username) are read from the default root before the model exists.
+- EntityConditionModel.Modified no longer throws when snapshotting the condition state, which it does on every condition change event. An enabled condition with a missing operand (reachable with autoEnable off) is reported as modified rather than throwing out of the listener chain; the query time evaluation remains the failure.
+- EntityConditionModel, an equality search on a LocalTime column at the last second/minute/hour of the day no longer builds an interval wrapping around midnight, which matched nothing; plain equality is used instead.
+- EntityConditionModel.get(ForeignKey) now reports a condition model that is not a ForeignKeyConditionModel rather than throwing ClassCastException.
+- AbstractEntityTableModel.onInsert() no longer clears the selection, which defaulted the editor via the selection sync, overriding the UI's clear-after-insert configuration. The selection is restored by item instead, since an indexed insert does not shift the selected indexes.
+- AbstractEntityTableModel, the edit/query model entity type mismatch message now names the edit model's entity type rather than its Entities instance, and updated(ForeignKey, Map) now documents that the rows are neither re-sorted nor re-filtered.
+- EntitySearchModel, an update is now reconciled into the selection with a single set(), a remove followed by an add left the selection transiently missing the updated entities, which cascaded through the condition operands bound to it.
+- EntitySearchModel, the search string is now trimmed before spaces are replaced with wildcards, the trim previously had no effect with spaceAsWildcard enabled.
+- EntityQueryModel and EntitySearchModel, exception message typos corrected.
 ### is.codion.swing.common.ui
 - ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
 - Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.
