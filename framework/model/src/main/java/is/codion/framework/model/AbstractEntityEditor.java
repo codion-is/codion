@@ -414,6 +414,21 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 	}
 
+	private <T> DefaultEditorValue<T> editorValue(Attribute<T> attribute) {
+		return (DefaultEditorValue<T>) value(attribute);
+	}
+
+	/**
+	 * Replaces a foreign key value in response to the referenced entity having been updated or deleted elsewhere.
+	 * <p>This is not a user edit; it bypasses the editability check and the value equality check, both of which
+	 * would otherwise get in the way, the former by throwing and the latter by discarding the notification.
+	 * @param foreignKey the foreign key
+	 * @param value the replacement value
+	 */
+	private void replaceValue(ForeignKey foreignKey, @Nullable Entity value) {
+		editorValue(foreignKey).replace(value);
+	}
+
 	private void notifyValueChange(Attribute<?> attribute, Map<Attribute<?>, String> invalidAttributes) {
 		updateAttributeStates(attribute, invalidAttributes);
 		DefaultEditorValue<?> editorValue = (DefaultEditorValue<?>) editorValues.get(attribute);
@@ -540,7 +555,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private void deleted(ForeignKey foreignKey, Collection<Entity> entities) {
 			Entity currentForeignKeyValue = value(foreignKey).get();
 			if (currentForeignKeyValue != null && entities.contains(currentForeignKeyValue)) {
-				value(foreignKey).clear();
+				replaceValue(foreignKey, null);
 				LOG.debug("{} - cleared FK {} (referenced entity deleted)", this, foreignKey);
 			}
 		}
@@ -562,8 +577,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
 			Entity currentForeignKeyValue = value(foreignKey).get();
 			if (currentForeignKeyValue != null && entities.containsKey(currentForeignKeyValue.primaryKey())) {
-				value(foreignKey).clear();
-				value(foreignKey).set(entities.get(currentForeignKeyValue.primaryKey()));
+				replaceValue(foreignKey, entities.get(currentForeignKeyValue.primaryKey()));
 				LOG.debug("{} - updated FK {}", this, foreignKey);
 			}
 		}
@@ -1568,8 +1582,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			this.entity = builder.entity;
 			this.beforeInsert = builder.beforeInsert;
 			this.clearEmpty = builder.clearEmpty;
-			this.editor.entity().present().predicate().set(builder.present);
-			this.editor.entity().present().predicate().addValidator(new PreventPresentModification());
+		}
+
+		/**
+		 * Claims the detail editor's present predicate, preventing further modification.
+		 * <p>Called from {@link DetailEditors#add(EditorLink)}, not from the constructor, a link
+		 * which is built but never added must not leave the editor's predicate locked.
+		 */
+		private void claimPresent() {
+			editor.entity().present().predicate().set(present);
+			editor.entity().present().predicate().addValidator(new PreventPresentModification());
 		}
 
 		private class PreventPresentModification implements Validator<Predicate<Entity>> {
@@ -1843,6 +1865,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			this.editor = (R) link.editor;
 			this.link = link;
 			this.key = key;
+			link.claimPresent();
 			if (link instanceof ForeignKeyEditorLink) {
 				ForeignKey foreignKey = ((DefaultForeignKeyEditorLink) link).foreignKey();
 				editor.validator().update(validator -> new DetailForeignKeyValidator(validator, foreignKey, editor.entity().present()));
@@ -2075,6 +2098,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private final AbstractEntityEditor<?> editor;
 		private final Map<ForeignKey, F> foreignKeyComboBoxModels = new HashMap<>();
 		private final Map<Column<?>, C> columnComboBoxModels = new HashMap<>();
+		//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
+		private final Collection<PersistenceListener<?>> persistenceListeners = new ArrayList<>();
 
 		/**
 		 * @param editor the editor
@@ -2154,15 +2179,36 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			return editor.componentModels.comboBoxModel(requireNonNull(column), editor.connectionProvider);
 		}
 
-		private static <T> void addPersistenceListener(FilterComboBoxModel<T> comboBoxModel, Column<T> column) {
+		private <T> void addPersistenceListener(FilterComboBoxModel<T> comboBoxModel, Column<T> column) {
+			PersistenceListener<T> listener = new PersistenceListener<>(comboBoxModel, column);
+			persistenceListeners.add(listener);
 			PersistenceEvents events = persistenceEvents(column.entityType());
-			events.inserted().addListener(comboBoxModel.items()::refresh);
-			events.deleted().addListener(comboBoxModel.items()::refresh);
-			events.updated().addConsumer(entities -> {
-				if (entities.keySet().stream().anyMatch(track -> track.modified(column))) {
+			events.inserted().addWeakListener(listener);
+			events.deleted().addWeakListener(listener);
+			events.updated().addWeakConsumer(listener);
+		}
+
+		private static final class PersistenceListener<T> implements Runnable, Consumer<Map<Entity, Entity>> {
+
+			private final FilterComboBoxModel<T> comboBoxModel;
+			private final Column<T> column;
+
+			private PersistenceListener(FilterComboBoxModel<T> comboBoxModel, Column<T> column) {
+				this.comboBoxModel = comboBoxModel;
+				this.column = column;
+			}
+
+			@Override
+			public void run() {
+				comboBoxModel.items().refresh();
+			}
+
+			@Override
+			public void accept(Map<Entity, Entity> updated) {
+				if (updated.keySet().stream().anyMatch(entity -> entity.modified(column))) {
 					comboBoxModel.items().refresh();
 				}
-			});
+			}
 		}
 	}
 
@@ -2242,12 +2288,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private void update() {
+			//attributes before modified, a modified() listener describing what changed must see the current attributes
 			attributes.set(modifiedAttributes());
 			modified.set(entity.exists.is() && (entity.instance.modified() || additional.get().stream()
 							.anyMatch(ObservableState::is)));
 		}
 
 		private Set<Attribute<?>> modifiedAttributes() {
+			//editorValues, not the entity definition, only attributes with an EditorValue are reportable,
+			//the instance also reports the columns underlying a modified foreign key, which no component displays
 			Set<Attribute<?>> modifiedAttributes = new HashSet<>(editorValues.keySet().stream()
 							.filter(entity.instance::modified)
 							.collect(toSet()));
@@ -2393,9 +2442,16 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public void set(Entity entity, @Nullable T value) {
-			requireNonNull(entity).set(attribute, value);
-			propagators.forEach((attr, deriver) ->
-							entity.set((Attribute<Object>) attr, deriver.apply(entity.get(attribute))));
+			set(requireNonNull(entity), value, new HashSet<>());
+		}
+
+		private void set(Entity entity, @Nullable T value, Set<Attribute<?>> propagated) {
+			//propagators forming a cycle never terminate otherwise
+			if (propagated.add(attribute)) {
+				entity.set(attribute, value);
+				propagators.forEach((attr, deriver) -> editorValue((Attribute<Object>) attr)
+								.set(entity, deriver.apply(entity.get(attribute)), propagated));
+			}
 		}
 
 		@Override
@@ -2412,7 +2468,26 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			T previousValue = entity.instance.set(attribute, value);
 			if (!Objects.deepEquals(value, previousValue)) {
 				notifyValueEdit(attribute, value, dependingValues);
+				//propagating an unchanged value is a no-op, and propagators forming a cycle never terminate
+				propagate();
 			}
+		}
+
+		/**
+		 * Replaces the value without regard for editability or value equality, notifying as if it had been edited.
+		 * <p>Used when a referenced entity has been updated or deleted elsewhere. On update the replacement is equal
+		 * to the current value according to {@link Entity#equals(Object)} (same primary key), so {@link #setValue(Object)}
+		 * would discard the notification and leave the UI showing the stale entity.
+		 * @param value the replacement value
+		 */
+		private void replace(@Nullable T value) {
+			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
+			entity.instance.set(attribute, value);
+			notifyValueEdit(attribute, value, dependingValues);
+			propagate();
+		}
+
+		private void propagate() {
 			propagators.forEach((attr, deriver) ->
 							value((Attribute<Object>) attr).set(deriver.apply(entity.instance.get(attribute))));
 		}

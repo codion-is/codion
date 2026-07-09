@@ -54,6 +54,12 @@ Codion Change Log
 - EntitySearchModel, an update is now reconciled into the selection with a single set(), a remove followed by an add left the selection transiently missing the updated entities, which cascaded through the condition operands bound to it.
 - EntitySearchModel, the search string is now trimmed before spaces are replaced with wildcards, the trim previously had no effect with spaceAsWildcard enabled.
 - EntityQueryModel and EntitySearchModel, exception message typos corrected.
+- AbstractEntityEditor, the column combo box models no longer register strong listeners on the static PersistenceEvents registry, which pinned each one for the lifetime of the application, refreshing from the database on every persist event. Weak listeners are used, held by the ComboBoxModels instance, matching the editor's own foreign key listeners.
+- EntityEditor.EditorValue.propagate(Attribute, Function), the propagators are no longer applied to an unchanged value, two attributes propagating to each other, or an attribute propagating to itself, previously recursed until StackOverflowError.
+- EntityEditor.EditorValue.set(Entity, Object) now applies the propagated attributes' own propagators, consistent with set(Object); an attribute is propagated to once, so a cycle terminates.
+- AbstractEntityEditor, a foreign key value is now replaced in place when the referenced entity is updated or deleted elsewhere. It was cleared and set, which wrote a null through the notification graph, and threw IllegalStateException when the foreign key was not editable.
+- EditorLink.Builder.build() no longer claims the detail editor's present() predicate, DetailEditors.add(EditorLink) does. A link which was built but never added left the predicate permanently locked.
+- EntityEditor.Modified.attributes() javadoc now states that only attributes with an associated EditorValue are reported, and that the set may be empty while the modified state is true.
 ### is.codion.swing.common.ui
 - ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
 - Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.

@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
@@ -37,11 +38,17 @@ import is.codion.framework.model.EntityEditor.EditorValue;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.and;
+import static is.codion.framework.model.PersistenceEvents.persistenceEvents;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class AbstractEntityEditorTest {
@@ -1373,6 +1380,126 @@ public final class AbstractEntityEditorTest {
 
 	private static void delete(TestEntityEditor editor) {
 		editor.tasks(editor.connectionProvider().connection()).delete().perform().handle();
+	}
+
+	@Test
+	void columnComboBoxModelNotRetainedByPersistenceEvents() {
+		WeakReference<FilterComboBoxModel<String>> reference = createColumnComboBoxModel();
+		for (int i = 0; i < 20 && reference.get() != null; i++) {
+			System.gc();
+		}
+		assertNull(reference.get());
+	}
+
+	private static WeakReference<FilterComboBoxModel<String>> createColumnComboBoxModel() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+
+		return new WeakReference<>(editor.comboBoxModels().get(Employee.NAME));
+	}
+
+	@Test
+	void propagateCycle() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		EditorValue<Double> salary = editor.value(Employee.SALARY);
+		EditorValue<Integer> manager = editor.value(Employee.MANAGER_ID);
+		salary.propagate(Employee.MANAGER_ID, value -> value == null ? null : value.intValue());
+		manager.propagate(Employee.SALARY, value -> value == null ? null : value.doubleValue());
+
+		salary.set(10d);
+		assertEquals(10, manager.get());
+
+		manager.set(20);
+		assertEquals(20d, salary.get());
+	}
+
+	@Test
+	void propagateSelf() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		EditorValue<String> name = editor.value(Employee.NAME);
+		name.propagate(Employee.NAME, value -> value == null ? null : value.trim());
+
+		name.set(" john ");
+		assertEquals("john", name.get());
+	}
+
+	@Test
+	void propagateEntityTransitive() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		editor.value(Employee.NAME).propagate(Employee.SALARY, value -> (double) value.length());
+		editor.value(Employee.SALARY).propagate(Employee.MANAGER_ID, Double::intValue);
+		//a cycle back to the source, terminated by the visited set
+		editor.value(Employee.MANAGER_ID).propagate(Employee.NAME, String::valueOf);
+
+		Entity employee = CONNECTION_PROVIDER.entities().entity(Employee.TYPE).build();
+		editor.value(Employee.NAME).set(employee, "Scott");
+
+		assertEquals("Scott", employee.get(Employee.NAME));
+		assertEquals(5d, employee.get(Employee.SALARY));
+		assertEquals(5, employee.get(Employee.MANAGER_ID));
+	}
+
+	@Test
+	void foreignKeyUpdatedElsewhere() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		Entity department = CONNECTION_PROVIDER.entities().entity(Department.TYPE)
+						.with(Department.ID, -1)
+						.with(Department.NAME, "Accounting")
+						.build();
+		editor.value(Employee.DEPARTMENT_FK).set(department);
+
+		List<Entity> foreignKeyValues = new ArrayList<>();
+		List<Integer> columnValues = new ArrayList<>();
+		editor.value(Employee.DEPARTMENT_FK).edited().addConsumer(foreignKeyValues::add);
+		editor.value(Employee.DEPARTMENT).edited().addConsumer(columnValues::add);
+
+		Entity updated = department.copy().mutable();
+		updated.set(Department.NAME, "Bookkeeping");
+		updated.save();
+
+		persistenceEvents(Department.TYPE).updated().accept(singletonMap(department, updated));
+
+		//the referenced entity is equal to the previous one, being the same row, but must still replace it
+		assertEquals("Bookkeeping", editor.value(Employee.DEPARTMENT_FK).get().get(Department.NAME));
+		//without ever travelling through null, which the reference column would have followed
+		assertEquals(1, foreignKeyValues.size());
+		assertEquals("Bookkeeping", foreignKeyValues.get(0).get(Department.NAME));
+		assertTrue(columnValues.isEmpty());
+	}
+
+	@Test
+	void foreignKeyPersistenceIgnoresEditable() {
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		Entity department = CONNECTION_PROVIDER.entities().entity(Department.TYPE)
+						.with(Department.ID, -2)
+						.with(Department.NAME, "Research")
+						.build();
+		editor.value(Employee.DEPARTMENT_FK).set(department);
+		editor.value(Employee.DEPARTMENT_FK).editable().set(false);
+
+		Entity updated = department.copy().mutable();
+		updated.set(Department.NAME, "Science");
+		updated.save();
+
+		persistenceEvents(Department.TYPE).updated().accept(singletonMap(department, updated));
+		assertEquals("Science", editor.value(Employee.DEPARTMENT_FK).get().get(Department.NAME));
+
+		persistenceEvents(Department.TYPE).deleted().accept(singleton(updated));
+		assertNull(editor.value(Employee.DEPARTMENT_FK).get());
+	}
+
+	@Test
+	void editorLinkBuildDoesNotClaimPresent() {
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		EditorLink.builder()
+						.editor(employeeEditor)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.present(EMPLOYEE_PRESENT)
+						.build();
+
+		//the link was never added, the predicate is unclaimed
+		Predicate<Entity> present = employee -> employee.present(Employee.SALARY);
+		employeeEditor.entity().present().predicate().set(present);
+		assertSame(present, employeeEditor.entity().present().predicate().get());
 	}
 
 	private static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
