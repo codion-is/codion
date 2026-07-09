@@ -57,13 +57,30 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		this.setValueOnInsert = builder.setValueOnInsert;
 		this.setConditionOnInsert = builder.setConditionOnInsert;
 		this.refreshOnSelection = builder.refreshOnSelection;
-		if (modelLink.model().containsTableModel()) {
-			modelLink.model().tableModel().query().condition().persist().add(foreignKey);
-		}
 	}
 
 	M model() {
 		return modelLink.model();
+	}
+
+	ForeignKey foreignKey() {
+		return foreignKey;
+	}
+
+	DefaultModelLink<M, E, T, R> modelLink() {
+		return modelLink;
+	}
+
+	/**
+	 * Configures the detail model, called when this link is added to a master model.
+	 * @see DefaultModelLink#configure()
+	 */
+	void configure() {
+		if (model().containsTableModel()) {
+			//the foreign key condition reflects the master selection, persisting it keeps
+			//a condition clear from detaching the detail model from its master
+			model().tableModel().query().condition().persist().add(foreignKey);
+		}
 	}
 
 	private final class OnSelection implements Consumer<Collection<Entity>> {
@@ -96,6 +113,12 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 			return false;
 		}
 
+		/**
+		 * Sets the foreign key value on the detail editor, only when it holds a new entity,
+		 * navigating the master must never overwrite the foreign key of an existing detail entity.
+		 * <p>Note that when the detail table model is refreshed this runs in the refresh result handler,
+		 * a failed refresh therefore leaves the editor without its foreign key value.
+		 */
 		private void setValueOnSelection(Collection<Entity> entities) {
 			Entity foreignKeyValue = entities.isEmpty() ? null : entities.iterator().next();
 			if (model().editor().entity().exists().not().is()
@@ -111,24 +134,26 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		public void accept(Collection<Entity> insertedEntities) {
 			Collection<Entity> entities = ofReferencedType(insertedEntities);
 			if (!entities.isEmpty()) {
-				Entity insertedEntity = entities.iterator().next();
-				setValueOnInsert(insertedEntity);
-				if (model().containsTableModel() && setConditionOnInsert(insertedEntity)) {
+				setValueOnInsert(entities.iterator().next());
+				if (model().containsTableModel() && setConditionOnInsert(entities)) {
 					model().tableModel().items().refresh();
 				}
 			}
 		}
 
+		/**
+		 * @param foreignKeyValue the first inserted entity, a foreign key value being a single entity
+		 */
 		private void setValueOnInsert(Entity foreignKeyValue) {
 			if (model().editor().entity().exists().not().is() && setValueOnInsert) {
 				model().editor().value(foreignKey).set(foreignKeyValue);
 			}
 		}
 
-		private boolean setConditionOnInsert(Entity insertedEntity) {
+		private boolean setConditionOnInsert(Collection<Entity> insertedEntities) {
 			if (setConditionOnInsert) {
 				return model().tableModel().query().condition()
-								.get(foreignKey).set().in(insertedEntity);
+								.get(foreignKey).set().in(insertedEntities);
 			}
 
 			return false;
@@ -230,8 +255,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T, R>, E exte
 		}
 
 		@Override
-		public ModelLink build() {
-			return new DefaultForeignKeyModelLink<>(this).modelLink;
+		public ForeignKeyModelLink build() {
+			return new DefaultForeignKeyModelLink<>(this);
 		}
 	}
 

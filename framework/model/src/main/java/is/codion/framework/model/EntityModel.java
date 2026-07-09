@@ -141,8 +141,12 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 
 		/**
 		 * Adds the given detail model to this model.
+		 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
+		 * any data, via {@link EntityQueryModel#conditionRequired()}
 		 * @param modelLink the {@link ModelLink} to add
-		 * @throws IllegalArgumentException in case the model has already been added
+		 * @throws IllegalArgumentException in case the model has already been added or the model is this model
+		 * @throws IllegalArgumentException in case of a {@link ForeignKeyModelLink} whose foreign key is not based on
+		 * the linked model's entity type or does not reference this model's entity type
 		 */
 		void add(ModelLink modelLink);
 

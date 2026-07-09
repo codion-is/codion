@@ -137,9 +137,21 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 		return detailModels;
 	}
 
+	/**
+	 * @param link the link
+	 * @return the underlying {@link DefaultModelLink}, unwrapping a {@link ForeignKeyModelLink}
+	 */
+	private DefaultModelLink<M, E, T, R> modelLink(ModelLink link) {
+		if (link instanceof ForeignKeyModelLink) {
+			return ((DefaultForeignKeyModelLink<M, E, T, R>) link).modelLink();
+		}
+
+		return (DefaultModelLink<M, E, T, R>) link;
+	}
+
 	private void selectionChanged(Collection<Entity> entities) {
 		detailModels.get().values().stream()
-						.map(DefaultModelLink.class::cast)
+						.map(this::modelLink)
 						.forEach(link -> link.onSelection(entities));
 	}
 
@@ -166,25 +178,25 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 
 	private void onInsert(Collection<Entity> insertedEntities) {
 		detailModels.get().values().stream()
-						.map(DefaultModelLink.class::cast)
+						.map(this::modelLink)
 						.forEach(link -> link.onInsert(insertedEntities));
 	}
 
 	private void onUpdate(Map<Entity, Entity> updatedEntities) {
 		detailModels.get().values().stream()
-						.map(DefaultModelLink.class::cast)
+						.map(this::modelLink)
 						.forEach(link -> link.onUpdate(updatedEntities));
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
 		detailModels.get().values().stream()
-						.map(DefaultModelLink.class::cast)
+						.map(this::modelLink)
 						.forEach(link -> link.onDelete(deletedEntities));
 	}
 
 	private final class DefaultDetailModels implements DetailModels<M, E, T, R> {
 
-		private final Map<M, DefaultModelLink<M, E, T, R>> models = new HashMap<>();
+		private final Map<M, ModelLink> models = new HashMap<>();
 		private final ValueSet<M> active = ValueSet.valueSet();
 
 		@Override
@@ -196,7 +208,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 
 		@Override
 		public void add(M detailModel) {
-			add(detailModel, validateForeignKeyLink(detailModel));
+			add(detailModel, inferForeignKey(detailModel));
 		}
 
 		@Override
@@ -209,17 +221,23 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 
 		@Override
 		public void add(ModelLink link) {
-			DefaultModelLink<M, E, T, R> modelLink = (DefaultModelLink<M, E, T, R>) link;
-			if (AbstractEntityModel.this == requireNonNull(modelLink).model()) {
+			DefaultModelLink<M, E, T, R> modelLink = modelLink(requireNonNull(link));
+			if (AbstractEntityModel.this == modelLink.model()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
 			if (models.containsKey(modelLink.model())) {
 				throw new IllegalArgumentException("Detail model " + modelLink.model() + " has already been added");
 			}
-			if (link instanceof DefaultForeignKeyModelLink<?, ?, ?, ?>) {
-				validateForeignKeyLink(((DefaultForeignKeyModelLink<?, ?, ?, ?>) link).model());
+			DefaultForeignKeyModelLink<M, E, T, R> foreignKeyLink =
+							link instanceof ForeignKeyModelLink ? (DefaultForeignKeyModelLink<M, E, T, R>) link : null;
+			if (foreignKeyLink != null) {
+				validateForeignKey(foreignKeyLink.foreignKey(), modelLink.model());
 			}
-			models.put(modelLink.model(), modelLink);
+			modelLink.configure();
+			if (foreignKeyLink != null) {
+				foreignKeyLink.configure();
+			}
+			models.put(modelLink.model(), link);
 			if (modelLink.active().is()) {
 				active.add(modelLink.model());
 				modelLink.onSelection(activeEntities());
@@ -243,7 +261,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 				throw new IllegalStateException("Detail model not found: " + detailModel);
 			}
 
-			return models.get(detailModel).active();
+			return modelLink(models.get(detailModel)).active();
 		}
 
 		@Override
@@ -269,7 +287,14 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + AbstractEntityModel.this));
 		}
 
-		private ForeignKey validateForeignKeyLink(EntityModel<?, ?, ?, ?> model) {
+		/**
+		 * Infers the foreign key on which to base a detail model link, requiring exactly one.
+		 * <p>Uniqueness is a requirement of the inference, not of linking; a detail model referencing
+		 * the master via multiple foreign keys is linked by naming one of them explicitly.
+		 * @param model the detail model
+		 * @return the single foreign key referencing this model's entity type
+		 */
+		private ForeignKey inferForeignKey(EntityModel<?, ?, ?, ?> model) {
 			Collection<ForeignKey> foreignKeys = model.entityDefinition().foreignKeys().get(editModel.entityType());
 			if (foreignKeys.isEmpty()) {
 				throw new IllegalArgumentException("Entity " + model.entityType() +
@@ -281,6 +306,15 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 			}
 
 			return foreignKeys.iterator().next();
+		}
+
+		private void validateForeignKey(ForeignKey foreignKey, EntityModel<?, ?, ?, ?> model) {
+			if (!foreignKey.entityType().equals(model.entityType())) {
+				throw new IllegalArgumentException("Foreign key " + foreignKey + " is not based on entity " + model.entityType());
+			}
+			if (!foreignKey.referencedType().equals(entityType())) {
+				throw new IllegalArgumentException("Foreign key " + foreignKey + " does not reference entity " + entityType());
+			}
 		}
 
 		private final class ActiveChanged implements Consumer<Boolean> {

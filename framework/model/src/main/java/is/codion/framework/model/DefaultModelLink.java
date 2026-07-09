@@ -45,13 +45,22 @@ final class DefaultModelLink<M extends EntityModel<M, E, T, R>, E extends Entity
 		this.onInsert = builder.onInsert;
 		this.onUpdate = builder.onUpdate;
 		this.onDelete = builder.onDelete;
-		if (model.containsTableModel()) {
-			model.tableModel().query().conditionRequired().set(true);
-		}
 	}
 
 	M model() {
 		return model;
+	}
+
+	/**
+	 * Configures the detail model, called when this link is added to a master model.
+	 * <p>A required condition is one leg of the empty selection interlock: an empty master selection clears the
+	 * detail's foreign key condition, which disables it, at which point the detail table shows no rows at all
+	 * rather than every row in the table.
+	 */
+	void configure() {
+		if (model.containsTableModel()) {
+			model.tableModel().query().conditionRequired().set(true);
+		}
 	}
 
 	State active() {

@@ -50,8 +50,8 @@ public sealed interface ModelLink permits DefaultModelLink, ForeignKeyModelLink 
 
 			/**
 			 * <p>Returns a new {@link Builder} instance.
-			 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
-			 * any data, via {@link EntityQueryModel#conditionRequired()}
+			 * <p>Note that the linked model is configured when the resulting {@link ModelLink} is added
+			 * to a master model, building one has no effect on the linked model.
 			 * @param model the model to link
 			 * @param <M> the {@link EntityModel} type
 			 * @param <E> the {@link EntityEditModel} type

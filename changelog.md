@@ -60,6 +60,15 @@ Codion Change Log
 - AbstractEntityEditor, a foreign key value is now replaced in place when the referenced entity is updated or deleted elsewhere. It was cleared and set, which wrote a null through the notification graph, and threw IllegalStateException when the foreign key was not editable.
 - EditorLink.Builder.build() no longer claims the detail editor's present() predicate, DetailEditors.add(EditorLink) does. A link which was built but never added left the predicate permanently locked.
 - EntityEditor.Modified.attributes() javadoc now states that only attributes with an associated EditorValue are reported, and that the set may be empty while the modified state is true.
+- ForeignKeyModelLink.Builder.build() now returns the ForeignKeyModelLink rather than the plain ModelLink it wraps, the sealed type was previously unobtainable and EntityModel.DetailModels.get() reported every link as a ModelLink.
+- EntityModel.DetailModels.add(ModelLink) now validates the foreign key of a ForeignKeyModelLink, which build() unwrapping had rendered unreachable; a foreign key not based on the detail entity type or not referencing the master entity type is rejected on add() rather than at first selection. The uniqueness requirement remains on the implicit add(EntityModel) path, where it belongs, a detail model referencing its master via multiple foreign keys being exactly what add(EntityModel, ForeignKey) is for.
+- ModelLink.Builder.build() no longer configures the linked model, DetailModels.add(ModelLink) does. A link which was built but never added left conditionRequired() set and the foreign key condition persisted.
+- ForeignKeyModelLink, setConditionOnInsert now searches by all inserted entities of the referenced type rather than the first one.
+- EntityExport.Builder.export() now throws IllegalStateException when no attributes are included, rather than silently producing no output.
+- EntityExport no longer re-selects a referenced entity the exported entity already carries, an export of entities loaded with the default reference depth no longer issues a select per distinct foreign key value. The referenced entity is used only if it contains every attribute the export requires.
+- EntityExport.ExportAttributes.Builder.order(List), attributes left out of the order are now sorted by caption, as they are without an order, rather than falling back to definition order.
+- EntityExport.ExportAttributes.Builder.include(Collection) now copies the given collection, which was previously validated at include() and read at build().
+- EntityExport, an EntityNotFoundException thrown for a missing referenced entity now chains the original as its cause.
 ### is.codion.swing.common.ui
 - ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
 - Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.

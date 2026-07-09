@@ -64,20 +64,21 @@ public final class DefaultEntityExportTest {
 
 	@Test
 	void basicExport() {
-		StringBuilder output = new StringBuilder();
 		EntityConnection connection = CONNECTION_PROVIDER.connection();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		// no included attributes, an export of nothing is a configuration error
+		StringBuilder empty = new StringBuilder();
+		assertThrows(IllegalStateException.class, () -> EntityExport.builder(CONNECTION_PROVIDER)
 						.entityType(Employee.TYPE)
 						.attributes(builder -> {})
 						.entities(connection.select(Select.all(Employee.TYPE)
 														.orderBy(ascending(Employee.NAME))
 														.build())
 										.iterator())
-						.output(output::append)
-						.export();
-		// no included attributes
-		assertEquals("", output.toString());
+						.output(empty::append)
+						.export());
+		assertEquals("", empty.toString());
 
+		StringBuilder output = new StringBuilder();
 		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION_PROVIDER)
 						.entityType(Employee.TYPE)
 						.attributes(attributes -> attributes.include(Department.NAME)));
@@ -260,6 +261,78 @@ public final class DefaultEntityExportTest {
 						.keys(keys.iterator())
 						.output(line -> {})
 						.export());
+	}
+
+	@Test
+	void loadedForeignKeyIsNotSelected() {
+		//a department which does not exist in the database, selecting it would throw
+		Entity department = ENTITIES.entity(Department.TYPE)
+						.with(Department.ID, -42)
+						.with(Department.NAME, "Ministry")
+						.with(Department.LOCATION, "Elsewhere")
+						.build();
+		Entity employee = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.ID, -42)
+						.with(Employee.NAME, "AGENT")
+						.with(Employee.DEPARTMENT_FK, department)
+						.build();
+
+		StringBuilder output = new StringBuilder();
+		EntityExport.builder(CONNECTION_PROVIDER)
+						.entityType(Employee.TYPE)
+						.attributes(attributes -> attributes.include(Employee.NAME)
+										.attributes(Employee.DEPARTMENT_FK, dept ->
+														dept.include(Department.NAME, Department.LOCATION)))
+						.entities(singletonList(employee).iterator())
+						.output(output::append)
+						.export();
+
+		assertEquals("Department Location\tDepartment Name\tName\nElsewhere\tMinistry\tAGENT\n", output.toString());
+	}
+
+	@Test
+	void partiallyLoadedForeignKeyIsSelected() {
+		//the department is present, but was not selected with the LOCATION the export requires
+		Entity department = ENTITIES.entity(Department.TYPE)
+						.with(Department.ID, 10)
+						.with(Department.NAME, "Stale name")
+						.build();
+		Entity employee = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.ID, -42)
+						.with(Employee.NAME, "AGENT")
+						.with(Employee.DEPARTMENT_FK, department)
+						.build();
+
+		StringBuilder output = new StringBuilder();
+		EntityExport.builder(CONNECTION_PROVIDER)
+						.entityType(Employee.TYPE)
+						.attributes(attributes -> attributes.include(Employee.NAME)
+										.attributes(Employee.DEPARTMENT_FK, dept ->
+														dept.include(Department.NAME, Department.LOCATION)))
+						.entities(singletonList(employee).iterator())
+						.output(output::append)
+						.export();
+
+		assertEquals("Department Location\tDepartment Name\tName\nNEW YORK\tACCOUNTING\tAGENT\n", output.toString());
+	}
+
+	@Test
+	void orderRemainderSortedByCaption() {
+		Set<Entity.Key> jones = singleton(CONNECTION_PROVIDER.connection()
+						.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
+
+		StringBuilder output = new StringBuilder();
+		EntityExport.builder(CONNECTION_PROVIDER)
+						.entityType(Employee.TYPE)
+						.attributes(employee -> employee
+										.include(Employee.NAME, Employee.JOB, Employee.COMMISSION, Employee.HIREDATE)
+										//the unordered remainder follows, by caption, as it would without an order
+										.order(Employee.NAME))
+						.keys(jones.iterator())
+						.output(output::append)
+						.export();
+
+		assertEquals("Name\tCommission\tHiredate\tJob\nJONES\t\t04-02-1981\tMANAGER\n", output.toString());
 	}
 
 	private static String textFileContents(Class<?> resourceClass, String resourceName) throws IOException {

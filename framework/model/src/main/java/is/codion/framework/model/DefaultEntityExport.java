@@ -36,8 +36,6 @@ import is.codion.framework.model.EntityExport.Builder.ExportAttributesStep;
 import is.codion.framework.model.EntityExport.Builder.OutputStep;
 
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,8 +59,6 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityExport implements EntityExport {
-
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityExport.class);
 
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
@@ -94,12 +90,8 @@ final class DefaultEntityExport implements EntityExport {
 	private void export() {
 		EntityConnection connection = connectionProvider.connection();
 		Iterator<Entity> iterator = iterator(connection);
-		String header = createHeader();
-		if (header.isEmpty()) {
-			return;
-		}
 		try {
-			output.accept(header);
+			output.accept(createHeader());
 			while (iterator.hasNext()) {
 				if (cancel != null && cancel.is()) {
 					throw new CancelException();
@@ -135,8 +127,9 @@ final class DefaultEntityExport implements EntityExport {
 	private String createHeader() {
 		List<String> columnHeaders = addToHeader(attributes, new ArrayList<>(), "");
 		if (columnHeaders.isEmpty()) {
-			return "";
+			throw new IllegalStateException("No attributes included in the export of " + attributes.entityType());
 		}
+
 		return columnHeaders.stream().collect(joining(TAB, "", "\n"));
 	}
 
@@ -146,7 +139,7 @@ final class DefaultEntityExport implements EntityExport {
 	}
 
 	private List<String> addToHeader(ExportAttributes attributes, List<String> header, String prefix) {
-		for (Attribute<?> node : orderered(attributes)) {
+		for (Attribute<?> node : ordered(attributes)) {
 			String caption = entities.definition(node.entityType()).attributes().definition(node).caption();
 			String columnHeader = prefix.isEmpty() ? caption : (prefix + SPACE + caption);
 			if (attributes.include().contains(node)) {
@@ -163,25 +156,50 @@ final class DefaultEntityExport implements EntityExport {
 
 	private List<String> addToRow(List<String> row, @Nullable Entity entity,
 																ExportAttributes attributes, EntityConnection connection) {
-		for (Attribute<?> attribute : orderered(attributes)) {
+		for (Attribute<?> attribute : ordered(attributes)) {
 			if (attributes.include().contains(attribute)) {
 				row.add(entity == null ? "" : replaceNewlinesAndTabs(entity.formatted(attribute)));
 			}
 			if (attribute instanceof ForeignKey) {
 				attributes.attributes((ForeignKey) attribute).ifPresent(foreignKeyAttributes ->
-								addToRow(row, (ForeignKey) attribute, entity == null ? null : entity.key((ForeignKey) attribute), foreignKeyAttributes, connection));
+								addToRow(row, referenced(entity, (ForeignKey) attribute, foreignKeyAttributes, connection), foreignKeyAttributes, connection));
 			}
 		}
 
 		return row;
 	}
 
-	private List<String> addToRow(List<String> row, ForeignKey foreignKey, Entity.@Nullable Key referencedKey,
-																ExportAttributes attributes, EntityConnection connection) {
-		return addToRow(row, referencedKey == null ? null : select(foreignKey, referencedKey, attributes, connection), attributes, connection);
+	/**
+	 * Returns the entity referenced by the given foreign key, preferring the one the given entity already carries.
+	 * @return the referenced entity or null if the foreign key value is null
+	 */
+	private @Nullable Entity referenced(@Nullable Entity entity, ForeignKey foreignKey,
+																			ExportAttributes attributes, EntityConnection connection) {
+		if (entity == null) {
+			return null;
+		}
+		Entity referenced = entity.get(foreignKey);
+		if (referenced != null && contains(referenced, attributes)) {
+			return referenced;
+		}
+		Entity.Key referencedKey = entity.key(foreignKey);
+
+		return referencedKey == null ? null : select(foreignKey, referencedKey, attributes, connection);
 	}
 
-	private List<Attribute<?>> orderered(ExportAttributes attributes) {
+	/**
+	 * Returns true if the given entity was selected with every attribute the export requires, derived
+	 * attributes excluded, those being computed from source attributes which the closure includes.
+	 */
+	private boolean contains(Entity entity, ExportAttributes attributes) {
+		EntityDefinition definition = entity.definition();
+
+		return selectAttributes(definition, attributes).stream()
+						.filter(attribute -> !definition.attributes().definition(attribute).derived())
+						.allMatch(entity::contains);
+	}
+
+	private List<Attribute<?>> ordered(ExportAttributes attributes) {
 		return orderedAttributes.computeIfAbsent(attributes, k ->
 						entities.definition(attributes.entityType()).attributes().get().stream()
 										.sorted(attributes.comparator())
@@ -197,9 +215,11 @@ final class DefaultEntityExport implements EntityExport {
 							.attributes(selectAttributes(referencedKey.definition(), attributes))));
 		}
 		catch (EntityNotFoundException e) {
-			String message = "Entity not found: " + referencedKey + ", foreignKey: " + foreignKey;
-			LOG.error(message, e);
-			throw new EntityNotFoundException(message);
+			EntityNotFoundException exception =
+							new EntityNotFoundException("Entity not found: " + referencedKey + ", foreignKey: " + foreignKey);
+			exception.initCause(e);
+
+			throw exception;
 		}
 	}
 
@@ -258,9 +278,10 @@ final class DefaultEntityExport implements EntityExport {
 								.attributes(selectAttributes(key.definition(), attributes)));
 			}
 			catch (EntityNotFoundException e) {
-				String message = "Entity not found: " + key;
-				LOG.error(message, e);
-				throw new EntityNotFoundException(message);
+				EntityNotFoundException exception = new EntityNotFoundException("Entity not found: " + key);
+				exception.initCause(e);
+
+				throw exception;
 			}
 		}
 	}
@@ -439,7 +460,7 @@ final class DefaultEntityExport implements EntityExport {
 		@Override
 		public ExportAttributes.Builder include(Collection<Attribute<?>> attributes) {
 			requireNonNull(attributes).forEach(this::validate);
-			this.include = requireNonNull(attributes);
+			this.include = new ArrayList<>(attributes);
 			return this;
 		}
 
@@ -451,7 +472,7 @@ final class DefaultEntityExport implements EntityExport {
 		@Override
 		public ExportAttributes.Builder order(List<Attribute<?>> attributes) {
 			requireNonNull(attributes).forEach(this::validate);
-			return order(new IndexedOrder(attributes));
+			return order(new IndexedOrder(new ArrayList<>(attributes), new AttributeComparator(entities.definition(entityType))));
 		}
 
 		@Override
@@ -481,15 +502,21 @@ final class DefaultEntityExport implements EntityExport {
 	private static final class IndexedOrder implements Comparator<Attribute<?>> {
 
 		private final List<Attribute<?>> order;
+		private final Comparator<Attribute<?>> remainder;
 
-		private IndexedOrder(List<Attribute<?>> order) {
+		private IndexedOrder(List<Attribute<?>> order, Comparator<Attribute<?>> remainder) {
 			this.order = order;
+			this.remainder = remainder;
 		}
 
 		@Override
 		public int compare(Attribute<?> attribute1, Attribute<?> attribute2) {
 			int index1 = order.indexOf(attribute1);
 			int index2 = order.indexOf(attribute2);
+			if (index1 == -1 && index2 == -1) {
+				//attributes left out of the order follow the ordered ones, sorted as they would be without an order
+				return remainder.compare(attribute1, attribute2);
+			}
 
 			return Integer.compare(index1 == -1 ? order.size() : index1, index2 == -1 ? order.size() : index2);
 		}
