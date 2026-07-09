@@ -26,10 +26,14 @@ import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.QueryCache;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +46,14 @@ import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static is.codion.framework.db.EntityConnection.Select.where;
 import static java.lang.reflect.InvocationHandler.invokeDefault;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 /**
  * A class responsible for managing a remote entity connection.
@@ -156,11 +163,14 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		private static final String CONNECTED = "connected";
 		private static final String ENTITIES = "entities";
 		private static final String ITERATOR = "iterator";
+		private static final String CACHE_QUERIES = "cacheQueries";
+		private static final String SELECT = "select";
 
 		private final Map<Method, Method> methodCache = new HashMap<>();
 		private final RemoteEntityConnection remoteConnection;
 
 		private Entities entities;
+		private @Nullable ProxyQueryCache queryCache;
 
 		private RemoteEntityConnectionHandler(RemoteEntityConnection remoteConnection) {
 			this.remoteConnection = remoteConnection;
@@ -175,8 +185,19 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 			if (methodName.equals(ENTITIES)) {
 				return entities();
 			}
+			if (methodName.equals(CACHE_QUERIES)) {
+				return cacheQueries();
+			}
 			if (method.isDefault()) {
 				return invokeDefault(proxy, method, args);
+			}
+			//a cache hit is served here, without a round-trip to the server
+			Select cacheKey = cacheKey(methodName, args);
+			if (cacheKey != null) {
+				List<Entity> cached = queryCache.cached.get(cacheKey);
+				if (cached != null) {
+					return cached;
+				}
 			}
 
 			Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);
@@ -184,6 +205,14 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 				Object result = remoteMethod.invoke(remoteConnection, args);
 				if (methodName.equals(ITERATOR)) {
 					return new RemoteEntityResultIteratorWrapper((RemoteEntityResultIterator) result);
+				}
+				if (cacheKey != null) {
+					//the cached result is shared by every hit, immutable entities in an unmodifiable
+					//list keep a single caller from modifying what the next one receives
+					List<Entity> cached = immutable((List<Entity>) result);
+					queryCache.cached.put(cacheKey, cached);
+
+					return cached;
 				}
 
 				return result;
@@ -195,6 +224,54 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 			catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 				throw e;
+			}
+		}
+
+		private QueryCache cacheQueries() {
+			if (queryCache != null) {
+				throw new IllegalStateException("A query cache is already active on this connection");
+			}
+
+			return queryCache = new ProxyQueryCache();
+		}
+
+		/**
+		 * @return the cache key for the given invocation or null if it is not a cacheable select
+		 * or no query cache is active
+		 */
+		private @Nullable Select cacheKey(String methodName, Object @Nullable [] args) {
+			if (queryCache == null || !methodName.equals(SELECT) || args == null || args.length != 1) {
+				return null;
+			}
+			Select select = null;
+			if (args[0] instanceof Select) {
+				select = (Select) args[0];
+			}
+			else if (args[0] instanceof Condition) {
+				select = where((Condition) args[0]).build();
+			}
+
+			return select == null || select.forUpdate() ? null : select;
+		}
+
+		private static List<Entity> immutable(List<Entity> entities) {
+			return entities.stream()
+							.map(Entity::immutable)
+							.collect(toUnmodifiableList());
+		}
+
+		private final class ProxyQueryCache implements QueryCache {
+
+			private final Map<Select, List<Entity>> cached = new HashMap<>();
+
+			@Override
+			public void close() {
+				synchronized (RemoteEntityConnectionHandler.this) {
+					cached.clear();
+					if (queryCache == this) {
+						queryCache = null;
+					}
+				}
 			}
 		}
 

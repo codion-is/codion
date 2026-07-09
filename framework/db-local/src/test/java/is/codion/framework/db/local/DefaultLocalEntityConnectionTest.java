@@ -28,6 +28,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.EntityResultIterator;
@@ -1694,52 +1695,84 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void cacheQueries() {
-		connection.cacheQueries(true);
-		assertTrue(connection.cacheQueries());
+		try (QueryCache cache = connection.cacheQueries()) {
+			assertThrows(IllegalStateException.class, connection::cacheQueries);//scopes do not nest
 
-		List<Entity> result = connection.select(Department.DEPTNO
-						.greaterThanOrEqualTo(20));
+			List<Entity> result = connection.select(Department.DEPTNO
+							.greaterThanOrEqualTo(20));
+			List<Entity> result2 = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
+			assertSame(result, result2);
+
+			result2 = connection.select(Select.where(Department.DEPTNO
+											.greaterThanOrEqualTo(20))
+							.orderBy(descending(Department.DEPTNO))
+							.build());
+			assertNotSame(result, result2);
+
+			result = connection.select(Select.where(Department.DEPTNO
+											.greaterThanOrEqualTo(20))
+							.orderBy(descending(Department.DEPTNO))
+							.build());
+			assertSame(result, result2);
+
+			result2 = connection.select(Select.where(Department.DEPTNO
+											.greaterThanOrEqualTo(20))
+							.orderBy(OrderBy.ascending(Department.DEPTNO))
+							.build());
+			assertNotSame(result, result2);
+
+			result = connection.select(Select.where(Department.DEPTNO
+											.greaterThanOrEqualTo(20))
+							.forUpdate()
+							.build());
+			result2 = connection.select(Select.where(Department.DEPTNO
+											.greaterThanOrEqualTo(20))
+							.forUpdate()
+							.build());
+			assertNotSame(result, result2);//forUpdate selects bypass the cache
+
+			result = connection.select(Department.DEPTNO.equalTo(20));
+			result2 = connection.select(Department.DEPTNO.equalTo(20));
+			assertSame(result, result2);
+
+			//a cached result is shared by every hit, so it is handed out as
+			//immutable entities in an unmodifiable list
+			List<Entity> cached = connection.select(Department.DEPTNO.equalTo(20));
+			assertThrows(UnsupportedOperationException.class, () -> cached.add(null));
+			Entity department = cached.get(0);
+			assertFalse(department.mutable());
+			assertThrows(UnsupportedOperationException.class, () -> department.set(Department.DNAME, "MODIFIED"));
+
+			//a modifiable copy is available
+			Entity mutableCopy = department.copy().mutable();
+			assertTrue(mutableCopy.mutable());
+			mutableCopy.set(Department.DNAME, "MODIFIED");
+
+			//forUpdate selects bypass the cache and return mutable entities
+			Entity forUpdate = connection.select(Select.where(Department.DEPTNO.equalTo(20))
+							.forUpdate()
+							.build()).get(0);
+			assertTrue(forUpdate.mutable());
+
+			cache.close();
+			cache.close();//close is idempotent
+		}
+
+		//the cache is cleared and caching disabled on close
+		List<Entity> result = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
 		List<Entity> result2 = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
-		assertSame(result, result2);
-
-		result2 = connection.select(Select.where(Department.DEPTNO
-										.greaterThanOrEqualTo(20))
-						.orderBy(descending(Department.DEPTNO))
-						.build());
 		assertNotSame(result, result2);
+	}
 
-		result = connection.select(Select.where(Department.DEPTNO
-										.greaterThanOrEqualTo(20))
-						.orderBy(descending(Department.DEPTNO))
-						.build());
-		assertSame(result, result2);
-
-		result2 = connection.select(Select.where(Department.DEPTNO
-										.greaterThanOrEqualTo(20))
-						.orderBy(OrderBy.ascending(Department.DEPTNO))
-						.build());
-		assertNotSame(result, result2);
-
-		result = connection.select(Select.where(Department.DEPTNO
-										.greaterThanOrEqualTo(20))
-						.forUpdate()
-						.build());
-		result2 = connection.select(Select.where(Department.DEPTNO
-										.greaterThanOrEqualTo(20))
-						.forUpdate()
-						.build());
-		assertNotSame(result, result2);
-
-		result = connection.select(Department.DEPTNO.equalTo(20));
-		result2 = connection.select(Department.DEPTNO.equalTo(20));
-		assertSame(result, result2);
-
-		connection.cacheQueries(false);
-		assertFalse(connection.cacheQueries());
-
-		result = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
-		result2 = connection.select(Department.DEPTNO.greaterThanOrEqualTo(20));
-		assertNotSame(result, result2);
+	@Test
+	void queryCacheClosedOnException() {
+		assertThrows(UnsupportedOperationException.class, () -> {
+			try (QueryCache cache = connection.cacheQueries()) {
+				throw new UnsupportedOperationException();
+			}
+		});
+		//try-with-resources closed the scope despite the exception, so a new one can be opened
+		connection.cacheQueries().close();
 	}
 
 	@Test

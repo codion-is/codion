@@ -54,30 +54,6 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void cacheQueries(boolean queryCache) {
-		synchronized (transport) {
-			try {
-				handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCache))));
-			}
-			catch (Exception exception) {
-				throw handleException(exception);
-			}
-		}
-	}
-
-	@Override
-	public boolean cacheQueries() {
-		synchronized (transport) {
-			try {
-				return handleResponse(execute(createRequest("isQueryCacheEnabled")));
-			}
-			catch (Exception exception) {
-				throw handleException(exception);
-			}
-		}
-	}
-
-	@Override
 	public Collection<Entity.Key> insert(Collection<Entity> entities) {
 		requireNonNull(entities);
 		synchronized (transport) {
@@ -199,8 +175,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	public List<Entity> select(Select select) {
 		requireNonNull(select);
 		synchronized (transport) {
+			List<Entity> cached = cachedResult(select);
+			if (cached != null) {
+				return cached;
+			}
 			try {
-				return handleResponse(execute(createRequest("select", serialize(select))));
+				return cacheResult(select, handleResponse(execute(createRequest("select", serialize(select)))));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);

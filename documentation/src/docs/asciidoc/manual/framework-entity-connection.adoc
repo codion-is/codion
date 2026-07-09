@@ -364,6 +364,21 @@ For a more fine-grained transaction control and the ability to rollback, transac
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
 ----
 
+== Query cache
+
+{url-entity-connection}#cacheQueries()[cacheQueries()] enables query result caching on the connection until the returned QueryCache is closed.
+While active, identical selects return the cached result, which is intended for short-lived, read-only scopes, such as application or model initialization, where the same lookup entities would otherwise be selected repeatedly.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=queryCache]
+----
+
+A cached result is shared by every cache hit, so it is handed out as an unmodifiable list of immutable entities, along with their foreign key references, preventing one caller from modifying what the next one receives.
+Use `entity.copy().mutable()` to obtain a modifiable copy.
+
+Note that the cache is not invalidated by inserts, updates, deletes or transaction rollback, that selects for update always bypass the cache and return mutable entities, and that these scopes do not nest.
+
 == LocalEntityConnection
 
 An EntityConnection implementation based on a direct connection to the database, provides access to the underlying JDBC connection.

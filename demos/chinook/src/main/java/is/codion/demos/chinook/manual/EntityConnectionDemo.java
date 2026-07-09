@@ -25,6 +25,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParamet
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
+import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Transactional;
 import is.codion.framework.db.EntityConnection.TransactionalResult;
@@ -539,6 +540,24 @@ public final class EntityConnectionDemo {
 		// end::transaction[]
 	}
 
+	static void queryCache(EntityConnectionProvider connectionProvider) {
+		// tag::queryCache[]
+		EntityConnection connection = connectionProvider.connection();
+
+		try (QueryCache cache = connection.cacheQueries()) {
+			// Each of these selects hits the database once, the repeated
+			// ones are served from the cache, as would the identical selects
+			// performed while initializing a set of combo box models.
+			connection.select(Genre.NAME.equalTo("Metal"));
+			connection.select(Genre.NAME.equalTo("Metal"));
+
+			connection.select(MediaType.NAME.equalTo("MPEG audio file"));
+			connection.select(MediaType.NAME.equalTo("MPEG audio file"));
+		}
+		// The cache is cleared and caching disabled here, also in case of an exception
+		// end::queryCache[]
+	}
+
 	public static void main(String[] args) {
 		Database.URL.set("jdbc:h2:mem:h2db");
 		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
@@ -568,5 +587,6 @@ public final class EntityConnectionDemo {
 		function(connectionProvider);
 		report(connectionProvider);
 		transaction(connectionProvider);
+		queryCache(connectionProvider);
 	}
 }

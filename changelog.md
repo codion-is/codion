@@ -14,8 +14,18 @@ Codion Change Log
 ### is.codion.framework.server
 - EntityServerConfiguration.builder() no longer takes port parameters, consistent with ServerConfiguration.builder().
 - EntityServerAdmin get/set/is accessors (maintenanceInterval, idleConnectionTimeout, logLevel, traceToFile, tracingEnabled, and the per-pool collect/cleanup/timeout/size methods) de-beanified to the house name()/name(value) style. The underlying LoggerProxy and per-connection tracing methods retain their names.
+### is.codion.framework.db.core
+- EntityConnection.cacheQueries(boolean) and the cacheQueries() getter replaced with a scoped, AutoCloseable EntityConnection.QueryCache returned by cacheQueries(). The cache can no longer be left enabled, try-with-resources closes it on the exception path, and scopes do not nest, a second cacheQueries() while one is active throws IllegalStateException.
+- A cached select result is now an unmodifiable list of immutable entities, so a shared cached instance can no longer be modified by one caller and observed modified by the next. Selects for update continue to bypass the cache and return mutable entities.
 ### is.codion.framework.db.local
 - LocalEntityConnection.TRACES configuration key renamed from codion.db.traces to codion.db.tracing.retained, nested under codion.db.tracing to read as a pair and no longer a one-letter typo away from it.
+- DefaultLocalEntityConnection query caching moved behind the scoped QueryCache handle, the cache is cleared and disabled when the handle is closed.
+### is.codion.framework.db.rmi
+- RemoteEntityConnection.cacheQueries(boolean)/cacheQueries() removed from the wire protocol; query caching is now performed client-side in the connection proxy, so a cache hit no longer costs a network round-trip and serialization.
+### is.codion.framework.db.http
+- HTTP query caching moved client-side, a cache hit no longer costs a round-trip. The setQueryCacheEnabled/isQueryCacheEnabled requests are removed.
+### is.codion.framework.servlet
+- EntityService, the isQueryCacheEnabled and setQueryCacheEnabled routes (serial and json) removed, query caching is a client-side concern.
 ### is.codion.framework.model
 - EntitySearchModel.Selection.single() added, an ObservableState indicating whether exactly one entity is selected.
 - AbstractEntityApplicationModel, the custom-Preferences constructor javadoc now notes that startup preferences (frame size, look and feel, default username) are read from the default root before the model exists.

@@ -23,6 +23,7 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.rmi.TestDomain.Department;
@@ -418,10 +419,36 @@ public class RemoteEntityConnectionTest {
 	@Test
 	void cacheQueries() {
 		EntityConnection connection = connection();
-		connection.cacheQueries(true);
-		assertTrue(connection.cacheQueries());
-		connection.cacheQueries(false);
-		assertFalse(connection.cacheQueries());
+		try (QueryCache cache = connection.cacheQueries()) {
+			assertThrows(IllegalStateException.class, connection::cacheQueries);//scopes do not nest
+
+			//a cache hit returns the identical List instance, a round-trip would deserialize a new one
+			List<Entity> result = connection.select(Department.ID.greaterThanOrEqualTo(20L));
+			assertSame(result, connection.select(Department.ID.greaterThanOrEqualTo(20L)));
+			//select(Condition) and the equivalent select(Select) share the cache key
+			assertSame(result, connection.select(Select.where(Department.ID.greaterThanOrEqualTo(20L)).build()));
+
+			//a cached result is shared by every hit, so it is handed out as
+			//immutable entities in an unmodifiable list
+			assertThrows(UnsupportedOperationException.class, () -> result.add(null));
+			Entity department = result.get(0);
+			assertFalse(department.mutable());
+			assertThrows(UnsupportedOperationException.class, () -> department.set(Department.NAME, "MODIFIED"));
+
+			//forUpdate selects bypass the cache and return mutable entities
+			Select forUpdate = Select.where(Department.ID.greaterThanOrEqualTo(20L))
+							.forUpdate()
+							.build();
+			assertNotSame(connection.select(forUpdate), connection.select(forUpdate));
+			assertTrue(connection.select(forUpdate).get(0).mutable());
+
+			cache.close();
+			cache.close();//close is idempotent
+		}
+
+		//the cache is cleared and caching disabled on close, each select round-trips again
+		assertNotSame(connection.select(Department.ID.greaterThanOrEqualTo(20L)),
+						connection.select(Department.ID.greaterThanOrEqualTo(20L)));
 	}
 
 	@Test
@@ -445,7 +472,10 @@ public class RemoteEntityConnectionTest {
 		List<Method> remoteEntityConnectionMethods = Arrays.stream(RemoteEntityConnection.class.getDeclaredMethods())
 						.filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
 		List<Method> entityConnectionMethods = Arrays.stream(EntityConnection.class.getDeclaredMethods())
-						.filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
+						.filter(method -> !Modifier.isStatic(method.getModifiers()))
+						// the query cache is client-side only, it never crosses the wire
+						.filter(method -> !method.getName().equals("cacheQueries"))
+						.collect(Collectors.toList());
 		if (remoteEntityConnectionMethods.size() != entityConnectionMethods.size()) {
 			fail("Method count mismatch");
 		}
