@@ -102,8 +102,8 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 		interface ModelStep {
 
 			/**
-			 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
-			 * any data, via {@link EntityQueryModel#conditionRequired()}
+			 * <p>Note that the linked model is configured when the resulting {@link ForeignKeyModelLink} is added
+			 * to a master model, building one has no effect on the linked model.
 			 * @param model the detail model
 			 * @param <M> the {@link EntityModel} type
 			 * @param <E> the {@link EntityEditModel} type
@@ -182,5 +182,11 @@ public sealed interface ForeignKeyModelLink extends ModelLink permits DefaultFor
 		 * @see ForeignKeyModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION
 		 */
 		B clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection);
+
+		/**
+		 * @return a {@link ForeignKeyModelLink}
+		 */
+		@Override
+		ForeignKeyModelLink build();
 	}
 }

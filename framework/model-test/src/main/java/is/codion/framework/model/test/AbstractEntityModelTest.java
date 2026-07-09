@@ -31,6 +31,7 @@ import is.codion.framework.model.EntityEditor;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.framework.model.ForeignKeyModelLink;
+import is.codion.framework.model.ModelLink;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
@@ -84,6 +85,14 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		assertFalse(deptTableModel.selection().empty().is());
 		Entity operations = deptTableModel.selection().item().get();
 		assertEquals(80, operations.get(Department.ID));
+
+		M employeeModel = departmentModel.detail().get(Employee.TYPE);
+		if (employeeModel.containsTableModel()) {
+			//the selection holds the updated entity, whose primary key differs from the previous one,
+			//so it notifies, carrying the detail's foreign key condition along with it
+			assertEquals(singleton(operations), employeeModel.tableModel().query()
+							.condition().get(Employee.DEPARTMENT_FK).operands().in().get());
+		}
 
 		deptTableModel.items().included().predicate().set(item ->
 						!Objects.equals(80, item.get(Department.ID)));
@@ -199,6 +208,40 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 	public void addModelAsItsOwnDetailModel() {
 		M model = createDepartmentModelWithoutDetailModel();
 		assertThrows(IllegalArgumentException.class, () -> model.detail().add(model));
+	}
+
+	@Test
+	public void foreignKeyModelLinkBuildReturnsForeignKeyModelLink() {
+		ModelLink link = ForeignKeyModelLink.builder()
+						.model(createEmployeeModel())
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.build();
+		assertInstanceOf(ForeignKeyModelLink.class, link);
+	}
+
+	@Test
+	public void addDetailModelValidatesForeignKey() {
+		M departmentModel = createDepartmentModelWithoutDetailModel();
+		//MGR_FK is based on Employee, but references Employee, not Department
+		assertThrows(IllegalArgumentException.class, () ->
+						departmentModel.detail().add(createEmployeeModel(), Employee.MGR_FK));
+		//DEPARTMENT_FK is based on Employee, adding it to a link for a Department model is nonsense
+		assertThrows(IllegalArgumentException.class, () ->
+						createEmployeeModel().detail().add(createDepartmentModelWithoutDetailModel(), Employee.DEPARTMENT_FK));
+	}
+
+	@Test
+	public void unaddedForeignKeyModelLinkDoesNotConfigureDetailModel() {
+		M employeeModel = createEmployeeModel();
+		if (!employeeModel.containsTableModel()) {
+			return;
+		}
+		ForeignKeyModelLink.builder()
+						.model(employeeModel)
+						.foreignKey(Employee.DEPARTMENT_FK)
+						.build();
+		assertFalse(employeeModel.tableModel().query().conditionRequired().is());
+		assertFalse(employeeModel.tableModel().query().condition().persist().contains(Employee.DEPARTMENT_FK));
 	}
 
 	@Test

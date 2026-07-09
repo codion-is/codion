@@ -72,7 +72,12 @@ public interface EntityExport {
 
 		/**
 		 * Performs the export
+		 * <p>A referenced entity is fetched only when the entity being exported does not already carry it,
+		 * with every attribute the export requires.
 		 * @throws CancelException in case {@link #cancel(ObservableState)} is activated
+		 * @throws IllegalStateException in case no attributes are included, an export of nothing being a configuration error
+		 * @throws is.codion.framework.db.exception.EntityNotFoundException in case a foreign key references a row which
+		 * does not exist, which aborts the export rather than exporting an empty cell
 		 */
 		void export();
 
