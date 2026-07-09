@@ -51,8 +51,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.currentTimeMillis;
@@ -81,8 +83,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private final ServerConfiguration configuration;
 	private final ServerInformation serverInformation;
 	private final Event<?> shutdownEvent = Event.event();
+	private final AtomicBoolean shuttingDown = new AtomicBoolean();
 	private volatile int connectionLimit = -1;
-	private volatile boolean shuttingDown = false;
 	private volatile long lastMaintenance;
 
 	private @Nullable Registry registry;
@@ -192,7 +194,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	@Override
 	public final T connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException, LoginException {
-		if (shuttingDown) {
+		if (shuttingDown.get()) {
 			throw new LoginException("Server is shutting down");
 		}
 		requireNonNull(connectionRequest);
@@ -200,6 +202,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		requireNonNull(connectionRequest.clientId(), "clientId must be specified");
 		requireNonNull(connectionRequest.clientType(), "clientType must be specified");
 		synchronized (connections) {
+			//re-check within the monitor, shutdown() snapshots the connections while holding it,
+			//so a connection created here can not escape the disconnect sweep
+			if (shuttingDown.get()) {
+				throw new LoginException("Server is shutting down");
+			}
 			ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
 			if (clientConnection != null) {
 				validateUserCredentials(connectionRequest.user(), clientConnection.remoteClient().user());
@@ -220,38 +227,50 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	@Override
 	public final void disconnect(UUID clientId) {
-		ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId));
-		if (clientConnection != null) {
+		requireNonNull(clientId);
+		ClientConnection<T> clientConnection;
+		//the removal and the close must be atomic with respect to connect(), which hands out
+		//an existing connection, otherwise a reconnecting client can receive a just-closed one
+		synchronized (connections) {
+			clientConnection = connections.remove(clientId);
+			if (clientConnection == null) {
+				return;
+			}
 			try {
 				disconnect(clientConnection.connection());
 			}
 			catch (Exception e) {
 				LOG.debug("Error while disconnecting a client: {}", clientId, e);
 			}
-			RemoteClient remoteClient = clientConnection.remoteClient();
-			for (Authenticator authenticator : sharedAuthenticators) {
-				authenticator.logout(remoteClient);
-			}
-			Authenticator authenticator = authenticators.get(remoteClient.clientType());
-			if (authenticator != null) {
-				authenticator.logout(remoteClient);
-			}
-			LOG.debug("Client disconnected {}", remoteClient);
 		}
+		RemoteClient remoteClient = clientConnection.remoteClient();
+		for (Authenticator authenticator : sharedAuthenticators) {
+			authenticator.logout(remoteClient);
+		}
+		Authenticator authenticator = authenticators.get(remoteClient.clientType());
+		if (authenticator != null) {
+			authenticator.logout(remoteClient);
+		}
+		LOG.debug("Client disconnected {}", remoteClient);
 	}
 
 	/**
 	 * Shuts down this server.
 	 */
 	public final void shutdown() {
-		if (shuttingDown) {
+		if (!shuttingDown.compareAndSet(false, true)) {
 			return;
 		}
-		shuttingDown = true;
 		removeShutdownHook();
 		connectionMaintenanceScheduler.stop();
 		unexportSilently(asList(registry, this, admin));
-		new ArrayList<>(connections.keySet()).forEach(this::disconnect);
+		List<UUID> clientIds;
+		//snapshot within the monitor, a connect() in flight either completed before this
+		//and is included, or observes shuttingDown and is rejected
+		synchronized (connections) {
+			clientIds = new ArrayList<>(connections.keySet());
+		}
+		clientIds.forEach(this::disconnect);
 		sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
 		authenticators.values().forEach(AbstractServer::closeAuthenticator);
 		auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
@@ -428,7 +447,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 					startAuxiliaryServer(auxiliaryServer);
 					return null;
 				};
-				newSingleThreadExecutor(new DaemonThreadFactory(auxiliaryServer.getClass().getSimpleName())).submit(starter).get();
+				//the executor exists only to name the starting thread, it is of no use once the server has started
+				ExecutorService executor = newSingleThreadExecutor(new DaemonThreadFactory(auxiliaryServer.getClass().getSimpleName()));
+				try {
+					executor.submit(starter).get();
+				}
+				finally {
+					executor.shutdown();
+				}
 			}
 		}
 		catch (InterruptedException e) {
@@ -503,7 +529,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 					unexportObject(remote, true);
 				}
 				catch (NoSuchObjectException e) {
-					LOG.error("Exception while unexporting {} on shutdown", remote, e);
+					//already unexported, nothing to do, hence 'silently'
+					LOG.debug("Exception while unexporting {} on shutdown", remote, e);
 				}
 			}
 		}

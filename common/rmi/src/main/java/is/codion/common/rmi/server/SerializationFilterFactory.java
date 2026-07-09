@@ -185,9 +185,11 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 		}
 
 		return lines.stream()
+						.map(String::trim)
+						//a blank line would join into an empty pattern element, which createFilter rejects
+						.filter(line -> !line.isEmpty())
 						.filter(line -> !line.startsWith("#"))
-						.collect(joining(";"))
-						.trim();
+						.collect(joining(";"));
 	}
 
 	private static Collection<String> readClasspathWhitelistItems(String patternFile) {

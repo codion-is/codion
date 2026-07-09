@@ -299,6 +299,28 @@ public class EntityServerTest {
 	}
 
 	@Test
+	void unknownDomainType() {
+		RemoteEntityConnectionProvider provider =
+						RemoteEntityConnectionProvider.builder()
+										.hostname("localhost")
+										.port(CONFIGURATION.port())
+										.registryPort(CONFIGURATION.registryPort())
+										.domain(DomainType.domainType("unknownDomainType"))
+										.clientType("TestClient")
+										.user(UNIT_TEST_USER)
+										.build();
+
+		//a domain not hosted by the server used to surface as 'LoginException: null'
+		Exception exception = assertThrows(Exception.class, provider::connection);
+		Throwable cause = exception;
+		while (cause.getMessage() == null && cause.getCause() != null) {
+			cause = cause.getCause();
+		}
+		assertNotNull(cause.getMessage());
+		assertTrue(cause.getMessage().contains("unknownDomainType"), cause.getMessage());
+	}
+
+	@Test
 	void remoteEntityConnectionProvider() throws Exception {
 		RemoteEntityConnectionProvider provider =
 						RemoteEntityConnectionProvider.builder()

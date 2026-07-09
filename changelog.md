@@ -9,11 +9,21 @@ Codion Change Log
 - ServerConfiguration.Builder.build() now rejects a negative server port with a clear message instead of deferring to an obscure RMI error, catching a missing SERVER_PORT configuration early.
 - Clients.SERVER_HOSTNAME configuration key renamed from codion.server.hostname to codion.client.hostname, it is a client-side setting and now sits under codion.client.* consistent with codion.client.http.hostname.
 - ServerAdmin.getConnectionLimit()/setConnectionLimit() renamed to connectionLimit()/connectionLimit(int), de-beanified to the house name()/name(value) style. AbstractServer follows suit, along with getMaintenanceInterval()/setMaintenanceInterval(); the protected getAdmin()/setAdmin() are left as-is to avoid clashing with the admin(User) authentication method.
+- AbstractServer.disconnect() now removes and closes the client connection while holding the connections monitor, a client reconnecting while maintenance disconnects it can no longer be handed a just-closed connection.
+- AbstractServer.shutdown() now flips the shuttingDown flag atomically and snapshots the connections under the monitor, and connect() re-checks the flag within the monitor, so a connection created during shutdown can no longer escape the disconnect sweep.
+- AbstractServer.startAuxiliaryServers() now shuts down the single-thread executor used to name the starting thread, it previously abandoned one idle thread per auxiliary server.
+- SerializationFilterFactory, a blank line in a serialization pattern file no longer joins into an empty pattern element, which ObjectInputFilter rejects, bricking server startup. Lines are now trimmed and blank lines skipped.
+- AbstractServer.unexportSilently() now logs an already unexported object at debug rather than error.
 ### is.codion.common.db
 - ConnectionPoolWrapper get/set/is accessors (cleanupInterval, idleTimeout, minimumPoolSize, maximumPoolSize, maximumCheckOutTime, collectSnapshotStatistics, collectCheckOutTimes) de-beanified to the house name()/name(value) style, consistent with the interface's own user()/statistics() methods. The JMX metric MXBeans retain bean naming, as required by the JMX attribute contract.
 ### is.codion.framework.server
 - EntityServerConfiguration.builder() no longer takes port parameters, consistent with ServerConfiguration.builder().
 - EntityServerAdmin get/set/is accessors (maintenanceInterval, idleConnectionTimeout, logLevel, traceToFile, tracingEnabled, and the per-pool collect/cleanup/timeout/size methods) de-beanified to the house name()/name(value) style. The underlying LoggerProxy and per-connection tracing methods retain their names.
+- AbstractRemoteEntityConnection, a failed remote iterator export no longer strands the open-iterator count, which pinned the pooled connection for the life of the session; the local iterator is closed and the count decremented before the exception propagates.
+- AbstractRemoteEntityConnection, the remote iterator's hasNext()/next()/close() now serialize on the connection proxy like every other remote call, no longer allowing two server threads onto the same JDBC connection concurrently.
+- EntityServer, connecting with a domain type the server does not host now reports the domain and the hosted domains, instead of surfacing as "LoginException: null".
+- EntityServer.disconnectClients() now uses the connections from its own snapshot rather than re-looking each one up through the throwing accessor, which aborted the sweep when a client disconnected concurrently.
+- EntityServer, a classpath domain model overriding a service loaded one is now logged.
 ### is.codion.framework.db.core
 - EntityConnection.cacheQueries(boolean) and the cacheQueries() getter replaced with a scoped, AutoCloseable EntityConnection.QueryCache returned by cacheQueries(). The cache can no longer be left enabled, try-with-resources closes it on the exception path, and scopes do not nest, a second cacheQueries() while one is active throws IllegalStateException.
 - A cached select result is now an unmodifiable list of immutable entities, so a shared cached instance can no longer be modified by one caller and observed modified by the next. Selects for update continue to bypass the cache and return mutable entities.
@@ -22,6 +32,8 @@ Codion Change Log
 - DefaultLocalEntityConnection query caching moved behind the scoped QueryCache handle, the cache is cleared and disabled when the handle is closed.
 ### is.codion.framework.db.rmi
 - RemoteEntityConnection.cacheQueries(boolean)/cacheQueries() removed from the wire protocol; query caching is now performed client-side in the connection proxy, so a cache hit no longer costs a network round-trip and serialization.
+- RemoteEntityConnectionProvider now reconnects to an unreachable-but-cached server by registry name, letting connect() decide; server discovery filters out servers with no connections available, which hid the very server still holding the client's session (existing sessions being exempt from the connection limit).
+- RemoteEntityResultIteratorWrapper now chains the RemoteException as the cause of the DatabaseException it throws, instead of discarding it.
 ### is.codion.framework.db.http
 - HTTP query caching moved client-side, a cache hit no longer costs a round-trip. The setQueryCacheEnabled/isQueryCacheEnabled requests are removed.
 ### is.codion.framework.servlet
