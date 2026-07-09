@@ -27,6 +27,7 @@ import is.codion.swing.common.model.component.table.SwingFilterTableModel.RowEdi
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JTable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -103,6 +104,52 @@ public final class DefaultSwingFilterTableModelTest {
 		public Object value(TestRow row, Integer identifier) {
 			return row.value;
 		}
+	}
+
+	@Test
+	void selectionPreservedAcrossIndexedMutationsWithoutJTable() {
+		// Without a JTable nothing shifts the selected indexes on insertion, the items model must
+		tableModel.items().refresh();
+		tableModel.selection().index().set(1);// B
+		assertEquals(B, tableModel.selection().item().get());
+
+		tableModel.items().included().add(0, new TestRow("0"));
+		assertEquals(B, tableModel.selection().item().get());
+		assertEquals(2, tableModel.selection().index().get());
+
+		tableModel.items().included().remove(0);
+		assertEquals(B, tableModel.selection().item().get());
+		assertEquals(1, tableModel.selection().index().get());
+	}
+
+	@Test
+	void selectionPreservedAcrossIndexedMutationsWithJTable() {
+		// A JTable shifts the selected indexes of the selection model it shares with this table model,
+		// and DefaultSwingFilterTableModel unregisters its own remove-selection listener while one is
+		// attached. Preserving the selection by item must be idempotent with respect to both, this
+		// pins that: it would break if the items model shifted the indexes itself instead.
+		tableModel.items().refresh();
+		JTable table = new JTable(tableModel);
+		table.setSelectionModel(tableModel.selection());
+
+		tableModel.selection().index().set(1);// B
+		assertEquals(B, tableModel.selection().item().get());
+
+		TestRow inserted = new TestRow("0");
+		tableModel.items().included().add(0, inserted);
+		assertEquals(B, tableModel.selection().item().get());
+		assertEquals(2, tableModel.selection().index().get());
+
+		tableModel.items().included().remove(0);
+		assertEquals(B, tableModel.selection().item().get());
+		assertEquals(1, tableModel.selection().index().get());
+
+		tableModel.items().remove(A);
+		assertEquals(B, tableModel.selection().item().get());
+		assertEquals(0, tableModel.selection().index().get());
+
+		tableModel.items().remove(B);
+		assertTrue(tableModel.selection().empty().is());
 	}
 
 	private static SwingFilterTableModel<TestRow, Integer> createTestModel() {

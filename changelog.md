@@ -16,6 +16,8 @@ Codion Change Log
 - AbstractServer.unexportSilently() now logs an already unexported object at debug rather than error.
 ### is.codion.common.db
 - ConnectionPoolWrapper get/set/is accessors (cleanupInterval, idleTimeout, minimumPoolSize, maximumPoolSize, maximumCheckOutTime, collectSnapshotStatistics, collectCheckOutTimes) de-beanified to the house name()/name(value) style, consistent with the interface's own user()/statistics() methods. The JMX metric MXBeans retain bean naming, as required by the JMX attribute contract.
+### is.codion.common.model
+- DefaultFilterModelItems, the selection is now preserved by item across item insertion and removal. IncludedItems.add(int, ..), IncludedItems.remove(int), IncludedItems.remove(int, int) and Items.remove(item/items/predicate) shift the indexes of the items at and after the mutation point, but left the selected indexes untouched, so the selection ended up pointing at the wrong items. Preserving by item is idempotent with respect to a view which shifts the indexes on its own, such as a JTable, so no selection is adjusted twice.
 ### is.codion.framework.server
 - EntityServerConfiguration.builder() no longer takes port parameters, consistent with ServerConfiguration.builder().
 - EntityServerAdmin get/set/is accessors (maintenanceInterval, idleConnectionTimeout, logLevel, traceToFile, tracingEnabled, and the per-pool collect/cleanup/timeout/size methods) de-beanified to the house name()/name(value) style. The underlying LoggerProxy and per-connection tracing methods retain their names.
@@ -46,7 +48,7 @@ Codion Change Log
 - EntityConditionModel.Modified no longer throws when snapshotting the condition state, which it does on every condition change event. An enabled condition with a missing operand (reachable with autoEnable off) is reported as modified rather than throwing out of the listener chain; the query time evaluation remains the failure.
 - EntityConditionModel, an equality search on a LocalTime column at the last second/minute/hour of the day no longer builds an interval wrapping around midnight, which matched nothing; plain equality is used instead.
 - EntityConditionModel.get(ForeignKey) now reports a condition model that is not a ForeignKeyConditionModel rather than throwing ClassCastException.
-- AbstractEntityTableModel.onInsert() no longer clears the selection, which defaulted the editor via the selection sync, overriding the UI's clear-after-insert configuration. The selection is restored by item instead, since an indexed insert does not shift the selected indexes.
+- AbstractEntityTableModel.onInsert() no longer clears the selection, which defaulted the editor via the selection sync, overriding the UI's clear-after-insert configuration. The selection is now preserved by the items model, and the editor sync is suppressed while the rows are added, since the selection notifies unconditionally.
 - AbstractEntityTableModel, the edit/query model entity type mismatch message now names the edit model's entity type rather than its Entities instance, and updated(ForeignKey, Map) now documents that the rows are neither re-sorted nor re-filtered.
 - EntitySearchModel, an update is now reconciled into the selection with a single set(), a remove followed by an add left the selection transiently missing the updated entities, which cascaded through the condition operands bound to it.
 - EntitySearchModel, the search string is now trimmed before spaces are replaced with wildcards, the trim previously had no effect with spaceAsWildcard enabled.

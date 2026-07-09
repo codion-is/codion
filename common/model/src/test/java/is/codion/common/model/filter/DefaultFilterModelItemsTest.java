@@ -655,6 +655,47 @@ public class DefaultFilterModelItemsTest {
 		}
 	}
 
+	@Test
+	@DisplayName("The selection is preserved by item across indexed insertion and removal")
+	void selectionPreservedAcrossIndexedMutations() {
+		List<MultiSelection<String>> holder = new ArrayList<>(1);
+		Items<String> model = Items.builder()
+						.<String>refresher(i -> Refresher.<String>builder().build())
+						.selection(included -> {
+							MultiSelection<String> selection = MultiSelection.multiSelection(included);
+							holder.add(selection);
+
+							return selection;
+						})
+						.sort(new TestSort())
+						.included(new TestInclude())
+						.build();
+		MultiSelection<String> selection = holder.get(0);
+
+		model.add(asList("b", "c", "d"));
+		selection.index().set(1);
+		assertEquals("c", selection.item().get());
+
+		//inserting before the selection shifts its index, the selected item must not change
+		model.included().add(0, "a");
+		assertEquals("c", selection.item().get());
+		assertEquals(2, selection.index().get());
+
+		//removing before the selection shifts it back
+		model.included().remove(0);
+		assertEquals("c", selection.item().get());
+		assertEquals(1, selection.index().get());
+
+		//removing by item likewise
+		model.remove("b");
+		assertEquals("c", selection.item().get());
+		assertEquals(0, selection.index().get());
+
+		//removing the selected item drops it from the selection, it no longer has an index
+		model.remove("c");
+		assertTrue(selection.empty().is());
+	}
+
 	private static class TestInclude implements IncludePredicate<String> {
 		private final Value<Predicate<String>> predicate = Value.nullable(item -> true);
 

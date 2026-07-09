@@ -150,6 +150,37 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	}
 
 	@Test
+	public void onInsertDoesNotSyncEditorFromSelection() throws EntityValidationException {
+		T deptModel = createDepartmentTableModel();
+		deptModel.items().refresh();
+		Entities entities = deptModel.entities();
+
+		deptModel.selection().index().set(1);
+		Entity selected = deptModel.selection().item().get();
+		Entity other = deptModel.items().included().get(2);
+		assertNotEquals(selected, other);
+
+		//the UI insert flow leaves the inserted entity in the editor, which is not the selected row
+		deptModel.editor().entity().set(other);
+		assertEquals(other.primaryKey(), deptModel.editor().entity().get().primaryKey());
+
+		deptModel.onInsert().set(EntityTableModel.OnInsert.PREPEND);
+		Entity dept = entities.entity(Department.TYPE)
+						.with(Department.ID, -50)
+						.with(Department.LOCATION, "Nowhere5")
+						.with(Department.NAME, "AAAAB")
+						.build();
+		deptModel.editor().insert(singletonList(dept));
+
+		//preserving the selection re-notifies it, but the selection did not actually change,
+		//so the editor must not be resynced from it, which would discard the inserted entity
+		assertEquals(other.primaryKey(), deptModel.editor().entity().get().primaryKey());
+		assertEquals(selected, deptModel.selection().item().get());
+
+		deptModel.editor().delete(singletonList(dept));
+	}
+
+	@Test
 	public void onInsert() throws EntityValidationException {
 		T deptModel = createDepartmentTableModel();
 		deptModel.items().refresh();
