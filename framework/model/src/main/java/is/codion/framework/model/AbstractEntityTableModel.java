@@ -76,9 +76,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	//we keep a reference to this listener, since it will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 
-	//set while onInsert() adds rows, suppressing the spurious selection to editor sync
-	private boolean insertingRows = false;
-
 	/**
 	 * @param editModel the edit model
 	 * @param filterModel the filter model
@@ -324,16 +321,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		OnInsert onInsertAction = onInsert.getOrThrow();
 		if (onInsertAction != OnInsert.DO_NOTHING && !entitiesToAdd.isEmpty()) {
 			// The inserted rows do not invalidate the selection, which the items model preserves by item.
-			// The selection notifies unconditionally though, so the editor sync is suppressed meanwhile:
-			// the selection did not actually change and defaulting the editor here would discard the
-			// inserted entity, overriding the UI's clear-after-insert configuration.
-			insertingRows = true;
-			try {
-				items().included().add(onInsertAction == OnInsert.PREPEND ? 0 : items().included().size(), entitiesToAdd);
-			}
-			finally {
-				insertingRows = false;
-			}
+			// The selection notifies only when it actually changes, so the editor is left holding the
+			// inserted entity, leaving the clear-after-insert decision to the UI.
+			items().included().add(onInsertAction == OnInsert.PREPEND ? 0 : items().included().size(), entitiesToAdd);
 		}
 	}
 
@@ -375,9 +365,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	}
 
 	private void onSelectionChanged(@Nullable Entity selected) {
-		if (insertingRows) {
-			return;
-		}
 		if (selected == null) {
 			editModel.editor().entity().defaults();
 		}

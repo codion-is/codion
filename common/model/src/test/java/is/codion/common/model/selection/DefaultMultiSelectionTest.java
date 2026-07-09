@@ -27,7 +27,10 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -103,6 +106,45 @@ public final class DefaultMultiSelectionTest {
 		assertEquals(2, selection.index().get());
 	}
 
+	@Test
+	void facadesNotifyOnlyWhenValueChanges() {
+		TestItems items = new TestItems(asList("a", "b", "c", "d"));
+		MultiSelection<String> selection = new DefaultMultiSelection<>(items);
+		selection.item().set("b");
+
+		AtomicInteger indexNotified = new AtomicInteger();
+		AtomicInteger indexesNotified = new AtomicInteger();
+		AtomicInteger itemNotified = new AtomicInteger();
+		AtomicInteger itemsNotified = new AtomicInteger();
+		selection.index().addListener(indexNotified::incrementAndGet);
+		selection.indexes().addListener(indexesNotified::incrementAndGet);
+		selection.item().addListener(itemNotified::incrementAndGet);
+		selection.items().addListener(itemsNotified::incrementAndGet);
+
+		//ending an adjustment which changed nothing must not notify, adjusting(false) bypasses
+		//the no-op guard in applyTarget() and drives the facades directly
+		selection.adjusting(true);
+		selection.adjusting(false);
+		assertEquals(0, indexNotified.get());
+		assertEquals(0, indexesNotified.get());
+		assertEquals(0, itemNotified.get());
+		assertEquals(0, itemsNotified.get());
+
+		//an item inserted before the selection shifts its index, the selected item is unchanged,
+		//so the index facades notify and the item facades do not
+		items.insert(0, "x");
+		selection.adjusting(true);
+		selection.indexes().set(singletonList(2));
+		selection.adjusting(false);
+
+		assertEquals("b", selection.item().get());
+		assertEquals(2, selection.index().get());
+		assertEquals(1, indexNotified.get());
+		assertEquals(1, indexesNotified.get());
+		assertEquals(0, itemNotified.get());
+		assertEquals(0, itemsNotified.get());
+	}
+
 	/**
 	 * Minimal {@link IncludedItems} over a fixed list; observable surface delegated to a {@link Value}.
 	 * Only the index/item lookups {@link DefaultMultiSelection} actually uses are implemented.
@@ -115,6 +157,11 @@ public final class DefaultMultiSelectionTest {
 		private TestItems(List<String> items) {
 			this.list.addAll(items);
 			this.value.set(unmodifiableList(new ArrayList<>(items)));
+		}
+
+		private void insert(int index, String item) {
+			list.add(index, item);
+			value.set(unmodifiableList(new ArrayList<>(list)));
 		}
 
 		@Override
