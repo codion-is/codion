@@ -907,7 +907,12 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 		/**
 		 * Indicates which editor attributes are modified.
-		 * <p>Note that modified attributes are included, regardless of whether the entity exists.
+		 * <p>Only attributes with an associated {@link EditorValue} are reported, that is, attributes which have
+		 * been accessed via {@link #value(Attribute)}, typically by binding them to a component. The columns
+		 * underlying a modified foreign key are therefore absent, as is any attribute the editor never touched.
+		 * <p>Note that modified attributes are included, regardless of whether the entity exists, and that this
+		 * set may be empty while {@link #is()} is true, since the modified state also reflects
+		 * {@link #additional()} states.
 		 * @return an {@link ObservableValueSet} indicating the currently modified attributes
 		 * @see #value(Attribute)
 		 */
@@ -1036,6 +1041,9 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>When editing via the editor, derived values are set via their respective {@link EditorValue}
 		 * instances, triggering edit events. When setting values in an entity, derived values are
 		 * set directly on the entity via {@link Entity#set(Attribute, Object)}.
+		 * <p>Propagation is transitive, a value derived for a target attribute in turn applies that attribute's
+		 * own propagators. Cycles terminate; when editing via the editor propagation stops as soon as a derived
+		 * value equals the current one, when setting values in an entity each attribute is propagated to once.
 		 * {@snippet :
 		 * // Populate billing address fields when customer changes
 		 * editor().value(Invoice.CUSTOMER_FK).propagate(Invoice.BILLINGADDRESS,
