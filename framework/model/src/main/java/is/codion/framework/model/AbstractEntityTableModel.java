@@ -76,8 +76,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	//we keep a reference to this listener, since it will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 
-	//set while onInsert() restores the selection, suppressing the spurious selection to editor sync
-	private boolean restoringSelection = false;
+	//set while onInsert() adds rows, suppressing the spurious selection to editor sync
+	private boolean insertingRows = false;
 
 	/**
 	 * @param editModel the edit model
@@ -323,20 +323,16 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 						.collect(toList());
 		OnInsert onInsertAction = onInsert.getOrThrow();
 		if (onInsertAction != OnInsert.DO_NOTHING && !entitiesToAdd.isEmpty()) {
-			// The inserted rows do not invalidate the selection, but an indexed insert does not shift the
-			// selected indexes, so the selection is restored by item. The selection notifies unconditionally,
-			// so the editor sync is suppressed meanwhile, the selection did not actually change and defaulting
-			// the editor here would discard the inserted entity, overriding the UI's clear-after-insert setting.
-			List<Entity> selectedItems = selection().items().get();
-			restoringSelection = true;
-			selection().adjusting(true);
+			// The inserted rows do not invalidate the selection, which the items model preserves by item.
+			// The selection notifies unconditionally though, so the editor sync is suppressed meanwhile:
+			// the selection did not actually change and defaulting the editor here would discard the
+			// inserted entity, overriding the UI's clear-after-insert configuration.
+			insertingRows = true;
 			try {
 				items().included().add(onInsertAction == OnInsert.PREPEND ? 0 : items().included().size(), entitiesToAdd);
-				selection().items().set(selectedItems);
 			}
 			finally {
-				selection().adjusting(false);
-				restoringSelection = false;
+				insertingRows = false;
 			}
 		}
 	}
@@ -379,7 +375,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	}
 
 	private void onSelectionChanged(@Nullable Entity selected) {
-		if (restoringSelection) {
+		if (insertingRows) {
 			return;
 		}
 		if (selected == null) {

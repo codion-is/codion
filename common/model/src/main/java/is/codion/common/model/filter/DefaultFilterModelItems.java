@@ -44,9 +44,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static is.codion.common.reactive.value.Value.Notify.SET;
+import static java.lang.Boolean.TRUE;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -137,53 +139,59 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void remove(R item) {
 		requireNonNull(item);
-		synchronized (lock) {
-			if (filtered.items.remove(item)) {
-				filtered.notifyChanges();
-			}
-			else {
-				int index = included.items.indexOf(item);
-				if (index >= 0) {
-					included.items.remove(index);
-					notifyDeleted(index, index);
-					included.notifyChanges();
+		preserveSelection(() -> {
+			synchronized (lock) {
+				if (filtered.items.remove(item)) {
+					filtered.notifyChanges();
+				}
+				else {
+					int index = included.items.indexOf(item);
+					if (index >= 0) {
+						included.items.remove(index);
+						notifyDeleted(index, index);
+						included.notifyChanges();
+					}
 				}
 			}
-		}
+
+			return null;
+		});
 	}
 
 	@Override
 	public void remove(Collection<R> items) {
 		rejectNulls(items);
-		synchronized (lock) {
-			boolean filteredRemoved = false;
-			Set<R> toRemove = new HashSet<>(items);
-			for (R itemToRemove : items) {
-				if (filtered.items.remove(itemToRemove)) {
-					toRemove.remove(itemToRemove);
-					filteredRemoved = true;
+		preserveSelection(() -> {
+			synchronized (lock) {
+				boolean filteredRemoved = false;
+				Set<R> toRemove = new HashSet<>(items);
+				for (R itemToRemove : items) {
+					if (filtered.items.remove(itemToRemove)) {
+						toRemove.remove(itemToRemove);
+						filteredRemoved = true;
+					}
+				}
+				boolean includedRemoved = false;
+				ListIterator<R> iterator = included.items.listIterator(included.items.size());
+				while (!toRemove.isEmpty() && iterator.hasPrevious()) {
+					int index = iterator.previousIndex();
+					R item = iterator.previous();
+					if (toRemove.remove(item)) {
+						iterator.remove();
+						notifyDeleted(index, index);
+						includedRemoved = true;
+					}
+				}
+				if (includedRemoved) {
+					included.notifyChanges();
+				}
+				if (filteredRemoved) {
+					filtered.notifyChanges();
 				}
 			}
-			boolean includedRemoved = false;
-			selection.adjusting(true);
-			ListIterator<R> iterator = included.items.listIterator(included.items.size());
-			while (!toRemove.isEmpty() && iterator.hasPrevious()) {
-				int index = iterator.previousIndex();
-				R item = iterator.previous();
-				if (toRemove.remove(item)) {
-					iterator.remove();
-					notifyDeleted(index, index);
-					includedRemoved = true;
-				}
-			}
-			selection.adjusting(false);
-			if (includedRemoved) {
-				included.notifyChanges();
-			}
-			if (filteredRemoved) {
-				filtered.notifyChanges();
-			}
-		}
+
+			return null;
+		});
 	}
 
 	@Override
@@ -304,6 +312,29 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			if (filteredSize > 0) {
 				filtered.notifyChanges();
 			}
+		}
+	}
+
+	/**
+	 * Runs the given mutation, preserving the selection by item.
+	 * <p>Inserting or removing items shifts the indexes of the items at and after the mutation point, but not the
+	 * selected indexes, leaving the selection pointing at the wrong items. Restoring the selection by item is
+	 * idempotent with respect to any view which shifts the indexes on its own, such as a {@code JTable}, and
+	 * items which were removed are dropped from the selection since they no longer have an index.
+	 * @param mutation the mutation to perform
+	 * @return the mutation result
+	 */
+	private <T> @Nullable T preserveSelection(Supplier<@Nullable T> mutation) {
+		List<R> selectedItems = selection.items().get();
+		selection.adjusting(true);
+		try {
+			T result = mutation.get();
+			selection.items().set(selectedItems);
+
+			return result;
+		}
+		finally {
+			selection.adjusting(false);
 		}
 	}
 
@@ -454,16 +485,20 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		@Override
 		public boolean add(int index, Collection<R> items) {
-			synchronized (lock) {
-				return addInternal(index, rejectNulls(items));
-			}
+			return TRUE.equals(preserveSelection(() -> {
+				synchronized (lock) {
+					return addInternal(index, rejectNulls(items));
+				}
+			}));
 		}
 
 		@Override
 		public boolean add(int index, R item) {
-			synchronized (lock) {
-				return addInternal(index, singleton(requireNonNull(item)));
-			}
+			return TRUE.equals(preserveSelection(() -> {
+				synchronized (lock) {
+					return addInternal(index, singleton(requireNonNull(item)));
+				}
+			}));
 		}
 
 		@Override
@@ -484,29 +519,33 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		@Override
 		public R remove(int index) {
-			synchronized (lock) {
-				R removed = items.remove(index);
-				notifyDeleted(index, index);
-				notifyChanges();
+			return preserveSelection(() -> {
+				synchronized (lock) {
+					R removed = items.remove(index);
+					notifyDeleted(index, index);
+					notifyChanges();
 
-				return removed;
-			}
+					return removed;
+				}
+			});
 		}
 
 		@Override
 		public List<R> remove(int fromIndex, int toIndex) {
-			synchronized (lock) {
-				List<R> subList = items.subList(fromIndex, toIndex);
-				List<R> removedItems = new ArrayList<>(subList);
-				subList.clear();
-				if (toIndex > fromIndex) {
-					//toIndex is exclusive, the ItemsListener range is inclusive
-					notifyDeleted(fromIndex, toIndex - 1);
-				}
-				notifyChanges();
+			return preserveSelection(() -> {
+				synchronized (lock) {
+					List<R> subList = items.subList(fromIndex, toIndex);
+					List<R> removedItems = new ArrayList<>(subList);
+					subList.clear();
+					if (toIndex > fromIndex) {
+						//toIndex is exclusive, the ItemsListener range is inclusive
+						notifyDeleted(fromIndex, toIndex - 1);
+					}
+					notifyChanges();
 
-				return removedItems;
-			}
+					return removedItems;
+				}
+			});
 		}
 
 		@Override
