@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,7 +147,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private void validateType(Entity entity) {
 		if (!entity.type().equals(entityDefinition.type())) {
-			throw new IllegalArgumentException("Entities of type " + entityDefinition.type() + " exptected, got " + entity.type());
+			throw new IllegalArgumentException("Entities of type " + entityDefinition.type() + " expected, got " + entity.type());
 		}
 	}
 
@@ -170,6 +171,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		private Select select() {
+			//not validated at build time, DefaultForeignKeyConditionModel eagerly builds a search model
+			//for every foreign key, including those referencing entities without searchable columns
 			if (columns.isEmpty()) {
 				throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.type());
 			}
@@ -198,10 +201,14 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private String prepareSearchString(String rawSearchString, Settings settings) {
 			boolean wildcardPrefix = settings.wildcardPrefix().is();
 			boolean wildcardPostfix = settings.wildcardPostfix().is();
-			rawSearchString = settings.spaceAsWildcard().is() ? rawSearchString.replace(' ', '%') : rawSearchString;
+			//trim before replacing spaces, otherwise surrounding whitespace becomes wildcards instead of being removed
+			String searchString = rawSearchString.trim();
+			if (settings.spaceAsWildcard().is()) {
+				searchString = searchString.replace(' ', '%');
+			}
 
-			return rawSearchString.equals(WILDCARD_MULTIPLE) ? WILDCARD_MULTIPLE :
-							((wildcardPrefix ? WILDCARD_MULTIPLE : "") + rawSearchString.trim() + (wildcardPostfix ? WILDCARD_MULTIPLE : ""));
+			return searchString.equals(WILDCARD_MULTIPLE) ? WILDCARD_MULTIPLE :
+							((wildcardPrefix ? WILDCARD_MULTIPLE : "") + searchString + (wildcardPostfix ? WILDCARD_MULTIPLE : ""));
 		}
 
 		private Condition createCombinedCondition(Collection<Condition> conditions) {
@@ -286,8 +293,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 				}
 			});
 			if (!toRemove.isEmpty()) {
-				selection.entities.removeAll(toRemove);
-				selection.entities.addAll(toAdd);
+				//apply the reconciliation in a single set(), a remove followed by an add would leave the
+				//selection transiently missing the updated entities, and this set is a live condition operand
+				Set<Entity> reconciled = new LinkedHashSet<>(selection.entities.get());
+				reconciled.removeAll(toRemove);
+				reconciled.addAll(toAdd);
+				selection.entities.set(reconciled);
 				LOG.debug("{} - reconciled {} updated entities", DefaultEntitySearchModel.this, toRemove.size());
 			}
 		}

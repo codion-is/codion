@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.NoSuchElementException;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -327,5 +328,53 @@ public class DefaultEntityConditionModelTest {
 		assertEquals("date_time_hh_mm_ss_sss <> ?", where.string(entityDefinition));
 		assertEquals(1, where.values().size());
 		assertEquals(LocalDateTime.of(1975, Month.OCTOBER, 3, 10, 45, 15, 999_000_000), where.values().get(0));
+	}
+
+	@Test
+	void temporalEqualWrappingAroundMidnight() {
+		EntityConditionModel condition = EntityConditionModel.builder()
+						.entityType(DateTimeTest.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
+		EntityDefinition entityDefinition = CONNECTION_PROVIDER.entities().definition(DateTimeTest.TYPE);
+
+		//the last second of the day, the interval upper bound would wrap to 00:00:00,
+		//yielding an interval matching nothing, so plain equality is used instead
+		ConditionModel<LocalTime> timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM_SS);
+		timeConditionModel.set().equalTo(LocalTime.of(23, 59, 59));
+		Condition where = condition.where();
+		assertEquals("time_hh_mm_ss = ?", where.string(entityDefinition));
+		assertEquals(1, where.values().size());
+		assertEquals(LocalTime.of(23, 59, 59), where.values().get(0));
+
+		//the last minute of the day likewise
+		condition = EntityConditionModel.builder()
+						.entityType(DateTimeTest.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
+		timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM);
+		timeConditionModel.set().equalTo(LocalTime.of(23, 59));
+		where = condition.where();
+		assertEquals("time_hh_mm = ?", where.string(entityDefinition));
+	}
+
+	@Test
+	void enablingWithMissingOperandDoesNotThrow() {
+		EntityConditionModel condition = EntityConditionModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
+		ConditionModel<Integer> conditionModel = condition.get(Employee.ID);
+		conditionModel.autoEnable().set(false);
+		conditionModel.operator().set(Operator.LESS_THAN);
+
+		//enabling with no operand fires changed(), which snapshots the condition state for Modified.
+		//The snapshot evaluates where(), which throws for a one sided operator with no operand.
+		//That must not escape the listener chain, the model is simply reported as modified.
+		assertDoesNotThrow(() -> conditionModel.enabled().set(true));
+		assertTrue(condition.modified().is());
+
+		//the query time evaluation remains the honest failure
+		assertThrows(NoSuchElementException.class, condition::where);
 	}
 }

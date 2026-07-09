@@ -41,7 +41,10 @@ import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.domain.entity.condition.Condition.Combination;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
@@ -59,6 +62,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityConditionModel implements EntityConditionModel {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConditionModel.class);
 
 	private static final Supplier<@Nullable Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
@@ -129,8 +134,13 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	@Override
 	public ForeignKeyConditionModel get(ForeignKey foreignKey) {
 		entityDefinition.foreignKeys().definition(foreignKey);
+		ConditionModel<Entity> model = conditionModel.get(foreignKey);
+		if (!(model instanceof ForeignKeyConditionModel)) {
+			throw new IllegalArgumentException("Condition model for foreign key " + foreignKey
+							+ " is not a " + ForeignKeyConditionModel.class.getSimpleName() + ": " + model.getClass().getName());
+		}
 
-		return (ForeignKeyConditionModel) conditionModel.<Entity>get(foreignKey);
+		return (ForeignKeyConditionModel) model;
 	}
 
 	@Override
@@ -345,6 +355,15 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	private static @Nullable Temporal createTemporalUpperBound(Temporal value, String dateTimePattern) {
+		Temporal upperBound = temporalUpperBound(value, dateTimePattern);
+		if (upperBound != null && wrapsAroundMidnight(value, upperBound)) {
+			return null;// the resulting interval would match nothing, fall back to plain equality
+		}
+
+		return upperBound;
+	}
+
+	private static @Nullable Temporal temporalUpperBound(Temporal value, String dateTimePattern) {
 		if (dateTimePattern.contains("SSS")) {//millisecond
 			return null;// no need, same precision as column
 		}
@@ -359,6 +378,14 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		}
 
 		return null;
+	}
+
+	/**
+	 * {@link java.time.LocalTime} is the only temporal type reaching here which wraps around on plus(),
+	 * 23:59:59 plus one second being 00:00:00.
+	 */
+	private static boolean wrapsAroundMidnight(Temporal value, Temporal upperBound) {
+		return value instanceof LocalTime && !((LocalTime) upperBound).isAfter((LocalTime) value);
 	}
 
 	private static <T> boolean containsTime(Attribute.DataType<T> type) {
@@ -509,10 +536,10 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 		private final State modified = State.state();
 
-		private ConditionState conditionState;
+		private @Nullable ConditionState conditionState;
 
 		private DefaultModified() {
-			this.conditionState = new ConditionState();
+			this.conditionState = conditionState();
 		}
 
 		@Override
@@ -532,12 +559,30 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 
 		@Override
 		public void reset() {
-			conditionState = new ConditionState();
+			conditionState = conditionState();
 			modified.set(false);
 		}
 
 		private void set() {
-			modified.set(!Objects.equals(conditionState, new ConditionState()));
+			ConditionState current = conditionState();
+			modified.set(conditionState == null || current == null || !conditionState.equals(current));
+		}
+
+		/**
+		 * This runs on every condition change event, whereas the conditions themselves are only
+		 * evaluated at query time. An enabled condition with a missing operand throws when evaluated,
+		 * a state which is not comparable and therefore reported as modified, never thrown from here.
+		 * @return the current condition state or null in case it can not be evaluated
+		 */
+		private @Nullable ConditionState conditionState() {
+			try {
+				return new ConditionState();
+			}
+			catch (Exception e) {
+				LOG.debug("Unable to create condition state", e);
+
+				return null;
+			}
 		}
 	}
 

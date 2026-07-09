@@ -122,6 +122,34 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	}
 
 	@Test
+	public void onInsertPreservesSelection() throws EntityValidationException {
+		T deptModel = createDepartmentTableModel();
+		deptModel.items().refresh();
+		Entities entities = deptModel.entities();
+
+		deptModel.selection().index().set(1);
+		Entity selected = deptModel.selection().item().get();
+		assertNotNull(selected);
+
+		deptModel.onInsert().set(EntityTableModel.OnInsert.PREPEND);
+		Entity dept = entities.entity(Department.TYPE)
+						.with(Department.ID, -40)
+						.with(Department.LOCATION, "Nowhere4")
+						.with(Department.NAME, "AAAAA")
+						.build();
+		deptModel.editor().insert(singletonList(dept));
+
+		//the inserted rows do not invalidate the selection, which is restored by item since
+		//the indexed insert shifts the rows at and below the insertion point
+		assertEquals(selected, deptModel.selection().item().get());
+		//and since the selection never actually changed, the editor was not defaulted via the
+		//selection sync, leaving the clear-after-insert decision to the UI
+		assertEquals(selected.primaryKey(), deptModel.editor().entity().get().primaryKey());
+
+		deptModel.editor().delete(singletonList(dept));
+	}
+
+	@Test
 	public void onInsert() throws EntityValidationException {
 		T deptModel = createDepartmentTableModel();
 		deptModel.items().refresh();
