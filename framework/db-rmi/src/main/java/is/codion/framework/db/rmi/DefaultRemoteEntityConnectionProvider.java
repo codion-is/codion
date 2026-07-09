@@ -52,7 +52,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.lang.reflect.InvocationHandler.invokeDefault;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
@@ -192,6 +194,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		private static final String ITERATOR = "iterator";
 		private static final String CACHE_QUERIES = "cacheQueries";
 		private static final String SELECT = "select";
+		private static final String SELECT_SINGLE = "selectSingle";
 
 		private final Map<Method, Method> methodCache = new HashMap<>();
 		private final RemoteEntityConnection remoteConnection;
@@ -220,10 +223,18 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 			}
 			//a cache hit is served here, without a round-trip to the server
 			Select cacheKey = cacheKey(methodName, args);
+			boolean singleResult = cacheKey != null && singleResult(methodName, args);
 			if (cacheKey != null) {
 				List<Entity> cached = queryCache.cached.get(cacheKey);
 				if (cached != null) {
-					return cached;
+					if (!singleResult) {
+						return cached;
+					}
+					if (cached.size() == 1) {
+						return cached.get(0);
+					}
+					//zero or multiple rows cached, forward and let the server throw
+					//EntityNotFoundException/MultipleEntitiesFoundException with its own messages
 				}
 			}
 
@@ -236,6 +247,12 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 				if (cacheKey != null) {
 					//the cached result is shared by every hit, immutable entities in an unmodifiable
 					//list keep a single caller from modifying what the next one receives
+					if (singleResult) {
+						Entity entity = ((Entity) result).immutable();
+						queryCache.cached.put(cacheKey, singletonList(entity));
+
+						return entity;
+					}
 					List<Entity> cached = immutable((List<Entity>) result);
 					queryCache.cached.put(cacheKey, cached);
 
@@ -267,7 +284,8 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		 * or no query cache is active
 		 */
 		private @Nullable Select cacheKey(String methodName, Object @Nullable [] args) {
-			if (queryCache == null || !methodName.equals(SELECT) || args == null || args.length != 1) {
+			if (queryCache == null || args == null || args.length != 1
+							|| (!methodName.equals(SELECT) && !methodName.equals(SELECT_SINGLE))) {
 				return null;
 			}
 			Select select = null;
@@ -277,8 +295,19 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 			else if (args[0] instanceof Condition) {
 				select = where((Condition) args[0]).build();
 			}
+			else if (args[0] instanceof Entity.Key) {
+				//select(Key) is selectSingle(key(key)) in the local and http tiers, share their cache key
+				select = where(key((Entity.Key) args[0])).build();
+			}
 
 			return select == null || select.forUpdate() ? null : select;
+		}
+
+		/**
+		 * @return true if the given invocation returns a single Entity rather than a List
+		 */
+		private static boolean singleResult(String methodName, Object[] args) {
+			return methodName.equals(SELECT_SINGLE) || args[0] instanceof Entity.Key;
 		}
 
 		private static List<Entity> immutable(List<Entity> entities) {
