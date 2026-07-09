@@ -37,6 +37,7 @@ Codion Change Log
 - RemoteEntityConnection client-side query cache now also serves selectSingle(Condition)/selectSingle(Select) and select(Key), sharing cache entries with the equivalent select(), consistent with the local and http tiers where these all route through select(Select).
 ### is.codion.framework.db.http
 - HTTP query caching moved client-side, a cache hit no longer costs a round-trip. The setQueryCacheEnabled/isQueryCacheEnabled requests are removed.
+- HttpEntityConnection message bundle key many_records_found renamed multiple_records_found, matching the LocalEntityConnection sibling and the MultipleEntitiesFoundException it populates. The English message is aligned with it as well.
 ### is.codion.framework.servlet
 - EntityService, the isQueryCacheEnabled and setQueryCacheEnabled routes (serial and json) removed, query caching is a client-side concern.
 ### is.codion.framework.model

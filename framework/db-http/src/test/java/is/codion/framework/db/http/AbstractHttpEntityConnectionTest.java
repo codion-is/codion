@@ -26,6 +26,8 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
+import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
 import is.codion.framework.domain.entity.Entity;
@@ -358,6 +360,18 @@ abstract class AbstractHttpEntityConnectionTest {
 		Entity employee = connection.selectSingle(Employee.ID.equalTo(5));
 		assertNotNull(employee.get(Employee.DEPARTMENT_FK));
 		assertNotNull(employee.get(Employee.MGR_FK));
+	}
+
+	@Test
+	void selectSingleMessages() {
+		//a missing message bundle key silently resolves to "!key!", assert the messages actually resolve
+		EntityNotFoundException notFound = assertThrows(EntityNotFoundException.class,
+						() -> connection.selectSingle(Employee.ID.equalTo(-1)));
+		assertFalse(notFound.getMessage().startsWith("!"), notFound.getMessage());
+
+		MultipleEntitiesFoundException multipleFound = assertThrows(MultipleEntitiesFoundException.class,
+						() -> connection.selectSingle(Employee.JOB.equalTo("MANAGER")));
+		assertFalse(multipleFound.getMessage().startsWith("!"), multipleFound.getMessage());
 	}
 
 	@Test

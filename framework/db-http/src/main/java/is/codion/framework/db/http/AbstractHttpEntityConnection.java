@@ -184,7 +184,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			throw new EntityNotFoundException(MESSAGES.getString("record_not_found"));
 		}
 		if (selected.size() > 1) {
-			throw new MultipleEntitiesFoundException(MESSAGES.getString("many_records_found"));
+			throw new MultipleEntitiesFoundException(MESSAGES.getString("multiple_records_found"));
 		}
 
 		return selected.get(0);
