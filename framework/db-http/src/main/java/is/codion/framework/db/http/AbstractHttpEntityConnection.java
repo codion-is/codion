@@ -43,7 +43,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.common.utilities.Serializer.deserialize;
@@ -55,6 +57,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
@@ -81,6 +84,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	protected final String[] headers;
 
 	private boolean closed;
+	private @Nullable HttpQueryCache queryCache;
 
 	/**
 	 * Instantiates a new {@link DefaultHttpEntityConnection} instance
@@ -203,6 +207,57 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	@Override
 	public final List<Entity> select(Condition condition) {
 		return select(Select.where(condition).build());
+	}
+
+	@Override
+	public final QueryCache cacheQueries() {
+		synchronized (transport) {
+			if (queryCache != null) {
+				throw new IllegalStateException("A query cache is already active on this connection");
+			}
+
+			return queryCache = new HttpQueryCache();
+		}
+	}
+
+	/**
+	 * For use by {@link #select(Select)} implementations, must be called while holding the transport lock.
+	 * @param select the select
+	 * @return the cached result or null if absent, no cache is active or the select is for update
+	 */
+	protected final @Nullable List<Entity> cachedResult(Select select) {
+		HttpQueryCache cache = queryCache;
+		if (cache != null && !select.forUpdate()) {
+			return cache.cached.get(select);
+		}
+
+		return null;
+	}
+
+	/**
+	 * For use by {@link #select(Select)} implementations, must be called while holding the transport lock.
+	 * @param select the select
+	 * @param result the result to cache
+	 * @return the cached (immutable) result if it was cached, otherwise the given result
+	 */
+	protected final List<Entity> cacheResult(Select select, List<Entity> result) {
+		HttpQueryCache cache = queryCache;
+		if (cache != null && !select.forUpdate()) {
+			//the cached result is shared by every hit, immutable entities in an unmodifiable
+			//list keep a single caller from modifying what the next one receives
+			List<Entity> cached = immutable(result);
+			cache.cached.put(select, cached);
+
+			return cached;
+		}
+
+		return result;
+	}
+
+	private static List<Entity> immutable(List<Entity> entities) {
+		return entities.stream()
+						.map(Entity::immutable)
+						.collect(toUnmodifiableList());
 	}
 
 	@Override
@@ -375,6 +430,21 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	private static String createAuthorizationHeader(User user) {
 		return BASIC + Base64.getEncoder().encodeToString((user.username() + ":" + String.valueOf(user.password())).getBytes());
+	}
+
+	private final class HttpQueryCache implements QueryCache {
+
+		private final Map<Select, List<Entity>> cached = new HashMap<>();
+
+		@Override
+		public void close() {
+			synchronized (transport) {
+				cached.clear();
+				if (queryCache == this) {
+					queryCache = null;
+				}
+			}
+		}
 	}
 
 	static final class DefaultBuilder implements Builder {

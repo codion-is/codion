@@ -73,31 +73,6 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		}
 	}
 
-	@Override
-	public void cacheQueries(boolean queryCache) {
-		synchronized (transport) {
-			try {
-				handleResponse(execute(createJsonRequest("setQueryCacheEnabled",
-								objectMapper.writeValueAsString(queryCache))));
-			}
-			catch (Exception exception) {
-				throw handleException(exception);
-			}
-		}
-	}
-
-	@Override
-	public boolean cacheQueries() {
-		synchronized (transport) {
-			try {
-				return handleJsonResponse(execute(createJsonRequest("isQueryCacheEnabled")),
-								objectMapper, Boolean.class);
-			}
-			catch (Exception exception) {
-				throw handleException(exception);
-			}
-		}
-	}
 
 	@Override
 	public Collection<Entity.Key> insert(Collection<Entity> entities) {
@@ -234,9 +209,13 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	public List<Entity> select(Select select) {
 		requireNonNull(select);
 		synchronized (transport) {
+			List<Entity> cached = cachedResult(select);
+			if (cached != null) {
+				return cached;
+			}
 			try {
-				return handleJsonResponse(execute(createJsonRequest("select",
-								objectMapper.writeValueAsString(select))), objectMapper, ENTITY_LIST_REFERENCE);
+				return cacheResult(select, handleJsonResponse(execute(createJsonRequest("select",
+								objectMapper.writeValueAsString(select))), objectMapper, ENTITY_LIST_REFERENCE));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);

@@ -196,22 +196,31 @@ public interface EntityConnection extends AutoCloseable {
 	void commitTransaction();
 
 	/**
-	 * Controls the enabled state of the query result cache.
-	 * Queries are cached on a {@link Select}
-	 * basis, but never when selecting for update.
-	 * The cache is cleared when disabled.
-	 * <p>Note that cached results are shared as-is and are not invalidated by writes or rollbacks on the connection,
-	 * so a cached result may reflect data that has since been modified or rolled back. Intended for short, scoped
-	 * populate operations rather than long-lived connections.
-	 * @param queryCache true to turn on the query cache, false to clear and disable the cache
+	 * Enables query result caching on this connection until the returned {@link QueryCache} is closed.
+	 * <p>While active, entity select results are cached and identical selects (by {@link Select} equality)
+	 * return the cached result. Intended for short-lived, read-only scopes, such as application or model
+	 * initialization, where the same lookup entities would otherwise be selected repeatedly:
+	 * {@snippet :
+	 * try (QueryCache cache = connection.cacheQueries()) {
+	 *   // initialize application models
+	 * }
+	 *}
+	 * <p><b>Contract:</b>
+	 * <ul>
+	 * <li>Cached results are shared instances, the same {@code List} is returned for every cache hit.
+	 *     The list is unmodifiable and its entities are {@link Entity#immutable() immutable}, along with
+	 *     their foreign key references, so that no caller can modify what the next one receives.
+	 *     Use {@link Entity#copy()}{@code .mutable()} to obtain a modifiable copy.
+	 * <li>The cache is <b>not</b> invalidated by inserts, updates, deletes or transaction rollback on this
+	 *     connection, a select performed inside a transaction and cached may represent uncommitted or
+	 *     rolled-back data.
+	 * <li>{@link Select#forUpdate()} selects always bypass the cache and return mutable entities.
+	 * <li>Scopes do not nest, calling this method while a cache is active throws {@link IllegalStateException}.
+	 * </ul>
+	 * @return a new active {@link QueryCache}
+	 * @throws IllegalStateException in case a query cache is already active
 	 */
-	void cacheQueries(boolean queryCache);
-
-	/**
-	 * @return true if the query cache is enabled
-	 * @see #cacheQueries(boolean)
-	 */
-	boolean cacheQueries();
+	QueryCache cacheQueries();
 
 	/**
 	 * Executes the function with the given type with no parameter
@@ -817,6 +826,17 @@ public interface EntityConnection extends AutoCloseable {
 	 */
 	static BatchInsert.Builder batchInsert(EntityConnection connection, Iterator<Entity> entities) {
 		return new DefaultBatchInsert.DefaultBuilder(connection, entities);
+	}
+
+	/**
+	 * A scoped query cache. Closing clears the cache and disables caching.
+	 * Closing an already closed instance has no effect.
+	 * @see EntityConnection#cacheQueries()
+	 */
+	interface QueryCache extends AutoCloseable {
+
+		@Override
+		void close();
 	}
 
 	/**

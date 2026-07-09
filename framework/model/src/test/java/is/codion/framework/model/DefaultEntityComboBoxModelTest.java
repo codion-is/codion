@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -531,5 +532,48 @@ public final class DefaultEntityComboBoxModelTest {
 		assertTrue(model.items().contains(null));
 		assertEquals("-", model.selectedItem().toString());
 		assertNull(model.selection().item().get());
+	}
+
+	@Test
+	void refreshWithinQueryCacheScope() {
+		// The query cache's motivating scenario: several combo box models over the same
+		// lookup entities, initialized in one scope, selecting identical rows.
+		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityComboBoxModel departments = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
+		EntityComboBoxModel moreDepartments = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
+
+		try (QueryCache cache = connection.cacheQueries()) {
+			departments.items().refresh();
+			moreDepartments.items().refresh();
+		}
+
+		Entity department = departments.items().get().stream()
+						.filter(Objects::nonNull)
+						.findFirst()
+						.orElseThrow(IllegalStateException::new);
+
+		// cached entities reach the model layer immutable
+		assertFalse(department.mutable());
+
+		// selecting one and using it as a foreign key value on a mutable entity works
+		departments.selection().item().set(department);
+		Entity employee = ENTITIES.entity(Employee.TYPE)
+						.with(Employee.NAME, "Name")
+						.with(Employee.DEPARTMENT_FK, department)
+						.build();
+		assertTrue(employee.mutable());
+		assertEquals(department, employee.get(Employee.DEPARTMENT_FK));
+
+		// and the model still refreshes normally outside the scope, with mutable entities
+		departments.items().refresh();
+		assertTrue(departments.items().get().stream()
+						.filter(Objects::nonNull)
+						.allMatch(Entity::mutable));
 	}
 }

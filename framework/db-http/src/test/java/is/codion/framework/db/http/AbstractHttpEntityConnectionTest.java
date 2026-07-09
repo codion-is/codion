@@ -23,6 +23,8 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.report.Report;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.QueryCache;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
@@ -360,10 +362,36 @@ abstract class AbstractHttpEntityConnectionTest {
 
 	@Test
 	void cacheQueries() {
-		connection.cacheQueries(true);
-		assertTrue(connection.cacheQueries());
-		connection.cacheQueries(false);
-		assertFalse(connection.cacheQueries());
+		try (QueryCache cache = connection.cacheQueries()) {
+			assertThrows(IllegalStateException.class, connection::cacheQueries);//scopes do not nest
+
+			//a cache hit returns the identical List instance, a round-trip would deserialize a new one
+			List<Entity> result = connection.select(Department.ID.greaterThanOrEqualTo(20L));
+			assertSame(result, connection.select(Department.ID.greaterThanOrEqualTo(20L)));
+			//select(Condition) and the equivalent select(Select) share the cache key
+			assertSame(result, connection.select(Select.where(Department.ID.greaterThanOrEqualTo(20L)).build()));
+
+			//a cached result is shared by every hit, so it is handed out as
+			//immutable entities in an unmodifiable list
+			assertThrows(UnsupportedOperationException.class, () -> result.add(null));
+			Entity department = result.get(0);
+			assertFalse(department.mutable());
+			assertThrows(UnsupportedOperationException.class, () -> department.set(Department.NAME, "MODIFIED"));
+
+			//forUpdate selects bypass the cache and return mutable entities
+			Select forUpdate = Select.where(Department.ID.greaterThanOrEqualTo(20L))
+							.forUpdate()
+							.build();
+			assertNotSame(connection.select(forUpdate), connection.select(forUpdate));
+			assertTrue(connection.select(forUpdate).get(0).mutable());
+
+			cache.close();
+			cache.close();//close is idempotent
+		}
+
+		//the cache is cleared and caching disabled on close, each select round-trips again
+		assertNotSame(connection.select(Department.ID.greaterThanOrEqualTo(20L)),
+						connection.select(Department.ID.greaterThanOrEqualTo(20L)));
 	}
 
 	@Test

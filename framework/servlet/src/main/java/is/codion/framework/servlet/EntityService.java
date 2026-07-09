@@ -197,8 +197,6 @@ public final class EntityService implements AuxiliaryServer {
 	private final CommitTransactionHandler commitTransactionHandler = new CommitTransactionHandler();
 	private final RollbackTransactionHandler rollbackTransactionHandler = new RollbackTransactionHandler();
 	private final IsTransactionOpenHandler isTransactionOpenHandler = new IsTransactionOpenHandler();
-	private final IsQueryCacheEnabledHandler isQueryCacheEnabledHandler = new IsQueryCacheEnabledHandler();
-	private final SetQueryCacheEnabledHandler setQueryCacheEnabledHandler = new SetQueryCacheEnabledHandler();
 	private final SelectHandler selectHandler = new SelectHandler();
 	private final SelectByKeyHandler selectByKeyHandler = new SelectByKeyHandler();
 	private final InsertHandler insertHandler = new InsertHandler();
@@ -349,60 +347,6 @@ public final class EntityService implements AuxiliaryServer {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.commitTransaction();
-				context.status(HttpStatus.OK_200);
-			}
-			catch (Exception e) {
-				handleException(context, e);
-			}
-		}
-	}
-
-	private final class IsQueryCacheEnabledHandler {
-
-		private void serial(Context context) {
-			try {
-				RemoteEntityConnection connection = authenticate(context);
-				context.status(HttpStatus.OK_200)
-								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(serialize(connection.cacheQueries()));
-			}
-			catch (Exception e) {
-				handleException(context, e);
-			}
-		}
-
-		private void json(Context context) {
-			try {
-				RemoteEntityConnection connection = authenticate(context);
-				ObjectMapper objectMapper = objectMapper(connection.entities());
-				context.status(HttpStatus.OK_200)
-								.contentType(ContentType.APPLICATION_JSON)
-								.result(objectMapper.writeValueAsString(connection.cacheQueries()));
-			}
-			catch (Exception e) {
-				handleException(context, e);
-			}
-		}
-	}
-
-	private final class SetQueryCacheEnabledHandler {
-
-		private void serial(Context context) {
-			try {
-				RemoteEntityConnection connection = authenticate(context);
-				connection.cacheQueries(deserialize(context.req()));
-				context.status(HttpStatus.OK_200);
-			}
-			catch (Exception e) {
-				handleException(context, e);
-			}
-		}
-
-		private void json(Context context) {
-			try {
-				RemoteEntityConnection connection = authenticate(context);
-				ObjectMapper objectMapper = objectMapper(connection.entities());
-				connection.cacheQueries(objectMapper.readValue(context.req().getInputStream(), Boolean.class));
 				context.status(HttpStatus.OK_200);
 			}
 			catch (Exception e) {
@@ -951,8 +895,6 @@ public final class EntityService implements AuxiliaryServer {
 			config.routes.post(URL_SERIAL + "startTransaction", startTransactionHandler::serial);
 			config.routes.post(URL_SERIAL + "rollbackTransaction", rollbackTransactionHandler::serial);
 			config.routes.post(URL_SERIAL + "commitTransaction", commitTransactionHandler::serial);
-			config.routes.post(URL_SERIAL + "isQueryCacheEnabled", isQueryCacheEnabledHandler::serial);
-			config.routes.post(URL_SERIAL + "setQueryCacheEnabled", setQueryCacheEnabledHandler::serial);
 			config.routes.post(URL_SERIAL + "procedure", procedureHandler::serial);
 			config.routes.post(URL_SERIAL + "function", functionHandler::serial);
 			config.routes.post(URL_SERIAL + "report", reportHandler::serial);
@@ -980,8 +922,6 @@ public final class EntityService implements AuxiliaryServer {
 			config.routes.post(URL_JSON + "startTransaction", startTransactionHandler::serial);
 			config.routes.post(URL_JSON + "rollbackTransaction", rollbackTransactionHandler::serial);
 			config.routes.post(URL_JSON + "commitTransaction", commitTransactionHandler::serial);
-			config.routes.post(URL_JSON + "isQueryCacheEnabled", isQueryCacheEnabledHandler::json);
-			config.routes.post(URL_JSON + "setQueryCacheEnabled", setQueryCacheEnabledHandler::json);
 			config.routes.post(URL_JSON + "procedure", procedureHandler::json);
 			config.routes.post(URL_JSON + "function", functionHandler::json);
 			config.routes.post(URL_JSON + "report", reportHandler::json);

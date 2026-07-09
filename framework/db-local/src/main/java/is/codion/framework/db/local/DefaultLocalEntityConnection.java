@@ -125,7 +125,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private final Map<EntityType, List<Column<?>>> lazyColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ForeignKeyDefinition>> hardForeignKeyReferenceCache = new HashMap<>();
 	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableSelectedColumnsCache = new HashMap<>();
-	private final Map<Select, List<Entity>> queryCache = new HashMap<>();
 
 	private MethodTracer tracer = MethodTracer.NO_OP;
 
@@ -133,8 +132,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private boolean limitReferenceDepth = LIMIT_REFERENCE_DEPTH.getOrThrow();
 	private int iteratorBufferSize = ITERATOR_BUFFER_SIZE.getOrThrow();
 	private int queryTimeout = QUERY_TIMEOUT.getOrThrow();
-	private boolean cacheQueries = false;
 
+	private @Nullable DefaultQueryCache queryCache;
 	private @Nullable Connection connection;
 	private boolean transactionOpen = false;
 
@@ -270,19 +269,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public void cacheQueries(boolean cacheQueries) {
+	public QueryCache cacheQueries() {
 		synchronized (lock) {
-			this.cacheQueries = cacheQueries;
-			if (!cacheQueries) {
-				queryCache.clear();
+			if (queryCache != null) {
+				throw new IllegalStateException("A query cache is already active on this connection");
 			}
-		}
-	}
 
-	@Override
-	public boolean cacheQueries() {
-		synchronized (lock) {
-			return cacheQueries;
+			return queryCache = new DefaultQueryCache();
 		}
 	}
 
@@ -1635,20 +1628,33 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private @Nullable List<Entity> cachedResult(Select select) {
-		if (cacheQueries && !select.forUpdate()) {
-			return queryCache.get(select);
+		DefaultQueryCache cache = queryCache;
+		if (cache != null && !select.forUpdate()) {
+			return cache.cached.get(select);
 		}
 
 		return null;
 	}
 
 	private List<Entity> cacheResult(Select select, List<Entity> result) {
-		if (cacheQueries && !select.forUpdate()) {
+		DefaultQueryCache cache = queryCache;
+		if (cache != null && !select.forUpdate()) {
 			LOG.debug("Caching result for select {}, size {}", select, result.size());
-			queryCache.put(select, result);
+			//the cached result is shared by every hit, immutable entities in an unmodifiable
+			//list keep a single caller from modifying what the next one receives
+			List<Entity> cached = immutable(result);
+			cache.cached.put(select, cached);
+
+			return cached;
 		}
 
 		return result;
+	}
+
+	private static List<Entity> immutable(List<Entity> entities) {
+		return entities.stream()
+						.map(Entity::immutable)
+						.collect(toUnmodifiableList());
 	}
 
 	private static @Nullable Entity entity(@Nullable Key key, Map<Key, Entity> entityKeyMap) {
@@ -1893,6 +1899,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	 * Note that this is per-connection, connections do not synchronize against each other.
 	 */
 	private static final class Lock {}
+
+	private final class DefaultQueryCache implements QueryCache {
+
+		private final Map<Select, List<Entity>> cached = new HashMap<>();
+
+		@Override
+		public void close() {
+			synchronized (lock) {
+				cached.clear();
+				if (queryCache == this) {
+					queryCache = null;
+				}
+			}
+		}
+	}
 
 	private static final class DatabaseConfiguration {
 

@@ -168,45 +168,6 @@ public class EntityServiceTest {
 	}
 
 	@Test
-	void setQueryCacheEnabled() throws Exception {
-		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("setQueryCacheEnabled",
-						BodyPublishers.ofByteArray(Serializer.serialize(true))), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-
-		response = HTTP_CLIENT.send(createRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-		boolean value = Serializer.deserialize(response.body());
-		assertTrue(value);
-
-		response = HTTP_CLIENT.send(createRequest("setQueryCacheEnabled",
-						BodyPublishers.ofByteArray(Serializer.serialize(false))), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-
-		response = HTTP_CLIENT.send(createRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-		value = Serializer.deserialize(response.body());
-		assertFalse(value);
-
-		response = HTTP_CLIENT.send(createJsonRequest("setQueryCacheEnabled",
-						BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(true))), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-
-		response = HTTP_CLIENT.send(createJsonRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-		value = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), Boolean.class);
-		assertTrue(value);
-
-		response = HTTP_CLIENT.send(createJsonRequest("setQueryCacheEnabled",
-						BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(false))), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-
-		response = HTTP_CLIENT.send(createJsonRequest("isQueryCacheEnabled"), BodyHandlers.ofByteArray());
-		assertEquals(OK, response.statusCode());
-		value = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), Boolean.class);
-		assertFalse(value);
-	}
-
-	@Test
 	void procedure() throws Exception {
 		JsonNodeFactory nodeFactory = OBJECT_MAPPER.getNodeFactory();
 		ObjectNode request = OBJECT_MAPPER.createObjectNode();
