@@ -217,7 +217,7 @@ is/codion/framework/db/http/HttpEntityConnection_is_IS.properties
 |===
 |key|default|is_IS
 
-|many_records_found|Many records found when one was expected|Margar færslur fundust þegar einungis var gert ráð fyrir einni
+|multiple_records_found|Multiple records found when one was expected|Margar færslur fundust þegar einungis var gert ráð fyrir einni
 |record_not_found|Record not found|Engin færsla fannst
 |===
 
