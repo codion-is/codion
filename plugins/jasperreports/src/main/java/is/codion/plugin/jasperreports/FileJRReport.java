@@ -46,6 +46,9 @@ final class FileJRReport extends AbstractJRReport {
 
 			return (JasperReport) JRLoader.loadObject(reportFile);
 		}
+		catch (ReportException e) {
+			throw e;
+		}
 		catch (Exception e) {
 			throw new ReportException(e);
 		}

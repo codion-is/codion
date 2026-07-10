@@ -40,7 +40,7 @@ public final class TestDomainExtended extends DomainModel {
 
 	public static final ProcedureType<?, ?> PROC_TYPE = ProcedureType.procedureType("proc");
 	public static final FunctionType<Object, Object, Object> FUNC_TYPE = FunctionType.functionType("func");
-	public static final ReportType<Object, Object, Object> REP_TYPE = ReportType.reportType("rep");
+	public static final ReportType<Object, Object> REP_TYPE = ReportType.reportType("rep");
 
 	public TestDomainExtended() {
 		this(DOMAIN);

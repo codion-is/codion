@@ -18,6 +18,7 @@
  */
 package is.codion.demos.employees.domain;
 
+import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.framework.domain.DomainModel;
@@ -27,13 +28,15 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.plugin.jasperreports.JRReportType;
-import is.codion.plugin.jasperreports.JasperReports;
+
+import net.sf.jasperreports.engine.JasperPrint;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
+import static is.codion.common.db.report.ReportType.reportType;
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -80,7 +83,7 @@ public final class Employees extends DomainModel {
 		// Attribute for the denormalized department location property
 		Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
-		JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
+		ReportType<Map<String, Object>, JasperPrint> EMPLOYEE_REPORT = reportType("employee_report");
 
 		// Constants for the allowed JOB values
 		int PRESIDENT = 1;

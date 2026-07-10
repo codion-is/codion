@@ -56,7 +56,7 @@ public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
-	public static final ReportType<Object, Map<String, Object>, String> REPORT = ReportType.reportType("report");
+	public static final ReportType<Map<String, Object>, String> REPORT = ReportType.reportType("report");
 
 	public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 	public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");

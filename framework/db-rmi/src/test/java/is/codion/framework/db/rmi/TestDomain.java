@@ -43,7 +43,7 @@ public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
-	public static final ReportType<Object, String, String> REPORT = ReportType.reportType("report");
+	public static final ReportType<String, String> REPORT = ReportType.reportType("report");
 
 	public TestDomain() {
 		super(DOMAIN);

@@ -21,11 +21,14 @@ package is.codion.common.db.report;
 /**
  * Identifies a report.
  * A factory for {@link ReportType} instances.
- * @param <T> the report type
+ * <p>Note that a report type identifies a report by name alone, it says nothing of the reporting
+ * engine backing it. The type of the loaded report object, {@link Report}'s {@code T}, is an
+ * implementation detail of the {@link Report} the report type is registered with, so a client
+ * naming a report type never depends on the engine.
  * @param <P> the report parameters type
  * @param <R> the report result type
  */
-public interface ReportType<T, P, R> {
+public interface ReportType<P, R> {
 
 	/**
 	 * @return the report name
@@ -35,12 +38,11 @@ public interface ReportType<T, P, R> {
 	/**
 	 * Instantiates a new ReportType instance with the given name.
 	 * @param name the report name
-	 * @param <T> the report type
 	 * @param <P> the report parameters type
 	 * @param <R> the report result type
 	 * @return a report type
 	 */
-	static <T, P, R> ReportType<T, P, R> reportType(String name) {
+	static <P, R> ReportType<P, R> reportType(String name) {
 		return new DefaultReportType<>(name);
 	}
 }

@@ -99,7 +99,7 @@ public final class TestDomain extends DomainModel {
 		ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
 		ConditionType MGR_CONDITION_TYPE = TYPE.conditionType("mgrConditionType");
-		ReportType<Object, Object, Object> EMP_REPORT = ReportType.reportType("emp_report");
+		ReportType<Object, Object> EMP_REPORT = ReportType.reportType("emp_report");
 		FunctionType<EntityConnection, Object, Object> FUNC = FunctionType.functionType("emp_func");
 	}
 

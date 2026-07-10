@@ -322,7 +322,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	@Override
-	public <T, P, R> R report(ReportType<T, P, R> reportType, P parameter) {
+	public <P, R> R report(ReportType<P, R> reportType, P parameter) {
 		requireNonNull(reportType);
 		synchronized (transport) {
 			try {

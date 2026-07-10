@@ -168,7 +168,7 @@ public final class TestDomain extends DomainModel {
 		add(FUNCTION, (connection, objects) -> asList(1, 2, 3));
 	}
 
-	public static final ReportType<Object, String, String> REPORT = ReportType.reportType("test");
+	public static final ReportType<String, String> REPORT = ReportType.reportType("test");
 
 	void report() {
 		add(REPORT, new AbstractReport<Object, String, String>("report.path", false) {

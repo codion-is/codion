@@ -29,10 +29,8 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.plugin.jasperreports.JasperReports;
 
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -66,8 +64,8 @@ public final class Store extends DomainModel {
 		Column<String> EMAIL = TYPE.stringColumn("email");
 		Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
 
-		ReportType<JasperReport, Map<String, Object>, JasperPrint> REPORT =
-						JasperReports.reportType("customer_report");
+		ReportType<Map<String, Object>, JasperPrint> REPORT =
+						ReportType.reportType("customer_report");
 	}
 
 	public interface CustomerAddress {

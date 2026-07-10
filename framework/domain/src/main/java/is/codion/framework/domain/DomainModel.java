@@ -76,7 +76,7 @@ public abstract class DomainModel implements Domain {
 	}
 
 	@Override
-	public final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports() {
+	public final Map<ReportType<?, ?>, Report<?, ?, ?>> reports() {
 		return unmodifiableMap(domainReports.reports);
 	}
 
@@ -91,8 +91,8 @@ public abstract class DomainModel implements Domain {
 	}
 
 	@Override
-	public final <T, P, R> Report<T, P, R> report(ReportType<T, P, R> reportType) {
-		Report<T, P, R> report = domainReports.report(reportType);
+	public final <P, R> Report<?, P, R> report(ReportType<P, R> reportType) {
+		Report<?, P, R> report = domainReports.report(reportType);
 		if (report == null) {
 			throw new IllegalArgumentException("Undefined report: " + reportType);
 		}
@@ -124,13 +124,13 @@ public abstract class DomainModel implements Domain {
 	 * Adds a report to this domain model.
 	 * @param reportType the report to add
 	 * @param report the actual report to associate with the report type
-	 * @param <T> the report type
+	 * @param <T> the type of the loaded report object
 	 * @param <P> the report parameters type
 	 * @param <R> the report result type
 	 * @throws RuntimeException in case loading the report failed
 	 * @throws IllegalArgumentException in case the report has already been added
 	 */
-	protected final <T, P, R> void add(ReportType<T, P, R> reportType, Report<T, P, R> report) {
+	protected final <T, P, R> void add(ReportType<P, R> reportType, Report<T, P, R> report) {
 		domainReports.addReport(reportType, report);
 	}
 
@@ -300,9 +300,9 @@ public abstract class DomainModel implements Domain {
 
 	private static final class DomainReports {
 
-		private final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports = new HashMap<>();
+		private final Map<ReportType<?, ?>, Report<?, ?, ?>> reports = new HashMap<>();
 
-		private <T, P, R> void addReport(ReportType<T, P, R> reportType, Report<T, P, R> report) {
+		private <T, P, R> void addReport(ReportType<P, R> reportType, Report<T, P, R> report) {
 			if (reports.containsKey(requireNonNull(reportType))) {
 				throw new IllegalArgumentException("Report has already been defined: " + reportType);
 			}
@@ -310,8 +310,8 @@ public abstract class DomainModel implements Domain {
 			reports.put(reportType, report);
 		}
 
-		private <T, P, R> Report<T, P, R> report(ReportType<T, P, R> reportType) {
-			return (Report<T, P, R>) reports.get(requireNonNull(reportType));
+		private <P, R> Report<?, P, R> report(ReportType<P, R> reportType) {
+			return (Report<?, P, R>) reports.get(requireNonNull(reportType));
 		}
 	}
 }

@@ -27,5 +27,13 @@ import java.util.Map;
 
 /**
  * A JasperReport.
+ * <p>Identified by a plain {@link is.codion.common.db.report.ReportType}, created via
+ * {@link is.codion.common.db.report.ReportType#reportType(String)}, since a report type names
+ * a report and says nothing of the engine backing it:
+ * {@snippet :
+ * ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("customer_report");
+ *
+ * add(REPORT, classPathReport(Store.class, "customer_report.jasper"));
+ *}
  */
 public interface JRReport extends Report<JasperReport, Map<String, Object>, JasperPrint> {}
