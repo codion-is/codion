@@ -21,6 +21,9 @@ package is.codion.plugin.jasperreports;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.util.JRSaver;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Exports a filled report.
@@ -56,6 +59,32 @@ public interface JRExport<R> {
 	 * JasperReports type, serialized when the report is filled through a remote connection.
 	 */
 	JRExport<JasperPrint> PRINT = print -> print;
+
+	/**
+	 * Serializes the filled report to bytes, reconstructed with {@link JasperReports#loadPrint(byte[])}.
+	 * <p>The {@link JasperPrint} itself, unlike {@link #PRINT}, but carried as a {@code byte[]}, which any
+	 * connection transfers, a JSON one included, where a {@link JasperPrint} cannot go. A client with the
+	 * reporting engine, one displaying reports with a {@code JRViewer}, can therefore keep filling them to
+	 * a {@link JasperPrint} over any connection, reconstructing it from the bytes:
+	 * {@snippet :
+	 * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report");
+	 *
+	 * add(REPORT, export(classPathReport(Store.class, "customer_report.jasper"), SERIALIZED));
+	 *
+	 * //client side, with the engine on hand
+	 * JasperPrint print = loadPrint(connection.report(REPORT, parameters));
+	 *}
+	 * <p>The bytes are the report's own Java serialization, so a client reconstructing them needs the
+	 * {@code net.sf.jasperreports.engine.**} classes allowed by any deserialization filter it applies,
+	 * the same classes a server loading a {@code .jasper} file needs.
+	 * @see JasperReports#loadPrint(byte[])
+	 */
+	JRExport<byte[]> SERIALIZED = print -> {
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		JRSaver.saveObject(print, bytes);
+
+		return bytes.toByteArray();
+	};
 
 	/**
 	 * Exports to PDF.

@@ -211,6 +211,32 @@ public class JasperReportsTest {
 	}
 
 	@Test
+	void serializedRoundTrips() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+
+		//the filled report itself, carried as bytes, reconstructed with the engine on hand
+		byte[] bytes = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.SERIALIZED)
+						.fill(connection.connection(), reportParameters);
+		JasperPrint reconstructed = JasperReports.loadPrint(bytes);
+
+		JasperPrint direct = Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters);
+		assertEquals(direct.getName(), reconstructed.getName());
+		assertEquals(direct.getPages().size(), reconstructed.getPages().size());
+	}
+
+	@Test
+	void loadPrintInvalidBytes() {
+		//a client side reconstruction, its failure crosses no wire, so the cause is kept
+		ReportException exception = assertThrows(ReportException.class,
+						() -> JasperReports.loadPrint(new byte[] {1, 2, 3}));
+		assertNotNull(exception.getCause());
+	}
+
+	@Test
 	void exportFailure() {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);

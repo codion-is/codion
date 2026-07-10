@@ -45,6 +45,7 @@ public final class TestDomain extends DomainModel {
 		department();
 		employee();
 		add(Employee.PDF_REPORT, export(Employee.CLASS_PATH_REPORT, JRExport.PDF));
+		add(Employee.SERIALIZED_REPORT, export(Employee.CLASS_PATH_REPORT, JRExport.SERIALIZED));
 	}
 
 	public interface Department {
@@ -101,6 +102,8 @@ public final class TestDomain extends DomainModel {
 
 		//names a report and a byte[], nothing of JasperReports
 		ReportType<Map<String, Object>, byte[]> PDF_REPORT = reportType("employee_pdf");
+		//the filled report itself, carried as bytes, for a client which reconstructs it with the engine
+		ReportType<Map<String, Object>, byte[]> SERIALIZED_REPORT = reportType("employee_serialized");
 	}
 
 	void employee() {

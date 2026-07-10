@@ -24,7 +24,9 @@ import is.codion.common.db.report.ReportException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.util.JRLoader;
 
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -106,6 +108,30 @@ public final class JasperReports {
 		}
 		catch (Exception e) {
 			throw reportException(e);
+		}
+	}
+
+	/**
+	 * Reconstructs a {@link JasperPrint} from the bytes {@link JRExport#SERIALIZED} produced, for a client
+	 * receiving them from a report exported to it, letting a client with the reporting engine keep a
+	 * {@link JasperPrint} report over a connection which can not transfer one, such as a JSON one.
+	 * {@snippet :
+	 * JasperPrint print = loadPrint(connection.report(REPORT, parameters));
+	 *}
+	 * @param bytes the bytes {@link JRExport#SERIALIZED} produced
+	 * @return the reconstructed report
+	 * @throws ReportException in case of an exception
+	 * @see JRExport#SERIALIZED
+	 */
+	public static JasperPrint loadPrint(byte[] bytes) {
+		requireNonNull(bytes);
+		try {
+			return (JasperPrint) JRLoader.loadObject(new ByteArrayInputStream(bytes));
+		}
+		catch (Exception e) {
+			//the cause is kept, unlike the fill and export paths, this reconstructs the report on the
+			//client, the last step, its failure crossing no wire to a client without the engine
+			throw new ReportException(e);
 		}
 	}
 
