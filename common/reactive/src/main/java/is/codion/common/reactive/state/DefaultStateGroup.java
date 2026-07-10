@@ -92,9 +92,14 @@ final class DefaultStateGroup implements State.Group {
 		this.fallback = state;
 	}
 
+	/**
+	 * Note the snapshot, set(false) notifies the state's own listeners synchronously, one of which may leave
+	 * the group, a panel deactivated and made undisplayable doing exactly that via {@link #remove(State)}.
+	 * The live member list must not be traversed while its elements are notifying.
+	 */
 	private void disableOthers(State current) {
 		disabling = true;
-		members.stream()
+		new ArrayList<>(members).stream()
 						.filter(state -> state != current)
 						.filter(ObservableState::is)
 						.forEach(state -> state.set(false));

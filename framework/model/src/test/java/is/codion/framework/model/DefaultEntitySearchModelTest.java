@@ -317,6 +317,15 @@ public final class DefaultEntitySearchModelTest {
 
 		assertEquals(singletonList(2), notifiedSizes);
 		assertEquals(2, searchModel.selection().entities().get().size());
+
+		//the reconciled set is equal to the previous one, Entity.equals being primary key based, so this
+		//ValueSet notifies on set() rather than on change; a display consumer, the search field's text,
+		//would otherwise never see the new value
+		assertEquals("Newname", searchModel.selection().entities().get().stream()
+						.filter(entity -> entity.primaryKey().equals(one.primaryKey()))
+						.findFirst()
+						.orElseThrow()
+						.get(Employee.NAME));
 	}
 
 	@BeforeEach

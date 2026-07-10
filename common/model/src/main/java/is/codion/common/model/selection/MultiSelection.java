@@ -96,9 +96,28 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	/**
 	 * Indicates whether the subsequent selection events
 	 * should be grouped and not triggered individually
+	 * <p>Note that grouping is not reentrant, {@code adjusting(false)} ends the group whether or not it
+	 * opened one. Code which may run inside a group of its caller's making saves and restores the state:
+	 * {@snippet :
+	 * boolean wasAdjusting = selection.adjusting();
+	 * selection.adjusting(true);
+	 * try {
+	 *   // mutate the selection
+	 * }
+	 * finally {
+	 *   selection.adjusting(wasAdjusting);
+	 * }
+	 *}
 	 * @param adjusting true if subsequent selection events should be grouped
+	 * @see #adjusting()
 	 */
 	void adjusting(boolean adjusting);
+
+	/**
+	 * @return true if the subsequent selection events are being grouped
+	 * @see #adjusting(boolean)
+	 */
+	boolean adjusting();
 
 	/**
 	 * @param items the indexed items

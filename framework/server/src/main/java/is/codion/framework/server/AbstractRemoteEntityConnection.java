@@ -292,11 +292,12 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 					iterator.close();
 				}
 				catch (Exception ignored) {/*ignored*/}
-				unexportObject(this, true);
 				if (remoteIterators.remove(this)) {
-					//only the first close decrements, so double-close (client + maintenance) is safe
+					//only the first close decrements, so double-close (client + maintenance) is safe.
+					//the decrement precedes the unexport, which throws, so the count is never stranded
 					connectionHandler.iteratorClosed();
 				}
+				unexportObject(this, true);
 			}
 		}
 

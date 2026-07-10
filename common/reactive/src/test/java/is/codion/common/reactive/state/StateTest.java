@@ -163,6 +163,26 @@ public class StateTest {
 	}
 
 	@Test
+	void groupRemoveWhileDisablingOthers() {
+		State one = State.state(true);
+		State two = State.state();
+		State three = State.state();
+		State.Group group = State.group(one, two, three);
+		//a listener responding to deactivation by leaving the group, which is what a panel
+		//made undisplayable does, disableOthers must not traverse the live member list
+		one.addConsumer(active -> {
+			if (!active) {
+				group.remove(one);
+			}
+		});
+
+		assertDoesNotThrow(() -> two.set(true));
+		assertTrue(two.is());
+		assertFalse(one.is());
+		assertFalse(three.is());
+	}
+
+	@Test
 	void groupVarargsCreation() {
 		State one = State.state(true);
 		State two = State.state(true);

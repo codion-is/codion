@@ -45,9 +45,11 @@ import static java.util.stream.Collectors.toList;
  * indexes — the AWT/Swing-free counterpart to {@code DefaultListSelection}, which borrows
  * {@code javax.swing.DefaultListSelectionModel} as its engine.
  *
- * <p>A Compose implementation detail for now. If a second non-Swing client appears, this (with its
- * test) is a prime candidate for promotion into {@code codion-common-model} alongside
- * {@code MultiSelection}/{@code SingleSelection}.
+ * <p>Note that the {@link #index()}, {@link #indexes()}, {@link #item()} and {@link #items()} facades
+ * use the non-notifying {@link is.codion.common.reactive.value.AbstractValue} constructors; notification
+ * is owned by their {@code onChanged()}, which fires only when the facade's own value actually changes.
+ * A selection model must stay silent on a no-op, the framework's selection to editor linking loops
+ * infinitely otherwise.
  */
 final class DefaultMultiSelection<R> implements MultiSelection<R> {
 
@@ -131,6 +133,11 @@ final class DefaultMultiSelection<R> implements MultiSelection<R> {
 	@Override
 	public void adjusting(boolean adjusting) {
 		setAdjusting(adjusting);
+	}
+
+	@Override
+	public boolean adjusting() {
+		return adjusting;
 	}
 
 	@Override

@@ -656,6 +656,38 @@ public class DefaultFilterModelItemsTest {
 	}
 
 	@Test
+	@DisplayName("An items mutation does not terminate a group its caller opened")
+	void itemsMutationPreservesTheCallersAdjustingGroup() {
+		List<MultiSelection<String>> holder = new ArrayList<>(1);
+		Items<String> model = Items.builder()
+						.<String>refresher(i -> Refresher.<String>builder().build())
+						.selection(included -> {
+							MultiSelection<String> selection = MultiSelection.multiSelection(included);
+							holder.add(selection);
+
+							return selection;
+						})
+						.sort(new TestSort())
+						.included(new TestInclude())
+						.build();
+		MultiSelection<String> selection = holder.get(0);
+		model.add(asList("a", "b", "c"));
+		selection.index().set(1);
+
+		List<String> notifiedItems = new ArrayList<>();
+		selection.item().addConsumer(notifiedItems::add);
+
+		//a caller grouping around an items mutation, the mutation groups internally as well
+		selection.adjusting(true);
+		model.included().add(0, "z");
+		assertTrue(selection.adjusting(), "the caller's group was terminated by the mutation");
+		assertTrue(notifiedItems.isEmpty(), "the group notified while still open");
+		selection.adjusting(false);
+
+		assertEquals("b", selection.item().get());
+	}
+
+	@Test
 	@DisplayName("The selection is preserved by item across indexed insertion and removal")
 	void selectionPreservedAcrossIndexedMutations() {
 		List<MultiSelection<String>> holder = new ArrayList<>(1);
@@ -867,6 +899,8 @@ public class DefaultFilterModelItemsTest {
 		private final Value<List<String>> selectedItems = Value.nonNull(new ArrayList<String>());
 		private final State singleSelection = State.state();
 
+		private boolean adjusting;
+
 		@Override
 		public ObservableState empty() {
 			return State.state(selectedItems.get().isEmpty());
@@ -927,7 +961,14 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Override
-		public void adjusting(boolean adjusting) {}
+		public void adjusting(boolean adjusting) {
+			this.adjusting = adjusting;
+		}
+
+		@Override
+		public boolean adjusting() {
+			return adjusting;
+		}
 
 		private static class TestIndexes implements Indexes {
 			private final Value<List<Integer>> indexes = Value.nonNull(new ArrayList<Integer>());

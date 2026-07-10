@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.80
 ### is.codion.common.reactive
 - State.Group.remove(State) added, allowing a state to leave a group; DefaultStateGroup now removes the associated listener so a removed state no longer participates or is retained.
+- DefaultStateGroup.disableOthers() now snapshots the member list before traversing it. Deactivating a member notifies its listeners synchronously, one of which may leave the group, a panel made undisplayable doing exactly that, corrupting the traversal.
 ### is.codion.common.rmi
 - ServerConfiguration.builder() no longer takes port parameters, the server and registry ports are now builder methods defaulting to SERVER_PORT and REGISTRY_PORT respectively.
 - ServerConfiguration.Builder.build() now rejects a negative server port with a clear message instead of deferring to an obscure RMI error, catching a missing SERVER_PORT configuration early.
@@ -20,6 +21,10 @@ Codion Change Log
 ### is.codion.common.model
 - DefaultFilterModelItems, the selection is now preserved by item across item insertion and removal. IncludedItems.add(int, ..), IncludedItems.remove(int), IncludedItems.remove(int, int) and Items.remove(item/items/predicate) shift the indexes of the items at and after the mutation point, but left the selected indexes untouched, so the selection ended up pointing at the wrong items. Preserving by item is idempotent with respect to a view which shifts the indexes on its own, such as a JTable, so no selection is adjusted twice.
 - DefaultMultiSelection, the index(), indexes(), item() and items() facades now notify only when their own value actually changes, honoring the Notify.CHANGED contract and matching DefaultListSelection. Ending an adjustment via adjusting(false) previously notified all four unconditionally, bypassing the no-op guard in applyTarget().
+- MultiSelection.adjusting() added, a getter for the existing setter, so code which may run inside a group of its caller's making can save and restore the state rather than terminate the group.
+- DefaultFilterModelItems saves and restores the adjusting state around its own grouping, an items mutation performed inside a caller's group no longer ends it early.
+### is.codion.framework.domain
+- DerivedValue.from() javadoc now states that a derived value provider must be total, every cached derived value being computed when an entity is made immutable, not only the ones a caller reads.
 ### is.codion.framework.server
 - EntityServerConfiguration.builder() no longer takes port parameters, consistent with ServerConfiguration.builder().
 - EntityServerAdmin get/set/is accessors (maintenanceInterval, idleConnectionTimeout, logLevel, traceToFile, tracingEnabled, and the per-pool collect/cleanup/timeout/size methods) de-beanified to the house name()/name(value) style. The underlying LoggerProxy and per-connection tracing methods retain their names.
@@ -28,6 +33,7 @@ Codion Change Log
 - EntityServer, connecting with a domain type the server does not host now reports the domain and the hosted domains, instead of surfacing as "LoginException: null".
 - EntityServer.disconnectClients() now uses the connections from its own snapshot rather than re-looking each one up through the throwing accessor, which aborted the sweep when a client disconnected concurrently.
 - EntityServer, a classpath domain model overriding a service loaded one is now logged.
+- AbstractRemoteEntityConnection, a remote iterator's close() now decrements the open iterator count before unexporting the iterator, which throws when it has already been unexported, previously stranding the count.
 ### is.codion.framework.db.core
 - EntityConnection.cacheQueries(boolean) and the cacheQueries() getter replaced with a scoped, AutoCloseable EntityConnection.QueryCache returned by cacheQueries(). The cache can no longer be left enabled, try-with-resources closes it on the exception path, and scopes do not nest, a second cacheQueries() while one is active throws IllegalStateException.
 - A cached select result is now an unmodifiable list of immutable entities, so a shared cached instance can no longer be modified by one caller and observed modified by the next. Selects for update continue to bypass the cache and return mutable entities.
@@ -51,6 +57,7 @@ Codion Change Log
 - Neither a stack trace nor a cause chain crosses the wire in json mode; a server originated exception carries the stack trace of the client throw site. An unmatched server exception carries a generic message and a correlation id identifying the server log entry.
 - HttpEntityConnection.close(), startTransaction(), commitTransaction() and rollbackTransaction() no longer deserialize the response, which carries no payload. In json mode, with an injected domain, the only remaining java deserialization is the report() return value.
 - A json connection now sends and receives a function's return value as json, rather than receiving a serialized object. With an injected domain, the report() return value is the last java deserialization a json connection performs.
+- A json connection decoding an error envelope no longer throws from the decode. A referential integrity Operation this client does not know, or a modified column naming an attribute absent from its domain, degrade to the generic exception rather than raising a client side exception in place of the server's.
 ### is.codion.framework.servlet
 - EntityService, the isQueryCacheEnabled and setQueryCacheEnabled routes (serial and json) removed, query caching is a client-side concern.
 - EntityService, enabling SECURE no longer leaves a cleartext connector listening on PORT alongside the secure one, which served the whole api, basic authentication credentials included, in the clear. The javalin ssl plugin adds an insecure connector by default; it is now disabled.
@@ -87,6 +94,7 @@ Codion Change Log
 - EntityExport.ExportAttributes.Builder.order(List), attributes left out of the order are now sorted by caption, as they are without an order, rather than falling back to definition order.
 - EntityExport.ExportAttributes.Builder.include(Collection) now copies the given collection, which was previously validated at include() and read at build().
 - EntityExport, an EntityNotFoundException thrown for a missing referenced entity now chains the original as its cause.
+- AbstractEntityTableModel.onSelectionChanged() javadoc now states that the editor keeps its entity across a refresh, the selection notifying only when it actually changes and a refreshed row being the same row. A refresh must not clobber an edit in progress; optimistic locking catches a write based on a stale instance.
 ### is.codion.swing.common.ui
 - ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
 - Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.
