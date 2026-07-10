@@ -21,6 +21,7 @@
  * <ul>
  * <li>{@link is.codion.plugin.jasperreports.JasperReports}
  * <li>{@link is.codion.plugin.jasperreports.JRReport}
+ * <li>{@link is.codion.plugin.jasperreports.JRExport}
  * </ul>
  */
 module is.codion.plugin.jasperreports {

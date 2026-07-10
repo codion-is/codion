@@ -18,6 +18,36 @@ You can then create an action calling that method and put it in for example the 
 include::{dir-source}/is/codion/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----
 
+== Export
+
+A report fills to a *JasperPrint* by default, which the receiver needs JasperReports on its classpath to read.
+Wrapping the report in an export via {url-javadoc}{plugin-jasperreports}/is/codion/plugin/jasperreports/JasperReports.html[JasperReports.export()] changes what filling it produces, a *PDF* for example, in which case nothing of JasperReports reaches the receiver.
+
+The export runs wherever the report is filled, which for a remote connection is on the server, so only the exported document crosses the wire.
+This is what makes reports available to a client which can not host the reporting engine, an Android or a web client for example.
+
+The export is bound where the report is registered, so the report type carries the result type and the caller need not ask for a format:
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/framework/domain/Reports.java[tags=reportTypes]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/framework/domain/Reports.java[tags=addReports]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/framework/domain/Reports.java[tags=fillReports]
+----
+
+{url-javadoc}{plugin-jasperreports}/is/codion/plugin/jasperreports/JRExport.html[JRExport] provides *PRINT*, *PDF* and *XML*, any other JasperReports exporter being a lambda.
+
+NOTE: *JRExport.PDF* requires the `net.sf.jasperreports:jasperreports-pdf` artifact, which is not a dependency of the plugin.
+It registers itself through a `jasperreports_extension.properties` resource scanned off the classpath, so nothing requires its module, and it is neither resolved on the module path nor included in a jlink image unless named explicitly, via `--add-modules net.sf.jasperreports.pdf`.
+
 == JRDataSource Reports
 
 The JRDataSource implementation provided by the JasperReportsDataSource simply iterates through the iterator received via the constructor and retrieves the field values from the underlying entities.

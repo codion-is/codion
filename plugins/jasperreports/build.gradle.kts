@@ -15,6 +15,11 @@ dependencies {
 
     testImplementation(project(":codion-framework-db-local"))
     testImplementation(project(":codion-dbms-h2"))
+    // JRExport.PDF resolves its exporter through the JasperReports extension registry,
+    // this artifact is not a dependency of the plugin, a consumer wanting PDF adds it
+    testRuntimeOnly(libs.jasperreports.pdf) {
+        exclude(group = "xml-apis")
+    }
     testImplementation(libs.javalin) {
         exclude(group = "org.jetbrains", module = "annotations")
     }
