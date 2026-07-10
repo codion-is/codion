@@ -644,7 +644,6 @@ public interface EntityConnection extends AutoCloseable {
 	 * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
 	 * @param reportType the report to fill
 	 * @param parameter the report parameter, if any
-	 * @param <T> the report type
 	 * @param <P> the report parameters type
 	 * @param <R> the report result type
 	 * @return the filled result object
@@ -652,7 +651,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.report.ReportException in case of a report exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
-	<T, P, R> R report(ReportType<T, P, R> reportType, @Nullable P parameter);
+	<P, R> R report(ReportType<P, R> reportType, @Nullable P parameter);
 
 	/**
 	 * Returns a result set iterator based on the given query condition.

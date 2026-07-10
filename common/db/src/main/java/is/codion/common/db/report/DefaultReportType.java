@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultReportType<T, P, R> implements ReportType<T, P, R>, Serializable {
+final class DefaultReportType<P, R> implements ReportType<P, R>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -45,7 +45,7 @@ final class DefaultReportType<T, P, R> implements ReportType<T, P, R>, Serializa
 			return true;
 		}
 		if (object instanceof ReportType) {
-			return name.equals(((ReportType<?, ?, ?>) object).name());
+			return name.equals(((ReportType<?, ?>) object).name());
 		}
 
 		return false;

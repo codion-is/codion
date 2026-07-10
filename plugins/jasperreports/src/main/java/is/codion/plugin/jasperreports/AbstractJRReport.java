@@ -19,7 +19,7 @@
 package is.codion.plugin.jasperreports;
 
 import is.codion.common.db.report.AbstractReport;
-import is.codion.common.utilities.exceptions.Exceptions;
+import is.codion.common.db.report.ReportException;
 
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -43,8 +43,15 @@ abstract class AbstractJRReport extends AbstractReport<JasperReport, Map<String,
 		try {
 			return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : parameters, connection);
 		}
+		catch (ReportException e) {
+			//already the exception this method contracts to throw, wrapping it in another one buries the message
+			throw e;
+		}
 		catch (Exception e) {
-			throw Exceptions.runtime(e);
+			//not only the checked JRException, JasperFillManager throws JRRuntimeException for an incompatible
+			//parameter value. An engine exception escaping fill() reaches the client, which then requires the
+			//engine on its classpath to deserialize the failure of a report it need never have heard of
+			throw new ReportException(e);
 		}
 	}
 }

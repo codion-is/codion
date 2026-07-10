@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static is.codion.common.db.report.ReportType.reportType;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportTest {
 
@@ -38,5 +38,17 @@ public class ReportTest {
 		final String path = "test/path";
 		Report.REPORT_PATH.set(path);
 		assertEquals(path, Report.reportPath());
+	}
+
+	@Test
+	void reportTypeEqualsByName() {
+		assertNotEquals(reportType("name"), reportType("another"));
+		//the json tier reconstructs a report type from the name alone and looks it up
+		//in the domain, so a report type must equal any other one sharing its name,
+		//regardless of the parameter and result types it was declared with
+		ReportType<String, String> declared = reportType("report");
+		ReportType<Object, Object> reconstructed = reportType("report");
+		assertEquals(declared, reconstructed);
+		assertEquals(declared.hashCode(), reconstructed.hashCode());
 	}
 }

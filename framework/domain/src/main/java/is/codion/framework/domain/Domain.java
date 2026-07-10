@@ -57,7 +57,7 @@ public interface Domain {
 	/**
 	 * @return an unmodifiable view of this domain's reports
 	 */
-	Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports();
+	Map<ReportType<?, ?>, Report<?, ?, ?>> reports();
 
 	/**
 	 * @return an unmodifiable view of this domain's procedures
@@ -71,14 +71,13 @@ public interface Domain {
 
 	/**
 	 * Retrieves the report of the given type.
-	 * @param <T> the report type
 	 * @param <P> the report parameters type
 	 * @param <R> the report result type
 	 * @param reportType the report type
 	 * @return the report
 	 * @throws IllegalArgumentException in case the report is not found
 	 */
-	<T, P, R> Report<T, P, R> report(ReportType<T, P, R> reportType);
+	<P, R> Report<?, P, R> report(ReportType<P, R> reportType);
 
 	/**
 	 * Retrieves the procedure of the given type.

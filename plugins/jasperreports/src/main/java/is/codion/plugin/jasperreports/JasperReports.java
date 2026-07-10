@@ -38,14 +38,6 @@ public final class JasperReports {
 	private JasperReports() {}
 
 	/**
-	 * @param name the report name
-	 * @return a JRReport
-	 */
-	public static JRReportType reportType(String name) {
-		return new DefaultJRReportType(name);
-	}
-
-	/**
 	 * Instantiates a JRReport for a classpath based report.
 	 * Note that classpath reports are always cached.
 	 * @param resourceClass the class owning the report resource
@@ -102,8 +94,8 @@ public final class JasperReports {
 		try {
 			return JasperFillManager.fillReport(report.load(), reportParameters, dataSource);
 		}
-		catch (RuntimeException re) {
-			throw re;
+		catch (ReportException e) {
+			throw e;
 		}
 		catch (Exception e) {
 			throw new ReportException(e);

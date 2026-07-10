@@ -436,14 +436,13 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * Fills the given report using a JDBC datasource and returns the result.
 	 * @param reportType the report to fill
 	 * @param parameter the report parameter, if any
-	 * @param <T> the report type
 	 * @param <P> the report parameters type
 	 * @param <R> the report result type
 	 * @return the filled result object
 	 * @throws RemoteException in case of a remote exception
 	 * @see EntityConnection#report(ReportType, Object)
 	 */
-	<T, P, R> R report(ReportType<T, P, R> reportType, @Nullable P parameter) throws RemoteException;
+	<P, R> R report(ReportType<P, R> reportType, @Nullable P parameter) throws RemoteException;
 
 	/**
 	 * Returns a result set iterator based on the given query condition.

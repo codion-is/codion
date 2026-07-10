@@ -74,7 +74,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	private final ConditionDeserializer conditionDeserializer;
 	private final Map<ProcedureType<?, ?>, JsonType<?>> procedureParameters = new HashMap<>();
 	private final Map<FunctionType<?, ?, ?>, JsonType<?>> functionParameters = new HashMap<>();
-	private final Map<ReportType<?, ?, ?>, JsonType<?>> reportParameters = new HashMap<>();
+	private final Map<ReportType<?, ?>, JsonType<?>> reportParameters = new HashMap<>();
 	private final Map<FunctionType<?, ?, ?>, JsonType<?>> functionReturnTypes = new HashMap<>();
 
 	EntityObjectMapper(Entities entities) {
@@ -244,7 +244,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	 * @param <P> the report parameter type
 	 * @return the parameter {@link JsonType} for the given report
 	 */
-	public <P> JsonType<P> parameter(ReportType<?, P, ?> reportType) {
+	public <P> JsonType<P> parameter(ReportType<P, ?> reportType) {
 		return (JsonType<P>) reportParameters.computeIfAbsent(requireNonNull(reportType),
 						k -> new DefaultJsonType<>("json parameter type for report: " + reportType.name(),
 										"EntityObjectMapper.parameter(reportType).set(..)"));

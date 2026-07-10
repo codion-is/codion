@@ -18,6 +18,7 @@
  */
 package is.codion.manual.framework.domain;
 
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
@@ -27,11 +28,14 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.manual.framework.domain.Composition.Orders.Customer;
 import is.codion.manual.framework.domain.Composition.Products.Product;
-import is.codion.plugin.jasperreports.JRReportType;
 
+import net.sf.jasperreports.engine.JasperPrint;
+
+import java.util.Map;
+
+import static is.codion.common.db.report.ReportType.reportType;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
-import static is.codion.plugin.jasperreports.JasperReports.reportType;
 
 public class Composition {
 	// tag::composition[]
@@ -46,7 +50,7 @@ public class Composition {
 			Column<Integer> ID = TYPE.integerColumn("id");
 			Column<String> NAME = TYPE.stringColumn("name");
 
-			JRReportType REPORT = reportType("product_report");
+			ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("product_report");
 		}
 
 		public Products() {

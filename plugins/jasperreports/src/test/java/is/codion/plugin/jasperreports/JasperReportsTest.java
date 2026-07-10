@@ -76,6 +76,33 @@ public class JasperReportsTest {
 	}
 
 	@Test
+	void fillJdbcReportFailure() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		HashMap<String, Object> reportParameters = new HashMap<>();
+		//DEPTNO is declared java.util.Collection, JasperFillManager throws JRRuntimeException
+		reportParameters.put("DEPTNO", "not a collection");
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		ReportException exception = assertThrows(ReportException.class, () ->
+						Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters));
+		//no engine type may escape fill(), a client throwing it must not need the engine to deserialize it
+		assertFalse(exception.getClass().getName().startsWith("net.sf.jasperreports"));
+	}
+
+	@Test
+	void fillJdbcReportPropagatesLoadFailure() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		//load() already throws ReportException, neither it nor fill() may wrap it in another one
+		ReportException exception = assertThrows(ReportException.class, () ->
+						JasperReports.fileReport("/non-existing.jasper", false)
+										.fill(connection.connection(), new HashMap<>()));
+		assertNull(exception.getCause());
+		assertTrue(exception.getMessage().contains("not found in filesystem"));
+	}
+
+	@Test
 	void fillDataSourceReport() {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
@@ -104,7 +131,7 @@ public class JasperReportsTest {
 	void fillJdbcReportInvalidReport() {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
-		ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
+		ReportType<Object, Object> nonExisting = ReportType.reportType("test");
 		assertThrows(IllegalArgumentException.class, () -> CONNECTION_PROVIDER.connection().report(nonExisting, new HashMap<>()));
 	}
 
@@ -149,10 +176,5 @@ public class JasperReportsTest {
 		assertFalse(Employee.FILE_REPORT.cached());
 
 		assertThrows(ReportException.class, () -> new FileJRReport("/non-existing.jasper", false).load());
-	}
-
-	@Test
-	void reportType() {
-		assertNotEquals(JasperReports.reportType("name"), JasperReports.reportType("another"));
 	}
 }

@@ -699,7 +699,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public <T, P, R> R report(ReportType<T, P, R> reportType, P parameter) {
+	public <P, R> R report(ReportType<P, R> reportType, P parameter) {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
 		tracer.enter(REPORT, reportType, parameter);

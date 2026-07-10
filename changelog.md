@@ -18,6 +18,7 @@ Codion Change Log
 ### is.codion.common.db
 - ConnectionPoolWrapper get/set/is accessors (cleanupInterval, idleTimeout, minimumPoolSize, maximumPoolSize, maximumCheckOutTime, collectSnapshotStatistics, collectCheckOutTimes) de-beanified to the house name()/name(value) style, consistent with the interface's own user()/statistics() methods. The JMX metric MXBeans retain bean naming, as required by the JMX attribute contract.
 - ReferentialIntegrityException(String, Operation), UniqueConstraintException(String) and QueryTimeoutException(String) added, for a client reconstructing these from a message, having no SQLException to hand.
+- ReportType no longer specifies the type of the loaded report object, which was never bound to anything but Object or a wildcard at any use site, being an implementation detail of the Report the type is registered with. It required every domain naming a report to depend on the reporting engine, JasperReports demanding java.desktop of an Android or headless client which need never deserialize a JasperPrint.
 ### is.codion.common.model
 - DefaultFilterModelItems, the selection is now preserved by item across item insertion and removal. IncludedItems.add(int, ..), IncludedItems.remove(int), IncludedItems.remove(int, int) and Items.remove(item/items/predicate) shift the indexes of the items at and after the mutation point, but left the selected indexes untouched, so the selection ended up pointing at the wrong items. Preserving by item is idempotent with respect to a view which shifts the indexes on its own, such as a JTable, so no selection is adjusted twice.
 - DefaultMultiSelection, the index(), indexes(), item() and items() facades now notify only when their own value actually changes, honoring the Notify.CHANGED contract and matching DefaultListSelection. Ending an adjustment via adjusting(false) previously notified all four unconditionally, bypassing the no-op guard in applyTarget().
@@ -25,6 +26,7 @@ Codion Change Log
 - DefaultFilterModelItems saves and restores the adjusting state around its own grouping, an items mutation performed inside a caller's group no longer ends it early.
 ### is.codion.framework.domain
 - DerivedValue.from() javadoc now states that a derived value provider must be total, every cached derived value being computed when an entity is made immutable, not only the ones a caller reads.
+- Domain.report(ReportType) now returns Report<?, P, R> and Domain.reports() a Map<ReportType<?, ?>, Report<?, ?, ?>>, following ReportType.
 ### is.codion.framework.server
 - EntityServerConfiguration.builder() no longer takes port parameters, consistent with ServerConfiguration.builder().
 - EntityServerAdmin get/set/is accessors (maintenanceInterval, idleConnectionTimeout, logLevel, traceToFile, tracingEnabled, and the per-pool collect/cleanup/timeout/size methods) de-beanified to the house name()/name(value) style. The underlying LoggerProxy and per-connection tracing methods retain their names.
@@ -95,6 +97,10 @@ Codion Change Log
 - EntityExport.ExportAttributes.Builder.include(Collection) now copies the given collection, which was previously validated at include() and read at build().
 - EntityExport, an EntityNotFoundException thrown for a missing referenced entity now chains the original as its cause.
 - AbstractEntityTableModel.onSelectionChanged() javadoc now states that the editor keeps its entity across a refresh, the selection notifying only when it actually changes and a refreshed row being the same row. A refresh must not clobber an edit in progress; optimistic locking catches a write based on a stale instance.
+### is.codion.plugin.jasperreports
+- JRReportType and DefaultJRReportType removed along with JasperReports.reportType(String), a report type names a report and says nothing of the engine backing it; ReportType.reportType(String) serves. A domain API naming a report no longer depends on this plugin, and the serialization whitelist no longer opens is.codion.plugin.jasperreports.* for the report type travelling to the server.
+- AbstractJRReport.fill() and JasperReports.fillReport() now throw ReportException as documented. JasperFillManager throws JRRuntimeException for an incompatible parameter value, previously passed through unwrapped, and a client would have to carry the engine to deserialize the failure of a report it need never have heard of.
+- FileJRReport.load() no longer wraps its own ReportException in another one, burying the message a getCause() deep, as ClassPathJRReport.load() already avoided.
 ### is.codion.swing.common.ui
 - ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
 - Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.

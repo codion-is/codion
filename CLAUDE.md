@@ -750,8 +750,9 @@ public final class ChinookAuthenticator implements Authenticator {
 Embed reports in the domain model:
 
 ```java
-// Chinook demo - JasperReports integration
-JRReportType REPORT = JasperReports.reportType("customer_report");
+// Chinook demo - JasperReports integration. Note the plain ReportType: a report type
+// names a report, it says nothing of the engine backing it
+ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("customer_report");
 
 // Domain model
 public Employees() {

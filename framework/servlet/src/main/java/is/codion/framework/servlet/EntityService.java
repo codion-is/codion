@@ -470,7 +470,7 @@ public final class EntityService implements AuxiliaryServer {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				List<Object> parameters = deserialize(context.req());
-				ReportType<?, Object, ?> reportType = (ReportType<?, Object, ?>) parameters.get(0);
+				ReportType<Object, ?> reportType = (ReportType<Object, ?>) parameters.get(0);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(connection.report(reportType, parameters.get(1))));
@@ -486,7 +486,7 @@ public final class EntityService implements AuxiliaryServer {
 				DatabaseObjectMapper objectMapper = (DatabaseObjectMapper) objectMapper(connection.entities());
 
 				JsonNode requestNode = objectMapper.readTree(context.req().getInputStream());
-				ReportType<Object, Object, Object> reportType = reportType(requestNode.get("reportType").asText());
+				ReportType<Object, Object> reportType = reportType(requestNode.get("reportType").asText());
 				Object parameter = null;
 				JsonNode parameterNode = requestNode.get(PARAMETER);
 				if (parameterNode != null) {

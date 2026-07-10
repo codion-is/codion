@@ -4,7 +4,6 @@ java.time.**
 java.util.**
 is.codion.common.**
 is.codion.framework.**
-is.codion.plugin.jasperreports.*
 is.codion.demos.chinook.domain.api.*
 is.codion.demos.world.domain.api.*
 # ServerMonitor
