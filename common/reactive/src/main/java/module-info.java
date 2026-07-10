@@ -26,7 +26,6 @@
  * <li>{@link is.codion.common.reactive.state.ObservableState}
  * <li>{@link is.codion.common.reactive.value.Value}
  * </ul>
- * <p>
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.common.reactive {

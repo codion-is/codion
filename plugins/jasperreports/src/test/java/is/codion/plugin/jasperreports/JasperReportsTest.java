@@ -198,7 +198,7 @@ public class JasperReportsTest {
 	}
 
 	@Test
-	void exportFilledReport() throws Exception {
+	void exportFilledReport() {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
 		Map<String, Object> reportParameters = new HashMap<>();
