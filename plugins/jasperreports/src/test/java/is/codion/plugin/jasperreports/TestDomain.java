@@ -18,18 +18,22 @@
  */
 package is.codion.plugin.jasperreports;
 
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import java.time.LocalDate;
+import net.sf.jasperreports.engine.JasperPrint;
 
+import java.time.LocalDate;
+import java.util.Map;
+
+import static is.codion.common.db.report.ReportType.reportType;
 import static is.codion.common.utilities.item.Item.item;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
-import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
-import static is.codion.plugin.jasperreports.JasperReports.fileReport;
+import static is.codion.plugin.jasperreports.JasperReports.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DomainModel {
@@ -40,6 +44,7 @@ public final class TestDomain extends DomainModel {
 		super(DOMAIN);
 		department();
 		employee();
+		add(Employee.PDF_REPORT, export(Employee.CLASS_PATH_REPORT, JRExport.PDF));
 	}
 
 	public interface Department {
@@ -89,10 +94,13 @@ public final class TestDomain extends DomainModel {
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
 		ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
-		JRReport FILE_REPORT =
+		JRReport<JasperPrint> FILE_REPORT =
 						fileReport("/employees.jasper", true);
-		JRReport CLASS_PATH_REPORT =
+		JRReport<JasperPrint> CLASS_PATH_REPORT =
 						classPathReport(TestDomain.class, "/employees.jasper");
+
+		//names a report and a byte[], nothing of JasperReports
+		ReportType<Map<String, Object>, byte[]> PDF_REPORT = reportType("employee_pdf");
 	}
 
 	void employee() {

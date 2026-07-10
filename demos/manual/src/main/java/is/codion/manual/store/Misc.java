@@ -64,7 +64,7 @@ public final class Misc {
 										(entity, reportField) ->
 														entity.get(customerDefinition.attributes().getOrThrow(reportField.getName())));
 
-		JRReport customerReport = fileReport("reports/customer.jasper");
+		JRReport<JasperPrint> customerReport = fileReport("reports/customer.jasper");
 
 		JasperPrint jasperPrint = JasperReports.fillReport(customerReport, dataSource);
 		// end::jasperReportDataSource[]

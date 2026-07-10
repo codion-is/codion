@@ -26,7 +26,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import java.util.Map;
 
 /**
- * A JasperReport.
+ * A JasperReport, producing a result of type {@code R} when filled.
  * <p>Identified by a plain {@link is.codion.common.db.report.ReportType}, created via
  * {@link is.codion.common.db.report.ReportType#reportType(String)}, since a report type names
  * a report and says nothing of the engine backing it:
@@ -35,5 +35,16 @@ import java.util.Map;
  *
  * add(REPORT, classPathReport(Store.class, "customer_report.jasper"));
  *}
+ * <p>Filling produces a {@link JasperPrint} unless an export is applied via
+ * {@link JasperReports#export(JRReport, JRExport)}, in which case the report produces
+ * whatever that export produces, a PDF for example, in which case the client never
+ * sees a JasperReports type:
+ * {@snippet :
+ * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report");
+ *
+ * add(REPORT, export(classPathReport(Store.class, "customer_report.jasper"), PDF));
+ *}
+ * @param <R> the type this report produces when filled
+ * @see JRExport
  */
-public interface JRReport extends Report<JasperReport, Map<String, Object>, JasperPrint> {}
+public interface JRReport<R> extends Report<JasperReport, Map<String, Object>, R> {}

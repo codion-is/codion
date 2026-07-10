@@ -29,6 +29,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.plugin.jasperreports.TestDomain.Employee;
 
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.eclipse.jetty.server.Server;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static java.util.Arrays.copyOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JasperReportsTest {
@@ -106,7 +108,7 @@ public class JasperReportsTest {
 	void fillDataSourceReport() {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
-		JRReport wrapper = JasperReports.fileReport("employees.jasper");
+		JRReport<JasperPrint> wrapper = JasperReports.fileReport("employees.jasper");
 		JRDataSource dataSource = new JRDataSource() {
 			boolean done = false;
 
@@ -125,6 +127,120 @@ public class JasperReportsTest {
 			}
 		};
 		JasperReports.fillReport(wrapper, dataSource);
+	}
+
+	@Test
+	void exportToPdf() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+
+		JRReport<byte[]> pdfReport = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.PDF);
+		byte[] pdf = pdfReport.fill(connection.connection(), reportParameters);
+
+		//the export is what crosses the wire, a client reading it needs no reporting engine
+		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(pdf, 4));
+	}
+
+	@Test
+	void exportToXml() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+
+		String xml = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.XML)
+						.fill(connection.connection(), reportParameters);
+
+		assertTrue(xml.startsWith("<?xml"));
+	}
+
+	@Test
+	void exportPrintIsTheIdentity() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+
+		JasperPrint print = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.PRINT)
+						.fill(connection.connection(), reportParameters);
+
+		assertNotNull(print);
+	}
+
+	@Test
+	void exportSharesTheReportCache() {
+		Report.CACHE_REPORTS.set(true);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+
+		JRReport<JasperPrint> report = JasperReports.fileReport("/employees.jasper", true);
+		JRReport<byte[]> pdf = JasperReports.export(report, JRExport.PDF);
+		JRReport<String> xml = JasperReports.export(report, JRExport.XML);
+
+		report.clearCache();
+		assertFalse(pdf.cached());
+		pdf.fill(connection.connection(), reportParameters);
+		//one loaded report behind both exports, and the server clears the cache
+		//of every report it hosts, so clearCache() must reach through the export
+		assertTrue(report.cached());
+		assertTrue(xml.cached());
+		xml.clearCache();
+		assertFalse(report.cached());
+		assertFalse(pdf.cached());
+	}
+
+	@Test
+	void exportFilledReport() throws Exception {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		JasperPrint print = Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters);
+
+		assertSame(print, JasperReports.export(print, JRExport.PRINT));
+		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(JasperReports.export(print, JRExport.PDF), 4));
+	}
+
+	@Test
+	void exportFailure() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+
+		JRExport<byte[]> failing = print -> {
+			throw new JRException("Missing export extension");
+		};
+		//a failing export, a missing exporter extension being the likely one, must not
+		//let a JasperReports exception escape any more than a failing fill() may
+		ReportException exception = assertThrows(ReportException.class, () ->
+						JasperReports.export(Employee.CLASS_PATH_REPORT, failing)
+										.fill(connection.connection(), reportParameters));
+		assertInstanceOf(JRException.class, exception.getCause());
+		assertThrows(ReportException.class, () ->
+						JasperReports.export(Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters), failing));
+	}
+
+	@Test
+	void exportedReportThroughEntityConnection() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+
+		//the report type names a report and a byte[], nothing of JasperReports
+		byte[] pdf = CONNECTION_PROVIDER.connection().report(Employee.PDF_REPORT, reportParameters);
+
+		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(pdf, 4));
 	}
 
 	@Test

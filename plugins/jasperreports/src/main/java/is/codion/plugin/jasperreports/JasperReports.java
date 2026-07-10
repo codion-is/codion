@@ -44,7 +44,7 @@ public final class JasperReports {
 	 * @param reportPath the report path, relative to the resource class
 	 * @return a report wrapper
 	 */
-	public static JRReport classPathReport(Class<?> resourceClass, String reportPath) {
+	public static JRReport<JasperPrint> classPathReport(Class<?> resourceClass, String reportPath) {
 		return new ClassPathJRReport(resourceClass, reportPath);
 	}
 
@@ -53,7 +53,7 @@ public final class JasperReports {
 	 * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}
 	 * @return a report wrapper
 	 */
-	public static JRReport fileReport(String reportPath) {
+	public static JRReport<JasperPrint> fileReport(String reportPath) {
 		return fileReport(reportPath, Report.CACHE_REPORTS.getOrThrow());
 	}
 
@@ -63,8 +63,53 @@ public final class JasperReports {
 	 * @param cacheReport if true the report is only loaded once and cached
 	 * @return a report wrapper
 	 */
-	public static JRReport fileReport(String reportPath, boolean cacheReport) {
+	public static JRReport<JasperPrint> fileReport(String reportPath, boolean cacheReport) {
 		return new FileJRReport(reportPath, cacheReport);
+	}
+
+	/**
+	 * Returns a report producing the result of the given export when filled, instead of a {@link JasperPrint}.
+	 * <p>The export runs wherever the report is filled, on the server in case of a remote connection, so a
+	 * report exported to {@link JRExport#PDF} reaches the client as bytes, requiring no reporting engine there.
+	 * {@snippet :
+	 * ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report");
+	 *
+	 * add(REPORT, export(classPathReport(Store.class, "customer_report.jasper"), PDF));
+	 *}
+	 * <p>The loaded report and its cache are shared with the given report, so exporting the same report to
+	 * more than one format loads and caches it once.
+	 * @param report the report to export
+	 * @param export the export to apply to the filled report
+	 * @param <R> the export result type
+	 * @return a report producing the result of the given export
+	 * @see JRExport
+	 */
+	public static <R> JRReport<R> export(JRReport<JasperPrint> report, JRExport<R> export) {
+		return new ExportingJRReport<>(report, export);
+	}
+
+	/**
+	 * Exports the given filled report, for a {@link JasperPrint} already at hand, such as one
+	 * returned by {@link #fillReport(JRReport, JRDataSource)}.
+	 * @param print the filled report to export
+	 * @param export the export to apply
+	 * @param <R> the export result type
+	 * @return the exported report
+	 * @throws ReportException in case of an exception
+	 * @see JRExport
+	 */
+	public static <R> R export(JasperPrint print, JRExport<R> export) {
+		requireNonNull(print);
+		requireNonNull(export);
+		try {
+			return export.export(print);
+		}
+		catch (ReportException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new ReportException(e);
+		}
 	}
 
 	/**
@@ -74,7 +119,7 @@ public final class JasperReports {
 	 * @return a filled report ready for display
 	 * @throws ReportException in case of an exception
 	 */
-	public static JasperPrint fillReport(JRReport report, JRDataSource dataSource) {
+	public static JasperPrint fillReport(JRReport<JasperPrint> report, JRDataSource dataSource) {
 		return fillReport(report, dataSource, new HashMap<>());
 	}
 
@@ -86,7 +131,7 @@ public final class JasperReports {
 	 * @return a filled report ready for display
 	 * @throws ReportException in case of an exception
 	 */
-	public static JasperPrint fillReport(JRReport report, JRDataSource dataSource,
+	public static JasperPrint fillReport(JRReport<JasperPrint> report, JRDataSource dataSource,
 																			 Map<String, Object> reportParameters) {
 		requireNonNull(report);
 		requireNonNull(dataSource);

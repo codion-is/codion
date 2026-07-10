@@ -3,4 +3,7 @@ extraJavaModuleInfo {
     automaticModule("commons-digester:commons-digester", "commons.digester")
     automaticModule("commons-beanutils:commons-beanutils", "commons.beanutils")
     automaticModule("org.apache.xmlgraphics:batik-shared-resources", "org.apache.xmlgraphics.batik.shared.resources")
+    // jasperreports-pdf -> openpdf -> xmpcore, the only one of the three carrying neither
+    // a module-info nor an Automatic-Module-Name
+    automaticModule("com.adobe.xmp:xmpcore", "com.adobe.xmp.xmpcore")
 }

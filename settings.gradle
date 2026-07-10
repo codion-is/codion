@@ -263,6 +263,7 @@ dependencyResolutionManagement {
 
             library("jasperreports", "net.sf.jasperreports", "jasperreports").versionRef("jasperreports")
             library("jasperreports-jdt", "net.sf.jasperreports", "jasperreports-jdt").versionRef("jasperreports")
+            library("jasperreports-pdf", "net.sf.jasperreports", "jasperreports-pdf").versionRef("jasperreports")
         }
     }
 }
