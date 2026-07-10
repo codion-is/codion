@@ -50,6 +50,7 @@ Codion Change Log
 ### is.codion.framework.json.domain
 - EntityObjectMapper.returnType(FunctionType) added, registering the type a function's return value is serialized as and deserialized from over a json connection. A function called over one requires a registered return type, its FunctionType return type parameter being erased at runtime, and fails with a message naming the function and the registration.
 - EntityObjectMapper.ParameterType renamed JsonType, being what returnType() returns as well, and its get() now returns a JavaType rather than a Class. set(TypeReference) previously stored the reference's raw type, so a parameter registered as new TypeReference<List<Dto>>() {} was deserialized as a raw List, leaving the caller holding a List<LinkedHashMap>.
+- EntityObjectMapper.returnType(ReportType) added, registering the type a report result is serialized as and deserialized from over a JSON connection, symmetric with returnType(FunctionType) and parameter(ReportType).
 ### is.codion.framework.json.db
 - ErrorEnvelope and ErrorKind added, the wire form of a server side exception on the json error channel. The kind is a closed enum determining the http status, the server log severity and the exception the client reconstructs; nothing on the wire names a class.
 ### is.codion.framework.db.http
@@ -57,8 +58,9 @@ Codion Change Log
 - HttpEntityConnection message bundle key many_records_found renamed multiple_records_found, matching the LocalEntityConnection sibling and the MultipleEntitiesFoundException it populates. The English message is aligned with it as well.
 - A json connection no longer deserializes the error response, which was a readObject() on the most travelled failure path of the tier, one an attacker able to inject a single response could reach. The typed ErrorEnvelope is parsed and the exception reconstructed from its kind. The serial connection, being a java serialization channel by definition, is unchanged.
 - Neither a stack trace nor a cause chain crosses the wire in json mode; a server originated exception carries the stack trace of the client throw site. An unmatched server exception carries a generic message and a correlation id identifying the server log entry.
-- HttpEntityConnection.close(), startTransaction(), commitTransaction() and rollbackTransaction() no longer deserialize the response, which carries no payload. In json mode, with an injected domain, the only remaining java deserialization is the report() return value.
-- A json connection now sends and receives a function's return value as json, rather than receiving a serialized object. With an injected domain, the report() return value is the last java deserialization a json connection performs.
+- HttpEntityConnection.close(), startTransaction(), commitTransaction() and rollbackTransaction() no longer deserialize the response, which carries no payload.
+- A json connection now sends and receives a function's return value as json, rather than receiving a serialized object.
+- A json connection now sends and receives a report's result as json, rather than receiving a serialized object, symmetric with a function. A report filled over one requires a registered return type, EntityObjectMapper.returnType(reportType), resolved before the request, so a report exported to bytes reaches the client base64 encoded in json rather than as a serialized object. With an injected domain a json connection now performs no java deserialization; the entities route, the last replying with a serialized object, is the one a client avoids by injecting its domain.
 - A json connection decoding an error envelope no longer throws from the decode. A referential integrity Operation this client does not know, or a modified column naming an attribute absent from its domain, degrade to the generic exception rather than raising a client side exception in place of the server's.
 ### is.codion.framework.servlet
 - EntityService, the isQueryCacheEnabled and setQueryCacheEnabled routes (serial and json) removed, query caching is a client-side concern.
@@ -70,6 +72,7 @@ Codion Change Log
 - EntityService.remoteHost() javadoc now documents that X-Forwarded-For is a client controlled header, honored for display and logging only, never for authorization.
 - EntityService.SECURE_PORT javadoc corrected, it described the insecure port.
 - EntityService, the json function route responds with application/json rather than an octet stream, writing the return value as the registered return type.
+- EntityService responds to a report on a json route with the report result as json, resolving its registered return type before filling, rather than a serialized object. The report route joins the function route in carrying no serialized object in json mode, leaving the entities route the only one that does.
 ### is.codion.framework.model
 - EntitySearchModel.Selection.single() added, an ObservableState indicating whether exactly one entity is selected.
 - AbstractEntityApplicationModel, the custom-Preferences constructor javadoc now notes that startup preferences (frame size, look and feel, default username) are read from the default root before the model exists.

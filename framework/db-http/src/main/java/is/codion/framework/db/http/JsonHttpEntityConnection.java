@@ -325,8 +325,11 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				if (parameter != null) {
 					request.set(PARAMETER, objectMapper.valueToTree(parameter));
 				}
+				//both ends resolve the result type from the domain's object mapper,
+				//so there is one source of truth and no type name on the wire
+				JavaType returnType = objectMapper.entityObjectMapper().returnType(reportType).get();
 
-				return handleResponse(execute(createJsonRequest("report", request.toString())));
+				return handleJsonResponse(execute(createJsonRequest("report", request.toString())), objectMapper, returnType);
 			}
 			catch (Exception exception) {
 				throw handleException(exception);

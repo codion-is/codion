@@ -39,6 +39,11 @@ public final class TestObjectMapperFactory implements EntityObjectMapperFactory 
 		entityObjectMapper.parameter(TestDomain.FUNCTION).set(new TypeReference<>() {});
 		entityObjectMapper.parameter(TestDomain.PROCEDURE).set(new TypeReference<>() {});
 		entityObjectMapper.parameter(TestDomain.REPORT).set(String.class);
+		entityObjectMapper.returnType(TestDomain.REPORT).set(String.class);
+		entityObjectMapper.parameter(TestDomain.BYTE_ARRAY_REPORT).set(String.class);
+		entityObjectMapper.returnType(TestDomain.BYTE_ARRAY_REPORT).set(byte[].class);
+		//UNREGISTERED_RETURN_REPORT has a parameter type but no return type, on purpose
+		entityObjectMapper.parameter(TestDomain.UNREGISTERED_RETURN_REPORT).set(String.class);
 		entityObjectMapper.returnType(TestDomain.FUNCTION).set(new TypeReference<>() {});
 		entityObjectMapper.parameter(TestDomain.ENTITY_FUNCTION).set(Long.class);
 		entityObjectMapper.returnType(TestDomain.ENTITY_FUNCTION).set(Entity.class);

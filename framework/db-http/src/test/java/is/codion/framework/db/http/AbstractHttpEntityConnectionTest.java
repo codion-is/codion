@@ -131,6 +131,13 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
+	void byteArrayReport() {
+		//the bytes cross both tiers, JSON base64-encodes them, the serial tier serializes them
+		byte[] result = connection.report(TestDomain.BYTE_ARRAY_REPORT, "");
+		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, result);
+	}
+
+	@Test
 	void insert() {
 		Entity entity = connection.entities().entity(Department.TYPE)
 						.with(Department.ID, 33L)

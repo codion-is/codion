@@ -79,6 +79,15 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 	}
 
 	@Test
+	void unregisteredReportReturnType() {
+		//the client resolves the return type before the request, so the report never runs
+		IllegalStateException exception = assertThrows(IllegalStateException.class,
+						() -> createConnection().report(TestDomain.UNREGISTERED_RETURN_REPORT, "a parameter"));
+		assertEquals("No json return type for report: unregisteredReturnReport registered, "
+						+ "register one via EntityObjectMapper.returnType(reportType).set(..)", exception.getMessage());
+	}
+
+	@Test
 	void unknownErrorKind() {
 		//a client older than the server, an unknown kind must be inert rather than resolved by name
 		String envelope = "{\"kind\":\"KIND_FROM_THE_FUTURE\",\"message\":\"something happened\","

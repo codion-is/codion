@@ -493,10 +493,13 @@ public final class EntityService implements AuxiliaryServer {
 					JavaType parameterType = objectMapper.entityObjectMapper().parameter(reportType).get();
 					parameter = objectMapper.readValue(parameterNode.toString(), parameterType);
 				}
+				//resolved before the report is filled, an unregistered return type must not
+				//fail after the fact, the report having already been filled
+				JavaType returnType = objectMapper.entityObjectMapper().returnType(reportType).get();
 
 				context.status(HttpStatus.OK_200)
-								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(serialize(connection.report(reportType, parameter)));
+								.contentType(ContentType.APPLICATION_JSON)
+								.result(objectMapper.writerFor(returnType).writeValueAsString(connection.report(reportType, parameter)));
 			}
 			catch (Exception e) {
 				handleException(context, e);
