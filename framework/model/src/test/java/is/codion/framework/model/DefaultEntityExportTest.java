@@ -78,7 +78,6 @@ public final class DefaultEntityExportTest {
 						.export());
 		assertEquals("", empty.toString());
 
-		StringBuilder output = new StringBuilder();
 		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION_PROVIDER)
 						.entityType(Employee.TYPE)
 						.attributes(attributes -> attributes.include(Department.NAME)));
@@ -88,7 +87,7 @@ public final class DefaultEntityExportTest {
 
 		Set<Entity.Key> jones = singleton(connection.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
 
-		output = new StringBuilder();
+		StringBuilder output = new StringBuilder();
 		EntityExport.builder(CONNECTION_PROVIDER)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee.include(Employee.NAME))

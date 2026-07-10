@@ -448,12 +448,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 					return null;
 				};
 				//the executor exists only to name the starting thread, it is of no use once the server has started
-				ExecutorService executor = newSingleThreadExecutor(new DaemonThreadFactory(auxiliaryServer.getClass().getSimpleName()));
-				try {
+				try (ExecutorService executor = newSingleThreadExecutor(new DaemonThreadFactory(auxiliaryServer.getClass().getSimpleName()))) {
 					executor.submit(starter).get();
-				}
-				finally {
-					executor.shutdown();
 				}
 			}
 		}
