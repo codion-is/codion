@@ -26,6 +26,7 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.exception.DeleteEntityException;
@@ -388,6 +389,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return new DeleteEntityException(message);
 			case QUERY_TIMEOUT:
 				return new QueryTimeoutException(message);
+			case REPORT:
+				return new ReportException(message);
 			default:
 				//CONNECTION_UNAVAILABLE, DATABASE and INTERNAL, none of which the client has a type for
 				return new DatabaseException(message);

@@ -229,6 +229,20 @@ public class JasperReportsTest {
 	}
 
 	@Test
+	void reportExceptionFoldsCauseMessage() {
+		//the cause is dropped for the wire, but its message is folded into the message, the outer
+		//exception often naming only the operation, the cause naming what actually went wrong
+		ReportException wrapped = JasperReports.reportException(
+						new ReportException("Unable to fill report", new IllegalStateException("column DEPTNO not found")));
+		assertNull(wrapped.getCause());
+		assertEquals("Unable to fill report: column DEPTNO not found", wrapped.getMessage());
+
+		//a clean ReportException, no cause, passes through untouched
+		ReportException clean = new ReportException("not found in filesystem");
+		assertSame(clean, JasperReports.reportException(clean));
+	}
+
+	@Test
 	void loadPrintInvalidBytes() {
 		//a client side reconstruction, its failure crosses no wire, so the cause is kept
 		ReportException exception = assertThrows(ReportException.class,
