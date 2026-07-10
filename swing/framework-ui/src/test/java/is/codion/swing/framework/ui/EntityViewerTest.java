@@ -26,9 +26,14 @@ import is.codion.framework.domain.entity.Entity;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class EntityViewerTest {
 
@@ -48,6 +53,41 @@ public final class EntityViewerTest {
 			expandAll(tree, new TreePath(tree.getModel().getRoot()));
 			expandAll(tree, new TreePath(tree.getModel().getRoot()));
 		}
+	}
+
+	@Test
+	void deletedReference() {
+		try (EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+						.domain(new TestDomain())
+						.user(UNIT_TEST_USER)
+						.build()) {
+			Entity blake = connectionProvider.connection().selectSingle(TestDomain.Employee.NAME.equalTo("BLAKE"));
+			//a reference to a row which no longer exists, exactly what one opens this tool to find
+			blake.set(TestDomain.Employee.DEPARTMENT_FK, connectionProvider.entities()
+							.entity(TestDomain.Department.TYPE)
+							.with(TestDomain.Department.ID, -42)
+							.build());
+
+			JTree tree = EntityViewer.createTree(blake, connectionProvider);
+			expandAll(tree, new TreePath(tree.getModel().getRoot()));
+
+			assertTrue(children(tree).stream()
+							.filter(DefaultMutableTreeNode.class::isInstance)
+							.map(DefaultMutableTreeNode.class::cast)
+							.filter(node -> node.getChildCount() == 1)
+							.map(node -> node.getChildAt(0).toString())
+							.anyMatch("<deleted>"::equals));
+		}
+	}
+
+	private static List<TreeNode> children(JTree tree) {
+		List<TreeNode> children = new ArrayList<>();
+		Enumeration<? extends TreeNode> nodes = ((TreeNode) tree.getModel().getRoot()).children();
+		while (nodes.hasMoreElements()) {
+			children.add(nodes.nextElement());
+		}
+
+		return children;
 	}
 
 	private static void expandAll(JTree tree, TreePath parent) {

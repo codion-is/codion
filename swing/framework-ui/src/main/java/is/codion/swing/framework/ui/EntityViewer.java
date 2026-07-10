@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -43,12 +44,19 @@ import static java.util.Objects.requireNonNull;
 
 final class EntityViewer {
 
+	private static final String DELETED = "<deleted>";
+
 	private EntityViewer() {}
 
 	static void view(Entity.Key key, EntityConnectionProvider connectionProvider, JComponent dialogOwner) {
 		requireNonNull(key);
 		requireNonNull(connectionProvider);
-		view(select(key, connectionProvider), connectionProvider, dialogOwner);
+		//the entity is fetched on a worker, this being a round trip on a remote connection
+		Dialogs.progressWorker()
+						.task(() -> select(key, connectionProvider))
+						.owner(dialogOwner)
+						.onResult(entity -> view(entity, connectionProvider, dialogOwner))
+						.execute();
 	}
 
 	static void view(Entity entity, EntityConnectionProvider connectionProvider, JComponent dialogOwner) {
@@ -176,11 +184,23 @@ final class EntityViewer {
 				return (ForeignKeyDefinition) super.attributeDefinition();
 			}
 
+			/**
+			 * Fetched on the EDT, {@link TreeWillExpandListener#treeWillExpand(TreeExpansionEvent)} being
+			 * synchronous, and this following an explicit expansion of a single node, one round trip per click.
+			 * <p>Note that a failed fetch leaves the node unpopulated, so the next expansion retries it,
+			 * while a reference to a deleted row is rendered as such rather than retried.
+			 */
 			private void populate() {
 				if (!populated) {
 					Entity.Key referencedKey = entity().key(attributeDefinition().attribute());
 					if (referencedKey != null) {
-						EntityTreeModel.populate(select(referencedKey, connectionProvider), connectionProvider, this);
+						try {
+							EntityTreeModel.populate(select(referencedKey, connectionProvider), connectionProvider, this);
+						}
+						catch (EntityNotFoundException e) {
+							//a dangling reference is exactly what one opens this tool to find
+							add(new DefaultMutableTreeNode(DELETED));
+						}
 					}
 					populated = true;
 				}

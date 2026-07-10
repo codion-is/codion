@@ -134,6 +134,11 @@ Codion Change Log
 - EntityComponents.toggleButton() now rejects nullable attributes with the same guard as checkBox(), a two-state toggle can not represent a three-state attribute.
 - EntityComponents, the "no dateTimePattern defined" exception now names the offending attribute.
 - EntityComboBox.addFocusListener() javadoc now documents that the editor-component routing is based on editability at call time.
+- EditAttributePanel no longer arms its updating state before creating the update task, which validates each entity in full, where the panel's ok control validates the edited attribute alone. An entity invalid on some other attribute passed the panel's gate and threw from the task, leaving the modal dialog with both controls disabled, and the application frozen. The result handler now closes the dialog even when an after-update consumer throws.
+- SelectQueryInspector now renders EntityQueryModel.select(), rather than a select rebuilt from the model's parts. It passed the default attributes to Select.Builder.include(), a replacing setter, which the following include() call then discarded, so a query model with default attributes was rendered as a select of every column.
+- EntityTablePanel no longer binds the INSPECT_QUERY control when no EntityQueries.Factory is available, which is the case on a remote client, the factory being provided by the db-local module. It previously threw IllegalStateException on each press.
+- EntityViewer fetches the entity to view on a worker rather than the event dispatch thread. A foreign key referencing a deleted row now renders as such rather than throwing out of the tree expansion listener.
+- KeyboardShortcutsPanel now documents the entity viewer, CTRL-ALT-V, which is enabled by default.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui
