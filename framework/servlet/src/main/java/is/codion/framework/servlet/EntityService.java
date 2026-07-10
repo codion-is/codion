@@ -18,6 +18,8 @@
  */
 package is.codion.framework.servlet;
 
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
@@ -34,14 +36,19 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
+import is.codion.framework.db.exception.EntityModifiedException;
+import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.json.db.DatabaseObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
@@ -93,25 +100,28 @@ public final class EntityService implements AuxiliaryServer {
 	private static final Logger LOG = LoggerFactory.getLogger(EntityService.class);
 
 	/**
-	 * The port on which the http server is made available to clients.
+	 * The port on which the http server is made available to clients, unless {@link #SECURE} is enabled.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 8080
 	 * </ul>
+	 * @see #SECURE
 	 */
 	public static final PropertyValue<Integer> PORT = integerValue("codion.server.http.port", 8080);
 
 	/**
-	 * The port on which the http server is made available to clients.
+	 * The port on which the https server is made available to clients.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 4443
 	 * </ul>
+	 * @see #SECURE
 	 */
 	public static final PropertyValue<Integer> SECURE_PORT = integerValue("codion.server.http.securePort", 4443);
 
 	/**
 	 * Specifies whether https should be used.
+	 * <p>Note that when enabled the service listens on {@link #SECURE_PORT} only, {@link #PORT} is not bound.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
@@ -252,8 +262,7 @@ public final class EntityService implements AuxiliaryServer {
 	@Override
 	public String information() {
 		return "Entity Service " + Version.version()
-						+ " started on port: " + port
-						+ ", securePort: " + securePort
+						+ (sslEnabled ? " started on securePort: " + securePort : " started on port: " + port)
 						+ ", sslEnabled: " + sslEnabled;
 	}
 
@@ -559,7 +568,7 @@ public final class EntityService implements AuxiliaryServer {
 				ObjectMapper objectMapper = objectMapper(entities);
 				JsonNode jsonNode = objectMapper.readTree(context.req().getInputStream());
 				EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-				Column<?> column = (Column<?>) entities.definition(entityType).attributes().getOrThrow(jsonNode.get("column").textValue());
+				Column<?> column = column(entities.definition(entityType).attributes().getOrThrow(jsonNode.get("column").textValue()));
 				Select select = null;
 				JsonNode conditionNode = jsonNode.get("condition");
 				if (conditionNode != null) {
@@ -946,7 +955,9 @@ public final class EntityService implements AuxiliaryServer {
 		public void accept(SslConfig ssl) {
 			ssl.keystoreFromPath(KEYSTORE_PATH.getOrThrow(), KEYSTORE_PASSWORD.getOrThrow());
 			ssl.securePort = securePort;
-			ssl.insecurePort = port;
+			//the plugin adds an insecure connector alongside the secure one by default, which served
+			//the whole api, basic authentication credentials included, in cleartext on PORT
+			ssl.insecure = false;
 		}
 	}
 
@@ -956,6 +967,14 @@ public final class EntityService implements AuxiliaryServer {
 										.entityObjectMapper(entities)));
 	}
 
+	/**
+	 * Returns the remote host, the first value of the X-Forwarded-For header if present, the remote address otherwise.
+	 * <p>Note that X-Forwarded-For is a client controlled header, a client with no reverse proxy in front of it, or
+	 * one appending to the header rather than overwriting it, can report whichever host it likes. The remote host is
+	 * used for display and logging only, never for authorization.
+	 * @param request the request
+	 * @return the remote host
+	 */
 	private static String remoteHost(HttpServletRequest request) {
 		String forwardHeader = request.getHeader(X_FORWARDED_FOR);
 		if (forwardHeader == null) {
@@ -963,6 +982,17 @@ public final class EntityService implements AuxiliaryServer {
 		}
 
 		return forwardHeader.split(",")[0];
+	}
+
+	/**
+	 * An attribute name naming a foreign key or a derived attribute is a malformed request, not a server fault.
+	 */
+	private static Column<?> column(Attribute<?> attribute) {
+		if (attribute instanceof Column) {
+			return (Column<?>) attribute;
+		}
+
+		throw new IllegalArgumentException("Attribute " + attribute + " is not a column");
 	}
 
 	private static String domainTypeName(Context context) throws ServerAuthenticationException {
@@ -974,7 +1004,7 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	private static UUID clientId(Context context) throws ServerAuthenticationException {
-		UUID headerClientId = UUID.fromString(checkHeaderParameter(context.header(CLIENT_ID), CLIENT_ID));
+		UUID headerClientId = clientId(checkHeaderParameter(context.header(CLIENT_ID), CLIENT_ID));
 		HttpSession session = context.req().getSession();
 		if (session.isNew()) {
 			session.setAttribute(CLIENT_ID, headerClientId);
@@ -991,6 +1021,18 @@ public final class EntityService implements AuxiliaryServer {
 		return headerClientId;
 	}
 
+	/**
+	 * A malformed client id is an authentication failure, not a server fault, as is a missing one.
+	 */
+	private static UUID clientId(String clientId) throws ServerAuthenticationException {
+		try {
+			return UUID.fromString(clientId);
+		}
+		catch (IllegalArgumentException e) {
+			throw new ServerAuthenticationException("Invalid " + CLIENT_ID + " header parameter");
+		}
+	}
+
 	private static Version clientVersion(Context context) {
 		String clientVersion = context.header(CLIENT_VERSION);
 
@@ -1004,10 +1046,23 @@ public final class EntityService implements AuxiliaryServer {
 		}
 
 		if (basicAuth.length() > BASIC_PREFIX_LENGTH && BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH))) {
-			return User.parse(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
+			return user(basicAuth.substring(BASIC_PREFIX_LENGTH));
 		}
 
 		throw new ServerAuthenticationException("Invalid authorization format");
+	}
+
+	/**
+	 * Malformed credentials are an authentication failure, not a server fault, as are missing ones.
+	 * <p>Note that the exception message must not echo the credentials back.
+	 */
+	private static User user(String credentials) throws ServerAuthenticationException {
+		try {
+			return User.parse(new String(Base64.getDecoder().decode(credentials)));
+		}
+		catch (IllegalArgumentException e) {
+			throw new ServerAuthenticationException("Invalid authorization format");
+		}
 	}
 
 	private static String checkHeaderParameter(String header, String headerParameter)
@@ -1020,14 +1075,43 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	private static void handleException(Context context, Exception exception) {
-		LOG.error(exception.getMessage(), exception);
+		if (expected(exception)) {
+			LOG.debug(exception.getMessage(), exception);
+		}
+		else {
+			LOG.error(exception.getMessage(), exception);
+		}
 		context.status(exceptionStatus(exception))
 						.result(exceptionResult(exception));
 	}
 
+	/**
+	 * Returns true for exceptions which a correctly functioning application produces during normal use,
+	 * a failed login, a row someone else changed first, a rejected value, a delete a dependency prevents.
+	 * <p>Logging these at ERROR buries genuine server faults in noise, an optimistic locking conflict
+	 * being the outcome the framework's update mechanism is designed to produce.
+	 */
+	private static boolean expected(Exception exception) {
+		return exception instanceof ServerAuthenticationException
+						|| exception instanceof EntityValidationException
+						|| exception instanceof ReferentialIntegrityException
+						|| exception instanceof UniqueConstraintException
+						|| exception instanceof EntityNotFoundException
+						|| exception instanceof MultipleEntitiesFoundException
+						|| exception instanceof EntityModifiedException;
+	}
+
+	/**
+	 * The status categorizes by whose fault the request was, 4xx the client's, 5xx ours.
+	 * <p>Note that the client deserializes the exception itself from the response body, the status
+	 * being for the benefit of anything between the two, a proxy, a load balancer, alerting.
+	 */
 	private static int exceptionStatus(Exception exception) {
 		if (exception instanceof ServerAuthenticationException) {
 			return HttpStatus.UNAUTHORIZED_401;
+		}
+		if (exception instanceof IllegalArgumentException) {
+			return HttpStatus.BAD_REQUEST_400;
 		}
 
 		return HttpStatus.INTERNAL_SERVER_ERROR_500;

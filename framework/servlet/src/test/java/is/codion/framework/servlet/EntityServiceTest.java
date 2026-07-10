@@ -78,6 +78,8 @@ public class EntityServiceTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 	private static final int OK = 200;
+	private static final int BAD_REQUEST = 400;
+	private static final int UNAUTHORIZED = 401;
 
 	private static String HOSTNAME;
 	private static String SERVER_BASEURL;
@@ -423,6 +425,37 @@ public class EntityServiceTest {
 		assertEquals(OK, response.statusCode());
 	}
 
+	@Test
+	void malformedAuthenticationHeaders() throws Exception {
+		//a missing header is 401, so a malformed one must not be 500, the server blaming itself for the client's input
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest(SERVER_JSON_BASEURL, "isTransactionOpen",
+						BodyPublishers.noBody(), "not a uuid", Version.version().toString(), createAuthorizationHeader()),
+						BodyHandlers.ofByteArray());
+		assertEquals(UNAUTHORIZED, response.statusCode());
+
+		response = HTTP_CLIENT.send(createRequest(SERVER_JSON_BASEURL, "isTransactionOpen",
+						BodyPublishers.noBody(), CLIENT_ID_STRING, Version.version().toString(), "Basic not!base64"),
+						BodyHandlers.ofByteArray());
+		assertEquals(UNAUTHORIZED, response.statusCode());
+
+		//a malformed optional version header is a bad request, not an authentication failure
+		response = HTTP_CLIENT.send(createRequest(SERVER_JSON_BASEURL, "isTransactionOpen",
+						BodyPublishers.noBody(), CLIENT_ID_STRING, "not a version", createAuthorizationHeader()),
+						BodyHandlers.ofByteArray());
+		assertEquals(BAD_REQUEST, response.statusCode());
+	}
+
+	@Test
+	void valuesForeignKey() throws Exception {
+		//a foreign key is not a column, the request is malformed
+		ObjectNode node = OBJECT_MAPPER.createObjectNode();
+		node.set("column", OBJECT_MAPPER.valueToTree(Employee.DEPARTMENT_FK.name()));
+		node.set("entityType", OBJECT_MAPPER.valueToTree(Employee.TYPE.name()));
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("values",
+						BodyPublishers.ofString(node.toString())), BodyHandlers.ofByteArray());
+		assertEquals(BAD_REQUEST, response.statusCode());
+	}
+
 	private static HttpRequest createRequest(String path) {
 		return createRequest(SERVER_BASEURL, path, BodyPublishers.noBody());
 	}
@@ -440,21 +473,31 @@ public class EntityServiceTest {
 	}
 
 	private static HttpRequest createRequest(String baseUrl, String path, BodyPublisher bodyPublisher) {
+		return createRequest(baseUrl, path, bodyPublisher, CLIENT_ID_STRING,
+						Version.version().toString(), createAuthorizationHeader());
+	}
+
+	private static HttpRequest createRequest(String baseUrl, String path, BodyPublisher bodyPublisher,
+																					 String clientId, String clientVersion, String authorization) {
 		return HttpRequest.newBuilder()
 						.uri(URI.create(baseUrl + path))
 						.POST(bodyPublisher)
 						.headers(new String[] {
 										EntityService.DOMAIN_TYPE, TestDomain.DOMAIN.name(),
 										EntityService.CLIENT_TYPE, "EntityJavalinTest",
-										EntityService.CLIENT_ID, CLIENT_ID_STRING,
-										EntityService.CLIENT_VERSION, Version.version().toString(),
-										"Authorization", createAuthorizationHeader()
+										EntityService.CLIENT_ID, clientId,
+										EntityService.CLIENT_VERSION, clientVersion,
+										"Authorization", authorization
 						})
 						.build();
 	}
 
 	private static String createAuthorizationHeader() {
-		return "Basic " + Base64.getEncoder().encodeToString((UNIT_TEST_USER.username() +
+		return "Basic " + createCredentials();
+	}
+
+	private static String createCredentials() {
+		return Base64.getEncoder().encodeToString((UNIT_TEST_USER.username() +
 						":" + String.valueOf(UNIT_TEST_USER.password())).getBytes());
 	}
 
