@@ -46,6 +46,9 @@ public final class TestDomain extends DomainModel {
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
 	public static final ReportType<String, String> REPORT = ReportType.reportType("report");
+	//a report producing bytes, a PDF for one, the case exporting a report to bytes serves, over JSON
+	public static final ReportType<String, byte[]> BYTE_ARRAY_REPORT = ReportType.reportType("byteArrayReport");
+	public static final ReportType<String, byte[]> UNREGISTERED_RETURN_REPORT = ReportType.reportType("unregisteredReturnReport");
 
 	public TestDomain() {
 		super(DOMAIN);
@@ -63,6 +66,22 @@ public final class TestDomain extends DomainModel {
 				return null;
 			}
 		});
+		add(BYTE_ARRAY_REPORT, byteArrayReport("byteArray.path"));
+		add(UNREGISTERED_RETURN_REPORT, byteArrayReport("unregisteredReturn.path"));
+	}
+
+	private static AbstractReport<Object, String, byte[]> byteArrayReport(String path) {
+		return new AbstractReport<Object, String, byte[]>(path, false) {
+			@Override
+			public byte[] fill(Connection connection, String parameters) {
+				return new byte[] {'%', 'P', 'D', 'F'};
+			}
+
+			@Override
+			public Object load() {
+				return null;
+			}
+		};
 	}
 
 	public interface Department {

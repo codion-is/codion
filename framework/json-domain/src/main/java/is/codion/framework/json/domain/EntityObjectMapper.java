@@ -76,6 +76,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 	private final Map<FunctionType<?, ?, ?>, JsonType<?>> functionParameters = new HashMap<>();
 	private final Map<ReportType<?, ?>, JsonType<?>> reportParameters = new HashMap<>();
 	private final Map<FunctionType<?, ?, ?>, JsonType<?>> functionReturnTypes = new HashMap<>();
+	private final Map<ReportType<?, ?>, JsonType<?>> reportReturnTypes = new HashMap<>();
 
 	EntityObjectMapper(Entities entities) {
 		this.entities = requireNonNull(entities);
@@ -248,6 +249,24 @@ public final class EntityObjectMapper extends ObjectMapper {
 		return (JsonType<P>) reportParameters.computeIfAbsent(requireNonNull(reportType),
 						k -> new DefaultJsonType<>("json parameter type for report: " + reportType.name(),
 										"EntityObjectMapper.parameter(reportType).set(..)"));
+	}
+
+	/**
+	 * Returns the {@link JsonType} of the given report's result, for registering the type it is
+	 * serialized as and deserialized from, when the report is filled over a JSON connection.
+	 * <p>A report filled over a JSON connection requires a registered result type; the type parameter
+	 * of {@link ReportType} is erased at runtime, leaving nothing to deserialize the response as, and
+	 * a type name on the wire would be a type name the client resolves, which is what JSON avoids. A
+	 * report exported to a {@code byte[]}, a PDF for example, registers {@code set(byte[].class)}.
+	 * @param reportType the report type
+	 * @param <R> the report result type
+	 * @return the result {@link JsonType} for the given report
+	 * @see #parameter(ReportType)
+	 */
+	public <R> JsonType<R> returnType(ReportType<?, R> reportType) {
+		return (JsonType<R>) reportReturnTypes.computeIfAbsent(requireNonNull(reportType),
+						k -> new DefaultJsonType<>("json return type for report: " + reportType.name(),
+										"EntityObjectMapper.returnType(reportType).set(..)"));
 	}
 
 	/**
