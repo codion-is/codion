@@ -30,7 +30,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
 import java.io.File;
+import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -38,6 +42,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyStore;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -59,9 +66,6 @@ public class EntityServiceSecureTest {
 	@BeforeAll
 	public static void setUp() throws Exception {
 		Clients.SERVER_HOSTNAME.set("localhost");
-		System.setProperty("javax.net.ssl.trustStore",
-						new File("../server/src/main/config/truststore.jks").getAbsolutePath());
-		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 		System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
 		EntityService.SERIALIZATION.set(false);
 		EntityService.SECURE.set(true);
@@ -87,8 +91,6 @@ public class EntityServiceSecureTest {
 			server.shutdown();
 		}
 		System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.FALSE.toString());
-		System.clearProperty("javax.net.ssl.trustStore");
-		System.clearProperty("javax.net.ssl.trustStorePassword");
 		Clients.SERVER_HOSTNAME.set(null);
 		ServerConfiguration.AUXILIARY_SERVER_FACTORIES.set(null);
 		EntityService.SERIALIZATION.set(false);
@@ -99,7 +101,7 @@ public class EntityServiceSecureTest {
 
 	@Test
 	void securePortServes() throws Exception {
-		HttpResponse<byte[]> response = HttpClient.newHttpClient()
+		HttpResponse<byte[]> response = createHttpClient()
 						.send(createRequest("https://localhost:" + EntityService.SECURE_PORT.get()), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
 	}
@@ -107,8 +109,28 @@ public class EntityServiceSecureTest {
 	@Test
 	void insecurePortIsNotListening() {
 		//the whole api, basic authentication credentials included, was served in cleartext alongside the secure connector
-		assertThrows(ConnectException.class, () -> HttpClient.newHttpClient()
+		assertThrows(ConnectException.class, () -> createHttpClient()
 						.send(createRequest("http://localhost:" + EntityService.PORT.get()), BodyHandlers.ofByteArray()));
+	}
+
+	/**
+	 * The trust store is loaded into an {@link SSLContext} of our own rather than set as a system property,
+	 * the default context being cached from the first use anywhere in the JVM, which another test class may
+	 * well have reached first.
+	 */
+	private static HttpClient createHttpClient() throws Exception {
+		KeyStore trustStore = KeyStore.getInstance("pkcs12");
+		try (InputStream inputStream = Files.newInputStream(Paths.get("../server/src/main/config/truststore.jks"))) {
+			trustStore.load(inputStream, "changeit".toCharArray());
+		}
+		TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+		trustManagerFactory.init(trustStore);
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+		sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
+
+		return HttpClient.newBuilder()
+						.sslContext(sslContext)
+						.build();
 	}
 
 	private static HttpRequest createRequest(String baseUrl) {

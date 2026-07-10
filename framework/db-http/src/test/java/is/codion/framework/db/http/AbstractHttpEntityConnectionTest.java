@@ -90,6 +90,41 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
+	void executeFunctionReturningEntity() {
+		Entity department = connection.execute(TestDomain.ENTITY_FUNCTION, 10L);
+		assertEquals(Department.TYPE, department.type());
+		assertEquals("ACCOUNTING", department.get(Department.NAME));
+	}
+
+	@Test
+	void executeFunctionReturningEntities() {
+		List<Entity> departments = connection.execute(TestDomain.ENTITIES_FUNCTION, null);
+		assertEquals(4, departments.size());
+		//the element type survives, a raw List would hold LinkedHashMaps
+		assertEquals(Department.TYPE, departments.get(0).type());
+	}
+
+	@Test
+	void executeFunctionReturningGenericDtoList() {
+		List<TestDomain.Dto> parameter = asList(new TestDomain.Dto("one", 1), new TestDomain.Dto("two", 2));
+		List<TestDomain.Dto> result = connection.execute(TestDomain.DTO_FUNCTION, parameter);
+		//guards the generics fix, a TypeReference<List<Dto>> registered as its raw type
+		//leaves both the parameter and the return value a List<LinkedHashMap>
+		assertEquals(parameter, result);
+		assertEquals(TestDomain.Dto.class, result.get(0).getClass());
+	}
+
+	@Test
+	void executeFunctionReturningPrimitive() {
+		assertEquals(42, connection.execute(TestDomain.INTEGER_FUNCTION, 41));
+	}
+
+	@Test
+	void executeFunctionReturningNull() {
+		assertNull(connection.execute(TestDomain.NULL_FUNCTION, null));
+	}
+
+	@Test
 	void report() {
 		String result = connection.report(TestDomain.REPORT, "");
 		assertNotNull(result);

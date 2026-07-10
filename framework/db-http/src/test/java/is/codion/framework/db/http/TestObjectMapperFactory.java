@@ -20,6 +20,7 @@ package is.codion.framework.db.http;
 
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
@@ -38,6 +39,17 @@ public final class TestObjectMapperFactory implements EntityObjectMapperFactory 
 		entityObjectMapper.parameter(TestDomain.FUNCTION).set(new TypeReference<>() {});
 		entityObjectMapper.parameter(TestDomain.PROCEDURE).set(new TypeReference<>() {});
 		entityObjectMapper.parameter(TestDomain.REPORT).set(String.class);
+		entityObjectMapper.returnType(TestDomain.FUNCTION).set(new TypeReference<>() {});
+		entityObjectMapper.parameter(TestDomain.ENTITY_FUNCTION).set(Long.class);
+		entityObjectMapper.returnType(TestDomain.ENTITY_FUNCTION).set(Entity.class);
+		entityObjectMapper.returnType(TestDomain.ENTITIES_FUNCTION).set(new TypeReference<>() {});
+		entityObjectMapper.parameter(TestDomain.DTO_FUNCTION).set(new TypeReference<>() {});
+		entityObjectMapper.returnType(TestDomain.DTO_FUNCTION).set(new TypeReference<>() {});
+		entityObjectMapper.parameter(TestDomain.INTEGER_FUNCTION).set(Integer.class);
+		entityObjectMapper.returnType(TestDomain.INTEGER_FUNCTION).set(Integer.class);
+		entityObjectMapper.returnType(TestDomain.NULL_FUNCTION).set(Entity.class);
+		//UNREGISTERED_RETURN_FUNCTION has no return type and UNREGISTERED_PARAMETER_FUNCTION no parameter type, on purpose
+		entityObjectMapper.returnType(TestDomain.UNREGISTERED_PARAMETER_FUNCTION).set(Integer.class);
 
 		return entityObjectMapper;
 	}

@@ -195,8 +195,9 @@ public class EntityServiceTest {
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("function",
 						BodyPublishers.ofString(request.toString())), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
-		// Deserialize response (returns empty list)
-		List<Integer> result = Serializer.deserialize(response.body());
+		//the return value is json, not a serialized object
+		assertTrue(response.headers().firstValue("Content-Type").orElseThrow().startsWith("application/json"));
+		List<Integer> result = OBJECT_MAPPER.readValue(new String(response.body(), UTF_8), new TypeReference<List<Integer>>() {});
 		assertEquals(asList(1, 2, 3), result);
 	}
 

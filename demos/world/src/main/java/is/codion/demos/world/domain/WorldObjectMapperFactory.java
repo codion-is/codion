@@ -52,6 +52,7 @@ public final class WorldObjectMapperFactory extends AbstractEntityObjectMapperFa
 		objectMapper.addSerializer(Location.class, new LocationSerializer());
 		objectMapper.addDeserializer(Location.class, new LocationDeserializer());
 		objectMapper.parameter(Country.AVERAGE_CITY_POPULATION).set(String.class);
+		objectMapper.returnType(Country.AVERAGE_CITY_POPULATION).set(Double.class);
 
 		return objectMapper;
 	}

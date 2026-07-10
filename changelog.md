@@ -39,6 +39,9 @@ Codion Change Log
 - RemoteEntityConnectionProvider now reconnects to an unreachable-but-cached server by registry name, letting connect() decide; server discovery filters out servers with no connections available, which hid the very server still holding the client's session (existing sessions being exempt from the connection limit).
 - RemoteEntityResultIteratorWrapper now chains the RemoteException as the cause of the DatabaseException it throws, instead of discarding it.
 - RemoteEntityConnection client-side query cache now also serves selectSingle(Condition)/selectSingle(Select) and select(Key), sharing cache entries with the equivalent select(), consistent with the local and http tiers where these all route through select(Select).
+### is.codion.framework.json.domain
+- EntityObjectMapper.returnType(FunctionType) added, registering the type a function's return value is serialized as and deserialized from over a json connection. A function called over one requires a registered return type, its FunctionType return type parameter being erased at runtime, and fails with a message naming the function and the registration.
+- EntityObjectMapper.ParameterType renamed JsonType, being what returnType() returns as well, and its get() now returns a JavaType rather than a Class. set(TypeReference) previously stored the reference's raw type, so a parameter registered as new TypeReference<List<Dto>>() {} was deserialized as a raw List, leaving the caller holding a List<LinkedHashMap>.
 ### is.codion.framework.json.db
 - ErrorEnvelope and ErrorKind added, the wire form of a server side exception on the json error channel. The kind is a closed enum determining the http status, the server log severity and the exception the client reconstructs; nothing on the wire names a class.
 ### is.codion.framework.db.http
@@ -47,6 +50,7 @@ Codion Change Log
 - A json connection no longer deserializes the error response, which was a readObject() on the most travelled failure path of the tier, one an attacker able to inject a single response could reach. The typed ErrorEnvelope is parsed and the exception reconstructed from its kind. The serial connection, being a java serialization channel by definition, is unchanged.
 - Neither a stack trace nor a cause chain crosses the wire in json mode; a server originated exception carries the stack trace of the client throw site. An unmatched server exception carries a generic message and a correlation id identifying the server log entry.
 - HttpEntityConnection.close(), startTransaction(), commitTransaction() and rollbackTransaction() no longer deserialize the response, which carries no payload. In json mode, with an injected domain, the only remaining java deserialization is the report() return value.
+- A json connection now sends and receives a function's return value as json, rather than receiving a serialized object. With an injected domain, the report() return value is the last java deserialization a json connection performs.
 ### is.codion.framework.servlet
 - EntityService, the isQueryCacheEnabled and setQueryCacheEnabled routes (serial and json) removed, query caching is a client-side concern.
 - EntityService, enabling SECURE no longer leaves a cleartext connector listening on PORT alongside the secure one, which served the whole api, basic authentication credentials included, in the clear. The javalin ssl plugin adds an insecure connector by default; it is now disabled.
@@ -56,6 +60,7 @@ Codion Change Log
 - EntityService.information() no longer reports the insecure port when only the secure port is listening.
 - EntityService.remoteHost() javadoc now documents that X-Forwarded-For is a client controlled header, honored for display and logging only, never for authorization.
 - EntityService.SECURE_PORT javadoc corrected, it described the insecure port.
+- EntityService, the json function route responds with application/json rather than an octet stream, writing the return value as the registered return type.
 ### is.codion.framework.model
 - EntitySearchModel.Selection.single() added, an ObservableState indicating whether exactly one entity is selected.
 - AbstractEntityApplicationModel, the custom-Preferences constructor javadoc now notes that startup preferences (frame size, look and feel, default username) are read from the default root before the model exists.

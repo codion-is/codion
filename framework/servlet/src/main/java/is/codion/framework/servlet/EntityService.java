@@ -60,6 +60,7 @@ import is.codion.framework.json.db.ErrorKind;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -404,7 +405,7 @@ public final class EntityService implements AuxiliaryServer {
 				Object parameter = null;
 				JsonNode parameterNode = requestNode.get(PARAMETER);
 				if (parameterNode != null) {
-					Class<?> parameterType = objectMapper.entityObjectMapper().parameter(procedureType).get();
+					JavaType parameterType = objectMapper.entityObjectMapper().parameter(procedureType).get();
 					parameter = objectMapper.readValue(parameterNode.toString(), parameterType);
 				}
 
@@ -446,13 +447,16 @@ public final class EntityService implements AuxiliaryServer {
 				Object parameter = null;
 				JsonNode parameterNode = requestNode.get(PARAMETER);
 				if (parameterNode != null) {
-					Class<?> parameterType = objectMapper.entityObjectMapper().parameter(functionType).get();
+					JavaType parameterType = objectMapper.entityObjectMapper().parameter(functionType).get();
 					parameter = objectMapper.readValue(parameterNode.toString(), parameterType);
 				}
+				//resolved before the function runs, an unregistered return type must not
+				//fail after the fact, the function having already had its effect
+				JavaType returnType = objectMapper.entityObjectMapper().returnType(functionType).get();
 
 				context.status(HttpStatus.OK_200)
-								.contentType(ContentType.APPLICATION_OCTET_STREAM)
-								.result(serialize(connection.execute(functionType, parameter)));
+								.contentType(ContentType.APPLICATION_JSON)
+								.result(objectMapper.writerFor(returnType).writeValueAsString(connection.execute(functionType, parameter)));
 			}
 			catch (Exception e) {
 				handleException(context, e);
@@ -486,7 +490,7 @@ public final class EntityService implements AuxiliaryServer {
 				Object parameter = null;
 				JsonNode parameterNode = requestNode.get(PARAMETER);
 				if (parameterNode != null) {
-					Class<?> parameterType = objectMapper.entityObjectMapper().parameter(reportType).get();
+					JavaType parameterType = objectMapper.entityObjectMapper().parameter(reportType).get();
 					parameter = objectMapper.readValue(parameterNode.toString(), parameterType);
 				}
 
