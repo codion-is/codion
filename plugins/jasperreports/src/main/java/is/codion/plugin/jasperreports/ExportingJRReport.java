@@ -18,8 +18,6 @@
  */
 package is.codion.plugin.jasperreports;
 
-import is.codion.common.db.report.ReportException;
-
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
@@ -70,13 +68,10 @@ final class ExportingJRReport<R> implements JRReport<R> {
 		try {
 			return export.export(print);
 		}
-		catch (ReportException e) {
-			throw e;
-		}
 		catch (Exception e) {
 			//as in AbstractJRReport.fill(), no engine exception may escape, a JRException or a
 			//JRRuntimeException from a missing exporter extension being the likely ones here
-			throw new ReportException(e);
+			throw JasperReports.reportException(e);
 		}
 	}
 }

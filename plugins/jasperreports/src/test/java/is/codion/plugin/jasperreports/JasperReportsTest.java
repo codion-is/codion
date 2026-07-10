@@ -87,8 +87,9 @@ public class JasperReportsTest {
 		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
 		ReportException exception = assertThrows(ReportException.class, () ->
 						Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters));
-		//no engine type may escape fill(), a client throwing it must not need the engine to deserialize it
-		assertFalse(exception.getClass().getName().startsWith("net.sf.jasperreports"));
+		//no engine type may escape fill(), by value or as a cause, a client throwing it
+		//must not need the engine to deserialize it
+		assertNoEngineType(exception);
 	}
 
 	@Test
@@ -220,12 +221,14 @@ public class JasperReportsTest {
 		JRExport<byte[]> failing = print -> {
 			throw new JRException("Missing export extension");
 		};
-		//a failing export, a missing exporter extension being the likely one, must not
-		//let a JasperReports exception escape any more than a failing fill() may
+		//a failing export, a missing exporter extension being the likely one, must not let a
+		//JasperReports exception escape, by value or as a cause, any more than a failing fill() may.
+		//The message is kept, the engine cause dropped
 		ReportException exception = assertThrows(ReportException.class, () ->
 						JasperReports.export(Employee.CLASS_PATH_REPORT, failing)
 										.fill(connection.connection(), reportParameters));
-		assertInstanceOf(JRException.class, exception.getCause());
+		assertNoEngineType(exception);
+		assertTrue(exception.getMessage().contains("Missing export extension"));
 		assertThrows(ReportException.class, () ->
 						JasperReports.export(Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters), failing));
 	}
@@ -241,6 +244,27 @@ public class JasperReportsTest {
 		byte[] pdf = CONNECTION_PROVIDER.connection().report(Employee.PDF_REPORT, reportParameters);
 
 		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(pdf, 4));
+	}
+
+	@Test
+	void reportFailureThroughEntityConnectionCarriesNoEngineType() {
+		Report.CACHE_REPORTS.set(false);
+		Report.REPORT_PATH.set(REPORT_PATH);
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", "not a collection");
+
+		//the same failure the fat client tolerates must reach a client without the engine intact,
+		//the exception it throws being serializable there, carrying no JasperReports type
+		ReportException exception = assertThrows(ReportException.class, () ->
+						CONNECTION_PROVIDER.connection().report(Employee.PDF_REPORT, reportParameters));
+		assertNoEngineType(exception);
+	}
+
+	private static void assertNoEngineType(Throwable throwable) {
+		for (Throwable t = throwable; t != null; t = t.getCause()) {
+			assertFalse(t.getClass().getName().startsWith("net.sf.jasperreports"),
+							"engine type in the exception chain: " + t.getClass().getName());
+		}
 	}
 
 	@Test

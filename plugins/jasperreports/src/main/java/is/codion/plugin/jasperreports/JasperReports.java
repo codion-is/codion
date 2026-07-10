@@ -104,11 +104,8 @@ public final class JasperReports {
 		try {
 			return export.export(print);
 		}
-		catch (ReportException e) {
-			throw e;
-		}
 		catch (Exception e) {
-			throw new ReportException(e);
+			throw reportException(e);
 		}
 	}
 
@@ -139,11 +136,27 @@ public final class JasperReports {
 		try {
 			return JasperFillManager.fillReport(report.load(), reportParameters, dataSource);
 		}
-		catch (ReportException e) {
-			throw e;
-		}
 		catch (Exception e) {
-			throw new ReportException(e);
+			throw reportException(e);
 		}
+	}
+
+	/**
+	 * Returns the given exception as a {@link ReportException} carrying no cause, only its message
+	 * and stack trace. Filling a report or exporting one runs the reporting engine, so the exception
+	 * behind a failure, or the one a load failure chains, is a JasperReports type. Such a cause reaching
+	 * the client would require the engine there to deserialize the failure of a report the client need
+	 * never have heard of, exactly the coupling exporting the result removes. The engine stack trace,
+	 * being strings, is kept, and the server logs the exception in full before rethrowing.
+	 */
+	static ReportException reportException(Exception exception) {
+		if (exception instanceof ReportException && exception.getCause() == null) {
+			//already the exception this contract throws, carrying no engine type
+			return (ReportException) exception;
+		}
+		ReportException reportException = new ReportException(exception.getMessage());
+		reportException.setStackTrace(exception.getStackTrace());
+
+		return reportException;
 	}
 }

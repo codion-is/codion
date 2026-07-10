@@ -23,6 +23,11 @@ dependencies {
     testImplementation(libs.javalin) {
         exclude(group = "org.jetbrains", module = "annotations")
     }
+    // JasperReportsWireTest: a real server filling and exporting a report, a remote client receiving the bytes
+    testImplementation(project(":codion-common-rmi"))
+    testImplementation(project(":codion-framework-db-http"))
+    testImplementation(project(":codion-framework-server"))
+    testImplementation(project(":codion-framework-servlet"))
     testRuntimeOnly(libs.h2)
 }
 
