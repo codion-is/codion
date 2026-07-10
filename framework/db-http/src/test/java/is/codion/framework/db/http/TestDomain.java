@@ -23,12 +23,15 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
@@ -171,11 +174,28 @@ public final class TestDomain extends DomainModel {
 						.build());
 	}
 
+	//Serializable for the sake of the serial connection, the json one has no such requirement
+	public record Dto(String name, int number) implements Serializable {}
+
 	public static final FunctionType<EntityConnection, List<String>, List<Integer>> FUNCTION = FunctionType.functionType("functionId");
 	public static final ProcedureType<EntityConnection, List<String>> PROCEDURE = ProcedureType.procedureType("procedureId");
+	public static final FunctionType<EntityConnection, Long, Entity> ENTITY_FUNCTION = FunctionType.functionType("entityFunction");
+	public static final FunctionType<EntityConnection, Void, List<Entity>> ENTITIES_FUNCTION = FunctionType.functionType("entitiesFunction");
+	public static final FunctionType<EntityConnection, List<Dto>, List<Dto>> DTO_FUNCTION = FunctionType.functionType("dtoFunction");
+	public static final FunctionType<EntityConnection, Integer, Integer> INTEGER_FUNCTION = FunctionType.functionType("integerFunction");
+	public static final FunctionType<EntityConnection, Void, Entity> NULL_FUNCTION = FunctionType.functionType("nullFunction");
+	public static final FunctionType<EntityConnection, Void, Integer> UNREGISTERED_RETURN_FUNCTION = FunctionType.functionType("unregisteredReturnFunction");
+	public static final FunctionType<EntityConnection, String, Integer> UNREGISTERED_PARAMETER_FUNCTION = FunctionType.functionType("unregisteredParameterFunction");
 
 	void operations() {
 		add(PROCEDURE, (connection, parameter) -> {});
 		add(FUNCTION, (connection, parameter) -> asList(1, 2, 3));
+		add(ENTITY_FUNCTION, (connection, deptNo) -> connection.selectSingle(Department.ID.equalTo(deptNo)));
+		add(ENTITIES_FUNCTION, (connection, parameter) -> connection.select(Select.all(Department.TYPE).build()));
+		add(DTO_FUNCTION, (connection, parameter) -> parameter);
+		add(INTEGER_FUNCTION, (connection, parameter) -> parameter + 1);
+		add(NULL_FUNCTION, (connection, parameter) -> null);
+		add(UNREGISTERED_RETURN_FUNCTION, (connection, parameter) -> 42);
+		add(UNREGISTERED_PARAMETER_FUNCTION, (connection, parameter) -> 42);
 	}
 }

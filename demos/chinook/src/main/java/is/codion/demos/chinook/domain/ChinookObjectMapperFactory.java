@@ -26,6 +26,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParamet
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.json.domain.AbstractEntityObjectMapperFactory;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
@@ -45,6 +46,8 @@ public final class ChinookObjectMapperFactory extends AbstractEntityObjectMapper
 		objectMapper.parameter(Track.RAISE_PRICE).set(RaisePriceParameters.class);
 		objectMapper.parameter(Playlist.RANDOM_PLAYLIST).set(RandomPlaylistParameters.class);
 		objectMapper.parameter(Customer.REPORT).set(new TypeReference<>() {});
+		objectMapper.returnType(Track.RAISE_PRICE).set(new TypeReference<>() {});
+		objectMapper.returnType(Playlist.RANDOM_PLAYLIST).set(Entity.class);
 
 		return objectMapper;
 	}

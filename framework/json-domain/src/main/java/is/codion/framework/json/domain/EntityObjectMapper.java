@@ -31,6 +31,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,13 +39,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,9 +72,10 @@ public final class EntityObjectMapper extends ObjectMapper {
 	private final EntityDeserializer entityDeserializer;
 	private final ConditionSerializer conditionSerializer;
 	private final ConditionDeserializer conditionDeserializer;
-	private final Map<ProcedureType<?, ?>, ParameterType<?>> procedureParameters = new HashMap<>();
-	private final Map<FunctionType<?, ?, ?>, ParameterType<?>> functionParameters = new HashMap<>();
-	private final Map<ReportType<?, ?, ?>, ParameterType<?>> reportParameters = new HashMap<>();
+	private final Map<ProcedureType<?, ?>, JsonType<?>> procedureParameters = new HashMap<>();
+	private final Map<FunctionType<?, ?, ?>, JsonType<?>> functionParameters = new HashMap<>();
+	private final Map<ReportType<?, ?, ?>, JsonType<?>> reportParameters = new HashMap<>();
+	private final Map<FunctionType<?, ?, ?>, JsonType<?>> functionReturnTypes = new HashMap<>();
 
 	EntityObjectMapper(Entities entities) {
 		this.entities = requireNonNull(entities);
@@ -208,54 +211,89 @@ public final class EntityObjectMapper extends ObjectMapper {
 	}
 
 	/**
+	 * Returns the {@link JsonType} of the given procedure's parameter, for registering the type
+	 * the parameter is deserialized as, when the procedure is called over a JSON connection.
 	 * @param procedureType the procedure type
 	 * @param <P> the procedure parameter type
-	 * @return the {@link ParameterType} for the given procedure
+	 * @return the parameter {@link JsonType} for the given procedure
 	 */
-	public <P> ParameterType<P> parameter(ProcedureType<?, P> procedureType) {
-		return (ParameterType<P>) procedureParameters.computeIfAbsent(requireNonNull(procedureType),
-						k -> new DefaultParameterType<>("procedure: " + procedureType.name()));
+	public <P> JsonType<P> parameter(ProcedureType<?, P> procedureType) {
+		return (JsonType<P>) procedureParameters.computeIfAbsent(requireNonNull(procedureType),
+						k -> new DefaultJsonType<>("json parameter type for procedure: " + procedureType.name(),
+										"EntityObjectMapper.parameter(procedureType).set(..)"));
 	}
 
 	/**
+	 * Returns the {@link JsonType} of the given function's parameter, for registering the type
+	 * the parameter is deserialized as, when the function is called over a JSON connection.
 	 * @param functionType the function type
 	 * @param <P> the function parameter type
-	 * @return the {@link ParameterType} for the given function
+	 * @return the parameter {@link JsonType} for the given function
+	 * @see #returnType(FunctionType)
 	 */
-	public <P> ParameterType<P> parameter(FunctionType<?, P, ?> functionType) {
-		return (ParameterType<P>) functionParameters.computeIfAbsent(requireNonNull(functionType),
-						k -> new DefaultParameterType<>("function: " + functionType.name()));
+	public <P> JsonType<P> parameter(FunctionType<?, P, ?> functionType) {
+		return (JsonType<P>) functionParameters.computeIfAbsent(requireNonNull(functionType),
+						k -> new DefaultJsonType<>("json parameter type for function: " + functionType.name(),
+										"EntityObjectMapper.parameter(functionType).set(..)"));
 	}
 
 	/**
+	 * Returns the {@link JsonType} of the given report's parameter, for registering the type
+	 * the parameter is deserialized as, when the report is filled over a JSON connection.
 	 * @param reportType the report type
 	 * @param <P> the report parameter type
-	 * @return the {@link ParameterType} for the given report
+	 * @return the parameter {@link JsonType} for the given report
 	 */
-	public <P> ParameterType<P> parameter(ReportType<?, P, ?> reportType) {
-		return (ParameterType<P>) reportParameters.computeIfAbsent(requireNonNull(reportType),
-						k -> new DefaultParameterType<>("report: " + reportType.name()));
+	public <P> JsonType<P> parameter(ReportType<?, P, ?> reportType) {
+		return (JsonType<P>) reportParameters.computeIfAbsent(requireNonNull(reportType),
+						k -> new DefaultJsonType<>("json parameter type for report: " + reportType.name(),
+										"EntityObjectMapper.parameter(reportType).set(..)"));
 	}
 
 	/**
-	 * @param <P> the parameter type
+	 * Returns the {@link JsonType} of the given function's return value, for registering the type
+	 * it is serialized as and deserialized from, when the function is called over a JSON connection.
+	 * <p>A function called over a JSON connection requires a registered return type; the type parameter
+	 * of {@link FunctionType} is erased at runtime, leaving nothing to deserialize the response as, and
+	 * a type name on the wire would be a type name the client resolves, which is what JSON avoids.
+	 * @param functionType the function type
+	 * @param <R> the function return type
+	 * @return the return {@link JsonType} for the given function
+	 * @see #parameter(FunctionType)
 	 */
-	public sealed interface ParameterType<P> {
+	public <R> JsonType<R> returnType(FunctionType<?, ?, R> functionType) {
+		return (JsonType<R>) functionReturnTypes.computeIfAbsent(requireNonNull(functionType),
+						k -> new DefaultJsonType<>("json return type for function: " + functionType.name(),
+										"EntityObjectMapper.returnType(functionType).set(..)"));
+	}
+
+	/**
+	 * The type a value is serialized as and deserialized from, registered once and for all.
+	 * @param <T> the value type
+	 * @see EntityObjectMapper#parameter(FunctionType)
+	 * @see EntityObjectMapper#returnType(FunctionType)
+	 */
+	public sealed interface JsonType<T> {
+
+		/**
+		 * Registers a generic type, {@code new TypeReference<List<Track>>() {}}, whose type arguments,
+		 * unlike those of a {@link Class}, survive to the deserialization site.
+		 * @param type the type
+		 * @throws IllegalStateException in case a type has already been registered
+		 */
+		void set(TypeReference<T> type);
 
 		/**
 		 * @param type the type
+		 * @throws IllegalStateException in case a type has already been registered
 		 */
-		void set(TypeReference<P> type);
+		void set(Class<T> type);
 
 		/**
-		 * @param type the type
+		 * @return the registered type
+		 * @throws IllegalStateException in case no type has been registered
 		 */
-		void set(Class<P> type);
-
-		/**
-		 * @return the type
-		 */
-		Class<P> get();
+		JavaType get();
 	}
 
 	/**
@@ -267,48 +305,44 @@ public final class EntityObjectMapper extends ObjectMapper {
 		return new EntityObjectMapper(entities);
 	}
 
-	private static final class DefaultParameterType<P> implements ParameterType<P> {
+	private static final class DefaultJsonType<T> implements JsonType<T> {
 
 		private final String identifier;
+		private final String registration;
 
-		private Class<P> type;
+		private @Nullable JavaType type;
 
-		private DefaultParameterType(String identifier) {
+		private DefaultJsonType(String identifier, String registration) {
 			this.identifier = identifier;
+			this.registration = registration;
 		}
 
 		@Override
-		public void set(TypeReference<P> type) {
-			set(rawType(requireNonNull(type)));
+		public void set(TypeReference<T> type) {
+			//the type reference, not its raw type, a List<Track> deserialized as a
+			//List leaves the caller holding a List<LinkedHashMap>
+			set(TypeFactory.defaultInstance().constructType(requireNonNull(type)));
 		}
 
 		@Override
-		public void set(Class<P> type) {
-			if (this.type != null) {
-				throw new IllegalStateException("Type already set for " + identifier);
-			}
-			this.type = requireNonNull(type);
+		public void set(Class<T> type) {
+			set(TypeFactory.defaultInstance().constructType(requireNonNull(type)));
 		}
 
 		@Override
-		public Class<P> get() {
+		public JavaType get() {
 			if (type == null) {
-				throw new IllegalStateException("Type not set for " + identifier);
+				throw new IllegalStateException("No " + identifier + " registered, register one via " + registration);
 			}
 
 			return type;
 		}
 
-		private static <T> Class<T> rawType(TypeReference<T> typeReference) {
-			Type type = typeReference.getType();
-			if (type instanceof ParameterizedType) {
-				return (Class<T>) ((ParameterizedType) type).getRawType();
+		private void set(JavaType javaType) {
+			if (type != null) {
+				throw new IllegalStateException(identifier + " already registered");
 			}
-			else if (type instanceof Class<?>) {
-				return (Class<T>) type;
-			}
-
-			throw new IllegalArgumentException("Cannot extract raw type from: " + type);
+			this.type = javaType;
 		}
 	}
 }

@@ -60,6 +60,24 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 	}
 
 	@Test
+	void unregisteredReturnType() {
+		//the client resolves the return type before the request, so the function never runs
+		IllegalStateException exception = assertThrows(IllegalStateException.class,
+						() -> createConnection().execute(TestDomain.UNREGISTERED_RETURN_FUNCTION, null));
+		assertEquals("No json return type for function: unregisteredReturnFunction registered, "
+						+ "register one via EntityObjectMapper.returnType(functionType).set(..)", exception.getMessage());
+	}
+
+	@Test
+	void unregisteredParameterType() {
+		//the server resolves the parameter type, so this message crosses the wire in an error envelope
+		IllegalStateException exception = assertThrows(IllegalStateException.class,
+						() -> createConnection().execute(TestDomain.UNREGISTERED_PARAMETER_FUNCTION, "a parameter"));
+		assertEquals("No json parameter type for function: unregisteredParameterFunction registered, "
+						+ "register one via EntityObjectMapper.parameter(functionType).set(..)", exception.getMessage());
+	}
+
+	@Test
 	void unknownErrorKind() {
 		//a client older than the server, an unknown kind must be inert rather than resolved by name
 		String envelope = "{\"kind\":\"KIND_FROM_THE_FUTURE\",\"message\":\"something happened\","

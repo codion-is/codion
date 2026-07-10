@@ -143,6 +143,8 @@ When using HTTP-based connections with JSON serialization enabled (via {url-java
 
 Jackson's `ObjectMapper` requires target types to deserialize JSON. While `FunctionType` and `ProcedureType` carry generic type parameters, these are erased at runtime. The type registry provides this information to the JSON serialization layer.
 
+A function called over a JSON connection therefore requires a registered return type, and fails with a message naming the function and the registration if it has none. Register a generic type via a `TypeReference`, `new TypeReference<List<Track>>() {}`, whose type arguments, unlike those of a `Class`, survive to the deserialization site.
+
 [#_entityobjectmapperfactory]
 === EntityObjectMapperFactory
 
