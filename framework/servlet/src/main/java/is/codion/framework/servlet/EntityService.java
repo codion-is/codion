@@ -18,6 +18,8 @@
  */
 package is.codion.framework.servlet;
 
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.operation.FunctionType;
@@ -27,6 +29,7 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.AuxiliaryServer;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
+import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.utilities.property.PropertyValue;
@@ -36,9 +39,12 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
+import is.codion.framework.db.exception.DeleteEntityException;
 import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.InsertEntityException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
@@ -48,12 +54,18 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.json.db.DatabaseObjectMapper;
+import is.codion.framework.json.db.ErrorEnvelope;
+import is.codion.framework.json.db.ErrorKind;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SslConfig;
 import io.javalin.community.ssl.SslPlugin;
@@ -63,6 +75,7 @@ import io.javalin.http.Context;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.eclipse.jetty.http.HttpStatus;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +101,7 @@ import static is.codion.common.db.report.ReportType.reportType;
 import static is.codion.common.utilities.Configuration.*;
 import static is.codion.common.utilities.Serializer.serialize;
 import static is.codion.common.utilities.Text.nullOrEmpty;
+import static is.codion.framework.json.db.ErrorEnvelope.*;
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
 import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERENCE;
 import static java.util.Objects.requireNonNull;
@@ -200,6 +214,7 @@ public final class EntityService implements AuxiliaryServer {
 	private static final String URL_SERIAL = "entities/serial/";
 	private static final String URL_JSON = "entities/json/";
 	private static final String PARAMETER = "parameter";
+	private static final String INTERNAL_ERROR = "Internal server error";
 
 	private final EntitiesHandler entitiesHandler = new EntitiesHandler();
 	private final CloseHandler closeHandler = new CloseHandler();
@@ -282,7 +297,7 @@ public final class EntityService implements AuxiliaryServer {
 
 	private final class CloseHandler {
 
-		private void serial(Context context) {
+		private void handle(Context context) {
 			try {
 				authenticate(context).close();
 				context.req().getSession().invalidate();
@@ -324,7 +339,7 @@ public final class EntityService implements AuxiliaryServer {
 
 	private final class StartTransactionHandler {
 
-		private void serial(Context context) {
+		private void handle(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.startTransaction();
@@ -338,7 +353,7 @@ public final class EntityService implements AuxiliaryServer {
 
 	private final class RollbackTransactionHandler {
 
-		private void serial(Context context) {
+		private void handle(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.rollbackTransaction();
@@ -352,7 +367,7 @@ public final class EntityService implements AuxiliaryServer {
 
 	private final class CommitTransactionHandler {
 
-		private void serial(Context context) {
+		private void handle(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
 				connection.commitTransaction();
@@ -899,11 +914,11 @@ public final class EntityService implements AuxiliaryServer {
 
 		private void addSerializationHandlers(JavalinConfig config) {
 			config.routes.post(URL_SERIAL + "entities", entitiesHandler::serial);
-			config.routes.post(URL_SERIAL + "close", closeHandler::serial);
+			config.routes.post(URL_SERIAL + "close", closeHandler::handle);
 			config.routes.post(URL_SERIAL + "isTransactionOpen", isTransactionOpenHandler::serial);
-			config.routes.post(URL_SERIAL + "startTransaction", startTransactionHandler::serial);
-			config.routes.post(URL_SERIAL + "rollbackTransaction", rollbackTransactionHandler::serial);
-			config.routes.post(URL_SERIAL + "commitTransaction", commitTransactionHandler::serial);
+			config.routes.post(URL_SERIAL + "startTransaction", startTransactionHandler::handle);
+			config.routes.post(URL_SERIAL + "rollbackTransaction", rollbackTransactionHandler::handle);
+			config.routes.post(URL_SERIAL + "commitTransaction", commitTransactionHandler::handle);
 			config.routes.post(URL_SERIAL + "procedure", procedureHandler::serial);
 			config.routes.post(URL_SERIAL + "function", functionHandler::serial);
 			config.routes.post(URL_SERIAL + "report", reportHandler::serial);
@@ -922,15 +937,15 @@ public final class EntityService implements AuxiliaryServer {
 		}
 
 		private void addJsonHandlers(JavalinConfig config) {
-			// Note: Some methods (for example those without parameters and return values)
-			// use the java serialization handler, so these are not just some glaring
-			// mistakes below, where a ::serial call is associated with the json url
+			// Note: the entities route replies with a serialized Entities instance in both modes; a json client
+			// avoids the round trip altogether by injecting its domain, see HttpEntityConnection.Builder.domain().
+			// The close and transaction routes carry no payload in either direction, hence the single handler.
 			config.routes.post(URL_JSON + "entities", entitiesHandler::serial);
-			config.routes.post(URL_JSON + "close", closeHandler::serial);
+			config.routes.post(URL_JSON + "close", closeHandler::handle);
 			config.routes.post(URL_JSON + "isTransactionOpen", isTransactionOpenHandler::json);
-			config.routes.post(URL_JSON + "startTransaction", startTransactionHandler::serial);
-			config.routes.post(URL_JSON + "rollbackTransaction", rollbackTransactionHandler::serial);
-			config.routes.post(URL_JSON + "commitTransaction", commitTransactionHandler::serial);
+			config.routes.post(URL_JSON + "startTransaction", startTransactionHandler::handle);
+			config.routes.post(URL_JSON + "rollbackTransaction", rollbackTransactionHandler::handle);
+			config.routes.post(URL_JSON + "commitTransaction", commitTransactionHandler::handle);
 			config.routes.post(URL_JSON + "procedure", procedureHandler::json);
 			config.routes.post(URL_JSON + "function", functionHandler::json);
 			config.routes.post(URL_JSON + "report", reportHandler::json);
@@ -1074,47 +1089,163 @@ public final class EntityService implements AuxiliaryServer {
 		return header;
 	}
 
-	private static void handleException(Context context, Exception exception) {
-		if (expected(exception)) {
-			LOG.debug(exception.getMessage(), exception);
+	/**
+	 * <p>Responds with the given exception, as an {@link ErrorEnvelope} on the json routes and as a serialized
+	 * exception on the serial ones. The {@link ErrorKind} decides the status, the log severity and, on the json
+	 * routes, the envelope the client reconstructs the exception from.
+	 * <p>Note that the mode is a property of the route, not of the handler; a few handlers serve both, the json
+	 * routes for the operations which carry no payload being wired to the serial handler.
+	 */
+	private void handleException(Context context, Exception exception) {
+		ErrorKind kind = errorKind(exception);
+		String correlationId = UUID.randomUUID().toString();
+		log(kind, exception, correlationId);
+		context.status(kind.status());
+		if (json(context)) {
+			context.contentType(ContentType.APPLICATION_JSON)
+							.result(envelope(kind, exception, correlationId));
 		}
 		else {
-			LOG.error(exception.getMessage(), exception);
+			context.result(exceptionResult(exception));
 		}
-		context.status(exceptionStatus(exception))
-						.result(exceptionResult(exception));
 	}
 
 	/**
-	 * Returns true for exceptions which a correctly functioning application produces during normal use,
-	 * a failed login, a row someone else changed first, a rejected value, a delete a dependency prevents.
-	 * <p>Logging these at ERROR buries genuine server faults in noise, an optimistic locking conflict
-	 * being the outcome the framework's update mechanism is designed to produce.
+	 * The status categorizes by whose fault the request was, 4xx the client's, 5xx ours,
+	 * and the severity by whether it is a fault at all.
 	 */
-	private static boolean expected(Exception exception) {
-		return exception instanceof ServerAuthenticationException
-						|| exception instanceof EntityValidationException
-						|| exception instanceof ReferentialIntegrityException
-						|| exception instanceof UniqueConstraintException
-						|| exception instanceof EntityNotFoundException
-						|| exception instanceof MultipleEntitiesFoundException
-						|| exception instanceof EntityModifiedException;
-	}
-
-	/**
-	 * The status categorizes by whose fault the request was, 4xx the client's, 5xx ours.
-	 * <p>Note that the client deserializes the exception itself from the response body, the status
-	 * being for the benefit of anything between the two, a proxy, a load balancer, alerting.
-	 */
-	private static int exceptionStatus(Exception exception) {
+	private static ErrorKind errorKind(Exception exception) {
 		if (exception instanceof ServerAuthenticationException) {
-			return HttpStatus.UNAUTHORIZED_401;
+			return ErrorKind.AUTHENTICATION;
 		}
-		if (exception instanceof IllegalArgumentException) {
-			return HttpStatus.BAD_REQUEST_400;
+		if (exception instanceof ConnectionNotAvailableException) {
+			return ErrorKind.CONNECTION_UNAVAILABLE;
+		}
+		if (exception instanceof IllegalArgumentException || exception instanceof JsonProcessingException) {
+			return ErrorKind.BAD_REQUEST;
+		}
+		if (exception instanceof IllegalStateException) {
+			return ErrorKind.ILLEGAL_STATE;
+		}
+		if (exception instanceof EntityModifiedException) {
+			return ErrorKind.CONFLICT_MODIFIED;//before UpdateEntityException, its supertype
+		}
+		if (exception instanceof ReferentialIntegrityException) {
+			return ErrorKind.CONFLICT_REFERENTIAL;
+		}
+		if (exception instanceof UniqueConstraintException) {
+			return ErrorKind.CONFLICT_UNIQUE;
+		}
+		if (exception instanceof EntityNotFoundException) {
+			return ErrorKind.NOT_FOUND;
+		}
+		if (exception instanceof MultipleEntitiesFoundException) {
+			return ErrorKind.MULTIPLE_FOUND;
+		}
+		if (exception instanceof InsertEntityException) {
+			return ErrorKind.INSERT;
+		}
+		if (exception instanceof UpdateEntityException) {
+			return ErrorKind.UPDATE;
+		}
+		if (exception instanceof DeleteEntityException) {
+			return ErrorKind.DELETE;
+		}
+		if (exception instanceof QueryTimeoutException) {
+			return ErrorKind.QUERY_TIMEOUT;
+		}
+		if (exception instanceof DatabaseException) {
+			return ErrorKind.DATABASE;
 		}
 
-		return HttpStatus.INTERNAL_SERVER_ERROR_500;
+		return ErrorKind.INTERNAL;
+	}
+
+	private static void log(ErrorKind kind, Exception exception, String correlationId) {
+		switch (kind.severity()) {
+			case DEBUG:
+				LOG.debug("{} {}", correlationId, exception.getMessage(), exception);
+				break;
+			case WARN:
+				LOG.warn("{} {}", correlationId, exception.getMessage(), exception);
+				break;
+			default:
+				//the only trace of an INTERNAL error, whose message the client never receives
+				LOG.error("{} {}", correlationId, exception.getMessage(), exception);
+				break;
+		}
+	}
+
+	private String envelope(ErrorKind kind, Exception exception, String correlationId) {
+		try {
+			return new ErrorEnvelope(kind.name(), message(kind, exception), correlationId, detail(kind, exception)).toJson();
+		}
+		catch (JsonProcessingException e) {
+			LOG.error(e.getMessage(), e);
+
+			return "{\"kind\":\"INTERNAL\",\"message\":\"" + INTERNAL_ERROR
+							+ "\",\"correlationId\":\"" + correlationId + "\"}";
+		}
+	}
+
+	/**
+	 * The message of a known framework exception is already a user facing string and passes through verbatim.
+	 * An unmatched exception's message is replaced, it names server internals; only the correlation id crosses.
+	 */
+	private static String message(ErrorKind kind, Exception exception) {
+		if (kind == ErrorKind.INTERNAL) {
+			return INTERNAL_ERROR;
+		}
+		String message = exception.getMessage();
+
+		return message == null ? kind.name() : message;
+	}
+
+	private @Nullable JsonNode detail(ErrorKind kind, Exception exception) {
+		if (kind == ErrorKind.CONFLICT_REFERENTIAL) {
+			return referentialDetail((ReferentialIntegrityException) exception);
+		}
+		if (kind == ErrorKind.CONFLICT_MODIFIED) {
+			return modifiedDetail((EntityModifiedException) exception);
+		}
+
+		return null;
+	}
+
+	private static JsonNode referentialDetail(ReferentialIntegrityException exception) {
+		//EntityEditPanel.onReferentialIntegrityException branches on the operation
+		return JsonNodeFactory.instance.objectNode()
+						.put(OPERATION, exception.operation().name());
+	}
+
+	/**
+	 * Returns the entity being updated, its current state and the modified columns, without which
+	 * the client cannot reconstruct an {@link EntityModifiedException}, its entity being mandatory.
+	 */
+	private @Nullable JsonNode modifiedDetail(EntityModifiedException exception) {
+		ObjectMapper objectMapper = domainObjectMappers.get(exception.entity().type().domainType());
+		if (objectMapper == null) {
+			//every json handler resolves the mapper before performing the operation, so this cannot happen,
+			//and the client falls back to an UpdateEntityException rather than failing, should it ever
+			return null;
+		}
+		ObjectNode detail = JsonNodeFactory.instance.objectNode();
+		detail.set(ENTITY, objectMapper.valueToTree(exception.entity()));
+		detail.set(MODIFIED, exception.modified()
+						.map(modified -> (JsonNode) objectMapper.valueToTree(modified))
+						.orElse(NullNode.getInstance()));
+		ArrayNode columns = detail.putArray(COLUMNS);
+		exception.columns().forEach(column -> columns.add(column.entityType().name() + "." + column.name()));
+
+		return detail;
+	}
+
+	/**
+	 * The error format is a property of the route, not of the handler; the close and transaction
+	 * routes are served by the same handler in both modes, carrying no payload either way.
+	 */
+	private static boolean json(Context context) {
+		return context.path().contains(URL_JSON);
 	}
 
 	private static byte[] exceptionResult(Exception exception) {

@@ -18,23 +18,40 @@
  */
 package is.codion.framework.db.http;
 
+import is.codion.common.db.database.Database.Operation;
+import is.codion.common.db.exception.AuthenticationException;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.QueryTimeoutException;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.exception.DeleteEntityException;
+import is.codion.framework.db.exception.EntityModifiedException;
+import is.codion.framework.db.exception.EntityNotFoundException;
+import is.codion.framework.db.exception.InsertEntityException;
+import is.codion.framework.db.exception.MultipleEntitiesFoundException;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
+import is.codion.framework.json.db.ErrorEnvelope;
+import is.codion.framework.json.db.ErrorKind;
 import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -314,6 +331,102 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		}
 	}
 
+	/**
+	 * Reconstructs the exception the given error envelope describes.
+	 * <p>The envelope's {@link ErrorKind} maps to a known constructor, nothing on the wire names a class. An
+	 * unrecognized kind, which a client older than the server encounters, yields a plain {@link DatabaseException}.
+	 * <p>Note that neither a stack trace nor a cause crosses the wire, so the returned exception's stack trace
+	 * is that of the client throw site, not the server one. The {@link ErrorEnvelope#correlationId()} identifies
+	 * the server log entry.
+	 */
+	@Override
+	protected Exception decodeError(HttpTransport.Response response) {
+		ErrorEnvelope envelope;
+		try {
+			envelope = ErrorEnvelope.fromJson(response.body());
+		}
+		catch (IOException e) {
+			//not an envelope at all, a proxy error page or an unmatched route
+			return new DatabaseException("HTTP " + response.statusCode() + ": " + new String(response.body(), UTF_8));
+		}
+
+		return envelope.errorKind()
+						.map(kind -> exception(kind, envelope))
+						.orElseGet(() -> new DatabaseException(envelope.message()));
+	}
+
+	private Exception exception(ErrorKind kind, ErrorEnvelope envelope) {
+		String message = envelope.message();
+		switch (kind) {
+			case AUTHENTICATION:
+				return new AuthenticationException(message);
+			case BAD_REQUEST:
+				return new IllegalArgumentException(message);
+			case ILLEGAL_STATE:
+				return new IllegalStateException(message);
+			case CONFLICT_MODIFIED:
+				return entityModified(envelope, message);
+			case CONFLICT_REFERENTIAL:
+				return new ReferentialIntegrityException(message, operation(envelope));
+			case CONFLICT_UNIQUE:
+				return new UniqueConstraintException(message);
+			case NOT_FOUND:
+				return new EntityNotFoundException(message);
+			case MULTIPLE_FOUND:
+				return new MultipleEntitiesFoundException(message);
+			case INSERT:
+				return new InsertEntityException(message);
+			case UPDATE:
+				return new UpdateEntityException(message);
+			case DELETE:
+				return new DeleteEntityException(message);
+			case QUERY_TIMEOUT:
+				return new QueryTimeoutException(message);
+			default:
+				//CONNECTION_UNAVAILABLE, DATABASE and INTERNAL, none of which the client has a type for
+				return new DatabaseException(message);
+		}
+	}
+
+	private static Operation operation(ErrorEnvelope envelope) {
+		JsonNode detail = envelope.detail();
+		if (detail == null || !detail.has(ErrorEnvelope.OPERATION)) {
+			throw new IllegalArgumentException("No operation in a " + ErrorKind.CONFLICT_REFERENTIAL + " error envelope");
+		}
+
+		return Operation.valueOf(detail.get(ErrorEnvelope.OPERATION).asText());
+	}
+
+	private Exception entityModified(ErrorEnvelope envelope, String message) {
+		JsonNode detail = envelope.detail();
+		if (detail == null) {
+			//the server could not resolve an object mapper for the domain, keeping the supertype rather than failing
+			return new UpdateEntityException(message);
+		}
+		try {
+			return new EntityModifiedException(objectMapper.readValue(detail.get(ErrorEnvelope.ENTITY).toString(), Entity.class),
+							detail.get(ErrorEnvelope.MODIFIED).isNull() ? null
+											: objectMapper.readValue(detail.get(ErrorEnvelope.MODIFIED).toString(), Entity.class),
+							columns(detail.get(ErrorEnvelope.COLUMNS)), message);
+		}
+		catch (IOException e) {
+			return new UpdateEntityException(message);
+		}
+	}
+
+	private Collection<Column<?>> columns(JsonNode columns) {
+		Collection<Column<?>> modified = new ArrayList<>();
+		DomainType domainType = entities().domainType();
+		for (JsonNode column : columns) {
+			String qualified = column.asText();
+			int separator = qualified.lastIndexOf('.');
+			EntityType entityType = domainType.entityType(qualified.substring(0, separator));
+			modified.add((Column<?>) entities().definition(entityType).attributes().getOrThrow(qualified.substring(separator + 1)));
+		}
+
+		return modified;
+	}
+
 	private Request createJsonRequest(String path) {
 		return createRequest(path);
 	}
@@ -322,19 +435,19 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		return createRequest(path, data.getBytes(UTF_8));
 	}
 
-	private static <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, TypeReference<T> typeReference) throws Exception {
+	private <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, TypeReference<T> typeReference) throws Exception {
 		throwIfError(response);
 
 		return mapper.readValue(new String(response.body(), UTF_8), typeReference);
 	}
 
-	private static <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, Class<T> valueClass) throws Exception {
+	private <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, Class<T> valueClass) throws Exception {
 		throwIfError(response);
 
 		return mapper.readValue(new String(response.body(), UTF_8), valueClass);
 	}
 
-	private static <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, JavaType javaType) throws Exception {
+	private <T> T handleJsonResponse(HttpTransport.Response response, ObjectMapper mapper, JavaType javaType) throws Exception {
 		throwIfError(response);
 
 		return mapper.readValue(new String(response.body(), UTF_8), javaType);

@@ -45,6 +45,17 @@ public final class ReferentialIntegrityException extends DatabaseException {
 	}
 
 	/**
+	 * Instantiates a new {@link ReferentialIntegrityException}, for a client reconstructing
+	 * this exception from a message, having no {@link SQLException} to hand.
+	 * @param message the error message
+	 * @param operation the operation causing this exception
+	 */
+	public ReferentialIntegrityException(@Nullable String message, Operation operation) {
+		super(message);
+		this.operation = requireNonNull(operation);
+	}
+
+	/**
 	 * @return the {@link Operation} causing this exception
 	 */
 	public Operation operation() {

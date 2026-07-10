@@ -122,7 +122,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	public final void close() {
 		synchronized (transport) {
 			try {
-				handleResponse(execute(createRequest("close")));
+				throwIfError(execute(createRequest("close")));
 				closed = true;
 			}
 			catch (Exception exception) {
@@ -135,7 +135,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	public final void startTransaction() {
 		synchronized (transport) {
 			try {
-				handleResponse(execute(createRequest("startTransaction")));
+				throwIfError(execute(createRequest("startTransaction")));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);
@@ -147,7 +147,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	public final void rollbackTransaction() {
 		synchronized (transport) {
 			try {
-				handleResponse(execute(createRequest("rollbackTransaction")));
+				throwIfError(execute(createRequest("rollbackTransaction")));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);
@@ -159,7 +159,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	public final void commitTransaction() {
 		synchronized (transport) {
 			try {
-				handleResponse(execute(createRequest("commitTransaction")));
+				throwIfError(execute(createRequest("commitTransaction")));
 			}
 			catch (Exception exception) {
 				throw handleException(exception);
@@ -367,17 +367,26 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		return new Request(baseurl + path, data);
 	}
 
-	protected static <T> T handleResponse(HttpTransport.Response response) throws Exception {
+	protected final <T> T handleResponse(HttpTransport.Response response) throws Exception {
 		throwIfError(response);
 
 		return deserialize(response.body());
 	}
 
-	protected static void throwIfError(HttpTransport.Response response) throws Exception {
+	protected final void throwIfError(HttpTransport.Response response) throws Exception {
 		if (response.statusCode() != HTTP_STATUS_OK) {
-			throw (Exception) deserialize(response.body());
+			throw decodeError(response);
 		}
 	}
+
+	/**
+	 * Returns the exception the given error response describes, the wire format of an error being mode specific.
+	 * <p>Note that this is called from the constructor, via {@link #initializeEntities()}, so it must not depend
+	 * on subclass state; the entities endpoint is the only request made before the subclass is initialized.
+	 * @param response the error response, its status being something other than 200
+	 * @return the exception to throw
+	 */
+	protected abstract Exception decodeError(HttpTransport.Response response);
 
 	/**
 	 * A http request: a url and an optional body.

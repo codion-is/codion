@@ -19,6 +19,7 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.report.Report;
 import is.codion.common.rmi.client.Clients;
@@ -26,6 +27,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
+import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.http.TestDomain.Department;
@@ -42,6 +44,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -352,7 +355,32 @@ abstract class AbstractHttpEntityConnectionTest {
 	@Test
 	void deleteDepartmentWithEmployees() {
 		Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
-		assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key(department.primaryKey())));
+		ReferentialIntegrityException exception = assertThrows(ReferentialIntegrityException.class,
+						() -> connection.delete(key(department.primaryKey())));
+		//EntityEditPanel.onReferentialIntegrityException branches on the operation, so it must survive the wire
+		assertEquals(Operation.DELETE, exception.operation());
+	}
+
+	@Test
+	void updateModifiedElsewhere() {
+		connection.startTransaction();
+		try {
+			Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));
+			Entity stale = department.copy().mutable();
+
+			Entity current = department.copy().mutable();
+			current.set(Department.LOCATION, "ELSEWHERE");
+			connection.update(current);
+
+			stale.set(Department.LOCATION, "STALE");
+			EntityModifiedException exception = assertThrows(EntityModifiedException.class, () -> connection.update(stale));
+			assertEquals(department.primaryKey(), exception.entity().primaryKey());
+			assertEquals("ELSEWHERE", exception.modified().orElseThrow().get(Department.LOCATION));
+			assertEquals(singletonList(Department.LOCATION), new ArrayList<>(exception.columns()));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
 	}
 
 	@Test

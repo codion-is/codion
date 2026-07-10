@@ -21,6 +21,7 @@ package is.codion.framework.servlet;
 import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.utilities.Serializer;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
@@ -32,6 +33,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.json.db.DatabaseObjectMapper;
+import is.codion.framework.json.db.ErrorEnvelope;
+import is.codion.framework.json.db.ErrorKind;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -80,6 +83,7 @@ public class EntityServiceTest {
 	private static final int OK = 200;
 	private static final int BAD_REQUEST = 400;
 	private static final int UNAUTHORIZED = 401;
+	private static final int INTERNAL_SERVER_ERROR = 500;
 
 	private static String HOSTNAME;
 	private static String SERVER_BASEURL;
@@ -443,6 +447,40 @@ public class EntityServiceTest {
 						BodyPublishers.noBody(), CLIENT_ID_STRING, "not a version", createAuthorizationHeader()),
 						BodyHandlers.ofByteArray());
 		assertEquals(BAD_REQUEST, response.statusCode());
+	}
+
+	@Test
+	void internalErrorIsGeneric() throws Exception {
+		//no entityType node, the handler dereferences null; nothing about it is the client's business
+		ObjectNode node = OBJECT_MAPPER.createObjectNode();
+		node.set("column", OBJECT_MAPPER.valueToTree(Department.ID.name()));
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createJsonRequest("values",
+						BodyPublishers.ofString(node.toString())), BodyHandlers.ofByteArray());
+
+		assertEquals(INTERNAL_SERVER_ERROR, response.statusCode());
+		assertTrue(response.headers().firstValue("Content-Type").orElseThrow().startsWith("application/json"));
+
+		ErrorEnvelope envelope = ErrorEnvelope.fromJson(response.body());
+		assertEquals(ErrorKind.INTERNAL, envelope.errorKind().orElseThrow());
+		assertEquals("Internal server error", envelope.message());
+		assertFalse(envelope.correlationId().isEmpty());
+		assertNull(envelope.detail());
+
+		//neither the exception type, its message nor a stack frame crosses the wire
+		String body = new String(response.body(), UTF_8);
+		assertFalse(body.contains("NullPointer"), body);
+		assertFalse(body.contains("is.codion.framework.servlet"), body);
+	}
+
+	@Test
+	void serialErrorsAreStillSerializedExceptions() throws Exception {
+		//the serial channel is a java serialization channel by definition, its error wire format is unchanged
+		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest(SERVER_BASEURL, "isTransactionOpen",
+						BodyPublishers.noBody(), CLIENT_ID_STRING, Version.version().toString(), "Basic not!base64"),
+						BodyHandlers.ofByteArray());
+		assertEquals(UNAUTHORIZED, response.statusCode());
+		Object exception = Serializer.deserialize(response.body());
+		assertInstanceOf(ServerAuthenticationException.class, exception);
 	}
 
 	@Test

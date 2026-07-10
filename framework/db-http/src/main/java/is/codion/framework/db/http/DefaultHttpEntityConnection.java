@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.common.utilities.Serializer.deserialize;
 import static is.codion.common.utilities.Serializer.serialize;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -39,6 +40,22 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	DefaultHttpEntityConnection(DefaultBuilder builder) {
 		super(builder, "/entities/serial/");
+	}
+
+	/**
+	 * The serial routes respond with the serialized exception itself.
+	 * <p>Note that this deserializes a server response, which is only safe because the serial channel is
+	 * opt-in, off by default, and speaks Java serialization by definition, see
+	 * {@code codion.server.http.serialization}. The json channel carries a typed error envelope instead.
+	 */
+	@Override
+	protected Exception decodeError(HttpTransport.Response response) {
+		try {
+			return deserialize(response.body());
+		}
+		catch (Exception exception) {
+			return exception;
+		}
 	}
 
 	@Override
