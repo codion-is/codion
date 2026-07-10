@@ -20,6 +20,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.report.ReportException;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.exception.UpdateEntityException;
@@ -121,6 +122,16 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 		Exception exception = decodeError(409, envelope);
 		assertEquals(UpdateEntityException.class, exception.getClass());
 		assertEquals("changed", exception.getMessage());
+	}
+
+	@Test
+	void reportError() {
+		//a report failure crosses as ErrorKind.REPORT, its message already stripped of engine
+		//types by the plugin, and is reconstructed as a ReportException, which lives in common-db
+		String envelope = "{\"kind\":\"REPORT\",\"message\":\"PDF exporter extension not found\",\"correlationId\":\"abc\"}";
+		Exception exception = decodeError(500, envelope);
+		assertEquals(ReportException.class, exception.getClass());
+		assertEquals("PDF exporter extension not found", exception.getMessage());
 	}
 
 	@Test

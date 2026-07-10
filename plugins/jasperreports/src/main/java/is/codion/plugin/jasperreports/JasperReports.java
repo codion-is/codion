@@ -174,15 +174,30 @@ public final class JasperReports {
 	 * the client would require the engine there to deserialize the failure of a report the client need
 	 * never have heard of, exactly the coupling exporting the result removes. The engine stack trace,
 	 * being strings, is kept, and the server logs the exception in full before rethrowing.
+	 * <p>The dropped cause's message is folded into the message, being the message a client sees, the
+	 * outer exception often naming only the operation, the cause naming what actually went wrong.
 	 */
 	static ReportException reportException(Exception exception) {
 		if (exception instanceof ReportException && exception.getCause() == null) {
 			//already the exception this contract throws, carrying no engine type
 			return (ReportException) exception;
 		}
-		ReportException reportException = new ReportException(exception.getMessage());
+		ReportException reportException = new ReportException(message(exception));
 		reportException.setStackTrace(exception.getStackTrace());
 
 		return reportException;
+	}
+
+	private static String message(Throwable exception) {
+		String message = exception.getMessage();
+		Throwable cause = exception.getCause();
+		if (cause == null || cause.getMessage() == null) {
+			return message;
+		}
+		if (message == null) {
+			return cause.getMessage();
+		}
+
+		return message.contains(cause.getMessage()) ? message : message + ": " + cause.getMessage();
 	}
 }

@@ -19,7 +19,6 @@
 package is.codion.plugin.jasperreports;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.rmi.client.Clients;
@@ -147,11 +146,12 @@ public final class JasperReportsWireTest {
 						serial.report(Employee.PDF_REPORT, reportParameters));
 		assertNoEngineType(serialException);
 
-		//the json tier reconstructs the exception from an error envelope keyed by a closed set of kinds;
-		//a ReportException, being none of them, generalizes to a DatabaseException, still no engine type
-		Exception jsonException = assertThrows(DatabaseException.class, () ->
+		//the json tier reconstructs it from an ErrorKind.REPORT envelope, so the same ReportException,
+		//with the same message the plugin made safe to send, reaches a client without the engine
+		ReportException jsonException = assertThrows(ReportException.class, () ->
 						json.report(Employee.PDF_REPORT, reportParameters));
 		assertNoEngineType(jsonException);
+		assertEquals(serialException.getMessage(), jsonException.getMessage());
 	}
 
 	private static void assertNoEngineType(Throwable throwable) {

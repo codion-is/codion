@@ -24,6 +24,7 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.AuxiliaryServer;
@@ -1160,6 +1161,9 @@ public final class EntityService implements AuxiliaryServer {
 		}
 		if (exception instanceof QueryTimeoutException) {
 			return ErrorKind.QUERY_TIMEOUT;
+		}
+		if (exception instanceof ReportException) {
+			return ErrorKind.REPORT;
 		}
 		if (exception instanceof DatabaseException) {
 			return ErrorKind.DATABASE;

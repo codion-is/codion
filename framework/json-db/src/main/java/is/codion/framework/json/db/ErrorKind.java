@@ -91,6 +91,16 @@ public enum ErrorKind {
 	 */
 	QUERY_TIMEOUT(504, Severity.WARN),
 	/**
+	 * A report failed to fill or export.
+	 * <p>The message is passed verbatim, unlike {@link #INTERNAL}, the plugin producing it having already
+	 * stripped any reporting engine type, so a client without the engine reconstructs the failure as a
+	 * {@link is.codion.common.db.report.ReportException}, which lives in common-db. A serial client receives
+	 * that same exception directly, so the message reaches both.
+	 * <p>Logged at {@link Severity#ERROR}, a report failure being a data or deployment fault, a missing
+	 * exporter extension for one.
+	 */
+	REPORT(500, Severity.ERROR),
+	/**
 	 * A database error with no more specific kind.
 	 */
 	DATABASE(500, Severity.ERROR),
