@@ -35,4 +35,13 @@ public final class UniqueConstraintException extends DatabaseException {
 	public UniqueConstraintException(SQLException cause, @Nullable String message) {
 		super(cause, message);
 	}
+
+	/**
+	 * Instantiates a new {@link UniqueConstraintException}, for a client reconstructing
+	 * this exception from a message, having no {@link SQLException} to hand.
+	 * @param message the error message
+	 */
+	public UniqueConstraintException(@Nullable String message) {
+		super(message);
+	}
 }
