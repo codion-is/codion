@@ -184,7 +184,7 @@ final class EditorInspector extends JPanel {
 											.build())
 							.center(FilterTable.builder()
 											.model(attributeModel)
-											.visibleRows(new AttributeItems(components).components.editor().entityDefinition().attributes().definitions().size())
+											.visibleRows(components.editor().entityDefinition().attributes().definitions().size())
 											.columns(EditorComponentsPanel::columns)
 											.autoResizeMode(JTable.AUTO_RESIZE_OFF)
 											.fitColumnHeaders(true)

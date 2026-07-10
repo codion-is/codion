@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityQueries;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.swing.common.ui.component.Components;
@@ -66,16 +65,12 @@ final class SelectQueryInspector extends JPanel {
 		});
 	}
 
-	private String createSelectQuery() {
-		return queries.select(EntityConnection.Select
-						.where(queryModel.condition().where())
-						.having(queryModel.condition().having())
-						.include(queryModel.attributes().defaults().get())
-						.include(queryModel.attributes().include().get())
-						.exclude(queryModel.attributes().exclude().get())
-						.limit(queryModel.limit().get())
-						.orderBy(queryModel.orderBy().get())
-						.build());
+	/**
+	 * The query model's own {@link EntityQueryModel#select()}, not a select rebuilt from its parts,
+	 * an inspector showing a query the model will not run being worse than none at all.
+	 */
+	String createSelectQuery() {
+		return queries.select(queryModel.select());
 	}
 
 	private void initializeUI() {

@@ -110,17 +110,29 @@ final class EditAttributePanel<T> extends JPanel {
 						.build();
 	}
 
-	private void performUpdate() throws EntityValidationException {
-		updating.set(true);
+	void performUpdate() {
 		Collection<Entity> toUpdate = entities.stream()
 						.map(Entity::copy)
 						.map(Entity.Copy::mutable)
 						.collect(toList());
 		T value = componentValue.get();
 		toUpdate.forEach(entity -> editor.value(attribute).set(entity, value));
-		EditorTask<Collection<Entity>> task = editor.tasks().update(toUpdate.stream()
-						.filter(Entity::modified)
-						.collect(toList()));
+		EditorTask<Collection<Entity>> task;
+		try {
+			//the task is created before the updating state is armed, tasks().update() validates and
+			//notifies the before-update consumers synchronously, before any worker exists. Both controls
+			//of this modal dialog are disabled while updating, so a throw with the state armed would
+			//leave no way of closing it
+			task = editor.tasks().update(toUpdate.stream()
+							.filter(Entity::modified)
+							.collect(toList()));
+		}
+		catch (EntityValidationException e) {
+			handleValidationException(e);
+
+			return;
+		}
+		updating.set(true);
 		ProgressWorker.builder()
 						.task(task::perform)
 						.onStarted(this::showProgress)
@@ -130,10 +142,21 @@ final class EditAttributePanel<T> extends JPanel {
 	}
 
 	private void onResult(Result<Collection<Entity>> result) {
-		result.handle();
-		closeDialog();
+		try {
+			result.handle();
+		}
+		finally {
+			//handle() notifies the persist event consumers, one of which throwing
+			//would otherwise leave this dialog behind, its controls disabled
+			closeDialog();
+		}
 	}
 
+	/**
+	 * Called on each edit of the component value, so it copies the selected entities and validates each one
+	 * per keystroke. The validation is entity scoped, a validator may compare the edited attribute against
+	 * the entity's other values, so a single representative would not do. Worth knowing when editing thousands.
+	 */
 	private void updateStates() {
 		EntityValidator validator = editor.validator().getOrThrow();
 		Collection<Entity> toUpdate = entities.stream()
@@ -143,18 +166,17 @@ final class EditAttributePanel<T> extends JPanel {
 		T value = componentValue.get();
 		toUpdate.forEach(entity -> editor.value(attribute).set(entity, value));
 		modified.set(toUpdate.stream().anyMatch(Entity::modified));
-		for (Entity entity : toUpdate) {
-			try {
+		try {
+			componentValue.validate(value);
+			for (Entity entity : toUpdate) {
 				validator.validate(entity, attribute);
-				componentValue.validate(value);
-				valid.set(true);
-				message.clear();
 			}
-			catch (AttributeValidationException | IllegalArgumentException e) {
-				valid.set(false);
-				message.set(e.getMessage());
-				return;
-			}
+			valid.set(true);
+			message.clear();
+		}
+		catch (AttributeValidationException | IllegalArgumentException e) {
+			valid.set(false);
+			message.set(e.getMessage());
 		}
 	}
 

@@ -30,6 +30,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
+import is.codion.framework.db.EntityQueries;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -1639,7 +1640,7 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includeEntityViewer) {
 			controlMap.control(VIEW_ENTITY).set(command(this::viewEntity));
 		}
-		if (configuration.includeInspector) {
+		if (configuration.includeInspector && EntityQueries.factory().isPresent()) {
 			controlMap.control(INSPECT_QUERY).set(command(this::inspectQuery));
 		}
 		if (configuration.includePopupMenu) {
