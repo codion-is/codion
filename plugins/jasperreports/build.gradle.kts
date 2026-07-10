@@ -28,6 +28,7 @@ dependencies {
     testImplementation(project(":codion-framework-db-http"))
     testImplementation(project(":codion-framework-server"))
     testImplementation(project(":codion-framework-servlet"))
+    testImplementation(project(":codion-framework-json-domain"))
     testRuntimeOnly(libs.h2)
 }
 

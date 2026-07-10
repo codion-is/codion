@@ -19,6 +19,7 @@
 package is.codion.plugin.jasperreports;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.rmi.client.Clients;
@@ -31,6 +32,7 @@ import is.codion.framework.servlet.EntityService;
 import is.codion.framework.servlet.EntityServiceFactory;
 import is.codion.plugin.jasperreports.TestDomain.Employee;
 
+import net.sf.jasperreports.engine.JasperPrint;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -56,7 +58,8 @@ public final class JasperReportsWireTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	private static EntityServer server;
-	private static EntityConnection connection;
+	private static EntityConnection serial;
+	private static EntityConnection json;
 
 	@BeforeAll
 	public static void setUp() throws Exception {
@@ -79,8 +82,13 @@ public final class JasperReportsWireTest {
 						.auxiliaryServerFactory(singletonList(EntityServiceFactory.class.getName()))
 						.objectInputFilterFactoryRequired(false)
 						.build());
-		connection = HttpEntityConnection.builder()
-						.json(false)
+		serial = connection(false);
+		json = connection(true);
+	}
+
+	private static EntityConnection connection(boolean json) {
+		return HttpEntityConnection.builder()
+						.json(json)
 						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
 						.clientType("JasperReportsWireTest")
@@ -90,8 +98,11 @@ public final class JasperReportsWireTest {
 
 	@AfterAll
 	public static void tearDown() {
-		if (connection != null) {
-			connection.close();
+		if (serial != null) {
+			serial.close();
+		}
+		if (json != null) {
+			json.close();
 		}
 		if (server != null) {
 			server.shutdown();
@@ -105,10 +116,24 @@ public final class JasperReportsWireTest {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
 
-		//PDF_REPORT is a ReportType<Map<String, Object>, byte[]>, the client names no JasperReports type
-		byte[] pdf = connection.report(Employee.PDF_REPORT, reportParameters);
+		//PDF_REPORT is a ReportType<Map<String, Object>, byte[]>, the client names no JasperReports type.
+		//The serial tier serializes the bytes, the JSON tier base64 encodes them
+		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(serial.report(Employee.PDF_REPORT, reportParameters), 4));
+		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(json.report(Employee.PDF_REPORT, reportParameters), 4));
+	}
 
-		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(pdf, 4));
+	@Test
+	void serializedPrintCrossesTheJsonWire() {
+		Map<String, Object> reportParameters = new HashMap<>();
+		reportParameters.put("DEPTNO", asList(10, 20));
+
+		//a JasperPrint can not cross a JSON connection, but its bytes can, so a client with the engine
+		//keeps a JasperPrint report over JSON, reconstructing it from the bytes with a JRViewer to follow
+		byte[] bytes = json.report(Employee.SERIALIZED_REPORT, reportParameters);
+		JasperPrint print = JasperReports.loadPrint(bytes);
+
+		assertNotNull(print.getName());
+		assertFalse(print.getPages().isEmpty());
 	}
 
 	@Test
@@ -117,10 +142,20 @@ public final class JasperReportsWireTest {
 		//DEPTNO is declared java.util.Collection, the server throws deep in the engine
 		reportParameters.put("DEPTNO", "not a collection");
 
-		//the failure crosses as a ReportException the client can deserialize with no engine on hand
-		ReportException exception = assertThrows(ReportException.class, () ->
-						connection.report(Employee.PDF_REPORT, reportParameters));
-		for (Throwable t = exception; t != null; t = t.getCause()) {
+		//the serial tier serializes the exception, so the ReportException crosses intact
+		ReportException serialException = assertThrows(ReportException.class, () ->
+						serial.report(Employee.PDF_REPORT, reportParameters));
+		assertNoEngineType(serialException);
+
+		//the json tier reconstructs the exception from an error envelope keyed by a closed set of kinds;
+		//a ReportException, being none of them, generalizes to a DatabaseException, still no engine type
+		Exception jsonException = assertThrows(DatabaseException.class, () ->
+						json.report(Employee.PDF_REPORT, reportParameters));
+		assertNoEngineType(jsonException);
+	}
+
+	private static void assertNoEngineType(Throwable throwable) {
+		for (Throwable t = throwable; t != null; t = t.getCause()) {
 			assertFalse(t.getClass().getName().startsWith("net.sf.jasperreports"),
 							"engine type crossed the wire: " + t.getClass().getName());
 		}
