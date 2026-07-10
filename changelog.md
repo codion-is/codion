@@ -43,6 +43,12 @@ Codion Change Log
 - HttpEntityConnection message bundle key many_records_found renamed multiple_records_found, matching the LocalEntityConnection sibling and the MultipleEntitiesFoundException it populates. The English message is aligned with it as well.
 ### is.codion.framework.servlet
 - EntityService, the isQueryCacheEnabled and setQueryCacheEnabled routes (serial and json) removed, query caching is a client-side concern.
+- EntityService, enabling SECURE no longer leaves a cleartext connector listening on PORT alongside the secure one, which served the whole api, basic authentication credentials included, in the clear. The javalin ssl plugin adds an insecure connector by default; it is now disabled.
+- EntityService, a malformed clientId or Authorization header now returns 401, as a missing one already did, rather than 500. Every other request the server rejects as malformed, a bad clientVersion header, an attribute name naming something other than a column, returns 400. The status now categorizes by whose fault the request was.
+- EntityService no longer logs every exception at ERROR with a stack trace. An authentication failure, a validation exception, a referential integrity or unique constraint violation, an entity not found, or an optimistic locking conflict are logged at DEBUG, being the outcomes a correctly functioning application produces.
+- EntityService.information() no longer reports the insecure port when only the secure port is listening.
+- EntityService.remoteHost() javadoc now documents that X-Forwarded-For is a client controlled header, honored for display and logging only, never for authorization.
+- EntityService.SECURE_PORT javadoc corrected, it described the insecure port.
 ### is.codion.framework.model
 - EntitySearchModel.Selection.single() added, an ObservableState indicating whether exactly one entity is selected.
 - AbstractEntityApplicationModel, the custom-Preferences constructor javadoc now notes that startup preferences (frame size, look and feel, default username) are read from the default root before the model exists.
