@@ -221,45 +221,67 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 			if (method.isDefault()) {
 				return invokeDefault(proxy, method, args);
 			}
-			//a cache hit is served here, without a round-trip to the server
 			Select cacheKey = cacheKey(methodName, args);
 			boolean singleResult = cacheKey != null && singleResult(methodName, args);
-			if (cacheKey != null) {
-				List<Entity> cached = queryCache.cached.get(cacheKey);
-				if (cached != null) {
-					if (!singleResult) {
-						return cached;
-					}
-					if (cached.size() == 1) {
-						return cached.get(0);
-					}
-					//zero or multiple rows cached, forward and let the server throw
-					//EntityNotFoundException/MultipleEntitiesFoundException with its own messages
-				}
+			Object cached = cachedResult(cacheKey, singleResult);
+			if (cached != null) {
+				//served without a round-trip to the server
+				return cached;
 			}
 
+			Object result = invokeRemote(method, args);
+			if (methodName.equals(ITERATOR)) {
+				return new RemoteEntityResultIteratorWrapper((RemoteEntityResultIterator) result);
+			}
+			if (cacheKey != null) {
+				return cacheResult(cacheKey, singleResult, result);
+			}
+
+			return result;
+		}
+
+		/**
+		 * @return the cached result for the given invocation, or null if it must be forwarded to the server,
+		 * there being no query cache, no cached result, or a single result requested but not exactly one cached
+		 */
+		private @Nullable Object cachedResult(@Nullable Select cacheKey, boolean singleResult) {
+			if (cacheKey == null) {
+				return null;
+			}
+			List<Entity> cached = queryCache.cached.get(cacheKey);
+			if (cached == null) {
+				return null;
+			}
+			if (!singleResult) {
+				return cached;
+			}
+			if (cached.size() == 1) {
+				return cached.get(0);
+			}
+			//zero or multiple rows cached, forward and let the server throw
+			//EntityNotFoundException/MultipleEntitiesFoundException with its own messages
+			return null;
+		}
+
+		private Object cacheResult(Select cacheKey, boolean singleResult, Object result) {
+			//the cached result is shared by every hit, immutable entities in an unmodifiable
+			//list keep a single caller from modifying what the next one receives
+			if (singleResult) {
+				Entity entity = ((Entity) result).immutable();
+				queryCache.cached.put(cacheKey, singletonList(entity));
+
+				return entity;
+			}
+			List<Entity> cached = immutable((List<Entity>) result);
+			queryCache.cached.put(cacheKey, cached);
+
+			return cached;
+		}
+
+		private Object invokeRemote(Method method, Object[] args) throws Throwable {
 			Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);
 			try {
-				Object result = remoteMethod.invoke(remoteConnection, args);
-				if (methodName.equals(ITERATOR)) {
-					return new RemoteEntityResultIteratorWrapper((RemoteEntityResultIterator) result);
-				}
-				if (cacheKey != null) {
-					//the cached result is shared by every hit, immutable entities in an unmodifiable
-					//list keep a single caller from modifying what the next one receives
-					if (singleResult) {
-						Entity entity = ((Entity) result).immutable();
-						queryCache.cached.put(cacheKey, singletonList(entity));
-
-						return entity;
-					}
-					List<Entity> cached = immutable((List<Entity>) result);
-					queryCache.cached.put(cacheKey, cached);
-
-					return cached;
-				}
-
-				return result;
+				return remoteMethod.invoke(remoteConnection, args);
 			}
 			catch (InvocationTargetException e) {
 				LOG.error(e.getMessage(), e);
