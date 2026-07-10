@@ -364,6 +364,13 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 		}
 	}
 
+	/**
+	 * <p>Note that the editor keeps its entity across a refresh. The selection notifies only when it actually
+	 * changes, and a refreshed row is the same row by {@link Entity#equals(Object)}, so the fresher instance
+	 * is not pushed into the editor. This is deliberate: a refresh must not clobber an edit in progress, and
+	 * a write based on a stale instance is caught by optimistic locking.
+	 * @param selected the selected entity, null if the selection was cleared
+	 */
 	private void onSelectionChanged(@Nullable Entity selected) {
 		if (selected == null) {
 			editModel.editor().entity().defaults();

@@ -952,7 +952,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |expand_collapse|Expand/collapse|Stækka/minnka alveg
 |find_next|Find next|Finna næstu
 |find_previous|Find previous|Finna síðustu
-|increment_decrement|Increment/decrement based to cursor position|Hækka/læækka út frá staðsetningu bendils
+|increment_decrement|Increment/decrement based to cursor position|Hækka/lækka út frá staðsetningu bendils
 |move_focus_to_table|Move focus to table|Færa fókus í töflu
 |move_selected_column|Move selected column|Færa valinn dálk
 |move_selection|Move selection|Færa val
@@ -999,6 +999,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |transfer_focus_to_next_input_field|Transfer focus to next input field|Færa fókus í næsta innsláttarreit
 |transfer_focus_to_previous_input_field|Transfer focus to previous input field|Færa fókus í síðasta innsláttarreit
 |update|Update|Uppfæra
+|view_selected_item|View selected item|Skoða valda færslu
 |===
 
 === is/codion/swing/framework/ui/TabbedDetailLayout.java

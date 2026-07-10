@@ -370,7 +370,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 			case CONFLICT_MODIFIED:
 				return entityModified(envelope, message);
 			case CONFLICT_REFERENTIAL:
-				return new ReferentialIntegrityException(message, operation(envelope));
+				return referentialIntegrity(envelope, message);
 			case CONFLICT_UNIQUE:
 				return new UniqueConstraintException(message);
 			case NOT_FOUND:
@@ -391,13 +391,21 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 		}
 	}
 
-	private static Operation operation(ErrorEnvelope envelope) {
+	/**
+	 * Decoding an error must never throw, its job being to return the exception to throw. A detail this client
+	 * cannot make sense of, an Operation named by a newer server, degrades to the generic exception.
+	 */
+	private static Exception referentialIntegrity(ErrorEnvelope envelope, String message) {
 		JsonNode detail = envelope.detail();
 		if (detail == null || !detail.has(ErrorEnvelope.OPERATION)) {
-			throw new IllegalArgumentException("No operation in a " + ErrorKind.CONFLICT_REFERENTIAL + " error envelope");
+			return new DatabaseException(message);
 		}
-
-		return Operation.valueOf(detail.get(ErrorEnvelope.OPERATION).asText());
+		try {
+			return new ReferentialIntegrityException(message, Operation.valueOf(detail.get(ErrorEnvelope.OPERATION).asText()));
+		}
+		catch (IllegalArgumentException e) {
+			return new DatabaseException(message);
+		}
 	}
 
 	private Exception entityModified(ErrorEnvelope envelope, String message) {
@@ -412,7 +420,9 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 											: objectMapper.readValue(detail.get(ErrorEnvelope.MODIFIED).toString(), Entity.class),
 							columns(detail.get(ErrorEnvelope.COLUMNS)), message);
 		}
-		catch (IOException e) {
+		catch (Exception e) {
+			//not only IOException, a column or entity type named by a newer server's domain
+			//reaches this through columns(), which is precisely the skew this catch exists for
 			return new UpdateEntityException(message);
 		}
 	}

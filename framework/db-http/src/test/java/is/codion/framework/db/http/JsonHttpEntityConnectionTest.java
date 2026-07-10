@@ -22,6 +22,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.domain.entity.Entity;
 
@@ -85,6 +86,32 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 		Exception exception = decodeError(500, envelope);
 		assertEquals(DatabaseException.class, exception.getClass());
 		assertEquals("something happened", exception.getMessage());
+	}
+
+	@Test
+	void unknownReferentialOperation() {
+		//an Operation named by a newer server; decoding must return an exception, not throw one
+		String envelope = "{\"kind\":\"CONFLICT_REFERENTIAL\",\"message\":\"blocked\",\"correlationId\":\"abc\","
+						+ "\"detail\":{\"operation\":\"MERGE\"}}";
+		Exception exception = decodeError(409, envelope);
+		assertEquals(DatabaseException.class, exception.getClass());
+		assertEquals("blocked", exception.getMessage());
+
+		//and a missing operation detail
+		exception = decodeError(409, "{\"kind\":\"CONFLICT_REFERENTIAL\",\"message\":\"blocked\",\"correlationId\":\"abc\"}");
+		assertEquals(DatabaseException.class, exception.getClass());
+	}
+
+	@Test
+	void unknownModifiedColumn() {
+		//a column named by a newer server's domain, reached through columns(), which the
+		//IOException catch did not cover; degrade to the supertype like a missing detail does
+		String envelope = "{\"kind\":\"CONFLICT_MODIFIED\",\"message\":\"changed\",\"correlationId\":\"abc\","
+						+ "\"detail\":{\"entity\":{\"entityType\":\"employees.department\",\"values\":{\"deptno\":10}},"
+						+ "\"modified\":null,\"columns\":[\"employees.department.columnFromTheFuture\"]}}";
+		Exception exception = decodeError(409, envelope);
+		assertEquals(UpdateEntityException.class, exception.getClass());
+		assertEquals("changed", exception.getMessage());
 	}
 
 	@Test

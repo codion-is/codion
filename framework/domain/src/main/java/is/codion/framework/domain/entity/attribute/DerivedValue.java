@@ -134,6 +134,11 @@ import static java.util.Objects.requireNonNull;
 public interface DerivedValue<T> extends Serializable {
 
 	/**
+	 * <p>Must be total, that is, return a value or null for every combination of source values, including
+	 * all null, which a new entity presents. A cached derived value is computed for every attribute of an
+	 * entity being made immutable, not only for the ones a caller happens to read, so a provider throwing
+	 * on some combination throws from {@link is.codion.framework.domain.entity.Entity#immutable()} rather
+	 * than from the read it would once have failed.
 	 * @param values the source values, mapped to their respective attributes
 	 * @return the derived value
 	 */

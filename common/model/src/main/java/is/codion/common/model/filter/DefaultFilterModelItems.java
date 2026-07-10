@@ -117,6 +117,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		rejectNulls(items);
 		synchronized (lock) {
 			List<R> selectedItems = selection.items().get();
+			//save and restore, a caller already grouping must not have its group terminated here
+			boolean wasAdjusting = selection.adjusting();
 			selection.adjusting(true);
 			try {
 				clear();
@@ -124,7 +126,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				selection.items().set(selectedItems);
 			}
 			finally {
-				selection.adjusting(false);
+				selection.adjusting(wasAdjusting);
 			}
 		}
 	}
@@ -326,6 +328,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	 */
 	private <T> @Nullable T preserveSelection(Supplier<@Nullable T> mutation) {
 		List<R> selectedItems = selection.items().get();
+		//save and restore, a caller already grouping must not have its group terminated here
+		boolean wasAdjusting = selection.adjusting();
 		selection.adjusting(true);
 		try {
 			T result = mutation.get();
@@ -334,7 +338,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			return result;
 		}
 		finally {
-			selection.adjusting(false);
+			selection.adjusting(wasAdjusting);
 		}
 	}
 

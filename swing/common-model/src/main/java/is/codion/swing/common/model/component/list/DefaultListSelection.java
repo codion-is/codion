@@ -92,6 +92,11 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
+	public boolean adjusting() {
+		return getValueIsAdjusting();
+	}
+
+	@Override
 	public Indexes indexes() {
 		return selectedIndexes;
 	}
