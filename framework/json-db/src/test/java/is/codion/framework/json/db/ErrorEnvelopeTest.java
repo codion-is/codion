@@ -18,6 +18,10 @@
  */
 package is.codion.framework.json.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -29,6 +33,25 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ErrorEnvelopeTest {
+
+	@Test
+	void roundTripsWithoutFieldAccess() throws IOException {
+		//the module path forbids Jackson from setAccessible() on a private field of a package this module does
+		//not open to it, so ErrorEnvelope must (de)serialize through its public creator and getters alone. A
+		//mapper that ignores fields entirely proves it, standing in for a restriction a classpath test can not impose
+		ObjectMapper fieldless = JsonMapper.builder()
+						.visibility(PropertyAccessor.FIELD, Visibility.NONE)
+						.build();
+		ObjectNode detail = JsonNodeFactory.instance.objectNode()
+						.put(ErrorEnvelope.OPERATION, "DELETE");
+		ErrorEnvelope envelope = new ErrorEnvelope(ErrorKind.CONFLICT_REFERENTIAL.name(), "Delete failed", "id", detail);
+
+		ErrorEnvelope parsed = fieldless.readValue(fieldless.writeValueAsString(envelope), ErrorEnvelope.class);
+		assertEquals(ErrorKind.CONFLICT_REFERENTIAL.name(), parsed.kind());
+		assertEquals("Delete failed", parsed.message());
+		assertEquals("id", parsed.correlationId());
+		assertEquals("DELETE", parsed.detail().get(ErrorEnvelope.OPERATION).asText());
+	}
 
 	@Test
 	void roundTrip() throws IOException {
