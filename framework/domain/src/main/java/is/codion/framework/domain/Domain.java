@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
@@ -116,11 +115,21 @@ public interface Domain {
 	default void configure(Database database) {}
 
 	/**
-	 * @return a list containing all the Domains registered with {@link ServiceLoader}.
+	 * Returns one {@link Domain} per {@link DomainType} registered with {@link ServiceLoader}.
+	 * <p>Among multiple implementations of one domain type the most derived one wins: the unique
+	 * implementation class every other implementation class is assignable from, a variant extending the
+	 * base such as one adding engine backed reports. Identical implementations, a jar present twice,
+	 * resolve to either instance. Unrelated implementations of one type, or two independent extensions of a
+	 * common base, are genuine ambiguity the framework can not resolve and throw an
+	 * {@link IllegalStateException}; provide a single implementation extending the others, or remove all but
+	 * one from the classpath. The result is deterministic, independent of {@link ServiceLoader} iteration order.
+	 * <p>A consumer wanting the raw, possibly duplicate bearing list uses {@link ServiceLoader#load(Class)} directly.
+	 * @return one {@link Domain} per registered {@link DomainType}
+	 * @throws IllegalStateException in case a domain type has multiple unrelated implementations on the classpath
 	 */
 	static List<Domain> domains() {
 		try {
-			return unmodifiableList(stream(ServiceLoader.load(Domain.class).spliterator(), false).collect(toList()));
+			return DomainResolver.resolve(stream(ServiceLoader.load(Domain.class).spliterator(), false).collect(toList()));
 		}
 		catch (ServiceConfigurationError e) {
 			throw Exceptions.runtime(e, ServiceConfigurationError.class);
