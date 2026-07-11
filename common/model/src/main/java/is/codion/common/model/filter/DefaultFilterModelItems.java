@@ -447,7 +447,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		@Override
 		public List<R> get() {
 			synchronized (lock) {
-				return unmodifiableList(items);
+				return unmodifiableList(new ArrayList<>(items));
 			}
 		}
 
@@ -591,7 +591,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		@Override
 		public Collection<R> get() {
 			synchronized (lock) {
-				return unmodifiableCollection(items);
+				return unmodifiableList(new ArrayList<>(items));
 			}
 		}
 

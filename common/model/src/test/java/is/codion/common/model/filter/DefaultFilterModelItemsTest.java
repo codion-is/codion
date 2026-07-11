@@ -519,6 +519,22 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
+		@DisplayName("get() returns a stable snapshot, unaffected by a later mutation")
+		void get_returnsStableSnapshot() {
+			items.add(asList("a", "b", "c"));
+
+			List<String> snapshot = included.get();
+			assertEquals(asList("a", "b", "c"), snapshot);
+
+			//set() clears and repopulates the backing list in place, the refresh path. A live view would
+			//reflect that mutation, and race it when the refresh runs off the reading thread; a snapshot does not
+			items.set(asList("x", "y"));
+
+			assertEquals(asList("a", "b", "c"), snapshot);
+			assertEquals(asList("x", "y"), included.get());
+		}
+
+		@Test
 		@DisplayName("Index bounds checking")
 		void indexOperations_boundsChecking() {
 			items.add(asList("a", "b", "c"));

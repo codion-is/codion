@@ -317,6 +317,8 @@ public interface FilterModel<T> {
 	interface IncludedItems<T> extends Observable<List<T>>, IndexedItems<T> {
 
 		/**
+		 * Returns an unmodifiable snapshot, stable and safe to iterate; it does not reflect subsequent changes
+		 * to the model. Use {@link #get(int)} and {@link #size()} for indexed access, which avoids the copy.
 		 * @return the included items or an empty list if all items are filtered
 		 */
 		@Override
@@ -448,6 +450,8 @@ public interface FilterModel<T> {
 	interface FilteredItems<T> extends Observable<Collection<T>> {
 
 		/**
+		 * Returns an unmodifiable snapshot, stable and safe to iterate; it does not reflect subsequent changes
+		 * to the model.
 		 * @return the filtered items or an empty collection in case of no filtered items
 		 */
 		@Override
