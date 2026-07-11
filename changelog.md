@@ -170,6 +170,7 @@ Codion Change Log
 - EntityViewer fetches the entity to view on a worker rather than the event dispatch thread. A foreign key referencing a deleted row now renders as such rather than throwing out of the tree expansion listener.
 - KeyboardShortcutsPanel now documents the entity viewer, CTRL-ALT-V, which is enabled by default.
 - EntitySearchFieldPanel now propagates its name to the inner search field, which is what receives focus, so a tool driving the UI identifies it as it does a plain search field, matching EntityComboBoxPanel and the other composite fields.
+- EntityConditionInspector added, a UiInspector projecting the ConditionModel behind a focused condition field for the model_state MCP tool, its attribute, whether it is a query condition or a client-side filter, its operator, operands and enabled state. EntityTableModelInspector defers to it when focus is in a condition field, reporting the table rows and selection elsewhere.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui
