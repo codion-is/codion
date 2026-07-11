@@ -50,5 +50,6 @@ module is.codion.swing.framework.ui {
 					with is.codion.swing.framework.ui.icon.DefaultFrameworkIcons;
 	provides is.codion.swing.common.ui.inspect.UiInspector
 					with is.codion.swing.framework.ui.inspect.EntityEditorInspector,
+									is.codion.swing.framework.ui.inspect.EntityConditionInspector,
 									is.codion.swing.framework.ui.inspect.EntityTableModelInspector;
 }

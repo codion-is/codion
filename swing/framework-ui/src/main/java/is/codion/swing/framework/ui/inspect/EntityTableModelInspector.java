@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui.inspect;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.ancestor.Ancestor;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.inspect.UiInspector;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -43,6 +44,10 @@ public final class EntityTableModelInspector implements UiInspector {
 	public Optional<Map<String, Object>> state(Component focusOwner) {
 		EntityTablePanel tablePanel = Ancestor.ofType(EntityTablePanel.class).of(focusOwner).get();
 		if (tablePanel == null) {
+			return Optional.empty();
+		}
+		if (Ancestor.ofType(ColumnConditionPanel.class).of(focusOwner).get() != null) {
+			//focus is in a condition/filter field, EntityConditionInspector reports it
 			return Optional.empty();
 		}
 

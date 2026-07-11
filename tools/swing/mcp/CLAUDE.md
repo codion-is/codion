@@ -38,7 +38,9 @@ entity-aware introspection arrives at runtime through the `UiInspector` ServiceL
 ### Introspection (cheap text, no pixels)
 - **model_state** — the state of the model behind the focused component. In an **edit panel**: per-attribute
   `value/valid/modified/message` + entity `exists/modified/valid`. In a **table**: `rowCount`, `selectionCount`,
-  `selectedIndex`, `selected`. Which one you get depends on where focus is (exactly one inspector applies).
+  `selectedIndex`, `selected`. In a **condition/filter field**: `type` (`condition` = sent to the DB, `filter` =
+  client-side), `attribute`, `operator`, `operands`, `enabled`. Which one you get depends on where focus is
+  (exactly one inspector applies; a condition field reports the condition, not the enclosing table).
 
 ### Screenshots
 - **app_screenshot** `{format}` — the main window, via direct painting (works even when obscured). `png` or `jpg`.
@@ -95,6 +97,7 @@ Interaction verdict (`key`/`type`):
   "attributes": [ { "attribute": "name", "value": "Demo", "valid": true, "modified": true, "original": "null" } ] }
 ```
 `model_state` (table): `{ "entityType": "...", "rowCount": 5, "selectionCount": 1, "selectedIndex": 0, "selected": ["Demo"] }`
+`model_state` (condition/filter field): `{ "entityType": "...", "type": "condition", "attribute": "employees.department.name", "enabled": true, "operator": "EQUAL", "operands": { "equal": "SALES" } }`
 
 `interactions`: `{ "ok": true, "executed": 12 }` or `{ "ok": false, "failedAt": 6, "step": {...}, "delivery": "MISSED", "component": "..." }`
 

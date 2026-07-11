@@ -1,2 +1,3 @@
 is.codion.swing.framework.ui.inspect.EntityEditorInspector
+is.codion.swing.framework.ui.inspect.EntityConditionInspector
 is.codion.swing.framework.ui.inspect.EntityTableModelInspector
