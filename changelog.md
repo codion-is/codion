@@ -57,6 +57,7 @@ Codion Change Log
 ### is.codion.framework.json.db
 - ErrorEnvelope and ErrorKind added, the wire form of a server side exception on the json error channel. The kind is a closed enum determining the http status, the server log severity and the exception the client reconstructs; nothing on the wire names a class.
 - ErrorKind.REPORT added, a report failure crossing the json error channel as its own kind rather than as a generic INTERNAL error, which would replace the message. The plugin strips the message of any engine type before it is thrown, so it is safe to send, and the client reconstructs it as a ReportException, which lives in common-db.
+- ErrorEnvelope, its mapper now (de)serializes through the public creator and getters alone, never the private fields, so it no longer fails on the module path where Jackson can not setAccessible() on a field of a package this module does not open to it. The whole error channel would break with an InaccessibleObjectException on the first error otherwise.
 ### is.codion.framework.db.http
 - HTTP query caching moved client-side, a cache hit no longer costs a round-trip. The setQueryCacheEnabled/isQueryCacheEnabled requests are removed.
 - HttpEntityConnection message bundle key many_records_found renamed multiple_records_found, matching the LocalEntityConnection sibling and the MultipleEntitiesFoundException it populates. The English message is aligned with it as well.

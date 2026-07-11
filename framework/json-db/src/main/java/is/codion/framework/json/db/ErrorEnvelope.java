@@ -21,17 +21,19 @@ package is.codion.framework.json.db;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -77,6 +79,11 @@ public final class ErrorEnvelope {
 	private static final ObjectMapper MAPPER = JsonMapper.builder()
 					//a client older than the server must tolerate fields it does not know
 					.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+					//(de)serialize through the public creator and getters alone, never the private fields. On the
+					//module path Jackson can not setAccessible() on a private field of a package this module does not
+					//open to it, and this envelope, being all public accessors, need never make it try
+					.visibility(PropertyAccessor.FIELD, NONE)
+					.disable(MapperFeature.CAN_OVERRIDE_ACCESS_MODIFIERS)
 					.build();
 
 	private final String kind;
@@ -126,7 +133,7 @@ public final class ErrorEnvelope {
 	}
 
 	/**
-	 * @return the kind specific detail, an empty {@link Optional} if the kind carries none
+	 * @return the kind specific detail, or null if the kind carries none
 	 */
 	@JsonProperty("detail")
 	public @Nullable JsonNode detail() {
