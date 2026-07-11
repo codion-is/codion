@@ -652,10 +652,10 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						return emptyList();
 					}
 					if (!includeNull) {
-						return unmodifiableList(items);
+						return unmodifiableList(new ArrayList<>(items));
 					}
 
-					return unmodifiableList(items.subList(1, items.size()));
+					return unmodifiableList(new ArrayList<>(items.subList(1, items.size())));
 				}
 			}
 
@@ -756,8 +756,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private void notifyChanges() {
-				//publish a snapshot, get() returns a live view over the backing list
-				changed.accept(unmodifiableList(new ArrayList<>(get())));
+				changed.accept(get());
 			}
 		}
 
@@ -769,7 +768,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			@Override
 			public Collection<T> get() {
 				synchronized (lock) {
-					return unmodifiableCollection(items);
+					return unmodifiableCollection(new ArrayList<>(items));
 				}
 			}
 
@@ -793,8 +792,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private void notifyChanges() {
-				//publish a snapshot, get() returns a live view over the backing set
-				changed.accept(unmodifiableCollection(new ArrayList<>(items)));
+				changed.accept(get());
 			}
 		}
 	}
