@@ -22,6 +22,11 @@ import is.codion.common.model.condition.ConditionModel;
 
 import org.junit.jupiter.api.Test;
 
+import java.awt.Component;
+import java.util.Objects;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ColumnConditionPanelTest {
@@ -39,6 +44,41 @@ public class ColumnConditionPanelTest {
 		assertNotNull(panel.operands().upper());
 		assertNotNull(panel.operands().lower());
 		assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String>builder().model(null));
+	}
+
+	@Test
+	void componentNames() {
+		ConditionModel<String> model = ConditionModel.builder()
+						.valueClass(String.class)
+						.build();
+		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder()
+						.model(model)
+						.name("test.column")
+						.build();
+		panel.operands().equal();//triggers lazy component creation
+
+		//each input component is named by its role, so a tool driving the UI, such as the Swing MCP server,
+		//identifies the focused condition field and its column via Component.getName()
+		Set<String> names = panel.components().stream()
+						.map(Component::getName)
+						.filter(Objects::nonNull)
+						.collect(toSet());
+		assertTrue(names.contains("test.column:operator"), names::toString);
+		assertTrue(names.contains("test.column:equal"), names::toString);
+		assertTrue(names.stream().allMatch(name -> name.startsWith("test.column:")), names::toString);
+	}
+
+	@Test
+	void unnamedByDefault() {
+		ConditionModel<String> model = ConditionModel.builder()
+						.valueClass(String.class)
+						.build();
+		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder()
+						.model(model)
+						.build();
+		//no name provided, the components keep their default null name
+		assertTrue(panel.operands().equal().isPresent());
+		assertNull(panel.operands().equal().get().getName());
 	}
 
 	@Test

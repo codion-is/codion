@@ -120,6 +120,7 @@ Codion Change Log
 - ToggleMenuItemBuilder.PERSIST_MENU configuration key no longer contains a duplicated class name segment.
 - Completion.COMPLETION_MODE configuration key suffix shortened from completionMode to mode, no longer restating the class name.
 - ModifiedIndicator.INDICATOR_CLASS and ValidIndicator.INDICATOR_CLASS configuration key suffixes changed from indicatorClass to implementation, no longer restating the class name.
+- ColumnConditionPanel.Builder.name() added, naming each input component by its role, operator/equal/lower/upper/in/enabled suffixed onto the given base name, typically the column identifier. A tool driving the UI, such as the Swing MCP server, now identifies the focused condition field and its column via Component.getName(), the way it already does an attribute's edit field. FilterTable and EntityTablePanel name their condition panels by the column identifier.
 ### is.codion.swing.framework.ui
 - ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING configuration key suffix shortened to handling, no longer restating the full class name.
 - FrameworkIcons.FRAMEWORK_ICONS configuration key suffix changed from frameworkIconsName to implementation, no longer restating the full class name.
@@ -168,6 +169,7 @@ Codion Change Log
 - EntityTablePanel no longer binds the INSPECT_QUERY control when no EntityQueries.Factory is available, which is the case on a remote client, the factory being provided by the db-local module. It previously threw IllegalStateException on each press.
 - EntityViewer fetches the entity to view on a worker rather than the event dispatch thread. A foreign key referencing a deleted row now renders as such rather than throwing out of the tree expansion listener.
 - KeyboardShortcutsPanel now documents the entity viewer, CTRL-ALT-V, which is enabled by default.
+- EntitySearchFieldPanel now propagates its name to the inner search field, which is what receives focus, so a tool driving the UI identifies it as it does a plain search field, matching EntityComboBoxPanel and the other composite fields.
 ### is.codion.tools.generator.model
 - Generator model, configuration keys moved from codion.domain.generator.* to codion.tools.generator.*, no longer squatting in the core domain namespace.
 ### is.codion.tools.generator.ui

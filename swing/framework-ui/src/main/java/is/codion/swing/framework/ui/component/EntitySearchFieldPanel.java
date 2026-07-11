@@ -508,6 +508,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
+		protected void setName(String name, EntitySearchFieldPanel component) {
+			super.setName(name, component);
+			component.searchField.setName(name);
+		}
+
+		@Override
 		protected void enable(TransferFocusOnEnter transferFocusOnEnter, EntitySearchFieldPanel component) {
 			transferFocusOnEnter.enable(component.searchField);
 			transferFocusOnEnter.enable(component.buttons.toArray(new JComponent[0]));

@@ -1516,6 +1516,7 @@ public class EntityTablePanel extends JPanel {
 						.model(conditionModel)
 						.components(conditionComponents)
 						.tableColumn(table.columnModel().column(identifier))
+						.name(identifier.toString())
 						.build();
 	}
 

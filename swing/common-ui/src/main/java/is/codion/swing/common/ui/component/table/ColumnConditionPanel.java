@@ -161,6 +161,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	private final ConditionComponents components;
 	private final Event<JComponent> focusGained = Event.event();
 	private final @Nullable TableColumn tableColumn;
+	private final @Nullable String name;
 	private final Function<Operator, String> operatorCaptions;
 	private final OperandComponents operandComponents = new OperandComponents();
 
@@ -181,6 +182,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		this.components = builder.components;
 		this.operatorCaptions = builder.operatorCaptions;
 		this.tableColumn = builder.tableColumn;
+		this.name = builder.name;
 	}
 
 	@Override
@@ -328,6 +330,16 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		Builder<T> tableColumn(TableColumn tableColumn);
 
 		/**
+		 * Sets the base name for this panel's input components, each suffixed by its role
+		 * ({@code :operator}, {@code :equal}, {@code :lower}, {@code :upper}, {@code :in}, {@code :enabled}),
+		 * so a tool driving the UI can identify the focused condition field and its column via
+		 * {@link java.awt.Component#getName()}. Typically the column identifier.
+		 * @param name the base component name
+		 * @return this builder
+		 */
+		Builder<T> name(String name);
+
+		/**
 		 * @return a new {@link ColumnConditionPanel} based on this builder
 		 */
 		ColumnConditionPanel<T> build();
@@ -350,6 +362,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		private ConditionComponents components = new ConditionComponents() {};
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private @Nullable TableColumn tableColumn;
+		private @Nullable String name;
 
 		private DefaultBuilder(ConditionModel<T> conditionModel) {
 			this.conditionModel = conditionModel;
@@ -374,6 +387,12 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		@Override
 		public Builder<T> tableColumn(TableColumn tableColumn) {
 			this.tableColumn = requireNonNull(tableColumn);
+			return this;
+		}
+
+		@Override
+		public Builder<T> name(String name) {
+			this.name = requireNonNull(name);
 			return this;
 		}
 
@@ -502,6 +521,26 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 		operatorCombo = createOperatorComboBox(model().operators());
 		components().forEach(this::configureHorizontalAlignment);
+		nameComponents();
+	}
+
+	//name each component by its role so a tool driving the UI, such as the Swing MCP server, can identify the
+	//focused condition field and its column, the way it already identifies an attribute's edit field
+	private void nameComponents() {
+		if (name != null) {
+			nameComponent(toggleEnabledButton, "enabled");
+			nameComponent(operatorCombo, "operator");
+			nameComponent(equalComponent, "equal");
+			nameComponent(lowerComponent, "lower");
+			nameComponent(upperComponent, "upper");
+			nameComponent(inComponent, "in");
+		}
+	}
+
+	private void nameComponent(@Nullable JComponent component, String role) {
+		if (component != null) {
+			component.setName(name + ":" + role);
+		}
 	}
 
 	private void configureHorizontalAlignment(JComponent component) {

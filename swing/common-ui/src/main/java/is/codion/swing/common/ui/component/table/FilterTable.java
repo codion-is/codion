@@ -1190,6 +1190,7 @@ public final class FilterTable<R, C> extends JTable {
 								.model(condition)
 								.components(components)
 								.tableColumn(columnModel().column(identifier))
+								.name(identifier.toString())
 								.build());
 			}
 		}

@@ -63,4 +63,21 @@ public final class EntitySearchFieldPanelTest {
 		value.set(sales);
 		assertEquals(sales, model.selection().entity().get());
 	}
+
+	@Test
+	void namePropagatesToSearchField() {
+		EntitySearchModel model = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
+		EntitySearchFieldPanel panel = EntitySearchFieldPanel.builder()
+						.model(model)
+						.editPanel(() -> null)
+						.singleSelection()
+						.name("test.name")
+						.build();
+		//the panel never receives focus, so the name must reach the focusable inner search field,
+		//the way a tool driving the UI identifies a plain search field
+		assertEquals("test.name", panel.searchField().getName());
+	}
 }
