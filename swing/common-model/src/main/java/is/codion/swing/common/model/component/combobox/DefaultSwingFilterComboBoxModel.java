@@ -108,11 +108,11 @@ final class DefaultSwingFilterComboBoxModel<T> implements SwingFilterComboBoxMod
 	@Override
 	public @Nullable T getElementAt(int index) {
 		ComboBoxItems<T> items = model.items();
-		if (items.includesNull()) {
-			return index == 0 ? items.nullItem() : items.included().get().get(index - 1);
+		if (items.includesNull() && index == 0) {
+			return items.nullItem();
 		}
-
-		return items.included().get().get(index);
+		//get(int) indexes the backing list, which holds the null item at index 0 when includesNull, so no offset here
+		return items.included().get(index);
 	}
 
 	@Override
