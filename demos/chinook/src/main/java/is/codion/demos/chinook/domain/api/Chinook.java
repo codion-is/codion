@@ -35,8 +35,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 
-import net.sf.jasperreports.engine.JasperPrint;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -151,7 +149,7 @@ public interface Chinook {
 
 		ForeignKey SUPPORTREP_FK = TYPE.foreignKey("supportrep_fk", SUPPORTREP_ID, Employee.ID);
 
-		ReportType<Map<String, Object>, JasperPrint> REPORT = reportType("customer_report");
+		ReportType<Map<String, Object>, byte[]> REPORT = reportType("customer_report");
 	}
 
 	interface Preferences {
@@ -237,6 +235,8 @@ public interface Chinook {
 		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
 
 		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+
+		ReportType<Map<String, Object>, byte[]> REPORT = reportType("invoice_report");
 
 		// tag::updateTotals[]
 		ProcedureType<EntityConnection, Collection<Long>> UPDATE_TOTALS = procedureType("chinook.update_totals");
