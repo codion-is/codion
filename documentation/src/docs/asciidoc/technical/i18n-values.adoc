@@ -35,7 +35,7 @@ is/codion/common/i18n/Messages_is_IS.properties
 |print|Print|Prenta
 |print_mnemonic|P|P
 |refresh|Refresh|Endurhlaða
-|refresh_mnemonic|R|E
+|refresh_mnemonic|R|R
 |refresh_tip|Refresh data|Endurhlaða gögnum
 |save|Save|Vista
 |save_mnemonic|S|V
@@ -278,7 +278,7 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |key|default|is_IS
 
 |add|Add|Ný færsla
-|add_mnemonic|A|N
+|add_mnemonic|A|A
 |add_tip|Add a new record|Skrá nýja færslu
 |confirm_delete|Delete {0, choice, 1#record\|1<{0, number, integer} records}?|Eyða {0, choice, 1#færslu\|1<{0, number, integer} færslum}?
 |confirm_exit|Are you sure you want to close the application?|Ertu viss um að þú viljir hætta?
@@ -287,7 +287,7 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |confirm_update|Update record?|Uppfæra færslu?
 |delete|Delete|Eyða
 |delete_current_tip|Delete current record|Eyða færslu
-|delete_mnemonic|D|A
+|delete_mnemonic|D|E
 |delete_selected_tip|Delete selected records|Eyða völdum færslum
 |dependencies|Dependencies|Tengdar Færslur
 |dependencies_tip|View records depending on the selected record|Skoða færslur sem byggja á völdu færslunni
@@ -302,15 +302,13 @@ is/codion/framework/i18n/FrameworkMessages_is_IS.properties
 |file_mnemonic|F|K
 |filter_noun|Filter|Sýjun
 |insert|Add|Vista
-|insert_mnemonic|A|V
+|insert_mnemonic|A|A
 |insert_tip|Add a new record based on the given values|Vista nýja færslu byggða á innslegnum gildum
 |lookup|Lookup|Uppfletting
 |lookup_mnemonic|L|L
 |modified_warning|Unsaved modifications will be lost, continue?|Óvistaðar breytingar munu tapast, viltu halda áfram?
 |modified_warning_title|Unsaved modifications|Óvistaðar breytingar
 |no_search_results|Search did not return any results|Leit skilaði engum niðurstöðum
-|save|Save|Vista
-|save_mnemonic|S|V
 |search_mnemonic|S|T
 |search_noun|Search|Leit
 |search_verb|Search|Leita
