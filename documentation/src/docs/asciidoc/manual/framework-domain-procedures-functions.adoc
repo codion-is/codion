@@ -110,7 +110,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[ta
 
 == Usage
 
-Procedures and functions are executed via {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#execute(is.codion.common.db.operation.FunctionType,T)[EntityConnection.execute()]. The connection is passed to the implementation, which can use it for database operations.
+Procedures and functions are executed via {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#execute(is.codion.common.db.operation.FunctionType,P)[EntityConnection.execute()]. The connection is passed to the implementation, which can use it for database operations.
 
 === Executing a Function
 

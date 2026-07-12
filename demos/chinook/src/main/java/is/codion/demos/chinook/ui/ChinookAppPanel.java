@@ -244,6 +244,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		}
 	}
 
+	// tag::main[]
 	public static void main(String[] args) throws CancelException {
 		String language = UserPreferences.get(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
@@ -259,9 +260,11 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		EntityPanel.Config.WINDOW_TYPE.set(WindowType.FRAME);
 		EntityEditPanel.Config.MODIFIED_WARNING.set(true);
 		EntityEditPanel.Config.INCLUDE_INSPECTOR.set(true);
+		// tag::keyStroke[]
 		// Add a CTRL modifier to the DELETE key shortcut for table panels
 		EntityTablePanel.ControlKeys.DELETE.defaultKeystroke().update(keyStroke ->
 						keyStroke(keyStroke.getKeyCode(), MENU_SHORTCUT_MASK));
+		// end::keyStroke[]
 		EntityTablePanel.Config.COLUMN_SELECTION.set(SelectionMode.MENU);
 		EntityTablePanel.Config.AUTO_RESIZE_MODE_SELECTION.set(SelectionMode.MENU);
 		EntityTablePanel.Config.INCLUDE_FILTERS.set(true);
@@ -284,4 +287,5 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}
+	// end::main[]
 }

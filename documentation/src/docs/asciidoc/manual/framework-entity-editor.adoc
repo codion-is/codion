@@ -1,14 +1,100 @@
 [#_entityeditor]
 = EntityEditor
+:dir-source: ../../../../../demos/manual/src/main/java
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html[EntityEditor] is the framework's write path: it manages a single entity instance being edited — its values, their validity, dirty state and default values — and performs the insert, update and delete operations.
+An editor is available from every edit model via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html#editor()[editor()], and everything an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] does — component enabling, validation indicators, dirty warnings — it does by observing the editor.
+
+The editor exposes two things: the *entity* being edited, via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#entity()[entity()], and an observable *value* for each attribute, via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#value(is.codion.framework.domain.entity.attribute.Attribute)[value(attribute)].
+
+== The entity
+
+{url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorEntity.html[EditorEntity] represents the entity being edited: *set()* populates the editor, *defaults()* initializes a new entity with default values, *clear()* empties it, *revert()* reverts all modifications.
+Its {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.Exists.html[exists()], {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.Modified.html[modified()] and *valid()* observable states drive the UI — an insert control is enabled while the entity does not exist, an update control while it exists and is modified and valid.
+
+The example below shows the full life cycle: defaults, setting values, insert, modify, update and delete.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/store/Misc.java[tags=editModel]
+----
+
+== Editing values
+
+{url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html[EditorValue] is a full {url-javadoc}{common-reactive}/is/codion/common/reactive/value/Value.html[Value] implementation for a single attribute, so anything that can be linked to a *Value* — an input component, another value — can be linked to an attribute of the entity being edited.
+Each editor value also exposes the state the UI needs: *valid()* and *modified()* observable states, a validation *message()*, the *original()* value and *revert()*.
+
+Two observers notify of changes, with an important distinction:
+
+* *Value.observer()* — notified whenever the value changes, whether by the user or by the framework populating the editor.
+* {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#edited()[edited()] — notified only when the value is changed *through this EditorValue*, that is, by an actual edit, not when the entity is set or cleared.
+
+Use *edited()* to react to user edits without also reacting every time an entity is selected into the editor:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLineEditModel.java[tags=editedObserver]
+----
+
+== Default values and persistent values
+
+Each editor value has a {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#defaultValue()[defaultValue()] supplier, used by *entity().defaults()* when initializing a new entity.
+A default value can be configured in the domain model, via the attribute definition, or set on the editor value directly, as in the *UUID* example in the previous section.
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#persist()[persist()] state controls whether a value survives *defaults()* — whether it carries over from one entity to the next.
+Foreign key values persist by default, since when entering a batch of records the reference typically stays the same, while the other values change.
+
+== Foreign key values: persist and propagate
+
+The example below disables persistence for a foreign key and uses {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.EditorValue.html#propagate(is.codion.framework.domain.entity.attribute.Attribute,java.util.function.Function)[propagate()] to populate the invoice billing address from the customer, each time the customer is edited.
+A propagated value is applied only when the source value actually changes and remains editable by the user afterwards.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceEditModel.java[tags=invoiceEditModel]
+----
+
+== Inserting, updating and deleting
+
+{url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#insert()[insert()], {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#update()[update()] and {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#delete()[delete()] operate on the entity being edited and return the resulting entity (or entities, for the collection variants).
+The entity is validated before insert and update, using the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#validator()[validator()], and an invalid entity fails with an *EntityValidationException* — the same validation continuously reflected by the *valid()* states and *message()* of each editor value.
+
+NOTE: These methods perform the operation on the calling thread. UI code, such as {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], uses {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#tasks()[tasks()] to prepare an operation for background execution, keeping the UI responsive.
+
+== Custom persistence
+
+{url-javadoc}{framework-model}/is/codion/framework/model/EntityPersistence.html[EntityPersistence], set via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#persistence()[persistence()], replaces how the editor performs its insert, update and delete — without changing anything else about it.
+Here invoice line operations run in a transaction which also updates the totals of the affected invoices, via a database procedure:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLineEditModel.java[tags=persistence]
+----
+
+== Detail editors
+
+An editor can edit related entities alongside its own, via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#detail()[detail()] and {url-javadoc}{framework-model}/is/codion/framework/model/EditorLink.html[EditorLink].
+A detail editor is populated when the master entity is set, and its entity is inserted, updated or deleted along with the master, in the same transaction.
+The link's *present* predicate decides whether the detail entity should exist at all — a detail entity failing the predicate is deleted rather than saved.
+
+Here customer preferences are edited alongside the customer:
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/model/CustomerEditModel.java[tags=customerEditModel]
 ----
 
+The link's *select* provides the query fetching the detail entity for a given master, which the artist editor below uses to edit a fixed number of tag entities, one link per tag slot:
+
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/model/ArtistEditModel.java[tags=artistEditModel]
 ----
+
+== Events
+
+{url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#events()[events()] provides application-wide insert, update and delete notifications for the edited entity type.
+These are what keep the rest of a running application consistent without any wiring: combo box models refresh or reconcile, search model selections receive updated instances, table models react to insert and delete, and foreign key values in other editors are replaced when the entity they reference is updated or deleted elsewhere.
+Reach for these events when application logic must react to persistence outcomes regardless of *which* editor performed the operation.

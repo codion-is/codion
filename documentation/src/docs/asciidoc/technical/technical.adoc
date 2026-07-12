@@ -14,6 +14,10 @@ include::{basedir}/technical/testing.adoc[leveloffset=+1]
 
 include::{basedir}/technical/server.adoc[leveloffset=+1]
 
+include::{basedir}/technical/internet-deployment.adoc[leveloffset=+1]
+
+include::{basedir}/technical/packaging.adoc[leveloffset=+1]
+
 include::{basedir}/technical/server-monitor.adoc[leveloffset=+1]
 
 include::{basedir}/technical/design.adoc[leveloffset=+1]
@@ -23,5 +27,3 @@ include::{basedir}/technical/modules.adoc[leveloffset=+1]
 include::{basedir}/technical/utilities.adoc[leveloffset=+1]
 
 include::{basedir}/technical/i18n.adoc[leveloffset=+1]
-
-include::{basedir}/technical/architecture-deep-dives.adoc[leveloffset=+1]

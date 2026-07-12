@@ -1,30 +1,48 @@
 [#_entityeditmodel]
 = EntityEditModel
 :dir-source: ../../../../../demos/manual/src/main/java
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
 [plantuml,entity-edit-model-diagram,svg,align=center]
 -------------------------------------------
-skinparam genericDisplay old
-
 interface EntityEditModel {
-    +<T> Value<T> value(Attribute<T> attribute)
     +EntityEditor editor()
-    +Entity insert()
-    +Entity update()
-    +Entity delete()
+    +EntityConnection connection()
 }
+
+interface EntityEditor {}
+
+EntityEditModel --o EntityEditor
 -------------------------------------------
 
-The {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] interface defines the CRUD business logic used by the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class when entities are being edited.
-The *EntityEditModel* works with a single entity instance, which can be retrieved and set via the *EntityEditor* instance accessible via the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html#editor()[editor()] method. *EntityEditor* exposes a number of methods for manipulating as well as querying the state of the entity being edited.
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] binds an <<_entityeditor, EntityEditor>> to a connection, and is the model an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] is based on.
+The editing itself — values, validation, dirty state, insert, update and delete — is the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html[EntityEditor]'s job, accessed via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html#editor()[editor()].
+
+The simplest edit model requires nothing but a constructor:
 
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
 ----
 
+Application logic belongs in the edit model (or its editor), not in the UI: default values, value dependencies and custom persistence configured here work identically whether the entity is edited through an edit panel, a table or a dialog.
+
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/Misc.java[tags=editModel]
+include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceEditModel.java[tags=invoiceEditModel]
 ----
+
+See <<_entityeditor, EntityEditor>> for the editor API this builds on: editing values, default values, value propagation, custom persistence and detail editors.
+
+== Combo box models
+
+The Swing implementation, {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/SwingEntityEditModel.html[SwingEntityEditModel], provides combo box models for foreign keys and column values, shared by the input components bound to them.
+A combo box model can be initialized eagerly in the constructor — otherwise it is created and refreshed on first use, by the component requesting it.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/TrackEditModel.java[tags=trackEditModel]
+----
+
+Combo box models based on entities stay consistent automatically: entities inserted, updated or deleted elsewhere in the application are added to, replaced in or removed from the combo box model, via the editor's insert, update and delete events.

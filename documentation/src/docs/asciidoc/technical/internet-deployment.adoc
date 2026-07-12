@@ -1,0 +1,306 @@
+[#_internet_deployment]
+= Internet deployment
+:dir-tutorials: ../tutorials
+:url-javadoc: link:../api
+
+The Codion server is designed for a trusted network: a known client, on a network you control.
+This page is about what changes when that assumption is removed — when the HTTP entity service
+must be reachable from the open internet, typically to serve a mobile client.
+
+The short version: **prefer not to**. The rest of this page explains why, what to do instead,
+and — if exposure is unavoidable — what must be true before the server faces the internet.
+
+== Prefer not to
+
+The most secure public port is the one that does not exist.
+
+Before hardening a public endpoint, ask whether the users can be enumerated. Employees,
+members of an institution, customers with an account — if the set of people who may connect is
+knowable in advance, they can be given network access instead of the internet being given
+application access.
+
+Ordered by preference:
+
+Mesh VPN (WireGuard, Tailscale, Netbird):: The server has **no inbound port open at all**;
+peers reach it over an authenticated encrypted mesh, with access controlled by identity.
+All of these have Android and desktop clients, and work over cellular. For a known user
+population this is both the most secure and — after setup — the least friction.
+
+Institutional VPN:: If one already exists, use it. Users toggle the VPN before opening the
+application, exactly as they would for any other internal service.
+
+Mutual TLS (mTLS) at a reverse proxy:: No tunnel, but only clients presenting a provisioned
+client certificate complete the TLS handshake. Anonymous traffic is rejected by the proxy
+before a single byte reaches the application. Android stores client certificates in its
+keystore, so this is a practical option for mobile clients where a VPN is not.
+
+Public HTTPS:: Only when the user population genuinely cannot be enumerated.
+
+[NOTE]
+====
+This is not a statement about the quality of the Codion server. It is a statement about what
+a public port implies. Exposing the entity service means placing a JVM containing Javalin,
+Jetty, Jackson, your domain model, a JDBC driver — and, in the same process, an RMI registry —
+behind a listener anyone on earth can reach. You inherit the vulnerability stream of that
+entire stack, permanently, and must patch on disclosure timelines. A WireGuard listener is a
+few thousand lines of heavily reviewed code with no dynamic dispatch and no deserialization.
+
+Reducing attack surface beats defending it.
+====
+
+== What the security model assumes
+
+Three properties are entirely reasonable on a trusted network, and become the crux of the
+problem on the internet.
+
+**Client credentials are database credentials.** By default, the user supplied by the client is
+the user the server opens a database connection with. Exposing the entity service therefore
+exposes your database login surface. See <<_authenticate_against_your_application>>.
+
+**Authorization is database privileges.** Codion has no per-operation or row-level authorization
+layer. Authorization is enforced by the database, below the application, where it cannot be
+bypassed — the same model the framework has used since its Oracle Forms ancestry. This is a
+strength, provided the database user actually constrains the client.
+
+**The client is trusted to be well behaved.** A desktop client on your network runs your code.
+A mobile application runs on a device its user controls, and its traffic can be modified.
+Assume a hostile client will send any request the wire protocol permits — including
+`delete(all(...))`, an unbounded `select`, or any registered function or procedure. Whatever the
+database user is permitted to do, assume the client can do.
+
+A VPN restores the assumption the design was built on. That is not a workaround; it is aligning
+the deployment with the design.
+
+== If you expose the server
+
+Everything below is necessary. None of it is sufficient on its own.
+
+[#_never_expose_the_rmi_ports]
+=== 1. Never expose the RMI ports
+
+The `EntityServer` opens an RMI registry port, a server port and — if configured — an admin port.
+The admin interface provides `shutdown()` and `disconnectClients()` behind a single user check.
+
+[IMPORTANT]
+====
+The server binds **all interfaces**. There is no bind-address configuration for the RMI ports
+or for the HTTP port; `Javalin.start(port)` and `LocateRegistry.createRegistry(port)` both listen
+on `0.0.0.0`. Firewalling is therefore not an additional precaution — it is the only mechanism
+available, and it is mandatory.
+====
+
+Only the HTTP port may be reachable from outside, and ideally only from the reverse proxy on
+localhost. Everything else — registry, server, admin, JMX — belongs on a management network or
+behind a host firewall.
+
+[#_authenticate_against_your_application]
+=== 2. Authenticate against your application, not the database
+
+Implement an {url-javadoc}{common-rmi}/is/codion/common/rmi/server/Authenticator.html[Authenticator]
+that validates the client's credentials against your own user store, then swaps in a database user
+with
+{url-javadoc}{common-rmi}/is/codion/common/rmi/server/RemoteClient.html[RemoteClient.withDatabaseUser()].
+Internet clients then never present database credentials, and a failed login costs no database
+connection attempt.
+
+See also <<server.adoc#_authentication, Authentication>>.
+<<{dir-tutorials}/chinook/chinook.adoc#_authenticator, ChinookAuthenticator>> demonstrates the
+pattern: authenticate the client's user against an application table, then return
+`remoteClient.withDatabaseUser(databaseUser)`.
+
+For mobile clients, have the application present an opaque, revocable **token** as the password.
+The device then never stores a reusable credential, and access can be withdrawn without changing
+anyone's password.
+
+[CAUTION]
+====
+Codion performs no login throttling, lockout or failed-attempt counting. Without an
+`Authenticator`, every failed login attempt opens a database connection with the supplied
+credentials. Rate limiting at the proxy (<<_put_a_reverse_proxy_in_front>>) is not optional.
+====
+
+[#_keep_authorization_in_the_database]
+=== 3. Keep authorization in the database
+
+Map each application role to a **separate pooled database user** with only the privileges that
+role needs, and select the database user in the `Authenticator` based on the authenticated
+application user.
+
+A compromised client then cannot exceed its role: a `DELETE` it is not granted fails in the
+database engine, not in application code that an attacker has already bypassed. Views and
+row-level security extend this to row granularity.
+
+A single shared database user for all clients discards the framework's only authorization
+mechanism.
+
+=== 4. Leave Java serialization disabled
+
+[source]
+----
+codion.server.http.serialization=false # <1>
+codion.server.http.json=true
+codion.server.objectInputFilterFactoryRequired=true # <2>
+----
+
+<1> The default. With serialization disabled the serial routes are not registered, and **no Java
+deserialization of client-supplied input occurs anywhere in the HTTP path**. This is a strong
+property; do not give it up.
+<2> The default. The `EntityServer` refuses to start without a deserialization filter, which
+protects the RMI interface. See <<server.adoc#_serialization_filtering, Serialization filtering>>.
+
+[#_put_a_reverse_proxy_in_front]
+=== 5. Put a reverse proxy in front
+
+Terminate TLS at the proxy rather than managing a Jetty keystore, and set
+`codion.server.http.secure=false` so the entity service serves plain HTTP to the proxy over
+localhost (protected by the firewall from <<_never_expose_the_rmi_ports>>).
+
+[NOTE]
+====
+If you terminate TLS at the entity service instead (`codion.server.http.secure=true`), only the
+secure port listens; no cleartext connector is opened alongside it.
+====
+
+[source]
+----
+limit_req_zone $binary_remote_addr zone=codion:10m rate=10r/s;
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name entities.example.org;
+
+    ssl_certificate     /etc/letsencrypt/live/entities.example.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/entities.example.org/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    add_header Strict-Transport-Security "max-age=63072000" always;
+
+    client_max_body_size 8m; # <1>
+
+    location /entities/serial/ {
+        return 404; # <2>
+    }
+
+    location /entities/json/ {
+        limit_req zone=codion burst=20 nodelay; # <3>
+
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-For $remote_addr; # <4>
+        proxy_set_header Host $host;
+
+        proxy_connect_timeout 5s;
+        proxy_read_timeout    60s;
+        proxy_send_timeout    60s;
+    }
+
+    location / {
+        return 404;
+    }
+}
+----
+
+<1> The entity service applies no request body size limit. A sufficiently large insert body is an
+out-of-memory condition.
+<2> Belt and braces: the serial routes are already unregistered by default.
+<3> The only defense against credential stuffing and brute force, since the server counts nothing.
+<4> `proxy_set_header`, not `add_header`. The entity service honours `X-Forwarded-For` when
+present, and it is a client-supplied header — the proxy must **overwrite** it, or a client can
+spoof the host recorded against its connection.
+
+=== 6. Bound the resources a client can consume
+
+`Select.limit` is supplied by the client and there is no server-side cap: a hostile client can
+request every row of your largest table. The available bounds are below the framework:
+
+* A database statement timeout.
+* `codion.db.pool.maximumPoolSize` — caps concurrent database work.
+* `codion.server.connectionLimit` — caps concurrent clients.
+* `codion.server.idleConnectionTimeout` — reaps abandoned connections.
+
+=== 7. Harden the client
+
+A JSON client that supplies its own `Domain` performs **no Java deserialization at all**. Error
+responses are a typed JSON envelope, and function and report results are JSON — a report exported
+server-side (PDF, for example) reaches the client as bytes no reporting engine is required to read.
+One serialized site remains, and it is avoidable:
+
+* The `entities` route replies with a serialized object. Supply the `Domain` to the connection
+builder and the client never calls it — this also removes a round trip and keeps the domain
+implementation off the wire.
+
+One **opt-in** deserialization exists: a client that displays reports with a `JRViewer` may register
+reports with `JRExport.SERIALIZED` and reconstruct the `JasperPrint` via `JasperReports.loadPrint()`,
+which deserializes server-supplied bytes. For an internet-facing client prefer a bytes-out export
+(PDF, HTML) instead; if `SERIALIZED` is used, the filter advice below applies.
+
+The client trusts the server it authenticated to. Over correct TLS that is safe; a user-installed
+certificate authority on a rooted or coerced device is not correct TLS.
+
+* Pin the server certificate, or at minimum configure Android's network security config to trust
+only system certificate authorities.
+* If reports use `JRExport.SERIALIZED`, install a JVM-wide `ObjectInputFilter` allowing
+`net.sf.jasperreports.engine.**` alongside Codion and your domain classes — `loadPrint()` honours
+it, being ordinary Java deserialization. Worth doing regardless, as defence in depth.
+
+== Error responses
+
+On a JSON connection an error response is a typed JSON envelope, never a serialized exception.
+**Nothing on the wire names a class**; the client reconstructs the exception from a closed set of
+error kinds, so an error response cannot instantiate an arbitrary type. An unrecognized kind
+degrades to a plain `DatabaseException`.
+
+Neither a stack trace nor a cause chain crosses the wire. A server-originated exception carries the
+stack trace of the client throw site. An exception the server does not recognize carries a generic
+message and a correlation id identifying the server log entry — nothing else about it is disclosed.
+
+The SQL statement, error code and SQL state are `transient` on `DatabaseException` and have never
+crossed the wire.
+
+The status code categorizes by whose fault the request was, and the same classification decides the
+server log severity:
+
+[cols="1,3"]
+|===
+|401 |Authentication failure, including a malformed `Authorization` or `clientId` header
+|400 |A request the server rejects as malformed
+|404, 409 |Not found, and the conflicts a correctly functioning application produces — optimistic locking, referential integrity, unique constraints
+|503, 504 |No connection available, query timeout
+|500 |A genuine server fault. A report failure is a named 500 whose message passes through;
+an unrecognized exception carries only a generic message and a correlation id
+|===
+
+Consequently **a 5xx response is a true fault signal**, and an ERROR-level log entry is a genuine
+fault. An optimistic locking conflict is a 409 logged at DEBUG. Alert on 5xx.
+
+A serial connection is a Java serialization channel by definition and is unchanged: it receives a
+serialized exception.
+
+[#_what_codion_does_not_provide]
+== What Codion does not provide
+
+Stated plainly, because a security control you believe exists is worse than one you know does not:
+
+* **No rate limiting, login throttling, lockout, or failed-attempt counting.** Provide these at
+the proxy.
+* **No per-operation or row-level authorization.** Authorization is database privileges. See
+<<_keep_authorization_in_the_database>>.
+* **No server-side cap on query result size.** `Select.limit` is a client-supplied value.
+* **No bind-address configuration.** Every port listens on all interfaces; use a firewall.
+* **No audit log** of the operations a client performs. Method tracing exists for diagnostics,
+not for audit.
+
+== Checklist
+
+. Can the users be enumerated? If yes, use a VPN and stop here.
+. RMI registry, server, admin and JMX ports firewalled off; only the HTTP port reachable, ideally
+only from localhost.
+. An `Authenticator` in place, authenticating against the application, swapping in a role-specific
+pooled database user.
+. Database privileges actually constrain each role.
+. `codion.server.http.serialization=false`, `codion.server.objectInputFilterFactoryRequired=true`.
+. Reverse proxy: TLS, rate limiting, body size limit, timeouts, `X-Forwarded-For` overwritten.
+. Statement timeout, pool size, connection limit, idle timeout all set.
+. Client: certificate pinning, an injected `Domain`, and an `ObjectInputFilter` if reports use
+`JRExport.SERIALIZED`.
+. Alerting on 5xx responses and ERROR log entries, both of which now mean a genuine fault.
+. A penetration test before the first real user connects.

@@ -1,12 +1,16 @@
 [#_entitytablemodel]
 = EntityTableModel
 :dir-source: ../../../../../demos/manual/src/main/java
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
 [plantuml,entity-table-model-diagram,svg,align=center]
 -------------------------------------------
 interface EntityTableModel {
     +EntityEditModel editModel()
+    +EntityQueryModel query()
+    +MultiSelection selection()
+    +Items items()
 }
 
 interface EntityEditModel {}
@@ -14,16 +18,42 @@ interface EntityEditModel {}
 EntityTableModel --o EntityEditModel
 -------------------------------------------
 
-The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] class provides a table representation of the underlying entities.
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] provides a table representation of entities: the *items* fetched by its <<_entityquerymodel, EntityQueryModel>>, a *selection* and an *editModel* for editing them.
 
-Every *EntityTableModel* contains a *EntityEditModel* instance. A default edit model implementation is created automatically by the *EntityTableModel* if one is not supplied via a constructor argument.
+Every *EntityTableModel* contains an *EntityEditModel* instance — a default one is created automatically unless one is supplied via a constructor argument.
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/store/model/CustomerAddressTableModel.java[tags=customerAddressTableModel]
+----
+
+== Items, selection and query
+
+*items().refresh()* populates the table by running the <<_entityquerymodel, query model>>'s query — the condition, attributes, order by and limit it is configured with.
+*selection()* provides the selected items and indexes as observable values, which is what selection-scoped controls bind their enabled state to, and what master models propagate to their detail models.
+
+When entities of the table's type are inserted, updated or deleted anywhere in the application, the table model reacts: updated rows are replaced in place, deleted rows removed, and inserted entities added according to the {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html#onInsert()[onInsert()] strategy — prepended by default, appended, or ignored.
+
+== Application logic
+
+Operations on the selected rows belong in the table model, keeping the UI layer free of business logic.
+Here a database function raises the price of the selected tracks, and the updated entities are reconciled back into the table with *replace()*:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/TrackTableModel.java[tags=raisePrice]
+----
+
+The task above is a *ResultTaskHandler*, prepared by the model and executed by the UI on a background thread, with the result applied on the UI thread.
+
+Functions returning new entities follow the same pattern — here wrapped in a transaction:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/model/PlaylistTableModel.java[tags=randomPlaylist]
 ----

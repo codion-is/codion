@@ -32,6 +32,7 @@ import java.util.List;
 import static is.codion.demos.chinook.domain.api.Chinook.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// tag::domainTest[]
 public class ChinookTest extends DomainTest {
 
 	public ChinookTest() {
@@ -47,6 +48,7 @@ public class ChinookTest extends DomainTest {
 	void artist() {
 		test(Artist.TYPE);
 	}
+	// end::domainTest[]
 
 	@Test
 	void artistTag() {
@@ -98,6 +100,7 @@ public class ChinookTest extends DomainTest {
 		test(Track.TYPE);
 	}
 
+	// tag::functionTest[]
 	@Test
 	void randomPlaylist() {
 		EntityConnection connection = connection();
@@ -119,7 +122,9 @@ public class ChinookTest extends DomainTest {
 			connection.rollbackTransaction();
 		}
 	}
+	// end::functionTest[]
 
+	// tag::entityFactory[]
 	private static final class ChinookEntityFactory extends DefaultEntityFactory {
 
 		private ChinookEntityFactory(EntityConnection connection) {
@@ -143,4 +148,7 @@ public class ChinookTest extends DomainTest {
 			return super.value(attribute);
 		}
 	}
+	// end::entityFactory[]
+	// tag::domainTest[]
 }
+// end::domainTest[]

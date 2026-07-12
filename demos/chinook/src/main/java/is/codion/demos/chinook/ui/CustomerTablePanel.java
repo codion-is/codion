@@ -49,6 +49,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 						.refreshButtonVisible(RefreshButtonVisible.ALWAYS));
 	}
 
+	// tag::setupControls[]
 	@Override
 	protected void setupControls() {
 		// Assign a custom report action to the standard PRINT control,
@@ -60,6 +61,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 						.enabled(tableModel().selection().empty().not())
 						.build());
 	}
+	// end::setupControls[]
 
 	private void viewCustomerReport() {
 		Dialogs.progressWorker()

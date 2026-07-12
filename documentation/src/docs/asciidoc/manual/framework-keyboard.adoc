@@ -1,0 +1,46 @@
+[#_keyboard_shortcuts]
+= Keyboard shortcuts
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:dir-tutorials: ../tutorials
+:url-javadoc: link:../api
+
+Codion applications are keyboard-first: every panel, control and navigation action is reachable without the mouse, and every shortcut is discoverable and configurable.
+The complete, always-current reference for a running application is available via its *Help* menu (*Keyboard shortcuts*).
+
+== ControlKeys
+
+Each UI class declares its controls in a *ControlKeys* class — {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.ControlKeys.html[EntityTablePanel.ControlKeys], {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.ControlKeys.html[EntityEditPanel.ControlKeys], {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityPanel.ControlKeys.html[EntityPanel.ControlKeys] — where each key identifies a control and carries its default keystroke.
+The javadoc of each *ControlKeys* class is the authoritative shortcut listing for that component.
+
+Keystrokes are configurable at two levels:
+
+*Application-wide* — modify a default keystroke before the panels are created, typically in *main()*:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/ChinookAppPanel.java[tags=keyStroke]
+----
+
+*Per panel* — via the panel configuration:
+
+[source,java]
+----
+new EntityTablePanel(tableModel, config ->
+        config.keyStroke(EntityTablePanel.ControlKeys.REFRESH, keyStroke ->
+                keyStroke.set(KeyStroke.getKeyStroke(VK_F5, 0))));
+----
+
+== Custom key bindings
+
+For key bindings beyond the built-in controls, the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/key/KeyEvents.html[KeyEvents] builder associates keystrokes with actions on any component — see the <<{dir-tutorials}/keybinding.adoc#_keybinding_tutorial, KeyBinding tutorial>> for a complete example.
+
+== The essentials
+
+A few defaults worth knowing from the start, since they shape how applications feel:
+
+* *Navigation*: CTRL-ALT-UP/DOWN between master and detail panels, CTRL-ALT-LEFT/RIGHT between siblings — focus follows.
+* *Focus*: CTRL-E edit panel, CTRL-T table, CTRL-I initial input field, CTRL-F table search field.
+* *Table*: INSERT adds, CTRL-INSERT edits the selected row, SHIFT-INSERT edits one value for the whole selection, DELETE deletes.
+* *Transfer focus on enter*: ENTER moves to the next input component in edit panels, so data entry never touches the mouse.
+
+NOTE: CTRL above refers to the platform menu shortcut key — CTRL on Windows/Linux, ⌘ on macOS.

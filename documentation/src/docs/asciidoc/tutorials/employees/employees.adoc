@@ -82,7 +82,7 @@ The tests are run within their own transactions which are then rolled back.
 We can provide our own entity instances by passing our own *EntityFactory* implementation to the super constructor, overriding *entity(entityType, foreignKeyEntities)* handling the cases we'd like and delegating the rest to the superclass implementation.
 The same can be done for entities that are referenced via foreign keys and are required in order to be able to insert records.
 
-NOTE: The {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.html#TEST_USER[DomainTest.TEST_USER] configuration value specifies the user credentials to use when running the tests, you can set it directly or via the *codion.test.user* system property.
+NOTE: The user credentials {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.html[DomainTest] runs with are specified via the *codion.test.user* system property.
 
 [source,java]
 ----

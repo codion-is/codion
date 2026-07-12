@@ -22,6 +22,7 @@ import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 
+// tag::invoicePanel[]
 public final class InvoicePanel extends EntityPanel {
 
 	public InvoicePanel(SwingEntityModel invoiceModel) {
@@ -37,3 +38,4 @@ public final class InvoicePanel extends EntityPanel {
 		detail().add(editPanel.invoiceLinePanel());
 	}
 }
+// end::invoicePanel[]
