@@ -18,15 +18,10 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
-
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.StreamSupport.stream;
 
 /**
  * Provides {@link EntityObjectMapper} instances for a given domain.
@@ -58,16 +53,6 @@ public interface EntityObjectMapperFactory {
 	 * @return a {@link EntityObjectMapperFactory} instance compatible with the given domain type.
 	 */
 	static EntityObjectMapperFactory instance(DomainType domainType) {
-		requireNonNull(domainType);
-		try {
-			return stream(ServiceLoader.load(EntityObjectMapperFactory.class).spliterator(), false)
-							.filter(factory -> factory.compatibleWith(domainType))
-							.findFirst()
-							//compatible with all domain models
-							.orElse(mapperDomainType -> true);
-		}
-		catch (ServiceConfigurationError e) {
-			throw Exceptions.runtime(e, ServiceConfigurationError.class);
-		}
+		return AbstractEntityObjectMapperFactory.resolve(requireNonNull(domainType));
 	}
 }
