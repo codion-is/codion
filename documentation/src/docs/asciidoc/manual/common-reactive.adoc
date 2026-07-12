@@ -114,6 +114,29 @@ Null is then translated to the _nullValue_ when set.
 include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=nullValue]
 ----
 
+[#_value_linking]
+==== Linking
+
+Values of the same type can be linked, instead of synchronizing them manually with listeners.
+Linking is bidirectional and the current value of the original propagates to the linked value when the link is established.
+This is the mechanism binding input components to values throughout the framework.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=valueLinking]
+----
+
+[#_notification_strategies]
+==== Notification strategies
+
+By default, listeners are notified only when a value actually changes ({url-javadoc}{common-reactive}/is/codion/common/reactive/value/Value.Notify.html[Notify.CHANGED]) — setting a value equal to the current one is a no-op.
+*Notify.SET* notifies on every set, whether the value changed or not.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=notifyStrategies]
+----
+
 [#_valuecollection]
 ==== ValueCollection
 
@@ -181,3 +204,34 @@ include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=control]
 ----
 
 NOTE: When a State or Event is linked to a Swing component, for example its enabled state, all state changes must happen on the Event Dispatch Thread.
+
+[#_state_group]
+==== State groups
+
+A {url-javadoc}{common-reactive}/is/codion/common/reactive/state/State.Group.html[State.Group] ensures that at most a single member state is active at a time — radio button semantics:
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=stateGroup]
+----
+
+[#_weak_listeners]
+== Weak listeners
+
+Every observer accepts listeners via weak references — *addWeakListener()*, *addWeakConsumer()* — which do not prevent the listener from being garbage collected.
+A short-lived component observing a long-lived model should use a weak listener (or remove its listeners when discarded), otherwise the model keeps the discarded component reachable forever.
+Dead references are cleaned up automatically; the caller must simply ensure something holds a strong reference to the listener for as long as it should stay active.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=weakListeners]
+----
+
+[#_reactive_threading]
+== Threading
+
+Listener management — adding and removing — is thread-safe on all reactive classes.
+Mutation and notification are *not*: *set()*, *run()* and *accept()* are designed to be called from a single thread, the UI thread in a typical application.
+A background thread with a result for a value hands it to the UI thread first — in Swing via *SwingUtilities.invokeLater* or, better, a *ProgressWorker* whose *onResult* already runs there.
+
+Listeners are notified synchronously, in the order they were added, and an exception thrown by a listener prevents the remaining ones from being notified — listeners performing risky work handle their own exceptions.

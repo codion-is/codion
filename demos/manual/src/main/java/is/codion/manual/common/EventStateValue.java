@@ -207,6 +207,96 @@ public final class EventStateValue {
 		// end::nullValue[]
 	}
 
+	private static void valueLinking() {
+		// tag::valueLinking[]
+		Value<Integer> value = Value.nullable();
+
+		Value<Integer> linked = Value.nullable();
+
+		// linking propagates the current value
+		// of the original value to the linked one
+		linked.link(value);
+
+		value.set(2);
+
+		System.out.println(linked.get());// output: 2
+
+		// linking is bidirectional, so a change
+		// in either value propagates to the other
+		linked.set(3);
+
+		System.out.println(value.get());// output: 3
+		// end::valueLinking[]
+	}
+
+	private static void notifyStrategies() {
+		// tag::notifyStrategies[]
+		// CHANGED, the default: listeners are notified
+		// only when the value actually changes
+		Value<Integer> counter = Value.builder()
+						.nonNull(0)
+						.notify(Value.Notify.CHANGED)
+						.build();
+
+		counter.addListener(() -> System.out.println("changed"));
+
+		counter.set(1);// output: 'changed'
+		counter.set(1);// no output, value did not change
+
+		// SET: listeners are notified each
+		// time the value is set
+		Value<Integer> status = Value.builder()
+						.nonNull(0)
+						.notify(Value.Notify.SET)
+						.build();
+
+		status.addListener(() -> System.out.println("set"));
+
+		status.set(1);// output: 'set'
+		status.set(1);// output: 'set'
+		// end::notifyStrategies[]
+	}
+
+	private static void weakListeners() {
+		// tag::weakListeners[]
+		Value<Integer> value = Value.nullable();
+
+		Runnable listener = () -> System.out.println("Value changed");
+
+		// a weak listener does not prevent garbage collection of the
+		// listener instance; a component observing a model that outlives
+		// it should use a weak listener, or remove its listeners when discarded.
+		// Note that something must keep a strong reference to the listener,
+		// here it is a local variable, so this only works within this scope
+		value.addWeakListener(listener);
+
+		value.set(42);// output: 'Value changed'
+
+		// weak references to garbage collected
+		// listeners are cleaned up automatically
+		// end::weakListeners[]
+	}
+
+	private static void stateGroup() {
+		// tag::stateGroup[]
+		// a state group ensures that only a single
+		// state is active at a time, like radio buttons
+		State one = State.state();
+		State two = State.state();
+		State three = State.state();
+
+		State.group(one, two, three);
+
+		one.set(true);
+
+		System.out.println(two.is());// output: false
+
+		two.set(true);
+
+		System.out.println(one.is());// output: false
+		// end::stateGroup[]
+	}
+
 	private static void valueCollection() {
 		// tag::valueCollection[]
 		ValueSet<Integer> valueSet =
@@ -317,6 +407,10 @@ public final class EventStateValue {
 		control();
 		value();
 		nullValue();
+		valueLinking();
+		notifyStrategies();
+		weakListeners();
+		stateGroup();
 		valueCollection();
 	}
 }

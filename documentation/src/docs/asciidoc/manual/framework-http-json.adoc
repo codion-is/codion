@@ -1,0 +1,57 @@
+[#_http_json_client]
+= HTTP & JSON clients
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:dir-technical: ../technical
+:url-javadoc: link:../api
+
+A client connecting over HTTP (see <<_httpentityconnectionprovider, HttpEntityConnectionProvider>>) uses one of two wire formats: *JSON*, the default, or *Java serialization*.
+The serialization format requires the exchanged classes on both ends and a deserialization filter; the JSON format exchanges typed JSON documents — entities, conditions, error envelopes — and is the format for clients outside the trusted network, such as mobile clients.
+This chapter covers what a JSON client must provide: its domain, and JSON type registrations for the database operations it calls.
+
+The format is selected via the connection provider builder or the *codion.client.http.json* configuration value (default *true*):
+
+[source,java]
+----
+HttpEntityConnectionProvider.builder()
+        .json(true)
+        ...
+----
+
+== Supplying the domain
+
+A client provides its domain model to the connection builder via {url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnectionProvider.Builder.html#domain(is.codion.framework.domain.Domain)[HttpEntityConnectionProvider.Builder.domain(Domain)].
+Without it, the client fetches the entity definitions from the server on connect — a convenience for trusted-network clients, but that reply is the one JSON-mode response carrying a Java-serialized object.
+A client with an injected domain skips the round trip and, if it avoids Java-serialized report results (see below), performs *no Java deserialization at all* — the property that makes the JSON format suitable for internet-facing clients.
+
+== Registering operation types
+
+Entities, keys and conditions serialize out of the box.
+The parameter and return values of database <<_procedures_functions, procedures, functions>> and reports are domain-specific types, so the domain registers how they travel, in an {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory]:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookObjectMapperFactory.java[tags=procedureFunction]
+----
+
+Registration is mandatory for the operations a JSON client calls — a function with an unregistered return type fails at the first call, with a message naming the function and the registration site.
+Both client and server resolve these registrations from the same factory, so there is one source of truth and no type name ever crosses the wire.
+
+The factory is discovered via the *ServiceLoader*, so it must be registered as a service provider — in *module-info.java* for the module path, and in *META-INF/services* for clients running on the classpath, Android included, where JPMS *provides* clauses are inert.
+
+TIP: Keeping the mapper factory in its own module, depending only on the domain API, lets clients that need it (HTTP/JSON) include it while others (local, RMI) skip it — and keeps Jackson off the classpaths that don't need it.
+
+== Errors
+
+Over JSON, an error response is a typed envelope, never a serialized exception.
+The client reconstructs the exception from a closed set of error kinds — nothing on the wire names a class — so the exceptions application code catches are the same as over any other connection type: *ReferentialIntegrityException*, *EntityModifiedException* with the conflicting entity, *UniqueConstraintException*, *ReportException* and so on, with their messages intact.
+An error the server does not recognize yields a generic message and a correlation id identifying the server log entry.
+
+== Reports
+
+A report result travels as JSON like a function result, using a registered return type — a report exported to *PDF* on the server simply arrives as *byte[]*.
+A client displaying reports with the JasperReports viewer can keep working with *JasperPrint* over a JSON connection via *JRExport.SERIALIZED* and *JasperReports.loadPrint()* — see <<_reporting_with_jasperreports, Reporting with JasperReports>>.
+
+== Deployment
+
+Exposing the HTTP service outside a trusted network is a deployment decision with security consequences — authentication, authorization, rate limiting, TLS.
+See <<{dir-technical}/internet-deployment.adoc#_internet_deployment, Internet deployment>> before opening the port.

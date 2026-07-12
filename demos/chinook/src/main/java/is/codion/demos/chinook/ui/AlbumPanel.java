@@ -25,6 +25,7 @@ import is.codion.demos.chinook.model.TrackTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 
+// tag::albumPanel[]
 public final class AlbumPanel extends EntityPanel {
 
 	public AlbumPanel(AlbumModel albumModel) {
@@ -39,3 +40,4 @@ public final class AlbumPanel extends EntityPanel {
 		detail().add(trackPanel);
 	}
 }
+// end::albumPanel[]

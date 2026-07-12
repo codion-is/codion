@@ -1,6 +1,7 @@
 [#_entitypanel]
 = EntityPanel
 :dir-source: ../../../../../demos/manual/src/main/java
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
 [plantuml,entity-panel-diagram,svg,align=center]
@@ -35,10 +36,43 @@ include::{dir-source}/is/codion/manual/framework/EntityPanels.java[tags=setup]
 
 == Detail panels
 
-Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see link:#_detail_models[detail models].
-See link:#_entityapplicationpanel[EntityApplicationPanel].
+Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the corresponding detail model, see <<_detail_models, detail models>>.
+The detail panel hierarchy typically mirrors the model hierarchy — here the customer panel adds an invoice panel, whose model is the customer model's detail model:
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/framework/EntityPanels.java[tags=detailPanel]
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/CustomerPanel.java[tags=customerPanel]
 ----
+
+A detail panel is just an *EntityPanel* — extended or instantiated directly:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/AlbumPanel.java[tags=albumPanel]
+----
+
+=== Detail panel layout
+
+By default, detail panels are laid out by a {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/TabbedDetailLayout.html[TabbedDetailLayout]: the master panel and its detail panels share a split pane, with the detail panels in a tabbed pane on the right.
+A detail panel can be expanded, collapsed or torn out into a separate window, with both the mouse and the keyboard (see <<_entity_panel_navigation, navigation>> below).
+
+The layout is configurable per panel — the invoice panel below opts out entirely, since its invoice line panel is embedded in the edit panel itself, while still registering the panel for keyboard navigation:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/InvoicePanel.java[tags=invoicePanel]
+----
+
+== Edit panel state
+
+The edit panel can be *embedded* (the default, above the table), displayed in a separate *window*, or *hidden*, toggled via the toolbar or CTRL-ALT-E.
+The available states — and whether the toggle uses a frame or a dialog — are configurable via the panel's *Config*.
+
+[#_entity_panel_navigation]
+== Navigation and resizing
+
+Entity panels form a keyboard-navigable hierarchy: CTRL-ALT-UP/DOWN moves between master and detail panels, CTRL-ALT-LEFT/RIGHT between sibling panels — with focus following, so the active panel is always the one under the keyboard.
+SHIFT-ALT-LEFT/RIGHT resizes a master/detail split, and CTRL-SHIFT-ALT-LEFT/RIGHT expands or collapses it.
+Within a panel, CTRL-E transfers focus to the edit panel, CTRL-T to the table, CTRL-I to the initial input field, CTRL-F to the table search field.
+
+The complete, current shortcut reference is available in any running application via the *Help* menu (*Keyboard shortcuts*).

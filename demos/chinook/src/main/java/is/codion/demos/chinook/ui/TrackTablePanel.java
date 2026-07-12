@@ -62,6 +62,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 					.mapToObj(ranking -> rightPad("", ranking, '*'))
 					.collect(toMap(String::length, identity()));
 
+	// tag::config[]
 	public TrackTablePanel(TrackTableModel tableModel) {
 		super(tableModel, config -> config
 						// Custom component for editing track ratings
@@ -81,6 +82,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 										.autoStartsEdit(false)
 										.startEditing(keyStroke(VK_INSERT)))
 						.includeLimitMenu(true));
+		// end::config[]
+		// tag::popupMenu[]
 		// Add a custom control to the top of the table popup menu.
 		// Start by clearing the popup menu layout
 		configurePopupMenu(layout -> layout.clear()
@@ -94,6 +97,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 						// and add all the default controls
 						.defaults());
 	}
+	// end::popupMenu[]
 
 	private void raisePriceOfSelected() {
 		TrackTableModel tableModel = (TrackTableModel) tableModel();

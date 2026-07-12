@@ -1,0 +1,45 @@
+[#_development_tools]
+= Development tools
+:url-javadoc: link:../api
+
+The framework ships a set of inspection tools for looking *into* a running application — the live query, the editor state, an entity's data graph.
+The inspectors are excluded by default and enabled via configuration values, typically during development.
+
+== Entity viewer
+
+Displays the selected entity as a navigable tree: every attribute with its type and value, original values for modified attributes, and foreign key references expandable into the referenced entity's tree — the fastest way to answer "what is *actually* in this row".
+
+Included by default in every table panel, on CTRL-ALT-V; excluded via {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_ENTITY_VIEWER[EntityTablePanel.Config.INCLUDE_ENTITY_VIEWER].
+
+== Query inspector
+
+Displays the *SELECT* statement the table's query model will run, updated live as conditions change — see <<_table_query_inspector, Query Inspector>>.
+Enabled via *EntityTablePanel.Config.INCLUDE_INSPECTOR*, opened with CTRL-ALT-Q.
+
+NOTE: The query inspector requires the *codion-framework-db-local* module on the classpath, since it renders SQL — on a purely remote client it is unavailable.
+
+== Editor inspector
+
+Displays the state of an edit panel's editor: each attribute's value, original value, modified/valid/present flags and validation message, along with the *INSERT* and *UPDATE* statements the current state would produce.
+Detail editors appear as nested inspectors.
+
+Enabled via *EntityEditPanel.Config.INCLUDE_INSPECTOR*, opened with CTRL-ALT-R when the edit panel is focused.
+
+[source,java]
+----
+EntityTablePanel.Config.INCLUDE_INSPECTOR.set(true);
+EntityEditPanel.Config.INCLUDE_INSPECTOR.set(true);
+----
+
+== Dependencies viewer
+
+Displays the entities *depending on* the selected rows — the incoming foreign key references — as a tabbed pane of table panels, one per dependent entity type, navigable with CTRL-ALT-LEFT/RIGHT.
+Available from the table popup menu, and shown automatically when a delete fails on a referential integrity constraint, if {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/ReferentialIntegrityErrorHandling.html[ReferentialIntegrityErrorHandling] is set to *DISPLAY_DEPENDENCIES*.
+
+== SQL tracing
+
+Traces the queries a local connection runs — see <<_entityapplicationpanel, EntityApplicationPanel>>.
+
+== Server monitor
+
+For inspecting a running *EntityServer* — connected clients, connection pools, performance charts and client method tracing — see the server monitor in the technical documentation.

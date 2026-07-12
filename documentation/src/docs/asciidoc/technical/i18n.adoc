@@ -4,6 +4,34 @@
 :url-javadoc: link:../api
 :basedir: ..
 
+The framework's own strings — messages, control captions, dialog texts — are resource-bundle based and ship in English and Icelandic; applications localize their domain the same way, with plain Java resource bundles.
+The active language follows the default locale, so localization is selected with *Locale.setDefault()* during application startup, before any UI is created.
+
+== Localizing the domain
+
+Entity and attribute captions are localized by associating an *EntityType* with a resource bundle, by passing a class when defining it:
+
+[source,java]
+----
+interface Artist {
+    EntityType TYPE = DOMAIN.entityType("chinook.artist", Artist.class);
+    ...
+}
+----
+
+The bundle is resolved from the class name — here *Chinook$Artist.properties* — with the entity type name as the key for the entity caption and attribute names for attribute captions:
+
+[source,properties]
+----
+# Chinook$Artist.properties
+chinook.artist=Artists
+name=Name
+number_of_albums=Number of albums
+----
+
+Adding a language is then a matter of providing the locale-suffixed sibling — *Chinook$Artist_is_IS.properties* — for each entity, as the Chinook demo does for Icelandic.
+A caption found in the resource bundle takes precedence over one defined in code via *.caption()*; with neither, the attribute name serves as the caption.
+
 == Overriding
 
 The default i18n strings can be overridden by implementing {url-javadoc}{common-utilities}/is/codion/common/utilities/resource/Resources.html[Resources] and registering the implementation with the ServiceLoader.

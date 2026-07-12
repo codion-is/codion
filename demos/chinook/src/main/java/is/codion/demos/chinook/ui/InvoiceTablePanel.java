@@ -34,6 +34,7 @@ import static is.codion.swing.common.ui.component.table.ConditionPanel.Condition
 
 public final class InvoiceTablePanel extends EntityTablePanel {
 
+	// tag::config[]
 	public InvoiceTablePanel(SwingEntityTableModel tableModel) {
 		super(tableModel, config -> config
 						// The TOTAL column is updated automatically when invoice lines are updated,
@@ -44,6 +45,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 						// Start with the SIMPLE condition panel view.
 						.conditionView(SIMPLE));
 	}
+	// end::config[]
 
 	private static final class InvoiceConditionPanelFactory implements TableConditionPanel.Factory<Attribute<?>> {
 

@@ -1,0 +1,54 @@
+[#_packaging]
+= Packaging
+:url-javadoc: link:../api
+
+Codion applications ship as ordinary Java applications, and since every framework module is a JPMS module, they package naturally with *jlink* — a self-contained image with a custom runtime, no pre-installed Java required — and *jpackage*, which wraps that image in a native installer (msi/exe, deb/rpm, dmg/pkg).
+
+The https://github.com/beryx/badass-jlink-plugin[Badass JLink Gradle plugin] handles both, including the common real-world wrinkle: non-modular dependencies, which it merges into a single synthetic module.
+
+[source,kotlin]
+----
+plugins {
+    id("org.beryx.jlink")
+}
+
+application {
+    mainModule = "com.myapp.client"
+    mainClass = "com.myapp.client.MyAppPanel"
+}
+
+jlink {
+    imageName = "myapp"
+    options = listOf("--strip-debug", "--no-header-files", "--no-man-pages")
+
+    jpackage {
+        if (org.gradle.internal.os.OperatingSystem.current().isLinux) {
+            installerType = "deb"
+        }
+    }
+}
+----
+
+== Service provider modules
+
+jlink includes only modules reachable from the main module's *requires* graph — and a module that exists solely to *provide* a service is reachable from nobody's.
+Such modules must be added explicitly, or they are silently absent from the image:
+
+* A *domain model* module on a server or local client (discovered via *ServiceLoader*).
+* An *EntityObjectMapperFactory* module for JSON connections (see <<../manual/manual.adoc#_http_json_client, HTTP & JSON clients>>).
+* JDBC drivers and Look&Feel plugins, when service-loaded.
+
+The jlink plugin's *addExtraDependencies* and the *--add-modules* option cover these.
+A missing provider fails at runtime, not at build time — an unknown-domain error on connect, or an unregistered-mapper error at first use — so when a jlinked application misbehaves where the IDE run works, a missing service module is the first suspect.
+
+== Optional engine extensions
+
+Some dependencies register themselves via classpath-scanned extension files rather than services — the JasperReports PDF exporter, for example — and are invisible to the module graph in the same way.
+See <<../manual/manual.adoc#_reporting_with_jasperreports, Reporting with JasperReports>> for the *--add-modules net.sf.jasperreports.pdf* case.
+
+== Working examples
+
+The https://github.com/codion-is/chinook[Chinook demo] maintains complete, working packaging for all deployment shapes: a jlinked/jpackaged desktop client (*chinook-client-local*), a jlinked multi-protocol server (*chinook-server*) and a Docker server image (*chinook-server-docker*).
+Rather than reproducing their build files here — where they would drift — use them directly as templates.
+
+For server deployment specifics — configuration, TLS, monitoring — see <<server.adoc#_entity_server, Server>>, and <<internet-deployment.adoc#_internet_deployment, Internet deployment>> if the server faces the internet.

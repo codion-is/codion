@@ -61,7 +61,7 @@ include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=bool
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textField(is.codion.framework.domain.entity.attribute.ForeignKey)[textField(foreignKey)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#label(is.codion.framework.domain.entity.attribute.ForeignKey)[label(foreignKey)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#label(is.codion.framework.domain.entity.attribute.Attribute)[label(foreignKey)]
 
 [source,java,indent=0]
 ----
@@ -72,7 +72,7 @@ include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=fore
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#temporalFieldPanel(is.codion.framework.domain.entity.attribute.Attribute)[temporalFieldPanel(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#localDateField(is.codion.framework.domain.entity.attribute.Attribute)[localDateField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#temporalField(is.codion.framework.domain.entity.attribute.Attribute)[temporalField(attribute)]
 
 [source,java,indent=0]
 ----
@@ -94,7 +94,7 @@ include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=nume
 
 {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textArea(is.codion.framework.domain.entity.attribute.Attribute)[textArea(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textInputPanel(is.codion.framework.domain.entity.attribute.Attribute)[textInputPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#textFieldPanel(is.codion.framework.domain.entity.attribute.Attribute)[textFieldPanel(attribute)]
 
 [source,java,indent=0]
 ----
@@ -103,7 +103,7 @@ include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=text
 
 === Selection
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#comboBox(is.codion.framework.domain.entity.attribute.Attribute,javax.swing.comboBoxModel)[ComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EditorComponents.ComponentFactory.html#comboBox(is.codion.framework.domain.entity.attribute.Attribute,javax.swing.ComboBoxModel)[comboBox(attribute)]
 
 [source,java,indent=0]
 ----
@@ -193,13 +193,13 @@ The action mechanism used throughout the Codion framework is based on the {url-j
 [#_edit_query_inspector]
 == Query Inspector
 
-A *Query Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.Config.html#INCLUDE_QUERY_INSPECTOR[EntityEditPanel.Config.INCLUDE_QUERY_INSPECTOR] configuration value or for a single panel via the panel configuration.
+An *Editor Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.Config.html#INCLUDE_INSPECTOR[EntityEditPanel.Config.INCLUDE_INSPECTOR] configuration value or for a single panel via the panel configuration.
 
-The *Query Inspector* displays INSERT and UPDATE queries, dynamically updated according to the current edit panel state.
+The inspector displays the editor state — values, modified/valid flags, validation messages — along with the INSERT and UPDATE queries the current state would produce, dynamically updated. See <<_development_tools, Development tools>>.
 
 [source,java]
 ----
-EntityEditPanel.Config.INCLUDE_QUERY_INSPECTOR.set(true);
+EntityEditPanel.Config.INCLUDE_INSPECTOR.set(true);
 ----
 
-The Query Inspector can be opened using the CTRL-ALT-Q keyboard shortcut, when the edit panel is focused.
+The inspector can be opened using the CTRL-ALT-R keyboard shortcut, when the edit panel is focused.

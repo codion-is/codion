@@ -2,134 +2,53 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-The framework model layer serves as the bridge between the domain layer's entity definitions and the UI layer's visual components.
-It provides a comprehensive set of model classes that handle data retrieval, manipulation, and state management while maintaining strict separation of concerns.
+The model layer is a complete, UI-independent application: data retrieval, editing, validation, selection, master-detail coordination and all associated state live here, exposed through the framework's <<_reactive_classes, reactive classes>>.
+The UI layer *renders* models — it does not extend them with logic.
+Nothing in the model layer depends on a UI toolkit, which has two practical consequences: application logic is unit-testable without showing a window, and the same models can drive different client technologies.
 
-== Overview
+== The pieces
 
-The model layer implements a reactive MVC architecture where:
-
-* **Models** manage data and business logic through observable state
-* **Views** (UI layer) observe models for state changes
-* **Controllers** are the reactive bindings (like {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/value/ComponentValue.html[ComponentValue]) that automatically synchronize models and views
-
-All model components are built on Codion's observable foundation, ensuring that any data or state change automatically propagates to interested observers.
-
-== Core Components
-
-[#_core_entitymodel]
-=== EntityModel
-
-The {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] serves as the central coordinator, managing both edit and table models along with any detail models in master-detail relationships.
+An {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] is the composition root for a single entity type: an <<_entityeditmodel, edit model>> (wrapping the <<_entityeditor, editor>> — the write path), usually a <<_entitytablemodel, table model>> (with its <<_entityquerymodel, query model>> — the read path), and any detail models.
 
 [source,java]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=entityModel]
 ----
 
-[#_core_entityeditmodel]
-=== EntityEditModel
-
-The {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] handles single entity CRUD operations and maintains the current entity state.
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=entityEditModel]
-----
-
-[#_core_entitytablemodel]
-=== EntityTableModel
-
-The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] manages collections of entities, providing sorting, filtering, and selection capabilities.
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=entityTableModel]
-----
-
-=== EntityQueryModel
-
-The {url-javadoc}{framework-model}/is/codion/framework/model/EntityQueryModel.html[EntityQueryModel] controls how data is fetched from the database, including conditions, limits, and ordering.
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=entityQueryModel]
-----
-
-== Observable Architecture
-
-Every model component extends Codion's observable foundation:
-
-=== State Management
-
-Models expose their state through observable values:
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=observableState]
-----
-
-=== Event System
-
-Models emit events for all significant operations:
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=eventSystem]
-----
-
-=== Value Observers
-
-Entity values are observable and can be bound across models:
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=valueObservers]
-----
-
-== Model Relationships
-
-=== Master-Detail Pattern
-
-The framework supports arbitrarily deep master-detail hierarchies:
+Master-detail relationships are expressed by linking models, to arbitrary depth — a detail model's query condition tracks its master's selection automatically:
 
 [source,java]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=masterDetail]
 ----
 
-== Best Practices
+See <<_model_linking, Model linking>> for the linking configuration — what happens on selection, insert, update and delete.
 
-=== Query Optimization
+== The reactive fabric
 
-Always configure appropriate limits to prevent loading excessive data:
+Everything a model knows is exposed as an observable *Value*, *State* or *Event* — which is all a UI needs to render it, and all application logic needs to react to it:
 
 [source,java]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=queryOptimization]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=observableState]
 ----
 
-=== Event Handling
+Entity values are observable per attribute, so values can be bound — to input components, or across models:
 
-Use the event system to maintain consistency across models:
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=valueObservers]
+----
+
+== Where application logic belongs
+
+Logic belongs in the models — reacting to edits, persistence events and selection there means it works the same regardless of which UI (or test) drives it:
 
 [source,java]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=eventHandling]
 ----
 
-=== Custom Data Sources
+The chinook demo's models are the reference examples: value dependencies and custom persistence in *InvoiceLineEditModel*, value propagation in *InvoiceEditModel*, selection-scoped operations in *TrackTableModel* — each documented in the chapters that follow.
 
-For specialized queries, consider custom data sources:
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=customDataSource]
-----
-
-== See Also
-
-* <<{basedir}/manual/manual.adoc#_entitymodel, Manual:EntityModel>>
-* <<{basedir}/manual/manual.adoc#_entityeditmodel, Manual:EntityEditModel>>
-* <<{basedir}/manual/manual.adoc#_entitytablemodel, Manual:EntityTableModel>>
-* <<{basedir}/manual/manual.adoc#_domain_modelling, Manual:Domain Modelling>>
+NOTE: Since models are UI-free, they are constructed and exercised directly in unit tests — create the model with a test connection provider, edit, insert, assert.

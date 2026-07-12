@@ -40,12 +40,14 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
 		super(InvoiceLine.TYPE, connectionProvider);
 		editor().persistence().set(new InvoiceLinePersistence());
+		// tag::editedObserver[]
 		// We populate the unit price when the track is edited
 		Observer<Entity> trackEdited = editor().value(InvoiceLine.TRACK_FK).edited();
 		trackEdited.when(Objects::nonNull)
 						.addConsumer(this::setUnitPrice);
 		trackEdited.when(Objects::isNull)
 						.addListener(this::clearUnitPrice);
+		// end::editedObserver[]
 	}
 
 	private void setUnitPrice(Entity track) {
@@ -56,6 +58,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		editor().value(InvoiceLine.UNITPRICE).clear();
 	}
 
+	// tag::persistence[]
 	private static final class InvoiceLinePersistence implements EntityPersistence {
 
 		@Override
@@ -90,4 +93,5 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		}
 		// end::updateTotals[]
 	}
+	// end::persistence[]
 }

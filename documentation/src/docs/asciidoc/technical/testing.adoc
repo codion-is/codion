@@ -1,19 +1,17 @@
-= Testing Strategy & Patterns
+= Testing
 :dir-source: ../../../../../demos
 :url-javadoc: link:../api
 :basedir: ..
 
-== Overview
+Codion applications are tested in layers, matching how they are built:
 
-Codion applications follow a layered testing approach, with each layer providing specific testing capabilities:
+* **Domain testing** — entity definitions, relationships and database operations, via *DomainTest*
+* **Model testing** — application logic in edit and table models, headless
+* **Integration testing** — workflows across entities and models
 
-* **Domain Testing** - Validates entity definitions, relationships, and domain logic
-* **Model Testing** - Tests business logic in edit and table models
-* **Integration Testing** - Verifies end-to-end functionality with database operations
+Since the model layer has no UI dependency, everything below the panels is testable without showing a window.
 
-== Test Configuration
-
-=== User Configuration
+== Test configuration
 
 The test user is configured via the `codion.test.user` system property:
 
@@ -22,230 +20,61 @@ The test user is configured via the `codion.test.user` system property:
 ./gradlew test -Dcodion.test.user=scott:tiger
 ----
 
-Or in your test configuration:
+== Domain testing
 
-[source,java]
+The {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.html[DomainTest] base class verifies an entity definition against the database with a single method call per entity type: a randomly populated entity is inserted, selected, modified, updated and deleted, in a transaction which is rolled back — exercising the definition, its column mappings, primary key generation and foreign key relationships, without leaving a trace.
+
+[source,java,indent=0]
 ----
-private static final User UNIT_TEST_USER =
-        User.parse(System.getProperty("codion.test.user", "scott:tiger"));
-----
-
-== Domain Testing
-
-The `DomainTest` base class provides comprehensive testing for entity definitions.
-
-=== Basic Domain Test
-
-[source,java]
-----
-public class ChinookTest extends DomainTest {
-
-    public ChinookTest() {
-        super(new ChinookImpl(), ChinookEntityFactory::new);
-    }
-
-    @Test
-    void album() {
-        test(Album.TYPE);
-    }
-    
-    @Test
-    void artist() {
-        test(Artist.TYPE);
-    }
-}
+include::{dir-source}/chinook/src/test/java/is/codion/demos/chinook/domain/ChinookTest.java[tags=domainTest]
 ----
 
-The `test(EntityType)` method automatically verifies:
+=== Custom entity factory
 
-* Entity can be instantiated
-* All attributes are correctly defined
-* Primary keys work correctly
-* Foreign key relationships are valid
-* Insert, update, delete, and select operations succeed
-* Entity validation rules are enforced
+The random entities are created by an {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html[EntityFactory] — extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DefaultEntityFactory.html[DefaultEntityFactory] to control the values of specific attributes, for entities with constraints random values cannot satisfy:
 
-=== Custom Entity Factory
-
-For entities with complex validation rules or required relationships, provide a custom {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html[EntityFactory]:
-
-[source,java]
+[source,java,indent=0]
 ----
-public class ChinookEntityFactory extends DefaultEntityFactory {
-    
-    @Override
-    public Entity entity(EntityType entityType) {
-        if (entityType.equals(InvoiceLine.TYPE)) {
-            return createInvoiceLine();
-        }
-
-        return super.entity(entityType);
-    }
-    
-    private Entity createInvoiceLine() {
-        Entity invoiceLine = entities.entity(InvoiceLine.TYPE);
-        // Set required relationships and values
-        invoiceLine.set(InvoiceLine.INVOICE_FK, randomInvoice());
-        invoiceLine.set(InvoiceLine.TRACK_FK, randomTrack());
-        invoiceLine.set(InvoiceLine.QUANTITY, 1);
-
-        return invoiceLine;
-    }
-}
+include::{dir-source}/chinook/src/test/java/is/codion/demos/chinook/domain/ChinookTest.java[tags=entityFactory]
 ----
 
-=== Testing Domain Functions
+=== Testing database functions
 
-Test database functions and procedures through the domain:
+Database functions and procedures are tested through a connection, in a transaction rolled back in a finally block — the standard pattern for any test modifying data:
 
-[source,java]
+[source,java,indent=0]
 ----
-@Test
-void randomPlaylist() {
-    EntityConnection connection = connection();
-    connection.startTransaction();
-    try {
-        List<Entity> genres = connection.select(Select.all(Genre.TYPE)
-                .limit(3)
-                .build());
-        
-        Entity playlist = connection.execute(Playlist.RANDOM_PLAYLIST,
-                new RandomPlaylistParameters("Test Playlist", 10, genres));
-        
-        assertNotNull(playlist);
-        assertEquals(10, connection.count(where(PlaylistTrack.PLAYLIST_FK.equalTo(playlist))));
-    }
-    finally {
-        connection.rollbackTransaction();
-    }
-}
+include::{dir-source}/chinook/src/test/java/is/codion/demos/chinook/domain/ChinookTest.java[tags=functionTest]
 ----
 
-== Model Testing
+== Model testing
 
-Test business logic in your Swing models independently of the UI.
+Application logic in edit and table models is tested by constructing the model with a local connection provider and exercising it directly:
 
-=== Edit Model Testing
-
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/world/src/test/java/is/codion/demos/world/model/CountryEditModelTest.java[lines=19..-1]
 ----
 
-=== Table Model Testing
+Master-detail behavior tests the same way — select in the master, assert the detail:
 
-Test table model behavior and master-detail relationships:
-
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/chinook/src/test/java/is/codion/demos/chinook/model/AlbumModelTest.java[lines=19..-1]
 ----
 
-== Integration Testing
+== Integration testing
 
-Test complete workflows across multiple entities and models.
+Complete workflows, such as report generation, follow the same shape:
 
-=== Testing Report Generation
-
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/world/src/test/java/is/codion/demos/world/model/CountryReportDataSourceTest.java[lines=19..-1]
 ----
 
-== Test Utilities
+== Practices
 
-=== Connection Provider Setup
-
-The `LocalEntityConnectionProvider.Builder` requires the `codion.db.url` system property to be set:
-
-[source,bash]
-----
--Dcodion.db.url=jdbc:h2:mem:h2db
-----
-
-Create connection providers for testing:
-
-[source,java]
-----
-private static EntityConnectionProvider createConnectionProvider() {
-    return LocalEntityConnectionProvider.builder()
-            .domain(new WorldImpl())
-            .user(UNIT_TEST_USER)
-            .build();
-}
-----
-
-Alternatively, you can provide your own `Database` instance:
-
-[source,java]
-----
-private static EntityConnectionProvider createConnectionProvider() {
-    Database database = H2DatabaseFactory.create("jdbc:h2:mem:testdb");
-    
-    return LocalEntityConnectionProvider.builder()
-            .domain(new WorldImpl())
-            .database(database)
-            .user(UNIT_TEST_USER)
-            .build();
-}
-----
-
-=== Transaction Management
-
-Always use transactions for data modification tests:
-
-[source,java]
-----
-@Test
-void updateTest() {
-    EntityConnection connection = connection();
-    connection.startTransaction();
-    try {
-        // Perform updates
-        Entity entity = connection.selectSingle(Country.CODE2.equalTo("IS"));
-        entity.set(Country.POPULATION, 400_000);
-        connection.update(entity);
-        
-        // Verify changes
-        Entity updated = connection.selectSingle(Country.CODE2.equalTo("IS"));
-        assertEquals(400_000, updated.get(Country.POPULATION));
-    }
-    finally {
-        connection.rollbackTransaction();
-    }
-}
-----
-
-=== Test Data Builders
-
-Create fluent builders for complex test data:
-
-[source,java]
-----
-public class TestDataBuilder {
-    
-    public static Entity.Builder customer() {
-        return entities.entity(Customer.TYPE)
-                .with(Customer.FIRST_NAME, "Test")
-                .with(Customer.LAST_NAME, "Customer")
-                .with(Customer.EMAIL, "test@example.com");
-    }
-    
-    public static Entity.Builder invoice(Entity customer) {
-        return entities.entity(Invoice.TYPE)
-                .with(Invoice.CUSTOMER_FK, customer)
-                .with(Invoice.INVOICE_DATE, LocalDate.now())
-                .with(Invoice.TOTAL, BigDecimal.ZERO);
-    }
-}
-----
-
-== Testing Best Practices
-
-1. **Use DomainTest for all entity types** - Even simple entities benefit from the comprehensive validation
-2. **Test with transactions** - Always rollback to keep tests isolated
-3. **Test observable behavior** - Verify that model state changes trigger appropriate notifications
-4. **Test validation rules** - Ensure domain constraints are properly enforced
-5. **Test computed values** - Verify derived attributes and denormalized values update correctly
-6. **Keep tests focused** - Each test should verify one specific behavior
-7. **Use realistic test data** - Your entity factories should create valid, meaningful entities
+1. **Run DomainTest over every entity type** — it is one line per entity and catches definition/schema drift immediately.
+2. **Transactions with rollback** keep tests isolated and repeatable — no test data cleanup.
+3. **Test observable behavior** — model state is exposed as Value/State/Event; assert on those, the same surface the UI binds to.
+4. **Load test early** — see <<{basedir}/manual/manual.adoc#_application_load_testing, application load testing>> for exercising the application under concurrent users.

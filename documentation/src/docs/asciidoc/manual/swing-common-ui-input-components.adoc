@@ -142,11 +142,11 @@ The available completion modes are:
 
 Combo boxes created via {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/Components.html[Components] have completion enabled by default, with {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/combobox/Completion.Mode.html[MAXIMUM_MATCH] being the default completion mode.
 
-The default completion mode is controlled via the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/combobox/Completion.html#COMPLETION_MODE.html[Completion.COMPLETION_MODE] configuration value.
+The default completion mode is controlled via the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/combobox/Completion.html#COMPLETION_MODE[Completion.COMPLETION_MODE] configuration value.
 
 ===== Normalization
 
-Strings are normalized by default during completion, that is, accents are removed, i.e. *á*, *í* and *ú* become *a*, *i* and *u*. To enable accented character sensitivity, normalization can be turned off, either globally via the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/combobox/Completion.html#NORMALIZE.html[Completion.NORMALIZE] configuration value or individually via the combo box builder.
+Strings are normalized by default during completion, that is, accents are removed, i.e. *á*, *í* and *ú* become *a*, *i* and *u*. To enable accented character sensitivity, normalization can be turned off, either globally via the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/combobox/Completion.html#NORMALIZE[Completion.NORMALIZE] configuration value or individually via the combo box builder.
 
 [source,java,indent=0]
 ----

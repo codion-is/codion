@@ -6,7 +6,7 @@
 
 == I. The Common Foundation
 
-* <<technical/technical.adoc#_observable_pattern, Reactive State Management>> Core with <<manual/manual.adoc#_value, Value>>, <<manual/manual.adoc#_state, State>> and <<manual/manual.adoc#_event, Event>>
+* <<manual/manual.adoc#_reactive_classes, Reactive State Management>> Core with <<manual/manual.adoc#_value, Value>>, <<manual/manual.adoc#_state, State>> and <<manual/manual.adoc#_event, Event>>
 * <<manual/manual.adoc#_state_composition, Composable Boolean Logic>> for UI State
 * Observable and Thread-Safe <<manual/manual.adoc#_valuecollection, Value Collections>>
 * Declarative Asynchronous Task Execution with <<manual/manual.adoc#_progressworker, ProgressWorker>>
@@ -29,9 +29,9 @@
 ** Integrated, Type-Safe <<help/client.adoc#_searching, Filtering and Searching UI>>
 ** Model-Driven, Multi-Column Sorting
 ** Automatic <<manual/manual.adoc#_model_linking, Master-Detail Coordination>>
-** Denormalized data export UI
+** <<manual/manual.adoc#_table_export, Denormalized Data Export UI>>
 * Automated Data Entry Forms with <<manual/manual.adoc#_entityeditpanel, EntityEditPanel>>
-* Full https://www.youtube.com/watch?v=2dDKjeqJJeQ[Keyboard Control and Navigation] see <<help/client.adoc#_keyboard_shortcuts, Keyboard Shortcuts>>
+* Full https://www.youtube.com/watch?v=2dDKjeqJJeQ[Keyboard Control and Navigation] see <<manual/manual.adoc#_keyboard_shortcuts, Keyboard Shortcuts>>
 * Dynamic <<manual/manual.adoc#_table_query_inspector, Table>> and <<manual/manual.adoc#_edit_query_inspector, Edit>> Query Debugging UI
 * <<manual/manual.adoc#_reporting_with_jasperreports, JasperReports>> integration
 

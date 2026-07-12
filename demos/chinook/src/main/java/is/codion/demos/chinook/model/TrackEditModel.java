@@ -22,6 +22,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
+// tag::trackEditModel[]
 public final class TrackEditModel extends SwingEntityEditModel {
 
 	public TrackEditModel(EntityConnectionProvider connectionProvider) {
@@ -31,3 +32,4 @@ public final class TrackEditModel extends SwingEntityEditModel {
 		editor().comboBoxModels().initialize(Track.MEDIATYPE_FK, Track.GENRE_FK);
 	}
 }
+// end::trackEditModel[]

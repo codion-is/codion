@@ -1,0 +1,31 @@
+[#_table_export]
+= Exporting data
+:url-javadoc: link:../api
+
+The table export tool produces denormalized, tab-separated output from the rows of an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] — to the clipboard or to a file — and is available in the table popup menu's *Export...* submenu.
+
+What sets it apart from a plain copy is *foreign key traversal*: the export dialog presents the entity's attributes as a tree, where each foreign key expands into the attributes of the referenced entity, recursively.
+Including *Track → Album → Artist → Name* exports the artist name as a column alongside the track's own attributes — denormalized flat output from normalized data, without writing a query.
+
+== Using it
+
+* The attribute tree is navigated with the keyboard; SPACE toggles whether an attribute is included.
+* Foreign key nodes expand on demand, so cyclic references are a non-issue — expansion goes as deep as you take it.
+* The export covers the *selected* rows or *all* rows.
+* Output goes to the clipboard or a *.tsv* file, ready for a spreadsheet.
+
+== Configurations
+
+An export configuration — the included attributes, their order and the target — can be *named, saved and opened later*, and reappears in the export dialog as long as the configuration file exists.
+The active configuration is saved in user preferences on application exit, so a routinely used export is a two-keystroke affair.
+
+== Enabling
+
+The export tool is excluded by default, and enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_EXPORT[EntityTablePanel.Config.INCLUDE_EXPORT] configuration value or per panel:
+
+[source,java]
+----
+EntityTablePanel.Config.INCLUDE_EXPORT.set(true);
+----
+
+The underlying model, {url-javadoc}{framework-model}/is/codion/framework/model/EntityExport.html[EntityExport], is UI-independent and can be used to produce the same output programmatically.

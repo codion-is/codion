@@ -29,6 +29,7 @@ import org.jspecify.annotations.Nullable;
 import static is.codion.demos.chinook.domain.api.Chinook.Customer;
 import static is.codion.demos.chinook.domain.api.Chinook.Invoice;
 
+// tag::invoiceEditModel[]
 public final class InvoiceEditModel extends SwingEntityEditModel {
 
 	public InvoiceEditModel(EntityConnectionProvider connectionProvider) {
@@ -50,3 +51,4 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 		return customer == null ? null : customer.get(attribute);
 	}
 }
+// end::invoiceEditModel[]

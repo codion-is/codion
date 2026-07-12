@@ -26,17 +26,17 @@ This limiting of foreign key reference depth can be turned off, meaning the full
 
 [source]
 ----
-codion.db.limitForeignKeyReferenceDepth=false
+codion.db.limitReferenceDepth=false
 ----
 
-or the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_REFERENCE_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH] configuration value:
+or the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_REFERENCE_DEPTH[LocalEntityConnection.LIMIT_REFERENCE_DEPTH] configuration value:
 
 [source,java,]
 ----
-LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.set(false);
+LocalEntityConnection.LIMIT_REFERENCE_DEPTH.set(false);
 ----
 
-or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#limitForeignKeyReferenceDepth(boolean)[limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth)]
+or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#limitReferenceDepth(boolean)[limitReferenceDepth(boolean limitReferenceDepth)]
 
 [source,java,]
 ----

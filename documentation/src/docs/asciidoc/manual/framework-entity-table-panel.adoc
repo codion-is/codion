@@ -1,41 +1,104 @@
 [#_entitytablepanel]
 = EntityTablePanel
 :dir-source: ../../../../../demos/manual/src/main/java
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities: a searchable, filterable, sortable grid with a toolbar, a popup menu, in-table editing, a summary panel and a status bar — all driven by an underlying <<_entitytablemodel, EntityTableModel>>.
+
+== Configuration
+
+Each panel is configured via a {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html[Config] instance, supplied to the constructor.
+Most configuration values also exist as system properties, configuring the default for all table panels in an application — *Config.INCLUDE_FILTERS*, *Config.INCLUDE_EXPORT* and company — with the per-panel configuration overriding the default.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/InvoiceTablePanel.java[tags=config]
+----
+
+== Editing
+
+The table supports editing the selected rows directly, in two ways:
+
+* *Edit value* — the *Edit* popup menu (and SHIFT-INSERT) edits a single attribute for all selected rows, in a dialog. Which attributes are editable this way is controlled via *Config.editable()*, and *Config.editComponent()* provides a custom input component for a given attribute.
+* *In-cell editing* — standard table cell editing, using components provided by *Config.cellEditor()*.
+
+The track panel below configures both, along with custom cell renderers, and starts cell editing on INSERT rather than on typing:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/TrackTablePanel.java[tags=config]
+----
+
+A custom edit component for a foreign key, here a track selector used when editing the track of the selected invoice lines:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/InvoiceLineTablePanel.java[tags=editComponent]
+----
+
+== Custom controls
+
+The panel's controls — refresh, add, edit, delete, print and the rest — are identified by {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.ControlKeys.html[ControlKeys].
+Overriding *setupControls()* is the idiomatic place to assign custom controls to standard keys; a control assigned to a standard key appears wherever that key is used — popup menu, toolbar, keyboard shortcut.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/CustomerTablePanel.java[tags=setupControls]
+----
+
+The popup menu layout itself is configurable via *configurePopupMenu()* — here a custom control is placed at the top, above the default menu:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/TrackTablePanel.java[tags=popupMenu]
+----
 
 [#_adding_a_print_action]
-== Adding a print action
+=== Adding a print action
 
-The most common place to add a custom control is the table popup menu, i.e. an action for printing reports or for acting on the selected rows.
-For the simplest case, where a single print action is required, a custom control can be associated with the *PRINT* ControlKey, this control will appear in the Print submenu in the table popup menu as well as on the table toolbar.
-
+The most common custom control is an action for printing reports or acting on the selected rows.
+For the simplest case, where a single print action is required, a custom control can be associated with the *PRINT* ControlKey, appearing in the Print submenu in the table popup menu as well as on the table toolbar.
 For more complex cases, where multiple print controls are required, custom controls can be associated with the *PRINT_CONTROLS* ControlKey.
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----
 
-== Exporting Data
+== Condition and filter panels
 
-A configurable denormalized data export tool can be included in the EntityTablePanel **Copy** table popup submenu.
+The panel above the table provides query *conditions* — what is fetched from the database — while *filters* narrow down what is shown, without a round trip.
+The condition panel has three views: *HIDDEN*, *SIMPLE* (a single row of fields) and *ADVANCED* (operators and bounds per column), toggled via the toolbar or CTRL-ALT-S, with CTRL-S moving focus to a condition field.
+The initial view and a custom condition panel implementation are configurable — see the *conditionPanel()* and *conditionView()* calls in the invoice panel configuration <<_configuration, above>>, where a custom condition panel provides invoice-specific search fields.
 
-It can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_EXPORT[EntityTablePanel.Config.INCLUDE_EXPORT] configuration value or for a single panel via the panel configuration.
+Filter panels are excluded by default and included via *Config.INCLUDE_FILTERS* (globally) or *includeFilters()* (per panel).
 
-The active export configuration is saved in user preferences on application exit.
+== Exporting data
+
+A configurable denormalized data export tool — including attributes of referenced entities via foreign key traversal — can be included in the EntityTablePanel **Copy** table popup submenu, via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_EXPORT[EntityTablePanel.Config.INCLUDE_EXPORT] configuration value or the panel configuration.
+See <<_table_export, Exporting data>>.
 
 [#_table_query_inspector]
 == Query Inspector
 
-A *Query Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_QUERY_INSPECTOR[EntityTablePanel.Config.INCLUDE_QUERY_INSPECTOR] configuration value or for a single panel via the panel configuration.
+A *Query Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_INSPECTOR[EntityTablePanel.Config.INCLUDE_INSPECTOR] configuration value or for a single panel via the panel configuration.
 
 The *Query Inspector* displays the SELECT query, dynamically updated according to the underlying query conditions.
 
 [source,java]
 ----
-EntityTablePanel.Config.INCLUDE_QUERY_INSPECTOR.set(true);
+EntityTablePanel.Config.INCLUDE_INSPECTOR.set(true);
 ----
 
 The *Query Inspector* can be opened using the CTRL-ALT-Q keyboard shortcut, when the table panel is focused.
+
+== Keyboard shortcuts
+
+Each {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.ControlKeys.html[ControlKey] carries its default keystroke — INSERT adds a new row, CTRL-INSERT edits the selected row, SHIFT-INSERT edits a single value for the selection, DELETE deletes the selection.
+A default keystroke can be modified before the panels are created, typically during application startup — here a CTRL modifier is added to the DELETE shortcut, application-wide:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/ui/ChinookAppPanel.java[tags=keyStroke]
+----
