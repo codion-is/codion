@@ -26,6 +26,8 @@ Codion Change Log
 - DefaultFilterModelItems saves and restores the adjusting state around its own grouping, an items mutation performed inside a caller's group no longer ends it early.
 - FilterModel.IncludedItems.get() and FilteredItems.get() now return a stable snapshot rather than an unmodifiable live view over the model's backing list. The view reflected an in-place mutation, set() clearing and repopulating the list, and a caller iterating it while another thread refreshed, an Android or web client doing exactly that, raced the mutation. The top-level Items.get() already copied; the two are now consistent. The Swing table reads rows by index, get(int)/size(), so the copy adds nothing to its hot path.
 - DefaultFilterComboBoxModel, its own IncludedItems.get() and FilteredItems.get() likewise return a stable snapshot now, and the defensive copies their notifyChanges() published, workarounds for the live view, are removed.
+### is.codion.framework.i18n
+- FrameworkMessages.save() removed, some minor mnemonic improvements.
 ### is.codion.framework.domain
 - DerivedValue.from() javadoc now states that a derived value provider must be total, every cached derived value being computed when an entity is made immutable, not only the ones a caller reads.
 - Domain.report(ReportType) now returns Report<?, P, R> and Domain.reports() a Map<ReportType<?, ?>, Report<?, ?, ?>>, following ReportType.

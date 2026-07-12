@@ -60,7 +60,6 @@ public final class FrameworkMessages {
 	private static final String ADD = "add";
 	private static final String ADD_MNEMONIC = "add_mnemonic";
 	private static final String ADD_TIP = "add_tip";
-	private static final String SAVE = "save";
 	private static final String SAVE_MNEMONIC = "save_mnemonic";
 	private static final String CONFIRM_EXIT = "confirm_exit";
 	private static final String CONFIRM_EXIT_TITLE = "confirm_exit_title";
@@ -274,13 +273,6 @@ public final class FrameworkMessages {
 	 */
 	public static String addTip() {
 		return get(ADD_TIP);
-	}
-
-	/**
-	 * @return save
-	 */
-	public static String save() {
-		return get(SAVE);
 	}
 
 	/**
