@@ -533,7 +533,7 @@ public final class FrameworkModelDemo {
 						.setValueOnInsert(true)
 						// Control when to refresh detail data
 						.refreshOnSelection(true)
-						// Filter detail records based on master selection
+						// Set search condition based on master insert
 						.setConditionOnInsert(true)
 						.build());
 		// end::foreignKeyLink[]

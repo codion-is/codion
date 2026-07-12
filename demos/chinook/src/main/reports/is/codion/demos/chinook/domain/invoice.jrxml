@@ -1,0 +1,138 @@
+<jasperReport name="invoice" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e70">
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import>net.sf.jasperreports.engine.*</import>
+	<import>java.util.*</import>
+	<import>net.sf.jasperreports.engine.data.*</import>
+	<parameter name="INVOICE_IDS" forPrompting="false" class="java.util.Collection"/>
+	<query language="sql"><![CDATA[select i.id as invoice_id,
+    i.invoicedate as invoice_date,
+    i.billingaddress, i.billingcity, i.billingstate, i.billingcountry, i.billingpostalcode,
+    c.firstname, c.lastname, c.company, c.email, c.phone,
+    t.name as track_name,
+    il.unitprice as unit_price,
+    il.quantity as quantity,
+    il.unitprice * il.quantity as line_total
+from chinook.invoice i
+join chinook.customer c on c.id = i.customer_id
+join chinook.invoiceline il on il.invoice_id = i.id
+join chinook.track t on t.id = il.track_id
+where $X{IN, i.id, INVOICE_IDS}
+order by i.id, t.name]]></query>
+	<field name="INVOICE_ID" class="java.lang.Long"/>
+	<field name="INVOICE_DATE" class="java.util.Date"/>
+	<field name="BILLINGADDRESS" class="java.lang.String"/>
+	<field name="BILLINGCITY" class="java.lang.String"/>
+	<field name="BILLINGSTATE" class="java.lang.String"/>
+	<field name="BILLINGCOUNTRY" class="java.lang.String"/>
+	<field name="BILLINGPOSTALCODE" class="java.lang.String"/>
+	<field name="FIRSTNAME" class="java.lang.String"/>
+	<field name="LASTNAME" class="java.lang.String"/>
+	<field name="COMPANY" class="java.lang.String"/>
+	<field name="EMAIL" class="java.lang.String"/>
+	<field name="PHONE" class="java.lang.String"/>
+	<field name="TRACK_NAME" class="java.lang.String"/>
+	<field name="UNIT_PRICE" class="java.lang.Double"/>
+	<field name="QUANTITY" class="java.lang.Integer"/>
+	<field name="LINE_TOTAL" class="java.lang.Double"/>
+	<variable name="TOTAL" class="java.lang.Double" resetType="Group" resetGroup="Invoice" calculation="Sum">
+		<expression><![CDATA[$F{LINE_TOTAL}]]></expression>
+	</variable>
+	<group name="Invoice" startNewPage="true">
+		<expression><![CDATA[$F{INVOICE_ID}]]></expression>
+		<groupHeader>
+			<band height="230" splitType="Stretch">
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e71" x="0" y="0" width="360" height="28" fontSize="22.0" bold="true">
+					<text><![CDATA[Chinook Music Store]]></text>
+				</element>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e72" x="0" y="29" width="360" height="14" fontSize="9.0" italic="true" forecolor="#666666">
+					<text><![CDATA[Music for every moment]]></text>
+				</element>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e73" x="360" y="0" width="175" height="34" fontSize="28.0" bold="true" hTextAlign="Right">
+					<text><![CDATA[INVOICE]]></text>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e74" x="360" y="40" width="175" height="16" fontSize="11.0" hTextAlign="Right">
+					<expression><![CDATA["# " + $F{INVOICE_ID}]]></expression>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e75" x="360" y="57" width="175" height="16" fontSize="11.0" hTextAlign="Right" pattern="MMMM d, yyyy">
+					<expression><![CDATA[$F{INVOICE_DATE}]]></expression>
+				</element>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e76" x="0" y="86" width="200" height="16" fontSize="11.0" bold="true">
+					<text><![CDATA[Bill To]]></text>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e77" x="0" y="104" width="340" height="16" fontSize="11.0">
+					<expression><![CDATA[$F{FIRSTNAME} + " " + $F{LASTNAME}]]></expression>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e78" x="0" y="120" width="340" height="16" blankWhenNull="true">
+					<expression><![CDATA[$F{COMPANY}]]></expression>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e79" x="0" y="136" width="340" height="16" blankWhenNull="true">
+					<expression><![CDATA[$F{BILLINGADDRESS}]]></expression>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e7a" x="0" y="152" width="340" height="16" blankWhenNull="true">
+					<expression><![CDATA[($F{BILLINGCITY} == null ? "" : $F{BILLINGCITY} + ", ") + ($F{BILLINGSTATE} == null ? "" : $F{BILLINGSTATE} + " ") + ($F{BILLINGPOSTALCODE} == null ? "" : $F{BILLINGPOSTALCODE})]]></expression>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e7b" x="0" y="168" width="340" height="16" blankWhenNull="true">
+					<expression><![CDATA[$F{BILLINGCOUNTRY}]]></expression>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e7c" x="0" y="185" width="340" height="14" fontSize="9.0" forecolor="#666666" blankWhenNull="true">
+					<expression><![CDATA[$F{EMAIL}]]></expression>
+				</element>
+				<element kind="line" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e7d" x="0" y="206" width="535" height="1"/>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e7e" x="0" y="211" width="305" height="16" fontSize="11.0" bold="true">
+					<text><![CDATA[Track]]></text>
+				</element>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e7f" x="305" y="211" width="75" height="16" fontSize="11.0" bold="true" hTextAlign="Right">
+					<text><![CDATA[Unit price]]></text>
+				</element>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e80" x="380" y="211" width="50" height="16" fontSize="11.0" bold="true" hTextAlign="Right">
+					<text><![CDATA[Qty]]></text>
+				</element>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e81" x="435" y="211" width="100" height="16" fontSize="11.0" bold="true" hTextAlign="Right">
+					<text><![CDATA[Amount]]></text>
+				</element>
+				<element kind="line" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e82" x="0" y="229" width="535" height="1"/>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="64" splitType="Stretch">
+				<element kind="line" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e88" x="305" y="4" width="230" height="1"/>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e89" x="305" y="9" width="125" height="18" fontSize="12.0" bold="true" hTextAlign="Right">
+					<text><![CDATA[Total]]></text>
+				</element>
+				<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e8a" x="435" y="9" width="100" height="18" fontSize="12.0" bold="true" pattern="$#,##0.00" hTextAlign="Right">
+					<expression><![CDATA[$V{TOTAL}]]></expression>
+				</element>
+				<element kind="staticText" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e8b" x="0" y="44" width="535" height="16" fontSize="10.0" italic="true" forecolor="#666666" hTextAlign="Center">
+					<text><![CDATA[Thank you for shopping at Chinook Music Store!]]></text>
+				</element>
+			</band>
+		</groupFooter>
+	</group>
+	<background splitType="Stretch"/>
+	<title splitType="Stretch"/>
+	<pageHeader splitType="Stretch"/>
+	<columnHeader splitType="Stretch"/>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e83" x="0" y="0" width="305" height="16" blankWhenNull="false">
+				<expression><![CDATA[$F{TRACK_NAME}]]></expression>
+			</element>
+			<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e84" x="305" y="0" width="75" height="16" pattern="$#,##0.00" hTextAlign="Right" blankWhenNull="false">
+				<expression><![CDATA[$F{UNIT_PRICE}]]></expression>
+			</element>
+			<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e85" x="380" y="0" width="50" height="16" hTextAlign="Right" blankWhenNull="false">
+				<expression><![CDATA[$F{QUANTITY}]]></expression>
+			</element>
+			<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e86" x="435" y="0" width="100" height="16" pattern="$#,##0.00" hTextAlign="Right" blankWhenNull="false">
+				<expression><![CDATA[$F{LINE_TOTAL}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter splitType="Stretch"/>
+	<pageFooter height="20" splitType="Stretch">
+		<element kind="textField" uuid="6a1e3f70-1c2b-4d5e-9a01-2f3c4b5d6e87" x="0" y="4" width="535" height="14" fontSize="8.0" forecolor="#666666" hTextAlign="Right">
+			<expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+	<summary splitType="Stretch"/>
+</jasperReport>

@@ -39,6 +39,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.ColumnTemplate;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
+import is.codion.plugin.jasperreports.JRExport;
 
 import java.math.BigDecimal;
 import java.sql.Array;
@@ -56,6 +57,7 @@ import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
+import static is.codion.plugin.jasperreports.JasperReports.export;
 
 public final class ChinookImpl extends DomainModel {
 
@@ -79,7 +81,8 @@ public final class ChinookImpl extends DomainModel {
 		super(DOMAIN);
 		add(artist(), artistTag(), album(), employee(), customer(), genre(), preferences(), mediaType(),
 						track(), invoice(), invoiceLine(), playlist(), playlistTrack(), artistRevenue());
-		add(Customer.REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper"));
+		add(Customer.REPORT, export(classPathReport(ChinookImpl.class, "customer_report.jasper"), JRExport.SERIALIZED));
+		add(Invoice.REPORT, export(classPathReport(ChinookImpl.class, "invoice.jasper"), JRExport.SERIALIZED));
 		add(Track.RAISE_PRICE, new RaisePrice());
 		add(Invoice.UPDATE_TOTALS, new UpdateTotals());
 		add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylist(entities()));

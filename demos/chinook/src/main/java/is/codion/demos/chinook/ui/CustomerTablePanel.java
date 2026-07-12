@@ -20,6 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.plugin.jasperreports.JasperReports;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -79,8 +80,8 @@ public final class CustomerTablePanel extends EntityTablePanel {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-		return tableModel().connection()
-						.report(Customer.REPORT, reportParameters);
+		return JasperReports.loadPrint(tableModel().connection()
+						.report(Customer.REPORT, reportParameters));
 	}
 
 	private void viewReport(JasperPrint customerReport) {

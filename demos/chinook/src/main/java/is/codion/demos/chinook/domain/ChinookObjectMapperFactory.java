@@ -46,6 +46,7 @@ public final class ChinookObjectMapperFactory extends AbstractEntityObjectMapper
 		objectMapper.parameter(Track.RAISE_PRICE).set(RaisePriceParameters.class);
 		objectMapper.parameter(Playlist.RANDOM_PLAYLIST).set(RandomPlaylistParameters.class);
 		objectMapper.parameter(Customer.REPORT).set(new TypeReference<>() {});
+		objectMapper.returnType(Customer.REPORT).set(new TypeReference<>() {});
 		objectMapper.returnType(Track.RAISE_PRICE).set(new TypeReference<>() {});
 		objectMapper.returnType(Playlist.RANDOM_PLAYLIST).set(Entity.class);
 

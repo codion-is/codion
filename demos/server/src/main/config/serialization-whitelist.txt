@@ -2,6 +2,8 @@ java.lang.**
 java.math.**
 java.time.**
 java.util.**
+# JasperReports
+java.awt.Color
 is.codion.common.**
 is.codion.framework.**
 is.codion.demos.chinook.domain.api.*

@@ -36,6 +36,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.plugin.jasperreports.JasperReports;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -384,7 +385,8 @@ public final class EntityConnectionDemo {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", List.of(42, 43, 45));
 
-		JasperPrint jasperPrint = connection.report(Customer.REPORT, reportParameters);
+		JasperPrint jasperPrint = JasperReports.loadPrint(
+						connection.report(Customer.REPORT, reportParameters));
 		//end::report[]
 	}
 
