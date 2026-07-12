@@ -78,6 +78,32 @@ public class DefaultServerConfigurationTest {
 		}
 
 		@Test
+		@DisplayName("RMI is enabled by default")
+		void rmi_defaultsToTrue() {
+			assertTrue(ServerConfiguration.builder().port(TEST_PORT).build().rmi());
+		}
+
+		@Test
+		@DisplayName("RMI disabled without RMI or admin needs no port")
+		void rmiDisabled_withoutAdmin_needsNoPort() {
+			ServerConfiguration config = ServerConfiguration.builder().rmi(false).build();
+			assertFalse(config.rmi());
+			assertEquals(-1, config.port());
+		}
+
+		@Test
+		@DisplayName("RMI disabled but admin exported still needs a port")
+		void rmiDisabled_withAdmin_needsPort() {
+			assertThrows(IllegalStateException.class, () ->
+							ServerConfiguration.builder().rmi(false).adminPort(TEST_ADMIN_PORT).build());
+			// with a port it builds, exporting the server for the admin/monitor interface
+			ServerConfiguration config = ServerConfiguration.builder()
+							.rmi(false).adminPort(TEST_ADMIN_PORT).port(TEST_PORT).build();
+			assertFalse(config.rmi());
+			assertEquals(TEST_ADMIN_PORT, config.adminPort());
+		}
+
+		@Test
 		@DisplayName("Builder fluent interface works correctly")
 		void builder_fluentInterface_worksCorrectly() {
 			Collection<String> auxiliaryClasses = Arrays.asList(TEST_AUXILIARY_CLASS);

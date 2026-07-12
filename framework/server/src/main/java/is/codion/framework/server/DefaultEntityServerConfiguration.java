@@ -75,6 +75,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
+	public boolean rmi() {
+		return serverConfiguration.rmi();
+	}
+
+	@Override
 	public int port() {
 		return serverConfiguration.port();
 	}
@@ -279,6 +284,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		@Override
 		public Builder connectionMaintenanceInterval(int connectionMaintenanceInterval) {
 			serverConfigurationBuilder.connectionMaintenanceInterval(connectionMaintenanceInterval);
+			return this;
+		}
+
+		@Override
+		public Builder rmi(boolean rmi) {
+			serverConfigurationBuilder.rmi(rmi);
 			return this;
 		}
 

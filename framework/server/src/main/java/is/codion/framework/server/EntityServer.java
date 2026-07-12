@@ -113,7 +113,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			if (EntityServerConfiguration.JMX.getOrThrow()) {
 				metricsMBeans = MetricsMBeans.register(this);
 			}
-			registry().rebind(information().name(), this);
+			//bound into the registry when exported for RMI data or for the admin/monitor interface; a pure-HTTP
+			//server (rmi=false, no admin) is not exported and creates no registry
+			if (configuration.rmi() || configuration.adminPort() > 0) {
+				registry().rebind(information().name(), this);
+			}
 		}
 		catch (Throwable t) {
 			throw logShutdownAndReturn(new RuntimeException(t));
@@ -137,8 +141,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	protected final AbstractRemoteEntityConnection connect(RemoteClient remoteClient) throws RemoteException, LoginException {
 		requireNonNull(remoteClient);
 		try {
+			//a negative port tells the connection not to export itself; with RMI disabled the connection serves its
+			//HTTP client in-process and needs no RMI stub (a remote connect() is refused before reaching here)
 			AbstractRemoteEntityConnection connection = createRemoteConnection(database(), remoteClient,
-							configuration.port(), configuration.rmiClientSocketFactory().orElse(null),
+							configuration.rmi() ? configuration.port() : -1, configuration.rmiClientSocketFactory().orElse(null),
 							configuration.rmiServerSocketFactory().orElse(null));
 			connection.setTracingEnabled(methodTracing);
 

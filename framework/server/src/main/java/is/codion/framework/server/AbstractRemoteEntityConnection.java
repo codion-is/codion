@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serial;
 import java.lang.reflect.Proxy;
 import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -55,10 +56,7 @@ import static java.util.Collections.newSetFromMap;
  * A base class for remote connections served by a {@link EntityServer}.
  * Handles logging of service calls and database connection pooling.
  */
-public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject {
-
-	@Serial
-	private static final long serialVersionUID = 1;
+public abstract class AbstractRemoteEntityConnection implements Remote {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteEntityConnection.class);
 
@@ -89,16 +87,19 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
 	private final Set<DefaultRemoteEntityResultIterator> remoteIterators = newSetFromMap(new ConcurrentHashMap<>());
 
-	private final transient int connectionPort;
-	private final transient RMIClientSocketFactory clientSocketFactory;
-	private final transient RMIServerSocketFactory serverSocketFactory;
+	private final int connectionPort;
+	private final RMIClientSocketFactory clientSocketFactory;
+	private final RMIServerSocketFactory serverSocketFactory;
+	private final boolean exported;
 
 	/**
-	 * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
+	 * Instantiates a new AbstractRemoteEntityConnection, exported on the given port number unless the port is
+	 * negative, in which case the connection is not exported (it serves an HTTP client in-process and needs no
+	 * RMI stub).
 	 * @param domain the domain model
 	 * @param database defines the underlying database
 	 * @param remoteClient information about the client requesting the connection
-	 * @param port the port to use when exporting this remote connection
+	 * @param port the port to use when exporting this remote connection, negative to not export
 	 * @param clientSocketFactory the client socket factory to use, null for default
 	 * @param serverSocketFactory the server socket factory to use, null for default
 	 * @throws RemoteException in case of an exception
@@ -110,13 +111,18 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 																					 RMIClientSocketFactory clientSocketFactory,
 																					 RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		super(port, clientSocketFactory, serverSocketFactory);
 		this.connectionHandler = new LocalConnectionHandler(domain, remoteClient, database);
 		this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
 						new Class[] {EntityConnection.class}, connectionHandler);
 		this.clientSocketFactory = clientSocketFactory;
 		this.serverSocketFactory = serverSocketFactory;
 		this.connectionPort = port;
+		//a negative port means "do not export": the connection serves an HTTP client in-process, so it needs no
+		//RMI stub. Exported last, so a failed database connection above throws before an export could leak.
+		this.exported = port >= 0;
+		if (exported) {
+			UnicastRemoteObject.exportObject(this, port, clientSocketFactory, serverSocketFactory);
+		}
 	}
 
 	/**
@@ -143,11 +149,13 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 			if (connectionHandler.closed()) {
 				return;
 			}
-			try {
-				UnicastRemoteObject.unexportObject(this, true);
-			}
-			catch (NoSuchObjectException e) {
-				LOG.error(e.getMessage(), e);
+			if (exported) {
+				try {
+					UnicastRemoteObject.unexportObject(this, true);
+				}
+				catch (NoSuchObjectException e) {
+					LOG.error(e.getMessage(), e);
+				}
 			}
 			remoteIterators.forEach(this::close);
 			connectionHandler.close();

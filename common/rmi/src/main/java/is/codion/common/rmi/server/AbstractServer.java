@@ -69,7 +69,7 @@ import static java.util.stream.Collectors.*;
  * @param <T> the type of remote interface served by this server
  * @param <A> the type of the admin interface this server provides
  */
-public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> extends UnicastRemoteObject implements Server<T, A> {
+public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> implements Server<T, A> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
@@ -81,6 +81,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private final Thread shutdownHook;
 
 	private final ServerConfiguration configuration;
+	private final boolean exported;
 	private final ServerInformation serverInformation;
 	private final Event<?> shutdownEvent = Event.event();
 	private final AtomicBoolean shuttingDown = new AtomicBoolean();
@@ -100,9 +101,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @throws RemoteException in case of an exception
 	 */
 	protected AbstractServer(ServerConfiguration configuration) throws RemoteException {
-		super(requireNonNull(configuration).port(),
-						configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
-		this.configuration = configuration;
+		this.configuration = requireNonNull(configuration);
+		//the server object is exported for RMI data connections or for the admin/monitor interface (which the
+		//monitor reaches through the registry-bound server); when neither is enabled no RMI object is exported at all
+		this.exported = configuration.rmi() || configuration.adminPort() > 0;
+		if (exported) {
+			UnicastRemoteObject.exportObject(this, configuration.port(),
+							configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
+		}
 		this.serverInformation = new DefaultServerInformation(UUID.randomUUID(),
 						configuration.serverName(), configuration.port(), ZonedDateTime.now());
 		this.connectionMaintenanceScheduler = TaskScheduler.builder()
@@ -197,6 +203,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		if (shuttingDown.get()) {
 			throw new LoginException("Server is shutting down");
 		}
+		//with RMI disabled the server may still be exported for the admin interface, but it hands out no
+		//data connections over RMI; an in-process (HTTP auxiliary server) call has no active RMI client host
+		if (!configuration.rmi() && remoteCall()) {
+			throw new LoginException("RMI connections are disabled on this server, use an HTTP connection");
+		}
 		requireNonNull(connectionRequest);
 		requireNonNull(connectionRequest.user(), "user must be specified");
 		requireNonNull(connectionRequest.clientId(), "clientId must be specified");
@@ -263,7 +274,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 		removeShutdownHook();
 		connectionMaintenanceScheduler.stop();
-		unexportSilently(asList(registry, this, admin));
+		unexportSilently(exported ? asList(registry, this, admin) : asList(registry, admin));
 		List<UUID> clientIds;
 		//snapshot within the monitor, a connect() in flight either completed before this
 		//and is included, or observes shuttingDown and is rejected
@@ -522,7 +533,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		for (Remote remote : remotes) {
 			if (remote != null) {
 				try {
-					unexportObject(remote, true);
+					UnicastRemoteObject.unexportObject(remote, true);
 				}
 				catch (NoSuchObjectException e) {
 					//already unexported, nothing to do, hence 'silently'
@@ -535,7 +546,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	private static String clientHost(@Nullable String requestParameterHost) {
 		if (requestParameterHost == null) {
 			try {
-				return getClientHost();
+				return UnicastRemoteObject.getClientHost();
 			}
 			catch (ServerNotActiveException ignored) {
 				return RemoteClient.UNKNOWN_CLIENT_HOST;
@@ -543,6 +554,21 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 
 		return requestParameterHost;
+	}
+
+	/**
+	 * @return true if the calling thread is currently servicing a remote (RMI) method call, false for an
+	 * in-process call such as one from the HTTP auxiliary server
+	 */
+	private static boolean remoteCall() {
+		try {
+			UnicastRemoteObject.getClientHost();
+
+			return true;
+		}
+		catch (ServerNotActiveException e) {
+			return false;
+		}
 	}
 
 	private void loadAuthenticators(Collection<String> authenticatorClassNames) {

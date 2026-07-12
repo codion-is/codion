@@ -102,6 +102,19 @@ public interface ServerConfiguration {
 	PropertyValue<Integer> REGISTRY_PORT = integerValue("codion.server.registryPort", Registry.REGISTRY_PORT);
 
 	/**
+	 * Specifies whether the server participates in RMI at all — whether it exports itself for remote data
+	 * connections, exports each client connection, and binds itself into an RMI registry.
+	 * <p>When false the server serves only via its auxiliary servers (typically HTTP), no RMI data connection is
+	 * exported and a remote {@code connect()} is refused; the RMI admin interface stays available independently
+	 * (see {@link #ADMIN_PORT}), so the server can still be introspected with the {@code EntityServerMonitor}.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> RMI = booleanValue("codion.server.rmi", true);
+
+	/**
 	 * The rmi ssl keystore to use on the classpath, this will be resolved to a temporary file and set
 	 * as the javax.net.ssl.keyStore system property (JVM-wide) the first time a {@link ServerConfiguration}
 	 * builder is created
@@ -227,6 +240,12 @@ public interface ServerConfiguration {
 	String serverName();
 
 	/**
+	 * @return true if the server participates in RMI (exports itself and its connections and binds into a registry)
+	 * @see #RMI
+	 */
+	boolean rmi();
+
+	/**
 	 * @return the server port
 	 */
 	int port();
@@ -303,6 +322,14 @@ public interface ServerConfiguration {
 		 * @see ServerConfiguration#SERVER_PORT
 		 */
 		B port(int port);
+
+		/**
+		 * @param rmi whether the server participates in RMI; when false it serves only via its auxiliary servers
+		 * (typically HTTP), exporting no RMI data connection and refusing a remote {@code connect()}
+		 * @return this builder instance
+		 * @see ServerConfiguration#RMI
+		 */
+		B rmi(boolean rmi);
 
 		/**
 		 * @param registryPort the port on which to locate the server registry
