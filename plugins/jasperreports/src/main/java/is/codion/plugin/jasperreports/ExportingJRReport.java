@@ -61,7 +61,7 @@ final class ExportingJRReport<R> implements JRReport<R> {
 
 	@Override
 	public String toString() {
-		return report.toString();
+		return report.toString() + " [" + toString(export) + "]";
 	}
 
 	private R export(JasperPrint print) {
@@ -73,5 +73,22 @@ final class ExportingJRReport<R> implements JRReport<R> {
 			//JRRuntimeException from a missing exporter extension being the likely ones here
 			throw JasperReports.reportException(e);
 		}
+	}
+
+	private String toString(JRExport<R> export) {
+		if (export == JRExport.PRINT) {
+			return "PRINT";
+		}
+		if (export == JRExport.PDF) {
+			return "PDF";
+		}
+		if (export == JRExport.SERIALIZED) {
+			return "SERIALIZED";
+		}
+		if (export == JRExport.XML) {
+			return "XML";
+		}
+
+		return "CUSTOM";
 	}
 }
