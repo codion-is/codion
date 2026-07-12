@@ -66,10 +66,11 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	private final transient String name;
 	private final transient String expression;
-	private final transient @Nullable GetValue<Object> getValue;
-	private final transient @Nullable SetValue<Object> setValue;
 	private final transient Converter<T, Object> converter;
 	private final transient @Nullable Generator<T> generator;
+
+	private transient @Nullable GetValue<Object> getValue;
+	private transient @Nullable SetValue<Object> setValue;
 
 	private DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
 		super(builder);
@@ -182,8 +183,10 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public @Nullable T get(ResultSet resultSet, int index, Database database) throws SQLException {
-		GetValue<Object> reader = getValue != null ? getValue : (GetValue<Object>) database.getter(type);
-		Object value = reader.get(resultSet, index);
+		if (getValue == null) {
+			getValue = (GetValue<Object>) database.getter(type);
+		}
+		Object value = getValue.get(resultSet, index);
 		if (value != null || converter.handlesNull()) {
 			return converter.fromColumn(value);
 		}
@@ -198,8 +201,10 @@ final class DefaultColumnDefinition<T> extends AbstractValueAttributeDefinition<
 
 	@Override
 	public void set(PreparedStatement statement, int index, @Nullable T value, Database database) throws SQLException {
-		SetValue<Object> writer = setValue != null ? setValue : (SetValue<Object>) database.setter(type);
-		writer.set(statement, index, columnValue(value, statement));
+		if (setValue == null) {
+			setValue = (SetValue<Object>) database.setter(type);
+		}
+		setValue.set(statement, index, columnValue(value, statement));
 	}
 
 	private @Nullable Object columnValue(@Nullable T value, PreparedStatement statement) throws SQLException {
