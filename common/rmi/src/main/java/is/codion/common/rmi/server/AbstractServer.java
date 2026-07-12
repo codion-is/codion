@@ -37,6 +37,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RemoteServer;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.ZonedDateTime;
@@ -546,7 +547,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	private static String clientHost(@Nullable String requestParameterHost) {
 		if (requestParameterHost == null) {
 			try {
-				return UnicastRemoteObject.getClientHost();
+				return RemoteServer.getClientHost();
 			}
 			catch (ServerNotActiveException ignored) {
 				return RemoteClient.UNKNOWN_CLIENT_HOST;
@@ -562,7 +563,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	 */
 	private static boolean remoteCall() {
 		try {
-			UnicastRemoteObject.getClientHost();
+			RemoteServer.getClientHost();
 
 			return true;
 		}

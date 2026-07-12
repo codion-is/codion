@@ -73,17 +73,17 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	/**
 	 * A Proxy for logging method calls
 	 */
-	protected final transient EntityConnection connectionProxy;
+	protected final EntityConnection connectionProxy;
 
 	/**
 	 * The proxy connection handler
 	 */
-	private final transient LocalConnectionHandler connectionHandler;
+	private final LocalConnectionHandler connectionHandler;
 
 	/**
 	 * An event triggered when this connection is closed
 	 */
-	private final transient Event<AbstractRemoteEntityConnection> closed = Event.event();
+	private final Event<AbstractRemoteEntityConnection> closed = Event.event();
 
 	private final Set<DefaultRemoteEntityResultIterator> remoteIterators = newSetFromMap(new ConcurrentHashMap<>());
 
