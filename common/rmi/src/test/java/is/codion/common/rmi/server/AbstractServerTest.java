@@ -30,8 +30,10 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -233,6 +235,28 @@ public class AbstractServerTest {
 		serverStatistics.systemCpuLoad();
 		serverStatistics.requestsPerSecond();
 		serverStatistics.timestamp();
+	}
+
+	@Test
+	void rmiDisabledServerNotExported() throws RemoteException, ServerException {
+		TestServer rmiDisabled = new TestServer(ServerConfiguration.builder()
+						.rmi(false)
+						.port(PORT + 1)
+						.serverName("rmiDisabledTestServer")
+						.objectInputFilterFactoryRequired(false)
+						.build());
+		try {
+			//the server object is not exported for RMI: unexporting a never-exported object throws
+			//(the admin is exported by TestServer regardless, but the server itself is not)
+			assertThrows(NoSuchObjectException.class, () -> UnicastRemoteObject.unexportObject(rmiDisabled, true));
+			//an in-process connect() still works: no active RMI client host, so it is not treated as a remote call
+			ServerTest connection = rmiDisabled.connect(ConnectionRequest.builder()
+							.user(UNIT_TEST_USER).clientType("rmiDisabledClient").build());
+			assertNotNull(connection);
+		}
+		finally {
+			rmiDisabled.shutdown();
+		}
 	}
 
 	@Test

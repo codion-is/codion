@@ -40,10 +40,10 @@ Public HTTPS:: Only when the user population genuinely cannot be enumerated.
 ====
 This is not a statement about the quality of the Codion server. It is a statement about what
 a public port implies. Exposing the entity service means placing a JVM containing Javalin,
-Jetty, Jackson, your domain model, a JDBC driver — and, in the same process, an RMI registry —
-behind a listener anyone on earth can reach. You inherit the vulnerability stream of that
-entire stack, permanently, and must patch on disclosure timelines. A WireGuard listener is a
-few thousand lines of heavily reviewed code with no dynamic dispatch and no deserialization.
+Jetty, Jackson, your domain model and a JDBC driver behind a listener anyone on earth can reach.
+You inherit the vulnerability stream of that entire stack, permanently, and must patch on
+disclosure timelines. A WireGuard listener is a few thousand lines of heavily reviewed code
+with no dynamic dispatch and no deserialization.
 
 Reducing attack surface beats defending it.
 ====
@@ -76,22 +76,27 @@ the deployment with the design.
 Everything below is necessary. None of it is sufficient on its own.
 
 [#_never_expose_the_rmi_ports]
-=== 1. Never expose the RMI ports
+=== 1. Disable RMI
 
-The `EntityServer` opens an RMI registry port, a server port and — if configured — an admin port.
-The admin interface provides `shutdown()` and `disconnectClients()` behind a single user check.
+An internet-facing server serves HTTP only, so switch the RMI machinery off:
+
+[source]
+----
+codion.server.rmi=false
+----
+
+With RMI disabled the server exports no RMI objects, creates no registry and refuses a remote
+`connect()` outright — the entity service serves its clients in-process, and the RMI attack
+surface does not exist rather than being defended. The RMI admin interface is controlled
+independently: configuring an admin port exports the server for the `EntityServerMonitor`, so
+leave it unconfigured on an internet-facing host, or keep it firewalled to the management network.
 
 [IMPORTANT]
 ====
-The server binds **all interfaces**. There is no bind-address configuration for the RMI ports
-or for the HTTP port; `Javalin.start(port)` and `LocateRegistry.createRegistry(port)` both listen
-on `0.0.0.0`. Firewalling is therefore not an additional precaution — it is the only mechanism
-available, and it is mandatory.
+The HTTP port still binds **all interfaces** — `Javalin.start(port)` listens on `0.0.0.0` and
+there is no bind-address configuration — so the reverse proxy arrangement below and a host
+firewall remain mandatory. The same applies to the admin port and JMX, if enabled.
 ====
-
-Only the HTTP port may be reachable from outside, and ideally only from the reverse proxy on
-localhost. Everything else — registry, server, admin, JMX — belongs on a management network or
-behind a host firewall.
 
 [#_authenticate_against_your_application]
 === 2. Authenticate against your application, not the database
@@ -137,16 +142,18 @@ mechanism.
 
 [source]
 ----
-codion.server.http.serialization=false # <1>
+codion.server.rmi=false # <1>
+codion.server.http.serialization=false # <2>
 codion.server.http.json=true
-codion.server.objectInputFilterFactoryRequired=true # <2>
+codion.server.objectInputFilterFactoryRequired=true # <3>
 ----
 
-<1> The default. With serialization disabled the serial routes are not registered, and **no Java
+<1> See <<_never_expose_the_rmi_ports>>.
+<2> The default. With serialization disabled the serial routes are not registered, and **no Java
 deserialization of client-supplied input occurs anywhere in the HTTP path**. This is a strong
 property; do not give it up.
-<2> The default. The `EntityServer` refuses to start without a deserialization filter, which
-protects the RMI interface. See <<server.adoc#_serialization_filtering, Serialization filtering>>.
+<3> The default. The `EntityServer` refuses to start without a deserialization filter, which
+protects the RMI interface where one is enabled. See <<server.adoc#_serialization_filtering, Serialization filtering>>.
 
 [#_put_a_reverse_proxy_in_front]
 === 5. Put a reverse proxy in front
@@ -225,8 +232,22 @@ server-side (PDF, for example) reaches the client as bytes no reporting engine i
 One serialized site remains, and it is avoidable:
 
 * The `entities` route replies with a serialized object. Supply the `Domain` to the connection
-builder and the client never calls it — this also removes a round trip and keeps the domain
-implementation off the wire.
+builder and the client never calls it, removing a round trip along with the deserialization.
+
+[NOTE]
+====
+Injecting the domain has an information cost: the domain *implementation* carries the
+database-level details — physical table and column names, column expressions, custom select and
+subquery SQL — and ships them inside a client package anyone can decompile. The entity
+definitions served by the `entities` route deliberately **omit** these (the fields are transient);
+a client that fetches its definitions sees only the domain API surface, which may be aliased.
+
+Schema secrecy is reconnaissance-resistance, not a security control — authorization must hold
+with the schema known (it does: it is database privileges) — but query SQL can be genuine
+intellectual property, and there is no reason to hand out a map. If that matters for your
+deployment, have the client fetch its definitions and accept the single Java-deserialized
+response, from the authenticated server, over pinned TLS, with the `ObjectInputFilter` below.
+====
 
 One **opt-in** deserialization exists: a client that displays reports with a `JRViewer` may register
 reports with `JRExport.SERIALIZED` and reconstruct the `JasperPrint` via `JasperReports.loadPrint()`,
@@ -285,22 +306,24 @@ the proxy.
 * **No per-operation or row-level authorization.** Authorization is database privileges. See
 <<_keep_authorization_in_the_database>>.
 * **No server-side cap on query result size.** `Select.limit` is a client-supplied value.
-* **No bind-address configuration.** Every port listens on all interfaces; use a firewall.
+* **No bind-address configuration.** Every open port listens on all interfaces; use a firewall.
+The RMI ports can be removed entirely (`codion.server.rmi=false`), the HTTP port cannot.
 * **No audit log** of the operations a client performs. Method tracing exists for diagnostics,
 not for audit.
 
 == Checklist
 
 . Can the users be enumerated? If yes, use a VPN and stop here.
-. RMI registry, server, admin and JMX ports firewalled off; only the HTTP port reachable, ideally
-only from localhost.
+. `codion.server.rmi=false`, no admin port; JMX off or firewalled. Only the HTTP port reachable,
+ideally only from localhost.
 . An `Authenticator` in place, authenticating against the application, swapping in a role-specific
 pooled database user.
 . Database privileges actually constrain each role.
 . `codion.server.http.serialization=false`, `codion.server.objectInputFilterFactoryRequired=true`.
 . Reverse proxy: TLS, rate limiting, body size limit, timeouts, `X-Forwarded-For` overwritten.
 . Statement timeout, pool size, connection limit, idle timeout all set.
-. Client: certificate pinning, an injected `Domain`, and an `ObjectInputFilter` if reports use
-`JRExport.SERIALIZED`.
+. Client: certificate pinning; a deliberate domain decision — injected (schema ships with the
+client) or fetched (one deserialized response, schema stays home); an `ObjectInputFilter` if
+definitions are fetched or reports use `JRExport.SERIALIZED`.
 . Alerting on 5xx responses and ERROR log entries, both of which now mean a genuine fault.
 . A penetration test before the first real user connects.

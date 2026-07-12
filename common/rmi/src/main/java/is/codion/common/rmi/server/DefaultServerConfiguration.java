@@ -51,6 +51,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultServerConfiguration.class);
 
+	private final boolean rmi;
 	private final int port;
 	private final int registryPort;
 	private final Collection<String> auxiliaryServerFactories;
@@ -67,6 +68,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final boolean systemProperties;
 
 	DefaultServerConfiguration(DefaultServerConfiguration.DefaultBuilder builder) {
+		this.rmi = builder.rmi;
 		this.port = builder.serverPort;
 		this.registryPort = builder.registryPort;
 		this.auxiliaryServerFactories = unmodifiableCollection(builder.auxiliaryServerFactories);
@@ -91,6 +93,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		return serverName;
+	}
+
+	@Override
+	public boolean rmi() {
+		return rmi;
 	}
 
 	@Override
@@ -164,6 +171,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 			resolveClasspathKeyStore();
 		}
 
+		private boolean rmi;
 		private int serverPort;
 		private int registryPort;
 		private final Collection<String> auxiliaryServerFactories = new HashSet<>();
@@ -180,6 +188,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private boolean systemProperties;
 
 		DefaultBuilder() {
+			rmi(RMI.getOrThrow());
 			port(SERVER_PORT.getOrThrow());
 			registryPort(REGISTRY_PORT.getOrThrow());
 			auxiliaryServerFactory(parseCSV(AUXILIARY_SERVER_FACTORIES.get()));
@@ -189,6 +198,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 			objectInputFilterFactory(OBJECT_INPUT_FILTER_FACTORY.get());
 			objectInputFilterFactoryRequired(OBJECT_INPUT_FILTER_FACTORY_REQUIRED.getOrThrow());
 			systemProperties(SYSTEM_PROPERTIES.getOrThrow());
+		}
+
+		@Override
+		public DefaultBuilder rmi(boolean rmi) {
+			this.rmi = rmi;
+			return this;
 		}
 
 		@Override
@@ -282,8 +297,14 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 		@Override
 		public ServerConfiguration build() {
-			if (serverPort < 0) {
-				throw new IllegalStateException("Server port must be specified, see " + SERVER_PORT.name());
+			// the server object is exported (and bound in the registry) for RMI data or for the admin/monitor interface;
+			// either way it needs a valid port, whereas a pure-HTTP server (rmi=false, no admin) needs none
+			boolean exportServer = rmi || serverAdminPort > 0;
+			if (exportServer && serverPort < 0) {
+				throw new IllegalStateException("Server port must be specified when RMI or the admin interface is enabled, see " + SERVER_PORT.name());
+			}
+			if (!rmi && auxiliaryServerFactories.isEmpty()) {
+				LOG.warn("RMI is disabled (rmi=false) and no auxiliary server is configured, this server will not serve any clients, see {}", AUXILIARY_SERVER_FACTORIES.name());
 			}
 
 			return new DefaultServerConfiguration(this);

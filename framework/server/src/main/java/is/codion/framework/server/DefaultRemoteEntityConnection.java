@@ -37,7 +37,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
-import java.io.Serial;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -49,9 +48,6 @@ import java.util.Map;
  * A default RemoteEntityConnection implementation.
  */
 final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection implements RemoteEntityConnection {
-
-	@Serial
-	private static final long serialVersionUID = 1;
 
 	/**
 	 * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number

@@ -20,8 +20,15 @@ HttpEntityConnectionProvider.builder()
 == Supplying the domain
 
 A client provides its domain model to the connection builder via {url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnectionProvider.Builder.html#domain(is.codion.framework.domain.Domain)[HttpEntityConnectionProvider.Builder.domain(Domain)].
-Without it, the client fetches the entity definitions from the server on connect — a convenience for trusted-network clients, but that reply is the one JSON-mode response carrying a Java-serialized object.
-A client with an injected domain skips the round trip and, if it avoids Java-serialized report results (see below), performs *no Java deserialization at all* — the property that makes the JSON format suitable for internet-facing clients.
+Without it, the client fetches the entity definitions from the server on connect — that reply is the one JSON-mode response carrying a Java-serialized object.
+A client with an injected domain skips the round trip and, if it avoids Java-serialized report results (see below), performs *no Java deserialization at all*.
+
+The choice carries a trade-off in the other direction as well.
+The domain *implementation* contains the database-level details — physical table and column names (the domain API constants may well be aliases), column expressions, custom select and subquery SQL — and injecting it packages all of that inside the client, where it can be read out of the distributed application.
+The entity definitions served by the *entities route* deliberately omit these: the database-level fields are transient, so a client that fetches its definitions sees only the domain API surface.
+
+* A client you distribute within your own walls — the typical desktop deployment — injects the domain; the implementation details were never secret from those users.
+* For a client distributed beyond them, injecting means treating your schema and query SQL as public. If that is unacceptable, have the client fetch its definitions and accept the single Java-deserialized response, from the server it authenticated to, over TLS.
 
 == Registering operation types
 
