@@ -37,12 +37,12 @@ application {
 
     applicationDefaultJvmArgs = listOf(
         "-Xmx256m",
-        "-Dcodion.domain.generator.domainPackage=is.codion.demo.domain"
+        "-Dcodion.tools.generator.domainPackage=is.codion.demo.domain"
     )
     applicationDefaultJvmArgs += listOf(
         "-Dcodion.db.url=jdbc:h2:mem:h2db",
         "-Dcodion.db.initScripts=$scriptPaths",
-        "-Dcodion.domain.generator.user=sa",
+        "-Dcodion.tools.generator.user=sa",
     )
 //    applicationDefaultJvmArgs += listOf(
 //        "-Dcodion.db.url=jdbc:postgresql://localhost:5432/postgres"
