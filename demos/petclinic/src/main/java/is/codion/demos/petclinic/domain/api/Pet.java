@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static is.codion.demos.petclinic.domain.api.Petclinic.DOMAIN;
@@ -32,6 +33,7 @@ public interface Pet {
 	Column<Integer> ID = TYPE.integerColumn("id");
 	Column<String> NAME = TYPE.stringColumn("name");
 	Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
+	Column<BigDecimal> WEIGHT_KG = TYPE.bigDecimalColumn("weight_kg");
 	Column<Integer> PET_TYPE_ID = TYPE.integerColumn("type_id");
 	Column<Integer> OWNER_ID = TYPE.integerColumn("owner_id");
 

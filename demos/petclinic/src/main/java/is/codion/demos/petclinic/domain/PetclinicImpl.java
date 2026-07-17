@@ -210,6 +210,12 @@ public final class PetclinicImpl extends DomainModel {
 														.column()
 														.caption("Birth date")
 														.nullable(false),
+										Pet.WEIGHT_KG.as()
+														.column()
+														.caption("Weight (kg)")
+														// mirror DECIMAL(5, 2)
+														.fractionDigits(2)
+														.range(0, 999),
 										Pet.PET_TYPE_ID.as()
 														.column()
 														.nullable(false),
@@ -253,7 +259,16 @@ public final class PetclinicImpl extends DomainModel {
 										Visit.DESCRIPTION.as()
 														.column()
 														.caption("Description")
-														.maximumLength(255))
+														.maximumLength(255),
+										Visit.INSERT_TIME.as()
+														.column()
+														.caption("Inserted")
+														// Populated by the database, see DEFAULT in the schema
+														.readOnly(true),
+										Visit.INSERT_USER.as()
+														.column()
+														.caption("Inserted by")
+														.readOnly(true))
 						.orderBy(OrderBy.builder()
 										.ascending(Visit.PET_ID)
 										.descending(Visit.VISIT_DATE)
