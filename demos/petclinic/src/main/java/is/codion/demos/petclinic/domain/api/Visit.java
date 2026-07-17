@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static is.codion.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
@@ -34,6 +35,8 @@ public interface Visit {
 	Column<LocalDate> VISIT_DATE = TYPE.localDateColumn("visit_date");
 	Column<Integer> VET_ID = TYPE.integerColumn("vet_id");
 	Column<String> DESCRIPTION = TYPE.stringColumn("description");
+	Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+	Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
 
 	ForeignKey PET_FK = TYPE.foreignKey("pet_fk", PET_ID, Pet.ID);
 	ForeignKey VET_FK = TYPE.foreignKey("vet_fk", VET_ID, Vet.ID);
