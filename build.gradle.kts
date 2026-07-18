@@ -46,7 +46,7 @@ configure(frameworkModules()) {
     tasks.withType<Javadoc>().configureEach {
         val docletOptions = options as StandardJavadocDocletOptions
         docletOptions.links(
-            "https://docs.oracle.com/en/java/javase/" + properties["jdkVersion"] + "/docs/api/",
+            "https://docs.oracle.com/en/java/javase/" + project.findProperty("jdkVersion") + "/docs/api/",
             "https://jspecify.dev/docs/api/"
         )
         docletOptions.encoding = "UTF-8"
@@ -100,8 +100,8 @@ configure(frameworkModules()) {
 
     if (hasSonarqubeProperties()) {
         sonar {
-            System.setProperty("sonar.projectVersion", (project.version as String).replace("-SNAPSHOT", ""))
-            System.setProperty("sonar.java.source", properties["jdkVersion"].toString())
+            System.setProperty("sonar.projectVersion", project.version as String)
+            System.setProperty("sonar.java.source", project.findProperty("jdkVersion").toString())
             System.setProperty("sonar.sourceEncoding", "UTF-8")
             System.setProperty("sonar.exclusions", "**/*TestDomain.java")
             System.setProperty("sonar.coverage.exclusions", "**/is/codion/framework/model/test/**,**/is/codion/framework/domain/test/**")
@@ -183,7 +183,7 @@ configure(subprojects.filter { it.name != "codion-framework-bom" && it.name != "
 
     testing {
         suites {
-            val test by getting(JvmTestSuite::class) {
+            getByName<JvmTestSuite>("test") {
                 useJUnitJupiter(junitVersion)
                 targets {
                     all {
