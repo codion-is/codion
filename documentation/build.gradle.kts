@@ -292,6 +292,23 @@ tasks.register("upgradeDemoApps") {
                 println("Warning: $tomlFile not found")
             }
         }
+
+        // The codion-materials repo pins its framework/demo checkouts to the
+        // release version — keep the pin in lockstep with the demo versions
+        val setupFile = file("../../codion-materials/setup.sh")
+        if (setupFile.exists()) {
+            val content = setupFile.readText()
+            val updatedContent = content.replace(
+                Regex("""CODION_VERSION="[^"]+""""), """CODION_VERSION="$documentationVersion"""")
+            if (content != updatedContent) {
+                setupFile.writeText(updatedContent)
+                println("Updated codion-materials setup.sh to Codion $documentationVersion")
+            } else {
+                println("codion-materials setup.sh already at Codion $documentationVersion")
+            }
+        } else {
+            println("Warning: $setupFile not found")
+        }
     }
 }
 
@@ -330,6 +347,89 @@ tasks.register("assembleTutorials") {
     }
 }
 
+tasks.register("generateLlmsTxt") {
+    dependsOn("asciidoctor")
+    group = "documentation"
+    description = "Generates llms.txt and llms-full.txt from the single page manual"
+
+    val manualHtml = project.layout.buildDirectory.file("asciidoc/manual/manual.html")
+    val llmsDir = project.layout.buildDirectory.dir("llms")
+    inputs.file(manualHtml)
+    outputs.dir(llmsDir)
+
+    doLast {
+        // llms-full.txt: the manual converted to markdown, post-processed to
+        // strip the div wrapper noise pandoc leaves behind, normalize the
+        // code fence language and collapse consecutive blank lines
+        val pandoc = providers.exec {
+            commandLine(
+                "pandoc", "-f", "html", "-t", "gfm", "--wrap=none",
+                manualHtml.get().asFile.absolutePath
+            )
+        }
+        // The manual's relative links (../api, ../tutorials etc.) resolve
+        // against doc/<version>/manual/ on the site — a standalone text file
+        // needs them absolute, or an LLM reader dead-ends on every javadoc link
+        val docRoot = "https://codion.is/doc/$documentationVersion"
+        val relativeImage = Regex("src=\"(?!https?://)")
+        val fullText = buildString {
+            var blanks = 0
+            pandoc.standardOutput.asText.get().lineSequence()
+                .filterNot { it.startsWith("<div") || it == "</div>" }
+                .map { if (it == "``` rouge") "``` java" else it }
+                .map { it.replace("](../", "]($docRoot/") }
+                .map { it.replace(relativeImage, "src=\"$docRoot/manual/") }
+                .forEach { line ->
+                    blanks = if (line.isEmpty()) blanks + 1 else 0
+                    if (blanks <= 1) appendLine(line)
+                }
+        }
+        val outputDir = llmsDir.get().asFile
+        outputDir.mkdirs()
+        outputDir.resolve("llms-full.txt").writeText(fullText)
+        // llms.txt: the small index file, per the llms.txt convention
+        outputDir.resolve("llms.txt").writeText(
+            """
+            # Codion
+
+            > Codion is a full-stack, open-source Java rich client application framework based on the relational model — define a domain model over a SQL database and get a complete Swing CRUD application. Current version: $documentationVersion.
+
+            ## Documentation
+
+            - [Complete manual](https://codion.is/llms-full.txt): the full Codion manual as a single markdown file, all code examples compiled against the current release
+            - [Manual (HTML)](https://codion.is/doc/$documentationVersion/manual/manual.html)
+
+            ## LLM-assisted development
+
+            - [codion-materials](https://github.com/codion-is/codion-materials): a skill plus grounding materials (framework source at the release tag, five demo applications) for writing and maintaining Codion applications with coding agents
+
+            ## Source
+
+            - [codion](https://github.com/codion-is/codion): framework source
+            - Demo applications: [petclinic](https://github.com/codion-is/petclinic), [world](https://github.com/codion-is/world), [chinook](https://github.com/codion-is/chinook), [llemmy](https://github.com/codion-is/llemmy), [sdkboy](https://github.com/codion-is/sdkboy)
+
+            """.trimIndent()
+        )
+    }
+}
+
+tasks.register<Copy>("copyLlmsTxt") {
+    dependsOn("generateLlmsTxt")
+    group = "documentation"
+    description = "Copies llms.txt and llms-full.txt to the github pages project root"
+    from(project.layout.buildDirectory.dir("llms"))
+    into("../../codion-pages")
+}
+
+tasks.register<Copy>("updateMaterials") {
+    dependsOn("generateLlmsTxt")
+    group = "documentation"
+    description = "Updates manual.md in the codion-materials project"
+    from(project.layout.buildDirectory.file("llms/llms-full.txt"))
+    into("../../codion-materials")
+    rename { "manual.md" }
+}
+
 tasks.register<Sync>("copyToGitHubPages") {
     dependsOn("linkcheck")
     group = "documentation"
@@ -339,7 +439,7 @@ tasks.register<Sync>("copyToGitHubPages") {
 }
 
 tasks.register<Sync>("deploy") {
-    dependsOn("clean", "copyToGitHubPages")
+    dependsOn("clean", "copyToGitHubPages", "copyLlmsTxt", "updateMaterials")
     group = "documentation"
     description = "Clean, assembles and copies the docs to the github pages project"
 }
