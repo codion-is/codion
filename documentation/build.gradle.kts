@@ -4,7 +4,7 @@ plugins {
     id("org.asciidoctor.jvm.convert") version "4.0.5"
 }
 
-val documentationVersion = project.version.toString().replace("-SNAPSHOT", "")
+val documentationVersion = project.version.toString()
 
 tasks.register<Copy>("generateModuleDependencyGraphs") {
     group = "documentation"
