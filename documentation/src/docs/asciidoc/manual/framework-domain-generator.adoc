@@ -696,13 +696,7 @@ TIP: Generate once, customize as needed, and use version control to preserve you
 
 === Database Support
 
-The generator works with any JDBC-compliant database. Tested databases include:
-
-* H2 Database (in-memory and file-based)
-* PostgreSQL 12+
-* Oracle Database 11g+
-* MariaDB 10.3+
-* MySQL 8.0+ (via MariaDB driver)
+The generator works with any JDBC-compliant database.
 
 Each database requires its appropriate JDBC driver on the runtime classpath. See <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>>.
 

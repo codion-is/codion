@@ -23,6 +23,7 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
+import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.reactive.value.ValueList;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.swing.common.ui.Utilities;
@@ -235,7 +236,7 @@ public final class EventStateValue {
 		// only when the value actually changes
 		Value<Integer> counter = Value.builder()
 						.nonNull(0)
-						.notify(Value.Notify.CHANGED)
+						.notify(Notify.CHANGED)
 						.build();
 
 		counter.addListener(() -> System.out.println("changed"));
@@ -247,7 +248,7 @@ public final class EventStateValue {
 		// time the value is set
 		Value<Integer> status = Value.builder()
 						.nonNull(0)
-						.notify(Value.Notify.SET)
+						.notify(Notify.SET)
 						.build();
 
 		status.addListener(() -> System.out.println("set"));

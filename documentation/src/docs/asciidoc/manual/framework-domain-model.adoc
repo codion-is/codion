@@ -101,9 +101,9 @@ include::{dir-source}/is/codion/manual/store/minimal/ManualDomainModel.java[tags
 <1> The *DomainType* instance serves as a factory for *EntityTypes* associated with that domain.
 <2> Each *EntityType* instance serves as a factory for *Columns* and *ForeignKeys* associated with that entity.
 
-Typically, the underlying table name is used as the *EntityType* name, but you can use whatever identifying string you want and specify the table name via the *tableName()* builder method when defining the entity.
+Typically, the underlying table name is used as the *EntityType* name, but you can use whatever identifying string you want and specify the table name via the *table()* builder method when defining the entity.
 
-The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *columnName()* method when creating the associated *ColumnDefinition*.
+The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *name()* method when creating the associated *ColumnDefinition*.
 
 == Domain implementation
 
