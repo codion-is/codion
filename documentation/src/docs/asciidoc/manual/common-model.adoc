@@ -30,7 +30,7 @@ prefs.flush(); // Writes to ~/.codion/my.config.file.json
 
 Preferences are stored in a JSON file at a platform-specific location:
 
-* **Windows**: `%LOCALAPPDATA%\Codion\{filename}.json`
+* **Windows**: `%LOCALAPPDATA%\Codion\\{filename}.json`
 * **macOS**: `~/Library/Preferences/Codion/{filename}.json`
 * **Linux**: `~/.config/codion/{filename}.json` (follows XDG Base Directory specification)
 * **Other**: `~/.codion/{filename}.json`
@@ -49,7 +49,7 @@ The file uses the following JSON format:
 }
 ----
 
-NOTE: When storing JSON data as a preference value (such as serialized column preferences), the JSON content is properly escaped and stored as a JSON string value. This double-encoding is handled automatically - you store and retrieve your JSON strings normally through the Preferences API.
+NOTE: When storing JSON data as a preference value (such as serialized column preferences), it becomes a nested JSON structure.
 
 === Features
 

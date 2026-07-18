@@ -1,4 +1,4 @@
-[#_keyboard_shortcuts]
+[#_client_keyboard_shortcuts]
 = Keyboard shortcuts
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :dir-tutorials: ../tutorials

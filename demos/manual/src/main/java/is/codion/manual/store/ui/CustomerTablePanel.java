@@ -55,10 +55,6 @@ public class CustomerTablePanel extends EntityTablePanel {
 
 	private void viewCustomerReport() {
 		List<Entity> selectedCustomers = tableModel().selection().items().get();
-		if (selectedCustomers.isEmpty()) {
-			return;
-		}
-
 		Collection<String> customerIds = Entity.values(Customer.ID, selectedCustomers);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", customerIds);

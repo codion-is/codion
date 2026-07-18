@@ -21,7 +21,6 @@ package is.codion.manual.framework.domain;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -167,10 +166,8 @@ public class Composition {
 
 		public StoreWebSite() {
 			super(DOMAIN);
-			Entities orderEntities = new Orders().entities();
 			// Selectively add specific entities from Orders domain
-			add(orderEntities.definition(Product.TYPE));
-			add(orderEntities.definition(Customer.TYPE));
+			addEntities(new Orders(), Product.TYPE, Customer.TYPE);
 			// Include only reports from Products domain
 			addReports(new Products());
 			// Include only functions from Store domain

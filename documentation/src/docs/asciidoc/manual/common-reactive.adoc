@@ -168,7 +168,6 @@ State -|> ObservableState
 -------------------------------------------
 
 The {url-javadoc}{common-reactive}/is/codion/common/reactive/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-reactive}/is/codion/common/reactive/state/ObservableState.html[ObservableState].
-A *State* implements *Value<Boolean>* and is non-nullable with null translating to false.
 
 States are instantiated via factory methods in the {url-javadoc}{common-reactive}/is/codion/common/reactive/state/State.html[State] class.
 
