@@ -53,8 +53,8 @@ public final class ClientsTest {
 
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(user)
-							.clientId(clientId)
 							.clientType(TEST_CLIENT_TYPE)
+							.clientId(clientId)
 							.build();
 
 			assertEquals(user, request.user());
@@ -73,8 +73,8 @@ public final class ClientsTest {
 
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(user)
-							.clientId(clientId)
 							.clientType(TEST_CLIENT_TYPE)
+							.clientId(clientId)
 							.version(clientVersion)
 							.build();
 
@@ -88,9 +88,7 @@ public final class ClientsTest {
 			assertThrows(NullPointerException.class, () ->
 							ConnectionRequest.builder()
 											.user(null)
-											.clientId(UUID.randomUUID())
-											.clientType(TEST_CLIENT_TYPE)
-											.build());
+											.clientType(TEST_CLIENT_TYPE));
 		}
 
 		@Test
@@ -99,9 +97,8 @@ public final class ClientsTest {
 			assertThrows(NullPointerException.class, () ->
 							ConnectionRequest.builder()
 											.user(User.parse(TEST_USER_SPEC))
-											.clientId(null)
 											.clientType(TEST_CLIENT_TYPE)
-											.build());
+											.clientId(null));
 		}
 
 		@Test
@@ -110,7 +107,6 @@ public final class ClientsTest {
 			assertThrows(NullPointerException.class, () ->
 							ConnectionRequest.builder()
 											.user(User.parse(TEST_USER_SPEC))
-											.clientId(UUID.randomUUID())
 											.clientType(null)
 											.build());
 		}
@@ -143,8 +139,8 @@ public final class ClientsTest {
 			User user = User.parse(TEST_USER_SPEC);
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(user)
-							.clientId(UUID.randomUUID())
 							.clientType(TEST_CLIENT_TYPE)
+							.clientId(UUID.randomUUID())
 							.build();
 
 			String stringRep = request.toString();
@@ -161,8 +157,8 @@ public final class ClientsTest {
 		void clientType_empty_isAllowed() {
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(User.parse(TEST_USER_SPEC))
-							.clientId(UUID.randomUUID())
 							.clientType(EMPTY_CLIENT_TYPE)
+							.clientId(UUID.randomUUID())
 							.build();
 
 			assertEquals(EMPTY_CLIENT_TYPE, request.clientType());
@@ -173,7 +169,6 @@ public final class ClientsTest {
 		void clientType_veryLong_isAllowed() {
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(User.parse(TEST_USER_SPEC))
-							.clientId(UUID.randomUUID())
 							.clientType(LONG_CLIENT_TYPE)
 							.build();
 
@@ -186,7 +181,6 @@ public final class ClientsTest {
 			User user = User.user("testuser", new char[0]);
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(user)
-							.clientId(UUID.randomUUID())
 							.clientType(TEST_CLIENT_TYPE)
 							.build();
 
@@ -199,7 +193,6 @@ public final class ClientsTest {
 			User user = User.user("test@domain.com", "p@$$w0rd!".toCharArray());
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(user)
-							.clientId(UUID.randomUUID())
 							.clientType(TEST_CLIENT_TYPE)
 							.build();
 
@@ -260,7 +253,6 @@ public final class ClientsTest {
 		void version_nullResultsInEmptyOptional() {
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(User.parse(TEST_USER_SPEC))
-							.clientId(UUID.randomUUID())
 							.clientType(TEST_CLIENT_TYPE)
 							.version(null)
 							.build();
@@ -274,7 +266,6 @@ public final class ClientsTest {
 			Version testVersion = Version.parse("2.1.0");
 			ConnectionRequest request = ConnectionRequest.builder()
 							.user(User.parse(TEST_USER_SPEC))
-							.clientId(UUID.randomUUID())
 							.clientType(TEST_CLIENT_TYPE)
 							.version(testVersion)
 							.build();
@@ -296,8 +287,8 @@ public final class ClientsTest {
 	private ConnectionRequest createTestRequest(User user, UUID clientId) {
 		return ConnectionRequest.builder()
 						.user(user)
-						.clientId(clientId)
 						.clientType(TEST_CLIENT_TYPE)
+						.clientId(clientId)
 						.build();
 	}
 }

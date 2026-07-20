@@ -18,6 +18,8 @@
  */
 package is.codion.common.rmi.client;
 
+import is.codion.common.rmi.client.ConnectionRequest.Builder.ClientTypeStep;
+import is.codion.common.rmi.client.ConnectionRequest.Builder.UserStep;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 
@@ -51,9 +53,9 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	private final @Nullable Map<String, Object> parameters;
 
 	private DefaultConnectionRequest(DefaultBuilder builder) {
-		this.user = requireNonNull(builder.user, "user must be specified");
+		this.user = builder.user;
+		this.clientType = builder.clientType;
 		this.clientId = builder.clientId == null ? UUID.randomUUID() : builder.clientId;
-		this.clientType = requireNonNull(builder.clientType, "client type must be specified");
 		this.version = builder.version;
 		this.parameters = builder.parameters == null ? null : unmodifiableMap(builder.parameters);
 	}
@@ -100,10 +102,8 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
 	@Override
 	public ConnectionRequest copy() {
-		Builder builder = new DefaultBuilder()
-						.user(user.copy())
+		Builder builder = new DefaultBuilder(user.copy(), clientType)
 						.clientId(clientId)
-						.clientType(clientType)
 						.version(version);
 		if (parameters != null) {
 			parameters.forEach(builder::parameter);
@@ -127,31 +127,47 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		return user + " [" + clientType + "] - " + clientId;
 	}
 
+	private static final class DefaultUserStep implements UserStep {
+
+		@Override
+		public ClientTypeStep user(User user) {
+			return new DefaultClientTypeStep(requireNonNull(user));
+		}
+	}
+
+	private static final class DefaultClientTypeStep implements ClientTypeStep {
+
+		private final User user;
+
+		private DefaultClientTypeStep(User user) {
+			this.user = user;
+		}
+
+		@Override
+		public Builder clientType(String clientType) {
+			return new DefaultBuilder(user, requireNonNull(clientType));
+		}
+	}
+
 	static final class DefaultBuilder implements Builder {
 
-		private @Nullable User user;
+		static final UserStep USER = new DefaultUserStep();
+
+		private final User user;
+		private final String clientType;
+
 		private @Nullable UUID clientId;
-		private @Nullable String clientType;
 		private @Nullable Version version;
 		private @Nullable Map<String, Object> parameters;
 
-		DefaultBuilder() {}
-
-		@Override
-		public Builder user(User user) {
-			this.user = requireNonNull(user);
-			return this;
+		DefaultBuilder(User user, String clientType) {
+			this.user = user;
+			this.clientType = clientType;
 		}
 
 		@Override
 		public Builder clientId(UUID clientId) {
 			this.clientId = requireNonNull(clientId);
-			return this;
-		}
-
-		@Override
-		public Builder clientType(String clientType) {
-			this.clientType = requireNonNull(clientType);
 			return this;
 		}
 

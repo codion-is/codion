@@ -165,9 +165,15 @@ public class AbstractServerTest {
 	void connectionTheftWrongPassword() throws RemoteException, ServerException {
 		UUID connectionId = UUID.randomUUID();
 		ConnectionRequest connectionRequest = ConnectionRequest.builder()
-						.user(UNIT_TEST_USER).clientId(connectionId).clientType(CLIENT_TYPE).build();
+						.user(UNIT_TEST_USER)
+						.clientType(CLIENT_TYPE)
+						.clientId(connectionId)
+						.build();
 		ConnectionRequest connectionRequest2 = ConnectionRequest.builder()
-						.user(User.user(UNIT_TEST_USER.username(), "test".toCharArray())).clientId(connectionId).clientType(CLIENT_TYPE).build();
+						.user(User.user(UNIT_TEST_USER.username(), "test".toCharArray()))
+						.clientType(CLIENT_TYPE)
+						.clientId(connectionId)
+						.build();
 
 		server.connect(connectionRequest);
 
@@ -181,11 +187,14 @@ public class AbstractServerTest {
 	void connectionTheftWrongUsername() throws RemoteException, ServerException {
 		UUID connectionId = UUID.randomUUID();
 		ConnectionRequest connectionRequest = ConnectionRequest.builder()
-						.user(UNIT_TEST_USER).clientId(connectionId).clientType(CLIENT_TYPE).build();
+						.user(UNIT_TEST_USER)
+						.clientType(CLIENT_TYPE)
+						.clientId(connectionId)
+						.build();
 		ConnectionRequest connectionRequest2 = ConnectionRequest.builder()
 						.user(User.user("test", UNIT_TEST_USER.password()))
-						.clientId(connectionId)
 						.clientType(CLIENT_TYPE)
+						.clientId(connectionId)
 						.build();
 
 		server.connect(connectionRequest);

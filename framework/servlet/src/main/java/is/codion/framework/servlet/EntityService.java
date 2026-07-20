@@ -896,8 +896,8 @@ public final class EntityService implements AuxiliaryServer {
 
 		return server.connect(ConnectionRequest.builder()
 						.user(user)
-						.clientId(clientId)
 						.clientType(clientType)
+						.clientId(clientId)
 						.version(version)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
 						.parameter(Server.CLIENT_HOST, remoteHost(context.req()))

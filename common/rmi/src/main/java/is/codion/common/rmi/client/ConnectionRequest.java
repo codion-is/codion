@@ -18,6 +18,7 @@
  */
 package is.codion.common.rmi.client;
 
+import is.codion.common.rmi.client.ConnectionRequest.Builder.UserStep;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 
@@ -80,10 +81,10 @@ public interface ConnectionRequest {
 	ConnectionRequest copy();
 
 	/**
-	 * @return a {@link ConnectionRequest.Builder}
+	 * @return a {@link UserStep}
 	 */
-	static Builder builder() {
-		return new DefaultConnectionRequest.DefaultBuilder();
+	static UserStep builder() {
+		return DefaultConnectionRequest.DefaultBuilder.USER;
 	}
 
 	/**
@@ -92,22 +93,34 @@ public interface ConnectionRequest {
 	interface Builder {
 
 		/**
-		 * @param user the user, required
-		 * @return this Builder instance
+		 * Specifies the connection user
 		 */
-		Builder user(User user);
+		interface UserStep {
+
+			/**
+			 * @param user the user, required
+			 * @return a {@link ClientTypeStep} instance
+			 */
+			ClientTypeStep user(User user);
+		}
+
+		/**
+		 * Specifies the client type
+		 */
+		interface ClientTypeStep {
+
+			/**
+			 * @param clientType the client type, required
+			 * @return a Builder instance
+			 */
+			Builder clientType(String clientType);
+		}
 
 		/**
 		 * @param clientId the client id, a random {@link UUID} by default
 		 * @return this Builder instance
 		 */
 		Builder clientId(UUID clientId);
-
-		/**
-		 * @param clientType the client type, required
-		 * @return this Builder instance
-		 */
-		Builder clientType(String clientType);
 
 		/**
 		 * @param version the client version

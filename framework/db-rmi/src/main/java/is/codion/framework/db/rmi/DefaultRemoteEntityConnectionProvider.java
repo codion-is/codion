@@ -55,8 +55,9 @@ import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static java.lang.reflect.InvocationHandler.invokeDefault;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A class responsible for managing a remote entity connection.
@@ -67,8 +68,8 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultRemoteEntityConnectionProvider.class);
 
-	private Server<RemoteEntityConnection, ServerAdmin> server;
-	private String serverName;
+	private @Nullable Server<RemoteEntityConnection, ServerAdmin> server;
+	private @Nullable String serverName;
 	private boolean truststoreResolved = false;
 
 	private final String hostname;
@@ -104,8 +105,8 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 							new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
 											server().connect(ConnectionRequest.builder()
 															.user(user())
-															.clientId(clientId())
 															.clientType(clientType())
+															.clientId(clientId())
 															.version(clientVersion().orElse(null))
 															.parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
 															.build())));
@@ -199,7 +200,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		private final Map<Method, Method> methodCache = new HashMap<>();
 		private final RemoteEntityConnection remoteConnection;
 
-		private Entities entities;
+		private @Nullable Entities entities;
 		private @Nullable ProxyQueryCache queryCache;
 
 		private RemoteEntityConnectionHandler(RemoteEntityConnection remoteConnection) {
@@ -333,9 +334,9 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		}
 
 		private static List<Entity> immutable(List<Entity> entities) {
-			return entities.stream()
+			return unmodifiableList(entities.stream()
 							.map(Entity::immutable)
-							.collect(toUnmodifiableList());
+							.collect(toList()));
 		}
 
 		private final class ProxyQueryCache implements QueryCache {
