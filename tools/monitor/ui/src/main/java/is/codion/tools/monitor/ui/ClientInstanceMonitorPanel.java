@@ -73,7 +73,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	}
 
 	public void updateView() {
-		creationDateField.setText(DATE_TIME_FORMATTER.format(model.remoteClient().creationTime()));
+		creationDateField.setText(DATE_TIME_FORMATTER.format(model.client().creationTime()));
 		refreshLog();
 	}
 
@@ -141,7 +141,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 				throw new IllegalStateException("No client selected");
 			}
 
-			User user = model.remoteClient().request().user();
+			User user = model.client().request().user();
 			LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
 
 			return user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate);

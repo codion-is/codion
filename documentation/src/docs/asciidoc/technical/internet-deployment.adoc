@@ -111,7 +111,7 @@ connection attempt.
 See also <<server.adoc#_authentication, Authentication>>.
 <<{dir-tutorials}/chinook/chinook.adoc#_authenticator, ChinookAuthenticator>> demonstrates the
 pattern: authenticate the client's user against an application table, then return
-`remoteClient.withDatabaseUser(databaseUser)`.
+`client.withDatabaseUser(databaseUser)`.
 
 For mobile clients, have the application present an opaque, revocable **token** as the password.
 The device then never stores a reusable credential, and access can be withdrawn without changing

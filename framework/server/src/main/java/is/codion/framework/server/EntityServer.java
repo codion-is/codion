@@ -138,18 +138,18 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	@Override
-	protected final AbstractRemoteEntityConnection connect(RemoteClient remoteClient) throws RemoteException, LoginException {
-		requireNonNull(remoteClient);
+	protected final AbstractRemoteEntityConnection connect(RemoteClient client) throws RemoteException, LoginException {
+		requireNonNull(client);
 		try {
 			//a negative port tells the connection not to export itself; with RMI disabled the connection serves its
 			//HTTP client in-process and needs no RMI stub (a remote connect() is refused before reaching here)
-			AbstractRemoteEntityConnection connection = createRemoteConnection(database(), remoteClient,
+			AbstractRemoteEntityConnection connection = createRemoteConnection(database(), client,
 							configuration.rmi() ? configuration.port() : -1, configuration.rmiClientSocketFactory().orElse(null),
 							configuration.rmiServerSocketFactory().orElse(null));
 			connection.setTracingEnabled(methodTracing);
 
 			connection.closed().addConsumer(this::removeConnection);
-			LOG.debug("{} connected", remoteClient);
+			LOG.debug("{} connected", client);
 
 			return connection;
 		}
@@ -160,7 +160,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			throw e;
 		}
 		catch (Exception e) {
-			LOG.debug("{} unable to connect", remoteClient, e);
+			LOG.debug("{} unable to connect", client, e);
 			throw new LoginException(e.getMessage());
 		}
 	}
@@ -173,7 +173,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	/**
 	 * Creates the remote connection provided by this server
 	 * @param database the underlying database
-	 * @param remoteClient the client requesting the connection
+	 * @param client the client requesting the connection
 	 * @param port the port to use when exporting this remote connection
 	 * @param clientSocketFactory the client socket factory, null for default
 	 * @param serverSocketFactory the server socket factory, null for default
@@ -183,11 +183,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * if a wrong username or password is provided
 	 */
 	protected AbstractRemoteEntityConnection createRemoteConnection(Database database,
-																																	RemoteClient remoteClient, int port,
+																																	RemoteClient client, int port,
 																																	RMIClientSocketFactory clientSocketFactory,
 																																	RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		return new DefaultRemoteEntityConnection(clientDomainModel(remoteClient), database, remoteClient, port,
+		return new DefaultRemoteEntityConnection(clientDomainModel(client), database, client, port,
 						clientSocketFactory, serverSocketFactory);
 	}
 
@@ -364,7 +364,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private void removeConnection(AbstractRemoteEntityConnection connection) {
-		disconnect(connection.remoteClient().request().clientId());
+		disconnect(connection.client().request().clientId());
 	}
 
 	/**
@@ -382,7 +382,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private boolean timedOut(AbstractRemoteEntityConnection connection) {
-		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().request().clientType());
+		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.client().request().clientType());
 		if (timeout == null) {
 			timeout = idleConnectionTimeout;
 		}
@@ -390,8 +390,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		return connection.timedOut(timeout);
 	}
 
-	private Domain clientDomainModel(RemoteClient remoteClient) {
-		String domainTypeName = (String) remoteClient.request().parameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
+	private Domain clientDomainModel(RemoteClient client) {
+		String domainTypeName = (String) client.request().parameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
 		if (domainTypeName == null) {
 			throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
 		}

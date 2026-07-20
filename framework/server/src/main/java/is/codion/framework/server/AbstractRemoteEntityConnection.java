@@ -98,7 +98,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	 * RMI stub).
 	 * @param domain the domain model
 	 * @param database defines the underlying database
-	 * @param remoteClient information about the client requesting the connection
+	 * @param client information about the client requesting the connection
 	 * @param port the port to use when exporting this remote connection, negative to not export
 	 * @param clientSocketFactory the client socket factory to use, null for default
 	 * @param serverSocketFactory the server socket factory to use, null for default
@@ -107,11 +107,11 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	 * if a wrong username or password is provided
 	 */
 	protected AbstractRemoteEntityConnection(Domain domain, Database database,
-																					 RemoteClient remoteClient, int port,
+																					 RemoteClient client, int port,
 																					 RMIClientSocketFactory clientSocketFactory,
 																					 RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		this.connectionHandler = new LocalConnectionHandler(domain, remoteClient, database);
+		this.connectionHandler = new LocalConnectionHandler(domain, client, database);
 		this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
 						new Class[] {EntityConnection.class}, connectionHandler);
 		this.clientSocketFactory = clientSocketFactory;
@@ -129,7 +129,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	 * @return the user this connection is using
 	 */
 	public final User user() {
-		return connectionHandler.remoteClient().request().user();
+		return connectionHandler.client().request().user();
 	}
 
 	/**
@@ -166,8 +166,8 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	/**
 	 * @return the remote client using this remote connection
 	 */
-	final RemoteClient remoteClient() {
-		return connectionHandler.remoteClient();
+	final RemoteClient client() {
+		return connectionHandler.client();
 	}
 
 	/**

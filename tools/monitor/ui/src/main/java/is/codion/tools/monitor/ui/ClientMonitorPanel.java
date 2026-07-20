@@ -124,11 +124,11 @@ public final class ClientMonitorPanel extends JPanel {
 						.rightComponent(clientInstancePanel)
 						.build();
 
-		model.clientInstanceTableModel().selection().item().addConsumer(remoteClient -> {
+		model.clientInstanceTableModel().selection().item().addConsumer(client -> {
 			clientInstancePanel.removeAll();
 			try {
-				if (remoteClient != null) {
-					ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.server(), remoteClient));
+				if (client != null) {
+					ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.server(), client));
 					clientInstancePanel.add(clientMonitor, BorderLayout.CENTER);
 				}
 				revalidate();
@@ -159,9 +159,9 @@ public final class ClientMonitorPanel extends JPanel {
 	}
 
 	private void disconnect() throws RemoteException {
-		for (RemoteClient remoteClient : model.clientInstanceTableModel().selection().items().get()) {
-			model.server().disconnect(remoteClient.request().clientId());
-			model.clientInstanceTableModel().items().remove(remoteClient);
+		for (RemoteClient client : model.clientInstanceTableModel().selection().items().get()) {
+			model.server().disconnect(client.request().clientId());
+			model.clientInstanceTableModel().items().remove(client);
 		}
 	}
 

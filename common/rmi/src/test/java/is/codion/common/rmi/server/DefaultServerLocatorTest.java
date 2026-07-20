@@ -120,7 +120,7 @@ public class DefaultServerLocatorTest {
 		}
 
 		@Override
-		protected Remote connect(RemoteClient remoteClient) {
+		protected Remote connect(RemoteClient client) {
 			return null;
 		}
 

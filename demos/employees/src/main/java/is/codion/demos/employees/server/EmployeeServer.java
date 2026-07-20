@@ -45,18 +45,18 @@ public final class EmployeeServer extends EntityServer {
 
 	@Override
 	protected AbstractRemoteEntityConnection createRemoteConnection(Database database,
-																																	RemoteClient remoteClient, int port,
+																																	RemoteClient client, int port,
 																																	RMIClientSocketFactory clientSocketFactory,
 																																	RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		return new DefaultEmployeeService(domain, database, remoteClient, port);
+		return new DefaultEmployeeService(domain, database, client, port);
 	}
 
 	static final class DefaultEmployeeService extends AbstractRemoteEntityConnection implements EmployeeService {
 
-		private DefaultEmployeeService(Domain domain, Database database, RemoteClient remoteClient, int port)
+		private DefaultEmployeeService(Domain domain, Database database, RemoteClient client, int port)
 						throws RemoteException {
-			super(domain, database, remoteClient, port, null, null);
+			super(domain, database, client, port, null, null);
 		}
 
 		@Override
