@@ -67,7 +67,6 @@ public final class EmployeeServerTest {
 						.namePrefix("Employee Server")
 						.registryPort(REGISTRY_PORT)
 						.port(SERVER_PORT)
-						.build()
 						.locate();
 
 		UUID clientId = UUID.randomUUID();

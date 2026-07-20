@@ -56,14 +56,6 @@ public class DefaultServerLocatorTest {
 	@Test
 	@DisplayName("Server locator functionality test - fixed flaky behavior")
 	void findServer() throws RemoteException, NotBoundException {
-		// Improved approach: explicit setup and cleanup with better error handling
-		Server.Locator serverLocator = Server.Locator.builder()
-						.hostname("localhost")
-						.namePrefix(SERVER_NAME)
-						.registryPort(Registry.REGISTRY_PORT)
-						.port(42)
-						.build();
-
 		Registry registry = null;
 		boolean serverBound = false;
 
@@ -73,16 +65,18 @@ public class DefaultServerLocatorTest {
 			serverBound = true;
 
 			// Should not find server with wrong port
-			assertThrows(NotBoundException.class, serverLocator::locate);
+			assertThrows(NotBoundException.class, Server.Locator.builder()
+						.hostname("localhost")
+						.namePrefix(SERVER_NAME)
+						.registryPort(Registry.REGISTRY_PORT)
+						.port(42)::locate);
 
-			// Should find server with any port (-1)
-			serverLocator = Server.Locator.builder()
+			Server<Remote, ServerAdmin> foundServer = Server.Locator.builder()
 							.hostname("localhost")
 							.namePrefix(SERVER_NAME)
 							.registryPort(Registry.REGISTRY_PORT)
 							.port(-1)
-							.build();
-			Server<Remote, ServerAdmin> foundServer = serverLocator.locate();
+							.locate();
 			assertNotNull(foundServer);
 
 		}
