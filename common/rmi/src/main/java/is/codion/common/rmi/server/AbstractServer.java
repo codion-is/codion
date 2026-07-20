@@ -221,7 +221,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 			}
 			ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
 			if (clientConnection != null) {
-				validateUserCredentials(connectionRequest.user(), clientConnection.client().user());
+				validateUserCredentials(connectionRequest.user(), clientConnection.client().request().user());
 				LOG.trace("Active connection exists {}", connectionRequest);
 
 				return clientConnection.connection();
@@ -259,7 +259,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		for (Authenticator authenticator : sharedAuthenticators) {
 			authenticator.logout(client);
 		}
-		Authenticator authenticator = authenticators.get(client.clientType());
+		Authenticator authenticator = authenticators.get(client.request().clientType());
 		if (authenticator != null) {
 			authenticator.logout(client);
 		}
@@ -294,6 +294,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	 */
 	final Collection<User> users() {
 		return connections().keySet().stream()
+						.map(RemoteClient::request)
 						.map(ConnectionRequest::user)
 						.map(User::copy)
 						.map(User::clearPassword)
@@ -444,7 +445,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 			remoteClient = clientAuthenticator.login(remoteClient);
 		}
 		ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, connect(remoteClient));
-		connections.put(remoteClient.clientId(), clientConnection);
+		connections.put(remoteClient.request().clientId(), clientConnection);
 
 		return clientConnection;
 	}
@@ -476,7 +477,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	}
 
 	private static RemoteClient clearPasswords(RemoteClient remoteClient) {
-		remoteClient.user().clearPassword();
+		remoteClient.request().user().clearPassword();
 		remoteClient.databaseUser().clearPassword();
 
 		return remoteClient;

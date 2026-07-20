@@ -120,23 +120,23 @@ public final class ClientMonitor {
 		public Object value(RemoteClient row, String identifier) {
 			switch (identifier) {
 				case USER:
-					return row.user().username();
+					return row.request().user().username();
 				case CLIENT_HOST:
 					return row.clientHost();
 				case CLIENT_TYPE:
-					return row.clientType();
+					return row.request().clientType();
 				case CLIENT_VERSION:
-					return row.version()
+					return row.request().version()
 									.map(Object::toString)
 									.orElse(null);
 				case CODION_VERSION:
-					return row.frameworkVersion().toString();
+					return row.request().frameworkVersion().toString();
 				case CLIENT_ID:
-					return row.clientId().toString();
+					return row.request().clientId().toString();
 				case LOCALE:
-					return row.locale().toString();
+					return row.request().locale().toString();
 				case TIMEZONE:
-					return row.timeZone().toString();
+					return row.request().timeZone().toString();
 				case CREATION_TIME:
 					return row.creationTime();
 				default:

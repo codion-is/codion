@@ -141,7 +141,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 				throw new IllegalStateException("No client selected");
 			}
 
-			User user = model.remoteClient().user();
+			User user = model.remoteClient().request().user();
 			LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
 
 			return user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate);

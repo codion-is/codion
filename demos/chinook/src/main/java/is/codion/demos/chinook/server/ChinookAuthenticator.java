@@ -86,7 +86,7 @@ public final class ChinookAuthenticator implements Authenticator {
 
 	@Override
 	public RemoteClient login(RemoteClient remoteClient) throws LoginException {
-		authenticateUser(remoteClient.user());
+		authenticateUser(remoteClient.request().user());
 
 		//Create a new RemoteClient based on the one received
 		//but with the actual database user
