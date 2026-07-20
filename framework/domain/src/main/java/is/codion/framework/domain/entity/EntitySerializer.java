@@ -110,7 +110,7 @@ final class EntitySerializer {
 			Attribute<Object> attribute = attributeByName(definition, (String) stream.readObject());
 			Object value = stream.readObject();
 			if (attribute != null) {
-				map.put(attribute, attribute.type().validateType(value));
+				map.put(attribute, attribute.type().validate(value));
 			}
 		}
 
@@ -126,7 +126,7 @@ final class EntitySerializer {
 			Column<Object> attribute = (Column<Object>) key.definition.attributes().getOrThrow((String) stream.readObject());
 			Object value = stream.readObject();
 			key.columns.add(attribute);
-			key.values.put(attribute, attribute.type().validateType(value));
+			key.values.put(attribute, attribute.type().validate(value));
 		}
 		key.columns = unmodifiableList(key.columns);
 		key.values = unmodifiableMap(key.values);

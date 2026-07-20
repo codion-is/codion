@@ -523,7 +523,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 				throw new IllegalArgumentException("Invalid item value: " + value + " for attribute " + attributeDefinition.attribute());
 			}
 		}
-		attributeDefinition.attribute().type().validateType(value);
+		attributeDefinition.attribute().type().validate(value);
 		if (attributeDefinition instanceof ForeignKeyDefinition) {
 			return (T) validateForeignKeyValue((ForeignKeyDefinition) attributeDefinition, (Entity) value);
 		}
@@ -840,7 +840,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 				if (!attribute.entityType().equals(definition.type())) {
 					throw new IllegalArgumentException("Attribute " + attribute + " not found in entity: " + definition.type());
 				}
-				attribute.type().validateType(valueEntry.getValue());
+				attribute.type().validate(valueEntry.getValue());
 			}
 		}
 

@@ -124,7 +124,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		}
 
 		@Override
-		public @Nullable T validateType(@Nullable T value) {
+		public @Nullable T validate(@Nullable T value) {
 			if (value != null && valueClass != value.getClass() && !valueClass.isAssignableFrom(value.getClass())) {
 				throw new IllegalArgumentException("Value of type " + valueClass +
 								" expected for attribute " + DefaultAttribute.this + ", got: " + value.getClass());

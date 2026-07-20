@@ -290,7 +290,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			throw new IllegalStateException(entityType + " has a composite primary key");
 		}
 		Column<T> column = (Column<T>) primaryKey.columns().get(0);
-		column.type().validateType(value);
+		column.type().validate(value);
 
 		return new SingleColumnKey(this, column, value, true);
 	}
