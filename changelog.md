@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.81
+### is.codion.common.model
+- ProgressWorker.WorkerTask added.
 ### is.codion.framework.domain
 - Attribute.DataType.validateType() renamed validate().
 

@@ -91,7 +91,7 @@ public final class ProgressWorker<T, V> {
 	private static final BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
 	private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new DaemonThreadFactory());
 
-	private final Object task;
+	private final WorkerTask task;
 	private final List<Runnable> onStarted;
 	private final List<Runnable> onDone;
 	private final List<Runnable> onSuccess;
@@ -298,7 +298,7 @@ public final class ProgressWorker<T, V> {
 	 * A background task.
 	 */
 	@FunctionalInterface
-	public interface Task {
+	public interface Task extends WorkerTask {
 
 		/**
 		 * Executes the task.
@@ -312,7 +312,7 @@ public final class ProgressWorker<T, V> {
 	 * @param <T> the task result type
 	 */
 	@FunctionalInterface
-	public interface ResultTask<T> {
+	public interface ResultTask<T> extends WorkerTask {
 
 		/**
 		 * Executes the task.
@@ -327,7 +327,7 @@ public final class ProgressWorker<T, V> {
 	 * @param <V> the intermediate result type
 	 */
 	@FunctionalInterface
-	public interface ProgressTask<V> {
+	public interface ProgressTask<V> extends WorkerTask {
 
 		/**
 		 * Executes the task.
@@ -351,7 +351,7 @@ public final class ProgressWorker<T, V> {
 	 * @param <V> the intermediate result type
 	 */
 	@FunctionalInterface
-	public interface ProgressResultTask<T, V> {
+	public interface ProgressResultTask<T, V> extends WorkerTask {
 
 		/**
 		 * Executes the task.
@@ -614,6 +614,8 @@ public final class ProgressWorker<T, V> {
 		ProgressWorker<T, V> build();
 	}
 
+	private interface WorkerTask {}
+
 	private final class TaskProgressReporter implements ProgressReporter<V> {
 
 		@Override
@@ -709,7 +711,7 @@ public final class ProgressWorker<T, V> {
 		private static final Consumer<Exception> RETHROW_HANDLER = new RethrowHandler();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
-		private final Object task;
+		private final WorkerTask task;
 
 		private @Nullable List<Runnable> onStarted;
 		private @Nullable List<Runnable> onDone;
