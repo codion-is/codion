@@ -1036,7 +1036,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				throw new UpdateEntityException("Column is not updatable: " + columnDefinition.attribute());
 			}
 			statementColumns.add(columnDefinition);
-			statementValues.add(columnDefinition.attribute().type().validateType(columnValue.getValue()));
+			statementValues.add(columnDefinition.attribute().type().validate(columnValue.getValue()));
 		}
 		String updateQuery = updateQuery(entityDefinition.table(), statementColumns, update.where().string(entityDefinition));
 		statementColumns.addAll(definitions(update.where().columns()));

@@ -95,7 +95,7 @@ final class DefaultUpdate implements Update, Serializable {
 			if (values.containsKey(requireNonNull(column))) {
 				throw new IllegalStateException("Update already contains a value for column: " + column);
 			}
-			values.put(column, column.type().validateType(value));
+			values.put(column, column.type().validate(value));
 
 			return this;
 		}

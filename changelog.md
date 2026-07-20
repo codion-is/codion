@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.81
+### is.codion.framework.domain
+- Attribute.DataType.validateType() renamed validate().
 
 ## 0.18.80
 ### is.codion.common.reactive

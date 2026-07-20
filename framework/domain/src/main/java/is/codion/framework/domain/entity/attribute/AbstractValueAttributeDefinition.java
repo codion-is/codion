@@ -407,7 +407,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		@Override
 		public final B defaultValue(DefaultValue<T> defaultValue) {
 			if (defaultValue != null) {
-				attribute().type().validateType(defaultValue.get());
+				attribute().type().validate(defaultValue.get());
 			}
 			this.defaultValue = defaultValue == null ? (DefaultValue<T>) NULL : defaultValue;
 			return self();

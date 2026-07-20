@@ -56,7 +56,7 @@ final class CompositeColumnKey implements Entity.Key, Serializable {
 	EntityDefinition definition;
 
 	CompositeColumnKey(EntityDefinition definition, Map<Column<?>, Object> values, boolean primary) {
-		values.forEach((column, value) -> ((Column<Object>) column).type().validateType(value));
+		values.forEach((column, value) -> ((Column<Object>) column).type().validate(value));
 		this.values = unmodifiableMap(values);
 		this.columns = unmodifiableList(new ArrayList<>(values.keySet()));
 		this.definition = definition;

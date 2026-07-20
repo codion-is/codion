@@ -183,7 +183,7 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 		 * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
 		 * @see #valueClass()
 		 */
-		@Nullable T validateType(@Nullable T value);
+		@Nullable T validate(@Nullable T value);
 
 		/**
 		 * @return true if this attribute represents a numerical value.
