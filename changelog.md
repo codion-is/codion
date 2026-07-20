@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.81
+
 ## 0.18.80
 ### is.codion.common.reactive
 - State.Group.remove(State) added, allowing a state to leave a group; DefaultStateGroup now removes the associated listener so a removed state no longer participates or is retained.
