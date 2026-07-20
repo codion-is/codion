@@ -48,9 +48,7 @@ final class DefaultServerLocator implements Server.Locator {
 		this.port = builder.port;
 	}
 
-	@Override
-	public <T extends Remote, A extends ServerAdmin> Server<T, A> locate()
-					throws RemoteException, NotBoundException {
+	private <T extends Remote, A extends ServerAdmin> Server<T, A> locate() throws RemoteException, NotBoundException {
 		List<Server<T, A>> servers = findServersOnHost(hostname, registryPort, namePrefix, port);
 		if (!servers.isEmpty()) {
 			return servers.get(0);
@@ -157,8 +155,8 @@ final class DefaultServerLocator implements Server.Locator {
 		}
 
 		@Override
-		public Server.Locator build() {
-			return new DefaultServerLocator(this);
+		public <C extends Remote, A extends ServerAdmin> Server<C, A> locate() throws RemoteException, NotBoundException {
+			return new DefaultServerLocator(this).locate();
 		}
 	}
 }

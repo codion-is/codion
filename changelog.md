@@ -9,6 +9,7 @@ Codion Change Log
 - RemoteClient fields and parameters renamed client.
 - ConnectionRequest.Builder.UserStep and ClientTypeStep added.
 - Server.Locator.locateServer() renamed locate().
+- Server.Locator.Builder.locate() added, replacing Locator.locate() and Builder.build().
 ### is.codion.common.model
 - ProgressWorker.WorkerTask added.
 ### is.codion.framework.domain

@@ -90,17 +90,6 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	interface Locator {
 
 		/**
-		 * Retrieves a Server from the registry, using the configured hostname, registry port and server
-		 * name prefix. Returns the first server satisfying the condition.
-		 * @param <C> the Remote connection type served by the server
-		 * @param <A> the server admin type supplied by the server
-		 * @return the first server whose name has the configured prefix
-		 * @throws RemoteException in case of a remote exception
-		 * @throws NotBoundException in case no such server is found
-		 */
-		<C extends Remote, A extends ServerAdmin> Server<C, A> locate() throws RemoteException, NotBoundException;
-
-		/**
 		 * Returns a {@link Locator.Builder} instance.
 		 * @return a {@link Locator.Builder} instance.
 		 */
@@ -157,9 +146,15 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 			Builder port(int port);
 
 			/**
-			 * @return a new {@link Locator} instance based on this builder
+			 * Retrieves a Server from the registry, using the configured hostname, registry port and server
+			 * name prefix. Returns the first server satisfying the condition.
+			 * @param <C> the Remote connection type served by the server
+			 * @param <A> the server admin type supplied by the server
+			 * @return the first server whose name has the configured prefix
+			 * @throws RemoteException in case of a remote exception
+			 * @throws NotBoundException in case no such server is found
 			 */
-			Locator build();
+			<C extends Remote, A extends ServerAdmin> Server<C, A> locate() throws RemoteException, NotBoundException;
 		}
 	}
 }
