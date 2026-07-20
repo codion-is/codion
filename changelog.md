@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.81
+### is.codion.common.rmi
+- RemoteClient.connectionRequest() renamed request().
+- AbstractServer.ClientConnection.remoteClient() renamed client().
 ### is.codion.common.model
 - ProgressWorker.WorkerTask added.
 ### is.codion.framework.domain

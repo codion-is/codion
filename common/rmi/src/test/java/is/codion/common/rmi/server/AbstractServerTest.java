@@ -118,7 +118,7 @@ public class AbstractServerTest {
 		admin.users().forEach(user -> assertEquals(0, user.password().length));
 
 		RemoteClient client = server.clients().iterator().next();
-		client.connectionRequest();
+		client.request();
 		client.clientHost();
 		client.version();
 		client.frameworkVersion();

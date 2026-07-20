@@ -234,14 +234,14 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	@Override
 	protected final void maintainConnections(Collection<ClientConnection<AbstractRemoteEntityConnection>> connections) throws RemoteException {
-		for (ClientConnection<AbstractRemoteEntityConnection> client : connections) {
-			AbstractRemoteEntityConnection connection = client.connection();
+		for (ClientConnection<AbstractRemoteEntityConnection> clientConnection : connections) {
+			AbstractRemoteEntityConnection connection = clientConnection.connection();
 			if (!connection.active()) {
 				boolean connected = connection.connected();
 				boolean timedOut = timedOut(connection);
 				if (!connected || timedOut) {
-					LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
-					disconnect(client.remoteClient().clientId());
+					LOG.debug("Removing connection {}, connected: {}, timeout: {}", clientConnection, connected, timedOut);
+					disconnect(clientConnection.client().clientId());
 				}
 				else {
 					connection.cleanupIterators();
