@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
  * Contains basic information about a remote client
  * @see #builder(ConnectionRequest)
  */
-public sealed interface RemoteClient extends ConnectionRequest permits DefaultRemoteClient {
+public sealed interface RemoteClient permits DefaultRemoteClient {
 
 	/**
 	 * @see #clientHost()

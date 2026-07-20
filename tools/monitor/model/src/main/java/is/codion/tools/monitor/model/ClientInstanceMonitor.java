@@ -48,11 +48,11 @@ public final class ClientInstanceMonitor {
 		this.remoteClient = requireNonNull(remoteClient);
 		this.server = requireNonNull(server);
 		this.tracingEnabled = State.builder()
-						.value(server.tracingEnabled(remoteClient.clientId()))
+						.value(server.tracingEnabled(remoteClient.request().clientId()))
 						.consumer(this::tracingEnabled)
 						.build();
 		this.traceToFileEnabled = State.builder()
-						.value(server.traceToFile(remoteClient.clientId()))
+						.value(server.traceToFile(remoteClient.request().clientId()))
 						.consumer(this::traceToFile)
 						.build();
 	}
@@ -80,7 +80,7 @@ public final class ClientInstanceMonitor {
 
 	public List<MethodTrace> methodTraces() {
 		try {
-			return server.methodTraces(remoteClient.clientId());
+			return server.methodTraces(remoteClient.request().clientId());
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -94,7 +94,7 @@ public final class ClientInstanceMonitor {
 
 	private void tracingEnabled(boolean status) {
 		try {
-			server.tracingEnabled(remoteClient.clientId(), status);
+			server.tracingEnabled(remoteClient.request().clientId(), status);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -103,7 +103,7 @@ public final class ClientInstanceMonitor {
 
 	private void traceToFile(boolean traceToFile) {
 		try {
-			server.traceToFile(remoteClient.clientId(), traceToFile);
+			server.traceToFile(remoteClient.request().clientId(), traceToFile);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);

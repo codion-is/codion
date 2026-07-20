@@ -241,7 +241,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 				boolean timedOut = timedOut(connection);
 				if (!connected || timedOut) {
 					LOG.debug("Removing connection {}, connected: {}, timeout: {}", clientConnection, connected, timedOut);
-					disconnect(clientConnection.client().clientId());
+					disconnect(clientConnection.client().request().clientId());
 				}
 				else {
 					connection.cleanupIterators();
@@ -354,17 +354,17 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			if (timedOutOnly) {
 				boolean active = connection.active();
 				if (!active && timedOut(connection)) {
-					disconnect(entry.getKey().clientId());
+					disconnect(entry.getKey().request().clientId());
 				}
 			}
 			else {
-				disconnect(entry.getKey().clientId());
+				disconnect(entry.getKey().request().clientId());
 			}
 		}
 	}
 
 	private void removeConnection(AbstractRemoteEntityConnection connection) {
-		disconnect(connection.remoteClient().clientId());
+		disconnect(connection.remoteClient().request().clientId());
 	}
 
 	/**
@@ -382,7 +382,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private boolean timedOut(AbstractRemoteEntityConnection connection) {
-		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().clientType());
+		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().request().clientType());
 		if (timeout == null) {
 			timeout = idleConnectionTimeout;
 		}
@@ -391,7 +391,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private Domain clientDomainModel(RemoteClient remoteClient) {
-		String domainTypeName = (String) remoteClient.parameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
+		String domainTypeName = (String) remoteClient.request().parameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
 		if (domainTypeName == null) {
 			throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
 		}

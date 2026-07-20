@@ -81,8 +81,8 @@ final class LocalConnectionHandler implements InvocationHandler {
 		String databaseUsername = remoteClient.databaseUser().username();
 		this.connectionPool = database.containsConnectionPool(databaseUsername) ? database.connectionPool(databaseUsername) : null;
 		this.database = database;
-		this.logIdentifier = remoteClient.user().username().toLowerCase() + "@" + remoteClient.clientType();
-		this.userDescription = "Remote user: " + remoteClient.user().username() + ", database user: " + databaseUsername;
+		this.logIdentifier = remoteClient.request().user().username().toLowerCase() + "@" + remoteClient.request().clientType();
+		this.userDescription = "Remote user: " + remoteClient.request().user().username() + ", database user: " + databaseUsername;
 		this.entityConnection = initializeConnection();
 	}
 

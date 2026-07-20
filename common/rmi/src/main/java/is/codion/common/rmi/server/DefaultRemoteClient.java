@@ -20,16 +20,10 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.utilities.user.User;
-import is.codion.common.utilities.version.Version;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
@@ -75,48 +69,8 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	}
 
 	@Override
-	public User user() {
-		return connectionRequest.user();
-	}
-
-	@Override
 	public User databaseUser() {
 		return databaseUser;
-	}
-
-	@Override
-	public UUID clientId() {
-		return connectionRequest.clientId();
-	}
-
-	@Override
-	public String clientType() {
-		return connectionRequest.clientType();
-	}
-
-	@Override
-	public Locale locale() {
-		return connectionRequest.locale();
-	}
-
-	@Override
-	public ZoneId timeZone() {
-		return connectionRequest.timeZone();
-	}
-
-	@Override
-	public Optional<Version> version() {
-		return connectionRequest.version();
-	}
-
-	@Override
-	public Version frameworkVersion() {
-		return connectionRequest.frameworkVersion();
-	}
-
-	@Override
-	public Map<String, Object> parameters() {
-		return connectionRequest.parameters();
 	}
 
 	@Override

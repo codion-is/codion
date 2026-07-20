@@ -46,7 +46,7 @@ public final class TestAuthenticator implements Authenticator {
 
 	@Override
 	public RemoteClient login(RemoteClient remoteClient) throws ServerAuthenticationException {
-		authenticateUser(remoteClient.user());
+		authenticateUser(remoteClient.request().user());
 
 		return RemoteClient.builder(remoteClient.request())
 						.databaseUser(databaseUser)

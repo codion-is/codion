@@ -129,7 +129,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	 * @return the user this connection is using
 	 */
 	public final User user() {
-		return connectionHandler.remoteClient().user();
+		return connectionHandler.remoteClient().request().user();
 	}
 
 	/**
