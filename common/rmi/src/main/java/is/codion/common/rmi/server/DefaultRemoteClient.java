@@ -44,18 +44,18 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 		this.creationTime = LocalDateTime.now();
 	}
 
-	DefaultRemoteClient(DefaultRemoteClient remoteClient) {
-		this.connectionRequest = remoteClient.connectionRequest.copy();
-		this.databaseUser = remoteClient.databaseUser.copy();
-		this.clientHost = remoteClient.clientHost;
-		this.creationTime = remoteClient.creationTime;
+	DefaultRemoteClient(DefaultRemoteClient client) {
+		this.connectionRequest = client.connectionRequest.copy();
+		this.databaseUser = client.databaseUser.copy();
+		this.clientHost = client.clientHost;
+		this.creationTime = client.creationTime;
 	}
 
-	DefaultRemoteClient(DefaultRemoteClient remoteClient, User databaseUser) {
-		this.connectionRequest = remoteClient.connectionRequest;
+	DefaultRemoteClient(DefaultRemoteClient client, User databaseUser) {
+		this.connectionRequest = client.connectionRequest;
 		this.databaseUser = databaseUser;
-		this.clientHost = remoteClient.clientHost;
-		this.creationTime = remoteClient.creationTime;
+		this.clientHost = client.clientHost;
+		this.creationTime = client.creationTime;
 	}
 
 	@Override

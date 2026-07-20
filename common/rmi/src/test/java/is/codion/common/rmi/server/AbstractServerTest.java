@@ -127,8 +127,8 @@ public class AbstractServerTest {
 		ServerTest connection3 = server.connect(connectionRequest);
 		assertNotSame(connection, connection3);
 		assertNotNull(server.information());
-		admin.disconnect(connection3.remoteClient().request().clientId());
-		assertThrows(IllegalArgumentException.class, () -> server.connection(connection3.remoteClient().request().clientId()));
+		admin.disconnect(connection3.client().request().clientId());
+		assertThrows(IllegalArgumentException.class, () -> server.connection(connection3.client().request().clientId()));
 		assertThrows(NullPointerException.class, () -> server.connect((ConnectionRequest) null));
 	}
 
@@ -141,14 +141,14 @@ public class AbstractServerTest {
 		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		ServerTest connection = server.connect(connectionRequest);
 		assertNotNull(connection);
-		assertEquals(connectionRequest.clientId(), connection.remoteClient().request().clientId());
+		assertEquals(connectionRequest.clientId(), connection.client().request().clientId());
 
 		server.disconnect(connectionRequest.clientId());
 
 		connection = server.connect(connectionRequest);
 		assertEquals(2, TestAuthenticator.LOGIN_COUNTER.get());
 		assertNotNull(connection);
-		assertEquals(connectionRequest.clientId(), connection.remoteClient().request().clientId());
+		assertEquals(connectionRequest.clientId(), connection.client().request().clientId());
 
 		server.disconnect(connectionRequest.clientId());
 		assertEquals(2, TestAuthenticator.LOGOUT_COUNTER.get());
@@ -156,7 +156,7 @@ public class AbstractServerTest {
 		connection = server.connect(connectionRequest);
 		assertEquals(3, TestAuthenticator.LOGIN_COUNTER.get());
 		assertNotNull(connection);
-		assertEquals(connectionRequest.clientId(), connection.remoteClient().request().clientId());
+		assertEquals(connectionRequest.clientId(), connection.client().request().clientId());
 
 		server.disconnect(connectionRequest.clientId());
 	}
@@ -268,20 +268,20 @@ public class AbstractServerTest {
 
 	private static class ServerTestImpl implements ServerTest {
 
-		private final RemoteClient remoteClient;
+		private final RemoteClient client;
 
-		public ServerTestImpl(RemoteClient remoteClient) {
-			this.remoteClient = remoteClient;
+		public ServerTestImpl(RemoteClient client) {
+			this.client = client;
 		}
 
 		@Override
-		public RemoteClient remoteClient() throws RemoteException {
-			return remoteClient;
+		public RemoteClient client() throws RemoteException {
+			return client;
 		}
 	}
 
 	private interface ServerTest extends Remote {
-		RemoteClient remoteClient() throws RemoteException;
+		RemoteClient client() throws RemoteException;
 	}
 
 	private static ServerConfiguration configuration() {
@@ -307,8 +307,8 @@ public class AbstractServerTest {
 		}
 
 		@Override
-		protected ServerTest connect(RemoteClient remoteClient) {
-			return new ServerTestImpl(remoteClient);
+		protected ServerTest connect(RemoteClient client) {
+			return new ServerTestImpl(client);
 		}
 
 		@Override
@@ -335,13 +335,13 @@ public class AbstractServerTest {
 		}
 
 		@Override
-		public RemoteClient login(RemoteClient remoteClient) {
+		public RemoteClient login(RemoteClient client) {
 			LOGIN_COUNTER.incrementAndGet();
-			return remoteClient;
+			return client;
 		}
 
 		@Override
-		public void logout(RemoteClient remoteClient) {
+		public void logout(RemoteClient client) {
 			LOGOUT_COUNTER.incrementAndGet();
 		}
 

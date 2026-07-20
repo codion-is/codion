@@ -47,18 +47,18 @@ public interface Authenticator {
 	 * Performs login validation for the user specified by the remote client
 	 * and returns a remote client with the same clientId and user but possibly
 	 * a different databaseUser to propagate to further login procedures
-	 * @param remoteClient the client
+	 * @param client the client
 	 * @return a new client with the same clientId but not necessarily the same databaseUser
 	 * @throws LoginException in case the login fails
 	 * @see RemoteClient#databaseUser()
 	 */
-	RemoteClient login(RemoteClient remoteClient) throws LoginException;
+	RemoteClient login(RemoteClient client) throws LoginException;
 
 	/**
 	 * Called after the given client has been disconnected
-	 * @param remoteClient the remote client
+	 * @param client the remote client
 	 */
-	default void logout(RemoteClient remoteClient) {}
+	default void logout(RemoteClient client) {}
 
 	/**
 	 * Disposes of all resources used by this authenticator, after a call to this

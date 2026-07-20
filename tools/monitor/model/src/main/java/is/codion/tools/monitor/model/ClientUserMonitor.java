@@ -240,10 +240,10 @@ public final class ClientUserMonitor {
 		public Collection<UserInfo> get() {
 			try {
 				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().included().get());
-				for (RemoteClient remoteClient : server.clients()) {
-					UserInfo newUserInfo = new UserInfo(remoteClient.request().user(), remoteClient.request().clientType(),
-									remoteClient.clientHost(), LocalDateTime.now(), remoteClient.request().clientId(),
-									remoteClient.request().version().orElse(null), remoteClient.request().frameworkVersion());
+				for (RemoteClient client : server.clients()) {
+					UserInfo newUserInfo = new UserInfo(client.request().user(), client.request().clientType(),
+									client.clientHost(), LocalDateTime.now(), client.request().clientId(),
+									client.request().version().orElse(null), client.request().frameworkVersion());
 					int index = items.indexOf(newUserInfo);
 					if (index == -1) {
 						items.add(newUserInfo);
@@ -251,7 +251,7 @@ public final class ClientUserMonitor {
 					else {
 						UserInfo currentUserInfo = items.get(index);
 						currentUserInfo.setLastSeen(newUserInfo.lastSeen());
-						currentUserInfo.addClientId(remoteClient.request().clientId());
+						currentUserInfo.addClientId(client.request().clientId());
 					}
 				}
 

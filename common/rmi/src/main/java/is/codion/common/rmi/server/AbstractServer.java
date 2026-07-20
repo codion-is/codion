@@ -346,12 +346,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 
 	/**
 	 * Establishes the actual client connection.
-	 * @param remoteClient the remote client
+	 * @param client the remote client
 	 * @return a connection for the given client
 	 * @throws RemoteException in case of an exception
 	 * @throws LoginException in case of an error during the login
 	 */
-	protected abstract T connect(RemoteClient remoteClient) throws RemoteException, LoginException;
+	protected abstract T connect(RemoteClient client) throws RemoteException, LoginException;
 
 	/**
 	 * Disconnects the given connection.
@@ -433,19 +433,19 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	}
 
 	private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
-		RemoteClient remoteClient = RemoteClient.builder(connectionRequest)
+		RemoteClient client = RemoteClient.builder(connectionRequest)
 						.clientHost(clientHost((String) connectionRequest.parameters().get(CLIENT_HOST)))
 						.build();
 		for (Authenticator authenticator : sharedAuthenticators) {
-			remoteClient = authenticator.login(remoteClient);
+			client = authenticator.login(client);
 		}
 		Authenticator clientAuthenticator = authenticators.get(connectionRequest.clientType());
 		LOG.debug("Connecting client {}, authenticator {}", connectionRequest, clientAuthenticator);
 		if (clientAuthenticator != null) {
-			remoteClient = clientAuthenticator.login(remoteClient);
+			client = clientAuthenticator.login(client);
 		}
-		ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, connect(remoteClient));
-		connections.put(remoteClient.request().clientId(), clientConnection);
+		ClientConnection<T> clientConnection = new ClientConnection<>(client, connect(client));
+		connections.put(client.request().clientId(), clientConnection);
 
 		return clientConnection;
 	}
@@ -476,11 +476,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		}
 	}
 
-	private static RemoteClient clearPasswords(RemoteClient remoteClient) {
-		remoteClient.request().user().clearPassword();
-		remoteClient.databaseUser().clearPassword();
+	private static RemoteClient clearPasswords(RemoteClient client) {
+		client.request().user().clearPassword();
+		client.databaseUser().clearPassword();
 
-		return remoteClient;
+		return client;
 	}
 
 	private static void configureObjectInputFilter(ServerConfiguration configuration) {

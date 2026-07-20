@@ -6,6 +6,7 @@ Codion Change Log
 - RemoteClient.connectionRequest() renamed request().
 - AbstractServer.ClientConnection.remoteClient() renamed client().
 - RemoteClient no longer extends ConnectionRequest.
+- RemoteClient fields and parameters renamed client.
 ### is.codion.common.model
 - ProgressWorker.WorkerTask added.
 ### is.codion.framework.domain

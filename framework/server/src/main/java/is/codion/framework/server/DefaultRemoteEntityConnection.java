@@ -53,22 +53,22 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	 * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
 	 * @param domain the domain model
 	 * @param database the underlying database
-	 * @param remoteClient the client requesting the connection
+	 * @param client the client requesting the connection
 	 * @param port the port to use when exporting this remote connection
 	 * @throws RemoteException in case of an exception
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	DefaultRemoteEntityConnection(Domain domain, Database database, RemoteClient remoteClient,
+	DefaultRemoteEntityConnection(Domain domain, Database database, RemoteClient client,
 																int port) throws RemoteException {
-		this(domain, database, remoteClient, port, null, null);
+		this(domain, database, client, port, null, null);
 	}
 
 	/**
 	 * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
 	 * @param domain the domain model
 	 * @param database the underlying database
-	 * @param remoteClient the client requesting the connection
+	 * @param client the client requesting the connection
 	 * @param port the port to use when exporting this remote connection
 	 * @param clientSocketFactory the client socket factory to use, null for default
 	 * @param serverSocketFactory the server socket factory to use, null for default
@@ -76,11 +76,11 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	DefaultRemoteEntityConnection(Domain domain, Database database, RemoteClient remoteClient,
+	DefaultRemoteEntityConnection(Domain domain, Database database, RemoteClient client,
 																int port, RMIClientSocketFactory clientSocketFactory,
 																RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		super(domain, database, remoteClient, port, clientSocketFactory, serverSocketFactory);
+		super(domain, database, client, port, clientSocketFactory, serverSocketFactory);
 	}
 
 	@Override

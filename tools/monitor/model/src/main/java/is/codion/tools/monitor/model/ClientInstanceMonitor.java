@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ClientInstanceMonitor {
 
-	private final RemoteClient remoteClient;
+	private final RemoteClient client;
 	private final EntityServerAdmin server;
 	private final State tracingEnabled;
 	private final State traceToFileEnabled;
@@ -41,18 +41,18 @@ public final class ClientInstanceMonitor {
 	/**
 	 * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
 	 * @param server the server being monitored
-	 * @param remoteClient the client info
+	 * @param client the client info
 	 * @throws RemoteException in case of an exception
 	 */
-	public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
-		this.remoteClient = requireNonNull(remoteClient);
+	public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient client) throws RemoteException {
+		this.client = requireNonNull(client);
 		this.server = requireNonNull(server);
 		this.tracingEnabled = State.builder()
-						.value(server.tracingEnabled(remoteClient.request().clientId()))
+						.value(server.tracingEnabled(client.request().clientId()))
 						.consumer(this::tracingEnabled)
 						.build();
 		this.traceToFileEnabled = State.builder()
-						.value(server.traceToFile(remoteClient.request().clientId()))
+						.value(server.traceToFile(client.request().clientId()))
 						.consumer(this::traceToFile)
 						.build();
 	}
@@ -60,8 +60,8 @@ public final class ClientInstanceMonitor {
 	/**
 	 * @return the {@link RemoteClient}
 	 */
-	public RemoteClient remoteClient() {
-		return remoteClient;
+	public RemoteClient client() {
+		return client;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public final class ClientInstanceMonitor {
 
 	public List<MethodTrace> methodTraces() {
 		try {
-			return server.methodTraces(remoteClient.request().clientId());
+			return server.methodTraces(client.request().clientId());
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -89,12 +89,12 @@ public final class ClientInstanceMonitor {
 
 	@Override
 	public String toString() {
-		return remoteClient.toString();
+		return client.toString();
 	}
 
 	private void tracingEnabled(boolean status) {
 		try {
-			server.tracingEnabled(remoteClient.request().clientId(), status);
+			server.tracingEnabled(client.request().clientId(), status);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -103,7 +103,7 @@ public final class ClientInstanceMonitor {
 
 	private void traceToFile(boolean traceToFile) {
 		try {
-			server.traceToFile(remoteClient.request().clientId(), traceToFile);
+			server.traceToFile(client.request().clientId(), traceToFile);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);

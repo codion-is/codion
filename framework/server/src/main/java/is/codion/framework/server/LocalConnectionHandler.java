@@ -60,7 +60,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private static final String ENTITIES = "entities";
 
 	private final Domain domain;
-	private final RemoteClient remoteClient;
+	private final RemoteClient client;
 	private final Database database;
 	private final ConnectionPoolWrapper connectionPool;
 	private final String logIdentifier;
@@ -75,21 +75,21 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private volatile long lastAccessTime = creationTime;
 	private volatile boolean closed = false;
 
-	LocalConnectionHandler(Domain domain, RemoteClient remoteClient, Database database) {
+	LocalConnectionHandler(Domain domain, RemoteClient client, Database database) {
 		this.domain = domain;
-		this.remoteClient = remoteClient;
-		String databaseUsername = remoteClient.databaseUser().username();
+		this.client = client;
+		String databaseUsername = client.databaseUser().username();
 		this.connectionPool = database.containsConnectionPool(databaseUsername) ? database.connectionPool(databaseUsername) : null;
 		this.database = database;
-		this.logIdentifier = remoteClient.request().user().username().toLowerCase() + "@" + remoteClient.request().clientType();
-		this.userDescription = "Remote user: " + remoteClient.request().user().username() + ", database user: " + databaseUsername;
+		this.logIdentifier = client.request().user().username().toLowerCase() + "@" + client.request().clientType();
+		this.userDescription = "Remote user: " + client.request().user().username() + ", database user: " + databaseUsername;
 		this.entityConnection = initializeConnection();
 	}
 
 	@Override
 	public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
 		if (closed) {
-			throw new IllegalStateException("Connection closed: " + remoteClient);
+			throw new IllegalStateException("Connection closed: " + client);
 		}
 		String methodName = method.getName();
 		if (methodName.equals(ENTITIES)) {
@@ -156,7 +156,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private void logExit(String methodName, Exception exception) {
 		MethodTrace trace = tracer.exit(methodName, exception);
 		if (tracer != MethodTracer.NO_OP && traceToFile) {
-			StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
+			StringBuilder messageBuilder = new StringBuilder(client.toString()).append("\n");
 			trace.appendTo(messageBuilder);
 			TRACER.trace(messageBuilder.toString());
 		}
@@ -189,8 +189,8 @@ final class LocalConnectionHandler implements InvocationHandler {
 		return tracer.entries();
 	}
 
-	RemoteClient remoteClient() {
-		return remoteClient;
+	RemoteClient client() {
+		return client;
 	}
 
 	long lastAccessTime() {
@@ -221,7 +221,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		DatabaseException exception = null;
 		try {
 			tracer.enter(FETCH_CONNECTION, userDescription);
-			entityConnection.setConnection(connectionPool.connection(remoteClient.databaseUser()));
+			entityConnection.setConnection(connectionPool.connection(client.databaseUser()));
 		}
 		catch (DatabaseException ex) {
 			exception = ex;
@@ -238,7 +238,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			DatabaseException exception = null;
 			try {
 				tracer.enter(CREATE_CONNECTION, userDescription);
-				entityConnection.setConnection(database.createConnection(remoteClient.databaseUser()));
+				entityConnection.setConnection(database.createConnection(client.databaseUser()));
 			}
 			catch (DatabaseException ex) {
 				exception = ex;
@@ -294,20 +294,20 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private void rollbackIfRequired(LocalEntityConnection entityConnection) {
 		if (entityConnection.transactionOpen()) {
-			LOG.info("Rollback open transaction on disconnect: {}", remoteClient);
+			LOG.info("Rollback open transaction on disconnect: {}", client);
 			try {
 				entityConnection.rollbackTransaction();
 			}
 			catch (DatabaseException e) {
-				LOG.error("Rollback on disconnect failed: {}", remoteClient, e);
+				LOG.error("Rollback on disconnect failed: {}", client, e);
 			}
 		}
 	}
 
 	private LocalEntityConnection initializeConnection() {
 		LocalEntityConnection connection = localEntityConnection(database, domain, connectionPool == null ?
-						database.createConnection(remoteClient.databaseUser()) :
-						connectionPool.connection(remoteClient.databaseUser()));
+						database.createConnection(client.databaseUser()) :
+						connectionPool.connection(client.databaseUser()));
 		((Traceable) connection).tracer(tracer);
 		if (connectionPool != null) {
 			rollbackSilently(connection.getConnection());
