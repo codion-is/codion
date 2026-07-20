@@ -68,7 +68,7 @@ public final class EmployeeServerTest {
 						.registryPort(REGISTRY_PORT)
 						.port(SERVER_PORT)
 						.build()
-						.locateServer();
+						.locate();
 
 		UUID clientId = UUID.randomUUID();
 		EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()

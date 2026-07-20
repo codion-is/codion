@@ -184,7 +184,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 						.registryPort(registryPort)
 						.port(port)
 						.build()
-						.locateServer();
+						.locate();
 		serverName = server.information().name();
 	}
 
