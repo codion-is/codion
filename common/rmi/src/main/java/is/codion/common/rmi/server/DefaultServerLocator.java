@@ -49,7 +49,7 @@ final class DefaultServerLocator implements Server.Locator {
 	}
 
 	@Override
-	public <T extends Remote, A extends ServerAdmin> Server<T, A> locateServer()
+	public <T extends Remote, A extends ServerAdmin> Server<T, A> locate()
 					throws RemoteException, NotBoundException {
 		List<Server<T, A>> servers = findServersOnHost(hostname, registryPort, namePrefix, port);
 		if (!servers.isEmpty()) {

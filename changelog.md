@@ -8,6 +8,7 @@ Codion Change Log
 - RemoteClient no longer extends ConnectionRequest.
 - RemoteClient fields and parameters renamed client.
 - ConnectionRequest.Builder.UserStep and ClientTypeStep added.
+- Server.Locator.locateServer() renamed locate().
 ### is.codion.common.model
 - ProgressWorker.WorkerTask added.
 ### is.codion.framework.domain

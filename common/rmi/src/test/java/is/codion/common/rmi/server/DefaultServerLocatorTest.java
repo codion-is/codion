@@ -73,7 +73,7 @@ public class DefaultServerLocatorTest {
 			serverBound = true;
 
 			// Should not find server with wrong port
-			assertThrows(NotBoundException.class, serverLocator::locateServer);
+			assertThrows(NotBoundException.class, serverLocator::locate);
 
 			// Should find server with any port (-1)
 			serverLocator = Server.Locator.builder()
@@ -82,7 +82,7 @@ public class DefaultServerLocatorTest {
 							.registryPort(Registry.REGISTRY_PORT)
 							.port(-1)
 							.build();
-			Server<Remote, ServerAdmin> foundServer = serverLocator.locateServer();
+			Server<Remote, ServerAdmin> foundServer = serverLocator.locate();
 			assertNotNull(foundServer);
 
 		}

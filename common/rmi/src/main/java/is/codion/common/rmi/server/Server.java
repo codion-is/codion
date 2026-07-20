@@ -98,7 +98,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 		 * @throws RemoteException in case of a remote exception
 		 * @throws NotBoundException in case no such server is found
 		 */
-		<C extends Remote, A extends ServerAdmin> Server<C, A> locateServer() throws RemoteException, NotBoundException;
+		<C extends Remote, A extends ServerAdmin> Server<C, A> locate() throws RemoteException, NotBoundException;
 
 		/**
 		 * Returns a {@link Locator.Builder} instance.
