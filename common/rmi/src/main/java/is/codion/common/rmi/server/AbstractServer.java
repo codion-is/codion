@@ -135,7 +135,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	 * @return a map containing the current connections
 	 */
 	public final Map<RemoteClient, T> connections() {
-		return connections.values().stream().collect(toMap(ClientConnection::remoteClient, ClientConnection::connection));
+		return connections.values().stream().collect(toMap(ClientConnection::client, ClientConnection::connection));
 	}
 
 	/**
@@ -221,7 +221,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 			}
 			ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
 			if (clientConnection != null) {
-				validateUserCredentials(connectionRequest.user(), clientConnection.remoteClient().user());
+				validateUserCredentials(connectionRequest.user(), clientConnection.client().user());
 				LOG.trace("Active connection exists {}", connectionRequest);
 
 				return clientConnection.connection();
@@ -255,15 +255,15 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 				LOG.debug("Error while disconnecting a client: {}", clientId, e);
 			}
 		}
-		RemoteClient remoteClient = clientConnection.remoteClient();
+		RemoteClient client = clientConnection.client();
 		for (Authenticator authenticator : sharedAuthenticators) {
-			authenticator.logout(remoteClient);
+			authenticator.logout(client);
 		}
-		Authenticator authenticator = authenticators.get(remoteClient.clientType());
+		Authenticator authenticator = authenticators.get(client.clientType());
 		if (authenticator != null) {
-			authenticator.logout(remoteClient);
+			authenticator.logout(client);
 		}
-		LOG.debug("Client disconnected {}", remoteClient);
+		LOG.debug("Client disconnected {}", client);
 	}
 
 	/**
@@ -641,7 +641,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 		/**
 		 * @return the remote client
 		 */
-		public RemoteClient remoteClient() {
+		public RemoteClient client() {
 			return client;
 		}
 

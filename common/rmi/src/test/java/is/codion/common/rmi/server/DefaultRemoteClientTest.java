@@ -37,7 +37,7 @@ public final class DefaultRemoteClientTest {
 						.databaseUser(User.user("john"))
 						.build();
 		RemoteClient copy = client.copy();
-		assertNotSame(client.connectionRequest(), copy.connectionRequest());
+		assertNotSame(client.request(), copy.request());
 		assertNotSame(client.user(), copy.user());
 		assertNotSame(client.databaseUser(), copy.databaseUser());
 		assertSame(client.creationTime(), copy.creationTime());
@@ -53,7 +53,7 @@ public final class DefaultRemoteClientTest {
 						.databaseUser(User.user("john"))
 						.build();
 		RemoteClient copy = client.withDatabaseUser(User.user("peter"));
-		assertSame(client.connectionRequest(), copy.connectionRequest());
+		assertSame(client.request(), copy.request());
 		assertSame(client.user(), copy.user());
 		assertNotSame(client.databaseUser(), copy.databaseUser());
 		assertSame(client.creationTime(), copy.creationTime());

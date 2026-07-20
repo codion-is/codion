@@ -65,7 +65,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	}
 
 	@Override
-	public ConnectionRequest connectionRequest() {
+	public ConnectionRequest request() {
 		return connectionRequest;
 	}
 
@@ -141,7 +141,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		return this == obj || obj instanceof RemoteClient && connectionRequest.equals(((RemoteClient) obj).connectionRequest());
+		return this == obj || obj instanceof RemoteClient && connectionRequest.equals(((RemoteClient) obj).request());
 	}
 
 	@Override

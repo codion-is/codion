@@ -37,7 +37,7 @@ public sealed interface RemoteClient extends ConnectionRequest permits DefaultRe
 	/**
 	 * @return the initial connection request this client is based on
 	 */
-	ConnectionRequest connectionRequest();
+	ConnectionRequest request();
 
 	/**
 	 * @return the time when this client connection was created
