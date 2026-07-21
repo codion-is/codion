@@ -18,9 +18,7 @@
  */
 package is.codion.common.model.preferences;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +41,12 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.currentTimeMillis;
-import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toSet;
 
 /**
- * A thread-safe, multi-JVM safe JSON-based storage for preferences.
- * Uses file locking for concurrent access and atomic writes.
+ * File persistence for a {@link JsonPreferences} in-memory store: thread-safe, multi-JVM safe JSON file storage using
+ * file locking for concurrent access and atomic writes. The in-memory storage itself (get/put/child nodes) lives in
+ * {@link JsonPreferences}; this class adds loading, saving and reloading of the backing file.
  * <p>
  * If the preferences file becomes corrupted (invalid JSON), this implementation
  * will automatically create a backup of the corrupted file with a ".corrupt.{timestamp}"
@@ -63,19 +60,15 @@ final class JsonPreferencesStore {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JsonPreferencesStore.class);
 
-	private static final String PATH_SEPARATOR = "/";
 	private static final long LOCK_TIMEOUT_MS = 5000; // 5 seconds
 	private static final long LOCK_RETRY_DELAY_MS = 50; // 50ms between retries
-	private static final String NODE = ".node";
 
 	private final Path filePath;
 	private final Path lockFilePath;
 	private final boolean prettyPrint;
-	private final Lock inMemoryLock = new Lock() {};
+	private final JsonPreferences preferences = new JsonPreferences();
 
-	private final JSONObject data = new JSONObject();
-
-	private long lastModified;
+	private volatile long lastModified;
 
 	JsonPreferencesStore(Path filePath) {
 		this(filePath, false);
@@ -94,125 +87,32 @@ final class JsonPreferencesStore {
 		}
 	}
 
+	JsonPreferences preferences() {
+		return preferences;
+	}
+
 	void put(String path, String key, String value) {
-		requireNonNull(path);
-		requireNonNull(key);
-		requireNonNull(value);
-
-		synchronized (inMemoryLock) {
-			LOG.trace("Putting value at path '{}', key '{}'", path, key);
-			JSONObject node = getOrCreateNode(path);
-
-			// Try to parse the value as JSON
-			Object valueToStore = tryParseJson(value);
-			if (valueToStore != null) {
-				// Valid JSON - store as nested object/array
-				node.put(key, valueToStore);
-				LOG.trace("Stored value as JSON object/array for key '{}'", key);
-			}
-			else {
-				// Not valid JSON - store as string
-				node.put(key, value);
-			}
-		}
+		preferences.put(path, key, value);
 	}
 
 	@Nullable String get(String path, String key) {
-		requireNonNull(path);
-		requireNonNull(key);
-
-		synchronized (inMemoryLock) {
-			JSONObject node = getNode(path);
-			if (node == null || !node.has(key)) {
-				return null;
-			}
-
-			Object value = node.get(key);
-			if (value instanceof String) {
-				return (String) value;
-			}
-			else if (value instanceof JSONObject || value instanceof JSONArray) {
-				// Convert JSON object/array back to string
-				return value.toString();
-			}
-			else {
-				// Handle other types (numbers, booleans)
-				return String.valueOf(value);
-			}
-		}
+		return preferences.get(path, key);
 	}
 
 	void remove(String path, String key) {
-		requireNonNull(path);
-		requireNonNull(key);
-
-		synchronized (inMemoryLock) {
-			LOG.trace("Removing key '{}' at path '{}'", key, path);
-			JSONObject node = getNode(path);
-			if (node != null) {
-				node.remove(key);
-			}
-		}
+		preferences.remove(path, key);
 	}
 
 	Set<String> keys(String path) {
-		requireNonNull(path);
-
-		synchronized (inMemoryLock) {
-			JSONObject node = getNode(path);
-			if (node == null) {
-				return emptySet();
-			}
-
-			// Return all keys except those that are child nodes (JSONObjects used for hierarchy)
-			// Note: JSONObjects/JSONArrays that represent stored JSON values should be included
-			return node.keySet().stream()
-							.filter(k -> !isChildNode(node, k) && !NODE.equals(k))
-							.collect(toSet());
-		}
+		return preferences.keys(path);
 	}
 
 	Set<String> childrenNames(String path) {
-		requireNonNull(path);
-
-		synchronized (inMemoryLock) {
-			JSONObject node = getNode(path);
-			if (node == null) {
-				return emptySet();
-			}
-
-			// Return only child nodes (JSONObjects used for hierarchy)
-			return node.keySet().stream()
-							.filter(k -> isChildNode(node, k))
-							.collect(toSet());
-		}
+		return preferences.childrenNames(path);
 	}
 
 	void removeNode(String path) {
-		requireNonNull(path);
-
-		synchronized (inMemoryLock) {
-			LOG.debug("Removing node at path '{}'", path);
-			if (path.isEmpty()) {
-				// Clear root node
-				data.keySet().clear();
-			}
-			else {
-				int lastSeparator = path.lastIndexOf(PATH_SEPARATOR);
-				if (lastSeparator >= 0) {
-					String parentPath = path.substring(0, lastSeparator);
-					String nodeName = path.substring(lastSeparator + 1);
-					JSONObject parent = getNode(parentPath);
-					if (parent != null) {
-						parent.remove(nodeName);
-					}
-				}
-				else {
-					// Direct child of root
-					data.remove(path);
-				}
-			}
-		}
+		preferences.removeNode(path);
 	}
 
 	/**
@@ -221,33 +121,33 @@ final class JsonPreferencesStore {
 	 * @throws IOException if an I/O error occurs
 	 */
 	void save() throws IOException {
-		synchronized (inMemoryLock) {
-			if (isEmpty(data)) {
-				LOG.debug("Preferences empty, deleting file if exists: {}", filePath);
-				delete();
-				return;
+		// A point-in-time snapshot of the store, taken atomically; the file write below need not hold the in-memory lock.
+		String content = preferences.snapshot(prettyPrint);
+		if (content == null) {
+			LOG.debug("Preferences empty, deleting file if exists: {}", filePath);
+			delete();
+			return;
+		}
+		LOG.debug("Saving preferences to {}", filePath);
+		long startTime = currentTimeMillis();
+		Files.createDirectories(filePath.getParent());
+		// Write to temp file first
+		Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
+		try {
+			Files.write(tempFile.toAbsolutePath(), content.getBytes());
+			// Force sync to disk before atomic move (helps on Windows/VirtualBox)
+			try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
+				channel.force(true);
 			}
-			LOG.debug("Saving preferences to {}", filePath);
-			long startTime = currentTimeMillis();
-			Files.createDirectories(filePath.getParent());
-			// Write to temp file first
-			Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
-			try {
-				Files.write(tempFile.toAbsolutePath(), data.toString(prettyPrint ? 2 : 0).getBytes());
-				// Force sync to disk before atomic move (helps on Windows/VirtualBox)
-				try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
-					channel.force(true);
-				}
-				// Atomic move with lock
-				try (FileLock lock = acquireExclusiveLock()) {
-					atomicMove(tempFile, filePath);
-					lastModified = Files.getLastModifiedTime(filePath).toMillis();
-					LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
-				}
+			// Atomic move with lock
+			try (FileLock lock = acquireExclusiveLock()) {
+				atomicMove(tempFile, filePath);
+				lastModified = Files.getLastModifiedTime(filePath).toMillis();
+				LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
 			}
-			finally {
-				Files.deleteIfExists(tempFile);
-			}
+		}
+		finally {
+			Files.deleteIfExists(tempFile);
 		}
 	}
 
@@ -259,20 +159,18 @@ final class JsonPreferencesStore {
 	 * @throws IOException if an I/O error occurs
 	 */
 	void reload() throws IOException {
-		synchronized (inMemoryLock) {
-			if (Files.exists(filePath)) {
-				long currentModified = Files.getLastModifiedTime(filePath).toMillis();
-				if (currentModified != lastModified) {
-					LOG.debug("File has been modified externally, reloading from {}", filePath);
-					loadData();
-				}
-				else {
-					LOG.trace("File has not been modified, skipping reload");
-				}
+		if (Files.exists(filePath)) {
+			long currentModified = Files.getLastModifiedTime(filePath).toMillis();
+			if (currentModified != lastModified) {
+				LOG.debug("File has been modified externally, reloading from {}", filePath);
+				loadData();
 			}
 			else {
-				LOG.trace("File does not exist, nothing to reload");
+				LOG.trace("File has not been modified, skipping reload");
 			}
+		}
+		else {
+			LOG.trace("File does not exist, nothing to reload");
 		}
 	}
 
@@ -301,14 +199,9 @@ final class JsonPreferencesStore {
 				}
 
 				try {
-					// Clear existing data and reload
-					data.keySet().clear();
-					JSONObject reloaded = new JSONObject(content);
-					for (String key : reloaded.keySet()) {
-						data.put(key, reloaded.get(key));
-					}
+					preferences.load(content);
 					lastModified = Files.getLastModifiedTime(filePath).toMillis();
-					LOG.trace("Loaded {} keys from preferences file", this.data.length());
+					LOG.trace("Loaded preferences from file");
 				}
 				catch (JSONException e) {
 					// Invalid JSON format
@@ -329,7 +222,7 @@ final class JsonPreferencesStore {
 		Files.copy(filePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
 
 		// Initialize with empty data
-		data.keySet().clear();
+		preferences.clear();
 		lastModified = 0;
 
 		LOG.warn("Corrupted preferences file detected at {}, reason: {}, backup saved to: {}, starting with empty preferences",
@@ -448,122 +341,6 @@ final class JsonPreferencesStore {
 		}
 	}
 
-	private @Nullable JSONObject getNode(String path) {
-		if (path.isEmpty()) {
-			return data;
-		}
-		String[] parts = path.split(PATH_SEPARATOR);
-		JSONObject current = data;
-		for (String part : parts) {
-			if (!current.has(part) || !(current.get(part) instanceof JSONObject)) {
-				return null;
-			}
-			current = current.getJSONObject(part);
-		}
-
-		return current;
-	}
-
-	private JSONObject getOrCreateNode(String path) {
-		if (path.isEmpty()) {
-			return data;
-		}
-		String[] parts = path.split(PATH_SEPARATOR);
-		JSONObject current = data;
-		for (String part : parts) {
-			if (!current.has(part)) {
-				JSONObject newNode = new JSONObject();
-				// Mark this as a preferences node, not a stored JSON value
-				newNode.put(NODE, true);
-				current.put(part, newNode);
-			}
-			else if (!(current.get(part) instanceof JSONObject)) {
-				// A value exists at this path, cannot create a node
-				LOG.error("Cannot create node '{}' at path '{}' because a value already exists", part, path);
-				throw new IllegalStateException("Cannot create node '" + part +
-								"' because a value already exists at this path");
-			}
-			current = current.getJSONObject(part);
-		}
-
-		return current;
-	}
-
-	/**
-	 * Attempts to parse a string value as JSON.
-	 * @param value the string to parse
-	 * @return a JSONObject or JSONArray if the value is valid JSON, null otherwise
-	 */
-	private static @Nullable Object tryParseJson(String value) {
-		// Quick check to avoid parsing non-JSON strings
-		if (value == null || value.isEmpty()) {
-			return null;
-		}
-
-		String trimmed = value.trim();
-		if (trimmed.isEmpty()) {
-			return null;
-		}
-
-		// Only try to parse if it looks like JSON (starts with { or [)
-		char firstChar = trimmed.charAt(0);
-		if (firstChar != '{' && firstChar != '[') {
-			return null;
-		}
-
-		try {
-			if (firstChar == '{') {
-				return new JSONObject(value);
-			}
-			else {
-				return new JSONArray(value);
-			}
-		}
-		catch (JSONException e) {
-			// Not valid JSON, return null to store as string
-			return null;
-		}
-	}
-
-	/**
-	 * Checks if a key represents a child node (used for preferences hierarchy)
-	 * rather than a stored value.
-	 */
-	private static boolean isChildNode(JSONObject parent, String key) {
-		Object value = parent.get(key);
-		if (!(value instanceof JSONObject)) {
-			return false;
-		}
-
-		JSONObject obj = (JSONObject) value;
-
-		// A node is marked with the special ".node" property
-		return obj.optBoolean(NODE, false);
-	}
-
-	/**
-	 * Recursively checks if a node is empty (contains no actual preference values,
-	 * only node markers or empty child nodes).
-	 */
-	private static boolean isEmpty(JSONObject node) {
-		for (String key : node.keySet()) {
-			if (NODE.equals(key)) {
-				continue;
-			}
-			Object value = node.get(key);
-			if (value instanceof JSONObject) {
-				if (!isEmpty((JSONObject) value)) {
-					return false; // Found a non-empty child
-				}
-			}
-			else {
-				return false; // Found an actual value
-			}
-		}
-
-		return true;
-	}
-
 	/**
 	 * Wrapper to ensure lock file is closed when lock is released.
 	 */
@@ -595,6 +372,4 @@ final class JsonPreferencesStore {
 			}
 		}
 	}
-
-	private interface Lock {}
 }

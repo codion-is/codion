@@ -30,7 +30,6 @@ import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,10 +37,9 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.model.preferences.FilePreferences.filePreferences;
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityTablePanelPreferencesTest {
@@ -54,21 +52,13 @@ public class EntityTablePanelPreferencesTest {
 					.domain(new TestDomain())
 					.build();
 
-	private static final String PREFERENCES_KEY = EntityTablePanelPreferencesTest.class.getName();
-
 	private Preferences preferences;
 	private List<Entity> testEntities;
 
 	@BeforeEach
 	void setUp() {
 		testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
-		preferences = filePreferences(PREFERENCES_KEY);
-	}
-
-	@AfterEach
-	void tearDown() throws BackingStoreException {
-		preferences.clear();
-		preferences.flush();
+		preferences = jsonPreferences();
 	}
 
 	@Test
@@ -200,7 +190,7 @@ public class EntityTablePanelPreferencesTest {
 		tablePanel.store(preferences);
 
 		// Manually inject a preference for a non-existent column
-		String columnsKey = tablePanel.preferencesKey() + "-columns";
+		String columnsKey = "columns";
 		String currentJson = preferences.get(columnsKey, "{}");
 		String modifiedJson = currentJson.replace("}", ",\"nonexistent\":{\"w\":100,\"i\":0}}");
 		preferences.put(columnsKey, modifiedJson);

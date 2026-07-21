@@ -12,6 +12,7 @@ Codion Change Log
 - Server.Locator.Builder.locate() added, replacing Locator.locate() and Builder.build().
 ### is.codion.common.model
 - ProgressWorker.WorkerTask added.
+- JsonPreferences refactored from JsonPreferencesStore.
 ### is.codion.framework.domain
 - Attribute.DataType.validateType() renamed validate().
 ### is.codion.swing.framework.ui
