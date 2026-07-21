@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.filter.SortOrder;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -34,8 +35,7 @@ import java.util.prefs.Preferences;
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityApplicationPanelTest {
 
@@ -89,6 +89,28 @@ public class EntityApplicationPanelTest {
 		restoredPanel.restore(entities.node(restoredPanel.preferencesKey()));
 
 		assertTrue(restoredModel.tableModel().query().condition().get(Employee.NAME).caseSensitive().is());
+		assertFalse(restoredPanel.tablePanel().table().columnModel().visible(Employee.COMMISSION).is());
+	}
+
+	@Test
+	void dependencyScratchRoundTrip() {
+		// The dependency panel captures model (sort) and view (columns) state into a single in-memory scratch node
+		Preferences scratch = jsonPreferences();
+
+		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityPanel panel = new EntityPanel(model);
+		model.tableModel().sort().ascending(Employee.NAME); // model state
+		panel.tablePanel().table().columnModel().visible(Employee.COMMISSION).set(false); // view state
+
+		model.tableModel().store(scratch);
+		panel.tablePanel().store(scratch);
+
+		SwingEntityModel restoredModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityPanel restoredPanel = new EntityPanel(restoredModel);
+		restoredModel.tableModel().restore(scratch);
+		restoredPanel.tablePanel().restore(scratch);
+
+		assertEquals(SortOrder.ASCENDING, restoredModel.tableModel().sort().columns().get(Employee.NAME).sortOrder());
 		assertFalse(restoredPanel.tablePanel().table().columnModel().visible(Employee.COMMISSION).is());
 	}
 

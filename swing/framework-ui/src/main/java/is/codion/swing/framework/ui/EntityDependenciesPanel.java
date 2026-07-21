@@ -33,6 +33,8 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -42,8 +44,10 @@ import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
@@ -136,7 +140,7 @@ final class EntityDependenciesPanel extends JPanel {
 
 	static void displayDependencies(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
 																	JComponent dialogOwner, AtomicReference<Dimension> dialogSize,
-																	Map<EntityType, EntityTablePanelPreferences> preferences,
+																	Map<EntityType, Preferences> preferences,
 																	boolean dependenciesExpected) {
 		ResultTask<Map<EntityType, Collection<Entity>>> dependenciesTask = () -> connectionProvider.connection().dependencies(entities);
 		Dialogs.progressWorker()
@@ -151,7 +155,7 @@ final class EntityDependenciesPanel extends JPanel {
 
 	private static void displayDependencies(Map<EntityType, Collection<Entity>> dependencies, EntityConnectionProvider connectionProvider,
 																					JComponent dialogOwner, AtomicReference<Dimension> dialogSize,
-																					Map<EntityType, EntityTablePanelPreferences> preferences,
+																					Map<EntityType, Preferences> preferences,
 																					boolean dependenciesExpected) {
 		if (dependencies.isEmpty()) {
 			showMessageDialog(dialogOwner, dependenciesExpected ? MESSAGES.getString("unknown_dependent_records") : MESSAGES.getString("no_dependencies"),
@@ -159,12 +163,7 @@ final class EntityDependenciesPanel extends JPanel {
 		}
 		else {
 			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
-			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) -> {
-				EntityTablePanelPreferences panelPreferences = preferences.get(entityType);
-				if (panelPreferences != null) {
-					panelPreferences.restore(dependencyTablePanel);
-				}
-			});
+			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) -> restore(preferences.get(entityType), dependencyTablePanel));
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
 			Dialogs.builder()
@@ -178,9 +177,26 @@ final class EntityDependenciesPanel extends JPanel {
 							.onClosed(event -> {
 								dialogSize.set(event.getWindow().getSize());
 								dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
-												preferences.put(entityType, new EntityTablePanelPreferences(dependencyTablePanel)));
+												preferences.put(entityType, capture(dependencyTablePanel)));
 							})
 							.show();
+		}
+	}
+
+	// Captures both the model-owned state (conditions, filters, sort) and the view state (columns, settings, export)
+	// of a dependency table panel to an in-memory scratch node, for restoring its layout when the dialog is reopened.
+	private static Preferences capture(EntityTablePanel tablePanel) {
+		Preferences scratch = jsonPreferences();
+		tablePanel.tableModel().store(scratch);
+		tablePanel.store(scratch);
+
+		return scratch;
+	}
+
+	private static void restore(@Nullable Preferences scratch, EntityTablePanel tablePanel) {
+		if (scratch != null) {
+			tablePanel.tableModel().restore(scratch);
+			tablePanel.restore(scratch);
 		}
 	}
 

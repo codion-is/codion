@@ -469,7 +469,7 @@ public class EntityTablePanel extends JPanel {
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
 	private final State tableFocused = State.state();
 
-	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
+	private final Map<EntityType, Preferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 
 	private @Nullable EntityTableExportPanel exportPanel;
