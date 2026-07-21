@@ -18,6 +18,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, deprecated legacy preferences removed.
 - EntityTablePanel, deprecated legacy preferences removed.
+- EntityApplication.Builder.preferences() added, related refactoring.
 
 ## 0.18.80
 ### is.codion.common.reactive
