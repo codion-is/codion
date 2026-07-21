@@ -57,6 +57,7 @@ public interface ConditionModel<T> {
 	 * <li>Value type: {@link Wildcard}
 	 * <li>Default value: {@link Wildcard#PREFIX_AND_POSTFIX}
 	 * </ul>
+	 * @see Operands#wildcard()
 	 */
 	PropertyValue<Wildcard> WILDCARD =
 					enumValue(ConditionModel.class.getName() + ".wildcard",
@@ -68,9 +69,21 @@ public interface ConditionModel<T> {
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
+	 * @see #caseSensitive()
 	 */
 	PropertyValue<Boolean> CASE_SENSITIVE =
 					booleanValue(ConditionModel.class.getName() + ".caseSensitive", false);
+
+	/**
+	 * Specifies whether conditions auto-enable by default.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see #autoEnable()
+	 */
+	PropertyValue<Boolean> AUTO_ENABLE =
+					booleanValue(ConditionModel.class.getName() + ".autoEnable", true);
 
 	/**
 	 * The possible wildcard types
