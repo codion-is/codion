@@ -24,8 +24,13 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 import static java.util.Collections.unmodifiableList;
@@ -40,6 +45,8 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
 				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements EntityApplicationModel<M, E, T, R> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityApplicationModel.class);
 
 	private final EntityConnectionProvider connectionProvider;
 	private final DefaultEntityModels<M, E, T, R> models;
@@ -84,7 +91,12 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 	@Override
 	public void store(Preferences preferences) {
 		requireNonNull(preferences);
+		Set<String> keys = new HashSet<>();
 		for (M entityModel : models.get()) {
+			if (!keys.add(entityModel.preferencesKey())) {
+				// Last writer wins - override preferencesKey() to disambiguate
+				LOG.warn("Duplicate entity model preferences key: {}", entityModel.preferencesKey());
+			}
 			entityModel.store(preferences);
 		}
 	}

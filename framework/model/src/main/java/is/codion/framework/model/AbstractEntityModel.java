@@ -30,11 +30,15 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 
@@ -50,6 +54,8 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
 				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements EntityModel<M, E, T, R> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityModel.class);
 
 	private static final String MODEL = "model";
 	private static final String DETAILS = "details";
@@ -165,7 +171,12 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 		Map<M, ModelLink> details = detailModels.get();
 		if (!details.isEmpty()) {
 			Preferences detailNode = entityNode.node(DETAILS);
+			Set<String> keys = new HashSet<>();
 			for (M detailModel : details.keySet()) {
+				if (!keys.add(detailModel.preferencesKey())) {
+					// Last writer wins - override preferencesKey() to disambiguate
+					LOG.warn("Duplicate detail model preferences key '{}' under '{}'", detailModel.preferencesKey(), preferencesKey());
+				}
 				detailModel.store(detailNode);
 			}
 		}
