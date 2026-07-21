@@ -79,21 +79,29 @@ public final class FilePreferences extends AbstractPreferences {
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final String PATH_SEPARATOR = "/";
 
-	private final JsonPreferencesStore store;
+	private final JsonPreferences preferences;
+	private final @Nullable JsonPreferencesStore store;
 	private final String path;
 
 	private FilePreferences(Path path) {
-		this(null, "", new JsonPreferencesStore(path, PRETTY_PRINT.getOrThrow()));
+		this(new JsonPreferencesStore(path, PRETTY_PRINT.getOrThrow()));
 		LOG.info("Created file preferences: {}", path);
 	}
 
 	FilePreferences(JsonPreferencesStore store) {
-		this(null, "", store);
+		this(null, "", store.preferences(), store);
 		LOG.debug("Created file preferences with custom store");
 	}
 
-	private FilePreferences(@Nullable FilePreferences parent, String name, JsonPreferencesStore store) {
+	FilePreferences(JsonPreferences preferences) {
+		this(null, "", preferences, null);
+		LOG.debug("Created in-memory preferences");
+	}
+
+	private FilePreferences(@Nullable FilePreferences parent, String name, JsonPreferences preferences,
+													@Nullable JsonPreferencesStore store) {
 		super(parent, name);
+		this.preferences = preferences;
 		this.store = store;
 		this.path = parent == null ? "" : (parent.path.isEmpty() ? name : parent.path + PATH_SEPARATOR + name);
 	}
@@ -120,27 +128,30 @@ public final class FilePreferences extends AbstractPreferences {
 
 	@Override
 	protected void putSpi(String key, String value) {
-		store.put(path, key, value);
+		preferences.put(path, key, value);
 	}
 
 	@Override
 	protected @Nullable String getSpi(String key) {
-		return store.get(path, key);
+		return preferences.get(path, key);
 	}
 
 	@Override
 	protected void removeSpi(String key) {
 		LOG.trace("Removing preference key '{}' at path '{}'", key, path);
-		store.remove(path, key);
+		preferences.remove(path, key);
 	}
 
 	@Override
 	protected String[] keysSpi() throws BackingStoreException {
-		return store.keys(path).toArray(EMPTY_STRING_ARRAY);
+		return preferences.keys(path).toArray(EMPTY_STRING_ARRAY);
 	}
 
 	@Override
 	protected void flushSpi() throws BackingStoreException {
+		if (store == null) {
+			return; // in-memory, nothing to flush
+		}
 		LOG.debug("Flushing preferences to disk");
 		try {
 			store.save();
@@ -153,6 +164,9 @@ public final class FilePreferences extends AbstractPreferences {
 
 	@Override
 	protected void syncSpi() throws BackingStoreException {
+		if (store == null) {
+			return; // in-memory, nothing to sync
+		}
 		LOG.debug("Syncing preferences from disk");
 		try {
 			store.reload();
@@ -165,19 +179,22 @@ public final class FilePreferences extends AbstractPreferences {
 
 	@Override
 	protected String[] childrenNamesSpi() {
-		return store.childrenNames(path).toArray(EMPTY_STRING_ARRAY);
+		return preferences.childrenNames(path).toArray(EMPTY_STRING_ARRAY);
 	}
 
 	@Override
 	protected AbstractPreferences childSpi(String name) {
 		LOG.trace("Creating child preference node '{}' under path '{}'", name, path);
-		return new FilePreferences(this, name, store);
+		return new FilePreferences(this, name, preferences, store);
 	}
 
 	@Override
 	protected void removeNodeSpi() throws BackingStoreException {
 		LOG.debug("Removing preference node at path '{}'", path);
-		store.removeNode(path);
+		preferences.removeNode(path);
+		if (store == null) {
+			return; // in-memory, nothing to persist
+		}
 		try {
 			store.save();
 		}

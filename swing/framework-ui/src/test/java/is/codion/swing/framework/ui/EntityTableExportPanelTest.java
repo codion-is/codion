@@ -35,6 +35,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,7 +60,7 @@ public final class EntityTableExportPanelTest {
 		exportPanel.model().treeModel().includeAll();
 
 		// Store preferences - export should be empty JSON since it matches defaults
-		Preferences prefs = Preferences.userNodeForPackage(getClass()).node("exportPreferencesDefaults");
+		Preferences prefs = jsonPreferences();
 		EntityTablePanelPreferences.store(prefs, tablePanel);
 
 		// Should store empty JSON for export since it matches defaults

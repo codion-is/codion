@@ -37,6 +37,7 @@ import java.util.prefs.Preferences;
 
 import static is.codion.common.model.condition.ConditionModel.CASE_SENSITIVE;
 import static is.codion.common.model.condition.ConditionModel.WILDCARD;
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -59,47 +60,14 @@ final class EntityTablePanelPreferences {
 	private static final String CASE_SENSITIVE_KEY = "cs";
 	private static final String WILDCARD_KEY = "w";
 
-	private final JSONObject tablePreferences;
-	private final JSONObject columnPreferences;
-	private final JSONObject conditionPreferences;
-	private final ExportPreferences exportPreferences;
+	private final Preferences preferences = jsonPreferences();
 
 	EntityTablePanelPreferences(EntityTablePanel tablePanel) {
-		this.tablePreferences = createTablePreferences(tablePanel);
-		this.columnPreferences = createColumnPreferences(tablePanel.table().columnModel());
-		this.conditionPreferences = createConditionPreferences(tablePanel.tableModel().query().condition().get());
-		this.exportPreferences = new ExportPreferences(tablePanel.exportModel());
+		store(preferences, tablePanel);
 	}
 
 	void restore(EntityTablePanel tablePanel) {
-		try {
-			restoreTablePreferences(tablePreferences, tablePanel);
-		}
-		catch (Exception e) {
-			LOG.error("Error while restoring table preferences: {}", tablePreferences, e);
-		}
-		if (!columnPreferences.isEmpty()) {
-			try {
-				restoreColumnPreferences(columnPreferences, tablePanel);
-			}
-			catch (Exception e) {
-				LOG.error("Error while restoring column preferences: {}", columnPreferences, e);
-			}
-		}
-		if (!conditionPreferences.isEmpty()) {
-			try {
-				restoreConditionPreferences(conditionPreferences, tablePanel.tableModel().query().condition().get());
-			}
-			catch (Exception e) {
-				LOG.error("Error while restoring condition preferences: {}", conditionPreferences, e);
-			}
-		}
-		try {
-			exportPreferences.restore(tablePanel.exportModel());
-		}
-		catch (Exception e) {
-			LOG.error("Error while restoring export preferences: {}", exportPreferences, e);
-		}
+		restore(preferences, tablePanel);
 	}
 
 	/**
