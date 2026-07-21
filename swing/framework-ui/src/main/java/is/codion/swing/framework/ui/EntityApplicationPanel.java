@@ -808,6 +808,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private void restorePreferences() {
 		if (userPreferences) {
 			Preferences preferences = applicationModel.preferences();
+			PreferencesMigrator.migrate(preferences); // bring a v1 layout up to v2 before reading
 			// The model walk restores the model-owned state (conditions, filters, sort), the UI walk the view state
 			applicationModel.restore(preferences.node(ENTITIES));
 			restore(preferences);

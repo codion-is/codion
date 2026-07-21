@@ -126,6 +126,23 @@ public final class FilePreferences extends AbstractPreferences {
 		return FILE_PREFERENCES.computeIfAbsent(userPreferencesPath(filename), FilePreferences::new);
 	}
 
+	/**
+	 * Copies the backing file to a sibling with the given suffix appended to the filename.
+	 * Does nothing in case of an in-memory instance or if the backing file does not exist.
+	 * @param suffix the backup filename suffix
+	 */
+	public void backup(String suffix) {
+		requireNonNull(suffix);
+		if (store != null) {
+			try {
+				store.backup(suffix);
+			}
+			catch (IOException e) {
+				LOG.error("Failed to back up preferences file", e);
+			}
+		}
+	}
+
 	@Override
 	protected void putSpi(String key, String value) {
 		preferences.put(path, key, value);

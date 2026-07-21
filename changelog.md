@@ -24,6 +24,7 @@ Codion Change Log
 - EntityApplication.Builder.preferences() added, related refactoring.
 - EntityPanel.preferencesKey() now delegates to model.
 - EntityPanel preferences structure updated.
+- PreferencesMigrator added.
 
 ## 0.18.80
 ### is.codion.common.reactive
