@@ -183,6 +183,19 @@ final class JsonPreferencesStore {
 		Files.deleteIfExists(lockFilePath);
 	}
 
+	/**
+	 * Copies the backing file to a sibling with the given suffix appended to the filename, does nothing if the file does not exist.
+	 * @param suffix the backup filename suffix
+	 * @throws IOException in case of an exception
+	 */
+	void backup(String suffix) throws IOException {
+		if (Files.exists(filePath)) {
+			Path backupPath = filePath.resolveSibling(filePath.getFileName() + "." + requireNonNull(suffix));
+			Files.copy(filePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
+			LOG.info("Backed up preferences file to {}", backupPath);
+		}
+	}
+
 	private void loadData() throws IOException {
 		if (Files.exists(filePath)) {
 			LOG.trace("Loading preferences from {}", filePath);

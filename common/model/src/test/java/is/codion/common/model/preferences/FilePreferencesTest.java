@@ -150,6 +150,30 @@ public final class FilePreferencesTest {
 		assertFalse(testFile.toFile().exists(), "Empty preferences should delete existing file");
 	}
 
+	@Test
+	void backup() throws Exception {
+		Path testFile = tempDir.resolve("backup-test-" + System.nanoTime() + ".json");
+		FilePreferences prefs = new FilePreferences(new JsonPreferencesStore(testFile));
+		Path backupFile = testFile.resolveSibling(testFile.getFileName() + ".bak");
+
+		// No file yet, backup is a no-op
+		prefs.backup("bak");
+		assertFalse(backupFile.toFile().exists());
+
+		prefs.put("key", "value");
+		prefs.flush();
+		assertTrue(testFile.toFile().exists());
+
+		prefs.backup("bak");
+		assertTrue(backupFile.toFile().exists());
+	}
+
+	@Test
+	void backupInMemoryNoOp() {
+		// An in-memory instance has no backing file, backup is a no-op and must not throw
+		assertDoesNotThrow(() -> new FilePreferences(new JsonPreferences()).backup("bak"));
+	}
+
 	private static boolean containsKey(String[] keys, String key) {
 		for (String k : keys) {
 			if (k.equals(key)) {
