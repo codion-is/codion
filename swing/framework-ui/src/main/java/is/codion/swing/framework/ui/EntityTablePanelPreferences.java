@@ -32,7 +32,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -50,15 +49,7 @@ final class EntityTablePanelPreferences {
 	private static final String WIDTH_KEY = "w";
 	private static final String INDEX_KEY = "i";
 
-	private final Preferences preferences = jsonPreferences();
-
-	EntityTablePanelPreferences(EntityTablePanel tablePanel) {
-		store(preferences, tablePanel);
-	}
-
-	void restore(EntityTablePanel tablePanel) {
-		restore(preferences, tablePanel);
-	}
+	private EntityTablePanelPreferences() {}
 
 	/**
 	 * Stores all preferences for the given table panel to the given Preferences node.

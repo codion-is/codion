@@ -92,7 +92,7 @@ public final class PreferencesMigratorTest {
 	}
 
 	@Test
-	void alreadyV2Untouched() throws Exception {
+	void alreadyV2Untouched() {
 		Preferences root = jsonPreferences();
 		root.put("version", "2");
 		root.node("entities").node("x").node("model").put("conditions", "{\"a\":1}");

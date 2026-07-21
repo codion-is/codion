@@ -216,7 +216,7 @@ public abstract class EntityEditPanel extends JPanel {
 	private final SwingEntityEditModel editModel;
 	private final EditorComponents components;
 	private final EditPanelCommands commands = new EditPanelCommands();
-	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
+	private final Map<EntityType, Preferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final FocusedListener focusedListener = new FocusedListener(this);
 	private final Controls.Layout controlsLayout;

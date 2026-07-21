@@ -26,6 +26,7 @@ Codion Change Log
 - EntityPanel preferences structure updated.
 - PreferencesMigrator added.
 - Preferences ownership moved to application.
+- EntityDependenciesPanel preferences updated.
 
 ## 0.18.80
 ### is.codion.common.reactive
