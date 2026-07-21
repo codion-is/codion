@@ -18,8 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
@@ -32,11 +30,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.model.condition.ConditionModel.CASE_SENSITIVE;
-import static is.codion.common.model.condition.ConditionModel.WILDCARD;
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -54,11 +49,6 @@ final class EntityTablePanelPreferences {
 	private static final String COLUMNS_KEY = "columns";
 	private static final String WIDTH_KEY = "w";
 	private static final String INDEX_KEY = "i";
-	private static final String CONDITIONS_KEY = "conditions";
-	private static final String FILTERS_KEY = "filters";
-	private static final String AUTO_ENABLE_KEY = "ae";
-	private static final String CASE_SENSITIVE_KEY = "cs";
-	private static final String WILDCARD_KEY = "w";
 
 	private final Preferences preferences = jsonPreferences();
 
@@ -90,22 +80,6 @@ final class EntityTablePanelPreferences {
 		}
 		catch (Exception e) {
 			LOG.error("Error while storing column preferences", e);
-		}
-		try {
-			if (tablePanel.configuration.includeConditions) {
-				preferences.put(CONDITIONS_KEY, createConditionPreferences(tablePanel.tableModel().query().condition().get()).toString());
-			}
-		}
-		catch (Exception e) {
-			LOG.error("Error while storing condition preferences", e);
-		}
-		try {
-			if (tablePanel.configuration.includeFilters) {
-				preferences.put(FILTERS_KEY, createConditionPreferences(tablePanel.tableModel().filters().get()).toString());
-			}
-		}
-		catch (Exception e) {
-			LOG.error("Error while storing filter preferences", e);
 		}
 		try {
 			preferences.put(EXPORT_KEY, new ExportPreferences(tablePanel.exportModel()).preferences().toString());
@@ -140,24 +114,6 @@ final class EntityTablePanelPreferences {
 			LOG.error("Error while restoring column preferences", e);
 		}
 		try {
-			JSONObject conditionPrefs = new JSONObject(preferences.get(CONDITIONS_KEY, EMPTY_JSON_OBJECT));
-			if (!conditionPrefs.isEmpty()) {
-				restoreConditionPreferences(conditionPrefs, tablePanel.tableModel().query().condition().get());
-			}
-		}
-		catch (Exception e) {
-			LOG.error("Error while restoring condition preferences", e);
-		}
-		try {
-			JSONObject filterPrefs = new JSONObject(preferences.get(FILTERS_KEY, EMPTY_JSON_OBJECT));
-			if (!filterPrefs.isEmpty()) {
-				restoreConditionPreferences(filterPrefs, tablePanel.tableModel().filters().get());
-			}
-		}
-		catch (Exception e) {
-			LOG.error("Error while restoring filter preferences", e);
-		}
-		try {
 			String exportJson = preferences.get(EXPORT_KEY, EMPTY_JSON_OBJECT);
 			if (!EMPTY_JSON_OBJECT.equals(exportJson)) {
 				new ExportPreferences(exportJson).restore(tablePanel.exportModel());
@@ -180,34 +136,6 @@ final class EntityTablePanelPreferences {
 		}
 
 		return columnPreferences;
-	}
-
-	private static JSONObject createConditionPreferences(Map<Attribute<?>, ConditionModel<?>> conditions) {
-		JSONObject conditionPreferences = new JSONObject();
-		boolean defaultAutoEnable = true;
-		boolean defaultCaseSensitive = CASE_SENSITIVE.getOrThrow();
-		Wildcard defaultWildcard = WILDCARD.getOrThrow();
-		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
-			ConditionModel<?> condition = entry.getValue();
-			JSONObject conditionJson = new JSONObject();
-			boolean autoEnable = condition.autoEnable().is();
-			boolean caseSensitive = condition.caseSensitive().is();
-			Wildcard wildcard = condition.operands().wildcard().getOrThrow();
-			if (autoEnable != defaultAutoEnable) {
-				conditionJson.put(AUTO_ENABLE_KEY, autoEnable ? 1 : 0);
-			}
-			if (caseSensitive != defaultCaseSensitive) {
-				conditionJson.put(CASE_SENSITIVE_KEY, caseSensitive ? 1 : 0);
-			}
-			if (wildcard != defaultWildcard) {
-				conditionJson.put(WILDCARD_KEY, wildcard.name());
-			}
-			if (!conditionJson.isEmpty()) {
-				conditionPreferences.put(entry.getKey().name(), conditionJson);
-			}
-		}
-
-		return conditionPreferences;
 	}
 
 	private static JSONObject createTablePreferences(EntityTablePanel tablePanel) {
@@ -251,30 +179,6 @@ final class EntityTablePanelPreferences {
 						.collect(toList());
 		visibleAttributes.addAll(0, attributesWithoutPreferences);
 		columnModel.visible().set(visibleAttributes);
-	}
-
-	private static void restoreConditionPreferences(JSONObject conditionPreferences, Map<Attribute<?>, ConditionModel<?>> conditions) {
-		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
-			Attribute<?> attribute = entry.getKey();
-			if (conditionPreferences.has(attribute.name())) {
-				ConditionModel<?> condition = entry.getValue();
-				try {
-					JSONObject conditionJson = conditionPreferences.getJSONObject(attribute.name());
-					if (conditionJson.has(AUTO_ENABLE_KEY)) {
-						condition.autoEnable().set(conditionJson.getInt(AUTO_ENABLE_KEY) == 1);
-					}
-					if (conditionJson.has(CASE_SENSITIVE_KEY)) {
-						condition.caseSensitive().set(conditionJson.getInt(CASE_SENSITIVE_KEY) == 1);
-					}
-					if (conditionJson.has(WILDCARD_KEY)) {
-						condition.operands().wildcard().set(Wildcard.valueOf(conditionJson.getString(WILDCARD_KEY)));
-					}
-				}
-				catch (Exception e) {
-					LOG.error("Error parsing condition/filter preferences for attribute: {}", attribute, e);
-				}
-			}
-		}
 	}
 
 	private static final class AttributeIndex {
