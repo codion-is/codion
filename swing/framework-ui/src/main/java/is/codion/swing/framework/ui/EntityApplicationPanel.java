@@ -100,6 +100,7 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -233,6 +234,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final Set<EntityPanel> displayedEntityPanels = new LinkedHashSet<>();
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
+
+	// The preferences root, provided by EntityApplication or resolved lazily from the domain for a stand-alone panel
+	private @Nullable Preferences preferences;
 
 	private @Nullable LogViewer sqlTraceViewer;
 
@@ -805,10 +809,25 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 										.buildMenuBar());
 	}
 
+	// Provided by EntityApplication at startup (already migrated); package private
+	void preferences(Preferences preferences) {
+		this.preferences = requireNonNull(preferences);
+	}
+
+	// The application-provided root, or a lazily resolved (and migrated) default for a stand-alone panel
+	private Preferences preferences() {
+		if (preferences == null) {
+			preferences = filePreferences(EntityApplicationModel.PREFERENCES_KEY.optional()
+							.orElse(applicationModel.connectionProvider().domainType().name()));
+			PreferencesMigrator.migrate(preferences);
+		}
+
+		return preferences;
+	}
+
 	private void restorePreferences() {
 		if (userPreferences) {
-			Preferences preferences = applicationModel.preferences();
-			PreferencesMigrator.migrate(preferences); // bring a v1 layout up to v2 before reading
+			Preferences preferences = preferences();
 			// The model walk restores the model-owned state (conditions, filters, sort), the UI walk the view state
 			applicationModel.restore(preferences.node(ENTITIES));
 			restore(preferences);
@@ -822,7 +841,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		try {
 			if (userPreferences) {
 				LOG.debug("Writing user preferences");
-				Preferences preferences = applicationModel.preferences();
+				Preferences preferences = preferences();
 				applicationModel.store(preferences.node(ENTITIES));
 				store(preferences);
 				preferences.put(VERSION, VERSION_VALUE);
@@ -934,7 +953,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
 		if (userPreferences) {
-			entityPanel.restore(applicationModel.preferences().node(AUXILIARY).node(entityPanel.preferencesKey()));
+			entityPanel.restore(preferences().node(AUXILIARY).node(entityPanel.preferencesKey()));
 		}
 		entityPanel.initialize();
 		if (CACHE_ENTITY_PANELS.getOrThrow()) {
@@ -1189,7 +1208,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {
 		displayedEntityPanels.remove(entityPanel);
-		entityPanel.store(applicationModel.preferences().node(AUXILIARY).node(entityPanel.preferencesKey()));
+		entityPanel.store(preferences().node(AUXILIARY).node(entityPanel.preferencesKey()));
 		entityPanel.setPreferredSize(entityPanel.getSize());
 	}
 
