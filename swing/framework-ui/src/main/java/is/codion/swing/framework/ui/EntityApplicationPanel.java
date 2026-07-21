@@ -100,7 +100,6 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -191,17 +190,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = booleanValue(EntityApplicationPanel.class.getName() + ".cacheEntityPanels", false);
 
-	/**
-	 * Controls whether legacy flat file-based preferences are applied and written.
-	 * When true, both legacy (flat) and hierarchical (JSON) preferences are used,
-	 * with hierarchical preferences taking precedence when present.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: false
-	 * </ul>
-	 */
-	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", false);
-
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
 	private static final String HELP = "help";
@@ -244,7 +232,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
-	private @Nullable Preferences legacyPreferences;
 	private @Nullable LogViewer sqlTraceViewer;
 
 	private boolean saveDefaultUsername = true;
@@ -816,48 +803,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 										.buildMenuBar());
 	}
 
-	/**
-	 * <p>Called during the exit() method, override to write custom user preferences on program exit.
-	 * <p>Remember to call super.writePreferences(preferences) when overriding.
-	 * @param preferences the preferences instance to write to
-	 * @deprecated replaced with hierarchical preferences
-	 */
-	@Deprecated
-	protected void writePreferences(Preferences preferences) {
-		try {
-			panels().forEach(entityPanel -> entityPanel.writePreferences(preferences));
-			createApplicationPreferences().save(preferences);
-		}
-		catch (Exception e) {
-			LOG.error("Error while writing legacy application preferences", e);
-		}
-	}
-
-	/**
-	 * <p>Called on application start when using legacy flat preferences.
-	 * <p>Remember to call {@code super.applyLegacyPreferences(preferences)} when overriding.
-	 * @param preferences the preferences instance containing the preferences to apply
-	 * @deprecated replaced with hierarchical preferences
-	 */
-	@Deprecated
-	protected void applyPreferences(Preferences preferences) {
-		requireNonNull(preferences);
-		entityPanels.forEach(panel -> panel.applyPreferences(preferences));
-	}
-
-	protected Preferences legacyPreferences() {
-		synchronized (applicationModel) {
-			if (legacyPreferences == null) {
-				legacyPreferences = filePreferences(applicationModel.getClass().getName());
-			}
-
-			return legacyPreferences;
-		}
-	}
-
 	private void restorePreferences() {
 		if (userPreferences) {
-			restoreLegacyPreferences();
 			restore(applicationModel.preferences());
 		}
 		else {
@@ -870,28 +817,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			if (userPreferences) {
 				LOG.debug("Writing user preferences");
 				store(applicationModel.preferences());
-				storeLegacyPreferences();
 				applicationModel.preferences().flush();
-				if (legacyPreferences != null) {
-					legacyPreferences.flush();
-				}
 			}
 		}
 		catch (Throwable e) {
 			LOG.error("Exception while storing preferences", e);
-		}
-	}
-
-	private void restoreLegacyPreferences() {
-		if (LEGACY_PREFERENCES.getOrThrow()) {
-			LOG.debug("Restoring legacy preferences");
-			applyPreferences(legacyPreferences());
-		}
-	}
-
-	private void storeLegacyPreferences() {
-		if (LEGACY_PREFERENCES.getOrThrow()) {
-			writePreferences(legacyPreferences());
 		}
 	}
 
@@ -995,9 +925,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
 		if (userPreferences) {
-			if (LEGACY_PREFERENCES.getOrThrow()) {
-				entityPanel.applyPreferences(legacyPreferences());
-			}
 			entityPanel.restore(applicationModel.preferences().node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
 		}
 		entityPanel.initialize();
@@ -1254,9 +1181,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {
 		displayedEntityPanels.remove(entityPanel);
 		entityPanel.store(applicationModel.preferences().node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
-		if (LEGACY_PREFERENCES.getOrThrow()) {
-			entityPanel.writePreferences(legacyPreferences());
-		}
 		entityPanel.setPreferredSize(entityPanel.getSize());
 	}
 

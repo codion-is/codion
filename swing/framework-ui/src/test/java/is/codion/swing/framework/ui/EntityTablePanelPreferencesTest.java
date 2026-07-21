@@ -86,9 +86,9 @@ public class EntityTablePanelPreferencesTest {
 		columnModel.moveColumn(columnModel.getColumnIndex(Detail.DOUBLE), 0);
 
 		// Save and restore
-		tablePanel.writePreferences(preferences);
+		tablePanel.store(preferences);
 		tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.applyPreferences(preferences);
+		tablePanel.restore(preferences);
 
 		// Verify restored state
 		columnModel = tablePanel.table().columnModel();
@@ -111,9 +111,9 @@ public class EntityTablePanelPreferencesTest {
 		doubleColumn.setPreferredWidth(200);
 
 		// Save and restore
-		tablePanel.writePreferences(preferences);
+		tablePanel.store(preferences);
 		tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.applyPreferences(preferences);
+		tablePanel.restore(preferences);
 
 		// Verify restored widths
 		columnModel = tablePanel.table().columnModel();
@@ -133,9 +133,9 @@ public class EntityTablePanelPreferencesTest {
 		stringCondition.operands().wildcard().set(Wildcard.PREFIX);
 
 		// Save and restore
-		tablePanel.writePreferences(preferences);
+		tablePanel.store(preferences);
 		tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.applyPreferences(preferences);
+		tablePanel.restore(preferences);
 
 		// Verify restored condition preferences
 		stringCondition = tableModel.query().condition().get().get(Detail.STRING);
@@ -159,13 +159,13 @@ public class EntityTablePanelPreferencesTest {
 		tablePanel.table().setAutoResizeMode(newMode);
 
 		// Save and restore
-		tablePanel.writePreferences(preferences);
+		tablePanel.store(preferences);
 		tablePanel = new EntityTablePanel(tableModel);
 
 		// Verify it's back to default before applying
 		assertEquals(initialMode, tablePanel.table().getAutoResizeMode());
 
-		tablePanel.applyPreferences(preferences);
+		tablePanel.restore(preferences);
 
 		// Verify restored auto-resize mode
 		assertEquals(newMode, tablePanel.table().getAutoResizeMode());
@@ -182,7 +182,7 @@ public class EntityTablePanelPreferencesTest {
 		int intWidth = columnModel.column(Detail.INT).getPreferredWidth();
 
 		// Apply empty preferences (nothing saved yet)
-		tablePanel.applyPreferences(preferences);
+		tablePanel.restore(preferences);
 
 		// Verify defaults are unchanged
 		assertEquals(stringVisible, columnModel.visible(Detail.STRING).is());
@@ -197,7 +197,7 @@ public class EntityTablePanelPreferencesTest {
 		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
 
 		columnModel.column(Detail.INT).setWidth(175);
-		tablePanel.writePreferences(preferences);
+		tablePanel.store(preferences);
 
 		// Manually inject a preference for a non-existent column
 		String columnsKey = tablePanel.preferencesKey() + "-columns";
@@ -207,7 +207,7 @@ public class EntityTablePanelPreferencesTest {
 
 		// Apply preferences - should not throw, non-existent column preference is ignored
 		EntityTablePanel newTablePanel = new EntityTablePanel(tableModel);
-		assertDoesNotThrow(() -> newTablePanel.applyPreferences(preferences));
+		assertDoesNotThrow(() -> newTablePanel.restore(preferences));
 
 		// Verify valid preferences were still applied
 		columnModel = newTablePanel.table().columnModel();
@@ -222,11 +222,11 @@ public class EntityTablePanelPreferencesTest {
 
 		// Hide STRING column and save preferences
 		columnModel.visible(Detail.STRING).set(false);
-		tablePanel.writePreferences(preferences);
+		tablePanel.store(preferences);
 
 		// Remove STRING from saved preferences to simulate a "new" column
 		// that wasn't in the preferences when they were saved
-		String columnsKey = tablePanel.preferencesKey() + "-columns";
+		String columnsKey = "columns";
 		String currentJson = preferences.get(columnsKey, "{}");
 		// Remove string entry from JSON
 		String modifiedJson = currentJson.replaceAll(",?\"string\":\\{[^}]+\\}", "");
@@ -236,7 +236,7 @@ public class EntityTablePanelPreferencesTest {
 
 		// Apply preferences - STRING should be visible since it's not in preferences
 		tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.applyPreferences(preferences);
+		tablePanel.restore(preferences);
 
 		columnModel = tablePanel.table().columnModel();
 		// New columns (not in preferences) should remain visible
@@ -263,11 +263,11 @@ public class EntityTablePanelPreferencesTest {
 		stringCondition.operands().wildcard().set(Wildcard.POSTFIX);
 
 		// Save
-		tablePanel.writePreferences(preferences);
+		tablePanel.store(preferences);
 
 		// Create fresh panel and restore
 		tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.applyPreferences(preferences);
+		tablePanel.restore(preferences);
 
 		// Verify everything
 		columnModel = tablePanel.table().columnModel();
