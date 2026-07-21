@@ -89,6 +89,24 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	EntityModels<M, E, T, R> models();
 
 	/**
+	 * Stores the model-owned persistent state of this application's model tree to the given preferences node.
+	 * Each root model stores its state under a child node named by its {@link EntityModel#preferencesKey()}.
+	 * May be overridden to persist custom state, in which case {@code super.store(preferences)} should
+	 * be called in order to retain the default state.
+	 * @param preferences the preferences node representing the entity models
+	 * @see #restore(Preferences)
+	 */
+	void store(Preferences preferences);
+
+	/**
+	 * Restores the model-owned persistent state of this application's model tree from the given preferences node.
+	 * Each root model restores its state from a child node named by its {@link EntityModel#preferencesKey()}.
+	 * @param preferences the preferences node representing the entity models
+	 * @see #store(Preferences)
+	 */
+	void restore(Preferences preferences);
+
+	/**
 	 * Returns file-based preferences using the domain name as identifier or {@link #PREFERENCES_KEY} if specified.
 	 * This is used for the hierarchical JSON preferences format.
 	 * @return the application preferences instance

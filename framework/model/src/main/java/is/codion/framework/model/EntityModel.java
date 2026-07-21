@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 /**
  * Coordinates, among other things, an {@link EntityEditModel} and an {@link EntityTableModel}.
@@ -91,6 +92,31 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 	 * @return the detail models
 	 */
 	DetailModels<M, E, T, R> detail();
+
+	/**
+	 * The key identifying this model's node when persisting preferences, defaults to the entity type name.
+	 * Must be unique among sibling models and contain only valid preferences node name characters.
+	 * @return the preferences key for this model
+	 */
+	String preferencesKey();
+
+	/**
+	 * Stores the model-owned persistent state of this model and its detail models to the given preferences
+	 * node. Each model stores its state under a child node named by its {@link #preferencesKey()}.
+	 * May be overridden to persist custom state, in which case {@code super.store(preferences)} should
+	 * be called in order to retain the default state.
+	 * @param preferences the preferences node representing the entity models
+	 * @see #restore(Preferences)
+	 */
+	void store(Preferences preferences);
+
+	/**
+	 * Restores the model-owned persistent state of this model and its detail models from the given preferences
+	 * node. Each model restores its state from a child node named by its {@link #preferencesKey()}.
+	 * @param preferences the preferences node representing the entity models
+	 * @see #store(Preferences)
+	 */
+	void restore(Preferences preferences);
 
 	/**
 	 * Manages the detail models for a {@link EntityModel}

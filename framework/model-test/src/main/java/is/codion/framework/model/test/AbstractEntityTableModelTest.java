@@ -19,6 +19,7 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.model.filter.SortOrder;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.utilities.Operator;
@@ -44,7 +45,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
@@ -692,6 +695,39 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 						.findFirst()
 						.orElseThrow(IllegalStateException::new);
 		assertEquals("REPLACED", updated.get(Employee.NAME));
+	}
+
+	@Test
+	public void preferences() {
+		T source = createTableModel(Employee.TYPE, connectionProvider());
+		// condition settings (only the settings are persisted, not the operand values)
+		ConditionModel<String> nameCondition = source.query().condition().get(Employee.NAME);
+		nameCondition.autoEnable().set(false);
+		nameCondition.caseSensitive().set(true);
+		nameCondition.operands().wildcard().set(Wildcard.NONE);
+		// filter settings
+		source.filters().get(Employee.JOB).autoEnable().set(false);
+		// multi-column sort
+		source.sort().order(Employee.JOB).set(SortOrder.ASCENDING);
+		source.sort().order(Employee.NAME).add(SortOrder.DESCENDING);
+
+		Preferences preferences = jsonPreferences();
+		source.store(preferences);
+
+		T target = createTableModel(Employee.TYPE, connectionProvider());
+		target.restore(preferences);
+
+		ConditionModel<String> restored = target.query().condition().get(Employee.NAME);
+		assertFalse(restored.autoEnable().is());
+		assertTrue(restored.caseSensitive().is());
+		assertEquals(Wildcard.NONE, restored.operands().wildcard().getOrThrow());
+
+		assertFalse(target.filters().get(Employee.JOB).autoEnable().is());
+
+		assertEquals(SortOrder.ASCENDING, target.sort().columns().get(Employee.JOB).sortOrder());
+		assertEquals(0, target.sort().columns().get(Employee.JOB).priority());
+		assertEquals(SortOrder.DESCENDING, target.sort().columns().get(Employee.NAME).sortOrder());
+		assertEquals(1, target.sort().columns().get(Employee.NAME).priority());
 	}
 
 	/**

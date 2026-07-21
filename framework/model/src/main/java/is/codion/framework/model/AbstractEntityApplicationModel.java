@@ -101,6 +101,22 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 	}
 
 	@Override
+	public void store(Preferences preferences) {
+		requireNonNull(preferences);
+		for (M entityModel : models.get()) {
+			entityModel.store(preferences);
+		}
+	}
+
+	@Override
+	public void restore(Preferences preferences) {
+		requireNonNull(preferences);
+		for (M entityModel : models.get()) {
+			entityModel.restore(preferences);
+		}
+	}
+
+	@Override
 	public final Preferences preferences() {
 		return preferences;
 	}

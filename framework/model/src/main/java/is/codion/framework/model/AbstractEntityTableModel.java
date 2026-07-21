@@ -51,6 +51,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.prefs.Preferences;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableList;
@@ -162,6 +163,18 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	@Override
 	public final EntityQueryModel query() {
 		return queryModel;
+	}
+
+	@Override
+	public void store(Preferences preferences) {
+		EntityTableModelPreferences.store(preferences, this);
+		editModel.store(preferences.node(AbstractEntityModel.EDIT));
+	}
+
+	@Override
+	public void restore(Preferences preferences) {
+		EntityTableModelPreferences.restore(preferences, this);
+		editModel.restore(preferences.node(AbstractEntityModel.EDIT));
 	}
 
 	@Override
