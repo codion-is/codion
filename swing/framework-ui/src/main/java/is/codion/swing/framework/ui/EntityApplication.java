@@ -65,6 +65,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.prefs.Preferences;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
@@ -156,7 +157,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private final Class<M> applicationModelClass;
 	private final Class<P> applicationPanelClass;
 	private final DomainType domain;
-	private final @Nullable String preferencesLookAndFeel;
+	private @Nullable String preferencesLookAndFeel;
 
 	private @Nullable Function<User, EntityConnectionProvider> connectionProviderFunction;
 	private @Nullable EntityConnectionProvider connectionProvider;
@@ -179,12 +180,13 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private String defaultLookAndFeelClassName = systemLookAndFeelClassName();
 	private @Nullable String lookAndFeelClassName;
 	private boolean uncaughtExceptionHandler = true;
-	private boolean maximizeFrame = false;
+	private @Nullable Boolean maximizeFrame;
 	private boolean displayFrame = true;
 	private boolean mainMenu = true;
 	private @Nullable Dimension frameSize;
 	private @Nullable Dimension defaultFrameSize;
 	private @Nullable User defaultUser;
+	private @Nullable Preferences preferences;
 	private @Nullable User user = USER.optional()
 					.map(User::parse)
 					.orElse(null);
@@ -193,14 +195,6 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		this.applicationModelClass = applicationModelClass;
 		this.applicationPanelClass = applicationPanelClass;
 		this.domain = domain;
-		ApplicationPreferences preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow() ?
-						ApplicationPreferences.load(applicationModelClass, domain) :
-						ApplicationPreferences.fromString(EMPTY_JSON_OBJECT);
-		this.defaultUser = preferences.defaultLoginUser();
-		this.frameSize = preferences.frameSize();
-		this.maximizeFrame = preferences.frameMaximized();
-		this.preferencesLookAndFeel = preferences.lookAndFeel();
-		Scaler.SCALING.set(preferences.scaling());
 	}
 
 	/**
@@ -302,6 +296,23 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	 */
 	public EntityApplication<M, P> defaultUser(@Nullable User defaultUser) {
 		this.defaultUser = defaultUser;
+		return this;
+	}
+
+	/**
+	 * <p>The {@link Preferences} instance the application-level preferences (frame size, look and feel, default user,
+	 * scaling) are read from at {@link #start()} and, on exit, written to — in place of the default file-based user
+	 * preferences. Any explicit builder call (e.g. {@link #frameSize(Dimension)}) still takes precedence over a stored
+	 * value.
+	 * <p>This is the application-level half only; the model and its panels keep their own preferences (see the
+	 * {@link Preferences} constructor of {@code AbstractEntityApplicationModel}). For a fully self-contained application
+	 * (e.g. a test using {@code JsonPreferences.jsonPreferences()}), inject the same instance into both — here and via
+	 * the {@link #model(Function) model} factory.
+	 * @param preferences the preferences instance to use for the application-level preferences
+	 * @return this {@link EntityApplication} instance
+	 */
+	public EntityApplication<M, P> preferences(Preferences preferences) {
+		this.preferences = requireNonNull(preferences);
 		return this;
 	}
 
@@ -538,6 +549,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private void startApplication() {
 		LOG.debug("{} application starting", applicationName());
+		applyPreferences();
 		if (uncaughtExceptionHandler) {
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionAndExit());
 		}
@@ -561,6 +573,37 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		else {
 			startApplication(initializeApplicationModel(connectionProvider), initializationStarted);
 		}
+	}
+
+	// Applies the stored application-level preferences as fallbacks — each only fills in a value no explicit builder call
+	// set, so a builder override always wins. Run at start(), so a preferences(Preferences) call is in effect.
+	private void applyPreferences() {
+		ApplicationPreferences applicationPreferences = applicationPreferences();
+		if (defaultUser == null) {
+			defaultUser = applicationPreferences.defaultLoginUser();
+		}
+		if (frameSize == null) {
+			frameSize = applicationPreferences.frameSize();
+		}
+		if (maximizeFrame == null) {
+			maximizeFrame = applicationPreferences.frameMaximized();
+		}
+		if (preferencesLookAndFeel == null) {
+			preferencesLookAndFeel = applicationPreferences.lookAndFeel();
+		}
+		Scaler.SCALING.set(applicationPreferences.scaling());
+	}
+
+	// The injected preferences node if one was provided, else the default file-based user preferences (or empty when
+	// user preferences are disabled).
+	private ApplicationPreferences applicationPreferences() {
+		if (preferences != null) {
+			return ApplicationPreferences.load(preferences);
+		}
+
+		return EntityApplicationModel.USER_PREFERENCES.getOrThrow() ?
+						ApplicationPreferences.load(applicationModelClass, domain) :
+						ApplicationPreferences.fromString(EMPTY_JSON_OBJECT);
 	}
 
 	private String applicationName() {
@@ -692,7 +735,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		}
 		Windows.resizeToFitScreen(frame);
 		frame.setLocationRelativeTo(null);
-		if (maximizeFrame) {
+		if (Boolean.TRUE.equals(maximizeFrame)) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
 

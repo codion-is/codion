@@ -25,15 +25,13 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.model.preferences.FilePreferences.filePreferences;
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -47,13 +45,6 @@ public class EntityApplicationPanelTest {
 					.user(UNIT_TEST_USER)
 					.build();
 
-	@AfterAll
-	static void cleanUp() throws BackingStoreException {
-		Preferences preferences = filePreferences("is.codion.swing.framework.ui.EntityApplicationPanelTest$TestApplicationModel");
-		preferences.clear();
-		preferences.flush();
-	}
-
 	@AfterEach
 	void tearDown() {
 		Thread.setDefaultUncaughtExceptionHandler(null);
@@ -62,9 +53,13 @@ public class EntityApplicationPanelTest {
 	@Test
 	void test() {
 		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+		// In-memory preferences for both the application level and the model, so the test never touches the real store.
+		Preferences preferences = jsonPreferences();
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
+						.preferences(preferences)
+						.model(connectionProvider -> new TestApplicationModel(connectionProvider, preferences))
 						.uncaughtExceptionHandler(false)
 						.saveDefaultUsername(false)
 						.displayFrame(false)
@@ -75,8 +70,8 @@ public class EntityApplicationPanelTest {
 
 	private static final class TestApplicationModel extends SwingEntityApplicationModel {
 
-		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, singletonList(new SwingEntityModel(Employee.TYPE, connectionProvider)));
+		public TestApplicationModel(EntityConnectionProvider connectionProvider, Preferences preferences) {
+			super(connectionProvider, singletonList(new SwingEntityModel(Employee.TYPE, connectionProvider)), preferences);
 		}
 	}
 

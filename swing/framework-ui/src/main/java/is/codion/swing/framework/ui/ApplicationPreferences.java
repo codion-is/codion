@@ -109,6 +109,10 @@ final class ApplicationPreferences {
 		return fromString(preferences);
 	}
 
+	static ApplicationPreferences load(Preferences preferences) {
+		return fromString(preferences.get(APPLICATION_PANEL, EMPTY_JSON_OBJECT));
+	}
+
 	static ApplicationPreferences fromString(String preferences) {
 		try {
 			JSONObject jsonObject = new JSONObject(preferences);

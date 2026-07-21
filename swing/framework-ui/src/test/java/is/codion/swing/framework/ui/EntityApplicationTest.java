@@ -23,30 +23,25 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.model.preferences.FilePreferences.filePreferences;
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 public final class EntityApplicationTest {
 
-	@AfterAll
-	static void cleanUp() throws BackingStoreException {
-		Preferences preferences = filePreferences("is.codion.swing.framework.ui.DefaultEntityApplicationTest$TestApplicationModel");
-		preferences.clear();
-		preferences.flush();
-	}
-
 	@Test
 	void connection() {
+		// In-memory preferences (application-level and model), so the test never touches the real user store.
+		Preferences preferences = jsonPreferences();
 		User user = User.user("Test");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
+						.preferences(preferences)
+						.model(cp -> new TestApplicationModel(cp, preferences))
 						.onStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
 						.user(user)
 						.startupDialog(false)
@@ -55,6 +50,8 @@ public final class EntityApplicationTest {
 		User user2 = User.user("Test2");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
+						.preferences(preferences)
+						.model(cp -> new TestApplicationModel(cp, preferences))
 						.onStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
 						.user(() -> user2)
 						.startupDialog(false)
@@ -63,6 +60,8 @@ public final class EntityApplicationTest {
 		User user3 = User.user("Test3");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
+						.preferences(preferences)
+						.model(cp -> new TestApplicationModel(cp, preferences))
 						.onStarted(panel -> assertSame(user3, panel.applicationModel().connectionProvider().user()))
 						.user(user3)
 						.connectionProvider(usr -> LocalEntityConnectionProvider.builder()
@@ -79,6 +78,8 @@ public final class EntityApplicationTest {
 						.build();
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
+						.preferences(preferences)
+						.model(cp -> new TestApplicationModel(cp, preferences))
 						.onStarted(panel -> {
 							assertSame(connectionProvider, panel.applicationModel().connectionProvider());
 							assertSame(user4, panel.applicationModel().connectionProvider().user());
@@ -91,8 +92,8 @@ public final class EntityApplicationTest {
 
 	public static class TestApplicationModel extends SwingEntityApplicationModel {
 
-		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, emptyList());
+		public TestApplicationModel(EntityConnectionProvider connectionProvider, Preferences preferences) {
+			super(connectionProvider, emptyList(), preferences);
 		}
 	}
 
