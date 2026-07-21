@@ -26,7 +26,6 @@ import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.ui.EntityTableExportPanel.ExportPreferences;
 
 import org.json.JSONObject;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,16 +37,13 @@ import java.util.prefs.Preferences;
 
 import static is.codion.common.model.condition.ConditionModel.CASE_SENSITIVE;
 import static is.codion.common.model.condition.ConditionModel.WILDCARD;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class EntityTablePanelPreferences {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanelPreferences.class);
 
-	private static final String TABLE_PREFERENCES = "-table";
-	private static final String COLUMN_PREFERENCES = "-columns";
-	private static final String CONDITIONS_PREFERENCES = "-conditions";
-	private static final String EXPORT_PREFERENCES = "-export";
 	private static final String AUTO_RESIZE_MODE = "auto-resize-mode";
 	private static final String EMPTY_JSON_OBJECT = "{}";
 
@@ -66,47 +62,13 @@ final class EntityTablePanelPreferences {
 	private final JSONObject tablePreferences;
 	private final JSONObject columnPreferences;
 	private final JSONObject conditionPreferences;
-	private final @Nullable ExportPreferences exportPreferences;
-	private final String tableKey;
-	private final String columnsKey;
-	private final String conditionsKey;
-	private final String exportKey;
-
-	EntityTablePanelPreferences(EntityTablePanel tablePanel, Preferences preferences) {
-		this.tableKey = tablePanel.preferencesKey() + TABLE_PREFERENCES;
-		this.columnsKey = tablePanel.preferencesKey() + COLUMN_PREFERENCES;
-		this.conditionsKey = tablePanel.preferencesKey() + CONDITIONS_PREFERENCES;
-		this.exportKey = tablePanel.preferencesKey() + EXPORT_PREFERENCES;
-		this.tablePreferences = new JSONObject(preferences.get(tableKey, EMPTY_JSON_OBJECT));
-		this.columnPreferences = new JSONObject(preferences.get(columnsKey, EMPTY_JSON_OBJECT));
-		this.conditionPreferences = new JSONObject(preferences.get(conditionsKey, EMPTY_JSON_OBJECT));
-		this.exportPreferences = new ExportPreferences(preferences.get(exportKey, EMPTY_JSON_OBJECT));
-	}
+	private final ExportPreferences exportPreferences;
 
 	EntityTablePanelPreferences(EntityTablePanel tablePanel) {
-		this(createTablePreferences(tablePanel),
-						createColumnPreferences(tablePanel.table().columnModel()),
-						createConditionPreferences(tablePanel.tableModel().query().condition().get()),
-						new ExportPreferences(tablePanel.exportModel()),
-						tablePanel.preferencesKey() + TABLE_PREFERENCES,
-						tablePanel.preferencesKey() + COLUMN_PREFERENCES,
-						tablePanel.preferencesKey() + CONDITIONS_PREFERENCES,
-						tablePanel.preferencesKey() + EXPORT_PREFERENCES);
-	}
-
-	private EntityTablePanelPreferences(JSONObject tablePreferences,
-																			JSONObject columnPreferences,
-																			JSONObject conditionPreferences,
-																			@Nullable ExportPreferences exportPreferences, String tableKey,
-																			String columnKey, String conditionKey, String exportKey) {
-		this.tableKey = tableKey;
-		this.columnsKey = columnKey;
-		this.conditionsKey = conditionKey;
-		this.exportKey = exportKey;
-		this.tablePreferences = tablePreferences;
-		this.columnPreferences = columnPreferences;
-		this.conditionPreferences = conditionPreferences;
-		this.exportPreferences = exportPreferences;
+		this.tablePreferences = createTablePreferences(tablePanel);
+		this.columnPreferences = createColumnPreferences(tablePanel.table().columnModel());
+		this.conditionPreferences = createConditionPreferences(tablePanel.tableModel().query().condition().get());
+		this.exportPreferences = new ExportPreferences(tablePanel.exportModel());
 	}
 
 	void restore(EntityTablePanel tablePanel) {
@@ -132,42 +94,11 @@ final class EntityTablePanelPreferences {
 				LOG.error("Error while restoring condition preferences: {}", conditionPreferences, e);
 			}
 		}
-		if (exportPreferences != null) {// not strictly necessary, but prevents null warning
-			try {
-				exportPreferences.restore(tablePanel.exportModel());
-			}
-			catch (Exception e) {
-				LOG.error("Error while restoring export preferences: {}", exportPreferences, e);
-			}
-		}
-	}
-
-	void save(Preferences preferences) {
 		try {
-			preferences.put(tableKey, tablePreferences.toString());
+			exportPreferences.restore(tablePanel.exportModel());
 		}
 		catch (Exception e) {
-			LOG.error("Error while saving table preferences", e);
-		}
-		try {
-			preferences.put(columnsKey, columnPreferences.toString());
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving column preferences", e);
-		}
-		try {
-			preferences.put(conditionsKey, conditionPreferences.toString());
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving condition preferences", e);
-		}
-		if (exportPreferences != null) {// not strictly necessary, but prevents null warning
-			try {
-				preferences.put(exportKey, exportPreferences.preferences().toString());
-			}
-			catch (Exception e) {
-				LOG.error("Error while saving export preferences", e);
-			}
+			LOG.error("Error while restoring export preferences: {}", exportPreferences, e);
 		}
 	}
 
@@ -178,6 +109,8 @@ final class EntityTablePanelPreferences {
 	 * @param tablePanel the table panel
 	 */
 	static void store(Preferences preferences, EntityTablePanel tablePanel) {
+		requireNonNull(preferences);
+		requireNonNull(tablePanel);
 		try {
 			preferences.put(TABLE_KEY, createTablePreferences(tablePanel).toString());
 		}
@@ -221,6 +154,8 @@ final class EntityTablePanelPreferences {
 	 * @param tablePanel the table panel
 	 */
 	static void restore(Preferences preferences, EntityTablePanel tablePanel) {
+		requireNonNull(preferences);
+		requireNonNull(tablePanel);
 		try {
 			restoreTablePreferences(new JSONObject(preferences.get(TABLE_KEY, EMPTY_JSON_OBJECT)), tablePanel);
 		}

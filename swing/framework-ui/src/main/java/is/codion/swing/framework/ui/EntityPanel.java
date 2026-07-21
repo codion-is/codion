@@ -590,41 +590,6 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Saves user preferences for this entity panel and its detail panels using the legacy flat format.
-	 * <p>Remember to call {@code super.writeLegacyPreferences(preferences)} when overriding.
-	 * @param preferences the Preferences instance into which to save the preferences
-	 * @see #preferencesKey()
-	 * @see EntityTablePanel#writePreferences(Preferences)
-	 * @deprecated replaced with hierarchical preferences
-	 */
-	@Deprecated
-	public void writePreferences(Preferences preferences) {
-		requireNonNull(preferences);
-		if (containsTablePanel()) {
-			tablePanel.writePreferences(preferences);
-		}
-		detailPanels.get().forEach(detailPanel -> detailPanel.writePreferences(preferences));
-	}
-
-	/**
-	 * Applies any user preferences previously written via {@link #writePreferences(Preferences)}
-	 * for this panel and its detail panels using the legacy flat format.
-	 * <p>Remember to call {@code super.applyPreferences(preferences)} when overriding.
-	 * @param preferences the Preferences instance containing the preferences to apply
-	 * @see #preferencesKey()
-	 * @see EntityTablePanel#applyPreferences(Preferences)
-	 * @deprecated replaced with hierarchical preferences
-	 */
-	@Deprecated
-	public void applyPreferences(Preferences preferences) {
-		requireNonNull(preferences);
-		if (containsTablePanel()) {
-			tablePanel.applyPreferences(preferences);
-		}
-		detailPanels.get().forEach(detailPanel -> detailPanel.applyPreferences(preferences));
-	}
-
-	/**
 	 * Restores preferences for this panel and its detail panels. Override to restore panel specific preferences.
 	 * <p>Remember to call {@code super.restore(preferences)} when overriding.
 	 * @param preferences the preferences instance from which to restore

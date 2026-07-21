@@ -694,32 +694,6 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Writes user preferences using the legacy flat format.
-	 * <p>Remember to call {@code super.writeLegacyPreferences(preferences)} when overriding.
-	 * @param preferences the preferences instance to write to
-	 * @see #preferencesKey()
-	 * @deprecated replaced with hierarchical preferences
-	 */
-	@Deprecated
-	public void writePreferences(Preferences preferences) {
-		requireNonNull(preferences);
-		new EntityTablePanelPreferences(this).save(preferences);
-	}
-
-	/**
-	 * Applies any user preferences previously written via {@link #writePreferences(Preferences)}
-	 * using the legacy flat format.
-	 * <p>Remember to call {@code super.applyLegacyPreferences(preferences)} when overriding.
-	 * @param preferences the preferences instance containing the preferences to apply
-	 * @deprecated replaced with hierarchical preferences
-	 */
-	@Deprecated
-	public void applyPreferences(Preferences preferences) {
-		requireNonNull(preferences);
-		new EntityTablePanelPreferences(this, preferences).restore(this);
-	}
-
-	/**
 	 * Restores the preferences for this panel.
 	 * Override to apply panel specific preferences.
 	 * <p>Remember to call {@code super.restore(preferences)} when overriding.

@@ -14,6 +14,9 @@ Codion Change Log
 - ProgressWorker.WorkerTask added.
 ### is.codion.framework.domain
 - Attribute.DataType.validateType() renamed validate().
+### is.codion.swing.framework.ui
+- EntityApplicationPanel, deprecated legacy preferences removed.
+- EntityTablePanel, deprecated legacy preferences removed.
 
 ## 0.18.80
 ### is.codion.common.reactive
