@@ -36,8 +36,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.model.condition.ConditionModel.CASE_SENSITIVE;
-import static is.codion.common.model.condition.ConditionModel.WILDCARD;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -138,10 +136,9 @@ final class EntityTableModelPreferences {
 
 	private static JSONObject createConditionPreferences(Map<Attribute<?>, ConditionModel<?>> conditions) {
 		JSONObject conditionPreferences = new JSONObject();
-		// No configuration property for the autoEnable default (unlike CASE_SENSITIVE/WILDCARD) - update if one appears
-		boolean defaultAutoEnable = true;
-		boolean defaultCaseSensitive = CASE_SENSITIVE.getOrThrow();
-		Wildcard defaultWildcard = WILDCARD.getOrThrow();
+		boolean defaultAutoEnable = ConditionModel.AUTO_ENABLE.getOrThrow();
+		boolean defaultCaseSensitive = ConditionModel.CASE_SENSITIVE.getOrThrow();
+		Wildcard defaultWildcard = ConditionModel.WILDCARD.getOrThrow();
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
 			try {
 				ConditionModel<?> condition = entry.getValue();

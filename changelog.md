@@ -13,6 +13,7 @@ Codion Change Log
 ### is.codion.common.model
 - ProgressWorker.WorkerTask added.
 - JsonPreferences refactored from JsonPreferencesStore.
+- ConditionModel.AUTO_ENABLE configuration value added.
 ### is.codion.framework.domain
 - Attribute.DataType.validateType() renamed validate().
 ### is.codion.framework.model

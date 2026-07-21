@@ -611,7 +611,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.build()
 						.dateTimePattern();
 		private boolean caseSensitive = CASE_SENSITIVE.getOrThrow();
-		private boolean autoEnable = true;
+		private boolean autoEnable = AUTO_ENABLE.getOrThrow();
 
 		private DefaultBuilder(Class<T> valueClass) {
 			this.valueClass = requireNonNull(valueClass);
