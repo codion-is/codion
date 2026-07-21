@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.model.component.table.FilterTableModel;
 import is.codion.common.model.selection.MultiSelection;
+import is.codion.common.reactive.value.Value;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -29,11 +30,17 @@ import is.codion.framework.model.EntityEditor.ComponentModels;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
+import is.codion.framework.model.test.TestDomain.Employee;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.function.Supplier;
+import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Exercises the shared {@link AbstractEntityTableModelTest} contract against a minimal, toolkit-free concrete
@@ -43,6 +50,20 @@ import static is.codion.framework.domain.entity.condition.Condition.keys;
 public final class DefaultEntityTableModelTest extends
 				AbstractEntityTableModelTest<DefaultEntityTableModelTest.TestEntityEditModel,
 								DefaultEntityTableModelTest.TestEntityTableModel, DefaultEntityTableModelTest.TestEntityEditor> {
+
+	@Test
+	void editModelPreferences() {
+		// A table backed model persists its edit model on its behalf, so a stand-alone table model is self-sufficient
+		TestEntityTableModel source = createTableModel(Employee.TYPE, connectionProvider());
+		source.editModel().note.set("hello");
+
+		Preferences preferences = jsonPreferences();
+		source.store(preferences);
+
+		TestEntityTableModel target = createTableModel(Employee.TYPE, connectionProvider());
+		target.restore(preferences);
+		assertEquals("hello", target.editModel().note.getOrThrow());
+	}
 
 	@Override
 	protected TestEntityTableModel createTestTableModel() {
@@ -143,8 +164,21 @@ public final class DefaultEntityTableModelTest extends
 
 	public static final class TestEntityEditModel extends AbstractEntityEditModel<TestEntityEditor> {
 
+		// Exercises the edit model preferences hook, persisted by the table model on its behalf.
+		final Value<String> note = Value.nullable();
+
 		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(new TestEntityEditor(entityType, connectionProvider));
+		}
+
+		@Override
+		public void store(Preferences preferences) {
+			note.optional().ifPresent(value -> preferences.put("note", value));
+		}
+
+		@Override
+		public void restore(Preferences preferences) {
+			note.set(preferences.get("note", null));
 		}
 	}
 

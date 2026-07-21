@@ -15,6 +15,9 @@ Codion Change Log
 - JsonPreferences refactored from JsonPreferencesStore.
 ### is.codion.framework.domain
 - Attribute.DataType.validateType() renamed validate().
+### is.codion.framework.model
+- EntityApplicationModel, EntityModel, EntityEditModel and EntityTableModel, store(Preferences) and restore(Preferences) added.
+- AbstractEntityTableModel now stores sorting state in preferences.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, deprecated legacy preferences removed.
 - EntityTablePanel, deprecated legacy preferences removed.

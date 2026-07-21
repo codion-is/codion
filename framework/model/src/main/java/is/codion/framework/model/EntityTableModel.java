@@ -35,6 +35,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.prefs.Preferences;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.enumValue;
@@ -166,6 +167,24 @@ public interface EntityTableModel<E extends EntityEditModel<R>, R extends Entity
 	 * @return the underlying query model
 	 */
 	EntityQueryModel query();
+
+	/**
+	 * Stores the model-owned persistent state of this table model - the query condition settings,
+	 * filter settings and sort order - to the given preferences node.
+	 * May be overridden to persist custom state, in which case {@code super.store(preferences)} should
+	 * be called in order to retain the default state.
+	 * @param preferences the preferences node to store to
+	 * @see #restore(Preferences)
+	 */
+	void store(Preferences preferences);
+
+	/**
+	 * Restores the model-owned persistent state of this table model - the query condition settings,
+	 * filter settings and sort order - from the given preferences node.
+	 * @param preferences the preferences node to restore from
+	 * @see #store(Preferences)
+	 */
+	void restore(Preferences preferences);
 
 	/**
 	 * @return the {@link EntityRowEditor}

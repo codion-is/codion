@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.prefs.Preferences;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -49,6 +50,15 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
 				T extends EntityTableModel<E, R>, R extends EntityEditor<R>> implements EntityModel<M, E, T, R> {
+
+	private static final String MODEL = "model";
+	private static final String DETAILS = "details";
+
+	/**
+	 * The node under which edit model preferences are stored, shared with {@link AbstractEntityTableModel},
+	 * which persists the edit model on behalf of a table backed model.
+	 */
+	static final String EDIT = "edit";
 
 	private final E editModel;
 	private final @Nullable T tableModel;
@@ -135,6 +145,49 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 	@Override
 	public final DetailModels<M, E, T, R> detail() {
 		return detailModels;
+	}
+
+	@Override
+	public String preferencesKey() {
+		return entityType().name();
+	}
+
+	@Override
+	public void store(Preferences preferences) {
+		Preferences entityNode = requireNonNull(preferences).node(preferencesKey());
+		Preferences modelNode = entityNode.node(MODEL);
+		if (tableModel != null) {
+			tableModel.store(modelNode);
+		}
+		else {
+			editModel.store(modelNode.node(EDIT));
+		}
+		Map<M, ModelLink> details = detailModels.get();
+		if (!details.isEmpty()) {
+			Preferences detailNode = entityNode.node(DETAILS);
+			for (M detailModel : details.keySet()) {
+				detailModel.store(detailNode);
+			}
+		}
+	}
+
+	@Override
+	public void restore(Preferences preferences) {
+		Preferences entityNode = requireNonNull(preferences).node(preferencesKey());
+		Preferences modelNode = entityNode.node(MODEL);
+		if (tableModel != null) {
+			tableModel.restore(modelNode);
+		}
+		else {
+			editModel.restore(modelNode.node(EDIT));
+		}
+		Map<M, ModelLink> details = detailModels.get();
+		if (!details.isEmpty()) {
+			Preferences detailNode = entityNode.node(DETAILS);
+			for (M detailModel : details.keySet()) {
+				detailModel.restore(detailNode);
+			}
+		}
 	}
 
 	/**

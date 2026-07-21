@@ -26,6 +26,8 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 
+import java.util.prefs.Preferences;
+
 /**
  * Represents the context for editing an {@link Entity} instance.
  * The underlying attribute values are available via {@link EntityEditor#value(Attribute)}.
@@ -70,4 +72,20 @@ public interface EntityEditModel<R extends EntityEditor<R>> {
 	 * @return the definition of the underlying entity
 	 */
 	EntityDefinition entityDefinition();
+
+	/**
+	 * Stores any custom persistent state to the given preferences node. Does nothing by default,
+	 * override to persist edit model state along with the rest of the model tree.
+	 * @param preferences the preferences node to store to
+	 * @see #restore(Preferences)
+	 */
+	default void store(Preferences preferences) {}
+
+	/**
+	 * Restores any custom persistent state from the given preferences node. Does nothing by default,
+	 * override to restore edit model state along with the rest of the model tree.
+	 * @param preferences the preferences node to restore from
+	 * @see #store(Preferences)
+	 */
+	default void restore(Preferences preferences) {}
 }
