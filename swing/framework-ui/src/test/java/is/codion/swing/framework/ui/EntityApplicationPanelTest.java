@@ -61,7 +61,7 @@ public class EntityApplicationPanelTest {
 						.domain(TestDomain.DOMAIN)
 						.user(UNIT_TEST_USER)
 						.preferences(preferences)
-						.model(connectionProvider -> new TestApplicationModel(connectionProvider, preferences))
+						.model(TestApplicationModel::new)
 						.uncaughtExceptionHandler(false)
 						.saveDefaultUsername(false)
 						.displayFrame(false)
@@ -94,8 +94,8 @@ public class EntityApplicationPanelTest {
 
 	private static final class TestApplicationModel extends SwingEntityApplicationModel {
 
-		public TestApplicationModel(EntityConnectionProvider connectionProvider, Preferences preferences) {
-			super(connectionProvider, singletonList(new SwingEntityModel(Employee.TYPE, connectionProvider)), preferences);
+		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
+			super(connectionProvider, singletonList(new SwingEntityModel(Employee.TYPE, connectionProvider)));
 		}
 	}
 

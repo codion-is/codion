@@ -107,14 +107,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	void restore(Preferences preferences);
 
 	/**
-	 * Returns file-based preferences using the domain name as identifier or {@link #PREFERENCES_KEY} if specified.
-	 * This is used for the hierarchical JSON preferences format.
-	 * @return the application preferences instance
-	 * @see #PREFERENCES_KEY
-	 */
-	Preferences preferences();
-
-	/**
 	 * Manages the {@link EntityModel}s for a {@link EntityApplicationModel}
 	 * @param <M> the {@link EntityModel} type
 	 * @param <E> the {@link EntityEditModel} type

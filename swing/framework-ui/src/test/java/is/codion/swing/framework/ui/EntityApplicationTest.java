@@ -41,7 +41,7 @@ public final class EntityApplicationTest {
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
-						.model(cp -> new TestApplicationModel(cp, preferences))
+						.model(TestApplicationModel::new)
 						.onStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
 						.user(user)
 						.startupDialog(false)
@@ -51,7 +51,7 @@ public final class EntityApplicationTest {
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
-						.model(cp -> new TestApplicationModel(cp, preferences))
+						.model(TestApplicationModel::new)
 						.onStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
 						.user(() -> user2)
 						.startupDialog(false)
@@ -61,7 +61,7 @@ public final class EntityApplicationTest {
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
-						.model(cp -> new TestApplicationModel(cp, preferences))
+						.model(TestApplicationModel::new)
 						.onStarted(panel -> assertSame(user3, panel.applicationModel().connectionProvider().user()))
 						.user(user3)
 						.connectionProvider(usr -> LocalEntityConnectionProvider.builder()
@@ -79,7 +79,7 @@ public final class EntityApplicationTest {
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
-						.model(cp -> new TestApplicationModel(cp, preferences))
+						.model(TestApplicationModel::new)
 						.onStarted(panel -> {
 							assertSame(connectionProvider, panel.applicationModel().connectionProvider());
 							assertSame(user4, panel.applicationModel().connectionProvider().user());
@@ -92,8 +92,8 @@ public final class EntityApplicationTest {
 
 	public static class TestApplicationModel extends SwingEntityApplicationModel {
 
-		public TestApplicationModel(EntityConnectionProvider connectionProvider, Preferences preferences) {
-			super(connectionProvider, emptyList(), preferences);
+		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
+			super(connectionProvider, emptyList());
 		}
 	}
 

@@ -20,7 +20,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.Text;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.domain.DomainType;
 
 import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
@@ -30,8 +29,6 @@ import org.slf4j.LoggerFactory;
 import java.awt.Dimension;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.model.preferences.FilePreferences.filePreferences;
-import static is.codion.framework.model.EntityApplicationModel.PREFERENCES_KEY;
 import static java.lang.Integer.parseInt;
 
 final class ApplicationPreferences {
@@ -97,16 +94,6 @@ final class ApplicationPreferences {
 		preferences.put(FRAME_MAXIMIZED_KEY, frameMaximized);
 
 		return preferences;
-	}
-
-	static ApplicationPreferences load(Class<?> applicationModelClass, DomainType domain) {
-		String preferences = filePreferences(PREFERENCES_KEY.optional().orElse(domain.name()))
-						.get(APPLICATION, EMPTY_JSON_OBJECT);
-		if (preferences.equals(EMPTY_JSON_OBJECT)) {
-			preferences = filePreferences(applicationModelClass.getName()).get(APPLICATION, EMPTY_JSON_OBJECT);
-		}
-
-		return fromString(preferences);
 	}
 
 	static ApplicationPreferences load(Preferences preferences) {

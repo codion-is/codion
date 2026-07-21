@@ -67,6 +67,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.model.preferences.FilePreferences.filePreferences;
+import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.Configuration.stringValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -152,7 +154,6 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private static final String CODION_CLIENT_VERSION = "codion.client.version";
 	private static final String CODION_VERSION = "codion.version";
 	private static final String DASH = " - ";
-	private static final String EMPTY_JSON_OBJECT = "{}";
 
 	private final Class<M> applicationModelClass;
 	private final Class<P> applicationPanelClass;
@@ -187,6 +188,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private @Nullable Dimension defaultFrameSize;
 	private @Nullable User defaultUser;
 	private @Nullable Preferences preferences;
+	private boolean preferencesResolved;
 	private @Nullable User user = USER.optional()
 					.map(User::parse)
 					.orElse(null);
@@ -594,16 +596,25 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		Scaler.SCALING.set(applicationPreferences.scaling());
 	}
 
-	// The injected preferences node if one was provided, else the default file-based user preferences (or empty when
-	// user preferences are disabled).
 	private ApplicationPreferences applicationPreferences() {
-		if (preferences != null) {
-			return ApplicationPreferences.load(preferences);
+		return ApplicationPreferences.load(preferences());
+	}
+
+	// Resolves the preferences root once: the injected node, else the default file based root, else an empty in-memory
+	// root when user preferences are disabled. Migrates a v1 layout to v2 before it is read (by the application level
+	// preferences below and, later, by the application panel's model and view walks).
+	private Preferences preferences() {
+		if (!preferencesResolved) {
+			if (preferences == null) {
+				preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow()
+								? filePreferences(EntityApplicationModel.PREFERENCES_KEY.optional().orElse(domain.name()))
+								: jsonPreferences();
+			}
+			PreferencesMigrator.migrate(preferences);
+			preferencesResolved = true;
 		}
 
-		return EntityApplicationModel.USER_PREFERENCES.getOrThrow() ?
-						ApplicationPreferences.load(applicationModelClass, domain) :
-						ApplicationPreferences.fromString(EMPTY_JSON_OBJECT);
+		return preferences;
 	}
 
 	private String applicationName() {
@@ -747,7 +758,11 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private P initializeApplicationPanel(M applicationModel) {
-		return (P) panel.apply(applicationModel).initialize();
+		P applicationPanel = panel.apply(applicationModel);
+		applicationPanel.preferences(preferences());
+		applicationPanel.initialize();
+
+		return applicationPanel;
 	}
 
 	private void configureFrame(JFrame frame, P applicationPanel) {

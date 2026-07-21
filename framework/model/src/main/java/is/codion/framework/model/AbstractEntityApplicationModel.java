@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -44,35 +43,17 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 
 	private final EntityConnectionProvider connectionProvider;
 	private final DefaultEntityModels<M, E, T, R> models;
-	private final Preferences preferences;
 
 	/**
-	 * Instantiates a new AbstractEntityApplicationModel, using the default file based preferences.
+	 * Instantiates a new AbstractEntityApplicationModel
 	 * @param connectionProvider the EntityConnectionProvider instance
 	 * @param entityModels the entity models
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
 	protected AbstractEntityApplicationModel(EntityConnectionProvider connectionProvider,
 																			 Collection<? extends M> entityModels) {
-		this(connectionProvider, entityModels, filePreferences(PREFERENCES_KEY.optional()
-						.orElse(connectionProvider.domainType().name())));
-	}
-
-	/**
-	 * Instantiates a new AbstractEntityApplicationModel
-	 * <p>Note that the associated application panel reads startup preferences (frame size, look and feel,
-	 * default username) from the default file based preferences root before the model is instantiated,
-	 * so those specific preferences are not read from or stored under the given {@link Preferences} instance.
-	 * @param connectionProvider the EntityConnectionProvider instance
-	 * @param entityModels the entity models
-	 * @param preferences the {@link Preferences} instance to use
-	 * @throws NullPointerException in case connectionProvider is null
-	 */
-	protected AbstractEntityApplicationModel(EntityConnectionProvider connectionProvider,
-																			 Collection<? extends M> entityModels, Preferences preferences) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.models = new DefaultEntityModels<>(requireNonNull(entityModels));
-		this.preferences = requireNonNull(preferences);
 	}
 
 	@Override
@@ -114,11 +95,6 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 		for (M entityModel : models.get()) {
 			entityModel.restore(preferences);
 		}
-	}
-
-	@Override
-	public final Preferences preferences() {
-		return preferences;
 	}
 
 	private final class DefaultEntityModels<M extends EntityModel<M, E, T, R>, E extends EntityEditModel<R>,
