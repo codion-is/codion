@@ -43,7 +43,7 @@ final class ApplicationPreferences {
 	private static final String SCALING_KEY = "scaling";
 	private static final String FRAME_SIZE_KEY = "frameSize";
 	private static final String FRAME_MAXIMIZED_KEY = "maximized";
-	private static final String APPLICATION_PANEL = "applicationPanel";
+	private static final String APPLICATION = "application";
 	private static final String EMPTY_JSON_OBJECT = "{}";
 
 	private final @Nullable String defaultUsername;
@@ -78,7 +78,7 @@ final class ApplicationPreferences {
 	}
 
 	void save(Preferences preferences) {
-		preferences.put(APPLICATION_PANEL, preferences().toString());
+		preferences.put(APPLICATION, preferences().toString());
 	}
 
 	@Nullable User defaultLoginUser() {
@@ -101,16 +101,16 @@ final class ApplicationPreferences {
 
 	static ApplicationPreferences load(Class<?> applicationModelClass, DomainType domain) {
 		String preferences = filePreferences(PREFERENCES_KEY.optional().orElse(domain.name()))
-						.get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
+						.get(APPLICATION, EMPTY_JSON_OBJECT);
 		if (preferences.equals(EMPTY_JSON_OBJECT)) {
-			preferences = filePreferences(applicationModelClass.getName()).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
+			preferences = filePreferences(applicationModelClass.getName()).get(APPLICATION, EMPTY_JSON_OBJECT);
 		}
 
 		return fromString(preferences);
 	}
 
 	static ApplicationPreferences load(Preferences preferences) {
-		return fromString(preferences.get(APPLICATION_PANEL, EMPTY_JSON_OBJECT));
+		return fromString(preferences.get(APPLICATION, EMPTY_JSON_OBJECT));
 	}
 
 	static ApplicationPreferences fromString(String preferences) {

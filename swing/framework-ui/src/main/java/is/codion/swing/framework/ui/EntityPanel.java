@@ -128,9 +128,12 @@ public class EntityPanel extends JPanel {
 					messageBundle(EntityPanel.class, getBundle(EntityPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
-	private static final String EDIT_PANEL_KEY = "editPanel";
-	private static final String TABLE_PANEL_KEY = "tablePanel";
-	private static final String DETAIL_PANELS_KEY = "detailPanels";
+	private static final String VIEW = "view";
+	private static final String TABLE = "table";
+	// EDIT and DETAILS must match the node names used by the model layer (see AbstractEntityModel),
+	// since the model and UI walks navigate the same entity subtree, writing disjoint model/ and view/ nodes.
+	private static final String EDIT = "edit";
+	private static final String DETAILS = "details";
 
 	/**
 	 * The possible states of a detail or edit panel.
@@ -1059,7 +1062,7 @@ public class EntityPanel extends JPanel {
 	private void storeEditPanelPreferences(Preferences preferences) {
 		if (containsEditPanel()) {
 			try {
-				editPanel.store(preferences.node(EDIT_PANEL_KEY));
+				editPanel.store(preferences.node(VIEW).node(EDIT));
 			}
 			catch (Exception e) {
 				LOG.error("Error storing edit panel preferences for panel: {}", preferencesKey(), e);
@@ -1070,7 +1073,7 @@ public class EntityPanel extends JPanel {
 	private void restoreEditPanelPreferences(Preferences preferences) {
 		if (containsEditPanel()) {
 			try {
-				editPanel.restore(preferences.node(EDIT_PANEL_KEY));
+				editPanel.restore(preferences.node(VIEW).node(EDIT));
 			}
 			catch (Exception e) {
 				LOG.error("Error restoring edit panel preferences for {}", preferencesKey(), e);
@@ -1081,7 +1084,7 @@ public class EntityPanel extends JPanel {
 	private void storeTablePanelPreferences(Preferences preferences) {
 		if (containsTablePanel()) {
 			try {
-				tablePanel.store(preferences.node(TABLE_PANEL_KEY));
+				tablePanel.store(preferences.node(VIEW).node(TABLE));
 			}
 			catch (Exception e) {
 				LOG.error("Error storing table panel preferences for panel: {}", preferencesKey(), e);
@@ -1092,7 +1095,7 @@ public class EntityPanel extends JPanel {
 	private void restoreTablePanelPreferences(Preferences preferences) {
 		if (containsTablePanel()) {
 			try {
-				tablePanel.restore(preferences.node(TABLE_PANEL_KEY));
+				tablePanel.restore(preferences.node(VIEW).node(TABLE));
 			}
 			catch (Exception e) {
 				LOG.error("Error restoring table panel preferences for {}", preferencesKey(), e);
@@ -1102,7 +1105,7 @@ public class EntityPanel extends JPanel {
 
 	private void storeDetailPanelPreferences(Preferences preferences) {
 		if (!detailPanels.get().isEmpty()) {
-			Preferences node = preferences.node(DETAIL_PANELS_KEY);
+			Preferences node = preferences.node(DETAILS);
 			for (EntityPanel detailPanel : detailPanels.get()) {
 				try {
 					detailPanel.store(node.node(detailPanel.preferencesKey()));
@@ -1116,7 +1119,7 @@ public class EntityPanel extends JPanel {
 
 	private void restoreDetailPanelPreferences(Preferences preferences) {
 		if (!detailPanels.get().isEmpty()) {
-			Preferences node = preferences.node(DETAIL_PANELS_KEY);
+			Preferences node = preferences.node(DETAILS);
 			for (EntityPanel detailPanel : detailPanels.get()) {
 				try {
 					detailPanel.restore(node.node(detailPanel.preferencesKey()));

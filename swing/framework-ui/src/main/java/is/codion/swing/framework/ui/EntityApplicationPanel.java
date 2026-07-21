@@ -201,9 +201,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private static final String MEMORY_USAGE = "memory_usage";
 	private static final String ADVANCED_LOG_LEVEL = "advanced_log_level";
 	private static final String ADVANCED_LOG_LEVEL_MNEMONIC = "advanced_log_level_mnemonic";
-	private static final String ENTITY_PANELS_KEY = "entityPanels";
-	private static final String AUXILIARY_PANEL_KEY = "auxiliaryPanels";
-	private static final String APPLICATION_PANEL_KEY = "applicationPanel";
+	// ENTITIES is the shared parent node navigated by both the model walk (EntityApplicationModel) and the UI walk
+	private static final String ENTITIES = "entities";
+	private static final String AUXILIARY = "auxiliary";
+	private static final String VERSION = "version";
+	private static final String VERSION_VALUE = "2";
 	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
 	private static final Runtime RUNTIME = Runtime.getRuntime();
 
@@ -805,7 +807,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void restorePreferences() {
 		if (userPreferences) {
-			restore(applicationModel.preferences());
+			Preferences preferences = applicationModel.preferences();
+			// The model walk restores the model-owned state (conditions, filters, sort), the UI walk the view state
+			applicationModel.restore(preferences.node(ENTITIES));
+			restore(preferences);
 		}
 		else {
 			LOG.debug("User preferences are disabled");
@@ -816,8 +821,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		try {
 			if (userPreferences) {
 				LOG.debug("Writing user preferences");
-				store(applicationModel.preferences());
-				applicationModel.preferences().flush();
+				Preferences preferences = applicationModel.preferences();
+				applicationModel.store(preferences.node(ENTITIES));
+				store(preferences);
+				preferences.put(VERSION, VERSION_VALUE);
+				preferences.flush();
 			}
 		}
 		catch (Throwable e) {
@@ -827,7 +835,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void storeEntityPanelPreferences(Preferences preferences) {
 		if (!entityPanels.isEmpty()) {
-			Preferences node = preferences.node(ENTITY_PANELS_KEY);
+			Preferences node = preferences.node(ENTITIES);
 			for (EntityPanel panel : entityPanels) {
 				try {
 					panel.store(node.node(panel.preferencesKey()));
@@ -842,7 +850,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private void restoreEntityPanelPreferences(Preferences preferences) {
 		if (!entityPanels.isEmpty()) {
 			LOG.debug("Restoring entity panel preferences");
-			Preferences node = preferences.node(ENTITY_PANELS_KEY);
+			Preferences node = preferences.node(ENTITIES);
 			for (EntityPanel panel : entityPanels) {
 				try {
 					panel.restore(node.node(panel.preferencesKey()));
@@ -859,7 +867,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			for (Map.Entry<EntityPanel.Builder, EntityPanel> entry : cachedEntityPanels.entrySet()) {
 				EntityPanel entityPanel = entry.getValue();
 				try {
-					entityPanel.store(preferences.node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
+					entityPanel.store(preferences.node(AUXILIARY).node(entityPanel.preferencesKey()));
 				}
 				catch (Exception e) {
 					LOG.error("Error storing preferences for auxiliary panel: {}", entityPanel.preferencesKey(), e);
@@ -874,7 +882,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			//so the windowClosed store() would run after the final preferences flush
 			if (!cachedEntityPanels.containsValue(entityPanel)) {
 				try {
-					entityPanel.store(preferences.node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
+					entityPanel.store(preferences.node(AUXILIARY).node(entityPanel.preferencesKey()));
 				}
 				catch (Exception e) {
 					LOG.error("Error storing preferences for auxiliary panel: {}", entityPanel.preferencesKey(), e);
@@ -885,7 +893,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void storeApplicationPreferences(Preferences preferences) {
 		try {
-			preferences.put(APPLICATION_PANEL_KEY, createApplicationPreferences().preferences().toString());
+			createApplicationPreferences().save(preferences);
 		}
 		catch (Exception e) {
 			LOG.error("Error while storing application preferences", e);
@@ -925,7 +933,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
 		if (userPreferences) {
-			entityPanel.restore(applicationModel.preferences().node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
+			entityPanel.restore(applicationModel.preferences().node(AUXILIARY).node(entityPanel.preferencesKey()));
 		}
 		entityPanel.initialize();
 		if (CACHE_ENTITY_PANELS.getOrThrow()) {
@@ -1180,7 +1188,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {
 		displayedEntityPanels.remove(entityPanel);
-		entityPanel.store(applicationModel.preferences().node(AUXILIARY_PANEL_KEY).node(entityPanel.preferencesKey()));
+		entityPanel.store(applicationModel.preferences().node(AUXILIARY).node(entityPanel.preferencesKey()));
 		entityPanel.setPreferredSize(entityPanel.getSize());
 	}
 

@@ -43,7 +43,7 @@ final class EntityTablePanelPreferences {
 	private static final String AUTO_RESIZE_MODE = "auto-resize-mode";
 	private static final String EMPTY_JSON_OBJECT = "{}";
 
-	private static final String TABLE_KEY = "table";
+	private static final String SETTINGS_KEY = "settings";
 	private static final String EXPORT_KEY = "export";
 
 	private static final String COLUMNS_KEY = "columns";
@@ -70,10 +70,10 @@ final class EntityTablePanelPreferences {
 		requireNonNull(preferences);
 		requireNonNull(tablePanel);
 		try {
-			preferences.put(TABLE_KEY, createTablePreferences(tablePanel).toString());
+			preferences.put(SETTINGS_KEY, createSettingsPreferences(tablePanel).toString());
 		}
 		catch (Exception e) {
-			LOG.error("Error while storing table preferences", e);
+			LOG.error("Error while storing table settings preferences", e);
 		}
 		try {
 			preferences.put(COLUMNS_KEY, createColumnPreferences(tablePanel.table().columnModel()).toString());
@@ -99,10 +99,10 @@ final class EntityTablePanelPreferences {
 		requireNonNull(preferences);
 		requireNonNull(tablePanel);
 		try {
-			restoreTablePreferences(new JSONObject(preferences.get(TABLE_KEY, EMPTY_JSON_OBJECT)), tablePanel);
+			restoreSettingsPreferences(new JSONObject(preferences.get(SETTINGS_KEY, EMPTY_JSON_OBJECT)), tablePanel);
 		}
 		catch (Exception e) {
-			LOG.error("Error while restoring table preferences", e);
+			LOG.error("Error while restoring table settings preferences", e);
 		}
 		try {
 			JSONObject columnPrefs = new JSONObject(preferences.get(COLUMNS_KEY, EMPTY_JSON_OBJECT));
@@ -138,16 +138,16 @@ final class EntityTablePanelPreferences {
 		return columnPreferences;
 	}
 
-	private static JSONObject createTablePreferences(EntityTablePanel tablePanel) {
+	private static JSONObject createSettingsPreferences(EntityTablePanel tablePanel) {
 		JSONObject json = new JSONObject();
 		json.put(AUTO_RESIZE_MODE, tablePanel.table().getAutoResizeMode());
 
 		return json;
 	}
 
-	private static void restoreTablePreferences(JSONObject tablePreferences, EntityTablePanel tablePanel) {
-		if (tablePreferences.has(AUTO_RESIZE_MODE)) {
-			tablePanel.table().setAutoResizeMode(tablePreferences.getInt(AUTO_RESIZE_MODE));
+	private static void restoreSettingsPreferences(JSONObject settingsPreferences, EntityTablePanel tablePanel) {
+		if (settingsPreferences.has(AUTO_RESIZE_MODE)) {
+			tablePanel.table().setAutoResizeMode(settingsPreferences.getInt(AUTO_RESIZE_MODE));
 		}
 	}
 
