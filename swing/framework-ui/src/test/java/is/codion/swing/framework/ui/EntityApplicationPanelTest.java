@@ -34,6 +34,8 @@ import java.util.prefs.Preferences;
 import static is.codion.common.model.preferences.JsonPreferences.jsonPreferences;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EntityApplicationPanelTest {
 
@@ -66,6 +68,28 @@ public class EntityApplicationPanelTest {
 						.mainMenu(true)
 						.startupDialog(false)
 						.start(false);
+	}
+
+	@Test
+	void preferencesModelAndViewRoundTrip() {
+		// The model walk and the UI walk share the entities/<key> node, writing disjoint model/ and view/ subtrees
+		Preferences entities = jsonPreferences();
+
+		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		model.tableModel().query().condition().get(Employee.NAME).caseSensitive().set(true); // model state
+		EntityPanel panel = new EntityPanel(model);
+		panel.tablePanel().table().columnModel().visible(Employee.COMMISSION).set(false); // view state
+
+		model.store(entities);
+		panel.store(entities.node(panel.preferencesKey()));
+
+		SwingEntityModel restoredModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityPanel restoredPanel = new EntityPanel(restoredModel);
+		restoredModel.restore(entities);
+		restoredPanel.restore(entities.node(restoredPanel.preferencesKey()));
+
+		assertTrue(restoredModel.tableModel().query().condition().get(Employee.NAME).caseSensitive().is());
+		assertFalse(restoredPanel.tablePanel().table().columnModel().visible(Employee.COMMISSION).is());
 	}
 
 	private static final class TestApplicationModel extends SwingEntityApplicationModel {
