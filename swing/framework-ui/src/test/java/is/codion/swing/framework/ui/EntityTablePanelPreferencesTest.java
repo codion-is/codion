@@ -18,8 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -111,28 +109,7 @@ public class EntityTablePanelPreferencesTest {
 		assertEquals(200, columnModel.column(Detail.DOUBLE).getPreferredWidth());
 	}
 
-	@Test
-	void conditionPreferences() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-
-		// Modify condition preferences
-		ConditionModel<?> stringCondition = tableModel.query().condition().get().get(Detail.STRING);
-		stringCondition.autoEnable().set(false);
-		stringCondition.caseSensitive().set(true);
-		stringCondition.operands().wildcard().set(Wildcard.PREFIX);
-
-		// Save and restore
-		tablePanel.store(preferences);
-		tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.restore(preferences);
-
-		// Verify restored condition preferences
-		stringCondition = tableModel.query().condition().get().get(Detail.STRING);
-		assertFalse(stringCondition.autoEnable().is());
-		assertTrue(stringCondition.caseSensitive().is());
-		assertEquals(Wildcard.PREFIX, stringCondition.operands().wildcard().get());
-	}
+	// Condition, filter and sort persistence is model-owned and covered by AbstractEntityTableModelTest.preferences()
 
 	@Test
 	void autoResizeMode() {
@@ -247,11 +224,6 @@ public class EntityTablePanelPreferencesTest {
 		columnModel.column(Detail.INT).setPreferredWidth(155);
 		tablePanel.table().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-		ConditionModel<?> stringCondition = tableModel.query().condition().get().get(Detail.STRING);
-		stringCondition.autoEnable().set(false);
-		stringCondition.caseSensitive().set(true);
-		stringCondition.operands().wildcard().set(Wildcard.POSTFIX);
-
 		// Save
 		tablePanel.store(preferences);
 
@@ -265,11 +237,6 @@ public class EntityTablePanelPreferencesTest {
 		assertEquals(0, columnModel.getColumnIndex(Detail.DOUBLE));
 		assertEquals(155, columnModel.column(Detail.INT).getPreferredWidth());
 		assertEquals(JTable.AUTO_RESIZE_OFF, tablePanel.table().getAutoResizeMode());
-
-		stringCondition = tableModel.query().condition().get().get(Detail.STRING);
-		assertFalse(stringCondition.autoEnable().is());
-		assertTrue(stringCondition.caseSensitive().is());
-		assertEquals(Wildcard.POSTFIX, stringCondition.operands().wildcard().get());
 	}
 
 	private static List<Entity> initTestEntities(Entities entities) {

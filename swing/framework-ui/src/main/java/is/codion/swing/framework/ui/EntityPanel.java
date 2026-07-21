@@ -26,6 +26,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.model.EntityModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.border.Borders;
@@ -649,18 +650,18 @@ public class EntityPanel extends JPanel {
 	protected void setupControls() {}
 
 	/**
-	 * Returns the key used to identify user preferences for this panel.
+	 * Returns the key used to identify user preferences for this panel, delegating to the model by default.
 	 * The default implementation is:
 	 * {@snippet :
-	 * return model().entityType().name();
+	 * return model().preferencesKey();
 	 *}
-	 * Override in case this key is not unique within the application,
-	 * for example when the same entity type appears multiple times
-	 * in different contexts.
+	 * Override the model's {@link EntityModel#preferencesKey()} in case this key is not unique within the
+	 * application, for example when the same entity type appears multiple times in different contexts.
 	 * @return the key used to identify user preferences for this panel
+	 * @see EntityModel#preferencesKey()
 	 */
 	public String preferencesKey() {
-		return model().entityType().name();
+		return model().preferencesKey();
 	}
 
 	/**
