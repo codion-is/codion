@@ -41,6 +41,8 @@ public final class PreferencesMigratorTest {
 		table.put("columns", "{\"ename\":{\"w\":100,\"i\":0}}");
 		table.put("export", "{\"format\":\"csv\"}");
 		employee.node("editPanel").put("custom", "value");
+		// a panel-level key from an app's EntityPanel.store() override
+		employee.put("panelCustom", "panelValue");
 		employee.node("detailPanels").node("employees.department").node("tablePanel").put("conditions", "{\"loc\":{\"cs\":1}}");
 		// auxiliary panel
 		root.node("auxiliaryPanels").node("employees.lookup").node("tablePanel").put("columns", "{\"x\":{\"w\":50}}");
@@ -65,6 +67,8 @@ public final class PreferencesMigratorTest {
 		assertTrue(viewTable.get("columns", "").contains("\"w\""));
 		assertTrue(viewTable.get("export", "").contains("csv"));
 		assertEquals("value", employeeV2.node("view").node("edit").get("custom", null));
+		// panel-level override keys stay at the entity node, where a v2 EntityPanel.restore() override reads
+		assertEquals("panelValue", employeeV2.get("panelCustom", null));
 
 		// detail recursed
 		assertTrue(employeeV2.node("details").node("employees.department")

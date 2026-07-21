@@ -18,6 +18,9 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityApplicationModel, EntityModel, EntityEditModel and EntityTableModel, store(Preferences) and restore(Preferences) added.
 - AbstractEntityTableModel now stores sorting state in preferences.
+- Preferences duplicate key warnings added.
+- EntityTableModelPreferences.createConditionPreferences() made more resilient.
+- EntityTableModelPreferences.restoreSortPreferences() no longer clears if nothing is being restored.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, deprecated legacy preferences removed.
 - EntityTablePanel, deprecated legacy preferences removed.

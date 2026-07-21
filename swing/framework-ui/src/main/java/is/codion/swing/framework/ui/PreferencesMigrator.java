@@ -179,14 +179,11 @@ final class PreferencesMigrator {
 		}
 	}
 
-	// Any value keys directly under the panel node came from an app's EntityPanel.store() override, default them to view/
+	// Any value keys directly under the panel node came from an app's EntityPanel.store() override, which in v2
+	// receives the entity node - keep them there, so an overridden restore() finds them where it reads
 	private static void migratePanelKeys(Preferences v1Panel, Preferences v2Entity) throws BackingStoreException {
-		String[] keys = v1Panel.keys();
-		if (keys.length > 0) {
-			Preferences view = v2Entity.node(VIEW);
-			for (String key : keys) {
-				view.put(key, v1Panel.get(key, ""));
-			}
+		for (String key : v1Panel.keys()) {
+			v2Entity.put(key, v1Panel.get(key, ""));
 		}
 	}
 

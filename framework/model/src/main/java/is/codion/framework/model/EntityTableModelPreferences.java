@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
@@ -137,26 +138,33 @@ final class EntityTableModelPreferences {
 
 	private static JSONObject createConditionPreferences(Map<Attribute<?>, ConditionModel<?>> conditions) {
 		JSONObject conditionPreferences = new JSONObject();
+		// No configuration property for the autoEnable default (unlike CASE_SENSITIVE/WILDCARD) - update if one appears
 		boolean defaultAutoEnable = true;
 		boolean defaultCaseSensitive = CASE_SENSITIVE.getOrThrow();
 		Wildcard defaultWildcard = WILDCARD.getOrThrow();
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> entry : conditions.entrySet()) {
-			ConditionModel<?> condition = entry.getValue();
-			JSONObject conditionJson = new JSONObject();
-			boolean autoEnable = condition.autoEnable().is();
-			boolean caseSensitive = condition.caseSensitive().is();
-			Wildcard wildcard = condition.operands().wildcard().getOrThrow();
-			if (autoEnable != defaultAutoEnable) {
-				conditionJson.put(AUTO_ENABLE, autoEnable ? 1 : 0);
+			try {
+				ConditionModel<?> condition = entry.getValue();
+				JSONObject conditionJson = new JSONObject();
+				boolean autoEnable = condition.autoEnable().is();
+				boolean caseSensitive = condition.caseSensitive().is();
+				Wildcard wildcard = condition.operands().wildcard().getOrThrow();
+				if (autoEnable != defaultAutoEnable) {
+					conditionJson.put(AUTO_ENABLE, autoEnable ? 1 : 0);
+				}
+				if (caseSensitive != defaultCaseSensitive) {
+					conditionJson.put(CASE_SENSITIVE_KEY, caseSensitive ? 1 : 0);
+				}
+				if (wildcard != defaultWildcard) {
+					conditionJson.put(WILDCARD_KEY, wildcard.name());
+				}
+				if (!conditionJson.isEmpty()) {
+					conditionPreferences.put(entry.getKey().name(), conditionJson);
+				}
 			}
-			if (caseSensitive != defaultCaseSensitive) {
-				conditionJson.put(CASE_SENSITIVE_KEY, caseSensitive ? 1 : 0);
-			}
-			if (wildcard != defaultWildcard) {
-				conditionJson.put(WILDCARD_KEY, wildcard.name());
-			}
-			if (!conditionJson.isEmpty()) {
-				conditionPreferences.put(entry.getKey().name(), conditionJson);
+			catch (Exception e) {
+				// Same per-item granularity as restore - one misbehaving condition model doesn't cost the rest
+				LOG.error("Error while storing condition/filter preferences for attribute: {}", entry.getKey(), e);
 			}
 		}
 
@@ -200,20 +208,34 @@ final class EntityTableModelPreferences {
 	}
 
 	private static void restoreSortPreferences(JSONArray sortPreferences, EntityTableModel<?, ?> tableModel) {
-		FilterTableSort<Entity, Attribute<?>> sort = tableModel.sort();
-		sort.clear();
+		// Resolve first, clear only if anything resolves - otherwise stale/unknown stored attributes
+		// would wipe a programmatically configured default sort and restore nothing in its place
+		Map<Attribute<?>, SortOrder> sortOrders = new LinkedHashMap<>();
 		EntityDefinition definition = tableModel.entityDefinition();
 		for (int i = 0; i < sortPreferences.length(); i++) {
 			try {
 				JSONObject sortJson = sortPreferences.getJSONObject(i);
 				Attribute<?> attribute = definition.attributes().get(sortJson.getString(SORT_COLUMN));
 				if (attribute != null) {
-					sort.order(attribute).add(SortOrder.valueOf(sortJson.getString(SORT_ORDER)));
+					sortOrders.put(attribute, SortOrder.valueOf(sortJson.getString(SORT_ORDER)));
 				}
 			}
 			catch (Exception e) {
 				LOG.error("Error parsing sort preferences", e);
 			}
+		}
+		if (!sortOrders.isEmpty()) {
+			FilterTableSort<Entity, Attribute<?>> sort = tableModel.sort();
+			sort.clear();
+			sortOrders.forEach((attribute, sortOrder) -> {
+				try {
+					sort.order(attribute).add(sortOrder);
+				}
+				catch (Exception e) {
+					// IllegalStateException in case sorting is locked for the column
+					LOG.error("Error restoring sort preferences for attribute: {}", attribute, e);
+				}
+			});
 		}
 	}
 }
