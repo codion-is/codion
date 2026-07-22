@@ -98,7 +98,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static is.codion.common.model.preferences.FilePreferences.filePreferences;
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -370,10 +369,14 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		catch (Exception e) {
 			LOG.debug("Exception while disconnecting from database", e);
 		}
-		try {
-			Stream.of(Window.getWindows()).forEach(Window::dispose);
+		for (Window window : Window.getWindows()) {
+			try {
+				window.dispose();
+			}
+			catch (Exception e) {
+				LOG.debug("Exception while disposing window on exit: {}", window, e);
+			}
 		}
-		catch (Exception ignored) {/*ignored*/}
 		if (SYSTEM_EXIT.getOrThrow()) {
 			System.exit(0);
 		}
