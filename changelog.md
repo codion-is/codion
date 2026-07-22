@@ -31,6 +31,7 @@ Codion Change Log
 - PreferencesMigrator added.
 - Preferences ownership moved to application.
 - EntityDependenciesPanel preferences updated.
+- EntityApplicationPanel.exit(), error during window disposal no longer prevents further disposals, logged.
 
 ## 0.18.80
 ### is.codion.common.reactive
