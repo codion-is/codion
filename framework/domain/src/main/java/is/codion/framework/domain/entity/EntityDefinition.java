@@ -143,7 +143,15 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	Predicate<Entity> exists();
 
 	/**
+	 * Returns the caption, resolved in the following order of precedence:
+	 * <ol>
+	 *   <li>the caption specified via {@link Builder#caption(String)}, if any
+	 *   <li>the caption from the entity resource bundle, if a matching key is available
+	 *   <li>the entity type name ({@link EntityType#name()})
+	 * </ol>
 	 * @return the caption to use when presenting entities of this type
+	 * @see Builder#caption(String)
+	 * @see Builder#captionResourceKey(String)
 	 */
 	String caption();
 
@@ -372,18 +380,24 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		Builder condition(ConditionType conditionType, ConditionString conditionString);
 
 		/**
-		 * Sets the caption for this entity type
+		 * Sets the caption for this entity type. A caption specified via this method takes precedence
+		 * over any caption available from the entity resource bundle, and is mutually exclusive with
+		 * {@link #captionResourceKey(String)}.
 		 * @param caption the caption
 		 * @return this {@link Builder} instance
+		 * @throws IllegalStateException in case a caption resource key has already been specified via {@link #captionResourceKey(String)}
+		 * @see #captionResourceKey(String)
 		 */
 		Builder caption(String caption);
 
 		/**
 		 * Specifies the resource bundle key associated with the caption.
-		 * Defaults to {@code entityType.name()}
+		 * Defaults to {@code entityType.name()}. Mutually exclusive with {@link #caption(String)}.
 		 * @param captionResourceKey the name of the resource bundle key associated with the caption for this entity
 		 * @return this {@link Builder} instance
+		 * @throws IllegalStateException in case the caption has already been set via {@link #caption(String)}
 		 * @see EntityType#resourceBundleName()
+		 * @see #caption(String)
 		 */
 		Builder captionResourceKey(String captionResourceKey);
 

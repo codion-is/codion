@@ -145,6 +145,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public String caption() {
+		if (caption != null) {
+			return caption;
+		}
 		String resourceBundleName = entityType.resourceBundleName().orElse(null);
 		if (resourceBundleName != null) {
 			if (resourceCaption == null) {
@@ -157,7 +160,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			}
 		}
 
-		return caption == null ? entityType.name() : caption;
+		return entityType.name();
 	}
 
 	@Override
@@ -825,6 +828,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private @Nullable Map<ConditionType, ConditionString> conditionStrings;
 		private @Nullable String caption;
 		private String captionResourceKey;
+		private boolean captionResourceKeyRequested;
 		private @Nullable String description;
 		private String descriptionResourceKey;
 		private boolean smallDataset;
@@ -871,6 +875,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public Builder caption(String caption) {
+			if (captionResourceKeyRequested) {
+				throw new IllegalStateException("Caption resource key has already been set for entity: " + attributes.entityType);
+			}
 			this.caption = requireNonNull(caption);
 			return this;
 		}
@@ -881,6 +888,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 				throw new IllegalStateException("Caption has already been set for entity: " + attributes.entityType);
 			}
 			this.captionResourceKey = requireNonNull(captionResourceKey);
+			this.captionResourceKeyRequested = true;
 			return this;
 		}
 

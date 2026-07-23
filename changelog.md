@@ -19,6 +19,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - Attribute.DataType.validateType() renamed validate().
 - Attribute caption specified via builder now takes precedence over resource bundle caption.
+- Entity caption specified via builder now takes precedence over resource bundle caption.
 ### is.codion.framework.model
 - EntityApplicationModel, EntityModel, EntityEditModel and EntityTableModel, store(Preferences) and restore(Preferences) added.
 - AbstractEntityTableModel now stores sorting state in preferences.

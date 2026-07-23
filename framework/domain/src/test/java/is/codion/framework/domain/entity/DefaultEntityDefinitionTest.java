@@ -535,6 +535,36 @@ public class DefaultEntityDefinitionTest {
 	}
 
 	@Test
+	void captionPrecedence() {
+		EntityType entityType = DOMAIN_TYPE.entityType("test", DefaultEntityDefinitionTest.class.getName());
+
+		Locale.setDefault(new Locale("en", "EN"));
+		// An explicit caption wins over the entity resource bundle,
+		// even when a matching bundle key ("test") is available
+		EntityDefinition explicitCaption = entityType.as()
+						.attributes(entityType.integerColumn("attribute").as().primaryKey())
+						.caption("Explicit")
+						.build();
+		assertEquals("Explicit", explicitCaption.caption());
+
+		// No explicit caption falls back to the bundle
+		EntityDefinition bundleCaption = entityType.as()
+						.attributes(entityType.integerColumn("attribute").as().primaryKey())
+						.build();
+		assertEquals("Test", bundleCaption.caption());
+
+		// caption and captionResourceKey are mutually exclusive, in both directions
+		assertThrows(IllegalStateException.class, () -> entityType.as()
+						.attributes(entityType.integerColumn("attribute").as().primaryKey())
+						.caption("Explicit")
+						.captionResourceKey("test"));
+		assertThrows(IllegalStateException.class, () -> entityType.as()
+						.attributes(entityType.integerColumn("attribute").as().primaryKey())
+						.captionResourceKey("test")
+						.caption("Explicit"));
+	}
+
+	@Test
 	void entityTypeMismatch() {
 		EntityType entityType1 = DOMAIN_TYPE.entityType("mismatch1");
 		EntityType entityType2 = DOMAIN_TYPE.entityType("mismatch2");
