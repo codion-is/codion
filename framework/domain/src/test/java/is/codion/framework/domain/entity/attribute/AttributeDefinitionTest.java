@@ -246,6 +246,29 @@ public final class AttributeDefinitionTest {
 	}
 
 	@Test
+	void captionPrecedence() {
+		Locale.setDefault(new Locale("en", "EN"));
+		// An explicit caption wins over the auto-discovered entity resource bundle,
+		// even when a matching bundle key ("test") is available
+		AttributeDefinition<Integer> explicitCaption =
+						ENTITY_TYPE.integerColumn("test").as().column().caption("Explicit").build();
+		assertEquals("Explicit", explicitCaption.caption());
+
+		// No caption and no matching bundle key falls back to the attribute name
+		AttributeDefinition<Integer> noResource =
+						ENTITY_TYPE.integerColumn("noResource").as().column().build();
+		assertEquals("noResource", noResource.caption());
+
+		// caption and captionResource are mutually exclusive, in both directions
+		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("test").as().column()
+						.caption("Explicit")
+						.captionResource("test"));
+		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("test").as().column()
+						.captionResource("test")
+						.caption("Explicit"));
+	}
+
+	@Test
 	void itemAttribute() {
 		List<Item<Integer>> itemsDuplicate = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
 		assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("item").as().column().items(itemsDuplicate));

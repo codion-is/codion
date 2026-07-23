@@ -219,8 +219,16 @@ public sealed interface AttributeDefinition<T>
 	EntityType entityType();
 
 	/**
-	 * @return the caption or the attribute name if no caption has been specified
+	 * Returns the caption, resolved in the following order of precedence:
+	 * <ol>
+	 *   <li>the caption specified via {@link Builder#caption(String)}, if any
+	 *   <li>the caption from the entity resource bundle, if a matching key is available
+	 *   <li>the attribute name ({@link Attribute#name()})
+	 * </ol>
+	 * @return the caption
 	 * @see Attribute#name()
+	 * @see Builder#caption(String)
+	 * @see Builder#captionResource(String)
 	 */
 	String caption();
 
@@ -319,36 +327,43 @@ public sealed interface AttributeDefinition<T>
 		Attribute<T> attribute();
 
 		/**
-		 * Note that this method has a side effect, when setting the caption to a null value
+		 * Specifies the caption to use for this attribute. A caption specified via this method takes
+		 * precedence over any caption available from the entity resource bundle, and is mutually
+		 * exclusive with {@link #captionResource(String)}.
+		 * <p>Note that this method has a side effect, when setting the caption to a null value
 		 * this attribute is automatically hidden via {@link #hidden(boolean)}, when
 		 * a non-null value is used it is automatically made visible (as in, not hidden).
 		 * @param caption the caption
 		 * @return this builder instance
+		 * @throws IllegalStateException in case a non-null caption is specified after a caption resource has been specified via {@link #captionResource(String)}
 		 * @see #hidden(boolean)
+		 * @see #captionResource(String)
 		 */
 		B caption(@Nullable String caption);
 
 		/**
 		 * Specifies the key to use when retrieving the caption for this attribute from the entity resource bundle,
 		 * in case it differs from the attribute name ({@link Attribute#name()}), which is the default value.
-		 * Note that this configures the attribute to not be hidden.
+		 * Note that this configures the attribute to not be hidden, and is mutually exclusive with {@link #caption(String)}.
 		 * @param captionResourceKey the caption resource bundle key
 		 * @return this builder instance
 		 * @throws IllegalStateException in case the caption has already been set
 		 * @throws IllegalStateException in case no resource bundle is specified for the entity
 		 * @throws IllegalStateException in case the caption resource is not found in the entity resource bundle
 		 * @see EntityType#resourceBundleName()
+		 * @see #caption(String)
 		 */
 		B captionResource(String captionResourceKey);
 
 		/**
 		 * Specifies the key to use when retrieving the caption for this attribute from the given resource bundle.
-		 * Note that this configures the attribute to not be hidden.
+		 * Note that this configures the attribute to not be hidden, and is mutually exclusive with {@link #caption(String)}.
 		 * @param resourceBundleName the resource bundle name
 		 * @param captionResourceKey the caption resource bundle key
 		 * @return this builder instance
 		 * @throws IllegalStateException in case the caption has already been set
 		 * @throws IllegalStateException in case the caption resource is not found in the given resource bundle
+		 * @see #caption(String)
 		 */
 		B captionResource(String resourceBundleName, String captionResourceKey);
 
