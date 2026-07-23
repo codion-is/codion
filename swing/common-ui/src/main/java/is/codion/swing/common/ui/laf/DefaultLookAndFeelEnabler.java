@@ -46,23 +46,25 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	private final LookAndFeelInfo lookAndFeelInfo;
 	private final Consumer<LookAndFeelInfo> enabler;
 	private final boolean installed;
+	private final boolean dark;
 
 	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo) {
 		this(lookAndFeelInfo, DEFAULT_ENABLER, false);
 	}
 
-	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
-		this(lookAndFeelInfo, enabler, false);
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean dark) {
+		this(lookAndFeelInfo, enabler, false, dark);
 	}
 
-	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean installed) {
-		this(lookAndFeelInfo, DEFAULT_ENABLER, installed);
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean installed, boolean dark) {
+		this(lookAndFeelInfo, DEFAULT_ENABLER, installed, dark);
 	}
 
-	private DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean installed) {
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean installed, boolean dark) {
 		this.lookAndFeelInfo = requireNonNull(lookAndFeelInfo);
 		this.enabler = requireNonNull(enabler);
 		this.installed = installed;
+		this.dark = dark;
 	}
 
 	@Override
@@ -73,6 +75,11 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	@Override
 	public void enable() {
 		enabler.accept(lookAndFeelInfo);
+	}
+
+	@Override
+	public boolean dark() {
+		return dark;
 	}
 
 	@Override

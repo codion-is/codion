@@ -38,6 +38,7 @@ import java.awt.Component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
 import static is.codion.common.utilities.item.Item.item;
@@ -81,6 +82,8 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	private final LookAndFeelEnabler originalLookAndFeel = createOriginalLookAndFeel();
 
 	private final State includeInstalled;
+	private final State includeLight;
+	private final State includeDark;
 
 	private LookAndFeelComboBox(DefaultBuilder builder) {
 		super(createLookAndFeelComboBoxModel());
@@ -96,8 +99,16 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 						.value(builder.includeInstalled)
 						.listener(getModel().items()::filter)
 						.build();
+		includeLight = State.builder()
+						.value(true)
+						.listener(getModel().items()::filter)
+						.build();
+		includeDark = State.builder()
+						.value(true)
+						.listener(getModel().items()::filter)
+						.build();
 		getModel().items().included().predicate()
-						.set(item -> includeInstalled.is() || !item.getOrThrow().installed());
+						.set(new IncludePredicate());
 		if (builder.onSelection != null) {
 			getModel().selection().item().addConsumer(item ->
 							builder.onSelection.accept(item.getOrThrow()));
@@ -118,6 +129,20 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	 */
 	public State includeInstalled() {
 		return includeInstalled;
+	}
+
+	/**
+	 * @return a {@link State} controlling whether light look and feels are included
+	 */
+	public State includeLight() {
+		return includeLight;
+	}
+
+	/**
+	 * @return a {@link State} controlling whether dark look and feels are included
+	 */
+	public State includeDark() {
+		return includeDark;
 	}
 
 	/**
@@ -273,6 +298,22 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 			}
 
 			return panel;
+		}
+	}
+
+	private class IncludePredicate implements Predicate<Item<LookAndFeelEnabler>> {
+
+		@Override
+		public boolean test(Item<LookAndFeelEnabler> item) {
+			LookAndFeelEnabler enabler = item.getOrThrow();
+			if (!includeLight.is() && !enabler.dark()) {
+				return false;
+			}
+			if (!includeDark.is() && enabler.dark()) {
+				return false;
+			}
+
+			return includeInstalled.is() || !enabler.installed();
 		}
 	}
 

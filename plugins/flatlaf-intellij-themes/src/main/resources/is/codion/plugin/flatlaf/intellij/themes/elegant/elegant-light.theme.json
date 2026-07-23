@@ -1,6 +1,6 @@
 {
   "name": "Elegant Light",
-  "dark": false,
+  "dark": true,
   "author": "yx208",
   "editorScheme": "/theme/elegant-light.theme.icls",
   "colors": {
