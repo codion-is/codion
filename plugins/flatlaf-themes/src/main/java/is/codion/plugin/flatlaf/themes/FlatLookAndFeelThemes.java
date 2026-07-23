@@ -35,6 +35,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
 import static java.util.Arrays.asList;
@@ -44,22 +45,39 @@ import static java.util.Objects.requireNonNull;
 /**
  * Provides all available Flat Look and Feels
  */
-public final class FlatLookAndFeelProvider implements LookAndFeelProvider {
+public final class FlatLookAndFeelThemes {
 
 	private static final Consumer<LookAndFeelInfo> ENABLER = new DefaultEnabler();
 
-	public FlatLookAndFeelProvider() {}
+	private static final Collection<LookAndFeelEnabler> LOOK_AND_FEELS = unmodifiableList(asList(
+					lookAndFeelEnabler(new LookAndFeelInfo("Flat Darcula ", FlatDarculaLaf.class.getName()), ENABLER),
+					lookAndFeelEnabler(new LookAndFeelInfo("Flat Dark", FlatDarkLaf.class.getName()), ENABLER),
+					lookAndFeelEnabler(new LookAndFeelInfo("Flat IntelliJ", FlatIntelliJLaf.class.getName()), ENABLER),
+					lookAndFeelEnabler(new LookAndFeelInfo("Flat Light", FlatLightLaf.class.getName()), ENABLER),
+					lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Dark", FlatMacDarkLaf.class.getName()), ENABLER),
+					lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Light", FlatMacLightLaf.class.getName()), ENABLER)
+	));
 
-	@Override
-	public Collection<LookAndFeelEnabler> get() {
-		return unmodifiableList(asList(
-						lookAndFeelEnabler(new LookAndFeelInfo("Flat Darcula ", FlatDarculaLaf.class.getName()), ENABLER),
-						lookAndFeelEnabler(new LookAndFeelInfo("Flat Dark", FlatDarkLaf.class.getName()), ENABLER),
-						lookAndFeelEnabler(new LookAndFeelInfo("Flat IntelliJ", FlatIntelliJLaf.class.getName()), ENABLER),
-						lookAndFeelEnabler(new LookAndFeelInfo("Flat Light", FlatLightLaf.class.getName()), ENABLER),
-						lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Dark", FlatMacDarkLaf.class.getName()), ENABLER),
-						lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Light", FlatMacLightLaf.class.getName()), ENABLER)
-		));
+	private FlatLookAndFeelThemes() {}
+
+	/**
+	 * Registers the IntelliJ themes, making them available via {@link LookAndFeelProvider}, for example
+	 * to a {@link is.codion.swing.common.ui.laf.LookAndFeelComboBox}. Call once during application startup.
+	 */
+	public static void addAll() {
+		add(info -> true);
+	}
+
+	/**
+	 * Registers the IntelliJ themes, making them available via {@link LookAndFeelProvider}, for example
+	 * to a {@link is.codion.swing.common.ui.laf.LookAndFeelComboBox}. Call once during application startup.
+	 * @param include controls which look and feels to include
+	 */
+	public static void add(Predicate<LookAndFeelInfo> include) {
+		requireNonNull(include);
+		LOOK_AND_FEELS.stream()
+						.filter(enabler -> include.test(enabler.lookAndFeelInfo()))
+						.forEach(LookAndFeelProvider::addLookAndFeel);
 	}
 
 	/**

@@ -29,6 +29,7 @@ module is.codion.demos.employees {
 	requires is.codion.swing.framework.ui;
 	requires is.codion.framework.server;
 	requires is.codion.plugin.jasperreports;
+	requires is.codion.plugin.flatlaf.themes;
 	requires is.codion.plugin.flatlaf.intellij.themes;
 	requires is.codion.tools.swing.robot;
 	requires is.codion.tools.swing.mcp;

@@ -149,6 +149,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -161,11 +162,7 @@ import static java.util.Objects.requireNonNull;
  * <p>Provides Look And Feels based on IntelliJ themes.
  * <p>Uses Flat Look And Feel under the hood.
  */
-public final class IntelliJThemeProvider implements LookAndFeelProvider {
-
-	private static final Consumer<LookAndFeelInfo> ENABLER = new DefaultEnabler();
-
-	private final Collection<LookAndFeelEnabler> enablers;
+public final class FlatLookAndFeelIntelliJThemes {
 
 	static {
 		// Turn off FlatLaf logging to get around
@@ -174,8 +171,9 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 		Logger.getLogger(FlatLaf.class.getName()).setLevel(Level.OFF);
 	}
 
-	public IntelliJThemeProvider() {
-		enablers = unmodifiableList(asList(
+	private static final Consumer<LookAndFeelInfo> ENABLER = new DefaultEnabler();
+
+	private static final Collection<LookAndFeelEnabler> LOOK_AND_FEELS = unmodifiableList(asList(
 						lookAndFeelEnabler(new LookAndFeelInfo("Nature Aurora Borealis", AuroraBorealis.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("Nature Autumn", Autumn.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("Nature Everest", Everest.class.getName()), ENABLER),
@@ -300,14 +298,32 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 						lookAndFeelEnabler(new LookAndFeelInfo("One Dark", OneDark.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("Vuesion", Vuesion.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("XCode Dark", XcodeDark.class.getName()), ENABLER)
-		));
+	));
+
+	private FlatLookAndFeelIntelliJThemes() {}
+
+	/**
+	 * Registers the IntelliJ themes, making them available via {@link LookAndFeelProvider}, for example
+	 * to a {@link is.codion.swing.common.ui.laf.LookAndFeelComboBox}. Call once during application startup.
+	 */
+	public static void addAll() {
+		add(info -> true);
 	}
 
 	/**
-	 * @return all available IntelliJ Theme Look and Feels
+	 * Registers the IntelliJ themes, making them available via {@link LookAndFeelProvider}, for example
+	 * to a {@link is.codion.swing.common.ui.laf.LookAndFeelComboBox}. Call once during application startup.
+	 * @param include controls which look and feels to include
 	 */
-	public Collection<LookAndFeelEnabler> get() {
-		return enablers;
+	public static void add(Predicate<LookAndFeelInfo> include) {
+		requireNonNull(include);
+		LOOK_AND_FEELS.stream()
+						.filter(enabler -> include.test(enabler.lookAndFeelInfo()))
+						.forEach(LookAndFeelProvider::addLookAndFeel);
+	}
+
+	static Collection<LookAndFeelEnabler> lookAndFeels() {
+		return LOOK_AND_FEELS;
 	}
 
 	/**

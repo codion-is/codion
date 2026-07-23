@@ -20,10 +20,10 @@ package is.codion.plugin.flatlaf.intellij;
 
 import org.junit.jupiter.api.Test;
 
-public class IntelliJThemeProviderTest {
+public class FlatLookAndFeelIntelliJThemesTest {
 
 	@Test
 	void test() {
-		new IntelliJThemeProvider().get().forEach(theme -> theme.lookAndFeel().getDefaults());
+		FlatLookAndFeelIntelliJThemes.lookAndFeels().forEach(theme -> theme.lookAndFeel().getDefaults());
 	}
 }
