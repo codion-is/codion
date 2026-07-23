@@ -34,8 +34,10 @@ Codion Change Log
 - EntityApplicationPanel.exit(), error during window disposal no longer prevents further disposals, logged.
 ### is.codion.tools.swing.mcp
 - SwingMcpServer now Swing EDT compliant.
+- SwingMcpServer now attaches the narrator window.
 ### is.codion.tools.swing.robot
 - Controller, DefaultAutomation and Narrator now Swing EDT compliant.
+- Narrator, window parameter added to factory method.
 
 ## 0.18.80
 ### is.codion.common.reactive

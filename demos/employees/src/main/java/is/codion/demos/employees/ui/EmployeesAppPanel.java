@@ -62,7 +62,6 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	public EmployeesAppPanel(EmployeesAppModel applicationModel) {
 		super(applicationModel, createPanels(applicationModel), emptyList());
-		mcpController.set(true);
 	}
 
 	private static List<EntityPanel> createPanels(EmployeesAppModel applicationModel) {

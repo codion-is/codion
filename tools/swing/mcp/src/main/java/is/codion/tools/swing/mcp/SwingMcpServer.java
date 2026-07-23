@@ -500,7 +500,7 @@ public final class SwingMcpServer {
 	private void initializeServer() {
 		this.controller = Controller.controller(Controller.Transport.EDT);
 		this.inspectors = UiInspector.instances();
-		this.narrator = includeNarrator ? Narrator.narrator(controller) : null;
+		this.narrator = includeNarrator ? Narrator.narrator(controller, onEventDispatchThread(applicationWindow)) : null;
 		this.windowEventListener = new WindowEventListener();
 		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);
 	}

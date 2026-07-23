@@ -141,18 +141,20 @@ public final class Narrator {
 	}
 
 	/**
-	 * Instantiates a new {@link Narrator}, on the event dispatch thread.
+	 * Instantiates a new {@link Narrator} attached to the given window, on the event dispatch thread.
 	 * @param controller the controller to narrate
+	 * @param window the window to attach to
 	 * @return a new {@link Narrator}
 	 */
-	public static Narrator narrator(Controller controller) {
+	public static Narrator narrator(Controller controller, Window window) {
 		requireNonNull(controller);
+		requireNonNull(window);
 		if (SwingUtilities.isEventDispatchThread()) {
-			return new Narrator(controller);
+			return create(controller, window);
 		}
 		AtomicReference<Narrator> narrator = new AtomicReference<>();
 		try {
-			SwingUtilities.invokeAndWait(() -> narrator.set(new Narrator(controller)));
+			SwingUtilities.invokeAndWait(() -> narrator.set(create(controller, window)));
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -172,31 +174,20 @@ public final class Narrator {
 		onEventDispatchThread(() -> {
 			narration.setText("");
 			keyStrokeTable.model().items().clear();
-			detachFromWindow();
+			detach();
 			frame.dispose();
 		});
 	}
 
-	/**
-	 * Attaches this narrator to the given window
-	 * @param window the window to attach to
-	 */
-	void attach(Window window) {
-		requireNonNull(window);
-		onEventDispatchThread(() -> attachToWindow(window));
+	private static Narrator create(Controller controller, Window window) {
+		Narrator narrator = new Narrator(controller);
+		narrator.attach(window);
+
+		return narrator;
 	}
 
-	/**
-	 * Detaches this narrator from its currently attached window.
-	 */
-	void detach() {
-		onEventDispatchThread(this::detachFromWindow);
-	}
-
-	private void attachToWindow(Window window) {
-		if (this.window != null) {
-			detachFromWindow();
-		}
+	// Called only during construction, on the event dispatch thread
+	private void attach(Window window) {
 		this.window = window;
 		window.addComponentListener(resizer);
 		window.addWindowListener(detachOnClose);
@@ -205,7 +196,8 @@ public final class Narrator {
 		frame.setVisible(true);
 	}
 
-	private void detachFromWindow() {
+	// Called on the event dispatch thread, from close() and the window closing listener
+	private void detach() {
 		if (window != null) {
 			window.removeComponentListener(resizer);
 			window.removeWindowListener(detachOnClose);
