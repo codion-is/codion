@@ -55,6 +55,11 @@ public interface LookAndFeelEnabler {
 	LookAndFeel lookAndFeel();
 
 	/**
+	 * @return true if this enabler represents a dark look and feel
+	 */
+	boolean dark();
+
+	/**
 	 * Whether this is one of the platform look and feels provided by {@link javax.swing.UIManager#getInstalledLookAndFeels()},
 	 * as opposed to one registered via {@link LookAndFeelProvider}. Determined when the enabler is created.
 	 * @return true if this represents an installed platform look and feel
@@ -86,7 +91,20 @@ public interface LookAndFeelEnabler {
 	 * @return a look and feel provider
 	 */
 	static LookAndFeelEnabler lookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
-		return new DefaultLookAndFeelEnabler(lookAndFeelInfo, enabler);
+		return lookAndFeelEnabler(lookAndFeelInfo, false, enabler);
+	}
+
+	/**
+	 * Instantiates a new {@link LookAndFeelEnabler}.
+	 * <p>The {@code enabler} is responsible for configuring and enabling the look and feel as well as updating the component
+	 * tree of all application windows, for example by calling {@link Utilities#updateComponentTreeForAllWindows()}
+	 * @param lookAndFeelInfo the look and feel info
+	 * @param dark true if the resulting enabler should represent a dark look and feel
+	 * @param enabler configures and enables the look and feel as well as updates the component tree of all application windows
+	 * @return a look and feel provider
+	 */
+	static LookAndFeelEnabler lookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean dark, Consumer<LookAndFeelInfo> enabler) {
+		return new DefaultLookAndFeelEnabler(lookAndFeelInfo, enabler, false, dark);
 	}
 
 	/**

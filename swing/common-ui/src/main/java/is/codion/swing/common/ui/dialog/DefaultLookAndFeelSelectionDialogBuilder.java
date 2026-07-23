@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
-import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.component.panel.GridLayoutPanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
@@ -32,10 +32,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.util.function.Consumer;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
@@ -94,14 +95,11 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 		JPanel basePanel = new JPanel(new BorderLayout());
 		basePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, 0, PADDING));
 		basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);
-		if (auxiliaryLookAndFeelsAvailable() && allowInstalled) {
-			basePanel.add(PanelBuilder.builder()
-							.flowLayout(FlowLayout.TRAILING)
-							.add(CheckBoxBuilder.builder()
-											.link(lookAndFeelComboBox.includeInstalled())
-											.text(MESSAGES.getString("include_installed"))
-											.mnemonic(MESSAGES.getString("include_installed_mnemonic").charAt(0))
-											.includeText(true))
+		JPanel configPanel = createConfigPanel(lookAndFeelComboBox);
+		if (configPanel != null) {
+			basePanel.add(borderLayoutPanel()
+							.border(BorderFactory.createTitledBorder(MESSAGES.getString("include")))
+							.east(configPanel)
 							.build(), BorderLayout.SOUTH);
 		}
 		DefaultOkCancelDialogBuilder.OK_CANCEL_COMPONENT
@@ -110,7 +108,43 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 						.title(MESSAGES.getString("look_and_feel"))
 						.onOk(() -> selectedLookAndFeel.accept(lookAndFeelComboBox.selectedLookAndFeel()))
 						.onCancel(lookAndFeelComboBox::revert)
+						.onShown(dialog -> lookAndFeelComboBox.requestFocusInWindow())
 						.show();
+	}
+
+	private @Nullable JPanel createConfigPanel(LookAndFeelComboBox lookAndFeelComboBox) {
+		boolean darkAvailable = darkLookAndFeelsAvailable();
+		if (auxiliaryLookAndFeelsAvailable() && (darkAvailable || allowInstalled)) {
+			GridLayoutPanelBuilder builder = gridLayoutPanel(1, 0);
+			if (darkAvailable) {
+				builder.add(CheckBoxBuilder.builder()
+												.link(lookAndFeelComboBox.includeLight())
+												.text(MESSAGES.getString("light"))
+												.mnemonic(MESSAGES.getString("light_mnemonic").charAt(0))
+												.includeText(true))
+								.add(CheckBoxBuilder.builder()
+												.link(lookAndFeelComboBox.includeDark())
+												.text(MESSAGES.getString("dark"))
+												.mnemonic(MESSAGES.getString("dark_mnemonic").charAt(0))
+												.includeText(true));
+			}
+			if (allowInstalled) {
+				builder.add(CheckBoxBuilder.builder()
+								.link(lookAndFeelComboBox.includeInstalled())
+								.text(MESSAGES.getString("installed"))
+								.mnemonic(MESSAGES.getString("installed_mnemonic").charAt(0))
+								.includeText(true));
+			}
+
+			return builder.build();
+		}
+
+		return null;
+	}
+
+	private static boolean darkLookAndFeelsAvailable() {
+		return LookAndFeelProvider.lookAndFeels().stream()
+						.anyMatch(LookAndFeelEnabler::dark);
 	}
 
 	private static boolean auxiliaryLookAndFeelsAvailable() {

@@ -35,7 +35,7 @@ public final class InstalledLookAndFeelProvider implements LookAndFeelProvider {
 	public Collection<LookAndFeelEnabler> get() {
 		return Stream.of(UIManager.getInstalledLookAndFeels())
 						.filter(InstalledLookAndFeelProvider::included)
-						.map(lookAndFeelInfo -> new DefaultLookAndFeelEnabler(lookAndFeelInfo, true))
+						.map(lookAndFeelInfo -> new DefaultLookAndFeelEnabler(lookAndFeelInfo, true, false))
 						.collect(toList());
 	}
 

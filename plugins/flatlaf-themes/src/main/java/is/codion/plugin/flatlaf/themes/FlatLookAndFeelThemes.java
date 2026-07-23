@@ -27,6 +27,7 @@ import is.codion.swing.common.ui.scaler.Scaler;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
@@ -50,12 +51,12 @@ public final class FlatLookAndFeelThemes {
 	private static final Consumer<LookAndFeelInfo> ENABLER = new DefaultEnabler();
 
 	private static final Collection<LookAndFeelEnabler> LOOK_AND_FEELS = unmodifiableList(asList(
-					lookAndFeelEnabler(new LookAndFeelInfo("Flat Darcula ", FlatDarculaLaf.class.getName()), ENABLER),
-					lookAndFeelEnabler(new LookAndFeelInfo("Flat Dark", FlatDarkLaf.class.getName()), ENABLER),
-					lookAndFeelEnabler(new LookAndFeelInfo("Flat IntelliJ", FlatIntelliJLaf.class.getName()), ENABLER),
-					lookAndFeelEnabler(new LookAndFeelInfo("Flat Light", FlatLightLaf.class.getName()), ENABLER),
-					lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Dark", FlatMacDarkLaf.class.getName()), ENABLER),
-					lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Light", FlatMacLightLaf.class.getName()), ENABLER)
+					enabler(FlatDarculaLaf.class, "Flat Darcula"),
+					enabler(FlatDarkLaf.class, "Flat Dark"),
+					enabler(FlatIntelliJLaf.class, "Flat IntelliJ"),
+					enabler(FlatLightLaf.class, "Flat Light"),
+					enabler(FlatMacDarkLaf.class, "Flat Mac Dark"),
+					enabler(FlatMacLightLaf.class, "Flat Mac Light")
 	));
 
 	private FlatLookAndFeelThemes() {}
@@ -73,11 +74,22 @@ public final class FlatLookAndFeelThemes {
 	 * to a {@link is.codion.swing.common.ui.laf.LookAndFeelComboBox}. Call once during application startup.
 	 * @param include controls which look and feels to include
 	 */
-	public static void add(Predicate<LookAndFeelInfo> include) {
+	public static void add(Predicate<LookAndFeelEnabler> include) {
 		requireNonNull(include);
 		LOOK_AND_FEELS.stream()
-						.filter(enabler -> include.test(enabler.lookAndFeelInfo()))
+						.filter(include)
 						.forEach(LookAndFeelProvider::addLookAndFeel);
+	}
+
+	private static LookAndFeelEnabler enabler(Class<? extends FlatLaf> lookAndFeelClass, String name) {
+		try {
+			FlatLaf theme = lookAndFeelClass.getDeclaredConstructor().newInstance();
+
+			return lookAndFeelEnabler(new LookAndFeelInfo(name, lookAndFeelClass.getName()), theme.isDark(), ENABLER);
+		}
+		catch (Exception e) {
+			throw Exceptions.runtime(e);
+		}
 	}
 
 	/**
