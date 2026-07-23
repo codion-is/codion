@@ -14,6 +14,8 @@ Codion Change Log
 - ProgressWorker.WorkerTask added.
 - JsonPreferences refactored from JsonPreferencesStore.
 - ConditionModel.AUTO_ENABLE configuration value added.
+### is.codion.swing.common.ui
+- LookAndFeelEnabler.installed() added, installed look and feels determined once at provider creation.
 ### is.codion.framework.domain
 - Attribute.DataType.validateType() renamed validate().
 ### is.codion.framework.model
