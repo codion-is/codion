@@ -268,14 +268,17 @@ public final class Controller {
 	}
 
 	private void addKeyEventListener() {
-		KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
-		focusManager.addKeyEventDispatcher(e -> {
-			verifier.dispatched(e);
-			return false;
-		});
-		focusManager.addKeyEventPostProcessor(e -> {
-			verifier.postProcessed(e);
-			return false;
+		// May be constructed off the EDT (the MCP server initializes on a background thread), so register on the EDT
+		onEventDispatchThread(() -> {
+			KeyboardFocusManager focusManager = getCurrentKeyboardFocusManager();
+			focusManager.addKeyEventDispatcher(e -> {
+				verifier.dispatched(e);
+				return false;
+			});
+			focusManager.addKeyEventPostProcessor(e -> {
+				verifier.postProcessed(e);
+				return false;
+			});
 		});
 	}
 

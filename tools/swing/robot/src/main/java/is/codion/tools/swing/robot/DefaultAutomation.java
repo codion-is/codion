@@ -75,7 +75,7 @@ final class DefaultAutomation implements Automation {
 		if (builder.applicationWindow == null) {
 			return null;
 		}
-		Narrator narrator = new Narrator(controller);
+		Narrator narrator = Narrator.narrator(controller);
 		if (builder.applicationWindow != null) {
 			narrator.attach(builder.applicationWindow);
 		}

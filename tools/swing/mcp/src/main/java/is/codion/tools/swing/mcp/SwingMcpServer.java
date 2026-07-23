@@ -350,6 +350,13 @@ public final class SwingMcpServer {
 		});
 	}
 
+	private static void onEventDispatchThread(Runnable runnable) {
+		onEventDispatchThread(() -> {
+			runnable.run();
+			return null;
+		});
+	}
+
 	private static <T> T onEventDispatchThread(Supplier<T> supplier) {
 		if (SwingUtilities.isEventDispatchThread()) {
 			return supplier.get();
@@ -424,7 +431,7 @@ public final class SwingMcpServer {
 	 * @return Rectangle with x, y, width, height of the application window
 	 */
 	Rectangle getApplicationWindowBounds() {
-		return getApplicationWindow().getBounds();
+		return onEventDispatchThread(() -> getApplicationWindow().getBounds());
 	}
 
 	/**
@@ -433,7 +440,7 @@ public final class SwingMcpServer {
 	 * @return the screenshot as a BufferedImage
 	 */
 	BufferedImage takeApplicationScreenshot() {
-		return paintWindowToImage(getApplicationWindow());
+		return onEventDispatchThread(() -> paintWindowToImage(getApplicationWindow()));
 	}
 
 	/**
@@ -442,7 +449,7 @@ public final class SwingMcpServer {
 	 * @return the screenshot as a BufferedImage
 	 */
 	BufferedImage takeActiveWindowScreenshot() {
-		return paintWindowToImage(getActiveWindow());
+		return onEventDispatchThread(() -> paintWindowToImage(getActiveWindow()));
 	}
 
 	/**
@@ -685,6 +692,10 @@ public final class SwingMcpServer {
 	}
 
 	private List<WindowInfo> getApplicationWindows() {
+		return onEventDispatchThread(this::applicationWindows);
+	}
+
+	private List<WindowInfo> applicationWindows() {
 		Window mainWindow = getApplicationWindow();
 		Window[] allWindows = Window.getWindows();
 		Window focusedWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow();
@@ -777,6 +788,10 @@ public final class SwingMcpServer {
 	}
 
 	private Window getActiveWindow() {
+		return onEventDispatchThread(this::activeWindow);
+	}
+
+	private Window activeWindow() {
 		// First priority: event-driven last active window
 		if (lastActiveWindow != null && lastActiveWindow.isVisible() && lastActiveWindow.isFocusableWindow()) {
 			LOG.debug("Using event-driven last active window: {} (activated at {})", getWindowTitle(lastActiveWindow), lastActivationTime);
@@ -866,11 +881,11 @@ public final class SwingMcpServer {
 	 * Bring the application window to front and ensure it has focus
 	 */
 	private void focusApplicationWindow() {
-		safeWindowOperation(() -> getApplicationWindow().toFront(), "Could not focus application window");
+		safeWindowOperation(() -> onEventDispatchThread(() -> getApplicationWindow().toFront()), "Could not focus application window");
 	}
 
 	private void focusActiveWindow() {
-		safeWindowOperation(() -> getActiveWindow().toFront(), "Could not focus active window");
+		safeWindowOperation(() -> onEventDispatchThread(() -> getActiveWindow().toFront()), "Could not focus active window");
 	}
 
 	private static void safeWindowOperation(Runnable operation, String errorMessage) {
