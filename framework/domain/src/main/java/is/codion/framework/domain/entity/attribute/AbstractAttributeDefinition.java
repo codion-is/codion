@@ -192,6 +192,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	@Override
 	public final String caption() {
+		if (caption != null) {
+			return caption;
+		}
 		if (captionResourceBundleName != null) {
 			if (resourceCaption == null) {
 				ResourceBundle bundle = getBundle(captionResourceBundleName);
@@ -203,7 +206,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			}
 		}
 
-		return caption == null ? attribute.name() : caption;
+		return attribute.name();
 	}
 
 	@Override
@@ -343,6 +346,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 		private @Nullable String caption;
 		private @Nullable String captionResourceBundleName;
+		private boolean captionResourceRequested;
 		private @Nullable String mnemonicResourceBundleName;
 		private @Nullable String descriptionResourceBundleName;
 		private String captionResourceKey;
@@ -378,6 +382,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 		@Override
 		public final B caption(String caption) {
+			if (caption != null && captionResourceRequested) {
+				throw new IllegalStateException("Caption resource has already been set for attribute: " + attribute);
+			}
 			this.caption = caption;
 			this.hidden = caption == null;
 			return self();
@@ -400,6 +407,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			}
 			this.captionResourceBundleName = resourceBundleName;
 			this.captionResourceKey = captionResourceKey;
+			this.captionResourceRequested = true;
 			this.hidden = false;
 			return self();
 		}
