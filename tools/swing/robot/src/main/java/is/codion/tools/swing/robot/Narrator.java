@@ -32,6 +32,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
@@ -40,7 +41,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static is.codion.common.utilities.Configuration.integerValue;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
@@ -93,7 +96,7 @@ public final class Narrator {
 
 	private Window window;
 
-	Narrator(Controller controller) {
+	private Narrator(Controller controller) {
 		frame = Frames.builder()
 						.title(MESSAGES.getString("narrator"))
 						.component(createMainPanel())
@@ -109,7 +112,7 @@ public final class Narrator {
 	 */
 	public void narrate(String text) {
 		if (text != null) {
-			narration.insert(text + "\n\n", 0);
+			onEventDispatchThread(() -> narration.insert(text + "\n\n", 0));
 		}
 	}
 
@@ -117,49 +120,82 @@ public final class Narrator {
 	 * Clears the narration text.
 	 */
 	public void clearNarration() {
-		narration.setText("");
+		onEventDispatchThread(() -> narration.setText(""));
 	}
 
 	/**
 	 * Clears the keystrokes table.
 	 */
 	public void clearKeyStrokes() {
-		keyStrokeTable.model().items().clear();
+		onEventDispatchThread(() -> keyStrokeTable.model().items().clear());
 	}
 
 	/**
 	 * Clears both narration and keystrokes
 	 */
 	public void clear() {
-		clearNarration();
-		clearKeyStrokes();
+		onEventDispatchThread(() -> {
+			narration.setText("");
+			keyStrokeTable.model().items().clear();
+		});
 	}
 
 	/**
+	 * Instantiates a new {@link Narrator}, on the event dispatch thread.
 	 * @param controller the controller to narrate
 	 * @return a new {@link Narrator}
 	 */
 	public static Narrator narrator(Controller controller) {
-		return new Narrator(requireNonNull(controller));
+		requireNonNull(controller);
+		if (SwingUtilities.isEventDispatchThread()) {
+			return new Narrator(controller);
+		}
+		AtomicReference<Narrator> narrator = new AtomicReference<>();
+		try {
+			SwingUtilities.invokeAndWait(() -> narrator.set(new Narrator(controller)));
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e);
+		}
+		catch (InvocationTargetException e) {
+			throw e.getCause() instanceof RuntimeException ? (RuntimeException) e.getCause() : new RuntimeException(e.getCause());
+		}
+
+		return narrator.get();
 	}
 
 	/**
 	 * Clears this narrator and closes its frame
 	 */
 	public void close() {
-		clear();
-		detach();
-		frame.dispose();
+		onEventDispatchThread(() -> {
+			narration.setText("");
+			keyStrokeTable.model().items().clear();
+			detachFromWindow();
+			frame.dispose();
+		});
 	}
 
 	/**
 	 * Attaches this narrator to the given window
 	 * @param window the window to attach to
 	 */
-   void attach(Window window) {
+	void attach(Window window) {
 		requireNonNull(window);
+		onEventDispatchThread(() -> attachToWindow(window));
+	}
+
+	/**
+	 * Detaches this narrator from its currently attached window.
+	 */
+	void detach() {
+		onEventDispatchThread(this::detachFromWindow);
+	}
+
+	private void attachToWindow(Window window) {
 		if (this.window != null) {
-			detach();
+			detachFromWindow();
 		}
 		this.window = window;
 		window.addComponentListener(resizer);
@@ -169,10 +205,7 @@ public final class Narrator {
 		frame.setVisible(true);
 	}
 
-	/**
-	 * Detaches this narrator from its currently attached window.
-	 */
-	void detach() {
+	private void detachFromWindow() {
 		if (window != null) {
 			window.removeComponentListener(resizer);
 			window.removeWindowListener(detachOnClose);
@@ -193,8 +226,20 @@ public final class Narrator {
 	}
 
 	private void onKeyStroke(KeyStrokeDescription keyStroke) {
-		keyStrokeTable.model().items().included().add(0, keyStroke);
-		keyStrokeTable.model().selection().index().set(0);
+		// Fired by the Controller on its calling thread (an MCP request thread or an automation script thread)
+		onEventDispatchThread(() -> {
+			keyStrokeTable.model().items().included().add(0, keyStroke);
+			keyStrokeTable.model().selection().index().set(0);
+		});
+	}
+
+	private static void onEventDispatchThread(Runnable runnable) {
+		if (SwingUtilities.isEventDispatchThread()) {
+			runnable.run();
+		}
+		else {
+			SwingUtilities.invokeLater(runnable);
+		}
 	}
 
 	private static void configureColumns(FilterTableColumn.Builder<Integer> column) {

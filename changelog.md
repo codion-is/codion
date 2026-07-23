@@ -32,6 +32,10 @@ Codion Change Log
 - Preferences ownership moved to application.
 - EntityDependenciesPanel preferences updated.
 - EntityApplicationPanel.exit(), error during window disposal no longer prevents further disposals, logged.
+### is.codion.tools.swing.mcp
+- SwingMcpServer now Swing EDT compliant.
+### is.codion.tools.swing.robot
+- Controller, DefaultAutomation and Narrator now Swing EDT compliant.
 
 ## 0.18.80
 ### is.codion.common.reactive
