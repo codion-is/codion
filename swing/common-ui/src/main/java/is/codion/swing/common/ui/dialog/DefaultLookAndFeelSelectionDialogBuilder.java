@@ -114,6 +114,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	}
 
 	private static boolean auxiliaryLookAndFeelsAvailable() {
-		return LookAndFeelProvider.instances().size() > 1;
+		return LookAndFeelProvider.lookAndFeels().stream()
+						.anyMatch(lookAndFeel -> !lookAndFeel.installed());
 	}
 }
