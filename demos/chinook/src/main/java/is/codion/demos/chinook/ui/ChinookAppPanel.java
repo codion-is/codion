@@ -31,7 +31,9 @@ import is.codion.demos.chinook.model.EmployeeModel;
 import is.codion.demos.chinook.model.GenreModel;
 import is.codion.demos.chinook.model.PlaylistModel;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.plugin.flatlaf.intellij.FlatLookAndFeelIntelliJThemes;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
+import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -280,6 +282,10 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		CalendarPanel.WEEK_NUMBERS.set(true);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
+		// Include all the standard flat look and feels
+		FlatLookAndFeelThemes.addAll();
+		// and all the intellij theme based flat look and feels
+		FlatLookAndFeelIntelliJThemes.addAll();
 		EntityApplication.builder(ChinookAppModel.class, ChinookAppPanel.class)
 						.domain(Chinook.DOMAIN)
 						.version(ChinookAppModel.VERSION)

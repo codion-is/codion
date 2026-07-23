@@ -27,6 +27,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
+import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.Components;
@@ -654,6 +655,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	 * @param arguments no arguments required
 	 */
 	public static void main(String[] arguments) {
+		FlatLookAndFeelThemes.addAll();
 		enableLookAndFeel(DomainGeneratorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY, FlatDarculaLaf.class);
 		try {
 			SwingUtilities.invokeLater(DomainGeneratorPanel::start);

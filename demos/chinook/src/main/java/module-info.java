@@ -31,6 +31,7 @@ module is.codion.framework.demos.chinook {
 	requires net.sf.jasperreports.core;
 	requires org.jfree.jfreechart;
 	requires com.formdev.flatlaf.extras;
+	requires is.codion.plugin.flatlaf.themes;
 	requires is.codion.plugin.flatlaf.intellij.themes;
 	requires is.codion.tools.swing.mcp;
 

@@ -23,6 +23,7 @@ import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.common.utilities.user.User;
+import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.model.component.table.SwingFilterTableModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -131,6 +132,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	static {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
+		FlatLookAndFeelThemes.addAll();
 		enableLookAndFeel(LoadTestPanel.class.getName() + LOOK_AND_FEEL_PROPERTY, FlatDarculaLaf.class);
 	}
 

@@ -21,6 +21,7 @@
  */
 module is.codion.demos.petclinic {
 	requires is.codion.swing.framework.ui;
+	requires is.codion.plugin.flatlaf.themes;
 	requires is.codion.plugin.flatlaf.intellij.themes;
 
 	exports is.codion.demos.petclinic.model

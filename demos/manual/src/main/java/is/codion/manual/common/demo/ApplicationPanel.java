@@ -24,7 +24,9 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.format.LocaleDateTimePattern;
 import is.codion.common.utilities.item.Item;
+import is.codion.plugin.flatlaf.intellij.FlatLookAndFeelIntelliJThemes;
 import is.codion.plugin.flatlaf.intellij.themes.dracula.Dracula;
+import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
 import is.codion.swing.common.model.component.combobox.SwingFilterComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -449,6 +451,8 @@ public final class ApplicationPanel extends JPanel {
 	}
 
 	public static void main(String[] args) {
+		FlatLookAndFeelThemes.addAll();
+		FlatLookAndFeelIntelliJThemes.addAll();
 		findLookAndFeel(Dracula.class)
 						.ifPresent(LookAndFeelEnabler::enable);
 

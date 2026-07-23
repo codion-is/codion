@@ -31,6 +31,7 @@ module is.codion.manual {
 	requires is.codion.swing.framework.model;
 	requires is.codion.swing.framework.ui;
 	requires is.codion.plugin.jasperreports;
+	requires is.codion.plugin.flatlaf.themes;
 	requires is.codion.plugin.flatlaf.intellij.themes;
 	requires is.codion.framework.domain.test;
 	requires org.junit.jupiter.api;

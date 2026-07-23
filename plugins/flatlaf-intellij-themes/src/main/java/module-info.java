@@ -77,7 +77,4 @@ module is.codion.plugin.flatlaf.intellij.themes {
 	exports is.codion.plugin.flatlaf.intellij.themes.vscode;
 	exports is.codion.plugin.flatlaf.intellij.themes.vuesion;
 	exports is.codion.plugin.flatlaf.intellij.themes.xcodedark;
-
-	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
-					with is.codion.plugin.flatlaf.intellij.IntelliJThemeProvider;
 }

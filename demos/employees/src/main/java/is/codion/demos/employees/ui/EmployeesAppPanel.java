@@ -26,7 +26,9 @@ import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.plugin.flatlaf.intellij.FlatLookAndFeelIntelliJThemes;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
+import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
 import is.codion.swing.common.ui.ancestor.Ancestor;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;
@@ -135,6 +137,8 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 	public static void main(String[] args) {
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		TemporalField.ADJUSTABLE.set(true);
+		FlatLookAndFeelThemes.addAll();
+		FlatLookAndFeelIntelliJThemes.addAll();
 		EntityApplication.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
 						.domain(Employees.DOMAIN)
 						.defaultLookAndFeel(Arc.class)

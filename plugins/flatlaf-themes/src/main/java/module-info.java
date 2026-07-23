@@ -22,6 +22,5 @@
 module is.codion.plugin.flatlaf.themes {
 	requires transitive is.codion.plugin.flatlaf;
 
-	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
-					with is.codion.plugin.flatlaf.themes.FlatLookAndFeelProvider;
+	exports is.codion.plugin.flatlaf.themes;
 }

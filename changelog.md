@@ -40,6 +40,12 @@ Codion Change Log
 ### is.codion.tools.swing.robot
 - Controller, DefaultAutomation and Narrator now Swing EDT compliant.
 - Narrator, window parameter added to factory method.
+### is.codion.plugin.flatlaf.themes
+- FlatLookAndFeelProvider renamed FlatLookAndFeelThemes.
+- FlatLaf themes no longer service based, opt-in via FlatLookAndFeelThemes.add() or addAll().
+### is.codion.plugin.flatlaf.intellij.themes
+- IntelliJThemeProvider renamed FlatLookAndFeelIntelliJThemes.
+- IntelliJ FlatLaf themes no longer service based, opt-in via FlatLookAndFeelIntelliJThemes.add() or addAll().
 
 ## 0.18.80
 ### is.codion.common.reactive
