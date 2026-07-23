@@ -27,12 +27,9 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static javax.swing.UIManager.getInstalledLookAndFeels;
 
 final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 
@@ -48,14 +45,24 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 
 	private final LookAndFeelInfo lookAndFeelInfo;
 	private final Consumer<LookAndFeelInfo> enabler;
+	private final boolean installed;
 
 	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo) {
-		this(lookAndFeelInfo, DEFAULT_ENABLER);
+		this(lookAndFeelInfo, DEFAULT_ENABLER, false);
 	}
 
 	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
+		this(lookAndFeelInfo, enabler, false);
+	}
+
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean installed) {
+		this(lookAndFeelInfo, DEFAULT_ENABLER, installed);
+	}
+
+	private DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean installed) {
 		this.lookAndFeelInfo = requireNonNull(lookAndFeelInfo);
 		this.enabler = requireNonNull(enabler);
+		this.installed = installed;
 	}
 
 	@Override
@@ -70,9 +77,7 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 
 	@Override
 	public boolean installed() {
-		return Stream.of(getInstalledLookAndFeels())
-						.filter(Objects::nonNull)
-						.anyMatch(info -> lookAndFeelInfo().getClassName().equals(info.getClassName()));
+		return installed;
 	}
 
 	@Override
