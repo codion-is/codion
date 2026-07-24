@@ -26,15 +26,15 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 /**
- * <p>Provides the installed look and feels.
+ * <p>Provides the installed platform look and feels.
  * <p>Note that Nimbus and Motif are excluded.
  */
-public final class InstalledLookAndFeelProvider implements LookAndFeelProvider {
+public final class PlatformLookAndFeels implements LookAndFeelProvider {
 
 	@Override
 	public Collection<LookAndFeelEnabler> get() {
 		return Stream.of(UIManager.getInstalledLookAndFeels())
-						.filter(InstalledLookAndFeelProvider::included)
+						.filter(PlatformLookAndFeels::included)
 						.map(lookAndFeelInfo -> new DefaultLookAndFeelEnabler(lookAndFeelInfo, true, false))
 						.collect(toList());
 	}

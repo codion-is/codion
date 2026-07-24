@@ -45,7 +45,7 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 
 	private final LookAndFeelInfo lookAndFeelInfo;
 	private final Consumer<LookAndFeelInfo> enabler;
-	private final boolean installed;
+	private final boolean platform;
 	private final boolean dark;
 
 	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo) {
@@ -56,14 +56,14 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 		this(lookAndFeelInfo, enabler, false, dark);
 	}
 
-	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean installed, boolean dark) {
-		this(lookAndFeelInfo, DEFAULT_ENABLER, installed, dark);
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean platform, boolean dark) {
+		this(lookAndFeelInfo, DEFAULT_ENABLER, platform, dark);
 	}
 
-	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean installed, boolean dark) {
+	DefaultLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler, boolean platform, boolean dark) {
 		this.lookAndFeelInfo = requireNonNull(lookAndFeelInfo);
 		this.enabler = requireNonNull(enabler);
-		this.installed = installed;
+		this.platform = platform;
 		this.dark = dark;
 	}
 
@@ -83,8 +83,8 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	}
 
 	@Override
-	public boolean installed() {
-		return installed;
+	public boolean platform() {
+		return platform;
 	}
 
 	@Override

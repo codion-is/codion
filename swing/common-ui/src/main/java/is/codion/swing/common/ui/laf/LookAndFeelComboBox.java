@@ -58,7 +58,7 @@ import static javax.swing.UIManager.getLookAndFeel;
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler>> {
 
 	/**
-	 * <p>Specifies whether to include installed look and feels in the selection combo box by default.
+	 * <p>Specifies whether to include the platform look and feels in the selection combo box by default.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
@@ -66,8 +66,8 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	 * @see UIManager#getInstalledLookAndFeels()
 	 * @see is.codion.swing.common.ui.laf.LookAndFeelProvider
 	 */
-	public static final PropertyValue<Boolean> INCLUDE_INSTALLED_LOOK_AND_FEELS =
-					booleanValue(LookAndFeelComboBox.class.getName() + ".includeInstalledLookAndFeels", false);
+	public static final PropertyValue<Boolean> PLATFORM =
+					booleanValue(LookAndFeelComboBox.class.getName() + ".platform", false);
 
 	/**
 	 * Specifies whether to enable the Look and Feel dynamically when selected
@@ -81,9 +81,9 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 
 	private final LookAndFeelEnabler originalLookAndFeel = createOriginalLookAndFeel();
 
-	private final State includeInstalled;
-	private final State includeLight;
-	private final State includeDark;
+	private final State platform;
+	private final State light;
+	private final State dark;
 
 	private LookAndFeelComboBox(DefaultBuilder builder) {
 		super(createLookAndFeelComboBoxModel());
@@ -95,15 +95,15 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		if (builder.enabled != null) {
 			enabled(builder.enabled, this);
 		}
-		includeInstalled = State.builder()
-						.value(builder.includeInstalled)
+		platform = State.builder()
+						.value(builder.platform)
 						.listener(getModel().items()::filter)
 						.build();
-		includeLight = State.builder()
+		light = State.builder()
 						.value(true)
 						.listener(getModel().items()::filter)
 						.build();
-		includeDark = State.builder()
+		dark = State.builder()
 						.value(true)
 						.listener(getModel().items()::filter)
 						.build();
@@ -125,24 +125,24 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	}
 
 	/**
-	 * @return a {@link State} controlling whether installed look and feels are included
+	 * @return a {@link State} controlling whether the platform look and feels are included
 	 */
-	public State includeInstalled() {
-		return includeInstalled;
+	public State platform() {
+		return platform;
 	}
 
 	/**
 	 * @return a {@link State} controlling whether light look and feels are included
 	 */
-	public State includeLight() {
-		return includeLight;
+	public State light() {
+		return light;
 	}
 
 	/**
 	 * @return a {@link State} controlling whether dark look and feels are included
 	 */
-	public State includeDark() {
-		return includeDark;
+	public State dark() {
+		return dark;
 	}
 
 	/**
@@ -193,10 +193,10 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		Builder enableOnSelection(boolean enableOnSelection);
 
 		/**
-		 * @param includeInstalled true if installed look and feels should be included
+		 * @param platform true if installed platform look and feels should be included
 		 * @return this builder
 		 */
-		Builder includeInstalled(boolean includeInstalled);
+		Builder platform(boolean platform);
 
 		/**
 		 * @param enabled the enabled observer
@@ -219,7 +219,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	private static final class DefaultBuilder implements Builder {
 
 		private @Nullable ObservableState enabled;
-		private boolean includeInstalled = INCLUDE_INSTALLED_LOOK_AND_FEELS.getOrThrow();
+		private boolean platform = PLATFORM.getOrThrow();
 		private boolean enableOnSelection = ENABLE_ON_SELECTION.getOrThrow();
 		private @Nullable Consumer<LookAndFeelEnabler> onSelection;
 
@@ -230,8 +230,8 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		}
 
 		@Override
-		public Builder includeInstalled(boolean includeInstalled) {
-			this.includeInstalled = includeInstalled;
+		public Builder platform(boolean platform) {
+			this.platform = platform;
 			return this;
 		}
 
@@ -306,14 +306,14 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		@Override
 		public boolean test(Item<LookAndFeelEnabler> item) {
 			LookAndFeelEnabler enabler = item.getOrThrow();
-			if (!includeLight.is() && !enabler.dark()) {
+			if (!light.is() && !enabler.dark()) {
 				return false;
 			}
-			if (!includeDark.is() && enabler.dark()) {
+			if (!dark.is() && enabler.dark()) {
 				return false;
 			}
 
-			return includeInstalled.is() || !enabler.installed();
+			return platform.is() || !enabler.platform();
 		}
 	}
 
