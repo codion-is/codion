@@ -23,6 +23,7 @@ import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
+import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
@@ -35,6 +36,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static is.codion.common.utilities.Configuration.stringValue;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 
 /**
@@ -271,6 +273,18 @@ public interface EntityConnectionProvider extends AutoCloseable {
 		 * @return this builder instance
 		 */
 		B domain(DomainType domain);
+
+		/**
+		 * Sets the domain by instance. Providers that run the domain in-process (such as a local connection) use
+		 * the given instance directly, instead of resolving one via {@link java.util.ServiceLoader} from its
+		 * {@link Domain#type()}; other providers use only its {@link Domain#type()}.
+		 * @param domain the domain instance to base this connection on
+		 * @return this builder instance
+		 * @see #domain(DomainType)
+		 */
+		default B domain(Domain domain) {
+			return domain(requireNonNull(domain).type());
+		}
 
 		/**
 		 * @param clientId the UUID identifying this client connection
