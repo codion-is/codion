@@ -62,9 +62,9 @@ public interface LookAndFeelEnabler {
 	/**
 	 * Whether this is one of the platform look and feels provided by {@link javax.swing.UIManager#getInstalledLookAndFeels()},
 	 * as opposed to one registered via {@link LookAndFeelProvider}. Determined when the enabler is created.
-	 * @return true if this represents an installed platform look and feel
+	 * @return true if this represents a platform look and feel
 	 */
-	boolean installed();
+	boolean platform();
 
 	/**
 	 * @return the {@link UIDefaults} for the look and feel this enabler represents

@@ -87,7 +87,7 @@ module is.codion.swing.common.ui {
 	uses is.codion.swing.common.ui.inspect.UiInspector;
 
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
-					with is.codion.swing.common.ui.laf.InstalledLookAndFeelProvider;
+					with is.codion.swing.common.ui.laf.PlatformLookAndFeels;
 	provides is.codion.swing.common.ui.component.indicator.ModifiedIndicator
 					with is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicator,
 									is.codion.swing.common.ui.component.indicator.SwapColorsModifiedIndicator;

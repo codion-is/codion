@@ -678,9 +678,14 @@ is/codion/swing/common/ui/dialog/DefaultLookAndFeelSelectionDialogBuilder_is_IS.
 |===
 |key|default|is_IS
 
-|include_installed|Include installed Look and Feels|Birta innbyggð útlit
-|include_installed_mnemonic|I|I
+|dark|Dark|Dökk
+|dark_mnemonic|D|D
+|include|Include|Birta
+|light|Light|Ljós
+|light_mnemonic|L|L
 |look_and_feel|Look & Feel|Útlit
+|platform|Platform|Innbyggð
+|platform_mnemonic|P|I
 |===
 
 === is/codion/swing/common/ui/dialog/ExceptionPanel.java

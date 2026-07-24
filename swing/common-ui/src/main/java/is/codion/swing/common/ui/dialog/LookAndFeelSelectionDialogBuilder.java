@@ -35,14 +35,14 @@ import static is.codion.common.utilities.Configuration.booleanValue;
 public interface LookAndFeelSelectionDialogBuilder {
 
 	/**
-	 * Specifies whether to allow selecting an installed (platform) Look and Feel when auxiliary ones are available.
+	 * Specifies whether to allow selecting a platform Look and Feel when auxiliary ones are available.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> ALLOW_INSTALLED =
-					booleanValue(LookAndFeelSelectionDialogBuilder.class.getName() + ".allowInstalled", true);
+	PropertyValue<Boolean> PLATFORM =
+					booleanValue(LookAndFeelSelectionDialogBuilder.class.getName() + ".platform", true);
 
 	/**
 	 * @param owner the dialog owner
@@ -57,11 +57,11 @@ public interface LookAndFeelSelectionDialogBuilder {
 	LookAndFeelSelectionDialogBuilder enableOnSelection(boolean enableOnSelection);
 
 	/**
-	 * @param allowInstalled true if selecting installed (platform) look and feels should be allowed if auxiliary ones are available
+	 * @param platform true if selecting platform look and feels should be allowed if auxiliary ones are available
 	 * @return this builder
-	 * @see #ALLOW_INSTALLED
+	 * @see #PLATFORM
 	 */
-	LookAndFeelSelectionDialogBuilder allowInstalled(boolean allowInstalled);
+	LookAndFeelSelectionDialogBuilder platform(boolean platform);
 
 	/**
 	 * Displays a dialog allowing the user the select between all available Look and Feels.

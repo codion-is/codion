@@ -24,8 +24,8 @@
  * <li>{@link is.codion.swing.common.ui.dialog.LoginDialogBuilder#INPUT_FIELD_COLUMNS}
  * <li>{@link is.codion.swing.common.ui.dialog.ProgressWorkerDialogBuilder#SHOW_DELAY}
  * <li>{@link is.codion.swing.common.ui.dialog.ProgressWorkerDialogBuilder#HIDE_DELAY}
- * <li>{@link is.codion.swing.common.ui.dialog.LookAndFeelSelectionDialogBuilder#ALLOW_INSTALLED}
- * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelComboBox#INCLUDE_INSTALLED_LOOK_AND_FEELS}
+ * <li>{@link is.codion.swing.common.ui.dialog.LookAndFeelSelectionDialogBuilder#PLATFORM}
+ * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelComboBox#PLATFORM}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

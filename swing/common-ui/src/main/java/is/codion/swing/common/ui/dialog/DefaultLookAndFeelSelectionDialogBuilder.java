@@ -37,6 +37,7 @@ import java.util.function.Consumer;
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.ENABLE_ON_SELECTION;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
@@ -49,8 +50,8 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	private static final int PADDING = 10;
 
 	private @Nullable JComponent owner;
-	private boolean enableOnSelection = LookAndFeelComboBox.ENABLE_ON_SELECTION.getOrThrow();
-	private boolean allowInstalled = ALLOW_INSTALLED.getOrThrow();
+	private boolean enableOnSelection = ENABLE_ON_SELECTION.getOrThrow();
+	private boolean platform = PLATFORM.getOrThrow();
 
 	@Override
 	public LookAndFeelSelectionDialogBuilder owner(@Nullable JComponent owner) {
@@ -65,8 +66,8 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	}
 
 	@Override
-	public LookAndFeelSelectionDialogBuilder allowInstalled(boolean allowInstalled) {
-		this.allowInstalled = allowInstalled;
+	public LookAndFeelSelectionDialogBuilder platform(boolean platform) {
+		this.platform = platform;
 		return this;
 	}
 
@@ -114,25 +115,25 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 	private @Nullable JPanel createConfigPanel(LookAndFeelComboBox lookAndFeelComboBox) {
 		boolean darkAvailable = darkLookAndFeelsAvailable();
-		if (auxiliaryLookAndFeelsAvailable() && (darkAvailable || allowInstalled)) {
+		if (auxiliaryLookAndFeelsAvailable() && (darkAvailable || platform)) {
 			GridLayoutPanelBuilder builder = gridLayoutPanel(1, 0);
 			if (darkAvailable) {
 				builder.add(CheckBoxBuilder.builder()
-												.link(lookAndFeelComboBox.includeLight())
+												.link(lookAndFeelComboBox.light())
 												.text(MESSAGES.getString("light"))
 												.mnemonic(MESSAGES.getString("light_mnemonic").charAt(0))
 												.includeText(true))
 								.add(CheckBoxBuilder.builder()
-												.link(lookAndFeelComboBox.includeDark())
+												.link(lookAndFeelComboBox.dark())
 												.text(MESSAGES.getString("dark"))
 												.mnemonic(MESSAGES.getString("dark_mnemonic").charAt(0))
 												.includeText(true));
 			}
-			if (allowInstalled) {
+			if (platform) {
 				builder.add(CheckBoxBuilder.builder()
-								.link(lookAndFeelComboBox.includeInstalled())
-								.text(MESSAGES.getString("installed"))
-								.mnemonic(MESSAGES.getString("installed_mnemonic").charAt(0))
+								.link(lookAndFeelComboBox.platform())
+								.text(MESSAGES.getString("platform"))
+								.mnemonic(MESSAGES.getString("platform_mnemonic").charAt(0))
 								.includeText(true));
 			}
 
@@ -149,6 +150,6 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 	private static boolean auxiliaryLookAndFeelsAvailable() {
 		return LookAndFeelProvider.lookAndFeels().stream()
-						.anyMatch(lookAndFeel -> !lookAndFeel.installed());
+						.anyMatch(lookAndFeel -> !lookAndFeel.platform());
 	}
 }

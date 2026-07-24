@@ -18,6 +18,7 @@ Codion Change Log
 - LookAndFeelEnabler.installed() added, installed look and feels determined once at provider creation.
 - DefaultLookAndFeelSelectionDialogBuilder.auxiliaryLookAndFeelsAvailable() bug fixed, now based on LookAndFeelEnabler.installed().
 - LookAndFeelEnabler.dark() added, related refactoring.
+- InstalledLookAndFeelProvider renamed PlatformLookAndFeels, related renaming.
 ### is.codion.framework.domain
 - Attribute.DataType.validateType() renamed validate().
 - Attribute caption specified via builder now takes precedence over resource bundle caption.
