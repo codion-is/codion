@@ -14,6 +14,7 @@ Codion Change Log
 - ProgressWorker.WorkerTask added.
 - JsonPreferences refactored from JsonPreferencesStore.
 - ConditionModel.AUTO_ENABLE configuration value added.
+- JsonPreferences json.org usage made android compatible.
 ### is.codion.swing.common.ui
 - LookAndFeelEnabler.installed() added, installed look and feels determined once at provider creation.
 - DefaultLookAndFeelSelectionDialogBuilder.auxiliaryLookAndFeelsAvailable() bug fixed, now based on LookAndFeelEnabler.installed().
@@ -32,6 +33,7 @@ Codion Change Log
 - Preferences duplicate key warnings added.
 - EntityTableModelPreferences.createConditionPreferences() made more resilient.
 - EntityTableModelPreferences.restoreSortPreferences() no longer clears if nothing is being restored.
+- EntityTableModelPreferences json.org usage made android compatible.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, deprecated legacy preferences removed.
 - EntityTablePanel, deprecated legacy preferences removed.

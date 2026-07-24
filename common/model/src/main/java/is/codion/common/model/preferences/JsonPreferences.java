@@ -25,6 +25,8 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
@@ -135,7 +137,7 @@ public final class JsonPreferences {
 
 			// Return all keys except those that are child nodes (JSONObjects used for hierarchy)
 			// Note: JSONObjects/JSONArrays that represent stored JSON values should be included
-			return node.keySet().stream()
+			return keys(node).stream()
 							.filter(k -> !isChildNode(node, k) && !NODE.equals(k))
 							.collect(toSet());
 		}
@@ -151,7 +153,7 @@ public final class JsonPreferences {
 			}
 
 			// Return only child nodes (JSONObjects used for hierarchy)
-			return node.keySet().stream()
+			return keys(node).stream()
 							.filter(k -> isChildNode(node, k))
 							.collect(toSet());
 		}
@@ -164,7 +166,7 @@ public final class JsonPreferences {
 			LOG.debug("Removing node at path '{}'", path);
 			if (path.isEmpty()) {
 				// Clear root node
-				data.keySet().clear();
+				clearObject(data);
 			}
 			else {
 				int lastSeparator = path.lastIndexOf(PATH_SEPARATOR);
@@ -206,8 +208,8 @@ public final class JsonPreferences {
 	void load(String json) {
 		synchronized (lock) {
 			JSONObject reloaded = new JSONObject(json); // may throw, leaving the current contents untouched
-			data.keySet().clear();
-			for (String key : reloaded.keySet()) {
+			clearObject(data);
+			for (String key : keys(reloaded)) {
 				data.put(key, reloaded.get(key));
 			}
 		}
@@ -218,7 +220,7 @@ public final class JsonPreferences {
 	 */
 	void clear() {
 		synchronized (lock) {
-			data.keySet().clear();
+			clearObject(data);
 		}
 	}
 
@@ -315,12 +317,27 @@ public final class JsonPreferences {
 		return obj.optBoolean(NODE, false);
 	}
 
+	// Android's built-in org.json.JSONObject has neither keySet() nor clear(); iterate keys() (an Iterator) instead.
+	private static Set<String> keys(JSONObject object) {
+		Set<String> keys = new LinkedHashSet<>();
+		Iterator<String> iterator = object.keys();
+		while (iterator.hasNext()) {
+			keys.add(iterator.next());
+		}
+
+		return keys;
+	}
+
+	private static void clearObject(JSONObject object) {
+		keys(object).forEach(object::remove);
+	}
+
 	/**
 	 * Recursively checks if a node is empty (contains no actual preference values,
 	 * only node markers or empty child nodes).
 	 */
 	private static boolean isEmpty(JSONObject node) {
-		for (String key : node.keySet()) {
+		for (String key : keys(node)) {
 			if (NODE.equals(key)) {
 				continue;
 			}
