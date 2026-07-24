@@ -81,7 +81,7 @@ final class EntityTableModelPreferences {
 		}
 		try {
 			JSONArray sort = createSortPreferences(tableModel.sort());
-			if (sort.isEmpty()) {
+			if (sort.length() == 0) {
 				preferences.remove(SORT);
 			}
 			else {
@@ -98,7 +98,7 @@ final class EntityTableModelPreferences {
 		requireNonNull(tableModel);
 		try {
 			JSONObject conditions = new JSONObject(preferences.get(CONDITIONS, EMPTY_JSON_OBJECT));
-			if (!conditions.isEmpty()) {
+			if (conditions.length() > 0) {
 				restoreConditionPreferences(conditions, tableModel.query().condition().get());
 			}
 		}
@@ -107,7 +107,7 @@ final class EntityTableModelPreferences {
 		}
 		try {
 			JSONObject filters = new JSONObject(preferences.get(FILTERS, EMPTY_JSON_OBJECT));
-			if (!filters.isEmpty()) {
+			if (filters.length() > 0) {
 				restoreConditionPreferences(filters, tableModel.filters().get());
 			}
 		}
@@ -116,7 +116,7 @@ final class EntityTableModelPreferences {
 		}
 		try {
 			JSONArray sort = new JSONArray(preferences.get(SORT, EMPTY_JSON_ARRAY));
-			if (!sort.isEmpty()) {
+			if (sort.length() > 0) {
 				restoreSortPreferences(sort, tableModel);
 			}
 		}
@@ -126,7 +126,7 @@ final class EntityTableModelPreferences {
 	}
 
 	private static void putOrRemove(Preferences preferences, String key, JSONObject value) {
-		if (value.isEmpty()) {
+		if (value.length() == 0) {
 			preferences.remove(key);
 		}
 		else {
@@ -155,7 +155,7 @@ final class EntityTableModelPreferences {
 				if (wildcard != defaultWildcard) {
 					conditionJson.put(WILDCARD_KEY, wildcard.name());
 				}
-				if (!conditionJson.isEmpty()) {
+				if (conditionJson.length() > 0) {
 					conditionPreferences.put(entry.getKey().name(), conditionJson);
 				}
 			}
