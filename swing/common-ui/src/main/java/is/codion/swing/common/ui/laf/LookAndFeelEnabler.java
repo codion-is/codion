@@ -69,7 +69,7 @@ public interface LookAndFeelEnabler {
 	/**
 	 * @return the {@link UIDefaults} for the look and feel this enabler represents
 	 */
-	default UIDefaults uiDefaults() {
+	default UIDefaults defaults() {
 		return lookAndFeel().getDefaults();
 	}
 
