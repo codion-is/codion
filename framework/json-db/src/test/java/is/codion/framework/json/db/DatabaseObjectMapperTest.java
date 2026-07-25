@@ -31,6 +31,8 @@ import is.codion.framework.json.TestDomain.Employee;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 
+import java.util.OptionalInt;
+
 import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_FIRST;
 import static is.codion.framework.domain.entity.OrderBy.NullOrder.NULLS_LAST;
 import static is.codion.framework.json.db.DatabaseObjectMapper.databaseObjectMapper;
@@ -70,7 +72,7 @@ public final class DatabaseObjectMapperTest {
 		assertEquals(select.orderBy().orElse(null).orderByColumns(), readCondition.orderBy().get().orderByColumns());
 		assertEquals(select.limit(), readCondition.limit());
 		assertEquals(select.offset(), readCondition.offset());
-		assertEquals(select.referenceDepth().orElse(-1), readCondition.referenceDepth().orElse(-1));
+		assertEquals(select.referenceDepth(), readCondition.referenceDepth());
 		for (ForeignKey foreignKey : entities.definition(select.where().entityType()).foreignKeys().get()) {
 			assertEquals(select.foreignKeyReferenceDepths().get(foreignKey), readCondition.foreignKeyReferenceDepths().get(foreignKey));
 		}
@@ -93,6 +95,22 @@ public final class DatabaseObjectMapperTest {
 		jsonString = mapper.writeValueAsString(select);
 
 		select = mapper.readValue(jsonString, Select.class);
+	}
+
+	@Test
+	void selectUnlimitedReferenceDepth() throws JsonProcessingException {
+		// -1 (unlimited) is a legal reference depth, so it must survive the round trip
+		// instead of being mistaken for 'unspecified' and dropped
+		Select select = Select.where(Employee.EMPNO.equalTo(1))
+						.referenceDepth(-1)
+						.referenceDepth(Employee.DEPARTMENT_FK, -1)
+						.build();
+
+		Select readCondition = mapper.readValue(mapper.writeValueAsString(select), Select.class);
+
+		assertEquals(OptionalInt.of(-1), readCondition.referenceDepth());
+		assertEquals(Integer.valueOf(-1), readCondition.foreignKeyReferenceDepths().get(Employee.DEPARTMENT_FK));
+		assertEquals(select, readCondition);
 	}
 
 	@Test

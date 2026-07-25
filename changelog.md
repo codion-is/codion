@@ -27,6 +27,8 @@ Codion Change Log
 - Entity caption specified via builder now takes precedence over resource bundle caption.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domain(Domain) added.
+### is.codion.framework.json.db
+- SelectSerializer bug fixed, -1 is a legal referenceDepth value.
 ### is.codion.framework.model
 - EntityApplicationModel, EntityModel, EntityEditModel and EntityTableModel, store(Preferences) and restore(Preferences) added.
 - AbstractEntityTableModel now stores sorting state in preferences.

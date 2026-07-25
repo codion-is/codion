@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.Map;
+import java.util.OptionalInt;
 
 final class SelectSerializer extends StdSerializer<Select> {
 
@@ -81,9 +82,10 @@ final class SelectSerializer extends StdSerializer<Select> {
 		if (timeout != -1) {
 			generator.writeNumberField("timeout", timeout);
 		}
-		int conditionReferenceDepth = select.referenceDepth().orElse(-1);
-		if (conditionReferenceDepth != -1) {
-			generator.writeNumberField("referenceDepth", conditionReferenceDepth);
+		// Note that -1 (unlimited) is a legal reference depth, so it can not double as the 'unspecified' sentinel
+		OptionalInt referenceDepth = select.referenceDepth();
+		if (referenceDepth.isPresent()) {
+			generator.writeNumberField("referenceDepth", referenceDepth.getAsInt());
 		}
 		Map<ForeignKey, Integer> foreignKeyReferenceDepths = select.foreignKeyReferenceDepths();
 		if (!foreignKeyReferenceDepths.isEmpty()) {
