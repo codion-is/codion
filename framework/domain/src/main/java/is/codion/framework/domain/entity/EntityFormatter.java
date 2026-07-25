@@ -21,21 +21,13 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import org.jspecify.annotations.Nullable;
-
-import java.io.Serial;
 import java.io.Serializable;
 import java.text.Format;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
-
 /**
- * Factory class for building formatters for {@link Entity} instances.
+ * Formats {@link Entity} instances into their string representations.
+ * Instances are built via {@link #builder()}.
  * {@snippet :
  *  interface Department {
  *  		EntityType TYPE = DOMAIN.entityType("employees.department");
@@ -54,7 +46,7 @@ import static java.util.stream.Collectors.joining;
  * 			Entity department = createDepartment();// With name: Accounting
  *  		Entity employee = createEmployee(department);// With name: John and the above department
  *
- * 			Function<Entity, String> formatter =
+ * 			EntityFormatter formatter =
  * 					EntityFormatter.builder()
  *             .text("Name=")
  *             .value(Employee.NAME)
@@ -72,21 +64,19 @@ import static java.util.stream.Collectors.joining;
  * given the entities above.
  * </p>
  */
-public final class EntityFormatter {
-
-	private EntityFormatter() {}
+public interface EntityFormatter extends Function<Entity, String>, Serializable {
 
 	/**
 	 * @return a {@link Builder} instance for configuring a formatter {@link Function} for entities.
 	 */
-	public static Builder builder() {
+	static Builder builder() {
 		return new DefaultEntityFormatterBuilder();
 	}
 
 	/**
-	 * A Builder for a formatter function, which provides toString() values for entities.
+	 * A Builder for a formatter, which provides toString() values for entities.
 	 */
-	public sealed interface Builder permits DefaultEntityFormatterBuilder {
+	sealed interface Builder permits DefaultEntityFormatterBuilder {
 
 		/**
 		 * Adds the value mapped to the given key to this {@link Builder}
@@ -120,172 +110,8 @@ public final class EntityFormatter {
 		Builder text(String text);
 
 		/**
-		 * @return a new string formatter based on this builder
+		 * @return a new EntityFormatter based on this builder
 		 */
-		Function<Entity, String> build();
-	}
-
-	private static final class DefaultEntityFormatter implements Function<Entity, String>, Serializable {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		/**
-		 * Holds the ValueProviders used when constructing the String representation
-		 */
-		private final List<Function<Entity, String>> valueProviders;
-
-		/**
-		 * Instantiates a new {@link EntityFormatter} instance
-		 */
-		private DefaultEntityFormatter(DefaultEntityFormatterBuilder builder) {
-			this.valueProviders = unmodifiableList(builder.valueProviders);
-		}
-
-		/**
-		 * Returns a String representation of the given entity
-		 * @param entity the entity, may not be null
-		 * @return a String representation of the entity
-		 */
-		@Override
-		public String apply(Entity entity) {
-			requireNonNull(entity);
-			if (valueProviders.size() == 1) {
-				return valueProviders.get(0).apply(entity);
-			}
-
-			return valueProviders.stream()
-							.map(valueProvider -> valueProvider.apply(entity))
-							.collect(joining());
-		}
-	}
-
-	private static final class FormattedValueProvider implements Function<Entity, String>, Serializable {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private final Attribute<?> attribute;
-		private final Format format;
-
-		private FormattedValueProvider(Attribute<?> attribute, Format format) {
-			this.attribute = requireNonNull(attribute);
-			this.format = requireNonNull(format);
-		}
-
-		@Override
-		public String apply(Entity entity) {
-			if (!entity.present(attribute)) {
-				return "";
-			}
-
-			return format.format(entity.get(attribute));
-		}
-	}
-
-	private static final class ForeignKeyValueProvider implements Function<Entity, String>, Serializable {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private final ForeignKey foreignKey;
-		private final Attribute<?> attribute;
-
-		private ForeignKeyValueProvider(ForeignKey foreignKey, Attribute<?> attribute) {
-			this.foreignKey = requireNonNull(foreignKey);
-			this.attribute = requireNonNull(attribute);
-			if (!attribute.entityType().equals(foreignKey.referencedType())) {
-				throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + foreignKey.entityType());
-			}
-		}
-
-		@Override
-		public String apply(Entity entity) {
-			if (!entity.present(foreignKey)) {
-				return "";
-			}
-
-			return entity.entity(foreignKey).formatted(attribute);
-		}
-	}
-
-	private static final class StringValueProvider implements Function<Entity, String>, Serializable {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private final Attribute<?> attribute;
-
-		private StringValueProvider(Attribute<?> attribute) {
-			this.attribute = requireNonNull(attribute);
-		}
-
-		@Override
-		public String apply(Entity entity) {
-			return entity.formatted(attribute);
-		}
-	}
-
-	private static final class StaticTextProvider implements Function<Entity, String>, Serializable {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private final String text;
-
-		private StaticTextProvider(String text) {
-			this.text = requireNonNull(text);
-		}
-
-		@Override
-		public String apply(Entity entity) {
-			return text;
-		}
-	}
-
-	private static final class DefaultEntityFormatterBuilder implements Builder {
-
-		private final List<Function<Entity, String>> valueProviders = new ArrayList<>();
-
-		private @Nullable EntityType entityType;
-
-		@Override
-		public Builder value(Attribute<?> attribute) {
-			valueProviders.add(new StringValueProvider(attribute));
-			validateEntityType(attribute);
-			return this;
-		}
-
-		@Override
-		public Builder value(Attribute<?> attribute, Format format) {
-			valueProviders.add(new FormattedValueProvider(attribute, format));
-			return this;
-		}
-
-		@Override
-		public Builder value(ForeignKey foreignKey, Attribute<?> attribute) {
-			valueProviders.add(new ForeignKeyValueProvider(foreignKey, attribute));
-			return this;
-		}
-
-		@Override
-		public Builder text(String text) {
-			valueProviders.add(new StaticTextProvider(text));
-			return this;
-		}
-
-		@Override
-		public Function<Entity, String> build() {
-			return new DefaultEntityFormatter(this);
-		}
-
-		private void validateEntityType(Attribute<?> attribute) {
-			if (entityType == null) {
-				entityType = attribute.entityType();
-			}
-			else if (!attribute.entityType().equals(entityType)) {
-				throw new IllegalArgumentException("entityType " + entityType + " expected, got: " + attribute.entityType());
-			}
-		}
+		EntityFormatter build();
 	}
 }

@@ -26,6 +26,7 @@ Codion Change Log
 - Attribute caption specified via builder now takes precedence over resource bundle caption.
 - Entity caption specified via builder now takes precedence over resource bundle caption.
 - ForeignKeyDefinition.referenceDepth() now returns OptionalInt.
+- EntityFormatter now an interface extending Function<Entity, String>, Builder returns EntityFormatter.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domain(Domain) added.
 ### is.codion.framework.db.local

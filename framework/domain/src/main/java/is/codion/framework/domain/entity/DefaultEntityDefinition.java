@@ -963,6 +963,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
+		public Builder formatter(EntityFormatter formatter) {
+			return formatter((Function<Entity, String>) formatter);
+		}
+
+		@Override
 		public Builder cacheToString(boolean cacheToString) {
 			this.cacheToString = cacheToString;
 			return this;
