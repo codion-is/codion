@@ -486,6 +486,16 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		Builder formatter(Function<Entity, String> formatter);
 
 		/**
+		 * Sets the formatter, that is, the function responsible for creating toString() values for this entity type.
+		 * Note that if for some reason this formatter returns null, the default formatter is used as fallback,
+		 * which simply returns the entity type name and primary key value.
+		 * @param formatter the formatter
+		 * @return this {@link Builder} instance
+		 * @see #cacheToString(boolean)
+		 */
+		Builder formatter(EntityFormatter formatter);
+
+		/**
 		 * Default true.
 		 * @param cacheToString true if the result of toString() should be cached
 		 * @return this {@link Builder} instance
