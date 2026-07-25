@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.exception.AttributeValidationException;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.OptionalInt;
 
 import static is.codion.common.utilities.Configuration.integerValue;
 
@@ -143,11 +144,12 @@ import static is.codion.common.utilities.Configuration.integerValue;
 public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity> permits DefaultForeignKeyDefinition {
 
 	/**
-	 * Specifies the default foreign key reference depth
+	 * Specifies the reference depth to use for foreign keys which do not specify one
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 1
 	 * </ul>
+	 * @see Builder#referenceDepth(int)
 	 */
 	PropertyValue<Integer> REFERENCE_DEPTH = integerValue("codion.domain.referenceDepth", 1);
 
@@ -158,9 +160,15 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 	ForeignKey attribute();
 
 	/**
-	 * @return the default query reference depth for this foreign key
+	 * Returns the reference depth specified for this foreign key, an empty {@link OptionalInt} if none was
+	 * specified, in which case {@link #REFERENCE_DEPTH} applies.
+	 * <p>
+	 * A specified depth of 0 means this foreign key is never populated automatically, not even when it is
+	 * reached via another foreign key specifying a greater depth.
+	 * @return the reference depth specified for this foreign key
+	 * @see Builder#referenceDepth(int)
 	 */
-	int referenceDepth();
+	OptionalInt referenceDepth();
 
 	/**
 	 * @return true if this foreign key is not based on a physical (table) foreign key and should not prevent deletion
@@ -233,7 +241,9 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 		Builder include(Attribute<?>... attributes);
 
 		/**
-		 * Specifies the default query reference depth for this foreign key.
+		 * Specifies the query reference depth for this foreign key, that is, how many levels of the referenced
+		 * entity's foreign key graph are fetched along with it. Foreign keys not specifying a depth use
+		 * {@link #REFERENCE_DEPTH}.
 		 * <pre>
 		 * Reference depth:
 		 * -1: the full foreign key graph of the referenced entity is fetched.
@@ -243,6 +253,17 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 		 *  3: the referenced entity is fetched, with two levels of foreign key references.
 		 *  etc...
 		 * </pre>
+		 * <p>
+		 * A depth greater than 1 is a <i>budget for the whole subtree</i>, not merely a limit on this foreign key:
+		 * the referenced entity's own foreign keys are fetched to the same depth, whatever depth <i>they</i> specify.
+		 * This is what makes a depth of 2 fetch the referenced entity's references, since those typically specify
+		 * the default depth of 1, which on its own would stop the fetching.
+		 * <p>
+		 * A depth of 0 is the exception, and is absolute: such a foreign key is never populated automatically,
+		 * not even when reached via another foreign key specifying a greater depth. This is how a foreign key is
+		 * kept from being fetched at all, whether to prevent a child from fetching its parent back, to leave an
+		 * expensive reference alone or to break a reference cycle. It can still be fetched by asking for it
+		 * explicitly, by specifying a reference depth for it when selecting.
 		 * <p>
 		 * <b>Warning:</b> Using referenceDepth(-1) when the actual data contains circular references
 		 * (e.g., record A references B, B references C, C references A) will cause infinite recursion

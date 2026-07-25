@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import static is.codion.framework.domain.entity.attribute.ForeignKeyDefinition.REFERENCE_DEPTH;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
@@ -118,7 +119,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	public Value<Integer> referenceDepth(ForeignKey foreignKey) {
 		ForeignKeyDefinition definition = entityDefinition.foreignKeys().definition(foreignKey);
 
-		return foreignKeyReferenceDepth.computeIfAbsent(foreignKey, k -> Value.nonNull(definition.referenceDepth()));
+		return foreignKeyReferenceDepth.computeIfAbsent(foreignKey, k ->
+						Value.nonNull(definition.referenceDepth().orElseGet(REFERENCE_DEPTH::getOrThrow)));
 	}
 
 	@Override
