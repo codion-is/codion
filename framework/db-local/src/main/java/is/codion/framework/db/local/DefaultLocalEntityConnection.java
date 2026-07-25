@@ -69,6 +69,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BinaryOperator;
@@ -87,6 +88,7 @@ import static is.codion.framework.domain.entity.Entity.groupByType;
 import static is.codion.framework.domain.entity.Entity.originalPrimaryKeys;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.ForeignKeyDefinition.REFERENCE_DEPTH;
 import static is.codion.framework.domain.entity.condition.Condition.*;
 import static java.lang.String.format;
 import static java.util.Collections.*;
@@ -1096,8 +1098,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						foreignKeysToPopulate(select, definition(entities.get(0).type()));
 		for (ForeignKeyDefinition foreignKeyDefinition : foreignKeysToSet) {
 			ForeignKey foreignKey = foreignKeyDefinition.attribute();
-			int referenceDepthLimit = select.referenceDepth(foreignKey)
-							.orElse(foreignKeyDefinition.referenceDepth());
+			int referenceDepthLimit = referenceDepthLimit(foreignKeyDefinition, select);
 			if (withinReferenceDepthLimit(referenceDepth, referenceDepthLimit)
 							&& containsReferencedColumns(entities.get(0), foreignKey.references())) {
 				try {
@@ -1129,6 +1130,37 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 										missingReferenceColumn(foreignKeyDefinition, attributes));
 
 		return foreignKeys.isEmpty();
+	}
+
+	/**
+	 * Resolves the reference depth to apply when populating the given foreign key, in order of precedence:
+	 * <ol>
+	 * <li>the depth specified for this foreign key by the select, which overrides everything
+	 * <li>0 if the foreign key specifies a reference depth of 0, meaning it is never populated automatically,
+	 * which a depth inherited from a foreign key closer to the root does not override
+	 * <li>the select level depth, which for a select fetching referenced entities is the depth of the foreign
+	 * key being populated, propagated down the graph, overriding the depth the foreign keys along the way specify
+	 * (this is what makes a depth greater than 1 fetch more than one level)
+	 * <li>the depth specified by the foreign key, or {@link ForeignKeyDefinition#REFERENCE_DEPTH} if it specifies none
+	 * </ol>
+	 * @param foreignKeyDefinition the definition of the foreign key being populated
+	 * @param select the select being executed
+	 * @return the reference depth to apply
+	 */
+	private static int referenceDepthLimit(ForeignKeyDefinition foreignKeyDefinition, Select select) {
+		Integer selectReferenceDepth = select.foreignKeyReferenceDepths().get(foreignKeyDefinition.attribute());
+		if (selectReferenceDepth != null) {
+			return selectReferenceDepth;
+		}
+		OptionalInt referenceDepth = foreignKeyDefinition.referenceDepth();
+		if (referenceDepth.isPresent() && referenceDepth.getAsInt() == 0) {
+			return 0;
+		}
+		if (select.referenceDepth().isPresent()) {
+			return select.referenceDepth().getAsInt();
+		}
+
+		return referenceDepth.orElseGet(REFERENCE_DEPTH::getOrThrow);
 	}
 
 	private boolean withinReferenceDepthLimit(int currentReferenceDepth, int referenceDepthLimit) {
@@ -1782,7 +1814,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private static boolean referenceDepthZero(ForeignKeyDefinition foreignKeyDefinition, Select select) {
-		return select.referenceDepth(foreignKeyDefinition.attribute()).orElse(foreignKeyDefinition.referenceDepth()) == 0;
+		return referenceDepthLimit(foreignKeyDefinition, select) == 0;
 	}
 
 	private static boolean missingReferenceColumn(ForeignKeyDefinition foreignKeyDefinition, Set<Attribute<?>> attributes) {

@@ -25,8 +25,11 @@ Codion Change Log
 - Attribute.DataType.validateType() renamed validate().
 - Attribute caption specified via builder now takes precedence over resource bundle caption.
 - Entity caption specified via builder now takes precedence over resource bundle caption.
+- ForeignKeyDefinition.referenceDepth() now returns OptionalInt.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domain(Domain) added.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnection referenceDepth handling improved.
 ### is.codion.framework.json.db
 - SelectSerializer bug fixed, -1 is a legal referenceDepth value.
 ### is.codion.framework.model

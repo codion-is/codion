@@ -23,11 +23,14 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 import is.codion.framework.domain.entity.exception.AttributeValidationException;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.Set;
 
 import static is.codion.framework.domain.entity.attribute.AbstractValueAttributeDefinition.createNullValidationException;
@@ -42,7 +45,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 
 	private final Set<Column<?>> readOnlyColumns;
 	private final List<Attribute<?>> attributes;
-	private final int referenceDepth;
+	private final @Nullable Integer referenceDepth;
 	private final boolean soft;
 
 	private DefaultForeignKeyDefinition(DefaultForeignKeyDefinitionBuilder builder) {
@@ -64,8 +67,8 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 	}
 
 	@Override
-	public int referenceDepth() {
-		return referenceDepth;
+	public OptionalInt referenceDepth() {
+		return referenceDepth == null ? OptionalInt.empty() : OptionalInt.of(referenceDepth);
 	}
 
 	@Override
@@ -103,7 +106,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 
 		private List<Attribute<?>> attributes = emptyList();
 		private boolean soft = false;
-		private int referenceDepth = REFERENCE_DEPTH.getOrThrow();
+		private @Nullable Integer referenceDepth;
 
 		DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey) {
 			super(foreignKey);

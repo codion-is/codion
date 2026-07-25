@@ -68,6 +68,7 @@ public final class TestDomain extends DomainModel {
 		employee();
 		departmentFk();
 		employeeFk();
+		employeeNoDepartment();
 		uuidTestDefaultValue();
 		uuidTestNoDefaultValue();
 		operations();
@@ -657,6 +658,44 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(),
 										MasterFk.NAME.as()
 														.column())
+						.build());
+	}
+
+	// Exercises the absolute nature of a specified reference depth of 0: DEPARTMENT_FK is never populated
+	// automatically, not even one level down, where MGR_FK's depth of 2 would otherwise apply to it.
+	public interface EmployeeNoDepartment {
+		EntityType TYPE = DOMAIN.entityType("employees.employee_no_department");
+
+		Column<Integer> ID = TYPE.integerColumn("empno");
+		Column<String> NAME = TYPE.stringColumn("ename");
+		Column<Integer> MGR = TYPE.integerColumn("mgr");
+		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+
+		// References the DepartmentFk variant, as EmployeeFk does, so this entity does not turn up
+		// as a dependency of Department
+		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, DepartmentFk.DEPTNO);
+		ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
+	}
+
+	void employeeNoDepartment() {
+		add(EmployeeNoDepartment.TYPE.as()
+						.attributes(
+										EmployeeNoDepartment.ID.as()
+														.primaryKey(),
+										EmployeeNoDepartment.NAME.as()
+														.column(),
+										EmployeeNoDepartment.DEPARTMENT.as()
+														.column(),
+										EmployeeNoDepartment.DEPARTMENT_FK.as()
+														.foreignKey()
+														.referenceDepth(0),
+										EmployeeNoDepartment.MGR.as()
+														.column(),
+										EmployeeNoDepartment.MGR_FK.as()
+														.foreignKey()
+														.soft(true)
+														.referenceDepth(2))
+						.table("employees.employee")
 						.build());
 	}
 

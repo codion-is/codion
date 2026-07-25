@@ -511,6 +511,39 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void referenceDepthZeroIsAbsolute() {
+		// EmployeeNoDepartment.DEPARTMENT_FK specifies a reference depth of 0, MGR_FK one of 2. The manager is
+		// therefore fetched, but neither its department nor the employee's own, even though the depth of 2
+		// inherited from MGR_FK would otherwise apply to the manager's DEPARTMENT_FK.
+		// ALLEN (1), whose manager is BLAKE (5), of department 10
+		Entity employee = connection.selectSingle(EmployeeNoDepartment.ID.equalTo(1));
+		assertNull(employee.get(EmployeeNoDepartment.DEPARTMENT_FK));
+
+		Entity manager = employee.get(EmployeeNoDepartment.MGR_FK);
+		assertNotNull(manager);
+		assertNull(manager.get(EmployeeNoDepartment.DEPARTMENT_FK), "A specified reference depth of 0 must not be overridden");
+		// The foreign key value itself is still available, only the referenced entity is not fetched
+		assertEquals(Integer.valueOf(10), manager.entity(EmployeeNoDepartment.DEPARTMENT_FK).get(DepartmentFk.DEPTNO));
+
+		// Asking for it explicitly when selecting still fetches it
+		employee = connection.selectSingle(Select.where(EmployeeNoDepartment.ID.equalTo(1))
+						.referenceDepth(EmployeeNoDepartment.DEPARTMENT_FK, 1)
+						.build());
+		assertNotNull(employee.get(EmployeeNoDepartment.DEPARTMENT_FK));
+	}
+
+	@Test
+	void referenceDepthDefaultIsNotAbsolute() {
+		// Employee.DEPARTMENT_FK specifies no depth, so the configured default applies and, unlike a specified
+		// 0, gives way to a depth inherited from a foreign key closer to the root
+		Entity employee = connection.selectSingle(Select.where(Employee.NAME_IS_BLAKE_CONDITION.get())
+						.referenceDepth(2)
+						.build());
+		assertNotNull(employee.get(Employee.DEPARTMENT_FK));
+		assertNotNull(employee.get(Employee.MGR_FK).get(Employee.DEPARTMENT_FK));
+	}
+
+	@Test
 	void selectLimit() {
 		Condition condition = all(Department.TYPE);
 		List<Entity> departments = connection.select(condition);
