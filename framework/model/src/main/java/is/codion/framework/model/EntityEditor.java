@@ -515,6 +515,13 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 	/**
 	 * Provides access to the entity instance being edited.
+	 * <p>A new editor starts out holding a null valued entity, <b>not</b> a defaulted one — {@link #present()} reports
+	 * no value for every attribute, including those specifying a default value. Applying the defaults is left to
+	 * whatever presents the editor, which calls {@link #defaults()} once it is set up to edit a new record, as the
+	 * Swing edit panel and the Android edit view both do on construction. The editor can not do so itself: a default
+	 * value supplied via {@link EditorValue#defaultValue()} is resolved when the defaults are applied, and the edit
+	 * model must have had the chance to configure those first.
+	 * @see #defaults()
 	 */
 	interface EditorEntity extends Observable<Entity> {
 
@@ -611,6 +618,8 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * {@link is.codion.common.model.CancelException} from a {@link #changing()} listener cancels the
 		 * operation. Detail editors are reset silently, firing only {@link #replaced()}. This is an
 		 * in-memory reset and is always performed synchronously, even when the editor is bound to UI components.
+		 * <p>Note that this is also how a new editor arrives at its default values in the first place, since it
+		 * starts out holding a null valued entity, see {@link EditorEntity}.
 		 * @see #clear()
 		 * @see EditorValue#defaultValue()
 		 * @see EditorValue#persist()
