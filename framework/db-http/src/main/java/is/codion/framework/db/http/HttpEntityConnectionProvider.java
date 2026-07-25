@@ -54,6 +54,7 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 		 * @return this builder instance
 		 * @see EntityConnectionProvider.Builder#domain(is.codion.framework.domain.DomainType)
 		 */
+		@Override
 		Builder domain(Domain domain);
 
 		/**
