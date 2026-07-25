@@ -1109,7 +1109,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					}
 					else {
 						Map<Key, Entity> referencedEntitiesMappedByKey = queryReferencedEntities(foreignKeyDefinition,
-										new ArrayList<>(referencedKeys), referenceDepth, referenceDepthLimit);
+										new ArrayList<>(referencedKeys), referenceDepth, referenceDepthLimit,
+										select.foreignKeyReferenceDepths());
 						entities.forEach(entity -> entity.set(foreignKey,
 										entity(entity.key(foreignKey), referencedEntitiesMappedByKey)));
 					}
@@ -1168,17 +1169,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private Map<Key, Entity> queryReferencedEntities(ForeignKeyDefinition foreignKeyDefinition, List<Key> referencedKeys,
-																									 int referenceDepth, int referenceDepthLimit) throws SQLException {
+																									 int referenceDepth, int referenceDepthLimit,
+																									 Map<ForeignKey, Integer> foreignKeyReferenceDepths) throws SQLException {
 		Key referencedKey = referencedKeys.get(0);
 		Collection<Column<?>> keyColumns = referencedKey.columns();
 		List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
 		int keysPerStatement = keysPerStatement(referencedKeys.get(0));
 		for (int i = 0; i < referencedKeys.size(); i += keysPerStatement) {
 			List<Key> keys = referencedKeys.subList(i, Math.min(i + keysPerStatement, referencedKeys.size()));
-			Select referencedEntitiesCondition = where(keys(keys))
+			Select.Builder referencedEntitiesSelect = where(keys(keys))
 							.referenceDepth(referenceDepthLimit)
-							.attributes(attributesToSelect(foreignKeyDefinition, keyColumns))
-							.build();
+							.attributes(attributesToSelect(foreignKeyDefinition, keyColumns));
+			// Carry any depths specified per foreign key along, so they apply throughout the graph and not
+			// merely at the root, a foreign key belonging to a single entity type so the ones which do not
+			// apply here are simply never looked up
+			foreignKeyReferenceDepths.forEach(referencedEntitiesSelect::referenceDepth);
+			Select referencedEntitiesCondition = referencedEntitiesSelect.build();
 			referencedEntities.addAll(query(referencedEntitiesCondition, referenceDepth + 1).stream()
 							.map(IMMUTABLE)
 							.collect(toList()));
