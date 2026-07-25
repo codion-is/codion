@@ -1154,7 +1154,11 @@ public interface EntityConnection extends AutoCloseable {
 			Builder forUpdate();
 
 			/**
-			 * Limit the levels of foreign keys to fetch
+			 * Limit the levels of foreign keys to fetch, for every foreign key encountered while fetching the
+			 * referenced entities, overriding the depth the foreign keys themselves specify.
+			 * <p>
+			 * Note that a foreign key specifying a reference depth of 0 is never populated automatically and is
+			 * therefore not affected, it must be asked for explicitly via {@link #referenceDepth(ForeignKey, int)}.
 			 * <p>
 			 * <b>Warning:</b> Using unlimited depth (-1) when the actual data contains circular references
 			 * will cause infinite recursion and stack overflow errors. Self-referential foreign keys are safe

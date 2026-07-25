@@ -530,6 +530,11 @@ public class DefaultLocalEntityConnectionTest {
 						.referenceDepth(EmployeeNoDepartment.DEPARTMENT_FK, 1)
 						.build());
 		assertNotNull(employee.get(EmployeeNoDepartment.DEPARTMENT_FK));
+
+		// As does disabling the reference depth limit, which fetches the full graph
+		connection.limitReferenceDepth(false);
+		employee = connection.selectSingle(EmployeeNoDepartment.ID.equalTo(1));
+		assertNotNull(employee.get(EmployeeNoDepartment.DEPARTMENT_FK));
 	}
 
 	@Test

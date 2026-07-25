@@ -20,9 +20,16 @@ By default, when you select a row using {url-entity-connection}[EntityConnection
 This means that selecting a track you get all the entities referenced via foreign keys as well.
 
 The reference depth can be configured on a foreign key basis when defining entities.
-A reference depth of zero means that no foreign key references are fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached.
+
+A depth larger than one is a budget for the whole subtree, not merely a limit on the foreign key it is specified for: the referenced entity is fetched along with its own foreign key references, to the same depth, whatever depth those specify.
+This is what makes a depth of two fetch the references of the referenced entity, since those typically use the default depth of one, which on its own would stop the fetching.
+
+A depth of zero is the exception, and is absolute: such a foreign key is never populated automatically, not even when it is reached via a foreign key specifying a greater depth.
+This is how a foreign key is kept from being fetched at all, whether to keep a child from fetching its parent back, to leave an expensive reference alone or to break a reference cycle.
+It can still be fetched by asking for it explicitly when selecting.
+
 A negative reference depth means no limit with the whole dependency graph fetched.
-This limiting of foreign key reference depth can be turned off, meaning the full reference graph is always fetched, via a system property:
+This limiting of foreign key reference depth can be turned off, meaning the full reference graph is always fetched — including foreign keys specifying a depth of zero — via a system property:
 
 [source]
 ----
@@ -40,21 +47,27 @@ or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/fram
 
 [source,java,]
 ----
-connection.limitForeignKeyReferenceDepth(false);
+connection.limitReferenceDepth(false);
 ----
 
-You can specify that the foreign key should not be populated by default by using a reference depth of 0.
+You can specify that the foreign key should never be populated automatically by using a reference depth of 0.
+Here an invoice line does not fetch the invoice it belongs to, which is already at hand wherever invoice lines are being displayed.
+
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=referenceDepth0]
 ----
 
 Or you can specify that the foreign key should be populated along with one more level by using a reference depth of 2.
+Here a track fetches its album along with the album's artist.
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=referenceDepth2]
 ----
+
+Note the `include()` in the example above, which restricts the attributes fetched for the referenced entity.
+It doubles as a way to prune the fetching, since only the foreign keys among the included attributes are populated — here the album's cover, a potentially large blob, is left behind, while its artist is included so that the reference depth of 2 has something to reach.
 
 [source,java,indent=0]
 ----
@@ -62,6 +75,8 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 ----
 
 The reference depth can also be configured on a query basis, either for the whole query or one or more foreign keys.
+Both apply wherever the foreign keys occur while fetching the referenced entities, not merely to the entities being selected, and a depth specified for a single foreign key overrides both the depth that foreign key specifies and the depth specified for the query as a whole.
+This is also how a foreign key specifying a depth of 0 is fetched when it is needed.
 
 [source,java,indent=0]
 ----
@@ -75,7 +90,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === Reference Depth Values
 
-* 0 – Do not fetch foreign key references
+* 0 – Never fetch, unless asked for explicitly when selecting
 * 1 (default) – Fetch directly referenced foreign key entities
 * N – Fetch up to N levels deep
 * -1 – Fetch entire reference graph (no limit)

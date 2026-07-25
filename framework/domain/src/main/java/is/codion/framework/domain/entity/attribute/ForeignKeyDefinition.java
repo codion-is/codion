@@ -94,12 +94,14 @@ import static is.codion.common.utilities.Configuration.integerValue;
  *                 OrderLine.QUANTITY.as()
  *                     .column(),
  *
- *                 // Foreign key with deeper reference depth to load customer info
+ *                 // Foreign key with deeper reference depth to load customer info.
+ *                 // Note that only the foreign keys among the included attributes are populated,
+ *                 // so CUSTOMER_FK must be included for the reference depth of 2 to reach the customer.
  *                 OrderLine.ORDER_FK.as()
  *                     .foreignKey()
  *                     .caption("Order")
  *                     .referenceDepth(2)  // Load order AND its customer
- *                     .include(Order.ORDER_DATE, Order.TOTAL)) // Only include specific order attributes
+ *                     .include(Order.ORDER_DATE, Order.TOTAL, Order.CUSTOMER_FK))
  *             .build();
  *     }
  * }

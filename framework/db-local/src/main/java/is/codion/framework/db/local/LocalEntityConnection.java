@@ -159,7 +159,10 @@ public interface LocalEntityConnection extends EntityConnection {
 	boolean limitReferenceDepth();
 
 	/**
-	 * Note that disabling the reference depth limit (or specifying a reference depth of -1) removes the only
+	 * Note that disabling the reference depth limit fetches the full foreign key graph, including foreign keys
+	 * specifying a reference depth of 0, which are otherwise never populated automatically.
+	 * <p>
+	 * Note also that disabling the reference depth limit (or specifying a reference depth of -1) removes the only
 	 * bound on foreign key population; a cyclic foreign key reference in the data then causes unbounded
 	 * recursion and a {@link StackOverflowError}, since no cycle detection is performed.
 	 * @param limitReferenceDepth false to override the reference depth limit specified by conditions or entities

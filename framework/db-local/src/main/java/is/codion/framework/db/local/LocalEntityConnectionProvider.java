@@ -76,12 +76,6 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider,
 		Builder database(Database database);
 
 		/**
-		 * @param domain the domain model to base this connection on
-		 * @return this builder instance
-		 */
-		Builder domain(Domain domain);
-
-		/**
 		 * @param queryTimeout the default query timeout in seconds
 		 * @return this builder instance
 		 */
