@@ -533,6 +533,31 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void selectReferenceDepthAppliesThroughout() {
+		// A depth specified for a single foreign key applies wherever that foreign key occurs, not only to the
+		// entities being selected: no department is fetched for the employee nor for its manager, while MGR_FK's
+		// depth of 2 still reaches the manager's own manager
+		Entity employee = connection.selectSingle(Select.where(Employee.NAME_IS_BLAKE_CONDITION.get())
+						.referenceDepth(Employee.DEPARTMENT_FK, 0)
+						.referenceDepth(Employee.MGR_FK, 2)
+						.build());
+		assertNull(employee.get(Employee.DEPARTMENT_FK));
+
+		Entity manager = employee.get(Employee.MGR_FK);
+		assertNotNull(manager);
+		assertNull(manager.get(Employee.DEPARTMENT_FK), "A depth specified for a foreign key must apply throughout");
+		assertNotNull(manager.get(Employee.MGR_FK));
+
+		// The same, specified for the select as a whole rather than for MGR_FK
+		employee = connection.selectSingle(Select.where(Employee.NAME_IS_BLAKE_CONDITION.get())
+						.referenceDepth(2)
+						.referenceDepth(Employee.DEPARTMENT_FK, 0)
+						.build());
+		assertNull(employee.get(Employee.DEPARTMENT_FK));
+		assertNull(employee.get(Employee.MGR_FK).get(Employee.DEPARTMENT_FK));
+	}
+
+	@Test
 	void referenceDepthDefaultIsNotAbsolute() {
 		// Employee.DEPARTMENT_FK specifies no depth, so the configured default applies and, unlike a specified
 		// 0, gives way to a depth inherited from a foreign key closer to the root

@@ -30,6 +30,7 @@ Codion Change Log
 - EntityConnectionProvider.Builder.domain(Domain) added.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection referenceDepth handling improved.
+- DefaultLocalEntityConnection.queryReferencedEntities() now propagates foreignKeyReferenceDepths.
 ### is.codion.framework.json.db
 - SelectSerializer bug fixed, -1 is a legal referenceDepth value.
 ### is.codion.framework.model

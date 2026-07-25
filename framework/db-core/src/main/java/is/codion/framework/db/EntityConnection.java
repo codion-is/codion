@@ -1168,6 +1168,10 @@ public interface EntityConnection extends AutoCloseable {
 			 * Limits the levels of foreign key values to fetch for a specific foreign key,
 			 * with 0 meaning the referenced entity should not be fetched and -1 unlimited depth.
 			 * <p>
+			 * Applies wherever the foreign key occurs while fetching the referenced entities, not merely to the
+			 * entities being selected, and overrides both the depth the foreign key specifies and the depth
+			 * specified for this select as a whole.
+			 * <p>
 			 * <b>Caution:</b> Unlimited depth (-1) can cause infinite recursion with self-referential
 			 * or circular foreign key relationships. Use bounded depth for safety.
 			 * @param foreignKey the foreign key
