@@ -501,6 +501,16 @@ image::modules/tools/generator/model/build/reports/dependency-graph/dependency-g
 image::modules/tools/generator/ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
+[#_codion_tools_generator_cli]
+[discrete]
+=== codion-tools-generator-cli
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/tools/generator/cli/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
 === Load Test
 
 [discrete]

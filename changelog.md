@@ -65,6 +65,8 @@ Codion Change Log
 - IntelliJ FlatLaf themes no longer service based, opt-in via FlatLookAndFeelIntelliJThemes.add() or addAll().
 ### is.codion.tools.generator.domain
 - Generated entity definition methods are no longer static, so a domain requiring configuration needs no refactoring.
+### is.codion.tools.generator.cli
+- Domain generator cli utility added.
 
 ## 0.18.80
 ### is.codion.common.reactive
