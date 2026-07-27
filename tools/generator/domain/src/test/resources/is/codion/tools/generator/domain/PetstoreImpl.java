@@ -22,7 +22,7 @@ public final class PetstoreImpl extends DomainModel {
 				item(), tagItem());
 	}
 
-	static EntityDefinition address() {
+	EntityDefinition address() {
 		return Address.TYPE.as()
 			.attributes(
 				Address.ADDRESS_ID.as()
@@ -61,7 +61,7 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition category() {
+	EntityDefinition category() {
 		return Category.TYPE.as()
 			.attributes(
 				Category.CATEGORY_ID.as()
@@ -81,7 +81,7 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition contactInfo() {
+	EntityDefinition contactInfo() {
 		return ContactInfo.TYPE.as()
 			.attributes(
 				ContactInfo.CONTACT_INFO_ID.as()
@@ -102,7 +102,7 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition itemTagsView() {
+	EntityDefinition itemTagsView() {
 		return ItemTagsView.TYPE.as()
 			.attributes(
 				ItemTagsView.NAME.as()
@@ -113,7 +113,7 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition tag() {
+	EntityDefinition tag() {
 		return Tag.TYPE.as()
 			.attributes(
 				Tag.TAG_ID.as()
@@ -126,7 +126,7 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition product() {
+	EntityDefinition product() {
 		return Product.TYPE.as()
 			.attributes(
 				Product.PRODUCT_ID.as()
@@ -159,7 +159,7 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition item() {
+	EntityDefinition item() {
 		return Item.TYPE.as()
 			.attributes(
 				Item.ITEM_ID.as()
@@ -217,7 +217,7 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition tagItem() {
+	EntityDefinition tagItem() {
 		return TagItem.TYPE.as()
 			.attributes(
 				TagItem.TAG_ID.as()

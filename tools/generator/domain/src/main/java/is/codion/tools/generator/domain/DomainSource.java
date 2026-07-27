@@ -686,8 +686,10 @@ public final class DomainSource {
 		}
 		builder.append("\n").append(INDENT).append(".build();");
 
+		// Package private and non-static: a domain gaining configuration (multiple databases, say) then only
+		// gains a field, with no change to the definition methods, and nothing outside the domain package
+		// calls these. Private would have static analysis asking for them back as static (sonar S2325).
 		return methodBuilder(interfaceName(definition, false))
-						.addModifiers(STATIC)
 						.returns(EntityDefinition.class)
 						.addCode(builder.toString())
 						.build();

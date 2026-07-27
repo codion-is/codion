@@ -35,7 +35,8 @@ import static java.util.stream.Collectors.joining;
 final class PostProcessing {
 
 	private static final String PUBLIC_INTERFACE = "public interface ";
-	private static final String STATIC_ENTITY_DEFINITION = "static EntityDefinition ";
+	private static final String ENTITY_DEFINITION = "EntityDefinition ";
+	private static final String INTERFACE = "interface ";
 
 	private PostProcessing() {}
 
@@ -93,7 +94,7 @@ final class PostProcessing {
 					continue;
 				}
 			}
-			else if (trimmed.startsWith(STATIC_ENTITY_DEFINITION)) {
+			else if (trimmed.startsWith(ENTITY_DEFINITION)) {
 				String methodName = methodName(trimmed);
 				if (methodName != null) {
 					List<String> block = extractBlock(lines, i);
@@ -176,7 +177,7 @@ final class PostProcessing {
 	}
 
 	private static String interfaceName(String line) {
-		int start = line.indexOf("interface ") + "interface ".length();
+		int start = line.indexOf(INTERFACE) + INTERFACE.length();
 		int end = line.indexOf(" ", start);
 		if (end == -1) {
 			end = line.indexOf("{", start);
@@ -189,7 +190,7 @@ final class PostProcessing {
 	}
 
 	private static String methodName(String line) {
-		int start = line.indexOf("EntityDefinition ") + "EntityDefinition ".length();
+		int start = line.indexOf(ENTITY_DEFINITION) + ENTITY_DEFINITION.length();
 		int end = line.indexOf("(", start);
 		if (start > 0 && end > start) {
 			return line.substring(start, end).trim();

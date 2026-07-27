@@ -27,7 +27,7 @@ public final class ChinookImpl extends DomainModel {
 				track(), invoiceline(), playlisttrack());
 	}
 
-	static EntityDefinition artist() {
+	EntityDefinition artist() {
 		return Artist.TYPE.as()
 			.attributes(
 				Artist.ARTISTID.as()
@@ -42,7 +42,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition employee() {
+	EntityDefinition employee() {
 		return Employee.TYPE.as()
 			.attributes(
 				Employee.EMPLOYEEID.as()
@@ -110,7 +110,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition genre() {
+	EntityDefinition genre() {
 		return Genre.TYPE.as()
 			.attributes(
 				Genre.GENREID.as()
@@ -125,7 +125,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition mediatype() {
+	EntityDefinition mediatype() {
 		return Mediatype.TYPE.as()
 			.attributes(
 				Mediatype.MEDIATYPEID.as()
@@ -140,7 +140,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition playlist() {
+	EntityDefinition playlist() {
 		return Playlist.TYPE.as()
 			.attributes(
 				Playlist.PLAYLISTID.as()
@@ -155,7 +155,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition users() {
+	EntityDefinition users() {
 		return Users.TYPE.as()
 			.attributes(
 				Users.USERID.as()
@@ -174,7 +174,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition album() {
+	EntityDefinition album() {
 		return Album.TYPE.as()
 			.attributes(
 				Album.ALBUMID.as()
@@ -201,7 +201,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition customer() {
+	EntityDefinition customer() {
 		return Customer.TYPE.as()
 			.attributes(
 				Customer.CUSTOMERID.as()
@@ -263,7 +263,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition invoice() {
+	EntityDefinition invoice() {
 		return Invoice.TYPE.as()
 			.attributes(
 				Invoice.INVOICEID.as()
@@ -307,7 +307,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition track() {
+	EntityDefinition track() {
 		return Track.TYPE.as()
 			.attributes(
 				Track.TRACKID.as()
@@ -358,7 +358,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition invoiceline() {
+	EntityDefinition invoiceline() {
 		return Invoiceline.TYPE.as()
 			.attributes(
 				Invoiceline.INVOICELINEID.as()
@@ -388,7 +388,7 @@ public final class ChinookImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition playlisttrack() {
+	EntityDefinition playlisttrack() {
 		return Playlisttrack.TYPE.as()
 			.attributes(
 				Playlisttrack.PLAYLISTTRACKID.as()
