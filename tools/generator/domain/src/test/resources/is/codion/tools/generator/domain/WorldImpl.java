@@ -17,7 +17,7 @@ public final class WorldImpl extends DomainModel {
 				countrylanguage());
 	}
 
-	static EntityDefinition countryCityView() {
+	EntityDefinition countryCityView() {
 		return CountryCityView.TYPE.as()
 			.attributes(
 				CountryCityView.COUNTRYCODE.as()
@@ -89,7 +89,7 @@ public final class WorldImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition city() {
+	EntityDefinition city() {
 		return City.TYPE.as()
 			.attributes(
 				City.ID.as()
@@ -122,7 +122,7 @@ public final class WorldImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition country() {
+	EntityDefinition country() {
 		return Country.TYPE.as()
 			.attributes(
 				Country.CODE.as()
@@ -198,7 +198,7 @@ public final class WorldImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition countrylanguage() {
+	EntityDefinition countrylanguage() {
 		return Countrylanguage.TYPE.as()
 			.attributes(
 				Countrylanguage.COUNTRYCODE.as()

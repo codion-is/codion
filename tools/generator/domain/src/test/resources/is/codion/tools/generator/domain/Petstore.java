@@ -47,7 +47,7 @@ public final class Petstore extends DomainModel {
 		Column<byte[]> IMAGE = TYPE.byteArrayColumn("image");
 	}
 
-	static EntityDefinition address() {
+	EntityDefinition address() {
 		return Address.TYPE.as()
 			.attributes(
 				Address.ADDRESS_ID.as()
@@ -124,7 +124,7 @@ public final class Petstore extends DomainModel {
 		}
 	}
 
-	static EntityDefinition category() {
+	EntityDefinition category() {
 		return Category.TYPE.as()
 			.attributes(
 				Category.CATEGORY_ID.as()
@@ -176,7 +176,7 @@ public final class Petstore extends DomainModel {
 		}
 	}
 
-	static EntityDefinition contactInfo() {
+	EntityDefinition contactInfo() {
 		return ContactInfo.TYPE.as()
 			.attributes(
 				ContactInfo.CONTACT_INFO_ID.as()
@@ -223,7 +223,7 @@ public final class Petstore extends DomainModel {
 		}
 	}
 
-	static EntityDefinition itemTagsView() {
+	EntityDefinition itemTagsView() {
 		return ItemTagsView.TYPE.as()
 			.attributes(
 				ItemTagsView.NAME.as()
@@ -244,7 +244,7 @@ public final class Petstore extends DomainModel {
 		Column<String> TAG = TYPE.stringColumn("tag");
 	}
 
-	static EntityDefinition tag() {
+	EntityDefinition tag() {
 		return Tag.TYPE.as()
 			.attributes(
 				Tag.TAG_ID.as()
@@ -299,7 +299,7 @@ public final class Petstore extends DomainModel {
 		}
 	}
 
-	static EntityDefinition product() {
+	EntityDefinition product() {
 		return Product.TYPE.as()
 			.attributes(
 				Product.PRODUCT_ID.as()
@@ -403,7 +403,7 @@ public final class Petstore extends DomainModel {
 		}
 	}
 
-	static EntityDefinition item() {
+	EntityDefinition item() {
 		return Item.TYPE.as()
 			.attributes(
 				Item.ITEM_ID.as()
@@ -485,7 +485,7 @@ public final class Petstore extends DomainModel {
 		ForeignKey ITEM_FK = TYPE.foreignKey("item_fk", ITEM_ID, Item.ITEM_ID);
 	}
 
-	static EntityDefinition tagItem() {
+	EntityDefinition tagItem() {
 		return TagItem.TYPE.as()
 			.attributes(
 				TagItem.TAG_ID.as()

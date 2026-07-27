@@ -45,7 +45,7 @@ public final class PetclinicImpl extends DomainModel {
 		add(vet(), specialty(), vetSpecialty(), petType(), owner(), pet(), visit());
 	}
 
-	private EntityDefinition vet() {
+	EntityDefinition vet() {
 		return Vet.TYPE.as()
 						.attributes(
 										Vet.ID.as()
@@ -74,7 +74,7 @@ public final class PetclinicImpl extends DomainModel {
 						.build();
 	}
 
-	private EntityDefinition specialty() {
+	EntityDefinition specialty() {
 		return Specialty.TYPE.as()
 						.attributes(
 										Specialty.ID.as()
@@ -92,7 +92,7 @@ public final class PetclinicImpl extends DomainModel {
 						.build();
 	}
 
-	private EntityDefinition vetSpecialty() {
+	EntityDefinition vetSpecialty() {
 		return VetSpecialty.TYPE.as()
 						.attributes(
 										VetSpecialty.VET.as()
@@ -116,7 +116,7 @@ public final class PetclinicImpl extends DomainModel {
 						.build();
 	}
 
-	private EntityDefinition petType() {
+	EntityDefinition petType() {
 		return PetType.TYPE.as()
 						.attributes(
 										PetType.ID.as()
@@ -135,7 +135,7 @@ public final class PetclinicImpl extends DomainModel {
 						.build();
 	}
 
-	private EntityDefinition owner() {
+	EntityDefinition owner() {
 		return Owner.TYPE.as()
 						.attributes(
 										Owner.ID.as()
@@ -194,7 +194,7 @@ public final class PetclinicImpl extends DomainModel {
 		}
 	}
 
-	private EntityDefinition pet() {
+	EntityDefinition pet() {
 		return Pet.TYPE.as()
 						.attributes(
 										Pet.ID.as()
@@ -234,7 +234,7 @@ public final class PetclinicImpl extends DomainModel {
 						.build();
 	}
 
-	private EntityDefinition visit() {
+	EntityDefinition visit() {
 		return Visit.TYPE.as()
 						.attributes(
 										Visit.ID.as()

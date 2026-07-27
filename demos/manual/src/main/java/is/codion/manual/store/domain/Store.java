@@ -84,7 +84,7 @@ public final class Store extends DomainModel {
 		add(customer(), address(), customerAddress());
 	}
 
-	private EntityDefinition customer() {
+	EntityDefinition customer() {
 		// tag::customer[]
 		return Customer.TYPE.as()
 						.attributes(
@@ -118,7 +118,7 @@ public final class Store extends DomainModel {
 		// end::customer[]
 	}
 
-	private EntityDefinition address() {
+	EntityDefinition address() {
 		// tag::address[]
 		return Address.TYPE.as()
 						.attributes(
@@ -152,7 +152,7 @@ public final class Store extends DomainModel {
 		// end::address[]
 	}
 
-	private EntityDefinition customerAddress() {
+	EntityDefinition customerAddress() {
 		// tag::customerAddress[]
 		return CustomerAddress.TYPE.as()
 						.attributes(

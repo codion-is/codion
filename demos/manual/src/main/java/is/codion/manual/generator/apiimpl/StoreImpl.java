@@ -32,7 +32,7 @@ public final class StoreImpl extends DomainModel {
 		add(customer(), order());
 	}
 
-	static EntityDefinition customer() {
+	EntityDefinition customer() {
 		return Customer.TYPE.as()
 						.attributes(
 										Customer.ID.as()
@@ -51,7 +51,7 @@ public final class StoreImpl extends DomainModel {
 						.build();
 	}
 
-	static EntityDefinition order() {
+	EntityDefinition order() {
 		return Order.TYPE.as()
 						.attributes(
 										Order.ID.as()
