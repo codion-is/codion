@@ -1,4 +1,5 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import com.vanniktech.maven.publish.*
 
 plugins {
     id("org.sonarqube") version "7.3.1.8318"
@@ -6,26 +7,13 @@ plugins {
     id("com.vanniktech.dependency.graph.generator") version "0.8.0"
     id("com.diffplug.spotless") version "8.8.0"
     id("org.gradlex.extra-java-module-info") version "1.14.2"
-    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
+    id("com.vanniktech.maven.publish") version "0.37.0" apply false
     id("io.github.f-cramer.jasperreports") version "0.0.4"
-}
-
-if (hasPublicationProperties()) {
-    nexusPublishing {
-        packageGroup = "is.codion"
-        repositories {
-            sonatype {
-                nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
-                snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
-            }
-        }
-    }
 }
 
 configure(frameworkModules()) {
     apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
-    apply(plugin = "signing")
+    apply(plugin = "com.vanniktech.maven.publish")
     apply(plugin = "com.github.ben-manes.versions")
     apply(plugin = "com.vanniktech.dependency.graph.generator")
 
@@ -39,8 +27,6 @@ configure(frameworkModules()) {
     java {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-        withJavadocJar()
-        withSourcesJar()
     }
 
     tasks.withType<Javadoc>().configureEach {
@@ -62,40 +48,12 @@ configure(frameworkModules()) {
         }
     }
 
-    configure<PublishingExtension> {
-        publications {
-            create<MavenPublication>("mavenJava") {
-                groupId = "is.codion"
-                from(components["java"])
-                pom {
-                    name = "is.codion:" + project.name
-                    description = "Codion Application Framework"
-                    url = "https://codion.is"
-                    licenses {
-                        license {
-                            name = "GPL-3.0"
-                            url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = "bjorndarri"
-                            name = "Björn Darri Sigurðsson"
-                            email = "bjorndarri@gmail.com"
-                        }
-                    }
-                    scm {
-                        connection = "scm:git:git://github.com/codion-is/codion.git"
-                        developerConnection = "scm:git:git://github.com/codion-is/codion.git"
-                        url = "https://github.com/codion-is/codion"
-                    }
-                }
-            }
-        }
-
-        configure<SigningExtension> {
-            sign(project.extensions.getByType<PublishingExtension>().publications["mavenJava"])
-        }
+    configure<MavenPublishBaseExtension> {
+        publishToMavenCentral()
+        signAllPublications()
+        configure(JavaLibrary(javadocJar = JavadocJar.Javadoc(), sourcesJar = SourcesJar.Sources()))
+        coordinates("is.codion", project.name, project.version.toString())
+        pom(codionPom("is.codion:" + project.name, "Codion Application Framework"))
     }
 
     if (hasSonarqubeProperties()) {
@@ -116,43 +74,14 @@ configure(frameworkModules()) {
 
 configure(bomModules()) {
     apply(plugin = "java-platform")
-    apply(plugin = "maven-publish")
-    apply(plugin = "signing")
+    apply(plugin = "com.vanniktech.maven.publish")
 
-    configure<PublishingExtension> {
-        publications {
-            create<MavenPublication>("bom") {
-                groupId = "is.codion"
-                from(components["javaPlatform"])
-                pom {
-                    name = "is.codion:" + project.name
-                    description = "Codion Application Framework BOM"
-                    url = "https://codion.is"
-                    licenses {
-                        license {
-                            name = "GPL-3.0"
-                            url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = "bjorndarri"
-                            name = "Björn Darri Sigurðsson"
-                            email = "bjorndarri@gmail.com"
-                        }
-                    }
-                    scm {
-                        connection = "scm:git:git://github.com/codion-is/codion.git"
-                        developerConnection = "scm:git:git://github.com/codion-is/codion.git"
-                        url = "https://github.com/codion-is/codion"
-                    }
-                }
-            }
-        }
-
-        configure<SigningExtension> {
-            sign(project.extensions.getByType<PublishingExtension>().publications["bom"])
-        }
+    configure<MavenPublishBaseExtension> {
+        publishToMavenCentral()
+        signAllPublications()
+        configure(JavaPlatform())
+        coordinates("is.codion", project.name, project.version.toString())
+        pom(codionPom("is.codion:" + project.name, "Codion Application Framework BOM"))
     }
 }
 
@@ -290,12 +219,28 @@ tasks.withType<DependencyUpdatesTask> {
     }
 }
 
-fun hasPublicationProperties(): Boolean {
-    return project.hasProperty("sonatypeUsername") &&
-            project.hasProperty("sonatypePassword") &&
-            project.hasProperty("signing.keyId") &&
-            project.hasProperty("signing.password") &&
-            project.hasProperty("signing.secretKeyRingFile")
+fun codionPom(pomName: String, pomDescription: String) = Action<MavenPom> {
+    name = pomName
+    description = pomDescription
+    url = "https://codion.is"
+    licenses {
+        license {
+            name = "GPL-3.0"
+            url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+        }
+    }
+    developers {
+        developer {
+            id = "bjorndarri"
+            name = "Björn Darri Sigurðsson"
+            email = "bjorndarri@gmail.com"
+        }
+    }
+    scm {
+        connection = "scm:git:git://github.com/codion-is/codion.git"
+        developerConnection = "scm:git:git://github.com/codion-is/codion.git"
+        url = "https://github.com/codion-is/codion"
+    }
 }
 
 fun hasSonarqubeProperties(): Boolean {
