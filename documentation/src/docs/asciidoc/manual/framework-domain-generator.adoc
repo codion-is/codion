@@ -33,6 +33,9 @@ MVC model layer providing which coordinates schema discovery, entity selection, 
 <<{basedir}/technical/technical.adoc#_codion_tools_generator_ui, codion-tools-generator-ui>>::
 Swing desktop interface providing schema browser, entity selection, configuration dialogs, and code preview with search.
 
+<<{basedir}/technical/technical.adoc#_codion_tools_generator_cli, codion-tools-generator-cli>>::
+Command line interface generating the domain source code for a whole schema, for scripted use, see <<#_command_line_interface, Command Line Interface>>.
+
 == Project Setup
 
 To use the generator in your project, create a Gradle (or the Maven equivalent) build configuration similar to the included demo:
@@ -52,12 +55,12 @@ dependencies {
     runtimeOnly("com.h2database:h2:{h2-version}")
 
     // Or PostgreSQL:
-    //runtimeOnly("is.codion:codion-dbms-postgresql:{codion-version}")
+    // runtimeOnly("is.codion:codion-dbms-postgresql:{codion-version}")
     // runtimeOnly("org.postgresql:postgresql:{postgresql-driver-version")
 
     // Or Oracle:
-    //runtimeOnly("is.codion:codion-dbms-oracle:{codion-version}")
-    // runtimeOnly("com.oracle.database.jdbc:ojdbc:{oracle-driver-version}") { isTransitive = false }
+    // runtimeOnly("is.codion:codion-dbms-oracle:{codion-version}")
+    // runtimeOnly("com.oracle.database.jdbc:ojdbc:{oracle-driver-version}")
 }
 
 application {
@@ -315,6 +318,112 @@ Each tab has directory fields showing where files will be written. Click *...* t
 Click *Save* on the appropriate tab to write files. Existing files trigger an overwrite confirmation dialog. Generated files can be copied to actual module directories as needed.
 
 TIP: Use keyboard shortcuts kbd:[Alt+1] through kbd:[Alt+5] to navigate between major UI sections (schema table, entity table, tabs, etc.).
+
+[#_command_line_interface]
+== Command Line Interface
+
+The <<{basedir}/technical/technical.adoc#_codion_tools_generator_cli, codion-tools-generator-cli>> module generates the domain source code for a whole schema without the UI, for scripted use, such as regenerating the domain model after a schema migration.
+
+Without an output directory the combined source is printed to standard output, with diagnostics on standard error, so it can be piped or redirected.
+
+[source,bash]
+----
+java -m is.codion.tools.generator.cli \
+    --url jdbc:h2:mem:h2db \
+    --init-scripts /path/to/create_schema.sql \
+    --user sa \
+    --schema PETCLINIC \
+    --package is.codion.demos.petclinic.domain > Petclinic.java
+----
+
+The dbms module and the JDBC driver for the database in question must be available at runtime, as must the domain generator itself, the following writes the api and implementation to a source directory, along with the i18n resource bundles and the domain unit test.
+
+._build.gradle.kts_
+[source,kotlin]
+----
+plugins {
+    application
+}
+
+dependencies {
+    runtimeOnly("is.codion:codion-tools-generator-cli:{codion-version}")
+
+    // Add your database JDBC driver
+    runtimeOnly("is.codion:codion-dbms-postgresql:{codion-version}")
+    runtimeOnly("org.postgresql:postgresql:{postgresql-driver-version}")
+}
+
+application {
+    mainModule = "is.codion.tools.generator.cli"
+    mainClass = "is.codion.tools.generator.cli.DomainGeneratorCli"
+}
+----
+
+[source,bash]
+----
+./gradlew :your-generator-module:installDist
+
+./build/install/your-generator-module/bin/your-generator-module \
+    --url jdbc:postgresql://localhost:5432/mydb \
+    --user scott:tiger \
+    --schema store \
+    --package com.example.domain \
+    --output-dir src/main/java \
+    --resource-dir src/main/resources \
+    --test-dir src/test/java \
+    --split-api-impl --i18n --test --overwrite
+----
+
+[cols="2,3"]
+|===
+|Option|Description
+
+|`--url <url>`
+|The database url, falls back to `codion.db.url`
+
+|`--init-scripts <paths>`
+|Database init scripts, comma separated, falls back to `codion.db.initScripts`
+
+|`--user <user>`
+|The database user, on the form `username` or `username:password`
+
+|`--schema <schema>`
+|The schema to generate a domain model for (required)
+
+|`--package <package>`
+|The domain package (required)
+
+|`--output-dir <dir>`
+|The source directory to write the domain source to, the package directories are created below it, when not specified the source is printed to standard output
+
+|`--resource-dir <dir>`
+|The resource directory to write the i18n properties to, required by `--i18n`
+
+|`--test-dir <dir>`
+|The test source directory to write the domain unit test to, required by `--test`
+
+|`--split-api-impl`
+|Write the domain api and implementation to separate source files
+
+|`--i18n`
+|Generate i18n resource bundles for the entity and attribute captions
+
+|`--test`
+|Generate a domain unit test
+
+|`--dtos`
+|Generate a record based dto for each entity
+
+|`--overwrite`
+|Overwrite existing source files
+
+|`--help`
+|Print the available options
+|===
+
+Exit codes: 0 success, 1 failure, 2 usage error.
+
+NOTE: The CLI generates the domain model for the whole schema, using the default schema settings, entity selection and schema settings require the UI.
 
 == Generated Output
 
