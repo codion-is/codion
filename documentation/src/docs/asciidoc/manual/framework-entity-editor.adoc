@@ -93,8 +93,19 @@ The link's *select* provides the query fetching the detail entity for a given ma
 include::{dir-chinook-source}/is/codion/demos/chinook/model/ArtistEditModel.java[tags=artistEditModel]
 ----
 
-== Events
+== Editor Events
 
-{url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#events()[events()] provides application-wide insert, update and delete notifications for the edited entity type.
+{url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.PersistEvents.html[EntityEditor.PersistEvents] available via {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#events()[EntityEditor.events()] provides before and after notifications for insert, update and delete, as well as a general post-persistence notification.
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=eventHandling]
+----
+
+== Application Events
+
+{url-javadoc}{framework-model}/is/codion/framework/model/PersistenceEvents.html[PersistenceEvents] provides application-wide insert, update and delete notifications for all available entity types.
 These are what keep the rest of a running application consistent without any wiring: combo box models refresh or reconcile, search model selections receive updated instances, table models react to insert and delete, and foreign key values in other editors are replaced when the entity they reference is updated or deleted elsewhere.
 Reach for these events when application logic must react to persistence outcomes regardless of *which* editor performed the operation.
+
+By default, an EntityEditor posts its persist events to the global *PersistenceEvents* instance, but that can be configured either globally via the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#PUBLISH_PERSISTENCE_EVENTS[EntityEditor.PUBLISH_PERSISTENCE_EVENTS] configuration value or per instance using {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditor.html#settings()[EntityEditor.settings()].

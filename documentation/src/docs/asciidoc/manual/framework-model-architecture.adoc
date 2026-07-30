@@ -42,12 +42,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.
 
 == Where application logic belongs
 
-Logic belongs in the models — reacting to edits, persistence events and selection there means it works the same regardless of which UI (or test) drives it:
-
-[source,java]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=eventHandling]
-----
+Logic belongs in the models — reacting to edits, persistence events and selection there means it works the same regardless of which UI (or test) drives it.
 
 The chinook demo's models are the reference examples: value dependencies and custom persistence in *InvoiceLineEditModel*, value propagation in *InvoiceEditModel*, selection-scoped operations in *TrackTableModel* — each documented in the chapters that follow.
 
