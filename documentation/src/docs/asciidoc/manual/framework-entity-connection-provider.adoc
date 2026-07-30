@@ -63,7 +63,14 @@ Each connection provider type has its own default description:
 
 === Overriding the Description
 
-You can override the default description using the configuration property:
+You can override the default description using the configuration property {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnectionProvider.html#DESCRIPTION[EntityConnectionProvider.DESCRIPTION]
+
+[source,java]
+----
+EntityConnectionProvider.DESCRIPTION.set("MyDescription");
+----
+
+or the associated JVM argument
 
 [source,properties]
 ----

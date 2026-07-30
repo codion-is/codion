@@ -8,7 +8,7 @@ Thank you for your interest in contributing — it means a lot. Here's what you 
 
 This policy allows for tight control over the codebase architecture, design decisions, and quality standards while the framework is being finalized.
 
-**Pull requests will be closed without detailed code review** to avoid copyright complications. Trivial changes (typos in documentation, obvious syntax errors) may be incorporated at the maintainer's discretion with acknowledgment.
+**Pull request creation is restricted to repository collaborators.** If you attempt to open one, GitHub will tell you that pull requests are limited to collaborators — this is intentional, not a bug. It keeps the codebase free of unsolicited code for the copyright reasons above. Trivial changes (typos in documentation, obvious syntax errors) may still be incorporated at the maintainer's discretion with acknowledgment — please open an issue and they'll be handled directly.
 
 **If and when code contributions are accepted in the future**, copyright assignment will be required. This is because Codion may be dual-licensed (GPL + commercial) down the road, which requires clear ownership of all contributions.
 
