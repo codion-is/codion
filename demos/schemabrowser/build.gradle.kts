@@ -39,6 +39,6 @@ tasks.register<JavaExec>("runClientLocal") {
     systemProperties = mapOf(
         "codion.client.connectionType" to "local",
         "codion.db.url" to "jdbc:h2:mem:h2db",
-        "codion.db.initScripts" to "$scriptPaths",
+        "codion.db.initScripts" to scriptPaths,
     )
 }

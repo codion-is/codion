@@ -177,7 +177,7 @@ tasks.register("combinedJavadoc") {
             add("-notimestamp")
 
             // Links to external documentation
-            add("-link"); add("https://docs.oracle.com/en/java/javase/${properties["jdkVersion"]}/docs/api/")
+            add("-link"); add("https://docs.oracle.com/en/java/javase/${project.findProperty("jdkVersion")}/docs/api/")
             add("-link"); add("https://jspecify.dev/docs/api/")
 
             // Add all source files
