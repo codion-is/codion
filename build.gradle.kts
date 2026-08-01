@@ -3,9 +3,8 @@ import com.vanniktech.maven.publish.*
 
 plugins {
     id("org.sonarqube") version "7.3.1.8318"
-    id("com.github.ben-manes.versions") version "0.54.0"
     id("com.vanniktech.dependency.graph.generator") version "0.8.0"
-    id("com.diffplug.spotless") version "8.8.0"
+    id("com.diffplug.spotless") version "8.9.0"
     id("org.gradlex.extra-java-module-info") version "1.14.2"
     id("com.vanniktech.maven.publish") version "0.37.0" apply false
     id("io.github.f-cramer.jasperreports") version "0.0.4"
@@ -14,7 +13,6 @@ plugins {
 configure(frameworkModules()) {
     apply(plugin = "java-library")
     apply(plugin = "com.vanniktech.maven.publish")
-    apply(plugin = "com.github.ben-manes.versions")
     apply(plugin = "com.vanniktech.dependency.graph.generator")
 
     tasks.clean {
