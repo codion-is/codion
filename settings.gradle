@@ -1,5 +1,6 @@
 plugins {
     id "org.gradle.toolchains.foojay-resolver-convention" version "1.0.0"
+    id "io.github.ben-manes.versions.settings"  version "0.58.0"
 }
 
 rootProject.name = "is.codion"
@@ -215,14 +216,14 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             version("slf4j.api", "2.0.18")
-            version("logback", "1.6.0")
+            version("logback", "1.6.1")
             version("h2", "2.3.232")
             version("json", "20260719")
 
             version("jfreechart", "1.5.6")
             version("junit", "6.1.2")
             version("assertj.swing", "4.0.0-beta-2")
-            version("ayza", "10.0.5")
+            version("ayza", "10.0.6")
             version("flatlaf", "3.7.2")
             version("jsvg", "2.1.0")
             version("javalin", "7.2.2")
@@ -234,7 +235,7 @@ dependencyResolutionManagement {
             version("tomcat", "11.0.24")
 
             version("jasperreports", "7.0.6")
-            version("jspecify", "1.0.0")
+            version("jspecify", "1.0.1")
 
             library("slf4j-api", "org.slf4j", "slf4j-api").versionRef("slf4j.api")
             library("logback-core", "ch.qos.logback", "logback-core").versionRef("logback")
