@@ -1,6 +1,10 @@
 Codion Change Log
 =================
 
+## 0.18.82
+### is.codion
+- Minimum JDK changed from 17 to 21.
+
 ## 0.18.81
 ### is.codion.common.rmi
 - RemoteClient.connectionRequest() renamed request().

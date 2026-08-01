@@ -24,11 +24,6 @@ configure(frameworkModules()) {
         }
     }
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     tasks.withType<Javadoc>().configureEach {
         val docletOptions = options as StandardJavadocDocletOptions
         docletOptions.links(
