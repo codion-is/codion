@@ -32,6 +32,7 @@ dependencies {
         api(project(":codion-tools-generator-domain"))
         api(project(":codion-tools-generator-model"))
         api(project(":codion-tools-generator-ui"))
+        api(project(":codion-tools-generator-cli"))
         api(project(":codion-tools-monitor-model"))
         api(project(":codion-tools-monitor-ui"))
     }
