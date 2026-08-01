@@ -113,105 +113,64 @@ tasks.asciidoctor {
     }
 }
 
-tasks.register("combinedJavadoc") {
+val javadocModules = frameworkModules().filter { module -> module.plugins.hasPlugin("java") }
+val combinedJavadocSourceDir = layout.buildDirectory.dir("tmp/javadoc/combined-source")
+
+tasks.register<Sync>("combinedJavadocSource") {
+    group = "documentation"
+    description = "Collects the framework module sources into a single --module-source-path tree"
+
+    into(combinedJavadocSourceDir)
+    javadocModules.forEach { module ->
+        from(module.file("src/main/java")) {
+            into(moduleName(module))
+        }
+    }
+}
+
+tasks.register<Javadoc>("combinedJavadoc") {
     group = "documentation"
     description = "Generates combined Javadocs for all framework modules"
 
-    // Define directories
-    val tempDir = layout.buildDirectory.dir("tmp/javadoc")
-    val combinedSourceDir = tempDir.map { it.dir("combined-source") }
-    val outputDir = layout.buildDirectory.dir("javadoc")
+    dependsOn("combinedJavadocSource")
 
-    // Track inputs and outputs
-    frameworkModules().filter { module ->
-        module.plugins.hasPlugin("java")
-    }.forEach { module ->
-        inputs.files(module.sourceSets.main.get().allJava)
-        inputs.files(module.sourceSets.main.get().output)
+    // The modules resolve each other through --module-path, added below, so the task classpath stays empty.
+    val modulePath = files(javadocModules.map { module -> module.sourceSets.main.get().compileClasspath },
+        javadocModules.map { module -> module.sourceSets.main.get().output })
+
+    val javadocDir = layout.buildDirectory.dir("javadoc").get().asFile
+
+    destinationDir = javadocDir
+    source(combinedJavadocSourceDir.map { dir -> dir.asFileTree.matching { include("**/*.java") } })
+    classpath = files()
+
+    (options as StandardJavadocDocletOptions).apply {
+        docTitle = "Codion Framework API $documentationVersion"
+        windowTitle = "Codion Framework API $documentationVersion"
+        encoding = "UTF-8"
+        charSet = "UTF-8"
+        author(true)
+        use(true)
+        noTimestamp(true)
+        links(
+            "https://docs.oracle.com/en/java/javase/${project.findProperty("jdkVersion")}/docs/api/",
+            "https://jspecify.dev/docs/api/"
+        )
+        addStringOption("-add-modules", javadocModules.joinToString(",") { module -> moduleName(module) })
     }
-    outputs.dir(outputDir)
 
-    doLast {
-        // Clean and create directories
-        delete(tempDir)
-        mkdir(combinedSourceDir)
-
-        // Prepare module source structure
-        val moduleNames = mutableListOf<String>()
-        val classpath = mutableSetOf<File>()
-
-        frameworkModules().filter { module ->
-            module.plugins.hasPlugin("java")
-        }.forEach { module ->
-            val moduleName = "is.${module.name.replace("-", ".")}"
-            moduleNames.add(moduleName)
-
-            // Copy source files maintaining module structure
-            copy {
-                from(module.file("src/main/java"))
-                into(combinedSourceDir.get().dir(moduleName))
-            }
-
-            // Collect classpath
-            module.sourceSets.main.get().compileClasspath.forEach { classpath.add(it) }
-            module.sourceSets.main.get().output.files.forEach { classpath.add(it) }
-        }
-
-        // Prepare javadoc arguments
-        val javadocArgs = mutableListOf<String>().apply {
-            // Output directory
-            add("-d"); add(outputDir.get().asFile.absolutePath)
-
-            // Module configuration
-            add("--module-source-path"); add(combinedSourceDir.get().asFile.absolutePath)
-            add("--add-modules"); add(moduleNames.joinToString(","))
-            add("--module-path"); add(classpath.joinToString(File.pathSeparator))
-
-            // Documentation options
-            add("-doctitle"); add("Codion Framework API $documentationVersion")
-            add("-windowtitle"); add("Codion Framework API $documentationVersion")
-            add("-encoding"); add("UTF-8")
-            add("-charset"); add("UTF-8")
-            add("-author")
-            add("-use")
-            add("-notimestamp")
-
-            // Links to external documentation
-            add("-link"); add("https://docs.oracle.com/en/java/javase/${project.findProperty("jdkVersion")}/docs/api/")
-            add("-link"); add("https://jspecify.dev/docs/api/")
-
-            // Add all source files
-            fileTree(combinedSourceDir).matching {
-                include("**/*.java")
-            }.files.forEach { sourceFile ->
-                add(sourceFile.absolutePath)
-            }
-        }
-
-        // Execute javadoc
-        val javadocTool = javaToolchains.javadocToolFor {
-            languageVersion = JavaLanguageVersion.of(21)
-        }
-
-        val execResult = providers.exec {
-            executable = javadocTool.get().executablePath.asFile.absolutePath
-            args = javadocArgs
-            isIgnoreExitValue = true
-        }
-
-        val exitValue = execResult.result.get().exitValue
-        if (exitValue != 0) {
-            println("STDOUT:")
-            println(execResult.standardOutput.asText.get())
-            println("STDERR:")
-            println(execResult.standardError.asText.get())
-            throw GradleException("Javadoc failed with exit code $exitValue")
-        }
-
-        // Clean up temporary directory
-        delete(tempDir)
+    doFirst {
+        // Javadoc writes into the output directory without clearing it, leaving pages for deleted classes
+        // and legal notices from whichever JDK generated them last behind to be published.
+        javadocDir.deleteRecursively()
+        // The module path is only resolved once the modules have been built.
+        options.modulePath = modulePath.files.toList()
+        (options as StandardJavadocDocletOptions)
+            .addStringOption("-module-source-path", combinedJavadocSourceDir.get().asFile.absolutePath)
     }
 }
+
+fun moduleName(module: Project) = "is." + module.name.replace("-", ".")
 
 tasks.register("checkI18nDocs") {
     group = "verification"
