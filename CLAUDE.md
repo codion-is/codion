@@ -11,10 +11,10 @@ If you find a claude directory in the project root dir, then that is meant for y
 Codion is a full-stack Java rich client desktop CRUD application framework based solely on Java Standard Edition components. It follows Domain-Driven Design principles with Entity-Relationship concepts rather than ORM. The framework has been continuously refined for over 20 years and is designed for internal business/scientific applications with 1-10 users, though it can handle thousands of concurrent users (see `documentation/src/docs/asciidoc/images/monitoring`).
 
 **Key Technologies:**
-- Java 17+ (compiled with JDK 21)
-- Gradle 8.14 build system
+- Java 21+
+- Gradle build system
 - Swing UI framework
-- JUnit Jupiter 5.12.2 for testing
+- JUnit for testing
 - Multiple database support (PostgreSQL, Oracle, H2, MySQL, etc.)
 
 ## Design Philosophy
