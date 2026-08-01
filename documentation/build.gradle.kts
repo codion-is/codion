@@ -75,8 +75,10 @@ tasks.asciidoctor {
             "codion-version" to documentationVersion,
             "revnumber" to documentationVersion, "sectnums" to 4, "sectanchors" to true, "prewrap" to false,
             "experimental" to true, "reproducible" to true, "linkcss" to true, "tabsize" to 2,
-            "diagram-cachedir" to project.layout.buildDirectory.dir("asciidoc/images/diagram-cache")
-                .get().asFile.absolutePath,
+            "diagram-cachedir" to
+                    project.layout.buildDirectory.dir("asciidoc/images/diagram-cache").get().asFile.absolutePath,
+            "url-jdk-javadoc" to
+                    "https://docs.oracle.com/en/java/javase/" + project.findProperty("jdkVersion") + "/docs/api",
             "common-db" to "/is.codion.common.db",
             "common-model" to "/is.codion.common.model",
             "common-reactive" to "/is.codion.common.reactive",

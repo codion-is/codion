@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with Co
 Codion is a full-stack Java rich client desktop CRUD application framework based solely on Java Standard Edition components. It follows Domain-Driven Design principles with Entity-Relationship concepts rather than ORM. The framework has been continuously refined for over 20 years and is designed for internal business/scientific applications, though it can handle thousands of concurrent users.
 
 **Key Technologies:**
-- Java 17+ (compiled with JDK 21)
+- Java 21+
 - Gradle build system
 - Swing UI framework  
 - JUnit Jupiter for testing

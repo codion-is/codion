@@ -57,7 +57,7 @@ designed to be **safe by default** against it.
    transport performs no Java deserialization of request bodies.
 
 2. **A deserialization filter is mandatory by default.** The server configures a
-   JVM-wide [`ObjectInputFilter`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/ObjectInputFilter.html)
+   JVM-wide [`ObjectInputFilter`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/ObjectInputFilter.html)
    (JEP 290) from a configured `ObjectInputFilterFactory`, and
    `codion.server.objectInputFilterFactoryRequired` defaults to `true`. **If no
    filter factory is configured, the server refuses to start.** This filter applies
