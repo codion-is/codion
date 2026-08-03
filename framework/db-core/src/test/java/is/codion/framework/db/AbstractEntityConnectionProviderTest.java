@@ -30,7 +30,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("AbstractEntityConnectionProviderTest")
@@ -268,6 +270,119 @@ public final class AbstractEntityConnectionProviderTest {
 			for (EntityConnection connection : connections) {
 				assertSame(firstConnection, connection);
 			}
+		}
+
+		@Test
+		@DisplayName("a slow operation does not block unrelated provider callers")
+		void provider_operationInProgress_doesNotBlockProvider() throws InterruptedException {
+			//connections serialize every operation on a single lock, which connected() shares,
+			//so validating a connection blocks for the duration of any operation in progress.
+			//That check must not be performed while holding the provider lock, doing so stalls
+			//every provider caller, the UI thread included
+			Object connectionLock = new Object();
+			CountDownLatch operationRunning = new CountDownLatch(1);
+			CountDownLatch releaseOperation = new CountDownLatch(1);
+
+			EntityConnectionProvider provider = new LockingProviderBuilder(connectionLock)
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+			provider.connection();
+
+			//an operation in progress, holding the connection lock
+			Thread operation = new Thread(() -> {
+				synchronized (connectionLock) {
+					operationRunning.countDown();
+					await(releaseOperation);
+				}
+			});
+			operation.start();
+			assertTrue(operationRunning.await(10, SECONDS));
+
+			//a second caller, blocked while validating the connection
+			Thread caller = new Thread(provider::connection);
+			caller.start();
+			assertTrue(blocked(caller));
+
+			CountDownLatch done = new CountDownLatch(1);
+			Thread unrelated = new Thread(() -> {
+				provider.entities();
+				done.countDown();
+			});
+			unrelated.start();
+
+			assertTrue(done.await(10, SECONDS), "entities() must not queue behind an operation in progress");
+
+			releaseOperation.countDown();
+			operation.join();
+			caller.join();
+			unrelated.join();
+		}
+
+		private boolean blocked(Thread thread) throws InterruptedException {
+			for (int i = 0; i < 500; i++) {
+				if (thread.getState() == Thread.State.BLOCKED) {
+					return true;
+				}
+				Thread.sleep(10);
+			}
+
+			return false;
+		}
+
+		private void await(CountDownLatch latch) {
+			try {
+				latch.await();
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
+	}
+
+	private static final class LockingProvider extends AbstractEntityConnectionProvider {
+
+		private final Object connectionLock;
+
+		private LockingProvider(LockingProviderBuilder builder) {
+			super(builder);
+			this.connectionLock = builder.connectionLock;
+		}
+
+		@Override
+		protected EntityConnection connect() {
+			return ProxyBuilder.of(EntityConnection.class)
+							.method("entities", parameters -> ENTITIES)
+							.method("connected", parameters -> {
+								synchronized (connectionLock) {
+									return true;
+								}
+							})
+							.method("close", parameters -> null)
+							.build();
+		}
+
+		@Override
+		protected void close(EntityConnection connection) {}
+
+		@Override
+		public Optional<String> description() {
+			return Optional.of("description");
+		}
+	}
+
+	private static final class LockingProviderBuilder extends AbstractBuilder<LockingProvider, LockingProviderBuilder> {
+
+		private final Object connectionLock;
+
+		private LockingProviderBuilder(Object connectionLock) {
+			super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+			this.connectionLock = connectionLock;
+		}
+
+		@Override
+		public LockingProvider build() {
+			return new LockingProvider(this);
 		}
 	}
 
