@@ -281,12 +281,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	@Override
 	public final EditorTasks tasks() {
-		return tasks(connectionProvider.connection());
+		return new DefaultEditorTasks(connectionProvider::connection);
 	}
 
 	@Override
 	public final EditorTasks tasks(EntityConnection connection) {
-		return new DefaultEditorTasks(requireNonNull(connection));
+		requireNonNull(connection);
+
+		return new DefaultEditorTasks(() -> connection);
 	}
 
 	@Override
@@ -734,7 +736,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private DefaultEditorTasks defaultTasks() {
-			return new DefaultEditorTasks(connectionProvider.connection());
+			return new DefaultEditorTasks(connectionProvider::connection);
 		}
 
 		private static <T> @Nullable T nullValue(AttributeDefinition<T> attributeDefinition) {
@@ -793,10 +795,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private static final String UPDATE = "update {}";
 		private static final String DELETE = "delete {}";
 
-		private final EntityConnection connection;
+		private final Supplier<EntityConnection> connectionSupplier;
 
-		private DefaultEditorTasks(EntityConnection connection) {
-			this.connection = connection;
+		private volatile @Nullable EntityConnection connection;
+
+		private DefaultEditorTasks(Supplier<EntityConnection> connectionSupplier) {
+			this.connectionSupplier = connectionSupplier;
 		}
 
 		@Override
@@ -925,6 +929,23 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			return new ReplaceEntity(entity);
 		}
 
+		/**
+		 * The connection is resolved on first use rather than when these tasks are created, since they are
+		 * typically created on the UI thread and performed on a background thread, and resolving a connection
+		 * blocks for the duration of any operation in progress on it.
+		 * @return the connection, resolved once and reused, so that all the operations making up a task share one
+		 */
+		private EntityConnection connection() {
+			EntityConnection connection = this.connection;
+			if (connection == null) {
+				//a benign race resolves twice, the provider hands out the same connection either way
+				connection = connectionSupplier.get();
+				this.connection = connection;
+			}
+
+			return connection;
+		}
+
 		private final class InsertDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
@@ -938,8 +959,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.before = requireNonNull(before);
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.editor.entity().present().is()) {
-						tasks.add(detailEditor.editor.tasks(connection).insert(detail ->
-										detailEditor.link.beforeInsert.apply(detail, inserted(), connection)));
+						tasks.add(detailEditor.editor.tasks(connection()).insert(detail ->
+										detailEditor.link.beforeInsert.apply(detail, inserted(), connection())));
 					}
 				}
 			}
@@ -947,12 +968,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(INSERT, entity);
-				return transaction(connection, this::insert);
+				return transaction(connection(), this::insert);
 			}
 
 			private Result<Entity> insert() {
 				before.accept(entity);
-				inserted = persistence.get().insert(entity, connection);
+				inserted = persistence.get().insert(entity, connection());
 				Collection<Result<Entity>> detail = detail();
 				Result<Entity> replace = replace(inserted).perform();
 				return () -> {
@@ -986,14 +1007,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.entity = entity;
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.updatable.insert.is()) {
-						tasks.add(detailEditor.editor.tasks(connection).insert(detail ->
-										detailEditor.link.beforeInsert.apply(detail, updated(), connection)));
+						tasks.add(detailEditor.editor.tasks(connection()).insert(detail ->
+										detailEditor.link.beforeInsert.apply(detail, updated(), connection())));
 					}
 					else if (detailEditor.updatable.update.is()) {
-						tasks.add(detailEditor.editor.tasks(connection).update());
+						tasks.add(detailEditor.editor.tasks(connection()).update());
 					}
 					else if (detailEditor.updatable.delete.is()) {
-						tasks.add(detailEditor.editor.tasks(connection).delete());
+						tasks.add(detailEditor.editor.tasks(connection()).delete());
 					}
 				}
 			}
@@ -1001,13 +1022,13 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(UPDATE, entity);
-				return transaction(connection, this::update);
+				return transaction(connection(), this::update);
 			}
 
 			private Result<Entity> update() {
 				updated = entity;
 				if (entity.modified()) {
-					updated = persistence.get().update(entity, connection);
+					updated = persistence.get().update(entity, connection());
 				}
 				Collection<Result<Entity>> detail = detail();
 				Result<Entity> replace = replace(updated).perform();
@@ -1040,7 +1061,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.entity = entity;
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.editor.entity().exists().is()) {
-						tasks.add(detailEditor.editor.tasks(connection).delete());
+						tasks.add(detailEditor.editor.tasks(connection()).delete());
 					}
 				}
 			}
@@ -1048,12 +1069,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(DELETE, entity);
-				return transaction(connection, this::delete);
+				return transaction(connection(), this::delete);
 			}
 
 			private Result<Entity> delete() {
 				Collection<Result<Entity>> detail = detail();
-				persistence.get().delete(entity, connection);
+				persistence.get().delete(entity, connection());
 				return () -> {
 					detail.forEach(Result::handle);
 					AbstractEntityEditor.this.entity.resetDefaults();
@@ -1084,7 +1105,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			public Result<Entity> perform() {
 				LOG.debug(INSERT, entity);
 				before.accept(entity);
-				Entity inserted = persistence.get().insert(entity, connection);
+				Entity inserted = persistence.get().insert(entity, connection());
 				Result<Entity> replace = replace(inserted).perform();
 				return () -> {
 					replace.handle();
@@ -1106,7 +1127,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(UPDATE, entity);
-				Entity updated = persistence.get().update(entity, connection);
+				Entity updated = persistence.get().update(entity, connection());
 				Result<Entity> replace = replace(updated).perform();
 				return () -> {
 					replace.handle();
@@ -1128,7 +1149,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(DELETE, entity);
-				persistence.get().delete(entity, connection);
+				persistence.get().delete(entity, connection());
 				return () -> {
 					AbstractEntityEditor.this.entity.resetDefaults();
 					persistEvents.afterDelete(entity);
@@ -1149,7 +1170,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(INSERT, entity);
-				Entity inserted = persistence.get().insert(entity, connection);
+				Entity inserted = persistence.get().insert(entity, connection());
 				return () -> {
 					persistEvents.afterInsert(inserted);
 
@@ -1169,7 +1190,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Collection<Entity>> perform() {
 				LOG.debug(INSERT, entities);
-				Collection<Entity> inserted = persistence.get().insert(entities, connection);
+				Collection<Entity> inserted = persistence.get().insert(entities, connection());
 				return () -> {
 					persistEvents.afterInsert(inserted);
 
@@ -1189,7 +1210,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(UPDATE, entity);
-				Entity updated = persistence.get().update(entity, connection);
+				Entity updated = persistence.get().update(entity, connection());
 				return () -> {
 					persistEvents.afterUpdate(entity, updated);
 
@@ -1209,7 +1230,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Collection<Entity>> perform() {
 				LOG.debug(UPDATE, entities);
-				Collection<Entity> updated = persistence.get().update(entities, connection);
+				Collection<Entity> updated = persistence.get().update(entities, connection());
 				return () -> {
 					persistEvents.afterUpdate(originalEntityMap(entities, updated));
 
@@ -1259,7 +1280,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(DELETE, entity);
-				persistence.get().delete(entity, connection);
+				persistence.get().delete(entity, connection());
 				return () -> {
 					persistEvents.afterDelete(entity);
 
@@ -1279,7 +1300,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Collection<Entity>> perform() {
 				LOG.debug(DELETE, entities);
-				persistence.get().delete(entities, connection);
+				persistence.get().delete(entities, connection());
 				return () -> {
 					persistEvents.afterDelete(entities);
 
@@ -1299,7 +1320,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			@Override
 			public Result<Entity> perform() {
 				LOG.debug(REFRESH, key);
-				Entity refreshed = connection.selectSingle(where(key(key))
+				Entity refreshed = connection().selectSingle(where(key(key))
 												.include(entityDefinition.columns().definitions().stream()
 																.filter(definition -> !definition.selected())
 																.map(ColumnDefinition::attribute)
@@ -1316,8 +1337,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private List<Result<Entity>> loadDetails(Entity master, boolean replace) {
-			return detail.load(master, connection).stream()
-							.map(detail -> detail.editor.populate(master, detail.entity, connection, replace))
+			return detail.load(master, connection()).stream()
+							.map(detail -> detail.editor.populate(master, detail.entity, connection(), replace))
 							.map(EditorTask::perform)
 							.collect(toList());
 		}
