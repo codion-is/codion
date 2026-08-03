@@ -218,10 +218,10 @@ public interface FilterModel<T> {
 		void filter();
 
 		/**
-		 * @return a new {@link Builder.RefresherStep} instance
+		 * @return a new {@link Builder.SelectionStep} instance
 		 */
-		static Builder.RefresherStep builder() {
-			return DefaultFilterModelItems.DefaultBuilder.REFRESHER;
+		static Builder.SelectionStep builder() {
+			return DefaultFilterModelItems.DefaultBuilder.SELECTION;
 		}
 
 		/**
@@ -231,29 +231,16 @@ public interface FilterModel<T> {
 		interface Builder<T> {
 
 			/**
-			 * Provides a {@link SelectionStep}
-			 */
-			interface RefresherStep {
-
-				/**
-				 * @param refresher the item refresher to use
-				 * @param <T> the item type
-				 * @return a new {@link SelectionStep} instance
-				 */
-				<T> SelectionStep<T> refresher(Function<Items<T>, Refresher<T>> refresher);
-			}
-
-			/**
 			 * Provides a {@link SortStep}
-			 * @param <T> the item type
 			 */
-			interface SelectionStep<T> {
+			interface SelectionStep {
 
 				/**
 				 * @param selection provides the {@link MultiSelection} instance to use
-				 * @return the next stage
+				 * @param <T> the item type
+				 * @return a new {@link SortStep} instance
 				 */
-				SortStep<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection);
+				<T> SortStep<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection);
 			}
 
 			/**
@@ -268,6 +255,22 @@ public interface FilterModel<T> {
 				 */
 				Builder<T> sort(Sort<T> sort);
 			}
+
+			/**
+			 * Specifies the items supplier for the {@link Refresher} driving {@link Items#refresh()}.
+			 * Without one, refreshing does nothing.
+			 * @param items supplies the items during refresh
+			 * @return this builder
+			 */
+			Builder<T> items(Supplier<Collection<T>> items);
+
+			/**
+			 * By default, exceptions during refresh are rethrown,
+			 * use this method to handle async exceptions differently
+			 * @param onRefreshException the exception handler to use during refresh
+			 * @return this builder
+			 */
+			Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
 
 			/**
 			 * @param validator the item validator
@@ -541,12 +544,6 @@ public interface FilterModel<T> {
 			 * @return this builder instance
 			 */
 			Builder<T> onException(@Nullable Consumer<Exception> onException);
-
-			/**
-			 * @param async true if refresh should be asynchronous when triggered on the UI thread, {@link FilterModel#ASYNC} by default
-			 * @return this builder instance
-			 */
-			Builder<T> async(boolean async);
 
 			/**
 			 * @return a new {@link Refresher} instance

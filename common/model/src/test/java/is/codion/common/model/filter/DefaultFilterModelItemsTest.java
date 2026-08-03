@@ -21,7 +21,6 @@ package is.codion.common.model.filter;
 import is.codion.common.model.filter.FilterModel.IncludePredicate;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.Items;
-import is.codion.common.model.filter.FilterModel.Refresher;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
@@ -77,8 +76,7 @@ public class DefaultFilterModelItemsTest {
 			selection = new TestMultiSelection();
 
 			items = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> selection)
+							.<String>selection(included -> selection)
 							.sort(new TestSort())
 							.included(includePredicate)
 							.build();
@@ -194,8 +192,7 @@ public class DefaultFilterModelItemsTest {
 			RangeRecorder recorder = new RangeRecorder();
 			TestInclude include = new TestInclude();
 			Items<String> model = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> new TestMultiSelection())
+							.<String>selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.included(include)
 							.listener(recorder)
@@ -219,8 +216,7 @@ public class DefaultFilterModelItemsTest {
 		void add_firesInclusiveInsertedRange() {
 			RangeRecorder recorder = new RangeRecorder();
 			Items<String> model = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> new TestMultiSelection())
+							.<String>selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.included(new TestInclude())
 							.listener(recorder)
@@ -289,8 +285,7 @@ public class DefaultFilterModelItemsTest {
 			TestMultiSelection selection = new TestMultiSelection();
 
 			items = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> selection)
+							.<String>selection(included -> selection)
 							.sort(new TestSort())
 							.included(includePredicate)
 							.build();
@@ -334,8 +329,7 @@ public class DefaultFilterModelItemsTest {
 			sort.setComparator(Comparator.reverseOrder());
 
 			items = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> new TestMultiSelection())
+							.<String>selection(included -> new TestMultiSelection())
 							.sort(sort)
 							.included(includePredicate)
 							.build();
@@ -361,14 +355,12 @@ public class DefaultFilterModelItemsTest {
 		@BeforeEach
 		void setUp() {
 			items = Items.builder()
-							.<String>refresher(modelItems -> Refresher.<String>builder()
-											.items(() -> new ArrayList<>(source))
-											.onResult(modelItems::set)
-											.async(false)
-											.build())
-							.selection(included -> new TestMultiSelection())
+							.<String>selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
+							.items(() -> new ArrayList<>(source))
 							.build();
+			//refresh synchronously, so each refresh has landed by the time the assertions run
+			items.refresher().async().set(false);
 		}
 
 		@Test
@@ -424,8 +416,7 @@ public class DefaultFilterModelItemsTest {
 			sort = new TestSort();
 
 			items = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> new TestMultiSelection())
+							.<String>selection(included -> new TestMultiSelection())
 							.sort(sort)
 							.build();
 		}
@@ -470,8 +461,7 @@ public class DefaultFilterModelItemsTest {
 		@BeforeEach
 		void setUp() {
 			items = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(v -> new TestMultiSelection())
+							.<String>selection(v -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
 
@@ -556,8 +546,7 @@ public class DefaultFilterModelItemsTest {
 			Predicate<String> validator = item -> !item.contains("invalid");
 
 			Items<String> items = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> new TestMultiSelection())
+							.<String>selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.validator(validator)
 							.build();
@@ -573,8 +562,7 @@ public class DefaultFilterModelItemsTest {
 		@DisplayName("Default validator accepts all")
 		void defaultValidator_acceptsAll() {
 			Items<String> items = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> new TestMultiSelection())
+							.<String>selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
 
@@ -600,8 +588,7 @@ public class DefaultFilterModelItemsTest {
 		@BeforeEach
 		void setUp() {
 			items = Items.builder()
-							.<String>refresher(i -> Refresher.<String>builder().build())
-							.selection(included -> new TestMultiSelection())
+							.<String>selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
 			executor = Executors.newFixedThreadPool(THREAD_COUNT);
@@ -676,8 +663,7 @@ public class DefaultFilterModelItemsTest {
 	void itemsMutationPreservesTheCallersAdjustingGroup() {
 		List<MultiSelection<String>> holder = new ArrayList<>(1);
 		Items<String> model = Items.builder()
-						.<String>refresher(i -> Refresher.<String>builder().build())
-						.selection(included -> {
+						.<String>selection(included -> {
 							MultiSelection<String> selection = MultiSelection.multiSelection(included);
 							holder.add(selection);
 
@@ -708,8 +694,7 @@ public class DefaultFilterModelItemsTest {
 	void selectionPreservedAcrossIndexedMutations() {
 		List<MultiSelection<String>> holder = new ArrayList<>(1);
 		Items<String> model = Items.builder()
-						.<String>refresher(i -> Refresher.<String>builder().build())
-						.selection(included -> {
+						.<String>selection(included -> {
 							MultiSelection<String> selection = MultiSelection.multiSelection(included);
 							holder.add(selection);
 

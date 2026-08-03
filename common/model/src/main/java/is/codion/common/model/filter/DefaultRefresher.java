@@ -55,7 +55,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 
 	private DefaultRefresher(DefaultBuilder<T> builder) {
 		this.items = builder.items;
-		this.async = State.state(builder.async);
+		this.async = State.state(FilterModel.ASYNC.getOrThrow());
 		this.onResult = builder.onResult;
 		this.onException = builder.onException == null ? new RethrowExceptionHandler() : builder.onException;
 	}
@@ -195,7 +195,6 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		private @Nullable Supplier<Collection<T>> items;
 		private @Nullable Consumer<Collection<T>> onResult;
 		private @Nullable Consumer<Exception> onException;
-		private boolean async = FilterModel.ASYNC.getOrThrow();
 
 		@Override
 		public Builder<T> items(@Nullable Supplier<Collection<T>> items) {
@@ -212,12 +211,6 @@ final class DefaultRefresher<T> implements Refresher<T> {
 		@Override
 		public Builder<T> onException(@Nullable Consumer<Exception> onException) {
 			this.onException = onException;
-			return this;
-		}
-
-		@Override
-		public Builder<T> async(boolean async) {
-			this.async = async;
 			return this;
 		}
 

@@ -41,8 +41,8 @@ public final class DefaultRefresherTest {
 							throw consumerException;
 						})
 						.onException(exception -> onExceptionCalls.incrementAndGet())
-						.async(false)
 						.build();
+		refresher.async().set(false);
 
 		RuntimeException thrown = assertThrows(RuntimeException.class, () -> refresher.refresh(null));
 		assertSame(consumerException, thrown);
@@ -59,8 +59,8 @@ public final class DefaultRefresherTest {
 							throw new RuntimeException("refresh failed");
 						})
 						.onException(exception -> onExceptionCalls.incrementAndGet())
-						.async(false)
 						.build();
+		refresher.async().set(false);
 
 		assertDoesNotThrow(() -> refresher.refresh(null));
 		assertEquals(1, onExceptionCalls.get());

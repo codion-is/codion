@@ -71,9 +71,14 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		this.validator = builder.validator;
 		this.included = new DefaultIncludedItems(builder.included);
 		this.filtered = new DefaultFilteredItems();
-		this.refresher = builder.refresher.apply(this);
 		this.selection = builder.selection.apply(included);
 		this.listeners = new ArrayList<>(builder.listeners);
+		//the refresher feeds these items, hence built here rather than handed in
+		this.refresher = Refresher.<R>builder()
+						.items(builder.supplier)
+						.onResult(this::set)
+						.onException(builder.onRefreshException)
+						.build();
 		this.included.predicate.addListener(DefaultFilterModelItems.this::filter);
 		this.sort.observer().addListener(included::sort);
 	}
@@ -619,62 +624,56 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private static final class DefaultRefresherStep implements Builder.RefresherStep {
+	private static final class DefaultSelectionStep implements Builder.SelectionStep {
 
 		@Override
-		public <T> Builder.SelectionStep<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
-			return new DefaultSelectionStep<>(requireNonNull(refresher));
-		}
-	}
-
-	private static final class DefaultSelectionStep<T> implements Builder.SelectionStep<T> {
-
-		private final Function<Items<T>, Refresher<T>> refresher;
-
-		private DefaultSelectionStep(Function<Items<T>, Refresher<T>> refresher) {
-			this.refresher = refresher;
-		}
-
-		@Override
-		public Builder.SortStep<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection) {
-			return new DefaultSortStep<>(refresher, requireNonNull(selection));
+		public <T> Builder.SortStep<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection) {
+			return new DefaultSortStep<>(requireNonNull(selection));
 		}
 	}
 
 	private static final class DefaultSortStep<T> implements Builder.SortStep<T> {
 
-		private final Function<Items<T>, Refresher<T>> refresher;
 		private final Function<IncludedItems<T>, MultiSelection<T>> selectionFunction;
 
-		private DefaultSortStep(Function<Items<T>, Refresher<T>> refresher,
-														Function<IncludedItems<T>, MultiSelection<T>> selection) {
-			this.refresher = refresher;
+		private DefaultSortStep(Function<IncludedItems<T>, MultiSelection<T>> selection) {
 			this.selectionFunction = selection;
 		}
 
 		@Override
 		public Builder<T> sort(Sort<T> sort) {
-			return new DefaultBuilder<>(selectionFunction, refresher, requireNonNull(sort));
+			return new DefaultBuilder<>(selectionFunction, requireNonNull(sort));
 		}
 	}
 
 	static final class DefaultBuilder<T> implements Builder<T> {
 
-		static final Builder.RefresherStep REFRESHER = new DefaultRefresherStep();
+		static final Builder.SelectionStep SELECTION = new DefaultSelectionStep();
 
 		private final Function<IncludedItems<T>, MultiSelection<T>> selection;
-		private final Function<Items<T>, Refresher<T>> refresher;
 		private final Collection<ItemsListener> listeners = new ArrayList<>(1);
 		private final Sort<T> sort;
 
+		private @Nullable Supplier<Collection<T>> supplier;
+		private @Nullable Consumer<Exception> onRefreshException;
 		private IncludePredicate<T> included = new DefaultIncludePredicate<>();
 		private Predicate<T> validator = new ValidPredicate<>();
 
-		private DefaultBuilder(Function<IncludedItems<T>, MultiSelection<T>> selection,
-													 Function<Items<T>, Refresher<T>> refresher, Sort<T> sort) {
+		private DefaultBuilder(Function<IncludedItems<T>, MultiSelection<T>> selection, Sort<T> sort) {
 			this.selection = requireNonNull(selection);
-			this.refresher = requireNonNull(refresher);
 			this.sort = requireNonNull(sort);
+		}
+
+		@Override
+		public Builder<T> items(Supplier<Collection<T>> items) {
+			this.supplier = requireNonNull(items);
+			return this;
+		}
+
+		@Override
+		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
+			this.onRefreshException = requireNonNull(onRefreshException);
+			return this;
 		}
 
 		@Override
