@@ -22,6 +22,7 @@ Codion Change Log
 - EntityConnectionProvider.VALIDITY_CHECK_INTERVAL added, specifying the minimum time between connection validity checks, 1000 ms by default.
 ### is.codion.framework.model
 - EntityEditor.EditorTasks now resolves its connection on first use instead of when the tasks are created, since they are typically created on the UI thread and performed on a background thread. Selecting a record while a refresh was in progress blocked the UI thread on a connection the tasks often never used.
+- EntityEditor.EditorEntity.set() and replace() are now fully synchronous when no detail editors are registered.
 ### is.codion.framework.domain.test
 - DomainTest now closes the connection via the connection provider, closing it directly left the provider handing out a connection it believed to be alive.
 
