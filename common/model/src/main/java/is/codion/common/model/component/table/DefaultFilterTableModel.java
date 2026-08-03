@@ -70,20 +70,20 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		this.columns = builder.columns;
 		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
-		Function<Items<R>, Refresher<R>> refresherFactory = modelItems -> Refresher.<R>builder()
-						.items(builder.supplier)
-						.onResult(modelItems::set)
-						.onException(builder.onRefreshException)
-						.build();
 		Function<IncludedItems<R>, MultiSelection<R>> selectionFactory = builder.selectionFactory != null
 						? builder.selectionFactory
 						: MultiSelection::multiSelection;
-		Items.Builder<R> itemsBuilder = Items.<R>builder()
-						.refresher(refresherFactory)
+		Items.Builder<R> itemsBuilder = Items.builder()
 						.selection(selectionFactory)
 						.sort(sort)
 						.validator(builder.validator)
 						.included(new DefaultInclude<>(builder.columns, filters));
+		if (builder.supplier != null) {
+			itemsBuilder.items(builder.supplier);
+		}
+		if (builder.onRefreshException != null) {
+			itemsBuilder.onRefreshException(builder.onRefreshException);
+		}
 		builder.itemsListeners.forEach(itemsBuilder::listener);
 		this.items = itemsBuilder.build();
 		this.items.included().predicate().set(builder.included);

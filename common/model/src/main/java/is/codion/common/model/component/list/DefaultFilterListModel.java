@@ -18,7 +18,6 @@
  */
 package is.codion.common.model.component.list;
 
-import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.event.Event;
@@ -47,18 +46,18 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 
 	DefaultFilterListModel(DefaultBuilder<T> builder) {
 		this.sort = new DefaultListSort(builder.comparator);
-		Function<Items<T>, Refresher<T>> refresherFactory = modelItems -> Refresher.<T>builder()
-						.items(builder.supplier)
-						.onResult(modelItems::set)
-						.onException(builder.onRefreshException)
-						.build();
 		Function<IncludedItems<T>, MultiSelection<T>> selectionFactory = builder.selectionFactory != null
 						? builder.selectionFactory
 						: MultiSelection::multiSelection;
-		FilterModel.Items.Builder<T> itemsBuilder = FilterModel.Items.<T>builder()
-						.refresher(refresherFactory)
+		Items.Builder<T> itemsBuilder = Items.builder()
 						.selection(selectionFactory)
 						.sort(sort);
+		if (builder.supplier != null) {
+			itemsBuilder.items(builder.supplier);
+		}
+		if (builder.onRefreshException != null) {
+			itemsBuilder.onRefreshException(builder.onRefreshException);
+		}
 		builder.itemsListeners.forEach(itemsBuilder::listener);
 		this.items = itemsBuilder.build();
 		this.items.included().predicate().set(builder.included);

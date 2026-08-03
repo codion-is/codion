@@ -8,6 +8,9 @@ Codion Change Log
 - FilterComboBoxModel.Builder.refresher() removed, unused since the Dispatcher based refresher was introduced.
 - FilterListModel.Builder.refresher() removed, the Swing list model no longer overrides the refresher.
 - FilterTableModel.Builder.refresher() removed, DefaultRefresher is now the only Refresher implementation, async wherever a Dispatcher is available.
+- FilterModel.Items.Builder.RefresherStep removed, Items.builder() now starts with selection(), the refresher is built by the items instance itself.
+- FilterModel.Items.Builder.items() and onRefreshException() added, replacing the refresher factory.
+- FilterModel.Refresher.Builder.async() removed, use Refresher.async() or the FilterModel.ASYNC configuration value.
 ### is.codion.swing.common.model
 - DefaultSwingFilterTableModel and DefaultSwingFilterListModel, the redundant refresher overrides removed, the common model's Dispatcher based refresher is used directly.
 - SwingFilterTableModel.Builder.async() and SwingFilterListModel.Builder.async() removed, use FilterModel.ASYNC or Refresher.async().
