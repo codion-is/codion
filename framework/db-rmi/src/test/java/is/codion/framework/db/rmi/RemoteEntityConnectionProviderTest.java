@@ -90,8 +90,6 @@ public class RemoteEntityConnectionProviderTest {
 
 		provider.close();
 
-		assertFalse(provider.connectionValid());
-
 		assertThrows(RuntimeException.class, provider::connection);
 	}
 

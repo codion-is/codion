@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.reactive.observer.Observer;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
@@ -92,8 +91,8 @@ import static java.util.stream.StreamSupport.stream;
  * Instances are safe to use from multiple threads, and typically are: an application shares a single provider
  * between its models, each of which may refresh on its own background thread.
  * <p>{@link #entities()} does not block once the connection has been established, making it safe to call
- * during model and component construction on a UI thread. {@link #connection()} and {@link #connectionValid()}
- * validate the connection, which is serialized against operations in progress on it, so both may block for
+ * during model and component construction on a UI thread. {@link #connection()} validates the connection,
+ * which is serialized against operations in progress on it, so both may block for
  * the duration of one and should not be called on a UI thread.
  * <p>All callers share a single {@link EntityConnection} instance, see {@link EntityConnection} for what
  * that implies, transactions in particular.
@@ -162,16 +161,6 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * @see #DESCRIPTION
 	 */
 	Optional<String> description();
-
-	/**
-	 * @return true if a connection has been established and the connection is in a valid state
-	 */
-	boolean connectionValid();
-
-	/**
-	 * @return an observer notified when a connection is established
-	 */
-	Observer<EntityConnection> connected();
 
 	/**
 	 * Closes the underlying connection and performs cleanup if required

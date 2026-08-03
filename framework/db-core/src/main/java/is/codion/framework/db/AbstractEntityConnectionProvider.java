@@ -18,8 +18,6 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.reactive.event.Event;
-import is.codion.common.reactive.observer.Observer;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.domain.DomainType;
@@ -43,7 +41,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
 
 	private final Lock lock = new Lock() {};
-	private final Event<EntityConnection> connected = Event.event();
 
 	private final User user;
 	private final DomainType domainType;
@@ -106,18 +103,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	@Override
 	public final Optional<Version> clientVersion() {
 		return Optional.ofNullable(clientVersion);
-	}
-
-	@Override
-	public final boolean connectionValid() {
-		EntityConnection connection = entityConnection;
-
-		return connection != null && valid(connection);
-	}
-
-	@Override
-	public final Observer<EntityConnection> connected() {
-		return connected.observer();
 	}
 
 	@Override
@@ -184,7 +169,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private void doConnect() {
 		entityConnection = connect();
 		entities = entityConnection.entities();
-		connected.accept(entityConnection);
 	}
 
 	private static boolean valid(EntityConnection connection) {
