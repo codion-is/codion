@@ -20,7 +20,6 @@ package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.component.list.FilterListModel;
 import is.codion.common.model.component.list.FilterListSort;
-import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 
 import org.jspecify.annotations.Nullable;
@@ -33,14 +32,12 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A Swing {@link javax.swing.ListModel} coat over the UI-agnostic
  * {@link is.codion.common.model.component.list.FilterListModel}: delegates the rich model surface to a
  * common instance — built with a {@link javax.swing.ListSelectionModel} based selection
- * ({@link DefaultListSelection}) and a {@code ProgressWorker} based refresher — and adds the
- * {@link javax.swing.ListModel} methods, firing {@code ListDataEvent}s off the common model's items.
+ * ({@link DefaultListSelection}) — and adds the {@link javax.swing.ListModel} methods, firing
+ * {@code ListDataEvent}s off the common model's items.
  */
 final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implements SwingFilterListModel<T> {
 
@@ -50,12 +47,6 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 	private DefaultSwingFilterListModel(DefaultBuilder<T> builder) {
 		this.model = builder.builder
 						.selection(DefaultListSelection::new)
-						.refresher(modelItems -> Refresher.<T>builder()
-										.items(builder.supplier)
-										.onResult(modelItems::set)
-										.onException(builder.onRefreshException)
-										.async(builder.async)
-										.build())
 						.listener(new ListModelAdapter())
 						.build();
 		this.selection = (FilterListSelection<T>) model.selection();
@@ -116,17 +107,17 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 
 		@Override
 		public <T> Builder<T> items() {
-			return new DefaultBuilder<>(FilterListModel.builder().items(), null);
+			return new DefaultBuilder<>(FilterListModel.builder().items());
 		}
 
 		@Override
 		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultBuilder<>(FilterListModel.builder().items(items), null);
+			return new DefaultBuilder<>(FilterListModel.builder().items(items));
 		}
 
 		@Override
 		public <T> Builder<T> items(Supplier<Collection<T>> items) {
-			return new DefaultBuilder<>(FilterListModel.builder().items(items), items);
+			return new DefaultBuilder<>(FilterListModel.builder().items(items));
 		}
 	}
 
@@ -135,14 +126,9 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 		static final Builder.ItemsStep ITEMS = new DefaultItemsStep();
 
 		private final FilterListModel.Builder<T> builder;
-		private final @Nullable Supplier<Collection<T>> supplier;
 
-		private boolean async = FilterModel.ASYNC.getOrThrow();
-		private @Nullable Consumer<Exception> onRefreshException;
-
-		private DefaultBuilder(FilterListModel.Builder<T> builder, @Nullable Supplier<Collection<T>> supplier) {
+		private DefaultBuilder(FilterListModel.Builder<T> builder) {
 			this.builder = builder;
-			this.supplier = supplier;
 		}
 
 		@Override
@@ -152,14 +138,8 @@ final class DefaultSwingFilterListModel<T> extends AbstractListModel<T> implemen
 		}
 
 		@Override
-		public Builder<T> async(boolean async) {
-			this.async = async;
-			return this;
-		}
-
-		@Override
 		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
-			this.onRefreshException = requireNonNull(onRefreshException);
+			builder.onRefreshException(onRefreshException);
 			return this;
 		}
 

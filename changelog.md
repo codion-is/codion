@@ -4,6 +4,13 @@ Codion Change Log
 ## 0.18.82
 ### is.codion
 - Minimum JDK changed from 17 to 21.
+### is.codion.common.model
+- FilterComboBoxModel.Builder.refresher() removed, unused since the Dispatcher based refresher was introduced.
+- FilterListModel.Builder.refresher() removed, the Swing list model no longer overrides the refresher.
+- FilterTableModel.Builder.refresher() removed, DefaultRefresher is now the only Refresher implementation, async wherever a Dispatcher is available.
+### is.codion.swing.common.model
+- DefaultSwingFilterTableModel and DefaultSwingFilterListModel, the redundant refresher overrides removed, the common model's Dispatcher based refresher is used directly.
+- SwingFilterTableModel.Builder.async() and SwingFilterListModel.Builder.async() removed, use FilterModel.ASYNC or Refresher.async().
 
 ## 0.18.81
 ### is.codion.common.rmi

@@ -147,15 +147,6 @@ public interface FilterListModel<T> extends FilterModel<T> {
 		Builder<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection);
 
 		/**
-		 * Provides the {@link FilterModel.Refresher} for this model, given its {@link Items}.
-		 * The default is a UI-agnostic synchronous refresher; the Swing layer plugs a {@code ProgressWorker}
-		 * based one and Android a coroutine based one — mirroring {@link FilterModel.Items.Builder.RefresherStep}.
-		 * @param refresher the refresher factory
-		 * @return this builder instance
-		 */
-		Builder<T> refresher(Function<Items<T>, Refresher<T>> refresher);
-
-		/**
 		 * Adds an {@link ItemsListener} notified of fine-grained changes to the included items, allowing
 		 * toolkit layers to bridge to their list change notifications (e.g. {@code ListDataEvent}s).
 		 * @param itemsListener the {@link ItemsListener} to add

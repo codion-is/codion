@@ -174,16 +174,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T> {
 		Builder<T> onRefreshException(Consumer<Exception> onRefreshException);
 
 		/**
-		 * Provides the {@link FilterModel.Refresher} for this model, given its {@link ComboBoxItems}.
-		 * The default {@link FilterModel.Refresher.Builder#build()} refresher is async-capable via the
-		 * {@link is.codion.common.model.worker.Dispatcher} SPI wherever a UI provider is on the classpath;
-		 * override this only to supply a custom refresher (for example Android's coroutine based one).
-		 * @param refresher the refresher factory
-		 * @return this builder instance
-		 */
-		Builder<T> refresher(Function<ComboBoxItems<T>, FilterModel.Refresher<T>> refresher);
-
-		/**
 		 * @param refresh true if the model items should be refreshed on initialization, false by default
 		 * @return this builder instance
 		 */

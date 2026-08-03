@@ -47,9 +47,7 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 
 	DefaultFilterListModel(DefaultBuilder<T> builder) {
 		this.sort = new DefaultListSort(builder.comparator);
-		Function<Items<T>, Refresher<T>> refresherFactory = builder.refresherFactory != null
-						? builder.refresherFactory
-						: modelItems -> Refresher.<T>builder()
+		Function<Items<T>, Refresher<T>> refresherFactory = modelItems -> Refresher.<T>builder()
 						.items(builder.supplier)
 						.onResult(modelItems::set)
 						.onException(builder.onRefreshException)
@@ -181,7 +179,6 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		private @Nullable Comparator<T> comparator;
 		private @Nullable Consumer<Exception> onRefreshException;
 		private @Nullable Predicate<T> included;
-		private @Nullable Function<Items<T>, Refresher<T>> refresherFactory;
 		private @Nullable Function<IncludedItems<T>, MultiSelection<T>> selectionFactory;
 
 		private DefaultBuilder(Collection<T> items, @Nullable Supplier<Collection<T>> supplier) {
@@ -240,12 +237,6 @@ final class DefaultFilterListModel<T> implements FilterListModel<T> {
 		@Override
 		public Builder<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection) {
 			this.selectionFactory = requireNonNull(selection);
-			return this;
-		}
-
-		@Override
-		public Builder<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
-			this.refresherFactory = requireNonNull(refresher);
 			return this;
 		}
 

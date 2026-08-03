@@ -127,7 +127,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
 		private @Nullable Consumer<Exception> onRefreshException;
-		private @Nullable Function<ComboBoxItems<T>, Refresher<T>> refresherFactory;
 		private boolean filterSelected;
 		private boolean includeNull;
 		private @Nullable T nullItem;
@@ -189,12 +188,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Builder<T> onRefreshException(Consumer<Exception> onRefreshException) {
 			this.onRefreshException = requireNonNull(onRefreshException);
-			return this;
-		}
-
-		@Override
-		public Builder<T> refresher(Function<ComboBoxItems<T>, Refresher<T>> refresher) {
-			this.refresherFactory = requireNonNull(refresher);
 			return this;
 		}
 
@@ -331,9 +324,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (builder.items != null) {
 				set(builder.items);
 			}
-			refresher = builder.refresherFactory != null
-							? builder.refresherFactory.apply(this)
-							: Refresher.<T>builder()
+			refresher = Refresher.<T>builder()
 							.items(builder.supplier)
 							.onResult(this::set)
 							.onException(builder.onRefreshException)

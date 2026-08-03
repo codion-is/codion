@@ -22,7 +22,6 @@ import is.codion.common.model.component.table.FilterTableModel;
 import is.codion.common.model.component.table.FilterTableSort;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
@@ -45,9 +44,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing {@link javax.swing.table.TableModel} coat over the UI-agnostic
  * {@link FilterTableModel}: delegates the rich model surface to a common instance — built with a
- * {@link javax.swing.ListSelectionModel} based selection ({@link FilterListSelection}) and a
- * {@code ProgressWorker} based refresher — and adds the {@link javax.swing.table.TableModel} methods
- * and cell editing (via {@link RowEditor}), firing {@code TableModelEvent}s off the common model's items.
+ * {@link javax.swing.ListSelectionModel} based selection ({@link FilterListSelection}) — and adds the
+ * {@link javax.swing.table.TableModel} methods and cell editing (via {@link RowEditor}), firing
+ * {@code TableModelEvent}s off the common model's items.
  */
 final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implements SwingFilterTableModel<R, C> {
 
@@ -62,12 +61,6 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 		this.rowEditorFactory = builder.rowEditorFactory;
 		this.model = builder.builder
 						.selection(FilterListSelection::filterListSelection)
-						.refresher(modelItems -> Refresher.<R>builder()
-										.items(builder.itemSupplier)
-										.onResult(modelItems::set)
-										.onException(builder.onRefreshException)
-										.async(builder.async)
-										.build())
 						.listener(new TableModelAdapter())
 						.build();
 		this.selection = (FilterListSelection<R>) model.selection();
@@ -236,9 +229,6 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 
 		private final FilterTableModel.Builder<R, C> builder;
 
-		private @Nullable Supplier<Collection<R>> itemSupplier;
-		private boolean async = FilterModel.ASYNC.getOrThrow();
-		private @Nullable Consumer<Exception> onRefreshException;
 		private Function<SwingFilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 		private boolean refresh = false;
 
@@ -254,7 +244,7 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 
 		@Override
 		public Builder<R, C> items(Supplier<? extends Collection<R>> items) {
-			this.itemSupplier = (Supplier<Collection<R>>) requireNonNull(items);
+			builder.items((Supplier<Collection<R>>) requireNonNull(items));
 			return this;
 		}
 
@@ -265,14 +255,8 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 		}
 
 		@Override
-		public Builder<R, C> async(boolean async) {
-			this.async = async;
-			return this;
-		}
-
-		@Override
 		public Builder<R, C> onRefreshException(Consumer<Exception> onRefreshException) {
-			this.onRefreshException = requireNonNull(onRefreshException);
+			builder.onRefreshException(onRefreshException);
 			return this;
 		}
 

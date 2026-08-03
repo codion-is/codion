@@ -80,10 +80,9 @@ public interface SwingFilterTableModel<R, C> extends FilterTableModel<R, C>, Tab
 
 	/**
 	 * Builds a {@link SwingFilterTableModel} — the same options as the common
-	 * {@link is.codion.common.model.component.table.FilterTableModel.Builder} (the selection is a
-	 * {@code javax.swing.ListSelectionModel} based one and the refresher a {@code ProgressWorker} based one),
-	 * adding {@link #async(boolean)} and {@link #rowEditor(Function)}, with the chain staying Swing-typed
-	 * so {@code build()} yields a {@link TableModel}.
+	 * {@link is.codion.common.model.component.table.FilterTableModel.Builder} (the selection being a
+	 * {@code javax.swing.ListSelectionModel} based one), adding {@link #rowEditor(Function)}, with the
+	 * chain staying Swing-typed so {@code build()} yields a {@link TableModel}.
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
@@ -122,12 +121,6 @@ public interface SwingFilterTableModel<R, C> extends FilterTableModel<R, C>, Tab
 		 * @return this builder instance
 		 */
 		Builder<R, C> validator(Predicate<R> validator);
-
-		/**
-		 * @param async true if async refresh should be enabled
-		 * @return this builder instance
-		 */
-		Builder<R, C> async(boolean async);
 
 		/**
 		 * By default, exceptions during refresh are rethrown,

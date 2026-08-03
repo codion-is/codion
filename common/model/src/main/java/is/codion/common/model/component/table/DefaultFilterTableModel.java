@@ -70,9 +70,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		this.columns = builder.columns;
 		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
-		Function<Items<R>, Refresher<R>> refresherFactory = builder.refresherFactory != null
-						? builder.refresherFactory
-						: modelItems -> Refresher.<R>builder()
+		Function<Items<R>, Refresher<R>> refresherFactory = modelItems -> Refresher.<R>builder()
 						.items(builder.supplier)
 						.onResult(modelItems::set)
 						.onException(builder.onRefreshException)
@@ -270,7 +268,6 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		private @Nullable Consumer<Exception> onRefreshException;
 		private @Nullable Predicate<R> included;
 		private boolean refresh = false;
-		private @Nullable Function<Items<R>, Refresher<R>> refresherFactory;
 		private @Nullable Function<IncludedItems<R>, MultiSelection<R>> selectionFactory;
 
 		private DefaultBuilder(TableColumns<R, C> columns) {
@@ -350,12 +347,6 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		@Override
 		public Builder<R, C> selection(Function<IncludedItems<R>, MultiSelection<R>> selection) {
 			this.selectionFactory = requireNonNull(selection);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> refresher(Function<Items<R>, Refresher<R>> refresher) {
-			this.refresherFactory = requireNonNull(refresher);
 			return this;
 		}
 
