@@ -4,6 +4,9 @@ Codion Change Log
 ## 0.18.82
 ### is.codion
 - Minimum JDK changed from 17 to 21.
+### is.codion.common.utilities
+- Dispatcher moved from is.codion.common.model.worker, it describes a dispatch context rather than anything model or UI related.
+- Dispatcher.userInterfaceThread() renamed bound(), it reports whether a dispatch context is bound to the caller.
 ### is.codion.common.model
 - FilterComboBoxModel.Builder.refresher() removed, unused since the Dispatcher based refresher was introduced.
 - FilterListModel.Builder.refresher() removed, the Swing list model no longer overrides the refresher.

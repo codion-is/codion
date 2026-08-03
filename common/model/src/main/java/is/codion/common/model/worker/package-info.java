@@ -20,7 +20,6 @@
  * <p>Executing background tasks with progress reporting.
  * <ul>
  * <li>{@link is.codion.common.model.worker.ProgressWorker}
- * <li>{@link is.codion.common.model.worker.Dispatcher}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

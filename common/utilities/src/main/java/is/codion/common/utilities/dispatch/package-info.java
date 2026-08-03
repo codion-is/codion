@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 /**
- * <p>Swing implementation of {@link is.codion.common.utilities.dispatch.Dispatcher}.
+ * <p>Dispatch related classes.
  */
 @org.jspecify.annotations.NullMarked
-package is.codion.swing.common.model.worker;
+package is.codion.common.utilities.dispatch;

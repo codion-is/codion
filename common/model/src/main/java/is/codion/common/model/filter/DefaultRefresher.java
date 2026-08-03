@@ -19,13 +19,13 @@
 package is.codion.common.model.filter;
 
 import is.codion.common.model.filter.FilterModel.Refresher;
-import is.codion.common.model.worker.Dispatcher;
 import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
+import is.codion.common.utilities.dispatch.Dispatcher;
 import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
@@ -37,8 +37,8 @@ import java.util.function.Supplier;
 
 /**
  * The default {@link Refresher} implementation, performing an async refresh via {@link ProgressWorker} when
- * {@link #async()} is enabled and the refresh is triggered on the UI thread (as determined by {@link Dispatcher}),
- * otherwise a synchronous refresh on the calling thread.
+ * {@link #async()} is enabled and the refresh is triggered where a dispatch context is bound, the UI thread on
+ * UI platforms (see {@link Dispatcher#bound()}), otherwise a synchronous refresh on the calling thread.
  * @param <T> the model item type
  */
 final class DefaultRefresher<T> implements Refresher<T> {
@@ -77,7 +77,7 @@ final class DefaultRefresher<T> implements Refresher<T> {
 
 	@Override
 	public void refresh(@Nullable Consumer<Collection<T>> onResult) {
-		if (async.is() && Dispatcher.instance().userInterfaceThread()) {
+		if (async.is() && Dispatcher.instance().bound()) {
 			refreshAsync(onResult);
 		}
 		else {
