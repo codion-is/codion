@@ -32,6 +32,7 @@ import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityResultIterator;
@@ -322,6 +323,18 @@ public class EntityServerTest {
 
 	@Test
 	void remoteEntityConnectionProvider() throws Exception {
+		//this asserts reconnection the moment the server disconnects the client,
+		//so the connection must be checked on every call rather than once per interval
+		EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.set(0L);
+		try {
+			remoteEntityConnectionProviderTest();
+		}
+		finally {
+			EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.remove();
+		}
+	}
+
+	private void remoteEntityConnectionProviderTest() throws Exception {
 		RemoteEntityConnectionProvider provider =
 						RemoteEntityConnectionProvider.builder()
 										.hostname("localhost")

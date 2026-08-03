@@ -19,6 +19,9 @@ Codion Change Log
 - AbstractEntityConnectionProvider, the connection validity check is no longer performed while holding the provider lock, since it blocks for the duration of any operation in progress on the connection.
 - AbstractEntityConnectionProvider.entities() no longer acquires the provider lock once the connection has been established.
 - EntityConnectionProvider.connectionValid() and connected() removed, unused.
+- EntityConnectionProvider.VALIDITY_CHECK_INTERVAL added, specifying the minimum time between connection validity checks, 1000 ms by default.
+### is.codion.framework.domain.test
+- DomainTest now closes the connection via the connection provider, closing it directly left the provider handing out a connection it believed to be alive.
 
 ## 0.18.81
 ### is.codion.common.rmi

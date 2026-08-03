@@ -25,12 +25,15 @@ import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +45,17 @@ public final class AbstractEntityConnectionProviderTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	private static final Entities ENTITIES = new TestDomain().entities();
+
+	@BeforeEach
+	void setUp() {
+		//check on every call, these tests assert reconnection the moment a connection goes bad
+		EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.set(0L);
+	}
+
+	@AfterEach
+	void tearDown() {
+		EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.remove();
+	}
 
 	@Nested
 	@DisplayName("Connection Lifecycle")
@@ -203,6 +217,76 @@ public final class AbstractEntityConnectionProviderTest {
 	}
 
 	@Nested
+	@DisplayName("Validity Check Interval")
+	class ValidityCheckInterval {
+
+		@Test
+		@DisplayName("a connection validated within the interval is not rechecked")
+		void connection_withinInterval_notRechecked() {
+			EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.set(10_000L);
+
+			AtomicInteger checks = new AtomicInteger();
+			EntityConnectionProvider provider = new CountingProviderBuilder(checks)
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			provider.connection();
+			int afterConnect = checks.get();
+			provider.connection();
+			provider.connection();
+
+			assertEquals(afterConnect, checks.get(), "the connection must not be rechecked within the interval");
+		}
+
+		@Test
+		@DisplayName("a connection is rechecked once the interval has elapsed")
+		void connection_intervalElapsed_rechecked() throws InterruptedException {
+			EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.set(50L);
+
+			AtomicInteger checks = new AtomicInteger();
+			EntityConnectionProvider provider = new CountingProviderBuilder(checks)
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			provider.connection();
+			int afterConnect = checks.get();
+			Thread.sleep(100);
+			provider.connection();
+
+			assertTrue(checks.get() > afterConnect, "the connection must be rechecked once the interval has elapsed");
+		}
+
+		@Test
+		@DisplayName("continuous use does not postpone the check indefinitely")
+		void connection_continuousUse_stillRechecked() throws InterruptedException {
+			//the interval is measured from the last check, not the last use, otherwise a connection
+			//dying during continuous use would never be rechecked and every operation would fail
+			EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.set(50L);
+
+			AtomicInteger checks = new AtomicInteger();
+			EntityConnectionProvider provider = new CountingProviderBuilder(checks)
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			//the connection dies, unnoticed, and is then used continuously
+			EntityConnection connection = provider.connection();
+			connection.close();
+
+			EntityConnection current = connection;
+			long deadline = System.currentTimeMillis() + 5_000;
+			while (current == connection && System.currentTimeMillis() < deadline) {
+				Thread.sleep(10);
+				current = provider.connection();
+			}
+
+			assertNotSame(connection, current, "continuous use must not postpone the check past the interval");
+		}
+	}
+
+	@Nested
 	@DisplayName("Thread Safety")
 	class ThreadSafety {
 
@@ -305,6 +389,60 @@ public final class AbstractEntityConnectionProviderTest {
 			catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
+		}
+	}
+
+	private static final class CountingProvider extends AbstractEntityConnectionProvider {
+
+		private final AtomicInteger checks;
+
+		private CountingProvider(CountingProviderBuilder builder) {
+			super(builder);
+			this.checks = builder.checks;
+		}
+
+		@Override
+		protected EntityConnection connect() {
+			State connected = State.state(true);
+
+			return ProxyBuilder.of(EntityConnection.class)
+							.method("entities", parameters -> ENTITIES)
+							.method("connected", parameters -> {
+								checks.incrementAndGet();
+
+								return connected.is();
+							})
+							.method("close", parameters -> {
+								connected.set(false);
+
+								return null;
+							})
+							.build();
+		}
+
+		@Override
+		protected void close(EntityConnection connection) {
+			connection.close();
+		}
+
+		@Override
+		public Optional<String> description() {
+			return Optional.of("description");
+		}
+	}
+
+	private static final class CountingProviderBuilder extends AbstractBuilder<CountingProvider, CountingProviderBuilder> {
+
+		private final AtomicInteger checks;
+
+		private CountingProviderBuilder(AtomicInteger checks) {
+			super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+			this.checks = checks;
+		}
+
+		@Override
+		public CountingProvider build() {
+			return new CountingProvider(this);
 		}
 	}
 

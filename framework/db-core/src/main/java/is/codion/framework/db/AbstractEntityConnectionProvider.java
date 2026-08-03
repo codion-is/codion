@@ -32,6 +32,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * An abstract EntityConnectionProvider implementation.
@@ -51,6 +52,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 	private volatile @Nullable EntityConnection entityConnection;
 	private volatile @Nullable Entities entities;
+	private volatile long validated;
 
 	/**
 	 * @param builder the builder
@@ -145,7 +147,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		// the validity check blocks for the duration of any operation in progress
 		// on the connection, so it must not be performed while holding the lock
 		EntityConnection connection = entityConnection;
-		if (connection != null && valid(connection)) {
+		if (connection != null && validated(connection)) {
 			return connection;
 		}
 		synchronized (lock) {
@@ -169,6 +171,28 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private void doConnect() {
 		entityConnection = connect();
 		entities = entityConnection.entities();
+		validated = System.nanoTime();
+	}
+
+	/**
+	 * Note that the timestamp records the last successful <i>check</i>, not the last use, so that a connection
+	 * dying during continuous use is still rechecked once the interval elapses. Stamping on each call would
+	 * refresh the interval indefinitely, leaving a broken connection to fail every operation forever.
+	 * @param connection the connection to validate
+	 * @return true if the connection was validated within the interval or is valid
+	 */
+	private boolean validated(EntityConnection connection) {
+		long now = System.nanoTime();
+		if (now - validated < MILLISECONDS.toNanos(VALIDITY_CHECK_INTERVAL.getOrThrow())) {
+			return true;
+		}
+		if (valid(connection)) {
+			validated = now;
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static boolean valid(EntityConnection connection) {

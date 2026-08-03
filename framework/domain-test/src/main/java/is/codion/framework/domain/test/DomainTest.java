@@ -125,7 +125,7 @@ public class DomainTest {
 		}
 		finally {
 			connection.rollbackTransaction();
-			connection.close();
+			connectionProvider.close();
 		}
 	}
 

@@ -25,6 +25,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Select;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.rmi.TestDomain.Department;
@@ -71,6 +72,8 @@ public class RemoteEntityConnectionTest {
 
 	@BeforeAll
 	public static void setUp() throws Exception {
+		//these tests share a single provider and close its connection along the way
+		EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.set(0L);
 		EntityServerConfiguration configuration = RemoteEntityConnectionProviderTest.configure();
 		EntityServer.startServer(configuration);
 		server = (Server<RemoteEntityConnection, EntityServerAdmin>)
@@ -89,6 +92,7 @@ public class RemoteEntityConnectionTest {
 	@AfterAll
 	public static void tearDown() throws RemoteException {
 		admin.shutdown();
+		EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.remove();
 	}
 
 	@Test
