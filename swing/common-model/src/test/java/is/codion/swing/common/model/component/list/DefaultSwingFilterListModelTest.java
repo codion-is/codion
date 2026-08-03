@@ -64,18 +64,14 @@ final class DefaultSwingFilterListModelTest {
 
 	@Test
 	void async() {
-		// the Swing builder's async option is forwarded to the ProgressWorker based refresher
-		SwingFilterListModel<String> asyncModel = SwingFilterListModel.builder()
+		// async refresh is on by default (FilterModel.ASYNC) and toggled through the refresher itself
+		SwingFilterListModel<String> model = SwingFilterListModel.builder()
 						.<String>items()
-						.async(true)
 						.build();
-		assertTrue(asyncModel.items().refresher().async().is());
+		assertTrue(model.items().refresher().async().is());
 
-		SwingFilterListModel<String> syncModel = SwingFilterListModel.builder()
-						.<String>items()
-						.async(false)
-						.build();
-		assertFalse(syncModel.items().refresher().async().is());
+		model.items().refresher().async().set(false);
+		assertFalse(model.items().refresher().async().is());
 	}
 
 	@Test

@@ -233,15 +233,6 @@ public interface FilterTableModel<R, C> extends FilterModel<R> {
 		Builder<R, C> selection(Function<IncludedItems<R>, MultiSelection<R>> selection);
 
 		/**
-		 * Provides the {@link FilterModel.Refresher} for this model, given its {@link Items}.
-		 * The default is a UI-agnostic synchronous refresher; the Swing layer plugs a {@code ProgressWorker}
-		 * based one and Android a coroutine based one.
-		 * @param refresher the refresher factory
-		 * @return this builder instance
-		 */
-		Builder<R, C> refresher(Function<Items<R>, Refresher<R>> refresher);
-
-		/**
 		 * Adds an {@link ItemsListener} notified of fine-grained changes to the included items, allowing
 		 * toolkit layers to bridge to their table change notifications (e.g. {@code TableModelEvent}s).
 		 * @param itemsListener the {@link ItemsListener} to add

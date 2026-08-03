@@ -93,12 +93,6 @@ public interface SwingFilterListModel<T> extends FilterListModel<T>, ListModel<T
 		Builder<T> comparator(@Nullable Comparator<T> comparator);
 
 		/**
-		 * @param async true if async refresh should be enabled
-		 * @return this builder instance
-		 */
-		Builder<T> async(boolean async);
-
-		/**
 		 * By default, exceptions during refresh are rethrown,
 		 * use this method to handle async exceptions differently
 		 * @param onRefreshException the exception handler to use during refresh
