@@ -14,6 +14,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - DefaultSwingFilterTableModel and DefaultSwingFilterListModel, the redundant refresher overrides removed, the common model's Dispatcher based refresher is used directly.
 - SwingFilterTableModel.Builder.async() and SwingFilterListModel.Builder.async() removed, use FilterModel.ASYNC or Refresher.async().
+- SwingFilterTableModel.Builder.items() parameter wildcard type removed.
 
 ## 0.18.81
 ### is.codion.common.rmi
