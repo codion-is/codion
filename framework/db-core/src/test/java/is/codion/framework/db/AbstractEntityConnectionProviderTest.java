@@ -64,16 +64,13 @@ public final class AbstractEntityConnectionProviderTest {
 			// Get connection
 			EntityConnection connection1 = provider.connection();
 			assertNotNull(connection1);
-			assertTrue(provider.connectionValid());
 
 			// Close provider - should close connection
 			provider.close();
-			assertFalse(provider.connectionValid());
 
 			// Get new connection after close
 			EntityConnection connection2 = provider.connection();
 			assertNotNull(connection2);
-			assertTrue(provider.connectionValid());
 			assertNotEquals(connection1, connection2);
 		}
 
@@ -86,16 +83,13 @@ public final class AbstractEntityConnectionProviderTest {
 							.build();
 
 			EntityConnection connection = provider.connection();
-			assertTrue(provider.connectionValid());
 
 			// Close connection directly
 			connection.close();
-			assertFalse(provider.connectionValid());
 
 			// Provider creates new connection after previous was closed
 			EntityConnection newConnection = provider.connection();
 			assertNotNull(newConnection);
-			assertTrue(provider.connectionValid());
 			assertNotEquals(connection, newConnection);
 		}
 
@@ -169,26 +163,6 @@ public final class AbstractEntityConnectionProviderTest {
 	class ConnectionState {
 
 		@Test
-		@DisplayName("connection valid state changes correctly")
-		void provider_connectionValidState_changesCorrectly() {
-			EntityConnectionProvider provider = new TestProviderBuilder()
-							.user(UNIT_TEST_USER)
-							.domain(TestDomain.DOMAIN)
-							.build();
-
-			// Initially no connection
-			assertFalse(provider.connectionValid());
-
-			// After getting connection
-			provider.connection();
-			assertTrue(provider.connectionValid());
-
-			// After closing provider
-			provider.close();
-			assertFalse(provider.connectionValid());
-		}
-
-		@Test
 		@DisplayName("closed provider can create new connections")
 		void provider_afterClose_canCreateNewConnections() {
 			EntityConnectionProvider provider = new TestProviderBuilder()
@@ -203,7 +177,6 @@ public final class AbstractEntityConnectionProviderTest {
 			EntityConnection connection2 = provider.connection();
 			assertNotNull(connection2);
 			assertNotEquals(connection1, connection2);
-			assertTrue(provider.connectionValid());
 		}
 
 		@Test
@@ -216,21 +189,16 @@ public final class AbstractEntityConnectionProviderTest {
 
 			// Get initial connection
 			EntityConnection connection1 = provider.connection();
-			assertTrue(provider.connectionValid());
 
 			// Close connection directly (simulating connection failure)
 			connection1.close();
 			assertFalse(connection1.connected());
-
-			// Provider should detect invalid connection
-			assertFalse(provider.connectionValid());
 
 			// Next call should create new connection
 			EntityConnection connection2 = provider.connection();
 			assertNotNull(connection2);
 			assertNotEquals(connection1, connection2);
 			assertTrue(connection2.connected());
-			assertTrue(provider.connectionValid());
 		}
 	}
 

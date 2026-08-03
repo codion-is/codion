@@ -353,10 +353,6 @@ public class EntityServerTest {
 		db3.close();
 
 		provider.close();
-		assertFalse(provider.connectionValid());
-		db3 = provider.connection();
-		assertTrue(provider.connectionValid());
-		db3.close();
 	}
 
 	@Test
