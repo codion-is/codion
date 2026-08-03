@@ -243,8 +243,8 @@ final class DefaultSwingFilterTableModel<R, C> extends AbstractTableModel implem
 		}
 
 		@Override
-		public Builder<R, C> items(Supplier<? extends Collection<R>> items) {
-			builder.items((Supplier<Collection<R>>) requireNonNull(items));
+		public Builder<R, C> items(Supplier<Collection<R>> items) {
+			builder.items(requireNonNull(items));
 			return this;
 		}
 

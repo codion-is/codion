@@ -113,7 +113,7 @@ public interface SwingFilterTableModel<R, C> extends FilterTableModel<R, C>, Tab
 		 * @param items supplies the items
 		 * @return this builder instance
 		 */
-		Builder<R, C> items(Supplier<? extends Collection<R>> items);
+		Builder<R, C> items(Supplier<Collection<R>> items);
 
 		/**
 		 * Items failing validation can not be added to the model.
