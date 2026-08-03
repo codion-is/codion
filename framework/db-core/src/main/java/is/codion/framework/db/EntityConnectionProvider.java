@@ -34,6 +34,7 @@ import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static is.codion.common.utilities.Configuration.longValue;
 import static is.codion.common.utilities.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
@@ -142,6 +143,19 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * @see #description()
 	 */
 	PropertyValue<String> DESCRIPTION = stringValue(EntityConnectionProvider.class.getName() + ".description");
+
+	/**
+	 * Specifies the minimum time between connection validity checks, in milliseconds.
+	 * <p>{@link #connection()} verifies that the connection is still alive before handing it out, which costs
+	 * a round trip to the database or server. A connection validated within this interval is handed out unchecked.
+	 * <p>A connection dying within the interval is therefore not detected until it elapses, until then
+	 * operations fail as they would on any broken connection. Specify 0 to check on every call.
+	 * <ul>
+	 * <li>Value type: Long
+	 * <li>Default value: 1000
+	 * </ul>
+	 */
+	PropertyValue<Long> VALIDITY_CHECK_INTERVAL = longValue("codion.client.validityCheckInterval", 1_000L);
 
 	/**
 	 * Returns the domain entities this connection is based on
