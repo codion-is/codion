@@ -52,8 +52,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private final @Nullable Version clientVersion;
 	private final @Nullable Consumer<EntityConnectionProvider> onClose;
 
-	private @Nullable EntityConnection entityConnection;
-	private @Nullable Entities entities;
+	private volatile @Nullable EntityConnection entityConnection;
+	private volatile @Nullable Entities entities;
 
 	/**
 	 * @param builder the builder
@@ -70,13 +70,17 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 	@Override
 	public final Entities entities() {
-		synchronized (lock) {
-			if (entities == null) {
-				doConnect();
+		Entities entities = this.entities;
+		if (entities == null) {
+			synchronized (lock) {
+				if (this.entities == null) {
+					doConnect();
+				}
+				entities = this.entities;
 			}
-
-			return entities;
 		}
+
+		return entities;
 	}
 
 	@Override
@@ -106,18 +110,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 	@Override
 	public final boolean connectionValid() {
-		synchronized (lock) {
-			if (entityConnection == null) {
-				return false;
-			}
-			try {
-				return entityConnection.connected();
-			}
-			catch (RuntimeException e) {
-				LOG.debug("Connection deemed invalid", e);
-				return false;
-			}
-		}
+		EntityConnection connection = entityConnection;
+
+		return connection != null && valid(connection);
 	}
 
 	@Override
@@ -132,13 +127,14 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 	@Override
 	public final void close() {
+		EntityConnection connection;
 		synchronized (lock) {
-			if (entityConnection != null) {
-				if (connectionValid()) {
-					close(entityConnection);
-				}
-				entityConnection = null;
-			}
+			connection = entityConnection;
+			entityConnection = null;
+		}
+		//validate and close without holding the lock
+		if (connection != null && valid(connection)) {
+			close(connection);
 		}
 		if (onClose != null) {
 			onClose.accept(this);
@@ -161,19 +157,25 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	 * @return a valid connection
 	 */
 	protected final EntityConnection validConnection() {
+		// the validity check blocks for the duration of any operation in progress
+		// on the connection, so it must not be performed while holding the lock
+		EntityConnection connection = entityConnection;
+		if (connection != null && valid(connection)) {
+			return connection;
+		}
 		synchronized (lock) {
-			if (entityConnection == null) {
-				doConnect();
+			if (entityConnection != null && entityConnection != connection) {
+				return entityConnection; //reconnected by another thread while we were validating
 			}
-			else if (!connectionValid()) {
+			if (entityConnection != null) {
 				LOG.info("Previous connection invalid, reconnecting");
 				try {//try to disconnect just in case
 					entityConnection.close();
 				}
 				catch (Exception ignored) {/*ignored*/}
 				entityConnection = null;
-				doConnect();
 			}
+			doConnect();
 
 			return entityConnection;
 		}
@@ -183,6 +185,16 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		entityConnection = connect();
 		entities = entityConnection.entities();
 		connected.accept(entityConnection);
+	}
+
+	private static boolean valid(EntityConnection connection) {
+		try {
+			return connection.connected();
+		}
+		catch (Exception e) {
+			LOG.debug("Connection deemed invalid", e);
+			return false;
+		}
 	}
 
 	/**
