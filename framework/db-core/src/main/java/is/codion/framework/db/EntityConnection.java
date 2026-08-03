@@ -84,6 +84,22 @@ import static java.util.Objects.requireNonNull;
  * });
  *}
  *
+ * <p>Thread Safety</p>
+ * Instances are safe to use from multiple threads, and typically are, since a client shares a single
+ * connection between its models. Each connection guards its statements with a private monitor, so
+ * operations from different threads never interleave. Note that this <i>serializes</i> rather than
+ * parallelizes: concurrent callers queue up, and a slow operation delays every other caller on the same
+ * connection. Connections do not synchronize against each other.
+ * <p>Two pieces of state belong to the connection rather than to the calling thread, and are therefore
+ * shared by every thread using it:
+ * <ul>
+ *   <li>The transaction. One opened via {@link #startTransaction()} spans all threads using the connection
+ *   until it is committed or rolled back, and suspends the automatic commit their operations would otherwise
+ *   perform. Do not run a transaction on a connection other threads are using.</li>
+ *   <li>The query cache, see {@link #cacheQueries()}.</li>
+ * </ul>
+ * <p>{@link #iterator(Select)} is a further exception, driving a live result set outside the monitor.
+ *
  * <p>Basic Usage</p>
  * {@snippet :
  * EntityConnection connection = connectionProvider.connection();

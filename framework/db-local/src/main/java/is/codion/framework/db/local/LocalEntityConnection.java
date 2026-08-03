@@ -114,6 +114,8 @@ public interface LocalEntityConnection extends EntityConnection {
 	/**
 	 * Returns the underlying connection, throwing in case it is closed.
 	 * Use {@link #getConnection()} for the non-throwing variant, which returns null when closed.
+	 * <p>Statements executed on the returned connection are not guarded by this connection's monitor,
+	 * so they may interleave with operations performed by other threads, see {@link EntityConnection}.
 	 * @return the underlying connection
 	 * @throws DatabaseException in case this connection is closed
 	 * @see #getConnection()
