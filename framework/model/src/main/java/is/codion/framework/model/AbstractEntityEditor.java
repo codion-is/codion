@@ -379,6 +379,17 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		currentTask = null;
 	}
 
+	/**
+	 * Used when a master editor builds tasks for its detail editors. The detail tasks must share the
+	 * master's connection, but resolving it is deferred, since the tasks are built on the calling thread,
+	 * typically the UI thread, while they are performed on a background thread.
+	 * @param connection provides the connection to use, resolved when first needed
+	 * @return a new {@link EditorTasks} instance
+	 */
+	final EditorTasks tasks(Supplier<EntityConnection> connection) {
+		return new DefaultEditorTasks(requireNonNull(connection));
+	}
+
 	private void cancelCurrentWorker() {
 		ProgressWorker<Result<Entity>, ?> currentWorker = worker;
 		if (currentWorker != null && !currentWorker.done()) {
@@ -967,7 +978,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.before = requireNonNull(before);
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.editor.entity().present().is()) {
-						tasks.add(detailEditor.editor.tasks(connection()).insert(detail ->
+						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).insert(detail ->
 										detailEditor.link.beforeInsert.apply(detail, inserted(), connection())));
 					}
 				}
@@ -1015,14 +1026,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.entity = entity;
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.updatable.insert.is()) {
-						tasks.add(detailEditor.editor.tasks(connection()).insert(detail ->
+						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).insert(detail ->
 										detailEditor.link.beforeInsert.apply(detail, updated(), connection())));
 					}
 					else if (detailEditor.updatable.update.is()) {
-						tasks.add(detailEditor.editor.tasks(connection()).update());
+						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).update());
 					}
 					else if (detailEditor.updatable.delete.is()) {
-						tasks.add(detailEditor.editor.tasks(connection()).delete());
+						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).delete());
 					}
 				}
 			}
@@ -1069,7 +1080,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.entity = entity;
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.editor.entity().exists().is()) {
-						tasks.add(detailEditor.editor.tasks(connection()).delete());
+						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).delete());
 					}
 				}
 			}

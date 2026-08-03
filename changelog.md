@@ -23,6 +23,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityEditor.EditorTasks now resolves its connection on first use instead of when the tasks are created, since they are typically created on the UI thread and performed on a background thread. Selecting a record while a refresh was in progress blocked the UI thread on a connection the tasks often never used.
 - EntityEditor.EditorEntity.set() and replace() are now fully synchronous when no detail editors are registered.
+- AbstractEntityEditor, the detail editor insert, update and delete tasks no longer resolve the connection when they are built, which happens on the calling thread, typically the UI thread.
 ### is.codion.framework.domain.test
 - DomainTest now closes the connection via the connection provider, closing it directly left the provider handing out a connection it believed to be alive.
 
