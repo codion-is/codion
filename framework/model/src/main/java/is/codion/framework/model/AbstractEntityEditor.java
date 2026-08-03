@@ -617,7 +617,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			Entity validated = validateType(entity).immutable();
 			changing.accept(validated);
 			setEntity(validated);
-			execute(defaultTasks().setDetails(validated));
+			if (!detail.editors.isEmpty()) {
+				// the detail editors must be loaded for the new entity, on a background thread
+				execute(defaultTasks().setDetails(validated));
+			}
+			else {
+				// nothing to load; supersede any in-flight load and fire changed
+				supersede();
+				changed.accept(validated);
+			}
 		}
 
 		@Override
@@ -635,12 +643,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			Entity validated = validateType(entity).immutable();
 			boolean identityChanged = !instance.primaryKey().equals(validated.primaryKey());
 			setEntity(validated);
-			if (identityChanged) {
+			if (identityChanged && !detail.editors.isEmpty()) {
 				// the detail editors must be reloaded for the new identity, on a background thread
 				execute(defaultTasks().replaceDetails(validated));
 			}
 			else {
-				// same identity, no detail reload; supersede any in-flight load and fire replaced
+				// nothing to reload; supersede any in-flight load and fire replaced
 				supersede();
 				replaced.accept(validated);
 			}

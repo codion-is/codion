@@ -541,10 +541,14 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * with {@link #changed()} firing once the full detail subtree is in place.
 		 * Use {@link #replace(Entity)} for silent post-persist refreshes that should not re-fire change events.
 		 * <p>The active entity is applied synchronously, so {@link #get()} reflects the new values as soon
-		 * as this method returns. When the editor is bound to UI components only the detail editors are
+		 * as this method returns. Without registered detail editors there is nothing to load and the
+		 * operation is fully synchronous, {@link #changed()} having fired by the time this method returns.
+		 * <p>With registered detail editors, and the editor bound to UI components, the detail editors are
 		 * loaded asynchronously, on a background thread; the method then returns before the detail subtree
-		 * is in place and before {@link #changed()} fires. Otherwise the operation is fully
-		 * synchronous.
+		 * is in place and before {@link #changed()} fires. Note that consecutive calls supersede one
+		 * another in that case, an in-flight load is abandoned when a new one begins and only the last
+		 * fires {@link #changed()}, so it does not necessarily fire once per call. Otherwise the operation
+		 * is fully synchronous.
 		 * <p>For master editors with registered detail editors the events are ordered bottom-up:
 		 * {@link #changing()} fires before the detail subtree is touched; each detail editor is then set
 		 * (firing {@link #changed()}, never {@link #changing()}); finally {@link #changed()}
@@ -591,11 +595,12 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * {@link #changed()} events; only {@link #replaced()} fires.
 		 * <p>If the new entity has the same primary key as the current one (the typical post-persist
 		 * refresh case), detail editors are <em>not</em> touched — their state is owned by their own
-		 * persist tasks — and the replacement is fully synchronous. If the primary key changes, detail
-		 * editors are reloaded via their link's load action, since the master's identity has changed; the
-		 * entity values are applied synchronously, while as with {@link #set(Entity)} that detail reload
-		 * may be performed asynchronously when the editor is bound to UI components, with {@link #replaced()}
-		 * firing once the full detail subtree is in place.
+		 * persist tasks — and the replacement is fully synchronous, as it is when no detail editors are
+		 * registered. If the primary key changes, registered detail editors are reloaded via their link's
+		 * load action, since the master's identity has changed; the entity values are applied
+		 * synchronously, while as with {@link #set(Entity)} that detail reload may be performed
+		 * asynchronously when the editor is bound to UI components, with {@link #replaced()} firing once
+		 * the full detail subtree is in place.
 		 * @param entity the replacement entity
 		 * @throws NullPointerException in case the entity is null
 		 * @throws IllegalArgumentException in case the entity is not of the correct type
