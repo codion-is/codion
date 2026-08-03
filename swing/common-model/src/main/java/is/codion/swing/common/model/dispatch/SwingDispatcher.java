@@ -14,10 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2025 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
+package is.codion.swing.common.model.dispatch;
+
+import is.codion.common.utilities.dispatch.Dispatcher;
+
+import javax.swing.SwingUtilities;
+import java.util.concurrent.Executor;
+
+import static javax.swing.SwingUtilities.isEventDispatchThread;
+
 /**
- * <p>Swing implementation of {@link is.codion.common.utilities.dispatch.Dispatcher}.
+ * A {@link Dispatcher} running tasks on the Event Dispatch Thread.
  */
-@org.jspecify.annotations.NullMarked
-package is.codion.swing.common.model.worker;
+public final class SwingDispatcher implements Dispatcher {
+
+	private static final Executor EXECUTOR = SwingUtilities::invokeLater;
+
+	@Override
+	public Executor executor() {
+		return EXECUTOR;
+	}
+
+	@Override
+	public boolean bound() {
+		return isEventDispatchThread();
+	}
+}
