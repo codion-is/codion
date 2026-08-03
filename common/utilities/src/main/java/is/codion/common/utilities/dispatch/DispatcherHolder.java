@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.worker;
+package is.codion.common.utilities.dispatch;
 
 import is.codion.common.utilities.exceptions.Exceptions;
 

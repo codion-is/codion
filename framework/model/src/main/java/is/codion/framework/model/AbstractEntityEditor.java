@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.common.model.worker.Dispatcher;
 import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.event.Event;
@@ -33,6 +32,7 @@ import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.common.reactive.value.ValueSet;
+import is.codion.common.utilities.dispatch.Dispatcher;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
@@ -350,14 +350,15 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	/**
 	 * Executes the given task, asynchronously via a {@link ProgressWorker} when {@link #async()} is enabled and
-	 * called on the UI thread (as determined by {@link Dispatcher}), otherwise synchronously on the calling thread.
+	 * a dispatch context is bound, the UI thread on UI platforms (see {@link Dispatcher#bound()}), otherwise
+	 * synchronously on the calling thread.
 	 * @param task the task to execute
 	 */
 	protected void execute(EditorTask<Entity> task) {
 		requireNonNull(task);
 		cancelCurrentWorker();
 		currentTask = task;
-		if (async().is() && Dispatcher.instance().userInterfaceThread()) {
+		if (async().is() && Dispatcher.instance().bound()) {
 			worker = ProgressWorker.builder()
 							.task(new ExecutionTask(task))
 							.execute();

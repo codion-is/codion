@@ -37,6 +37,6 @@ module is.codion.swing.common.model {
 	exports is.codion.swing.common.model.component.table;
 	exports is.codion.swing.common.model.component.text;
 
-	provides is.codion.common.model.worker.Dispatcher
+	provides is.codion.common.utilities.dispatch.Dispatcher
 					with is.codion.swing.common.model.worker.SwingDispatcher;
 }

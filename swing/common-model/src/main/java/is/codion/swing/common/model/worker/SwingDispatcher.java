@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.model.worker;
 
-import is.codion.common.model.worker.Dispatcher;
+import is.codion.common.utilities.dispatch.Dispatcher;
 
 import javax.swing.SwingUtilities;
 import java.util.concurrent.Executor;
@@ -38,7 +38,7 @@ public final class SwingDispatcher implements Dispatcher {
 	}
 
 	@Override
-	public boolean userInterfaceThread() {
+	public boolean bound() {
 		return isEventDispatchThread();
 	}
 }

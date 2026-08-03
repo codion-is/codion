@@ -19,6 +19,7 @@
 package is.codion.common.model.worker;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.utilities.dispatch.Dispatcher;
 import is.codion.common.utilities.exceptions.Exceptions;
 
 import org.jspecify.annotations.Nullable;
@@ -43,8 +44,9 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * <p>Executes a task on a background thread, invoking its lifecycle handlers on the UI thread as resolved by
- * {@link Dispatcher}. Instances of this class are not reusable.</p>
+ * <p>Executes a task on a background thread, invoking its lifecycle handlers on the dispatch context resolved
+ * by {@link Dispatcher} — the UI thread on UI platforms, which is what the documentation below calls it.
+ * Instances of this class are not reusable.</p>
  * <p>Each execution runs on its own thread from a shared pool of daemon threads, created as needed and reaped
  * when idle, so {@code N} simultaneous executions use {@code N} threads.</p>
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
@@ -134,13 +136,14 @@ public final class ProgressWorker<T, V> {
 
 	/**
 	 * Executes this worker, running the task on a background thread and its handlers on the UI thread.
-	 * <p>Must be called on the UI thread, since the {@link Dispatcher} handler executor is resolved for the
-	 * current context at this point (relevant for platforms with a per-context UI thread).
-	 * @throws IllegalStateException if called off the UI thread (except when using {@link Dispatcher#SYNCHRONOUS})
+	 * <p>Must be called where a dispatch context is bound ({@link Dispatcher#bound()}), since the handler
+	 * executor is resolved for the caller at this point, and implementations binding a context per request
+	 * or session must resolve the right one.
+	 * @throws IllegalStateException if no dispatch context is bound (except when using {@link Dispatcher#SYNCHRONOUS})
 	 */
 	public void execute() {
-		if (dispatcher != Dispatcher.SYNCHRONOUS && !dispatcher.userInterfaceThread()) {
-			throw new IllegalStateException("ProgressWorker.execute() must be called on the UI thread");
+		if (dispatcher != Dispatcher.SYNCHRONOUS && !dispatcher.bound()) {
+			throw new IllegalStateException("ProgressWorker.execute() must be called where a dispatch context is bound");
 		}
 		uiExecutor = dispatcher.executor();
 		EXECUTOR.execute(future);

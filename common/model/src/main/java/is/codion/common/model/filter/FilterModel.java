@@ -504,7 +504,8 @@ public interface FilterModel<T> {
 		Observer<Collection<T>> result();
 
 		/**
-		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
+		 * <p>Refreshes the data. Async refresh is performed when it is enabled ({@link #async()}) and this method is called
+		 * where a dispatch context is bound, the UI thread on UI platforms.
 		 * <p>Note that a refresh superseded by a subsequent refresh invokes no callbacks.
 		 * @param onResult called with the result after a successful refresh, may be null (on the UI thread when refreshed asynchronously)
 		 * @see #active()

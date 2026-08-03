@@ -21,6 +21,7 @@
  * <ul>
  * <li>{@link is.codion.common.utilities.Text#COLLATOR_LANGUAGE}
  * </ul>
+ * @uses is.codion.common.utilities.dispatch.Dispatcher
  * @uses is.codion.common.utilities.logging.LoggerProxy
  * @uses is.codion.common.utilities.resource.Resources
  */
@@ -29,6 +30,7 @@ module is.codion.common.utilities {
 	requires transitive is.codion.common.reactive;
 
 	exports is.codion.common.utilities;
+	exports is.codion.common.utilities.dispatch;
 	exports is.codion.common.utilities.exceptions;
 	exports is.codion.common.utilities.format;
 	exports is.codion.common.utilities.item;
@@ -40,6 +42,7 @@ module is.codion.common.utilities {
 	exports is.codion.common.utilities.user;
 	exports is.codion.common.utilities.version;
 
+	uses is.codion.common.utilities.dispatch.Dispatcher;
 	uses is.codion.common.utilities.logging.LoggerProxy;
 	uses is.codion.common.utilities.resource.Resources;
 }
