@@ -18,6 +18,7 @@ Codion Change Log
 - DefaultSwingFilterTableModel and DefaultSwingFilterListModel, the redundant refresher overrides removed, the common model's Dispatcher based refresher is used directly.
 - SwingFilterTableModel.Builder.async() and SwingFilterListModel.Builder.async() removed, use FilterModel.ASYNC or Refresher.async().
 - SwingFilterTableModel.Builder.items() parameter wildcard type removed.
+- is.codion.swing.common.model.worker package renamed dispatch.
 ### is.codion.framework.db
 - AbstractEntityConnectionProvider, the connection validity check is no longer performed while holding the provider lock, since it blocks for the duration of any operation in progress on the connection.
 - AbstractEntityConnectionProvider.entities() no longer acquires the provider lock once the connection has been established.

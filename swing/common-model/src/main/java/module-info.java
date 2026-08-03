@@ -38,5 +38,5 @@ module is.codion.swing.common.model {
 	exports is.codion.swing.common.model.component.text;
 
 	provides is.codion.common.utilities.dispatch.Dispatcher
-					with is.codion.swing.common.model.worker.SwingDispatcher;
+					with is.codion.swing.common.model.dispatch.SwingDispatcher;
 }
