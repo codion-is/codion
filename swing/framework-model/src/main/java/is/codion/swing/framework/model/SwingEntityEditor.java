@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -40,21 +40,21 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	/**
 	 * Instantiates a new {@link SwingEntityEditor}
 	 * @param entityType the entity type
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 */
-	public SwingEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(entityType, connectionProvider, new SwingComponentModels() {});
+	public SwingEntityEditor(EntityType entityType, EntityConnection connection) {
+		this(entityType, connection, new SwingComponentModels() {});
 	}
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditor}
 	 * @param entityType the entity type
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 * @param componentModels the component models
 	 */
-	public SwingEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
+	public SwingEntityEditor(EntityType entityType, EntityConnection connection,
 													 SwingComponentModels componentModels) {
-		super(entityType, connectionProvider, componentModels, DefaultSwingComboBoxModels::new);
+		super(entityType, connection, componentModels, DefaultSwingComboBoxModels::new);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	public SwingEntityEditor create(EntityType entityType, ComponentModels componentModels) {
 		// The cast is safe by construction: a SwingEntityEditor only ever receives a SwingComponentModels, supplied
 		// by the application's own (single-platform) binding (e.g. via a shared edit config's componentModels() hook).
-		return new SwingEntityEditor(entityType, connectionProvider(), (SwingComponentModels) componentModels);
+		return new SwingEntityEditor(entityType, connection(), (SwingComponentModels) componentModels);
 	}
 
 	@Override
@@ -129,21 +129,21 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	public interface SwingComponentModels extends ComponentModels {
 
 		@Override
-		default SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+		default SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnection connection) {
 			return SwingEntityComboBoxModel.builder()
 							.foreignKey(foreignKey)
-							.connectionProvider(requireNonNull(connectionProvider))
+							.connection(requireNonNull(connection))
 							.build();
 		}
 
 		@Override
-		default <T> SwingFilterComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnectionProvider connectionProvider) {
-			EntityDefinition entityDefinition = requireNonNull(connectionProvider).entities()
+		default <T> SwingFilterComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnection connection) {
+			EntityDefinition entityDefinition = requireNonNull(connection).entities()
 							.definition(requireNonNull(column).entityType());
 			boolean nullable = entityDefinition.columns().definition(column).nullable();
 
 			return SwingFilterComboBoxModel.builder()
-							.items(() -> connectionProvider.connection().select(column))
+							.items(() -> connection.select(column))
 							.nullItem(nullable ? ComponentModels.createNullItem(column) : null)
 							.includeNull(nullable)
 							.build();

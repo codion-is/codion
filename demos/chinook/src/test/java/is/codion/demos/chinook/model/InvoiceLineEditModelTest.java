@@ -25,8 +25,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
@@ -44,15 +43,13 @@ public final class InvoiceLineEditModelTest {
 
 	@Test
 	void updateTotals() throws EntityValidationException {
-		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-			EntityConnection connection = connectionProvider.connection();
-
+		try (EntityConnection connection = createConnection()) {
 			Entity invoice = createInvoice(connection);
 			assertEquals(BigDecimal.ZERO, invoice.get(Invoice.TOTAL));
 
 			Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
 
-			InvoiceLineEditModel editModel = new InvoiceLineEditModel(connectionProvider);
+			InvoiceLineEditModel editModel = new InvoiceLineEditModel(connection);
 			SwingEntityEditor editor = editModel.editor();
 			editor.entity().defaults();
 			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
@@ -102,8 +99,8 @@ public final class InvoiceLineEditModelTest {
 						.build());
 	}
 
-	private static EntityConnectionProvider createConnectionProvider() {
-		return LocalEntityConnectionProvider.builder()
+	private static EntityConnection createConnection() {
+		return LocalEntityConnection.builder()
 						.domain(new ChinookImpl())
 						.user(User.parse("scott:tiger"))
 						.build();

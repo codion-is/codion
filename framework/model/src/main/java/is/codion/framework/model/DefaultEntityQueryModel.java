@@ -22,8 +22,8 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -59,7 +59,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	DefaultEntityQueryModel(EntityConditionModel conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);
-		this.entityDefinition = conditionModel.connectionProvider().entities().definition(conditionModel.entityType());
+		this.entityDefinition = conditionModel.connection().entities().definition(conditionModel.entityType());
 		this.conditionEnabled = Value.nonNull(conditionModel.enabled());
 		this.orderBy = entityDefinition.orderBy()
 						.map(Value::nonNull)
@@ -72,8 +72,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public EntityConnectionProvider connectionProvider() {
-		return conditionModel.connectionProvider();
+	public EntityConnection connection() {
+		return conditionModel.connection();
 	}
 
 	@Override
@@ -171,7 +171,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 		@Override
 		public List<Entity> apply(EntityQueryModel queryModel) {
-			return queryModel.connectionProvider().connection().select(queryModel.select());
+			return queryModel.connection().select(queryModel.select());
 		}
 	}
 

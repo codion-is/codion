@@ -22,8 +22,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.utilities.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.manual.store.minimal.domain.Store;
@@ -41,14 +40,13 @@ public class StoreDatabase {
 						.create("jdbc:h2:mem:store",
 										"src/main/sql/create_schema_minimal.sql");
 
-		EntityConnectionProvider connectionProvider =
-						LocalEntityConnectionProvider.builder()
+		EntityConnection connection =
+						LocalEntityConnection.builder()
 										.database(database)
 										.domain(new Store())
 										.user(User.parse("scott:tiger"))
 										.build();
 
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> customersNamedDoe =
 						connection.select(Customer.LAST_NAME.equalTo("Doe"));

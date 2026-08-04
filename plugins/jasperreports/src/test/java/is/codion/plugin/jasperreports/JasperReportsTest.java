@@ -25,7 +25,6 @@ import is.codion.common.db.report.ReportType;
 import is.codion.common.utilities.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.local.LocalEntityConnection;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.plugin.jasperreports.TestDomain.Employee;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -53,8 +52,8 @@ public class JasperReportsTest {
 
 	private static final String REPORT_PATH = "build/resources/test";
 
-	private static final LocalEntityConnectionProvider CONNECTION_PROVIDER =
-					LocalEntityConnectionProvider.builder()
+	private static final LocalEntityConnection CONNECTION =
+					LocalEntityConnection.builder()
 									.database(H2DatabaseFactory.create("jdbc:h2:mem:JasperReportsWrapperTest",
 													Database.INIT_SCRIPTS.get()))
 									.domain(new TestDomain())
@@ -63,7 +62,7 @@ public class JasperReportsTest {
 
 	@AfterAll
 	public static void tearDown() {
-		CONNECTION_PROVIDER.close();
+		CONNECTION.close();
 	}
 
 	@Test
@@ -72,7 +71,7 @@ public class JasperReportsTest {
 		Report.REPORT_PATH.set(REPORT_PATH);
 		HashMap<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 		JasperPrint print = Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters);
 		assertNotNull(print);
 	}
@@ -84,7 +83,7 @@ public class JasperReportsTest {
 		HashMap<String, Object> reportParameters = new HashMap<>();
 		//DEPTNO is declared java.util.Collection, JasperFillManager throws JRRuntimeException
 		reportParameters.put("DEPTNO", "not a collection");
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 		ReportException exception = assertThrows(ReportException.class, () ->
 						Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters));
 		//no engine type may escape fill(), by value or as a cause, a client throwing it
@@ -96,7 +95,7 @@ public class JasperReportsTest {
 	void fillJdbcReportPropagatesLoadFailure() {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 		//load() already throws ReportException, neither it nor fill() may wrap it in another one
 		ReportException exception = assertThrows(ReportException.class, () ->
 						JasperReports.fileReport("/non-existing.jasper", false)
@@ -136,7 +135,7 @@ public class JasperReportsTest {
 		Report.REPORT_PATH.set(REPORT_PATH);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 
 		JRReport<byte[]> pdfReport = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.PDF);
 		byte[] pdf = pdfReport.fill(connection.connection(), reportParameters);
@@ -151,7 +150,7 @@ public class JasperReportsTest {
 		Report.REPORT_PATH.set(REPORT_PATH);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 
 		String xml = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.XML)
 						.fill(connection.connection(), reportParameters);
@@ -165,7 +164,7 @@ public class JasperReportsTest {
 		Report.REPORT_PATH.set(REPORT_PATH);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 
 		JasperPrint print = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.PRINT)
 						.fill(connection.connection(), reportParameters);
@@ -179,7 +178,7 @@ public class JasperReportsTest {
 		Report.REPORT_PATH.set(REPORT_PATH);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 
 		JRReport<JasperPrint> report = JasperReports.fileReport("/employees.jasper", true);
 		JRReport<byte[]> pdf = JasperReports.export(report, JRExport.PDF);
@@ -203,7 +202,7 @@ public class JasperReportsTest {
 		Report.REPORT_PATH.set(REPORT_PATH);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 		JasperPrint print = Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters);
 
 		assertSame(print, JasperReports.export(print, JRExport.PRINT));
@@ -216,7 +215,7 @@ public class JasperReportsTest {
 		Report.REPORT_PATH.set(REPORT_PATH);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 
 		//the filled report itself, carried as bytes, reconstructed with the engine on hand
 		byte[] bytes = JasperReports.export(Employee.CLASS_PATH_REPORT, JRExport.SERIALIZED)
@@ -256,7 +255,7 @@ public class JasperReportsTest {
 		Report.REPORT_PATH.set(REPORT_PATH);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 
 		JRExport<byte[]> failing = print -> {
 			throw new JRException("Missing export extension");
@@ -281,7 +280,7 @@ public class JasperReportsTest {
 		reportParameters.put("DEPTNO", asList(10, 20));
 
 		//the report type names a report and a byte[], nothing of JasperReports
-		byte[] pdf = CONNECTION_PROVIDER.connection().report(Employee.PDF_REPORT, reportParameters);
+		byte[] pdf = CONNECTION.report(Employee.PDF_REPORT, reportParameters);
 
 		assertArrayEquals(new byte[] {'%', 'P', 'D', 'F'}, copyOf(pdf, 4));
 	}
@@ -296,7 +295,7 @@ public class JasperReportsTest {
 		//the same failure the fat client tolerates must reach a client without the engine intact,
 		//the exception it throws being serializable there, carrying no JasperReports type
 		ReportException exception = assertThrows(ReportException.class, () ->
-						CONNECTION_PROVIDER.connection().report(Employee.PDF_REPORT, reportParameters));
+						CONNECTION.report(Employee.PDF_REPORT, reportParameters));
 		assertNoEngineType(exception);
 	}
 
@@ -312,7 +311,7 @@ public class JasperReportsTest {
 		Report.CACHE_REPORTS.set(false);
 		Report.REPORT_PATH.set(REPORT_PATH);
 		ReportType<Object, Object> nonExisting = ReportType.reportType("test");
-		assertThrows(IllegalArgumentException.class, () -> CONNECTION_PROVIDER.connection().report(nonExisting, new HashMap<>()));
+		assertThrows(IllegalArgumentException.class, () -> CONNECTION.report(nonExisting, new HashMap<>()));
 	}
 
 	@Test
@@ -327,7 +326,7 @@ public class JasperReportsTest {
 			server.start();
 			Map<String, Object> reportParameters = new HashMap<>();
 			reportParameters.put("DEPTNO", asList(10, 20));
-			LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+			LocalEntityConnection connection = CONNECTION;
 			Employee.FILE_REPORT.fill(connection.connection(), reportParameters);
 		}
 		finally {
@@ -339,7 +338,7 @@ public class JasperReportsTest {
 	void classPathReport() {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 		Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters);
 
 		assertThrows(ReportException.class, () -> new ClassPathJRReport(JasperReportsTest.class, "non-existing.jasper").load());
@@ -349,7 +348,7 @@ public class JasperReportsTest {
 	void fileReport() {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
-		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
+		LocalEntityConnection connection = CONNECTION;
 		Employee.FILE_REPORT.fill(connection.connection(), reportParameters);
 		assertTrue(Employee.FILE_REPORT.cached());
 		Employee.FILE_REPORT.clearCache();

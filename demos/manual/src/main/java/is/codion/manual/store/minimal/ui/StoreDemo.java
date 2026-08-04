@@ -21,8 +21,8 @@ package is.codion.manual.store.minimal.ui;
 import is.codion.common.db.database.Database;
 import is.codion.common.utilities.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.manual.store.minimal.domain.Store;
 import is.codion.plugin.flatlaf.intellij.themes.material.MaterialDarker;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -88,17 +88,17 @@ public class StoreDemo {
 						.create("jdbc:h2:mem:h2db",
 										"src/main/sql/create_schema_minimal.sql");
 
-		EntityConnectionProvider connectionProvider =
-						LocalEntityConnectionProvider.builder()
+		EntityConnection connection =
+						LocalEntityConnection.builder()
 										.database(database)
 										.domain(new Store())
 										.user(User.parse("scott:tiger"))
 										.build();
 
 		SwingEntityModel customerModel =
-						new SwingEntityModel(Customer.TYPE, connectionProvider);
+						new SwingEntityModel(Customer.TYPE, connection);
 		SwingEntityModel addressModel =
-						new SwingEntityModel(Address.TYPE, connectionProvider);
+						new SwingEntityModel(Address.TYPE, connection);
 
 		customerModel.detail().add(addressModel);
 
@@ -121,7 +121,7 @@ public class StoreDemo {
 						Dialogs.builder()
 										.component(customerPanel.initialize())
 										.title("Customers")
-										.onClosed(e -> connectionProvider.close())
+										.onClosed(e -> connection.close())
 										.show());
 	}
 }

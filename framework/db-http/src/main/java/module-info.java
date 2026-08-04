@@ -20,9 +20,8 @@
  * HTTP based database connection classes.
  * <ul>
  * <li>{@link is.codion.framework.db.http.HttpEntityConnection}
- * <li>{@link is.codion.framework.db.http.HttpEntityConnectionProvider}
  * </ul>
- * @provides is.codion.framework.db.EntityConnectionProvider
+ * @provides is.codion.framework.db.EntityConnection.Builder
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.framework.db.http {
@@ -36,6 +35,6 @@ module is.codion.framework.db.http {
 
 	exports is.codion.framework.db.http;
 
-	provides is.codion.framework.db.EntityConnectionProvider.Builder
-					with is.codion.framework.db.http.DefaultHttpEntityConnectionProviderBuilder;
+	provides is.codion.framework.db.EntityConnection.Builder
+					with is.codion.framework.db.http.DefaultHttpEntityConnectionBuilder;
 }

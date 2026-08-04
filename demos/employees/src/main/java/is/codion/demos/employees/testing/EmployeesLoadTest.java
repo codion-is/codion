@@ -28,7 +28,7 @@ import is.codion.demos.employees.testing.scenarios.InsertEmployee;
 import is.codion.demos.employees.testing.scenarios.LoginLogout;
 import is.codion.demos.employees.testing.scenarios.SelectDepartment;
 import is.codion.demos.employees.testing.scenarios.UpdateEmployee;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.tools.loadtest.LoadTest;
 
@@ -51,7 +51,7 @@ public final class EmployeesLoadTest {
 		@Override
 		public EmployeesAppModel apply(User user) {
 			EmployeesAppModel applicationModel =
-							new EmployeesAppModel(EntityConnectionProvider.builder()
+							new EmployeesAppModel(EntityConnection.builder()
 											.domain(Employees.DOMAIN)
 											.clientType(EmployeesLoadTest.class.getSimpleName())
 											.user(user)
@@ -69,7 +69,7 @@ public final class EmployeesLoadTest {
 		LoadTest<EmployeesAppModel> loadTest =
 						LoadTest.builder()
 										.createApplication(new EmployeesAppModelFactory())
-										.closeApplication(application -> application.connectionProvider().close())
+										.closeApplication(application -> application.connection().close())
 										.user(UNIT_TEST_USER)
 										.scenarios(List.of(
 														scenario(new InsertDepartment(), 1),
@@ -77,7 +77,7 @@ public final class EmployeesLoadTest {
 														scenario(new LoginLogout(), 4),
 														scenario(new SelectDepartment(), 10),
 														scenario(new UpdateEmployee(), 5)))
-										.name("Employees LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+										.name("Employees LoadTest - " + EntityConnection.CLIENT_CONNECTION_TYPE.get())
 										.build();
 		loadTestPanel(loadTestModel(loadTest)).run();
 	}

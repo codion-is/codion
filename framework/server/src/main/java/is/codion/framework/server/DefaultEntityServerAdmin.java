@@ -286,6 +286,6 @@ final class DefaultEntityServerAdmin extends AbstractServerAdmin implements Enti
 
 	@Override
 	protected int requestsPerSecond() {
-		return AbstractRemoteEntityConnection.requestsPerSecond();
+		return AbstractServerEntityConnection.requestsPerSecond();
 	}
 }

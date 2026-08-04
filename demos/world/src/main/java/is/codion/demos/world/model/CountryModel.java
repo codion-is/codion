@@ -18,15 +18,15 @@
  */
 package is.codion.demos.world.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 public final class CountryModel extends SwingEntityModel {
 
-	CountryModel(EntityConnectionProvider connectionProvider) {
-		super(new CountryTableModel(connectionProvider));
-		SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connectionProvider));
-		SwingEntityModel countryLanguageModel = new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
+	CountryModel(EntityConnection connection) {
+		super(new CountryTableModel(connection));
+		SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connection));
+		SwingEntityModel countryLanguageModel = new SwingEntityModel(new CountryLanguageTableModel(connection));
 		detail().add(cityModel, countryLanguageModel);
 	}
 }

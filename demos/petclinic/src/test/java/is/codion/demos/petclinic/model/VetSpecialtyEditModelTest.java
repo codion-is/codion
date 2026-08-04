@@ -24,8 +24,7 @@ import is.codion.demos.petclinic.domain.api.Specialty;
 import is.codion.demos.petclinic.domain.api.Vet;
 import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityEditor;
@@ -40,9 +39,8 @@ public final class VetSpecialtyEditModelTest {
 
 	@Test
 	void validation() {
-		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-			EntityConnection connection = connectionProvider.connection();
-			VetSpecialtyEditModel model = new VetSpecialtyEditModel(connectionProvider);
+		try (EntityConnection connection = createConnection()) {
+			VetSpecialtyEditModel model = new VetSpecialtyEditModel(connection);
 
 			Entity linda = connection.selectSingle(Vet.FIRST_NAME.equalTo("Linda"));
 			Entity surgery = connection.selectSingle(Specialty.NAME.equalTo("surgery"));
@@ -62,8 +60,8 @@ public final class VetSpecialtyEditModelTest {
 		}
 	}
 
-	private static EntityConnectionProvider createConnectionProvider() {
-		return LocalEntityConnectionProvider.builder()
+	private static EntityConnection createConnection() {
+		return LocalEntityConnection.builder()
 						.domain(new PetclinicImpl())
 						.user(User.parse("scott:tiger"))
 						.build();

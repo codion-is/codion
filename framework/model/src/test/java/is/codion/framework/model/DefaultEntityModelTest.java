@@ -18,7 +18,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityEditor.ComponentModels;
 import is.codion.framework.model.test.AbstractEntityModelTest;
@@ -30,8 +30,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
 	@Override
 	protected TestEntityModel createDepartmentModel() {
-		TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(Department.TYPE, connectionProvider()));
-		TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
+		TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(Department.TYPE, connection()));
+		TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connection()));
 		deptModel.detail().add(ForeignKeyModelLink.builder()
 						.model(empModel)
 						.foreignKey(Employee.DEPARTMENT_FK)
@@ -43,18 +43,18 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
 	@Override
 	protected TestEntityModel createDepartmentModelWithoutDetailModel() {
-		return new TestEntityModel(new TestEntityEditModel(Department.TYPE, connectionProvider()));
+		return new TestEntityModel(new TestEntityEditModel(Department.TYPE, connection()));
 	}
 
 	@Override
 	protected TestEntityModel createEmployeeModel() {
-		return new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
+		return new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connection()));
 	}
 
 	public static final class TestEntityEditModel extends AbstractEntityEditModel<TestEntityEditor> {
 
-		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			super(new TestEntityEditor(entityType, connectionProvider));
+		public TestEntityEditModel(EntityType entityType, EntityConnection connection) {
+			super(new TestEntityEditor(entityType, connection));
 		}
 	}
 
@@ -66,22 +66,22 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
 	public static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
 
-		public TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			this(entityType, connectionProvider, new TestComponentModels() {});
+		public TestEntityEditor(EntityType entityType, EntityConnection connection) {
+			this(entityType, connection, new TestComponentModels() {});
 		}
 
-		public TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider, TestComponentModels componentModels) {
-			super(entityType, connectionProvider, componentModels);
+		public TestEntityEditor(EntityType entityType, EntityConnection connection, TestComponentModels componentModels) {
+			super(entityType, connection, componentModels);
 		}
 
 		@Override
 		public TestEntityEditor create(EntityType entityType) {
-			return new TestEntityEditor(entityType, connectionProvider());
+			return new TestEntityEditor(entityType, connection());
 		}
 
 		@Override
 		public TestEntityEditor create(EntityType entityType, ComponentModels componentModels) {
-			return new TestEntityEditor(entityType, connectionProvider(), (TestComponentModels) componentModels);
+			return new TestEntityEditor(entityType, connection(), (TestComponentModels) componentModels);
 		}
 	}
 

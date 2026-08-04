@@ -23,8 +23,7 @@ import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -42,8 +41,7 @@ public final class AlbumModelTest {
 
 	@Test
 	void albumRefreshedWhenTrackRatingIsUpdated() throws EntityValidationException {
-		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-			EntityConnection connection = connectionProvider.connection();
+		try (EntityConnection connection = createConnection()) {
 			connection.startTransaction();
 
 			// Initialize all the tracks with an inital rating of 8
@@ -57,7 +55,7 @@ public final class AlbumModelTest {
 
 			// Create our AlbumModel and configure the query condition
 			// to populate it with only Master Of Puppets
-			AlbumModel albumModel = new AlbumModel(connectionProvider);
+			AlbumModel albumModel = new AlbumModel(connection);
 			SwingEntityTableModel albumTableModel = albumModel.tableModel();
 			albumTableModel.query().condition().get(Album.TITLE).set().equalTo(MASTER_OF_PUPPETS);
 			albumTableModel.items().refresh();
@@ -78,8 +76,8 @@ public final class AlbumModelTest {
 		}
 	}
 
-	private static EntityConnectionProvider createConnectionProvider() {
-		return LocalEntityConnectionProvider.builder()
+	private static EntityConnection createConnection() {
+		return LocalEntityConnection.builder()
 						.domain(new ChinookImpl())
 						.user(User.parse("scott:tiger"))
 						.build();

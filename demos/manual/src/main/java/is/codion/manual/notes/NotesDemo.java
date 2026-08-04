@@ -23,8 +23,8 @@ import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
 import is.codion.dbms.h2.H2DatabaseFactory;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
@@ -124,8 +124,8 @@ public final class NotesDemo {
 
 	private static final class NoteEditModel extends SwingEntityEditModel {
 
-		private NoteEditModel(EntityConnectionProvider connectionProvider) {
-			super(Note.TYPE, connectionProvider);
+		private NoteEditModel(EntityConnection connection) {
+			super(Note.TYPE, connection);
 			// Set the Note.UPDATED value before we perform an update
 			editor().events().before().update().addConsumer(notes ->
 							notes.forEach(note -> note.set(Note.UPDATED, LocalDateTime.now())));
@@ -185,8 +185,8 @@ public final class NotesDemo {
 
 	private static final class NoteTableModel extends SwingEntityTableModel {
 
-		private NoteTableModel(EntityConnectionProvider connectionProvider) {
-			super(new NoteEditModel(connectionProvider));
+		private NoteTableModel(EntityConnection connection) {
+			super(new NoteEditModel(connection));
 		}
 	}
 
@@ -210,8 +210,8 @@ public final class NotesDemo {
 
 	private static final class NoteModel extends SwingEntityModel {
 
-		private NoteModel(EntityConnectionProvider connectionProvider) {
-			super(new NoteTableModel(connectionProvider));
+		private NoteModel(EntityConnection connection) {
+			super(new NoteTableModel(connection));
 		}
 	}
 
@@ -234,8 +234,8 @@ public final class NotesDemo {
 
 		private static final Version VERSION = Version.builder().major(1).build();
 
-		public NotesApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, List.of(new NoteModel(connectionProvider)));
+		public NotesApplicationModel(EntityConnection connection) {
+			super(connection, List.of(new NoteModel(connection)));
 			// Refresh the table model to populate it
 			models().get(Note.TYPE).tableModel().items().refresh();
 		}
@@ -273,7 +273,7 @@ public final class NotesDemo {
 						.version(NotesApplicationModel.VERSION)
 						// No need for a startup dialog since startup is very quick
 						.startupDialog(false)
-						.connectionProvider(LocalEntityConnectionProvider.builder()
+						.connection(LocalEntityConnection.builder()
 										// Initialize the database schema
 										.database(initializeDatabase())
 										// Supply our domain model

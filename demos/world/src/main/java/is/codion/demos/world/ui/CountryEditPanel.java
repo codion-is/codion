@@ -184,7 +184,7 @@ final class CountryEditPanel extends EntityEditPanel {
 	}
 
 	private EntityEditPanel createCapitalEditPanel() {
-		SwingEntityEditModel cityEditModel = new SwingEntityEditModel(City.TYPE, editModel().connectionProvider());
+		SwingEntityEditModel cityEditModel = new SwingEntityEditModel(City.TYPE, editModel().connection());
 		CityEditPanel capitalEditPanel = new CityEditPanel(cityEditModel);
 		if (editor().entity().exists().is()) {
 			//add the city to the table model items when a new city is inserted

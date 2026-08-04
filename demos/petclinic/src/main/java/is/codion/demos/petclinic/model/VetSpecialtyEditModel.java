@@ -19,7 +19,7 @@
 package is.codion.demos.petclinic.model;
 
 import is.codion.demos.petclinic.domain.api.VetSpecialty;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
@@ -30,8 +30,8 @@ import static is.codion.framework.domain.entity.condition.Condition.and;
 
 public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 
-	public VetSpecialtyEditModel(EntityConnectionProvider connectionProvider) {
-		super(VetSpecialty.TYPE, connectionProvider);
+	public VetSpecialtyEditModel(EntityConnection connection) {
+		super(VetSpecialty.TYPE, connection);
 		editor().validator().set(new VetSpecialtyValidator());
 		editor().comboBoxModels().initialize(VetSpecialty.VET_FK, VetSpecialty.SPECIALTY_FK);
 		editor().value(VetSpecialty.VET_FK).persist().set(false);

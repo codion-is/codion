@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
  * as remote iterators are automatically wrapped via dynamic proxy.
  * @see is.codion.framework.db.EntityResultIterator
  */
-public interface RemoteEntityResultIterator extends Remote, AutoCloseable {
+public interface ServerEntityResultIterator extends Remote, AutoCloseable {
 
 	boolean hasNext() throws RemoteException;
 

@@ -21,7 +21,6 @@ package is.codion.demos.chinook.model;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -29,8 +28,8 @@ import static is.codion.framework.db.EntityConnection.transaction;
 
 public final class PlaylistTableModel extends SwingEntityTableModel {
 
-	public PlaylistTableModel(EntityConnectionProvider connectionProvider) {
-		super(new PlaylistEditModel(connectionProvider));
+	public PlaylistTableModel(EntityConnection connection) {
+		super(new PlaylistEditModel(connection));
 	}
 
 	// tag::randomPlaylist[]

@@ -21,8 +21,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.model.CancelException;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
@@ -67,12 +66,12 @@ public final class SwingEntityEditorTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
 
-	private final Entities entities = CONNECTION_PROVIDER.entities();
+	private final Entities entities = CONNECTION.entities();
 	private final List<String> events = synchronizedList(new ArrayList<>());
 	private final AtomicReference<@Nullable Entity> detailToLoad = new AtomicReference<>();
 
@@ -86,8 +85,8 @@ public final class SwingEntityEditorTest {
 	void setUp() {
 		events.clear();
 		detailToLoad.set(null);
-		master = new SwingEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		detail = new SwingEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		master = new SwingEntityEditor(Department.TYPE, CONNECTION);
+		detail = new SwingEntityEditor(Employee.TYPE, CONNECTION);
 		master.detail().add(EditorLink.builder()
 						.editor(detail)
 						.foreignKey(Employee.DEPARTMENT_FK)
@@ -95,8 +94,8 @@ public final class SwingEntityEditorTest {
 						.entity((department, connection) -> detailToLoad.get())
 						.present(employee -> employee.present(Employee.NAME))
 						.build());
-		departmentModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
-		employeeModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		departmentModel = new SwingEntityModel(Department.TYPE, CONNECTION);
+		employeeModel = new SwingEntityModel(Employee.TYPE, CONNECTION);
 		departmentModel.detail().add(employeeModel);
 		departmentModel.detail().active(employeeModel).set(true);
 		departmentModel.tableModel().items().refresh();
@@ -234,7 +233,7 @@ public final class SwingEntityEditorTest {
 
 	@Test
 	void insertWithDetailOrdering() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
 			master.value(Department.ID).set(99);
 			master.value(Department.NAME).set("TST");
@@ -247,13 +246,13 @@ public final class SwingEntityEditorTest {
 			assertEquals(asList("detail.replaced", "master.replaced"), events);
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void updateWithDetailOrdering() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
 			master.value(Department.ID).set(99);
 			master.value(Department.NAME).set("TST");
@@ -269,13 +268,13 @@ public final class SwingEntityEditorTest {
 			assertEquals(asList("detail.replaced", "master.replaced"), events);
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void deleteResetsToDefaultsSilently() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
 			master.value(Department.ID).set(99);
 			master.value(Department.NAME).set("TST");
@@ -289,13 +288,13 @@ public final class SwingEntityEditorTest {
 			assertFalse(master.entity().exists().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void sync() {
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 		Entity research = connection.selectSingle(Department.NAME.equalTo("RESEARCH"));
 		Entity sales = connection.selectSingle(Department.NAME.equalTo("SALES"));
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
@@ -316,7 +315,7 @@ public final class SwingEntityEditorTest {
 
 	@Test
 	void async() throws Exception {
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 		Entity research = connection.selectSingle(Department.NAME.equalTo("RESEARCH"));
 		Entity sales = connection.selectSingle(Department.NAME.equalTo("SALES"));
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));

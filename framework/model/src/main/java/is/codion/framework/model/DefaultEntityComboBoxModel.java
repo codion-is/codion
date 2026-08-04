@@ -22,7 +22,7 @@ import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityDefinition.ForeignKeys;
@@ -109,8 +109,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public EntityConnectionProvider connectionProvider() {
-		return entityItems.connectionProvider;
+	public EntityConnection connection() {
+		return entityItems.connection;
 	}
 
 	@Override
@@ -361,21 +361,21 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	private static final class EntityItems implements Supplier<Collection<Entity>> {
 
 		private final EntityDefinition entityDefinition;
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 		private final Value<Supplier<Condition>> condition;
 
 		private @Nullable OrderBy orderBy;
 		private Collection<Attribute<?>> attributes = emptyList();
 
-		private EntityItems(EntityDefinition entityDefinition, EntityConnectionProvider connectionProvider) {
+		private EntityItems(EntityDefinition entityDefinition, EntityConnection connection) {
 			this.entityDefinition = entityDefinition;
-			this.connectionProvider = connectionProvider;
+			this.connection = connection;
 			this.condition = Value.nonNull(new DefaultConditionSupplier(entityDefinition.type()));
 		}
 
 		private EntityItems(EntityItems entityItems) {
 			this.entityDefinition = entityItems.entityDefinition;
-			this.connectionProvider = entityItems.connectionProvider;
+			this.connection = entityItems.connection;
 			this.condition = Value.nonNull(new DefaultConditionSupplier(entityDefinition.type()));
 			this.condition.set(entityItems.condition.get());
 			this.orderBy = entityItems.orderBy;
@@ -384,7 +384,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public Collection<Entity> get() {
-			return connectionProvider.connection().select(where(validate(condition.getOrThrow().get()))
+			return connection.select(where(validate(condition.getOrThrow().get()))
 							.attributes(attributes)
 							.orderBy(orderBy));
 		}
@@ -471,8 +471,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public Builder connectionProvider(EntityConnectionProvider connectionProvider) {
-			return new DefaultBuilder(entityType, foreignKey, connectionProvider);
+		public Builder connection(EntityConnection connection) {
+			return new DefaultBuilder(entityType, foreignKey, connection);
 		}
 	}
 
@@ -492,12 +492,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private @Nullable Consumer<@Nullable Entity> onItemSelected;
 		private boolean refresh = false;
 
-		private DefaultBuilder(EntityType entityType, @Nullable ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-			this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
-			this.items = new EntityItems(entityDefinition, connectionProvider);
-			this.comparator = connectionProvider.entities().definition(entityType).comparator();
+		private DefaultBuilder(EntityType entityType, @Nullable ForeignKey foreignKey, EntityConnection connection) {
+			this.entityDefinition = requireNonNull(connection).entities().definition(entityType);
+			this.items = new EntityItems(entityDefinition, connection);
+			this.comparator = connection.entities().definition(entityType).comparator();
 			if (foreignKey != null) {
-				ForeignKeys foreignKeys = connectionProvider.entities().definition(foreignKey.entityType()).foreignKeys();
+				ForeignKeys foreignKeys = connection.entities().definition(foreignKey.entityType()).foreignKeys();
 				includeNull(foreignKeys.nullable(foreignKey));
 				attributes(foreignKeys.definition(foreignKey).attributes());
 			}

@@ -23,8 +23,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.ChinookImpl;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.common.ui.component.Components;
@@ -48,9 +48,9 @@ import static is.codion.demos.chinook.domain.api.Chinook.Artist;
  */
 public final class ClientUI {
 
-	static void artistPanel(EntityConnectionProvider connectionProvider) {
+	static void artistPanel(EntityConnection connection) {
 		// create a EditModel based on the artist entity
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Artist.TYPE, connectionProvider);
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Artist.TYPE, connection);
 		SwingEntityEditor editor = editModel.editor();
 
 		// fetch the Value representing the artist name from the editor
@@ -96,9 +96,9 @@ public final class ClientUI {
 //            .show();
 	}
 
-	static void albumPanel(EntityConnectionProvider connectionProvider) {
+	static void albumPanel(EntityConnection connection) {
 		// create a EditModel based on the album entity
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Album.TYPE, connectionProvider);
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Album.TYPE, connection);
 		SwingEntityEditor editor = editModel.editor();
 
 		// fetch the Value representing the album artist from the editor
@@ -177,13 +177,13 @@ public final class ClientUI {
 		// initialize a connection provider, this class is responsible
 		// for supplying a valid connection or throwing an exception
 		// in case a connection can not be established
-		EntityConnectionProvider connectionProvider =
-						LocalEntityConnectionProvider.builder()
+		EntityConnection connection =
+						LocalEntityConnection.builder()
 										.domain(new ChinookImpl())
 										.user(User.parse("scott:tiger"))
 										.build();
 
-		artistPanel(connectionProvider);
-		albumPanel(connectionProvider);
+		artistPanel(connection);
+		albumPanel(connection);
 	}
 }

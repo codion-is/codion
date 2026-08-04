@@ -20,7 +20,7 @@ package is.codion.demos.employees.model;
 
 import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.domain.Employees.Employee;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -29,13 +29,13 @@ import java.util.List;
 // tag::applicationModel[]
 public final class EmployeesAppModel extends SwingEntityApplicationModel {
 
-	public EmployeesAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider, List.of(createDepartmentModel(connectionProvider)));
+	public EmployeesAppModel(EntityConnection connection) {
+		super(connection, List.of(createDepartmentModel(connection)));
 	}
 
-	private static SwingEntityModel createDepartmentModel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
-		EmployeeEditModel employeeEditModel = new EmployeeEditModel(connectionProvider);
+	private static SwingEntityModel createDepartmentModel(EntityConnection connection) {
+		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connection);
+		EmployeeEditModel employeeEditModel = new EmployeeEditModel(connection);
 		//Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
 		//in case a new manager got hired, fired or promoted
 		employeeEditModel.editor().events().persisted().addListener(employeeEditModel.editor()

@@ -22,7 +22,6 @@ import is.codion.common.model.worker.ProgressWorker.TaskHandler;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -36,8 +35,8 @@ import static java.util.Collections.singleton;
 
 public final class ArtistTableModel extends SwingEntityTableModel {
 
-	public ArtistTableModel(EntityConnectionProvider connectionProvider) {
-		super(new ArtistEditModel(connectionProvider));
+	public ArtistTableModel(EntityConnection connection) {
+		super(new ArtistEditModel(connection));
 	}
 
 	public CombineArtistsTask combine(List<Entity> artistsToDelete, Entity artistToKeep) {

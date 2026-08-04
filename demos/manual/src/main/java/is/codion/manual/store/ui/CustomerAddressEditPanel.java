@@ -44,7 +44,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
 	}
 
 	private AddressEditPanel createAddressEditPanel() {
-		return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider()));
+		return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connection()));
 	}
 }
 // end::customerAddressEditPanel[]

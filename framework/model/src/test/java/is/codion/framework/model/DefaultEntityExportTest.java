@@ -22,9 +22,8 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityResultIterator;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -56,18 +55,18 @@ public final class DefaultEntityExportTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new ExportDomain())
 					.user(UNIT_TEST_USER)
 					.build();
-	private static final Entities ENTITIES = CONNECTION_PROVIDER.entities();
+	private static final Entities ENTITIES = CONNECTION.entities();
 
 	@Test
 	void basicExport() {
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 		// no included attributes, an export of nothing is a configuration error
 		StringBuilder empty = new StringBuilder();
-		assertThrows(IllegalStateException.class, () -> EntityExport.builder(CONNECTION_PROVIDER)
+		assertThrows(IllegalStateException.class, () -> EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(builder -> {})
 						.entities(connection.select(Select.all(Employee.TYPE)
@@ -78,17 +77,17 @@ public final class DefaultEntityExportTest {
 						.export());
 		assertEquals("", empty.toString());
 
-		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION_PROVIDER)
+		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(attributes -> attributes.include(Department.NAME)));
-		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION_PROVIDER)
+		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(attributes -> attributes.order(Department.NAME)));
 
 		Set<Entity.Key> jones = singleton(connection.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
 
 		StringBuilder output = new StringBuilder();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee.include(Employee.NAME))
 						.keys(jones.iterator())
@@ -97,7 +96,7 @@ public final class DefaultEntityExportTest {
 		assertEquals("Name\nJONES\n", output.toString());
 
 		output = new StringBuilder();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee.include(Employee.NAME, Employee.JOB))
 						.keys(jones.iterator())
@@ -106,7 +105,7 @@ public final class DefaultEntityExportTest {
 		assertEquals("Job	Name\nMANAGER	JONES\n", output.toString());
 
 		output = new StringBuilder();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee
 										.include(Employee.NAME, Employee.JOB, Employee.HIREDATE, Employee.COMMISSION)
@@ -117,7 +116,7 @@ public final class DefaultEntityExportTest {
 		assertEquals("Name	Job	Commission	Hiredate\nJONES	MANAGER		04-02-1981\n", output.toString());
 
 		output = new StringBuilder();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee
 										.include(Employee.NAME, Employee.JOB, Employee.DEPARTMENT, Employee.MGR)
@@ -131,7 +130,7 @@ public final class DefaultEntityExportTest {
 	@Test
 	void derived() {
 		StringBuilder output = new StringBuilder();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(attributes ->
 										attributes.include(Employee.DEPARTMENT_LOCATION, Employee.INITIAL, Employee.INITIAL_LOWER))
@@ -151,11 +150,11 @@ public final class DefaultEntityExportTest {
 						.collect(toList());
 
 		StringBuilder output = new StringBuilder();
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
 						.orderBy(ascending(Employee.NAME))
 						.build())) {
-			EntityExport.builder(CONNECTION_PROVIDER)
+			EntityExport.builder(CONNECTION)
 							.entityType(Employee.TYPE)
 							.attributes(employee -> employee.include(employeeAttributes))
 							.entities(iterator)
@@ -170,11 +169,11 @@ public final class DefaultEntityExportTest {
 	@Test
 	void employeeDepartment() throws IOException {
 		StringBuilder output = new StringBuilder();
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
 						.orderBy(ascending(Employee.NAME))
 						.build())) {
-			EntityExport.builder(CONNECTION_PROVIDER)
+			EntityExport.builder(CONNECTION)
 							.entityType(Employee.TYPE)
 							.attributes(employee -> employee.include(Employee.NAME)
 											.attributes(Employee.DEPARTMENT_FK, department ->
@@ -191,11 +190,11 @@ public final class DefaultEntityExportTest {
 	@Test
 	void employeeManagerDepartmentLevel() throws IOException {
 		StringBuilder output = new StringBuilder();
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
 						.orderBy(ascending(Employee.NAME))
 						.build())) {
-			EntityExport.builder(CONNECTION_PROVIDER)
+			EntityExport.builder(CONNECTION)
 							.entityType(Employee.TYPE)
 							.attributes(employee -> employee
 											.include(Employee.NAME)
@@ -225,11 +224,11 @@ public final class DefaultEntityExportTest {
 
 		StringBuilder output = new StringBuilder();
 		AtomicInteger count = new AtomicInteger();
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 		try (EntityResultIterator iterator = connection.iterator(Select.all(Employee.TYPE)
 						.orderBy(ascending(Employee.NAME))
 						.build())) {
-			EntityExport.builder(CONNECTION_PROVIDER)
+			EntityExport.builder(CONNECTION)
 							.entityType(Employee.TYPE)
 							.attributes(employee -> employee
 											.include(employeeAttributes)
@@ -249,12 +248,12 @@ public final class DefaultEntityExportTest {
 		String exportResult = textFileContents(DefaultEntityExportTest.class, "employee_export.tsv");
 		assertEquals(exportResult, output.toString());
 
-		Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("JONES"));
-		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.ID.equalTo(10));
+		Entity jones = CONNECTION.selectSingle(Employee.NAME.equalTo("JONES"));
+		Entity accounting = CONNECTION.selectSingle(Department.ID.equalTo(10));
 
 		List<Entity.Key> keys = asList(jones.primaryKey(), accounting.primaryKey());
 
-		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION_PROVIDER)
+		assertThrows(IllegalArgumentException.class, () -> EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee.include(employeeAttributes))
 						.keys(keys.iterator())
@@ -277,7 +276,7 @@ public final class DefaultEntityExportTest {
 						.build();
 
 		StringBuilder output = new StringBuilder();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(attributes -> attributes.include(Employee.NAME)
 										.attributes(Employee.DEPARTMENT_FK, dept ->
@@ -303,7 +302,7 @@ public final class DefaultEntityExportTest {
 						.build();
 
 		StringBuilder output = new StringBuilder();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(attributes -> attributes.include(Employee.NAME)
 										.attributes(Employee.DEPARTMENT_FK, dept ->
@@ -317,11 +316,11 @@ public final class DefaultEntityExportTest {
 
 	@Test
 	void orderRemainderSortedByCaption() {
-		Set<Entity.Key> jones = singleton(CONNECTION_PROVIDER.connection()
+		Set<Entity.Key> jones = singleton(CONNECTION
 						.selectSingle(Employee.NAME.equalTo("JONES")).primaryKey());
 
 		StringBuilder output = new StringBuilder();
-		EntityExport.builder(CONNECTION_PROVIDER)
+		EntityExport.builder(CONNECTION)
 						.entityType(Employee.TYPE)
 						.attributes(employee -> employee
 										.include(Employee.NAME, Employee.JOB, Employee.COMMISSION, Employee.HIREDATE)

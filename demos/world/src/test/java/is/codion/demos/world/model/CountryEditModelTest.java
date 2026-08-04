@@ -21,8 +21,8 @@ package is.codion.demos.world.model;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.world.domain.WorldImpl;
 import is.codion.demos.world.domain.api.World.Country;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,9 +36,9 @@ public class CountryEditModelTest {
 
 	@Test
 	void averageCityPopulation() {
-		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-			CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
-			countryEditModel.editor().entity().set(connectionProvider.connection().selectSingle(
+		try (EntityConnection connection = createConnection()) {
+			CountryEditModel countryEditModel = new CountryEditModel(connection);
+			countryEditModel.editor().entity().set(connection.selectSingle(
 							Country.NAME.equalTo("Afghanistan")));
 			assertEquals(583_025, countryEditModel.averageCityPopulation().get());
 			countryEditModel.editor().entity().defaults();
@@ -46,8 +46,8 @@ public class CountryEditModelTest {
 		}
 	}
 
-	private static EntityConnectionProvider createConnectionProvider() {
-		return LocalEntityConnectionProvider.builder()
+	private static EntityConnection createConnection() {
+		return LocalEntityConnection.builder()
 						.domain(new WorldImpl())
 						.user(UNIT_TEST_USER)
 						.build();

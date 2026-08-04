@@ -23,8 +23,8 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.property.PropertyValue;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -42,7 +42,7 @@ import static is.codion.common.utilities.Configuration.integerValue;
  * The default data source can be overridden by using {@link #dataSource()}.
  * {@snippet :
  * tableModel.query().dataSource().set(query -> {
- * 	 EntityConnection connection = query.connectionProvider().connection();
+ * 	 EntityConnection connection = query.connection();
  *
  *   return connection.select(Employee.NAME.equalTo("John"));
  * });
@@ -68,7 +68,7 @@ public interface EntityQueryModel {
 	/**
 	 * @return the connection provider
 	 */
-	EntityConnectionProvider connectionProvider();
+	EntityConnection connection();
 
 	/**
 	 * Performs a query and returns the result.

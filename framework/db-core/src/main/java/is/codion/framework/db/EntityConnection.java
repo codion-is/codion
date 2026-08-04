@@ -23,8 +23,10 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
+import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
+import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.DefaultSelect.DefaultBuilder;
 import is.codion.framework.db.exception.DeleteEntityException;
 import is.codion.framework.db.exception.EntityModifiedException;
@@ -32,6 +34,8 @@ import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.db.exception.InsertEntityException;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.exception.UpdateEntityException;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -51,11 +55,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static is.codion.common.utilities.Configuration.integerValue;
+import static is.codion.common.utilities.Configuration.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * A connection to a database for querying and manipulating {@link Entity} instances.
@@ -102,7 +110,10 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>Basic Usage</p>
  * {@snippet :
- * EntityConnection connection = connectionProvider.connection();
+ * EntityConnection connection = EntityConnection.builder()
+ *     .domain(Chinook.DOMAIN)
+ *     .user(User.parse("scott:tiger"))
+ *     .build();
  *
  * // Select entities
  * List<Entity> albums = connection.select(Album.ARTIST_FK.equalTo(artist));
@@ -117,7 +128,7 @@ import static java.util.Objects.requireNonNull;
  * // Delete by condition
  * connection.delete(Track.ALBUM_FK.equalTo(album));
  *}
- * @see EntityConnectionProvider
+ * @see EntityConnection
  * @see #transaction(EntityConnection, Transactional)
  * @see #transaction(EntityConnection, TransactionalResult)
  * @see Select
@@ -139,6 +150,159 @@ public interface EntityConnection extends AutoCloseable {
 	PropertyValue<Integer> MAXIMUM_BATCH_SIZE = integerValue("codion.db.maximumBatchSize", 10_000);
 
 	/**
+	 * Indicates a local database connection
+	 * @see #CLIENT_CONNECTION_TYPE
+	 */
+	String CONNECTION_TYPE_LOCAL = "local";
+
+	/**
+	 * Indicates a remote database connection
+	 * @see #CLIENT_CONNECTION_TYPE
+	 */
+	String CONNECTION_TYPE_REMOTE = "remote";
+
+	/**
+	 * Indicates a http database connection
+	 * @see #CLIENT_CONNECTION_TYPE
+	 */
+	String CONNECTION_TYPE_HTTP = "http";
+
+	/**
+	 * Specifies whether the client should connect locally, via rmi or http,
+	 * accepted values: local, remote, http
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: {@link #CONNECTION_TYPE_LOCAL}
+	 * </ul>
+	 * @see #CONNECTION_TYPE_LOCAL
+	 * @see #CONNECTION_TYPE_REMOTE
+	 * @see #CONNECTION_TYPE_HTTP
+	 * @see #builder()
+	 */
+	PropertyValue<String> CLIENT_CONNECTION_TYPE = stringValue("codion.client.connectionType", CONNECTION_TYPE_LOCAL);
+
+	/**
+	 * Specifies a connection description, overriding the default one
+	 * which usually provides a hostname or other connection based information.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
+	 * @see #description()
+	 */
+	PropertyValue<String> DESCRIPTION = stringValue(EntityConnection.class.getName() + ".description");
+
+	/**
+	 * Specifies the minimum time between connection validity checks, in milliseconds.
+	 * <p>A self-managing connection, see {@link #builder()}, verifies that the underlying connection is still
+	 * alive before each operation, which costs a round trip to the database or server. A connection validated
+	 * within this interval is used unchecked.
+	 * <p>A connection dying within the interval is therefore not detected until it elapses, until then
+	 * operations fail as they would on any broken connection. Specify 0 to check before every operation.
+	 * <ul>
+	 * <li>Value type: Long
+	 * <li>Default value: 1000
+	 * </ul>
+	 */
+	PropertyValue<Long> VALIDITY_CHECK_INTERVAL = longValue("codion.client.validityCheckInterval", 1_000L);
+
+	/**
+	 * <p>Creates a connection builder based on system configuration, for the connection type specified by
+	 * {@link EntityConnection#CLIENT_CONNECTION_TYPE}.
+	 * <p>The resulting connection manages itself: it validates before each operation and re-establishes the
+	 * underlying connection when it has gone bad, so it can be held on to for the lifetime of a client rather
+	 * than fetched again for each operation. Contrast with {@code LocalEntityConnection.localEntityConnection},
+	 * which wraps a connection supplied by the caller and hands it back on {@link #close()}, for scoped use such
+	 * as a pooled connection on a server.
+	 * {@snippet :
+	 * // Configure connection type
+	 * System.setProperty("codion.client.connectionType", "remote");
+	 *
+	 * EntityConnection connection = EntityConnection.builder()
+	 *     .domain(DomainModel.DOMAIN)
+	 *     .user(User.parse("scott:tiger"))
+	 *     .build();
+	 *}
+	 * @return a new {@link Builder} instance
+	 * @throws IllegalStateException in case no connection is available for the configured connection type
+	 * @see #CLIENT_CONNECTION_TYPE
+	 */
+	static Builder<?, ?> builder() {
+		String connectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
+		try {
+			return stream(ServiceLoader.load(Builder.class).spliterator(), false)
+							.filter(builder -> builder.supports(connectionType))
+							.findFirst()
+							.orElseThrow(() -> new IllegalStateException("No connection builder available for requested client connection type: " + connectionType));
+		}
+		catch (ServiceConfigurationError e) {
+			throw Exceptions.runtime(e, ServiceConfigurationError.class);
+		}
+	}
+
+	/**
+	 * Builds a self-managing {@link EntityConnection}.
+	 * @param <T> the connection type
+	 * @param <B> the builder type
+	 * @see EntityConnection#builder()
+	 */
+	interface Builder<T extends EntityConnection, B extends Builder<T, B>> {
+
+		/**
+		 * @param connectionType the connection type
+		 * @return true if this builder supports the given connection type, e.g. "local", "remote" or "http"
+		 */
+		boolean supports(String connectionType);
+
+		/**
+		 * @param user the user
+		 * @return this builder instance
+		 */
+		B user(User user);
+
+		/**
+		 * @param domain the domain type to base this connection on
+		 * @return this builder instance
+		 */
+		B domain(DomainType domain);
+
+		/**
+		 * Sets the domain by instance. Connections which run the domain in-process (a local connection for
+		 * example) use the given instance directly, instead of resolving one via {@link java.util.ServiceLoader}
+		 * from its {@link Domain#type()}; other connections use only its {@link Domain#type()}.
+		 * @param domain the domain instance to base this connection on
+		 * @return this builder instance
+		 * @see #domain(DomainType)
+		 */
+		B domain(Domain domain);
+
+		/**
+		 * @param clientId the UUID identifying this client connection
+		 * @return this builder instance
+		 */
+		B clientId(UUID clientId);
+
+		/**
+		 * If no client type is specified, {@link DomainType#name()} is used.
+		 * @param clientType a String identifying the client type for this connection
+		 * @return this builder instance
+		 * @see #domain(DomainType)
+		 */
+		B clientType(String clientType);
+
+		/**
+		 * @param clientVersion the client version
+		 * @return this builder instance
+		 */
+		B clientVersion(@Nullable Version clientVersion);
+
+		/**
+		 * @return a new {@link EntityConnection} instance
+		 */
+		T build();
+	}
+
+	/**
 	 * @return the underlying domain entities
 	 */
 	Entities entities();
@@ -147,6 +311,30 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the user being used by this connection
 	 */
 	User user();
+
+	/**
+	 * @return the client id for this connection
+	 */
+	UUID clientId();
+
+	/**
+	 * Returns a description of this connection, a database or server name for example.
+	 * <p>Empty unless this connection manages itself, see {@link #builder()}, a raw connection
+	 * knowing nothing of how it was configured.
+	 * @return a description of this connection, an empty {@link Optional} if none is available
+	 */
+	default Optional<String> description() {
+		return Optional.empty();
+	}
+
+	/**
+	 * Returns the version of the client this connection belongs to, as reported to the server.
+	 * <p>Empty unless this connection manages itself, see {@link #builder()}.
+	 * @return the client version, an empty {@link Optional} if none was specified
+	 */
+	default Optional<Version> clientVersion() {
+		return Optional.empty();
+	}
 
 	/**
 	 * @return true if the connection has been established and is valid
@@ -170,7 +358,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * in order for the transaction to be properly ended in case of an exception.<br>
 	 * A transaction should always be started OUTSIDE the try/catch block.
 	 * {@snippet :
-	 * EntityConnection connection = connectionProvider().connection();
+	 * EntityConnection connection = connection();
 	 *
 	 * connection.startTransaction(); // Very important, should NOT be inside the try block
 	 * try {
@@ -1486,7 +1674,7 @@ public interface EntityConnection extends AutoCloseable {
 		static Count where(Condition where) {
 			requireNonNull(where);
 
-			return builder()
+			return Count.builder()
 							.where(where)
 							.build();
 		}
@@ -1498,7 +1686,7 @@ public interface EntityConnection extends AutoCloseable {
 		static Count having(Condition having) {
 			requireNonNull(having);
 
-			return builder()
+			return Count.builder()
 							.where(Condition.all(having.entityType()))
 							.having(having)
 							.build();

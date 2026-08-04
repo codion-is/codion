@@ -22,8 +22,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
@@ -149,11 +148,10 @@ public final class EntitiesTutorial {
 	/**
 	 * Demonstrates how to use a {@link EntityConnection} to select Entity instances.
 	 */
-	private static void selectingEntities(EntityConnectionProvider connectionProvider) {
+	private static void selectingEntities(EntityConnection connection) {
 		// fetch the connection from the provider, note that the provider returns
 		// the same connection until the previous one has been disconnected or
 		// has become invalid for some reason
-		EntityConnection connection = connectionProvider.connection();
 
 		// select the artist Metallica by name, the selectSingle() method
 		// throws a RecordNotFoundException if no record is found and a
@@ -191,11 +189,10 @@ public final class EntitiesTutorial {
 	/**
 	 * Demonstrates how to use a {@link EntityConnection} to modify Entity instances.
 	 */
-	private static void modifyingEntities(EntityConnectionProvider connectionProvider) {
-		EntityConnection connection = connectionProvider.connection();
+	private static void modifyingEntities(EntityConnection connection) {
 
 		//this Entities instance serves as a factory for Entity instances
-		Entities entities = connectionProvider.entities();
+		Entities entities = connection.entities();
 
 		// we create a new band
 		Entity myBand = entities.entity(Artist.TYPE)
@@ -237,16 +234,16 @@ public final class EntitiesTutorial {
 		// initialize a connection provider, this class is responsible
 		// for supplying a valid connection or throwing an exception
 		// in case a connection can not be established
-		EntityConnectionProvider connectionProvider =
-						LocalEntityConnectionProvider.builder()
+		EntityConnection connection =
+						LocalEntityConnection.builder()
 										.domain(new Chinook())
 										.user(User.parse("scott:tiger"))
 										.build();
 
-		selectingEntities(connectionProvider);
+		selectingEntities(connection);
 
-		modifyingEntities(connectionProvider);
+		modifyingEntities(connection);
 
-		connectionProvider.close();
+		connection.close();
 	}
 }

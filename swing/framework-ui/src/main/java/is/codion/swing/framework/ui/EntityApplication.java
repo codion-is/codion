@@ -29,7 +29,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.user.User;
 import is.codion.common.utilities.version.Version;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.ui.ancestor.Ancestor;
@@ -135,7 +135,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	/**
 	 * <p>Specifies whether the connection information displayed in the frame title is automatically converted to upper case.
 	 * <p>If not, the username as input via the login dialog is used along with the connection description as provided
-	 * by the underlying {@link EntityConnectionProvider}. This may result in "Scott@DevDb" or "scott@DEVSERVER@hostname"
+	 * by the underlying {@link EntityConnection}. This may result in "Scott@DevDb" or "scott@DEVSERVER@hostname"
 	 * instead of the default "SCOTT@DEVDB" or "SCOTT@DEVSERVER@HOSTNAME".
 	 * <ul>
 	 * <li>Value type: Boolean
@@ -160,10 +160,10 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	private final DomainType domain;
 	private @Nullable String preferencesLookAndFeel;
 
-	private @Nullable Function<User, EntityConnectionProvider> connectionProviderFunction;
-	private @Nullable EntityConnectionProvider connectionProvider;
+	private @Nullable Function<User, EntityConnection> connectionFunction;
+	private @Nullable EntityConnection connection;
 	private @Nullable String name;
-	private Function<EntityConnectionProvider, M> model = new DefaultApplicationModelFactory();
+	private Function<EntityConnection, M> model = new DefaultApplicationModelFactory();
 	private Function<M, P> panel = new DefaultApplicationPanelFactory();
 	private @Nullable Observable<String> frameTitle;
 	private boolean connectionInfoUpperCase = CONNECTION_INFO_UPPER_CASE.getOrThrow();
@@ -278,7 +278,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	 * @param model the application model factory
 	 * @return this {@link EntityApplication} instance
 	 */
-	public EntityApplication<M, P> model(Function<EntityConnectionProvider, M> model) {
+	public EntityApplication<M, P> model(Function<EntityConnection, M> model) {
 		this.model = requireNonNull(model);
 		return this;
 	}
@@ -319,7 +319,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connectionProvider(Function)}.
+	 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connection(Function)}.
 	 * <p>If this user is null, {@link #user(Supplier)} is used to fetch a user.
 	 * @param user the application user
 	 * @return this {@link EntityApplication} instance
@@ -331,7 +331,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connectionProvider(Function)}.
+	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connection(Function)}.
 	 * <p>This may be via a login dialog or simply by returning a hardcoded instance.
 	 * <p>Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
 	 * @param userSupplier supplies the application user, for example via a login dialog
@@ -344,7 +344,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connectionProvider(Function)}.
+	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connection(Function)}.
 	 * <p>This may be via a login dialog or simply by returning a hardcoded instance.
 	 * <p>This function receives the default user set via {@link #defaultUser(User)} or the one saved in application preferences, null if none is available.
 	 * <p>Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
@@ -499,21 +499,21 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * Overrides {@link #connectionProvider(Function)}
-	 * @param connectionProvider the connection provider
+	 * Overrides {@link #connection(Function)}
+	 * @param connection the connection provider
 	 * @return this {@link EntityApplication} instance
 	 */
-	public EntityApplication<M, P> connectionProvider(EntityConnectionProvider connectionProvider) {
-		this.connectionProvider = requireNonNull(connectionProvider);
+	public EntityApplication<M, P> connection(EntityConnection connection) {
+		this.connection = requireNonNull(connection);
 		return this;
 	}
 
 	/**
-	 * @param connectionProvider initializes the connection provider, receives the user provided by {@link #user(Supplier)}
+	 * @param connection initializes the connection provider, receives the user provided by {@link #user(Supplier)}
 	 * @return this {@link EntityApplication} instance
 	 */
-	public EntityApplication<M, P> connectionProvider(Function<User, EntityConnectionProvider> connectionProvider) {
-		this.connectionProviderFunction = requireNonNull(connectionProvider);
+	public EntityApplication<M, P> connection(Function<User, EntityConnection> connection) {
+		this.connectionFunction = requireNonNull(connection);
 		return this;
 	}
 
@@ -561,11 +561,11 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		if (onStarting != null) {
 			onStarting.run();
 		}
-		EntityConnectionProvider connectionProvider = initializeConnectionProvider();
+		EntityConnection connection = initializeConnection();
 		long initializationStarted = currentTimeMillis();
 		if (startupDialog) {
 			Dialogs.progressWorker()
-							.task(new InitializeApplicationModel(connectionProvider, initializationStarted))
+							.task(new InitializeApplicationModel(connection, initializationStarted))
 							.title(applicationName())
 							.icon(icon)
 							.border(emptyBorder())
@@ -573,7 +573,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 							.execute();
 		}
 		else {
-			startApplication(initializeApplicationModel(connectionProvider), initializationStarted);
+			startApplication(initializeApplicationModel(connection), initializationStarted);
 		}
 	}
 
@@ -753,8 +753,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		return frame;
 	}
 
-	private M initializeApplicationModel(EntityConnectionProvider connectionProvider) {
-		return model.apply(connectionProvider);
+	private M initializeApplicationModel(EntityConnection connection) {
+		return model.apply(connection);
 	}
 
 	private P initializeApplicationPanel(M applicationModel) {
@@ -797,7 +797,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		if (builder.length() > 0) {
 			builder.append(DASH);
 		}
-		builder.append(connectionInfo(applicationModel.connectionProvider()));
+		builder.append(connectionInfo(applicationModel.connection()));
 
 		return builder.toString();
 	}
@@ -810,29 +810,29 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		return null;
 	}
 
-	private EntityConnectionProvider initializeConnectionProvider() {
-		if (connectionProvider != null) {
-			return connectionProvider;
+	private EntityConnection initializeConnection() {
+		if (connection != null) {
+			return connection;
 		}
 		User connectionUser = user == null ? userSupplier.apply(defaultUser).get() : user;
 		//the default login validator connects when validating, reuse that provider instead of connecting again
 		if (userSupplier instanceof EntityApplication.DefaultUserSupplier &&
-						((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider != null) {
-			return ((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider;
+						((DefaultUserSupplier) userSupplier).loginValidator.connection != null) {
+			return ((DefaultUserSupplier) userSupplier).loginValidator.connection;
 		}
-		if (connectionProviderFunction != null) {
-			return connectionProviderFunction.apply(connectionUser);
+		if (connectionFunction != null) {
+			return connectionFunction.apply(connectionUser);
 		}
 
-		return createConnectionProvider(connectionUser);
+		return createConnection(connectionUser);
 	}
 
-	private EntityConnectionProvider createConnectionProvider(User user) {
+	private EntityConnection createConnection(User user) {
 		if (domain == null) {
-			throw new IllegalArgumentException("domain must be specified before creating a EntityConnectionProvider");
+			throw new IllegalArgumentException("domain must be specified before creating a EntityConnection");
 		}
 
-		return EntityConnectionProvider.builder()
+		return EntityConnection.builder()
 						.user(user)
 						.domain(domain)
 						.clientType(applicationName())
@@ -840,9 +840,9 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 						.build();
 	}
 
-	private String connectionInfo(EntityConnectionProvider connectionProvider) {
-		String username = connectionProvider.user().username();
-		String connectionInfo = connectionProvider.description()
+	private String connectionInfo(EntityConnection connection) {
+		String username = connection.user().username();
+		String connectionInfo = connection.description()
 						.map(connectionDescription -> username + (connectionDescription.isEmpty() ? "" : "@" + connectionDescription))
 						.orElse(username);
 		if (connectionInfoUpperCase) {
@@ -901,31 +901,24 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private final class DefaultLoginValidator implements LoginValidator {
 
-		private @Nullable EntityConnectionProvider connectionProvider;
+		private @Nullable EntityConnection connection;
 
 		@Override
 		public void validate(User user) {
-			//validate through the configured provider function when present, so the validated
-			//provider is the one the application actually uses, see initializeConnectionProvider()
-			connectionProvider = connectionProviderFunction == null ?
-							createConnectionProvider(user) : connectionProviderFunction.apply(user);
-			try {
-				connectionProvider.connection();//throws exception if the server is not reachable
-			}
-			catch (Exception e) {
-				connectionProvider.close();
-				connectionProvider = null;
-				throw e;
-			}
+			//validate through the configured connection function when present, so the validated
+			//connection is the one the application actually uses, see initializeConnection().
+			//Building it establishes it, throwing if the server is not reachable
+			connection = connectionFunction == null ?
+							createConnection(user) : connectionFunction.apply(user);
 		}
 	}
 
-	private final class DefaultApplicationModelFactory implements Function<EntityConnectionProvider, M> {
+	private final class DefaultApplicationModelFactory implements Function<EntityConnection, M> {
 
 		@Override
-		public M apply(EntityConnectionProvider connectionProvider) {
+		public M apply(EntityConnection connection) {
 			try {
-				return applicationModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+				return applicationModelClass.getConstructor(EntityConnection.class).newInstance(connection);
 			}
 			catch (Exception e) {
 				throw Exceptions.runtime(e, InvocationTargetException.class);
@@ -956,17 +949,17 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private final class InitializeApplicationModel implements ResultTaskHandler<M> {
 
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 		private final long initializationStarted;
 
-		private InitializeApplicationModel(EntityConnectionProvider connectionProvider, long initializationStarted) {
-			this.connectionProvider = connectionProvider;
+		private InitializeApplicationModel(EntityConnection connection, long initializationStarted) {
+			this.connection = connection;
 			this.initializationStarted = initializationStarted;
 		}
 
 		@Override
 		public M execute() throws Exception {
-			return initializeApplicationModel(connectionProvider);
+			return initializeApplicationModel(connection);
 		}
 
 		@Override

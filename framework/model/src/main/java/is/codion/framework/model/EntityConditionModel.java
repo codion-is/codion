@@ -23,7 +23,7 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.Conjunction;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -48,7 +48,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	/**
 	 * @return the connection provider
 	 */
-	EntityConnectionProvider connectionProvider();
+	EntityConnection connection();
 
 	/**
 	 * Returns a WHERE condition based on enabled condition models which are based on non-aggregate function columns.
@@ -168,10 +168,10 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 		interface ConnectionProviderStep {
 
 			/**
-			 * @param connectionProvider a {@link EntityConnectionProvider} instance
+			 * @param connection a {@link EntityConnection} instance
 			 * @return the {@link Builder}
 			 */
-			Builder connectionProvider(EntityConnectionProvider connectionProvider);
+			Builder connection(EntityConnection connection);
 		}
 
 		/**

@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -47,16 +47,16 @@ import static java.util.stream.Collectors.toMap;
 public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
 
 	private final EntityType entityType;
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 
 	/**
 	 * Instantiates a new {@link EntityConditions}.
 	 * @param entityType the entity type
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 */
-	public EntityConditions(EntityType entityType, EntityConnectionProvider connectionProvider) {
+	public EntityConditions(EntityType entityType, EntityConnection connection) {
 		this.entityType = requireNonNull(entityType);
-		this.connectionProvider = requireNonNull(connectionProvider);
+		this.connection = requireNonNull(connection);
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	protected EntitySearchModel createEqualSearchModel(ForeignKey foreignKey) {
 		return EntitySearchModel.builder()
 						.entityType(requireNonNull(foreignKey).referencedType())
-						.connectionProvider(connectionProvider)
+						.connection(connection)
 						.build();
 	}
 
@@ -129,15 +129,15 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	protected EntitySearchModel createInSearchModel(ForeignKey foreignKey) {
 		return EntitySearchModel.builder()
 						.entityType(requireNonNull(foreignKey).referencedType())
-						.connectionProvider(connectionProvider)
+						.connection(connection)
 						.build();
 	}
 
 	/**
 	 * @return the underlying connection provider
 	 */
-	protected final EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+	protected final EntityConnection connection() {
+		return connection;
 	}
 
 	/**
@@ -152,6 +152,6 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	 * @return the definition of the given type
 	 */
 	protected final EntityDefinition definition(EntityType entityType) {
-		return connectionProvider.entities().definition(entityType);
+		return connection.entities().definition(entityType);
 	}
 }

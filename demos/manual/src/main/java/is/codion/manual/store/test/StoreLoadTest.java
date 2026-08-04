@@ -19,8 +19,8 @@
 package is.codion.manual.store.test;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.manual.store.domain.Store;
 import is.codion.manual.store.domain.Store.Customer;
 import is.codion.manual.store.model.StoreApplicationModel;
@@ -45,13 +45,13 @@ public class StoreLoadTest {
 
 		@Override
 		public StoreApplicationModel apply(User user) {
-			EntityConnectionProvider connectionProvider =
-							RemoteEntityConnectionProvider.builder()
+			EntityConnection connection =
+							RemoteEntityConnection.builder()
 											.user(user)
 											.domain(Store.DOMAIN)
 											.build();
 
-			return new StoreApplicationModel(connectionProvider);
+			return new StoreApplicationModel(connection);
 		}
 	}
 
@@ -78,10 +78,10 @@ public class StoreLoadTest {
 		LoadTest<StoreApplicationModel> loadTest =
 						LoadTest.builder()
 										.createApplication(new StoreApplicationModelFactory())
-										.closeApplication(application -> application.connectionProvider().close())
+										.closeApplication(application -> application.connection().close())
 										.user(User.parse("scott:tiger"))
 										.scenarios(List.of(scenario(new StoreScenarioPerformer())))
-										.name("Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+										.name("Store LoadTest - " + EntityConnection.CLIENT_CONNECTION_TYPE.get())
 										.build();
 		loadTestPanel(loadTestModel(loadTest)).run();
 	}

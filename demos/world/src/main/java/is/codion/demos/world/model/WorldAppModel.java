@@ -22,7 +22,7 @@ import is.codion.common.utilities.version.Version;
 import is.codion.demos.world.domain.api.World.Continent;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.domain.api.World.Lookup;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -32,11 +32,11 @@ public final class WorldAppModel extends SwingEntityApplicationModel {
 
 	public static final Version VERSION = Version.parse(WorldAppModel.class, "/version.properties");
 
-	public WorldAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider, List.of(
-						new CountryModel(connectionProvider),
-						new SwingEntityModel(Lookup.TYPE, connectionProvider),
-						new ContinentModel(connectionProvider)));
+	public WorldAppModel(EntityConnection connection) {
+		super(connection, List.of(
+						new CountryModel(connection),
+						new SwingEntityModel(Lookup.TYPE, connection),
+						new ContinentModel(connection)));
 		models().get(Country.TYPE).tableModel().items().refresh();
 		models().get(Continent.TYPE).tableModel().items().refresh();
 	}

@@ -22,7 +22,7 @@ import is.codion.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -64,7 +64,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	/**
 	 * @return the connection provider used by this combo box model
 	 */
-	EntityConnectionProvider connectionProvider();
+	EntityConnection connection();
 
 	/**
 	 * @return the underlying {@link EntityDefinition}
@@ -142,10 +142,10 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		interface ConnectionProviderStep {
 
 			/**
-			 * @param connectionProvider an EntityConnectionProvider instance
+			 * @param connection an EntityConnection instance
 			 * @return a new {@link EntityComboBoxModel.Builder} instance
 			 */
-			Builder connectionProvider(EntityConnectionProvider connectionProvider);
+			Builder connection(EntityConnection connection);
 		}
 
 		/**

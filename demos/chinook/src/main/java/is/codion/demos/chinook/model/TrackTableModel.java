@@ -21,7 +21,7 @@ package is.codion.demos.chinook.model;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.value.Value.Validator;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModel;
@@ -40,12 +40,12 @@ public final class TrackTableModel extends SwingEntityTableModel {
 	private static final int DEFAULT_LIMIT = 1_000;
 	private static final int MAXIMUM_LIMIT = 10_000;
 
-	public TrackTableModel(EntityConnectionProvider connectionProvider) {
-		super(new TrackEditModel(connectionProvider),
+	public TrackTableModel(EntityConnection connection) {
+		super(new TrackEditModel(connection),
 						entityQueryModel(EntityConditionModel.builder()
 										.entityType(Track.TYPE)
-										.connectionProvider(connectionProvider)
-										.conditions(new TrackConditions(connectionProvider))
+										.connection(connection)
+										.conditions(new TrackConditions(connection))
 										.build()));
 		rowEditor().enabled().set(true);
 		configureLimit();
@@ -97,8 +97,8 @@ public final class TrackTableModel extends SwingEntityTableModel {
 
 	private static class TrackConditions extends SwingEntityConditions {
 
-		private TrackConditions(EntityConnectionProvider connectionProvider) {
-			super(Track.TYPE, connectionProvider);
+		private TrackConditions(EntityConnection connection) {
+			super(Track.TYPE, connection);
 		}
 
 		@Override

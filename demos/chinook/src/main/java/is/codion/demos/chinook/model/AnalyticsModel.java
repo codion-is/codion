@@ -22,8 +22,8 @@ import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.ArtistRevenue;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.swing.framework.model.component.SwingEntityComboBoxModel;
@@ -47,20 +47,20 @@ public final class AnalyticsModel {
 
 	private static final ResourceBundle BUNDLE = getBundle(AnalyticsModel.class.getName());
 
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 	private final SalesComparison salesComparison;
 	private final TopArtists topArtists;
 	private final TopArtistRevenue topArtistRevenue;
 
-	public AnalyticsModel(EntityConnectionProvider connectionProvider) {
-		this.connectionProvider = connectionProvider;
+	public AnalyticsModel(EntityConnection connection) {
+		this.connection = connection;
 		this.salesComparison = new SalesComparison();
 		this.topArtists = new TopArtists();
 		this.topArtistRevenue = new TopArtistRevenue();
 	}
 
-	public EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+	public EntityConnection connection() {
+		return connection;
 	}
 
 	public void clear() {
@@ -98,7 +98,7 @@ public final class AnalyticsModel {
 		}
 
 		private void refresh() {
-			List<Entity> invoices = connectionProvider.connection().select(all(Invoice.TYPE));
+			List<Entity> invoices = connection.select(all(Invoice.TYPE));
 			Map<Integer, Map<Month, BigDecimal>> revenueByYearAndMonth = invoices.stream()
 							.collect(groupingBy(invoice -> invoice.get(Invoice.DATE).getYear(),
 											groupingBy(invoice -> invoice.get(Invoice.DATE).getMonth(),
@@ -126,7 +126,7 @@ public final class AnalyticsModel {
 		private TopArtists() {
 			this.genreComboBoxModel = SwingEntityComboBoxModel.builder()
 							.entityType(Chinook.Genre.TYPE)
-							.connectionProvider(connectionProvider)
+							.connection(connection)
 							.onItemSelected(this::refresh)
 							.nullCaption(BUNDLE.getString("all_genres"))
 							.refresh(true)
@@ -147,7 +147,7 @@ public final class AnalyticsModel {
 
 		private void refresh(Entity genre) {
 			Condition condition = genre == null ? all(Track.TYPE) : Track.GENRE_FK.equalTo(genre);
-			List<Entity> tracks = connectionProvider.connection().select(condition);
+			List<Entity> tracks = connection.select(condition);
 
 			Map<String, Double> avgRatingByArtist = tracks.stream()
 							.collect(groupingBy(track -> track.get(Track.ARTIST_NAME),
@@ -174,7 +174,7 @@ public final class AnalyticsModel {
 		}
 
 		private void refresh() {
-			List<Entity> artistRevenues = connectionProvider.connection()
+			List<Entity> artistRevenues = connection
 							.select(Select.all(ArtistRevenue.TYPE)
 											.limit(15));
 

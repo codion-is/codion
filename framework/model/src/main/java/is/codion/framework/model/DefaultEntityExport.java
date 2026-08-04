@@ -21,7 +21,6 @@ package is.codion.framework.model;
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.ObservableState;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -65,7 +64,7 @@ final class DefaultEntityExport implements EntityExport {
 
 	private final @Nullable Iterator<Entity> entityIterator;
 	private final @Nullable Iterator<Entity.Key> keyIterator;
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 	private final Entities entities;
 	private final Consumer<String> output;
 	private final ExportAttributes attributes;
@@ -79,8 +78,8 @@ final class DefaultEntityExport implements EntityExport {
 	private DefaultEntityExport(DefaultBuilder builder) {
 		this.entityIterator = builder.entities;
 		this.keyIterator = builder.keys;
-		this.connectionProvider = builder.connectionProvider;
-		this.entities = connectionProvider.entities();
+		this.connection = builder.connection;
+		this.entities = connection.entities();
 		this.output = builder.output;
 		this.attributes = builder.attributes;
 		this.processed = builder.processed;
@@ -88,7 +87,6 @@ final class DefaultEntityExport implements EntityExport {
 	}
 
 	private void export() {
-		EntityConnection connection = connectionProvider.connection();
 		Iterator<Entity> iterator = iterator(connection);
 		try {
 			output.accept(createHeader());
@@ -288,55 +286,55 @@ final class DefaultEntityExport implements EntityExport {
 
 	static final class DefaultEntityTypeStep implements Builder.EntityTypeStep {
 
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 
-		DefaultEntityTypeStep(EntityConnectionProvider connectionProvider) {
-			this.connectionProvider = connectionProvider;
+		DefaultEntityTypeStep(EntityConnection connection) {
+			this.connection = connection;
 		}
 
 		@Override
 		public ExportAttributesStep entityType(EntityType entityType) {
-			return new DefaultExportAttributesStep(connectionProvider, requireNonNull(entityType));
+			return new DefaultExportAttributesStep(connection, requireNonNull(entityType));
 		}
 	}
 
 	private static final class DefaultExportAttributesStep implements ExportAttributesStep {
 
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 		private final EntityType entityType;
 
-		private DefaultExportAttributesStep(EntityConnectionProvider connectionProvider, EntityType entityType) {
-			this.connectionProvider = connectionProvider;
+		private DefaultExportAttributesStep(EntityConnection connection, EntityType entityType) {
+			this.connection = connection;
 			this.entityType = entityType;
 		}
 
 		@Override
 		public EntitiesStep attributes(Consumer<ExportAttributes.Builder> attributes) {
-			ExportAttributes.Builder builder = new DefaultExportAttributesBuilder(connectionProvider.entities(), entityType);
+			ExportAttributes.Builder builder = new DefaultExportAttributesBuilder(connection.entities(), entityType);
 			requireNonNull(attributes).accept(builder);
 
-			return new DefaultEntitiesStep(connectionProvider, builder.build());
+			return new DefaultEntitiesStep(connection, builder.build());
 		}
 	}
 
 	private static final class DefaultEntitiesStep implements EntitiesStep {
 
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 		private final ExportAttributes attributes;
 
-		private DefaultEntitiesStep(EntityConnectionProvider connectionProvider, ExportAttributes attributes) {
-			this.connectionProvider = connectionProvider;
+		private DefaultEntitiesStep(EntityConnection connection, ExportAttributes attributes) {
+			this.connection = connection;
 			this.attributes = attributes;
 		}
 
 		@Override
 		public OutputStep entities(Iterator<Entity> iterator) {
-			return new DefaultOutputStep(requireNonNull(iterator), null, attributes, connectionProvider);
+			return new DefaultOutputStep(requireNonNull(iterator), null, attributes, connection);
 		}
 
 		@Override
 		public OutputStep keys(Iterator<Entity.Key> iterator) {
-			return new DefaultOutputStep(null, requireNonNull(iterator), attributes, connectionProvider);
+			return new DefaultOutputStep(null, requireNonNull(iterator), attributes, connection);
 		}
 	}
 
@@ -345,19 +343,19 @@ final class DefaultEntityExport implements EntityExport {
 		private final @Nullable Iterator<Entity> entities;
 		private final @Nullable Iterator<Entity.Key> keys;
 		private final ExportAttributes attributes;
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 
 		private DefaultOutputStep(@Nullable Iterator<Entity> entities, @Nullable Iterator<Entity.Key> keys,
-															ExportAttributes attributes, EntityConnectionProvider connectionProvider) {
+															ExportAttributes attributes, EntityConnection connection) {
 			this.entities = entities;
 			this.keys = keys;
 			this.attributes = attributes;
-			this.connectionProvider = connectionProvider;
+			this.connection = connection;
 		}
 
 		@Override
 		public Builder output(Consumer<String> output) {
-			return new DefaultBuilder(entities, keys, attributes, connectionProvider, requireNonNull(output));
+			return new DefaultBuilder(entities, keys, attributes, connection, requireNonNull(output));
 		}
 	}
 
@@ -366,18 +364,18 @@ final class DefaultEntityExport implements EntityExport {
 		private final @Nullable Iterator<Entity> entities;
 		private final @Nullable Iterator<Entity.Key> keys;
 		private final ExportAttributes attributes;
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 		private final Consumer<String> output;
 
 		private @Nullable Consumer<Entity> processed;
 		private @Nullable ObservableState cancel;
 
 		private DefaultBuilder(@Nullable Iterator<Entity> entities, @Nullable Iterator<Entity.Key> keys, ExportAttributes attributes,
-													 EntityConnectionProvider connectionProvider, Consumer<String> output) {
+													 EntityConnection connection, Consumer<String> output) {
 			this.entities = entities;
 			this.keys = keys;
 			this.attributes = attributes;
-			this.connectionProvider = connectionProvider;
+			this.connection = connection;
 			this.output = output;
 		}
 

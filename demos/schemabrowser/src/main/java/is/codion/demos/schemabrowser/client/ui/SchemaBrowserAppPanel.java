@@ -25,7 +25,7 @@ import is.codion.demos.schemabrowser.domain.SchemaBrowser.ConstraintColumn;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.demos.schemabrowser.domain.SchemaBrowser.TableColumn;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
@@ -101,16 +101,16 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 	}
 
 	public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
-		public SchemaBrowserApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, List.of(createSchemaModel(connectionProvider)));
+		public SchemaBrowserApplicationModel(EntityConnection connection) {
+			super(connection, List.of(createSchemaModel(connection)));
 		}
 
-		private static SwingEntityModel createSchemaModel(EntityConnectionProvider connectionProvider) {
-			SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connectionProvider);
-			SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);
-			SwingEntityModel columnModel = new SwingEntityModel(TableColumn.TYPE, connectionProvider);
-			SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
-			SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connectionProvider);
+		private static SwingEntityModel createSchemaModel(EntityConnection connection) {
+			SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connection);
+			SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connection);
+			SwingEntityModel columnModel = new SwingEntityModel(TableColumn.TYPE, connection);
+			SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connection);
+			SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connection);
 
 			schemaModel.detail().add(tableModel);
 			tableModel.detail().add(columnModel, constraintModel);

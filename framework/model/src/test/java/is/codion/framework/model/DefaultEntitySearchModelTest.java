@@ -19,8 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
@@ -52,7 +52,7 @@ public final class DefaultEntitySearchModelTest {
 
 	private static final Entities ENTITIES = new TestDomain().entities();
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
@@ -63,18 +63,18 @@ public final class DefaultEntitySearchModelTest {
 	@Test
 	void builderValidation() {
 		// Null checks
-		assertThrows(NullPointerException.class, () -> new DefaultBuilder(null, CONNECTION_PROVIDER));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder(null, CONNECTION));
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, null));
-		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).search((Column<String>[]) null));
+		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION).search((Column<String>[]) null));
 		// Invalid arguments
-		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).search(emptyList()));
-		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION).search(emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION)
 						.search(singleton(Department.NAME)));
 	}
 
 	@Test
 	void theRest() {
-		assertNotNull(searchModel.connectionProvider());
+		assertNotNull(searchModel.connection());
 		assertTrue(searchModel.columns().containsAll(searchable));
 	}
 
@@ -234,7 +234,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void attributes() {
-		DefaultBuilder builder = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER);
+		DefaultBuilder builder = new DefaultBuilder(Employee.TYPE, CONNECTION);
 		assertThrows(IllegalArgumentException.class, () -> builder.attributes(singleton(Department.NAME)));
 
 		EntitySearchModel model = builder
@@ -252,7 +252,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void orderBy() {
-		DefaultBuilder builder = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER);
+		DefaultBuilder builder = new DefaultBuilder(Employee.TYPE, CONNECTION);
 		assertThrows(IllegalArgumentException.class, () -> builder.orderBy(OrderBy.ascending(Department.NAME)));
 
 		EntitySearchModel model = builder
@@ -331,17 +331,17 @@ public final class DefaultEntitySearchModelTest {
 	@BeforeEach
 	void setUp() {
 		searchable = asList(Employee.NAME, Employee.JOB);
-		searchModel = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+		searchModel = new DefaultBuilder(Employee.TYPE, CONNECTION)
 						.search(searchable)
 						.build();
 
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		setupData();
 	}
 
 	@AfterEach
 	void tearDown() {
-		CONNECTION_PROVIDER.connection().rollbackTransaction();
+		CONNECTION.rollbackTransaction();
 	}
 
 	private static boolean contains(List<Entity> result, String employeeName) {
@@ -391,6 +391,6 @@ public final class DefaultEntitySearchModelTest {
 						.with(Employee.SALARY, 1000d)
 						.build();
 
-		CONNECTION_PROVIDER.connection().insert(asList(dept, emp, emp2, emp3, emp4));
+		CONNECTION.insert(asList(dept, emp, emp2, emp3, emp4));
 	}
 }

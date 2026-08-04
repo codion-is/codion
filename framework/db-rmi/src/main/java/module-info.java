@@ -20,9 +20,9 @@
  * RMI based database connection classes.
  * <ul>
  * <li>{@link is.codion.framework.db.rmi.RemoteEntityConnection}
- * <li>{@link is.codion.framework.db.rmi.RemoteEntityConnectionProvider}
+ * <li>{@link is.codion.framework.db.rmi.ServerEntityConnection}
  * </ul>
- * @provides is.codion.framework.db.EntityConnectionProvider
+ * @provides is.codion.framework.db.EntityConnection.Builder
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.framework.db.rmi {
@@ -32,6 +32,6 @@ module is.codion.framework.db.rmi {
 
 	exports is.codion.framework.db.rmi;
 
-	provides is.codion.framework.db.EntityConnectionProvider.Builder
-					with is.codion.framework.db.rmi.DefaultRemoteEntityConnectionProviderBuilder;
+	provides is.codion.framework.db.EntityConnection.Builder
+					with is.codion.framework.db.rmi.DefaultRemoteEntityConnectionBuilder;
 }

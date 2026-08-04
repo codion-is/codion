@@ -21,7 +21,7 @@ package is.codion.demos.petclinic.model;
 import is.codion.demos.petclinic.domain.api.Owner;
 import is.codion.demos.petclinic.domain.api.Pet;
 import is.codion.demos.petclinic.domain.api.Visit;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -29,15 +29,15 @@ import java.util.List;
 
 public final class PetclinicAppModel extends SwingEntityApplicationModel {
 
-	public PetclinicAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider, List.of(createOwnersModel(connectionProvider)));
+	public PetclinicAppModel(EntityConnection connection) {
+		super(connection, List.of(createOwnersModel(connection)));
 	}
 
-	private static SwingEntityModel createOwnersModel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel ownersModel = new SwingEntityModel(Owner.TYPE, connectionProvider);
-		SwingEntityModel petsModel = new SwingEntityModel(Pet.TYPE, connectionProvider);
+	private static SwingEntityModel createOwnersModel(EntityConnection connection) {
+		SwingEntityModel ownersModel = new SwingEntityModel(Owner.TYPE, connection);
+		SwingEntityModel petsModel = new SwingEntityModel(Pet.TYPE, connection);
 		petsModel.editor().comboBoxModels().initialize(Pet.OWNER_FK, Pet.PET_TYPE_FK);
-		SwingEntityModel visitModel = new SwingEntityModel(Visit.TYPE, connectionProvider);
+		SwingEntityModel visitModel = new SwingEntityModel(Visit.TYPE, connection);
 		visitModel.editor().comboBoxModels().initialize(Visit.PET_FK);
 
 		ownersModel.detail().add(petsModel);

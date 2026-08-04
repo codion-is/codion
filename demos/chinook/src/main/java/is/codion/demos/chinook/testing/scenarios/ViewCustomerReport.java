@@ -20,7 +20,6 @@ package is.codion.demos.chinook.testing.scenarios;
 
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.tools.loadtest.Scenario.Performer;
 
 import java.util.HashMap;
@@ -29,11 +28,10 @@ import java.util.Map;
 
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
 
-public final class ViewCustomerReport implements Performer<EntityConnectionProvider> {
+public final class ViewCustomerReport implements Performer<EntityConnection> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) {
-		EntityConnection connection = connectionProvider.connection();
+	public void perform(EntityConnection connection) {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", List.of(randomCustomerId()));
 		connection.report(Customer.REPORT, reportParameters);

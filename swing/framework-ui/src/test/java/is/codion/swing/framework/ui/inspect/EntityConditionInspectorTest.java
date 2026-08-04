@@ -21,8 +21,8 @@ package is.codion.swing.framework.ui.inspect;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.common.ui.inspect.UiInspector;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain;
@@ -41,7 +41,7 @@ public final class EntityConditionInspectorTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
@@ -58,7 +58,7 @@ public final class EntityConditionInspectorTest {
 
 	@Test
 	void queryCondition() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, CONNECTION);
 		ConditionModel<String> condition = tableModel.query().condition().get(Department.NAME);
 		condition.operator().set(Operator.EQUAL);
 		condition.operands().equal().set("SALES");
@@ -76,7 +76,7 @@ public final class EntityConditionInspectorTest {
 
 	@Test
 	void clientFilter() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, CONNECTION);
 		ConditionModel<String> filter = tableModel.filters().get(Department.NAME);
 		filter.operator().set(Operator.EQUAL);
 		filter.operands().equal().set("ACCOUNTING");
@@ -90,7 +90,7 @@ public final class EntityConditionInspectorTest {
 
 	@Test
 	void unknownModelDoesNotApply() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, CONNECTION);
 		//a condition model belonging to no column of this table matches neither system
 		ConditionModel<String> orphan = ConditionModel.builder().valueClass(String.class).build();
 

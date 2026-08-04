@@ -20,7 +20,6 @@ package is.codion.manual.store;
 
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
@@ -43,15 +42,14 @@ import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 public final class Misc {
 
 	static void jasperReports() {
-		EntityConnectionProvider connectionProvider =
-						EntityConnectionProvider.builder()
+		EntityConnection connection =
+						EntityConnection.builder()
 										.domain(Store.DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.clientType("StoreMisc")
 										.build();
 
 		// tag::jasperReportDataSource[]
-		EntityConnection connection = connectionProvider.connection();
 
 		EntityDefinition customerDefinition =
 						connection.entities().definition(Customer.TYPE);
@@ -72,14 +70,14 @@ public final class Misc {
 
 	public static void main(String[] args) throws EntityValidationException {
 		// tag::editModel[]
-		EntityConnectionProvider connectionProvider =
-						EntityConnectionProvider.builder()
+		EntityConnection connection =
+						EntityConnection.builder()
 										.domain(Store.DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.clientType("StoreMisc")
 										.build();
 
-		CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
+		CustomerEditModel editModel = new CustomerEditModel(connection);
 
 		SwingEntityEditor editor = editModel.editor();
 		editor.value(Customer.ID).defaultValue()

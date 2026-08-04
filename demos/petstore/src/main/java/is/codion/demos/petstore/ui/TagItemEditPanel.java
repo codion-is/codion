@@ -43,6 +43,6 @@ public class TagItemEditPanel extends EntityEditPanel {
 	}
 
 	private TagEditPanel createTagEditPanel() {
-		return new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider()));
+		return new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connection()));
 	}
 }

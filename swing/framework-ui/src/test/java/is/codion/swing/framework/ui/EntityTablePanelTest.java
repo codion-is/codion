@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -36,14 +36,14 @@ public class EntityTablePanelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
 
 	@Test
 	void excludeHiddenColumns() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
 		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
 			assertTrue(employee.contains(Employee.ID));
@@ -68,7 +68,7 @@ public class EntityTablePanelTest {
 
 	@Test
 	void getColumnIndex() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		assertEquals(0, tablePanel.table().columnModel().getColumnIndex(Detail.INT));
 		assertEquals(1, tablePanel.table().columnModel().getColumnIndex(Detail.DOUBLE));
@@ -90,7 +90,7 @@ public class EntityTablePanelTest {
 
 	@Test
 	void columnModel() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Detail.STRING);
 		assertEquals(Detail.STRING, column.identifier());
@@ -100,7 +100,7 @@ public class EntityTablePanelTest {
 	void summaryPanelVisibleWithoutSummaryPanelDoesNotBrick() {
 		//a summary-visible state of true on a panel that ends up without a summary panel
 		//must not throw during initialize() and permanently brick the panel
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeSummaries(false));
 		tablePanel.summaryPanelVisible().set(true);
 		assertDoesNotThrow(tablePanel::initialize);
@@ -110,7 +110,7 @@ public class EntityTablePanelTest {
 
 	@Test
 	void editableAttributesExcludesDerivedAndDenormalizedAttributes() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION);
 		new EntityTablePanel(tableModel, config -> config.editable(attributes -> {
 			assertEquals(14, attributes.size());
 			assertFalse(attributes.contains(Detail.MASTER_NAME));

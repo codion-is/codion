@@ -20,7 +20,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.model.worker.ProgressWorker;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -51,31 +51,31 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param entityType the entityType
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 */
-	public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(new SwingEntityEditModel(entityType, connectionProvider));
+	public SwingEntityTableModel(EntityType entityType, EntityConnection connection) {
+		this(new SwingEntityEditModel(entityType, connection));
 	}
 
 	/**
 	 * Instantiates a new SwingEntityTableModel containing the given entities.
 	 * @param entities the entities to populate the model with
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 * @throws IllegalArgumentException in case {@code entities} is empty
 	 */
-	public SwingEntityTableModel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
-		this(entityType(entities), entities, connectionProvider);
+	public SwingEntityTableModel(Collection<Entity> entities, EntityConnection connection) {
+		this(entityType(entities), entities, connection);
 	}
 
 	/**
 	 * Instantiates a new SwingEntityTableModel containing the given entities.
 	 * @param entityType the entity type
 	 * @param entities the entities to populate the model with
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 * @throws IllegalArgumentException in case {@code entities} is empty
 	 */
-	public SwingEntityTableModel(EntityType entityType, Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
-		this(new SwingEntityEditModel(entityType, connectionProvider), requireNonNull(entities));
+	public SwingEntityTableModel(EntityType entityType, Collection<Entity> entities, EntityConnection connection) {
+		this(new SwingEntityEditModel(entityType, connection), requireNonNull(entities));
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	public SwingEntityTableModel(EntityQueryModel queryModel) {
 		this(new SwingEntityEditModel(requireNonNull(queryModel).entityType(),
-						queryModel.condition().connectionProvider()), queryModel);
+						queryModel.condition().connection()), queryModel);
 	}
 
 	/**
@@ -102,8 +102,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
 		this(editModel, entityQueryModel(EntityConditionModel.builder()
 						.entityType(editModel.entityType())
-						.connectionProvider(editModel.connectionProvider())
-						.conditions(new SwingEntityConditions(editModel.entityType(), editModel.connectionProvider()))
+						.connection(editModel.connection())
+						.conditions(new SwingEntityConditions(editModel.entityType(), editModel.connection()))
 						.build()));
 	}
 

@@ -26,7 +26,6 @@ import is.codion.common.reactive.state.ObservableState;
 import is.codion.common.reactive.state.State;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -46,8 +45,8 @@ public final class CityTableModel extends SwingEntityTableModel {
 	private final Event<Collection<Entity>> displayLocationEvent = Event.event();
 	private final State cityWithoutLocationSelected = State.state();
 
-	CityTableModel(EntityConnectionProvider connectionProvider) {
-		super(new CityEditModel(connectionProvider));
+	CityTableModel(EntityConnection connection) {
+		super(new CityEditModel(connection));
 		selection().items().addConsumer(displayLocationEvent);
 		selection().items().addConsumer(cities ->
 						cityWithoutLocationSelected.set(cities.stream()

@@ -24,7 +24,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueList;
 import is.codion.demos.chinook.domain.api.Chinook.Genre;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.component.list.SwingFilterListModel;
 import is.codion.swing.common.ui.component.list.FilterList;
@@ -53,11 +53,11 @@ final class RandomPlaylistParametersPanel extends JPanel {
 	private final NumberField<Integer> noOfTracksField;
 	private final FilterList<Entity> genreList;
 
-	RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
+	RandomPlaylistParametersPanel(EntityConnection connection) {
 		super(borderLayout());
 		playlistNameField = createPlaylistNameField();
 		noOfTracksField = createNoOfTracksField();
-		genreList = createGenreList(connectionProvider);
+		genreList = createGenreList(connection);
 		add(borderLayoutPanel()
 						.north(gridLayoutPanel(1, 2)
 										.add(label(BUNDLE.getString("playlist_name")))
@@ -100,10 +100,10 @@ final class RandomPlaylistParametersPanel extends JPanel {
 						.build();
 	}
 
-	private FilterList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
+	private FilterList<Entity> createGenreList(EntityConnection connection) {
 		return FilterList.builder()
 						.model(SwingFilterListModel.builder()
-										.items(allGenres(connectionProvider))
+										.items(allGenres(connection))
 										.build())
 						.selectedItems()
 						.link(model.genres)
@@ -111,8 +111,8 @@ final class RandomPlaylistParametersPanel extends JPanel {
 						.build();
 	}
 
-	private static Collection<Entity> allGenres(EntityConnectionProvider connectionProvider) {
-		return connectionProvider.connection().select(all(Genre.TYPE)
+	private static Collection<Entity> allGenres(EntityConnection connection) {
+		return connection.select(all(Genre.TYPE)
 						.orderBy(ascending(Genre.NAME)));
 	}
 

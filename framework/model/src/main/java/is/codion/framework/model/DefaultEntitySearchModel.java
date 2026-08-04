@@ -23,8 +23,8 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.Value.Notify;
 import is.codion.common.reactive.value.ValueSet;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -76,7 +76,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final @Nullable OrderBy orderBy;
 	private final DefaultSearch search = new DefaultSearch();
 	private final DefaultSelection selection = new DefaultSelection();
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 	private final Map<Column<String>, Settings> settings;
 	private final Value<Supplier<Condition>> condition;
 	private final Value<Integer> limit;
@@ -87,7 +87,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.entityDefinition;
-		this.connectionProvider = builder.connectionProvider;
+		this.connection = builder.connection;
 		this.columns = unmodifiableCollection(builder.columns);
 		this.condition = Value.builder()
 						.nonNull(NULL_CONDITION)
@@ -111,8 +111,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+	public EntityConnection connection() {
+		return connection;
 	}
 
 	@Override
@@ -164,7 +164,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public List<Entity> perform() {
-			List<Entity> result = connectionProvider.connection().select(select());
+			List<Entity> result = connection.select(select());
 			result.sort(entityDefinition.comparator());
 
 			return result;
@@ -366,8 +366,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public Builder connectionProvider(EntityConnectionProvider connectionProvider) {
-			return new DefaultBuilder(this.entityType, connectionProvider);
+		public Builder connection(EntityConnection connection) {
+			return new DefaultBuilder(this.entityType, connection);
 		}
 	}
 
@@ -376,7 +376,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
 		private final EntityDefinition entityDefinition;
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 		private Collection<Column<String>> columns;
 		private @Nullable Supplier<Condition> condition;
 		private Collection<Attribute<?>> attributes = emptyList();
@@ -384,9 +384,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private boolean persistenceAware = PERSISTENCE_AWARE.getOrThrow();
 		private @Nullable OrderBy orderBy;
 
-		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			this.connectionProvider = requireNonNull(connectionProvider);
-			this.entityDefinition = connectionProvider.entities().definition(entityType);
+		DefaultBuilder(EntityType entityType, EntityConnection connection) {
+			this.connection = requireNonNull(connection);
+			this.entityDefinition = connection.entities().definition(entityType);
 			this.columns = entityDefinition.columns().searchable();
 			this.orderBy = entityDefinition.orderBy().orElse(null);
 		}

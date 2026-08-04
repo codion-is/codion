@@ -29,7 +29,7 @@ import is.codion.common.reactive.value.AbstractValue;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.common.utilities.Conjunction;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -68,7 +68,7 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private static final Supplier<@Nullable Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
 	private final EntityDefinition entityDefinition;
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 	private final TableConditionModel<Attribute<?>> conditionModel;
 	private final Value<Conjunction> conjunction = Value.builder()
 					.nonNull(Conjunction.AND)
@@ -80,8 +80,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private final DefaultModified modified;
 
 	DefaultEntityConditionModel(DefaultBuilder builder) {
-		this.entityDefinition = builder.connectionProvider.entities().definition(builder.entityType);
-		this.connectionProvider = builder.connectionProvider;
+		this.entityDefinition = builder.connection.entities().definition(builder.entityType);
+		this.connection = builder.connection;
 		this.conditionModel = tableConditionModel(builder.conditions);
 		this.modified = new DefaultModified();
 		bindEvents();
@@ -93,8 +93,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	}
 
 	@Override
-	public EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+	public EntityConnection connection() {
+		return connection;
 	}
 
 	@Override
@@ -479,14 +479,14 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		static final EntityTypeStep ENTITY_TYPE_STEP = new DefaultEntityTypeStep();
 
 		private final EntityType entityType;
-		private final EntityConnectionProvider connectionProvider;
+		private final EntityConnection connection;
 
 		private Supplier<Map<Attribute<?>, ConditionModel<?>>> conditions;
 
-		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		private DefaultBuilder(EntityType entityType, EntityConnection connection) {
 			this.entityType = entityType;
-			this.connectionProvider = connectionProvider;
-			this.conditions = new EntityConditions(entityType, connectionProvider);
+			this.connection = connection;
+			this.conditions = new EntityConditions(entityType, connection);
 		}
 
 		private static final class DefaultEntityTypeStep implements EntityTypeStep {
@@ -506,8 +506,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 			}
 
 			@Override
-			public Builder connectionProvider(EntityConnectionProvider connectionProvider) {
-				return new DefaultBuilder(entityType, requireNonNull(connectionProvider));
+			public Builder connection(EntityConnection connection) {
+				return new DefaultBuilder(entityType, requireNonNull(connection));
 			}
 		}
 

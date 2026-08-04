@@ -19,7 +19,7 @@
 package is.codion.swing.framework.model.component;
 
 import is.codion.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -95,10 +95,10 @@ public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilt
 		interface ConnectionProviderStep {
 
 			/**
-			 * @param connectionProvider an EntityConnectionProvider instance
+			 * @param connection an EntityConnection instance
 			 * @return a new {@link SwingEntityComboBoxModel.Builder} instance
 			 */
-			Builder connectionProvider(EntityConnectionProvider connectionProvider);
+			Builder connection(EntityConnection connection);
 		}
 
 		/**

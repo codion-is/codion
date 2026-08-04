@@ -21,9 +21,7 @@ package is.codion.manual.quickstart;
 import is.codion.common.db.database.Database;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -74,14 +72,14 @@ public final class Example {
 
 	void customerPanel() {
 		// tag::customerPanel[]
-		EntityConnectionProvider connectionProvider =
-						LocalEntityConnectionProvider.builder()
+		EntityConnection connection =
+						LocalEntityConnection.builder()
 										.domain(new Store())
 										.user(User.parse("scott:tiger"))
 										.build();
 
 		SwingEntityModel customerModel =
-						new SwingEntityModel(Customer.TYPE, connectionProvider);
+						new SwingEntityModel(Customer.TYPE, connection);
 
 		CustomerEditPanel customerEditPanel =
 						new CustomerEditPanel(customerModel.editModel());
@@ -92,7 +90,7 @@ public final class Example {
 
 		// tag::detailPanel[]
 		SwingEntityModel addressModel =
-						new SwingEntityModel(CustomerAddress.TYPE, connectionProvider);
+						new SwingEntityModel(CustomerAddress.TYPE, connection);
 
 		customerModel.detail().add(addressModel);
 

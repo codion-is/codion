@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -63,13 +62,8 @@ public abstract class AbstractEntityEditModel<R extends EntityEditor<R>> impleme
 	}
 
 	@Override
-	public final EntityConnectionProvider connectionProvider() {
-		return editor.connectionProvider();
-	}
-
-	@Override
 	public final EntityConnection connection() {
-		return editor.connectionProvider().connection();
+		return editor.connection();
 	}
 
 	@Override

@@ -18,19 +18,20 @@
  */
 package is.codion.demos.chinook.testing.scenarios;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.tools.loadtest.Scenario.Performer;
 
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 
-public final class LogoutLogin implements Performer<EntityConnectionProvider> {
+public final class LogoutLogin implements Performer<EntityConnection> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) {
+	public void perform(EntityConnection connection) {
 		try {
-			connectionProvider.close();
+			connection.close();
 			Thread.sleep(RANDOM.nextInt(1500));
-			connectionProvider.connection();
+			//an operation re-establishes the connection, which is what this scenario measures
+			connection.user();
 		}
 		catch (InterruptedException ignored) {/*ignored*/}
 	}

@@ -21,7 +21,7 @@ package is.codion.demos.petstore.testing;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.petstore.domain.Petstore;
 import is.codion.demos.petstore.model.PetstoreAppModel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.tools.loadtest.LoadTest;
@@ -46,7 +46,7 @@ public final class PetstoreLoadTest {
 		@Override
 		public PetstoreAppModel apply(User user) {
 			PetstoreAppModel applicationModel = new PetstoreAppModel(
-							EntityConnectionProvider.builder()
+							EntityConnection.builder()
 											.domain(Petstore.DOMAIN)
 											.clientType(PetstoreLoadTest.class.getSimpleName())
 											.user(user)
@@ -90,13 +90,13 @@ public final class PetstoreLoadTest {
 		LoadTest<PetstoreAppModel> loadTest =
 						LoadTest.builder()
 										.createApplication(new PetstoreAppModelFactory())
-										.closeApplication(application -> application.connectionProvider().close())
+										.closeApplication(application -> application.connection().close())
 										.user(UNIT_TEST_USER)
 										.scenarios(List.of(Scenario.builder()
 														.performer(new PetstoreUsageScenario())
 														.name("selectRecords")
 														.build()))
-										.name("Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())
+										.name("Petstore LoadTest - " + EntityConnection.CLIENT_CONNECTION_TYPE.get())
 										.build();
 		loadTestPanel(loadTestModel(loadTest)).run();
 	}

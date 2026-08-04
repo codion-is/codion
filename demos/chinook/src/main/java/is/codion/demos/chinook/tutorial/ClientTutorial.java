@@ -19,8 +19,8 @@
 package is.codion.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityFormatter;
@@ -160,13 +160,13 @@ public final class ClientTutorial {
 
 	private static final class ApplicationModel extends SwingEntityApplicationModel {
 
-		private ApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, List.of(createArtistModel(connectionProvider)));
+		private ApplicationModel(EntityConnection connection) {
+			super(connection, List.of(createArtistModel(connection)));
 		}
 
-		private static SwingEntityModel createArtistModel(EntityConnectionProvider connectionProvider) {
-			SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
-			SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
+		private static SwingEntityModel createArtistModel(EntityConnection connection) {
+			SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connection);
+			SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connection);
 			artistModel.detail().add(albumModel);
 			artistModel.tableModel().items().refresh();
 
@@ -200,7 +200,7 @@ public final class ClientTutorial {
 						.domain(Chinook.DOMAIN)
 						.model(ApplicationModel::new)
 						.panel(ApplicationPanel::new)
-						.connectionProvider(LocalEntityConnectionProvider.builder()
+						.connection(LocalEntityConnection.builder()
 										.domain(new Chinook())
 										.build())
 						.defaultLookAndFeel(MaterialTheme.class)

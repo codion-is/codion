@@ -22,7 +22,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.tools.loadtest.Scenario.Performer;
 
@@ -35,11 +34,10 @@ import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.Entity.distinct;
 import static java.util.stream.Collectors.toList;
 
-public final class UpdateTotals implements Performer<EntityConnectionProvider> {
+public final class UpdateTotals implements Performer<EntityConnection> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) {
-		EntityConnection connection = connectionProvider.connection();
+	public void perform(EntityConnection connection) {
 		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
 		List<Long> invoiceIds = connection.select(Invoice.ID, Invoice.CUSTOMER_FK.equalTo(customer));
 		if (!invoiceIds.isEmpty()) {

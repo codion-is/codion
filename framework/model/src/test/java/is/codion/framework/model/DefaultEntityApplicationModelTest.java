@@ -32,9 +32,9 @@ public final class DefaultEntityApplicationModelTest extends AbstractEntityAppli
 	@Override
 	protected TestEntityModel createDepartmentModel() {
 		TestEntityModel deptModel = new TestEntityModel(
-						new TestEntityEditModel(Department.TYPE, connectionProvider()));
+						new TestEntityEditModel(Department.TYPE, connection()));
 		TestEntityModel empModel = new TestEntityModel(
-						new TestEntityEditModel(Employee.TYPE, connectionProvider()));
+						new TestEntityEditModel(Employee.TYPE, connection()));
 		deptModel.detail().add(ForeignKeyModelLink.builder()
 						.model(empModel)
 						.foreignKey(Employee.DEPARTMENT_FK)

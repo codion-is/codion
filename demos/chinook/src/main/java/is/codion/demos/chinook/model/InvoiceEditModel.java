@@ -18,7 +18,7 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityEditor.EditorValue;
@@ -32,8 +32,8 @@ import static is.codion.demos.chinook.domain.api.Chinook.Invoice;
 // tag::invoiceEditModel[]
 public final class InvoiceEditModel extends SwingEntityEditModel {
 
-	public InvoiceEditModel(EntityConnectionProvider connectionProvider) {
-		super(Invoice.TYPE, connectionProvider);
+	public InvoiceEditModel(EntityConnection connection) {
+		super(Invoice.TYPE, connection);
 		EditorValue<Entity> customer = editor().value(Invoice.CUSTOMER_FK);
 		// By default, foreign key values persist when the model
 		// is cleared, here we disable that for CUSTOMER_FK

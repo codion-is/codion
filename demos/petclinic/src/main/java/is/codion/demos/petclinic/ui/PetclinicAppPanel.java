@@ -29,7 +29,7 @@ import is.codion.demos.petclinic.domain.api.Vet;
 import is.codion.demos.petclinic.domain.api.Visit;
 import is.codion.demos.petclinic.model.PetclinicAppModel;
 import is.codion.demos.petclinic.model.VetSpecialtyEditModel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.plugin.flatlaf.intellij.FlatLookAndFeelIntelliJThemes;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
 import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
@@ -81,29 +81,29 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 		return List.of(petTypePanelBuilder, specialtyPanelBuilder, vetPanelBuilder);
 	}
 
-	private static EntityPanel createPetTypePanel(EntityConnectionProvider connectionProvider) {
+	private static EntityPanel createPetTypePanel(EntityConnection connection) {
 		SwingEntityModel petTypeModel =
-						new SwingEntityModel(PetType.TYPE, connectionProvider);
+						new SwingEntityModel(PetType.TYPE, connection);
 		petTypeModel.tableModel().items().refresh();
 
 		return new EntityPanel(petTypeModel,
 						new PetTypeEditPanel(petTypeModel.editModel()));
 	}
 
-	private static EntityPanel createSpecialtyPanel(EntityConnectionProvider connectionProvider) {
+	private static EntityPanel createSpecialtyPanel(EntityConnection connection) {
 		SwingEntityModel specialtyModel =
-						new SwingEntityModel(Specialty.TYPE, connectionProvider);
+						new SwingEntityModel(Specialty.TYPE, connection);
 		specialtyModel.tableModel().items().refresh();
 
 		return new EntityPanel(specialtyModel,
 						new SpecialtyEditPanel(specialtyModel.editModel()));
 	}
 
-	private static EntityPanel createVetPanel(EntityConnectionProvider connectionProvider) {
+	private static EntityPanel createVetPanel(EntityConnection connection) {
 		SwingEntityModel vetModel =
-						new SwingEntityModel(Vet.TYPE, connectionProvider);
+						new SwingEntityModel(Vet.TYPE, connection);
 		SwingEntityModel vetSpecialtyModel =
-						new SwingEntityModel(new VetSpecialtyEditModel(connectionProvider));
+						new SwingEntityModel(new VetSpecialtyEditModel(connection));
 		vetModel.detail().add(vetSpecialtyModel);
 		vetModel.tableModel().items().refresh();
 

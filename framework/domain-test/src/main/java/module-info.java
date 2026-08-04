@@ -22,7 +22,7 @@
  * <li>{@link is.codion.framework.domain.test.DomainTest}
  * <li>{@link is.codion.framework.domain.test.DefaultEntityFactory}
  * </ul>
- * @provides is.codion.framework.db.EntityConnectionProvider
+ * @provides is.codion.framework.db.EntityConnection
  */
 module is.codion.framework.domain.test {
 	requires org.slf4j;

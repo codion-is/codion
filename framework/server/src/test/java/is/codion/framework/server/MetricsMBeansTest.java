@@ -23,8 +23,7 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.rmi.RemoteEntityConnection;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.db.rmi.ServerEntityConnection;
 
 import org.junit.jupiter.api.Test;
 
@@ -72,9 +71,9 @@ public final class MetricsMBeansTest {
 			ConnectionRequest connectionRequest = ConnectionRequest.builder()
 							.user(ADMIN_USER)
 							.clientType("MetricsMBeansTest")
-							.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain")
+							.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain")
 							.build();
-			RemoteEntityConnection connection = (RemoteEntityConnection) server.connect(connectionRequest);
+			ServerEntityConnection connection = (ServerEntityConnection) server.connect(connectionRequest);
 			connection.select(all(TestDomain.Department.TYPE));
 
 			assertEquals(1, number(mBeanServer, serverName, "ConnectionCount"));

@@ -21,15 +21,15 @@ package is.codion.framework.servlet;
 import is.codion.common.rmi.server.AuxiliaryServerFactory;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
-import is.codion.framework.db.rmi.RemoteEntityConnection;
+import is.codion.framework.db.rmi.ServerEntityConnection;
 
 /**
  * Provides a {@link EntityService} auxiliary server instance.
  */
-public final class EntityServiceFactory implements AuxiliaryServerFactory<RemoteEntityConnection, ServerAdmin, EntityService> {
+public final class EntityServiceFactory implements AuxiliaryServerFactory<ServerEntityConnection, ServerAdmin, EntityService> {
 
 	@Override
-	public EntityService create(Server<RemoteEntityConnection, ServerAdmin> server) {
+	public EntityService create(Server<ServerEntityConnection, ServerAdmin> server) {
 		return new EntityService(server);
 	}
 }

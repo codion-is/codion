@@ -22,7 +22,7 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.demos.world.domain.api.World.Continent;
 import is.codion.demos.world.domain.api.World.Country;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.ModelLink;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -43,11 +43,11 @@ public final class ContinentModel extends SwingEntityModel {
 	private final DefaultPieDataset<String> gnpDataset = new DefaultPieDataset<>();
 	private final DefaultCategoryDataset lifeExpectancyDataset = new DefaultCategoryDataset();
 
-	ContinentModel(EntityConnectionProvider connectionProvider) {
-		super(Continent.TYPE, connectionProvider);
+	ContinentModel(EntityConnection connection) {
+		super(Continent.TYPE, connection);
 		tableModel().items().included().addConsumer(this::refreshChartDatasets);
 		detail().add(ModelLink.builder()
-						.model(new CountryModel(connectionProvider))
+						.model(new CountryModel(connection))
 						.onSelection(new OnContinentsSelected())
 						.active(true)
 						.build());
@@ -86,8 +86,8 @@ public final class ContinentModel extends SwingEntityModel {
 
 	private static final class CountryModel extends SwingEntityModel {
 
-		private CountryModel(EntityConnectionProvider connectionProvider) {
-			super(Country.TYPE, connectionProvider);
+		private CountryModel(EntityConnection connection) {
+			super(Country.TYPE, connection);
 			editor().settings().readOnly().set(true);
 			ConditionModel<?> continentCondition =
 							tableModel().query().condition().get(Country.CONTINENT);

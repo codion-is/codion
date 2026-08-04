@@ -25,12 +25,29 @@ Codion Change Log
 - EntityConnectionProvider.connectionValid() and connected() removed, unused.
 - EntityConnectionProvider.VALIDITY_CHECK_INTERVAL added, specifying the minimum time between connection validity checks, 1000 ms by default.
 - EntityConnectionProvider.Builder.onClose() removed, unused.
+- EntityConnection.builder() and EntityConnection.Builder added, building a self-managing connection based on the configured connection type, the entry point EntityConnectionProvider.builder() has been.
+- AbstractEntityConnectionProvider.connection() now returns the same instance for the lifetime of the provider, a facade which validates and re-establishes the underlying connection as needed, so it can be held on to instead of being fetched again for each operation. Note that connection() no longer performs the validity check, the operations do, so it no longer blocks for the duration of an operation in progress.
+- EntityConnectionProvider and AbstractEntityConnectionProvider removed, replaced by AbstractEntityConnection, a self-managing EntityConnection which connects on demand, validates before each operation and re-establishes the underlying connection when it has gone bad. Clients now hold an EntityConnection where they held a provider.
+- EntityConnection.Builder is now the service, providing the connection type based builder lookup EntityConnectionProvider.Builder used to.
+- EntityConnection.CONNECTION_TYPE_LOCAL, CONNECTION_TYPE_REMOTE, CONNECTION_TYPE_HTTP, CLIENT_CONNECTION_TYPE, DESCRIPTION and VALIDITY_CHECK_INTERVAL moved from EntityConnectionProvider. Note that the DESCRIPTION property name changed accordingly, from is.codion.framework.db.EntityConnectionProvider.description to is.codion.framework.db.EntityConnection.description.
+- EntityConnection.clientId(), description() and clientVersion() added, the connection's identity as the server sees it.
+### is.codion.framework.db.local
+- LocalEntityConnection.builder() added, replacing LocalEntityConnectionProvider, which has been removed along with its TRACING configuration value, now on LocalEntityConnection.
+- LocalEntityConnection, the optimisticLocking, limitReferenceDepth and iteratorBufferSize settings are now re-applied when a self-managing connection re-establishes the underlying one, as queryTimeout already was.
+### is.codion.framework.db.rmi
+- RemoteEntityConnection is now the client side RMI based EntityConnection, with RemoteEntityConnection.builder() replacing RemoteEntityConnectionProvider, which has been removed.
+- RemoteEntityConnection renamed ServerEntityConnection, along with RemoteEntityResultIterator, renamed ServerEntityResultIterator. These are the wire contracts, the connection and iterator running on the server as exported to clients, which is what the Server prefix now indicates. Note that ServerEntityConnection still can not extend EntityConnection, RMI requiring every method on a Remote interface to declare RemoteException, which is also why it can not host the client side builder. REMOTE_CLIENT_DOMAIN_TYPE moved to ServerEntityConnection along with it.
+### is.codion.framework.db.http
+- HttpEntityConnection.builder() now builds a self-managing connection, replacing HttpEntityConnectionProvider, which has been removed.
+### is.codion.framework.server
+- AbstractRemoteEntityConnection and DefaultRemoteEntityConnection renamed AbstractServerEntityConnection and DefaultServerEntityConnection, following ServerEntityConnection.
 ### is.codion.framework.model
 - EntityEditor.EditorTasks now resolves its connection on first use instead of when the tasks are created, since they are typically created on the UI thread and performed on a background thread. Selecting a record while a refresh was in progress blocked the UI thread on a connection the tasks often never used.
 - EntityEditor.EditorEntity.set() and replace() are now fully synchronous when no detail editors are registered.
 - AbstractEntityEditor, the detail editor insert, update and delete tasks no longer resolve the connection when they are built, which happens on the calling thread, typically the UI thread.
 ### is.codion.framework.domain.test
 - DomainTest now closes the connection via the connection provider, closing it directly left the provider handing out a connection it believed to be alive.
+- DomainTest now holds an EntityConnection instead of an EntityConnectionProvider.
 
 ## 0.18.81
 ### is.codion.common.rmi

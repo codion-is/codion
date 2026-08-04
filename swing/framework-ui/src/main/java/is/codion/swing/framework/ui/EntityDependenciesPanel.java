@@ -20,7 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -95,12 +95,12 @@ final class EntityDependenciesPanel extends JPanel {
 	private final Map<EntityType, EntityTablePanel> tablePanels;
 	private final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
 
-	EntityDependenciesPanel(Map<EntityType, Collection<Entity>> dependencies, EntityConnectionProvider connectionProvider) {
+	EntityDependenciesPanel(Map<EntityType, Collection<Entity>> dependencies, EntityConnection connection) {
 		super(new BorderLayout());
 		this.tablePanels = unmodifiableMap(dependencies.entrySet().stream()
-						.collect(Collectors.toMap(Map.Entry::getKey, entry -> createTablePanel(entry.getValue(), connectionProvider))));
+						.collect(Collectors.toMap(Map.Entry::getKey, entry -> createTablePanel(entry.getValue(), connection))));
 		tablePanels.forEach((entityType, tablePanel) ->
-						tabPane.addTab(connectionProvider.entities().definition(entityType).caption(), tablePanel));
+						tabPane.addTab(connection.entities().definition(entityType).caption(), tablePanel));
 		add(tabPane, BorderLayout.CENTER);
 		NAVIGATE_RIGHT.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder()
@@ -120,8 +120,8 @@ final class EntityDependenciesPanel extends JPanel {
 		return tablePanels;
 	}
 
-	private static EntityTablePanel createTablePanel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities, connectionProvider);
+	private static EntityTablePanel createTablePanel(Collection<Entity> entities, EntityConnection connection) {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities, connection);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeConditions(false));
 		tablePanel.configurePopupMenu(layout -> layout.clear()
 						.control(EDIT_ATTRIBUTE_CONTROLS)
@@ -138,22 +138,22 @@ final class EntityDependenciesPanel extends JPanel {
 		((EntityTablePanel) tabPane.getSelectedComponent()).table().requestFocusInWindow();
 	}
 
-	static void displayDependencies(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
+	static void displayDependencies(Collection<Entity> entities, EntityConnection connection,
 																	JComponent dialogOwner, AtomicReference<Dimension> dialogSize,
 																	Map<EntityType, Preferences> preferences,
 																	boolean dependenciesExpected) {
-		ResultTask<Map<EntityType, Collection<Entity>>> dependenciesTask = () -> connectionProvider.connection().dependencies(entities);
+		ResultTask<Map<EntityType, Collection<Entity>>> dependenciesTask = () -> connection.dependencies(entities);
 		Dialogs.progressWorker()
 						.task(dependenciesTask)
 						.owner(dialogOwner)
 						.title(MESSAGES.getString("fetching_dependencies"))
 						.onResult(dependencies ->
-										displayDependencies(dependencies, connectionProvider, dialogOwner,
+										displayDependencies(dependencies, connection, dialogOwner,
 														dialogSize, preferences, dependenciesExpected))
 						.execute();
 	}
 
-	private static void displayDependencies(Map<EntityType, Collection<Entity>> dependencies, EntityConnectionProvider connectionProvider,
+	private static void displayDependencies(Map<EntityType, Collection<Entity>> dependencies, EntityConnection connection,
 																					JComponent dialogOwner, AtomicReference<Dimension> dialogSize,
 																					Map<EntityType, Preferences> preferences,
 																					boolean dependenciesExpected) {
@@ -162,7 +162,7 @@ final class EntityDependenciesPanel extends JPanel {
 							MESSAGES.getString("no_dependencies_title"), INFORMATION_MESSAGE);
 		}
 		else {
-			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
+			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connection);
 			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) -> restore(preferences.get(entityType), dependencyTablePanel));
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));

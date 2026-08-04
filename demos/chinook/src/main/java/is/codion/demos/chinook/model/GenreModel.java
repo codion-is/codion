@@ -19,13 +19,13 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.demos.chinook.domain.api.Chinook.Genre;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 public final class GenreModel extends SwingEntityModel {
 
-	public GenreModel(EntityConnectionProvider connectionProvider) {
-		super(Genre.TYPE, connectionProvider);
-		detail().add(new SwingEntityModel(new TrackTableModel(connectionProvider)));
+	public GenreModel(EntityConnection connection) {
+		super(Genre.TYPE, connection);
+		detail().add(new SwingEntityModel(new TrackTableModel(connection)));
 	}
 }

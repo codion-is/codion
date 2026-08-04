@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 
 import org.junit.jupiter.api.Test;
@@ -42,14 +42,14 @@ public final class EntityViewerTest {
 
 	@Test
 	void test() {
-		try (EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+		try (EntityConnection connection = LocalEntityConnection.builder()
 						.domain(new TestDomain())
 						.user(UNIT_TEST_USER)
 						.build()) {
-			Entity blake = connectionProvider.connection().selectSingle(TestDomain.Employee.NAME.equalTo("BLAKE"));
+			Entity blake = connection.selectSingle(TestDomain.Employee.NAME.equalTo("BLAKE"));
 			blake.set(TestDomain.Employee.SALARY, 1000d);
 
-			JTree tree = EntityViewer.createTree(blake, connectionProvider);
+			JTree tree = EntityViewer.createTree(blake, connection);
 			expandAll(tree, new TreePath(tree.getModel().getRoot()));
 			expandAll(tree, new TreePath(tree.getModel().getRoot()));
 		}
@@ -57,18 +57,18 @@ public final class EntityViewerTest {
 
 	@Test
 	void deletedReference() {
-		try (EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+		try (EntityConnection connection = LocalEntityConnection.builder()
 						.domain(new TestDomain())
 						.user(UNIT_TEST_USER)
 						.build()) {
-			Entity blake = connectionProvider.connection().selectSingle(TestDomain.Employee.NAME.equalTo("BLAKE"));
+			Entity blake = connection.selectSingle(TestDomain.Employee.NAME.equalTo("BLAKE"));
 			//a reference to a row which no longer exists, exactly what one opens this tool to find
-			blake.set(TestDomain.Employee.DEPARTMENT_FK, connectionProvider.entities()
+			blake.set(TestDomain.Employee.DEPARTMENT_FK, connection.entities()
 							.entity(TestDomain.Department.TYPE)
 							.with(TestDomain.Department.ID, -42)
 							.build());
 
-			JTree tree = EntityViewer.createTree(blake, connectionProvider);
+			JTree tree = EntityViewer.createTree(blake, connection);
 			expandAll(tree, new TreePath(tree.getModel().getRoot()));
 
 			assertTrue(children(tree).stream()

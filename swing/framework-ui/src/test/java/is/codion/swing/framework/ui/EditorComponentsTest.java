@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -41,14 +41,14 @@ public final class EditorComponentsTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
 
 	@Test
 	void test() {
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
 		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
 		ComponentFactory create = new ComponentFactory(components);
 		create.textField(Employee.NAME);
@@ -67,7 +67,7 @@ public final class EditorComponentsTest {
 
 	@Test
 	void derived() {
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION);
 		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
 		ComponentFactory factory = new ComponentFactory(components);
 		JTextField textField = factory.textField(Detail.INT_DERIVED).build();

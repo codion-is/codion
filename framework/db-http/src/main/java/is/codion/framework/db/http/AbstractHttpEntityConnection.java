@@ -78,6 +78,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	private static final int HTTP_STATUS_OK = 200;
 
 	private final User user;
+	private final UUID clientId;
 	protected final String baseurl;
 	protected final HttpTransport transport;
 	protected final Entities entities;
@@ -96,6 +97,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		this.baseurl = createBaseUrl(builder, path);
 		this.transport = HttpTransport.instance(builder.connectTimeout, builder.socketTimeout);
 		this.headers = initializeHeaders(builder, user);
+		this.clientId = builder.clientId;
 		// An injected domain is used directly (built in-process); otherwise the entity definitions are fetched
 		// from the server — the secure default, keeping the domain implementation (table names, queries) off the client.
 		this.entities = builder.domain != null ? builder.domain.entities() : initializeEntities();
@@ -109,6 +111,11 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	@Override
 	public final User user() {
 		return user;
+	}
+
+	@Override
+	public final UUID clientId() {
+		return clientId;
 	}
 
 	@Override
@@ -456,7 +463,11 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		}
 	}
 
-	static final class DefaultBuilder implements Builder {
+	/**
+	 * Builds a raw {@link HttpEntityConnection}, one which does not manage itself,
+	 * see {@link HttpEntityConnection#builder()}.
+	 */
+	static final class DefaultBuilder {
 
 		private DomainType domainType;
 		private Domain domain;
@@ -472,86 +483,72 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		private UUID clientId;
 		private @Nullable Version clientVersion;
 
-		@Override
-		public Builder domain(DomainType domainType) {
+		DefaultBuilder domain(DomainType domainType) {
 			this.domainType = requireNonNull(domainType);
 			return this;
 		}
 
-		@Override
-		public Builder domain(Domain domain) {
+		DefaultBuilder domain(Domain domain) {
 			this.domain = requireNonNull(domain);
 			return domain(domain.type());
 		}
 
-		@Override
-		public Builder hostname(String hostname) {
+		DefaultBuilder hostname(String hostname) {
 			this.hostname = requireNonNull(hostname);
 			return this;
 		}
 
-		@Override
-		public Builder port(int port) {
+		DefaultBuilder port(int port) {
 			this.port = port;
 			return this;
 		}
 
-		@Override
-		public Builder securePort(int securePort) {
+		DefaultBuilder securePort(int securePort) {
 			this.securePort = securePort;
 			return this;
 		}
 
-		@Override
-		public Builder https(boolean https) {
+		DefaultBuilder https(boolean https) {
 			this.https = https;
 			return this;
 		}
 
-		@Override
-		public Builder json(boolean json) {
+		DefaultBuilder json(boolean json) {
 			this.json = json;
 			return this;
 		}
 
-		@Override
-		public Builder socketTimeout(int socketTimeout) {
+		DefaultBuilder socketTimeout(int socketTimeout) {
 			this.socketTimeout = socketTimeout;
 			return this;
 		}
 
-		@Override
-		public Builder connectTimeout(int connectTimeout) {
+		DefaultBuilder connectTimeout(int connectTimeout) {
 			this.connectTimeout = connectTimeout;
 			return this;
 		}
 
-		@Override
-		public Builder user(User user) {
+		DefaultBuilder user(User user) {
 			this.user = requireNonNull(user);
 			return this;
 		}
 
-		@Override
-		public Builder clientType(String clientType) {
+		DefaultBuilder clientType(String clientType) {
 			this.clientType = requireNonNull(clientType);
 			return this;
 		}
 
-		@Override
-		public Builder clientId(UUID clientId) {
+		DefaultBuilder clientId(UUID clientId) {
 			this.clientId = requireNonNull(clientId);
 			return this;
 		}
 
-		@Override
-		public Builder clientVersion(@Nullable Version clientVersion) {
+		DefaultBuilder clientVersion(@Nullable Version clientVersion) {
 			this.clientVersion = clientVersion;
 			return this;
 		}
 
-		@Override
-		public HttpEntityConnection build() {
+		HttpEntityConnection build() {
 			return json ? new JsonHttpEntityConnection(this) : new DefaultHttpEntityConnection(this);
 		}
 	}

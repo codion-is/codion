@@ -20,7 +20,7 @@ package is.codion.swing.framework.model.component;
 
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.reactive.value.Value;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -62,8 +62,8 @@ final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel 
 	// Entity-specific surface -> the wrapped entity model
 
 	@Override
-	public EntityConnectionProvider connectionProvider() {
-		return model.connectionProvider();
+	public EntityConnection connection() {
+		return model.connection();
 	}
 
 	@Override
@@ -258,8 +258,8 @@ final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel 
 		}
 
 		@Override
-		public Builder connectionProvider(EntityConnectionProvider connectionProvider) {
-			return new DefaultBuilder(step.connectionProvider(connectionProvider));
+		public Builder connection(EntityConnection connection) {
+			return new DefaultBuilder(step.connection(connection));
 		}
 	}
 }

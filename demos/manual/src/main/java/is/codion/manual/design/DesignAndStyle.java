@@ -25,7 +25,6 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.reactive.value.ValueList;
 import is.codion.common.utilities.scheduler.TaskScheduler;
 import is.codion.framework.db.local.LocalEntityConnection;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityConditionModel;
 import is.codion.manual.store.domain.Store.Customer;
@@ -44,7 +43,7 @@ import static javax.swing.BorderFactory.createTitledBorder;
 public final class DesignAndStyle {
 
 	public static void main(String[] args) {
-		LocalEntityConnectionProvider connectionProvider = null;
+		LocalEntityConnection connection = null;
 		Entity entity = null;
 		SwingFilterTableModel<List<String>, Integer> tableModel = null;
 		FilterTable<List<String>, Integer> table = null;
@@ -76,16 +75,13 @@ public final class DesignAndStyle {
 		EntityConditionModel condition =
 						EntityConditionModel.builder()
 										.entityType(Customer.TYPE)
-										.connectionProvider(connectionProvider)
+										.connection(connection)
 										.build();
 		//end::builders[]
 
 		//tag::accessors[]
 		Observer<String> observer = event.observer();
 
-		LocalEntityConnection connection = connectionProvider.connection();
-
-		boolean modified = entity.modified();
 
 		Entity.Key primaryKey = entity.primaryKey();
 		//end::accessors[]

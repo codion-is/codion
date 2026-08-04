@@ -22,7 +22,7 @@ import is.codion.common.reactive.observer.Observable;
 import is.codion.common.reactive.value.Value;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -32,8 +32,8 @@ public final class CountryEditModel extends SwingEntityEditModel {
 
 	private final Value<Double> averageCityPopulation = Value.nullable();
 
-	CountryEditModel(EntityConnectionProvider connectionProvider) {
-		super(Country.TYPE, connectionProvider);
+	CountryEditModel(EntityConnection connection) {
+		super(Country.TYPE, connection);
 		editor().entity().addConsumer(this::setAverageCityPopulation);
 		//only show cities for currently selected country
 		editor().entity().addConsumer(this::filterCities);

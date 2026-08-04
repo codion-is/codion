@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -28,10 +28,10 @@ import java.util.Collection;
 
 public final class InvoiceModel extends SwingEntityModel {
 
-	public InvoiceModel(EntityConnectionProvider connectionProvider) {
-		super(new InvoiceEditModel(connectionProvider));
+	public InvoiceModel(EntityConnection connection) {
+		super(new InvoiceEditModel(connection));
 
-		InvoiceLineEditModel invoiceLineEditModel = new InvoiceLineEditModel(connectionProvider);
+		InvoiceLineEditModel invoiceLineEditModel = new InvoiceLineEditModel(connection);
 
 		SwingEntityModel invoiceLineModel = new SwingEntityModel(invoiceLineEditModel);
 		detail().add(ForeignKeyModelLink.builder()

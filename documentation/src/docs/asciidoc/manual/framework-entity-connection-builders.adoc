@@ -1,0 +1,90 @@
+= Connection Builders
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:url-javadoc: link:../api
+
+An {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html[EntityConnection] built via one of the builders below manages itself, regardless of protocol (JDBC, RMI, HTTP): it connects on demand, validates the underlying connection before each operation and re-establishes it when it has gone bad.
+
+A client therefore holds on to a single *EntityConnection* instance for its lifetime, handing it to the models requiring database access. The instance stays valid across a network failure or a server restart, only the connection underneath it being replaced. If no connection can be established the operation throws.
+
+TIP: Use {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#builder()[EntityConnection.builder()] to build a connection of the type specified by the {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#CLIENT_CONNECTION_TYPE[CLIENT_CONNECTION_TYPE] configuration value, instead of naming a transport at compile time.
+
+[#_localentityconnection]
+== LocalEntityConnection
+
+{url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html[LocalEntityConnection]
+
+A connection based on a local JDBC connection.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionBuilderDemo.java[tags=local]
+----
+
+[#_remoteentityconnection]
+== RemoteEntityConnection
+
+{url-javadoc}{framework-db-rmi}/is/codion/framework/db/rmi/RemoteEntityConnection.html[RemoteEntityConnection]
+
+A connection based on a remote RMI connection.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionBuilderDemo.java[tags=remote]
+----
+
+[#_httpentityconnection]
+== HttpEntityConnection
+
+{url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnection.html[HttpEntityConnection]
+
+A connection based on a remote HTTP connection.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionBuilderDemo.java[tags=http]
+----
+
+For more information see <<{basedir}/technical/technical.adoc#_http_connections, HTTP Connections>> in the technical docs.
+
+== Customizing the Description
+
+The connection description is displayed in the application frame title (e.g., "Chinook - SCOTT@SERVER@HOST") and can be retrieved via `EntityConnection.description()`.
+
+=== Default Descriptions
+
+Each connection type has its own default description:
+
+* *LocalEntityConnection* - Database name in uppercase (e.g., "H2DB")
+* *RemoteEntityConnection* - Server name and hostname (e.g., "SERVER@HOST")
+* *HttpEntityConnection* - Hostname or URL (e.g., "example.com")
+
+=== Overriding the Description
+
+You can override the default description using the configuration property {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#DESCRIPTION[EntityConnection.DESCRIPTION]
+
+[source,java]
+----
+EntityConnection.DESCRIPTION.set("MyDescription");
+----
+
+or the associated JVM argument
+
+[source,properties]
+----
+-Dis.codion.framework.db.EntityConnection.description=MyDescription
+----
+
+This is particularly useful when:
+
+* Using HTTP connections with long URLs
+* Hiding production server details from the frame title
+* Providing a more user-friendly connection identifier
+
+.Example: Production client with generic description
+[source,bash]
+----
+java -Dis.codion.framework.db.EntityConnection.description=production \
+     -jar myapp-client.jar
+----
+
+Result: `MyApp - SCOTT@PRODUCTION` instead of `MyApp - SCOTT@SERVER@PROD-DB-01.COMPANY.COM`

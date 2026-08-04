@@ -61,11 +61,9 @@ import static is.codion.common.utilities.Configuration.booleanValue;
  * Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42);
  *}
  * <p>
- * Or via an EntityConnection or EntityConnectionProvider:
+ * Or via an EntityConnection:
  * {@snippet :
- * EntityConnectionProvider connectionProvider = connectionProvider();
- *
- * EntityConnection connection = connectionProvider.connection();
+ * EntityConnection connection = connection();
  *
  * Entities entities = connection.entities();
  *}

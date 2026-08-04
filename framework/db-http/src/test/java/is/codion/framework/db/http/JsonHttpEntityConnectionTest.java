@@ -143,7 +143,15 @@ public final class JsonHttpEntityConnectionTest extends AbstractHttpEntityConnec
 	}
 
 	private static Exception decodeError(int status, String body) {
-		return ((JsonHttpEntityConnection) createConnection())
+		//a raw connection, HttpEntityConnection.builder() building a self-managing one,
+		//which is not a JsonHttpEntityConnection but delegates to one
+		return ((JsonHttpEntityConnection) new AbstractHttpEntityConnection.DefaultBuilder()
+						.json(true)
+						.domain(TestDomain.DOMAIN)
+						.user(UNIT_TEST_USER)
+						.clientType("JsonHttpEntityConnectionTest")
+						.clientId(UUID.randomUUID())
+						.build())
 						.decodeError(new HttpTransport.Response(status, body.getBytes(UTF_8)));
 	}
 

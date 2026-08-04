@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.common.utilities.version.Version;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -31,34 +31,34 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 
 	private final AnalyticsModel analytics;
 
-	public ChinookAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider, List.of(
-						createAlbumModel(connectionProvider),
-						createPlaylistModel(connectionProvider),
-						createCustomerModel(connectionProvider)));
-		this.analytics = new AnalyticsModel(connectionProvider);
+	public ChinookAppModel(EntityConnection connection) {
+		super(connection, List.of(
+						createAlbumModel(connection),
+						createPlaylistModel(connection),
+						createCustomerModel(connection)));
+		this.analytics = new AnalyticsModel(connection);
 	}
 
 	public AnalyticsModel analytics() {
 		return analytics;
 	}
 
-	private static SwingEntityModel createAlbumModel(EntityConnectionProvider connectionProvider) {
-		AlbumModel albumModel = new AlbumModel(connectionProvider);
+	private static SwingEntityModel createAlbumModel(EntityConnection connection) {
+		AlbumModel albumModel = new AlbumModel(connection);
 		albumModel.tableModel().items().refresh();
 
 		return albumModel;
 	}
 
-	private static SwingEntityModel createPlaylistModel(EntityConnectionProvider connectionProvider) {
-		PlaylistModel playlistModel = new PlaylistModel(connectionProvider);
+	private static SwingEntityModel createPlaylistModel(EntityConnection connection) {
+		PlaylistModel playlistModel = new PlaylistModel(connection);
 		playlistModel.tableModel().items().refresh();
 
 		return playlistModel;
 	}
 
-	private static SwingEntityModel createCustomerModel(EntityConnectionProvider connectionProvider) {
-		CustomerModel customerModel = new CustomerModel(connectionProvider);
+	private static SwingEntityModel createCustomerModel(EntityConnection connection) {
+		CustomerModel customerModel = new CustomerModel(connection);
 		customerModel.tableModel().items().refresh();
 
 		return customerModel;

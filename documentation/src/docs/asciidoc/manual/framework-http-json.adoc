@@ -4,7 +4,7 @@
 :dir-technical: ../technical
 :url-javadoc: link:../api
 
-A client connecting over HTTP (see <<_httpentityconnectionprovider, HttpEntityConnectionProvider>>) uses one of two wire formats: *JSON*, the default, or *Java serialization*.
+A client connecting over HTTP (see <<_httpentityconnection, HttpEntityConnection>>) uses one of two wire formats: *JSON*, the default, or *Java serialization*.
 The serialization format requires the exchanged classes on both ends and a deserialization filter; the JSON format exchanges typed JSON documents — entities, conditions, error envelopes — and is the format for clients outside the trusted network, such as mobile clients.
 This chapter covers what a JSON client must provide: its domain, and JSON type registrations for the database operations it calls.
 
@@ -12,14 +12,14 @@ The format is selected via the connection provider builder or the *codion.client
 
 [source,java]
 ----
-HttpEntityConnectionProvider.builder()
+HttpEntityConnection.builder()
         .json(true)
         ...
 ----
 
 == Supplying the domain
 
-A client provides its domain model to the connection builder via {url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnectionProvider.Builder.html#domain(is.codion.framework.domain.Domain)[HttpEntityConnectionProvider.Builder.domain(Domain)].
+A client provides its domain model to the connection builder via {url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnection.Builder.html#domain(is.codion.framework.domain.Domain)[HttpEntityConnection.Builder.domain(Domain)].
 Without it, the client fetches the entity definitions from the server on connect — that reply is the one JSON-mode response carrying a Java-serialized object.
 A client with an injected domain skips the round trip and, if it avoids Java-serialized report results (see below), performs *no Java deserialization at all*.
 

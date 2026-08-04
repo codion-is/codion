@@ -23,8 +23,8 @@ import is.codion.common.utilities.user.User;
 import is.codion.demos.employees.domain.Employees;
 import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.domain.Employees.Employee;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.http.HttpEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.http.HttpEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario;
@@ -46,7 +46,7 @@ public final class EmployeesServletLoadTest {
 
 	private static final Random RANDOM = new Random();
 
-	private final LoadTest<EntityConnectionProvider> loadTest;
+	private final LoadTest<EntityConnection> loadTest;
 
 	private EmployeesServletLoadTest(User user) {
 		loadTest = LoadTest.builder()
@@ -66,12 +66,12 @@ public final class EmployeesServletLoadTest {
 						.build();
 	}
 
-	private static void closeApplication(EntityConnectionProvider client) {
+	private static void closeApplication(EntityConnection client) {
 		client.close();
 	}
 
-	private static EntityConnectionProvider createApplication(User user) throws CancelException {
-		return HttpEntityConnectionProvider.builder()
+	private static EntityConnection createApplication(User user) throws CancelException {
+		return HttpEntityConnection.builder()
 						.clientType("EmployeesServletLoadTest")
 						.domain(Employees.DOMAIN)
 						.user(user)
@@ -82,42 +82,42 @@ public final class EmployeesServletLoadTest {
 		loadTestPanel(loadTestModel(new EmployeesServletLoadTest(UNIT_TEST_USER).loadTest)).run();
 	}
 
-	private static final class UpdateLocation implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class UpdateLocation implements Scenario.Performer<EntityConnection> {
 
 		@Override
-		public void perform(EntityConnectionProvider client) {
-			List<Entity> departments = client.connection().select(all(Department.TYPE));
+		public void perform(EntityConnection client) {
+			List<Entity> departments = client.select(all(Department.TYPE));
 			Entity entity = departments.get(new Random().nextInt(departments.size()));
 			entity.set(Department.LOCATION, randomString(12));
-			client.connection().update(entity);
+			client.update(entity);
 		}
 	}
 
-	private static final class SelectDepartment implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class SelectDepartment implements Scenario.Performer<EntityConnection> {
 
 		@Override
-		public void perform(EntityConnectionProvider client) {
-			client.connection().select(Department.NAME.equalTo("Accounting"));
+		public void perform(EntityConnection client) {
+			client.select(Department.NAME.equalTo("Accounting"));
 		}
 	}
 
-	private static final class SelectEmployees implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class SelectEmployees implements Scenario.Performer<EntityConnection> {
 
 		@Override
-		public void perform(EntityConnectionProvider client) {
-			List<Entity> departments = client.connection().select(all(Department.TYPE));
+		public void perform(EntityConnection client) {
+			List<Entity> departments = client.select(all(Department.TYPE));
 
-			client.connection().select(Employee.DEPARTMENT
+			client.select(Employee.DEPARTMENT
 							.equalTo(departments.get(new Random().nextInt(departments.size())).get(Department.DEPARTMENT_NO)));
 		}
 	}
 
-	private static final class AddDepartment implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class AddDepartment implements Scenario.Performer<EntityConnection> {
 
 		@Override
-		public void perform(EntityConnectionProvider client) {
+		public void perform(EntityConnection client) {
 			int departmentNo = new Random().nextInt(5000);
-			client.connection().insert(client.entities().entity(Department.TYPE)
+			client.insert(client.entities().entity(Department.TYPE)
 							.with(Department.DEPARTMENT_NO, departmentNo)
 							.with(Department.NAME, randomString(6))
 							.with(Department.LOCATION, randomString(8))
@@ -125,15 +125,15 @@ public final class EmployeesServletLoadTest {
 		}
 	}
 
-	private static final class AddEmployee implements Scenario.Performer<EntityConnectionProvider> {
+	private static final class AddEmployee implements Scenario.Performer<EntityConnection> {
 
 		private final Random random = new Random();
 
 		@Override
-		public void perform(EntityConnectionProvider client) {
-			List<Entity> departments = client.connection().select(all(Department.TYPE));
+		public void perform(EntityConnection client) {
+			List<Entity> departments = client.select(all(Department.TYPE));
 			Entity department = departments.get(random.nextInt(departments.size()));
-			client.connection().insert(client.entities().entity(Employee.TYPE)
+			client.insert(client.entities().entity(Employee.TYPE)
 							.with(Employee.DEPARTMENT_FK, department)
 							.with(Employee.NAME, randomString(8))
 							.with(Employee.JOB, Employee.JOB_ITEMS.get(random.nextInt(Employee.JOB_ITEMS.size())).get())

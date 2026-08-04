@@ -19,7 +19,7 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.utilities.exceptions.Exceptions;
-import is.codion.framework.db.AbstractEntityConnectionProvider;
+import is.codion.framework.db.AbstractEntityConnection;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
@@ -33,13 +33,14 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A class responsible for managing a HttpEntityConnection.
- * @see HttpEntityConnectionProvider#builder()
+ * A self-managing {@link HttpEntityConnection}, connecting on demand and reconnecting
+ * when the underlying connection has gone bad.
+ * @see HttpEntityConnection#builder()
  */
-final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnectionProvider
-				implements HttpEntityConnectionProvider {
+final class ManagedHttpEntityConnection extends AbstractEntityConnection
+				implements HttpEntityConnection {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ManagedHttpEntityConnection.class);
 
 	private final String hostname;
 	private final int port;
@@ -50,7 +51,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 	private final int connectTimeout;
 	private final @Nullable Domain domain;
 
-	DefaultHttpEntityConnectionProvider(DefaultHttpEntityConnectionProviderBuilder builder) {
+	ManagedHttpEntityConnection(DefaultHttpEntityConnectionBuilder builder) {
 		super(builder);
 		this.hostname = requireNonNull(builder.hostname, "hostname must be specified");
 		this.port = builder.port;
@@ -71,8 +72,9 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 	protected EntityConnection connect() {
 		try {
 			LOG.debug("Initializing connection for {}", user());
-			HttpEntityConnection.Builder builder = HttpEntityConnection.builder()
-							.domain(domainType());
+			AbstractHttpEntityConnection.DefaultBuilder builder =
+							new AbstractHttpEntityConnection.DefaultBuilder()
+											.domain(domainType());
 			Domain localDomain = domain != null ? domain : localDomain(domainType());
 			if (localDomain != null) {
 				builder.domain(localDomain);

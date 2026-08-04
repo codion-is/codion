@@ -26,7 +26,6 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -84,7 +83,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	protected AbstractEntityTableModel(E editModel, FilterTableModel<Entity, Attribute<?>> filterModel) {
 		this(editModel, new DefaultEntityQueryModel(EntityConditionModel.builder()
 						.entityType(editModel.entityType())
-						.connectionProvider(editModel.connectionProvider())
+						.connection(editModel.connection())
 						.build()), filterModel);
 	}
 
@@ -107,7 +106,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 	@Override
 	public final Entities entities() {
-		return editModel.connectionProvider().entities();
+		return editModel.connection().entities();
 	}
 
 	@Override
@@ -143,11 +142,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 	@Override
 	public final R editor() {
 		return editModel.editor();
-	}
-
-	@Override
-	public final EntityConnectionProvider connectionProvider() {
-		return editModel.connectionProvider();
 	}
 
 	@Override

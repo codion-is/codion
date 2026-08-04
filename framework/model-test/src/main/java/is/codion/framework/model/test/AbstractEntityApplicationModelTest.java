@@ -19,8 +19,8 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.model.AbstractEntityApplicationModel;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.AbstractEntityModel;
@@ -53,21 +53,21 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
 
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 
 	protected AbstractEntityApplicationModelTest() {
-		this.connectionProvider = CONNECTION_PROVIDER;
+		this.connection = CONNECTION;
 	}
 
 	@Test
 	public void applicationModel() {
 		M deptModel = createDepartmentModel();
-		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connectionProvider, singleton(deptModel));
+		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connection, singleton(deptModel));
 		assertNotNull(model.models().get(Department.TYPE));
 		assertEquals(1, model.models().get().size());
 		assertEquals(UNIT_TEST_USER, model.user());
@@ -82,28 +82,28 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 
 	@Test
 	public void entityModelByEntityTypeNotFound() {
-		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connectionProvider, emptyList());
+		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connection, emptyList());
 		assertThrows(IllegalArgumentException.class, () -> model.models().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByEntityType() {
 		M departmentModel = createDepartmentModel();
-		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
+		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connection, singleton(departmentModel));
 		assertEquals(departmentModel, model.models().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByClass() {
 		M departmentModel = createDepartmentModel();
-		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
+		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connection, singleton(departmentModel));
 		assertEquals(departmentModel, model.models().get((Class<? extends M>) departmentModel.getClass()));
 	}
 
 	@Test
 	public void containsEntityModel() {
 		M departmentModel = createDepartmentModel();
-		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
+		EntityApplicationModel<M, E, T, R> model = new TestEntityApplicationModel<>(connection, singleton(departmentModel));
 
 		assertTrue(model.models().contains(Department.TYPE));
 		assertTrue(model.models().contains((Class<? extends M>) departmentModel.getClass()));
@@ -114,8 +114,8 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 		assertFalse(model.models().contains(detailModel));
 	}
 
-	protected final EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+	protected final EntityConnection connection() {
+		return connection;
 	}
 
 	/**
@@ -131,8 +131,8 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 					R extends EntityEditor<R>>
 					extends AbstractEntityApplicationModel<M, E, T, R> {
 
-		private TestEntityApplicationModel(EntityConnectionProvider connectionProvider, Collection<? extends M> entityModels) {
-			super(connectionProvider, entityModels);
+		private TestEntityApplicationModel(EntityConnection connection, Collection<? extends M> entityModels) {
+			super(connection, entityModels);
 		}
 	}
 }

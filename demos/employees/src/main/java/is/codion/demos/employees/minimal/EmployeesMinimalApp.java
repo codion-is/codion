@@ -20,7 +20,7 @@ package is.codion.demos.employees.minimal;
 
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
@@ -170,8 +170,8 @@ public final class EmployeesMinimalApp {
 	 */
 	public static final class EmployeeEditModel extends SwingEntityEditModel {
 
-		public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
-			super(Employee.TYPE, connectionProvider, new EmployeeComponentModels());
+		public EmployeeEditModel(EntityConnection connection) {
+			super(Employee.TYPE, connection, new EmployeeComponentModels());
 			//initialize the combo box models now, otherwise it happens
 			//during UI initialization when the combo boxes are created
 			editor().comboBoxModels().initialize(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
@@ -184,8 +184,8 @@ public final class EmployeesMinimalApp {
 			 * so that is only shows managers.
 			 */
 			@Override
-			public SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-				SwingEntityComboBoxModel comboBoxModel = SwingComponentModels.super.comboBoxModel(foreignKey, connectionProvider);
+			public SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnection connection) {
+				SwingEntityComboBoxModel comboBoxModel = SwingComponentModels.super.comboBoxModel(foreignKey, connection);
 				if (foreignKey.equals(Employee.MANAGER_FK)) {
 					comboBoxModel.condition().set(() -> Employee.JOB.in("Manager", "President"));
 				}
@@ -259,13 +259,13 @@ public final class EmployeesMinimalApp {
 	 */
 	public static final class EmployeesApplicationModel extends SwingEntityApplicationModel {
 
-		private EmployeesApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, List.of(createDepartmentModel(connectionProvider)));
+		private EmployeesApplicationModel(EntityConnection connection) {
+			super(connection, List.of(createDepartmentModel(connection)));
 		}
 
-		private static SwingEntityModel createDepartmentModel(EntityConnectionProvider connectionProvider) {
-			SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
-			SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
+		private static SwingEntityModel createDepartmentModel(EntityConnection connection) {
+			SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connection));
+			SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connection);
 			departmentModel.detail().add(employeeModel);
 
 			return departmentModel;
@@ -307,7 +307,7 @@ public final class EmployeesMinimalApp {
 		//Let's set the locale, otherwise the application would be in icelandic
 		Locale.setDefault(new Locale("en", "EN"));
 		//the remote connection settings
-		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
+		EntityConnection.CLIENT_CONNECTION_TYPE.set(EntityConnection.CONNECTION_TYPE_REMOTE);
 		Clients.SERVER_HOSTNAME.set("codion.is");
 		//we're using Secure Sockets Layer so that we need to specify a truststore
 		Clients.TRUSTSTORE.set("resources/config/truststore.jks");

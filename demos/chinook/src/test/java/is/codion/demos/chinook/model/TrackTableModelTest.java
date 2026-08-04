@@ -23,8 +23,8 @@ import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.model.TrackTableModel.RaisePriceTask;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 
 import org.junit.jupiter.api.Test;
@@ -37,11 +37,11 @@ public final class TrackTableModelTest {
 
 	@Test
 	void raisePriceOfSelected() throws Exception {
-		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-			Entity masterOfPuppets = connectionProvider.connection()
+		try (EntityConnection connection = createConnection()) {
+			Entity masterOfPuppets = connection
 							.selectSingle(Album.TITLE.equalTo("Master Of Puppets"));
 
-			TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
+			TrackTableModel trackTableModel = new TrackTableModel(connection);
 			trackTableModel.query().condition()
 							.get(Track.ALBUM_FK).set().equalTo(masterOfPuppets);
 
@@ -57,8 +57,8 @@ public final class TrackTableModelTest {
 		}
 	}
 
-	private static EntityConnectionProvider createConnectionProvider() {
-		return LocalEntityConnectionProvider.builder()
+	private static EntityConnection createConnection() {
+		return LocalEntityConnection.builder()
 						.domain(new ChinookImpl())
 						.user(User.parse("scott:tiger"))
 						.build();

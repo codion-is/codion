@@ -33,8 +33,8 @@ import is.codion.demos.chinook.model.PlaylistModel;
 import is.codion.demos.chinook.model.PlaylistTrackEditModel;
 import is.codion.demos.chinook.model.TrackEditModel;
 import is.codion.demos.chinook.model.TrackTableModel;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -52,76 +52,76 @@ public final class ChinookPanelsTest {
 		icons.put("minus", ChinookAppPanel.class.getResource("minus.svg"));
 	}
 
-	private final EntityConnectionProvider connectionProvider =
-					LocalEntityConnectionProvider.builder()
+	private final EntityConnection connection =
+					LocalEntityConnection.builder()
 									.domain(new ChinookImpl())
 									.user(User.parse(System.getProperty("codion.test.user")))
 									.build();
 
 	@Test
 	void album() {
-		new AlbumPanel(new AlbumModel(connectionProvider)).initialize();
+		new AlbumPanel(new AlbumModel(connection)).initialize();
 	}
 
 	@Test
 	void artist() {
-		SwingEntityModel model = new SwingEntityModel(new ArtistTableModel(connectionProvider));
+		SwingEntityModel model = new SwingEntityModel(new ArtistTableModel(connection));
 		new EntityPanel(model, new ArtistEditPanel(model.editModel())).initialize();
 	}
 
 	@Test
 	void customer() {
-		new CustomerPanel(new CustomerModel(connectionProvider)).initialize();
+		new CustomerPanel(new CustomerModel(connection)).initialize();
 	}
 
 	@Test
 	void employee() {
-		new EmployeePanel(new EmployeeModel(connectionProvider)).initialize();
+		new EmployeePanel(new EmployeeModel(connection)).initialize();
 	}
 
 	@Test
 	void genre() {
-		new GenrePanel(new GenreModel(connectionProvider)).initialize();
+		new GenrePanel(new GenreModel(connection)).initialize();
 	}
 
 	@Test
 	void invoice() {
-		new InvoicePanel(new InvoiceModel(connectionProvider)).initialize();
+		new InvoicePanel(new InvoiceModel(connection)).initialize();
 	}
 
 	@Test
 	void invoiceLine() {
-		SwingEntityModel model = new SwingEntityModel(new InvoiceLineEditModel(connectionProvider));
+		SwingEntityModel model = new SwingEntityModel(new InvoiceLineEditModel(connection));
 		new EntityPanel(model, new InvoiceLineEditPanel(model.editModel(), new JTextField())).initialize();
 	}
 
 	@Test
 	void mediaType() {
-		new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, connectionProvider)).initialize();
+		new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, connection)).initialize();
 	}
 
 	@Test
 	void playlist() {
-		SwingEntityModel model = new PlaylistModel(connectionProvider);
+		SwingEntityModel model = new PlaylistModel(connection);
 		new EntityPanel(model, new PlaylistEditPanel(model.editModel()),
 						new PlaylistTablePanel(model.tableModel())).initialize();
 	}
 
 	@Test
 	void playlistTrack() {
-		SwingEntityModel model = new SwingEntityModel(new PlaylistTrackEditModel(connectionProvider));
+		SwingEntityModel model = new SwingEntityModel(new PlaylistTrackEditModel(connection));
 		new EntityPanel(model, new PlaylistTrackEditPanel(model.editModel()),
 						new PlaylistTrackTablePanel(model.tableModel())).initialize();
 	}
 
 	@Test
 	void preferences() {
-		new PreferencesEditPanel(new SwingEntityEditModel(Preferences.TYPE, connectionProvider)).initialize();
+		new PreferencesEditPanel(new SwingEntityEditModel(Preferences.TYPE, connection)).initialize();
 	}
 
 	@Test
 	void track() {
-		SwingEntityModel model = new SwingEntityModel(new TrackTableModel(connectionProvider));
+		SwingEntityModel model = new SwingEntityModel(new TrackTableModel(connection));
 		TrackTableModel tableModel = (TrackTableModel) model.tableModel();
 		new EntityPanel(model, new TrackEditPanel((TrackEditModel) model.editModel(), tableModel.selection()),
 						new TrackTablePanel(tableModel)).initialize();

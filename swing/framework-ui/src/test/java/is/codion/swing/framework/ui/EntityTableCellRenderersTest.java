@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -38,14 +38,14 @@ public class EntityTableCellRenderersTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
 
 	@Test
 	void test() {
-		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
+		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
 		tablePanel.tableModel().items().refresh();
 		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRenderers();
 		FilterTableCellRenderer<Entity, Attribute<?>, ?> renderer = factory.create(Employee.NAME, tablePanel.table());
@@ -66,7 +66,7 @@ public class EntityTableCellRenderersTest {
 	void entityMismatch() {
 		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRenderers();
 		assertThrows(IllegalArgumentException.class, () -> factory.create(Department.NAME, FilterTable.builder()
-						.model(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER))
+						.model(new SwingEntityTableModel(Employee.TYPE, CONNECTION))
 						.build()));
 	}
 }

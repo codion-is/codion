@@ -87,7 +87,7 @@ final class AnalyticsPanel extends JPanel {
 														.center(EntityComboBox.builder()
 																		.model(analytics.topArtists().genreComboBoxModel())
 																		.preferredWidth(180))
-														.border(createTitledBorder(analytics.connectionProvider().entities()
+														.border(createTitledBorder(analytics.connection().entities()
 																		.definition(Track.TYPE)
 																		.attributes()
 																		.definition(Track.GENRE_FK)

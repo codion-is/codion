@@ -19,15 +19,7 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.utilities.property.PropertyValue;
-import is.codion.common.utilities.user.User;
-import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.DomainType;
-
-import org.jspecify.annotations.Nullable;
-
-import java.util.UUID;
 
 import static is.codion.common.utilities.Configuration.*;
 
@@ -110,33 +102,20 @@ public interface HttpEntityConnection extends EntityConnection {
 	PropertyValue<Integer> CONNECT_TIMEOUT = integerValue("codion.client.http.connectTimeout", 2000);
 
 	/**
+	 * <p>Instantiates a builder for a self-managing {@link HttpEntityConnection}, one which connects on demand
+	 * and reconnects when the underlying connection has gone bad, serving for the lifetime of a client.
 	 * @return a new builder instance
+	 * @see is.codion.framework.db.AbstractEntityConnection
 	 */
 	static Builder builder() {
-		return new AbstractHttpEntityConnection.DefaultBuilder();
+		return new DefaultHttpEntityConnectionBuilder();
 	}
 
 	/**
-	 * Builds a http based EntityConnection
+	 * Builds a self-managing http based {@link EntityConnection}.
+	 * @see HttpEntityConnection#builder()
 	 */
-	interface Builder {
-
-		/**
-		 * Specifies the domain type, in which case the entity definitions are fetched from the server.
-		 * @param domainType the domain model type
-		 * @return this builder instance
-		 * @see #domain(Domain)
-		 */
-		Builder domain(DomainType domainType);
-
-		/**
-		 * Specifies a local domain instance, in which case its entity definitions are used directly
-		 * instead of being fetched from the server.
-		 * @param domain the domain model to base this connection on
-		 * @return this builder instance
-		 * @see #domain(DomainType)
-		 */
-		Builder domain(Domain domain);
+	interface Builder extends EntityConnection.Builder<HttpEntityConnection, Builder> {
 
 		/**
 		 * @param hostname the http server hostname
@@ -179,34 +158,5 @@ public interface HttpEntityConnection extends EntityConnection {
 		 * @return this builder instance
 		 */
 		Builder connectTimeout(int connectTimeout);
-
-		/**
-		 * @param user the user
-		 * @return this builder instance
-		 */
-		Builder user(User user);
-
-		/**
-		 * @param clientType the client type
-		 * @return this builder instance
-		 */
-		Builder clientType(String clientType);
-
-		/**
-		 * @param clientId the client id
-		 * @return this builder instance
-		 */
-		Builder clientId(UUID clientId);
-
-		/**
-		 * @param clientVersion the client version
-		 * @return this Builder instance
-		 */
-		Builder clientVersion(@Nullable Version clientVersion);
-
-		/**
-		 * @return a http based {@link HttpEntityConnection}
-		 */
-		HttpEntityConnection build();
 	}
 }
