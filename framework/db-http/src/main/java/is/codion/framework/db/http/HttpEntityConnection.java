@@ -25,6 +25,8 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.UUID;
 
 import static is.codion.common.utilities.Configuration.*;
@@ -200,7 +202,7 @@ public interface HttpEntityConnection extends EntityConnection {
 		 * @param clientVersion the client version
 		 * @return this Builder instance
 		 */
-		Builder clientVersion(Version clientVersion);
+		Builder clientVersion(@Nullable Version clientVersion);
 
 		/**
 		 * @return a http based {@link HttpEntityConnection}

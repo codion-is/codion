@@ -32,7 +32,6 @@ import java.util.Optional;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import static is.codion.common.utilities.Configuration.longValue;
 import static is.codion.common.utilities.Configuration.stringValue;
@@ -178,7 +177,6 @@ public interface EntityConnectionProvider extends AutoCloseable {
 
 	/**
 	 * Closes the underlying connection and performs cleanup if required
-	 * @see EntityConnectionProvider.Builder#onClose(Consumer)
 	 */
 	void close();
 
@@ -318,13 +316,6 @@ public interface EntityConnectionProvider extends AutoCloseable {
 		 * @return this builder instance
 		 */
 		B clientVersion(@Nullable Version clientVersion);
-
-		/**
-		 * @param onClose called when this connection provider has been closed
-		 * @return this builder instance
-		 * @see EntityConnectionProvider#close()
-		 */
-		B onClose(Consumer<EntityConnectionProvider> onClose);
 
 		/**
 		 * Builds a {@link EntityConnectionProvider} instance based on this builder
