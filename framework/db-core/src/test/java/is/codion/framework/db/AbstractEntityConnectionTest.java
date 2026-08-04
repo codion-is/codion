@@ -76,7 +76,7 @@ public final class AbstractEntityConnectionTest {
 			assertEquals(TestDomain.DOMAIN, connection.domainType());
 			assertEquals(1, connection.connections());
 
-			connection.close();
+			connection.killUnderlying();
 
 			//the same instance, re-establishing itself on the next operation
 			connection.cacheQueries();
@@ -84,8 +84,8 @@ public final class AbstractEntityConnectionTest {
 		}
 
 		@Test
-		@DisplayName("closing the connection does not invalidate it")
-		void connection_closed_survives() {
+		@DisplayName("closing the connection is terminal")
+		void close_isTerminal() {
 			TestConnection connection = new TestConnectionBuilder()
 							.user(UNIT_TEST_USER)
 							.domain(TestDomain.DOMAIN)
@@ -95,10 +95,13 @@ public final class AbstractEntityConnectionTest {
 			connection.close();
 			assertFalse(connection.connected());
 
-			//the closed connection re-establishes itself rather than having to be discarded
-			connection.cacheQueries();
-			assertTrue(connection.connected());
-			assertEquals(2, connection.connections());
+			//it is a connection going bad that is healed, an explicit close is honored
+			assertThrows(IllegalStateException.class, connection::cacheQueries);
+			assertEquals(1, connection.connections());
+			//the domain metadata remains available
+			assertEquals(ENTITIES, connection.entities());
+			//closing an already closed connection has no effect
+			assertDoesNotThrow(() -> connection.close());
 		}
 
 		@Test
@@ -111,8 +114,8 @@ public final class AbstractEntityConnectionTest {
 
 			connection.cacheQueries();
 
-			//simulate a connection failure
-			connection.close();
+			//the underlying connection dies from an external cause
+			connection.killUnderlying();
 			assertFalse(connection.connected());
 
 			//the next operation re-establishes it, through the same instance
@@ -137,13 +140,13 @@ public final class AbstractEntityConnectionTest {
 
 		@Test
 		@DisplayName("connected() reports without re-establishing")
-		void connected_afterClose_doesNotHeal() {
+		void connected_afterUnderlyingDeath_doesNotHeal() {
 			TestConnection connection = new TestConnectionBuilder()
 							.user(UNIT_TEST_USER)
 							.domain(TestDomain.DOMAIN)
 							.build();
 
-			connection.close();
+			connection.killUnderlying();
 			assertFalse(connection.connected());
 			assertEquals(1, connection.connections());
 		}
@@ -316,8 +319,7 @@ public final class AbstractEntityConnectionTest {
 			connection.close();
 
 			assertFalse(connection.transactionOpen());
-			connection.cacheQueries();
-			assertEquals(2, connection.connections());
+			assertThrows(IllegalStateException.class, connection::cacheQueries);
 		}
 
 		@Test
@@ -444,14 +446,14 @@ public final class AbstractEntityConnectionTest {
 			EntityConnection.VALIDITY_CHECK_INTERVAL.set(50L);
 
 			AtomicInteger checks = new AtomicInteger();
-			EntityConnection connection = new CountingConnectionBuilder(checks)
+			CountingConnection connection = new CountingConnectionBuilder(checks)
 							.user(UNIT_TEST_USER)
 							.domain(TestDomain.DOMAIN)
 							.build();
 
 			//the connection dies, unnoticed, and is then used continuously
 			connection.cacheQueries();
-			connection.close();
+			connection.killUnderlying();
 
 			long deadline = System.currentTimeMillis() + 5_000;
 			while (!connection.connected() && System.currentTimeMillis() < deadline) {
@@ -580,14 +582,25 @@ public final class AbstractEntityConnectionTest {
 
 		private final AtomicInteger checks;
 
+		private volatile State alive = State.state(true);
+
 		private CountingConnection(CountingConnectionBuilder builder) {
 			super(builder);
 			this.checks = builder.checks;
 		}
 
+		/**
+		 * Simulates the current underlying connection dying from an external cause,
+		 * without this instance being told.
+		 */
+		private void killUnderlying() {
+			alive.set(false);
+		}
+
 		@Override
 		protected EntityConnection connect() {
 			State connected = State.state(true);
+			alive = connected;
 
 			return ProxyBuilder.of(EntityConnection.class)
 							.method("entities", parameters -> ENTITIES)
@@ -851,6 +864,8 @@ public final class AbstractEntityConnectionTest {
 
 		private final AtomicInteger connections = new AtomicInteger();
 
+		private volatile State alive = State.state(true);
+
 		private TestConnection(AbstractBuilder<?, ?> builder) {
 			super(builder);
 		}
@@ -862,9 +877,18 @@ public final class AbstractEntityConnectionTest {
 			return connections.get();
 		}
 
+		/**
+		 * Simulates the current underlying connection dying from an external cause,
+		 * without this instance being told.
+		 */
+		private void killUnderlying() {
+			alive.set(false);
+		}
+
 		@Override
 		protected EntityConnection connect() {
 			State connected = State.state(true);
+			alive = connected;
 			connections.incrementAndGet();
 
 			return ProxyBuilder.of(EntityConnection.class)

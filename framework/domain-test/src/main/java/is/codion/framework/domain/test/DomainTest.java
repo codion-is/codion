@@ -34,6 +34,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import org.junit.jupiter.api.AfterEach;
+
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;
@@ -44,8 +46,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A class for unit testing a domain model.
+ * <p>The connection is closed via {@link #close()}, which runs automatically after each test
+ * method when this class is extended, being {@link AfterEach} annotated. When used programmatically,
+ * close explicitly or via try-with-resources.
  */
-public class DomainTest {
+public class DomainTest implements AutoCloseable {
 
 	private static final String TEST_USER = "codion.test.user";
 	private static final int SELECT_LIMIT = 10;
@@ -101,7 +106,8 @@ public class DomainTest {
 	}
 
 	/**
-	 * Runs the insert/update/select/delete tests for the given entityType
+	 * Runs the insert/update/select/delete tests for the given entityType, within a
+	 * transaction which is rolled back, leaving the connection ready for the next call.
 	 * @param entityType the type of the entity to test
 	 * @throws DatabaseException in case of an exception
 	 */
@@ -124,8 +130,16 @@ public class DomainTest {
 		}
 		finally {
 			connection.rollbackTransaction();
-			connection.close();
 		}
+	}
+
+	/**
+	 * Closes the connection. Runs automatically after each test method when this class is extended.
+	 */
+	@AfterEach
+	@Override
+	public final void close() {
+		connection.close();
 	}
 
 	/**

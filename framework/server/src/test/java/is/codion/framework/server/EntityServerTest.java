@@ -342,16 +342,7 @@ public class EntityServerTest {
 										.user(UNIT_TEST_USER)
 										.build();
 
-		//the connection is established on demand, and re-established rather than replaced
-		connection.transactionOpen();
-		assertTrue(connection.connected());
-		connection.close();
-
-		connection.transactionOpen();
-		assertTrue(connection.connected());
-		connection.close();
-
-		connection.transactionOpen();
+		//established when built
 		assertTrue(connection.connected());
 
 		//disconnected server side, which connected() reports without healing, it being a question
@@ -359,10 +350,14 @@ public class EntityServerTest {
 		assertFalse(connection.connected());
 
 		//an operation re-establishes it, through the same instance
-		connection.transactionOpen();
+		connection.select(all(Employee.TYPE));
 		assertTrue(connection.connected());
 
 		connection.close();
+		assertFalse(connection.connected());
+
+		//close is terminal
+		assertThrows(IllegalStateException.class, () -> connection.select(all(Employee.TYPE)));
 	}
 
 	@Test

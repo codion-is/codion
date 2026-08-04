@@ -44,11 +44,10 @@ public final class EntityConnectionBuilderTest {
 			assertNotNull(connection.entities().definition(Department.TYPE));
 			assertFalse(connection.select(all(Department.TYPE)).isEmpty());
 
-			//self-managing, so the same instance is usable after being closed
+			//close is terminal, and closing again via try-with-resources has no effect
 			connection.close();
 			assertFalse(connection.connected());
-			assertFalse(connection.select(all(Department.TYPE)).isEmpty());
-			assertTrue(connection.connected());
+			assertThrows(IllegalStateException.class, () -> connection.select(all(Department.TYPE)));
 		}
 		finally {
 			EntityConnection.CLIENT_CONNECTION_TYPE.remove();
