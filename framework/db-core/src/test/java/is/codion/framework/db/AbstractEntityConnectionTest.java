@@ -147,6 +147,46 @@ public final class AbstractEntityConnectionTest {
 			assertFalse(connection.connected());
 			assertEquals(1, connection.connections());
 		}
+
+		@Test
+		@DisplayName("a build failing after the connect closes the established connection")
+		void build_entitiesFails_underlyingClosed() {
+			FailingEntitiesConnectionBuilder builder = new FailingEntitiesConnectionBuilder();
+			builder.failEntities = true;
+
+			//the underlying connection is established, then fetching the entities fails - the build
+			//fails, and the connection it established must be closed, not left dangling on the server
+			assertThrows(RuntimeException.class, () -> builder
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build());
+			assertEquals(1, builder.connections.get());
+			assertEquals(1, builder.closed.get(), "the established connection must be closed when the build fails");
+		}
+
+		@Test
+		@DisplayName("a re-establishment failing after the connect closes the established connection")
+		void reconnect_entitiesFails_underlyingClosedAndRetried() {
+			FailingEntitiesConnectionBuilder builder = new FailingEntitiesConnectionBuilder();
+			FailingEntitiesConnection connection = builder
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.killUnderlying();
+			connection.failEntities = true;
+
+			//the re-establishment creates a live underlying connection, whose entities() then fails -
+			//that connection must be closed rather than left dangling
+			assertThrows(RuntimeException.class, connection::cacheQueries);
+			assertEquals(2, builder.connections.get());
+			assertEquals(2, builder.closed.get(), "the dead original and the half established replacement");
+
+			//and the failure is not sticky, the next operation tries again
+			connection.failEntities = false;
+			connection.cacheQueries();
+			assertEquals(3, builder.connections.get());
+		}
 	}
 
 	@Nested
@@ -729,6 +769,81 @@ public final class AbstractEntityConnectionTest {
 		@Override
 		protected TransactionConnection createConnection() {
 			return new TransactionConnection(this);
+		}
+	}
+
+	private static final class FailingEntitiesConnection extends AbstractEntityConnection {
+
+		private final AtomicInteger connections;
+		private final AtomicInteger closed;
+
+		private volatile State alive = State.state(true);
+		private volatile boolean failEntities;
+
+		private FailingEntitiesConnection(FailingEntitiesConnectionBuilder builder) {
+			super(builder);
+			this.connections = builder.connections;
+			this.closed = builder.closed;
+			this.failEntities = builder.failEntities;
+		}
+
+		/**
+		 * Simulates the current underlying connection dying from an external cause,
+		 * without this instance being told.
+		 */
+		private void killUnderlying() {
+			alive.set(false);
+		}
+
+		@Override
+		protected EntityConnection connect() {
+			connections.incrementAndGet();
+			State connected = State.state(true);
+			alive = connected;
+
+			return ProxyBuilder.of(EntityConnection.class)
+							.method("entities", parameters -> {
+								if (failEntities) {
+									throw new RuntimeException("Fetching the entities failed");
+								}
+
+								return ENTITIES;
+							})
+							.method("connected", parameters -> connected.is())
+							//stands in for any operation
+							.method("cacheQueries", parameters -> {
+								if (!connected.is()) {
+									throw new RuntimeException("Connection has gone bad");
+								}
+
+								return (QueryCache) () -> {};
+							})
+							.method("close", parameters -> {
+								closed.incrementAndGet();
+								connected.set(false);
+
+								return null;
+							})
+							.build();
+		}
+	}
+
+	private static final class FailingEntitiesConnectionBuilder extends AbstractBuilder<FailingEntitiesConnection, FailingEntitiesConnectionBuilder> {
+
+		//held here, shared with the connection, since the connection instance
+		//never escapes a failing build for the test to inspect
+		private final AtomicInteger connections = new AtomicInteger();
+		private final AtomicInteger closed = new AtomicInteger();
+
+		private boolean failEntities = false;
+
+		private FailingEntitiesConnectionBuilder() {
+			super(EntityConnection.CONNECTION_TYPE_LOCAL);
+		}
+
+		@Override
+		protected FailingEntitiesConnection createConnection() {
+			return new FailingEntitiesConnection(this);
 		}
 	}
 
