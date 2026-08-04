@@ -472,8 +472,18 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	}
 
 	private void doConnect() {
-		connection = connect();
-		entities = connection.entities();
+		EntityConnection connection = connect();
+		try {
+			entities = connection.entities();
+		}
+		catch (Exception e) {
+			try {
+				connection.close();
+			}
+			catch (Exception ignored) {/*ignored*/}
+			throw e;
+		}
+		this.connection = connection;
 		validated = System.nanoTime();
 	}
 
