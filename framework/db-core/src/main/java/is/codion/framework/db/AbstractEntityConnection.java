@@ -48,6 +48,12 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * <p>An abstract self-managing {@link EntityConnection}, one which establishes the underlying connection on
  * demand, validates it before each operation and re-establishes it when it has gone bad. The same instance
  * therefore serves for the lifetime of a client, there being no need to fetch a connection per operation.
+ * <p>The transaction state lives on this instance rather than being asked of the underlying connection,
+ * which, once it has gone bad, can no longer answer: a connection with an open transaction is never validated
+ * nor replaced, so that an operation on one which has gone bad fails loudly instead of the transaction being
+ * silently discarded, and {@link #transactionOpen()} answers without a round trip. See
+ * {@link #commitTransaction()} and {@link #rollbackTransaction()} for how ending a transaction on a
+ * connection which has gone bad behaves.
  * <p>Subclasses supply the transport by implementing {@link #connect()}, and reach the current underlying
  * connection via {@link #delegate()} should they need to serve methods of their own.
  * @see EntityConnection#builder()
@@ -65,6 +71,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	private final @Nullable Version clientVersion;
 
 	private volatile @Nullable EntityConnection connection;
+	private volatile @Nullable EntityConnection transactionConnection;
 	private volatile @Nullable Entities entities;
 	private volatile long validated;
 
@@ -123,8 +130,8 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	}
 
 	/**
-	 * Closes the underlying connection. This instance survives, a subsequent operation
-	 * establishes a new underlying connection.
+	 * Closes the underlying connection, rolling back any open transaction with it. This instance
+	 * survives, a subsequent operation establishes a new underlying connection.
 	 */
 	@Override
 	public final void close() {
@@ -132,6 +139,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		synchronized (lock) {
 			connection = this.connection;
 			this.connection = null;
+			this.transactionConnection = null;
 		}
 		//validate and close without holding the lock
 		if (connection != null && valid(connection)) {
@@ -139,24 +147,64 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		}
 	}
 
+	/**
+	 * Answered from the transaction state maintained by this instance, without consulting,
+	 * or establishing, the underlying connection.
+	 * @return true if a transaction is open
+	 */
 	@Override
 	public final boolean transactionOpen() {
-		return delegate().transactionOpen();
+		return transactionConnection != null;
 	}
 
 	@Override
 	public final void startTransaction() {
-		delegate().startTransaction();
+		if (transactionConnection != null) {
+			throw new IllegalStateException("Transaction already open");
+		}
+		EntityConnection connection = delegate();
+		connection.startTransaction();
+		transactionConnection = connection;
 	}
 
+	/**
+	 * <p>Rolls back the open transaction. Should the rollback call itself fail, the underlying connection
+	 * is discarded and the failure logged rather than propagated - the disconnect rolls the transaction
+	 * back, which is the outcome the caller asked for, and the exception which caused the caller to roll
+	 * back remains the one being reported. The next operation establishes a fresh connection.
+	 */
 	@Override
 	public final void rollbackTransaction() {
-		delegate().rollbackTransaction();
+		EntityConnection connection = transactionConnection();
+		try {
+			connection.rollbackTransaction();
+			transactionConnection = null;
+		}
+		catch (Exception e) {
+			LOG.warn("Rollback failed, discarding the connection - the disconnect rolls the transaction back", e);
+			discard(connection);
+		}
 	}
 
+	/**
+	 * <p>Commits the open transaction. Should the commit call fail on a connection which is no longer
+	 * valid, the connection is discarded - the transaction died with it - and the next operation
+	 * establishes a fresh one. A failed commit on a valid connection leaves the transaction open,
+	 * the caller decides whether to retry or roll back.
+	 */
 	@Override
 	public final void commitTransaction() {
-		delegate().commitTransaction();
+		EntityConnection connection = transactionConnection();
+		try {
+			connection.commitTransaction();
+			transactionConnection = null;
+		}
+		catch (Exception e) {
+			if (!valid(connection)) {
+				discard(connection);
+			}
+			throw e;
+		}
 	}
 
 	@Override
@@ -338,11 +386,19 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	/**
 	 * <p>Returns the underlying connection, establishing it if this is the first use and re-establishing it if
 	 * it has gone bad. Called before each operation, hence {@link EntityConnection#VALIDITY_CHECK_INTERVAL}.
-	 * <p>Note that a connection with an open transaction is returned as is, so that the operation fails rather
-	 * than the transaction being discarded without the caller ever hearing about it.
-	 * @return a valid underlying connection
+	 * <p>Note that a connection with an open transaction is returned as is, without validation, so that an
+	 * operation on one which has gone bad fails rather than the transaction being discarded without the
+	 * caller ever hearing about it, see {@link #startTransaction()}.
+	 * @return the underlying connection
 	 */
 	protected final EntityConnection delegate() {
+		// during an open transaction the connection is used as is - replacing it would silently
+		// discard the transaction, and validating it would be a wasted round trip ahead of an
+		// operation which must go to this connection regardless of the answer
+		EntityConnection transactionConnection = this.transactionConnection;
+		if (transactionConnection != null) {
+			return transactionConnection;
+		}
 		// the validity check blocks for the duration of any operation in progress
 		// on the connection, so it must not be performed while holding the lock
 		EntityConnection connection = this.connection;
@@ -354,9 +410,6 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 				return this.connection; //re-established by another thread while we were validating
 			}
 			if (this.connection != null) {
-				if (transactionOpen(this.connection)) {
-					return this.connection;
-				}
 				LOG.info("Previous connection invalid, reconnecting");
 				try {//try to disconnect just in case
 					this.connection.close();
@@ -382,6 +435,32 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	 */
 	protected void close(EntityConnection connection) {
 		connection.close();
+	}
+
+	private EntityConnection transactionConnection() {
+		EntityConnection connection = transactionConnection;
+		if (connection == null) {
+			throw new IllegalStateException("Transaction is not open");
+		}
+
+		return connection;
+	}
+
+	/**
+	 * Discards the given connection, along with any transaction state, closing it best effort.
+	 * The next operation establishes a fresh connection.
+	 */
+	private void discard(EntityConnection connection) {
+		synchronized (lock) {
+			if (this.connection == connection) {
+				this.connection = null;
+			}
+			this.transactionConnection = null;
+		}
+		try {//try to disconnect just in case
+			connection.close();
+		}
+		catch (Exception ignored) {/*ignored*/}
 	}
 
 	private void establish() {
@@ -417,16 +496,6 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		}
 
 		return false;
-	}
-
-	private static boolean transactionOpen(EntityConnection connection) {
-		try {
-			return connection.transactionOpen();
-		}
-		catch (Exception e) {
-			LOG.debug("Unable to determine transaction state", e);
-			return false;
-		}
 	}
 
 	private static boolean valid(EntityConnection connection) {
