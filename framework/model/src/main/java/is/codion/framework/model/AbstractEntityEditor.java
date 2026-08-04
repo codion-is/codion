@@ -145,7 +145,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	/**
 	 * Instantiates an {@link AbstractEntityEditor}
 	 * @param entityType the entity type
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 * @param componentModels the editor component models
 	 */
 	protected AbstractEntityEditor(EntityType entityType, EntityConnection connection,
@@ -156,7 +156,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	/**
 	 * Instantiates an {@link AbstractEntityEditor}
 	 * @param entityType the entity type
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 * @param componentModels the editor component models
 	 * @param comboBoxModels supplies the {@link ComboBoxModels} instance to use
 	 */

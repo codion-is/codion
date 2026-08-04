@@ -31,7 +31,7 @@ public class SwingEntityApplicationModel
 
 	/**
 	 * Instantiates a new {@link SwingEntityApplicationModel}
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 * @param entityModels the entity models
 	 */
 	public SwingEntityApplicationModel(EntityConnection connection, Collection<SwingEntityModel> entityModels) {

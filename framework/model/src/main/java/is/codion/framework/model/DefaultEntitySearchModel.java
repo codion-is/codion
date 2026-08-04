@@ -352,16 +352,16 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	static class DefaultEntityTypeStep implements Builder.EntityTypeStep {
 
 		@Override
-		public Builder.ConnectionProviderStep entityType(EntityType entityType) {
-			return new DefaultConnectionProviderStep(requireNonNull(entityType));
+		public Builder.ConnectionStep entityType(EntityType entityType) {
+			return new DefaultConnectionStep(requireNonNull(entityType));
 		}
 	}
 
-	private static class DefaultConnectionProviderStep implements Builder.ConnectionProviderStep {
+	private static class DefaultConnectionStep implements Builder.ConnectionStep {
 
 		private final EntityType entityType;
 
-		private DefaultConnectionProviderStep(EntityType entityType) {
+		private DefaultConnectionStep(EntityType entityType) {
 			this.entityType = entityType;
 		}
 

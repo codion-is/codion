@@ -181,7 +181,10 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 
 	private void tracingChanged(boolean trace) {
 		LOG.debug("Method tracing {} for {}", trace ? "enabled" : "disabled", user());
-		setMethodTracer(trace ? createMethodTracer() : MethodTracer.NO_OP, (Traceable) delegate());
+		//configures the established connection, should one exist - connect() installs
+		//the tracer on the next one, no reason to establish a connection here
+		established().ifPresent(connection ->
+						setMethodTracer(trace ? createMethodTracer() : MethodTracer.NO_OP, (Traceable) connection));
 	}
 
 	private static void setMethodTracer(MethodTracer methodTracer, Traceable traceable) {

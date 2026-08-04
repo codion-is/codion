@@ -239,21 +239,21 @@ final class DefaultSwingEntityComboBoxModel implements SwingEntityComboBoxModel 
 	private static final class DefaultEntityTypeStep implements Builder.EntityTypeStep {
 
 		@Override
-		public Builder.ConnectionProviderStep entityType(EntityType entityType) {
-			return new DefaultConnectionProviderStep(EntityComboBoxModel.builder().entityType(entityType));
+		public Builder.ConnectionStep entityType(EntityType entityType) {
+			return new DefaultConnectionStep(EntityComboBoxModel.builder().entityType(entityType));
 		}
 
 		@Override
-		public Builder.ConnectionProviderStep foreignKey(ForeignKey foreignKey) {
-			return new DefaultConnectionProviderStep(EntityComboBoxModel.builder().foreignKey(foreignKey));
+		public Builder.ConnectionStep foreignKey(ForeignKey foreignKey) {
+			return new DefaultConnectionStep(EntityComboBoxModel.builder().foreignKey(foreignKey));
 		}
 	}
 
-	private static final class DefaultConnectionProviderStep implements Builder.ConnectionProviderStep {
+	private static final class DefaultConnectionStep implements Builder.ConnectionStep {
 
-		private final EntityComboBoxModel.Builder.ConnectionProviderStep step;
+		private final EntityComboBoxModel.Builder.ConnectionStep step;
 
-		private DefaultConnectionProviderStep(EntityComboBoxModel.Builder.ConnectionProviderStep step) {
+		private DefaultConnectionStep(EntityComboBoxModel.Builder.ConnectionStep step) {
 			this.step = step;
 		}
 

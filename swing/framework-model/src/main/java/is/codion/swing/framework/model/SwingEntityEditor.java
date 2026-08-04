@@ -40,7 +40,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	/**
 	 * Instantiates a new {@link SwingEntityEditor}
 	 * @param entityType the entity type
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 */
 	public SwingEntityEditor(EntityType entityType, EntityConnection connection) {
 		this(entityType, connection, new SwingComponentModels() {});
@@ -49,7 +49,7 @@ public final class SwingEntityEditor extends AbstractEntityEditor<SwingEntityEdi
 	/**
 	 * Instantiates a new {@link SwingEntityEditor}
 	 * @param entityType the entity type
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 * @param componentModels the component models
 	 */
 	public SwingEntityEditor(EntityType entityType, EntityConnection connection,

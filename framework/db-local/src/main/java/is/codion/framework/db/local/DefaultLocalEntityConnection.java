@@ -118,7 +118,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private final Domain domain;
 	private final User user;
-	private final UUID clientId = UUID.randomUUID();
 	private final Database database;
 	private final Lock lock = new Lock();
 	private final SelectQueries selectQueries;
@@ -139,6 +138,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private @Nullable DefaultQueryCache queryCache;
 	private @Nullable Connection connection;
+	private @Nullable UUID clientId;
 	private boolean transactionOpen = false;
 
 	/**
@@ -184,7 +184,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public UUID clientId() {
-		return clientId;
+		synchronized (lock) {
+			if (clientId == null) {
+				clientId = UUID.randomUUID();
+			}
+
+			return clientId;
+		}
 	}
 
 	@Override

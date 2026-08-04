@@ -67,8 +67,10 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManagedRemoteEntityConnection.class);
 
-	private @Nullable Server<ServerEntityConnection, ServerAdmin> server;
-	private @Nullable String serverName;
+	//volatile since these are written during connect(), under the base class lock, but read
+	//by close(EntityConnection) and description(), which are not synchronized against it
+	private volatile @Nullable Server<ServerEntityConnection, ServerAdmin> server;
+	private volatile @Nullable String serverName;
 	private boolean truststoreResolved = false;
 
 	private final String hostname;
@@ -89,7 +91,10 @@ final class ManagedRemoteEntityConnection extends AbstractEntityConnection
 	 */
 	@Override
 	public Optional<String> description() {
-		return Optional.of(DESCRIPTION.optional().orElse(serverName + "@" + hostname));
+		String serverName = this.serverName;
+
+		return Optional.of(DESCRIPTION.optional()
+						.orElse(serverName == null ? hostname : serverName + "@" + hostname));
 	}
 
 	@Override

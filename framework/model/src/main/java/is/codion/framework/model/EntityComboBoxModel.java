@@ -62,7 +62,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 					booleanValue(EntityComboBoxModel.class.getName() + ".persistenceAware", true);
 
 	/**
-	 * @return the connection provider used by this combo box model
+	 * @return the connection used by this combo box model
 	 */
 	EntityConnection connection();
 
@@ -112,34 +112,34 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * Specifies the entity type, either directly or derived from a {@link ForeignKey}.
-		 * Provides a {@link ConnectionProviderStep}
+		 * Provides a {@link ConnectionStep}
 		 */
 		interface EntityTypeStep {
 
 			/**
 			 * @param entityType the type of the entity this combo box model should represent
-			 * @return a new {@link ConnectionProviderStep} instance
+			 * @return a new {@link ConnectionStep} instance
 			 */
-			ConnectionProviderStep entityType(EntityType entityType);
+			ConnectionStep entityType(EntityType entityType);
 
 			/**
 			 * <p>This method configures the resulting {@link EntityComboBoxModel} according to the given foreign key,
 			 * including null if it is nullable and specifying the attributes to include if defined.
 			 * <p>If the foreign key has select attributes defined, those are set in the combo box model.
 			 * @param foreignKey the foreign key which referenced entity type this combo box model should represent
-			 * @return a new {@link ConnectionProviderStep} instance
+			 * @return a new {@link ConnectionStep} instance
 			 * @see ForeignKeyDefinition#attributes()
 			 * @see EntityDefinition.ForeignKeys#nullable(ForeignKey)
 			 * @see EntityComboBoxModel.Builder#includeNull(boolean)
 			 * @see EntityComboBoxModel.Builder#attributes(Collection)
 			 */
-			ConnectionProviderStep foreignKey(ForeignKey foreignKey);
+			ConnectionStep foreignKey(ForeignKey foreignKey);
 		}
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ConnectionProviderStep {
+		interface ConnectionStep {
 
 			/**
 			 * @param connection an EntityConnection instance

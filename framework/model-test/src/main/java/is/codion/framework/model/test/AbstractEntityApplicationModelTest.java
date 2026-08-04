@@ -76,7 +76,7 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 	}
 
 	@Test
-	public void constructorNullConnectionProvider() {
+	public void constructorNullConnection() {
 		assertThrows(NullPointerException.class, () -> new TestEntityApplicationModel<>(null, emptyList()));
 	}
 

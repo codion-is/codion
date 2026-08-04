@@ -41,7 +41,9 @@ public interface EntityEditModel<R extends EntityEditor<R>> {
 	EntityType entityType();
 
 	/**
-	 * @return the connection provider used by this edit model
+	 * <p>Typically the single self-managing connection shared by all models of an application,
+	 * safe to hold on to and use for its lifetime, see {@link EntityApplicationModel#connection()}.
+	 * @return the connection used by this edit model
 	 */
 	EntityConnection connection();
 

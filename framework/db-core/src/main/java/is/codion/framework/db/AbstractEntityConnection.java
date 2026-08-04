@@ -421,8 +421,8 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 			}
 			if (this.connection != null) {
 				LOG.info("Previous connection invalid, reconnecting");
-				try {//try to disconnect just in case
-					this.connection.close();
+				try {//close best effort, the connection being bad, note that this happens while holding the lock
+					close(this.connection);
 				}
 				catch (Exception ignored) {/*ignored*/}
 				this.connection = null;
@@ -439,12 +439,24 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	protected abstract EntityConnection connect();
 
 	/**
-	 * Closes the given connection, called when this connection is closed or when a bad
-	 * connection is being replaced.
+	 * <p>Closes the given connection, called when this connection is closed and, best effort, when
+	 * a bad connection is being replaced or discarded. Transports override this to release any
+	 * related resources, deregistering with a server for example.
 	 * @param connection the connection to close
 	 */
 	protected void close(EntityConnection connection) {
 		connection.close();
+	}
+
+	/**
+	 * <p>Returns the underlying connection should one be established, without validating it,
+	 * establishing one or throwing in case this connection has been closed. For subclasses
+	 * needing to configure the current underlying connection, should one exist -
+	 * {@link #connect()} being where a new one gets configured.
+	 * @return the established underlying connection, or an empty {@link Optional} if none exists
+	 */
+	protected final Optional<EntityConnection> established() {
+		return Optional.ofNullable(connection);
 	}
 
 	private void verifyOpen() {
@@ -473,8 +485,8 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 			}
 			this.transactionConnection = null;
 		}
-		try {//try to disconnect just in case
-			connection.close();
+		try {//close best effort, the connection being bad
+			close(connection);
 		}
 		catch (Exception ignored) {/*ignored*/}
 	}
@@ -494,7 +506,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		}
 		catch (Exception e) {
 			try {
-				connection.close();
+				close(connection);
 			}
 			catch (Exception ignored) {/*ignored*/}
 			throw e;
@@ -569,7 +581,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		}
 
 		@Override
-		public B domain(DomainType domain) {
+		public final B domain(DomainType domain) {
 			this.domain = requireNonNull(domain);
 			return self();
 		}

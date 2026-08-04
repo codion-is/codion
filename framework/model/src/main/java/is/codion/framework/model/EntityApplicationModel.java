@@ -66,7 +66,11 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	User user();
 
 	/**
-	 * @return the EntityConnection instance being used by this EntityApplicationModel
+	 * <p>Returns the {@link EntityConnection} used by this application model, a single self-managing
+	 * instance shared by all its entity models: it validates the underlying connection before each
+	 * operation and re-establishes it when it has gone bad, so it is safe to hold on to and use for
+	 * the lifetime of the application, see {@link EntityConnection#builder()}.
+	 * @return the connection used by this application model
 	 */
 	EntityConnection connection();
 

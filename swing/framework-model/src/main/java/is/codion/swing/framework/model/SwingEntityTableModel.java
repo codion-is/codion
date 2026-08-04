@@ -51,7 +51,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	/**
 	 * Instantiates a new SwingEntityTableModel.
 	 * @param entityType the entityType
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 */
 	public SwingEntityTableModel(EntityType entityType, EntityConnection connection) {
 		this(new SwingEntityEditModel(entityType, connection));
@@ -60,7 +60,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	/**
 	 * Instantiates a new SwingEntityTableModel containing the given entities.
 	 * @param entities the entities to populate the model with
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 * @throws IllegalArgumentException in case {@code entities} is empty
 	 */
 	public SwingEntityTableModel(Collection<Entity> entities, EntityConnection connection) {
@@ -71,7 +71,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * Instantiates a new SwingEntityTableModel containing the given entities.
 	 * @param entityType the entity type
 	 * @param entities the entities to populate the model with
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 * @throws IllegalArgumentException in case {@code entities} is empty
 	 */
 	public SwingEntityTableModel(EntityType entityType, Collection<Entity> entities, EntityConnection connection) {

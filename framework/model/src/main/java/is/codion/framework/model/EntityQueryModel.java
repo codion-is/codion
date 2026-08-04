@@ -66,7 +66,7 @@ public interface EntityQueryModel {
 	EntityType entityType();
 
 	/**
-	 * @return the connection provider
+	 * @return the connection
 	 */
 	EntityConnection connection();
 

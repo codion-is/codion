@@ -75,7 +75,7 @@ public interface EntitySearchModel {
 	EntityDefinition entityDefinition();
 
 	/**
-	 * @return the connection provider used by this search model
+	 * @return the connection used by this search model
 	 */
 	EntityConnection connection();
 
@@ -197,21 +197,21 @@ public interface EntitySearchModel {
 	interface Builder {
 
 		/**
-		 * Provides a {@link ConnectionProviderStep}
+		 * Provides a {@link ConnectionStep}
 		 */
 		interface EntityTypeStep {
 
 			/**
 			 * @param entityType the type of the entity this search model should represent
-			 * @return a new {@link ConnectionProviderStep} instance
+			 * @return a new {@link ConnectionStep} instance
 			 */
-			ConnectionProviderStep entityType(EntityType entityType);
+			ConnectionStep entityType(EntityType entityType);
 		}
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ConnectionProviderStep {
+		interface ConnectionStep {
 
 			/**
 			 * @param connection an EntityConnection instance
