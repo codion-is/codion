@@ -103,9 +103,4 @@ final class ManagedHttpEntityConnection extends AbstractEntityConnection
 						.findAny()
 						.orElse(null);
 	}
-
-	@Override
-	protected void close(EntityConnection connection) {
-		connection.close();
-	}
 }

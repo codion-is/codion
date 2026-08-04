@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
 public interface EntityExport {
 
 	/**
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 * @return a new {@link EntityTypeStep}
 	 */
 	static EntityTypeStep builder(EntityConnection connection) {

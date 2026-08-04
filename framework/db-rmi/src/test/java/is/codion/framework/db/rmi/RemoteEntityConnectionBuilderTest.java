@@ -33,6 +33,8 @@ import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.NotBoundException;
@@ -52,6 +54,17 @@ public class RemoteEntityConnectionBuilderTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+
+	@BeforeEach
+	void setUp() {
+		//check on every call, this test asserts both failure and healing the moment the server goes away or returns
+		EntityConnection.VALIDITY_CHECK_INTERVAL.set(0L);
+	}
+
+	@AfterEach
+	void tearDown() {
+		EntityConnection.VALIDITY_CHECK_INTERVAL.remove();
+	}
 
 	@Test
 	void test() throws RemoteException, ServerAuthenticationException, NotBoundException {
@@ -87,6 +100,17 @@ public class RemoteEntityConnectionBuilderTest {
 
 		//no server to reconnect to
 		assertThrows(RuntimeException.class, () -> connection.select(all(Department.TYPE)));
+
+		//the server comes back and the next operation heals the connection, through the same instance
+		//(cacheQueries() rather than a select, the in-memory database having died with the server)
+		EntityServer.startServer(configuration);
+		connection.cacheQueries().close();
+		assertTrue(connection.connected());
+
+		server = (Server<ServerEntityConnection, EntityServerAdmin>)
+						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(serverName);
+		admin = server.admin(User.parse("scott:tiger"));
+		admin.shutdown();
 
 		connection.close();
 

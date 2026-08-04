@@ -96,7 +96,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	EntityDefinition entityDefinition();
 
 	/**
-	 * @return the connection provider
+	 * @return the connection
 	 */
 	EntityConnection connection();
 
@@ -810,7 +810,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
 		 * using the search attributes defined for that entity type.
 		 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
-		 * @param connection the connection provider
+		 * @param connection the connection
 		 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 		 * @see EntityDefinition.Columns#searchable()
@@ -837,7 +837,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * null item caption if the underlying attribute is nullable.
 		 * <p>If the foreign key has select attributes defined, those are set in the combo box model.
 		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
-		 * @param connection the connection provider
+		 * @param connection the connection
 		 * @return a {@link EntityComboBoxModel} for the given foreign key
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 * @see EntityComboBoxModel.Builder#nullCaption(String)
@@ -858,7 +858,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * This default implementation returns a sorted {@link FilterComboBoxModel} using the default
 		 * null item caption if the underlying column is nullable
 		 * @param column the column
-		 * @param connection the connection provider
+		 * @param connection the connection
 		 * @param <T> the value type
 		 * @return a combo box model based on the given column
 		 * @see FilterComboBoxModel#NULL_CAPTION

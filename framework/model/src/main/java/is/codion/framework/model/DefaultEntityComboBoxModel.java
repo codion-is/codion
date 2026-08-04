@@ -445,27 +445,27 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	static class DefaultEntityTypeStep implements Builder.EntityTypeStep {
 
 		@Override
-		public Builder.ConnectionProviderStep entityType(EntityType entityType) {
-			return new DefaultConnectionProviderStep(requireNonNull(entityType));
+		public Builder.ConnectionStep entityType(EntityType entityType) {
+			return new DefaultConnectionStep(requireNonNull(entityType));
 		}
 
 		@Override
-		public Builder.ConnectionProviderStep foreignKey(ForeignKey foreignKey) {
-			return new DefaultConnectionProviderStep(requireNonNull(foreignKey));
+		public Builder.ConnectionStep foreignKey(ForeignKey foreignKey) {
+			return new DefaultConnectionStep(requireNonNull(foreignKey));
 		}
 	}
 
-	private static class DefaultConnectionProviderStep implements Builder.ConnectionProviderStep {
+	private static class DefaultConnectionStep implements Builder.ConnectionStep {
 
 		private final EntityType entityType;
 		private final @Nullable ForeignKey foreignKey;
 
-		private DefaultConnectionProviderStep(ForeignKey foreignKey) {
+		private DefaultConnectionStep(ForeignKey foreignKey) {
 			this.entityType = foreignKey.referencedType();
 			this.foreignKey = foreignKey;
 		}
 
-		private DefaultConnectionProviderStep(EntityType entityType) {
+		private DefaultConnectionStep(EntityType entityType) {
 			this.entityType = entityType;
 			this.foreignKey = null;
 		}

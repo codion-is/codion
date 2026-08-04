@@ -46,7 +46,7 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	EntityType entityType();
 
 	/**
-	 * @return the connection provider
+	 * @return the connection
 	 */
 	EntityConnection connection();
 
@@ -157,15 +157,15 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 
 			/**
 			 * @param entityType the underlying entity type
-			 * @return the {@link ConnectionProviderStep}
+			 * @return the {@link ConnectionStep}
 			 */
-			ConnectionProviderStep entityType(EntityType entityType);
+			ConnectionStep entityType(EntityType entityType);
 		}
 
 		/**
 		 * The second step in building an {@link EntityConditionModel}
 		 */
-		interface ConnectionProviderStep {
+		interface ConnectionStep {
 
 			/**
 			 * @param connection a {@link EntityConnection} instance

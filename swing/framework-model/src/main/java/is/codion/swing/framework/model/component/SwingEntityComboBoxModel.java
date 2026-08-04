@@ -66,33 +66,33 @@ public interface SwingEntityComboBoxModel extends EntityComboBoxModel, SwingFilt
 
 		/**
 		 * Specifies the entity type, either directly or derived from a {@link ForeignKey}.
-		 * Provides a {@link ConnectionProviderStep}
+		 * Provides a {@link ConnectionStep}
 		 */
 		interface EntityTypeStep {
 
 			/**
 			 * @param entityType the type of the entity this combo box model should represent
-			 * @return a new {@link ConnectionProviderStep} instance
+			 * @return a new {@link ConnectionStep} instance
 			 */
-			ConnectionProviderStep entityType(EntityType entityType);
+			ConnectionStep entityType(EntityType entityType);
 
 			/**
 			 * <p>This method configures the resulting {@link SwingEntityComboBoxModel} according to the given foreign key,
 			 * including null if it is nullable and specifying the attributes to include if defined.
 			 * @param foreignKey the foreign key which referenced entity type this combo box model should represent
-			 * @return a new {@link ConnectionProviderStep} instance
+			 * @return a new {@link ConnectionStep} instance
 			 * @see ForeignKeyDefinition#attributes()
 			 * @see EntityDefinition.ForeignKeys#nullable(ForeignKey)
 			 * @see SwingEntityComboBoxModel.Builder#includeNull(boolean)
 			 * @see SwingEntityComboBoxModel.Builder#attributes(Collection)
 			 */
-			ConnectionProviderStep foreignKey(ForeignKey foreignKey);
+			ConnectionStep foreignKey(ForeignKey foreignKey);
 		}
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ConnectionProviderStep {
+		interface ConnectionStep {
 
 			/**
 			 * @param connection an EntityConnection instance

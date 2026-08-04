@@ -500,7 +500,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	/**
 	 * Overrides {@link #connection(Function)}
-	 * @param connection the connection provider
+	 * @param connection the connection for the application to use
 	 * @return this {@link EntityApplication} instance
 	 */
 	public EntityApplication<M, P> connection(EntityConnection connection) {
@@ -509,7 +509,11 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	/**
-	 * @param connection initializes the connection provider, receives the user provided by {@link #user(Supplier)}
+	 * <p>Note that the login dialog relies on the given function connecting eagerly, failing when
+	 * given invalid credentials or an unreachable server. {@link EntityConnection#builder()} and the
+	 * transport specific builders guarantee this, building establishes the connection - a function
+	 * returning an unestablished hand-rolled {@link EntityConnection} would validate any credentials.
+	 * @param connection provides the application connection, receives the user provided by {@link #user(Supplier)}
 	 * @return this {@link EntityApplication} instance
 	 */
 	public EntityApplication<M, P> connection(Function<User, EntityConnection> connection) {
@@ -917,6 +921,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 		@Override
 		public void validate(User user) {
+			//a connection validated earlier must not linger, should this validation fail
+			connection = null;
 			//validate through the configured connection function when present, so the validated
 			//connection is the one the application actually uses, see initializeConnection().
 			//Building it establishes it, throwing if the server is not reachable

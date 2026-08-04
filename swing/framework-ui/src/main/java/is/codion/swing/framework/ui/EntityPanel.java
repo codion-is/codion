@@ -110,7 +110,7 @@ import static javax.swing.SwingConstants.VERTICAL;
 /**
  * A panel representing an Entity via an EntityModel, which facilitates browsing and editing of records.
  * {@snippet :
- *   EntityConnection connection = createConnectionProvider();
+ *   EntityConnection connection = createConnection();
  *   SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connection);
  *   EntityPanel entityPanel = new EntityPanel(entityModel);
  *   entityPanel.initialize();
@@ -1981,7 +1981,7 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Builds an {@link EntityPanel} based on this builder configuration.
-		 * @param connection the connection provider
+		 * @param connection the connection
 		 * @return an {@link EntityPanel} based on this builder
 		 */
 		EntityPanel build(EntityConnection connection);

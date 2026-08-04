@@ -52,7 +52,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	/**
 	 * Instantiates a new {@link EntityConditions}.
 	 * @param entityType the entity type
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 */
 	public EntityConditions(EntityType entityType, EntityConnection connection) {
 		this.entityType = requireNonNull(entityType);
@@ -134,7 +134,7 @@ public class EntityConditions implements Supplier<Map<Attribute<?>, ConditionMod
 	}
 
 	/**
-	 * @return the underlying connection provider
+	 * @return the underlying connection
 	 */
 	protected final EntityConnection connection() {
 		return connection;

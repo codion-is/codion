@@ -36,7 +36,7 @@ public class SwingEntityConditions extends EntityConditions {
 	/**
 	 * Instantiates a new {@link SwingEntityConditions}.
 	 * @param entityType the entity type
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 */
 	public SwingEntityConditions(EntityType entityType, EntityConnection connection) {
 		super(entityType, connection);

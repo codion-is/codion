@@ -492,16 +492,16 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 		private static final class DefaultEntityTypeStep implements EntityTypeStep {
 
 			@Override
-			public ConnectionProviderStep entityType(EntityType entityType) {
-				return new DefaultConnectionProviderStep(requireNonNull(entityType));
+			public ConnectionStep entityType(EntityType entityType) {
+				return new DefaultConnectionStep(requireNonNull(entityType));
 			}
 		}
 
-		private static final class DefaultConnectionProviderStep implements ConnectionProviderStep {
+		private static final class DefaultConnectionStep implements ConnectionStep {
 
 			private final EntityType entityType;
 
-			private DefaultConnectionProviderStep(EntityType entityType) {
+			private DefaultConnectionStep(EntityType entityType) {
 				this.entityType = entityType;
 			}
 

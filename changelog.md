@@ -34,11 +34,16 @@ Codion Change Log
 - AbstractEntityConnection now maintains the transaction state itself, instead of asking the underlying connection, which, once it has gone bad, can no longer answer: a connection with an open transaction is never validated nor replaced, so an operation on one which has gone bad fails loudly instead of continuing on a fresh connection outside the transaction, transactionOpen() no longer costs a round trip, and a failed rollback discards the underlying connection - the disconnect rolls the transaction back - instead of leaving the client stuck on a connection in a transaction it can neither continue nor end.
 - AbstractEntityConnection, an underlying connection failing between being established and fetching the entities is now closed instead of being left dangling, on the server until it timed out in case of the remote connections.
 - AbstractEntityConnection.close() is now terminal, subsequent operations throw IllegalStateException instead of re-establishing the connection, which the provider used to: it is a connection going bad that is healed, an explicit close is honored. A background task straggling past an application exit now fails loudly instead of silently leaving a fresh connection behind, and holding on to one via try-with-resources means what it says.
+- AbstractEntityConnection, the close(EntityConnection) hook is now also called, best effort, when a bad connection is being replaced or discarded, as its javadoc claimed, so transports get to release related resources on every disposal path.
+- AbstractEntityConnection.established() added, the underlying connection should one exist, for subclasses needing to configure the current one without establishing a connection to do so.
 ### is.codion.framework.db.local
 - LocalEntityConnection.builder() added, replacing LocalEntityConnectionProvider, which has been removed along with its TRACING configuration value, now on LocalEntityConnection.
 - LocalEntityConnection, the optimisticLocking, limitReferenceDepth and iteratorBufferSize settings are now re-applied when a self-managing connection re-establishes the underlying one, as queryTimeout already was.
+- LocalEntityConnection, toggling tracing no longer establishes a connection when none exists, the tracer is installed on the next one.
+- DefaultLocalEntityConnection no longer creates a UUID when instantiated.
 ### is.codion.framework.db.rmi
 - RemoteEntityConnection is now the client side RMI based EntityConnection, with RemoteEntityConnection.builder() replacing RemoteEntityConnectionProvider, which has been removed.
+- RemoteEntityConnection now disconnects from the server, best effort, when a bad connection is being replaced or discarded, instead of leaving the session to time out server side.
 - RemoteEntityConnection renamed ServerEntityConnection, along with RemoteEntityResultIterator, renamed ServerEntityResultIterator. These are the wire contracts, the connection and iterator running on the server as exported to clients, which is what the Server prefix now indicates. Note that ServerEntityConnection still can not extend EntityConnection, RMI requiring every method on a Remote interface to declare RemoteException, which is also why it can not host the client side builder. REMOTE_CLIENT_DOMAIN_TYPE moved to ServerEntityConnection along with it.
 ### is.codion.framework.db.http
 - HttpEntityConnection.builder() now builds a self-managing connection, replacing HttpEntityConnectionProvider, which has been removed.
@@ -48,10 +53,15 @@ Codion Change Log
 - EntityEditor.EditorTasks now resolves its connection on first use instead of when the tasks are created, since they are typically created on the UI thread and performed on a background thread. Selecting a record while a refresh was in progress blocked the UI thread on a connection the tasks often never used.
 - EntityEditor.EditorEntity.set() and replace() are now fully synchronous when no detail editors are registered.
 - AbstractEntityEditor, the detail editor insert, update and delete tasks no longer resolve the connection when they are built, which happens on the calling thread, typically the UI thread.
+- EntityComboBoxModel.Builder.ConnectionProviderStep renamed ConnectionStep, along with the ones on EntitySearchModel.Builder and EntityConditionModel.Builder, these steps accepting a connection since the provider was removed.
 ### is.codion.framework.domain.test
 - DomainTest now closes the connection via the connection provider, closing it directly left the provider handing out a connection it believed to be alive.
 - DomainTest now holds an EntityConnection instead of an EntityConnectionProvider.
 - DomainTest.test() no longer closes the connection, closing being terminal, so it can be called any number of times per instance. The connection is instead closed after each test method, DomainTest.close() being @AfterEach annotated, and DomainTest is now AutoCloseable, for programmatic use.
+### is.codion.swing.framework.model
+- SwingEntityComboBoxModel.Builder.ConnectionProviderStep renamed ConnectionStep, following EntityComboBoxModel.
+### is.codion.swing.framework.ui
+- EntityApplication, the connection is now established in the startup progress worker instead of on the EDT, which connections becoming eagerly established had moved it to, for applications configuring a user or a connection function instead of using the login dialog. User prompts still happen on the EDT, an unreachable database or server is now reported through the startup worker's exception handling instead of freezing the EDT for the duration of the connect timeout.
 
 ## 0.18.81
 ### is.codion.common.rmi
@@ -103,7 +113,6 @@ Codion Change Log
 - Preferences ownership moved to application.
 - EntityDependenciesPanel preferences updated.
 - EntityApplicationPanel.exit(), error during window disposal no longer prevents further disposals, logged.
-- EntityApplication, the connection is now established in the startup progress worker instead of on the EDT, which connections becoming eagerly established had moved it to, for applications configuring a user or a connection function instead of using the login dialog. User prompts still happen on the EDT, an unreachable database or server is now reported through the startup worker's exception handling instead of freezing the EDT for the duration of the connect timeout.
 ### is.codion.tools.swing.mcp
 - SwingMcpServer now Swing EDT compliant.
 - SwingMcpServer now attaches the narrator window.
