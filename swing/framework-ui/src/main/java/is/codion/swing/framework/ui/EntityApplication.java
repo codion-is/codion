@@ -561,7 +561,8 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		if (onStarting != null) {
 			onStarting.run();
 		}
-		EntityConnection connection = initializeConnection();
+		//user prompts happen here, on the EDT, the connect itself in the startup progress worker
+		Supplier<EntityConnection> connection = initializeConnection();
 		long initializationStarted = currentTimeMillis();
 		if (startupDialog) {
 			Dialogs.progressWorker()
@@ -573,7 +574,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 							.execute();
 		}
 		else {
-			startApplication(initializeApplicationModel(connection), initializationStarted);
+			startApplication(initializeApplicationModel(connection.get()), initializationStarted);
 		}
 	}
 
@@ -810,21 +811,32 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 		return null;
 	}
 
-	private EntityConnection initializeConnection() {
+	/**
+	 * Resolves the connection to use, prompting for a user as needed. Any dialogs happen here, on the EDT,
+	 * while the connect itself is deferred to the returned supplier, for the startup progress worker to
+	 * perform off the EDT. Building a connection establishes it, so an unreachable database or server is
+	 * then reported through the worker's exception handling instead of freezing the EDT.
+	 * @return a supplier providing the application connection
+	 */
+	private Supplier<EntityConnection> initializeConnection() {
 		if (connection != null) {
-			return connection;
+			EntityConnection configured = connection;
+
+			return () -> configured;
 		}
 		User connectionUser = user == null ? userSupplier.apply(defaultUser).get() : user;
-		//the default login validator connects when validating, reuse that provider instead of connecting again
+		//the default login validator connects when validating, reuse that connection instead of connecting again
 		if (userSupplier instanceof EntityApplication.DefaultUserSupplier &&
 						((DefaultUserSupplier) userSupplier).loginValidator.connection != null) {
-			return ((DefaultUserSupplier) userSupplier).loginValidator.connection;
+			EntityConnection validated = ((DefaultUserSupplier) userSupplier).loginValidator.connection;
+
+			return () -> validated;
 		}
 		if (connectionFunction != null) {
-			return connectionFunction.apply(connectionUser);
+			return () -> connectionFunction.apply(connectionUser);
 		}
 
-		return createConnection(connectionUser);
+		return () -> createConnection(connectionUser);
 	}
 
 	private EntityConnection createConnection(User user) {
@@ -949,17 +961,18 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private final class InitializeApplicationModel implements ResultTaskHandler<M> {
 
-		private final EntityConnection connection;
+		private final Supplier<EntityConnection> connection;
 		private final long initializationStarted;
 
-		private InitializeApplicationModel(EntityConnection connection, long initializationStarted) {
+		private InitializeApplicationModel(Supplier<EntityConnection> connection, long initializationStarted) {
 			this.connection = connection;
 			this.initializationStarted = initializationStarted;
 		}
 
 		@Override
 		public M execute() throws Exception {
-			return initializeApplicationModel(connection);
+			//the connect happens here, off the EDT, unless the login validator already connected
+			return initializeApplicationModel(connection.get());
 		}
 
 		@Override

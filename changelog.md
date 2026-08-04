@@ -100,6 +100,7 @@ Codion Change Log
 - Preferences ownership moved to application.
 - EntityDependenciesPanel preferences updated.
 - EntityApplicationPanel.exit(), error during window disposal no longer prevents further disposals, logged.
+- EntityApplication, the connection is now established in the startup progress worker instead of on the EDT, which connections becoming eagerly established had moved it to, for applications configuring a user or a connection function instead of using the login dialog. User prompts still happen on the EDT, an unreachable database or server is now reported through the startup worker's exception handling instead of freezing the EDT for the duration of the connect timeout.
 ### is.codion.tools.swing.mcp
 - SwingMcpServer now Swing EDT compliant.
 - SwingMcpServer now attaches the narrator window.
