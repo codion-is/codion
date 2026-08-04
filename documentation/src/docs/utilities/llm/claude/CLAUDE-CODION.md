@@ -109,10 +109,7 @@ List<Entity> artists = connection.select(
     orderBy(Artist.NAME)
 );
 
-// Transactions
-EntityConnection connection = connectionProvider.connection();
-
-// Without result
+// Transactions without result
 EntityConnection.transaction(connection, () -> {
     Entities entities = connection.entities();
 
@@ -129,9 +126,7 @@ EntityConnection.transaction(connection, () -> {
     connection.insert(album);
 });
 
-// With result
-EntityConnection connection = connectionProvider.connection();
-
+// Transactions with result
 Entity.Key albumKey = EntityConnection.transaction(connection, () -> {
     Entities entities = connection.entities();
 

@@ -46,4 +46,4 @@ Logic belongs in the models — reacting to edits, persistence events and select
 
 The chinook demo's models are the reference examples: value dependencies and custom persistence in *InvoiceLineEditModel*, value propagation in *InvoiceEditModel*, selection-scoped operations in *TrackTableModel* — each documented in the chapters that follow.
 
-NOTE: Since models are UI-free, they are constructed and exercised directly in unit tests — create the model with a test connection provider, edit, insert, assert.
+NOTE: Since models are UI-free, they are constructed and exercised directly in unit tests — create the model with a test connection, edit, insert, assert.

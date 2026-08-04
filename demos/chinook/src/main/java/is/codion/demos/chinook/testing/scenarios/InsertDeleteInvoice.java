@@ -42,7 +42,6 @@ public final class InsertDeleteInvoice implements Performer<EntityConnection> {
 
 	@Override
 	public void perform(EntityConnection connection) {
-
 		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
 		Entity invoice = connection.insertSelect(connection.entities().entity(Invoice.TYPE)
 						.with(Invoice.CUSTOMER_FK, customer)

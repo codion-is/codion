@@ -369,7 +369,7 @@ Common Swing model classes.
 * {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/combobox/package-summary.html[is.codion.swing.common.model.component.combobox]
 * {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/package-summary.html[is.codion.swing.common.model.component.table]
 * {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/text/package-summary.html[is.codion.swing.common.model.component.text]
-* {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/package-summary.html[is.codion.swing.common.model.worker]
+* {url-javadoc}{swing-common-model}/is/codion/swing/common/model/dispatch/package-summary.html[is.codion.swing.common.model.dispatch]
 
 .Dependency graph
 [%collapsible]

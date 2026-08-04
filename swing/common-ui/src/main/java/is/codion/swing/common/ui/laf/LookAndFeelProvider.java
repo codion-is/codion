@@ -53,7 +53,7 @@ public interface LookAndFeelProvider {
 	}
 
 	/**
-	 * Adds a new look and feel provider.
+	 * Adds a new look and feel enabler.
 	 * @param lookAndFeelInfo the look and feel info
 	 */
 	static void addLookAndFeel(LookAndFeelInfo lookAndFeelInfo) {
@@ -61,7 +61,7 @@ public interface LookAndFeelProvider {
 	}
 
 	/**
-	 * Adds a new look and feel provider.
+	 * Adds a new look and feel enabler.
 	 * @param lookAndFeelInfo the look and feel info
 	 * @param enabler configures and enables this look and feel
 	 */
@@ -70,9 +70,9 @@ public interface LookAndFeelProvider {
 	}
 
 	/**
-	 * Adds the given look and feel provider.
-	 * Note that this replaces any existing look and feel provider based on the same classname.
-	 * @param lookAndFeelEnabler the look and feel provider to add
+	 * Adds the given look and feel enabler.
+	 * Note that this replaces any existing look and feel enabler based on the same classname.
+	 * @param lookAndFeelEnabler the look and feel enabler to add
 	 */
 	static void addLookAndFeel(LookAndFeelEnabler lookAndFeelEnabler) {
 		LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelEnabler).lookAndFeelInfo().getClassName(), lookAndFeelEnabler);
@@ -87,18 +87,18 @@ public interface LookAndFeelProvider {
 	}
 
 	/**
-	 * Returns a look and feel provider for the given class, if available
+	 * Returns a look and feel enabler for the given class, if available
 	 * @param clazz the look and feel class
-	 * @return a look and feel provider, an empty Optional if not found
+	 * @return a look and feel enabler, an empty Optional if not found
 	 */
 	static Optional<LookAndFeelEnabler> findLookAndFeel(Class<? extends LookAndFeel> clazz) {
 		return findLookAndFeel(requireNonNull(clazz).getName());
 	}
 
 	/**
-	 * Returns a look and feel provider with the given classname, if found in the available looks and feels
+	 * Returns a look and feel enabler with the given classname, if found in the available looks and feels
 	 * @param className the look and feel classname
-	 * @return a look and feel provider, an empty Optional if not found
+	 * @return a look and feel enabler, an empty Optional if not found
 	 */
 	static Optional<LookAndFeelEnabler> findLookAndFeel(String className) {
 		return Optional.ofNullable(LOOK_AND_FEEL_PROVIDERS.get(requireNonNull(className)));

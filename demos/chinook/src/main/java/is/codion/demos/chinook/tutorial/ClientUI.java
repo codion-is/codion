@@ -174,9 +174,7 @@ public final class ClientUI {
 		Database.URL.set("jdbc:h2:mem:h2db");
 		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-		// initialize a connection provider, this class is responsible
-		// for supplying a valid connection or throwing an exception
-		// in case a connection can not be established
+		// initialize a connection
 		EntityConnection connection =
 						LocalEntityConnection.builder()
 										.domain(new ChinookImpl())

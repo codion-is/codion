@@ -50,8 +50,8 @@ import static java.util.Objects.requireNonNull;
  * <p>Each execution runs on its own thread from a shared pool of daemon threads, created as needed and reaped
  * when idle, so {@code N} simultaneous executions use {@code N} threads.</p>
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
- * those directly to the {@code onProgress} and {@code onPublish} handlers on the UI thread.</p>
- * <p>The {@code onStarted} handlers are guaranteed to be called on the UI thread before the background task executes,
+ * those directly to the {@code onProgress} and {@code onPublish} handlers for the {@link Dispatcher}.</p>
+ * <p>The {@code onStarted} handlers are guaranteed to be called using the {@link Dispatcher} before the background task executes,
  * and the {@code onDone} handlers are guaranteed to be called after the background task completes.
  * <p>All handler types support multiple handlers, which are called in the order they were added.
  * <p>There are two ways to use this class:
@@ -105,11 +105,11 @@ public final class ProgressWorker<T, V> {
 	private final List<Runnable> onInterrupted;
 	private final Dispatcher dispatcher;
 
-	private Executor uiExecutor = Runnable::run;
+	private Executor dispatchExecutor = Runnable::run;
 	private final FutureTask<T> future = new FutureTask<>(this::doInBackground) {
 		@Override
 		protected void done() {
-			uiExecutor.execute(ProgressWorker.this::finished);
+			dispatchExecutor.execute(ProgressWorker.this::finished);
 		}
 	};
 
@@ -135,7 +135,7 @@ public final class ProgressWorker<T, V> {
 	}
 
 	/**
-	 * Executes this worker, running the task on a background thread and its handlers on the UI thread.
+	 * Executes this worker, running the task on a background thread and its handlers using the {@link Dispatcher}.
 	 * <p>Must be called where a dispatch context is bound ({@link Dispatcher#bound()}), since the handler
 	 * executor is resolved for the caller at this point, and implementations binding a context per request
 	 * or session must resolve the right one.
@@ -145,7 +145,7 @@ public final class ProgressWorker<T, V> {
 		if (dispatcher != Dispatcher.SYNCHRONOUS && !dispatcher.bound()) {
 			throw new IllegalStateException("ProgressWorker.execute() must be called where a dispatch context is bound");
 		}
-		uiExecutor = dispatcher.executor();
+		dispatchExecutor = dispatcher.executor();
 		EXECUTOR.execute(future);
 	}
 
@@ -235,7 +235,7 @@ public final class ProgressWorker<T, V> {
 		if (!onStarted.isEmpty()) {
 			AtomicReference<RuntimeException> exception = new AtomicReference<>();
 			CountDownLatch startedLatch = new CountDownLatch(1);
-			uiExecutor.execute(() -> {
+			dispatchExecutor.execute(() -> {
 				try {
 					onStarted.forEach(Runnable::run);
 				}
@@ -375,7 +375,7 @@ public final class ProgressWorker<T, V> {
 
 	/**
 	 * <p>Provides default handler methods for the {@link ProgressWorker} lifecycle.
-	 * <p>All handler methods are called on the UI thread.
+	 * <p>All handler methods are called using the {@link Dispatcher}.
 	 * <p>Combined with a task interface (via {@link TaskHandler}, {@link ResultTaskHandler}, etc.),
 	 * this allows a single class to encapsulate both the background task and its handlers.
 	 * Handler methods from this interface are automatically wired when the task is passed to
@@ -389,24 +389,24 @@ public final class ProgressWorker<T, V> {
 	public interface Handler {
 
 		/**
-		 * Called on the UI thread before the background task executes.
+		 * Called using the {@link Dispatcher} before the background task executes.
 		 */
 		default void onStarted() {}
 
 		/**
-		 * Called on the UI thread when the task is done, successfully or not, before the result is processed.
+		 * Called using the {@link Dispatcher} when the task is done, successfully or not, before the result is processed.
 		 */
 		default void onDone() {}
 
 		/**
-		 * Called on the UI thread after a successful task execution,
+		 * Called using the {@link Dispatcher} after a successful task execution,
 		 * before {@link ResultTaskHandler#onResult(Object)} or
 		 * {@link ProgressResultTaskHandler#onResult(Object)} for result-producing tasks.
 		 */
 		default void onSuccess() {}
 
 		/**
-		 * Called on the UI thread if an exception occurred during the background task.
+		 * Called using the {@link Dispatcher} if an exception occurred during the background task.
 		 * <p>The default implementation rethrows the exception as a {@link RuntimeException}.
 		 * Override to handle the exception, for example by displaying it.
 		 * @param exception the exception
@@ -416,12 +416,12 @@ public final class ProgressWorker<T, V> {
 		}
 
 		/**
-		 * Called on the UI thread if the background task was cancelled.
+		 * Called using the {@link Dispatcher} if the background task was cancelled.
 		 */
 		default void onCancelled() {}
 
 		/**
-		 * Called on the UI thread if the background task was interrupted.
+		 * Called using the {@link Dispatcher} if the background task was interrupted.
 		 * <p>The default implementation simply calls {@code Thread.currentThread().interrupt()}.
 		 */
 		default void onInterrupted() {
@@ -446,7 +446,7 @@ public final class ProgressWorker<T, V> {
 	public interface ResultTaskHandler<T> extends ResultTask<T>, Handler {
 
 		/**
-		 * Called on the UI thread after a successful execution,
+		 * Called using the {@link Dispatcher} after a successful execution,
 		 * after {@link Handler#onSuccess()}.
 		 * @param result the task result
 		 */
@@ -462,13 +462,13 @@ public final class ProgressWorker<T, V> {
 	public interface ProgressHandler<V> extends Handler {
 
 		/**
-		 * Called on the UI thread when progress is reported.
+		 * Called using the {@link Dispatcher} when progress is reported.
 		 * @param progress the progress value
 		 */
 		default void onProgress(int progress) {}
 
 		/**
-		 * Called on the UI thread when intermediate results are available.
+		 * Called using the {@link Dispatcher} when intermediate results are available.
 		 * @param chunks the published chunks
 		 */
 		default void onPublish(List<V> chunks) {}
@@ -494,7 +494,7 @@ public final class ProgressWorker<T, V> {
 	public interface ProgressResultTaskHandler<T, V> extends ProgressResultTask<T, V>, ProgressHandler<V> {
 
 		/**
-		 * Called on the UI thread after a successful execution,
+		 * Called using the {@link Dispatcher} after a successful execution,
 		 * after {@link Handler#onSuccess()}.
 		 * @param result the task result
 		 */
@@ -530,14 +530,14 @@ public final class ProgressWorker<T, V> {
 	public sealed interface Builder<T, V> {
 
 		/**
-		 * Adds a handler called on the UI thread before background processing is started.
+		 * Adds a handler called using the {@link Dispatcher} before background processing is started.
 		 * @param onStarted the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onStarted(Runnable onStarted);
 
 		/**
-		 * Adds a handler called on the UI thread when the task is done running,
+		 * Adds a handler called using the {@link Dispatcher} when the task is done running,
 		 * successfully or not, before the result is processed.
 		 * @param onDone the handler to add
 		 * @return this builder instance
@@ -545,7 +545,7 @@ public final class ProgressWorker<T, V> {
 		Builder<T, V> onDone(Runnable onDone);
 
 		/**
-		 * Adds a handler called on the UI thread after a successful task run,
+		 * Adds a handler called using the {@link Dispatcher} after a successful task run,
 		 * before any {@link #onResult(Consumer)} handlers.
 		 * @param onSuccess the handler to add
 		 * @return this builder instance
@@ -553,7 +553,7 @@ public final class ProgressWorker<T, V> {
 		Builder<T, V> onSuccess(Runnable onSuccess);
 
 		/**
-		 * Adds a handler called on the UI thread when the result of a successful run is available,
+		 * Adds a handler called using the {@link Dispatcher} when the result of a successful run is available,
 		 * after any {@link #onSuccess(Runnable)} handlers.
 		 * @param onResult the handler to add
 		 * @return this builder instance
@@ -561,28 +561,28 @@ public final class ProgressWorker<T, V> {
 		Builder<T, V> onResult(Consumer<T> onResult);
 
 		/**
-		 * Adds a handler called on the UI thread when progress is reported.
+		 * Adds a handler called using the {@link Dispatcher} when progress is reported.
 		 * @param onProgress the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onProgress(Consumer<Integer> onProgress);
 
 		/**
-		 * Adds a handler called on the UI thread when chunks are available for publishing.
+		 * Adds a handler called using the {@link Dispatcher} when chunks are available for publishing.
 		 * @param onPublish the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onPublish(Consumer<List<V>> onPublish);
 
 		/**
-		 * Adds a handler called on the UI thread if an exception occurred.
+		 * Adds a handler called using the {@link Dispatcher} if an exception occurred.
 		 * @param onException the handler to add
 		 * @return this builder instance
 		 */
 		Builder<T, V> onException(Consumer<Exception> onException);
 
 		/**
-		 * Adds a handler called on the UI thread if the background task is cancelled
+		 * Adds a handler called using the {@link Dispatcher} if the background task is cancelled
 		 * via {@link ProgressWorker#cancel(boolean)} or if it throws a {@link CancelException}.
 		 * @param onCancelled the handler to add
 		 * @return this builder instance
@@ -590,7 +590,7 @@ public final class ProgressWorker<T, V> {
 		Builder<T, V> onCancelled(Runnable onCancelled);
 
 		/**
-		 * Adds a handler called on the UI thread if the background task was interrupted.
+		 * Adds a handler called using the {@link Dispatcher} if the background task was interrupted.
 		 * @param onInterrupted the handler to add
 		 * @return this builder instance
 		 */
@@ -624,14 +624,14 @@ public final class ProgressWorker<T, V> {
 		@Override
 		public void report(int progress) {
 			if (!onProgress.isEmpty()) {
-				uiExecutor.execute(() -> onProgress.forEach(c -> c.accept(progress)));
+				dispatchExecutor.execute(() -> onProgress.forEach(c -> c.accept(progress)));
 			}
 		}
 
 		@Override
 		public void publish(V... chunks) {
 			if (!onPublish.isEmpty()) {
-				uiExecutor.execute(() -> onPublish.forEach(c -> c.accept(asList(chunks))));
+				dispatchExecutor.execute(() -> onPublish.forEach(c -> c.accept(asList(chunks))));
 			}
 		}
 	}

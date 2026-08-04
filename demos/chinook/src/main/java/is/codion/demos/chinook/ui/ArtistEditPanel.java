@@ -20,14 +20,16 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.ArtistTag;
 import is.codion.demos.chinook.model.ArtistEditModel;
-import is.codion.swing.common.ui.component.panel.GridLayoutPanelBuilder;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EditorComponents;
 import is.codion.swing.framework.ui.EditorComponents.ComponentFactory;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Artist;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
@@ -44,24 +46,27 @@ public final class ArtistEditPanel extends EntityEditPanel {
 		create().textField(Artist.NAME)
 						.columns(18);
 
-		GridLayoutPanelBuilder tagPanel = gridLayoutPanel(3, 2);
-		for (int i = 0; i < ArtistEditModel.TAG_SLOTS; i++) {
-			addTagPanel(i, tagPanel);
-		}
 		setLayout(borderLayout());
 		addInputPanel(Artist.NAME, BorderLayout.NORTH);
-		add(tagPanel, BorderLayout.CENTER);
+		add(gridLayoutPanel(3, 2)
+						.addAll(createTagPanels()), BorderLayout.CENTER);
 	}
 
-	private void addTagPanel(int index, GridLayoutPanelBuilder tagPanel) {
-		String detailName = ArtistEditModel.TAG_PREFIX + index;
-		EditorComponents artistTag = components().detail().get(detailName);
-		ComponentFactory create = artistTag.create();
-		create.textField(ArtistTag.TAG)
-						.columns(8);
-		JLabel label = artistTag.component(ArtistTag.TAG).label();
-		label.setText(label.getText() + " " + (index + 1));
-		tagPanel.add(create.inputPanel(ArtistTag.TAG)
-						.label(label));
+	private List<JPanel> createTagPanels() {
+		List<JPanel> tagPanels = new ArrayList<>(ArtistEditModel.TAG_SLOTS);
+		for (int index = 0; index < ArtistEditModel.TAG_SLOTS; index++) {
+			String detailName = ArtistEditModel.TAG_PREFIX + index;
+			EditorComponents artistTag = components().detail().get(detailName);
+			ComponentFactory create = artistTag.create();
+			create.textField(ArtistTag.TAG)
+							.columns(8);
+			JLabel label = artistTag.component(ArtistTag.TAG).label();
+			label.setText(label.getText() + " " + (index + 1));
+			tagPanels.add(create.inputPanel(ArtistTag.TAG)
+							.label(label)
+							.build());
+		}
+
+		return tagPanels;
 	}
 }

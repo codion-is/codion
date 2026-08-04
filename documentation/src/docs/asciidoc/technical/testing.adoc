@@ -49,7 +49,7 @@ include::{dir-source}/chinook/src/test/java/is/codion/demos/chinook/domain/Chino
 
 == Model testing
 
-Application logic in edit and table models is tested by constructing the model with a local connection provider and exercising it directly:
+Application logic in edit and table models is tested by constructing the model with a local connection and exercising it directly:
 
 [source,java,indent=0]
 ----
