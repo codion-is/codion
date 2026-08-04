@@ -76,7 +76,7 @@ public interface LookAndFeelEnabler {
 	/**
 	 * Instantiates a new {@link LookAndFeelEnabler}, using {@link UIManager#setLookAndFeel(String)} to enable.
 	 * @param lookAndFeelInfo the look and feel info
-	 * @return a look and feel provider
+	 * @return a look and feel enabler
 	 */
 	static LookAndFeelEnabler lookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo) {
 		return new DefaultLookAndFeelEnabler(lookAndFeelInfo);
@@ -88,7 +88,7 @@ public interface LookAndFeelEnabler {
 	 * tree of all application windows, for example by calling {@link Utilities#updateComponentTreeForAllWindows()}
 	 * @param lookAndFeelInfo the look and feel info
 	 * @param enabler configures and enables the look and feel as well as updates the component tree of all application windows
-	 * @return a look and feel provider
+	 * @return a look and feel enabler
 	 */
 	static LookAndFeelEnabler lookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
 		return lookAndFeelEnabler(lookAndFeelInfo, false, enabler);
@@ -101,7 +101,7 @@ public interface LookAndFeelEnabler {
 	 * @param lookAndFeelInfo the look and feel info
 	 * @param dark true if the resulting enabler should represent a dark look and feel
 	 * @param enabler configures and enables the look and feel as well as updates the component tree of all application windows
-	 * @return a look and feel provider
+	 * @return a look and feel enabler
 	 */
 	static LookAndFeelEnabler lookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo, boolean dark, Consumer<LookAndFeelInfo> enabler) {
 		return new DefaultLookAndFeelEnabler(lookAndFeelInfo, enabler, false, dark);

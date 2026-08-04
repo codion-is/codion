@@ -149,10 +149,6 @@ public final class EntitiesTutorial {
 	 * Demonstrates how to use a {@link EntityConnection} to select Entity instances.
 	 */
 	private static void selectingEntities(EntityConnection connection) {
-		// fetch the connection from the provider, note that the provider returns
-		// the same connection until the previous one has been disconnected or
-		// has become invalid for some reason
-
 		// select the artist Metallica by name, the selectSingle() method
 		// throws a RecordNotFoundException if no record is found and a
 		// MultipleRecordsFoundException if more than one are found
@@ -231,9 +227,7 @@ public final class EntitiesTutorial {
 		// Configure the database
 		Database.URL.set("jdbc:h2:mem:h2db");
 		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
-		// initialize a connection provider, this class is responsible
-		// for supplying a valid connection or throwing an exception
-		// in case a connection can not be established
+		// initialize a connection
 		EntityConnection connection =
 						LocalEntityConnection.builder()
 										.domain(new Chinook())

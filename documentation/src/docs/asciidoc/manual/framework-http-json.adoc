@@ -8,7 +8,7 @@ A client connecting over HTTP (see <<_httpentityconnection, HttpEntityConnection
 The serialization format requires the exchanged classes on both ends and a deserialization filter; the JSON format exchanges typed JSON documents — entities, conditions, error envelopes — and is the format for clients outside the trusted network, such as mobile clients.
 This chapter covers what a JSON client must provide: its domain, and JSON type registrations for the database operations it calls.
 
-The format is selected via the connection provider builder or the *codion.client.http.json* configuration value (default *true*):
+The format is selected via the connection builder or the *codion.client.http.json* configuration value (default *true*):
 
 [source,java]
 ----

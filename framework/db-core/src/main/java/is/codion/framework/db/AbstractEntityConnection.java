@@ -421,10 +421,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 			}
 			if (this.connection != null) {
 				LOG.info("Previous connection invalid, reconnecting");
-				try {//close best effort, the connection being bad, note that this happens while holding the lock
-					close(this.connection);
-				}
-				catch (Exception ignored) {/*ignored*/}
+				closeSilently(this.connection);
 				this.connection = null;
 			}
 			doConnect();
@@ -465,6 +462,13 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		}
 	}
 
+	private void closeSilently(EntityConnection connection) {
+		try {
+			close(connection);
+		}
+		catch (Exception ignored) {/*ignored*/}
+	}
+
 	private EntityConnection transactionConnection() {
 		EntityConnection connection = transactionConnection;
 		if (connection == null) {
@@ -485,10 +489,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 			}
 			this.transactionConnection = null;
 		}
-		try {//close best effort, the connection being bad
-			close(connection);
-		}
-		catch (Exception ignored) {/*ignored*/}
+		closeSilently(connection);
 	}
 
 	private void establish() {
@@ -503,16 +504,13 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		EntityConnection connection = connect();
 		try {
 			entities = connection.entities();
+			this.connection = connection;
+			validated = System.nanoTime();
 		}
 		catch (Exception e) {
-			try {
-				close(connection);
-			}
-			catch (Exception ignored) {/*ignored*/}
+			closeSilently(connection);
 			throw e;
 		}
-		this.connection = connection;
-		validated = System.nanoTime();
 	}
 
 	/**

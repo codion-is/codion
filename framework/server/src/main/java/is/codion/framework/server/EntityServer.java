@@ -71,9 +71,6 @@ import static java.util.stream.Collectors.toList;
  */
 public class EntityServer extends AbstractServer<AbstractServerEntityConnection, EntityServerAdmin> {
 
-	@Serial
-	private static final long serialVersionUID = 1;
-
 	private static final Logger LOG = LoggerFactory.getLogger(EntityServer.class);
 
 	private static final String SHUTDOWN = "shutdown";

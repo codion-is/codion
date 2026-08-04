@@ -43,7 +43,7 @@ public final class ClientArchitecture {
 	/**
 	 * Creates a SwingEntityModel based on the {@link Artist#TYPE} entity
 	 * with a detail model based on {@link Album#TYPE}
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 */
 	static SwingEntityModel artistModel(EntityConnection connection) {
 		// create a default edit model
@@ -73,7 +73,7 @@ public final class ClientArchitecture {
 	/**
 	 * Creates a EntityPanel based on the {@link Artist#TYPE} entity
 	 * with a detail panel based on {@link Album#TYPE}
-	 * @param connection the connection provider
+	 * @param connection the connection
 	 */
 	static EntityPanel artistPanel(EntityConnection connection) {
 		// create the EntityModel to base the panel on (calling the above method)
@@ -118,7 +118,7 @@ public final class ClientArchitecture {
 		Database.URL.set("jdbc:h2:mem:h2db");
 		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-		// initialize a connection provider, this class is responsible
+		// initialize a connection, this class is responsible
 		// for supplying a valid connection or throwing an exception
 		// in case a connection can not be established
 		EntityConnection connection =

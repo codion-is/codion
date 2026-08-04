@@ -42,9 +42,9 @@
 * Pluggable <<technical/technical.adoc#_authentication, Authentication Management>>
 * Server monitoring UI with <<technical/server-monitor.adoc#_server_monitor, Server Monitor>>.
 * Flexible Client Deployment Models
-** <<manual/manual.adoc#_localentityconnectionprovider, Local JDBC Connection>>
-** <<manual/manual.adoc#_remoteentityconnectionprovider, Client-Server (RMI)>>
-** <<manual/manual.adoc#_httpentityconnectionprovider, HTTP Client-Server>>
+** <<manual/manual.adoc#_localentityconnection, Local JDBC Connection>>
+** <<manual/manual.adoc#_remoteentityconnection, Client-Server (RMI)>>
+** <<manual/manual.adoc#_httpentityconnection, HTTP Client-Server>>
 
 == V. The Developer Ecosystem & Tooling
 * Domain Model <<manual/manual.adoc#_domain_model_generator, Code Generation from Database Schema>> (including GUI Tool)

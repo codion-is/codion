@@ -60,24 +60,23 @@ public final class ChinookLoadTest {
 					scenario(new RandomPlaylist(), 1),
 					scenario(new InsertDeleteInvoice(), 3));
 
-	private static final class ConnectionProviderFactory implements Function<User, EntityConnection> {
+	private static final class ConnectionFactory implements Function<User, EntityConnection> {
 
 		@Override
 		public EntityConnection apply(User user) {
-			EntityConnection connection = EntityConnection.builder()
+			return EntityConnection.builder()
 							.domain(Chinook.DOMAIN)
 							.clientType(ChinookLoadTest.class.getSimpleName())
 							.clientVersion(ChinookAppModel.VERSION)
 							.user(user)
 							.build();
-			return connection;
 		}
 	}
 
 	public static void main(String[] args) {
 		LoadTest<EntityConnection> loadTest =
 						LoadTest.builder()
-										.createApplication(new ConnectionProviderFactory())
+										.createApplication(new ConnectionFactory())
 										.closeApplication(EntityConnection::close)
 										.scenarios(SCENARIOS)
 										.user(UNIT_TEST_USER)
