@@ -31,7 +31,6 @@ import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,16 +129,6 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 	public void queryTimeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		local().queryTimeout(queryTimeout);
-	}
-
-	@Override
-	public void setConnection(@Nullable Connection connection) {
-		local().setConnection(connection);
-	}
-
-	@Override
-	public @Nullable Connection getConnection() {
-		return local().getConnection();
 	}
 
 	@Override

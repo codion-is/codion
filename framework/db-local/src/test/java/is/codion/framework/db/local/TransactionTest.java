@@ -84,7 +84,7 @@ public final class TransactionTest {
 						.build());
 
 		// Create savepoint
-		Savepoint savepoint1 = connection.getConnection().setSavepoint("sp1");
+		Savepoint savepoint1 = connection.connection().setSavepoint("sp1");
 
 		// Insert second record
 		connection.insert(entities.entity(Department.TYPE)
@@ -98,7 +98,7 @@ public final class TransactionTest {
 		assertEquals(1, connection.count(Count.where(Department.DEPTNO.equalTo(98))));
 
 		// Rollback to savepoint
-		connection.getConnection().rollback(savepoint1);
+		connection.connection().rollback(savepoint1);
 
 		// First should still exist, second should not
 		assertEquals(1, connection.count(Count.where(Department.DEPTNO.equalTo(99))));
@@ -118,7 +118,7 @@ public final class TransactionTest {
 
 		connection.startTransaction();
 
-		Connection conn = connection.getConnection();
+		Connection conn = connection.connection();
 
 		// Level 1
 		connection.insert(entities.entity(Department.TYPE)

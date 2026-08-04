@@ -98,7 +98,7 @@ import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
-final class DefaultLocalEntityConnection implements LocalEntityConnection, MethodTracer.Traceable {
+final class DefaultLocalEntityConnection implements LocalEntityConnection, ConnectionHolder, MethodTracer.Traceable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
 
@@ -845,15 +845,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public void setConnection(@Nullable Connection connection) {
+	public void attach(Connection connection) {
+		requireNonNull(connection);
 		synchronized (lock) {
 			this.connection = connection;
 		}
 	}
 
 	@Override
-	public @Nullable Connection getConnection() {
+	public @Nullable Connection detach() {
 		synchronized (lock) {
+			Connection connection = this.connection;
+			this.connection = null;
+
 			return connection;
 		}
 	}

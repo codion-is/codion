@@ -28,8 +28,6 @@ import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.condition.Condition;
 
-import org.jspecify.annotations.Nullable;
-
 import java.sql.Connection;
 
 import static is.codion.common.utilities.Configuration.booleanValue;
@@ -124,12 +122,10 @@ public interface LocalEntityConnection extends EntityConnection {
 
 	/**
 	 * Returns the underlying connection, throwing in case it is closed.
-	 * Use {@link #getConnection()} for the non-throwing variant, which returns null when closed.
 	 * <p>Statements executed on the returned connection are not guarded by this connection's monitor,
 	 * so they may interleave with operations performed by other threads, see {@link EntityConnection}.
 	 * @return the underlying connection
 	 * @throws DatabaseException in case this connection is closed
-	 * @see #getConnection()
 	 */
 	Connection connection();
 
@@ -192,24 +188,6 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @param queryTimeout the query timeout in seconds
 	 */
 	void queryTimeout(int queryTimeout);
-
-	/**
-	 * Sets the internal connection to use, note that no validation or transaction checking is performed
-	 * on the connection and auto-commit is assumed to be disabled. The connection is simply used 'as is'.
-	 * Note that setting the connection to null causes all methods requiring it to throw a {@link DatabaseException}
-	 * until a non-null connection is set.
-	 * Note that this does not reset the transaction state; the caller is responsible for ensuring no transaction
-	 * is considered open when swapping the underlying connection.
-	 * @param connection the connection
-	 */
-	void setConnection(@Nullable Connection connection);
-
-	/**
-	 * Returns the underlying connection object.
-	 * Use {@link #connected()} to verify that the connection is available and valid.
-	 * @return the underlying connection object
-	 */
-	@Nullable Connection getConnection();
 
 	/**
 	 * <p>Instantiates a builder for a self-managing {@link LocalEntityConnection}, one which connects on

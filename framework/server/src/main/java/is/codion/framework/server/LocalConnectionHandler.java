@@ -24,6 +24,7 @@ import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.framework.db.EntityResultIterator;
+import is.codion.framework.db.local.ConnectionHolder;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
@@ -68,6 +69,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private final long creationTime = currentTimeMillis();
 	private final AtomicBoolean active = new AtomicBoolean(false);
 	private final LocalEntityConnection entityConnection;
+	private final ConnectionHolder connectionHolder;
 
 	private MethodTracer tracer = MethodTracer.NO_OP;
 	private boolean traceToFile = false;
@@ -84,6 +86,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		this.logIdentifier = client.request().user().username().toLowerCase() + "@" + client.request().clientType();
 		this.userDescription = "Remote user: " + client.request().user().username() + ", database user: " + databaseUsername;
 		this.entityConnection = initializeConnection();
+		this.connectionHolder = (ConnectionHolder) entityConnection;
 	}
 
 	@Override
@@ -178,7 +181,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		closed = true;
 		rollbackIfRequired(entityConnection);
 		if (connectionPool != null) {
-			returnToPool(entityConnection);
+			returnToPool(connectionHolder);
 		}
 		else {
 			entityConnection.close();
@@ -221,7 +224,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		DatabaseException exception = null;
 		try {
 			tracer.enter(FETCH_CONNECTION, userDescription);
-			entityConnection.setConnection(connectionPool.connection(client.databaseUser()));
+			connectionHolder.attach(connectionPool.connection(client.databaseUser()));
 		}
 		catch (DatabaseException ex) {
 			exception = ex;
@@ -238,7 +241,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			DatabaseException exception = null;
 			try {
 				tracer.enter(CREATE_CONNECTION, userDescription);
-				entityConnection.setConnection(database.createConnection(client.databaseUser()));
+				connectionHolder.attach(database.createConnection(client.databaseUser()));
 			}
 			catch (DatabaseException ex) {
 				exception = ex;
@@ -274,7 +277,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		Exception exception = null;
 		try {
 			tracer.enter(RETURN_CONNECTION, userDescription);
-			returnToPool(entityConnection);
+			returnToPool(connectionHolder);
 		}
 		catch (Exception e) {
 			exception = e;
@@ -285,10 +288,10 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 	}
 
-	private static void returnToPool(LocalEntityConnection connection) {
-		if (connection.getConnection() != null) {
-			closeSilently(connection.getConnection());
-			connection.setConnection(null);
+	private static void returnToPool(ConnectionHolder connectionHolder) {
+		Connection connection = connectionHolder.detach();
+		if (connection != null) {
+			closeSilently(connection);
 		}
 	}
 
@@ -310,8 +313,9 @@ final class LocalConnectionHandler implements InvocationHandler {
 						connectionPool.connection(client.databaseUser()));
 		((Traceable) connection).tracer(tracer);
 		if (connectionPool != null) {
-			rollbackSilently(connection.getConnection());
-			returnToPool(connection);
+			Connection jdbcConnection = ((ConnectionHolder) connection).detach();
+			rollbackSilently(jdbcConnection);
+			closeSilently(jdbcConnection);
 		}
 
 		return connection;

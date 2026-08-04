@@ -41,6 +41,7 @@ Codion Change Log
 - LocalEntityConnection, the optimisticLocking, limitReferenceDepth and iteratorBufferSize settings are now re-applied when a self-managing connection re-establishes the underlying one, as queryTimeout already was.
 - LocalEntityConnection, toggling tracing no longer establishes a connection when none exists, the tracer is installed on the next one.
 - DefaultLocalEntityConnection no longer creates a UUID when instantiated.
+- LocalEntityConnection.setConnection() and getConnection() moved to ConnectionHolder, as attach() and detach(): the server facing side of a local connection, the underlying JDBC connection being attached and detached by its owner, the server's pool handler for example. Implemented by the connections localEntityConnection() returns, reached by casting, like MethodTracer.Traceable. A self-managing connection no longer offers the protocol, a swap used to silently evaporate on the next re-establishment.
 ### is.codion.framework.db.rmi
 - RemoteEntityConnection is now the client side RMI based EntityConnection, with RemoteEntityConnection.builder() replacing RemoteEntityConnectionProvider, which has been removed.
 - RemoteEntityConnection now disconnects from the server, best effort, when a bad connection is being replaced or discarded, instead of leaving the session to time out server side.
