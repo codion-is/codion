@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -48,7 +47,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private final UUID clientId;
 	private final String clientType;
 	private final @Nullable Version clientVersion;
-	private final @Nullable Consumer<EntityConnectionProvider> onClose;
 
 	private volatile @Nullable EntityConnection entityConnection;
 	private volatile @Nullable Entities entities;
@@ -64,7 +62,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		this.clientId = builder.clientId;
 		this.clientType = builder.clientType == null ? domainType.name() : builder.clientType;
 		this.clientVersion = builder.clientVersion;
-		this.onClose = builder.onClose;
 	}
 
 	@Override
@@ -122,9 +119,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		//validate and close without holding the lock
 		if (connection != null && valid(connection)) {
 			close(connection);
-		}
-		if (onClose != null) {
-			onClose.accept(this);
 		}
 	}
 
@@ -220,7 +214,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		private UUID clientId = UUID.randomUUID();
 		private @Nullable String clientType;
 		private @Nullable Version clientVersion;
-		private @Nullable Consumer<EntityConnectionProvider> onClose;
 
 		/**
 		 * @param connectionType a string describing the connection type
@@ -261,12 +254,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		@Override
 		public final B clientVersion(@Nullable Version clientVersion) {
 			this.clientVersion = clientVersion;
-			return self();
-		}
-
-		@Override
-		public final B onClose(Consumer<EntityConnectionProvider> onClose) {
-			this.onClose = requireNonNull(onClose);
 			return self();
 		}
 

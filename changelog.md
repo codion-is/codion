@@ -19,11 +19,12 @@ Codion Change Log
 - SwingFilterTableModel.Builder.async() and SwingFilterListModel.Builder.async() removed, use FilterModel.ASYNC or Refresher.async().
 - SwingFilterTableModel.Builder.items() parameter wildcard type removed.
 - is.codion.swing.common.model.worker package renamed dispatch.
-### is.codion.framework.db
+### is.codion.framework.db.core
 - AbstractEntityConnectionProvider, the connection validity check is no longer performed while holding the provider lock, since it blocks for the duration of any operation in progress on the connection.
 - AbstractEntityConnectionProvider.entities() no longer acquires the provider lock once the connection has been established.
 - EntityConnectionProvider.connectionValid() and connected() removed, unused.
 - EntityConnectionProvider.VALIDITY_CHECK_INTERVAL added, specifying the minimum time between connection validity checks, 1000 ms by default.
+- EntityConnectionProvider.Builder.onClose() removed, unused.
 ### is.codion.framework.model
 - EntityEditor.EditorTasks now resolves its connection on first use instead of when the tasks are created, since they are typically created on the UI thread and performed on a background thread. Selecting a record while a refresh was in progress blocked the UI thread on a connection the tasks often never used.
 - EntityEditor.EditorEntity.set() and replace() are now fully synchronous when no detail editors are registered.
