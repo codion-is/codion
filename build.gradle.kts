@@ -1,5 +1,6 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.vanniktech.maven.publish.*
+import org.gradle.kotlin.dsl.support.serviceOf
 
 plugins {
     id("org.sonarqube") version "7.3.1.8318"
@@ -154,29 +155,30 @@ configure(subprojects.filter { it.name != "codion-framework-bom" && it.name != "
 
         onlyIf { !keystore.asFile.exists() }
 
+        val execOperations = project.serviceOf<ExecOperations>()
         doLast {
-            providers.exec {
+            execOperations.exec {
                 executable = keyToolExecutable
                 args = listOf(
                     "-genkeypair", "-keyalg", "RSA", "-keystore", keystore.asFile.absolutePath, "-storepass", "crappypass",
                     "-keypass", "crappypass", "-dname", "CN=Dummy, OU=dummy, O=dummy.org, C=DU", "-alias", "Alias",
                     "-storetype", "pkcs12", "-ext", "SAN=dns:localhost"
                 )
-            }.result.get()
-            providers.exec {
+            }
+            execOperations.exec {
                 executable = keyToolExecutable
                 args = listOf(
                     "-exportcert", "-keystore", keystore.asFile.absolutePath, "-storepass", "crappypass",
                     "-alias", "Alias", "-rfc", "-file", certificate.asFile.absolutePath
                 )
-            }.result.get()
-            providers.exec {
+            }
+            execOperations.exec {
                 executable = keyToolExecutable
                 args = listOf(
                     "-import", "-alias", "Alias", "-storepass", "changeit", "-file", certificate.asFile.absolutePath,
                     "-keystore", truststore.asFile.absolutePath, "-noprompt", "-storetype", "pkcs12"
                 )
-            }.result.get()
+            }
             delete(certificate)
         }
     }
@@ -186,16 +188,17 @@ tasks.register("tagRelease") {
     group = "other"
     description = "Tags the current version as a release"
 
+    val execOperations = project.serviceOf<ExecOperations>()
     doLast {
         if (project.version.toString().contains("SNAPSHOT")) {
             throw GradleException("Thou shalt not tag a snapshot release")
         }
         val tagName = "v" + project.version
-        providers.exec { commandLine("git", "push", "dev") }.result.get()
-        providers.exec { commandLine("git", "push", "origin") }.result.get()
-        providers.exec { commandLine("git", "tag", "-a", tagName, "-m", "$tagName release") }.result.get()
-        providers.exec { commandLine("git", "push", "dev", tagName) }.result.get()
-        providers.exec { commandLine("git", "push", "origin", tagName) }.result.get()
+        execOperations.exec { commandLine("git", "push", "dev") }
+        execOperations.exec { commandLine("git", "push", "origin") }
+        execOperations.exec { commandLine("git", "tag", "-a", tagName, "-m", "$tagName release") }
+        execOperations.exec { commandLine("git", "push", "dev", tagName) }
+        execOperations.exec { commandLine("git", "push", "origin", tagName) }
     }
 }
 

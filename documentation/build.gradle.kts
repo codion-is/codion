@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.support.serviceOf
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 plugins {
@@ -277,6 +279,7 @@ tasks.register("assembleTutorials") {
     group = "documentation"
     description = "Assembles tutorials from demo projects"
 
+    val execOperations = project.serviceOf<ExecOperations>()
     doLast {
         val docFolder = project.layout.buildDirectory.dir("tutorials").get()
         val demoProjects = listOf(
@@ -292,13 +295,18 @@ tasks.register("assembleTutorials") {
 
             val projectDir = file("../../$project")
 
-            val exec = providers.exec {
+            val result = execOperations.exec {
                 workingDir(projectDir)
                 commandLine("./gradlew", task)
                 environment("JAVA_HOME", System.getenv("JAVA_HOME") ?: System.getProperty("java.home"))
+                // report the failure ourselves, naming the project, rather than
+                // leaving a bare 'finished with non-zero exit value'
+                isIgnoreExitValue = true
             }
-            exec.result.get()
-            println(exec.standardOutput.asText.get())
+            if (result.exitValue != 0) {
+                throw GradleException("Tutorial build failed for $project: './gradlew $task' " +
+                        "in $projectDir exited with ${result.exitValue}, see the output above")
+            }
 
             copy {
                 from("../../$project/$outputPath")
@@ -318,15 +326,25 @@ tasks.register("generateLlmsTxt") {
     inputs.file(manualHtml)
     outputs.dir(llmsDir)
 
+    val execOperations = project.serviceOf<ExecOperations>()
+
     doLast {
         // llms-full.txt: the manual converted to markdown, post-processed to
         // strip the div wrapper noise pandoc leaves behind, normalize the
         // code fence language and collapse consecutive blank lines
-        val pandoc = providers.exec {
+        // Only stdout is captured, it being the conversion result; stderr is left
+        // inheriting the console, so a failing pandoc gets to say why
+        val markdown = ByteArrayOutputStream()
+        val pandocResult = execOperations.exec {
             commandLine(
                 "pandoc", "-f", "html", "-t", "gfm", "--wrap=none",
                 manualHtml.get().asFile.absolutePath
             )
+            standardOutput = markdown
+            isIgnoreExitValue = true
+        }
+        if (pandocResult.exitValue != 0) {
+            throw GradleException("pandoc exited with ${pandocResult.exitValue}, see the output above")
         }
         // The manual's relative links (../api, ../tutorials etc.) resolve
         // against doc/<version>/manual/ on the site — a standalone text file
@@ -335,7 +353,7 @@ tasks.register("generateLlmsTxt") {
         val relativeImage = Regex("src=\"(?!https?://)")
         val fullText = buildString {
             var blanks = 0
-            pandoc.standardOutput.asText.get().lineSequence()
+            markdown.toString(Charsets.UTF_8).lineSequence()
                 .filterNot { it.startsWith("<div") || it == "</div>" }
                 .map { if (it == "``` rouge") "``` java" else it }
                 .map { it.replace("](../", "]($docRoot/") }
@@ -410,6 +428,7 @@ tasks.register("linkcheck") {
     group = "documentation"
     description = "Runs linkcheck on the assembled documentation"
 
+    val execOperations = project.serviceOf<ExecOperations>()
     doLast {
         val docDir = project.layout.buildDirectory.dir(documentationVersion).get().asFile
         val port = 8080
@@ -433,12 +452,10 @@ tasks.register("linkcheck") {
 
         try {
             println("Running linkcheck...")
-            val exec = providers.exec {
+            val execResult = execOperations.exec {
                 commandLine("docker", "run", "--rm", "--network=host", "tennox/linkcheck", "http://localhost:$port")
                 isIgnoreExitValue = true // Don't fail on warnings (exit code 1), only on errors (exit code 2)
             }
-            val execResult = exec.result.get()
-            println(exec.standardOutput.asText.get())
             when (execResult.exitValue) {
                 0 -> println("Linkcheck completed successfully")
                 1 -> println("Linkcheck completed with warnings")
