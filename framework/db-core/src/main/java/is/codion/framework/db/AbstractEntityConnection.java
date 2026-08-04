@@ -48,6 +48,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * <p>An abstract self-managing {@link EntityConnection}, one which establishes the underlying connection on
  * demand, validates it before each operation and re-establishes it when it has gone bad. The same instance
  * therefore serves for the lifetime of a client, there being no need to fetch a connection per operation.
+ * <p>It is a connection <i>going bad</i> that is healed: {@link #close()} is terminal, subsequent
+ * operations throw {@link IllegalStateException}, an explicit close being a decision, not a mishap.
  * <p>The transaction state lives on this instance rather than being asked of the underlying connection,
  * which, once it has gone bad, can no longer answer: a connection with an open transaction is never validated
  * nor replaced, so that an operation on one which has gone bad fails loudly instead of the transaction being
@@ -74,6 +76,7 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	private volatile @Nullable EntityConnection transactionConnection;
 	private volatile @Nullable Entities entities;
 	private volatile long validated;
+	private volatile boolean closed;
 
 	/**
 	 * @param builder the builder
@@ -130,13 +133,16 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	}
 
 	/**
-	 * Closes the underlying connection, rolling back any open transaction with it. This instance
-	 * survives, a subsequent operation establishes a new underlying connection.
+	 * <p>Closes this connection, rolling back any open transaction with it. Closing is terminal:
+	 * subsequent operations throw {@link IllegalStateException}. It is a connection <i>going bad</i>
+	 * that is healed by re-establishment, not one explicitly closed.
+	 * <p>Closing an already closed connection has no effect.
 	 */
 	@Override
 	public final void close() {
 		EntityConnection connection;
 		synchronized (lock) {
+			closed = true;
 			connection = this.connection;
 			this.connection = null;
 			this.transactionConnection = null;
@@ -390,8 +396,10 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	 * operation on one which has gone bad fails rather than the transaction being discarded without the
 	 * caller ever hearing about it, see {@link #startTransaction()}.
 	 * @return the underlying connection
+	 * @throws IllegalStateException in case this connection has been closed
 	 */
 	protected final EntityConnection delegate() {
+		verifyOpen();
 		// during an open transaction the connection is used as is - replacing it would silently
 		// discard the transaction, and validating it would be a wasted round trip ahead of an
 		// operation which must go to this connection regardless of the answer
@@ -406,6 +414,8 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 			return connection;
 		}
 		synchronized (lock) {
+			//so a close while we were validating can not be followed by a re-establishment
+			verifyOpen();
 			if (this.connection != null && this.connection != connection) {
 				return this.connection; //re-established by another thread while we were validating
 			}
@@ -435,6 +445,12 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	 */
 	protected void close(EntityConnection connection) {
 		connection.close();
+	}
+
+	private void verifyOpen() {
+		if (closed) {
+			throw new IllegalStateException("Connection has been closed");
+		}
 	}
 
 	private EntityConnection transactionConnection() {

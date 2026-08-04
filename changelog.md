@@ -33,6 +33,7 @@ Codion Change Log
 - EntityConnection.clientId(), description() and clientVersion() added, the connection's identity as the server sees it.
 - AbstractEntityConnection now maintains the transaction state itself, instead of asking the underlying connection, which, once it has gone bad, can no longer answer: a connection with an open transaction is never validated nor replaced, so an operation on one which has gone bad fails loudly instead of continuing on a fresh connection outside the transaction, transactionOpen() no longer costs a round trip, and a failed rollback discards the underlying connection - the disconnect rolls the transaction back - instead of leaving the client stuck on a connection in a transaction it can neither continue nor end.
 - AbstractEntityConnection, an underlying connection failing between being established and fetching the entities is now closed instead of being left dangling, on the server until it timed out in case of the remote connections.
+- AbstractEntityConnection.close() is now terminal, subsequent operations throw IllegalStateException instead of re-establishing the connection, which the provider used to: it is a connection going bad that is healed, an explicit close is honored. A background task straggling past an application exit now fails loudly instead of silently leaving a fresh connection behind, and holding on to one via try-with-resources means what it says.
 ### is.codion.framework.db.local
 - LocalEntityConnection.builder() added, replacing LocalEntityConnectionProvider, which has been removed along with its TRACING configuration value, now on LocalEntityConnection.
 - LocalEntityConnection, the optimisticLocking, limitReferenceDepth and iteratorBufferSize settings are now re-applied when a self-managing connection re-establishes the underlying one, as queryTimeout already was.
@@ -50,6 +51,7 @@ Codion Change Log
 ### is.codion.framework.domain.test
 - DomainTest now closes the connection via the connection provider, closing it directly left the provider handing out a connection it believed to be alive.
 - DomainTest now holds an EntityConnection instead of an EntityConnectionProvider.
+- DomainTest.test() no longer closes the connection, closing being terminal, so it can be called any number of times per instance. The connection is instead closed after each test method, DomainTest.close() being @AfterEach annotated, and DomainTest is now AutoCloseable, for programmatic use.
 
 ## 0.18.81
 ### is.codion.common.rmi

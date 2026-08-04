@@ -67,18 +67,23 @@ public class RemoteEntityConnectionTest {
 
 	private static Server<ServerEntityConnection, EntityServerAdmin> server;
 	private static EntityServerAdmin admin;
+	private static EntityServerConfiguration configuration;
 	private static EntityConnection connection;
 
 	@BeforeAll
 	public static void setUp() throws Exception {
-		//these tests share a single connection and close it along the way
+		//check on every call
 		EntityConnection.VALIDITY_CHECK_INTERVAL.set(0L);
-		EntityServerConfiguration configuration = RemoteEntityConnectionBuilderTest.configure();
+		configuration = RemoteEntityConnectionBuilderTest.configure();
 		EntityServer.startServer(configuration);
 		server = (Server<ServerEntityConnection, EntityServerAdmin>)
 						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(configuration.serverName());
 		admin = server.admin(User.parse("scott:tiger"));
-		connection = RemoteEntityConnection.builder()
+		connection = createConnection();
+	}
+
+	private static EntityConnection createConnection() {
+		return RemoteEntityConnection.builder()
 						.hostname(Clients.SERVER_HOSTNAME.get())
 						.port(configuration.port())
 						.registryPort(configuration.registryPort())
@@ -331,9 +336,10 @@ public class RemoteEntityConnectionTest {
 
 	@Test
 	void iterator() {
-		try (EntityConnection connection = connection()) {
-			Condition condition = Condition.all(Employee.TYPE);
-			EntityResultIterator iterator = connection.iterator(condition);
+		//not try-with-resources, closing the shared connection is terminal
+		EntityConnection connection = connection();
+		Condition condition = Condition.all(Employee.TYPE);
+		try (EntityResultIterator iterator = connection.iterator(condition)) {
 			//calling hasNext() should be idempotent and not lose rows
 			assertTrue(iterator.hasNext());
 			assertTrue(iterator.hasNext());
@@ -347,17 +353,17 @@ public class RemoteEntityConnectionTest {
 			assertThrows(NoSuchElementException.class, iterator::next);
 			int rowCount = connection.count(EntityConnection.Count.where(condition));
 			assertEquals(rowCount, counter);
-			iterator.close();
-			iterator = connection.iterator(condition);
-			counter = 0;
-			try {
-				while (true) {
-					iterator.next();
-					counter++;
+			try (EntityResultIterator secondIterator = connection.iterator(condition)) {
+				counter = 0;
+				try {
+					while (true) {
+						secondIterator.next();
+						counter++;
+					}
 				}
-			}
-			catch (NoSuchElementException e) {
-				assertEquals(rowCount, counter);
+				catch (NoSuchElementException e) {
+					assertEquals(rowCount, counter);
+				}
 			}
 		}
 	}
@@ -401,9 +407,11 @@ public class RemoteEntityConnectionTest {
 
 	@Test
 	void close() {
-		EntityConnection connection = connection();
+		//close is terminal, so this test builds its own connection instead of using the shared one
+		EntityConnection connection = createConnection();
 		connection.close();
 		assertFalse(connection.connected());
+		assertThrows(IllegalStateException.class, connection::cacheQueries);
 	}
 
 	@Test

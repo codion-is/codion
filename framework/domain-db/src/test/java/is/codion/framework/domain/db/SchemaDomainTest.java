@@ -84,9 +84,10 @@ public final class SchemaDomainTest {
 				assertTrue(updateTime.readOnly());
 				assertTrue(updateTime.hidden());
 			}
-			DomainTest domainTest = new DomainTest(petstore, UNIT_TEST_USER);
-			for (EntityDefinition entityDefinition : petstore.entities().definitions()) {
-				domainTest.test(entityDefinition.type());
+			try (DomainTest domainTest = new DomainTest(petstore, UNIT_TEST_USER)) {
+				for (EntityDefinition entityDefinition : petstore.entities().definitions()) {
+					domainTest.test(entityDefinition.type());
+				}
 			}
 		}
 	}
@@ -102,9 +103,10 @@ public final class SchemaDomainTest {
 							.anyMatch(definition -> definition.attribute().name().equals("LASTNAME")));
 			chinook.entities().definitions().forEach(definition ->
 							assertTrue(definition.primaryKey().definitions().get(0).generated()));
-			DomainTest domainTest = new DomainTest(chinook, ChinookEntityFactory::new, UNIT_TEST_USER);
-			for (EntityDefinition entityDefinition : chinook.entities().definitions()) {
-				domainTest.test(entityDefinition.type());
+			try (DomainTest domainTest = new DomainTest(chinook, ChinookEntityFactory::new, UNIT_TEST_USER)) {
+				for (EntityDefinition entityDefinition : chinook.entities().definitions()) {
+					domainTest.test(entityDefinition.type());
+				}
 			}
 		}
 	}
@@ -146,9 +148,10 @@ public final class SchemaDomainTest {
 			EntityDefinition countryCity = world.entities().definition("world.country_city_v");
 			assertEquals("world.country_city_v", countryCity.type().name());
 			assertEquals("Country city", countryCity.caption());
-			DomainTest domainTest = new DomainTest(world, WorldEntityFactory::new, UNIT_TEST_USER);
-			for (EntityDefinition entityDefinition : world.entities().definitions()) {
-				domainTest.test(entityDefinition.type());
+			try (DomainTest domainTest = new DomainTest(world, WorldEntityFactory::new, UNIT_TEST_USER)) {
+				for (EntityDefinition entityDefinition : world.entities().definitions()) {
+					domainTest.test(entityDefinition.type());
+				}
 			}
 		}
 	}

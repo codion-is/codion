@@ -85,10 +85,13 @@ public class RemoteEntityConnectionBuilderTest {
 
 		assertFalse(connection.connected());
 
-		connection.close();
-
 		//no server to reconnect to
 		assertThrows(RuntimeException.class, () -> connection.select(all(Department.TYPE)));
+
+		connection.close();
+
+		//close is terminal
+		assertThrows(IllegalStateException.class, () -> connection.select(all(Department.TYPE)));
 	}
 
 	@Test
