@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -78,7 +79,7 @@ public final class AbstractEntityConnectionTest {
 			connection.close();
 
 			//the same instance, re-establishing itself on the next operation
-			connection.transactionOpen();
+			connection.cacheQueries();
 			assertEquals(2, connection.connections());
 		}
 
@@ -95,7 +96,7 @@ public final class AbstractEntityConnectionTest {
 			assertFalse(connection.connected());
 
 			//the closed connection re-establishes itself rather than having to be discarded
-			connection.transactionOpen();
+			connection.cacheQueries();
 			assertTrue(connection.connected());
 			assertEquals(2, connection.connections());
 		}
@@ -108,14 +109,14 @@ public final class AbstractEntityConnectionTest {
 							.domain(TestDomain.DOMAIN)
 							.build();
 
-			connection.transactionOpen();
+			connection.cacheQueries();
 
 			//simulate a connection failure
 			connection.close();
 			assertFalse(connection.connected());
 
 			//the next operation re-establishes it, through the same instance
-			connection.transactionOpen();
+			connection.cacheQueries();
 			assertTrue(connection.connected());
 			assertEquals(2, connection.connections());
 		}
@@ -145,6 +146,163 @@ public final class AbstractEntityConnectionTest {
 			connection.close();
 			assertFalse(connection.connected());
 			assertEquals(1, connection.connections());
+		}
+	}
+
+	@Nested
+	@DisplayName("Transactions")
+	class Transactions {
+
+		@Test
+		@DisplayName("the transaction state is answered from this instance, without a connection")
+		void transactionOpen_answersWithoutTouchingTheConnection() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.killUnderlying();
+			//a connection which has gone bad can not be asked, so the answer must come from this
+			//instance, and answering a question must not establish a connection
+			assertFalse(connection.transactionOpen());
+			assertEquals(1, connection.connections());
+		}
+
+		@Test
+		@DisplayName("operations within a transaction go to the transaction connection, unvalidated")
+		void transaction_operations_skipValidation() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.startTransaction();
+			assertTrue(connection.transactionOpen());
+			int checks = connection.checks();
+			connection.cacheQueries();
+			connection.cacheQueries();
+			assertEquals(checks, connection.checks(), "operations within a transaction must not validate the connection");
+			connection.commitTransaction();
+			assertFalse(connection.transactionOpen());
+			assertEquals(1, connection.connections());
+		}
+
+		@Test
+		@DisplayName("a connection dying within a transaction fails loudly, it is not replaced")
+		void transaction_connectionDies_operationsFailWithoutReconnecting() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.startTransaction();
+			connection.killUnderlying();
+
+			//were the connection replaced here, this operation would succeed on a fresh connection,
+			//outside the transaction the caller believes to be open, and be committed by itself
+			assertThrows(RuntimeException.class, connection::cacheQueries);
+			assertTrue(connection.transactionOpen());
+			assertEquals(1, connection.connections(), "a connection must never be replaced during a transaction");
+		}
+
+		@Test
+		@DisplayName("a failed rollback discards the connection and the next operation heals")
+		void rollbackTransaction_connectionDead_discardsAndHeals() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.startTransaction();
+			connection.killUnderlying();
+
+			//the rollback call fails, but the disconnect rolls the transaction back, so the caller's
+			//intent is fulfilled and the exception which triggered the rollback remains the one reported
+			assertDoesNotThrow(connection::rollbackTransaction);
+			assertFalse(connection.transactionOpen());
+
+			connection.cacheQueries();
+			assertEquals(2, connection.connections(), "the operation following a failed rollback must find a fresh connection");
+		}
+
+		@Test
+		@DisplayName("a commit failing on a dead connection throws and discards")
+		void commitTransaction_connectionDead_throwsAndDiscards() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.startTransaction();
+			connection.killUnderlying();
+
+			assertThrows(RuntimeException.class, connection::commitTransaction);
+			assertFalse(connection.transactionOpen(), "the transaction died with the connection");
+
+			connection.cacheQueries();
+			assertEquals(2, connection.connections());
+		}
+
+		@Test
+		@DisplayName("a commit failing on a live connection leaves the transaction open")
+		void commitTransaction_commitFails_transactionStaysOpen() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.startTransaction();
+			connection.failCommit = true;
+
+			//a deferred constraint failing on commit for example - the connection is fine and
+			//the transaction still open, the caller decides whether to retry or roll back
+			assertThrows(RuntimeException.class, connection::commitTransaction);
+			assertTrue(connection.transactionOpen());
+			assertEquals(1, connection.connections());
+
+			connection.rollbackTransaction();
+			assertFalse(connection.transactionOpen());
+		}
+
+		@Test
+		@DisplayName("closing the connection rolls back the open transaction")
+		void close_transactionOpen_clearsTransactionState() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.startTransaction();
+			connection.close();
+
+			assertFalse(connection.transactionOpen());
+			connection.cacheQueries();
+			assertEquals(2, connection.connections());
+		}
+
+		@Test
+		@DisplayName("a transaction can not be started while one is open")
+		void startTransaction_transactionOpen_throws() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			connection.startTransaction();
+			assertThrows(IllegalStateException.class, connection::startTransaction);
+			assertTrue(connection.transactionOpen(), "the open transaction must survive the failed start");
+		}
+
+		@Test
+		@DisplayName("ending a transaction which is not open throws")
+		void endTransaction_noTransactionOpen_throws() {
+			TransactionConnection connection = new TransactionConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			assertThrows(IllegalStateException.class, connection::commitTransaction);
+			assertThrows(IllegalStateException.class, connection::rollbackTransaction);
 		}
 	}
 
@@ -211,10 +369,10 @@ public final class AbstractEntityConnectionTest {
 							.domain(TestDomain.DOMAIN)
 							.build();
 
-			connection.transactionOpen();
+			connection.cacheQueries();
 			int afterFirstOperation = checks.get();
-			connection.transactionOpen();
-			connection.transactionOpen();
+			connection.cacheQueries();
+			connection.cacheQueries();
 
 			assertEquals(afterFirstOperation, checks.get(), "the connection must not be rechecked within the interval");
 		}
@@ -230,10 +388,10 @@ public final class AbstractEntityConnectionTest {
 							.domain(TestDomain.DOMAIN)
 							.build();
 
-			connection.transactionOpen();
+			connection.cacheQueries();
 			int afterFirstOperation = checks.get();
 			Thread.sleep(100);
-			connection.transactionOpen();
+			connection.cacheQueries();
 
 			assertTrue(checks.get() > afterFirstOperation, "the connection must be rechecked once the interval has elapsed");
 		}
@@ -252,13 +410,13 @@ public final class AbstractEntityConnectionTest {
 							.build();
 
 			//the connection dies, unnoticed, and is then used continuously
-			connection.transactionOpen();
+			connection.cacheQueries();
 			connection.close();
 
 			long deadline = System.currentTimeMillis() + 5_000;
 			while (!connection.connected() && System.currentTimeMillis() < deadline) {
 				Thread.sleep(10);
-				connection.transactionOpen();
+				connection.cacheQueries();
 			}
 
 			assertTrue(connection.connected(), "continuous use must not postpone the check past the interval");
@@ -279,7 +437,7 @@ public final class AbstractEntityConnectionTest {
 
 			Thread[] threads = new Thread[10];
 			for (int i = 0; i < threads.length; i++) {
-				threads[i] = new Thread(connection::transactionOpen);
+				threads[i] = new Thread(connection::cacheQueries);
 			}
 			for (Thread thread : threads) {
 				thread.start();
@@ -306,7 +464,7 @@ public final class AbstractEntityConnectionTest {
 							.user(UNIT_TEST_USER)
 							.domain(TestDomain.DOMAIN)
 							.build();
-			connection.transactionOpen();
+			connection.cacheQueries();
 
 			//an operation in progress, holding the connection lock
 			Thread operation = new Thread(() -> {
@@ -319,7 +477,7 @@ public final class AbstractEntityConnectionTest {
 			assertTrue(operationRunning.await(10, SECONDS));
 
 			//a second caller, blocked while validating the connection ahead of its operation
-			Thread caller = new Thread(connection::transactionOpen);
+			Thread caller = new Thread(connection::cacheQueries);
 			caller.start();
 			assertTrue(blocked(caller));
 
@@ -394,7 +552,7 @@ public final class AbstractEntityConnectionTest {
 			return ProxyBuilder.of(EntityConnection.class)
 							.method("entities", parameters -> ENTITIES)
 							//stands in for any operation, which is what drives validation
-							.method("transactionOpen", parameters -> false)
+							.method("cacheQueries", parameters -> (QueryCache) () -> {})
 							.method("connected", parameters -> {
 								checks.incrementAndGet();
 
@@ -438,7 +596,7 @@ public final class AbstractEntityConnectionTest {
 			return ProxyBuilder.of(EntityConnection.class)
 							.method("entities", parameters -> ENTITIES)
 							//stands in for any operation, which is what drives validation
-							.method("transactionOpen", parameters -> false)
+							.method("cacheQueries", parameters -> (QueryCache) () -> {})
 							.method("connected", parameters -> {
 								synchronized (connectionLock) {
 									return true;
@@ -467,6 +625,113 @@ public final class AbstractEntityConnectionTest {
 		}
 	}
 
+	private static final class TransactionConnection extends AbstractEntityConnection {
+
+		private final AtomicInteger connections = new AtomicInteger();
+		private final AtomicInteger checks = new AtomicInteger();
+
+		private volatile State alive = State.state(true);
+		private volatile boolean failCommit = false;
+
+		private TransactionConnection(TransactionConnectionBuilder builder) {
+			super(builder);
+		}
+
+		/**
+		 * @return the number of underlying connections established so far
+		 */
+		private int connections() {
+			return connections.get();
+		}
+
+		/**
+		 * @return the number of validity checks performed so far
+		 */
+		private int checks() {
+			return checks.get();
+		}
+
+		/**
+		 * Simulates the current underlying connection dying from an external cause,
+		 * without this instance being told.
+		 */
+		private void killUnderlying() {
+			alive.set(false);
+		}
+
+		@Override
+		protected EntityConnection connect() {
+			connections.incrementAndGet();
+			State connected = State.state(true);
+			alive = connected;
+			AtomicBoolean transactionOpen = new AtomicBoolean();
+
+			return ProxyBuilder.of(EntityConnection.class)
+							.method("entities", parameters -> ENTITIES)
+							.method("connected", parameters -> {
+								checks.incrementAndGet();
+
+								return connected.is();
+							})
+							//stands in for any operation
+							.method("cacheQueries", parameters -> {
+								verifyConnected(connected);
+
+								return (QueryCache) () -> {};
+							})
+							.method("transactionOpen", parameters -> transactionOpen.get())
+							.method("startTransaction", parameters -> {
+								verifyConnected(connected);
+								if (!transactionOpen.compareAndSet(false, true)) {
+									throw new IllegalStateException("Transaction already open");
+								}
+
+								return null;
+							})
+							//like the real connections, these clear the transaction flag only after
+							//the underlying call succeeds, which on a dead connection it never does
+							.method("commitTransaction", parameters -> {
+								verifyConnected(connected);
+								if (failCommit) {
+									throw new RuntimeException("Commit failed");
+								}
+								transactionOpen.set(false);
+
+								return null;
+							})
+							.method("rollbackTransaction", parameters -> {
+								verifyConnected(connected);
+								transactionOpen.set(false);
+
+								return null;
+							})
+							.method("close", parameters -> {
+								connected.set(false);
+
+								return null;
+							})
+							.build();
+		}
+
+		private static void verifyConnected(State connected) {
+			if (!connected.is()) {
+				throw new RuntimeException("Connection has gone bad");
+			}
+		}
+	}
+
+	private static final class TransactionConnectionBuilder extends AbstractBuilder<TransactionConnection, TransactionConnectionBuilder> {
+
+		private TransactionConnectionBuilder() {
+			super(EntityConnection.CONNECTION_TYPE_LOCAL);
+		}
+
+		@Override
+		protected TransactionConnection createConnection() {
+			return new TransactionConnection(this);
+		}
+	}
+
 	private static final class TestConnection extends AbstractEntityConnection {
 
 		private final AtomicInteger connections = new AtomicInteger();
@@ -490,7 +755,7 @@ public final class AbstractEntityConnectionTest {
 			return ProxyBuilder.of(EntityConnection.class)
 							.method("entities", parameters -> ENTITIES)
 							//stands in for any operation, which is what drives validation
-							.method("transactionOpen", parameters -> false)
+							.method("cacheQueries", parameters -> (QueryCache) () -> {})
 							.method("connected", parameters -> connected.is())
 							.method("close", parameters -> {
 								connected.set(false);
