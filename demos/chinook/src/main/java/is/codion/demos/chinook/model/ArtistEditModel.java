@@ -20,8 +20,8 @@ package is.codion.demos.chinook.model;
 
 import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.demos.chinook.domain.api.Chinook.ArtistTag;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EditorLink;
 import is.codion.framework.model.EditorLink.DetailSelect;
@@ -38,12 +38,12 @@ public final class ArtistEditModel extends SwingEntityEditModel {
 	public static final int TAG_SLOTS = 6;
 	public static final String TAG_PREFIX = "tag";
 
-	public ArtistEditModel(EntityConnectionProvider connectionProvider) {
-		super(Artist.TYPE, connectionProvider);
+	public ArtistEditModel(EntityConnection connection) {
+		super(Artist.TYPE, connection);
 		TagPresent present = new TagPresent();
 		for (int i = 0; i < TAG_SLOTS; i++) {
 			editor().detail().add(EditorLink.builder()
-							.editor(new SwingEntityEditor(ArtistTag.TYPE, connectionProvider))
+							.editor(new SwingEntityEditor(ArtistTag.TYPE, connection))
 							.foreignKey(ArtistTag.ARTIST_FK)
 							.select(new TagSelect(i))
 							.present(present)

@@ -26,11 +26,9 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.rmi.TestDomain.Department;
 import is.codion.framework.db.rmi.TestDomain.Employee;
-import is.codion.framework.domain.DomainType;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -50,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Date: 1.4.2010
  * Time: 22:44:24
  */
-public class RemoteEntityConnectionProviderTest {
+public class RemoteEntityConnectionBuilderTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -61,20 +59,19 @@ public class RemoteEntityConnectionProviderTest {
 
 		String serverName = configuration.serverName();
 		EntityServer.startServer(configuration);
-		Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
+		Server<ServerEntityConnection, EntityServerAdmin> server = (Server<ServerEntityConnection, EntityServerAdmin>)
 						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(serverName);
 		EntityServerAdmin admin = server.admin(User.parse("scott:tiger"));
 
-		RemoteEntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
+		EntityConnection connection = RemoteEntityConnection.builder()
 						.hostname(Clients.SERVER_HOSTNAME.get())
 						.port(configuration.port())
 						.registryPort(configuration.registryPort())
-						.clientType("RemoteEntityConnectionProviderTest")
+						.clientType("RemoteEntityConnectionBuilderTest")
 						.domain(TestDomain.DOMAIN)
 						.user(User.parse("scott:tiger"))
 						.build();
 
-		EntityConnection connection = provider.connection();
 		connection.select(all(Department.TYPE));
 		try (EntityResultIterator iterator = connection.iterator(all(Employee.TYPE))) {
 			while (iterator.hasNext()) {
@@ -88,24 +85,20 @@ public class RemoteEntityConnectionProviderTest {
 
 		assertFalse(connection.connected());
 
-		provider.close();
+		connection.close();
 
-		assertThrows(RuntimeException.class, provider::connection);
+		//no server to reconnect to
+		assertThrows(RuntimeException.class, () -> connection.select(all(Department.TYPE)));
 	}
 
 	@Test
-	void entityConnectionProviderBuilder() {
-		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
+	void connectionTypeRemote_resolvesRemoteBuilder() {
+		EntityConnection.CLIENT_CONNECTION_TYPE.set(EntityConnection.CONNECTION_TYPE_REMOTE);
 		try {
-			EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-							.domain(DomainType.domainType("entityConnectionProviderBuilder"))
-							.clientType("test")
-							.user(UNIT_TEST_USER)
-							.build();
-			assertInstanceOf(RemoteEntityConnectionProvider.class, connectionProvider);
+			assertInstanceOf(RemoteEntityConnection.Builder.class, EntityConnection.builder());
 		}
 		finally {
-			EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(null);
+			EntityConnection.CLIENT_CONNECTION_TYPE.set(null);
 		}
 	}
 

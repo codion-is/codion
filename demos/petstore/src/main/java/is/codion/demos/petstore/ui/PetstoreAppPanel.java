@@ -20,7 +20,7 @@ package is.codion.demos.petstore.ui;
 
 import is.codion.common.utilities.user.User;
 import is.codion.demos.petstore.model.PetstoreAppModel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -87,24 +87,24 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 										.panel(PetstoreAppPanel::createTagPanel));
 	}
 
-	private static EntityPanel createAddressPanel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel addressModel = new SwingEntityModel(Address.TYPE, connectionProvider);
+	private static EntityPanel createAddressPanel(EntityConnection connection) {
+		SwingEntityModel addressModel = new SwingEntityModel(Address.TYPE, connection);
 		addressModel.tableModel().items().refresh();
 
 		return new EntityPanel(addressModel, new AddressEditPanel(addressModel.editModel()));
 	}
 
-	private static EntityPanel createSellerContactInfoPanel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel sellerContactInfoModel = new SwingEntityModel(SellerContactInfo.TYPE, connectionProvider);
+	private static EntityPanel createSellerContactInfoPanel(EntityConnection connection) {
+		SwingEntityModel sellerContactInfoModel = new SwingEntityModel(SellerContactInfo.TYPE, connection);
 		sellerContactInfoModel.tableModel().items().refresh();
 
 		return new EntityPanel(sellerContactInfoModel,
 						new ContactInfoEditPanel(sellerContactInfoModel.editModel()));
 	}
 
-	private static EntityPanel createTagPanel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel tagModel = new SwingEntityModel(Tag.TYPE, connectionProvider);
-		SwingEntityModel tagItemModel = new SwingEntityModel(TagItem.TYPE, connectionProvider);
+	private static EntityPanel createTagPanel(EntityConnection connection) {
+		SwingEntityModel tagModel = new SwingEntityModel(Tag.TYPE, connection);
+		SwingEntityModel tagItemModel = new SwingEntityModel(TagItem.TYPE, connection);
 		tagModel.detail().add(tagItemModel);
 		tagModel.tableModel().items().refresh();
 

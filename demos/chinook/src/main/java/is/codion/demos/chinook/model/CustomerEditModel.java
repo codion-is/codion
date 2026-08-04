@@ -20,7 +20,7 @@ package is.codion.demos.chinook.model;
 
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EditorLink;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -33,11 +33,11 @@ import static is.codion.framework.db.EntityConnection.Select.where;
 // tag::customerEditModel[]
 public final class CustomerEditModel extends SwingEntityEditModel {
 
-	public CustomerEditModel(EntityConnectionProvider connectionProvider) {
-		super(Customer.TYPE, connectionProvider);
+	public CustomerEditModel(EntityConnection connection) {
+		super(Customer.TYPE, connection);
 		editor().comboBoxModels().initialize(Customer.SUPPORTREP_FK);
 		// Set a detail editor, in order to edit customer preferences alongside the customer
-		SwingEntityEditor preferences = new SwingEntityEditor(Preferences.TYPE, connectionProvider);
+		SwingEntityEditor preferences = new SwingEntityEditor(Preferences.TYPE, connection);
 		preferences.value(Preferences.PREFERRED_GENRE_FK).persist().set(false);
 		preferences.comboBoxModels().initialize(Preferences.PREFERRED_GENRE_FK);
 		editor().detail().add(EditorLink.builder()

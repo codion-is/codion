@@ -19,9 +19,9 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE}
- * <li>{@link is.codion.framework.db.EntityConnectionProvider#DESCRIPTION}
- * <li>{@link is.codion.framework.db.EntityConnectionProvider#VALIDITY_CHECK_INTERVAL}
+ * <li>{@link is.codion.framework.db.EntityConnection#CLIENT_CONNECTION_TYPE}
+ * <li>{@link is.codion.framework.db.EntityConnection#DESCRIPTION}
+ * <li>{@link is.codion.framework.db.EntityConnection#VALIDITY_CHECK_INTERVAL}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

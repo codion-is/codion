@@ -18,7 +18,7 @@
  */
 package is.codion.manual.framework;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.manual.store.domain.Store.Address;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -27,7 +27,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 public final class EntityPanels {
 
-	private final EntityConnectionProvider connectionProvider = null;
+	private final EntityConnection connection = null;
 
 	// tag::editPanel[]
 	public class AddressEditPanel extends EntityEditPanel {
@@ -58,7 +58,7 @@ public final class EntityPanels {
 	void setupEntityPanel() {
 		// tag::setup[]
 		SwingEntityModel addressModel =
-						new SwingEntityModel(Address.TYPE, connectionProvider);
+						new SwingEntityModel(Address.TYPE, connection);
 
 		EntityPanel addressPanel =
 						new EntityPanel(addressModel,

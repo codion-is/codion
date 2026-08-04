@@ -22,8 +22,7 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
@@ -56,7 +55,7 @@ public final class DefaultEntityComboBoxModelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
@@ -65,7 +64,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void persistenceAware() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		comboBoxModel.items().refresh();
 
@@ -97,7 +96,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void builderReuseProducesIndependentModels() {
 		EntityComboBoxModel.Builder builder = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER);
+						.connection(CONNECTION);
 		EntityComboBoxModel modelA = builder.build();
 		EntityComboBoxModel modelB = builder.build();
 		//each built model gets its own query state, they must not share the condition Value
@@ -113,10 +112,10 @@ public final class DefaultEntityComboBoxModelTest {
 	void persistenceUpdateRefreshesSelection() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		comboBoxModel.items().refresh();
-		Entity blake = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
+		Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
 		comboBoxModel.select(blake.primaryKey());
 		Entity selected = comboBoxModel.selection().item().getOrThrow();
 
@@ -134,7 +133,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void linkPreservesPresetKeysWhenMasterUnrefreshed() {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		employeeComboBoxModel.items().refresh();
 		Entity.Key accountingKey = ENTITIES.primaryKey(Department.TYPE, 10);
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(accountingKey);
@@ -142,7 +141,7 @@ public final class DefaultEntityComboBoxModelTest {
 		//link an unrefreshed (empty, no selection) master, the pre-set keys must survive
 		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(departmentComboBoxModel);
 		assertEquals(new HashSet<>(singleton(accountingKey)),
 						new HashSet<>(employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).get()));
@@ -155,7 +154,7 @@ public final class DefaultEntityComboBoxModelTest {
 		attributes.add(Employee.NAME);
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.attributes(attributes)
 						.build();
 		attributes.add(Employee.JOB);//mutate the caller's collection after build
@@ -173,27 +172,27 @@ public final class DefaultEntityComboBoxModelTest {
 
 	@Test
 	void constructorNullConnectionProvider() {
-		assertThrows(NullPointerException.class, () -> EntityComboBoxModel.builder().entityType(Employee.TYPE).connectionProvider(null));
+		assertThrows(NullPointerException.class, () -> EntityComboBoxModel.builder().entityType(Employee.TYPE).connection(null));
 	}
 
 	@Test
 	void foreignKeyFilter() {
-		Entities entities = CONNECTION_PROVIDER.entities();
+		Entities entities = CONNECTION.entities();
 		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		EntityComboBoxModel managerComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.includeNull(true)
 						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
 						.filterSelected(true)
-						.select(CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE")))
+						.select(CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE")))
 						.filter(Employee.DEPARTMENT_FK, departmentComboBoxModel)
 						.build();
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.filterSelected(true)
 						.filter(Employee.MGR_FK, managerComboBoxModel)
 						.build();
@@ -240,7 +239,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void buildFromForeignKey() {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
 						.foreignKey(Employee.MGR_FK)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.condition(() -> Employee.JOB.in("MANAGER"))
 						.build();
 		// Foreign key is nullable
@@ -255,7 +254,7 @@ public final class DefaultEntityComboBoxModelTest {
 
 		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
 						.foreignKey(Employee.DEPARTMENT_FK)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		// Foreign key is not nullable
 		assertFalse(departmentComboBoxModel.items().included().contains(null));
 	}
@@ -264,22 +263,22 @@ public final class DefaultEntityComboBoxModelTest {
 	void foreignKeyFilterComboBoxModel() {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.includeNull(true)
 						.build();
 		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(departmentComboBoxModel);
 		employeeComboBoxModel.items().refresh();//refreshes both
 		assertFalse(departmentComboBoxModel.items().included().contains(null));
 		assertEquals(0, employeeComboBoxModel.items().included().size());
-		Entity.Key accountingKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 10);
+		Entity.Key accountingKey = CONNECTION.entities().primaryKey(Department.TYPE, 10);
 		departmentComboBoxModel.select(accountingKey);
 		assertEquals(7, employeeComboBoxModel.items().included().size());
 		departmentComboBoxModel.selection().item().set(null);
 		assertEquals(0, employeeComboBoxModel.items().included().size());
-		Entity.Key salesKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 30);
+		Entity.Key salesKey = CONNECTION.entities().primaryKey(Department.TYPE, 30);
 		departmentComboBoxModel.select(salesKey);
 		assertEquals(4, employeeComboBoxModel.items().included().size());
 		employeeComboBoxModel.selection().item().set(employeeComboBoxModel.items().included().get().get(1));
@@ -290,9 +289,9 @@ public final class DefaultEntityComboBoxModelTest {
 	void setForeignKeyFilterEntities() {
 		EntityComboBoxModel employeeComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		employeeComboBoxModel.items().refresh();
-		Entity blake = employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
+		Entity blake = employeeComboBoxModel.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
 		assertThrows(IllegalArgumentException.class, () -> employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(blake.primaryKey()));
 
 		employeeComboBoxModel.filter().get(Employee.MGR_FK).set(blake.primaryKey());
@@ -302,7 +301,7 @@ public final class DefaultEntityComboBoxModelTest {
 			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
 
-		Entity sales = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("SALES"));
+		Entity sales = employeeComboBoxModel.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(sales.primaryKey());
 		assertEquals(2, employeeComboBoxModel.items().included().size());
 		for (int i = 0; i < employeeComboBoxModel.items().included().size(); i++) {
@@ -311,10 +310,10 @@ public final class DefaultEntityComboBoxModelTest {
 			assertEquals(item.entity(Employee.MGR_FK), blake);
 		}
 
-		Entity accounting = employeeComboBoxModel.connectionProvider().connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		Entity accounting = employeeComboBoxModel.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		EntityComboBoxModel deptComboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.select(accounting)
 						.build();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(deptComboBoxModel);
@@ -352,10 +351,10 @@ public final class DefaultEntityComboBoxModelTest {
 
 	@Test
 	void setSelectedEntityByKey() {
-		Entity clark = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("CLARK"));
+		Entity clark = CONNECTION.selectSingle(Employee.NAME.equalTo("CLARK"));
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.select(clark)
 						.build();
 		comboBoxModel.items().refresh();
@@ -375,7 +374,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void setSelectedEntityByPrimaryKeyNullValue() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		assertThrows(NullPointerException.class, () -> comboBoxModel.select(null));
 	}
 
@@ -383,7 +382,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void refresh() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.refresh(true)
 						.build();
 		assertEquals(16, comboBoxModel.items().size());
@@ -393,12 +392,12 @@ public final class DefaultEntityComboBoxModelTest {
 	void selectorValue() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		comboBoxModel.items().refresh();
 		assertThrows(IllegalArgumentException.class, () -> comboBoxModel.selector(Department.ID));
 		Value<Integer> empIdValue = comboBoxModel.selector(Employee.ID);
 		assertNull(empIdValue.get());
-		Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);
+		Entity.Key jonesKey = comboBoxModel.connection().entities().primaryKey(Employee.TYPE, 5);
 		comboBoxModel.select(jonesKey);
 		assertEquals(5, empIdValue.get());
 		comboBoxModel.selection().item().set(null);
@@ -413,7 +412,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void attributes() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.attributes(Arrays.asList(Employee.NAME, Employee.DEPARTMENT_FK))
 						.build();
 		comboBoxModel.items().refresh();
@@ -430,7 +429,7 @@ public final class DefaultEntityComboBoxModelTest {
 		}
 		comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		comboBoxModel.items().refresh();
 		for (Entity emp : comboBoxModel.items().get()) {
 			assertTrue(emp.contains(Employee.ID));
@@ -449,7 +448,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void test() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER).build();
+						.connection(CONNECTION).build();
 		AtomicInteger refreshed = new AtomicInteger();
 		Runnable refreshListener = refreshed::incrementAndGet;
 		comboBoxModel.items().refresher().result().addListener(refreshListener);
@@ -461,7 +460,7 @@ public final class DefaultEntityComboBoxModelTest {
 		assertTrue(comboBoxModel.items().included().size() > 0);
 		assertFalse(comboBoxModel.items().cleared());
 
-		Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("CLARK"));
+		Entity clark = comboBoxModel.connection().selectSingle(Employee.NAME.equalTo("CLARK"));
 		comboBoxModel.selection().item().set(clark);
 		assertEquals(clark, comboBoxModel.selection().item().get());
 
@@ -490,14 +489,14 @@ public final class DefaultEntityComboBoxModelTest {
 	void orderBy() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.orderBy(OrderBy.ascending(Employee.NAME))
 						.build();
 		comboBoxModel.items().refresh();
 		assertEquals("ADAMS", comboBoxModel.items().included().get().get(0).get(Employee.NAME));
 		comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.orderBy(OrderBy.descending(Employee.NAME))
 						.build();
 		comboBoxModel.items().refresh();
@@ -508,12 +507,12 @@ public final class DefaultEntityComboBoxModelTest {
 	void comparator() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.comparator(Comparator.comparing(employee -> employee.get(Department.ID)))
 						.build();
 		comboBoxModel.items().refresh();
 
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 
 		assertEquals(0, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"))));
 		assertEquals(1, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("RESEARCH"))));
@@ -525,7 +524,7 @@ public final class DefaultEntityComboBoxModelTest {
 	void nullCaption() {
 		EntityComboBoxModel model = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.includeNull(true)
 						.build();
 		model.items().refresh();
@@ -538,14 +537,14 @@ public final class DefaultEntityComboBoxModelTest {
 	void refreshWithinQueryCacheScope() {
 		// The query cache's motivating scenario: several combo box models over the same
 		// lookup entities, initialized in one scope, selecting identical rows.
-		EntityConnection connection = CONNECTION_PROVIDER.connection();
+		EntityConnection connection = CONNECTION;
 		EntityComboBoxModel departments = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		EntityComboBoxModel moreDepartments = EntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		try (QueryCache cache = connection.cacheQueries()) {

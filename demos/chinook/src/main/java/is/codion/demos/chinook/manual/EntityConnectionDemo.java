@@ -30,9 +30,8 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Transactional;
 import is.codion.framework.db.EntityConnection.TransactionalResult;
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityResultIterator;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -58,9 +57,8 @@ import static is.codion.framework.domain.entity.condition.Condition.and;
  */
 public final class EntityConnectionDemo {
 
-	static void select(EntityConnectionProvider connectionProvider) {
+	static void select(EntityConnection connection) {
 		// tag::select[]
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> artists = connection.select(
 						Artist.NAME.like("The %"));
@@ -94,9 +92,8 @@ public final class EntityConnectionDemo {
 		// end::select[]
 	}
 
-	static void referenceDepthEntity(EntityConnectionProvider connectionProvider) {
+	static void referenceDepthEntity(EntityConnection connection) {
 		// tag::referenceDepthEntity[]
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> tracks = connection.select(Track.NAME.like("Bad%"));
 
@@ -112,9 +109,8 @@ public final class EntityConnectionDemo {
 		// end::referenceDepthEntity[]
 	}
 
-	static void referenceDepthCondition(EntityConnectionProvider connectionProvider) {
+	static void referenceDepthCondition(EntityConnection connection) {
 		// tag::referenceDepthCondition[]
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> tracks = connection.select(
 						Select.where(Track.NAME.like("Bad%"))
@@ -132,9 +128,8 @@ public final class EntityConnectionDemo {
 		// end::referenceDepthCondition[]
 	}
 
-	static void referenceDepthForeignKeyCondition(EntityConnectionProvider connectionProvider) {
+	static void referenceDepthForeignKeyCondition(EntityConnection connection) {
 		// tag::referenceDepthConditionForeignKey[]
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> tracks = connection.select(
 						Select.where(Track.NAME.like("Bad%"))
@@ -156,9 +151,8 @@ public final class EntityConnectionDemo {
 		// end::referenceDepthConditionForeignKey[]
 	}
 
-	static void selectKeys(EntityConnectionProvider connectionProvider) {
+	static void selectKeys(EntityConnection connection) {
 		// tag::selectKeys[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Entities entities = connection.entities();
 
@@ -169,9 +163,8 @@ public final class EntityConnectionDemo {
 		// end::selectKeys[]
 	}
 
-	static void selectKey(EntityConnectionProvider connectionProvider) {
+	static void selectKey(EntityConnection connection) {
 		// tag::selectKey[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Entities entities = connection.entities();
 
@@ -181,9 +174,8 @@ public final class EntityConnectionDemo {
 		// end::selectKey[]
 	}
 
-	static void selectSingleValue(EntityConnectionProvider connectionProvider) {
+	static void selectSingleValue(EntityConnection connection) {
 		// tag::selectSingleValue[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Entity aliceInChains = connection.selectSingle(Artist.NAME.equalTo("Alice In Chains"));
 
@@ -193,9 +185,8 @@ public final class EntityConnectionDemo {
 		// end::selectSingleValue[]
 	}
 
-	static void selectValues(EntityConnectionProvider connectionProvider) {
+	static void selectValues(EntityConnection connection) {
 		// tag::selectValues[]
-		EntityConnection connection = connectionProvider.connection();
 
 		List<String> customerUsStates =
 						connection.select(Customer.STATE,
@@ -203,9 +194,8 @@ public final class EntityConnectionDemo {
 		// end::selectValues[]
 	}
 
-	static void dependencies(EntityConnectionProvider connectionProvider) {
+	static void dependencies(EntityConnection connection) {
 		// tag::dependencies[]
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> employees = connection.select(all(Employee.TYPE));
 
@@ -215,18 +205,16 @@ public final class EntityConnectionDemo {
 		// end::dependencies[]
 	}
 
-	static void count(EntityConnectionProvider connectionProvider) {
+	static void count(EntityConnection connection) {
 		// tag::count[]
-		EntityConnection connection = connectionProvider.connection();
 
 		int numberOfItStaff = connection.count(
 						Count.where(Employee.TITLE.equalTo("IT Staff")));
 		// end::count[]
 	}
 
-	static void insert(EntityConnectionProvider connectionProvider) {
+	static void insert(EntityConnection connection) {
 		// tag::insert[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Entities entities = connection.entities();
 
@@ -250,9 +238,8 @@ public final class EntityConnectionDemo {
 		// end::insert[]
 	}
 
-	static void update(EntityConnectionProvider connectionProvider) {
+	static void update(EntityConnection connection) {
 		// tag::updateEntity[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Entity myBand = connection.selectSingle(
 						Artist.NAME.equalTo("My Band"));
@@ -271,9 +258,8 @@ public final class EntityConnectionDemo {
 		// end::updateEntity[]
 	}
 
-	static void updateDemo(EntityConnectionProvider connectionProvider) {
+	static void updateDemo(EntityConnection connection) {
 		// tag::updateCondition[]
-		EntityConnection connection = connectionProvider.connection();
 
 		connection.update(
 						Update.where(Artist.NAME.equalTo("Azymuth"))
@@ -285,9 +271,8 @@ public final class EntityConnectionDemo {
 		// end::updateCondition[]
 	}
 
-	static void deleteCondition(EntityConnectionProvider connectionProvider) {
+	static void deleteCondition(EntityConnection connection) {
 		// tag::deleteCondition[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Entity aquaman = connection.selectSingle(
 						Artist.NAME.equalTo("Aquaman"));
@@ -309,9 +294,8 @@ public final class EntityConnectionDemo {
 		// end::deleteCondition[]
 	}
 
-	static void deleteKey(EntityConnectionProvider connectionProvider) {
+	static void deleteKey(EntityConnection connection) {
 		// tag::deleteKey[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Entity audioslave = connection.selectSingle(
 						Artist.NAME.equalTo("Audioslave"));
@@ -336,9 +320,8 @@ public final class EntityConnectionDemo {
 		// end::deleteKey[]
 	}
 
-	static void iterator(EntityConnectionProvider connectionProvider) {
+	static void iterator(EntityConnection connection) {
 		// tag::iterator[]
-		EntityConnection connection = connectionProvider.connection();
 
 		try (EntityResultIterator iterator =
 								 connection.iterator(Customer.EMAIL.isNotNull())) {
@@ -349,9 +332,8 @@ public final class EntityConnectionDemo {
 		// end::iterator[]
 	}
 
-	static void function(EntityConnectionProvider connectionProvider) {
+	static void function(EntityConnection connection) {
 		// tag::function[]
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Long> trackIds = List.of(123L, 1234L);
 		BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
@@ -370,17 +352,15 @@ public final class EntityConnectionDemo {
 		// end::function[]
 	}
 
-	static void procedure(EntityConnectionProvider connectionProvider) {
+	static void procedure(EntityConnection connection) {
 		// tag::procedure[]
-		EntityConnection connection = connectionProvider.connection();
 
 		connection.execute(Invoice.UPDATE_TOTALS, List.of(1234L, 3412L));
 		// end::procedure[]
 	}
 
-	static void report(EntityConnectionProvider connectionProvider) {
+	static void report(EntityConnection connection) {
 		// tag::report[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", List.of(42, 43, 45));
@@ -390,9 +370,8 @@ public final class EntityConnectionDemo {
 		//end::report[]
 	}
 
-	static void transactionalLambda(EntityConnectionProvider connectionProvider) {
+	static void transactionalLambda(EntityConnection connection) {
 		// tag::transactionalLambda[]
-		EntityConnection connection = connectionProvider.connection();
 
 		EntityConnection.transaction(connection, () -> {
 			Entities entities = connection.entities();
@@ -412,9 +391,8 @@ public final class EntityConnectionDemo {
 		// end::transactionalLambda[]
 	}
 
-	static void transactionalAnonymous(EntityConnectionProvider connectionProvider) {
+	static void transactionalAnonymous(EntityConnection connection) {
 		// tag::transactionalAnonymous[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Transactional transactional = new Transactional() {
 
@@ -440,9 +418,8 @@ public final class EntityConnectionDemo {
 		// end::transactionalAnonymous[]
 	}
 
-	static void transactionalResultLambda(EntityConnectionProvider connectionProvider) {
+	static void transactionalResultLambda(EntityConnection connection) {
 		// tag::transactionalResultLambda[]
-		EntityConnection connection = connectionProvider.connection();
 
 		Entity.Key albumKey = EntityConnection.transaction(connection, () -> {
 			Entities entities = connection.entities();
@@ -462,9 +439,8 @@ public final class EntityConnectionDemo {
 		// end::transactionalResultLambda[]
 	}
 
-	static void transactionalResultAnonymous(EntityConnectionProvider connectionProvider) {
+	static void transactionalResultAnonymous(EntityConnection connection) {
 		// tag::transactionalResultAnonymous[]
-		EntityConnection connection = connectionProvider.connection();
 
 		TransactionalResult<Entity.Key> transactional = new TransactionalResult<Entity.Key>() {
 
@@ -490,11 +466,10 @@ public final class EntityConnectionDemo {
 		// end::transactionalResultAnonymous[]
 	}
 
-	static void transaction(EntityConnectionProvider connectionProvider) {
+	static void transaction(EntityConnection connection) {
 		// tag::transaction[]
 		// This example demonstrates full manual transaction control, including rollback safety
 		// and protection against leaving transactions open in the presence of unexpected failures.
-		EntityConnection connection = connectionProvider.connection();
 
 		Entities entities = connection.entities();
 
@@ -542,9 +517,8 @@ public final class EntityConnectionDemo {
 		// end::transaction[]
 	}
 
-	static void queryCache(EntityConnectionProvider connectionProvider) {
+	static void queryCache(EntityConnection connection) {
 		// tag::queryCache[]
-		EntityConnection connection = connectionProvider.connection();
 
 		try (QueryCache cache = connection.cacheQueries()) {
 			// Each of these selects hits the database once, the repeated
@@ -564,31 +538,31 @@ public final class EntityConnectionDemo {
 		Database.URL.set("jdbc:h2:mem:h2db");
 		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-		LocalEntityConnectionProvider connectionProvider =
-						LocalEntityConnectionProvider.builder()
+		LocalEntityConnection connection =
+						LocalEntityConnection.builder()
 										.domain(DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.build();
 
-		select(connectionProvider);
-		referenceDepthEntity(connectionProvider);
-		referenceDepthCondition(connectionProvider);
-		referenceDepthForeignKeyCondition(connectionProvider);
-		selectKeys(connectionProvider);
-		iterator(connectionProvider);
-		selectKey(connectionProvider);
-		selectSingleValue(connectionProvider);
-		selectValues(connectionProvider);
-		dependencies(connectionProvider);
-		count(connectionProvider);
-		insert(connectionProvider);
-		update(connectionProvider);
-		updateDemo(connectionProvider);
-		deleteCondition(connectionProvider);
-		deleteKey(connectionProvider);
-		function(connectionProvider);
-		report(connectionProvider);
-		transaction(connectionProvider);
-		queryCache(connectionProvider);
+		select(connection);
+		referenceDepthEntity(connection);
+		referenceDepthCondition(connection);
+		referenceDepthForeignKeyCondition(connection);
+		selectKeys(connection);
+		iterator(connection);
+		selectKey(connection);
+		selectSingleValue(connection);
+		selectValues(connection);
+		dependencies(connection);
+		count(connection);
+		insert(connection);
+		update(connection);
+		updateDemo(connection);
+		deleteCondition(connection);
+		deleteKey(connection);
+		function(connection);
+		report(connection);
+		transaction(connection);
+		queryCache(connection);
 	}
 }

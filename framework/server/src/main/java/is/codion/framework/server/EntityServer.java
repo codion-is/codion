@@ -35,7 +35,7 @@ import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.local.LocalEntityConnection;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.db.rmi.ServerEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
@@ -67,9 +67,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A remote server serving {@link is.codion.framework.db.rmi.RemoteEntityConnection} instances to clients.
+ * A remote server serving {@link is.codion.framework.db.rmi.ServerEntityConnection} instances to clients.
  */
-public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection, EntityServerAdmin> {
+public class EntityServer extends AbstractServer<AbstractServerEntityConnection, EntityServerAdmin> {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -138,12 +138,12 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	@Override
-	protected final AbstractRemoteEntityConnection connect(RemoteClient client) throws RemoteException, LoginException {
+	protected final AbstractServerEntityConnection connect(RemoteClient client) throws RemoteException, LoginException {
 		requireNonNull(client);
 		try {
 			//a negative port tells the connection not to export itself; with RMI disabled the connection serves its
 			//HTTP client in-process and needs no RMI stub (a remote connect() is refused before reaching here)
-			AbstractRemoteEntityConnection connection = createRemoteConnection(database(), client,
+			AbstractServerEntityConnection connection = createRemoteConnection(database(), client,
 							configuration.rmi() ? configuration.port() : -1, configuration.rmiClientSocketFactory().orElse(null),
 							configuration.rmiServerSocketFactory().orElse(null));
 			connection.setTracingEnabled(methodTracing);
@@ -166,7 +166,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	@Override
-	protected final void disconnect(AbstractRemoteEntityConnection connection) throws RemoteException {
+	protected final void disconnect(AbstractServerEntityConnection connection) throws RemoteException {
 		connection.close();
 	}
 
@@ -182,12 +182,12 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	protected AbstractRemoteEntityConnection createRemoteConnection(Database database,
+	protected AbstractServerEntityConnection createRemoteConnection(Database database,
 																																	RemoteClient client, int port,
 																																	RMIClientSocketFactory clientSocketFactory,
 																																	RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
-		return new DefaultRemoteEntityConnection(clientDomainModel(client), database, client, port,
+		return new DefaultServerEntityConnection(clientDomainModel(client), database, client, port,
 						clientSocketFactory, serverSocketFactory);
 	}
 
@@ -233,9 +233,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	@Override
-	protected final void maintainConnections(Collection<ClientConnection<AbstractRemoteEntityConnection>> connections) throws RemoteException {
-		for (ClientConnection<AbstractRemoteEntityConnection> clientConnection : connections) {
-			AbstractRemoteEntityConnection connection = clientConnection.connection();
+	protected final void maintainConnections(Collection<ClientConnection<AbstractServerEntityConnection>> connections) throws RemoteException {
+		for (ClientConnection<AbstractServerEntityConnection> clientConnection : connections) {
+			AbstractServerEntityConnection connection = clientConnection.connection();
 			if (!connection.active()) {
 				boolean connected = connection.connected();
 				boolean timedOut = timedOut(connection);
@@ -344,13 +344,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	/**
 	 * @param timedOutOnly if true only connections that have timed out are culled
-	 * @see #timedOut(AbstractRemoteEntityConnection)
+	 * @see #timedOut(AbstractServerEntityConnection)
 	 */
 	final void disconnectClients(boolean timedOutOnly) {
 		//use the snapshot's connections, a client disconnecting between the snapshot and the
 		//lookup would make connection(clientId) throw and abort the rest of the sweep
-		for (Map.Entry<RemoteClient, AbstractRemoteEntityConnection> entry : new ArrayList<>(connections().entrySet())) {
-			AbstractRemoteEntityConnection connection = entry.getValue();
+		for (Map.Entry<RemoteClient, AbstractServerEntityConnection> entry : new ArrayList<>(connections().entrySet())) {
+			AbstractServerEntityConnection connection = entry.getValue();
 			if (timedOutOnly) {
 				boolean active = connection.active();
 				if (!active && timedOut(connection)) {
@@ -363,7 +363,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		}
 	}
 
-	private void removeConnection(AbstractRemoteEntityConnection connection) {
+	private void removeConnection(AbstractServerEntityConnection connection) {
 		disconnect(connection.client().request().clientId());
 	}
 
@@ -381,7 +381,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		return null;
 	}
 
-	private boolean timedOut(AbstractRemoteEntityConnection connection) {
+	private boolean timedOut(AbstractServerEntityConnection connection) {
 		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.client().request().clientType());
 		if (timeout == null) {
 			timeout = idleConnectionTimeout;
@@ -391,9 +391,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private Domain clientDomainModel(RemoteClient client) {
-		String domainTypeName = (String) client.request().parameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
+		String domainTypeName = (String) client.request().parameters().get(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE);
 		if (domainTypeName == null) {
-			throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
+			throw new IllegalArgumentException("'" + ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
 		}
 		Domain domain = domainModels.get(DomainType.domainTypeByName(domainTypeName));
 		if (domain == null) {

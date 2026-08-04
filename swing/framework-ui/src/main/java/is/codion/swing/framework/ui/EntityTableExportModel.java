@@ -22,7 +22,7 @@ import is.codion.common.model.component.combobox.FilterComboBoxModel.ComboBoxIte
 import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.common.reactive.state.State;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -67,7 +67,7 @@ final class EntityTableExportModel {
 
 	private final EntityTableModel<?, ?> tableModel;
 
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 	private final SwingFilterComboBoxModel<ConfigurationFile> configurationFiles;
 	private final EntityTableExportTreeModel treeModel;
 	private final State selected;
@@ -77,8 +77,8 @@ final class EntityTableExportModel {
 
 	EntityTableExportModel(EntityTableModel<?, ?> tableModel) {
 		this.tableModel = tableModel;
-		this.connectionProvider = tableModel.connectionProvider();
-		this.treeModel = new EntityTableExportTreeModel(tableModel.entityDefinition().type(), tableModel.connectionProvider().entities());
+		this.connection = tableModel.connection();
+		this.treeModel = new EntityTableExportTreeModel(tableModel.entityDefinition().type(), tableModel.connection().entities());
 		this.configurationFiles = SwingFilterComboBoxModel.builder()
 						.items(this::refreshConfigurationFiles)
 						.nullItem(NULL_CONFIGURATION_FILE)
@@ -97,14 +97,14 @@ final class EntityTableExportModel {
 		//pumping events, and the all-rows path would otherwise iterate a live view of the table items
 		List<Entity> entities = exportEntities();
 
-		return new ExportTask.ExportToClipboard(connectionProvider, tableModel.entityType(),
+		return new ExportTask.ExportToClipboard(connection, tableModel.entityType(),
 						treeModel::attributes, entities.iterator(), entities.size());
 	}
 
 	ExportTask exportToFile(Path file) {
 		List<Entity> entities = exportEntities();
 
-		return new ExportTask.ExportToFileTask(connectionProvider, tableModel.entityType(),
+		return new ExportTask.ExportToFileTask(connection, tableModel.entityType(),
 						treeModel::attributes, requireNonNull(file), entities.iterator(), entities.size());
 	}
 
@@ -270,7 +270,7 @@ final class EntityTableExportModel {
 
 	abstract static class ExportTask implements ProgressTask<Void> {
 
-		protected final EntityConnectionProvider connectionProvider;
+		protected final EntityConnection connection;
 		protected final EntityType entityType;
 		protected final Consumer<ExportAttributes.Builder> attributes;
 		protected final Iterator<Entity> entities;
@@ -279,10 +279,10 @@ final class EntityTableExportModel {
 		protected final AtomicInteger counter = new AtomicInteger();
 		protected final State cancel = State.state(false);
 
-		protected ExportTask(EntityConnectionProvider connectionProvider, EntityType entityType,
+		protected ExportTask(EntityConnection connection, EntityType entityType,
 		                     Consumer<ExportAttributes.Builder> attributes,
 		                     Iterator<Entity> entities, int maximum) {
-			this.connectionProvider = connectionProvider;
+			this.connection = connection;
 			this.entityType = entityType;
 			this.attributes = attributes;
 			this.entities = entities;
@@ -302,17 +302,17 @@ final class EntityTableExportModel {
 
 			private final Path file;
 
-			private ExportToFileTask(EntityConnectionProvider connectionProvider, EntityType entityType,
+			private ExportToFileTask(EntityConnection connection, EntityType entityType,
 			                         Consumer<ExportAttributes.Builder> attributes,
 			                         Path file, Iterator<Entity> entities, int maximum) {
-				super(connectionProvider, entityType, attributes, entities, maximum);
+				super(connection, entityType, attributes, entities, maximum);
 				this.file = file;
 			}
 
 			@Override
 			public void execute(ProgressReporter<Void> progress) throws Exception {
 				try (BufferedWriter output = Files.newBufferedWriter(file)) {
-					EntityExport.builder(connectionProvider)
+					EntityExport.builder(connection)
 									.entityType(entityType)
 									.attributes(attributes)
 									.entities(entities)
@@ -339,16 +339,16 @@ final class EntityTableExportModel {
 
 		private static final class ExportToClipboard extends ExportTask {
 
-			private ExportToClipboard(EntityConnectionProvider connectionProvider, EntityType entityType,
+			private ExportToClipboard(EntityConnection connection, EntityType entityType,
 			                          Consumer<ExportAttributes.Builder> attributes,
 			                          Iterator<Entity> entities, int maximum) {
-				super(connectionProvider, entityType, attributes, entities, maximum);
+				super(connection, entityType, attributes, entities, maximum);
 			}
 
 			@Override
 			public void execute(ProgressReporter<Void> progress) {
 				StringBuilder builder = new StringBuilder();
-				EntityExport.builder(connectionProvider)
+				EntityExport.builder(connection)
 								.entityType(entityType)
 								.attributes(attributes)
 								.entities(entities)

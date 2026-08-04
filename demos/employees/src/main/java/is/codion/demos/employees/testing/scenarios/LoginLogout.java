@@ -31,9 +31,9 @@ public final class LoginLogout implements Performer<EmployeesAppModel> {
 	@Override
 	public void perform(EmployeesAppModel application) {
 		try {
-			application.connectionProvider().close();
+			application.connection().close();
 			Thread.sleep(random.nextInt(1500));
-			application.connectionProvider().connection();
+			application.connection();
 		}
 		catch (InterruptedException ignored) {/*ignored*/}
 	}

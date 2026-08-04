@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.exception.EntityNotFoundException;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -48,41 +48,41 @@ final class EntityViewer {
 
 	private EntityViewer() {}
 
-	static void view(Entity.Key key, EntityConnectionProvider connectionProvider, JComponent dialogOwner) {
+	static void view(Entity.Key key, EntityConnection connection, JComponent dialogOwner) {
 		requireNonNull(key);
-		requireNonNull(connectionProvider);
+		requireNonNull(connection);
 		//the entity is fetched on a worker, this being a round trip on a remote connection
 		Dialogs.progressWorker()
-						.task(() -> select(key, connectionProvider))
+						.task(() -> select(key, connection))
 						.owner(dialogOwner)
-						.onResult(entity -> view(entity, connectionProvider, dialogOwner))
+						.onResult(entity -> view(entity, connection, dialogOwner))
 						.execute();
 	}
 
-	static void view(Entity entity, EntityConnectionProvider connectionProvider, JComponent dialogOwner) {
+	static void view(Entity entity, EntityConnection connection, JComponent dialogOwner) {
 		requireNonNull(entity);
-		requireNonNull(connectionProvider);
-		EntityDefinition definition = connectionProvider.entities().definition(entity.type());
+		requireNonNull(connection);
+		EntityDefinition definition = connection.entities().definition(entity.type());
 		Dialogs.builder()
 						.component(scrollPane()
-										.view(createTree(entity, connectionProvider)))
+										.view(createTree(entity, connection)))
 						.owner(dialogOwner)
 						.title(definition.caption() + " - " + entity)
 						.modal(false)
 						.show();
 	}
 
-	static JTree createTree(Entity entity, EntityConnectionProvider connectionProvider) {
+	static JTree createTree(Entity entity, EntityConnection connection) {
 		return Components.tree()
-						.model(new EntityTreeModel(entity, connectionProvider))
+						.model(new EntityTreeModel(entity, connection))
 						.showsRootHandles(true)
 						.rootVisible(false)
 						.treeWillExpandListener(new EntityTreeWillExpandListener())
 						.build();
 	}
 
-	private static Entity select(Entity.Key primaryKey, EntityConnectionProvider connectionProvider) {
-		return connectionProvider.connection().selectSingle(where(key(primaryKey))
+	private static Entity select(Entity.Key primaryKey, EntityConnection connection) {
+		return connection.selectSingle(where(key(primaryKey))
 						.referenceDepth(1));
 	}
 
@@ -90,18 +90,18 @@ final class EntityViewer {
 
 		private static final int MAXIMUM_VALUE_LENGTH = 42;
 
-		private EntityTreeModel(Entity entity, EntityConnectionProvider connectionProvider) {
+		private EntityTreeModel(Entity entity, EntityConnection connection) {
 			super(new DefaultMutableTreeNode());
-			populate(entity, connectionProvider, (DefaultMutableTreeNode) getRoot());
+			populate(entity, connection, (DefaultMutableTreeNode) getRoot());
 		}
 
-		private static void populate(Entity entity, EntityConnectionProvider connectionProvider, DefaultMutableTreeNode node) {
-			connectionProvider.entities().definition(entity.type()).attributes().definitions().forEach(attributeDefinition -> {
+		private static void populate(Entity entity, EntityConnection connection, DefaultMutableTreeNode node) {
+			connection.entities().definition(entity.type()).attributes().definitions().forEach(attributeDefinition -> {
 				if (attributeDefinition instanceof ForeignKeyDefinition) {
 					ForeignKeyDefinition foreignKeyDefinition = (ForeignKeyDefinition) attributeDefinition;
 					Entity reference = entity.get(foreignKeyDefinition.attribute());
 					if (reference != null) {
-						node.add(new ForeignKeyNode(foreignKeyDefinition, entity, connectionProvider));
+						node.add(new ForeignKeyNode(foreignKeyDefinition, entity, connection));
 					}
 					else {
 						node.add(new AttributeNode(attributeDefinition, entity));
@@ -165,13 +165,13 @@ final class EntityViewer {
 
 		private static final class ForeignKeyNode extends AttributeNode {
 
-			private final EntityConnectionProvider connectionProvider;
+			private final EntityConnection connection;
 
 			private boolean populated;
 
-			private ForeignKeyNode(ForeignKeyDefinition foreignKeyDefinition, Entity entity, EntityConnectionProvider connectionProvider) {
+			private ForeignKeyNode(ForeignKeyDefinition foreignKeyDefinition, Entity entity, EntityConnection connection) {
 				super(foreignKeyDefinition, entity);
-				this.connectionProvider = connectionProvider;
+				this.connection = connection;
 			}
 
 			@Override
@@ -195,7 +195,7 @@ final class EntityViewer {
 					Entity.Key referencedKey = entity().key(attributeDefinition().attribute());
 					if (referencedKey != null) {
 						try {
-							EntityTreeModel.populate(select(referencedKey, connectionProvider), connectionProvider, this);
+							EntityTreeModel.populate(select(referencedKey, connection), connection, this);
 						}
 						catch (EntityNotFoundException e) {
 							//a dangling reference is exactly what one opens this tool to find

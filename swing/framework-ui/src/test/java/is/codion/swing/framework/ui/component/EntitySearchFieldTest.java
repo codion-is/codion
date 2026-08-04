@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -49,7 +49,7 @@ public class EntitySearchFieldTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
@@ -58,7 +58,7 @@ public class EntitySearchFieldTest {
 	void componentValue() {
 		EntitySearchModel singleSelectionSearchModel = EntitySearchModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		ComponentValue<EntitySearchField, Entity> singleSelectionValue = EntitySearchField.builder()
 						.model(singleSelectionSearchModel)
@@ -67,7 +67,7 @@ public class EntitySearchFieldTest {
 
 		assertNull(singleSelectionValue.get());
 
-		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
 
 		singleSelectionSearchModel.selection().entity().set(sales);
 		assertEquals(sales, singleSelectionValue.get());
@@ -76,7 +76,7 @@ public class EntitySearchFieldTest {
 
 		assertNull(singleSelectionValue.get());
 
-		Entity research = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("RESEARCH"));
+		Entity research = CONNECTION.selectSingle(Department.NAME.equalTo("RESEARCH"));
 
 		singleSelectionValue.clear();
 		assertTrue(singleSelectionSearchModel.selection().empty().is());
@@ -84,7 +84,7 @@ public class EntitySearchFieldTest {
 
 		EntitySearchModel multiSelectionSearchModel = EntitySearchModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		ComponentValue<EntitySearchField, Set<Entity>> multiSelectionValue = EntitySearchField.builder()
 						.model(multiSelectionSearchModel)
@@ -100,10 +100,10 @@ public class EntitySearchFieldTest {
 
 	@Test
 	void text() {
-		Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("JONES"));
+		Entity jones = CONNECTION.selectSingle(Employee.NAME.equalTo("JONES"));
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		searchModel.selection().entity().set(jones);
 
@@ -114,8 +114,8 @@ public class EntitySearchFieldTest {
 						.build();
 		assertEquals("JONES", searchField.getText());
 
-		Entity blake = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
-		Entity allen = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("ALLEN"));
+		Entity blake = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
+		Entity allen = CONNECTION.selectSingle(Employee.NAME.equalTo("ALLEN"));
 
 		searchModel.selection().entities().set(asList(jones, blake, allen));
 		assertEquals("ALLEN;BLAKE;JONES", searchField.getText());
@@ -130,7 +130,7 @@ public class EntitySearchFieldTest {
 	void separatorWithRegexMetacharacter() {
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		EntitySearchField field = EntitySearchField.builder()
 						.model(searchModel)
@@ -148,14 +148,14 @@ public class EntitySearchFieldTest {
 	void formatter() {
 		EntitySearchModel model = EntitySearchModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		EntitySearchField field = EntitySearchField.builder()
 						.model(model)
 						.multiSelection()
 						.formatter(entity -> entity.formatted(Employee.JOB))
 						.build();
-		Entity employee = CONNECTION_PROVIDER.entities().entity(Employee.TYPE)
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE)
 						.with(Employee.NAME, "Darri")
 						.with(Employee.JOB, "CLERK")
 						.build();

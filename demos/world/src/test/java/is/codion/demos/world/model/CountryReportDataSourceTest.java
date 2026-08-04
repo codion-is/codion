@@ -25,8 +25,7 @@ import is.codion.demos.world.domain.WorldImpl;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 
@@ -50,7 +49,7 @@ public final class CountryReportDataSourceTest {
 
 	@Test
 	void iterate() throws JRException {
-		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
+		try (EntityConnection connection = createConnection()) {
 			Value<Integer> progressCounter = Value.nullable();
 			Value<String> publishedValue = Value.nullable();
 			ProgressReporter<String> progressReporter = new ProgressReporter<>() {
@@ -65,7 +64,6 @@ public final class CountryReportDataSourceTest {
 				}
 			};
 
-			EntityConnection connection = connectionProvider.connection();
 			List<Entity> countries =
 							connection.select(where(Country.NAME.in("Denmark", "Iceland"))
 											.orderBy(ascending(Country.NAME))
@@ -101,8 +99,8 @@ public final class CountryReportDataSourceTest {
 		}
 	}
 
-	private static EntityConnectionProvider createConnectionProvider() {
-		return LocalEntityConnectionProvider.builder()
+	private static EntityConnection createConnection() {
+		return LocalEntityConnection.builder()
 						.domain(new WorldImpl())
 						.user(UNIT_TEST_USER)
 						.build();

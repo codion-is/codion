@@ -24,7 +24,7 @@ import is.codion.demos.chinook.domain.api.Chinook.MediaType;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.ui.CustomerEditPanel;
 import is.codion.demos.chinook.ui.MediaTypeEditPanel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
@@ -51,11 +51,11 @@ import static java.awt.event.KeyEvent.VK_SPACE;
 
 final class FrameworkUIDemo {
 
-	void basicSearchField(EntityConnectionProvider connectionProvider) {
+	void basicSearchField(EntityConnection connection) {
 		// tag::basicSearchField[]
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
+						.connection(connection)
 						.search(Customer.FIRSTNAME, Customer.EMAIL)
 						.build();
 
@@ -95,9 +95,9 @@ final class FrameworkUIDemo {
 		// end::customTableSelector[]
 	}
 
-	void searchFieldWithAddEdit(EntitySearchModel searchModel, EntityConnectionProvider connectionProvider) {
+	void searchFieldWithAddEdit(EntitySearchModel searchModel, EntityConnection connection) {
 		// tag::searchFieldWithAddEdit[]
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Customer.TYPE, connectionProvider);
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Customer.TYPE, connection);
 
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
@@ -148,9 +148,9 @@ final class FrameworkUIDemo {
 		// end::searchFieldProgrammaticControl[]
 	}
 
-	void searchFieldReactiveBinding(EntitySearchModel searchModel, EntityConnectionProvider connectionProvider) {
+	void searchFieldReactiveBinding(EntitySearchModel searchModel, EntityConnection connection) {
 		// tag::searchFieldReactiveBinding[]
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Invoice.TYPE, connectionProvider);
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Invoice.TYPE, connection);
 
 		ComponentValue<EntitySearchField, Entity> searchFieldValue =
 						EntitySearchField.builder()
@@ -179,7 +179,7 @@ final class FrameworkUIDemo {
 	}
 
 	// EntityEditPanel examples
-	void editPanelConfiguration(EntityConnectionProvider connectionProvider) {
+	void editPanelConfiguration(EntityConnection connection) {
 		// tag::editPanelConfiguration[]
 		class InvoiceEditPanel extends EntityEditPanel {
 			public InvoiceEditPanel(SwingEntityEditModel editModel) {
@@ -197,7 +197,7 @@ final class FrameworkUIDemo {
 		// end::editPanelConfiguration[]
 	}
 
-	void editPanelFocusManagement(EntityConnectionProvider connectionProvider) {
+	void editPanelFocusManagement(EntityConnection connection) {
 		// tag::editPanelFocusManagement[]
 		class CustomerEditPanel extends EntityEditPanel {
 			public CustomerEditPanel(SwingEntityEditModel editModel) {
@@ -215,7 +215,7 @@ final class FrameworkUIDemo {
 		// end::editPanelFocusManagement[]
 	}
 
-	void editPanelComboBoxPanel(EntityConnectionProvider connectionProvider) {
+	void editPanelComboBoxPanel(EntityConnection connection) {
 		// tag::editPanelComboBoxPanel[]
 		class TrackEditPanel extends EntityEditPanel {
 			public TrackEditPanel(SwingEntityEditModel editModel) {
@@ -236,13 +236,13 @@ final class FrameworkUIDemo {
 			}
 
 			private EntityEditPanel createMediaTypeEditPanel() {
-				return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connectionProvider()));
+				return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connection()));
 			}
 		}
 		// end::editPanelComboBoxPanel[]
 	}
 
-	void editPanelCustomComponent(EntityConnectionProvider connectionProvider) {
+	void editPanelCustomComponent(EntityConnection connection) {
 		// tag::editPanelCustomComponent[]
 		class TrackEditPanel extends EntityEditPanel {
 			public TrackEditPanel(SwingEntityEditModel editModel) {
@@ -259,7 +259,7 @@ final class FrameworkUIDemo {
 		// end::editPanelCustomComponent[]
 	}
 
-	void editPanelKeyboardShortcuts(EntityConnectionProvider connectionProvider) {
+	void editPanelKeyboardShortcuts(EntityConnection connection) {
 		// tag::editPanelKeyboardShortcuts[]
 		class CustomerEditPanel extends EntityEditPanel {
 			public CustomerEditPanel(SwingEntityEditModel editModel) {
@@ -289,7 +289,7 @@ final class FrameworkUIDemo {
 		// end::editPanelKeyboardShortcuts[]
 	}
 
-	void editPanelDetailIntegration(EntityConnectionProvider connectionProvider) {
+	void editPanelDetailIntegration(EntityConnection connection) {
 		// tag::editPanelDetailIntegration[]
 		class InvoiceEditPanel extends EntityEditPanel {
 			private final EntityPanel invoiceLinePanel;

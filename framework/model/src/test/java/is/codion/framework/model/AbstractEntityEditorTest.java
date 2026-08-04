@@ -23,8 +23,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -56,7 +55,7 @@ public final class AbstractEntityEditorTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new DetailDomain())
 					.user(UNIT_TEST_USER)
 					.build();
@@ -66,12 +65,12 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void clearSetsNull() {
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
 		departmentEditor.entity().clear();
 		assertTrue(departmentEditor.entity().get().contains(Department.ID));
 		assertTrue(departmentEditor.entity().get().contains(Department.NAME));
 
-		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		employeeEditor.entity().clear();
 		assertTrue(employeeEditor.entity().get().contains(Employee.ID));
 		assertTrue(employeeEditor.entity().get().contains(Employee.NAME));
@@ -81,10 +80,10 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void simpleDetailEditor() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -126,22 +125,22 @@ public final class AbstractEntityEditorTest {
 			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void threeLevelDetailEditor() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
 							.present(EMPLOYEE_PRESENT)
 							.build());
-			TestEntityEditor managerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor managerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			employeeEditor.detail().add(EditorLink.builder()
 							.editor(managerEditor)
 							.foreignKey(Employee.MANAGER_FK)
@@ -202,14 +201,14 @@ public final class AbstractEntityEditorTest {
 			assertFalse(managerEditor.entity().exists().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorSetup() {
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		departmentEditor.detail().add(EditorLink.builder()
 						.editor(employeeEditor)
 						.foreignKey(Employee.DEPARTMENT_FK)
@@ -232,10 +231,10 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void detailEditorModifiedAttributesStayFresh() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -264,14 +263,14 @@ public final class AbstractEntityEditorTest {
 			delete(departmentEditor);
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorValidReflectsContext() {
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		// Present iff NAME is set — lets us reach a "present, but SALARY (a required non-FK field) missing" state.
 		departmentEditor.detail().add(EditorLink.builder()
 						.editor(employeeEditor)
@@ -300,10 +299,10 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void nonForeignKeyDetailEditor() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 
 			AtomicInteger beforeInsertCalls = new AtomicInteger();
 			departmentEditor.detail().add(EditorLink.builder()
@@ -337,9 +336,9 @@ public final class AbstractEntityEditorTest {
 			assertEquals(61, employeeEditor.entity().get().get(Employee.DEPARTMENT));
 
 			// Master changes -> detail loads via user-supplied condition
-			EntityConnection connection = CONNECTION_PROVIDER.connection();
+			EntityConnection connection = CONNECTION;
 			Entity dept62 = connection.insertSelect(
-							CONNECTION_PROVIDER.entities().entity(Department.TYPE)
+							CONNECTION.entities().entity(Department.TYPE)
 											.with(Department.ID, 62)
 											.with(Department.NAME, "Empty")
 											.build());
@@ -362,15 +361,15 @@ public final class AbstractEntityEditorTest {
 			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void foreignKeyDetailEditorNameOverride() {
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor managerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor headEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor managerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		TestEntityEditor headEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 
 		// Two FK-based detail editors sharing the same FK, distinguished by an explicit name override
 		DefaultDetailEditors detail = (DefaultDetailEditors) departmentEditor.detail();
@@ -398,7 +397,7 @@ public final class AbstractEntityEditorTest {
 						() -> detail.name(Employee.DEPARTMENT_FK));
 
 		// Empty name override is rejected
-		TestEntityEditor employee = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor employee = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		assertThrows(IllegalArgumentException.class, () -> EditorLink.builder()
 						.editor(employee)
 						.foreignKey(Employee.DEPARTMENT_FK)
@@ -411,8 +410,8 @@ public final class AbstractEntityEditorTest {
 		// Single FK detail editor with an explicit name override — get(ForeignKey) must still
 		// find it (was previously a sugar over get(foreignKey.name()) which silently returned null
 		// for renamed links).
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor managerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor managerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		DefaultDetailEditors detail = (DefaultDetailEditors) departmentEditor.detail();
 		detail.add(EditorLink.builder()
 						.editor(managerEditor)
@@ -436,9 +435,9 @@ public final class AbstractEntityEditorTest {
 		// Two FK-based detail editors with the same explicit name but different foreign keys
 		// should coexist — the (FK, name) tuple distinguishes them. Motivated by a copy-paste
 		// scenario where three FK links were given the same .name() by accident.
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
 
 		departmentEditor.detail().add(EditorLink.builder()
 						.editor(employeeEditor)
@@ -462,7 +461,7 @@ public final class AbstractEntityEditorTest {
 		assertTrue(ambiguous.getMessage().contains("get(ForeignKey)"));
 
 		// True duplicate (same FK + same name) still rejected
-		TestEntityEditor duplicateEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor duplicateEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		assertThrows(IllegalArgumentException.class, () ->
 						departmentEditor.detail().add(EditorLink.builder()
 										.editor(duplicateEditor)
@@ -473,10 +472,10 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void editorLinkCaption() {
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor managerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor headEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor plainEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor managerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		TestEntityEditor headEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		TestEntityEditor plainEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 
 		// Explicit caption used for UI display while name remains the structural identifier
 		DefaultDetailEditors detail = (DefaultDetailEditors) departmentEditor.detail();
@@ -509,7 +508,7 @@ public final class AbstractEntityEditorTest {
 						() -> detail.caption("unknown"));
 
 		// Empty/null caption rejected
-		TestEntityEditor employee = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor employee = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		assertThrows(IllegalArgumentException.class, () -> EditorLink.builder()
 						.editor(employee)
 						.foreignKey(Employee.DEPARTMENT_FK)
@@ -523,8 +522,8 @@ public final class AbstractEntityEditorTest {
 	@Test
 	void detailValidatorReplacementPrevented() {
 		// FK-based link: validator is wrapped and locked
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		departmentEditor.detail().add(EditorLink.builder()
 						.editor(employeeEditor)
 						.foreignKey(Employee.DEPARTMENT_FK)
@@ -538,8 +537,8 @@ public final class AbstractEntityEditorTest {
 						employeeEditor.validator().update(current -> replacement));
 
 		// Non-FK link: no FK management, validator can be replaced freely
-		TestEntityEditor otherDept = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor otherEmp = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor otherDept = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor otherEmp = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		otherDept.detail().add(EditorLink.builder()
 						.editor(otherEmp)
 						.name("non-fk")
@@ -552,9 +551,9 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void detailEditorSetupValidation() {
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
 
 		// Wrong detail entity type: DepartmentExtra editor with Employee foreign key
 		assertThrows(IllegalArgumentException.class, () ->
@@ -563,7 +562,7 @@ public final class AbstractEntityEditorTest {
 										.foreignKey(Employee.DEPARTMENT_FK)
 										.build()));
 		// Wrong master entity type: Employee FK references Department, but using employee as master
-		TestEntityEditor anotherEmployeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor anotherEmployeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		assertThrows(IllegalArgumentException.class, () ->
 						anotherEmployeeEditor.detail().add(EditorLink.builder()
 										.editor(employeeEditor)
@@ -573,10 +572,10 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void detailEditorMasterChanged() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -593,9 +592,9 @@ public final class AbstractEntityEditorTest {
 			assertTrue(employeeEditor.entity().exists().is());
 
 			// Insert another department
-			EntityConnection connection = CONNECTION_PROVIDER.connection();
+			EntityConnection connection = CONNECTION;
 			Entity dept43 = connection.insertSelect(
-							CONNECTION_PROVIDER.entities().entity(Department.TYPE)
+							CONNECTION.entities().entity(Department.TYPE)
 											.with(Department.ID, 43)
 											.with(Department.NAME, "Other")
 											.build());
@@ -615,14 +614,14 @@ public final class AbstractEntityEditorTest {
 			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorUpdatableStates() {
-		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		departmentEditor.detail().add(EditorLink.builder()
 						.editor(employeeEditor)
 						.foreignKey(Employee.DEPARTMENT_FK)
@@ -636,7 +635,7 @@ public final class AbstractEntityEditorTest {
 		assertFalse(departmentEditor.entity().modified().is());
 
 		// Simulate master existing by setting an existing entity (dept 40 has no employees)
-		Entity existingDept = CONNECTION_PROVIDER.connection()
+		Entity existingDept = CONNECTION
 						.selectSingle(Department.ID.equalTo(40));
 		departmentEditor.entity().set(existingDept);
 		assertTrue(departmentEditor.entity().exists().is());
@@ -661,10 +660,10 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void detailEditorInsertWithValidDetail() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -681,20 +680,20 @@ public final class AbstractEntityEditorTest {
 			assertTrue(departmentEditor.entity().exists().is());
 			assertTrue(employeeEditor.entity().exists().is());
 			// Detail entity has FK pointing to master
-			assertEquals(1, CONNECTION_PROVIDER.connection().count(
+			assertEquals(1, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(50))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorInsertWithInvalidDetail() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -710,20 +709,20 @@ public final class AbstractEntityEditorTest {
 
 			assertTrue(departmentEditor.entity().exists().is());
 			assertFalse(employeeEditor.entity().exists().is());
-			assertEquals(0, CONNECTION_PROVIDER.connection().count(
+			assertEquals(0, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(51))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorInsertWithEmptyDetail() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -738,20 +737,20 @@ public final class AbstractEntityEditorTest {
 
 			assertTrue(departmentEditor.entity().exists().is());
 			assertFalse(employeeEditor.entity().exists().is());
-			assertEquals(0, CONNECTION_PROVIDER.connection().count(
+			assertEquals(0, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(52))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorUpdateDeletePath() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -766,7 +765,7 @@ public final class AbstractEntityEditorTest {
 
 			insert(departmentEditor);
 			assertTrue(employeeEditor.entity().exists().is());
-			assertEquals(1, CONNECTION_PROVIDER.connection().count(
+			assertEquals(1, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(53))));
 
 			// Clearing SALARY makes the detail not present -> update() deletes it (present=false, exists=true). A not-present
@@ -779,20 +778,20 @@ public final class AbstractEntityEditorTest {
 
 			// Detail should be deleted
 			assertFalse(employeeEditor.entity().exists().is());
-			assertEquals(0, CONNECTION_PROVIDER.connection().count(
+			assertEquals(0, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(53))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorUpdateInsertPath() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -817,20 +816,20 @@ public final class AbstractEntityEditorTest {
 			update(departmentEditor);
 
 			assertTrue(employeeEditor.entity().exists().is());
-			assertEquals(1, CONNECTION_PROVIDER.connection().count(
+			assertEquals(1, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(54))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorUpdateUpdatePath() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -860,16 +859,16 @@ public final class AbstractEntityEditorTest {
 			assertEquals(3000d, employeeEditor.value(Employee.SALARY).get());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorUpdateNoOp() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -897,20 +896,20 @@ public final class AbstractEntityEditorTest {
 			assertFalse(employeeEditor.entity().modified().is());
 			assertEquals(2000d, employeeEditor.value(Employee.SALARY).get());
 			// Verify DB row unchanged
-			assertEquals(1, CONNECTION_PROVIDER.connection().count(
+			assertEquals(1, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(56))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorUpdateMasterUnmodifiedDetailModified() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -939,16 +938,16 @@ public final class AbstractEntityEditorTest {
 			assertFalse(employeeEditor.entity().modified().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorDeleteWithExistingDetail() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -970,22 +969,22 @@ public final class AbstractEntityEditorTest {
 			// Both should be deleted and editors cleared
 			assertFalse(departmentEditor.entity().exists().is());
 			assertFalse(employeeEditor.entity().exists().is());
-			assertEquals(0, CONNECTION_PROVIDER.connection().count(
+			assertEquals(0, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(58))));
-			assertEquals(0, CONNECTION_PROVIDER.connection().count(
+			assertEquals(0, CONNECTION.count(
 							Count.where(Department.ID.equalTo(58))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorDeleteWithNoDetail() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -1004,20 +1003,20 @@ public final class AbstractEntityEditorTest {
 			delete(departmentEditor);
 
 			assertFalse(departmentEditor.entity().exists().is());
-			assertEquals(0, CONNECTION_PROVIDER.connection().count(
+			assertEquals(0, CONNECTION.count(
 							Count.where(Department.ID.equalTo(59))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void detailEditorFullLifecycle() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -1048,7 +1047,7 @@ public final class AbstractEntityEditorTest {
 
 			update(departmentEditor);
 			assertFalse(employeeEditor.entity().exists().is());
-			assertEquals(0, CONNECTION_PROVIDER.connection().count(
+			assertEquals(0, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(60))));
 
 			// 4. Set valid detail values -> update master -> detail re-inserted
@@ -1058,28 +1057,28 @@ public final class AbstractEntityEditorTest {
 
 			update(departmentEditor);
 			assertTrue(employeeEditor.entity().exists().is());
-			assertEquals(1, CONNECTION_PROVIDER.connection().count(
+			assertEquals(1, CONNECTION.count(
 							Count.where(Employee.DEPARTMENT.equalTo(60))));
 
 			// 5. Delete master -> both gone
 			delete(departmentEditor);
 			assertFalse(departmentEditor.entity().exists().is());
 			assertFalse(employeeEditor.entity().exists().is());
-			assertEquals(0, CONNECTION_PROVIDER.connection().count(
+			assertEquals(0, CONNECTION.count(
 							Count.where(Department.ID.equalTo(60))));
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	@Test
 	void multipleDetailEditors() throws EntityValidationException {
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+			TestEntityEditor extraEditor = new TestEntityEditor(DepartmentExtra.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -1123,7 +1122,7 @@ public final class AbstractEntityEditorTest {
 			assertFalse(extraEditor.entity().exists().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
@@ -1132,24 +1131,24 @@ public final class AbstractEntityEditorTest {
 		// Two FK detail editors share the same FK, distinguished by an offset/limit-based DetailSelect.
 		// After an update that re-orders the rows, slots must retain their original primary keys —
 		// PK-stable post-persist reload, not loader-based reshuffle.
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			EntityConnection connection = CONNECTION_PROVIDER.connection();
+			EntityConnection connection = CONNECTION;
 			Entity dept40 = connection.selectSingle(Department.ID.equalTo(40));
-			connection.insertSelect(CONNECTION_PROVIDER.entities().entity(Employee.TYPE)
+			connection.insertSelect(CONNECTION.entities().entity(Employee.TYPE)
 							.with(Employee.NAME, "ALPHA")
 							.with(Employee.DEPARTMENT, 40)
 							.with(Employee.SALARY, 2000d)
 							.build());
-			connection.insertSelect(CONNECTION_PROVIDER.entities().entity(Employee.TYPE)
+			connection.insertSelect(CONNECTION.entities().entity(Employee.TYPE)
 							.with(Employee.NAME, "BETA")
 							.with(Employee.DEPARTMENT, 40)
 							.with(Employee.SALARY, 3000d)
 							.build());
 
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor first = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor second = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor first = new TestEntityEditor(Employee.TYPE, CONNECTION);
+			TestEntityEditor second = new TestEntityEditor(Employee.TYPE, CONNECTION);
 
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(first)
@@ -1191,7 +1190,7 @@ public final class AbstractEntityEditorTest {
 			assertEquals("AAA", second.value(Employee.NAME).get());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
@@ -1199,24 +1198,24 @@ public final class AbstractEntityEditorTest {
 	void multiSlotDetailEditorDeleteRetainsOtherSlot() throws EntityValidationException {
 		// Multi-slot setup; deleting one slot must not cause the loader to slide the remaining
 		// row from the surviving slot's offset into a different slot.
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			EntityConnection connection = CONNECTION_PROVIDER.connection();
+			EntityConnection connection = CONNECTION;
 			Entity dept40 = connection.selectSingle(Department.ID.equalTo(40));
-			connection.insertSelect(CONNECTION_PROVIDER.entities().entity(Employee.TYPE)
+			connection.insertSelect(CONNECTION.entities().entity(Employee.TYPE)
 							.with(Employee.NAME, "ALPHA")
 							.with(Employee.DEPARTMENT, 40)
 							.with(Employee.SALARY, 2000d)
 							.build());
-			connection.insertSelect(CONNECTION_PROVIDER.entities().entity(Employee.TYPE)
+			connection.insertSelect(CONNECTION.entities().entity(Employee.TYPE)
 							.with(Employee.NAME, "BETA")
 							.with(Employee.DEPARTMENT, 40)
 							.with(Employee.SALARY, 3000d)
 							.build());
 
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor first = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor second = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor first = new TestEntityEditor(Employee.TYPE, CONNECTION);
+			TestEntityEditor second = new TestEntityEditor(Employee.TYPE, CONNECTION);
 
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(first)
@@ -1257,7 +1256,7 @@ public final class AbstractEntityEditorTest {
 			assertEquals("BETA", second.value(Employee.NAME).get());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
@@ -1268,10 +1267,10 @@ public final class AbstractEntityEditorTest {
 		// replace() doesn't trigger a reload, and the participating detail's own persist task
 		// replaces its entity with the freshly-updated row. The next master selection re-runs the
 		// loader and correctly empties the slot.
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor highEarnerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor highEarnerEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(highEarnerEditor)
@@ -1301,13 +1300,13 @@ public final class AbstractEntityEditorTest {
 			assertEquals(2500d, highEarnerEditor.value(Employee.SALARY).get());
 
 			// Master selection re-runs the loader; condition no longer matches -> slot empties.
-			Entity dept50 = CONNECTION_PROVIDER.connection().selectSingle(Department.ID.equalTo(50));
+			Entity dept50 = CONNECTION.selectSingle(Department.ID.equalTo(50));
 			departmentEditor.entity().defaults();
 			departmentEditor.entity().set(dept50);
 			assertFalse(highEarnerEditor.entity().exists().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
@@ -1316,30 +1315,30 @@ public final class AbstractEntityEditorTest {
 		// replace() with a different master primary key reloads details via their loaders —
 		// otherwise slots would hold the previous master's children. Same-PK replace remains a
 		// silent value refresh that does not trigger a reload.
-		CONNECTION_PROVIDER.connection().startTransaction();
+		CONNECTION.startTransaction();
 		try {
-			EntityConnection connection = CONNECTION_PROVIDER.connection();
-			Entity deptA = connection.insertSelect(CONNECTION_PROVIDER.entities().entity(Department.TYPE)
+			EntityConnection connection = CONNECTION;
+			Entity deptA = connection.insertSelect(CONNECTION.entities().entity(Department.TYPE)
 							.with(Department.ID, 71)
 							.with(Department.NAME, "DEPT_A")
 							.build());
-			Entity empA = connection.insertSelect(CONNECTION_PROVIDER.entities().entity(Employee.TYPE)
+			Entity empA = connection.insertSelect(CONNECTION.entities().entity(Employee.TYPE)
 							.with(Employee.NAME, "EMP_A")
 							.with(Employee.DEPARTMENT, 71)
 							.with(Employee.SALARY, 2000d)
 							.build());
-			Entity deptB = connection.insertSelect(CONNECTION_PROVIDER.entities().entity(Department.TYPE)
+			Entity deptB = connection.insertSelect(CONNECTION.entities().entity(Department.TYPE)
 							.with(Department.ID, 72)
 							.with(Department.NAME, "DEPT_B")
 							.build());
-			Entity empB = connection.insertSelect(CONNECTION_PROVIDER.entities().entity(Employee.TYPE)
+			Entity empB = connection.insertSelect(CONNECTION.entities().entity(Employee.TYPE)
 							.with(Employee.NAME, "EMP_B")
 							.with(Employee.DEPARTMENT, 72)
 							.with(Employee.SALARY, 2000d)
 							.build());
 
-			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION_PROVIDER);
-			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditor departmentEditor = new TestEntityEditor(Department.TYPE, CONNECTION);
+			TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 			departmentEditor.detail().add(EditorLink.builder()
 							.editor(employeeEditor)
 							.foreignKey(Employee.DEPARTMENT_FK)
@@ -1366,20 +1365,20 @@ public final class AbstractEntityEditorTest {
 			assertFalse(employeeEditor.entity().exists().is());
 		}
 		finally {
-			CONNECTION_PROVIDER.connection().rollbackTransaction();
+			CONNECTION.rollbackTransaction();
 		}
 	}
 
 	private static void insert(TestEntityEditor editor) throws EntityValidationException {
-		editor.tasks(editor.connectionProvider().connection()).insert().perform().handle();
+		editor.tasks(editor.connection()).insert().perform().handle();
 	}
 
 	private static void update(TestEntityEditor editor) throws EntityValidationException {
-		editor.tasks(editor.connectionProvider().connection()).update().perform().handle();
+		editor.tasks(editor.connection()).update().perform().handle();
 	}
 
 	private static void delete(TestEntityEditor editor) {
-		editor.tasks(editor.connectionProvider().connection()).delete().perform().handle();
+		editor.tasks(editor.connection()).delete().perform().handle();
 	}
 
 	@Test
@@ -1392,14 +1391,14 @@ public final class AbstractEntityEditorTest {
 	}
 
 	private static WeakReference<FilterComboBoxModel<String>> createColumnComboBoxModel() {
-		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 
 		return new WeakReference<>(editor.comboBoxModels().get(Employee.NAME));
 	}
 
 	@Test
 	void propagateCycle() {
-		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		EditorValue<Double> salary = editor.value(Employee.SALARY);
 		EditorValue<Integer> manager = editor.value(Employee.MANAGER_ID);
 		salary.propagate(Employee.MANAGER_ID, value -> value == null ? null : value.intValue());
@@ -1414,7 +1413,7 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void propagateSelf() {
-		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		EditorValue<String> name = editor.value(Employee.NAME);
 		name.propagate(Employee.NAME, value -> value == null ? null : value.trim());
 
@@ -1424,13 +1423,13 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void propagateEntityTransitive() {
-		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		editor.value(Employee.NAME).propagate(Employee.SALARY, value -> (double) value.length());
 		editor.value(Employee.SALARY).propagate(Employee.MANAGER_ID, Double::intValue);
 		//a cycle back to the source, terminated by the visited set
 		editor.value(Employee.MANAGER_ID).propagate(Employee.NAME, String::valueOf);
 
-		Entity employee = CONNECTION_PROVIDER.entities().entity(Employee.TYPE).build();
+		Entity employee = CONNECTION.entities().entity(Employee.TYPE).build();
 		editor.value(Employee.NAME).set(employee, "Scott");
 
 		assertEquals("Scott", employee.get(Employee.NAME));
@@ -1440,8 +1439,8 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void foreignKeyUpdatedElsewhere() {
-		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-		Entity department = CONNECTION_PROVIDER.entities().entity(Department.TYPE)
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		Entity department = CONNECTION.entities().entity(Department.TYPE)
 						.with(Department.ID, -1)
 						.with(Department.NAME, "Accounting")
 						.build();
@@ -1468,8 +1467,8 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void foreignKeyPersistenceIgnoresEditable() {
-		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-		Entity department = CONNECTION_PROVIDER.entities().entity(Department.TYPE)
+		TestEntityEditor editor = new TestEntityEditor(Employee.TYPE, CONNECTION);
+		Entity department = CONNECTION.entities().entity(Department.TYPE)
 						.with(Department.ID, -2)
 						.with(Department.NAME, "Research")
 						.build();
@@ -1489,7 +1488,7 @@ public final class AbstractEntityEditorTest {
 
 	@Test
 	void editorLinkBuildDoesNotClaimPresent() {
-		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditor employeeEditor = new TestEntityEditor(Employee.TYPE, CONNECTION);
 		EditorLink.builder()
 						.editor(employeeEditor)
 						.foreignKey(Employee.DEPARTMENT_FK)
@@ -1504,22 +1503,22 @@ public final class AbstractEntityEditorTest {
 
 	private static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
 
-		private TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			this(entityType, connectionProvider, new TestComponentModels());
+		private TestEntityEditor(EntityType entityType, EntityConnection connection) {
+			this(entityType, connection, new TestComponentModels());
 		}
 
-		private TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider, TestComponentModels componentModels) {
-			super(entityType, connectionProvider, componentModels);
+		private TestEntityEditor(EntityType entityType, EntityConnection connection, TestComponentModels componentModels) {
+			super(entityType, connection, componentModels);
 		}
 
 		@Override
 		public TestEntityEditor create(EntityType entityType) {
-			return new TestEntityEditor(entityType, connectionProvider());
+			return new TestEntityEditor(entityType, connection());
 		}
 
 		@Override
 		public TestEntityEditor create(EntityType entityType, ComponentModels componentModels) {
-			return new TestEntityEditor(entityType, connectionProvider(), (TestComponentModels) componentModels);
+			return new TestEntityEditor(entityType, connection(), (TestComponentModels) componentModels);
 		}
 	}
 

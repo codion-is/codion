@@ -19,7 +19,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditions;
@@ -36,10 +36,10 @@ public class SwingEntityConditions extends EntityConditions {
 	/**
 	 * Instantiates a new {@link SwingEntityConditions}.
 	 * @param entityType the entity type
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 */
-	public SwingEntityConditions(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		super(entityType, connectionProvider);
+	public SwingEntityConditions(EntityType entityType, EntityConnection connection) {
+		super(entityType, connection);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class SwingEntityConditions extends EntityConditions {
 	protected SwingEntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
 		return SwingEntityComboBoxModel.builder()
 						.entityType(requireNonNull(foreignKey).referencedType())
-						.connectionProvider(connectionProvider())
+						.connection(connection())
 						.includeNull(true)
 						.build();
 	}

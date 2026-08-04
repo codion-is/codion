@@ -63,9 +63,9 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 	private static List<EntityPanel.Builder> createLookupPanelBuilders() {
 		EntityPanel.Builder addressPanelBuilder = EntityPanel.builder()
 						.entityType(Address.TYPE)
-						.panel(connectionProvider -> {
+						.panel(connection -> {
 							SwingEntityModel addressModel =
-											new SwingEntityModel(Address.TYPE, connectionProvider);
+											new SwingEntityModel(Address.TYPE, connection);
 
 							return new EntityPanel(addressModel,
 											new AddressEditPanel(addressModel.editModel()));

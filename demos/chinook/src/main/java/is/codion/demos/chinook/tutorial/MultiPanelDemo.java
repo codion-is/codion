@@ -23,7 +23,7 @@ import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.demos.chinook.domain.api.Chinook.Employee;
 import is.codion.demos.chinook.ui.EmployeeEditPanel;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -45,12 +45,12 @@ public final class MultiPanelDemo {
 		Database.URL.set("jdbc:h2:mem:h2db");
 		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-		LocalEntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+		LocalEntityConnection connection = LocalEntityConnection.builder()
 						.domain(new ChinookImpl())
 						.user(User.parse("scott:tiger"))
 						.build();
 
-		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
+		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connection);
 		employeeModel.tableModel().items().refresh();
 
 		JPanel basePanel = new JPanel(gridLayout(2, 2));

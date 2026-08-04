@@ -29,7 +29,6 @@ import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.condition.Condition;
@@ -56,19 +55,19 @@ import static is.codion.framework.domain.entity.condition.Condition.and;
 
 public final class FrameworkModelDemo {
 
-	void entityModel(EntityConnectionProvider connectionProvider) {
+	void entityModel(EntityConnection connection) {
 		// tag::entityModel[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
+		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connection);
 
 		// Establish master-detail relationship
 		customerModel.detail().add(invoiceModel);
 		// end::entityModel[]
 	}
 
-	void entityEditModel(EntityConnectionProvider connectionProvider) throws EntityValidationException {
+	void entityEditModel(EntityConnection connection) throws EntityValidationException {
 		// tag::entityEditModel[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		SwingEntityEditor editor = customerModel.editor();
 
 		// Access entity values
@@ -81,9 +80,9 @@ public final class FrameworkModelDemo {
 		// end::entityEditModel[]
 	}
 
-	void entityTableModel(EntityConnectionProvider connectionProvider) {
+	void entityTableModel(EntityConnection connection) {
 		// tag::entityTableModel[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Refresh data
@@ -94,9 +93,9 @@ public final class FrameworkModelDemo {
 		// end::entityTableModel[]
 	}
 
-	void observableState(EntityConnectionProvider connectionProvider) {
+	void observableState(EntityConnection connection) {
 		// tag::observableState[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		SwingEntityEditModel editModel = customerModel.editModel();
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
@@ -114,9 +113,9 @@ public final class FrameworkModelDemo {
 		// end::observableState[]
 	}
 
-	void eventSystem(EntityConnectionProvider connectionProvider) {
+	void eventSystem(EntityConnection connection) {
 		// tag::eventSystem[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		SwingEntityEditModel editModel = customerModel.editModel();
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
@@ -132,9 +131,9 @@ public final class FrameworkModelDemo {
 		// end::eventSystem[]
 	}
 
-	void valueObservers(EntityConnectionProvider connectionProvider) {
+	void valueObservers(EntityConnection connection) {
 		// tag::valueObservers[]
-		SwingEntityModel trackModel = new SwingEntityModel(Track.TYPE, connectionProvider);
+		SwingEntityModel trackModel = new SwingEntityModel(Track.TYPE, connection);
 		SwingEntityEditModel editModel = trackModel.editModel();
 
 		// Bind edit model value to UI state
@@ -151,18 +150,18 @@ public final class FrameworkModelDemo {
 		// end::valueObservers[]
 	}
 
-	void masterDetail(EntityConnectionProvider connectionProvider) {
+	void masterDetail(EntityConnection connection) {
 		// tag::masterDetail[]
 		// Three-level hierarchy
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
-		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
+		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connection);
+		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connection);
 
 		customerModel.detail().add(invoiceModel);
 		invoiceModel.detail().add(invoiceLineModel);
 
 		// Selection cascades down the hierarchy
-		Entity customer = getCustomer(connectionProvider);
+		Entity customer = getCustomer(connection);
 		customerModel.tableModel().selection().item().set(customer);
 		// Invoices for selected customer are loaded
 		Entity invoice = invoiceModel.tableModel().items().included().get(0);
@@ -171,12 +170,12 @@ public final class FrameworkModelDemo {
 		// end::masterDetail[]
 	}
 
-	void queryOptimization(EntityConnectionProvider connectionProvider) {
+	void queryOptimization(EntityConnection connection) {
 		// tag::queryOptimization[]
 		class CustomerTableModel extends SwingEntityTableModel {
 
-			public CustomerTableModel(EntityConnectionProvider connectionProvider) {
-				super(new SwingEntityEditModel(Customer.TYPE, connectionProvider));
+			public CustomerTableModel(EntityConnection connection) {
+				super(new SwingEntityEditModel(Customer.TYPE, connection));
 				// Prevent loading entire customer base
 				query().limit().set(100);
 				query().conditionRequired().set(true);
@@ -185,9 +184,9 @@ public final class FrameworkModelDemo {
 		// end::queryOptimization[]
 	}
 
-	void eventHandling(EntityConnectionProvider connectionProvider) {
+	void eventHandling(EntityConnection connection) {
 		// tag::eventHandling[]
-		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
+		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connection);
 
 		// Update summary when details change
 		PersistEvents events = invoiceLineModel.editor().events();
@@ -197,16 +196,14 @@ public final class FrameworkModelDemo {
 		// end::eventHandling[]
 	}
 
-	void customDataSource(EntityConnectionProvider connectionProvider) {
+	void customDataSource(EntityConnection connection) {
 		// tag::customDataSource[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Fetch only Customers with emails by default
 		tableModel.query().dataSource().set(query -> {
-			EntityConnection connection = query.connectionProvider().connection();
-
-			return connection.select(and(
+			return query.connection().select(and(
 							Customer.EMAIL.isNotNull(),
 							query.condition().where())
 			);
@@ -214,9 +211,9 @@ public final class FrameworkModelDemo {
 		// end::customDataSource[]
 	}
 
-	void conditionConfiguration(EntityConnectionProvider connectionProvider) {
+	void conditionConfiguration(EntityConnection connection) {
 		// tag::conditionConfiguration[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Alternative approach using ConditionModel
@@ -227,9 +224,9 @@ public final class FrameworkModelDemo {
 	}
 
 	// EntityQueryModel examples
-	void entityQueryModel(EntityConnectionProvider connectionProvider) {
+	void entityQueryModel(EntityConnection connection) {
 		// tag::entityQueryModel[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		SwingEntityTableModel tableModel = customerModel.tableModel();
 		EntityQueryModel query = tableModel.query();
 
@@ -240,9 +237,9 @@ public final class FrameworkModelDemo {
 		// end::entityQueryModel[]
 	}
 
-	void tableConditionModel(EntityConnectionProvider connectionProvider) {
+	void tableConditionModel(EntityConnection connection) {
 		// tag::tableConditionModel[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		EntityConditionModel condition = customerModel.tableModel().query().condition();
 
 		// Set condition values
@@ -254,9 +251,9 @@ public final class FrameworkModelDemo {
 		// end::tableConditionModel[]
 	}
 
-	void additionalWhereConditions(EntityConnectionProvider connectionProvider) {
+	void additionalWhereConditions(EntityConnection connection) {
 		// tag::additionalWhereConditions[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		AdditionalConditions additional = customerModel.tableModel().query().condition().additional();
 
 		// Single additional condition
@@ -270,9 +267,9 @@ public final class FrameworkModelDemo {
 		// end::additionalWhereConditions[]
 	}
 
-	void queryLimits(EntityConnectionProvider connectionProvider) {
+	void queryLimits(EntityConnection connection) {
 		// tag::queryLimits[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		EntityQueryModel query = customerModel.tableModel().query();
 
 		// Set a specific limit
@@ -297,9 +294,9 @@ public final class FrameworkModelDemo {
 		// end::queryLimits[]
 	}
 
-	void resultOrdering(EntityConnectionProvider connectionProvider) {
+	void resultOrdering(EntityConnection connection) {
 		// tag::resultOrdering[]
-		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
+		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connection);
 		EntityQueryModel query = invoiceModel.tableModel().query();
 
 		// Single column ordering
@@ -314,23 +311,21 @@ public final class FrameworkModelDemo {
 		// end::resultOrdering[]
 	}
 
-	void customQueryDataSource(EntityConnectionProvider connectionProvider) {
+	void customQueryDataSource(EntityConnection connection) {
 		// tag::customQueryDataSource[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 
 		customerModel.tableModel().query().dataSource().set(query -> {
-			EntityConnection connection = query.connectionProvider().connection();
-
 			// Custom query with complex joins or database-specific features
-			return connection.select(Select.where(customComplexCondition())
+			return query.connection().select(Select.where(customComplexCondition())
 							.attributes(Customer.ADDRESS, Customer.CITY, Customer.COUNTRY));
 		});
 		// end::customQueryDataSource[]
 	}
 
-	void conditionRequired(EntityConnectionProvider connectionProvider) {
+	void conditionRequired(EntityConnection connection) {
 		// tag::conditionRequired[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
 		EntityQueryModel query = customerModel.tableModel().query();
 
 		// Require at least one condition
@@ -341,9 +336,9 @@ public final class FrameworkModelDemo {
 		// end::conditionRequired[]
 	}
 
-	void attributeManagement(EntityConnectionProvider connectionProvider) {
+	void attributeManagement(EntityConnection connection) {
 		// tag::attributeManagement[]
-		SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
+		SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connection);
 		EntityQueryModel query = albumModel.tableModel().query();
 
 		// Exclude large columns by default
@@ -363,11 +358,11 @@ public final class FrameworkModelDemo {
 	}
 
 	// EntitySearchModel examples
-	void basicSearchModel(EntityConnectionProvider connectionProvider) {
+	void basicSearchModel(EntityConnection connection) {
 		// tag::basicSearchModel[]
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
+						.connection(connection)
 						.search(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL)
 						.limit(50)
 						.build();
@@ -380,11 +375,11 @@ public final class FrameworkModelDemo {
 		// end::basicSearchModel[]
 	}
 
-	void searchSettings(EntityConnectionProvider connectionProvider) {
+	void searchSettings(EntityConnection connection) {
 		// tag::searchSettings[]
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
+						.connection(connection)
 						.search(Customer.FIRSTNAME, Customer.LASTNAME)
 						.build();
 
@@ -403,16 +398,16 @@ public final class FrameworkModelDemo {
 		// end::searchSettings[]
 	}
 
-	void singleSelectionSearch(EntityConnectionProvider connectionProvider) {
+	void singleSelectionSearch(EntityConnection connection) {
 		// tag::singleSelectionSearch[]
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Album.TYPE)
-						.connectionProvider(connectionProvider)
+						.connection(connection)
 						.search(Album.TITLE)
 						.build();
 
 		// Set selection programmatically
-		Entity album = getAlbum(connectionProvider);
+		Entity album = getAlbum(connection);
 		searchModel.selection().entity().set(album);
 
 		// React to selection changes
@@ -427,11 +422,11 @@ public final class FrameworkModelDemo {
 		// end::singleSelectionSearch[]
 	}
 
-	void multiSelectionSearch(EntityConnectionProvider connectionProvider) {
+	void multiSelectionSearch(EntityConnection connection) {
 		// tag::multiSelectionSearch[]
 		EntitySearchModel searchModel = EntitySearchModel.builder()
 						.entityType(Track.TYPE)
-						.connectionProvider(connectionProvider)
+						.connection(connection)
 						.search(Track.NAME)
 						.build();
 
@@ -439,7 +434,7 @@ public final class FrameworkModelDemo {
 		Collection<Entity> selectedTracks = searchModel.selection().entities().get();
 
 		// Add to selection
-		Entity track = getTrack(connectionProvider);
+		Entity track = getTrack(connection);
 		searchModel.selection().entities().add(track);
 
 		// Remove from selection
@@ -451,11 +446,11 @@ public final class FrameworkModelDemo {
 	}
 
 	// ModelLink examples
-	void simpleMasterDetail(EntityConnectionProvider connectionProvider) {
+	void simpleMasterDetail(EntityConnection connection) {
 		// tag::simpleMasterDetail[]
 		// Invoice -> InvoiceLines
-		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
-		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
+		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connection);
+		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connection);
 
 		invoiceModel.detail().add(invoiceLineModel);
 
@@ -465,12 +460,12 @@ public final class FrameworkModelDemo {
 		// end::simpleMasterDetail[]
 	}
 
-	void multiLevelHierarchy(EntityConnectionProvider connectionProvider) {
+	void multiLevelHierarchy(EntityConnection connection) {
 		// tag::multiLevelHierarchy[]
 		// Customer -> Invoice -> InvoiceLine
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
-		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
+		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connection);
+		SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connection);
 
 		// Build hierarchy
 		customerModel.detail().add(invoiceModel);
@@ -481,7 +476,7 @@ public final class FrameworkModelDemo {
 		invoiceLineModel.tableModel().query().conditionRequired().set(true);
 
 		// Selection cascades down the hierarchy automatically
-		Entity customer = getCustomer(connectionProvider);
+		Entity customer = getCustomer(connection);
 		customerModel.tableModel().selection().item().set(customer);
 		// Invoices for customer are loaded
 		// When an invoice is selected, its lines are loaded
@@ -489,10 +484,10 @@ public final class FrameworkModelDemo {
 		// end::multiLevelHierarchy[]
 	}
 
-	void customModelLink(EntityConnectionProvider connectionProvider) {
+	void customModelLink(EntityConnection connection) {
 		// tag::customModelLink[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
+		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connection);
 
 		ModelLink customLink =
 						ForeignKeyModelLink.builder()
@@ -515,10 +510,10 @@ public final class FrameworkModelDemo {
 		// end::customModelLink[]
 	}
 
-	void foreignKeyLink(EntityConnectionProvider connectionProvider) {
+	void foreignKeyLink(EntityConnection connection) {
 		// tag::foreignKeyLink[]
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
+		SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connection);
 
 		// ForeignKeyModelLink is created automatically when foreign key is detected
 		customerModel.detail().add(invoiceModel);
@@ -548,16 +543,16 @@ public final class FrameworkModelDemo {
 
 	private void displayAlbumDetails(Entity album) {}
 
-	private Entity getCustomer(EntityConnectionProvider connectionProvider) {
-		return connectionProvider.connection().selectSingle(Customer.ID.equalTo(1L));
+	private Entity getCustomer(EntityConnection connection) {
+		return connection.selectSingle(Customer.ID.equalTo(1L));
 	}
 
-	private Entity getAlbum(EntityConnectionProvider connectionProvider) {
-		return connectionProvider.connection().selectSingle(Album.ID.equalTo(1L));
+	private Entity getAlbum(EntityConnection connection) {
+		return connection.selectSingle(Album.ID.equalTo(1L));
 	}
 
-	private Entity getTrack(EntityConnectionProvider connectionProvider) {
-		return connectionProvider.connection().selectSingle(Track.ID.equalTo(1L));
+	private Entity getTrack(EntityConnection connection) {
+		return connection.selectSingle(Track.ID.equalTo(1L));
 	}
 
 	private Condition customComplexCondition() {

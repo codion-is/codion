@@ -19,14 +19,14 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.demos.chinook.domain.api.Chinook.Track;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 // tag::trackEditModel[]
 public final class TrackEditModel extends SwingEntityEditModel {
 
-	public TrackEditModel(EntityConnectionProvider connectionProvider) {
-		super(Track.TYPE, connectionProvider);
+	public TrackEditModel(EntityConnection connection) {
+		super(Track.TYPE, connection);
 		// Creates and populates the combo box models for the given foreign keys, otherwise this
 		// would happen when the associated combo boxes are created, as the UI is initialized.
 		editor().comboBoxModels().initialize(Track.MEDIATYPE_FK, Track.GENRE_FK);

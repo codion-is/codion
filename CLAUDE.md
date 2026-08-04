@@ -410,8 +410,8 @@ interface Chat {
 Use SwingEntityModel as a thin wrapper:
 ```java
 public final class ChatModel extends SwingEntityModel {
-    ChatModel(EntityConnectionProvider connectionProvider) {
-        super(new ChatTableModel(connectionProvider));
+    ChatModel(EntityConnection connection) {
+        super(new ChatTableModel(connection));
     }
 }
 ```
@@ -426,8 +426,8 @@ public final class ChatEditModel extends DefaultEntityEditModel {
     private final State processing = State.state();
     private final Value<ChatLanguageModel> model = Value.nullable();
 	
-	public ChatEditModel(EntityConnectionProvider connectionProvider) {
-		super(Chat.TYPE, connectionProvider);
+	public ChatEditModel(EntityConnection connection) {
+		super(Chat.TYPE, connection);
     }
     
     void submitPrompt() {
@@ -873,8 +873,8 @@ Codion documentation follows a strict pattern for code examples to ensure they s
 ```asciidoc
 [source,java]
 ----
-SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-SwingEntityModel orderModel = new SwingEntityModel(Order.TYPE, connectionProvider);
+SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
+SwingEntityModel orderModel = new SwingEntityModel(Order.TYPE, connection);
 customerModel.detail().add(orderModel);
 ----
 ```
@@ -895,10 +895,10 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.
 
 2. **Use tags to mark sections:**
 ```java
-void entityModel(EntityConnectionProvider connectionProvider) {
+void entityModel(EntityConnection connection) {
     // tag::entityModel[]
-    SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-    SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
+    SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connection);
+    SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connection);
     
     // Establish master-detail relationship
     customerModel.detail().add(invoiceModel);
@@ -907,7 +907,7 @@ void entityModel(EntityConnectionProvider connectionProvider) {
 ```
 
 3. **Use the parameter trick** for dependencies:
-   - Methods take `EntityConnectionProvider connectionProvider` as parameter
+   - Methods take `EntityConnection connection` as parameter
    - Avoids complex setup code in examples
    - Keeps examples focused on the actual API usage
 

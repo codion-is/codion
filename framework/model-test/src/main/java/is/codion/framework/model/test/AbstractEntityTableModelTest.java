@@ -25,8 +25,7 @@ import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -65,7 +64,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
@@ -74,20 +73,20 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	private static final String SYNCED = "synced";
 	private static final String REPLACED = "replaced";
 
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 
-	protected final List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
+	protected final List<Entity> testEntities = initTestEntities(CONNECTION.entities());
 
 	protected final T testModel;
 
 	protected AbstractEntityTableModelTest() {
-		connectionProvider = CONNECTION_PROVIDER;
+		connection = CONNECTION;
 		testModel = createTestTableModel();
 	}
 
 	@Test
 	public void select() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connection);
 		tableModel.items().refresh();
 
 		List<Entity.Key> keys = tableModel.entities().primaryKeys(Employee.TYPE, 1, 2);
@@ -114,7 +113,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void selectedEntitiesIterator() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connection);
 		tableModel.items().refresh();
 
 		tableModel.selection().indexes().set(asList(0, 3, 5));
@@ -228,7 +227,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void removeDeletedEntities() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connection);
 		tableModel.items().refresh();
 
 		Entities entities = tableModel.entities();
@@ -278,7 +277,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void attributes() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connection);
 		tableModel.query().attributes().exclude().addAll(Employee.COMMISSION, Employee.DEPARTMENT_FK);
 		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
@@ -292,7 +291,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void limit() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider);
+		T tableModel = createTableModel(Employee.TYPE, connection);
 		tableModel.query().limit().set(6);
 		tableModel.items().refresh();
 		assertEquals(6, tableModel.items().included().size());
@@ -311,7 +310,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void conditionChangedListener() {
-		T empModel = createTableModel(Employee.TYPE, connectionProvider);
+		T empModel = createTableModel(Employee.TYPE, connection);
 		AtomicInteger counter = new AtomicInteger();
 		Runnable conditionChangedListener = counter::incrementAndGet;
 		empModel.query().condition().modified().addListener(conditionChangedListener);
@@ -329,7 +328,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void searchState() {
-		T empModel = createTableModel(Employee.TYPE, connectionProvider);
+		T empModel = createTableModel(Employee.TYPE, connection);
 		assertFalse(empModel.query().condition().modified().is());
 		ConditionModel<String> jobModel =
 						empModel.query().condition().get(Employee.JOB);
@@ -343,15 +342,15 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		assertFalse(empModel.query().condition().modified().is());
 	}
 
-	protected final EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+	protected final EntityConnection connection() {
+		return connection;
 	}
 
 	@Test
 	public void refreshOnForeignKeyConditionValuesSet() {
-		T employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T employeeTableModel = createTableModel(Employee.TYPE, connection());
 		assertEquals(0, employeeTableModel.items().included().size());
-		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
+		Entity accounting = connection().selectSingle(Department.ID.equalTo(10));
 		employeeTableModel.query().condition().get(Employee.DEPARTMENT_FK).set().in(accounting);
 		employeeTableModel.items().refresh();
 		assertEquals(7, employeeTableModel.items().included().size());
@@ -369,7 +368,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void validItems() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		Entity dept = tableModel.entities().entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.with(Department.NAME, "dept")
@@ -383,7 +382,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void conditionChanged() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		ConditionModel<String> nameCondition = tableModel.query().condition().get(Employee.NAME);
 		nameCondition.operands().equal().set(JONES);
@@ -398,7 +397,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void isConditionEnabled() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		EntityQueryModel queryModel = tableModel.query();
 		queryModel.conditionEnabled().set(queryModel.condition().get(Employee.MGR_FK).enabled());
 		tableModel.items().refresh();
@@ -418,16 +417,16 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void persistenceEvents() throws EntityValidationException {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		E employeeEditModel = tableModel.editModel();
 		employeeEditModel.editor().entity().set(tableModel.items().included().get(0));
 		String newName = "new name";
 		employeeEditModel.editor().value(Employee.NAME).set(newName);
-		E departmentEditModel = createEditModel(Department.TYPE, connectionProvider());
+		E departmentEditModel = createEditModel(Department.TYPE, connection());
 		departmentEditModel.editor().entity().set(employeeEditModel.editor().value(Employee.DEPARTMENT_FK).get());
 		departmentEditModel.editor().value(Department.NAME).set(newName);
-		EntityConnection connection = tableModel.connectionProvider().connection();
+		EntityConnection connection = tableModel.connection();
 		connection.startTransaction();
 		try {
 			employeeEditModel.editor().update();
@@ -444,14 +443,14 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	public void editorSyncedOnUpdate() throws EntityValidationException {
 		// When the selected row is updated via the table (bulk/inline editing), the editor's active entity is
 		// refreshed to the new values so the edit form reflects them (AbstractEntityTableModel.onUpdate).
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		E editModel = tableModel.editModel();
 		tableModel.selection().index().set(0);
 		Entity selected = tableModel.selection().item().get();
 		assertEquals(selected.get(Employee.NAME), editModel.editor().value(Employee.NAME).get());
 
-		EntityConnection connection = tableModel.connectionProvider().connection();
+		EntityConnection connection = tableModel.connection();
 		connection.startTransaction();
 		try {
 			// Update the selected row via a copy, as table editing does (not the editor's own active entity).
@@ -468,14 +467,14 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	@Test
 	public void editorNotSyncedOnUpdateWhenModified() throws EntityValidationException {
 		// A modified editor is left untouched by a table-driven update, so unsaved edits are never overwritten.
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		E editModel = tableModel.editModel();
 		tableModel.selection().index().set(0);
 		Entity selected = tableModel.selection().item().get();
 		editModel.editor().value(Employee.NAME).set("dirty");// unsaved edit in the editor
 
-		EntityConnection connection = tableModel.connectionProvider().connection();
+		EntityConnection connection = tableModel.connection();
 		connection.startTransaction();
 		try {
 			Entity edited = selected.copy().mutable();
@@ -490,7 +489,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void replaceByKey() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.query().attributes().exclude().set(asList(Employee.JOB, Employee.SALARY));
 		tableModel.items().refresh();
 		Entity.Key jonesKey = tableModel.entities().primaryKey(Employee.TYPE, 3);
@@ -507,7 +506,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	public void selectionItemsFreshAfterReplace() {
 		// selection().item()/items() derive from the selected index, so replacing a selected row's entity in place must
 		// surface the new values — the invariant behind the bulk-edit and editor-sync fixes.
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		tableModel.selection().index().set(0);
 		Entity selected = tableModel.selection().item().get();
@@ -523,7 +522,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	@Test
 	public void selectionAfterFilter() {
 		// Filtering a selected row out of the included set drops it from the selection; still-included rows stay selected.
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		tableModel.selection().selectAll();
 		Entity jones = tableModel.selection().items().get().stream()
@@ -540,7 +539,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 	@Test
 	public void selectionAfterSort() {
 		// Sorting keeps the same entity selected (selection follows its row); its index reflects the new position.
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		tableModel.selection().index().set(0);
 		Entity selected = tableModel.selection().item().get();
@@ -553,7 +552,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void singleAndMultipleSelection() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		MultiSelection<Entity> selection = tableModel.selection();
 		assertTrue(selection.empty().is());
@@ -579,7 +578,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void selectionNavigation() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		MultiSelection<Entity> selection = tableModel.selection();
 
@@ -604,7 +603,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void sortAscendingDescending() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		tableModel.sort().ascending(Employee.NAME);
 		assertSortedByName(tableModel.items().included().get(), true);
@@ -614,7 +613,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void sortClear() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		tableModel.sort().ascending(Employee.NAME);
 		assertEquals(SortOrder.ASCENDING, tableModel.sort().columns().get(Employee.NAME).sortOrder());
@@ -625,7 +624,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void sortPriority() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		tableModel.sort().order(Employee.JOB).set(SortOrder.ASCENDING);
 		tableModel.sort().order(Employee.NAME).add(SortOrder.DESCENDING);
@@ -649,7 +648,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void filterNotEqual() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		int total = tableModel.items().included().size();
 		ConditionModel<String> jobFilter = tableModel.filters().get(Employee.JOB);
@@ -663,7 +662,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void filterEnabled() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		int total = tableModel.items().included().size();
 		ConditionModel<String> jobFilter = tableModel.filters().get(Employee.JOB);
@@ -684,7 +683,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void replace() {
-		T tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		T tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		Entity employee = tableModel.items().included().get().get(0);
 		Entity replacement = employee.copy().mutable();
@@ -699,7 +698,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	@Test
 	public void preferences() {
-		T source = createTableModel(Employee.TYPE, connectionProvider());
+		T source = createTableModel(Employee.TYPE, connection());
 		// condition settings (only the settings are persisted, not the operand values)
 		ConditionModel<String> nameCondition = source.query().condition().get(Employee.NAME);
 		nameCondition.autoEnable().set(false);
@@ -714,7 +713,7 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 		Preferences preferences = jsonPreferences();
 		source.store(preferences);
 
-		T target = createTableModel(Employee.TYPE, connectionProvider());
+		T target = createTableModel(Employee.TYPE, connection());
 		target.restore(preferences);
 
 		ConditionModel<String> restored = target.query().condition().get(Employee.NAME);
@@ -738,11 +737,11 @@ public abstract class AbstractEntityTableModelTest<E extends EntityEditModel<R>,
 
 	protected abstract T createDepartmentTableModel();
 
-	protected abstract T createTableModel(EntityType entityType, EntityConnectionProvider connectionProvider);
+	protected abstract T createTableModel(EntityType entityType, EntityConnection connection);
 
 	protected abstract T createTableModel(E editModel);
 
-	protected abstract E createEditModel(EntityType entityType, EntityConnectionProvider connectionProvider);
+	protected abstract E createEditModel(EntityType entityType, EntityConnection connection);
 
 	private static List<Entity> initTestEntities(Entities entities) {
 		List<Entity> testEntities = new ArrayList<>(5);

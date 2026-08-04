@@ -23,7 +23,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.tools.loadtest.Scenario.Performer;
 
@@ -34,15 +33,14 @@ import java.util.UUID;
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.db.EntityConnection.transaction;
 
-public final class RandomPlaylist implements Performer<EntityConnectionProvider> {
+public final class RandomPlaylist implements Performer<EntityConnection> {
 
 	private static final String PLAYLIST_NAME = "Random playlist";
 	private static final Collection<String> GENRES =
 					List.of("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) {
-		EntityConnection connection = connectionProvider.connection();
+	public void perform(EntityConnection connection) {
 		List<Entity> playlistGenres = connection.select(Genre.NAME.in(GENRES));
 		RandomPlaylistParameters parameters = new RandomPlaylistParameters(PLAYLIST_NAME + " " + UUID.randomUUID(),
 						RANDOM.nextInt(20) + 25, playlistGenres);

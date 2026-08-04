@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.TestDomain.Department;
@@ -35,14 +35,14 @@ public final class EntityPanelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
 
 	@Test
 	void test() {
-		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION);
 		EntityPanel deptPanel = new EntityPanel(deptModel, null, (EntityTablePanel) null);
 		assertFalse(deptPanel.containsEditPanel());
 		assertThrows(IllegalStateException.class, deptPanel::editPanel);
@@ -74,7 +74,7 @@ public final class EntityPanelTest {
 
 	@Test
 	void editPanelStateValidator() {
-		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION);
 		//a disabled edit state is rejected instead of silently desyncing the value from the UI
 		EntityPanel panel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {
 			@Override
@@ -89,8 +89,8 @@ public final class EntityPanelTest {
 
 	@Test
 	void detailPanels() {
-		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION_PROVIDER);
-		SwingEntityModel empModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION);
+		SwingEntityModel empModel = new SwingEntityModel(Employee.TYPE, CONNECTION);
 		deptModel.detail().add(empModel);
 
 		EntityPanel deptPanel = new EntityPanel(deptModel);

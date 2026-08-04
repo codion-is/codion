@@ -71,6 +71,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -117,6 +118,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private final Domain domain;
 	private final User user;
+	private final UUID clientId = UUID.randomUUID();
 	private final Database database;
 	private final Lock lock = new Lock();
 	private final SelectQueries selectQueries;
@@ -178,6 +180,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public User user() {
 		return user;
+	}
+
+	@Override
+	public UUID clientId() {
+		return clientId;
 	}
 
 	@Override

@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -48,39 +47,34 @@ public abstract class AbstractEntityApplicationModel<M extends EntityModel<M, E,
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityApplicationModel.class);
 
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 	private final DefaultEntityModels<M, E, T, R> models;
 
 	/**
 	 * Instantiates a new AbstractEntityApplicationModel
-	 * @param connectionProvider the EntityConnectionProvider instance
+	 * @param connection the EntityConnection instance
 	 * @param entityModels the entity models
-	 * @throws NullPointerException in case connectionProvider is null
+	 * @throws NullPointerException in case connection is null
 	 */
-	protected AbstractEntityApplicationModel(EntityConnectionProvider connectionProvider,
-																			 Collection<? extends M> entityModels) {
-		this.connectionProvider = requireNonNull(connectionProvider);
+	protected AbstractEntityApplicationModel(EntityConnection connection,
+																					 Collection<? extends M> entityModels) {
+		this.connection = requireNonNull(connection);
 		this.models = new DefaultEntityModels<>(requireNonNull(entityModels));
 	}
 
 	@Override
 	public final User user() {
-		return connectionProvider.connection().user();
-	}
-
-	@Override
-	public final EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+		return connection.user();
 	}
 
 	@Override
 	public final EntityConnection connection() {
-		return connectionProvider.connection();
+		return connection;
 	}
 
 	@Override
 	public final Entities entities() {
-		return connectionProvider.entities();
+		return connection.entities();
 	}
 
 	@Override

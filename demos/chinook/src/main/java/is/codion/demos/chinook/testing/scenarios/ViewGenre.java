@@ -21,7 +21,6 @@ package is.codion.demos.chinook.testing.scenarios;
 import is.codion.demos.chinook.domain.api.Chinook.Genre;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.tools.loadtest.Scenario.Performer;
 
@@ -31,11 +30,10 @@ import java.util.List;
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 
-public final class ViewGenre implements Performer<EntityConnectionProvider> {
+public final class ViewGenre implements Performer<EntityConnection> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) {
-		EntityConnection connection = connectionProvider.connection();
+	public void perform(EntityConnection connection) {
 		List<Entity> genres = connection.select(all(Genre.TYPE));
 		List<Entity> tracks = connection.select(Track.GENRE_FK.equalTo(genres.get(RANDOM.nextInt(genres.size()))));
 		if (!tracks.isEmpty()) {

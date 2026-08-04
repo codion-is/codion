@@ -26,7 +26,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.db.rmi.ServerEntityConnection;
 
 import org.junit.jupiter.api.Test;
 
@@ -65,7 +65,7 @@ public final class DefaultEntityServerAdminTest {
 			ConnectionRequest connectionRequest = ConnectionRequest.builder()
 							.user(ADMIN_USER)
 							.clientType("DefaultEntityServerAdminTest")
-							.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain")
+							.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain")
 							.build();
 			server.connect(connectionRequest);
 			EntityServerAdmin admin = new DefaultEntityServerAdmin(server, configuration);

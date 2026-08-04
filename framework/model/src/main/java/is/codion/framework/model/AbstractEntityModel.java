@@ -22,7 +22,6 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.common.reactive.value.ValueSet;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -105,18 +104,13 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T, R>, E e
 	}
 
 	@Override
-	public final EntityConnectionProvider connectionProvider() {
-		return editModel.connectionProvider();
-	}
-
-	@Override
 	public final EntityConnection connection() {
 		return editModel.connection();
 	}
 
 	@Override
 	public final Entities entities() {
-		return editModel.connectionProvider().entities();
+		return editModel.connection().entities();
 	}
 
 	@Override

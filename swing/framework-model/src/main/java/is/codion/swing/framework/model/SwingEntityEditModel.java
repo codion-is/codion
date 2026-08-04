@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
@@ -32,20 +32,20 @@ public class SwingEntityEditModel extends AbstractEntityEditModel<SwingEntityEdi
 	/**
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
 	 * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
-	 * @param connectionProvider the {@link EntityConnectionProvider} instance
+	 * @param connection the {@link EntityConnection} instance
 	 */
-	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(entityType, connectionProvider, new SwingComponentModels() {});
+	public SwingEntityEditModel(EntityType entityType, EntityConnection connection) {
+		this(entityType, connection, new SwingComponentModels() {});
 	}
 
 	/**
 	 * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
 	 * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
-	 * @param connectionProvider the {@link EntityConnectionProvider} instance
+	 * @param connection the {@link EntityConnection} instance
 	 * @param componentModels the component models
 	 */
-	public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+	public SwingEntityEditModel(EntityType entityType, EntityConnection connection,
 															SwingComponentModels componentModels) {
-		super(new SwingEntityEditor(entityType, connectionProvider, componentModels));
+		super(new SwingEntityEditor(entityType, connection, componentModels));
 	}
 }

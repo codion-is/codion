@@ -21,7 +21,7 @@ package is.codion.demos.chinook.ui;
 import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.model.PlaylistTableModel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -70,7 +70,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	}
 
 	private void randomPlaylist() {
-		RandomPlaylistParametersValue parametersValue = new RandomPlaylistParametersValue(tableModel().connectionProvider());
+		RandomPlaylistParametersValue parametersValue = new RandomPlaylistParametersValue(tableModel().connection());
 		RandomPlaylistParameters parameters = Dialogs.input()
 						.component(parametersValue)
 						.owner(this)
@@ -109,8 +109,8 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	private static final class RandomPlaylistParametersValue
 					extends AbstractComponentValue<RandomPlaylistParametersPanel, RandomPlaylistParameters> {
 
-		private RandomPlaylistParametersValue(EntityConnectionProvider connectionProvider) {
-			super(new RandomPlaylistParametersPanel(connectionProvider));
+		private RandomPlaylistParametersValue(EntityConnection connection) {
+			super(new RandomPlaylistParametersPanel(connection));
 		}
 
 		@Override

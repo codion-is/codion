@@ -19,7 +19,7 @@
 package is.codion.demos.employees.model;
 
 import is.codion.demos.employees.domain.Employees.Employee;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor.SwingComponentModels;
@@ -33,8 +33,8 @@ import static java.util.Collections.singleton;
 // tag::constructor[]
 public final class EmployeeEditModel extends SwingEntityEditModel {
 
-	public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
-		super(Employee.TYPE, connectionProvider, new EmployeeComponentModels());
+	public EmployeeEditModel(EntityConnection connection) {
+		super(Employee.TYPE, connection, new EmployeeComponentModels());
 		editor().comboBoxModels().initialize(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
 		configureManagerComboBoxModel();
 	}
@@ -62,11 +62,11 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 		// tag::createComboBoxModel[]
 		// Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president
 		@Override
-		public SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+		public SwingEntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnection connection) {
 			if (foreignKey.equals(Employee.MANAGER_FK)) {
 				return SwingEntityComboBoxModel.builder()
 								.foreignKey(foreignKey)
-								.connectionProvider(connectionProvider)
+								.connection(connection)
 								//Customize the null value caption so that it displays 'None'
 								//instead of the default '-' character
 								.nullCaption("None")
@@ -79,7 +79,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 								.build();
 			}
 
-			return SwingComponentModels.super.comboBoxModel(foreignKey, connectionProvider);
+			return SwingComponentModels.super.comboBoxModel(foreignKey, connection);
 		}
 		// end::createComboBoxModel[]
 	}

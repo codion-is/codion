@@ -32,10 +32,9 @@ import is.codion.common.utilities.logging.MethodTrace;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
-import is.codion.framework.db.rmi.RemoteEntityResultIterator;
+import is.codion.framework.db.rmi.ServerEntityConnection;
+import is.codion.framework.db.rmi.ServerEntityResultIterator;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.OrderBy;
@@ -64,7 +63,7 @@ public class EntityServerTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	private static final User ADMIN_USER = User.parse("scott:tiger");
-	private static Server<RemoteEntityConnection, EntityServerAdmin> server;
+	private static Server<ServerEntityConnection, EntityServerAdmin> server;
 	private static EntityServerAdmin admin;
 
 	private static final EntityServerConfiguration CONFIGURATION = configure();
@@ -73,7 +72,7 @@ public class EntityServerTest {
 	public static synchronized void setUp() throws Exception {
 		String serverName = CONFIGURATION.serverName();
 		EntityServer.startServer(CONFIGURATION);
-		server = (Server<RemoteEntityConnection, EntityServerAdmin>)
+		server = (Server<ServerEntityConnection, EntityServerAdmin>)
 						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), CONFIGURATION.registryPort()).lookup(serverName);
 		admin = server.admin(ADMIN_USER);
 	}
@@ -86,15 +85,15 @@ public class EntityServerTest {
 
 	@Test
 	void customCondition() throws Exception {
-		//Fix side effect from remoteEntityConnectionProvider() test,
+		//Fix side effect from remoteEntityConnection() test,
 		//which registers the entities received from the server
 		//thus overwriting the entities containing the custom conditions
 		new TestDomain();
 		ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
 						.clientType("ClientType")
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
-		RemoteEntityConnection connection = server.connect(connectionRequestOne);
+						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+		ServerEntityConnection connection = server.connect(connectionRequestOne);
 
 		Condition condition = Employee.MGR_CONDITION_TYPE.get(Employee.MGR, 4);
 
@@ -109,17 +108,17 @@ public class EntityServerTest {
 		//the checked-out connection must stay pinned to the handler while the iterator is open, rather than
 		//being returned to the pool the moment iterator() returns (which would close the streaming ResultSet).
 		new TestDomain();
-		RemoteEntityConnection connection = server.connect(ConnectionRequest.builder()
+		ServerEntityConnection connection = server.connect(ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
 						.clientType("ClientType")
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build());
+						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build());
 		try {
 			Select select = Select.all(Employee.TYPE).build();
 			int expected = connection.select(select).size();
 			assertTrue(expected > 0);
 
 			int count = 0;
-			RemoteEntityResultIterator iterator = connection.iterator(select);
+			ServerEntityResultIterator iterator = connection.iterator(select);
 			try {
 				while (iterator.hasNext()) {
 					assertNotNull(iterator.next());
@@ -143,7 +142,7 @@ public class EntityServerTest {
 		assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
 						.user(User.user(UNIT_TEST_USER.username(), "foobar".toCharArray()))
 						.clientType(getClass().getSimpleName())
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build()));
+						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build()));
 	}
 
 	@Test
@@ -171,8 +170,8 @@ public class EntityServerTest {
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
 						.clientType("ClientType")
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, ConfigureDb.class.getSimpleName()).build();
-		try (RemoteEntityConnection connection = server.connect(connectionRequestTwo)) {
+						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, ConfigureDb.class.getSimpleName()).build();
+		try (ServerEntityConnection connection = server.connect(connectionRequestTwo)) {
 			//throws exception if table does not exist, which is created during connection configuration
 			connection.select(all(Configured.TYPE));
 		}
@@ -182,9 +181,9 @@ public class EntityServerTest {
 	void test() throws Exception {
 		ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientType("ClientType").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+						.clientType("ClientType").parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 
-		RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
+		ServerEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
 		assertTrue(remoteConnectionOne.connected());
 		assertEquals(1, admin.connectionCount());
 		admin.pooledConnectionIdleTimeout(UNIT_TEST_USER.username(), 60005);
@@ -202,7 +201,7 @@ public class EntityServerTest {
 			server.connect(ConnectionRequest.builder()
 							.user(UNIT_TEST_USER)
 							.clientType("ClientType")
-							.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE,
+							.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE,
 											new EmptyDomain().type().name()).build());
 			fail();
 		}
@@ -211,8 +210,8 @@ public class EntityServerTest {
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
 						.clientType("ClientType")
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
-		RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
+						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+		ServerEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
 		admin.tracingEnabled(connectionRequestTwo.clientId(), true);
 		assertTrue(admin.tracingEnabled(connectionRequestOne.clientId()));
 		assertThrows(IllegalArgumentException.class, () -> admin.tracingEnabled(UUID.randomUUID()));
@@ -272,15 +271,15 @@ public class EntityServerTest {
 		ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
 						.user(john)
 						.clientType(testClientType)
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
 						.user(User.parse("helen:juno"))
 						.clientType(testClientType)
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
 						.user(User.parse("foo:bar"))
 						.clientType(testClientType)
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+						.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		server.connect(connectionRequestJohn);
 		server.connect(connectionRequestHelen);
 		try {
@@ -301,18 +300,16 @@ public class EntityServerTest {
 
 	@Test
 	void unknownDomainType() {
-		RemoteEntityConnectionProvider provider =
-						RemoteEntityConnectionProvider.builder()
+		//a domain not hosted by the server used to surface as 'LoginException: null'
+		Exception exception = assertThrows(Exception.class, () ->
+						RemoteEntityConnection.builder()
 										.hostname("localhost")
 										.port(CONFIGURATION.port())
 										.registryPort(CONFIGURATION.registryPort())
 										.domain(DomainType.domainType("unknownDomainType"))
 										.clientType("TestClient")
 										.user(UNIT_TEST_USER)
-										.build();
-
-		//a domain not hosted by the server used to surface as 'LoginException: null'
-		Exception exception = assertThrows(Exception.class, provider::connection);
+										.build());
 		Throwable cause = exception;
 		while (cause.getMessage() == null && cause.getCause() != null) {
 			cause = cause.getCause();
@@ -322,21 +319,21 @@ public class EntityServerTest {
 	}
 
 	@Test
-	void remoteEntityConnectionProvider() throws Exception {
+	void remoteEntityConnection() throws Exception {
 		//this asserts reconnection the moment the server disconnects the client,
 		//so the connection must be checked on every call rather than once per interval
-		EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.set(0L);
+		EntityConnection.VALIDITY_CHECK_INTERVAL.set(0L);
 		try {
-			remoteEntityConnectionProviderTest();
+			remoteEntityConnectionTest();
 		}
 		finally {
-			EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.remove();
+			EntityConnection.VALIDITY_CHECK_INTERVAL.remove();
 		}
 	}
 
-	private void remoteEntityConnectionProviderTest() throws Exception {
-		RemoteEntityConnectionProvider provider =
-						RemoteEntityConnectionProvider.builder()
+	private void remoteEntityConnectionTest() throws Exception {
+		EntityConnection connection =
+						RemoteEntityConnection.builder()
 										.hostname("localhost")
 										.port(CONFIGURATION.port())
 										.registryPort(CONFIGURATION.registryPort())
@@ -345,27 +342,27 @@ public class EntityServerTest {
 										.user(UNIT_TEST_USER)
 										.build();
 
-		EntityConnection db = provider.connection();
-		assertNotNull(db);
-		assertTrue(db.connected());
-		provider.close();
+		//the connection is established on demand, and re-established rather than replaced
+		connection.transactionOpen();
+		assertTrue(connection.connected());
+		connection.close();
 
-		EntityConnection db2 = provider.connection();
-		assertNotNull(db2);
-		assertNotSame(db, db2);
-		assertTrue(db2.connected());
-		provider.close();
+		connection.transactionOpen();
+		assertTrue(connection.connected());
+		connection.close();
 
-		EntityConnection db3 = provider.connection();
-		assertTrue(db3.connected());
-		admin.disconnect(provider.clientId());
-		assertFalse(db3.connected());
+		connection.transactionOpen();
+		assertTrue(connection.connected());
 
-		db3 = provider.connection();
-		assertTrue(db3.connected());
-		db3.close();
+		//disconnected server side, which connected() reports without healing, it being a question
+		admin.disconnect(connection.clientId());
+		assertFalse(connection.connected());
 
-		provider.close();
+		//an operation re-establishes it, through the same instance
+		connection.transactionOpen();
+		assertTrue(connection.connected());
+
+		connection.close();
 	}
 
 	@Test

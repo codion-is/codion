@@ -30,7 +30,7 @@ import is.codion.demos.chinook.model.CustomerModel;
 import is.codion.demos.chinook.model.EmployeeModel;
 import is.codion.demos.chinook.model.GenreModel;
 import is.codion.demos.chinook.model.PlaylistModel;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.plugin.flatlaf.intellij.FlatLookAndFeelIntelliJThemes;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.plugin.flatlaf.themes.FlatLookAndFeelThemes;
@@ -135,22 +135,22 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		return List.of(artistPanelBuilder, genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder, preferencesPanelBuilder);
 	}
 
-	private static EntityPanel createGenrePanel(EntityConnectionProvider connectionProvider) {
-		GenreModel genreModel = new GenreModel(connectionProvider);
+	private static EntityPanel createGenrePanel(EntityConnection connection) {
+		GenreModel genreModel = new GenreModel(connection);
 		genreModel.tableModel().items().refresh();
 
 		return new GenrePanel(genreModel);
 	}
 
-	private static EntityPanel createMediaTypePanel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel mediaTypeModel = new SwingEntityModel(MediaType.TYPE, connectionProvider);
+	private static EntityPanel createMediaTypePanel(EntityConnection connection) {
+		SwingEntityModel mediaTypeModel = new SwingEntityModel(MediaType.TYPE, connection);
 		mediaTypeModel.tableModel().items().refresh();
 
 		return new EntityPanel(mediaTypeModel, new MediaTypeEditPanel(mediaTypeModel.editModel()));
 	}
 
-	private static EntityPanel createArtistPanel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel artistModel = new SwingEntityModel(new ArtistTableModel(connectionProvider));
+	private static EntityPanel createArtistPanel(EntityConnection connection) {
+		SwingEntityModel artistModel = new SwingEntityModel(new ArtistTableModel(connection));
 		artistModel.tableModel().items().refresh();
 
 		return new EntityPanel(artistModel,
@@ -158,15 +158,15 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						new ArtistTablePanel(artistModel.tableModel()));
 	}
 
-	private static EntityPanel createEmployeePanel(EntityConnectionProvider connectionProvider) {
-		EmployeeModel employeeModel = new EmployeeModel(connectionProvider);
+	private static EntityPanel createEmployeePanel(EntityConnection connection) {
+		EmployeeModel employeeModel = new EmployeeModel(connection);
 		employeeModel.tableModel().items().refresh();
 
 		return new EmployeePanel(employeeModel);
 	}
 
-	private static EntityPanel createPreferencesPanel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel preferencesModel = new SwingEntityModel(Preferences.TYPE, connectionProvider);
+	private static EntityPanel createPreferencesPanel(EntityConnection connection) {
+		SwingEntityModel preferencesModel = new SwingEntityModel(Preferences.TYPE, connection);
 		preferencesModel.editor().comboBoxModels().initialize(Preferences.PREFERRED_GENRE_FK);
 		// Foreign key values persist by default,
 		// but that doesn't make sense with these two

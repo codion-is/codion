@@ -19,7 +19,7 @@
 package is.codion.demos.world.model;
 
 import is.codion.demos.world.domain.api.World.CountryLanguage;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -32,8 +32,8 @@ public final class CountryLanguageTableModel extends SwingEntityTableModel {
 
 	private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
 
-	CountryLanguageTableModel(EntityConnectionProvider connectionProvider) {
-		super(CountryLanguage.TYPE, connectionProvider);
+	CountryLanguageTableModel(EntityConnection connection) {
+		super(CountryLanguage.TYPE, connection);
 		editor().comboBoxModels().initialize(CountryLanguage.COUNTRY_FK);
 		items().included().addConsumer(this::refreshChartDataset);
 	}

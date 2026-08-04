@@ -46,7 +46,7 @@ final class SelectQueryInspector extends JPanel {
 		requireNonNull(queryModel);
 		this.queries = EntityQueries.factory()
 						.orElseThrow(() -> new IllegalStateException("No EntityQueries.Factory available"))
-						.create(Database.instance(), queryModel.connectionProvider().connection().entities());
+						.create(Database.instance(), queryModel.connection().entities());
 		this.queryModel = queryModel;
 		this.queryModel.condition().changed().addListener(this::refreshQuery);
 		this.queryModel.limit().addListener(this::refreshQuery);

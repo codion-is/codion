@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -43,17 +43,17 @@ public class EntityComboBoxTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
 
 	@Test
 	void inputProvider() {
-		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
+		Entity operations = CONNECTION.selectSingle(Department.NAME.equalTo("OPERATIONS"));
 		SwingEntityComboBoxModel model = SwingEntityComboBoxModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.select(operations)
 						.build();
 		model.items().refresh();
@@ -63,7 +63,7 @@ public class EntityComboBoxTest {
 
 		assertNotNull(value.get());
 
-		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
+		Entity sales = CONNECTION.selectSingle(
 						Department.NAME.equalTo("SALES"));
 
 		model.setSelectedItem(sales);
@@ -76,17 +76,17 @@ public class EntityComboBoxTest {
 	void integerSelectorField() {
 		SwingEntityComboBoxModel comboBoxModel = SwingEntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		comboBoxModel.items().refresh();
-		Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
+		Entity.Key jonesKey = comboBoxModel.connection().entities().primaryKey(Employee.TYPE, 3);
 		comboBoxModel.select(jonesKey);
 		EntityComboBox comboBox = EntityComboBox.builder()
 						.model(comboBoxModel)
 						.build();
 		NumberField<Integer> empIdValue = comboBox.selector().integerField(Employee.ID).build();
 		assertEquals(3, empIdValue.get());
-		Entity.Key blakeKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);
+		Entity.Key blakeKey = comboBoxModel.connection().entities().primaryKey(Employee.TYPE, 5);
 		comboBoxModel.select(blakeKey);
 		assertEquals(5, empIdValue.get());
 		comboBoxModel.setSelectedItem(null);

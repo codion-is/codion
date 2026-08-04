@@ -18,15 +18,15 @@
  */
 package is.codion.manual.store.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.manual.store.domain.Store.Address;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 // tag::addressModel[]
 public class AddressModel extends SwingEntityModel {
 
-	public AddressModel(EntityConnectionProvider connectionProvider) {
-		super(Address.TYPE, connectionProvider);
+	public AddressModel(EntityConnection connection) {
+		super(Address.TYPE, connection);
 	}
 }
 // end::addressModel[]

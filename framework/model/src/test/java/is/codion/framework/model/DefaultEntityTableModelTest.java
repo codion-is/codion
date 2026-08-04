@@ -21,8 +21,8 @@ package is.codion.framework.model;
 import is.codion.common.model.component.table.FilterTableModel;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.reactive.value.Value;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -54,33 +54,33 @@ public final class DefaultEntityTableModelTest extends
 	@Test
 	void editModelPreferences() {
 		// A table backed model persists its edit model on its behalf, so a stand-alone table model is self-sufficient
-		TestEntityTableModel source = createTableModel(Employee.TYPE, connectionProvider());
+		TestEntityTableModel source = createTableModel(Employee.TYPE, connection());
 		source.editModel().note.set("hello");
 
 		Preferences preferences = jsonPreferences();
 		source.store(preferences);
 
-		TestEntityTableModel target = createTableModel(Employee.TYPE, connectionProvider());
+		TestEntityTableModel target = createTableModel(Employee.TYPE, connection());
 		target.restore(preferences);
 		assertEquals("hello", target.editModel().note.getOrThrow());
 	}
 
 	@Override
 	protected TestEntityTableModel createTestTableModel() {
-		return new TestEntityTableModel(Detail.TYPE, testEntities, connectionProvider());
+		return new TestEntityTableModel(Detail.TYPE, testEntities, connection());
 	}
 
 	@Override
 	protected TestEntityTableModel createDepartmentTableModel() {
-		TestEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connectionProvider());
+		TestEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connection());
 		deptModel.sort().ascending(Department.NAME);
 
 		return deptModel;
 	}
 
 	@Override
-	protected TestEntityTableModel createTableModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return createTableModel(createEditModel(entityType, connectionProvider));
+	protected TestEntityTableModel createTableModel(EntityType entityType, EntityConnection connection) {
+		return createTableModel(createEditModel(entityType, connection));
 	}
 
 	@Override
@@ -89,8 +89,8 @@ public final class DefaultEntityTableModelTest extends
 	}
 
 	@Override
-	protected TestEntityEditModel createEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return new TestEntityEditModel(entityType, connectionProvider);
+	protected TestEntityEditModel createEditModel(EntityType entityType, EntityConnection connection) {
+		return new TestEntityEditModel(entityType, connection);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class DefaultEntityTableModelTest extends
 		private TestEntityTableModel(TestEntityEditModel editModel) {
 			this(editModel, EntityQueryModel.entityQueryModel(EntityConditionModel.builder()
 							.entityType(editModel.entityType())
-							.connectionProvider(editModel.connectionProvider())
+							.connection(editModel.connection())
 							.build()));
 		}
 
@@ -114,8 +114,8 @@ public final class DefaultEntityTableModelTest extends
 			this.rowEditor = new AbstractEntityRowEditor<TestEntityEditor>(editModel.editor()) {};
 		}
 
-		private TestEntityTableModel(EntityType entityType, Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
-			this(new TestEntityEditModel(entityType, connectionProvider), entities);
+		private TestEntityTableModel(EntityType entityType, Collection<Entity> entities, EntityConnection connection) {
+			this(new TestEntityEditModel(entityType, connection), entities);
 		}
 
 		private TestEntityTableModel(TestEntityEditModel editModel, Collection<Entity> entities) {
@@ -167,8 +167,8 @@ public final class DefaultEntityTableModelTest extends
 		// Exercises the edit model preferences hook, persisted by the table model on its behalf.
 		final Value<String> note = Value.nullable();
 
-		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			super(new TestEntityEditor(entityType, connectionProvider));
+		public TestEntityEditModel(EntityType entityType, EntityConnection connection) {
+			super(new TestEntityEditor(entityType, connection));
 		}
 
 		@Override
@@ -184,22 +184,22 @@ public final class DefaultEntityTableModelTest extends
 
 	public static final class TestEntityEditor extends AbstractEntityEditor<TestEntityEditor> {
 
-		public TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			this(entityType, connectionProvider, new TestComponentModels() {});
+		public TestEntityEditor(EntityType entityType, EntityConnection connection) {
+			this(entityType, connection, new TestComponentModels() {});
 		}
 
-		public TestEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider, TestComponentModels componentModels) {
-			super(entityType, connectionProvider, componentModels);
+		public TestEntityEditor(EntityType entityType, EntityConnection connection, TestComponentModels componentModels) {
+			super(entityType, connection, componentModels);
 		}
 
 		@Override
 		public TestEntityEditor create(EntityType entityType) {
-			return new TestEntityEditor(entityType, connectionProvider());
+			return new TestEntityEditor(entityType, connection());
 		}
 
 		@Override
 		public TestEntityEditor create(EntityType entityType, ComponentModels componentModels) {
-			return new TestEntityEditor(entityType, connectionProvider(), (TestComponentModels) componentModels);
+			return new TestEntityEditor(entityType, connection(), (TestComponentModels) componentModels);
 		}
 	}
 

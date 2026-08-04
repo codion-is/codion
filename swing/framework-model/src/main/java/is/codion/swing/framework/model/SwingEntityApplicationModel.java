@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.model.AbstractEntityApplicationModel;
 
 import java.util.Collection;
@@ -31,10 +31,10 @@ public class SwingEntityApplicationModel
 
 	/**
 	 * Instantiates a new {@link SwingEntityApplicationModel}
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 * @param entityModels the entity models
 	 */
-	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Collection<SwingEntityModel> entityModels) {
-		super(connectionProvider, entityModels);
+	public SwingEntityApplicationModel(EntityConnection connection, Collection<SwingEntityModel> entityModels) {
+		super(connection, entityModels);
 	}
 }

@@ -28,8 +28,8 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
-import is.codion.framework.db.rmi.RemoteEntityConnection;
-import is.codion.framework.db.rmi.RemoteEntityResultIterator;
+import is.codion.framework.db.rmi.ServerEntityConnection;
+import is.codion.framework.db.rmi.ServerEntityResultIterator;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -45,12 +45,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A default RemoteEntityConnection implementation.
+ * A default ServerEntityConnection implementation.
  */
-final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection implements RemoteEntityConnection {
+final class DefaultServerEntityConnection extends AbstractServerEntityConnection implements ServerEntityConnection {
 
 	/**
-	 * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
+	 * Instantiates a new DefaultServerEntityConnection and exports it on the given port number
 	 * @param domain the domain model
 	 * @param database the underlying database
 	 * @param client the client requesting the connection
@@ -59,13 +59,13 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	DefaultRemoteEntityConnection(Domain domain, Database database, RemoteClient client,
+	DefaultServerEntityConnection(Domain domain, Database database, RemoteClient client,
 																int port) throws RemoteException {
 		this(domain, database, client, port, null, null);
 	}
 
 	/**
-	 * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
+	 * Instantiates a new DefaultServerEntityConnection and exports it on the given port number
 	 * @param domain the domain model
 	 * @param database the underlying database
 	 * @param client the client requesting the connection
@@ -76,7 +76,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	DefaultRemoteEntityConnection(Domain domain, Database database, RemoteClient client,
+	DefaultServerEntityConnection(Domain domain, Database database, RemoteClient client,
 																int port, RMIClientSocketFactory clientSocketFactory,
 																RMIServerSocketFactory serverSocketFactory)
 					throws RemoteException {
@@ -311,14 +311,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	}
 
 	@Override
-	public RemoteEntityResultIterator iterator(Condition condition) throws RemoteException {
+	public ServerEntityResultIterator iterator(Condition condition) throws RemoteException {
 		synchronized (connectionProxy) {
 			return remoteIterator(connectionProxy.iterator(condition));
 		}
 	}
 
 	@Override
-	public RemoteEntityResultIterator iterator(Select select) throws RemoteException {
+	public ServerEntityResultIterator iterator(Select select) throws RemoteException {
 		synchronized (connectionProxy) {
 			return remoteIterator(connectionProxy.iterator(select));
 		}

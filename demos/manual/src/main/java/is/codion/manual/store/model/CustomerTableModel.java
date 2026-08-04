@@ -18,14 +18,14 @@
  */
 package is.codion.manual.store.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 // tag::customerTableModel[]
 public class CustomerTableModel extends SwingEntityTableModel {
 
-	public CustomerTableModel(EntityConnectionProvider connectionProvider) {
-		super(new CustomerEditModel(connectionProvider));
+	public CustomerTableModel(EntityConnection connection) {
+		super(new CustomerEditModel(connection));
 	}
 }
 // end::customerTableModel[]

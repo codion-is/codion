@@ -22,7 +22,6 @@ import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.domain.api.World.Location;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -45,8 +44,8 @@ public final class CityEditModel extends SwingEntityEditModel {
 
 	private static final String OPENSTREETMAP_ORG_SEARCH = "https://nominatim.openstreetmap.org/search?q=";
 
-	public CityEditModel(EntityConnectionProvider connectionProvider) {
-		super(City.TYPE, connectionProvider);
+	public CityEditModel(EntityConnection connection) {
+		super(City.TYPE, connection);
 		editor().comboBoxModels().initialize(City.COUNTRY_FK);
 	}
 

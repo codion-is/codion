@@ -21,7 +21,6 @@ package is.codion.demos.petstore.manual;
 import is.codion.common.utilities.user.User;
 import is.codion.demos.petstore.domain.Petstore;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
@@ -34,14 +33,13 @@ public final class EntitiesInAction {
 
 	public static void main(String[] args) {
 		// tag::entitiesInAction[]
-		EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+		EntityConnection connection = EntityConnection.builder()
 						.domain(Petstore.DOMAIN)
 						.user(User.parse("scott:tiger"))
 						.build();
 
-		Entities entities = connectionProvider.entities();
+		Entities entities = connection.entities();
 
-		EntityConnection connection = connectionProvider.connection();
 
 		//populate a new category
 		Entity insects = entities.entity(Category.TYPE)

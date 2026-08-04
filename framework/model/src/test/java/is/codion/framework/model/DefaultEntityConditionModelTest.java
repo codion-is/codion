@@ -21,8 +21,8 @@ package is.codion.framework.model;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.utilities.Operator;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
@@ -47,15 +47,15 @@ public class DefaultEntityConditionModelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
 
 	private final EntityConditionModel conditionModel = EntityConditionModel.builder()
 					.entityType(Employee.TYPE)
-					.connectionProvider(CONNECTION_PROVIDER)
-					.conditions(new EntityConditions(Employee.TYPE, CONNECTION_PROVIDER))
+					.connection(CONNECTION)
+					.conditions(new EntityConditions(Employee.TYPE, CONNECTION))
 					.build();
 
 	@Test
@@ -74,8 +74,8 @@ public class DefaultEntityConditionModelTest {
 	void noSearchColumnsDefined() {
 		EntityConditionModel model = EntityConditionModel.builder()
 						.entityType(Detail.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
-						.conditions(new EntityConditions(Detail.TYPE, CONNECTION_PROVIDER))
+						.connection(CONNECTION)
+						.conditions(new EntityConditions(Detail.TYPE, CONNECTION))
 						.build();
 		//no search columns defined for master entity
 		ForeignKeyConditionModel masterModel = model.get(Detail.MASTER_FK);
@@ -95,7 +95,7 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void setEqualOperand() {
-		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().is());
 		boolean searchStateChanged = conditionModel.get(Employee.DEPARTMENT_FK).set().equalTo(sales);
 		assertTrue(searchStateChanged);
@@ -110,8 +110,8 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void setInOperands() {
-		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
-		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity accounting = CONNECTION.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().is());
 		boolean searchStateChanged = conditionModel.get(Employee.DEPARTMENT_FK).set().in(sales, accounting);
 		assertTrue(searchStateChanged);
@@ -161,8 +161,8 @@ public class DefaultEntityConditionModelTest {
 
 	@Test
 	void clearConditions() {
-		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
-		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		Entity sales = CONNECTION.selectSingle(Department.NAME.equalTo("SALES"));
+		Entity accounting = CONNECTION.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().is());
 		conditionModel.get(Employee.DEPARTMENT_FK).set().in(sales, accounting);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().is());
@@ -174,9 +174,9 @@ public class DefaultEntityConditionModelTest {
 	void dateTimeEqualTo() {
 		EntityConditionModel condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
-		EntityDefinition entityDefinition = CONNECTION_PROVIDER.entities().definition(DateTimeTest.TYPE);
+		EntityDefinition entityDefinition = CONNECTION.entities().definition(DateTimeTest.TYPE);
 
 		ConditionModel<LocalTime> timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM);
 		timeConditionModel.set().equalTo(LocalTime.of(11, 00));
@@ -188,7 +188,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM_SS);
@@ -201,7 +201,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM_SS_SSS);
@@ -213,7 +213,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		ConditionModel<LocalDateTime> dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM);
@@ -226,7 +226,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM_SS);
@@ -239,7 +239,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM_SS_SSS);
@@ -254,9 +254,9 @@ public class DefaultEntityConditionModelTest {
 	void dateTimeNotEqualTo() {
 		EntityConditionModel condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
-		EntityDefinition entityDefinition = CONNECTION_PROVIDER.entities().definition(DateTimeTest.TYPE);
+		EntityDefinition entityDefinition = CONNECTION.entities().definition(DateTimeTest.TYPE);
 
 		ConditionModel<LocalTime> timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM);
 		timeConditionModel.set().notEqualTo(LocalTime.of(11, 00));
@@ -268,7 +268,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM_SS);
@@ -281,7 +281,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM_SS_SSS);
@@ -293,7 +293,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		ConditionModel<LocalDateTime> dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM);
@@ -306,7 +306,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM_SS);
@@ -319,7 +319,7 @@ public class DefaultEntityConditionModelTest {
 
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 
 		dateTimeConditionModel = condition.get(DateTimeTest.DATE_TIME_HH_MM_SS_SSS);
@@ -334,9 +334,9 @@ public class DefaultEntityConditionModelTest {
 	void temporalEqualWrappingAroundMidnight() {
 		EntityConditionModel condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
-		EntityDefinition entityDefinition = CONNECTION_PROVIDER.entities().definition(DateTimeTest.TYPE);
+		EntityDefinition entityDefinition = CONNECTION.entities().definition(DateTimeTest.TYPE);
 
 		//the last second of the day, the interval upper bound would wrap to 00:00:00,
 		//yielding an interval matching nothing, so plain equality is used instead
@@ -350,7 +350,7 @@ public class DefaultEntityConditionModelTest {
 		//the last minute of the day likewise
 		condition = EntityConditionModel.builder()
 						.entityType(DateTimeTest.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		timeConditionModel = condition.get(DateTimeTest.TIME_HH_MM);
 		timeConditionModel.set().equalTo(LocalTime.of(23, 59));
@@ -362,7 +362,7 @@ public class DefaultEntityConditionModelTest {
 	void enablingWithMissingOperandDoesNotThrow() {
 		EntityConditionModel condition = EntityConditionModel.builder()
 						.entityType(Employee.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		ConditionModel<Integer> conditionModel = condition.get(Employee.ID);
 		conditionModel.autoEnable().set(false);

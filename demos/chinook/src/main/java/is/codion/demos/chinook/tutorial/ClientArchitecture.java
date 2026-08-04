@@ -23,8 +23,8 @@ import is.codion.common.utilities.user.User;
 import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Artist;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -43,12 +43,12 @@ public final class ClientArchitecture {
 	/**
 	 * Creates a SwingEntityModel based on the {@link Artist#TYPE} entity
 	 * with a detail model based on {@link Album#TYPE}
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 */
-	static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
+	static SwingEntityModel artistModel(EntityConnection connection) {
 		// create a default edit model
 		SwingEntityEditModel artistEditModel =
-						new SwingEntityEditModel(Artist.TYPE, connectionProvider);
+						new SwingEntityEditModel(Artist.TYPE, connection);
 
 		// create a default table model, wrapping the edit model
 		SwingEntityTableModel artistTableModel =
@@ -61,7 +61,7 @@ public final class ClientArchitecture {
 		// Note that this does the same as the above, that is, creates
 		// a SwingEntityModel with a default edit and table model
 		SwingEntityModel albumModel =
-						new SwingEntityModel(Album.TYPE, connectionProvider);
+						new SwingEntityModel(Album.TYPE, connection);
 
 		artistModel.detail().add(albumModel);
 
@@ -73,11 +73,11 @@ public final class ClientArchitecture {
 	/**
 	 * Creates a EntityPanel based on the {@link Artist#TYPE} entity
 	 * with a detail panel based on {@link Album#TYPE}
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 */
-	static EntityPanel artistPanel(EntityConnectionProvider connectionProvider) {
+	static EntityPanel artistPanel(EntityConnection connection) {
 		// create the EntityModel to base the panel on (calling the above method)
-		SwingEntityModel artistModel = artistModel(connectionProvider);
+		SwingEntityModel artistModel = artistModel(connection);
 
 		// the edit model
 		SwingEntityEditModel artistEditModel = artistModel.editModel();
@@ -121,13 +121,13 @@ public final class ClientArchitecture {
 		// initialize a connection provider, this class is responsible
 		// for supplying a valid connection or throwing an exception
 		// in case a connection can not be established
-		EntityConnectionProvider connectionProvider =
-						LocalEntityConnectionProvider.builder()
+		EntityConnection connection =
+						LocalEntityConnection.builder()
 										.domain(new ChinookImpl())
 										.user(User.parse("scott:tiger"))
 										.build();
 
-		EntityPanel artistPanel = artistPanel(connectionProvider);
+		EntityPanel artistPanel = artistPanel(connection);
 
 		// lazy initialization
 		artistPanel.initialize();
@@ -138,6 +138,6 @@ public final class ClientArchitecture {
 		// uncomment the below line to display the panel
 //    displayInDialog(null, artistPanel, "Artists");
 
-		connectionProvider.close();
+		connection.close();
 	}
 }

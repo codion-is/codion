@@ -22,8 +22,7 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditModel;
@@ -60,7 +59,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	protected static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	protected static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
@@ -533,7 +532,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 						.with(Department.LOCATION, "Loc")
 						.build();
 
-		Entity emp = connectionProvider().connection().selectSingle(Employee.ID.equalTo(8)).copy().builder().clearPrimaryKey().build();
+		Entity emp = connection().selectSingle(Employee.ID.equalTo(8)).copy().builder().clearPrimaryKey().build();
 		emp.set(Employee.NAME, "NewName");
 
 		M model = createDepartmentModelWithoutDetailModel();
@@ -546,8 +545,8 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T, R>,
 		assertFalse(model.tableModel().items().contains(dept));
 	}
 
-	protected final EntityConnectionProvider connectionProvider() {
-		return CONNECTION_PROVIDER;
+	protected final EntityConnection connection() {
+		return CONNECTION;
 	}
 
 	/**

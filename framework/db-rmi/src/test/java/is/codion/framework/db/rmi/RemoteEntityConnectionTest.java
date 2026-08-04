@@ -25,7 +25,6 @@ import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.QueryCache;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.exception.MultipleEntitiesFoundException;
 import is.codion.framework.db.rmi.TestDomain.Department;
@@ -66,20 +65,20 @@ public class RemoteEntityConnectionTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static Server<RemoteEntityConnection, EntityServerAdmin> server;
+	private static Server<ServerEntityConnection, EntityServerAdmin> server;
 	private static EntityServerAdmin admin;
-	private static RemoteEntityConnectionProvider connectionProvider;
+	private static EntityConnection connection;
 
 	@BeforeAll
 	public static void setUp() throws Exception {
-		//these tests share a single provider and close its connection along the way
-		EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.set(0L);
-		EntityServerConfiguration configuration = RemoteEntityConnectionProviderTest.configure();
+		//these tests share a single connection and close it along the way
+		EntityConnection.VALIDITY_CHECK_INTERVAL.set(0L);
+		EntityServerConfiguration configuration = RemoteEntityConnectionBuilderTest.configure();
 		EntityServer.startServer(configuration);
-		server = (Server<RemoteEntityConnection, EntityServerAdmin>)
+		server = (Server<ServerEntityConnection, EntityServerAdmin>)
 						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(configuration.serverName());
 		admin = server.admin(User.parse("scott:tiger"));
-		connectionProvider = RemoteEntityConnectionProvider.builder()
+		connection = RemoteEntityConnection.builder()
 						.hostname(Clients.SERVER_HOSTNAME.get())
 						.port(configuration.port())
 						.registryPort(configuration.registryPort())
@@ -92,7 +91,7 @@ public class RemoteEntityConnectionTest {
 	@AfterAll
 	public static void tearDown() throws RemoteException {
 		admin.shutdown();
-		EntityConnectionProvider.VALIDITY_CHECK_INTERVAL.remove();
+		EntityConnection.VALIDITY_CHECK_INTERVAL.remove();
 	}
 
 	@Test
@@ -498,18 +497,18 @@ public class RemoteEntityConnectionTest {
 
 	@Test
 	void supplier() {
-		// sanity check for calling default methods on a proxy, see RemoteEntityConnectionHandler
+		// sanity check for calling default methods on a proxy, see ServerEntityConnectionHandler
 		connection().select(Select.where(Employee.ID.equalTo(7)));
 	}
 
 	private static EntityConnection connection() {
-		return connectionProvider.connection();
+		return connection;
 	}
 
-	/* A sanity check since {@link RemoteEntityConnection} can not extend {@link EntityConnection}. */
+	/* A sanity check since {@link ServerEntityConnection} can not extend {@link EntityConnection}. */
 	@Test
 	void entityConnectionCompatibility() {
-		List<Method> remoteEntityConnectionMethods = Arrays.stream(RemoteEntityConnection.class.getDeclaredMethods())
+		List<Method> remoteEntityConnectionMethods = Arrays.stream(ServerEntityConnection.class.getDeclaredMethods())
 						.filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
 		List<Method> entityConnectionMethods = Arrays.stream(EntityConnection.class.getDeclaredMethods())
 						.filter(method -> !Modifier.isStatic(method.getModifiers()))
@@ -527,7 +526,7 @@ public class RemoteEntityConnectionTest {
 															&& Arrays.equals(remoteConnectionMethod.getParameterTypes(), entityConnectionMethod.getParameterTypes())
 															&& asList(remoteConnectionMethod.getExceptionTypes()).containsAll(asList(entityConnectionMethod.getExceptionTypes())))) {
 				fail(EntityConnection.class.getSimpleName() + " method " + entityConnectionMethod.getName()
-								+ " not found in " + RemoteEntityConnection.class.getSimpleName());
+								+ " not found in " + ServerEntityConnection.class.getSimpleName());
 			}
 		}
 	}

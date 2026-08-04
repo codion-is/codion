@@ -22,6 +22,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
+import is.codion.framework.db.AbstractEntityConnection;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.Domain;
@@ -48,6 +49,16 @@ import static is.codion.common.utilities.Configuration.integerValue;
  *}
  */
 public interface LocalEntityConnection extends EntityConnection {
+
+	/**
+	 * Specifies whether method tracing is enabled by default.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see #builder()
+	 */
+	PropertyValue<Boolean> TRACING = booleanValue("codion.db.tracing", false);
 
 	/**
 	 * Specifies the number of log traces to keep while tracing is enabled.
@@ -199,6 +210,37 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @return the underlying connection object
 	 */
 	@Nullable Connection getConnection();
+
+	/**
+	 * <p>Instantiates a builder for a self-managing {@link LocalEntityConnection}, one which connects on
+	 * demand and reconnects when the underlying connection has gone bad, serving for the lifetime of a client.
+	 * <p>Contrast with {@link #localEntityConnection(Database, Domain, Connection)}, which wraps a connection
+	 * supplied by the caller, for scoped use such as a pooled connection on a server.
+	 * @return a new builder
+	 * @see AbstractEntityConnection
+	 */
+	static Builder builder() {
+		return new DefaultLocalEntityConnectionBuilder();
+	}
+
+	/**
+	 * Builds a self-managing {@link LocalEntityConnection}.
+	 * @see LocalEntityConnection#builder()
+	 */
+	interface Builder extends EntityConnection.Builder<LocalEntityConnection, Builder> {
+
+		/**
+		 * @param database the database instance to use
+		 * @return this builder instance
+		 */
+		Builder database(Database database);
+
+		/**
+		 * @param queryTimeout the default query timeout in seconds
+		 * @return this builder instance
+		 */
+		Builder queryTimeout(int queryTimeout);
+	}
 
 	/**
 	 * Constructs a new {@link LocalEntityConnection} instance

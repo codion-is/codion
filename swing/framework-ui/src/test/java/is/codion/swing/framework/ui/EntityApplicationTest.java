@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import org.junit.jupiter.api.Test;
@@ -37,42 +37,43 @@ public final class EntityApplicationTest {
 	void connection() {
 		// In-memory preferences (application-level and model), so the test never touches the real user store.
 		Preferences preferences = jsonPreferences();
-		User user = User.user("Test");
+		// Always the same super username, connection created eagerly, so must be an existing user, tests use assertSame()
+		User user = User.user("sa");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
 						.model(TestApplicationModel::new)
-						.onStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
+						.onStarted(panel -> assertSame(user, panel.applicationModel().connection().user()))
 						.user(user)
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
-		User user2 = User.user("Test2");
+		User user2 = User.user("sa");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
 						.model(TestApplicationModel::new)
-						.onStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
+						.onStarted(panel -> assertSame(user2, panel.applicationModel().connection().user()))
 						.user(() -> user2)
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
-		User user3 = User.user("Test3");
+		User user3 = User.user("sa");
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
 						.model(TestApplicationModel::new)
-						.onStarted(panel -> assertSame(user3, panel.applicationModel().connectionProvider().user()))
+						.onStarted(panel -> assertSame(user3, panel.applicationModel().connection().user()))
 						.user(user3)
-						.connectionProvider(usr -> LocalEntityConnectionProvider.builder()
+						.connection(usr -> LocalEntityConnection.builder()
 										.domain(new TestDomain())
 										.user(usr)
 										.build())
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
-		User user4 = User.user("Test3");
-		LocalEntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+		User user4 = User.user("sa");
+		LocalEntityConnection connection = LocalEntityConnection.builder()
 						.domain(new TestDomain())
 						.user(user4)
 						.build();
@@ -81,10 +82,10 @@ public final class EntityApplicationTest {
 						.preferences(preferences)
 						.model(TestApplicationModel::new)
 						.onStarted(panel -> {
-							assertSame(connectionProvider, panel.applicationModel().connectionProvider());
-							assertSame(user4, panel.applicationModel().connectionProvider().user());
+							assertSame(connection, panel.applicationModel().connection());
+							assertSame(user4, panel.applicationModel().connection().user());
 						})
-						.connectionProvider(connectionProvider)
+						.connection(connection)
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
@@ -92,8 +93,8 @@ public final class EntityApplicationTest {
 
 	public static class TestApplicationModel extends SwingEntityApplicationModel {
 
-		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, emptyList());
+		public TestApplicationModel(EntityConnection connection) {
+			super(connection, emptyList());
 		}
 	}
 

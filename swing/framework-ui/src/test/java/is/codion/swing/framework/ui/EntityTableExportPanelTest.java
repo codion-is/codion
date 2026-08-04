@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableExportTreeModel.AttributeNode;
 import is.codion.swing.framework.ui.EntityTableExportTreeModel.EntityNode;
@@ -45,14 +45,14 @@ public final class EntityTableExportPanelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
 
 	@Test
 	void exportPreferencesDefaults() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
@@ -70,7 +70,7 @@ public final class EntityTableExportPanelTest {
 
 	@Test
 	void cyclicalForeignKeyExpansion() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
@@ -116,7 +116,7 @@ public final class EntityTableExportPanelTest {
 
 	@Test
 	void moveOntoOwnPositionDoesNotThrow() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityNode root = tablePanel.exportPanel().model().treeModel().getRoot();
 
@@ -130,7 +130,7 @@ public final class EntityTableExportPanelTest {
 
 	@Test
 	void rowSelectionFallsBackToAll() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION);
 		tableModel.items().refresh();
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportModel model = tablePanel.exportPanel().model();

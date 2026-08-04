@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2008 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2004 - 2026, Björn Darri Sigurðsson.
  */
 package is.codion.framework.db.local;
 
@@ -23,34 +23,36 @@ import is.codion.common.reactive.event.Event;
 import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.logging.MethodTrace;
-import is.codion.framework.db.AbstractEntityConnectionProvider;
+import is.codion.framework.db.AbstractEntityConnection;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.util.Optional;
 
-import static is.codion.framework.db.local.LocalEntityConnection.TRACES;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.tracer.MethodTracer.methodTracer;
 
 /**
- * A class responsible for managing a local EntityConnection.
- * @see LocalEntityConnectionProvider#builder()
+ * A self-managing {@link LocalEntityConnection}, connecting on demand and reconnecting
+ * when the underlying connection has gone bad.
+ * @see LocalEntityConnection#builder()
  */
-final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectionProvider
-				implements LocalEntityConnectionProvider {
+final class ManagedLocalEntityConnection extends AbstractEntityConnection
+				implements LocalEntityConnection, EntityConnectionTracer {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ManagedLocalEntityConnection.class);
 
 	private final Domain domain;
 	private final Database database;
-	private final int queryTimeout;
 
 	private final Event<MethodTrace> traceEvent = Event.event();
 	private final State tracing = State.builder()
@@ -58,7 +60,13 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 					.consumer(this::tracingChanged)
 					.build();
 
-	DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
+	//held here rather than on the underlying connection, which these settings outlive
+	private volatile int queryTimeout;
+	private volatile boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
+	private volatile boolean limitReferenceDepth = LIMIT_REFERENCE_DEPTH.getOrThrow();
+	private volatile int iteratorBufferSize = ITERATOR_BUFFER_SIZE.getOrThrow();
+
+	ManagedLocalEntityConnection(DefaultLocalEntityConnectionBuilder builder) {
 		super(builder);
 		this.domain = builder.domain == null ? initializeDomain(domainType()) : builder.domain;
 		this.database = builder.database == null ? Database.instance() : builder.database;
@@ -67,12 +75,12 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
 	@Override
 	public Optional<String> description() {
-		return Optional.of(DESCRIPTION.optional().orElse(database().name()));
+		return Optional.of(DESCRIPTION.optional().orElse(database.name()));
 	}
 
 	@Override
-	public Domain domain() {
-		return domain;
+	public Connection connection() {
+		return local().connection();
 	}
 
 	@Override
@@ -81,8 +89,57 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	}
 
 	@Override
-	public LocalEntityConnection connection() {
-		return (LocalEntityConnection) validConnection();
+	public boolean optimisticLocking() {
+		return optimisticLocking;
+	}
+
+	@Override
+	public void optimisticLocking(boolean optimisticLocking) {
+		this.optimisticLocking = optimisticLocking;
+		local().optimisticLocking(optimisticLocking);
+	}
+
+	@Override
+	public int iteratorBufferSize() {
+		return iteratorBufferSize;
+	}
+
+	@Override
+	public void iteratorBufferSize(int iteratorBufferSize) {
+		this.iteratorBufferSize = iteratorBufferSize;
+		local().iteratorBufferSize(iteratorBufferSize);
+	}
+
+	@Override
+	public boolean limitReferenceDepth() {
+		return limitReferenceDepth;
+	}
+
+	@Override
+	public void limitReferenceDepth(boolean limitReferenceDepth) {
+		this.limitReferenceDepth = limitReferenceDepth;
+		local().limitReferenceDepth(limitReferenceDepth);
+	}
+
+	@Override
+	public int queryTimeout() {
+		return queryTimeout;
+	}
+
+	@Override
+	public void queryTimeout(int queryTimeout) {
+		this.queryTimeout = queryTimeout;
+		local().queryTimeout(queryTimeout);
+	}
+
+	@Override
+	public void setConnection(@Nullable Connection connection) {
+		local().setConnection(connection);
+	}
+
+	@Override
+	public @Nullable Connection getConnection() {
+		return local().getConnection();
 	}
 
 	@Override
@@ -98,11 +155,15 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	@Override
 	protected LocalEntityConnection connect() {
 		LOG.debug("Initializing connection for {}", user());
-		LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
+		LocalEntityConnection connection = localEntityConnection(database, domain, user());
 		if (tracing.is()) {
 			setMethodTracer(createMethodTracer(), (Traceable) connection);
 		}
+		//re-apply the settings, the connection being replaceable and they not
 		connection.queryTimeout(queryTimeout);
+		connection.optimisticLocking(optimisticLocking);
+		connection.limitReferenceDepth(limitReferenceDepth);
+		connection.iteratorBufferSize(iteratorBufferSize);
 		LOG.info("Connection established to {} for user {}", database.name(), user());
 
 		return connection;
@@ -114,9 +175,13 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 		connection.close();
 	}
 
+	private LocalEntityConnection local() {
+		return (LocalEntityConnection) delegate();
+	}
+
 	private void tracingChanged(boolean trace) {
 		LOG.debug("Method tracing {} for {}", trace ? "enabled" : "disabled", user());
-		setMethodTracer(trace ? createMethodTracer() : MethodTracer.NO_OP, (Traceable) connection());
+		setMethodTracer(trace ? createMethodTracer() : MethodTracer.NO_OP, (Traceable) delegate());
 	}
 
 	private static void setMethodTracer(MethodTracer methodTracer, Traceable traceable) {

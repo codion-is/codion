@@ -22,7 +22,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Artist;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.tools.loadtest.Scenario.Performer;
 
@@ -31,11 +30,10 @@ import java.util.List;
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.randomArtistId;
 import static is.codion.framework.db.EntityConnection.Select.where;
 
-public final class ViewAlbum implements Performer<EntityConnectionProvider> {
+public final class ViewAlbum implements Performer<EntityConnection> {
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) {
-		EntityConnection connection = connectionProvider.connection();
+	public void perform(EntityConnection connection) {
 		Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
 		List<Entity> albums = connection.select(where(Album.ARTIST_FK.equalTo(artist))
 						.limit(1));

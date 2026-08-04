@@ -19,27 +19,26 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-public class HttpEntityConnectionProviderTest {
+public class HttpEntityConnectionTest {
 
 	@Test
-	void entityConnectionProviderBuilder() {
-		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
+	void connectionTypeHttp_resolvesHttpBuilder() {
+		EntityConnection.CLIENT_CONNECTION_TYPE.set(EntityConnection.CONNECTION_TYPE_HTTP);
 		try {
-			EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+			//building would connect, there being no server to connect to here
+			assertInstanceOf(HttpEntityConnection.Builder.class, EntityConnection.builder()
 							.domain(TestDomain.DOMAIN)
 							.clientType("test")
-							.user(User.parse("scott:tiger"))
-							.build();
-			assertInstanceOf(HttpEntityConnectionProvider.class, connectionProvider);
+							.user(User.parse("scott:tiger")));
 		}
 		finally {
-			EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(null);
+			EntityConnection.CLIENT_CONNECTION_TYPE.set(null);
 		}
 	}
 }

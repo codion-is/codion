@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -43,13 +42,6 @@ public interface EntityEditModel<R extends EntityEditor<R>> {
 
 	/**
 	 * @return the connection provider used by this edit model
-	 */
-	EntityConnectionProvider connectionProvider();
-
-	/**
-	 * Do not cache or keep the connection returned by this method in a long living field,
-	 * since it may become invalid and thereby unusable.
-	 * @return the connection used by this edit model
 	 */
 	EntityConnection connection();
 

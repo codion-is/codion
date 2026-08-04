@@ -31,7 +31,6 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.exception.EntityModifiedException;
 import is.codion.framework.db.exception.UpdateEntityException;
 import is.codion.framework.domain.entity.Entities;
@@ -99,7 +98,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 	/**
 	 * @return the connection provider
 	 */
-	EntityConnectionProvider connectionProvider();
+	EntityConnection connection();
 
 	/**
 	 * @return the editor settings
@@ -782,7 +781,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key.
 		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
 		 * @return a {@link EntityComboBoxModel} for the given foreign key
-		 * @see ComponentModels#comboBoxModel(ForeignKey, EntityConnectionProvider)
+		 * @see ComponentModels#comboBoxModel(ForeignKey, EntityConnection)
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 * @see EntityComboBoxModel.Builder#nullCaption(String)
 		 * @see EntityComboBoxModel.Builder#includeNull(boolean)
@@ -811,13 +810,13 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
 		 * using the search attributes defined for that entity type.
 		 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
-		 * @param connectionProvider the connection provider
+		 * @param connection the connection provider
 		 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
 		 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 		 * @see EntityDefinition.Columns#searchable()
 		 */
-		default EntitySearchModel searchModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
-			Collection<Column<String>> searchable = requireNonNull(connectionProvider).entities()
+		default EntitySearchModel searchModel(ForeignKey foreignKey, EntityConnection connection) {
+			Collection<Column<String>> searchable = requireNonNull(connection).entities()
 							.definition(requireNonNull(foreignKey).referencedType())
 							.columns()
 							.searchable();
@@ -827,7 +826,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 
 			return EntitySearchModel.builder()
 							.entityType(foreignKey.referencedType())
-							.connectionProvider(connectionProvider)
+							.connection(connection)
 							.build();
 		}
 
@@ -838,7 +837,7 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * null item caption if the underlying attribute is nullable.
 		 * <p>If the foreign key has select attributes defined, those are set in the combo box model.
 		 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
-		 * @param connectionProvider the connection provider
+		 * @param connection the connection provider
 		 * @return a {@link EntityComboBoxModel} for the given foreign key
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 * @see EntityComboBoxModel.Builder#nullCaption(String)
@@ -847,10 +846,10 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * @see EntityComboBoxModel.Builder#attributes(Collection)
 		 * @see ForeignKeyDefinition#attributes()
 		 */
-		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnectionProvider connectionProvider) {
+		default EntityComboBoxModel comboBoxModel(ForeignKey foreignKey, EntityConnection connection) {
 			return EntityComboBoxModel.builder()
 							.foreignKey(foreignKey)
-							.connectionProvider(requireNonNull(connectionProvider))
+							.connection(requireNonNull(connection))
 							.build();
 		}
 
@@ -859,18 +858,18 @@ public interface EntityEditor<R extends EntityEditor<R>> {
 		 * This default implementation returns a sorted {@link FilterComboBoxModel} using the default
 		 * null item caption if the underlying column is nullable
 		 * @param column the column
-		 * @param connectionProvider the connection provider
+		 * @param connection the connection provider
 		 * @param <T> the value type
 		 * @return a combo box model based on the given column
 		 * @see FilterComboBoxModel#NULL_CAPTION
 		 */
-		default <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnectionProvider connectionProvider) {
-			EntityDefinition entityDefinition = requireNonNull(connectionProvider).entities()
+		default <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column, EntityConnection connection) {
+			EntityDefinition entityDefinition = requireNonNull(connection).entities()
 							.definition(requireNonNull(column).entityType());
 			boolean nullable = entityDefinition.columns().definition(column).nullable();
 
 			return FilterComboBoxModel.builder()
-							.items(() -> connectionProvider.connection().select(column))
+							.items(() -> connection.select(column))
 							.nullItem(nullable ? createNullItem(column) : null)
 							.includeNull(nullable)
 							.build();

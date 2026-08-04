@@ -20,9 +20,8 @@
  * Local JDBC based database connection classes.
  * <ul>
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection}
- * <li>{@link is.codion.framework.db.local.LocalEntityConnectionProvider}
  * </ul>
- * @provides is.codion.framework.db.EntityConnectionProvider
+ * @provides is.codion.framework.db.EntityConnection.Builder
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.framework.db.local {
@@ -33,8 +32,8 @@ module is.codion.framework.db.local {
 	exports is.codion.framework.db.local.tracer
 					to is.codion.framework.server;
 
-	provides is.codion.framework.db.EntityConnectionProvider.Builder
-					with is.codion.framework.db.local.DefaultLocalEntityConnectionProviderBuilder;
+	provides is.codion.framework.db.EntityConnection.Builder
+					with is.codion.framework.db.local.DefaultLocalEntityConnectionBuilder;
 	provides is.codion.framework.db.EntityQueries.Factory
 					with is.codion.framework.db.local.DefaultEntityQueriesFactory;
 }

@@ -24,66 +24,59 @@ import is.codion.demos.chinook.domain.ChinookImpl;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.http.HttpEntityConnectionProvider;
+import is.codion.framework.db.http.HttpEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
 import java.sql.Connection;
 
-public final class EntityConnectionProviderDemo {
+public final class EntityConnectionBuilderDemo {
 
-	static void localConnectionProvider() {
+	static void localConnection() {
 		// tag::local[]
 		Database.URL.set("jdbc:h2:mem:h2db");
 		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
 		Database database = Database.instance();
 
-		LocalEntityConnectionProvider connectionProvider =
-						LocalEntityConnectionProvider.builder()
+		LocalEntityConnection entityConnection =
+						LocalEntityConnection.builder()
 										.database(database)
 										.domain(new ChinookImpl())
 										.user(User.parse("scott:tiger"))
 										.build();
 
-		LocalEntityConnection entityConnection =
-						connectionProvider.connection();
-
 		// the underlying JDBC connection is available in a local connection
 		Connection connection = entityConnection.connection();
 
-		connectionProvider.close();
+		entityConnection.close();
 		// end::local[]
 	}
 
-	static void remoteConnectionProvider() {
+	static void remoteConnection() {
 		// tag::remote[]
-		RemoteEntityConnectionProvider connectionProvider =
-						RemoteEntityConnectionProvider.builder()
+		EntityConnection entityConnection =
+						RemoteEntityConnection.builder()
 										.domain(Chinook.DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.hostname("localhost")
 										.registryPort(1099)
 										.build();
 
-		EntityConnection entityConnection =
-						connectionProvider.connection();
-
 		Entities entities = entityConnection.entities();
 
 		Entity track = entityConnection.select(entities.primaryKey(Track.TYPE, 42L));
 
-		connectionProvider.close();
+		entityConnection.close();
 		// end::remote[]
 	}
 
-	static void httpConnectionProvider() {
+	static void httpConnection() {
 		// tag::http[]
-		HttpEntityConnectionProvider connectionProvider =
-						HttpEntityConnectionProvider.builder()
+		EntityConnection entityConnection =
+						HttpEntityConnection.builder()
 										.domain(Chinook.DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.hostname("localhost")
@@ -91,13 +84,11 @@ public final class EntityConnectionProviderDemo {
 										.https(false)
 										.build();
 
-		EntityConnection entityConnection = connectionProvider.connection();
-
 		Entities entities = entityConnection.entities();
 
 		entityConnection.select(entities.primaryKey(Track.TYPE, 42L));
 
-		connectionProvider.close();
+		entityConnection.close();
 		// end::http[]
 	}
 }

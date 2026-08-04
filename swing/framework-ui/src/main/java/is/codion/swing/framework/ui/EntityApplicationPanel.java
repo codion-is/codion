@@ -29,7 +29,7 @@ import is.codion.common.utilities.property.PropertyStore;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
 import is.codion.common.utilities.version.Version;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
@@ -364,7 +364,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 		storePreferences();
 		try {
-			applicationModel.connectionProvider().close();
+			applicationModel.connection().close();
 		}
 		catch (Exception e) {
 			LOG.debug("Exception while disconnecting from database", e);
@@ -681,7 +681,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	protected JPanel createAboutPanel() {
 		PanelBuilder<GridLayout, ?> versionMemoryPanel = gridLayoutPanel(0, 2)
 						.border(emptyBorder());
-		applicationModel().connectionProvider().clientVersion().ifPresent(version -> versionMemoryPanel
+		applicationModel().connection().clientVersion().ifPresent(version -> versionMemoryPanel
 						.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
 						.add(new JLabel(version.toString())));
 		versionMemoryPanel
@@ -821,7 +821,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private Preferences preferences() {
 		if (preferences == null) {
 			preferences = filePreferences(EntityApplicationModel.PREFERENCES_KEY.optional()
-							.orElse(applicationModel.connectionProvider().domainType().name()));
+							.orElse(applicationModel.entities().domainType().name()));
 			PreferencesMigrator.migrate(preferences);
 		}
 
@@ -928,7 +928,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		boolean maximized = parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH;
 
 		return new ApplicationPreferences(
-						saveDefaultUsername ? applicationModel.connectionProvider().user().username() : null,
+						saveDefaultUsername ? applicationModel.connection().user().username() : null,
 						getLookAndFeel().getClass().getName(), Scaler.SCALING.getOrThrow(),
 						//when maximized parentFrame.getSize() is the screen size, not the frame size to restore when un-maximized
 						parentFrame == null || maximized ? null : parentFrame.getSize(),
@@ -954,7 +954,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			return cachedEntityPanels.get(panelBuilder);
 		}
 
-		EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
+		EntityPanel entityPanel = panelBuilder.build(applicationModel.connection());
 		if (userPreferences) {
 			entityPanel.restore(preferences().node(AUXILIARY).node(entityPanel.preferencesKey()));
 		}
@@ -1059,9 +1059,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private Optional<Controls> createTracingControls() {
-		EntityConnectionProvider connectionProvider = applicationModel.connectionProvider();
-		if (connectionProvider instanceof EntityConnectionTracer && SQL_TRACING.getOrThrow()) {
-			EntityConnectionTracer tracer = (EntityConnectionTracer) connectionProvider;
+		EntityConnection connection = applicationModel.connection();
+		if (connection instanceof EntityConnectionTracer && SQL_TRACING.getOrThrow()) {
+			EntityConnectionTracer tracer = (EntityConnectionTracer) connection;
 
 			return Optional.of(Controls.builder()
 							.caption(resourceBundle.getString("sql_tracing"))
@@ -1153,9 +1153,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void setupTracing() {
 		if (SQL_TRACING.getOrThrow()) {
-			EntityConnectionProvider connectionProvider = applicationModel.connectionProvider();
-			if (connectionProvider instanceof EntityConnectionTracer) {
-				EntityConnectionTracer tracer = (EntityConnectionTracer) connectionProvider;
+			EntityConnection connection = applicationModel.connection();
+			if (connection instanceof EntityConnectionTracer) {
+				EntityConnectionTracer tracer = (EntityConnectionTracer) connection;
 				if (tracer.tracing().is()) {
 					sqlTraceViewer = createTraceViewer(tracer);
 				}
@@ -1165,11 +1165,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void tracingChanged(boolean tracing) {
-		EntityConnectionProvider connectionProvider = applicationModel.connectionProvider();
-		if (connectionProvider instanceof EntityConnectionTracer) {
+		EntityConnection connection = applicationModel.connection();
+		if (connection instanceof EntityConnectionTracer) {
 			if (tracing) {
 				if (sqlTraceViewer == null) {
-					sqlTraceViewer = createTraceViewer((EntityConnectionTracer) connectionProvider);
+					sqlTraceViewer = createTraceViewer((EntityConnectionTracer) connection);
 				}
 			}
 			else if (sqlTraceViewer != null) {

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.AbstractEntityModel;
 
@@ -33,10 +33,10 @@ public class SwingEntityModel extends AbstractEntityModel<SwingEntityModel,
 	/**
 	 * Instantiates a new SwingEntityModel with default SwingEntityEditModel and SwingEntityTableModel implementations.
 	 * @param entityType the type of the entity to base this SwingEntityModel on
-	 * @param connectionProvider an EntityConnectionProvider
+	 * @param connection an EntityConnection
 	 */
-	public SwingEntityModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this(new SwingEntityEditModel(requireNonNull(entityType), requireNonNull(connectionProvider)));
+	public SwingEntityModel(EntityType entityType, EntityConnection connection) {
+		this(new SwingEntityEditModel(requireNonNull(entityType), requireNonNull(connection)));
 	}
 
 	/**

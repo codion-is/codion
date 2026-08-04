@@ -21,7 +21,6 @@ package is.codion.framework.model;
 import is.codion.common.reactive.state.State;
 import is.codion.common.reactive.value.ObservableValueSet;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -47,13 +46,6 @@ public interface EntityModel<M extends EntityModel<M, E, T, R>, E extends Entity
 
 	/**
 	 * @return the connection provider used by this entity model
-	 */
-	EntityConnectionProvider connectionProvider();
-
-	/**
-	 * Do not cache or keep the connection returned by this method in a long living field,
-	 * since it may become invalid and thereby unusable.
-	 * @return the connection used by this entity model
 	 */
 	EntityConnection connection();
 

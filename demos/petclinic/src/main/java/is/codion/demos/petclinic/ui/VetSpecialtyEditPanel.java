@@ -46,6 +46,6 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
 	}
 
 	private SpecialtyEditPanel createSpecialtyEditPanel() {
-		return new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider()));
+		return new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connection()));
 	}
 }

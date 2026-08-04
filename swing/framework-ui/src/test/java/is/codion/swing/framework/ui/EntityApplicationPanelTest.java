@@ -20,8 +20,8 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.filter.SortOrder;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -42,7 +42,7 @@ public class EntityApplicationPanelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
@@ -54,7 +54,7 @@ public class EntityApplicationPanelTest {
 
 	@Test
 	void test() {
-		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+		EntityConnection.CLIENT_CONNECTION_TYPE.set(EntityConnection.CONNECTION_TYPE_LOCAL);
 		// In-memory preferences for both the application level and the model, so the test never touches the real store.
 		Preferences preferences = jsonPreferences();
 		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
@@ -75,7 +75,7 @@ public class EntityApplicationPanelTest {
 		// The model walk and the UI walk share the entities/<key> node, writing disjoint model/ and view/ subtrees
 		Preferences entities = jsonPreferences();
 
-		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION);
 		model.tableModel().query().condition().get(Employee.NAME).caseSensitive().set(true); // model state
 		EntityPanel panel = new EntityPanel(model);
 		panel.tablePanel().table().columnModel().visible(Employee.COMMISSION).set(false); // view state
@@ -83,7 +83,7 @@ public class EntityApplicationPanelTest {
 		model.store(entities);
 		panel.store(entities.node(panel.preferencesKey()));
 
-		SwingEntityModel restoredModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityModel restoredModel = new SwingEntityModel(Employee.TYPE, CONNECTION);
 		EntityPanel restoredPanel = new EntityPanel(restoredModel);
 		restoredModel.restore(entities);
 		restoredPanel.restore(entities.node(restoredPanel.preferencesKey()));
@@ -97,7 +97,7 @@ public class EntityApplicationPanelTest {
 		// The dependency panel captures model (sort) and view (columns) state into a single in-memory scratch node
 		Preferences scratch = jsonPreferences();
 
-		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION);
 		EntityPanel panel = new EntityPanel(model);
 		model.tableModel().sort().ascending(Employee.NAME); // model state
 		panel.tablePanel().table().columnModel().visible(Employee.COMMISSION).set(false); // view state
@@ -105,7 +105,7 @@ public class EntityApplicationPanelTest {
 		model.tableModel().store(scratch);
 		panel.tablePanel().store(scratch);
 
-		SwingEntityModel restoredModel = new SwingEntityModel(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityModel restoredModel = new SwingEntityModel(Employee.TYPE, CONNECTION);
 		EntityPanel restoredPanel = new EntityPanel(restoredModel);
 		restoredModel.tableModel().restore(scratch);
 		restoredPanel.tablePanel().restore(scratch);
@@ -116,8 +116,8 @@ public class EntityApplicationPanelTest {
 
 	private static final class TestApplicationModel extends SwingEntityApplicationModel {
 
-		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider, singletonList(new SwingEntityModel(Employee.TYPE, connectionProvider)));
+		public TestApplicationModel(EntityConnection connection) {
+			super(connection, singletonList(new SwingEntityModel(Employee.TYPE, connection)));
 		}
 	}
 

@@ -19,7 +19,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.filter.SortOrder;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
@@ -40,20 +40,20 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 	@Override
 	protected SwingEntityTableModel createTestTableModel() {
-		return new SwingEntityTableModel(Detail.TYPE, testEntities, connectionProvider());
+		return new SwingEntityTableModel(Detail.TYPE, testEntities, connection());
 	}
 
 	@Override
 	protected SwingEntityTableModel createDepartmentTableModel() {
-		SwingEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connectionProvider());
+		SwingEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connection());
 		deptModel.sort().ascending(Department.NAME);
 
 		return deptModel;
 	}
 
 	@Override
-	protected SwingEntityTableModel createTableModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return createTableModel(createEditModel(entityType, connectionProvider));
+	protected SwingEntityTableModel createTableModel(EntityType entityType, EntityConnection connection) {
+		return createTableModel(createEditModel(entityType, connection));
 	}
 
 	@Override
@@ -62,8 +62,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	}
 
 	@Override
-	protected SwingEntityEditModel createEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return new SwingEntityEditModel(entityType, connectionProvider);
+	protected SwingEntityEditModel createEditModel(EntityType entityType, EntityConnection connection) {
+		return new SwingEntityEditModel(entityType, connection);
 	}
 
 
@@ -98,7 +98,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 	@Test
 	void setValueAt() {
-		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
+		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connection());
 		tableModel.items().refresh();
 		assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
 		tableModel.rowEditor().enabled().set(true);
@@ -127,7 +127,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 	@Test
 	void orderQuery() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connection());
 		OrderBy orderBy = tableModel.query().orderBy().getOrThrow();
 		//default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());
@@ -175,14 +175,14 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
 //	@Test
 //	void replacePerformance() {
-//		Entities entities = testModel.connectionProvider().entities();
+//		Entities entities = testModel.connection().entities();
 //		List<Entity> items = IntStream.range(0, 100_000)
 //						.mapToObj(i -> entities.entity(Department.TYPE)
 //										.with(Department.ID, i)
 //										.with(Department.NAME, "dept" + i)
 //										.build())
 //						.toList();
-//		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, testModel.connectionProvider()) {
+//		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, testModel.connection()) {
 //			@Override
 //			protected Collection<Entity> refreshItems() {
 //				return items;

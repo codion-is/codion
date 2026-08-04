@@ -21,8 +21,8 @@ package is.codion.manual.store;
 import is.codion.common.db.database.Database;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.http.HttpEntityConnectionProvider;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.db.http.HttpEntityConnection;
+import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -60,15 +60,14 @@ public final class ClientServer {
 
 		EntityServer server = EntityServer.startServer(configuration);
 
-		RemoteEntityConnectionProvider connectionProvider =
-						RemoteEntityConnectionProvider.builder()
+		EntityConnection connection =
+						RemoteEntityConnection.builder()
 										.port(SERVER_PORT)
 										.registryPort(REGISTRY_PORT)
 										.domain(Store.DOMAIN)
 										.user(parse("scott:tiger"))
 										.build();
 
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> customers = connection.select(all(Customer.TYPE));
 		customers.forEach(System.out::println);
@@ -99,15 +98,14 @@ public final class ClientServer {
 
 		EntityServer server = EntityServer.startServer(configuration);
 
-		HttpEntityConnectionProvider connectionProvider =
-						HttpEntityConnectionProvider.builder()
+		EntityConnection connection =
+						HttpEntityConnection.builder()
 										.port(HTTP_PORT)
 										.https(false)
 										.domain(Store.DOMAIN)
 										.user(parse("scott:tiger"))
 										.build();
 
-		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> customers = connection.select(all(Customer.TYPE));
 		customers.forEach(System.out::println);

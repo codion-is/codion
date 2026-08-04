@@ -24,7 +24,7 @@ import is.codion.common.reactive.observer.Observer;
 import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.resource.MessageBundle;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityModel;
 import is.codion.swing.common.ui.Utilities;
@@ -110,8 +110,8 @@ import static javax.swing.SwingConstants.VERTICAL;
 /**
  * A panel representing an Entity via an EntityModel, which facilitates browsing and editing of records.
  * {@snippet :
- *   EntityConnectionProvider connectionProvider = createConnectionProvider();
- *   SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
+ *   EntityConnection connection = createConnectionProvider();
+ *   SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connection);
  *   EntityPanel entityPanel = new EntityPanel(entityModel);
  *   entityPanel.initialize();
  *   JFrame frame = new JFrame();
@@ -1938,7 +1938,7 @@ public class EntityPanel extends JPanel {
 			 * @param entityPanel provides the {@link EntityPanel}
 			 * @return a {@link Builder}
 			 */
-			Builder panel(Function<EntityConnectionProvider, EntityPanel> entityPanel);
+			Builder panel(Function<EntityConnection, EntityPanel> entityPanel);
 		}
 
 		/**
@@ -1981,10 +1981,10 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Builds an {@link EntityPanel} based on this builder configuration.
-		 * @param connectionProvider the connection provider
+		 * @param connection the connection provider
 		 * @return an {@link EntityPanel} based on this builder
 		 */
-		EntityPanel build(EntityConnectionProvider connectionProvider);
+		EntityPanel build(EntityConnection connection);
 	}
 
 	private final class FocusOnMouseClickListener extends MouseAdapter {

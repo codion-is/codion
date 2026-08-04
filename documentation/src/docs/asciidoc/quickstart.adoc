@@ -209,7 +209,7 @@ We extend *EntityEditPanel* to provide the UI for editing a customer.
 include::{dir-source}/is/codion/manual/quickstart/Example.java[tags=customerEditPanel]
 ----
 
-We build a *EntityConnectionProvider* used when we create a *SwingEntityModel* based on the *Customer* entity.
+We build an *EntityConnection* used when we create a *SwingEntityModel* based on the *Customer* entity.
 
 We create an instance of our *CustomerEditPanel* and use it along with the model to create a *EntityPanel*.
 

@@ -25,7 +25,7 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.rmi.RemoteEntityConnection;
+import is.codion.framework.db.rmi.ServerEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.server.TestDomain.Employee;
@@ -42,7 +42,7 @@ import static is.codion.framework.domain.entity.condition.Condition.all;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultRemoteEntityConnectionTest {
+public class DefaultServerEntityConnectionTest {
 
 	private static final Domain DOMAIN = new TestDomain();
 
@@ -53,36 +53,36 @@ public class DefaultRemoteEntityConnectionTest {
 	void wrongUsername() {
 		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 										.user(User.user("foo", "bar".toCharArray()))
-										.clientType("DefaultRemoteEntityConnectionTestClient")
+										.clientType("DefaultServerEntityConnectionTestClient")
 										.build())
 						.build();
-		assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1234));
+		assertThrows(DatabaseException.class, () -> new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1234));
 	}
 
 	@Test
 	void wrongPassword() {
 		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 										.user(User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray()))
-										.clientType("DefaultRemoteEntityConnectionTestClient")
+										.clientType("DefaultServerEntityConnectionTestClient")
 										.build())
 						.build();
-		assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1235));
+		assertThrows(DatabaseException.class, () -> new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1235));
 	}
 
 	@Test
 	void rollbackOnClose() throws Exception {
 		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 										.user(UNIT_TEST_USER)
-										.clientType("DefaultRemoteEntityConnectionTestClient")
+										.clientType("DefaultServerEntityConnectionTestClient")
 										.build())
 						.build();
-		DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
+		DefaultServerEntityConnection connection = new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1238);
 		Condition condition = Condition.all(Employee.TYPE);
 		connection.startTransaction();
 		connection.delete(condition);
 		assertTrue(connection.select(condition).isEmpty());
 		connection.close();
-		connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1239);
+		connection = new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1239);
 		assertFalse(connection.select(condition).isEmpty());
 		connection.close();
 	}
@@ -90,15 +90,15 @@ public class DefaultRemoteEntityConnectionTest {
 	@Test
 	void test() throws Exception {
 		Registry registry = null;
-		DefaultRemoteEntityConnection adapter = null;
-		final String serviceName = "DefaultRemoteEntityConnectionTest";
+		DefaultServerEntityConnection adapter = null;
+		final String serviceName = "DefaultServerEntityConnectionTest";
 		try {
 			RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 											.user(UNIT_TEST_USER)
-											.clientType("DefaultRemoteEntityConnectionTestClient")
+											.clientType("DefaultServerEntityConnectionTestClient")
 											.build())
 							.build();
-			adapter = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1240);
+			adapter = new DefaultServerEntityConnection(DOMAIN, Database.instance(), client, 1240);
 
 			registry = Server.Locator.registry();
 
@@ -106,10 +106,10 @@ public class DefaultRemoteEntityConnectionTest {
 			Collection<String> boundNames = asList(registry.list());
 			assertTrue(boundNames.contains(serviceName));
 
-			DefaultRemoteEntityConnection finalAdapter = adapter;
+			DefaultServerEntityConnection finalAdapter = adapter;
 			EntityConnection proxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
 							new Class[] {EntityConnection.class}, (proxy1, method, args) -> {
-								Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
+								Method remoteMethod = ServerEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
 								try {
 									return remoteMethod.invoke(finalAdapter, args);
 								}

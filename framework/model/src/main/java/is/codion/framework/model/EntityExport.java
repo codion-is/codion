@@ -20,7 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.reactive.state.ObservableState;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -40,16 +40,16 @@ import static java.util.Objects.requireNonNull;
 /**
  * Exports entity data to delimited text, optionally traversing foreign keys to include
  * denormalized reference values.
- * @see #builder(EntityConnectionProvider)
+ * @see #builder(EntityConnection)
  */
 public interface EntityExport {
 
 	/**
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 * @return a new {@link EntityTypeStep}
 	 */
-	static EntityTypeStep builder(EntityConnectionProvider connectionProvider) {
-		return new DefaultEntityTypeStep(requireNonNull(connectionProvider));
+	static EntityTypeStep builder(EntityConnection connection) {
+		return new DefaultEntityTypeStep(requireNonNull(connection));
 	}
 
 	/**

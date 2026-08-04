@@ -118,7 +118,7 @@ final class EditorInspector extends JPanel {
 	private @Nullable EntityQueries createQueries() {
 		try {
 			return EntityQueries.factory()
-							.map(factory -> factory.create(Database.instance(), editor.connectionProvider().connection().entities()))
+							.map(factory -> factory.create(Database.instance(), editor.connection().entities()))
 							.orElse(null);
 		}
 		catch (Exception e) {

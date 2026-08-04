@@ -1663,7 +1663,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void viewEntity() {
 		tableModel.selection().item().optional().ifPresent(selected ->
-						EntityViewer.view(selected.primaryKey(), tableModel.connectionProvider(), this));
+						EntityViewer.view(selected.primaryKey(), tableModel.connection(), this));
 	}
 
 	private void inspectQuery() {
@@ -1716,7 +1716,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void displayDependencies(boolean dependenciesExpected) {
-		EntityDependenciesPanel.displayDependencies(tableModel.selection().items().get(), tableModel.connectionProvider(),
+		EntityDependenciesPanel.displayDependencies(tableModel.selection().items().get(), tableModel.connection(),
 						this, dependenciesDialogSize, dependencyPanelPreferences, dependenciesExpected);
 	}
 

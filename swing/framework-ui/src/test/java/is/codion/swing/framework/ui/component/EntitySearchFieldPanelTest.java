@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -37,7 +37,7 @@ public final class EntitySearchFieldPanelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
@@ -46,14 +46,14 @@ public final class EntitySearchFieldPanelTest {
 	void test() {
 		EntitySearchModel model = EntitySearchModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		ComponentValue<EntitySearchFieldPanel, Entity> value = EntitySearchFieldPanel.builder()
 						.model(model)
 						.editPanel(() -> null)
 						.singleSelection()
 						.buildValue();
-		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
+		Entity sales = CONNECTION.selectSingle(
 						Department.NAME.equalTo("SALES"));
 		model.selection().entity().set(sales);
 		assertEquals(sales, value.get());
@@ -68,7 +68,7 @@ public final class EntitySearchFieldPanelTest {
 	void namePropagatesToSearchField() {
 		EntitySearchModel model = EntitySearchModel.builder()
 						.entityType(Department.TYPE)
-						.connectionProvider(CONNECTION_PROVIDER)
+						.connection(CONNECTION)
 						.build();
 		EntitySearchFieldPanel panel = EntitySearchFieldPanel.builder()
 						.model(model)

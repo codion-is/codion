@@ -19,8 +19,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.common.ui.component.Components;
@@ -40,15 +40,15 @@ public final class EditAttributePanelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
 
 	@Test
 	void synchronousThrowDoesNotArmUpdating() {
-		SwingEntityEditor editor = new SwingEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
-		Entity employee = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
+		SwingEntityEditor editor = new SwingEntityEditor(Employee.TYPE, CONNECTION);
+		Entity employee = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
 		ComponentValue<JTextField, String> componentValue = Components.stringField().buildValue();
 
 		EditAttributePanel<String> panel =
@@ -71,11 +71,11 @@ public final class EditAttributePanelTest {
 
 	@Test
 	void propagatedValueEscapesTheAttributeScopedGate() {
-		SwingEntityEditor editor = new SwingEntityEditor(Employee.TYPE, CONNECTION_PROVIDER);
+		SwingEntityEditor editor = new SwingEntityEditor(Employee.TYPE, CONNECTION);
 		//editing the name propagates an invalid salary, below the range the domain defines
 		editor.value(Employee.NAME).propagate(Employee.SALARY, name -> 1d);
 
-		Entity employee = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
+		Entity employee = CONNECTION.selectSingle(Employee.NAME.equalTo("BLAKE"));
 		Entity toUpdate = employee.copy().mutable();
 		//exactly what the panel does, which applies the propagators
 		editor.value(Employee.NAME).set(toUpdate, "MODIFIED");

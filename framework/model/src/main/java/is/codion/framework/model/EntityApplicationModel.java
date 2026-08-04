@@ -21,7 +21,6 @@ package is.codion.framework.model;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -67,14 +66,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T, R>, E ext
 	User user();
 
 	/**
-	 * @return the EntityConnectionProvider instance being used by this EntityApplicationModel
-	 */
-	EntityConnectionProvider connectionProvider();
-
-	/**
-	 * Do not cache or keep the connection returned by this method in a long living field,
-	 * since it may become invalid and thereby unusable.
-	 * @return the connection used by this application model
+	 * @return the EntityConnection instance being used by this EntityApplicationModel
 	 */
 	EntityConnection connection();
 

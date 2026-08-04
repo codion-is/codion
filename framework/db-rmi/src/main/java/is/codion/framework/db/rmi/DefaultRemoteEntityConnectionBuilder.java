@@ -20,18 +20,18 @@ package is.codion.framework.db.rmi;
 
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
-import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.AbstractEntityConnection.AbstractBuilder;
+import is.codion.framework.db.EntityConnection;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Builds a {@link RemoteEntityConnectionProvider} instance.
- * @see RemoteEntityConnectionProvider#builder()
+ * Builds a self-managing {@link RemoteEntityConnection}.
+ * @see RemoteEntityConnection#builder()
  */
-public final class DefaultRemoteEntityConnectionProviderBuilder
-				extends AbstractBuilder<RemoteEntityConnectionProvider, RemoteEntityConnectionProvider.Builder>
-				implements RemoteEntityConnectionProvider.Builder {
+public final class DefaultRemoteEntityConnectionBuilder
+				extends AbstractBuilder<RemoteEntityConnection, RemoteEntityConnection.Builder>
+				implements RemoteEntityConnection.Builder {
 
 	String hostname = Clients.SERVER_HOSTNAME.get();
 	int port = ServerConfiguration.SERVER_PORT.getOrThrow();
@@ -39,38 +39,38 @@ public final class DefaultRemoteEntityConnectionProviderBuilder
 	String namePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
 
 	/**
-	 * Instantiates a new {@link DefaultRemoteEntityConnectionProviderBuilder}
+	 * Instantiates a new {@link DefaultRemoteEntityConnectionBuilder}
 	 */
-	public DefaultRemoteEntityConnectionProviderBuilder() {
-		super(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
+	public DefaultRemoteEntityConnectionBuilder() {
+		super(EntityConnection.CONNECTION_TYPE_REMOTE);
 	}
 
 	@Override
-	public RemoteEntityConnectionProvider.Builder hostname(String hostname) {
+	public RemoteEntityConnection.Builder hostname(String hostname) {
 		this.hostname = requireNonNull(hostname);
 		return this;
 	}
 
 	@Override
-	public RemoteEntityConnectionProvider.Builder port(int port) {
+	public RemoteEntityConnection.Builder port(int port) {
 		this.port = port;
 		return this;
 	}
 
 	@Override
-	public RemoteEntityConnectionProvider.Builder registryPort(int registryPort) {
+	public RemoteEntityConnection.Builder registryPort(int registryPort) {
 		this.registryPort = registryPort;
 		return this;
 	}
 
 	@Override
-	public RemoteEntityConnectionProvider.Builder namePrefix(String namePrefix) {
+	public RemoteEntityConnection.Builder namePrefix(String namePrefix) {
 		this.namePrefix = requireNonNull(namePrefix);
 		return this;
 	}
 
 	@Override
-	public RemoteEntityConnectionProvider build() {
-		return new DefaultRemoteEntityConnectionProvider(this);
+	protected RemoteEntityConnection createConnection() {
+		return new ManagedRemoteEntityConnection(this);
 	}
 }

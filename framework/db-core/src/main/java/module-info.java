@@ -20,9 +20,9 @@
  * Core framework database connection classes, such as:
  * <ul>
  * <li>{@link is.codion.framework.db.EntityConnection}
- * <li>{@link is.codion.framework.db.EntityConnectionProvider}
+ * <li>{@link is.codion.framework.db.AbstractEntityConnection}
  * </ul>
- * @uses is.codion.framework.db.EntityConnectionProvider.Builder
+ * @uses is.codion.framework.db.EntityConnection.Builder
  */
 @org.jspecify.annotations.NullMarked
 module is.codion.framework.db.core {
@@ -32,6 +32,6 @@ module is.codion.framework.db.core {
 	exports is.codion.framework.db;
 	exports is.codion.framework.db.exception;
 
-	uses is.codion.framework.db.EntityConnectionProvider.Builder;
+	uses is.codion.framework.db.EntityConnection.Builder;
 	uses is.codion.framework.db.EntityQueries.Factory;
 }

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -28,13 +28,13 @@ public final class SwingEntityApplicationModelTest
 
 	@Override
 	protected SwingEntityModel createDepartmentModel() {
-		return new DeptModel(connectionProvider());
+		return new DeptModel(connection());
 	}
 
 	private static class DeptModel extends SwingEntityModel {
-		private DeptModel(EntityConnectionProvider connectionProvider) {
-			super(Department.TYPE, connectionProvider);
-			detail().add(new SwingEntityModel(Employee.TYPE, connectionProvider));
+		private DeptModel(EntityConnection connection) {
+			super(Department.TYPE, connection);
+			detail().add(new SwingEntityModel(Employee.TYPE, connection));
 		}
 	}
 }

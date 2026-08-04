@@ -24,9 +24,8 @@ import is.codion.common.utilities.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.exception.EntityNotFoundException;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -51,7 +50,7 @@ public class DomainTest {
 	private static final String TEST_USER = "codion.test.user";
 	private static final int SELECT_LIMIT = 10;
 
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 	private final Function<EntityConnection, EntityFactory> entityFactory;
 
 	/**
@@ -87,7 +86,7 @@ public class DomainTest {
 	 * @param user the user to use when running the tests
 	 */
 	public DomainTest(Domain domain, Function<EntityConnection, EntityFactory> entityFactory, User user) {
-		this.connectionProvider = LocalEntityConnectionProvider.builder()
+		this.connection = LocalEntityConnection.builder()
 						.domain(requireNonNull(domain))
 						.user(requireNonNull(user))
 						.build();
@@ -98,7 +97,7 @@ public class DomainTest {
 	 * @return the domain entities
 	 */
 	public final Entities entities() {
-		return connectionProvider.entities();
+		return connection.entities();
 	}
 
 	/**
@@ -107,7 +106,7 @@ public class DomainTest {
 	 * @throws DatabaseException in case of an exception
 	 */
 	public final void test(EntityType entityType) {
-		EntityConnection connection = connectionProvider.connection();
+		EntityConnection connection = this.connection;
 		connection.startTransaction();
 		try {
 			EntityConnection proxyConnection = proxyConnection(connection);
@@ -125,7 +124,7 @@ public class DomainTest {
 		}
 		finally {
 			connection.rollbackTransaction();
-			connectionProvider.close();
+			connection.close();
 		}
 	}
 
@@ -167,7 +166,7 @@ public class DomainTest {
 	 * @return the EntityConnection instance used by this DomainTest
 	 */
 	protected final EntityConnection connection() {
-		return connectionProvider.connection();
+		return connection;
 	}
 
 	/**

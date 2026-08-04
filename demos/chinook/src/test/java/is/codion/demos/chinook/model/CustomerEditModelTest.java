@@ -24,8 +24,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Genre;
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.EntityEditor.EditorValue;
@@ -42,13 +41,12 @@ public final class CustomerEditModelTest {
 
 	@Test
 	void preferences() throws EntityValidationException {
-		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-			EntityConnection connection = connectionProvider.connection();
+		try (EntityConnection connection = createConnection()) {
 			connection.startTransaction();
 
 			Entity metal = connection.selectSingle(Genre.NAME.equalTo("Metal"));
 
-			SwingEntityEditModel editModel = new CustomerModel(connectionProvider).editModel();
+			SwingEntityEditModel editModel = new CustomerModel(connection).editModel();
 
 			SwingEntityEditor customerEditor = editModel.editor();
 			customerEditor.value(Customer.FIRSTNAME).set("John");
@@ -95,8 +93,8 @@ public final class CustomerEditModelTest {
 		}
 	}
 
-	private static EntityConnectionProvider createConnectionProvider() {
-		return LocalEntityConnectionProvider.builder()
+	private static EntityConnection createConnection() {
+		return LocalEntityConnection.builder()
 						.domain(new ChinookImpl())
 						.user(User.parse("scott:tiger"))
 						.build();

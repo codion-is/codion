@@ -18,7 +18,7 @@
  */
 package is.codion.demos.petstore.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -28,17 +28,17 @@ import static is.codion.demos.petstore.domain.Petstore.*;
 
 public final class PetstoreAppModel extends SwingEntityApplicationModel {
 
-	public PetstoreAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider, List.of(createCategoryModel(connectionProvider)));
+	public PetstoreAppModel(EntityConnection connection) {
+		super(connection, List.of(createCategoryModel(connection)));
 	}
 
-	private static SwingEntityModel createCategoryModel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel categoryModel = new SwingEntityModel(Category.TYPE, connectionProvider);
-		SwingEntityModel productModel = new SwingEntityModel(Product.TYPE, connectionProvider);
+	private static SwingEntityModel createCategoryModel(EntityConnection connection) {
+		SwingEntityModel categoryModel = new SwingEntityModel(Category.TYPE, connection);
+		SwingEntityModel productModel = new SwingEntityModel(Product.TYPE, connection);
 		productModel.editor().comboBoxModels().initialize(Product.CATEGORY_FK);
-		SwingEntityModel itemModel = new SwingEntityModel(Item.TYPE, connectionProvider);
+		SwingEntityModel itemModel = new SwingEntityModel(Item.TYPE, connection);
 		itemModel.editor().comboBoxModels().initialize(Item.PRODUCT_FK, Item.CONTACT_INFO_FK, Item.ADDRESS_FK);
-		SwingEntityModel tagItemModel = new SwingEntityModel(TagItem.TYPE, connectionProvider);
+		SwingEntityModel tagItemModel = new SwingEntityModel(TagItem.TYPE, connection);
 		tagItemModel.editor().comboBoxModels().initialize(TagItem.ITEM_FK, TagItem.TAG_FK);
 		categoryModel.tableModel().items().refresh();
 		itemModel.detail().add(tagItemModel);

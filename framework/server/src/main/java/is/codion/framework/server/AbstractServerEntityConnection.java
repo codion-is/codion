@@ -28,7 +28,7 @@ import is.codion.common.utilities.property.PropertyValue;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityResultIterator;
-import is.codion.framework.db.rmi.RemoteEntityResultIterator;
+import is.codion.framework.db.rmi.ServerEntityResultIterator;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 
@@ -45,6 +45,7 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -56,9 +57,9 @@ import static java.util.Collections.newSetFromMap;
  * A base class for remote connections served by a {@link EntityServer}.
  * Handles logging of service calls and database connection pooling.
  */
-public abstract class AbstractRemoteEntityConnection implements Remote {
+public abstract class AbstractServerEntityConnection implements Remote {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteEntityConnection.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractServerEntityConnection.class);
 
 	/**
 	 * Specifies the timeout in milliseconds for idle remote iterators.
@@ -83,7 +84,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	/**
 	 * An event triggered when this connection is closed
 	 */
-	private final Event<AbstractRemoteEntityConnection> closed = Event.event();
+	private final Event<AbstractServerEntityConnection> closed = Event.event();
 
 	private final Set<DefaultRemoteEntityResultIterator> remoteIterators = newSetFromMap(new ConcurrentHashMap<>());
 
@@ -93,7 +94,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	private final boolean exported;
 
 	/**
-	 * Instantiates a new AbstractRemoteEntityConnection, exported on the given port number unless the port is
+	 * Instantiates a new AbstractServerEntityConnection, exported on the given port number unless the port is
 	 * negative, in which case the connection is not exported (it serves an HTTP client in-process and needs no
 	 * RMI stub).
 	 * @param domain the domain model
@@ -106,7 +107,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	 * @throws DatabaseException in case a database connection can not be established, for example
 	 * if a wrong username or password is provided
 	 */
-	protected AbstractRemoteEntityConnection(Domain domain, Database database,
+	protected AbstractServerEntityConnection(Domain domain, Database database,
 																					 RemoteClient client, int port,
 																					 RMIClientSocketFactory clientSocketFactory,
 																					 RMIServerSocketFactory serverSocketFactory)
@@ -130,6 +131,10 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 	 */
 	public final User user() {
 		return connectionHandler.client().request().user();
+	}
+
+	public final UUID clientId() {
+		return connectionHandler.client().request().clientId();
 	}
 
 	/**
@@ -208,11 +213,11 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 		return connectionHandler.active();
 	}
 
-	final Observer<AbstractRemoteEntityConnection> closed() {
+	final Observer<AbstractServerEntityConnection> closed() {
 		return closed.observer();
 	}
 
-	final RemoteEntityResultIterator remoteIterator(EntityResultIterator iterator) throws RemoteException {
+	final ServerEntityResultIterator remoteIterator(EntityResultIterator iterator) throws RemoteException {
 		try {
 			return new DefaultRemoteEntityResultIterator(connectionPort, clientSocketFactory, serverSocketFactory, iterator);
 		}
@@ -231,7 +236,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 						.forEach(this::close);
 	}
 
-	private void close(RemoteEntityResultIterator iterator) {
+	private void close(ServerEntityResultIterator iterator) {
 		try {
 			LOG.debug("Closing iterator for {}", user());
 			iterator.close();
@@ -254,7 +259,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 		return ServerMetrics.INSTANCE.requestsPerSecond();
 	}
 
-	private final class DefaultRemoteEntityResultIterator extends UnicastRemoteObject implements RemoteEntityResultIterator {
+	private final class DefaultRemoteEntityResultIterator extends UnicastRemoteObject implements ServerEntityResultIterator {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -274,7 +279,7 @@ public abstract class AbstractRemoteEntityConnection implements Remote {
 		}
 
 		//the iterator holds a live ResultSet on the same JDBC connection the connection proxy uses,
-		//so these calls must serialize against it, just like every DefaultRemoteEntityConnection method
+		//so these calls must serialize against it, just like every DefaultServerEntityConnection method
 		@Override
 		public boolean hasNext() throws RemoteException {
 			synchronized (connectionProxy) {

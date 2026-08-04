@@ -36,7 +36,6 @@ import is.codion.common.utilities.dispatch.Dispatcher;
 import is.codion.common.utilities.property.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -132,7 +131,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private final EntityDefinition entityDefinition;
-	private final EntityConnectionProvider connectionProvider;
+	private final EntityConnection connection;
 	private final DefaultSettings settings;
 	private final Value<EntityValidator> validator;
 	private final ComponentModels componentModels;
@@ -146,25 +145,25 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	/**
 	 * Instantiates an {@link AbstractEntityEditor}
 	 * @param entityType the entity type
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 * @param componentModels the editor component models
 	 */
-	protected AbstractEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
+	protected AbstractEntityEditor(EntityType entityType, EntityConnection connection,
 																 ComponentModels componentModels) {
-		this(entityType, connectionProvider, componentModels, DefaultComboBoxModels::new);
+		this(entityType, connection, componentModels, DefaultComboBoxModels::new);
 	}
 
 	/**
 	 * Instantiates an {@link AbstractEntityEditor}
 	 * @param entityType the entity type
-	 * @param connectionProvider the connection provider
+	 * @param connection the connection provider
 	 * @param componentModels the editor component models
 	 * @param comboBoxModels supplies the {@link ComboBoxModels} instance to use
 	 */
-	protected AbstractEntityEditor(EntityType entityType, EntityConnectionProvider connectionProvider,
+	protected AbstractEntityEditor(EntityType entityType, EntityConnection connection,
 																 ComponentModels componentModels, Function<AbstractEntityEditor<R>, ComboBoxModels> comboBoxModels) {
-		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(entityType);
-		this.connectionProvider = requireNonNull(connectionProvider);
+		this.entityDefinition = requireNonNull(connection).entities().definition(entityType);
+		this.connection = requireNonNull(connection);
 		this.settings = new DefaultSettings(entityDefinition.readOnly());
 		this.componentModels = requireNonNull(componentModels);
 		this.comboBoxModels = requireNonNull(comboBoxModels).apply(this);
@@ -181,7 +180,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	@Override
 	public final Entities entities() {
-		return connectionProvider.entities();
+		return connection.entities();
 	}
 
 	@Override
@@ -190,8 +189,8 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 	}
 
 	@Override
-	public final EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+	public final EntityConnection connection() {
+		return connection;
 	}
 
 	@Override
@@ -281,14 +280,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 	@Override
 	public final EditorTasks tasks() {
-		return new DefaultEditorTasks(connectionProvider::connection);
+		return new DefaultEditorTasks(connection);
 	}
 
 	@Override
 	public final EditorTasks tasks(EntityConnection connection) {
 		requireNonNull(connection);
 
-		return new DefaultEditorTasks(() -> connection);
+		return new DefaultEditorTasks(connection);
 	}
 
 	@Override
@@ -378,17 +377,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		// worker so its result is discarded (currentTask == null) instead of clobbering the reset
 		cancelCurrentWorker();
 		currentTask = null;
-	}
-
-	/**
-	 * Used when a master editor builds tasks for its detail editors. The detail tasks must share the
-	 * master's connection, but resolving it is deferred, since the tasks are built on the calling thread,
-	 * typically the UI thread, while they are performed on a background thread.
-	 * @param connection provides the connection to use, resolved when first needed
-	 * @return a new {@link EditorTasks} instance
-	 */
-	final EditorTasks tasks(Supplier<EntityConnection> connection) {
-		return new DefaultEditorTasks(requireNonNull(connection));
 	}
 
 	private void cancelCurrentWorker() {
@@ -756,7 +744,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		}
 
 		private DefaultEditorTasks defaultTasks() {
-			return new DefaultEditorTasks(connectionProvider::connection);
+			return new DefaultEditorTasks(connection);
 		}
 
 		private static <T> @Nullable T nullValue(AttributeDefinition<T> attributeDefinition) {
@@ -815,12 +803,10 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		private static final String UPDATE = "update {}";
 		private static final String DELETE = "delete {}";
 
-		private final Supplier<EntityConnection> connectionSupplier;
+		private final EntityConnection connection;
 
-		private volatile @Nullable EntityConnection connection;
-
-		private DefaultEditorTasks(Supplier<EntityConnection> connectionSupplier) {
-			this.connectionSupplier = connectionSupplier;
+		private DefaultEditorTasks(EntityConnection connection) {
+			this.connection = connection;
 		}
 
 		@Override
@@ -949,23 +935,6 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 			return new ReplaceEntity(entity);
 		}
 
-		/**
-		 * The connection is resolved on first use rather than when these tasks are created, since they are
-		 * typically created on the UI thread and performed on a background thread, and resolving a connection
-		 * blocks for the duration of any operation in progress on it.
-		 * @return the connection, resolved once and reused, so that all the operations making up a task share one
-		 */
-		private EntityConnection connection() {
-			EntityConnection connection = this.connection;
-			if (connection == null) {
-				//a benign race resolves twice, the provider hands out the same connection either way
-				connection = connectionSupplier.get();
-				this.connection = connection;
-			}
-
-			return connection;
-		}
-
 		private final class InsertDetail implements EditorTask<Entity> {
 
 			private final Entity entity;
@@ -979,7 +948,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.before = requireNonNull(before);
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.editor.entity().present().is()) {
-						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).insert(detail ->
+						tasks.add(detailEditor.editor.tasks(connection).insert(detail ->
 										detailEditor.link.beforeInsert.apply(detail, inserted(), connection())));
 					}
 				}
@@ -1027,14 +996,14 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.entity = entity;
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.updatable.insert.is()) {
-						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).insert(detail ->
+						tasks.add(detailEditor.editor.tasks(connection).insert(detail ->
 										detailEditor.link.beforeInsert.apply(detail, updated(), connection())));
 					}
 					else if (detailEditor.updatable.update.is()) {
-						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).update());
+						tasks.add(detailEditor.editor.tasks(connection).update());
 					}
 					else if (detailEditor.updatable.delete.is()) {
-						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).delete());
+						tasks.add(detailEditor.editor.tasks(connection).delete());
 					}
 				}
 			}
@@ -1081,7 +1050,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 				this.entity = entity;
 				for (DetailEditor detailEditor : detail.editors.values()) {
 					if (detailEditor.editor.entity().exists().is()) {
-						tasks.add(detailEditor.editor.tasks(DefaultEditorTasks.this::connection).delete());
+						tasks.add(detailEditor.editor.tasks(connection).delete());
 					}
 				}
 			}
@@ -2121,7 +2090,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public EntitySearchModel create(ForeignKey foreignKey) {
-			return componentModels.searchModel(foreignKey, connectionProvider);
+			return componentModels.searchModel(foreignKey, connection);
 		}
 	}
 
@@ -2212,12 +2181,12 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 
 		@Override
 		public F create(ForeignKey foreignKey) {
-			return (F) editor.componentModels.comboBoxModel(requireNonNull(foreignKey), editor.connectionProvider);
+			return (F) editor.componentModels.comboBoxModel(requireNonNull(foreignKey), editor.connection);
 		}
 
 		@Override
 		public <T> FilterComboBoxModel<T> create(Column<T> column) {
-			return editor.componentModels.comboBoxModel(requireNonNull(column), editor.connectionProvider);
+			return editor.componentModels.comboBoxModel(requireNonNull(column), editor.connection);
 		}
 
 		private <T> void addPersistenceListener(FilterComboBoxModel<T> comboBoxModel, Column<T> column) {

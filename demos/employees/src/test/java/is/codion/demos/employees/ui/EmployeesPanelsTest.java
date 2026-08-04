@@ -22,8 +22,8 @@ import is.codion.common.utilities.user.User;
 import is.codion.demos.employees.domain.Employees;
 import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.model.EmployeeEditModel;
-import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 
@@ -31,21 +31,21 @@ import org.junit.jupiter.api.Test;
 
 public final class EmployeesPanelsTest {
 
-	private final EntityConnectionProvider connectionProvider =
-					LocalEntityConnectionProvider.builder()
+	private final EntityConnection connection =
+					LocalEntityConnection.builder()
 									.domain(new Employees())
 									.user(User.parse(System.getProperty("codion.test.user")))
 									.build();
 
 	@Test
 	void department() {
-		SwingEntityModel model = new SwingEntityModel(Department.TYPE, connectionProvider);
+		SwingEntityModel model = new SwingEntityModel(Department.TYPE, connection);
 		new EntityPanel(model, new DepartmentEditPanel(model.editModel()), new DepartmentTablePanel(model.tableModel())).initialize();
 	}
 
 	@Test
 	void employee() {
-		SwingEntityModel model = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
+		SwingEntityModel model = new SwingEntityModel(new EmployeeEditModel(connection));
 		new EntityPanel(model, new EmployeeEditPanel(model.editModel()), new EmployeeTablePanel(model.tableModel())).initialize();
 	}
 }

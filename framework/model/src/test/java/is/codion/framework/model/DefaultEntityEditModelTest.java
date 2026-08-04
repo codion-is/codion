@@ -25,9 +25,8 @@ import is.codion.common.reactive.value.Value;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.exception.UpdateEntityException;
-import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -71,7 +70,7 @@ public final class DefaultEntityEditModelTest {
 
 	private static final Entities ENTITIES = new TestDomain().entities();
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+	private static final EntityConnection CONNECTION = LocalEntityConnection.builder()
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
@@ -82,10 +81,10 @@ public final class DefaultEntityEditModelTest {
 
 	@BeforeEach
 	void setUp() {
-		employeeEditModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		employeeEditModel = new TestEntityEditModel(Employee.TYPE, CONNECTION);
 		editor = employeeEditModel.editor();
 		editor.value(Employee.HIREDATE).defaultValue().set(LocalDate::now);
-		Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.ID.equalTo(3));//JONES, used in containsUnsavedData()
+		Entity jones = CONNECTION.selectSingle(Employee.ID.equalTo(3));//JONES, used in containsUnsavedData()
 		editor.value(Employee.MGR_FK).defaultValue().set(() -> jones);
 	}
 
@@ -171,7 +170,7 @@ public final class DefaultEntityEditModelTest {
 			editor.entity().refresh();
 			assertEquals("NOONE", editor.value(Employee.NAME).get());
 
-			TestEntityEditModel departmentEditModel = new TestEntityEditModel(Department.TYPE, employeeEditModel.connectionProvider());
+			TestEntityEditModel departmentEditModel = new TestEntityEditModel(Department.TYPE, employeeEditModel.connection());
 			Entity accounting = connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 			TestEntityEditor departmentEditor = departmentEditModel.editor();
 			departmentEditor.entity().set(accounting);
@@ -200,7 +199,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void constructorValidation() {
-		assertThrows(NullPointerException.class, () -> new TestEntityEditModel(null, CONNECTION_PROVIDER));
+		assertThrows(NullPointerException.class, () -> new TestEntityEditModel(null, CONNECTION));
 		assertThrows(NullPointerException.class, () -> new TestEntityEditModel(Employee.TYPE, null));
 	}
 
@@ -448,7 +447,7 @@ public final class DefaultEntityEditModelTest {
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.editor().update(Arrays.asList(emp1, emp2)));
 
 			// Test afterUpdate event map contents
-			TestEntityEditModel deptEditModel = new TestEntityEditModel(Department.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditModel deptEditModel = new TestEntityEditModel(Department.TYPE, CONNECTION);
 			deptEditModel.editor().value(Department.ID).set(-1);
 			deptEditModel.editor().value(Department.NAME).set("UpdTest");
 			Entity dept = deptEditModel.editor().insert();
@@ -571,7 +570,7 @@ public final class DefaultEntityEditModelTest {
 							.selectSingle(Employee.NAME.equalTo("JAMES"));
 			editor.entity().set(james);
 			assertFalse(editor.entity().get().entity(Employee.MGR_FK).present(Employee.COMMISSION));
-			TestEntityEditModel blakeEditModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+			TestEntityEditModel blakeEditModel = new TestEntityEditModel(Employee.TYPE, CONNECTION);
 			blakeEditModel.editor().entity().set(connection
 							.selectSingle(Employee.NAME.equalTo("BLAKE")));
 			blakeEditModel.editor().value(Employee.COMMISSION).set(100d);
@@ -603,7 +602,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void derivedAttributes() {
-		TestEntityEditModel editModel = new TestEntityEditModel(Detail.TYPE, employeeEditModel.connectionProvider());
+		TestEntityEditModel editModel = new TestEntityEditModel(Detail.TYPE, employeeEditModel.connection());
 
 		AtomicInteger derivedCounter = new AtomicInteger();
 		AtomicInteger derivedEditCounter = new AtomicInteger();
@@ -629,7 +628,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	void persistWritableForeignKey() {
-		TestEntityEditModel editModel = new TestEntityEditModel(Detail.TYPE, employeeEditModel.connectionProvider());
+		TestEntityEditModel editModel = new TestEntityEditModel(Detail.TYPE, employeeEditModel.connection());
 		assertFalse(editModel.editor().value(Detail.MASTER_FK).persist().is());//not writable
 	}
 
@@ -720,7 +719,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	public void derivedValues() {
-		TestEntityEditModel editModel = new TestEntityEditModel(Derived.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditModel editModel = new TestEntityEditModel(Derived.TYPE, CONNECTION);
 
 		List<Attribute<?>> changed = new ArrayList<>();
 		editModel.editor().value(Derived.INT1).addListener(() -> changed.add(Derived.INT1));
@@ -812,7 +811,7 @@ public final class DefaultEntityEditModelTest {
 
 	@Test
 	public void validateWithNonGeneratedPK() {
-		TestEntityEditModel editModel = new TestEntityEditModel(NonGeneratedPK.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditModel editModel = new TestEntityEditModel(NonGeneratedPK.TYPE, CONNECTION);
 		editModel.editor().value(NonGeneratedPK.ID).set(UUID.randomUUID());
 		editModel.editor().value(NonGeneratedPK.NAME).set("123456");//length > 5
 		assertThrows(EntityValidationException.class, editModel.editor()::insert);//works, due to the edit model setting the defaults
@@ -828,7 +827,7 @@ public final class DefaultEntityEditModelTest {
 		EntityConnection connection = employeeEditModel.connection();
 		Entity jones = connection.selectSingle(where(Employee.NAME.equalTo("JONES")).build());
 
-		TestEntityEditModel editModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		TestEntityEditModel editModel = new TestEntityEditModel(Employee.TYPE, CONNECTION);
 		assertFalse(editModel.editor().entity().get().contains(Employee.DATA));
 		editModel.editor().entity().set(jones);
 		assertFalse(editModel.editor().entity().get().contains(Employee.DATA));

@@ -19,7 +19,6 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.framework.model.ForeignKeyModelLink;
@@ -39,8 +38,8 @@ public final class SwingEntityModelTest
 
 	@Override
 	protected SwingEntityModel createDepartmentModel() {
-		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider());
-		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
+		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connection());
+		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connection());
 		employeeModel.editor().comboBoxModels().initialize(Employee.DEPARTMENT_FK, Employee.MGR_FK);
 		departmentModel.detail().add(ForeignKeyModelLink.builder()
 						.model(employeeModel)
@@ -54,12 +53,12 @@ public final class SwingEntityModelTest
 
 	@Override
 	protected SwingEntityModel createDepartmentModelWithoutDetailModel() {
-		return new SwingEntityModel(Department.TYPE, connectionProvider());
+		return new SwingEntityModel(Department.TYPE, connection());
 	}
 
 	@Override
 	protected SwingEntityModel createEmployeeModel() {
-		return new SwingEntityModel(Employee.TYPE, connectionProvider());
+		return new SwingEntityModel(Employee.TYPE, connection());
 	}
 
 	@Test
@@ -91,7 +90,7 @@ public final class SwingEntityModelTest
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
 		SwingEntityComboBoxModel departmentsComboBoxModel = employeeEditModel.editor().comboBoxModels().get(Employee.DEPARTMENT_FK);
 		departmentsComboBoxModel.items().refresh();
-		Entity.Key primaryKey = connectionProvider().entities().primaryKey(Department.TYPE, 40);//operations, no employees
+		Entity.Key primaryKey = connection().entities().primaryKey(Department.TYPE, 40);//operations, no employees
 		departmentModel.tableModel().select(Collections.singletonList(primaryKey));
 		Entity operations = departmentModel.tableModel().selection().item().getOrThrow();
 		EntityConnection connection = departmentModel.connection();
@@ -151,13 +150,13 @@ public final class SwingEntityModelTest
 
 	@Test
 	void constructor() {
-		SwingEntityEditModel editModel = new SwingEntityEditModel(Department.TYPE, connectionProvider());
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, connectionProvider());
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Department.TYPE, connection());
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Department.TYPE, connection());
 
 		new SwingEntityModel(editModel);
 		new SwingEntityModel(tableModel);
 
-		tableModel = new SwingEntityTableModel(Department.TYPE, connectionProvider());
+		tableModel = new SwingEntityTableModel(Department.TYPE, connection());
 		assertNotEquals(editModel, new SwingEntityModel(tableModel).editModel());
 
 		tableModel = new SwingEntityTableModel(editModel);
@@ -166,7 +165,7 @@ public final class SwingEntityModelTest
 
 	@Test
 	void constructorNullEntityType() {
-		assertThrows(NullPointerException.class, () -> new SwingEntityModel(null, connectionProvider()));
+		assertThrows(NullPointerException.class, () -> new SwingEntityModel(null, connection()));
 	}
 
 	@Test
@@ -175,8 +174,8 @@ public final class SwingEntityModelTest
 	}
 
 	public static class EmpModel extends SwingEntityModel {
-		public EmpModel(EntityConnectionProvider connectionProvider) {
-			super(Employee.TYPE, connectionProvider);
+		public EmpModel(EntityConnection connection) {
+			super(Employee.TYPE, connection);
 		}
 	}
 }

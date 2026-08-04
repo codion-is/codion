@@ -18,8 +18,8 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.AbstractEntityConnection.AbstractBuilder;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 
 import org.jspecify.annotations.Nullable;
@@ -27,12 +27,12 @@ import org.jspecify.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Builds a {@link HttpEntityConnectionProvider} instance.
- * @see HttpEntityConnectionProvider#builder()
+ * Builds a self-managing {@link HttpEntityConnection}.
+ * @see HttpEntityConnection#builder()
  */
-public final class DefaultHttpEntityConnectionProviderBuilder
-				extends AbstractBuilder<HttpEntityConnectionProvider, HttpEntityConnectionProvider.Builder>
-				implements HttpEntityConnectionProvider.Builder {
+public final class DefaultHttpEntityConnectionBuilder
+				extends AbstractBuilder<HttpEntityConnection, HttpEntityConnection.Builder>
+				implements HttpEntityConnection.Builder {
 
 	String hostname = HttpEntityConnection.HOSTNAME.get();
 	int port = HttpEntityConnection.PORT.getOrThrow();
@@ -44,62 +44,62 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 	@Nullable Domain domain;
 
 	/**
-	 * Instantiates a new {@link DefaultHttpEntityConnectionProviderBuilder}
+	 * Instantiates a new {@link DefaultHttpEntityConnectionBuilder}
 	 */
-	public DefaultHttpEntityConnectionProviderBuilder() {
-		super(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
+	public DefaultHttpEntityConnectionBuilder() {
+		super(EntityConnection.CONNECTION_TYPE_HTTP);
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder domain(Domain domain) {
+	public HttpEntityConnection.Builder domain(Domain domain) {
 		this.domain = requireNonNull(domain);
 		return domain(domain.type());
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder hostname(String hostname) {
+	public HttpEntityConnection.Builder hostname(String hostname) {
 		this.hostname = requireNonNull(hostname);
 		return this;
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder port(int port) {
+	public HttpEntityConnection.Builder port(int port) {
 		this.port = port;
 		return this;
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder securePort(int securePort) {
+	public HttpEntityConnection.Builder securePort(int securePort) {
 		this.securePort = securePort;
 		return this;
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder https(boolean https) {
+	public HttpEntityConnection.Builder https(boolean https) {
 		this.https = https;
 		return this;
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder json(boolean json) {
+	public HttpEntityConnection.Builder json(boolean json) {
 		this.json = json;
 		return this;
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder socketTimeout(int socketTimeout) {
+	public HttpEntityConnection.Builder socketTimeout(int socketTimeout) {
 		this.socketTimeout = socketTimeout;
 		return this;
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder connectTimeout(int connectTimeout) {
+	public HttpEntityConnection.Builder connectTimeout(int connectTimeout) {
 		this.connectTimeout = connectTimeout;
 		return this;
 	}
 
 	@Override
-	public HttpEntityConnectionProvider build() {
-		return new DefaultHttpEntityConnectionProvider(this);
+	protected HttpEntityConnection createConnection() {
+		return new ManagedHttpEntityConnection(this);
 	}
 }

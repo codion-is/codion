@@ -24,10 +24,8 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.utilities.exceptions.Exceptions;
-import is.codion.framework.db.AbstractEntityConnectionProvider;
+import is.codion.framework.db.AbstractEntityConnection;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnection.QueryCache;
-import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -60,15 +58,16 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A class responsible for managing a remote entity connection.
- * @see RemoteEntityConnectionProvider#builder()
+ * A self-managing {@link RemoteEntityConnection}, connecting on demand and reconnecting
+ * when the underlying connection has gone bad.
+ * @see RemoteEntityConnection#builder()
  */
-final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnectionProvider
-				implements RemoteEntityConnectionProvider {
+final class ManagedRemoteEntityConnection extends AbstractEntityConnection
+				implements RemoteEntityConnection {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultRemoteEntityConnectionProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ManagedRemoteEntityConnection.class);
 
-	private @Nullable Server<RemoteEntityConnection, ServerAdmin> server;
+	private @Nullable Server<ServerEntityConnection, ServerAdmin> server;
 	private @Nullable String serverName;
 	private boolean truststoreResolved = false;
 
@@ -77,7 +76,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 	private final int registryPort;
 	private final String namePrefix;
 
-	DefaultRemoteEntityConnectionProvider(DefaultRemoteEntityConnectionProviderBuilder builder) {
+	ManagedRemoteEntityConnection(DefaultRemoteEntityConnectionBuilder builder) {
 		super(builder);
 		this.hostname = requireNonNull(builder.hostname, "hostname must be specified");
 		this.port = builder.port;
@@ -102,13 +101,13 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		try {
 			LOG.debug("Initializing connection for {}", user());
 			return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
-							new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
+							new Class[] {EntityConnection.class}, new ServerEntityConnectionHandler(
 											server().connect(ConnectionRequest.builder()
 															.user(user())
 															.clientType(clientType())
 															.clientId(clientId())
 															.version(clientVersion().orElse(null))
-															.parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
+															.parameter(ServerEntityConnection.REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
 															.build())));
 		}
 		catch (Exception e) {
@@ -131,7 +130,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 	 * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
 	 * @throws java.rmi.RemoteException in case of remote exceptions
 	 */
-	private Server<RemoteEntityConnection, ServerAdmin> server() throws RemoteException, NotBoundException {
+	private Server<ServerEntityConnection, ServerAdmin> server() throws RemoteException, NotBoundException {
 		boolean unreachable = false;
 		try {
 			if (server != null) {
@@ -163,7 +162,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 	private void reconnectToServer() throws RemoteException, NotBoundException {
 		if (serverName != null) {
 			try {
-				Server<RemoteEntityConnection, ServerAdmin> namedServer = (Server<RemoteEntityConnection, ServerAdmin>)
+				Server<ServerEntityConnection, ServerAdmin> namedServer = (Server<ServerEntityConnection, ServerAdmin>)
 								LocateRegistry.getRegistry(hostname, registryPort).lookup(serverName);
 				namedServer.information();//just to check the connection
 				server = namedServer;
@@ -187,7 +186,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		serverName = server.information().name();
 	}
 
-	private static final class RemoteEntityConnectionHandler implements InvocationHandler {
+	private static final class ServerEntityConnectionHandler implements InvocationHandler {
 
 		private static final String CONNECTED = "connected";
 		private static final String ENTITIES = "entities";
@@ -197,13 +196,13 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		private static final String SELECT_SINGLE = "selectSingle";
 
 		private final Map<Method, Method> methodCache = new HashMap<>();
-		private final RemoteEntityConnection remoteConnection;
+		private final ServerEntityConnection serverConnection;
 
 		private @Nullable Entities entities;
 		private @Nullable ProxyQueryCache queryCache;
 
-		private RemoteEntityConnectionHandler(RemoteEntityConnection remoteConnection) {
-			this.remoteConnection = remoteConnection;
+		private ServerEntityConnectionHandler(ServerEntityConnection serverConnection) {
+			this.serverConnection = serverConnection;
 		}
 
 		@Override
@@ -231,7 +230,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 			Object result = invokeRemote(method, args);
 			if (methodName.equals(ITERATOR)) {
-				return new RemoteEntityResultIteratorWrapper((RemoteEntityResultIterator) result);
+				return new ServerEntityResultIteratorWrapper((ServerEntityResultIterator) result);
 			}
 			if (cacheKey != null) {
 				return cacheResult(cacheKey, singleResult, result);
@@ -279,9 +278,9 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		}
 
 		private Object invokeRemote(Method method, Object[] args) throws Throwable {
-			Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);
+			Method remoteMethod = methodCache.computeIfAbsent(method, ServerEntityConnectionHandler::remoteMethod);
 			try {
-				return remoteMethod.invoke(remoteConnection, args);
+				return remoteMethod.invoke(serverConnection, args);
 			}
 			catch (InvocationTargetException e) {
 				LOG.error(e.getMessage(), e);
@@ -344,7 +343,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 			@Override
 			public void close() {
-				synchronized (RemoteEntityConnectionHandler.this) {
+				synchronized (ServerEntityConnectionHandler.this) {
 					cached.clear();
 					if (queryCache == this) {
 						queryCache = null;
@@ -355,7 +354,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 		private Object connected() throws RemoteException {
 			try {
-				return remoteConnection.connected();
+				return serverConnection.connected();
 			}
 			catch (NoSuchObjectException | ConnectException e) {
 				return false;
@@ -364,7 +363,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 		private Entities entities() throws RemoteException {
 			if (entities == null) {
-				entities = remoteConnection.entities();
+				entities = serverConnection.entities();
 			}
 
 			return entities;
@@ -372,7 +371,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 		private static Method remoteMethod(Method method) {
 			try {
-				return RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
+				return ServerEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
 			}
 			catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
@@ -380,11 +379,11 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 		}
 	}
 
-	private static final class RemoteEntityResultIteratorWrapper implements EntityResultIterator {
+	private static final class ServerEntityResultIteratorWrapper implements EntityResultIterator {
 
-		private final RemoteEntityResultIterator iterator;
+		private final ServerEntityResultIterator iterator;
 
-		private RemoteEntityResultIteratorWrapper(RemoteEntityResultIterator iterator) {
+		private ServerEntityResultIteratorWrapper(ServerEntityResultIterator iterator) {
 			this.iterator = iterator;
 		}
 

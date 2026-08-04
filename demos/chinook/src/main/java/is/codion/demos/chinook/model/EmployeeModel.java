@@ -19,12 +19,12 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.demos.chinook.domain.api.Chinook.Employee;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 public final class EmployeeModel extends SwingEntityModel {
 
-	public EmployeeModel(EntityConnectionProvider connectionProvider) {
-		super(Employee.TYPE, connectionProvider);
+	public EmployeeModel(EntityConnection connection) {
+		super(Employee.TYPE, connection);
 	}
 }

@@ -24,7 +24,8 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.utilities.user.User;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -72,8 +73,8 @@ public class EntityServerMonitorTest {
 	@Test
 	void test() throws Exception {
 		String clientType = EntityServerMonitorTest.class.getName();
-		RemoteEntityConnectionProvider connectionProvider =
-						RemoteEntityConnectionProvider.builder()
+		EntityConnection connection =
+						RemoteEntityConnection.builder()
 										.hostname("localhost")
 										.port(CONFIGURATION.port())
 										.registryPort(CONFIGURATION.registryPort())
@@ -81,7 +82,6 @@ public class EntityServerMonitorTest {
 										.clientType(clientType)
 										.user(UNIT_TEST_USER)
 										.build();
-		connectionProvider.connection();
 		EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.registryPort(), CONFIGURATION.adminUser());
 		model.refresh();
 		HostMonitor hostMonitor = model.hostMonitors().iterator().next();
@@ -94,7 +94,7 @@ public class EntityServerMonitorTest {
 		clientMonitor.clientInstanceTableModel().items().refresh();
 		assertEquals(1, clientMonitor.clientInstanceTableModel().items().included().size());
 		RemoteClient client = clientMonitor.clientInstanceTableModel().items().included().get(0);
-		assertEquals(connectionProvider.clientId(), client.request().clientId());
+		assertEquals(connection.clientId(), client.request().clientId());
 		assertEquals(UNIT_TEST_USER, client.request().user());
 
 		clientMonitor.server().disconnect(client.request().clientId());//disconnects the client

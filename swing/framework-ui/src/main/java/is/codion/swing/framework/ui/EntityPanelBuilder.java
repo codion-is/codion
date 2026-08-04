@@ -18,7 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.control.ControlIcon;
 
@@ -34,13 +34,13 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	static final EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
 	private final EntityType entityType;
-	private final Function<EntityConnectionProvider, EntityPanel> entityPanel;
+	private final Function<EntityConnection, EntityPanel> entityPanel;
 
 	private @Nullable String caption;
 	private @Nullable String description;
 	private @Nullable ControlIcon icon;
 
-	EntityPanelBuilder(EntityType entityType, Function<EntityConnectionProvider, EntityPanel> entityPanel) {
+	EntityPanelBuilder(EntityType entityType, Function<EntityConnection, EntityPanel> entityPanel) {
 		this.entityType = requireNonNull(entityType);
 		this.entityPanel = requireNonNull(entityPanel);
 	}
@@ -84,8 +84,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	}
 
 	@Override
-	public EntityPanel build(EntityConnectionProvider connectionProvider) {
-		return entityPanel.apply(requireNonNull(connectionProvider));
+	public EntityPanel build(EntityConnection connection) {
+		return entityPanel.apply(requireNonNull(connection));
 	}
 
 	private static final class DefaultEntityTypeStep implements EntityTypeStep {
@@ -105,7 +105,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		}
 
 		@Override
-		public EntityPanel.Builder panel(Function<EntityConnectionProvider, EntityPanel> entityPanel) {
+		public EntityPanel.Builder panel(Function<EntityConnection, EntityPanel> entityPanel) {
 			return new EntityPanelBuilder(entityType, entityPanel);
 		}
 	}

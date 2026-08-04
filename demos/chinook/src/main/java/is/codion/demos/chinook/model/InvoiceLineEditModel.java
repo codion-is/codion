@@ -23,7 +23,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityPersistence;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -37,8 +36,8 @@ import static is.codion.framework.domain.entity.Entity.primaryKeys;
 
 public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
-	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
-		super(InvoiceLine.TYPE, connectionProvider);
+	public InvoiceLineEditModel(EntityConnection connection) {
+		super(InvoiceLine.TYPE, connection);
 		editor().persistence().set(new InvoiceLinePersistence());
 		// tag::editedObserver[]
 		// We populate the unit price when the track is edited

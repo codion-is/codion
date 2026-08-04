@@ -21,7 +21,7 @@ package is.codion.demos.world.model;
 import is.codion.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -42,8 +42,8 @@ public final class CountryTableModel extends SwingEntityTableModel {
 	private static final String COUNTRY_REPORT = "country_report.jasper";
 	private static final String CITY_REPORT = "city_report.jasper";
 
-	CountryTableModel(EntityConnectionProvider connectionProvider) {
-		super(new CountryEditModel(connectionProvider));
+	CountryTableModel(EntityConnection connection) {
+		super(new CountryEditModel(connection));
 		configureCapitalConditionModel();
 		sort().order(Country.FLAG).locked().set(true);
 		query().attributes().included(Country.FLAG).addListener(items()::refresh);

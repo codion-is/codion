@@ -24,7 +24,6 @@ import is.codion.demos.chinook.domain.api.Chinook.Genre;
 import is.codion.demos.chinook.domain.api.Chinook.MediaType;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.tools.loadtest.Scenario.Performer;
 
@@ -37,15 +36,14 @@ import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.randomArtistId;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 
-public final class InsertDeleteAlbum implements Performer<EntityConnectionProvider> {
+public final class InsertDeleteAlbum implements Performer<EntityConnection> {
 
 	private static final BigDecimal UNIT_PRICE = BigDecimal.valueOf(2);
 
 	@Override
-	public void perform(EntityConnectionProvider connectionProvider) {
-		EntityConnection connection = connectionProvider.connection();
+	public void perform(EntityConnection connection) {
 		Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
-		Entity album = connectionProvider.entities().entity(Album.TYPE)
+		Entity album = connection.entities().entity(Album.TYPE)
 						.with(Album.ARTIST_FK, artist)
 						.with(Album.TITLE, "Title")
 						.build();
@@ -54,7 +52,7 @@ public final class InsertDeleteAlbum implements Performer<EntityConnectionProvid
 		List<Entity> mediaTypes = connection.select(all(MediaType.TYPE));
 		Collection<Entity> tracks = new ArrayList<>(10);
 		for (int i = 0; i < 10; i++) {
-			Entity track = connectionProvider.entities().entity(Track.TYPE)
+			Entity track = connection.entities().entity(Track.TYPE)
 							.with(Track.ALBUM_FK, album)
 							.with(Track.NAME, "Track " + i)
 							.with(Track.BYTES, RANDOM.nextInt(1_000_000))

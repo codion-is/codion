@@ -18,7 +18,7 @@
  */
 package is.codion.manual.store.model;
 
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -27,15 +27,15 @@ import java.util.List;
 // tag::storeAppModel[]
 public class StoreApplicationModel extends SwingEntityApplicationModel {
 
-	public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider, List.of(createCustomerModel(connectionProvider)));
+	public StoreApplicationModel(EntityConnection connection) {
+		super(connection, List.of(createCustomerModel(connection)));
 	}
 
-	private static SwingEntityModel createCustomerModel(EntityConnectionProvider connectionProvider) {
+	private static SwingEntityModel createCustomerModel(EntityConnection connection) {
 		CustomerModel customerModel =
-						new CustomerModel(connectionProvider);
+						new CustomerModel(connection);
 		CustomerAddressModel customerAddressModel =
-						new CustomerAddressModel(connectionProvider);
+						new CustomerAddressModel(connection);
 
 		customerModel.detail().add(customerAddressModel);
 
