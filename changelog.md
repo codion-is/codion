@@ -63,6 +63,10 @@ Codion Change Log
 - SwingEntityComboBoxModel.Builder.ConnectionProviderStep renamed ConnectionStep, following EntityComboBoxModel.
 ### is.codion.swing.framework.ui
 - EntityApplication, the connection is now established in the startup progress worker instead of on the EDT, which connections becoming eagerly established had moved it to, for applications configuring a user or a connection function instead of using the login dialog. User prompts still happen on the EDT, an unreachable database or server is now reported through the startup worker's exception handling instead of freezing the EDT for the duration of the connect timeout.
+### is.codion.plugin.flatlaf.themes
+- FlatLookAndFeelThemes.get() added.
+### is.codion.plugin.flatlaf.intellij.themes
+- FlatLookAndFeelIntelliJThemes.get() added.
 
 ## 0.18.81
 ### is.codion.common.rmi
