@@ -24,6 +24,6 @@ public class FlatLookAndFeelIntelliJThemesTest {
 
 	@Test
 	void test() {
-		FlatLookAndFeelIntelliJThemes.lookAndFeels().forEach(theme -> theme.lookAndFeel().getDefaults());
+		FlatLookAndFeelIntelliJThemes.get().forEach(theme -> theme.lookAndFeel().getDefaults());
 	}
 }

@@ -81,6 +81,13 @@ public final class FlatLookAndFeelThemes {
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 	}
 
+	/**
+	 * @return all the available {@link LookAndFeelEnabler}s
+	 */
+	public static Collection<LookAndFeelEnabler> get() {
+		return LOOK_AND_FEELS;
+	}
+
 	private static LookAndFeelEnabler enabler(Class<? extends FlatLaf> lookAndFeelClass, String name) {
 		try {
 			FlatLaf theme = lookAndFeelClass.getDeclaredConstructor().newInstance();

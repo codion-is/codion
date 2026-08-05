@@ -323,7 +323,10 @@ public final class FlatLookAndFeelIntelliJThemes {
 						.forEach(LookAndFeelProvider::addLookAndFeel);
 	}
 
-	static Collection<LookAndFeelEnabler> lookAndFeels() {
+	/**
+	 * @return all the available {@link LookAndFeelEnabler}s
+	 */
+	public static Collection<LookAndFeelEnabler> get() {
 		return LOOK_AND_FEELS;
 	}
 
