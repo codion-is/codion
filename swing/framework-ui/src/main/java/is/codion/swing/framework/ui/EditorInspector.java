@@ -54,6 +54,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingConstants.HORIZONTAL;
 import static javax.swing.SwingUtilities.invokeLater;
@@ -255,7 +256,7 @@ final class EditorInspector extends JPanel {
 
 		private static final class AttributeColumns implements TableColumns<AttributeRow, AttributeColumn> {
 
-			private static final List<AttributeColumn> IDENTIFIERS = asList(AttributeColumn.values());
+			private static final List<AttributeColumn> IDENTIFIERS = unmodifiableList(asList(AttributeColumn.values()));
 
 			@Override
 			public List<AttributeColumn> identifiers() {

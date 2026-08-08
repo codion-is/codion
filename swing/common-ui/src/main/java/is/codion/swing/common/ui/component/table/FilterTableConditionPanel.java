@@ -72,9 +72,9 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 
 	@Override
 	public Map<C, ConditionPanel<?>> selectable() {
-		return conditionPanels.entrySet().stream()
+		return unmodifiableMap(conditionPanels.entrySet().stream()
 						.filter(entry -> columnModel.visible(entry.getKey()).is())
-						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 	}
 
 	/**

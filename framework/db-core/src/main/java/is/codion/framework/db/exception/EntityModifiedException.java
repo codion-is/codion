@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,7 +50,7 @@ public final class EntityModifiedException extends UpdateEntityException {
 		super(message);
 		this.entity = requireNonNull(entity);
 		this.modified = modified;
-		this.columns = unmodifiableCollection(new HashSet<>(requireNonNull(columns)));
+		this.columns = unmodifiableSet(new HashSet<>(requireNonNull(columns)));
 	}
 
 	/**

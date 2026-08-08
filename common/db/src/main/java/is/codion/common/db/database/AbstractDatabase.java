@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -204,7 +205,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final Collection<String> connectionPoolUsernames() {
-		return new ArrayList<>(connectionPools.keySet());
+		return unmodifiableList(new ArrayList<>(connectionPools.keySet()));
 	}
 
 	@Override

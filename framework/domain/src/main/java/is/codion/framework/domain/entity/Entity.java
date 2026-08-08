@@ -38,6 +38,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
@@ -609,55 +611,55 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	}
 
 	/**
-	 * Returns the primary keys of the given entities.
+	 * Returns an unmodifiable collection containing the primary keys of the given entities.
 	 * @param entities the entities
 	 * @return a {@link Collection} containing the primary keys of the given entities
 	 */
 	static Collection<Key> primaryKeys(Collection<Entity> entities) {
-		return requireNonNull(entities).stream()
+		return unmodifiableList(requireNonNull(entities).stream()
 						.map(Entity::primaryKey)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	/**
-	 * Returns the non-null keys referenced by the given {@link ForeignKey}
+	 * Returns an unmodifiable collection containing the non-null keys referenced by the given {@link ForeignKey}
 	 * @param foreignKey the foreign key
 	 * @param entities the entities
 	 * @return a {@link Collection} containing the non-null keys referenced by the given {@link ForeignKey}
 	 */
 	static Collection<Key> keys(ForeignKey foreignKey, Collection<Entity> entities) {
-		return requireNonNull(entities).stream()
+		return unmodifiableSet(requireNonNull(entities).stream()
 						.map(entity -> entity.key(foreignKey))
 						.filter(Objects::nonNull)
-						.collect(toSet());
+						.collect(toSet()));
 	}
 
 	/**
-	 * Returns the primary keys of the given entities with their original values.
+	 * Returns an unmodifiable collection containing the primary keys of the given entities with their original values.
 	 * @param entities the entities
 	 * @return a {@link Collection} containing the primary keys of the given entities with their original values
 	 */
 	static Collection<Key> originalPrimaryKeys(Collection<Entity> entities) {
-		return requireNonNull(entities).stream()
+		return unmodifiableList(requireNonNull(entities).stream()
 						.map(Entity::originalPrimaryKey)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	/**
-	 * Retrieves the values of the given keys, assuming they are single column keys.
+	 * Returns an unmodifiable collection containing the values of the given keys, assuming they are single column keys.
 	 * @param <T> the value type
 	 * @param keys the keys
 	 * @return the attribute values of the given keys
 	 * @throws IllegalStateException in case of a composite key
 	 */
 	static <T> Collection<@Nullable T> values(Collection<Key> keys) {
-		return requireNonNull(keys).stream()
+		return unmodifiableList(requireNonNull(keys).stream()
 						.map(key -> (T) key.value())
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	/**
-	 * Returns the non-null values associated with {@code attribute} from the given entities.
+	 * Returns an unmodifiable collection containing the non-null values associated with {@code attribute} from the given entities.
 	 * @param <T> the value type
 	 * @param attribute the attribute which values to retrieve
 	 * @param entities the entities from which to retrieve the attribute value
@@ -665,14 +667,14 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 */
 	static <T> Collection<T> values(Attribute<T> attribute, Collection<Entity> entities) {
 		requireNonNull(attribute);
-		return requireNonNull(entities).stream()
+		return unmodifiableList(requireNonNull(entities).stream()
 						.map(entity -> entity.get(attribute))
 						.filter(Objects::nonNull)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	/**
-	 * Returns the distinct non-null values of {@code attribute} from the given entities.
+	 * Returns an unmodifiable collection containing the distinct non-null values of {@code attribute} from the given entities.
 	 * @param <T> the value type
 	 * @param attribute the attribute which values to retrieve
 	 * @param entities the entities from which to retrieve the values
@@ -680,10 +682,10 @@ public sealed interface Entity extends Comparable<Entity> permits DefaultEntity 
 	 */
 	static <T> Collection<T> distinct(Attribute<T> attribute, Collection<Entity> entities) {
 		requireNonNull(attribute);
-		return requireNonNull(entities).stream()
+		return unmodifiableSet(requireNonNull(entities).stream()
 						.map(entity -> entity.get(attribute))
 						.filter(Objects::nonNull)
-						.collect(toSet());
+						.collect(toSet()));
 	}
 
 	/**

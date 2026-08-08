@@ -99,7 +99,7 @@ import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
@@ -1245,7 +1245,7 @@ public class EntityPanel extends JPanel {
 		 * @return the detail panels
 		 */
 		public Collection<EntityPanel> get() {
-			return unmodifiableCollection(panels);
+			return unmodifiableList(panels);
 		}
 
 		/**
@@ -1267,9 +1267,9 @@ public class EntityPanel extends JPanel {
 		 * @return the currently linked detail EntityPanels, if any
 		 */
 		public Collection<EntityPanel> active() {
-			return panels.stream()
+			return unmodifiableList(panels.stream()
 							.filter(detailPanel -> entityModel.detail().active().contains(detailPanel.entityModel))
-							.collect(toList());
+							.collect(toList()));
 		}
 
 		/**

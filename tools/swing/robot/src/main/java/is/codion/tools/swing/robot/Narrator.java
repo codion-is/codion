@@ -50,6 +50,7 @@ import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -267,7 +268,7 @@ public final class Narrator {
 
 	private static final class KeyStrokeColumns implements TableColumns<KeyStrokeDescription, Integer> {
 
-		private static final List<Integer> IDENTIFIERS = asList(0, 1);
+		private static final List<Integer> IDENTIFIERS = unmodifiableList(asList(0, 1));
 
 		@Override
 		public List<Integer> identifiers() {

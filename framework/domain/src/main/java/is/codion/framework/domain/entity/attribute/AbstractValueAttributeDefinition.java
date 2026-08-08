@@ -42,7 +42,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static is.codion.common.utilities.resource.MessageBundle.messageBundle;
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toMap;
@@ -197,7 +198,7 @@ abstract sealed class AbstractValueAttributeDefinition<T> extends AbstractAttrib
 		}
 		list.addAll(builder.validators);
 
-		return unmodifiableCollection(new ArrayList<>(list));
+		return unmodifiableList(new ArrayList<>(list));
 	}
 
 	static AttributeValidationException createNullValidationException(Attribute<?> attribute, String caption) {

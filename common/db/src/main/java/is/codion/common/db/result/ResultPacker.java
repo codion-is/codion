@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -36,7 +37,7 @@ public interface ResultPacker<T> {
 	 * Iterates through the given {@link ResultSet}, packing its contents into a {@link List} using {@link #get(ResultSet)} in the order they appear.
 	 * This method does not close the {@link ResultSet}.
 	 * @param resultSet the {@link ResultSet} instance containing the query result to process
-	 * @return a {@link List} containing the data from the query result
+	 * @return an unmodifiable {@link List} containing the data from the query result
 	 * @throws SQLException thrown if anything goes wrong during the packing
 	 * @throws NullPointerException in case {@code resultSet} is null
 	 */
@@ -47,7 +48,7 @@ public interface ResultPacker<T> {
 			result.add(get(resultSet));
 		}
 
-		return result;
+		return unmodifiableList(result);
 	}
 
 	/**

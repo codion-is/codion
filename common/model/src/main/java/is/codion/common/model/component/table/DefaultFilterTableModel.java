@@ -43,6 +43,8 @@ import java.util.stream.Stream;
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.common.reactive.value.Value.Notify.SET;
 import static java.lang.String.join;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -156,7 +158,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 		}
 
 		private List<@Nullable Object> values(Stream<Integer> rowIndexStream, C identifier) {
-			return rowIndexStream.map(rowIndex -> value(rowIndex, identifier)).collect(toList());
+			return unmodifiableList(rowIndexStream.map(rowIndex -> value(rowIndex, identifier)).collect(toList()));
 		}
 
 		private C validateIdentifier(C identifier) {
@@ -189,7 +191,7 @@ final class DefaultFilterTableModel<R, C> implements FilterTableModel<R, C> {
 				}
 			}
 
-			return columnFilterModels;
+			return unmodifiableMap(columnFilterModels);
 		}
 	}
 

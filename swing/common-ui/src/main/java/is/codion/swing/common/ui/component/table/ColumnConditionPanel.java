@@ -95,6 +95,7 @@ import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -194,9 +195,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	@Override
 	public Collection<JComponent> components() {
-		return Stream.of(toggleEnabledButton, operatorCombo, equalComponent, lowerComponent, upperComponent, inComponent)
+		return unmodifiableList(Stream.of(toggleEnabledButton, operatorCombo, equalComponent, lowerComponent, upperComponent, inComponent)
 						.filter(Objects::nonNull)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	@Override

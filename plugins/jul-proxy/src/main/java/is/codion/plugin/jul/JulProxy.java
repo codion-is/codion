@@ -28,6 +28,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,7 +51,7 @@ public final class JulProxy implements LoggerProxy {
 
 	@Override
 	public List<Object> levels() {
-		return asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF);
+		return unmodifiableList(asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF));
 	}
 
 	@Override
@@ -60,6 +61,6 @@ public final class JulProxy implements LoggerProxy {
 
 	@Override
 	public Collection<String> loggers() {
-		return Collections.list(LogManager.getLogManager().getLoggerNames());
+		return unmodifiableList(Collections.list(LogManager.getLogManager().getLoggerNames()));
 	}
 }

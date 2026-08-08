@@ -285,7 +285,7 @@ public class EntityServiceTest {
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("selectByKey",
 						BodyPublishers.ofByteArray(Serializer.serialize(keys))), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
-		List<Entity> values = Serializer.deserialize(response.body());
+		Collection<Entity> values = Serializer.deserialize(response.body());
 		assertEquals(2, values.size());
 
 		response = HTTP_CLIENT.send(createJsonRequest("selectByKey",
@@ -332,7 +332,7 @@ public class EntityServiceTest {
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("insertSelect",
 						BodyPublishers.ofByteArray(Serializer.serialize(entities))), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
-		List<Entity> values = Serializer.deserialize(response.body());
+		Collection<Entity> values = Serializer.deserialize(response.body());
 		assertEquals(2, values.size());
 
 		entities.forEach(entity -> entity.set(Department.ID, entity.get(Department.ID) + 1));
@@ -362,7 +362,7 @@ public class EntityServiceTest {
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("updateSelect",
 						BodyPublishers.ofByteArray(Serializer.serialize(entities))), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
-		List<Entity> values = Serializer.deserialize(response.body());
+		Collection<Entity> values = Serializer.deserialize(response.body());
 		assertEquals(2, values.size());
 		assertTrue(values.containsAll(entities));
 		assertEquals("NEW YORK2", values.stream().filter(entity -> entity.get(Department.ID).equals(10))

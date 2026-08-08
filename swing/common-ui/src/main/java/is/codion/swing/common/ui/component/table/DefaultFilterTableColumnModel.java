@@ -380,9 +380,9 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 		@Override
 		public List<C> get() {
-			return columns().stream()
+			return unmodifiableList(columns().stream()
 							.map(FilterTableColumn::identifier)
-							.collect(toList());
+							.collect(toList()));
 		}
 
 		@Override
@@ -417,7 +417,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 		@Override
 		public Collection<C> get() {
-			return unmodifiableCollection(hiddenColumnMap.keySet());
+			return unmodifiableSet(hiddenColumnMap.keySet());
 		}
 
 		@Override
@@ -427,7 +427,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 		@Override
 		public Collection<FilterTableColumn<C>> columns() {
-			return unmodifiableCollection(hiddenColumnMap.values().stream()
+			return unmodifiableList(hiddenColumnMap.values().stream()
 							.map(hiddenColumn -> hiddenColumn.column)
 							.collect(toList()));
 		}

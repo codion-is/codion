@@ -37,11 +37,12 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
 import static is.codion.common.utilities.Text.parseCSV;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -71,8 +72,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		this.rmi = builder.rmi;
 		this.port = builder.serverPort;
 		this.registryPort = builder.registryPort;
-		this.auxiliaryServerFactories = unmodifiableCollection(builder.auxiliaryServerFactories);
-		this.authenticators = unmodifiableCollection(builder.authenticators);
+		this.auxiliaryServerFactories = unmodifiableSet(builder.auxiliaryServerFactories);
+		this.authenticators = unmodifiableSet(builder.authenticators);
 		this.adminPort = builder.serverAdminPort;
 		this.sslEnabled = builder.sslEnabled;
 		this.serverNameSupplier = builder.serverName;
@@ -174,8 +175,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private boolean rmi;
 		private int serverPort;
 		private int registryPort;
-		private final Collection<String> auxiliaryServerFactories = new HashSet<>();
-		private final Collection<String> authenticators = new HashSet<>();
+		private final Set<String> auxiliaryServerFactories = new HashSet<>();
+		private final Set<String> authenticators = new HashSet<>();
 		private int serverAdminPort;
 		private boolean sslEnabled = true;
 		private Supplier<String> serverName = new DefaultServerName();

@@ -39,7 +39,6 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +50,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -228,7 +228,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	public List<ExceptionTimestamp> exceptions(String scenarioName) {
 		synchronized (statistics) {
 			List<ExceptionTimestamp> exceptions = statistics.scenarioExceptions.get(scenarioName);
-			return exceptions == null ? emptyList() : new ArrayList<>(exceptions);
+			return exceptions == null ? emptyList() : unmodifiableList(new ArrayList<>(exceptions));
 		}
 	}
 
@@ -459,9 +459,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 		@Override
 		public Collection<ApplicationRow> get() {
-			return loadTest.applications().runners().stream()
+			return unmodifiableList(loadTest.applications().runners().stream()
 							.map(DefaultApplicationRow::new)
-							.collect(toList());
+							.collect(toList()));
 		}
 	}
 
@@ -560,7 +560,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	public static final class ApplicationColumns implements TableColumns<ApplicationRow, String> {
 
-		private static final List<String> IDENTIFIERS = unmodifiableList(Arrays.asList(
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(
 						ApplicationRow.NAME, ApplicationRow.USERNAME, ApplicationRow.SCENARIO,
 						ApplicationRow.SUCCESSFUL, ApplicationRow.DURATION, ApplicationRow.EXCEPTION,
 						ApplicationRow.MESSAGE, ApplicationRow.CREATED

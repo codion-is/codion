@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.laf.DefaultLookAndFeelEnabler.LOOK_AND_FEEL_PROVIDERS;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 
@@ -83,7 +83,7 @@ public interface LookAndFeelProvider {
 	 * @see #addLookAndFeel(LookAndFeelEnabler)
 	 */
 	static Collection<LookAndFeelEnabler> lookAndFeels() {
-		return unmodifiableCollection(new ArrayList<>(LOOK_AND_FEEL_PROVIDERS.values()));
+		return unmodifiableList(new ArrayList<>(LOOK_AND_FEEL_PROVIDERS.values()));
 	}
 
 	/**

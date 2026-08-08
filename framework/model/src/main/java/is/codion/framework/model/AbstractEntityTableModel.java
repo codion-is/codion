@@ -52,8 +52,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
-import static java.util.Collections.singleton;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -559,9 +558,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel<R>, R e
 
 		@Override
 		public Map<Attribute<?>, ConditionModel<?>> get() {
-			return entityDefinition.attributes().definitions().stream()
+			return unmodifiableMap(entityDefinition.attributes().definitions().stream()
 							.filter(EntityFilters::include)
-							.collect(toMap(AttributeDefinition::attribute, EntityFilters::condition));
+							.collect(toMap(AttributeDefinition::attribute, EntityFilters::condition)));
 		}
 
 		private static ConditionModel<?> condition(AttributeDefinition<?> definition) {

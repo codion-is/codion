@@ -88,7 +88,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.entityDefinition;
 		this.connection = builder.connection;
-		this.columns = unmodifiableCollection(builder.columns);
+		this.columns = unmodifiableList(new ArrayList<>(builder.columns));
 		this.condition = Value.builder()
 						.nonNull(NULL_CONDITION)
 						.value(builder.condition)
@@ -164,10 +164,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public List<Entity> perform() {
-			List<Entity> result = connection.select(select());
+			List<Entity> result = new ArrayList<>(connection.select(select()));
 			result.sort(entityDefinition.comparator());
 
-			return result;
+			return unmodifiableList(result);
 		}
 
 		private Select select() {

@@ -332,9 +332,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public Collection<Attribute<?>> get() {
-			return entityAttributes.attributeDefinitions.stream()
+			return unmodifiableList(entityAttributes.attributeDefinitions.stream()
 							.map(AttributeDefinition::attribute)
-							.collect(toList());
+							.collect(toList()));
 		}
 
 		@Override
@@ -400,10 +400,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public Collection<Column<String>> searchable() {
-			return entityAttributes.columnDefinitions.stream()
+			return unmodifiableList(entityAttributes.columnDefinitions.stream()
 							.filter(ColumnDefinition::searchable)
 							.map(column -> ((ColumnDefinition<String>) column).attribute())
-							.collect(toList());
+							.collect(toList()));
 		}
 
 		@Override
@@ -471,9 +471,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		@Override
 		public Collection<ForeignKey> get(EntityType referencedEntityType) {
 			requireNonNull(referencedEntityType);
-			return get().stream()
+			return unmodifiableList(get().stream()
 							.filter(foreignKey -> foreignKey.referencedType().equals(referencedEntityType))
-							.collect(toList());
+							.collect(toList()));
 		}
 
 		@Override

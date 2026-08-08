@@ -210,7 +210,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public List<Entity> select(Collection<Entity.Key> keys) {
+	public Collection<Entity> select(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
 		synchronized (transport) {
 			try {
