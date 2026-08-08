@@ -41,8 +41,7 @@ jasperreports {
 sourceSets.test.get().resources.srcDir(tasks.compileAllReports)
 
 tasks.test {
-    // CI runners occasionally exceed the 2s default on a localhost connect, and since building a
-    // connection now connects eagerly, every test method opens one - see codion.client.http.connectTimeout
-    systemProperty("codion.client.http.connectTimeout", "10000")
-    systemProperty("codion.client.http.socketTimeout", "10000")
+    // The default is no socket timeout, matching RMI - right for an application, wrong for a test run, where a
+    // server that accepts the connection and never answers should fail the test rather than hang the build.
+    systemProperty("codion.client.http.socketTimeout", "30000")
 }

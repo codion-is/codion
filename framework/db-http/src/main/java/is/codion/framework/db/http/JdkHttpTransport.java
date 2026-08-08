@@ -39,25 +39,31 @@ import java.util.concurrent.Executor;
 final class JdkHttpTransport implements HttpTransport {
 
 	private final HttpClient httpClient;
-	private final Duration socketTimeout;
+	private final @Nullable Duration socketTimeout;
 
 	JdkHttpTransport(int connectTimeout, int socketTimeout) {
-		this.httpClient = HttpClient.newBuilder()
+		HttpClient.Builder builder = HttpClient.newBuilder()
 						.executor(new SynchronousExecutor())
-						.cookieHandler(new CookieManager())
-						.connectTimeout(Duration.ofMillis(connectTimeout))
-						.build();
-		this.socketTimeout = Duration.ofMillis(socketTimeout);
+						.cookieHandler(new CookieManager());
+		// Both builders reject a non-positive duration, so zero (no timeout) is expressed by leaving the value
+		// unset - which is the HttpClient default in either case.
+		if (connectTimeout > 0) {
+			builder.connectTimeout(Duration.ofMillis(connectTimeout));
+		}
+		this.httpClient = builder.build();
+		this.socketTimeout = socketTimeout > 0 ? Duration.ofMillis(socketTimeout) : null;
 	}
 
 	@Override
 	public Response post(String url, String[] headers, byte @Nullable [] body) throws IOException {
-		HttpRequest request = HttpRequest.newBuilder()
-						.timeout(socketTimeout)
+		HttpRequest.Builder builder = HttpRequest.newBuilder()
 						.uri(URI.create(url))
 						.POST(body == null ? BodyPublishers.noBody() : BodyPublishers.ofByteArray(body))
-						.headers(headers)
-						.build();
+						.headers(headers);
+		if (socketTimeout != null) {
+			builder.timeout(socketTimeout);
+		}
+		HttpRequest request = builder.build();
 		try {
 			HttpResponse<byte[]> response = httpClient.send(request, BodyHandlers.ofByteArray());
 

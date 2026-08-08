@@ -46,6 +46,50 @@ public final class ConcurrentPreferencesTest {
 	Path tempDir;
 
 	@Test
+	void testConcurrentAccessSingleStore() throws Exception {
+		// The production shape: FilePreferences caches one store per file and every node of that file shares it,
+		// while flushSpi runs under the per-NODE lock - so threads flushing different nodes land here at once.
+		// A FileLock can not arbitrate between them (it is held per JVM, and each save opens its own channel),
+		// which is what the store's own lock is for.
+		Path prefsPath = tempDir.resolve("single-store.json");
+		JsonPreferencesStore store = new JsonPreferencesStore(prefsPath);
+		int numThreads = 8;
+		int numOperations = 50;
+
+		ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+		CountDownLatch startLatch = new CountDownLatch(1);
+		List<Future<Void>> futures = new ArrayList<>();
+		for (int i = 0; i < numThreads; i++) {
+			int threadId = i;
+			futures.add(executor.submit(() -> {
+				startLatch.await();
+				for (int op = 0; op < numOperations; op++) {
+					store.put("", "thread" + threadId + "-key" + op, "value" + op);
+					store.save();
+					store.reload();
+				}
+				return null;
+			}));
+		}
+		startLatch.countDown();
+		for (Future<Void> future : futures) {
+			future.get(60, TimeUnit.SECONDS); // rethrows, so a lock timeout under contention fails here
+		}
+		executor.shutdown();
+		assertTrue(executor.awaitTermination(10, TimeUnit.SECONDS));
+
+		// Every write survives: the last save wins, and it snapshots the whole store, so nothing is lost
+		// as long as the saves themselves did not interleave.
+		store.save();
+		JsonPreferencesStore reloaded = new JsonPreferencesStore(prefsPath);
+		for (int thread = 0; thread < numThreads; thread++) {
+			for (int op = 0; op < numOperations; op++) {
+				assertEquals("value" + op, reloaded.get("", "thread" + thread + "-key" + op));
+			}
+		}
+	}
+
+	@Test
 	void testConcurrentAccess() throws Exception {
 		Path prefsPath = tempDir.resolve("concurrent-test.json");
 		int numThreads = 10;
