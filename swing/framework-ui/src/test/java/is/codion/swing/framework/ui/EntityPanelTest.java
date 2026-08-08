@@ -111,4 +111,37 @@ public final class EntityPanelTest {
 		deptModel.detail().active(empModel).set(false);
 		assertEquals(0, deptPanel.detail().active().size());
 	}
+
+	@Test
+	void panelsMustBelongToTheEntityModel() {
+		SwingEntityModel deptModel = new SwingEntityModel(Department.TYPE, CONNECTION);
+		SwingEntityModel empModel = new SwingEntityModel(Employee.TYPE, CONNECTION);
+
+		EntityEditPanel empEditPanel = new EntityEditPanel(empModel.editModel()) {
+			@Override
+			protected void initializeUI() {}
+		};
+		EntityTablePanel empTablePanel = new EntityTablePanel(empModel.tableModel());
+
+		// the mistake this guards against: the panels are consistent with each other,
+		// but built against a different entity model than the one given to EntityPanel
+		String editMessage = assertThrows(IllegalArgumentException.class,
+						() -> new EntityPanel(deptModel, empEditPanel)).getMessage();
+		assertTrue(editMessage.contains(Department.TYPE.name()) && editMessage.contains(Employee.TYPE.name()), editMessage);
+
+		String tableMessage = assertThrows(IllegalArgumentException.class,
+						() -> new EntityPanel(deptModel, empTablePanel)).getMessage();
+		assertTrue(tableMessage.contains(Department.TYPE.name()) && tableMessage.contains(Employee.TYPE.name()), tableMessage);
+
+		// a second model of the same type is still the wrong instance
+		SwingEntityModel otherDeptModel = new SwingEntityModel(Department.TYPE, CONNECTION);
+		assertThrows(IllegalArgumentException.class,
+						() -> new EntityPanel(deptModel, new EntityEditPanel(otherDeptModel.editModel()) {
+							@Override
+							protected void initializeUI() {}
+						}));
+
+		// the matching panels are accepted
+		assertNotNull(new EntityPanel(empModel, empEditPanel, empTablePanel));
+	}
 }

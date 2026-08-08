@@ -522,7 +522,7 @@ public class EntityTablePanel extends JPanel {
 
 	private EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> config, @Nullable EntityEditPanel editPanel) {
 		this.tableModel = requireNonNull(tableModel);
-		this.editPanel = editPanel == null ? null : validateEditModel(editPanel);
+		this.editPanel = validateEditModel(editPanel);
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
 		this.table = configuration.buildTable();
@@ -1707,9 +1707,10 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private EntityEditPanel validateEditModel(EntityEditPanel editPanel) {
-		if (editPanel.editModel() != tableModel.editModel()) {
-			throw new IllegalArgumentException("Edit panel model must be the same as the table edit model");
+	private @Nullable EntityEditPanel validateEditModel(@Nullable EntityEditPanel editPanel) {
+		if (editPanel != null && editPanel.editModel() != tableModel.editModel()) {
+			throw new IllegalArgumentException("Edit panel model must be the same instance as the table model's edit model, expected "
+							+ tableModel.editModel().entityType() + ", got " + editPanel.editModel().entityType());
 		}
 
 		return editPanel;
