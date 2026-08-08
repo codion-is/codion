@@ -6,6 +6,10 @@ Codion Change Log
 - Methods now return unmodifiable collections, where applicable.
 ### is.codion.common.db
 - DatabaseFactory.driverCompatible() renamed supports(), driverClassName() removed.
+### is.codion.common.model
+- JsonPreferencesStore, the file lock was released as soon as it was acquired, the channel being closed on the success path, so the locking was never in effect.
+- JsonPreferencesStore.reload() and loadData() no longer throw NoSuchFileException when the file is deleted concurrently, the existence check preceding the read was racy.
+- JsonPreferencesStore.delete() no longer deletes the lock file, unlinking it breaks mutual exclusion for anyone holding a lock on it, and now deletes while holding the exclusive lock.
 
 ## 0.18.82
 ### is.codion
