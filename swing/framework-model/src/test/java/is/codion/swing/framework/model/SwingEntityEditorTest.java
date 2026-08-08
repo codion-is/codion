@@ -204,10 +204,19 @@ public final class SwingEntityEditorTest {
 			}
 		});
 		detailToLoad.set(employee("emp"));
-		// Two sets queued back to back: the second supersedes the first before any worker completes
-		invokeLater(() -> master.entity().set(department(1)));
-		invokeLater(() -> master.entity().set(department(2)));
+		// Two sets queued back to back: the second supersedes the first before any worker completes.
+		// Both must be issued within a single EDT dispatch - as two invokeLater calls there is no
+		// guarantee the second is queued before the first has run and its worker has already delivered,
+		// in which case set(1) has legitimately completed before set(2) was ever requested.
+		invokeLater(() -> {
+			master.entity().set(department(1));
+			master.entity().set(department(2));
+		});
 		assertTrue(secondApplied.await(5, SECONDS));
+		// The latch is counted down from an EDT callback, so returning from await() says nothing about
+		// work still queued behind it - the superseded load completes on the EDT too. Drain the queue
+		// before asserting, otherwise this races the EDT and fails intermittently under load.
+		flushEventQueue();
 		// The superseded set(1) never applied; only set(2) won (regardless of completion order)
 		assertEquals(singletonList(2), changedIds);
 		assertEquals(2, master.entity().get().get(Department.ID));

@@ -39,3 +39,10 @@ jasperreports {
 }
 
 sourceSets.test.get().resources.srcDir(tasks.compileAllReports)
+
+tasks.test {
+    // CI runners occasionally exceed the 2s default on a localhost connect, and since building a
+    // connection now connects eagerly, every test method opens one - see codion.client.http.connectTimeout
+    systemProperty("codion.client.http.connectTimeout", "10000")
+    systemProperty("codion.client.http.socketTimeout", "10000")
+}
