@@ -28,6 +28,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -36,40 +37,33 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UtilitiesTest {
 
 	@Test
-	void enabled() {
+	void enabled() throws Exception {
 		Action action = new AbstractAction("test") {
 			@Override
 			public void actionPerformed(ActionEvent e) {}
 		};
-		State state = State.state();
+		State actionState = State.state();
 
-		try {
-			Utilities.enabled(state, action);
-			assertFalse(action.isEnabled());
-			state.set(true);
-			Thread.sleep(50);//due to EDT
-			assertTrue(action.isEnabled());
-			state.set(false);
-			Thread.sleep(50);//due to EDT
-			assertFalse(action.isEnabled());
-		}
-		catch (InterruptedException ignored) {/*ignored*/}
+		Utilities.enabled(actionState, action);
+		assertFalse(action.isEnabled());
+		actionState.set(true);
+		flushEventQueue();
+		assertTrue(action.isEnabled());
+		actionState.set(false);
+		flushEventQueue();
+		assertFalse(action.isEnabled());
 
-		JComponent comp = new JTextField();
-		state = State.state();
+		JComponent component = new JTextField();
+		State componentState = State.state();
 
-		State theState = state;
-		try {
-			Utilities.enabled(theState, comp);
-			assertFalse(comp.isEnabled());
-			theState.set(true);
-			Thread.sleep(50);//due to EDT
-			assertTrue(comp.isEnabled());
-			theState.set(false);
-			Thread.sleep(50);//due to EDT
-			assertFalse(comp.isEnabled());
-		}
-		catch (InterruptedException e) {/*ignored*/}
+		Utilities.enabled(componentState, component);
+		assertFalse(component.isEnabled());
+		componentState.set(true);
+		flushEventQueue();
+		assertTrue(component.isEnabled());
+		componentState.set(false);
+		flushEventQueue();
+		assertFalse(component.isEnabled());
 	}
 
 	@Test
@@ -83,5 +77,15 @@ public class UtilitiesTest {
 		assertEquals(1, counter.get());
 		textField.setHorizontalAlignment(SwingConstants.LEADING);
 		assertEquals(2, counter.get());
+	}
+
+	/**
+	 * Returns once the Event Dispatch Thread has processed everything queued before this call.
+	 * {@link Utilities#enabled} applies the change via invokeLater when called off the EDT, as it
+	 * is here, so the state change is not visible on return from {@link State#set(Object)}.
+	 * Since invokeLater is FIFO, this is exact where a sleep is merely probable.
+	 */
+	private static void flushEventQueue() throws Exception {
+		SwingUtilities.invokeAndWait(() -> {});
 	}
 }
