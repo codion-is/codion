@@ -31,7 +31,7 @@ public final class Db2DatabaseFactory implements DatabaseFactory {
 	private static final String DRIVER_PACKAGE = "com.ibm.db2.jcc";
 
 	@Override
-	public boolean driverCompatible(String driverClassName) {
+	public boolean supports(String driverClassName) {
 		return requireNonNull(driverClassName).startsWith(DRIVER_PACKAGE);
 	}
 

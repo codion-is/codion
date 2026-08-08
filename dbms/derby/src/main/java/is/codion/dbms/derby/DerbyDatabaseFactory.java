@@ -35,7 +35,7 @@ public final class DerbyDatabaseFactory implements DatabaseFactory {
 	private static final String SHUTDOWN_ERROR_CODE = "08006";
 
 	@Override
-	public boolean driverCompatible(String driverClassName) {
+	public boolean supports(String driverClassName) {
 		return requireNonNull(driverClassName).startsWith(DRIVER_PACKAGE);
 	}
 
