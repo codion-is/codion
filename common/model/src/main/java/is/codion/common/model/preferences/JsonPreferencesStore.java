@@ -40,6 +40,8 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.requireNonNull;
@@ -68,6 +70,19 @@ final class JsonPreferencesStore {
 	private final Path lockFilePath;
 	private final boolean prettyPrint;
 	private final JsonPreferences preferences = new JsonPreferences();
+
+	/**
+	 * Serializes this JVM's own access to the file, so that the {@link FileLock} below only ever arbitrates
+	 * between JVMs. A {@link FileLock} is held on behalf of the whole JVM and is explicitly documented as
+	 * unsuitable for controlling access between threads within one: two threads locking the same region
+	 * through different channels get an {@link OverlappingFileLockException}, whichever of them asked for a
+	 * shared lock. Every node of a file shares one store, and {@code flushSpi} runs under the per-node lock,
+	 * so concurrent saves are ordinary rather than exotic.
+	 * <p>
+	 * Mutual exclusion rather than a read/write lock: concurrent readers would gain nothing, since they would
+	 * still each need their own {@link FileLock} and collide on it exactly as writers do.
+	 */
+	private final Lock lock = new ReentrantLock();
 
 	private volatile long lastModified;
 
@@ -122,33 +137,39 @@ final class JsonPreferencesStore {
 	 * @throws IOException if an I/O error occurs
 	 */
 	void save() throws IOException {
-		// A point-in-time snapshot of the store, taken atomically; the file write below need not hold the in-memory lock.
-		String content = preferences.snapshot(prettyPrint);
-		if (content == null) {
-			LOG.debug("Preferences empty, deleting file if exists: {}", filePath);
-			delete();
-			return;
-		}
-		LOG.debug("Saving preferences to {}", filePath);
-		long startTime = currentTimeMillis();
-		Files.createDirectories(filePath.getParent());
-		// Write to temp file first
-		Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
+		lock.lock();
 		try {
-			Files.write(tempFile.toAbsolutePath(), content.getBytes());
-			// Force sync to disk before atomic move (helps on Windows/VirtualBox)
-			try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
-				channel.force(true);
+			// A point-in-time snapshot of the store, taken atomically; the file write below need not hold the in-memory lock.
+			String content = preferences.snapshot(prettyPrint);
+			if (content == null) {
+				LOG.debug("Preferences empty, deleting file if exists: {}", filePath);
+				delete();
+				return;
 			}
-			// Atomic move with lock
-			try (FileLock lock = acquireExclusiveLock()) {
-				atomicMove(tempFile, filePath);
-				lastModified = Files.getLastModifiedTime(filePath).toMillis();
-				LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
+			LOG.debug("Saving preferences to {}", filePath);
+			long startTime = currentTimeMillis();
+			Files.createDirectories(filePath.getParent());
+			// Write to temp file first
+			Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
+			try {
+				Files.write(tempFile.toAbsolutePath(), content.getBytes());
+				// Force sync to disk before atomic move (helps on Windows/VirtualBox)
+				try (FileChannel channel = FileChannel.open(tempFile, StandardOpenOption.WRITE)) {
+					channel.force(true);
+				}
+				// Atomic move with lock
+				try (FileLock fileLock = acquireExclusiveLock()) {
+					atomicMove(tempFile, filePath);
+					lastModified = Files.getLastModifiedTime(filePath).toMillis();
+					LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
+				}
+			}
+			finally {
+				Files.deleteIfExists(tempFile);
 			}
 		}
 		finally {
-			Files.deleteIfExists(tempFile);
+			lock.unlock();
 		}
 	}
 
@@ -160,21 +181,28 @@ final class JsonPreferencesStore {
 	 * @throws IOException if an I/O error occurs
 	 */
 	void reload() throws IOException {
-		// no exists() check first: the file can be deleted between the check and the read - by save()
-		// when the preferences are emptied, or by another process - so ask for the timestamp and treat
-		// its absence as the answer, rather than racing between the two calls
+		// held across the check and the load, so two threads seeing the same modification time do not both reload
+		lock.lock();
 		try {
-			long currentModified = Files.getLastModifiedTime(filePath).toMillis();
-			if (currentModified != lastModified) {
-				LOG.debug("File has been modified externally, reloading from {}", filePath);
-				loadData();
+			// no exists() check first: the file can be deleted between the check and the read - by save()
+			// when the preferences are emptied, or by another process - so ask for the timestamp and treat
+			// its absence as the answer, rather than racing between the two calls
+			try {
+				long currentModified = Files.getLastModifiedTime(filePath).toMillis();
+				if (currentModified != lastModified) {
+					LOG.debug("File has been modified externally, reloading from {}", filePath);
+					loadData();
+				}
+				else {
+					LOG.trace("File has not been modified, skipping reload");
+				}
 			}
-			else {
-				LOG.trace("File has not been modified, skipping reload");
+			catch (NoSuchFileException e) {
+				LOG.trace("File does not exist, nothing to reload");
 			}
 		}
-		catch (NoSuchFileException e) {
-			LOG.trace("File does not exist, nothing to reload");
+		finally {
+			lock.unlock();
 		}
 	}
 
@@ -185,9 +213,13 @@ final class JsonPreferencesStore {
 	 * @throws IOException in case of an exception
 	 */
 	void delete() throws IOException {
-		try (FileLock lock = acquireExclusiveLock()) {
+		lock.lock();
+		try (FileLock fileLock = acquireExclusiveLock()) {
 			Files.deleteIfExists(filePath);
 			lastModified = 0;
+		}
+		finally {
+			lock.unlock();
 		}
 	}
 
@@ -197,14 +229,32 @@ final class JsonPreferencesStore {
 	 * @throws IOException in case of an exception
 	 */
 	void backup(String suffix) throws IOException {
-		if (Files.exists(filePath)) {
-			Path backupPath = filePath.resolveSibling(filePath.getFileName() + "." + requireNonNull(suffix));
-			Files.copy(filePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
-			LOG.info("Backed up preferences file to {}", backupPath);
+		requireNonNull(suffix);
+		// so the copy can not catch a concurrent save's atomic move half way
+		lock.lock();
+		try {
+			if (Files.exists(filePath)) {
+				Path backupPath = filePath.resolveSibling(filePath.getFileName() + "." + suffix);
+				Files.copy(filePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
+				LOG.info("Backed up preferences file to {}", backupPath);
+			}
+		}
+		finally {
+			lock.unlock();
 		}
 	}
 
 	private void loadData() throws IOException {
+		lock.lock();
+		try {
+			doLoadData();
+		}
+		finally {
+			lock.unlock();
+		}
+	}
+
+	private void doLoadData() throws IOException {
 		if (!Files.exists(filePath)) {
 			// fast path only, so the common "no preferences yet" case costs no lock; this is not the
 			// authoritative check, the file may be deleted at any point after it returns true, which is
@@ -284,8 +334,8 @@ final class JsonPreferencesStore {
 			int retryCount = 0;
 			while (currentTimeMillis() - startTime < LOCK_TIMEOUT_MS) {
 				try {
-					FileLock lock = shared ? channel.tryLock(0, Long.MAX_VALUE, true) : channel.tryLock();
-					if (lock != null) {
+					FileLock fileLock = shared ? channel.tryLock(0, Long.MAX_VALUE, true) : channel.tryLock();
+					if (fileLock != null) {
 						// Success - resources will be closed by FileLockWrapper
 						RandomAccessFile successFile = lockFile;
 						lockFile = null; // Prevent cleanup in finally block
@@ -293,11 +343,13 @@ final class JsonPreferencesStore {
 						// so closing it here would hand back a lock that was already released
 						channel = null;
 						LOG.trace("Lock acquired successfully after {} retries", retryCount);
-						return new FileLockWrapper(lock, successFile);
+						return new FileLockWrapper(fileLock, successFile);
 					}
 				}
 				catch (OverlappingFileLockException e) {
-					// Lock held by another thread in this JVM
+					// This store's own callers are serialized by the in-JVM lock, so reaching here means a second
+					// store instance on the same file - two paths that differ textually but resolve to one file,
+					// which FilePreferences caches separately. Rare, and the retry below still resolves it.
 					LOG.trace("Lock held by another thread in this JVM, retry {}", ++retryCount);
 				}
 

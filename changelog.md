@@ -10,6 +10,10 @@ Codion Change Log
 - JsonPreferencesStore, the file lock was released as soon as it was acquired, the channel being closed on the success path, so the locking was never in effect.
 - JsonPreferencesStore.reload() and loadData() no longer throw NoSuchFileException when the file is deleted concurrently, the existence check preceding the read was racy.
 - JsonPreferencesStore.delete() no longer deletes the lock file, unlinking it breaks mutual exclusion for anyone holding a lock on it, and now deletes while holding the exclusive lock.
+- JsonPreferencesStore now serializes this JVM's own access to the file with a lock of its own, so that the file lock only ever arbitrates between JVMs.
+### is.codion.framework.db.http
+- HttpEntityConnection.SOCKET_TIMEOUT default changed from 2000 to 0, meaning no timeout, as the RMI transport imposes none either.
+- HttpEntityConnection.CONNECT_TIMEOUT default changed from 2000 to 10000.
 ### is.codion.swing.framework.ui
 - EntityPanel, EntityTablePanel, model validation improved.
 

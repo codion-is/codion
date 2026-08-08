@@ -84,22 +84,28 @@ public interface HttpEntityConnection extends EntityConnection {
 	PropertyValue<Boolean> JSON = booleanValue("codion.client.http.json", true);
 
 	/**
-	 * The socket timeout in milliseconds
+	 * <p>The socket timeout in milliseconds, that is, how long an operation may wait for the server's response.
+	 * <p>Zero (the default) means no timeout, matching the RMI transport, which does not impose one either. A
+	 * finite value caps every operation, so it must exceed the slowest one the application performs - a report,
+	 * a bulk update or a domain function may run far longer than a select.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 2000 ms
+	 * <li>Default value: 0 ms (no timeout)
 	 * </ul>
 	 */
-	PropertyValue<Integer> SOCKET_TIMEOUT = integerValue("codion.client.http.socketTimeout", 2000);
+	PropertyValue<Integer> SOCKET_TIMEOUT = integerValue("codion.client.http.socketTimeout", 0);
 
 	/**
-	 * The connect timeout in milliseconds
+	 * <p>The connect timeout in milliseconds, that is, how long establishing the connection may take. Bounded
+	 * work, unlike {@link #SOCKET_TIMEOUT}, so this one has a finite default - a misconfigured hostname or port
+	 * should fail promptly rather than hang.
+	 * <p>Zero means no timeout.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 2000 ms
+	 * <li>Default value: 10000 ms
 	 * </ul>
 	 */
-	PropertyValue<Integer> CONNECT_TIMEOUT = integerValue("codion.client.http.connectTimeout", 2000);
+	PropertyValue<Integer> CONNECT_TIMEOUT = integerValue("codion.client.http.connectTimeout", 10_000);
 
 	/**
 	 * <p>Instantiates a builder for a self-managing {@link HttpEntityConnection}, one which connects on demand

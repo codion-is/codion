@@ -46,8 +46,8 @@ final class UrlConnectionTransport implements HttpTransport {
 	private final int socketTimeout;
 
 	UrlConnectionTransport(int connectTimeout, int socketTimeout) {
-		this.connectTimeout = connectTimeout;
-		this.socketTimeout = socketTimeout;
+		this.connectTimeout = Math.max(connectTimeout, 0);
+		this.socketTimeout = Math.max(socketTimeout, 0);
 	}
 
 	@Override
