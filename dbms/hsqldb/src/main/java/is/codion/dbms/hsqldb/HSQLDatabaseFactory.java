@@ -31,7 +31,7 @@ public final class HSQLDatabaseFactory implements DatabaseFactory {
 	private static final String DRIVER_PACKAGE = "org.hsqldb";
 
 	@Override
-	public boolean driverCompatible(String driverClassName) {
+	public boolean supports(String driverClassName) {
 		return requireNonNull(driverClassName).startsWith(DRIVER_PACKAGE);
 	}
 

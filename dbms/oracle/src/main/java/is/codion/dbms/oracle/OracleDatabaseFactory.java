@@ -31,7 +31,7 @@ public final class OracleDatabaseFactory implements DatabaseFactory {
 	private static final String DRIVER_PACKAGE = "oracle.jdbc";
 
 	@Override
-	public boolean driverCompatible(String driverClassName) {
+	public boolean supports(String driverClassName) {
 		return requireNonNull(driverClassName).startsWith(DRIVER_PACKAGE);
 	}
 

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.83
+### is.codion.common.db
+- DatabaseFactory.driverCompatible() renamed supports(), driverClassName() removed.
 
 ## 0.18.82
 ### is.codion

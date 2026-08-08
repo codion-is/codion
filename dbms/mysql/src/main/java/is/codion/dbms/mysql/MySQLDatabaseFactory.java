@@ -31,7 +31,7 @@ public final class MySQLDatabaseFactory implements DatabaseFactory {
 	private static final String DRIVER_PACKAGE = "com.mysql";
 
 	@Override
-	public boolean driverCompatible(String driverClassName) {
+	public boolean supports(String driverClassName) {
 		return requireNonNull(driverClassName).startsWith(DRIVER_PACKAGE);
 	}
 

@@ -38,9 +38,9 @@ public interface DatabaseFactory {
 
 	/**
 	 * @param driverClassName the driver class name
-	 * @return true if this database factory is compatible with the given driver
+	 * @return true if this database factory supports the given driver
 	 */
-	boolean driverCompatible(String driverClassName);
+	boolean supports(String driverClassName);
 
 	/**
 	 * @param url the jdbc url
@@ -65,24 +65,15 @@ public interface DatabaseFactory {
 	 * @throws IllegalStateException in case no implementation exists for the given jdbc url
 	 */
 	static DatabaseFactory instance(String url) throws SQLException {
-		String driver = driverClassName(url);
+		String driver = DriverManager.getDriver(requireNonNull(url)).getClass().getName();
 		try {
 			return stream(ServiceLoader.load(DatabaseFactory.class).spliterator(), false)
-							.filter(factory -> factory.driverCompatible(driver))
+							.filter(factory -> factory.supports(driver))
 							.findFirst()
 							.orElseThrow(() -> new IllegalStateException("No DatabaseFactory implementation available for driver: " + driver));
 		}
 		catch (ServiceConfigurationError e) {
 			throw Exceptions.runtime(e, ServiceConfigurationError.class);
 		}
-	}
-
-	/**
-	 * @param url the jdbc url
-	 * @return the database driver class name according to jdbc url
-	 * @throws SQLException in case loading of database driver failed
-	 */
-	static String driverClassName(String url) throws SQLException {
-		return DriverManager.getDriver(requireNonNull(url)).getClass().getName();
 	}
 }
