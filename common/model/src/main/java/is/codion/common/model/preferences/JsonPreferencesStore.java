@@ -34,6 +34,7 @@ import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
@@ -159,7 +160,10 @@ final class JsonPreferencesStore {
 	 * @throws IOException if an I/O error occurs
 	 */
 	void reload() throws IOException {
-		if (Files.exists(filePath)) {
+		// no exists() check first: the file can be deleted between the check and the read - by save()
+		// when the preferences are emptied, or by another process - so ask for the timestamp and treat
+		// its absence as the answer, rather than racing between the two calls
+		try {
 			long currentModified = Files.getLastModifiedTime(filePath).toMillis();
 			if (currentModified != lastModified) {
 				LOG.debug("File has been modified externally, reloading from {}", filePath);
@@ -169,18 +173,22 @@ final class JsonPreferencesStore {
 				LOG.trace("File has not been modified, skipping reload");
 			}
 		}
-		else {
+		catch (NoSuchFileException e) {
 			LOG.trace("File does not exist, nothing to reload");
 		}
 	}
 
 	/**
-	 * Deletes the prferences file along with the lock file
+	 * Deletes the preferences file. The lock file is deliberately left in place: deleting it while
+	 * another thread or process holds a {@link FileLock} on it unlinks the inode they locked, so the
+	 * next {@code acquireLock()} creates and locks a different file and mutual exclusion silently fails.
 	 * @throws IOException in case of an exception
 	 */
 	void delete() throws IOException {
-		Files.deleteIfExists(filePath);
-		Files.deleteIfExists(lockFilePath);
+		try (FileLock lock = acquireExclusiveLock()) {
+			Files.deleteIfExists(filePath);
+			lastModified = 0;
+		}
 	}
 
 	/**
@@ -197,35 +205,47 @@ final class JsonPreferencesStore {
 	}
 
 	private void loadData() throws IOException {
-		if (Files.exists(filePath)) {
-			LOG.trace("Loading preferences from {}", filePath);
-			try (FileLock lock = acquireSharedLock()) {
-				String content;
-				try {
-					content = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
-				}
-				catch (MalformedInputException e) {
-					// File contains binary data or invalid encoding
-					LOG.error("Preferences file contains invalid character encoding: {}", filePath, e);
-					handleCorruptedFile("File contains invalid character encoding", e);
-					return;
-				}
-
-				try {
-					preferences.load(content);
-					lastModified = Files.getLastModifiedTime(filePath).toMillis();
-					LOG.trace("Loaded preferences from file");
-				}
-				catch (JSONException e) {
-					// Invalid JSON format
-					LOG.error("Preferences file contains invalid JSON: {}", filePath, e);
-					handleCorruptedFile("Invalid JSON format", e);
-				}
-			}
-		}
-		else {
+		if (!Files.exists(filePath)) {
+			// fast path only, so the common "no preferences yet" case costs no lock; this is not the
+			// authoritative check, the file may be deleted at any point after it returns true, which is
+			// what the NoSuchFileException below is for
 			LOG.trace("Preferences file does not exist, starting with empty preferences");
 			lastModified = 0;
+			return;
+		}
+		LOG.trace("Loading preferences from {}", filePath);
+		try (FileLock lock = acquireSharedLock()) {
+			String content;
+			try {
+				content = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
+			}
+			catch (NoSuchFileException e) {
+				// as in reload(): no exists() check, the file may be deleted concurrently
+				LOG.trace("Preferences file does not exist, starting with empty preferences");
+				lastModified = 0;
+				return;
+			}
+			catch (MalformedInputException e) {
+				// File contains binary data or invalid encoding
+				LOG.error("Preferences file contains invalid character encoding: {}", filePath, e);
+				handleCorruptedFile("File contains invalid character encoding", e);
+				return;
+			}
+
+			try {
+				preferences.load(content);
+				lastModified = Files.getLastModifiedTime(filePath).toMillis();
+				LOG.trace("Loaded preferences from file");
+			}
+			catch (NoSuchFileException e) {
+				// deleted between the read and the timestamp; the content read above is still valid
+				lastModified = 0;
+			}
+			catch (JSONException e) {
+				// Invalid JSON format
+				LOG.error("Preferences file contains invalid JSON: {}", filePath, e);
+				handleCorruptedFile("Invalid JSON format", e);
+			}
 		}
 	}
 
@@ -269,6 +289,9 @@ final class JsonPreferencesStore {
 						// Success - resources will be closed by FileLockWrapper
 						RandomAccessFile successFile = lockFile;
 						lockFile = null; // Prevent cleanup in finally block
+						// and the channel likewise: closing a FileChannel releases every lock held on it,
+						// so closing it here would hand back a lock that was already released
+						channel = null;
 						LOG.trace("Lock acquired successfully after {} retries", retryCount);
 						return new FileLockWrapper(lock, successFile);
 					}
