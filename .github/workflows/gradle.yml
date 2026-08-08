@@ -23,6 +23,16 @@ jobs:
     - uses: gradle/actions/wrapper-validation@v4
     - name: Build with Gradle
       run: xvfb-run ./gradlew build --stacktrace
+    - name: Upload test reports
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: test-reports-linux
+        path: |
+          **/build/test-results/test/**/*.xml
+          **/build/reports/tests/**
+        if-no-files-found: ignore
+        retention-days: 30
   build-windows:
     runs-on: windows-latest
     timeout-minutes: 15
@@ -37,6 +47,16 @@ jobs:
     - uses: gradle/actions/wrapper-validation@v4
     - name: Build with Gradle
       run: ./gradlew build --stacktrace
+    - name: Upload test reports
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: test-reports-windows
+        path: |
+          **/build/test-results/test/**/*.xml
+          **/build/reports/tests/**
+        if-no-files-found: ignore
+        retention-days: 30
   build-mac:
     runs-on: macos-latest
     timeout-minutes: 15
@@ -51,3 +71,13 @@ jobs:
     - uses: gradle/actions/wrapper-validation@v4
     - name: Build with Gradle
       run: ./gradlew build --stacktrace
+    - name: Upload test reports
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: test-reports-mac
+        path: |
+          **/build/test-results/test/**/*.xml
+          **/build/reports/tests/**
+        if-no-files-found: ignore
+        retention-days: 30
