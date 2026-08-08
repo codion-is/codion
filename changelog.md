@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.83
+
 ## 0.18.82
 ### is.codion
 - Minimum JDK changed from 17 to 21.
