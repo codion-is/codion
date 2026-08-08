@@ -338,8 +338,8 @@ public class EntityPanel extends JPanel {
 	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel,
 										 Consumer<Config> config) {
 		this.entityModel = requireNonNull(entityModel);
-		this.editPanel = editPanel;
-		this.tablePanel = tablePanel;
+		this.editPanel = validateEditModel(editPanel);
+		this.tablePanel = validateTableModel(tablePanel);
 		this.configuration = configure(config);
 		setFocusCycleRoot(configuration.focusCycleRoot);
 		this.editControlPanel = createEditControlPanel();
@@ -1157,6 +1157,24 @@ public class EntityPanel extends JPanel {
 		else if (containsEditPanel()) {
 			controlMap.control(REFRESH).set(createRefreshEntityControl());
 		}
+	}
+
+	private @Nullable EntityEditPanel validateEditModel(@Nullable EntityEditPanel editPanel) {
+		if (editPanel != null && editPanel.editModel() != editModel()) {
+			throw new IllegalArgumentException("Edit panel model must be the same instance as the entity model's edit model, expected "
+							+ editModel().entityType() + ", got " + editPanel.editModel().entityType());
+		}
+
+		return editPanel;
+	}
+
+	private @Nullable EntityTablePanel validateTableModel(@Nullable EntityTablePanel tablePanel) {
+		if (tablePanel != null && tablePanel.tableModel() != tableModel()) {
+			throw new IllegalArgumentException("Table panel model must be the same instance as the entity model's table model, expected "
+							+ tableModel().entityType() + ", got " + tablePanel.tableModel().entityType());
+		}
+
+		return tablePanel;
 	}
 
 	private final class ShowHiddenEditPanel implements Control.Command {
