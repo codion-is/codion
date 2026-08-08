@@ -25,6 +25,7 @@ import is.codion.common.reactive.value.Value;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -40,7 +41,7 @@ final class DefaultSummaryModel<T extends Number> implements SummaryModel {
 	private final Value<String> summaryText = Value.nullable();
 	private final State locked = State.state();
 	private final SummaryValues<T> summaryValues;
-	private final List<Summary> summaries = asList(ColumnSummary.values());
+	private final List<Summary> summaries = unmodifiableList(asList(ColumnSummary.values()));
 
 	DefaultSummaryModel(SummaryValues<T> summaryValues) {
 		this.summaryValues = requireNonNull(summaryValues);

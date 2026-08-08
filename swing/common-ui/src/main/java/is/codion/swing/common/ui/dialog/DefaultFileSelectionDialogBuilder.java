@@ -42,6 +42,7 @@ import static java.awt.Cursor.getDefaultCursor;
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
@@ -277,7 +278,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 					selectedFiles = singletonList(fileChooserOpen.getSelectedFile());
 				}
 				else {
-					selectedFiles = asList(fileChooserOpen.getSelectedFiles());
+					selectedFiles = unmodifiableList(asList(fileChooserOpen.getSelectedFiles()));
 				}
 				if (!selectedFiles.isEmpty()) {
 					return selectedFiles;

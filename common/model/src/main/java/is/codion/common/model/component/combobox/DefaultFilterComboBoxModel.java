@@ -359,7 +359,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			synchronized (lock) {
 				List<T> includedItems = included.get();
 				if (filtered.items.isEmpty()) {
-					return unmodifiableCollection(new ArrayList<>(includedItems));
+					return unmodifiableList(new ArrayList<>(includedItems));
 				}
 				List<T> entities = new ArrayList<>(includedItems.size() + filtered.items.size());
 				entities.addAll(includedItems);
@@ -759,7 +759,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			@Override
 			public Collection<T> get() {
 				synchronized (lock) {
-					return unmodifiableCollection(new ArrayList<>(items));
+					return unmodifiableList(new ArrayList<>(items));
 				}
 			}
 

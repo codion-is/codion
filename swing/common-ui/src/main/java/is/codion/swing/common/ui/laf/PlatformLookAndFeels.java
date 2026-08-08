@@ -23,6 +23,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -33,10 +34,10 @@ public final class PlatformLookAndFeels implements LookAndFeelProvider {
 
 	@Override
 	public Collection<LookAndFeelEnabler> get() {
-		return Stream.of(UIManager.getInstalledLookAndFeels())
+		return unmodifiableList(Stream.of(UIManager.getInstalledLookAndFeels())
 						.filter(PlatformLookAndFeels::included)
 						.map(lookAndFeelInfo -> new DefaultLookAndFeelEnabler(lookAndFeelInfo, true, false))
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	private static boolean included(LookAndFeelInfo lookAndFeelInfo) {

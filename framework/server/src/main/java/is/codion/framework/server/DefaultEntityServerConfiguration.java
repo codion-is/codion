@@ -32,11 +32,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static is.codion.common.utilities.Text.nullOrEmpty;
-import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -64,8 +65,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		this.methodTracing = builder.methodTracing;
 		this.idleConnectionTimeout = builder.idleConnectionTimeout;
 		this.connectionPoolFactory = builder.connectionPoolFactory;
-		this.domainClasses = unmodifiableCollection(builder.domainClasses);
-		this.connectionPoolUsers = unmodifiableCollection(builder.connectionPoolUsers);
+		this.domainClasses = unmodifiableSet(builder.domainClasses);
+		this.connectionPoolUsers = unmodifiableSet(builder.connectionPoolUsers);
 		this.clientTypeIdleConnectionTimeouts = unmodifiableMap(builder.clientTypeIdleConnectionTimeouts);
 	}
 
@@ -193,8 +194,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		private boolean methodTracing = METHOD_TRACING.getOrThrow();
 		private int idleConnectionTimeout = IDLE_CONNECTION_TIMEOUT.getOrThrow();
 		private String connectionPoolFactory = CONNECTION_POOL_FACTORY.get();
-		private final Collection<String> domainClasses = new HashSet<>();
-		private final Collection<User> connectionPoolUsers = new HashSet<>();
+		private final Set<String> domainClasses = new HashSet<>();
+		private final Set<User> connectionPoolUsers = new HashSet<>();
 		private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
 		DefaultBuilder() {

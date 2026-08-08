@@ -318,10 +318,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		if (requireNonNull(entities, ENTITIES).isEmpty()) {
 			return emptyList();
 		}
-		Collection<Entity> insertedEntities = new ArrayList<>(entities.size());
+		List<Entity> insertedEntities = new ArrayList<>(entities.size());
 		insert(entities, insertedEntities);
 
-		return insertedEntities;
+		return unmodifiableList(insertedEntities);
 	}
 
 	@Override
@@ -344,10 +344,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 		if (requireNonNull(entities, ENTITIES).isEmpty()) {
 			return emptyList();
 		}
-		Collection<Entity> updatedEntities = new ArrayList<>(entities.size());
+		List<Entity> updatedEntities = new ArrayList<>(entities.size());
 		update(entities, updatedEntities);
 
-		return updatedEntities;
+		return unmodifiableList(updatedEntities);
 	}
 
 	@Override
@@ -487,7 +487,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				}
 				commitIfTransactionIsNotOpen();
 
-				return result;
+				return unmodifiableList(result);
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
@@ -632,6 +632,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 					}
 				}
 				commitIfTransactionIsNotOpen();
+
+				dependencyMap.entrySet().forEach(entry ->
+								entry.setValue(unmodifiableSet(new HashSet<>(entry.getValue()))));
+
+				return unmodifiableMap(dependencyMap);
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
@@ -639,8 +644,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				throw Exceptions.runtime(exception);
 			}
 		}
-
-		return dependencyMap;
 	}
 
 	@Override
@@ -913,7 +916,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				}
 				commitIfTransactionIsNotOpen();
 
-				return insertedKeys;
+				return unmodifiableList(insertedKeys);
 			}
 			catch (Exception exception) {
 				rollbackQuietlyIfTransactionIsNotOpen();
@@ -1392,7 +1395,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				result.add(iterator.next());
 			}
 
-			return result;
+			return unmodifiableList(result);
 		}
 		catch (Exception e) {
 			packingException = e;
@@ -1412,7 +1415,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Conne
 				result.add(columnDefinition.get(resultSet, 1, database));
 			}
 
-			return result;
+			return unmodifiableList(result);
 		}
 		catch (SQLException e) {
 			packingException = e;

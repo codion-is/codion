@@ -30,13 +30,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Spliterators.spliteratorUnknownSize;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A Logback LoggerProxy implementation
@@ -58,7 +59,7 @@ public final class LogbackProxy implements LoggerProxy {
 
 	@Override
 	public List<Object> levels() {
-		return asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);
+		return unmodifiableList(asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR));
 	}
 
 	@Override
@@ -68,21 +69,21 @@ public final class LogbackProxy implements LoggerProxy {
 
 	@Override
 	public Collection<String> loggers() {
-		return ((LoggerContext) LoggerFactory.getILoggerFactory()).getLoggerList().stream()
+		return unmodifiableList(((LoggerContext) LoggerFactory.getILoggerFactory()).getLoggerList().stream()
 						.map(Logger::getName)
-						.collect(Collectors.toList());
+						.collect(toList()));
 	}
 
 	@Override
 	public Collection<String> files() {
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-		return context.getLoggerList().stream()
+		return unmodifiableList(context.getLoggerList().stream()
 						.flatMap(LogbackProxy::appenders)
 						.filter(FileAppender.class::isInstance)
 						.map(FileAppender.class::cast)
 						.map(FileAppender::getFile)
-						.collect(Collectors.toList());
+						.collect(toList()));
 	}
 
 	private static Stream<Appender<ILoggingEvent>> appenders(Logger logger) {

@@ -41,7 +41,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.Collections.emptySet;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
@@ -394,7 +394,7 @@ public final class SchemaDomain extends DomainModel {
 			@Override
 			public Builder auditColumnNames(String... auditColumnNames) {
 				requireNonNull(auditColumnNames);
-				this.auditColumnNames = unmodifiableCollection(Arrays.stream(auditColumnNames)
+				this.auditColumnNames = unmodifiableSet(Arrays.stream(auditColumnNames)
 								.map(String::trim)
 								.map(String::toLowerCase)
 								.collect(toSet()));

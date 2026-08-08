@@ -838,7 +838,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		public EditorTask<Collection<Entity>> insert(Collection<Entity> entities) throws EntityValidationException {
 			settings.verifyInsertEnabled();
 			validate(requireNonNull(entities));
-			entities = unmodifiableCollection(new ArrayList<>(entities));
+			entities = unmodifiableList(new ArrayList<>(entities));
 			persistEvents.beforeInsert(entities);
 
 			return new InsertEntities(entities);
@@ -879,7 +879,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 					throw new IllegalStateException(NOT_MODIFIED + entity);
 				}
 			}
-			entities = unmodifiableCollection(new ArrayList<>(entities));
+			entities = unmodifiableList(new ArrayList<>(entities));
 			persistEvents.beforeUpdate(entities);
 
 			return new UpdateEntities(entities);
@@ -908,7 +908,7 @@ public abstract class AbstractEntityEditor<R extends AbstractEntityEditor<R>> im
 		@Override
 		public EditorTask<Collection<Entity>> delete(Collection<Entity> entities) {
 			settings.verifyDeleteEnabled();
-			entities = unmodifiableCollection(requireNonNull(entities).stream()
+			entities = unmodifiableList(requireNonNull(entities).stream()
 							.map(entity -> entity.copy().builder()
 											.original()// in case of a modified primary key
 											.build())

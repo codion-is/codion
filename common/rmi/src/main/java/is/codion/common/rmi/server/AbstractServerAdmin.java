@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -189,7 +190,7 @@ public class AbstractServerAdmin extends UnicastRemoteObject implements ServerAd
 			threadStateMap.compute(bean.getThreadInfo(threadId).getThreadState(), (threadState, value) -> value == null ? 1 : value + 1);
 		}
 
-		return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
+		return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount(), unmodifiableMap(threadStateMap));
 	}
 
 	private void initializeGarbageCollectionListener() {

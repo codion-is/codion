@@ -31,6 +31,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.lang.reflect.Modifier.*;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -73,7 +74,7 @@ final class DefaultControlMap implements ControlMap {
 
 	@Override
 	public Collection<Value<Control>> controls() {
-		return controls.values();
+		return unmodifiableCollection(controls.values());
 	}
 
 	@Override

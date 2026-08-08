@@ -485,7 +485,7 @@ public final class DomainGeneratorModel {
 		}
 
 		private Collection<SchemaRow> schemaRows(ResultSet resultSet) throws SQLException {
-			Collection<SchemaRow> schemaRows = new ArrayList<>();
+			List<SchemaRow> schemaRows = new ArrayList<>();
 			while (resultSet.next()) {
 				String tableSchem = resultSet.getString("TABLE_SCHEM");
 				if (tableSchem != null) {
@@ -496,7 +496,7 @@ public final class DomainGeneratorModel {
 				schemaRows.add(new SchemaRow(DEFAULT_SCHEMA_SETTINGS));
 			}
 
-			return schemaRows;
+			return unmodifiableList(schemaRows);
 		}
 
 		private SchemaSettings loadSchemaSettings(String tableSchem) {
@@ -517,14 +517,14 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<EntityRow> get() {
-			return schemaTableModel.selection().item().optional()
+			return unmodifiableList(schemaTableModel.selection().item().optional()
 							.map(SchemaRow::domain)
 							.filter(Optional::isPresent)
 							.map(Optional::get)
 							.map(domain -> domain.entities().definitions().stream()
 											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()), false))
 											.collect(toList()))
-							.orElse(emptyList());
+							.orElse(emptyList()));
 		}
 	}
 

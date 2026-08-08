@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -85,7 +84,7 @@ final class MetaDataTable {
 	}
 
 	Collection<MetaDataForeignKeyConstraint> foreignKeys() {
-		return unmodifiableCollection(foreignKeys);
+		return unmodifiableList(foreignKeys);
 	}
 
 	@Override

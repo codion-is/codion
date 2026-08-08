@@ -42,8 +42,7 @@ import java.util.Optional;
 
 import static is.codion.swing.common.ui.window.Windows.resizeToFitScreen;
 import static java.awt.event.KeyEvent.VK_ENTER;
-import static java.util.Collections.reverseOrder;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
@@ -148,7 +147,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 				throw new CancelException();
 			}
 
-			return list.getSelectedValuesList();
+			return unmodifiableList(list.getSelectedValuesList());
 		}
 
 		private FilterList<T> createList(boolean singleSelection) {

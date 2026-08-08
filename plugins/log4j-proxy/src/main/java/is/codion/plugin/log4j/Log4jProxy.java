@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -62,7 +63,7 @@ public final class Log4jProxy implements LoggerProxy {
 
 	@Override
 	public List<Object> levels() {
-		return asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL);
+		return unmodifiableList(asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL));
 	}
 
 	@Override
@@ -72,19 +73,19 @@ public final class Log4jProxy implements LoggerProxy {
 
 	@Override
 	public Collection<String> loggers() {
-		return ((LoggerContext) LogManager.getContext(false)).getLoggers().stream()
+		return unmodifiableList(((LoggerContext) LogManager.getContext(false)).getLoggers().stream()
 						.map(Logger::getName)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	@Override
 	public Collection<String> files() {
 		Map<String, Appender> appenderMap = ((Logger) LogManager.getLogger()).getAppenders();
 
-		return appenderMap.values().stream()
+		return unmodifiableList(appenderMap.values().stream()
 						.filter(RollingFileAppender.class::isInstance)
 						.map(RollingFileAppender.class::cast)
 						.map(RollingFileAppender::getFileName)
-						.collect(toList());
+						.collect(toList()));
 	}
 }

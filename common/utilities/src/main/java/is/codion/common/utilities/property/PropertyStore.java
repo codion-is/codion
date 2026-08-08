@@ -43,6 +43,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -380,10 +381,10 @@ public final class PropertyStore {
 	 */
 	public Collection<String> properties(Predicate<String> predicate) {
 		requireNonNull(predicate);
-		return properties.stringPropertyNames().stream()
+		return unmodifiableList(properties.stringPropertyNames().stream()
 						.filter(predicate)
 						.map(properties::getProperty)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	/**
@@ -393,9 +394,9 @@ public final class PropertyStore {
 	 */
 	public Collection<String> propertyNames(Predicate<String> predicate) {
 		requireNonNull(predicate);
-		return properties.stringPropertyNames().stream()
+		return unmodifiableList(properties.stringPropertyNames().stream()
 						.filter(predicate)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	/**

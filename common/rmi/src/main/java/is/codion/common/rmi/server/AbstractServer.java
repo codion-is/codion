@@ -60,7 +60,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.stream.Collectors.*;
@@ -77,7 +77,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
 	private final Map<String, Authenticator> authenticators = new HashMap<>();
 	private final Collection<Authenticator> sharedAuthenticators = new ArrayList<>();
-	private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
+	private final List<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 	private final TaskScheduler connectionMaintenanceScheduler;
 	private final Thread shutdownHook;
 
@@ -305,10 +305,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	 * @return info on all connected clients
 	 */
 	final Collection<RemoteClient> clients() {
-		return connections().keySet().stream()
+		return unmodifiableList(connections().keySet().stream()
 						.map(RemoteClient::copy)
 						.map(AbstractServer::clearPasswords)
-						.collect(toList());
+						.collect(toList()));
 	}
 
 	/**
@@ -396,7 +396,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> im
 	 * @return an unmodifiable view of the auxiliary servers running alongside this server
 	 */
 	protected final Collection<AuxiliaryServer> auxiliaryServers() {
-		return unmodifiableCollection(auxiliaryServers);
+		return unmodifiableList(auxiliaryServers);
 	}
 
 	/**

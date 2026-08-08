@@ -107,7 +107,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public Collection<R> get() {
 		synchronized (lock) {
 			if (filtered.items.isEmpty()) {
-				return unmodifiableCollection(new ArrayList<>(included.items));
+				return unmodifiableList(new ArrayList<>(included.items));
 			}
 			List<R> entities = new ArrayList<>(included.items.size() + filtered.items.size());
 			entities.addAll(included.items);
@@ -552,7 +552,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 					}
 					notifyChanges();
 
-					return removedItems;
+					return unmodifiableList(removedItems);
 				}
 			});
 		}

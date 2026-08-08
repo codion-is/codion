@@ -26,12 +26,14 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.tools.loadtest.Scenario.Performer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.framework.db.EntityConnection.transaction;
+import static is.codion.framework.domain.entity.Entity.primaryKeys;
 
 public final class RandomPlaylist implements Performer<EntityConnection> {
 
@@ -46,7 +48,7 @@ public final class RandomPlaylist implements Performer<EntityConnection> {
 						RANDOM.nextInt(20) + 25, playlistGenres);
 		Entity playlist = transaction(connection, () -> connection.execute(Playlist.RANDOM_PLAYLIST, parameters));
 		Collection<Entity> playlistTracks = connection.select(PlaylistTrack.PLAYLIST_FK.equalTo(playlist));
-		Collection<Entity.Key> toDelete = Entity.primaryKeys(playlistTracks);
+		Collection<Entity.Key> toDelete = new ArrayList<>(primaryKeys(playlistTracks));
 		toDelete.add(playlist.primaryKey());
 
 		connection.delete(toDelete);

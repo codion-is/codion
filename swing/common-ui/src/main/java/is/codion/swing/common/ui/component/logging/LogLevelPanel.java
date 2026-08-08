@@ -49,6 +49,7 @@ import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
@@ -202,7 +203,7 @@ public final class LogLevelPanel extends JPanel {
 				rows.add(new DefaultLogLevelRow(logger, logLevel == null ? rootLevel : logLevel));
 			});
 
-			return rows;
+			return unmodifiableList(rows);
 		}
 	}
 
@@ -266,7 +267,7 @@ public final class LogLevelPanel extends JPanel {
 
 	private static class LogLevelColumns implements TableColumns<LogLevelRow, LogLevelColumn> {
 
-		private static final List<LogLevelColumn> IDENTIFIERS = asList(LogLevelColumn.values());
+		private static final List<LogLevelColumn> IDENTIFIERS = unmodifiableList(asList(LogLevelColumn.values()));
 
 		@Override
 		public List<LogLevelColumn> identifiers() {

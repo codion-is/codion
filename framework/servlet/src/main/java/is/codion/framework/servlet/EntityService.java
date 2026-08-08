@@ -612,7 +612,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				ServerEntityConnection connection = authenticate(context);
-				List<Entity.Key> keys = deserialize(context.req());
+				Collection<Entity.Key> keys = deserialize(context.req());
 				Collection<Entity> selected = connection.select(keys);
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
