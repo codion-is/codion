@@ -31,7 +31,9 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,5 +74,36 @@ public final class EditorComponentsTest {
 		ComponentFactory factory = new ComponentFactory(components);
 		JTextField textField = factory.textField(Detail.INT_DERIVED).build();
 		assertFalse(textField.isEnabled());
+	}
+
+	@Test
+	void inputPanelLabel() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION);
+		EditorComponents components = EditorComponents.editorComponents(editModel.editor());
+		ComponentFactory create = new ComponentFactory(components);
+		create.textField(Employee.NAME);
+		create.textField(Employee.JOB);
+		create.textField(Employee.SALARY);
+
+		// The caption based label the factory supplies, when nothing else is specified.
+		assertEquals(Employee.NAME.name(), ((JLabel) labelOf(create.inputPanel(Employee.NAME).build())).getText());
+
+		// Overriding it, through an inherited overload and through one of the panel builder's own. Which of the
+		// five label() overloads a call binds to follows from the argument's static type, so any of them has to
+		// be able to replace the factory's - it is the last call that counts, not which overload was used.
+		assertEquals("The job", ((JLabel) labelOf(create.inputPanel(Employee.JOB)
+						.label("The job")
+						.build())).getText());
+		JTextField ownLabel = new JTextField("The salary");
+		assertSame(ownLabel, labelOf(create.inputPanel(Employee.SALARY)
+						.label(() -> ownLabel)
+						.build()));
+	}
+
+	// The label is the panel's first child, the input component its second - see InputPanelLayout.
+	private static JComponent labelOf(JPanel inputPanel) {
+		assertEquals(2, inputPanel.getComponentCount());
+
+		return (JComponent) inputPanel.getComponent(0);
 	}
 }

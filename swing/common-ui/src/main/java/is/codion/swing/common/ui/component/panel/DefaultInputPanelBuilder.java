@@ -28,7 +28,6 @@ import javax.swing.JPanel;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElse;
 
 final class DefaultInputPanelBuilder extends AbstractComponentBuilder<JPanel, InputPanelBuilder> implements InputPanelBuilder {
 
@@ -38,6 +37,12 @@ final class DefaultInputPanelBuilder extends AbstractComponentBuilder<JPanel, In
 	private InputPanelLayout layout = InputPanelLayout
 					.border()
 					.build();
+
+	@Override
+	public InputPanelBuilder label(@Nullable JLabel label) {
+		this.label = label;
+		return this;
+	}
 
 	@Override
 	public InputPanelBuilder label(JComponent labelComponent) {
@@ -69,14 +74,23 @@ final class DefaultInputPanelBuilder extends AbstractComponentBuilder<JPanel, In
 
 	@Override
 	protected JPanel createComponent() {
-		JLabel componentLabel = label();
-		if (componentLabel == null && label == null) {
+		if (label == null) {
 			throw new IllegalStateException("You must specify a label component before building an input panel");
 		}
 		if (component == null) {
-			throw new IllegalStateException("You must specify a input component before building an input panel	");
+			throw new IllegalStateException("You must specify an input component before building an input panel");
 		}
+		labelFor(label, component);
 
-		return layout.layout(requireNonNullElse(label, componentLabel), component);
+		return layout.layout(label, component);
+	}
+
+	// A label built from text alone carries no labelFor, so its mnemonic would have nothing to focus. The
+	// input component is what it labels, whatever an outer layout does with the panel. Only when unset, an
+	// explicit association - the one the attribute components come with - is the caller's and stands.
+	private static void labelFor(JComponent label, JComponent component) {
+		if (label instanceof JLabel && ((JLabel) label).getLabelFor() == null) {
+			((JLabel) label).setLabelFor(component);
+		}
 	}
 }
