@@ -1010,7 +1010,7 @@ public final class EntitySearchField extends HintTextField {
 
 			//sort ascending by the first search column (definition-ordered by default)
 			filterTable.model().sort().ascending(searchField.model.columns().iterator().next());
-			filterTable.columnModel().visible().set(searchField.model.columns().toArray(new Attribute[0]));
+			filterTable.columns().visible().set(searchField.model.columns().toArray(new Attribute[0]));
 
 			return filterTable;
 		}

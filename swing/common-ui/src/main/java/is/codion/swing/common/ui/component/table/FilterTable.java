@@ -375,7 +375,7 @@ public final class FilterTable<R, C> extends JTable {
 	private FilterTable(DefaultBuilder<R, C> builder) {
 		super(builder.tableModel, createColumnModel(builder), builder.tableModel.selection());
 		this.tableModel = builder.tableModel;
-		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columnModel());
+		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columns());
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
 						new DefaultSummaryValuesFactory() : builder.summaryValuesFactory);
 		this.filterPanelFactory = builder.filterPanelFactory;
@@ -464,7 +464,7 @@ public final class FilterTable<R, C> extends JTable {
 	public void updateUI() {
 		super.updateUI();
 		Utilities.updateUI(getTableHeader(), searchField, filterPanel);
-		Utilities.updateUI(columnModel().hidden().columns().stream()
+		Utilities.updateUI(columns().hidden().columns().stream()
 						.flatMap(FilterTable::columnComponents)
 						.collect(toList()));
 		updateCellEditorUI();
@@ -490,7 +490,7 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return the column model
 	 */
-	public FilterTableColumnModel<C> columnModel() {
+	public FilterTableColumnModel<C> columns() {
 		return getColumnModel();
 	}
 
@@ -513,7 +513,7 @@ public final class FilterTable<R, C> extends JTable {
 	public boolean isCellEditable(int row, int column) {
 		return super.isCellEditable(row, column) &&
 						cellEditable.test(model().items().included().get(row),
-										columnModel().getColumn(column).identifier());
+										columns().columnAt(column).identifier());
 	}
 
 	@Override
@@ -556,7 +556,7 @@ public final class FilterTable<R, C> extends JTable {
 	public TableConditionPanel<C> filters() {
 		if (filterPanel == null) {
 			filterPanel = filterPanelFactory.create(tableModel.filters(), createFilterPanels(),
-							columnModel(), this::configureFilterConditionPanel);
+							columns(), this::configureFilterConditionPanel);
 		}
 
 		return filterPanel;
@@ -634,7 +634,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * Shows a dialog for selecting which columns to display
 	 */
 	public void selectColumns() {
-		ColumnSelectionPanel<C> columnSelectionPanel = new ColumnSelectionPanel<>(columnModel());
+		ColumnSelectionPanel<C> columnSelectionPanel = new ColumnSelectionPanel<>(columns());
 		Dialogs.okCancel()
 						.component(columnSelectionPanel)
 						.owner(getParent())
@@ -683,7 +683,7 @@ public final class FilterTable<R, C> extends JTable {
 		requireNonNull(identifier);
 		Ancestor.ofType(JViewport.class).of(this).optional().ifPresent(viewport ->
 						scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
-										columnModel().getColumnIndex(identifier), CenterOnScroll.NEITHER));
+										columns().indexOf(identifier), CenterOnScroll.NEITHER));
 	}
 
 	/**
@@ -705,7 +705,7 @@ public final class FilterTable<R, C> extends JTable {
 		int selectedRow = getSelectedRow();
 		int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
 		if (selectedRow >= 0 && selectedColumn >= 0) {
-			FilterTableColumn<C> column = columnModel().getColumn(selectedColumn);
+			FilterTableColumn<C> column = columns().columnAt(selectedColumn);
 			Utilities.setClipboard(model().values().formatted(selectedRow, column.identifier()));
 		}
 	}
@@ -718,7 +718,7 @@ public final class FilterTable<R, C> extends JTable {
 		int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
 		if (selectedColumn >= 0) {
 			Utilities.setClipboard(tableModel.export()
-							.columns(singletonList(columnModel().getColumn(selectedColumn).identifier()))
+							.columns(singletonList(columns().columnAt(selectedColumn).identifier()))
 							.header(false)
 							.selected(!selectionModel.isSelectionEmpty())
 							.get());
@@ -734,8 +734,8 @@ public final class FilterTable<R, C> extends JTable {
 	public void copyRows() {
 		Utilities.setClipboard(tableModel.export()
 						.columns(getColumnSelectionAllowed() ?
-										columnModel().selection().identifiers().getOrThrow() :
-										columnModel().visible().get())
+										columns().selection().identifiers().getOrThrow() :
+										columns().visible().get())
 						.delimiter('\t')
 						.selected(!selectionModel.isSelectionEmpty())
 						.get());
@@ -748,7 +748,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::selectColumns)
 						.caption(MESSAGES.getString(SELECT) + "...")
-						.enabled(columnModel().locked().not())
+						.enabled(columns().locked().not())
 						.description(MESSAGES.getString(SELECT_COLUMNS))
 						.build();
 	}
@@ -759,8 +759,8 @@ public final class FilterTable<R, C> extends JTable {
 	public Controls createToggleColumnsControls() {
 		return Controls.builder()
 						.caption(MESSAGES.getString(SELECT))
-						.enabled(columnModel().locked().not())
-						.controls(columnModel().columns().stream()
+						.enabled(columns().locked().not())
+						.controls(columns().all().stream()
 										.sorted(new ColumnComparator())
 										.map(this::createToggleColumnControl)
 										.collect(toList()))
@@ -772,9 +772,9 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public CommandControl createResetColumnsControl() {
 		return Control.builder()
-						.command(columnModel()::reset)
+						.command(columns()::reset)
 						.caption(MESSAGES.getString(RESET))
-						.enabled(columnModel().locked().not())
+						.enabled(columns().locked().not())
 						.description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
 						.build();
 	}
@@ -816,7 +816,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::copyCell)
 						.caption(MESSAGES.getString("copy_cell"))
-						.enabled(State.and(tableModel.selection().empty().not(), columnModel().selection().lead().present()))
+						.enabled(State.and(tableModel.selection().empty().not(), columns().selection().lead().present()))
 						.build();
 	}
 
@@ -827,7 +827,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::copyColumn)
 						.caption(MESSAGES.getString("copy_column"))
-						.enabled(State.and(tableModel.selection().empty().not(), columnModel().selection().lead().present()))
+						.enabled(State.and(tableModel.selection().empty().not(), columns().selection().lead().present()))
 						.build();
 	}
 
@@ -1005,7 +1005,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private void toggleColumnSort(int selectedColumn, boolean previous, boolean add) {
 		if (sortable.is() && selectedColumn != -1) {
-			C identifier = columnModel().getColumn(selectedColumn).identifier();
+			C identifier = columns().columnAt(selectedColumn).identifier();
 			if (!tableModel.sort().order(identifier).locked().is()) {
 				toggleColumnSort(identifier, previous, add);
 			}
@@ -1067,21 +1067,21 @@ public final class FilterTable<R, C> extends JTable {
 
 	private ToggleControl createToggleColumnControl(FilterTableColumn<C> column) {
 		return Control.builder()
-						.toggle(columnModel().visible(column.identifier()))
+						.toggle(columns().visible(column.identifier()))
 						.caption(String.valueOf(column.getHeaderValue()))
 						.description(column.toolTipText().orElse(null))
 						.build();
 	}
 
 	private void configureColumns(DefaultBuilder<R, C> builder) {
-		columnModel().columns().stream()
+		columns().all().stream()
 						.filter(column -> column.getCellRenderer() == null)
 						.forEach(column -> column.setCellRenderer(builder.cellRenderers.getOrDefault(column.identifier(),
 										builder.cellRendererFactory.create(column.identifier(), this))));
-		columnModel().columns().stream()
+		columns().all().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
 						.forEach(column -> column.setHeaderRenderer(builder.headerRendererFactory.create(column.identifier(), this)));
-		columnModel().columns().stream()
+		columns().all().stream()
 						.filter(column -> column.getCellEditor() == null)
 						.forEach(column -> {
 							FilterTableCellEditor<?, ?> cellEditor = builder.cellEditors.get(column.identifier());
@@ -1133,9 +1133,9 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void bindEvents(DefaultBuilder<R, C>	builder) {
-		columnModel().columnHidden().addConsumer(this::onColumnHidden);
+		columns().columnHidden().addConsumer(this::onColumnHidden);
 		if (getTableHeader() != null) {
-			columnModel().selection().lead().addListener(getTableHeader()::repaint);
+			columns().selection().lead().addListener(getTableHeader()::repaint);
 			tableModel.selection().indexes().addListener(getTableHeader()::repaint);
 			tableModel.filters().changed().addListener(getTableHeader()::repaint);
 			tableModel.sort().observer().addListener(getTableHeader()::repaint);
@@ -1185,11 +1185,11 @@ public final class FilterTable<R, C> extends JTable {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			ConditionComponents components = filterComponents.getOrDefault(identifier, FILTER_COMPONENTS);
-			if (columnModel().contains(identifier) && components.supports(condition.valueClass())) {
+			if (columns().contains(identifier) && components.supports(condition.valueClass())) {
 				conditionPanels.put(identifier, ColumnConditionPanel.builder()
 								.model(condition)
 								.components(components)
-								.tableColumn(columnModel().column(identifier))
+								.tableColumn(columns().get(identifier))
 								.name(identifier.toString())
 								.build());
 			}
@@ -1208,7 +1208,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void updateCellEditorUI() {
-		columnModel().columns().forEach(column -> {
+		columns().all().forEach(column -> {
 			TableCellEditor columnCellEditor = column.getCellEditor();
 			if (columnCellEditor instanceof DefaultFilterTableCellEditor) {
 				((DefaultFilterTableCellEditor<?, ?>) columnCellEditor).updateUI();
@@ -1353,10 +1353,10 @@ public final class FilterTable<R, C> extends JTable {
 				return;
 			}
 
-			FilterTableColumnModel<C> columnModel = columnModel();
-			int index = columnModel.getColumnIndexAtX(e.getX());
+			FilterTableColumnModel<C> columns = columns();
+			int index = columns.getColumnIndexAtX(e.getX());
 			if (index >= 0) {
-				C identifier = columnModel.getColumn(index).identifier();
+				C identifier = columns.columnAt(index).identifier();
 				if (!tableModel.sort().order(identifier).locked().is()) {
 					if (!getSelectionModel().isSelectionEmpty()) {
 						setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
@@ -2259,7 +2259,7 @@ public final class FilterTable<R, C> extends JTable {
 		private void moveSelectedColumn(boolean left) {
 			int selectedColumnIndex = columnModel.getSelectionModel().getLeadSelectionIndex();
 			if (selectedColumnIndex != -1) {
-				int columnCount = columnModel().getColumnCount();
+				int columnCount = columns().getColumnCount();
 				int newIndex;
 				if (left) {
 					if (selectedColumnIndex == 0) {
@@ -2285,7 +2285,7 @@ public final class FilterTable<R, C> extends JTable {
 		private void resizeSelectedColumn(boolean enlarge) {
 			int selectedColumnIndex = columnModel.getSelectionModel().getLeadSelectionIndex();
 			if (selectedColumnIndex != -1) {
-				TableColumn column = columnModel().getColumn(selectedColumnIndex);
+				TableColumn column = columns().columnAt(selectedColumnIndex);
 				tableHeader.setResizingColumn(column);
 				column.setWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
 			}

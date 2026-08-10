@@ -63,15 +63,15 @@ public class EntityTablePanelPreferencesTest {
 	void columnVisibilityAndOrder() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
 		// Verify initial state
-		assertTrue(columnModel.visible(Detail.STRING).is());
-		assertTrue(columnModel.visible(Detail.INT).is());
+		assertTrue(columns.visible(Detail.STRING).is());
+		assertTrue(columns.visible(Detail.INT).is());
 
 		// Modify column visibility and order
-		columnModel.visible(Detail.STRING).set(false);
-		columnModel.moveColumn(columnModel.getColumnIndex(Detail.DOUBLE), 0);
+		columns.visible(Detail.STRING).set(false);
+		columns.moveColumn(columns.indexOf(Detail.DOUBLE), 0);
 
 		// Save and restore
 		tablePanel.store(preferences);
@@ -79,20 +79,20 @@ public class EntityTablePanelPreferencesTest {
 		tablePanel.restore(preferences);
 
 		// Verify restored state
-		columnModel = tablePanel.table().columnModel();
-		assertFalse(columnModel.visible(Detail.STRING).is());
-		assertEquals(0, columnModel.getColumnIndex(Detail.DOUBLE));
+		columns = tablePanel.table().columns();
+		assertFalse(columns.visible(Detail.STRING).is());
+		assertEquals(0, columns.indexOf(Detail.DOUBLE));
 	}
 
 	@Test
 	void columnWidth() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
 		// Modify column widths
-		TableColumn intColumn = columnModel.column(Detail.INT);
-		TableColumn doubleColumn = columnModel.column(Detail.DOUBLE);
+		TableColumn intColumn = columns.get(Detail.INT);
+		TableColumn doubleColumn = columns.get(Detail.DOUBLE);
 		intColumn.setWidth(150);
 		intColumn.setPreferredWidth(150);
 		doubleColumn.setWidth(200);
@@ -104,9 +104,9 @@ public class EntityTablePanelPreferencesTest {
 		tablePanel.restore(preferences);
 
 		// Verify restored widths
-		columnModel = tablePanel.table().columnModel();
-		assertEquals(150, columnModel.column(Detail.INT).getPreferredWidth());
-		assertEquals(200, columnModel.column(Detail.DOUBLE).getPreferredWidth());
+		columns = tablePanel.table().columns();
+		assertEquals(150, columns.get(Detail.INT).getPreferredWidth());
+		assertEquals(200, columns.get(Detail.DOUBLE).getPreferredWidth());
 	}
 
 	// Condition, filter and sort persistence is model-owned and covered by AbstractEntityTableModelTest.preferences()
@@ -142,18 +142,18 @@ public class EntityTablePanelPreferencesTest {
 	void emptyPreferences() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
 		// Remember initial state
-		boolean stringVisible = columnModel.visible(Detail.STRING).is();
-		int intWidth = columnModel.column(Detail.INT).getPreferredWidth();
+		boolean stringVisible = columns.visible(Detail.STRING).is();
+		int intWidth = columns.get(Detail.INT).getPreferredWidth();
 
 		// Apply empty preferences (nothing saved yet)
 		tablePanel.restore(preferences);
 
 		// Verify defaults are unchanged
-		assertEquals(stringVisible, columnModel.visible(Detail.STRING).is());
-		assertEquals(intWidth, columnModel.column(Detail.INT).getPreferredWidth());
+		assertEquals(stringVisible, columns.visible(Detail.STRING).is());
+		assertEquals(intWidth, columns.get(Detail.INT).getPreferredWidth());
 	}
 
 	@Test
@@ -161,9 +161,9 @@ public class EntityTablePanelPreferencesTest {
 		// Save preferences with current columns
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
-		columnModel.column(Detail.INT).setWidth(175);
+		columns.get(Detail.INT).setWidth(175);
 		tablePanel.store(preferences);
 
 		// Manually inject a preference for a non-existent column
@@ -177,18 +177,18 @@ public class EntityTablePanelPreferencesTest {
 		assertDoesNotThrow(() -> newTablePanel.restore(preferences));
 
 		// Verify valid preferences were still applied
-		columnModel = newTablePanel.table().columnModel();
-		assertEquals(175, columnModel.column(Detail.INT).getPreferredWidth());
+		columns = newTablePanel.table().columns();
+		assertEquals(175, columns.get(Detail.INT).getPreferredWidth());
 	}
 
 	@Test
 	void newColumnNotHiddenByOldPreferences() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
 		// Hide STRING column and save preferences
-		columnModel.visible(Detail.STRING).set(false);
+		columns.visible(Detail.STRING).set(false);
 		tablePanel.store(preferences);
 
 		// Remove STRING from saved preferences to simulate a "new" column
@@ -205,9 +205,9 @@ public class EntityTablePanelPreferencesTest {
 		tablePanel = new EntityTablePanel(tableModel);
 		tablePanel.restore(preferences);
 
-		columnModel = tablePanel.table().columnModel();
+		columns = tablePanel.table().columns();
 		// New columns (not in preferences) should remain visible
-		assertTrue(columnModel.visible(Detail.STRING).is());
+		assertTrue(columns.visible(Detail.STRING).is());
 	}
 
 	@Test
@@ -215,13 +215,13 @@ public class EntityTablePanelPreferencesTest {
 		// Comprehensive round-trip test
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 
 		// Configure everything
-		columnModel.visible(Detail.STRING).set(false);
-		columnModel.moveColumn(columnModel.getColumnIndex(Detail.DOUBLE), 0);
-		columnModel.column(Detail.INT).setWidth(155);
-		columnModel.column(Detail.INT).setPreferredWidth(155);
+		columns.visible(Detail.STRING).set(false);
+		columns.moveColumn(columns.indexOf(Detail.DOUBLE), 0);
+		columns.get(Detail.INT).setWidth(155);
+		columns.get(Detail.INT).setPreferredWidth(155);
 		tablePanel.table().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		// Save
@@ -232,10 +232,10 @@ public class EntityTablePanelPreferencesTest {
 		tablePanel.restore(preferences);
 
 		// Verify everything
-		columnModel = tablePanel.table().columnModel();
-		assertFalse(columnModel.visible(Detail.STRING).is());
-		assertEquals(0, columnModel.getColumnIndex(Detail.DOUBLE));
-		assertEquals(155, columnModel.column(Detail.INT).getPreferredWidth());
+		columns = tablePanel.table().columns();
+		assertFalse(columns.visible(Detail.STRING).is());
+		assertEquals(0, columns.indexOf(Detail.DOUBLE));
+		assertEquals(155, columns.get(Detail.INT).getPreferredWidth());
 		assertEquals(JTable.AUTO_RESIZE_OFF, tablePanel.table().getAutoResizeMode());
 	}
 

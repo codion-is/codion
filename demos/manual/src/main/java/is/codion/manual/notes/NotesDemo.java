@@ -201,10 +201,10 @@ public final class NotesDemo {
 			// Configure the table and columns
 			table().model().sort().descending(Note.CREATED);
 			table().setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-			FilterTableColumnModel<Attribute<?>> columnModel = table().columnModel();
-			columnModel.column(Note.NOTE).setPreferredWidth(280);
-			columnModel.column(Note.CREATED).setPreferredWidth(130);
-			columnModel.column(Note.UPDATED).setPreferredWidth(130);
+			FilterTableColumnModel<Attribute<?>> columns = table().columns();
+			columns.get(Note.NOTE).setPreferredWidth(280);
+			columns.get(Note.CREATED).setPreferredWidth(130);
+			columns.get(Note.UPDATED).setPreferredWidth(130);
 		}
 	}
 

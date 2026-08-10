@@ -74,7 +74,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	@Override
-	public Collection<FilterTableColumn<C>> columns() {
+	public Collection<FilterTableColumn<C>> all() {
 		return columns.values();
 	}
 
@@ -104,13 +104,23 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	@Override
-	public FilterTableColumn<C> column(C identifier) {
+	public FilterTableColumn<C> get(C identifier) {
 		FilterTableColumn<C> column = columns.get(requireNonNull(identifier));
 		if (column != null) {
 			return column;
 		}
 
 		throw new IllegalArgumentException("Column not found: " + identifier);
+	}
+
+	@Override
+	public FilterTableColumn<C> columnAt(int columnIndex) {
+		return getColumn(columnIndex);
+	}
+
+	@Override
+	public int indexOf(C identifier) {
+		return getColumnIndex(identifier);
 	}
 
 	@Override
@@ -123,15 +133,6 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		return validateColumn(requireNonNull(identifier));
 	}
 
-	@Override
-	public C identifier(int columnModelIndex) {
-		C identifier = columnIdentifiers.get(columnModelIndex);
-		if (identifier != null) {
-			return identifier;
-		}
-
-		throw new IllegalArgumentException("Column at model index not found: " + columnModelIndex);
-	}
 
 	@Override
 	public void reset() {
@@ -305,7 +306,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 	private void hideColumn(C identifier) {
 		if (!hiddenColumnMap.containsKey(identifier)) {
-			FilterTableColumn<C> column = column(identifier);
+			FilterTableColumn<C> column = get(identifier);
 			hiddenColumnMap.put(identifier, new HiddenColumn(column));
 			tableColumnModel.removeColumn(column);
 			columnHidden.accept(identifier);
@@ -366,7 +367,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 			int columnIndex = 0;
 			for (C identifier : identifiers) {
 				visibleStates.get(identifier).set(true);
-				moveColumn(getColumnIndex(identifier), columnIndex++);
+				moveColumn(indexOf(identifier), columnIndex++);
 			}
 			for (FilterTableColumn<C> column : columns()) {
 				if (!identifiers.contains(column.identifier())) {
@@ -481,7 +482,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 								.collect(toList());
 				indexes.set(selectedIndexes);
 				identifiers.set(selectedIndexes.stream()
-								.map(DefaultFilterTableColumnModel.this::identifier)
+								.map(index -> columnAt(index).identifier())
 								.collect(toList()));
 			}
 		}

@@ -1457,7 +1457,7 @@ public class EntityTablePanel extends JPanel {
 		}
 		TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
 						.create(tableModel.query().condition(), createConditionPanels(),
-										table.columnModel(), this::configureTableConditionPanel);
+										table.columns(), this::configureTableConditionPanel);
 		KeyEvents.builder()
 						.keyCode(VK_ENTER)
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1473,7 +1473,7 @@ public class EntityTablePanel extends JPanel {
 		EntityConditionComponents defaultComponents = new EntityConditionComponents(tableModel.entityDefinition());
 		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.query().condition().get().entrySet()) {
 			Attribute<?> attribute = conditionEntry.getKey();
-			if (table.columnModel().contains(attribute)) {
+			if (table.columns().contains(attribute)) {
 				ConditionComponents components = configuration.conditionComponents.getOrDefault(attribute, defaultComponents);
 				if (components.supports(attribute.type().valueClass())) {
 					conditionPanels.put(attribute, createConditionPanel(conditionEntry.getValue(), attribute, components));
@@ -1489,7 +1489,7 @@ public class EntityTablePanel extends JPanel {
 		return ColumnConditionPanel.builder()
 						.model(conditionModel)
 						.components(conditionComponents)
-						.tableColumn(table.columnModel().column(identifier))
+						.tableColumn(table.columns().get(identifier))
 						.name(identifier.toString())
 						.build();
 	}
@@ -1507,8 +1507,8 @@ public class EntityTablePanel extends JPanel {
 	private void configureExcludedColumns() {
 		if (configuration.excludeHiddenColumns) {
 			ValueSet<Attribute<?>> exclude = tableModel.query().attributes().exclude();
-			table.columnModel().hidden().addConsumer(exclude::set);
-			exclude.set(table.columnModel().hidden().get());
+			table.columns().hidden().addConsumer(exclude::set);
+			exclude.set(table.columns().hidden().get());
 		}
 	}
 
@@ -1845,7 +1845,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private static boolean containsSummaryModels(FilterTable<Entity, Attribute<?>> table) {
-		return table.columnModel().identifiers().stream()
+		return table.columns().identifiers().stream()
 						.map(table.summaries()::get)
 						.anyMatch(Optional::isPresent);
 	}
@@ -2743,7 +2743,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void configureConditionIndicator(FilterTable<Entity, Attribute<?>> filterTable) {
-			filterTable.columnModel().columns().stream()
+			filterTable.columns().all().stream()
 							.map(TableColumn::getCellRenderer)
 							.filter(FilterTableCellRenderer.class::isInstance)
 							.map(renderer -> (FilterTableCellRenderer<?, ?, ?>) renderer)
@@ -2751,7 +2751,7 @@ public class EntityTablePanel extends JPanel {
 							.filter(ConditionIndicator.class::isInstance)
 							.map(ConditionIndicator.class::cast)
 							.forEach(customizer -> customizer.enabled = conditionIndicator);
-			filterTable.columnModel().columns().stream()
+			filterTable.columns().all().stream()
 							.map(TableColumn::getHeaderRenderer)
 							.filter(EntityTableHeaderRenderer.class::isInstance)
 							.map(EntityTableHeaderRenderer.class::cast)
@@ -2824,7 +2824,7 @@ public class EntityTablePanel extends JPanel {
 
 		private EntityTableHeaderRenderer(Attribute<?> attribute, FilterTable<Entity, Attribute<?>> table) {
 			this.wrappedRenderer = DEFAULT_FACTORY.create(attribute, table);
-			this.tableColumn = table.columnModel().column(attribute);
+			this.tableColumn = table.columns().get(attribute);
 			this.condition = ((SwingEntityTableModel) table.model()).query().condition();
 		}
 
@@ -3027,12 +3027,12 @@ public class EntityTablePanel extends JPanel {
 				return null;
 			}
 
-			return filterTableColumnComponentPanel(table.columnModel(), columnSummaryPanels);
+			return filterTableColumnComponentPanel(table.columns(), columnSummaryPanels);
 		}
 
 		private Map<Attribute<?>, JComponent> createColumnSummaryPanels() {
 			Map<Attribute<?>, JComponent> components = new HashMap<>();
-			table.columnModel().columns().forEach(column ->
+			table.columns().all().forEach(column ->
 							table.summaries().get(column.identifier())
 											.ifPresent(columnSummaryModel ->
 															components.put(column.identifier(), columnSummaryPanel(columnSummaryModel,

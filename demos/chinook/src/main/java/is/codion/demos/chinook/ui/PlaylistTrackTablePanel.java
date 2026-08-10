@@ -44,7 +44,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 						.includeEditAttributeControl(false)
 						.includeEditControl(false));
 		// Hide the playlist column
-		table().columnModel().visible(PlaylistTrack.PLAYLIST_FK).set(false);
+		table().columns().visible(PlaylistTrack.PLAYLIST_FK).set(false);
 	}
 
 	@Override

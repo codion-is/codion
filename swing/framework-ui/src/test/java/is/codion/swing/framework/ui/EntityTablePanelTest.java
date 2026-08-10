@@ -54,7 +54,7 @@ public class EntityTablePanelTest {
 			assertTrue(employee.contains(Employee.JOB));
 		});
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.excludeHiddenColumns(true));
-		tablePanel.table().columnModel().visible().set(Employee.ID, Employee.NAME, Employee.COMMISSION);
+		tablePanel.table().columns().visible().set(Employee.ID, Employee.NAME, Employee.COMMISSION);
 		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
 			assertTrue(employee.contains(Employee.ID));
@@ -67,32 +67,32 @@ public class EntityTablePanelTest {
 	}
 
 	@Test
-	void getColumnIndex() {
+	void index() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		assertEquals(0, tablePanel.table().columnModel().getColumnIndex(Detail.INT));
-		assertEquals(1, tablePanel.table().columnModel().getColumnIndex(Detail.DOUBLE));
-		assertEquals(2, tablePanel.table().columnModel().getColumnIndex(Detail.BIG_DECIMAL));
-		assertEquals(3, tablePanel.table().columnModel().getColumnIndex(Detail.STRING));
-		assertEquals(4, tablePanel.table().columnModel().getColumnIndex(Detail.DATE));
-		assertEquals(5, tablePanel.table().columnModel().getColumnIndex(Detail.TIME));
-		assertEquals(6, tablePanel.table().columnModel().getColumnIndex(Detail.TIMESTAMP));
-		assertEquals(7, tablePanel.table().columnModel().getColumnIndex(Detail.OFFSET));
-		assertEquals(8, tablePanel.table().columnModel().getColumnIndex(Detail.BOOLEAN));
-		assertEquals(9, tablePanel.table().columnModel().getColumnIndex(Detail.BOOLEAN_NULLABLE));
-		assertEquals(10, tablePanel.table().columnModel().getColumnIndex(Detail.MASTER_FK));
-		assertEquals(11, tablePanel.table().columnModel().getColumnIndex(Detail.DETAIL_FK));
-		assertEquals(12, tablePanel.table().columnModel().getColumnIndex(Detail.MASTER_NAME));
-		assertEquals(13, tablePanel.table().columnModel().getColumnIndex(Detail.MASTER_CODE));
-		assertEquals(14, tablePanel.table().columnModel().getColumnIndex(Detail.INT_ITEMS));
-		assertEquals(15, tablePanel.table().columnModel().getColumnIndex(Detail.INT_DERIVED));
+		assertEquals(0, tablePanel.table().columns().indexOf(Detail.INT));
+		assertEquals(1, tablePanel.table().columns().indexOf(Detail.DOUBLE));
+		assertEquals(2, tablePanel.table().columns().indexOf(Detail.BIG_DECIMAL));
+		assertEquals(3, tablePanel.table().columns().indexOf(Detail.STRING));
+		assertEquals(4, tablePanel.table().columns().indexOf(Detail.DATE));
+		assertEquals(5, tablePanel.table().columns().indexOf(Detail.TIME));
+		assertEquals(6, tablePanel.table().columns().indexOf(Detail.TIMESTAMP));
+		assertEquals(7, tablePanel.table().columns().indexOf(Detail.OFFSET));
+		assertEquals(8, tablePanel.table().columns().indexOf(Detail.BOOLEAN));
+		assertEquals(9, tablePanel.table().columns().indexOf(Detail.BOOLEAN_NULLABLE));
+		assertEquals(10, tablePanel.table().columns().indexOf(Detail.MASTER_FK));
+		assertEquals(11, tablePanel.table().columns().indexOf(Detail.DETAIL_FK));
+		assertEquals(12, tablePanel.table().columns().indexOf(Detail.MASTER_NAME));
+		assertEquals(13, tablePanel.table().columns().indexOf(Detail.MASTER_CODE));
+		assertEquals(14, tablePanel.table().columns().indexOf(Detail.INT_ITEMS));
+		assertEquals(15, tablePanel.table().columns().indexOf(Detail.INT_DERIVED));
 	}
 
 	@Test
 	void columnModel() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		FilterTableColumn<Attribute<?>> column = tablePanel.table().columnModel().column(Detail.STRING);
+		FilterTableColumn<Attribute<?>> column = tablePanel.table().columns().get(Detail.STRING);
 		assertEquals(Detail.STRING, column.identifier());
 	}
 

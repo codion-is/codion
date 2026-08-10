@@ -78,7 +78,7 @@ public class EntityApplicationPanelTest {
 		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION);
 		model.tableModel().query().condition().get(Employee.NAME).caseSensitive().set(true); // model state
 		EntityPanel panel = new EntityPanel(model);
-		panel.tablePanel().table().columnModel().visible(Employee.COMMISSION).set(false); // view state
+		panel.tablePanel().table().columns().visible(Employee.COMMISSION).set(false); // view state
 
 		model.store(entities);
 		panel.store(entities.node(panel.preferencesKey()));
@@ -89,7 +89,7 @@ public class EntityApplicationPanelTest {
 		restoredPanel.restore(entities.node(restoredPanel.preferencesKey()));
 
 		assertTrue(restoredModel.tableModel().query().condition().get(Employee.NAME).caseSensitive().is());
-		assertFalse(restoredPanel.tablePanel().table().columnModel().visible(Employee.COMMISSION).is());
+		assertFalse(restoredPanel.tablePanel().table().columns().visible(Employee.COMMISSION).is());
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class EntityApplicationPanelTest {
 		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, CONNECTION);
 		EntityPanel panel = new EntityPanel(model);
 		model.tableModel().sort().ascending(Employee.NAME); // model state
-		panel.tablePanel().table().columnModel().visible(Employee.COMMISSION).set(false); // view state
+		panel.tablePanel().table().columns().visible(Employee.COMMISSION).set(false); // view state
 
 		model.tableModel().store(scratch);
 		panel.tablePanel().store(scratch);
@@ -111,7 +111,7 @@ public class EntityApplicationPanelTest {
 		restoredPanel.tablePanel().restore(scratch);
 
 		assertEquals(SortOrder.ASCENDING, restoredModel.tableModel().sort().columns().get(Employee.NAME).sortOrder());
-		assertFalse(restoredPanel.tablePanel().table().columnModel().visible(Employee.COMMISSION).is());
+		assertFalse(restoredPanel.tablePanel().table().columns().visible(Employee.COMMISSION).is());
 	}
 
 	private static final class TestApplicationModel extends SwingEntityApplicationModel {
