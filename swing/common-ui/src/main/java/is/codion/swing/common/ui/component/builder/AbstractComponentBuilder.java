@@ -128,8 +128,14 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		return label(label -> label.text(text));
 	}
 
+	/**
+	 * Not final, unlike the other builder methods: this is the single point every {@link #label(String)},
+	 * {@link #label(JLabel)} and {@link #label(Consumer)} call funnels through, so a builder whose component
+	 * carries its own label - {@link is.codion.swing.common.ui.component.panel.InputPanelBuilder} - overrides
+	 * this one to capture all three, rather than competing with them for which label the component gets.
+	 */
 	@Override
-	public final B label(@Nullable JLabel label) {
+	public B label(@Nullable JLabel label) {
 		this.label = label;
 		return self();
 	}

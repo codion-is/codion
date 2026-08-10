@@ -26,16 +26,30 @@ import java.util.function.Supplier;
 
 /**
  * Builds an input panel with a label and input component.
+ * <p>
+ * The panel contains its label, so the {@code label()} methods below and the inherited
+ * {@link ComponentBuilder#label(String)}, {@link ComponentBuilder#label(javax.swing.JLabel)} and
+ * {@link ComponentBuilder#label(java.util.function.Consumer)} all specify the same thing: the label the panel
+ * displays. They differ only in what they accept, the ones here lifting the restriction to a {@link javax.swing.JLabel}.
+ * The last call wins, whichever was used, so a label supplied by a factory - the caption based one the entity
+ * components come with, say - is replaced by specifying another.
+ * <p>
+ * Note that the panel itself is therefore never the target of {@link javax.swing.JLabel#setLabelFor(java.awt.Component)}:
+ * a label carrying no association of its own is associated with the input component, which is what it labels.
  */
 public interface InputPanelBuilder extends ComponentBuilder<JPanel, InputPanelBuilder> {
 
 	/**
+	 * Specifies the label the panel displays, lifting the {@link javax.swing.JLabel} restriction of
+	 * {@link ComponentBuilder#label(javax.swing.JLabel)}. Overrides any previously specified label.
 	 * @param labelComponent the label component
 	 * @return this builder instance
 	 */
 	InputPanelBuilder label(JComponent labelComponent);
 
 	/**
+	 * Specifies the label the panel displays, lifting the {@link javax.swing.JLabel} restriction of
+	 * {@link ComponentBuilder#label(javax.swing.JLabel)}. Overrides any previously specified label.
 	 * @param labelComponent the label component
 	 * @return this builder instance
 	 */
