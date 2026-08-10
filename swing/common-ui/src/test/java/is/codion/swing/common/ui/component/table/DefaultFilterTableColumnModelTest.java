@@ -46,7 +46,7 @@ public class DefaultFilterTableColumnModelTest {
 		testModel.columnShown().addConsumer(showConsumer);
 
 		assertEquals(1, testModel.getColumnCount());
-		assertNotNull(testModel.column(0));
+		assertNotNull(testModel.columnAt(0));
 
 		testModel.visible(0).set(false);
 		assertEquals(1, hidden.size());
@@ -64,7 +64,7 @@ public class DefaultFilterTableColumnModelTest {
 	@Test
 	void tableColumnNotFound() {
 		FilterTableColumnModel<Integer> testModel = createTestModel();
-		assertThrows(IllegalArgumentException.class, () -> testModel.column(42));
+		assertThrows(IllegalArgumentException.class, () -> testModel.get(42));
 	}
 
 	@Test
@@ -93,8 +93,8 @@ public class DefaultFilterTableColumnModelTest {
 		assertTrue(columnModel.visible(3).is());
 		assertFalse(columnModel.visible(0).is());
 		assertFalse(columnModel.visible(2).is());
-		assertEquals(0, columnModel.getColumnIndex(1));
-		assertEquals(1, columnModel.getColumnIndex(3));
+		assertEquals(0, columnModel.indexOf(1));
+		assertEquals(1, columnModel.indexOf(3));
 		columnModel.visible().set(0, 1);
 		assertEquals(0, columnModel.getSelectionModel().getLeadSelectionIndex());
 		assertTrue(columnModel.visible(0).is());
@@ -103,15 +103,15 @@ public class DefaultFilterTableColumnModelTest {
 		assertFalse(columnModel.visible(2).is());
 		assertFalse(columnModel.visible(2).is());
 		assertFalse(columnModel.visible(3).is());
-		assertEquals(0, columnModel.getColumnIndex(0));
-		assertEquals(1, columnModel.getColumnIndex(1));
+		assertEquals(0, columnModel.indexOf(0));
+		assertEquals(1, columnModel.indexOf(1));
 		columnModel.visible().set(3);
 		assertEquals(0, columnModel.getSelectionModel().getLeadSelectionIndex());
 		assertTrue(columnModel.visible(3).is());
 		assertFalse(columnModel.visible(2).is());
 		assertFalse(columnModel.visible(1).is());
 		assertFalse(columnModel.visible(0).is());
-		assertEquals(0, columnModel.getColumnIndex(3));
+		assertEquals(0, columnModel.indexOf(3));
 		columnModel.visible().set();
 		assertFalse(columnModel.visible(3).is());
 		assertFalse(columnModel.visible(2).is());
@@ -123,10 +123,10 @@ public class DefaultFilterTableColumnModelTest {
 		assertTrue(columnModel.visible(2).is());
 		assertTrue(columnModel.visible(1).is());
 		assertTrue(columnModel.visible(0).is());
-		assertEquals(0, columnModel.getColumnIndex(3));
-		assertEquals(1, columnModel.getColumnIndex(2));
-		assertEquals(2, columnModel.getColumnIndex(1));
-		assertEquals(3, columnModel.getColumnIndex(0));
+		assertEquals(0, columnModel.indexOf(3));
+		assertEquals(1, columnModel.indexOf(2));
+		assertEquals(2, columnModel.indexOf(1));
+		assertEquals(3, columnModel.indexOf(0));
 	}
 
 	@Test
@@ -233,6 +233,47 @@ public class DefaultFilterTableColumnModelTest {
 		assertEquals(asList("0", "2"), selection.identifiers().get());
 		selection.clearSelection();
 		assertTrue(selection.empty().is());
+	}
+
+	@Test
+	void selectedIdentifiersFollowTheVisibleOrder() {
+		FilterTableColumnModel<String> columnModel = new DefaultFilterTableColumnModel<>(asList(
+						new DefaultFilterTableColumnBuilder<>("0", 0).build(),
+						new DefaultFilterTableColumnBuilder<>("1", 1).build(),
+						new DefaultFilterTableColumnBuilder<>("2", 2).build(),
+						new DefaultFilterTableColumnBuilder<>("3", 3).build()));
+		// Hide one and reorder, so that a column's position among the visible columns no longer coincides with
+		// its model index - the selection indexes are the former, and the identifiers must follow them.
+		columnModel.visible().set("3", "2", "0");
+
+		ColumnSelection<String> selection = columnModel.selection();
+		selection.setSelectionInterval(0, 0);
+		assertEquals(asList("3"), selection.identifiers().get());
+		selection.setSelectionInterval(2, 2);
+		assertEquals(asList("0"), selection.identifiers().get());
+		selection.setSelectionInterval(0, 2);
+		assertEquals(asList("3", "2", "0"), selection.identifiers().get());
+	}
+
+	@Test
+	void indexesAreVisiblePositions() {
+		FilterTableColumnModel<String> columnModel = new DefaultFilterTableColumnModel<>(asList(
+						new DefaultFilterTableColumnBuilder<>("0", 0).build(),
+						new DefaultFilterTableColumnBuilder<>("1", 1).build(),
+						new DefaultFilterTableColumnBuilder<>("2", 2).build(),
+						new DefaultFilterTableColumnBuilder<>("3", 3).build()));
+		columnModel.visible().set("3", "2", "0");
+
+		// columnAt and indexOf are inverses, over the visible columns only.
+		assertEquals(0, columnModel.indexOf("3"));
+		assertEquals(2, columnModel.indexOf("0"));
+		assertEquals("3", columnModel.columnAt(0).identifier());
+		assertEquals("0", columnModel.columnAt(2).identifier());
+		// A hidden column occupies no index, and no index reaches past the visible ones.
+		assertThrows(IllegalArgumentException.class, () -> columnModel.indexOf("1"));
+		assertThrows(ArrayIndexOutOfBoundsException.class, () -> columnModel.columnAt(3));
+		// It is still a column of this model though.
+		assertTrue(columnModel.contains("1"));
 	}
 
 	private static FilterTableColumnModel<Integer> createTestModel() {

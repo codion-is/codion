@@ -60,7 +60,7 @@ final class DefaultFilterTableHeaderRenderer<R, C> implements FilterTableHeaderR
 	private DefaultFilterTableHeaderRenderer(FilterTable<R, C> table, C identifier) {
 		this.filters = table.model().filters();
 		this.columnSort = table.model().sort().columns();
-		this.tableColumn = table.columnModel().column(identifier);
+		this.tableColumn = table.columns().get(identifier);
 		this.columnCellRenderer = tableColumn.getCellRenderer();
 		this.columnToolTips = table.columnToolTips;
 	}

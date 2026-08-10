@@ -42,7 +42,7 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	/**
 	 * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
 	 */
-	Collection<FilterTableColumn<C>> columns();
+	Collection<FilterTableColumn<C>> all();
 
 	/**
 	 * @return an unmodifiable view of all column identifiers in this model, both hidden and visible, in no particular order
@@ -81,7 +81,16 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	 * @return the TableColumn with the given identifier
 	 * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
 	 */
-	FilterTableColumn<C> column(C identifier);
+	FilterTableColumn<C> get(C identifier);
+
+	/**
+	 * Returns the visible column at the given index, the index being the column's position among the visible
+	 * columns, as {@link #indexOf(Object)} returns and {@link #moveColumn(int, int)} takes - not its model index.
+	 * @param columnIndex the column index
+	 * @return the column at the given index
+	 * @throws ArrayIndexOutOfBoundsException in case no visible column occupies the given index
+	 */
+	FilterTableColumn<C> columnAt(int columnIndex);
 
 	@Override
 	FilterTableColumn<C> getColumn(int columnIndex);
@@ -95,16 +104,19 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	State visible(C identifier);
 
 	/**
+	 * Returns the column's position among the visible columns, which changes as columns are moved, hidden and
+	 * shown - not its model index. The inverse of {@link #columnAt(int)}.
+	 * @param identifier the column identifier
+	 * @return the column index
+	 * @throws IllegalArgumentException in case no visible column has the given identifier
+	 */
+	int indexOf(C identifier);
+
+	/**
 	 * @param identifier the column identifier
 	 * @return true if this column model contains a column with the given identifier
 	 */
 	boolean contains(C identifier);
-
-	/**
-	 * @param modelColumnIndex the column model index
-	 * @return the column identifier
-	 */
-	C identifier(int modelColumnIndex);
 
 	/**
 	 * Resets the columns to their original location and visibility

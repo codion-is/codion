@@ -161,7 +161,7 @@ public class FilterTableTest {
 		FilterTable<List<String>, Integer> filterTable = FilterTable.builder()
 						.model(tableModel)
 						.build();
-		filterTable.columnModel().visible(1).set(false);
+		filterTable.columns().visible(1).set(false);
 
 		new JScrollPane(filterTable);
 
@@ -292,7 +292,7 @@ public class FilterTableTest {
 		), searchModel.results().get());
 
 		table.model().sort().ascending(1);
-		table.columnModel().moveColumn(1, 0);
+		table.columns().moveColumn(1, 0);
 
 		testModel.items().refresh();
 		searchModel.searchString().set("b");
@@ -442,7 +442,7 @@ public class FilterTableTest {
 
 	@Test
 	void columnModel() {
-		FilterTableColumn<Integer> column = createTestTable().columnModel().getColumn(0);
+		FilterTableColumn<Integer> column = createTestTable().columns().columnAt(0);
 		assertEquals(0, column.identifier());
 	}
 
@@ -486,7 +486,7 @@ public class FilterTableTest {
 						.filterView(ConditionView.SIMPLE)
 						.build();
 
-		assertSame(oneRenderer, table.columnModel().column(1).getCellRenderer());
+		assertSame(oneRenderer, table.columns().columnAt(1).getCellRenderer());
 		assertSame(oneRenderer, table.getCellRenderer(0, 1));
 
 		// Should follow cell renderer alignment

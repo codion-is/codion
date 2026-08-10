@@ -601,7 +601,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		model.implSearchValue().addConsumer(implementationHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
 		model.i18nSearchValue().addConsumer(i18nHighlighter.searchString()::set);
-		model.dtos().addConsumer(entityTable.columnModel().visible(EntityColumns.DTO)::set);
+		model.dtos().addConsumer(entityTable.columns().visible(EntityColumns.DTO)::set);
 		model.i18n().addConsumer(this::onI18nChanged);
 	}
 

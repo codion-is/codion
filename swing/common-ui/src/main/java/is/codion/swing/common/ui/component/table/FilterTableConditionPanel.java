@@ -53,7 +53,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 																		Map<C, ConditionPanel<?>> conditionPanels,
 																		FilterTableColumnModel<C> columnModel,
 																		Consumer<TableConditionPanel<C>> onPanelInitialized) {
-		super(tableConditionModel, identifier -> Objects.toString(columnModel.column(identifier).getHeaderValue()));
+		super(tableConditionModel, identifier -> Objects.toString(columnModel.get(identifier).getHeaderValue()));
 		this.conditionPanels = unmodifiableMap(new HashMap<>(requireNonNull(conditionPanels)));
 		this.columnModel = requireNonNull(columnModel);
 		this.onPanelInitialized = onPanelInitialized == null ? panel -> {} : onPanelInitialized;

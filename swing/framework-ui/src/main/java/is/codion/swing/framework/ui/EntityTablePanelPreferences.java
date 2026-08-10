@@ -67,7 +67,7 @@ final class EntityTablePanelPreferences {
 			LOG.error("Error while storing table settings preferences", e);
 		}
 		try {
-			preferences.put(COLUMNS_KEY, createColumnPreferences(tablePanel.table().columnModel()).toString());
+			preferences.put(COLUMNS_KEY, createColumnPreferences(tablePanel.table().columns()).toString());
 		}
 		catch (Exception e) {
 			LOG.error("Error while storing column preferences", e);
@@ -115,11 +115,11 @@ final class EntityTablePanelPreferences {
 		}
 	}
 
-	private static JSONObject createColumnPreferences(FilterTableColumnModel<Attribute<?>> columnModel) {
+	private static JSONObject createColumnPreferences(FilterTableColumnModel<Attribute<?>> columns) {
 		JSONObject columnPreferences = new JSONObject();
-		for (FilterTableColumn<Attribute<?>> column : columnModel.columns()) {
+		for (FilterTableColumn<Attribute<?>> column : columns.all()) {
 			Attribute<?> attribute = column.identifier();
-			int index = columnModel.visible(attribute).is() ? columnModel.getColumnIndex(attribute) : -1;
+			int index = columns.visible(attribute).is() ? columns.indexOf(attribute) : -1;
 			JSONObject columnJson = new JSONObject();
 			columnJson.put(WIDTH_KEY, column.getWidth());
 			columnJson.put(INDEX_KEY, index);
@@ -143,16 +143,16 @@ final class EntityTablePanelPreferences {
 	}
 
 	private static void restoreColumnPreferences(JSONObject columnPreferences, EntityTablePanel tablePanel) {
-		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
+		FilterTableColumnModel<Attribute<?>> columns = tablePanel.table().columns();
 		List<Attribute<?>> attributesWithoutPreferences = new ArrayList<>();
 		List<AttributeIndex> attributesWithPreferences = new ArrayList<>();
-		for (Attribute<?> attribute : columnModel.identifiers()) {
+		for (Attribute<?> attribute : columns.identifiers()) {
 			if (columnPreferences.has(attribute.name())) {
 				JSONObject json = columnPreferences.getJSONObject(attribute.name());
 				int width = json.optInt(WIDTH_KEY, -1);
 				int index = json.optInt(INDEX_KEY, -1);
 				if (width > 0) {
-					FilterTableColumn<Attribute<?>> column = columnModel.column(attribute);
+					FilterTableColumn<Attribute<?>> column = columns.get(attribute);
 					column.setPreferredWidth(width);
 					column.setWidth(width);
 				}
@@ -169,7 +169,7 @@ final class EntityTablePanelPreferences {
 						.map(AttributeIndex::attribute)
 						.collect(toList());
 		visibleAttributes.addAll(0, attributesWithoutPreferences);
-		columnModel.visible().set(visibleAttributes);
+		columns.visible().set(visibleAttributes);
 	}
 
 	private static final class AttributeIndex {

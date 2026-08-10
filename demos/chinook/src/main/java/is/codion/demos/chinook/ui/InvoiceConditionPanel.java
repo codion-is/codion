@@ -84,15 +84,15 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 	InvoiceConditionPanel(SwingEntityTableModel tableModel,
 												Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
-												FilterTableColumnModel<Attribute<?>> columnModel,
+												FilterTableColumnModel<Attribute<?>> columns,
 												Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
 		super(tableModel.query().condition(),
-						attribute -> columnModel.column(attribute).getHeaderValue().toString());
+						attribute -> columns.get(attribute).getHeaderValue().toString());
 		setLayout(new BorderLayout());
 		tableModel.query().condition().persist().add(Invoice.DATE);
 		this.simpleConditionPanel = new SimpleConditionPanel(tableModel);
 		this.advancedConditionPanel = filterTableConditionPanel(tableModel.query().condition(),
-						conditionPanels, columnModel, onPanelInitialized);
+						conditionPanels, columns, onPanelInitialized);
 		view().link(advancedConditionPanel.view());
 	}
 

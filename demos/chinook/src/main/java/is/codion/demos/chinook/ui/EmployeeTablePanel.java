@@ -48,7 +48,7 @@ public final class EmployeeTablePanel extends EntityTablePanel {
 	}
 
 	private void requestEditFocus(EntityEditPanel editPanel) {
-		table().columnModel().selection().lead().optional().ifPresent(index ->
-						editPanel.focus().request(table().columnModel().getColumn(index).identifier()));
+		table().columns().selection().lead().optional().ifPresent(index ->
+						editPanel.focus().request(table().columns().columnAt(index).identifier()));
 	}
 }

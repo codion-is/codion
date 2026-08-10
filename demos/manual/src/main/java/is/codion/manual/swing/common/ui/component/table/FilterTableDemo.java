@@ -69,7 +69,7 @@ final class FilterTableDemo {
 
 	static void columns(FilterTable<Person, String> table) {
 		// tag::columns[]
-		FilterTableColumnModel<String> columns = table.columnModel();
+		FilterTableColumnModel<String> columns = table.columns();
 
 		// Reorder the columns
 		columns.visible().set(Person.AGE, Person.NAME);

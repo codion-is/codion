@@ -62,7 +62,7 @@ public class FilterTableColumnComponentPanelTest {
 						FilterTable.builder()
 										.model(tableModel)
 										.build();
-		FilterTableColumnModel<Integer> columnModel = table.columnModel();
+		FilterTableColumnModel<Integer> columnModel = table.columns();
 		Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
 		columnComponents.put(3, new JPanel());
 		assertThrows(IllegalArgumentException.class, () -> filterTableColumnComponentPanel(columnModel, columnComponents));
@@ -78,19 +78,19 @@ public class FilterTableColumnComponentPanelTest {
 						FilterTable.builder()
 										.model(tableModel)
 										.build();
-		FilterTableColumnModel<Integer> columnModel = table.columnModel();
+		FilterTableColumnModel<Integer> columns = table.columns();
 
-		columnModel.visible(1).set(false);
+		columns.visible(1).set(false);
 
-		FilterTableColumnComponentPanel<Integer> panel = filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+		FilterTableColumnComponentPanel<Integer> panel = filterTableColumnComponentPanel(columns, createColumnComponents(columns));
 		assertTrue(panel.components().containsKey(1));
 
 		assertNull(panel.components().get(1).getParent());
-		columnModel.visible(1).set(true);
+		columns.visible(1).set(true);
 		assertNotNull(panel.components().get(1).getParent());
-		columnModel.visible(2).set(false);
+		columns.visible(2).set(false);
 		assertNull(panel.components().get(2).getParent());
-		columnModel.visible(2).set(true);
+		columns.visible(2).set(true);
 		assertNotNull(panel.components().get(2).getParent());
 	}
 
@@ -104,14 +104,14 @@ public class FilterTableColumnComponentPanelTest {
 						FilterTable.builder()
 										.model(tableModel)
 										.build();
-		FilterTableColumnModel<Integer> columnModel = table.columnModel();
+		FilterTableColumnModel<Integer> columns = table.columns();
 
-		FilterTableColumnComponentPanel<Integer> panel = filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
-		columnModel.column(0).setWidth(100);
+		FilterTableColumnComponentPanel<Integer> panel = filterTableColumnComponentPanel(columns, createColumnComponents(columns));
+		columns.columnAt(0).setWidth(100);
 		assertEquals(100, panel.components().get(0).getPreferredSize().width);
-		columnModel.column(1).setWidth(90);
+		columns.columnAt(1).setWidth(90);
 		assertEquals(90, panel.components().get(1).getPreferredSize().width);
-		columnModel.column(2).setWidth(80);
+		columns.columnAt(2).setWidth(80);
 		assertEquals(80, panel.components().get(2).getPreferredSize().width);
 	}
 

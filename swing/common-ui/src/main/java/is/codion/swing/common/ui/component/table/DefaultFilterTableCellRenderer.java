@@ -142,10 +142,10 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		return (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}
 
-	private void paintBackground(FilterTable<R, C> filterTable, int rowIndex, R row, int column, Graphics graphics) {
-		paintBackground(filterTable, rowIndex, column, graphics,
-						settings.backgroundColor(filterTable, rowIndex, row, filterTable.columnModel().getColumn(column).identifier(),
-										component(filterTable, null, false, false, rowIndex, column)));
+	private void paintBackground(FilterTable<R, C> filterTable, int rowIndex, R row, int columnIndex, Graphics graphics) {
+		paintBackground(filterTable, rowIndex, columnIndex, graphics,
+						settings.backgroundColor(filterTable, rowIndex, row, filterTable.columns().columnAt(columnIndex).identifier(),
+										component(filterTable, null, false, false, rowIndex, columnIndex)));
 	}
 
 	static <R, C> void paintBackground(FilterTable<R, C> filterTable, int row, int column, Graphics graphics, TableCellRenderer renderer) {
@@ -227,9 +227,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		private void paintBackground(FilterTable<R, C> filterTable, int rowIndex, R row, int column, Graphics graphics) {
-			DefaultFilterTableCellRenderer.paintBackground(filterTable, rowIndex, column, graphics,
-							settings.backgroundColor(filterTable, rowIndex, row, filterTable.columnModel().getColumn(column).identifier(), this));
+		private void paintBackground(FilterTable<R, C> filterTable, int rowIndex, R row, int columnIndex, Graphics graphics) {
+			DefaultFilterTableCellRenderer.paintBackground(filterTable, rowIndex, columnIndex, graphics,
+							settings.backgroundColor(filterTable, rowIndex, row, filterTable.columns().columnAt(columnIndex).identifier(), this));
 		}
 	}
 
@@ -272,7 +272,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private void configure(FilterTable<R, C> filterTable, JComponent component, T value,
 													 boolean isSelected, boolean hasFocus, int rowIndex, int columnIndex) {
 			R row = filterTable.model().items().included().get(rowIndex);
-			C identifier = filterTable.columnModel().getColumn(columnIndex).identifier();
+			C identifier = filterTable.columns().columnAt(columnIndex).identifier();
 			boolean alternateRow = alternateRow(rowIndex);
 			Color foreground = foregroundColor(filterTable, row, identifier, value, isSelected);
 			Color background = backgroundColor(filterTable, row, identifier, value, isSelected, alternateRow);
