@@ -28,8 +28,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
-import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.DomainType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +48,6 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManagedLocalEntityConnection.class);
 
-	private final Domain domain;
 	private final Database database;
 
 	private final Event<MethodTrace> traceEvent = Event.event();
@@ -67,7 +64,6 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 
 	ManagedLocalEntityConnection(DefaultLocalEntityConnectionBuilder builder) {
 		super(builder);
-		this.domain = builder.domain == null ? initializeDomain(domainType()) : builder.domain;
 		this.database = builder.database == null ? Database.instance() : builder.database;
 		this.queryTimeout = builder.queryTimeout;
 	}
@@ -144,7 +140,8 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 	@Override
 	protected LocalEntityConnection connect() {
 		LOG.debug("Initializing connection for {}", user());
-		LocalEntityConnection connection = localEntityConnection(database, domain, user());
+		LocalEntityConnection connection = localEntityConnection(database, domain().orElseThrow(() ->
+						new IllegalStateException("Domain model not found in ServiceLoader: " + domainType())), user());
 		if (tracing.is()) {
 			setMethodTracer(createMethodTracer(), (Traceable) connection);
 		}
@@ -185,12 +182,5 @@ final class ManagedLocalEntityConnection extends AbstractEntityConnection
 		methodTracer.onTrace(traceEvent);
 
 		return methodTracer;
-	}
-
-	private static Domain initializeDomain(DomainType domainType) {
-		return Domain.domains().stream()
-						.filter(domain -> domain.type().equals(domainType))
-						.findAny()
-						.orElseThrow(() -> new IllegalStateException("Domain model not found in ServiceLoader: " + domainType));
 	}
 }

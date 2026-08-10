@@ -21,7 +21,6 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.framework.db.AbstractEntityConnection.AbstractBuilder;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.Domain;
 
 import org.jspecify.annotations.Nullable;
 
@@ -35,7 +34,6 @@ public final class DefaultLocalEntityConnectionBuilder
 				extends AbstractBuilder<LocalEntityConnection, LocalEntityConnection.Builder>
 				implements LocalEntityConnection.Builder {
 
-	@Nullable Domain domain;
 	@Nullable Database database;
 	int queryTimeout = LocalEntityConnection.QUERY_TIMEOUT.getOrThrow();
 
@@ -50,12 +48,6 @@ public final class DefaultLocalEntityConnectionBuilder
 	public LocalEntityConnection.Builder database(Database database) {
 		this.database = requireNonNull(database);
 		return this;
-	}
-
-	@Override
-	public LocalEntityConnection.Builder domain(Domain domain) {
-		this.domain = requireNonNull(domain);
-		return domain(domain.type());
 	}
 
 	@Override

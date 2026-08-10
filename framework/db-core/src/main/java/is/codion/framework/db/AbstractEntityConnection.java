@@ -68,9 +68,13 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 
 	private final User user;
 	private final DomainType domainType;
+	private final @Nullable Domain domain;
 	private final UUID clientId;
 	private final String clientType;
 	private final @Nullable Version clientVersion;
+
+	private @Nullable Domain resolvedDomain;
+	private boolean domainResolved;
 
 	private volatile @Nullable EntityConnection connection;
 	private volatile @Nullable EntityConnection transactionConnection;
@@ -84,7 +88,8 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	protected AbstractEntityConnection(AbstractBuilder<?, ?> builder) {
 		requireNonNull(builder);
 		this.user = requireNonNull(builder.user, "A user must be specified");
-		this.domainType = requireNonNull(builder.domain, "A domain must be specified");
+		this.domainType = requireNonNull(builder.domainType, "A domain must be specified");
+		this.domain = builder.domain;
 		this.clientId = builder.clientId;
 		this.clientType = builder.clientType == null ? domainType.name() : builder.clientType;
 		this.clientVersion = builder.clientVersion;
@@ -382,6 +387,32 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	}
 
 	/**
+	 * <p>Returns a domain model instance running in this process, the one supplied via
+	 * {@link Builder#domain(Domain)} or, when none was, one registered for {@link #domainType()} with
+	 * {@link java.util.ServiceLoader}. Empty when neither is available.
+	 * <p>Note that a supplied instance is returned without consulting the {@link java.util.ServiceLoader} at
+	 * all, which is the point of supplying one: {@link Domain#domains()} resolves every registered domain, not
+	 * only this one, instantiating each, and throws in the presence of an ambiguity among any of them.
+	 * <p>A lookup happens at most once per connection, on the first call, so a transport asking on each
+	 * connect does not pay for it again when re-establishing.
+	 * @return a local domain model, if available
+	 * @see Builder#domain(Domain)
+	 */
+	protected final Optional<Domain> domain() {
+		if (domain != null) {
+			return Optional.of(domain);
+		}
+		synchronized (lock) {
+			if (!domainResolved) {
+				resolvedDomain = serviceLoadedDomain();
+				domainResolved = true;
+			}
+
+			return Optional.ofNullable(resolvedDomain);
+		}
+	}
+
+	/**
 	 * @return the client type identifying this connection to the server
 	 * @see Builder#clientType(String)
 	 */
@@ -454,6 +485,13 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 	 */
 	protected final Optional<EntityConnection> established() {
 		return Optional.ofNullable(connection);
+	}
+
+	private @Nullable Domain serviceLoadedDomain() {
+		return Domain.domains().stream()
+						.filter(domain -> domain.type().equals(domainType))
+						.findAny()
+						.orElse(null);
 	}
 
 	private void verifyOpen() {
@@ -555,7 +593,8 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		private final String connectionType;
 
 		private @Nullable User user;
-		private @Nullable DomainType domain;
+		private @Nullable DomainType domainType;
+		private @Nullable Domain domain;
 		private UUID clientId = UUID.randomUUID();
 		private @Nullable String clientType;
 		private @Nullable Version clientVersion;
@@ -579,14 +618,20 @@ public abstract class AbstractEntityConnection implements EntityConnection {
 		}
 
 		@Override
-		public final B domain(DomainType domain) {
-			this.domain = requireNonNull(domain);
+		public final B domain(DomainType domainType) {
+			this.domainType = requireNonNull(domainType);
+			// an instance of another type would no longer be this connection's domain, one of this type still is
+			if (domain != null && !domain.type().equals(domainType)) {
+				domain = null;
+			}
 			return self();
 		}
 
 		@Override
-		public B domain(Domain domain) {
-			return domain(requireNonNull(domain).type());
+		public final B domain(Domain domain) {
+			this.domainType = requireNonNull(domain).type();
+			this.domain = domain;
+			return self();
 		}
 
 		@Override

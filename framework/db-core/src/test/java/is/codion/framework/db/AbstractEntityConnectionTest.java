@@ -22,6 +22,7 @@ import is.codion.common.reactive.state.State;
 import is.codion.common.utilities.proxy.ProxyBuilder;
 import is.codion.common.utilities.user.User;
 import is.codion.framework.db.AbstractEntityConnection.AbstractBuilder;
+import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
@@ -31,7 +32,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -860,6 +865,93 @@ public final class AbstractEntityConnectionTest {
 		}
 	}
 
+	@Nested
+	@DisplayName("Local domain")
+	class LocalDomain {
+
+		@Test
+		@DisplayName("a supplied domain is used without consulting the ServiceLoader")
+		void suppliedDomain_bypassesServiceLoader() {
+			Domain domain = new TestDomain();
+			ClassLoader original = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(domainLookupFails(original));
+			try {
+				// the sanity check: a lookup does fail under this class loader
+				assertThrows(RuntimeException.class, Domain::domains);
+
+				TestConnection connection = new TestConnectionBuilder()
+								.user(UNIT_TEST_USER)
+								.domain(domain)
+								.build();
+				// supplying an instance is how a caller opts out of the ServiceLoader - resolving every registered
+				// domain to find one already in hand is wasted work, and throws on an ambiguity among any of them
+				assertSame(domain, connection.localDomain().orElseThrow());
+			}
+			finally {
+				Thread.currentThread().setContextClassLoader(original);
+			}
+		}
+
+		@Test
+		@DisplayName("the ServiceLoader is the fallback when no domain was supplied")
+		void noSuppliedDomain_fallsBackToServiceLoader() {
+			ClassLoader original = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(domainLookupFails(original));
+			try {
+				TestConnection connection = new TestConnectionBuilder()
+								.user(UNIT_TEST_USER)
+								.domain(TestDomain.DOMAIN)
+								.build();
+				assertThrows(RuntimeException.class, connection::localDomain);
+			}
+			finally {
+				Thread.currentThread().setContextClassLoader(original);
+			}
+		}
+
+		@Test
+		@DisplayName("the ServiceLoader is consulted at most once")
+		void noSuppliedDomain_resolvesOnce() {
+			// resolving instantiates every registered domain, so a transport asking on each connect must not
+			// pay for it again when re-establishing
+			TestConnection connection = new TestConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+			assertFalse(connection.localDomain().isPresent());
+
+			ClassLoader original = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(domainLookupFails(original));
+			try {
+				// a lookup now fails, so a second one would surface here
+				assertThrows(RuntimeException.class, Domain::domains);
+				assertFalse(connection.localDomain().isPresent());
+			}
+			finally {
+				Thread.currentThread().setContextClassLoader(original);
+			}
+		}
+
+		@Test
+		@DisplayName("setting another domain type discards a supplied instance, the same type keeps it")
+		void domainType_discardsInstanceOfAnotherType() {
+			Domain domain = new TestDomain();
+			TestConnection sameType = new TestConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(domain)
+							.domain(TestDomain.DOMAIN)
+							.build();
+			assertSame(domain, sameType.localDomain().orElseThrow());
+
+			TestConnection otherType = new TestConnectionBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(domain)
+							.domain(DomainType.domainType("other"))
+							.build();
+			assertFalse(otherType.localDomain().isPresent());
+		}
+	}
+
 	private static final class TestConnection extends AbstractEntityConnection {
 
 		private final AtomicInteger connections = new AtomicInteger();
@@ -907,6 +999,28 @@ public final class AbstractEntityConnectionTest {
 		public Optional<String> description() {
 			return Optional.of("description");
 		}
+
+		private Optional<Domain> localDomain() {
+			return domain();
+		}
+	}
+
+	/**
+	 * Makes any {@link java.util.ServiceLoader} lookup of {@link Domain} fail, so that a test can tell whether
+	 * one was attempted at all - {@link ServiceLoader} wraps the {@link IOException} in a
+	 * {@link java.util.ServiceConfigurationError}, which {@link Domain#domains()} rethrows.
+	 */
+	private static ClassLoader domainLookupFails(ClassLoader parent) {
+		return new ClassLoader(parent) {
+			@Override
+			public Enumeration<URL> getResources(String name) throws IOException {
+				if (name.endsWith(Domain.class.getName())) {
+					throw new IOException("Domain service lookup attempted");
+				}
+
+				return super.getResources(name);
+			}
+		};
 	}
 
 	private static final class TestConnectionBuilder extends AbstractBuilder<TestConnection, TestConnectionBuilder> {
