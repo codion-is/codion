@@ -64,6 +64,6 @@ public final class AlbumEditPanel extends EntityEditPanel {
 	}
 
 	private EntityEditPanel createArtistEditPanel() {
-		return new ArtistEditPanel(new SwingEntityEditModel(Artist.TYPE, editModel().connection()));
+		return new ArtistEditPanel(new SwingEntityEditModel(Artist.TYPE, model().connection()));
 	}
 }

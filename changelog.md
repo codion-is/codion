@@ -25,6 +25,10 @@ Codion Change Log
 - HttpEntityConnection.CONNECT_TIMEOUT default changed from 2000 to 10000.
 ### is.codion.swing.framework.ui
 - EntityPanel, EntityTablePanel, model validation improved.
+- EntityPanel.editModel() and tableModel() removed.
+- EntityEditPanel.editModel() renamed model().
+- EntityTablePanel.tableModel() renamed model().
+- EntityApplicationPanel.applicationModel() renamed model().
 
 ## 0.18.82
 ### is.codion

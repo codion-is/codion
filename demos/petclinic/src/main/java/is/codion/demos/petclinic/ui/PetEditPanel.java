@@ -52,6 +52,6 @@ public final class PetEditPanel extends EntityEditPanel {
 	}
 
 	private PetTypeEditPanel createPetTypeEditPanel() {
-		return new PetTypeEditPanel(new SwingEntityEditModel(PetType.TYPE, editModel().connection()));
+		return new PetTypeEditPanel(new SwingEntityEditModel(PetType.TYPE, model().connection()));
 	}
 }

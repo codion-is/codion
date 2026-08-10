@@ -51,7 +51,7 @@ public final class EntityEditPanelTest {
 		editPanel.initialize();
 		editPanel.controls();
 
-		assertEquals(editModel, editPanel.editModel());
+		assertEquals(editModel, editPanel.model());
 		assertFalse(editPanel.active().is());
 		editPanel.active().set(true);
 		assertTrue(editPanel.active().is());

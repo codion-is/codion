@@ -96,10 +96,10 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 						.filter(new FileNameExtensionFilter("Text files", "txt"))
 						.selectFile();
 
-		List<Entity> entities = entityObjectMapper(applicationModel().entities())
+		List<Entity> entities = entityObjectMapper(model().entities())
 						.deserializeEntities(String.join("\n", Files.readAllLines(file.toPath())));
 
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities, applicationModel().connection());
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(entities, model().connection());
 		tableModel.editor().settings().readOnly().set(true);
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel,
 						config -> config.includePopupMenu(false));

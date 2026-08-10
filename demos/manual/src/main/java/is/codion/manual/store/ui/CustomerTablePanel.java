@@ -49,17 +49,17 @@ public class CustomerTablePanel extends EntityTablePanel {
 						.command(this::viewCustomerReport)
 						.caption("Customer report")
 						.icon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selection().empty().not())
+						.enabled(model().selection().empty().not())
 						.build());
 	}
 
 	private void viewCustomerReport() {
-		List<Entity> selectedCustomers = tableModel().selection().items().get();
+		List<Entity> selectedCustomers = model().selection().items().get();
 		Collection<String> customerIds = Entity.values(Customer.ID, selectedCustomers);
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", customerIds);
 
-		JasperPrint customerReport = tableModel().connection()
+		JasperPrint customerReport = model().connection()
 						.report(Customer.REPORT, reportParameters);
 
 		Dialogs.builder()

@@ -98,7 +98,7 @@ public final class CityEditPanel extends EntityEditPanel {
 	}
 
 	private void populateLocation() throws IOException, EntityValidationException {
-		CityEditModel editModel = (CityEditModel) editModel();
+		CityEditModel editModel = (CityEditModel) model();
 		editModel.populateLocation();
 		displayLocations(List.of(editModel.editor().entity().get()));
 	}

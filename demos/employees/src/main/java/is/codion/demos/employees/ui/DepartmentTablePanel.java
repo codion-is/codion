@@ -52,7 +52,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 						.command(this::viewEmployeeReport)
 						.caption("Employee Report")
 						.icon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selection().empty().not())
+						.enabled(model().selection().empty().not())
 						.build());
 	}
 	// end::setupControls[]
@@ -61,11 +61,11 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	private void viewEmployeeReport() {
 		Collection<Integer> departmentNumbers =
 						Entity.distinct(Department.DEPARTMENT_NO,
-										tableModel().selection().items().get());
+										model().selection().items().get());
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", departmentNumbers);
 
-		JasperPrint employeeReport = tableModel().connection()
+		JasperPrint employeeReport = model().connection()
 						.report(Employee.EMPLOYEE_REPORT, reportParameters);
 
 		Dialogs.builder()

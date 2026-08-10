@@ -51,7 +51,7 @@ public final class EntityTableModelInspector implements UiInspector {
 			return Optional.empty();
 		}
 
-		return Optional.of(state(tablePanel.tableModel()));
+		return Optional.of(state(tablePanel.model()));
 	}
 
 	private static Map<String, Object> state(SwingEntityTableModel tableModel) {

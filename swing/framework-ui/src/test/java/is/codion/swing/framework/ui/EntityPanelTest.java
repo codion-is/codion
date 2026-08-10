@@ -48,8 +48,8 @@ public final class EntityPanelTest {
 		assertThrows(IllegalStateException.class, deptPanel::editPanel);
 		assertFalse(deptPanel.containsTablePanel());
 		assertThrows(IllegalStateException.class, deptPanel::tablePanel);
-		assertNotNull(deptPanel.editModel());
-		assertNotNull(deptPanel.tableModel());
+		assertNotNull(deptPanel.model().editModel());
+		assertNotNull(deptPanel.model().tableModel());
 
 		// panel with a default table panel
 		deptPanel = new EntityPanel(deptModel, new EntityEditPanel(deptModel.editModel()) {

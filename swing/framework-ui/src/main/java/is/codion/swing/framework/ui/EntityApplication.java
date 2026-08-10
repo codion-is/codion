@@ -777,7 +777,7 @@ public final class EntityApplication<M extends SwingEntityApplicationModel, P ex
 			frameTitle.addConsumer(new FrameTitleConsumer(frame));
 		}
 		else {
-			frame.setTitle(createDefaultFrameTitle(applicationPanel.applicationModel()));
+			frame.setTitle(createDefaultFrameTitle(applicationPanel.model()));
 		}
 		if (mainMenu) {
 			applicationPanel.createMenuBar().ifPresent(frame::setJMenuBar);

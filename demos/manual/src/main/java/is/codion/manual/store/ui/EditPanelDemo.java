@@ -57,7 +57,7 @@ final class EditPanelDemo extends EntityEditPanel {
 	private void initializeUIExpanded() {
 		// tag::expanded[]
 		ColumnDefinition<String> firstNameDefinition =
-						editModel().entityDefinition().columns().definition(Customer.FIRST_NAME);
+						model().entityDefinition().columns().definition(Customer.FIRST_NAME);
 
 		//create the text field
 		JTextField firstNameField = new JTextField();

@@ -187,7 +187,7 @@ final class EntityDependenciesPanel extends JPanel {
 	// of a dependency table panel to an in-memory scratch node, for restoring its layout when the dialog is reopened.
 	private static Preferences capture(EntityTablePanel tablePanel) {
 		Preferences scratch = jsonPreferences();
-		tablePanel.tableModel().store(scratch);
+		tablePanel.model().store(scratch);
 		tablePanel.store(scratch);
 
 		return scratch;
@@ -195,7 +195,7 @@ final class EntityDependenciesPanel extends JPanel {
 
 	private static void restore(@Nullable Preferences scratch, EntityTablePanel tablePanel) {
 		if (scratch != null) {
-			tablePanel.tableModel().restore(scratch);
+			tablePanel.model().restore(scratch);
 			tablePanel.restore(scratch);
 		}
 	}

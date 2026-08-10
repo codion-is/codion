@@ -34,7 +34,6 @@ import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
 import is.codion.swing.common.ui.dialog.ActionDialogBuilder;
 import is.codion.swing.common.ui.dialog.DialogBuilder;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityEditor;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.DefaultEditComponent;
@@ -387,7 +386,7 @@ public final class EntityDialogs {
 							.command(this::ok)
 							.caption(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
-							.enabled(tablePanel.tableModel().selection().empty().not())
+							.enabled(tablePanel.model().selection().empty().not())
 							.build();
 			configureTable(tablePanel.table(), okControl, singleSelection);
 			ActionDialogBuilder<?> builder = Dialogs.action()
@@ -428,13 +427,13 @@ public final class EntityDialogs {
 		}
 
 		private void cancel() {
-			tablePanel.tableModel().selection().clear();
+			tablePanel.model().selection().clear();
 			Ancestor.window().of(tablePanel).dispose();
 			cancelled.set(true);
 		}
 
 		private void search() {
-			SwingEntityTableModel tableModel = tablePanel.tableModel();
+			SwingEntityTableModel tableModel = tablePanel.model();
 			tableModel.items().refresh(items -> {
 				if (tableModel.items().included().size() > 0) {
 					tableModel.selection().index().set(0);
@@ -451,7 +450,7 @@ public final class EntityDialogs {
 				throw new CancelException();
 			}
 
-			return tablePanel.tableModel().selection().items().get();
+			return tablePanel.model().selection().items().get();
 		}
 	}
 
@@ -495,7 +494,6 @@ public final class EntityDialogs {
 
 		@Override
 		public void show() {
-			SwingEntityEditModel editModel = editPanel.editModel();
 			//clear to defaults before the dialog is built, fires the veto-able changing event so a
 			//veto (e.g. the modified warning) simply prevents the dialog opening, as in the edit sibling
 			editPanel.editor().entity().defaults();
@@ -510,8 +508,8 @@ public final class EntityDialogs {
 							.defaultAction(createAddControl(editPanel,
 											new OnInsert(disposeDialog), confirm))
 							.escapeAction(createCancelControl(disposeDialog))
-							.title(FrameworkMessages.add() + " - " + editModel.entities()
-											.definition(editModel.entityType()).caption())
+							.title(FrameworkMessages.add() + " - " + editPanel.model().entities()
+											.definition(editPanel.model().entityType()).caption())
 							.onShown(new OnShown(editPanel, onShownConsumers))
 							.show();
 		}

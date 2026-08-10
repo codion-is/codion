@@ -47,18 +47,18 @@ final class CityTablePanel extends ChartTablePanel {
 	}
 
 	private Control createPopulateLocationControl() {
-		CityTableModel cityTableModel = (CityTableModel) tableModel();
+		CityTableModel tableModel = (CityTableModel) model();
 
 		return Control.builder()
 						.command(this::populateLocation)
 						.caption("Populate location")
-						.enabled(cityTableModel.cityWithoutLocationSelected())
+						.enabled(tableModel.cityWithoutLocationSelected())
 						.icon(FrameworkIcons.instance().get("map"))
 						.build();
 	}
 
 	private void populateLocation() {
-		CityTableModel tableModel = (CityTableModel) tableModel();
+		CityTableModel tableModel = (CityTableModel) model();
 		PopulateLocationTask task = tableModel.populateLocationTask();
 
 		Dialogs.progressWorker()

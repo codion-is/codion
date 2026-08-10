@@ -461,7 +461,7 @@ public class EntityTablePanel extends JPanel {
 	private final @Nullable TableConditionPanel<Attribute<?>> tableConditionPanel;
 	private final Controls.Layout popupMenuLayout;
 	private final Controls.Layout toolBarLayout;
-	private final SwingEntityTableModel tableModel;
+	private final SwingEntityTableModel model;
 	private final EntityTableExportModel exportModel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
@@ -486,42 +486,42 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Instantiates a new EntityTablePanel instance
-	 * @param tableModel the SwingEntityTableModel instance
+	 * @param model the SwingEntityTableModel instance
 	 */
-	public EntityTablePanel(SwingEntityTableModel tableModel) {
-		this(tableModel, NO_CONFIGURATION);
+	public EntityTablePanel(SwingEntityTableModel model) {
+		this(model, NO_CONFIGURATION);
 	}
 
 	/**
 	 * Instantiates a new EntityTablePanel instance
-	 * @param tableModel the SwingEntityTableModel instance
+	 * @param model the SwingEntityTableModel instance
 	 * @param config provides access to the table panel configuration
 	 */
-	public EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> config) {
-		this(tableModel, config, null);
+	public EntityTablePanel(SwingEntityTableModel model, Consumer<Config> config) {
+		this(model, config, null);
 	}
 
 	/**
 	 * Instantiates a new EntityTablePanel instance
-	 * @param tableModel the SwingEntityTableModel instance
+	 * @param model the SwingEntityTableModel instance
 	 * @param editPanel the edit panel
 	 */
-	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel) {
-		this(tableModel, editPanel, NO_CONFIGURATION);
+	public EntityTablePanel(SwingEntityTableModel model, EntityEditPanel editPanel) {
+		this(model, editPanel, NO_CONFIGURATION);
 	}
 
 	/**
 	 * Instantiates a new EntityTablePanel instance
-	 * @param tableModel the SwingEntityTableModel instance
+	 * @param model the SwingEntityTableModel instance
 	 * @param editPanel the edit panel
 	 * @param config provides access to the table panel configuration
 	 */
-	public EntityTablePanel(SwingEntityTableModel tableModel, EntityEditPanel editPanel, Consumer<Config> config) {
-		this(tableModel, config, requireNonNull(editPanel));
+	public EntityTablePanel(SwingEntityTableModel model, EntityEditPanel editPanel, Consumer<Config> config) {
+		this(model, config, requireNonNull(editPanel));
 	}
 
-	private EntityTablePanel(SwingEntityTableModel tableModel, Consumer<Config> config, @Nullable EntityEditPanel editPanel) {
-		this.tableModel = requireNonNull(tableModel);
+	private EntityTablePanel(SwingEntityTableModel model, Consumer<Config> config, @Nullable EntityEditPanel editPanel) {
+		this.model = requireNonNull(model);
 		this.editPanel = validateEditModel(editPanel);
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
@@ -530,7 +530,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
-		this.exportModel = new EntityTableExportModel(tableModel);
+		this.exportModel = new EntityTableExportModel(model);
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();
@@ -555,10 +555,10 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * @return the EntityTableModel used by this EntityTablePanel
+	 * @return the SwingEntityTableModel used by this EntityTablePanel
 	 */
-	public final SwingEntityTableModel tableModel() {
-		return tableModel;
+	public final SwingEntityTableModel model() {
+		return model;
 	}
 
 	/**
@@ -610,7 +610,7 @@ public class EntityTablePanel extends JPanel {
 
 	@Override
 	public final String toString() {
-		return getClass().getSimpleName() + ": " + tableModel.entityType();
+		return getClass().getSimpleName() + ": " + model.entityType();
 	}
 
 	/**
@@ -632,7 +632,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void editSelected() {
 		List<AttributeDefinition<?>> sortedDefinitions = configuration.editable.get().stream()
-						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
+						.map(attribute -> model.entityDefinition().attributes().definition(attribute))
 						.sorted(new AttributeDefinitionComparator())
 						.collect(toList());
 		Dialogs.select()
@@ -652,9 +652,9 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void editSelected(Attribute<?> attributeToEdit) {
 		requireNonNull(attributeToEdit);
-		if (!tableModel.selection().empty().is()) {
+		if (!model.selection().empty().is()) {
 			editDialogBuilder(attributeToEdit)
-							.edit(tableModel.selection().items().get());
+							.edit(model.selection().items().get());
 		}
 	}
 
@@ -662,7 +662,7 @@ public class EntityTablePanel extends JPanel {
 	 * Displays a dialog containing tables of entities depending on the selected entities via non-soft foreign keys
 	 */
 	public final void viewDependencies() {
-		if (!tableModel.selection().empty().is()) {
+		if (!model.selection().empty().is()) {
 			displayDependencies(false);
 		}
 	}
@@ -685,7 +685,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void deleteSelected() {
 		Dialogs.progressWorker()
-						.task(tableModel.editor().tasks().delete(tableModel.selection().items().get())::perform)
+						.task(model.editor().tasks().delete(model.selection().items().get())::perform)
 						.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 						.owner(this)
 						.onResult(Result::handle)
@@ -963,7 +963,7 @@ public class EntityTablePanel extends JPanel {
 	 * @return a edit dialog builder
 	 */
 	protected <T> EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
-		return editAttributeDialog(tableModel.editor(), attribute)
+		return editAttributeDialog(model.editor(), attribute)
 						.owner(this)
 						.component((EditComponent<?, T>) configuration.editComponents
 										.getOrDefault(attribute, new DefaultEditComponent<>(attribute)));
@@ -973,13 +973,13 @@ public class EntityTablePanel extends JPanel {
 	 * Returns the key used to identify user preferences for this table panel, that is column positions, widths and such.
 	 * The default implementation is:
 	 * {@snippet :
-	 * return tableModel().getClass().getSimpleName() + "-" + tableModel().entityType();
+	 * return model().getClass().getSimpleName() + "-" + model().entityType();
 	 *}
 	 * Override in case this key is not unique within the application.
 	 * @return the key used to identify user preferences for this table panel
 	 */
 	protected String preferencesKey() {
-		return tableModel.getClass().getSimpleName() + "-" + tableModel.entityType();
+		return model.getClass().getSimpleName() + "-" + model.entityType();
 	}
 
 	/**
@@ -1038,7 +1038,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(new EditCommand())
 						.caption(FrameworkMessages.edit())
-						.enabled(tableModel().selection().single())
+						.enabled(model.selection().single())
 						.icon(ICONS.edit())
 						.description(FrameworkMessages.editSelectedTip())
 						.build();
@@ -1078,7 +1078,7 @@ public class EntityTablePanel extends JPanel {
 						.icon(ICONS.edit())
 						.description(FrameworkMessages.editAttributeTip());
 		configuration.editable.get().stream()
-						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
+						.map(attribute -> model.entityDefinition().attributes().definition(attribute))
 						.sorted(new AttributeDefinitionComparator())
 						.forEach(definition ->
 										builder.control(createEditAttributeControl(definition, enabled)));
@@ -1088,11 +1088,11 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private ObservableState createEditAttributeEnabledState() {
-		ObservableState selectionNotEmpty = tableModel.selection().empty().not();
-		ObservableState updateEnabled = tableModel.editor().settings().updateEnabled();
+		ObservableState selectionNotEmpty = model.selection().empty().not();
+		ObservableState updateEnabled = model.editor().settings().updateEnabled();
 		ObservableState updateMultipleEnabledOrSingleSelection =
-						State.or(tableModel.editor().settings().updateMultipleEnabled(),
-										tableModel.selection().single());
+						State.or(model.editor().settings().updateMultipleEnabled(),
+										model.selection().single());
 
 		return State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
 	}
@@ -1112,7 +1112,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(this::viewDependencies)
 						.caption(FrameworkMessages.dependencies())
-						.enabled(tableModel.selection().empty().not())
+						.enabled(model.selection().empty().not())
 						.description(FrameworkMessages.dependenciesTip())
 						.icon(ICONS.dependencies())
 						.build();
@@ -1127,8 +1127,8 @@ public class EntityTablePanel extends JPanel {
 						.command(new DeleteCommand())
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(
-										tableModel.editor().settings().deleteEnabled(),
-										tableModel.selection().empty().not()))
+										model.editor().settings().deleteEnabled(),
+										model.selection().empty().not()))
 						.description(FrameworkMessages.deleteSelectedTip())
 						.icon(ICONS.delete())
 						.build();
@@ -1139,12 +1139,12 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private CommandControl createRefreshControl() {
 		return Control.builder()
-						.command(tableModel.items()::refresh)
+						.command(model.items()::refresh)
 						.caption(Messages.refresh())
 						.description(Messages.refreshTip())
 						.mnemonic(Messages.refreshMnemonic())
 						.icon(ICONS.refresh())
-						.enabled(tableModel.items().refresher().active().not())
+						.enabled(model.items().refresher().active().not())
 						.build();
 	}
 
@@ -1153,7 +1153,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private CommandControl createClearControl() {
 		return Control.builder()
-						.command(tableModel.items()::clear)
+						.command(model.items()::clear)
 						.caption(Messages.clear())
 						.description(Messages.clearTip())
 						.mnemonic(Messages.clearMnemonic())
@@ -1225,7 +1225,7 @@ public class EntityTablePanel extends JPanel {
 						.icon(ICONS.search())
 						.separator()
 						.control(Control.builder()
-										.toggle(tableModel.query().conditionRequired())
+										.toggle(model.query().conditionRequired())
 										.caption(MESSAGES.getString("condition_required"))
 										.description(MESSAGES.getString("condition_required_description")))
 						.build();
@@ -1291,8 +1291,8 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createClearSelectionControl() {
 		return Control.builder()
-						.command(tableModel.selection()::clear)
-						.enabled(tableModel.selection().empty().not())
+						.command(model.selection()::clear)
+						.enabled(model.selection().empty().not())
 						.icon(ICONS.clearSelection())
 						.description(MESSAGES.getString("clear_selection_tip"))
 						.build();
@@ -1300,7 +1300,7 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createIncrementSelectionControl() {
 		return Control.builder()
-						.command(tableModel.selection().indexes()::increment)
+						.command(model.selection().indexes()::increment)
 						.icon(ICONS.down())
 						.description(MESSAGES.getString("increment_selection_tip"))
 						.build();
@@ -1308,7 +1308,7 @@ public class EntityTablePanel extends JPanel {
 
 	private CommandControl createDecrementSelectionControl() {
 		return Control.builder()
-						.command(tableModel.selection().indexes()::decrement)
+						.command(model.selection().indexes()::decrement)
 						.icon(ICONS.up())
 						.description(MESSAGES.getString("decrement_selection_tip"))
 						.build();
@@ -1385,8 +1385,8 @@ public class EntityTablePanel extends JPanel {
 
 	private boolean includeAddControl() {
 		return editPanel != null && configuration.includeAddControl &&
-						!tableModel.editor().settings().readOnly().is() &&
-						tableModel.editor().settings().insertEnabled().is();
+						!model.editor().settings().readOnly().is() &&
+						model.editor().settings().insertEnabled().is();
 	}
 
 	private boolean includeEditControl() {
@@ -1400,19 +1400,19 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean updatable() {
-		return !tableModel.editor().settings().readOnly().is() &&
-						tableModel.editor().settings().updateEnabled().is();
+		return !model.editor().settings().readOnly().is() &&
+						model.editor().settings().updateEnabled().is();
 	}
 
 	private boolean includeDeleteControl() {
-		return !tableModel.editor().settings().readOnly().is() && tableModel.editor().settings().deleteEnabled().is();
+		return !model.editor().settings().readOnly().is() && model.editor().settings().deleteEnabled().is();
 	}
 
 	private boolean includeViewDependenciesControl() {
-		return tableModel.entities().definitions().stream()
+		return model.entities().definitions().stream()
 						.flatMap(entityDefinition -> entityDefinition.foreignKeys().definitions().stream())
 						.filter(foreignKeyDefinition -> !foreignKeyDefinition.soft())
-						.anyMatch(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(tableModel.entityType()));
+						.anyMatch(foreignKeyDefinition -> foreignKeyDefinition.attribute().referencedType().equals(model.entityType()));
 	}
 
 	private boolean includeToggleSummaryPanelControl() {
@@ -1421,8 +1421,8 @@ public class EntityTablePanel extends JPanel {
 
 	private Control createConditionRefreshControl() {
 		return Control.builder()
-						.command(tableModel.items()::refresh)
-						.enabled(tableModel.query().condition().modified())
+						.command(model.items()::refresh)
+						.enabled(model.query().condition().modified())
 						.icon(ICONS.refresh())
 						.build();
 	}
@@ -1456,7 +1456,7 @@ public class EntityTablePanel extends JPanel {
 			return null;
 		}
 		TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
-						.create(tableModel.query().condition(), createConditionPanels(),
+						.create(model.query().condition(), createConditionPanels(),
 										table.columns(), this::configureTableConditionPanel);
 		KeyEvents.builder()
 						.keyCode(VK_ENTER)
@@ -1470,8 +1470,8 @@ public class EntityTablePanel extends JPanel {
 
 	private Map<Attribute<?>, ConditionPanel<?>> createConditionPanels() {
 		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = new HashMap<>();
-		EntityConditionComponents defaultComponents = new EntityConditionComponents(tableModel.entityDefinition());
-		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.query().condition().get().entrySet()) {
+		EntityConditionComponents defaultComponents = new EntityConditionComponents(model.entityDefinition());
+		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : model.query().condition().get().entrySet()) {
 			Attribute<?> attribute = conditionEntry.getKey();
 			if (table.columns().contains(attribute)) {
 				ConditionComponents components = configuration.conditionComponents.getOrDefault(attribute, defaultComponents);
@@ -1506,7 +1506,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void configureExcludedColumns() {
 		if (configuration.excludeHiddenColumns) {
-			ValueSet<Attribute<?>> exclude = tableModel.query().attributes().exclude();
+			ValueSet<Attribute<?>> exclude = model.query().attributes().exclude();
 			table.columns().hidden().addConsumer(exclude::set);
 			exclude.set(table.columns().hidden().get());
 		}
@@ -1514,8 +1514,8 @@ public class EntityTablePanel extends JPanel {
 
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
-		tableModel.query().condition().changed().addListener(this::onConditionChanged);
-		tableModel.editor().events().persisted().addListener(table::repaint);
+		model.query().condition().changed().addListener(this::onConditionChanged);
+		model.editor().events().persisted().addListener(table::repaint);
 	}
 
 	private void enableConditionPanelRefreshOnEnter(JComponent component) {
@@ -1662,13 +1662,13 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void viewEntity() {
-		tableModel.selection().item().optional().ifPresent(selected ->
-						EntityViewer.view(selected.primaryKey(), tableModel.connection(), this));
+		model.selection().item().optional().ifPresent(selected ->
+						EntityViewer.view(selected.primaryKey(), model.connection(), this));
 	}
 
 	private void inspectQuery() {
 		if (queryInspector == null) {
-			queryInspector = new SelectQueryInspector(tableModel.query());
+			queryInspector = new SelectQueryInspector(model.query());
 		}
 		if (queryInspector.isShowing()) {
 			Ancestor.window().of(queryInspector).toFront();
@@ -1677,7 +1677,7 @@ public class EntityTablePanel extends JPanel {
 			Dialogs.builder()
 							.component(queryInspector)
 							.owner(this)
-							.title(tableModel.entityDefinition().caption() + " Query")
+							.title(model.entityDefinition().caption() + " Query")
 							.modal(false)
 							.show();
 		}
@@ -1708,16 +1708,16 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private @Nullable EntityEditPanel validateEditModel(@Nullable EntityEditPanel editPanel) {
-		if (editPanel != null && editPanel.editModel() != tableModel.editModel()) {
+		if (editPanel != null && editPanel.model() != model.editModel()) {
 			throw new IllegalArgumentException("Edit panel model must be the same instance as the table model's edit model, expected "
-							+ tableModel.editModel().entityType() + ", got " + editPanel.editModel().entityType());
+							+ model.entityType() + ", got " + editPanel.model().entityType());
 		}
 
 		return editPanel;
 	}
 
 	private void displayDependencies(boolean dependenciesExpected) {
-		EntityDependenciesPanel.displayDependencies(tableModel.selection().items().get(), tableModel.connection(),
+		EntityDependenciesPanel.displayDependencies(model.selection().items().get(), model.connection(),
 						this, dependenciesDialogSize, dependencyPanelPreferences, dependenciesExpected);
 	}
 
@@ -2193,15 +2193,15 @@ public class EntityTablePanel extends JPanel {
 
 		private Config(EntityTablePanel tablePanel) {
 			this.tablePanel = tablePanel;
-			this.entityDefinition = tablePanel.tableModel.entityDefinition();
+			this.entityDefinition = tablePanel.model.entityDefinition();
 			this.tableBuilder = FilterTable.builder()
-							.model(tablePanel.tableModel)
+							.model(tablePanel.model)
 							.name(entityDefinition.type().toString())
-							.summaryValues(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
+							.summaryValues(new EntitySummaryValuesFactory(entityDefinition, tablePanel.model))
 							.cellRenderers(new EntityTableCellRenderers())
 							.headerRenderers(new EntityTableHeaderRenderers())
 							.cellEditors(new EntityTableCellEditors())
-							.cellEditable(new EntityCellEditable(tablePanel.tableModel.entities()))
+							.cellEditable(new EntityCellEditable(tablePanel.model.entities()))
 							.scrollToAddedItem(true);
 			this.conditionPanelFactory = new DefaultConditionPanelFactory();
 			this.conditionComponents = new HashMap<>();
@@ -2209,7 +2209,7 @@ public class EntityTablePanel extends JPanel {
 			this.editable = valueSet(editableAttributes());
 			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
 			this.editComponents = new HashMap<>();
-			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selection());
+			this.deleteConfirmer = new DeleteConfirmer(tablePanel.model.selection());
 		}
 
 		private Config(Config config) {
@@ -3121,7 +3121,7 @@ public class EntityTablePanel extends JPanel {
 
 		private final Value<String> statusMessage = Value.builder()
 						.nonNull("")
-						.value(configuration.statusMessage.apply(tableModel))
+						.value(configuration.statusMessage.apply(model))
 						.build();
 		private final JLabel label = Components.label()
 						.text(statusMessage)
@@ -3141,10 +3141,10 @@ public class EntityTablePanel extends JPanel {
 		private StatusPanel() {
 			super(new BorderLayout());
 			add(label, BorderLayout.CENTER);
-			tableModel.items().refresher().active().addConsumer(this::refresherActive);
-			tableModel.selection().indexes().addListener(this::updateStatusMessage);
-			tableModel.items().included().addListener(this::updateStatusMessage);
-			tableModel.items().filtered().addListener(this::updateStatusMessage);
+			model.items().refresher().active().addConsumer(this::refresherActive);
+			model.selection().indexes().addListener(this::updateStatusMessage);
+			model.items().included().addListener(this::updateStatusMessage);
+			model.items().filtered().addListener(this::updateStatusMessage);
 			if (configuration.includeLimitMenu) {
 				setComponentPopupMenu(menu()
 								.control(Control.builder()
@@ -3163,9 +3163,9 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void configureLimit() {
-			tableModel.query().limit().set(Dialogs.input()
+			model.query().limit().set(Dialogs.input()
 							.component(integerField()
-											.value(tableModel.query().limit().get())
+											.value(model.query().limit().get())
 											.selectAllOnFocusGained(true)
 											.grouping(true)
 											.minimum(0)
@@ -3177,7 +3177,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void updateStatusMessage() {
-			statusMessage.set(configuration.statusMessage.apply(tableModel));
+			statusMessage.set(configuration.statusMessage.apply(model));
 		}
 
 		private void refresherActive(boolean refresherActive) {
@@ -3220,7 +3220,7 @@ public class EntityTablePanel extends JPanel {
 			@Override
 			public boolean test(Integer limit) {
 				try {
-					tableModel.query().limit().validate(limit);
+					model.query().limit().validate(limit);
 					return true;
 				}
 				catch (IllegalArgumentException e) {

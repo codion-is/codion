@@ -118,7 +118,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 	private void selectState(ActionEvent event) {
 		JTextField stateField = (JTextField) event.getSource();
 		Dialogs.select()
-						.list(editModel().connection().select(Customer.STATE))
+						.list(model().connection().select(Customer.STATE))
 						.owner(stateField)
 						.select()
 						.single()

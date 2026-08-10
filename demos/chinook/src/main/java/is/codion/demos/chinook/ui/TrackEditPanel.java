@@ -109,11 +109,11 @@ public final class TrackEditPanel extends EntityEditPanel {
 	}
 
 	private EntityEditPanel createMediaTypeEditPanel() {
-		return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connection()));
+		return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, model().connection()));
 	}
 
 	private GenreEditPanel createGenreEditPanel() {
-		return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connection()));
+		return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, model().connection()));
 	}
 
 	private void addKeyEvents() {

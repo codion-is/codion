@@ -236,7 +236,7 @@ final class FrameworkUIDemo {
 			}
 
 			private EntityEditPanel createMediaTypeEditPanel() {
-				return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connection()));
+				return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, model().connection()));
 			}
 		}
 		// end::editPanelComboBoxPanel[]
@@ -279,7 +279,7 @@ final class FrameworkUIDemo {
 				JTextField stateField = (JTextField) event.getSource();
 
 				Dialogs.select()
-								.list(editModel().connection().select(Customer.STATE))
+								.list(model().connection().select(Customer.STATE))
 								.owner(stateField)
 								.select()
 								.single()
