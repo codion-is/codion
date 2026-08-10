@@ -91,7 +91,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.control(Control.builder()
 										.command(this::raisePriceOfSelected)
 										.caption(BUNDLE.getString("raise_price") + "...")
-										.enabled(tableModel().selection().empty().not()))
+										.enabled(model().selection().empty().not()))
 						// and a separator
 						.separator()
 						// and add all the default controls
@@ -100,9 +100,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 	// end::popupMenu[]
 
 	private void raisePriceOfSelected() {
-		TrackTableModel tableModel = (TrackTableModel) tableModel();
+		TrackTableModel model = (TrackTableModel) model();
 		Dialogs.progressWorker()
-						.task(tableModel.raisePriceOfSelected(getAmountFromUser()))
+						.task(model.raisePriceOfSelected(getAmountFromUser()))
 						.owner(this)
 						.title(BUNDLE.getString("raise_price"))
 						.execute();

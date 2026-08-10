@@ -70,7 +70,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	}
 
 	private void randomPlaylist() {
-		RandomPlaylistParametersValue parametersValue = new RandomPlaylistParametersValue(tableModel().connection());
+		RandomPlaylistParametersValue parametersValue = new RandomPlaylistParametersValue(model().connection());
 		RandomPlaylistParameters parameters = Dialogs.input()
 						.component(parametersValue)
 						.owner(this)
@@ -96,13 +96,13 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 
 		@Override
 		public Entity execute() {
-			return ((PlaylistTableModel) tableModel()).createRandomPlaylist(parameters);
+			return ((PlaylistTableModel) model()).createRandomPlaylist(parameters);
 		}
 
 		@Override
 		public void onResult(Entity playlist) {
-			tableModel().items().included().add(0, playlist);
-			tableModel().selection().item().set(playlist);
+			model().items().included().add(0, playlist);
+			model().selection().item().set(playlist);
 		}
 	}
 

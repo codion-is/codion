@@ -46,7 +46,7 @@ public class EntityTableCellRenderersTest {
 	@Test
 	void test() {
 		EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION));
-		tablePanel.tableModel().items().refresh();
+		tablePanel.model().items().refresh();
 		FilterTableCellRenderer.Factory<Entity, Attribute<?>> factory = new EntityTableCellRenderers();
 		FilterTableCellRenderer<Entity, Attribute<?>, ?> renderer = factory.create(Employee.NAME, tablePanel.table());
 		renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);

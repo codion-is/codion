@@ -213,7 +213,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = (Consumer<Config>) EMPTY_CONSUMER;
 
-	private final SwingEntityEditModel editModel;
+	private final SwingEntityEditModel model;
 	private final EditorComponents components;
 	private final EditPanelCommands commands = new EditPanelCommands();
 	private final Map<EntityType, Preferences> dependencyPanelPreferences = new HashMap<>();
@@ -231,36 +231,36 @@ public abstract class EntityEditPanel extends JPanel {
 
 	/**
 	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
-	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
+	 * @param model the {@link EntityEditModel} instance to base this EntityEditPanel on
 	 */
-	protected EntityEditPanel(SwingEntityEditModel editModel) {
-		this(editModel, NO_CONFIGURATION);
+	protected EntityEditPanel(SwingEntityEditModel model) {
+		this(model, NO_CONFIGURATION);
 	}
 
 	/**
 	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
-	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
+	 * @param model the {@link EntityEditModel} instance to base this EntityEditPanel on
 	 * @param config provides access to the panel configuration
 	 */
-	protected EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
-		this.editModel = requireNonNull(editModel);
-		this.configuration = configure(config, editModel.entityDefinition());
-		this.components = createEditorComponents(editModel.editor());
+	protected EntityEditPanel(SwingEntityEditModel model, Consumer<Config> config) {
+		this.model = requireNonNull(model);
+		this.configuration = configure(config, model.entityDefinition());
+		this.components = createEditorComponents(model.editor());
 		this.active = State.state(!configuration.focusActivation);
 		this.controlsLayout = createControlsLayout();
 		this.inputFocus = new InputFocus();
 		createControls();
 		setupKeyboardActions();
-		if (editModel.editor().entity().exists().not().is()) {
-			editModel.editor().entity().defaults();
+		if (model.editor().entity().exists().not().is()) {
+			model.editor().entity().defaults();
 		}
 	}
 
 	/**
 	 * @return the edit model this panel is based on
 	 */
-	public final SwingEntityEditModel editModel() {
-		return editModel;
+	public final SwingEntityEditModel model() {
+		return model;
 	}
 
 	@Override
@@ -271,7 +271,7 @@ public abstract class EntityEditPanel extends JPanel {
 
 	@Override
 	public final String toString() {
-		return editModel().toString();
+		return model.toString();
 	}
 
 	/**
@@ -422,7 +422,7 @@ public abstract class EntityEditPanel extends JPanel {
 	 * @return the underlying {@link SwingEntityEditor}
 	 */
 	public final SwingEntityEditor editor() {
-		return editModel.editor();
+		return model.editor();
 	}
 
 	/**
@@ -540,7 +540,7 @@ public abstract class EntityEditPanel extends JPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			EntityDependenciesPanel.displayDependencies(singletonList(editor().entity().get()), editModel().connection(),
+			EntityDependenciesPanel.displayDependencies(singletonList(editor().entity().get()), model.connection(),
 							this, dependenciesDialogSize, dependencyPanelPreferences, true);
 		}
 		else {
@@ -745,7 +745,7 @@ public abstract class EntityEditPanel extends JPanel {
 			Dialogs.builder()
 							.component(inspector)
 							.owner(this)
-							.title(editModel().entityDefinition().caption())
+							.title(model.entityDefinition().caption())
 							.modal(false)
 							.show();
 		}
@@ -815,7 +815,7 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	private void viewEntity() {
-		EntityViewer.view(editor().entity().get(), editModel().connection(), this);
+		EntityViewer.view(editor().entity().get(), model.connection(), this);
 	}
 
 	private static Config configure(Consumer<Config> configuration, EntityDefinition entityDefinition) {
@@ -864,7 +864,7 @@ public abstract class EntityEditPanel extends JPanel {
 	}
 
 	private List<Item<ComponentEntry>> disambiguate(Collection<ComponentEntry> entries) {
-		Entities entities = editModel.entities();
+		Entities entities = model.entities();
 		Map<String, Long> captionCounts = entries.stream()
 						.collect(groupingBy(entry -> entry.component().caption(), counting()));
 

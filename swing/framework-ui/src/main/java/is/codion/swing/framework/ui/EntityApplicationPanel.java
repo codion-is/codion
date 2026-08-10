@@ -215,7 +215,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final MessageBundle resourceBundle =
 					messageBundle(EntityApplicationPanel.class, getBundle(EntityApplicationPanel.class.getName()));
 
-	private final M applicationModel;
+	private final M model;
 	private final Collection<EntityPanel.Builder> lookupPanelBuilders;
 	private final List<EntityPanel> entityPanels;
 	private final ApplicationLayout applicationLayout;
@@ -245,27 +245,27 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	/**
 	 * Instantiates a new {@link EntityApplicationPanel} based on the given application model,
 	 * using the default {@link TabbedApplicationLayout}.
-	 * @param applicationModel the application model
+	 * @param model the application model
 	 * @param entityPanels the entity panels
 	 * @param lookupPanelBuilders the support panel builders
 	 */
-	public EntityApplicationPanel(M applicationModel, List<EntityPanel> entityPanels,
+	public EntityApplicationPanel(M model, List<EntityPanel> entityPanels,
 																Collection<EntityPanel.Builder> lookupPanelBuilders) {
-		this(applicationModel, entityPanels, lookupPanelBuilders, TabbedApplicationLayout::new);
+		this(model, entityPanels, lookupPanelBuilders, TabbedApplicationLayout::new);
 	}
 
 	/**
 	 * Instantiates a new {@link EntityApplicationPanel} based on the given application model,
 	 * using the {@link ApplicationLayout} provided by {@code applicationLayout}.
-	 * @param applicationModel the application model
+	 * @param model the application model
 	 * @param entityPanels the entity panels
 	 * @param lookupPanelBuilders the support panel builders
 	 * @param applicationLayout provides the application layout
 	 */
-	public EntityApplicationPanel(M applicationModel, List<EntityPanel> entityPanels,
+	public EntityApplicationPanel(M model, List<EntityPanel> entityPanels,
 																Collection<EntityPanel.Builder> lookupPanelBuilders,
 																Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
-		this.applicationModel = requireNonNull(applicationModel);
+		this.model = requireNonNull(model);
 		this.entityPanels = unmodifiableList(new ArrayList<>(requireNonNull(entityPanels)));
 		this.lookupPanelBuilders = requireNonNull(lookupPanelBuilders);
 		this.applicationLayout = requireNonNull(applicationLayout).apply(this);
@@ -292,8 +292,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	/**
 	 * @return the application model this application panel is based on
 	 */
-	public final M applicationModel() {
-		return applicationModel;
+	public final M model() {
+		return model;
 	}
 
 	/**
@@ -364,7 +364,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 		storePreferences();
 		try {
-			applicationModel.connection().close();
+			model.connection().close();
 		}
 		catch (Exception e) {
 			LOG.debug("Exception while disconnecting from database", e);
@@ -556,7 +556,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.caption(FrameworkMessages.lookup())
 						.mnemonic(FrameworkMessages.lookupMnemonic())
 						.controls(lookupPanelBuilders.stream()
-										.sorted(new LookupPanelBuilderComparator(applicationModel.entities()))
+										.sorted(new LookupPanelBuilderComparator(model.entities()))
 										.map(this::createLookupPanelControl)
 										.collect(toList()))
 						.build());
@@ -681,7 +681,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	protected JPanel createAboutPanel() {
 		PanelBuilder<GridLayout, ?> versionMemoryPanel = gridLayoutPanel(0, 2)
 						.border(emptyBorder());
-		applicationModel().connection().clientVersion().ifPresent(version -> versionMemoryPanel
+		model.connection().clientVersion().ifPresent(version -> versionMemoryPanel
 						.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
 						.add(new JLabel(version.toString())));
 		versionMemoryPanel
@@ -821,7 +821,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private Preferences preferences() {
 		if (preferences == null) {
 			preferences = filePreferences(EntityApplicationModel.PREFERENCES_KEY.optional()
-							.orElse(applicationModel.entities().domainType().name()));
+							.orElse(model.entities().domainType().name()));
 			PreferencesMigrator.migrate(preferences);
 		}
 
@@ -832,7 +832,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		if (userPreferences) {
 			Preferences preferences = preferences();
 			// The model walk restores the model-owned state (conditions, filters, sort), the UI walk the view state
-			applicationModel.restore(preferences.node(ENTITIES));
+			model.restore(preferences.node(ENTITIES));
 			restore(preferences);
 		}
 		else {
@@ -845,7 +845,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			if (userPreferences) {
 				LOG.debug("Writing user preferences");
 				Preferences preferences = preferences();
-				applicationModel.store(preferences.node(ENTITIES));
+				model.store(preferences.node(ENTITIES));
 				store(preferences);
 				preferences.put(VERSION, VERSION_VALUE);
 				preferences.flush();
@@ -928,7 +928,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		boolean maximized = parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH;
 
 		return new ApplicationPreferences(
-						saveDefaultUsername ? applicationModel.connection().user().username() : null,
+						saveDefaultUsername ? model.connection().user().username() : null,
 						getLookAndFeel().getClass().getName(), Scaler.SCALING.getOrThrow(),
 						//when maximized parentFrame.getSize() is the screen size, not the frame size to restore when un-maximized
 						parentFrame == null || maximized ? null : parentFrame.getSize(),
@@ -938,7 +938,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private Control createLookupPanelControl(EntityPanel.Builder panelBuilder) {
 		return Control.builder()
 						.command(() -> displayEntityPanelWindow(panelBuilder))
-						.caption(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
+						.caption(panelBuilder.caption().orElse(model.entities().definition(panelBuilder.entityType()).caption()))
 						.description(panelBuilder.description().orElse(null))
 						.icon(panelBuilder.icon().orElse(null))
 						.build();
@@ -954,7 +954,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			return cachedEntityPanels.get(panelBuilder);
 		}
 
-		EntityPanel entityPanel = panelBuilder.build(applicationModel.connection());
+		EntityPanel entityPanel = panelBuilder.build(model.connection());
 		if (userPreferences) {
 			entityPanel.restore(preferences().node(AUXILIARY).node(entityPanel.preferencesKey()));
 		}
@@ -977,7 +977,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private void handleUnsavedModifications() {
 		Map<EntityPanel, Collection<Attribute<?>>> modified = modified(entityPanels);
 		if (modifiedWarning && !modified.isEmpty() && showConfirmDialog(this,
-						createModifiedMessage(modified, applicationModel.entities()), FrameworkMessages.modifiedWarningTitle(),
+						createModifiedMessage(modified, model.entities()), FrameworkMessages.modifiedWarningTitle(),
 						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
 			EntityPanel modifiedPanel = modified.keySet().stream()
 							.filter(entityPanel -> entityPanel.containsEditPanel() && entityPanel.editPanel().active().is())
@@ -1011,7 +1011,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private static Map<EntityPanel, Collection<Attribute<?>>> modified(Collection<EntityPanel> panels) {
 		Map<EntityPanel, Collection<Attribute<?>>> modifiedPanels = new LinkedHashMap<>();
 		for (EntityPanel panel : panels) {
-			SwingEntityEditModel editModel = panel.editModel();
+			SwingEntityEditModel editModel = panel.model().editModel();
 			if (editModel.editor().entity().modified().is()) {
 				modifiedPanels.put(panel, editModel.editor().entity().modified().attributes().get());
 			}
@@ -1059,7 +1059,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private Optional<Controls> createTracingControls() {
-		EntityConnection connection = applicationModel.connection();
+		EntityConnection connection = model.connection();
 		if (connection instanceof EntityConnectionTracer && SQL_TRACING.getOrThrow()) {
 			EntityConnectionTracer tracer = (EntityConnectionTracer) connection;
 
@@ -1153,7 +1153,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private void setupTracing() {
 		if (SQL_TRACING.getOrThrow()) {
-			EntityConnection connection = applicationModel.connection();
+			EntityConnection connection = model.connection();
 			if (connection instanceof EntityConnectionTracer) {
 				EntityConnectionTracer tracer = (EntityConnectionTracer) connection;
 				if (tracer.tracing().is()) {
@@ -1165,7 +1165,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void tracingChanged(boolean tracing) {
-		EntityConnection connection = applicationModel.connection();
+		EntityConnection connection = model.connection();
 		if (connection instanceof EntityConnectionTracer) {
 			if (tracing) {
 				if (sqlTraceViewer == null) {

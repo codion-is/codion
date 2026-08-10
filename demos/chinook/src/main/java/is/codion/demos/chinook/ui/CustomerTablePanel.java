@@ -59,7 +59,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 						.command(this::viewCustomerReport)
 						.caption(BUNDLE.getString("customer_report"))
 						.icon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selection().empty().not())
+						.enabled(model().selection().empty().not())
 						.build());
 	}
 	// end::setupControls[]
@@ -76,11 +76,11 @@ public final class CustomerTablePanel extends EntityTablePanel {
 	private JasperPrint fillCustomerReport() {
 		Collection<Long> customerIDs =
 						Entity.values(Customer.ID,
-										tableModel().selection().items().get());
+										model().selection().items().get());
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-		return JasperReports.loadPrint(tableModel().connection()
+		return JasperReports.loadPrint(model().connection()
 						.report(Customer.REPORT, reportParameters));
 	}
 

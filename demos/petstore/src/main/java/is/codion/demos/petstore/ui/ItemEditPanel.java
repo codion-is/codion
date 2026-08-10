@@ -60,10 +60,10 @@ public class ItemEditPanel extends EntityEditPanel {
 	}
 
 	private ContactInfoEditPanel createContactInfoEditPanel() {
-		return new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connection()));
+		return new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, model().connection()));
 	}
 
 	private AddressEditPanel createAddressEditPanel() {
-		return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connection()));
+		return new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, model().connection()));
 	}
 }

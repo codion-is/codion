@@ -58,7 +58,7 @@ public final class EntityConditionInspector implements UiInspector {
 			return Optional.empty();
 		}
 
-		return state(tablePanel.tableModel(), conditionPanel.model());
+		return state(tablePanel.model(), conditionPanel.model());
 	}
 
 	//package-private for direct testing without realizing the component hierarchy

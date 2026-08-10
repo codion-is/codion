@@ -57,12 +57,12 @@ public final class ArtistTablePanel extends EntityTablePanel {
 		return Control.builder()
 						.command(this::combineSelected)
 						.caption(BUNDLE.getString("combine") + "...")
-						.enabled(tableModel().selection().multiple())
+						.enabled(model().selection().multiple())
 						.build();
 	}
 
 	private void combineSelected() {
-		List<Entity> selectedArtists = tableModel().selection().items().get();
+		List<Entity> selectedArtists = model().selection().items().get();
 		Entity artistToKeep = Dialogs.select()
 						.list(selectedArtists)
 						.owner(this)
@@ -74,9 +74,9 @@ public final class ArtistTablePanel extends EntityTablePanel {
 
 		List<Entity> artistsToDelete = new ArrayList<>(selectedArtists);
 		artistsToDelete.remove(artistToKeep);
-		int albumCount = tableModel().connection().count(where(Album.ARTIST_FK.in(artistsToDelete)));
+		int albumCount = model().connection().count(where(Album.ARTIST_FK.in(artistsToDelete)));
 		if (confirmCombination(artistsToDelete, artistToKeep, albumCount)) {
-			CombineArtistsTask task = ((ArtistTableModel) tableModel()).combine(artistsToDelete, artistToKeep);
+			CombineArtistsTask task = ((ArtistTableModel) model()).combine(artistsToDelete, artistToKeep);
 			Dialogs.progressWorker()
 							.task(task)
 							.owner(this)

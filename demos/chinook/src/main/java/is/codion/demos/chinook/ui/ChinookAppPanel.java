@@ -210,7 +210,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 	private void displayAnalytics() {
 		if (analyticsPanel == null) {
-			analyticsPanel = new AnalyticsPanel(applicationModel().analytics());
+			analyticsPanel = new AnalyticsPanel(model().analytics());
 		}
 		if (!analyticsPanel.isShowing()) {
 			analyticsPanel.model().refresh();

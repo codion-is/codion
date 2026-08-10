@@ -179,15 +179,15 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void bindEvents() {
-		tableModel().items().included().addListener(this::displayCityLocations);
-		tableModel().selection().indexes().addListener(this::displayCityLocations);
+		model().items().included().addListener(this::displayCityLocations);
+		model().selection().indexes().addListener(this::displayCityLocations);
 	}
 
 	private void displayCityLocations() {
 		if (mapKit.isShowing()) {
-			Collection<Entity> entities = tableModel().selection().empty().is() ?
-							tableModel().items().included().get() :
-							tableModel().selection().items().get();
+			Collection<Entity> entities = model().selection().empty().is() ?
+							model().items().included().get() :
+							model().selection().items().get();
 			Maps.paintWaypoints(entities.stream()
 							.map(entity -> entity.optional(Lookup.CITY_LOCATION))
 							.flatMap(Optional::stream)
@@ -248,16 +248,16 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void exportCSV(File file) throws IOException {
-		Files.write(file.toPath(), List.of(tableModel().export()
+		Files.write(file.toPath(), List.of(model().export()
 						.delimiter(',')
 						.selected(true)
 						.get()));
 	}
 
 	private void exportJSON(File file) throws IOException {
-		Collection<Entity> entities = tableModel().selection().empty().is() ?
-						tableModel().items().get() :
-						tableModel().selection().items().get();
+		Collection<Entity> entities = model().selection().empty().is() ?
+						model().items().get() :
+						model().selection().items().get();
 		Files.writeString(file.toPath(), objectMapper.writeValueAsString(entities));
 	}
 
@@ -273,7 +273,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		List<Entity> entities = objectMapper.deserializeEntities(
 						String.join("\n", Files.readAllLines(file.toPath())));
 		clearTableAndCondition();
-		tableModel().items().included().add(0, entities);
+		model().items().included().add(0, entities);
 	}
 
 	private JToolBar createColumnSelectionToolBar() {
@@ -297,8 +297,8 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void clearTableAndCondition() {
-		tableModel().items().clear();
-		tableModel().query().condition().clear();
+		model().items().clear();
+		model().query().condition().clear();
 	}
 
 	private static Control createSelectAllColumnsControl(Controls toggleColumnsControls) {

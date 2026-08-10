@@ -70,7 +70,7 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 						.command(this::viewInvoices)
 						.caption(BUNDLE.getString("invoice"))
 						.icon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selection().empty().not())
+						.enabled(model().selection().empty().not())
 						.build());
 	}
 
@@ -86,9 +86,9 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 	private JasperPrint fillInvoices() {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("INVOICE_IDS",
-						Entity.values(Invoice.ID, tableModel().selection().items().get()));
+						Entity.values(Invoice.ID, model().selection().items().get()));
 
-		return JasperReports.loadPrint(tableModel().connection()
+		return JasperReports.loadPrint(model().connection()
 						.report(Invoice.REPORT, reportParameters));
 	}
 

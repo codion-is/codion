@@ -761,7 +761,7 @@ public Employees() {
 }
 
 // Reports are loaded from classpath, filsystem or over http and can be filled via EntityConnection
-JasperPrint employeeReport = tableModel().connection()
+JasperPrint employeeReport = model().connection()
 		.report(Employee.EMPLOYEE_REPORT, reportParameters);
 
 Dialogs.builder()

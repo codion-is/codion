@@ -40,9 +40,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jspecify.annotations.Nullable;
@@ -239,7 +237,7 @@ public class EntityPanel extends JPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
-	private final SwingEntityModel entityModel;
+	private final SwingEntityModel model;
 	private final DetailPanels detailPanels = new DetailPanels();
 	private final @Nullable EntityEditPanel editPanel;
 	private final @Nullable EntityTablePanel tablePanel;
@@ -265,79 +263,79 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
-	 * @param entityModel the EntityModel
+	 * @param model the EntityModel
 	 */
-	public EntityPanel(SwingEntityModel entityModel) {
-		this(requireNonNull(entityModel), NO_CONFIGURATION);
+	public EntityPanel(SwingEntityModel model) {
+		this(requireNonNull(model), NO_CONFIGURATION);
 	}
 
 	/**
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
-	 * @param entityModel the EntityModel
+	 * @param model the EntityModel
 	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, Consumer<Config> config) {
-		this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, config);
+	public EntityPanel(SwingEntityModel model, Consumer<Config> config) {
+		this(requireNonNull(model), null, model.containsTableModel() ? new EntityTablePanel(model.tableModel()) : null, config);
 	}
 
 	/**
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
-	 * @param entityModel the EntityModel
+	 * @param model the EntityModel
 	 * @param editPanel the edit panel
 	 */
-	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel) {
-		this(requireNonNull(entityModel), editPanel, NO_CONFIGURATION);
+	public EntityPanel(SwingEntityModel model, @Nullable EntityEditPanel editPanel) {
+		this(requireNonNull(model), editPanel, NO_CONFIGURATION);
 	}
 
 	/**
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
-	 * @param entityModel the EntityModel
+	 * @param model the EntityModel
 	 * @param editPanel the edit panel
 	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, Consumer<Config> config) {
-		this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, config);
+	public EntityPanel(SwingEntityModel model, @Nullable EntityEditPanel editPanel, Consumer<Config> config) {
+		this(requireNonNull(model), editPanel, model.containsTableModel() ? new EntityTablePanel(model.tableModel()) : null, config);
 	}
 
 	/**
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
-	 * @param entityModel the EntityModel
+	 * @param model the EntityModel
 	 * @param tablePanel the table panel
 	 */
-	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityTablePanel tablePanel) {
-		this(entityModel, tablePanel, NO_CONFIGURATION);
+	public EntityPanel(SwingEntityModel model, @Nullable EntityTablePanel tablePanel) {
+		this(model, tablePanel, NO_CONFIGURATION);
 	}
 
 	/**
 	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
-	 * @param entityModel the EntityModel
-	 * @param tablePanel the table panel
-	 * @param config provides access to the panel configuration
-	 */
-	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityTablePanel tablePanel, Consumer<Config> config) {
-		this(entityModel, null, tablePanel, config);
-	}
-
-	/**
-	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
-	 * @param entityModel the EntityModel
-	 * @param editPanel the edit panel
-	 * @param tablePanel the table panel
-	 */
-	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel) {
-		this(entityModel, editPanel, tablePanel, NO_CONFIGURATION);
-	}
-
-	/**
-	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
-	 * @param entityModel the EntityModel
-	 * @param editPanel the edit panel
+	 * @param model the EntityModel
 	 * @param tablePanel the table panel
 	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel,
+	public EntityPanel(SwingEntityModel model, @Nullable EntityTablePanel tablePanel, Consumer<Config> config) {
+		this(model, null, tablePanel, config);
+	}
+
+	/**
+	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
+	 * @param model the EntityModel
+	 * @param editPanel the edit panel
+	 * @param tablePanel the table panel
+	 */
+	public EntityPanel(SwingEntityModel model, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel) {
+		this(model, editPanel, tablePanel, NO_CONFIGURATION);
+	}
+
+	/**
+	 * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
+	 * @param model the EntityModel
+	 * @param editPanel the edit panel
+	 * @param tablePanel the table panel
+	 * @param config provides access to the panel configuration
+	 */
+	public EntityPanel(SwingEntityModel model, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel,
 										 Consumer<Config> config) {
-		this.entityModel = requireNonNull(entityModel);
+		this.model = requireNonNull(model);
 		this.editPanel = validateEditModel(editPanel);
 		this.tablePanel = validateTableModel(tablePanel);
 		this.configuration = configure(config);
@@ -375,22 +373,7 @@ public class EntityPanel extends JPanel {
 	 * @return the EntityModel
 	 */
 	public final SwingEntityModel model() {
-		return entityModel;
-	}
-
-	/**
-	 * @return the EntityEditModel
-	 */
-	public final SwingEntityEditModel editModel() {
-		return entityModel.editModel();
-	}
-
-	/**
-	 * @return the EntityTableModel
-	 * @throws IllegalStateException in case no table model is available
-	 */
-	public final SwingEntityTableModel tableModel() {
-		return entityModel.tableModel();
+		return model;
 	}
 
 	/**
@@ -839,7 +822,7 @@ public class EntityPanel extends JPanel {
 	 */
 	private CommandControl createRefreshTableControl() {
 		return Control.builder()
-						.command(tableModel().items()::refresh)
+						.command(model.tableModel().items()::refresh)
 						.caption(Messages.refresh())
 						.enabled(editPanel == null ? null : editPanel.active())
 						.description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
@@ -1160,18 +1143,18 @@ public class EntityPanel extends JPanel {
 	}
 
 	private @Nullable EntityEditPanel validateEditModel(@Nullable EntityEditPanel editPanel) {
-		if (editPanel != null && editPanel.editModel() != editModel()) {
+		if (editPanel != null && editPanel.model() != model.editModel()) {
 			throw new IllegalArgumentException("Edit panel model must be the same instance as the entity model's edit model, expected "
-							+ editModel().entityType() + ", got " + editPanel.editModel().entityType());
+							+ model.entityType() + ", got " + editPanel.model().entityType());
 		}
 
 		return editPanel;
 	}
 
 	private @Nullable EntityTablePanel validateTableModel(@Nullable EntityTablePanel tablePanel) {
-		if (tablePanel != null && tablePanel.tableModel() != tableModel()) {
+		if (tablePanel != null && tablePanel.model() != model.tableModel()) {
 			throw new IllegalArgumentException("Table panel model must be the same instance as the entity model's table model, expected "
-							+ tableModel().entityType() + ", got " + tablePanel.tableModel().entityType());
+							+ model.entityType() + ", got " + tablePanel.model().entityType());
 		}
 
 		return tablePanel;
@@ -1286,7 +1269,7 @@ public class EntityPanel extends JPanel {
 		 */
 		public Collection<EntityPanel> active() {
 			return unmodifiableList(panels.stream()
-							.filter(detailPanel -> entityModel.detail().active().contains(detailPanel.entityModel))
+							.filter(detailPanel -> model.detail().active().contains(detailPanel.model))
 							.collect(toList()));
 		}
 

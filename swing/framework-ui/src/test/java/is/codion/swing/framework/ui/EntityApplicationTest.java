@@ -43,7 +43,7 @@ public final class EntityApplicationTest {
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
 						.model(TestApplicationModel::new)
-						.onStarted(panel -> assertSame(user, panel.applicationModel().connection().user()))
+						.onStarted(panel -> assertSame(user, panel.model().connection().user()))
 						.user(user)
 						.startupDialog(false)
 						.displayFrame(false)
@@ -53,7 +53,7 @@ public final class EntityApplicationTest {
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
 						.model(TestApplicationModel::new)
-						.onStarted(panel -> assertSame(user2, panel.applicationModel().connection().user()))
+						.onStarted(panel -> assertSame(user2, panel.model().connection().user()))
 						.user(() -> user2)
 						.startupDialog(false)
 						.displayFrame(false)
@@ -63,7 +63,7 @@ public final class EntityApplicationTest {
 						.domain(TestDomain.DOMAIN)
 						.preferences(preferences)
 						.model(TestApplicationModel::new)
-						.onStarted(panel -> assertSame(user3, panel.applicationModel().connection().user()))
+						.onStarted(panel -> assertSame(user3, panel.model().connection().user()))
 						.user(user3)
 						.connection(usr -> LocalEntityConnection.builder()
 										.domain(new TestDomain())
@@ -82,8 +82,8 @@ public final class EntityApplicationTest {
 						.preferences(preferences)
 						.model(TestApplicationModel::new)
 						.onStarted(panel -> {
-							assertSame(connection, panel.applicationModel().connection());
-							assertSame(user4, panel.applicationModel().connection().user());
+							assertSame(connection, panel.model().connection());
+							assertSame(user4, panel.model().connection().user());
 						})
 						.connection(connection)
 						.startupDialog(false)

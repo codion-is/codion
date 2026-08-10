@@ -92,7 +92,7 @@ final class CountryEditPanel extends EntityEditPanel {
 						.preferredWidth(50)
 						.border(createEtchedBorder());
 		//add a field displaying the avarage city population for the selected country
-		CountryEditModel editModel = (CountryEditModel) editModel();
+		CountryEditModel editModel = (CountryEditModel) model();
 		NumberField<Double> averageCityPopulationField = doubleField()
 						.link(editModel.averageCityPopulation())
 						.fractionDigits(2)
@@ -184,7 +184,7 @@ final class CountryEditPanel extends EntityEditPanel {
 	}
 
 	private EntityEditPanel createCapitalEditPanel() {
-		SwingEntityEditModel cityEditModel = new SwingEntityEditModel(City.TYPE, editModel().connection());
+		SwingEntityEditModel cityEditModel = new SwingEntityEditModel(City.TYPE, model().connection());
 		CityEditPanel capitalEditPanel = new CityEditPanel(cityEditModel);
 		if (editor().entity().exists().is()) {
 			//add the city to the table model items when a new city is inserted

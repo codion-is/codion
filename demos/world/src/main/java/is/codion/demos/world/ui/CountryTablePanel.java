@@ -59,7 +59,7 @@ final class CountryTablePanel extends EntityTablePanel {
 						.command(this::viewCountryReport)
 						.caption("Country report")
 						.icon(FrameworkIcons.instance().print())
-						.enabled(tableModel().selection().empty().not())
+						.enabled(model().selection().empty().not())
 						.build());
 	}
 
@@ -67,14 +67,14 @@ final class CountryTablePanel extends EntityTablePanel {
 		Dialogs.progressWorker()
 						.task(this::fillCountryReport)
 						.owner(this)
-						.maximum(tableModel().selection().count())
+						.maximum(model().selection().count())
 						.stringPainted(true)
 						.onResult(this::viewReport)
 						.execute();
 	}
 
 	private JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) {
-		CountryTableModel countryTableModel = (CountryTableModel) tableModel();
+		CountryTableModel countryTableModel = (CountryTableModel) model();
 
 		return countryTableModel.fillCountryReport(progressReporter);
 	}
