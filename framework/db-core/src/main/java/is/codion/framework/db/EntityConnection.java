@@ -261,15 +261,20 @@ public interface EntityConnection extends AutoCloseable {
 		B user(User user);
 
 		/**
-		 * @param domain the domain type to base this connection on
+		 * <p>Sets the domain by type, leaving a connection needing the domain in-process to resolve an instance
+		 * via {@link java.util.ServiceLoader}.
+		 * <p>Discards an instance previously set via {@link #domain(Domain)} unless it is of this type.
+		 * @param domainType the domain type to base this connection on
 		 * @return this builder instance
+		 * @see #domain(Domain)
 		 */
-		B domain(DomainType domain);
+		B domain(DomainType domainType);
 
 		/**
-		 * Sets the domain by instance. Connections which run the domain in-process (a local connection for
-		 * example) use the given instance directly, instead of resolving one via {@link java.util.ServiceLoader}
-		 * from its {@link Domain#type()}; other connections use only its {@link Domain#type()}.
+		 * <p>Sets the domain by instance, and thereby its type. Connections which run the domain in-process (a
+		 * local connection for example) use the given instance directly, instead of resolving one via
+		 * {@link java.util.ServiceLoader} from its {@link Domain#type()}.
+		 * <p>Supplying an instance keeps the {@link java.util.ServiceLoader} out of the picture entirely.
 		 * @param domain the domain instance to base this connection on
 		 * @return this builder instance
 		 * @see #domain(DomainType)

@@ -21,10 +21,7 @@ package is.codion.framework.db.http;
 import is.codion.common.utilities.exceptions.Exceptions;
 import is.codion.framework.db.AbstractEntityConnection;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.DomainType;
 
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +46,6 @@ final class ManagedHttpEntityConnection extends AbstractEntityConnection
 	private final boolean json;
 	private final int socketTimeout;
 	private final int connectTimeout;
-	private final @Nullable Domain domain;
 
 	ManagedHttpEntityConnection(DefaultHttpEntityConnectionBuilder builder) {
 		super(builder);
@@ -60,7 +56,6 @@ final class ManagedHttpEntityConnection extends AbstractEntityConnection
 		this.json = builder.json;
 		this.socketTimeout = builder.socketTimeout;
 		this.connectTimeout = builder.connectTimeout;
-		this.domain = builder.domain;
 	}
 
 	@Override
@@ -75,10 +70,7 @@ final class ManagedHttpEntityConnection extends AbstractEntityConnection
 			AbstractHttpEntityConnection.DefaultBuilder builder =
 							new AbstractHttpEntityConnection.DefaultBuilder()
 											.domain(domainType());
-			Domain localDomain = domain != null ? domain : localDomain(domainType());
-			if (localDomain != null) {
-				builder.domain(localDomain);
-			}
+			domain().ifPresent(builder::domain);
 			return builder.hostname(hostname)
 							.port(port)
 							.securePort(securePort)
@@ -95,12 +87,5 @@ final class ManagedHttpEntityConnection extends AbstractEntityConnection
 		catch (Exception e) {
 			throw Exceptions.runtime(e);
 		}
-	}
-
-	private static @Nullable Domain localDomain(DomainType domainType) {
-		return Domain.domains().stream()
-						.filter(domain -> domain.type().equals(domainType))
-						.findAny()
-						.orElse(null);
 	}
 }

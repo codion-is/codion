@@ -20,6 +20,8 @@ Codion Change Log
 - InputPanelBuilder, the label is now specified in one place, whichever of the label() overloads is used.
 - InputPanelBuilder no longer makes the panel the target of JLabel.setLabelFor().
 - AbstractComponentBuilder.label(JLabel) is no longer final, being the single point the label(String) and label(Consumer) overloads funnel through, so that a builder whose component contains its own label can capture all three.
+### is.codion.framework.db.core
+- AbstractEntityConnection now handles local domain model resolution.
 ### is.codion.framework.db.http
 - HttpEntityConnection.SOCKET_TIMEOUT default changed from 2000 to 0, meaning no timeout, as the RMI transport imposes none either.
 - HttpEntityConnection.CONNECT_TIMEOUT default changed from 2000 to 10000.
