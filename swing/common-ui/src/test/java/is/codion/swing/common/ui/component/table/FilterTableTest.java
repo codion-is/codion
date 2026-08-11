@@ -543,6 +543,39 @@ public class FilterTableTest {
 		assertEquals("401", testRow.value);
 	}
 
+	@Test
+	void scrollToAddedDoesNotFollowAReplacement() {
+		// A refresh replaces the items, which the model reports as a deletion of every row followed by an
+		// addition of every row - scrolling to the topmost "added" one would drop the user back at the top
+		// on every refresh, wherever they had scrolled to.
+		// Deliberately not setting scrollToAddedItem here, so this also pins its default to true - without
+		// which the added-row assertion at the end fails.
+		FilterTable<TestRow, Integer> table = FilterTable.builder()
+						.model(createTestModel(null))
+						.build();
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setPreferredSize(new Dimension(200, 200));
+		SwingFilterTableModel<TestRow, Integer> model = table.model();
+		List<TestRow> rows = IntStream.range(0, 100)
+						.mapToObj(i -> new TestRow("" + i))
+						.collect(toList());
+		model.items().add(rows);
+
+		JViewport viewport = Ancestor.ofType(JViewport.class).of(table).get();
+		table.scrollToRowColumn(80, 0, FilterTable.CenterOnScroll.NEITHER);
+		int scrolledTo = table.rowAtPoint(viewport.getViewPosition());
+		assertTrue(scrolledTo > 0, "the table must be scrolled away from the top for this to mean anything");
+
+		// the same rows arriving again, as an unchanged query returns them
+		model.items().set(rows);
+		assertEquals(scrolledTo, table.rowAtPoint(viewport.getViewPosition()));
+
+		// a genuinely added row is still scrolled to
+		model.items().included().add(0, new TestRow("added"));
+		assertEquals(0, table.rowAtPoint(viewport.getViewPosition()));
+		assertEquals("added", model.items().included().get(0).value);
+	}
+
 	/**
 	 * Note that this method be made static and called from a main() method, in order to play with table editing
 	 */

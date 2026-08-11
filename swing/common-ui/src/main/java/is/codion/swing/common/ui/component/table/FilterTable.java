@@ -1535,7 +1535,11 @@ public final class FilterTable<R, C> extends JTable {
 
 		/**
 		 * <p>Specifies whether the table should scroll when items are added, so that the topmost added item appears at the top of the table view.
-		 * <p>Default: false.
+		 * <p>Applies to items added to the ones already there, not to a wholesale replacement - refreshing does not
+		 * scroll, see {@link is.codion.common.model.filter.FilterModel.IncludedItems#added()}.
+		 * <p>Turn this off for a table appended to continuously while being read, where following each arrival
+		 * would keep pulling the view away from the reader.
+		 * <p>Default: true.
 		 * @param scrollToAddedItem true if this table should scroll to the topmost added item
 		 * @return this builder instance
 		 */
@@ -1789,7 +1793,7 @@ public final class FilterTable<R, C> extends JTable {
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 		private @Nullable Action doubleClick;
 		private boolean scrollToSelectedItem = true;
-		private boolean scrollToAddedItem = false;
+		private boolean scrollToAddedItem = true;
 		private boolean columnToolTips = COLUMN_TOOL_TIPS.getOrThrow();
 		private boolean fillsViewportHeight = FILLS_VIEWPORT_HEIGHT.getOrThrow();
 		private boolean rowsFillViewport = ROWS_FILL_VIEWPORT.getOrThrow();

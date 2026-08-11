@@ -333,7 +333,11 @@ public interface FilterModel<T> {
 		IncludePredicate<T> predicate();
 
 		/**
+		 * <p>Notified when items have been added to the ones already included, with the items added.
+		 * <p>Not notified when the items are replaced wholesale via {@link Items#set(Collection)}, a refresh
+		 * for example - those are the model's new contents rather than additions to it, and are reported by {@link #changed()}.
 		 * @return an {@link Observer} notified when items have been added
+		 * @see #changed()
 		 */
 		Observer<Collection<T>> added();
 

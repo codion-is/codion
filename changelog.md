@@ -11,6 +11,7 @@ Codion Change Log
 - JsonPreferencesStore.reload() and loadData() no longer throw NoSuchFileException when the file is deleted concurrently, the existence check preceding the read was racy.
 - JsonPreferencesStore.delete() no longer deletes the lock file, unlinking it breaks mutual exclusion for anyone holding a lock on it, and now deletes while holding the exclusive lock.
 - JsonPreferencesStore now serializes this JVM's own access to the file with a lock of its own, so that the file lock only ever arbitrates between JVMs.
+- FilterModel.Items.set() no longer notifies IncludedItems.added(). It replaces the items rather than adding to them, so the new contents are reported by changed() alone.
 ### is.codion.swing.common.ui
 - FilterTable.columnModel() renamed columns().
 - FilterTableColumnModel.columns() renamed all(), column(identifier) renamed get(identifier), columnAt(columnIndex) and indexOf(identifier) added, the latter two type safe counterparts to the inherited getColumn(int) and getColumnIndex(Object).
@@ -20,6 +21,7 @@ Codion Change Log
 - InputPanelBuilder, the label is now specified in one place, whichever of the label() overloads is used.
 - InputPanelBuilder no longer makes the panel the target of JLabel.setLabelFor().
 - AbstractComponentBuilder.label(JLabel) is no longer final, being the single point the label(String) and label(Consumer) overloads funnel through, so that a builder whose component contains its own label can capture all three.
+- FilterTable.Builder.scrollToAddedItem() default changed from false to true. It now applies only to items genuinely added, a refresh no longer scrolling the table back to the top.
 ### is.codion.framework.db.core
 - AbstractEntityConnection now handles local domain model resolution.
 ### is.codion.framework.db.http

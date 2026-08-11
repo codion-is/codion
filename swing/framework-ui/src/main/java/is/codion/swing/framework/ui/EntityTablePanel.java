@@ -2201,8 +2201,7 @@ public class EntityTablePanel extends JPanel {
 							.cellRenderers(new EntityTableCellRenderers())
 							.headerRenderers(new EntityTableHeaderRenderers())
 							.cellEditors(new EntityTableCellEditors())
-							.cellEditable(new EntityCellEditable(tablePanel.model.entities()))
-							.scrollToAddedItem(true);
+							.cellEditable(new EntityCellEditable(tablePanel.model.entities()));
 			this.conditionPanelFactory = new DefaultConditionPanelFactory();
 			this.conditionComponents = new HashMap<>();
 			this.controlMap = ControlMap.controlMap(ControlKeys.class);
