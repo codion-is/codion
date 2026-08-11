@@ -127,7 +127,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			selection.adjusting(true);
 			try {
 				clear();
-				addInternal(0, items);
+				// a replacement, not an addition: these items are the model's new contents, which included().changed() reports.
+				// Reporting them as added as well would have a listener acting on additions treat every refresh as one.
+				addInternal(0, items, false);
 				selection.items().set(selectedItems);
 			}
 			finally {
@@ -377,6 +379,10 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	private boolean addInternal(int index, Collection<R> items) {
+		return addInternal(index, items, true);
+	}
+
+	private boolean addInternal(int index, Collection<R> items, boolean notifyAdded) {
 		Collection<R> includedItems = new ArrayList<>(items.size());
 		Collection<R> filteredItems = new ArrayList<>(items.size());
 		for (R item : items) {
@@ -393,7 +399,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			notifyInserted(index, index + includedItems.size() - 1);
 			included.notifyChanges();
 			included.sort();
-			included.notifyAdded(includedItems);
+			if (notifyAdded) {
+				included.notifyAdded(includedItems);
+			}
 		}
 		if (!filteredItems.isEmpty()) {
 			filtered.items.addAll(filteredItems);
