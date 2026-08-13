@@ -745,6 +745,9 @@ public class EntityPanel extends JPanel {
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
 			if (editControlPanel != null) {
+				tablePanel.configuration.controlMap.keyEvent(REQUEST_SEARCH_FIELD_FOCUS).ifPresent(keyEvent ->
+								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+												.enable(editControlPanel));
 				tablePanel.configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
