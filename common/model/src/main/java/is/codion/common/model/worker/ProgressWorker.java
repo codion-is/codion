@@ -334,10 +334,10 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Executes the task.
-		 * @param progressReporter the progress reporter to report a message or progress (0 - maximum()).
+		 * @param progress the progress reporter for reporting progress (0 - maximum()) or publishing an intermediate result or message.
 		 * @throws Exception in case of an exception
 		 */
-		void execute(ProgressReporter<V> progressReporter) throws Exception;
+		void execute(ProgressReporter<V> progress) throws Exception;
 
 		/**
 		 * Default {@link #DEFAULT_MAXIMUM} (100)
@@ -358,11 +358,11 @@ public final class ProgressWorker<T, V> {
 
 		/**
 		 * Executes the task.
-		 * @param progressReporter the progress reporter to report a message or progress (0 - maximum()).
+		 * @param progress the progress reporter for reporting progress (0 - maximum()) or publishing an intermediate result or message.
 		 * @return the task result
 		 * @throws Exception in case of an exception
 		 */
-		T execute(ProgressReporter<V> progressReporter) throws Exception;
+		T execute(ProgressReporter<V> progress) throws Exception;
 
 		/**
 		 * Default {@link #DEFAULT_MAXIMUM} (100)

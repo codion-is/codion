@@ -52,7 +52,7 @@ public final class CountryReportDataSourceTest {
 		try (EntityConnection connection = createConnection()) {
 			Value<Integer> progressCounter = Value.nullable();
 			Value<String> publishedValue = Value.nullable();
-			ProgressReporter<String> progressReporter = new ProgressReporter<>() {
+			ProgressReporter<String> progress = new ProgressReporter<>() {
 				@Override
 				public void report(int progress) {
 					progressCounter.set(progress);
@@ -68,7 +68,7 @@ public final class CountryReportDataSourceTest {
 							connection.select(where(Country.NAME.in("Denmark", "Iceland"))
 											.orderBy(ascending(Country.NAME))
 											.build());
-			CountryReportDataSource countryReportDataSource = new CountryReportDataSource(countries.iterator(), connection, progressReporter);
+			CountryReportDataSource countryReportDataSource = new CountryReportDataSource(countries.iterator(), connection, progress);
 			assertThrows(IllegalStateException.class, countryReportDataSource::cityDataSource);
 
 			countryReportDataSource.next();

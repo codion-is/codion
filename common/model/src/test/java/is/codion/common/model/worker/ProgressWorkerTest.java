@@ -19,6 +19,10 @@
 package is.codion.common.model.worker;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.common.model.worker.ProgressWorker.ResultTask;
+import is.codion.common.model.worker.ProgressWorker.Task;
 import is.codion.common.reactive.value.Value;
 
 import org.junit.jupiter.api.Test;
@@ -41,10 +45,10 @@ public final class ProgressWorkerTest {
 
 		List<Integer> stateChanges = new ArrayList<>();
 
-		ProgressWorker.ProgressResultTask<Integer, String> task = progressReporter -> {
+		ProgressResultTask<Integer, String> task = progress -> {
 			Thread.sleep(100);
-			progressReporter.report(100);
-			progressReporter.publish("Done");
+			progress.report(100);
+			progress.publish("Done");
 
 			return 42;
 		};
@@ -85,7 +89,7 @@ public final class ProgressWorkerTest {
 
 		Exception testException = new RuntimeException("Test exception");
 
-		ProgressWorker.ResultTask<Integer> task = () -> {
+		ResultTask<Integer> task = () -> {
 			throw testException;
 		};
 
@@ -120,7 +124,7 @@ public final class ProgressWorkerTest {
 		AtomicBoolean onDoneCalled = new AtomicBoolean();
 		AtomicBoolean onResultCalled = new AtomicBoolean();
 
-		ProgressWorker.Task task = () -> {
+		Task task = () -> {
 			taskStartedLatch.countDown();
 			// Sleep long enough to allow cancellation
 			Thread.sleep(1000);
@@ -157,7 +161,7 @@ public final class ProgressWorkerTest {
 		AtomicBoolean onCancelledCalled = new AtomicBoolean();
 
 		// Test CancelException handling
-		ProgressWorker.ResultTask<Integer> task = () -> {
+		ResultTask<Integer> task = () -> {
 			throw new CancelException();
 		};
 
@@ -182,7 +186,7 @@ public final class ProgressWorkerTest {
 		AtomicBoolean onCancelledCalled = new AtomicBoolean();
 		AtomicBoolean onDoneCalled = new AtomicBoolean();
 
-		ProgressWorker.Task task = () -> {
+		Task task = () -> {
 			taskStartedLatch.countDown();
 			try {
 				Thread.sleep(1000);
@@ -226,21 +230,21 @@ public final class ProgressWorkerTest {
 		List<String> publishedMessages = new ArrayList<>();
 		CountDownLatch latch = new CountDownLatch(1);
 
-		ProgressWorker.ProgressResultTask<String, String> task = progressReporter -> {
-			progressReporter.report(25);
-			progressReporter.publish("25% complete");
+		ProgressResultTask<String, String> task = progress -> {
+			progress.report(25);
+			progress.publish("25% complete");
 			Thread.sleep(50);
 
-			progressReporter.report(50);
-			progressReporter.publish("50% complete");
+			progress.report(50);
+			progress.publish("50% complete");
 			Thread.sleep(50);
 
-			progressReporter.report(75);
-			progressReporter.publish("75% complete");
+			progress.report(75);
+			progress.publish("75% complete");
 			Thread.sleep(50);
 
-			progressReporter.report(100);
-			progressReporter.publish("100% complete");
+			progress.report(100);
+			progress.publish("100% complete");
 
 			return "Task completed";
 		};
@@ -266,7 +270,7 @@ public final class ProgressWorkerTest {
 		CountDownLatch latch = new CountDownLatch(1);
 		AtomicReference<String> resultRef = new AtomicReference<>();
 
-		ProgressWorker.ResultTask<String> task = () -> {
+		ResultTask<String> task = () -> {
 			Thread.sleep(50);
 			return "Result from task";
 		};
@@ -288,7 +292,7 @@ public final class ProgressWorkerTest {
 		CountDownLatch latch = new CountDownLatch(1);
 		AtomicBoolean taskExecuted = new AtomicBoolean();
 
-		ProgressWorker.Task task = () -> {
+		Task task = () -> {
 			Thread.sleep(50);
 			taskExecuted.set(true);
 		};
@@ -307,10 +311,10 @@ public final class ProgressWorkerTest {
 		List<Integer> progressReports = new ArrayList<>();
 		CountDownLatch latch = new CountDownLatch(1);
 
-		ProgressWorker.ProgressTask<String> task = progressReporter -> {
+		ProgressTask<String> task = progress -> {
 			for (int i = 0; i <= 100; i += 25) {
-				progressReporter.report(i);
-				progressReporter.publish("Progress: " + i + "%");
+				progress.report(i);
+				progress.publish("Progress: " + i + "%");
 				Thread.sleep(20);
 			}
 		};

@@ -438,7 +438,7 @@ public final class ChatEditModel extends DefaultEntityEditModel {
             .execute();
     }
     
-    private ChatResponse callLLM(ProgressReporter<String> progressReporter) {
+    private ChatResponse callLLM(ProgressReporter<String> progress) {
         // Prepare attachments, call LLM, track tokens
         return model.get().call(messages);
     }

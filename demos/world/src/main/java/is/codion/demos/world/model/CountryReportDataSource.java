@@ -43,9 +43,9 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
 	CountryReportDataSource(Iterator<Entity> countryIterator,
 													EntityConnection connection,
-													ProgressReporter<String> progressReporter) {
+													ProgressReporter<String> progress) {
 		super(countryIterator, new CountryValueProvider(),
-						new CountryReportProgressReporter(progressReporter));
+						new CountryReportProgressReporter(progress));
 		this.connection = connection;
 	}
 
@@ -100,16 +100,16 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 	private static final class CountryReportProgressReporter implements Consumer<Entity> {
 
 		private final AtomicInteger counter = new AtomicInteger();
-		private final ProgressReporter<String> progressReporter;
+		private final ProgressReporter<String> progress;
 
-		private CountryReportProgressReporter(ProgressReporter<String> progressReporter) {
-			this.progressReporter = progressReporter;
+		private CountryReportProgressReporter(ProgressReporter<String> progress) {
+			this.progress = progress;
 		}
 
 		@Override
 		public void accept(Entity country) {
-			progressReporter.publish(country.get(Country.NAME));
-			progressReporter.report(counter.incrementAndGet());
+			progress.publish(country.get(Country.NAME));
+			progress.report(counter.incrementAndGet());
 		}
 	}
 }

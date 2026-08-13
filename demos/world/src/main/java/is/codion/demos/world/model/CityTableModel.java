@@ -27,7 +27,6 @@ import is.codion.common.reactive.state.State;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;
@@ -107,15 +106,15 @@ public final class CityTableModel extends SwingEntityTableModel {
 		}
 
 		@Override
-		public Collection<Entity> execute(ProgressReporter<Entity> progressReporter) throws IOException, EntityValidationException {
+		public Collection<Entity> execute(ProgressReporter<Entity> progress) throws IOException {
 			Collection<Entity> updatedCities = new ArrayList<>();
 			Iterator<Entity> citiesIterator = cities.iterator();
-			EntityConnection connection = editModel().connection();
+			CityEditModel editModel = (CityEditModel) editModel();
 			while (citiesIterator.hasNext() && !cancelled.is()) {
-				Entity city = CityEditModel.populateLocation(citiesIterator.next(), connection);
+				Entity city = editModel.populateLocation(citiesIterator.next());
 				updatedCities.add(city);
-				progressReporter.publish(city);
-				progressReporter.report(updatedCities.size());
+				progress.publish(city);
+				progress.report(updatedCities.size());
 			}
 
 			return updatedCities;
