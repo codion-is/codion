@@ -414,8 +414,9 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlsKey COLUMN_CONTROLS = Controls.key("columnControls", Controls.layout(asList(SELECT_COLUMNS, TOGGLE_COLUMN_CONTROLS, RESET_COLUMNS, SELECT_AUTO_RESIZE_MODE)));
 		/**
-		 * Requests focus for the table search field.<br>
+		 * Requests focus for the table search field, if one is available.<br>
 		 * Default key stroke: CTRL-F
+		 * <p>Note that the same control key exists in {@link FilterTable.ControlKeys#REQUEST_SEARCH_FIELD_FOCUS}, you would usually want to keep these in sync.
 		 */
 		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = CommandControl.key("requestSearchFieldFocus", keyStroke(VK_F, MENU_SHORTCUT_MASK));
 
@@ -767,6 +768,7 @@ public class EntityTablePanel extends JPanel {
 	 * @see ControlKeys#SELECT_FILTER
 	 * @see ControlKeys#TOGGLE_FILTER_VIEW
 	 * @see ControlKeys#PRINT
+	 * @see ControlKeys#REQUEST_SEARCH_FIELD_FOCUS
 	 * @see ControlKeys#ADD
 	 * @see ControlKeys#EDIT
 	 * @see ControlKeys#EDIT_ATTRIBUTE
@@ -798,6 +800,9 @@ public class EntityTablePanel extends JPanel {
 		configuration.controlMap.keyEvent(PRINT).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
+		configuration.controlMap.keyEvent(REQUEST_SEARCH_FIELD_FOCUS).ifPresent(keyEvent ->
+								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+												.enable(this));
 		configuration.controlMap.keyEvent(ADD).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(EDIT).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(EDIT_ATTRIBUTE).ifPresent(keyEvent -> keyEvent.enable(table));
@@ -1321,10 +1326,6 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private CommandControl createRequestSearchFieldFocusControl() {
-		return command(table.searchField()::requestFocusInWindow);
-	}
-
 	private @Nullable Controls createColumnControls() {
 		ControlsBuilder builder = Controls.builder()
 						.caption(MESSAGES.getString("columns"))
@@ -1626,7 +1627,7 @@ public class EntityTablePanel extends JPanel {
 		}
 		controlMap.control(REQUEST_TABLE_FOCUS).set(createRequestTableFocusControl());
 		if (configuration.includeSearchField) {
-			controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
+			controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(table.createRequestSearchFieldFocusControl());
 		}
 	}
 
