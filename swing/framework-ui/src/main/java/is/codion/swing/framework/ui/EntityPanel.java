@@ -197,7 +197,7 @@ public class EntityPanel extends JPanel {
 		 * Requests focus for the edit panel (intial focus component).<br>
 		 * Default key stroke: CTRL-E
 		 */
-		public static final ControlKey<CommandControl> REQUEST_EDIT_PANEL_FOCUS = CommandControl.key("requestEditPanelFocus", keyStroke(VK_E, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> FOCUS_EDIT_PANEL = CommandControl.key("focusEditPanel", keyStroke(VK_E, MENU_SHORTCUT_MASK));
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
 		 * Default key stroke: CTRL-ALT-E
@@ -726,7 +726,7 @@ public class EntityPanel extends JPanel {
 	 */
 	protected final void setupKeyboardActions() {
 		if (containsTablePanel()) {
-			tablePanel.configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
+			tablePanel.configuration.controlMap.keyEvent(FOCUS_TABLE).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
 			tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITION_VIEW).ifPresent(keyEvent ->
@@ -741,14 +741,14 @@ public class EntityPanel extends JPanel {
 			tablePanel.configuration.controlMap.keyEvent(SELECT_FILTER).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
-			tablePanel.configuration.controlMap.keyEvent(REQUEST_SEARCH_FIELD_FOCUS).ifPresent(keyEvent ->
+			tablePanel.configuration.controlMap.keyEvent(FOCUS_SEARCH_FIELD).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
 			if (editControlPanel != null) {
-				tablePanel.configuration.controlMap.keyEvent(REQUEST_SEARCH_FIELD_FOCUS).ifPresent(keyEvent ->
+				tablePanel.configuration.controlMap.keyEvent(FOCUS_SEARCH_FIELD).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
-				tablePanel.configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
+				tablePanel.configuration.controlMap.keyEvent(FOCUS_TABLE).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
 				tablePanel.configuration.controlMap.keyEvent(TOGGLE_CONDITION_VIEW).ifPresent(keyEvent ->
@@ -766,7 +766,7 @@ public class EntityPanel extends JPanel {
 			}
 		}
 		if (editControlPanel != null && editPanel != null) {
-			configuration.controlMap.keyEvent(REQUEST_EDIT_PANEL_FOCUS).ifPresent(keyEvent ->
+			configuration.controlMap.keyEvent(FOCUS_EDIT_PANEL).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this, editControlPanel));
 			editPanel.configuration.controlMap.keyEvent(SELECT_INPUT_FIELD).ifPresent(keyEvent ->
@@ -802,7 +802,7 @@ public class EntityPanel extends JPanel {
 	/**
 	 * @return a Control instance for requesting edit panel focus
 	 */
-	private CommandControl createRequestEditPanelFocusControl() {
+	private CommandControl createFocusEditPanelControl() {
 		return Control.builder()
 						.command(this::requestEditPanelFocus)
 						.enabled(editPanel.focused().not())
@@ -1130,7 +1130,7 @@ public class EntityPanel extends JPanel {
 		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
 		if (containsEditPanel()) {
-			controlMap.control(REQUEST_EDIT_PANEL_FOCUS).set(createRequestEditPanelFocusControl());
+			controlMap.control(FOCUS_EDIT_PANEL).set(createFocusEditPanelControl());
 			controlMap.control(TOGGLE_EDIT_PANEL).set(createToggleEditPanelControl());
 		}
 		controlMap.control(NAVIGATE_UP).set(command(new Navigate(UP)));

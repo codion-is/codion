@@ -309,7 +309,7 @@ public final class FilterTable<R, C> extends JTable {
 		 * Default key stroke: CTRL-F
 		 * @see #createSearchField()
 		 */
-		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = CommandControl.key("requestSearchFieldFocus", keyStroke(VK_F, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> FOCUS_SEARCH_FIELD = CommandControl.key("requestSearchFieldFocus", keyStroke(VK_F, MENU_SHORTCUT_MASK));
 
 		private ControlKeys() {}
 	}
@@ -406,7 +406,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.controlMap.control(TOGGLE_NEXT_SORT_ORDER).set(createToggleSortOrderControl(false));
 		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER_ADD).set(createToggleSortOrderAddControl(true));
 		this.controlMap.control(TOGGLE_NEXT_SORT_ORDER_ADD).set(createToggleSortOrderAddControl(false));
-		this.controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(createRequestSearchFieldFocusControl());
+		this.controlMap.control(FOCUS_SEARCH_FIELD).set(createFocusSearchFieldControl());
 		CommandControl startEditing = Control.action(new StartEditing());
 		builder.startEditKeyStrokes.forEach(keyStroke -> KeyEvents.builder()
 						.keyStroke(keyStroke)
@@ -842,7 +842,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return a Control for requesting search field focus
 	 * @see #createSearchField()
 	 */
-	public CommandControl createRequestSearchFieldFocusControl() {
+	public CommandControl createFocusSearchFieldControl() {
 		return Control.builder()
 						.command(this::requestSearchFieldFocus)
 						.build();
@@ -1170,7 +1170,7 @@ public final class FilterTable<R, C> extends JTable {
 		controlMap.keyEvent(TOGGLE_NEXT_SORT_ORDER_ADD).ifPresent(keyEvent -> keyEvent.enable(this));
 		controlMap.keyEvent(TOGGLE_PREVIOUS_SORT_ORDER).ifPresent(keyEvent -> keyEvent.enable(this));
 		controlMap.keyEvent(TOGGLE_NEXT_SORT_ORDER).ifPresent(keyEvent -> keyEvent.enable(this));
-		controlMap.keyEvent(REQUEST_SEARCH_FIELD_FOCUS).ifPresent(keyEvent -> keyEvent.enable(this));
+		controlMap.keyEvent(FOCUS_SEARCH_FIELD).ifPresent(keyEvent -> keyEvent.enable(this));
 	}
 
 	private void onColumnHidden(C columnIdentifier) {

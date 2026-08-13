@@ -229,7 +229,7 @@ public class EntityTablePanel extends JPanel {
 		 * Requests focus for the table.<br>
 		 * Default key stroke: CTRL-T
 		 */
-		public static final ControlKey<CommandControl> REQUEST_TABLE_FOCUS = CommandControl.key("requestTableFocus", keyStroke(VK_T, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> FOCUS_TABLE = CommandControl.key("focusTable", keyStroke(VK_T, MENU_SHORTCUT_MASK));
 		/**
 		 * Toggles the condition panel between the hidden, simple and advanced views.<br>
 		 * Default key stroke: CTRL-ALT-S
@@ -416,9 +416,9 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Requests focus for the table search field, if one is available.<br>
 		 * Default key stroke: CTRL-F
-		 * <p>Note that the same control key exists in {@link FilterTable.ControlKeys#REQUEST_SEARCH_FIELD_FOCUS}, you would usually want to keep these in sync.
+		 * <p>Note that the same control key exists in {@link FilterTable.ControlKeys#FOCUS_SEARCH_FIELD}, you would usually want to keep these in sync.
 		 */
-		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = CommandControl.key("requestSearchFieldFocus", keyStroke(VK_F, MENU_SHORTCUT_MASK));
+		public static final ControlKey<CommandControl> FOCUS_SEARCH_FIELD = CommandControl.key("focusSearchField", keyStroke(VK_F, MENU_SHORTCUT_MASK));
 
 		private ControlKeys() {}
 	}
@@ -762,13 +762,13 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Sets up the keyboard shortcuts.
 	 * @see ControlKeys#REFRESH
-	 * @see ControlKeys#REQUEST_TABLE_FOCUS
+	 * @see ControlKeys#FOCUS_TABLE
 	 * @see ControlKeys#SELECT_CONDITION
 	 * @see ControlKeys#TOGGLE_CONDITION_VIEW
 	 * @see ControlKeys#SELECT_FILTER
 	 * @see ControlKeys#TOGGLE_FILTER_VIEW
 	 * @see ControlKeys#PRINT
-	 * @see ControlKeys#REQUEST_SEARCH_FIELD_FOCUS
+	 * @see ControlKeys#FOCUS_SEARCH_FIELD
 	 * @see ControlKeys#ADD
 	 * @see ControlKeys#EDIT
 	 * @see ControlKeys#EDIT_ATTRIBUTE
@@ -782,7 +782,7 @@ public class EntityTablePanel extends JPanel {
 		configuration.controlMap.keyEvent(REFRESH).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
-		configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
+		configuration.controlMap.keyEvent(FOCUS_TABLE).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
 		configuration.controlMap.keyEvent(SELECT_CONDITION).ifPresent(keyEvent ->
@@ -800,9 +800,9 @@ public class EntityTablePanel extends JPanel {
 		configuration.controlMap.keyEvent(PRINT).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
-		configuration.controlMap.keyEvent(REQUEST_SEARCH_FIELD_FOCUS).ifPresent(keyEvent ->
-								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-												.enable(this));
+		configuration.controlMap.keyEvent(FOCUS_SEARCH_FIELD).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
 		configuration.controlMap.keyEvent(ADD).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(EDIT).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(EDIT_ATTRIBUTE).ifPresent(keyEvent -> keyEvent.enable(table));
@@ -1319,7 +1319,7 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private CommandControl createRequestTableFocusControl() {
+	private CommandControl createFocusTableControl() {
 		return Control.builder()
 						.command(table::requestFocus)
 						.enabled(tableFocused.not())
@@ -1625,9 +1625,9 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includeSingleSelectionControl) {
 			controlMap.control(SINGLE_SELECTION).set(table.createSingleSelectionControl());
 		}
-		controlMap.control(REQUEST_TABLE_FOCUS).set(createRequestTableFocusControl());
+		controlMap.control(FOCUS_TABLE).set(createFocusTableControl());
 		if (configuration.includeSearchField) {
-			controlMap.control(REQUEST_SEARCH_FIELD_FOCUS).set(table.createRequestSearchFieldFocusControl());
+			controlMap.control(FOCUS_SEARCH_FIELD).set(table.createFocusSearchFieldControl());
 		}
 	}
 
