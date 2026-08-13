@@ -23,6 +23,7 @@ Codion Change Log
 - AbstractComponentBuilder.label(JLabel) is no longer final, being the single point the label(String) and label(Consumer) overloads funnel through, so that a builder whose component contains its own label can capture all three.
 - FilterTable.Builder.scrollToAddedItem() default changed from false to true. It now applies only to items genuinely added, a refresh no longer scrolling the table back to the top.
 - FilterTable.ControlKeys.REQUEST_SEARCH_FIELD_FOCUS and createRequestSearchFieldControl() added.
+- FilterTable.ControlKeys.REQUEST_SEARCH_FIELD_FOCUS renamed FOCUS_SEARCH_FIELD.
 ### is.codion.framework.db.core
 - AbstractEntityConnection now handles local domain model resolution.
 ### is.codion.framework.db.http
@@ -36,6 +37,8 @@ Codion Change Log
 - EntityApplicationPanel.applicationModel() renamed model().
 - EntityTablePanel.setupKeyboardActions() now enables search field focus requests.
 - EntityPanel.setupKeyboardActions() now enables search field focus requests on the editControlPanel only.
+- EntityTablePanel.REQUEST_TABLE_FOCUS renamed FOCUS_TABLE.
+- EntityPanel.REQUEST_EDIT_PANEL_FOCUS renamed FOCUS_EDIT_PANEL.
 
 ## 0.18.82
 ### is.codion
