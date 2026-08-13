@@ -32,7 +32,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Dimension;
 
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.PRINT;
@@ -73,10 +72,10 @@ final class CountryTablePanel extends EntityTablePanel {
 						.execute();
 	}
 
-	private JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) {
+	private JasperPrint fillCountryReport(ProgressReporter<String> progress) {
 		CountryTableModel countryTableModel = (CountryTableModel) model();
 
-		return countryTableModel.fillCountryReport(progressReporter);
+		return countryTableModel.fillCountryReport(progress);
 	}
 
 	private void viewReport(JasperPrint countryReport) {
@@ -92,12 +91,7 @@ final class CountryTablePanel extends EntityTablePanel {
 	private static void columns(FilterTableColumn.Builder<Attribute<?>> column) {
 		if (column.identifier().equals(Country.FLAG)) {
 			column.fixedWidth(30);
-			column.headerRenderer(new DefaultTableCellRenderer() {
-				@Override
-				protected void setValue(Object value) {
-					super.setValue("Flg.");
-				}
-			});
+			column.headerValue("Fl.");
 		}
 	}
 }

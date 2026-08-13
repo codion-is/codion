@@ -49,10 +49,10 @@ public final class CountryTableModel extends SwingEntityTableModel {
 		query().attributes().included(Country.FLAG).addListener(items()::refresh);
 	}
 
-	public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) {
+	public JasperPrint fillCountryReport(ProgressReporter<String> progress) {
 		CountryReportDataSource dataSource =
 						new CountryReportDataSource(selection().items().get().iterator(),
-										connection(), progressReporter);
+										connection(), progress);
 
 		return fillReport(classPathReport(CountryTableModel.class, COUNTRY_REPORT), dataSource, reportParameters());
 	}

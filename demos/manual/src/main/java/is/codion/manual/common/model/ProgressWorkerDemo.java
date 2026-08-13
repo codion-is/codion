@@ -161,10 +161,10 @@ final class ProgressWorkerDemo {
 	private static void progressTask() {
 		// tag::progressTaskWorker[]
 		// A progress aware task, producing no result
-		ProgressWorker.ProgressTask<String> task = progressReporter -> {
+		ProgressWorker.ProgressTask<String> task = progress -> {
 			// Perform the task
-			progressReporter.report(42);
-			progressReporter.publish("Message");
+			progress.report(42);
+			progress.publish("Message");
 		};
 
 		ProgressWorker.builder()
@@ -189,11 +189,11 @@ final class ProgressWorkerDemo {
 		ProgressTaskHandler<String> task = new ProgressTaskHandler<String>() {
 
 			@Override
-			public void execute(ProgressReporter<String> progressReporter) throws Exception {
+			public void execute(ProgressReporter<String> progress) throws Exception {
 				// Perform the task
 				for (int i = 0; i < maximum(); i++) {
-					progressReporter.report(i);
-					progressReporter.publish("Message " + i);
+					progress.report(i);
+					progress.publish("Message " + i);
 				}
 			}
 
@@ -361,7 +361,7 @@ final class ProgressWorkerDemo {
 		private int taskSize;
 
 		@Override
-		public Integer execute(ProgressReporter<String> progressReporter) throws Exception {
+		public Integer execute(ProgressReporter<String> progress) throws Exception {
 			List<Integer> result = new ArrayList<>();
 			for (int i = 0; i < taskSize; i++) {
 				Thread.sleep(50);
@@ -369,7 +369,7 @@ final class ProgressWorkerDemo {
 					throw new CancelException();
 				}
 				result.add(i);
-				reportProgress(progressReporter, i);
+				reportProgress(progress, i);
 			}
 
 			return result.stream()

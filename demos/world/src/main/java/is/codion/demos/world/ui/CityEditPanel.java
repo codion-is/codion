@@ -18,13 +18,14 @@
  */
 package is.codion.demos.world.ui;
 
+import is.codion.common.model.worker.ProgressWorker.ResultTaskHandler;
 import is.codion.common.reactive.state.State;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.model.CityEditModel;
 import is.codion.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.exception.EntityValidationException;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -34,7 +35,6 @@ import org.jxmapviewer.JXMapKit;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -97,10 +97,11 @@ public final class CityEditPanel extends EntityEditPanel {
 		focus().initial().set(City.NAME);
 	}
 
-	private void populateLocation() throws IOException, EntityValidationException {
-		CityEditModel editModel = (CityEditModel) model();
-		editModel.populateLocation();
-		displayLocations(List.of(editModel.editor().entity().get()));
+	private void populateLocation() {
+		Dialogs.progressWorker()
+						.task(new PopulateLocationTask())
+						.owner(this)
+						.execute();
 	}
 
 	private void displayLocations(Collection<Entity> cities) {
@@ -108,5 +109,19 @@ public final class CityEditPanel extends EntityEditPanel {
 						.map(city -> city.optional(City.LOCATION))
 						.flatMap(Optional::stream)
 						.collect(toSet()), mapKit.getMainMap());
+	}
+
+	private final class PopulateLocationTask implements ResultTaskHandler<Entity> {
+
+		@Override
+		public Entity execute() throws Exception {
+			return ((CityEditModel) model()).populateLocation();
+		}
+
+		@Override
+		public void onResult(Entity city) {
+			editor().entity().set(city);
+			displayLocations(List.of(city));
+		}
 	}
 }
