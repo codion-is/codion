@@ -25,7 +25,7 @@
  * @uses is.codion.framework.db.EntityConnection.Builder
  */
 @org.jspecify.annotations.NullMarked
-module is.codion.framework.db.core {
+module is.codion.framework.db {
 	requires org.slf4j;
 	requires transitive is.codion.framework.domain;
 

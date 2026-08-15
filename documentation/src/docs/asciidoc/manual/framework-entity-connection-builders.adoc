@@ -2,11 +2,11 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-An {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html[EntityConnection] built via one of the builders below manages itself, regardless of protocol (JDBC, RMI, HTTP): it connects on demand, validates the underlying connection before each operation and re-establishes it when it has gone bad.
+An {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html[EntityConnection] built via one of the builders below manages itself, regardless of protocol (JDBC, RMI, HTTP): it connects on demand, validates the underlying connection before each operation and re-establishes it when it has gone bad.
 
 A client therefore holds on to a single *EntityConnection* instance for its lifetime, handing it to the models requiring database access. The instance stays valid across a network failure or a server restart, only the connection underneath it being replaced. If no connection can be established the operation throws.
 
-TIP: Use {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#builder()[EntityConnection.builder()] to build a connection of the type specified by the {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#CLIENT_CONNECTION_TYPE[CLIENT_CONNECTION_TYPE] configuration value, instead of naming a transport at compile time.
+TIP: Use {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html#builder()[EntityConnection.builder()] to build a connection of the type specified by the {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html#CLIENT_CONNECTION_TYPE[CLIENT_CONNECTION_TYPE] configuration value, instead of naming a transport at compile time.
 
 [#_localentityconnection]
 == LocalEntityConnection
@@ -60,7 +60,7 @@ Each connection type has its own default description:
 
 === Overriding the Description
 
-You can override the default description using the configuration property {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#DESCRIPTION[EntityConnection.DESCRIPTION]
+You can override the default description using the configuration property {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html#DESCRIPTION[EntityConnection.DESCRIPTION]
 
 [source,java]
 ----

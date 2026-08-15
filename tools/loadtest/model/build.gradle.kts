@@ -1,7 +1,7 @@
 dependencies {
     api(project(":codion-common-db"))
     api(project(":codion-swing-common-model"))
-    api(project(":codion-tools-loadtest-core"))
+    api(project(":codion-tools-loadtest"))
 
     api(libs.jfreechart)
 

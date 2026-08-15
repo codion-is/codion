@@ -1,5 +1,5 @@
 dependencies {
-    api(project(":codion-framework-db-core"))
+    api(project(":codion-framework-db"))
 
     implementation(libs.slf4j.api)
 

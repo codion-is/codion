@@ -3,7 +3,7 @@
 :dir-tutorials: ../tutorials
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
-:url-entity-connection: {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html
+:url-entity-connection: {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html
 
 Codion’s {url-entity-connection}[EntityConnection] is the primary interface for executing database operations — including querying, modifying, transaction control, calling procedures and functions and filling reports. It exposes a small, explicit API for working with Entity instances and makes no assumptions about your database engine or schema design.
 

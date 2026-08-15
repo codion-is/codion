@@ -28,7 +28,7 @@
 module is.codion.framework.db.rmi {
 	requires org.slf4j;
 	requires transitive is.codion.common.rmi;
-	requires transitive is.codion.framework.db.core;
+	requires transitive is.codion.framework.db;
 
 	exports is.codion.framework.db.rmi;
 

@@ -9,7 +9,7 @@ The Codion framework is based on a three tiered architecture.
 
 == Database layer
 
-The {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html[EntityConnection] class defines the database layer.
+The {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html[EntityConnection] class defines the database layer.
 See <<{basedir}/manual/manual.adoc#_entityconnection, Manual:EntityConnection>>
 
 == Model layer

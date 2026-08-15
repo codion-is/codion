@@ -262,7 +262,7 @@ It has three available implementations, one of which is based on a local JDBC co
 |===
 |Module|Artifact|Description
 
-|is.codion.framework.db.core|is.codion:codion-framework-db-core:{codion-version}|Core database API
+|is.codion.framework.db|is.codion:codion-framework-db:{codion-version}|Core database API
 |is.codion.framework.db.local|is.codion:codion-framework-db-local:{codion-version}|Local JDBC implementation
 |===
 
