@@ -24,6 +24,10 @@ Codion Change Log
 - FilterTable.Builder.scrollToAddedItem() default changed from false to true. It now applies only to items genuinely added, a refresh no longer scrolling the table back to the top.
 - FilterTable.ControlKeys.REQUEST_SEARCH_FIELD_FOCUS and createRequestSearchFieldControl() added.
 - FilterTable.ControlKeys.REQUEST_SEARCH_FIELD_FOCUS renamed FOCUS_SEARCH_FIELD.
+### is.codion.framework.domain
+- ColumnTemplate now applies to a Column, returning a ColumnDefinition.Builder, so a template can define a subquery or primary key column just as well as a regular one.
+- Column.as(ColumnTemplate) added, replacing ColumnDefiner.column(ColumnTemplate).
+- ColumnTemplate.and() removed, templates now compose by applying the one being extended.
 ### is.codion.framework.db.core
 - AbstractEntityConnection now handles local domain model resolution.
 ### is.codion.framework.db.http

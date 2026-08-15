@@ -18,47 +18,50 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import static java.util.Objects.requireNonNull;
-
 /**
- * Specifies a column template configuration.
+ * Specifies a reusable column configuration.
  * {@snippet :
  * ColumnTemplate<Integer> REQUIRED_POSITIVE =
- *         column -> column
+ *         column -> column.as()
+ *                 .column()
  *                 .nullable(false)
  *                 .minimum(0);
  *
- * Customer.AGE.as()
- *            .column(REQUIRED_POSITIVE)
- *            .caption("Age")
+ * Customer.AGE.as(REQUIRED_POSITIVE)
+ *         .caption("Age")
+ *}
+ * <p>A template configures the column from the ground up, so it is free to use any
+ * {@link Column.ColumnDefiner} method, a subquery or primary key column is templated
+ * just like a regular one.
+ * {@snippet :
+ * static ColumnTemplate<Integer> count(String subquery) {
+ *     return column -> column.as()
+ *             .subquery(subquery)
+ *             .numberGrouping(true);
+ * }
+ *}
+ * <p>Templates compose by applying the one being extended.
+ * {@snippet :
+ * ColumnTemplate<String> NAME =
+ *         column -> column.as()
+ *                 .column()
+ *                 .maximumLength(50)
+ *                 .searchable(true);
+ *
+ * ColumnTemplate<String> REQUIRED_NAME =
+ *         column -> NAME.apply(column)
+ *                 .nullable(false);
  *}
  * @param <T> the column type
+ * @see Column#as(ColumnTemplate)
  */
 @FunctionalInterface
 public interface ColumnTemplate<T> {
 
 	/**
-	 * Applies this column template to the given column definition builder
-	 * @param column the column definition builder
-	 * @return the column definition builder
+	 * Applies this template to the given column
+	 * @param column the column
+	 * @return a {@link ColumnDefinition.Builder} for the given column
 	 */
-	ColumnDefinition.Builder<T, ?> apply(ColumnDefinition.Builder<T, ?> column);
-
-	/**
-	 * Returns a composed template that applies this template followed by the given template.
-	 * {@snippet :
-	 * ColumnTemplate<String> REQUIRED = column -> column.nullable(false);
-	 * ColumnTemplate<String> SEARCHABLE = column -> column.searchable(true);
-	 *
-	 * ColumnTemplate<String> REQUIRED_SEARCHABLE = REQUIRED.and(SEARCHABLE);
-	 * // Equivalent to: column -> column.nullable(false).searchable(true)
-	 *}
-	 * @param template the template to apply after this template
-	 * @return a composed template that applies this template followed by the given template
-	 */
-	default ColumnTemplate<T> and(ColumnTemplate<T> template) {
-		requireNonNull(template);
-
-		return (ColumnDefinition.Builder<T, ?> column) -> template.apply(apply(column));
-	}
+	ColumnDefinition.Builder<T, ?> apply(Column<T> column);
 }

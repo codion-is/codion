@@ -449,7 +449,7 @@ The templates above demonstrate common patterns:
 * `REQUIRED_SEARCHABLE` - Combines nullable(false) with searchable(true) for required fields that should be used in search fields.
 * `INSERT_TIME` and `INSERT_USER` - Audit columns that track when and by whom records were created, using shared resource bundle keys for consistent captions across entities
 
-Templates are applied using the `column(ColumnTemplate<T>)` method:
+Templates are applied using the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html#as(is.codion.framework.domain.entity.attribute.ColumnTemplate)[Column.as(ColumnTemplate)] method:
 
 [source,java,indent=0]
 ----
@@ -461,9 +461,9 @@ include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[ta
 include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=columnTemplateUsage2]
 ----
 
-Templates can be chained with additional configuration methods, allowing you to apply a base configuration and then customize specific aspects as needed.
+A template configures the column from the ground up, so it is free to define a subquery or primary key column just like a regular one. It is applied first, any subsequent configuration overriding it, allowing you to apply a base configuration and then customize specific aspects as needed.
 
-Templates can be based on constants or static methods for more flexibility.
+Templates can be based on constants or static methods for more flexibility, and compose by applying the template being extended, see `REQUIRED_NAME` below.
 
 [source,java,indent=0]
 ----
@@ -488,23 +488,23 @@ public final class GeospatialTemplates {
 
     // Template for Point geometries with custom formatting
     public static final ColumnTemplate<Point> POINT =
-            column -> column
+            column -> column.as().column()
                     .converter(PGgeometry.class, new PGgeometryPointConverter(), new PGgeometryGetter())
                     .format(new PointFormat());
 
     // Template for LineString geometries
     public static final ColumnTemplate<LineString> LINE =
-            column -> column
+            column -> column.as().column()
                     .converter(PGgeometry.class, new PGgeometryLineConverter(), new PGgeometryGetter());
 
     // Template for Polygon geometries
     public static final ColumnTemplate<Polygon> POLYGON =
-            column -> column
+            column -> column.as().column()
                     .converter(PGgeometry.class, new PGgeometryPolygonConverter(), new PGgeometryGetter());
 
     // Template for MultiPolygon geometries
     public static final ColumnTemplate<MultiPolygon> MULTI_POLYGON =
-            column -> column
+            column -> column.as().column()
                     .converter(PGgeometry.class, new PGgeometryMultiPolygonConverter(), new PGgeometryGetter());
 }
 
@@ -516,12 +516,9 @@ EntityDefinition location() {
         Location.NAME.as()
             .column()
             .nullable(false),
-        Location.COORDINATES.as()
-            .column(GeospatialTemplates.POINT),
-        Location.BOUNDARY.as()
-            .column(GeospatialTemplates.POLYGON),
-        Location.ROUTE.as()
-            .column(GeospatialTemplates.LINE))
+        Location.COORDINATES.as(GeospatialTemplates.POINT),
+        Location.BOUNDARY.as(GeospatialTemplates.POLYGON),
+        Location.ROUTE.as(GeospatialTemplates.LINE))
     .build();
 }
 ----

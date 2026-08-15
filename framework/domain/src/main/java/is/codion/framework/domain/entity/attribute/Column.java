@@ -121,6 +121,18 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 	ColumnDefiner<T> as();
 
 	/**
+	 * Returns a {@link ColumnDefinition.Builder} for this column, configured by the given template.
+	 * {@snippet :
+	 * Customer.AGE.as(REQUIRED_POSITIVE)
+	 *         .caption("Age")
+	 *}
+	 * <p>The template is applied first, any subsequent configuration overriding it.
+	 * @param template the column template
+	 * @return a {@link ColumnDefinition.Builder} configured by the given template
+	 */
+	ColumnDefinition.Builder<T, ?> as(ColumnTemplate<T> template);
+
+	/**
 	 * Creates a new {@link Column}, associated with the given entityType.
 	 * @param entityType the entityType owning this column
 	 * @param name the column name
@@ -156,14 +168,6 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditions<T> perm
 		 * @return a new {@link ColumnDefinition.Builder}
 		 */
 		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column();
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance.
-		 * @param <B> the builder type
-		 * @param template the column template
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column(ColumnTemplate<T> template);
 
 		/**
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the primary key index 0.
