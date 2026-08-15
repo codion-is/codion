@@ -63,15 +63,15 @@ public final class ChinookImpl extends DomainModel {
 
 	// tag::columnTemplates[]
 	private static final ColumnTemplate<String> REQUIRED_SEARCHABLE =
-					column -> column
+					column -> column.as().column()
 									.nullable(false)
 									.searchable(true);
 	private static final ColumnTemplate<LocalDateTime> INSERT_TIME =
-					column -> column
+					column -> column.as().column()
 									.readOnly(true)
 									.captionResource(Chinook.class.getName(), "insert_time");
 	private static final ColumnTemplate<String> INSERT_USER =
-					column -> column
+					column -> column.as().column()
 									.readOnly(true)
 									.captionResource(Chinook.class.getName(), "insert_user");
 	// end::columnTemplates[]
@@ -100,8 +100,7 @@ public final class ChinookImpl extends DomainModel {
 										Artist.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Artist.NAME.as()
-														.column(REQUIRED_SEARCHABLE)
+										Artist.NAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(120),
 										Artist.NUMBER_OF_ALBUMS.as()
 														.subquery("""
@@ -134,10 +133,8 @@ public final class ChinookImpl extends DomainModel {
 														.column()
 														.nullable(false)
 														.maximumLength(100),
-										ArtistTag.INSERT_TIME.as()
-														.column(INSERT_TIME),
-										ArtistTag.INSERT_USER.as()
-														.column(INSERT_USER))
+										ArtistTag.INSERT_TIME.as(INSERT_TIME),
+										ArtistTag.INSERT_USER.as(INSERT_USER))
 						.formatter(ArtistTag.TAG)
 						.build();
 	}
@@ -155,8 +152,7 @@ public final class ChinookImpl extends DomainModel {
 														.foreignKey()
 														.include(Artist.NAME),
 										// tag::columnTemplateUsage1[]
-										Album.TITLE.as()
-														.column(REQUIRED_SEARCHABLE)
+										Album.TITLE.as(REQUIRED_SEARCHABLE)
 														.maximumLength(160),
 										// end::columnTemplateUsage1[]
 										Album.COVER.as()
@@ -174,10 +170,8 @@ public final class ChinookImpl extends DomainModel {
 																		SELECT AVG(rating) FROM chinook.track
 																		WHERE track.album_id = album.id"""),
 										// tag::columnTemplateUsage2[]
-										Album.INSERT_TIME.as()
-														.column(INSERT_TIME),
-										Album.INSERT_USER.as()
-														.column(INSERT_USER))
+										Album.INSERT_TIME.as(INSERT_TIME),
+										Album.INSERT_USER.as(INSERT_USER))
 						// end::columnTemplateUsage2[]
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
 						.formatter(Album.TITLE)
@@ -190,11 +184,9 @@ public final class ChinookImpl extends DomainModel {
 										Employee.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Employee.LASTNAME.as()
-														.column(REQUIRED_SEARCHABLE)
+										Employee.LASTNAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
-										Employee.FIRSTNAME.as()
-														.column(REQUIRED_SEARCHABLE)
+										Employee.FIRSTNAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
 										Employee.TITLE.as()
 														.column()
@@ -233,13 +225,10 @@ public final class ChinookImpl extends DomainModel {
 										Employee.FAX.as()
 														.column()
 														.maximumLength(24),
-										Employee.EMAIL.as()
-														.column(REQUIRED_SEARCHABLE)
+										Employee.EMAIL.as(REQUIRED_SEARCHABLE)
 														.maximumLength(60),
-										Employee.INSERT_TIME.as()
-														.column(INSERT_TIME),
-										Employee.INSERT_USER.as()
-														.column(INSERT_USER))
+										Employee.INSERT_TIME.as(INSERT_TIME),
+										Employee.INSERT_USER.as(INSERT_USER))
 						.validator(new EmailValidator(Employee.EMAIL))
 						.orderBy(name(Employee.FIRSTNAME, Employee.LASTNAME))
 						.formatter(EntityFormatter.builder()
@@ -256,11 +245,9 @@ public final class ChinookImpl extends DomainModel {
 										Customer.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Customer.LASTNAME.as()
-														.column(REQUIRED_SEARCHABLE)
+										Customer.LASTNAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
-										Customer.FIRSTNAME.as()
-														.column(REQUIRED_SEARCHABLE)
+										Customer.FIRSTNAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(40),
 										Customer.COMPANY.as()
 														.column()
@@ -286,18 +273,15 @@ public final class ChinookImpl extends DomainModel {
 										Customer.FAX.as()
 														.column()
 														.maximumLength(24),
-										Customer.EMAIL.as()
-														.column(REQUIRED_SEARCHABLE)
+										Customer.EMAIL.as(REQUIRED_SEARCHABLE)
 														.maximumLength(60),
 										Customer.SUPPORTREP_ID.as()
 														.column(),
 										Customer.SUPPORTREP_FK.as()
 														.foreignKey()
 														.include(Employee.FIRSTNAME, Employee.LASTNAME),
-										Customer.INSERT_TIME.as()
-														.column(INSERT_TIME),
-										Customer.INSERT_USER.as()
-														.column(INSERT_USER))
+										Customer.INSERT_TIME.as(INSERT_TIME),
+										Customer.INSERT_USER.as(INSERT_USER))
 						.validator(new EmailValidator(Customer.EMAIL))
 						.orderBy(name(Customer.FIRSTNAME, Customer.LASTNAME))
 						.formatter(new CustomerFormatter())
@@ -330,8 +314,7 @@ public final class ChinookImpl extends DomainModel {
 										Genre.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Genre.NAME.as()
-														.column(REQUIRED_SEARCHABLE)
+										Genre.NAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(120))
 						.orderBy(ascending(Genre.NAME))
 						.formatter(Genre.NAME)
@@ -374,8 +357,7 @@ public final class ChinookImpl extends DomainModel {
 														.column()
 														.expression("artist.name")
 														.readOnly(true),
-										Track.NAME.as()
-														.column(REQUIRED_SEARCHABLE)
+										Track.NAME.as(REQUIRED_SEARCHABLE)
 														.expression("track.name")
 														.maximumLength(200),
 										Track.GENRE_ID.as()
@@ -415,11 +397,9 @@ public final class ChinookImpl extends DomainModel {
 														.column()
 														.readOnly(true)
 														.selected(false),
-										Track.INSERT_TIME.as()
-														.column(INSERT_TIME)
+										Track.INSERT_TIME.as(INSERT_TIME)
 														.expression("track.insert_time"),
-										Track.INSERT_USER.as()
-														.column(INSERT_USER)
+										Track.INSERT_USER.as(INSERT_USER)
 														.expression("track.insert_user"))
 						.selectQuery(EntitySelectQuery.builder()
 										// Override the default FROM clause, joining
@@ -490,10 +470,8 @@ public final class ChinookImpl extends DomainModel {
 																		FROM chinook.invoiceline
 																		WHERE invoice_id = invoice.id""")
 														.fractionDigits(2),
-										Invoice.INSERT_TIME.as()
-														.column(INSERT_TIME),
-										Invoice.INSERT_USER.as()
-														.column(INSERT_USER))
+										Invoice.INSERT_TIME.as(INSERT_TIME),
+										Invoice.INSERT_USER.as(INSERT_USER))
 						.orderBy(OrderBy.builder()
 										.ascending(Invoice.CUSTOMER_ID)
 										.descending(Invoice.DATE)
@@ -535,11 +513,9 @@ public final class ChinookImpl extends DomainModel {
 														.derived()
 														.from(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
 														.with(new InvoiceLineTotal()),
-										InvoiceLine.INSERT_TIME.as()
-														.column(INSERT_TIME)
+										InvoiceLine.INSERT_TIME.as(INSERT_TIME)
 														.hidden(true),
-										InvoiceLine.INSERT_USER.as()
-														.column(INSERT_USER)
+										InvoiceLine.INSERT_USER.as(INSERT_USER)
 														.hidden(true))
 						.build();
 	}
@@ -550,8 +526,7 @@ public final class ChinookImpl extends DomainModel {
 										Playlist.ID.as()
 														.primaryKey()
 														.generator(identity()),
-										Playlist.NAME.as()
-														.column(REQUIRED_SEARCHABLE)
+										Playlist.NAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(120))
 						.orderBy(ascending(Playlist.NAME))
 						.formatter(Playlist.NAME)

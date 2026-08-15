@@ -34,18 +34,16 @@ public final class Examples {
 		public static final DomainType DOMAIN = DomainType.domainType("store");
 
 		private static final ColumnTemplate<String> NAME =
-						column -> column
+						column -> column.as().column()
 										.maximumLength(50)
 										.searchable(true);
 
-		private static final ColumnTemplate<String> REQUIRED =
-						column -> column
+		private static final ColumnTemplate<String> REQUIRED_NAME =
+						column -> NAME.apply(column)
 										.nullable(false);
 
-		private static final ColumnTemplate<String> REQUIRED_NAME = NAME.and(REQUIRED);
-
 		private static <T extends Number> ColumnTemplate<T> positiveNumber(double maximum) {
-			return column -> column
+			return column -> column.as().column()
 							.nullable(false)
 							.minimum(0)
 							.maximum(maximum);
@@ -72,17 +70,13 @@ public final class Examples {
 											Customer.ID.as()
 															.primaryKey()
 															.generator(identity()),
-											Customer.FIRST_NAME.as()
-															.column(REQUIRED_NAME)
+											Customer.FIRST_NAME.as(REQUIRED_NAME)
 															.caption("First Name"),
-											Customer.LAST_NAME.as()
-															.column(NAME)
+											Customer.LAST_NAME.as(NAME)
 															.caption("Last Name"),
-											Customer.BIRTH_YEAR.as()
-															.column(positiveNumber(2100))
+											Customer.BIRTH_YEAR.as(positiveNumber(2100))
 															.caption("Age"),
-											Customer.DISCOUNT.as()
-															.column(positiveNumber(8))
+											Customer.DISCOUNT.as(positiveNumber(8))
 															.defaultValue(0d)
 															.caption("Discount"))
 							.build();
