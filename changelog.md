@@ -34,6 +34,8 @@ Codion Change Log
 ### is.codion.framework.db.http
 - HttpEntityConnection.SOCKET_TIMEOUT default changed from 2000 to 0, meaning no timeout, as the RMI transport imposes none either.
 - HttpEntityConnection.CONNECT_TIMEOUT default changed from 2000 to 10000.
+### is.codion.framework.model
+- AbstractEntityTableModel.updated() now private.
 ### is.codion.swing.framework.ui
 - EntityPanel, EntityTablePanel, model validation improved.
 - EntityPanel.editModel() and tableModel() removed.
