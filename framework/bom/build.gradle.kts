@@ -9,7 +9,7 @@ dependencies {
         api(project(":codion-framework-domain"))
         api(project(":codion-framework-domain-db"))
         api(project(":codion-framework-domain-test"))
-        api(project(":codion-framework-db-core"))
+        api(project(":codion-framework-db"))
         api(project(":codion-framework-db-local"))
         api(project(":codion-framework-db-rmi"))
         api(project(":codion-framework-db-http"))

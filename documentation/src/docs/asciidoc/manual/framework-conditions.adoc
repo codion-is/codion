@@ -53,15 +53,15 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 
 The `EntityConnection.Select`, `EntityConnection.Update`, and `EntityConnection.Count` classes each provide a `.where(Condition)` factory method returning a builder object for further configuration.
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html#where(is.codion.framework.domain.entity.condition.Condition)[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.Builder.html[Select.Builder].
+{url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Select.html#where(is.codion.framework.domain.entity.condition.Condition)[Select.where] returns a {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Select.Builder.html[Select.Builder].
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html#where(is.codion.framework.domain.entity.condition.Condition)[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.Builder.html[Update.Builder].
+{url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Update.html#where(is.codion.framework.domain.entity.condition.Condition)[Update.where] returns a {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Update.Builder.html[Update.Builder].
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.html#where(is.codion.framework.domain.entity.condition.Condition)[Count.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.Builder.html[Count.Builder]
+{url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Count.html#where(is.codion.framework.domain.entity.condition.Condition)[Count.where] returns a {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Count.Builder.html[Count.Builder]
 
 === Select
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html[EntityConnection.Select]*::
+*{url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Select.html[EntityConnection.Select]*::
 Represents a `WHERE` condition as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *referenceDepth*.
 
 [source,java,indent=0]
@@ -71,7 +71,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 
 === Update
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html[EntityConnection.Update]*::
+*{url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Update.html[EntityConnection.Update]*::
 Represents a `WHERE` condition as well as the columns and values for updating one or more entities.
 
 [source,java,indent=0]
@@ -81,7 +81,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 
 === Count
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.html[EntityConnection.Count]*::
+*{url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.Count.html[EntityConnection.Count]*::
 Represents a `WHERE` condition specifically for counting records.
 
 [source,java,indent=0]

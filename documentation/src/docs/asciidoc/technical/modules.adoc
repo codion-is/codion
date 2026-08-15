@@ -224,16 +224,16 @@ image::modules/framework/domain-test/build/reports/dependency-graph/dependency-g
 ====
 
 [discrete]
-=== codion-framework-db-core
+=== codion-framework-db
 
 Core database connection related classes.
 
-* {url-javadoc}{framework-db-core}/is/codion/framework/db/package-summary.html[is.codion.framework.db]
+* {url-javadoc}{framework-db}/is/codion/framework/db/package-summary.html[is.codion.framework.db]
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/framework/db-core/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/framework/db/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -514,7 +514,7 @@ image::modules/tools/generator/cli/build/reports/dependency-graph/dependency-gra
 === Load Test
 
 [discrete]
-=== codion-tools-loadtest-core
+=== codion-tools-loadtest
 
 .Dependency graph
 [%collapsible]

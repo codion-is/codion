@@ -74,8 +74,8 @@ project(":codion-framework-domain-db").projectDir = file("framework/domain-db")
 include "codion-framework-domain-test"
 project(":codion-framework-domain-test").projectDir = file("framework/domain-test")
 
-include "codion-framework-db-core"
-project(":codion-framework-db-core").projectDir = file("framework/db-core")
+include "codion-framework-db"
+project(":codion-framework-db").projectDir = file("framework/db")
 
 include "codion-framework-db-local"
 project(":codion-framework-db-local").projectDir = file("framework/db-local")
@@ -110,8 +110,8 @@ project(":codion-swing-common-model").projectDir = file("swing/common-model")
 include "codion-swing-common-ui"
 project(":codion-swing-common-ui").projectDir = file("swing/common-ui")
 
-include "codion-tools-loadtest-core"
-project(":codion-tools-loadtest-core").projectDir = file("tools/loadtest/core")
+include "codion-tools-loadtest"
+project(":codion-tools-loadtest").projectDir = file("tools/loadtest/core")
 
 include "codion-tools-loadtest-model"
 project(":codion-tools-loadtest-model").projectDir = file("tools/loadtest/model")

@@ -29,7 +29,7 @@ module is.codion.tools.loadtest.model {
 	requires transitive is.codion.common.db;
 	requires transitive is.codion.common.model;
 	requires transitive is.codion.swing.common.model;
-	requires transitive is.codion.tools.loadtest.core;
+	requires transitive is.codion.tools.loadtest;
 
 	exports is.codion.tools.loadtest.model;
 }

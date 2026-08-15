@@ -22,7 +22,7 @@
  * <li>{@link is.codion.tools.loadtest.randomizer.ItemRandomizer}
  * </ul>
  */
-module is.codion.tools.loadtest.core {
+module is.codion.tools.loadtest {
 	requires org.slf4j;
 	requires transitive is.codion.common.utilities;
 

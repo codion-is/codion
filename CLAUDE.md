@@ -70,7 +70,7 @@ codion/
 │   └── rmi/         # Remote communication
 ├── framework/       # Core framework
 │   ├── domain/      # Entity definitions and domain modeling
-│   ├── db-core/     # EntityConnection interface
+│   ├── db/          # EntityConnection interface
 │   ├── db-local/    # Local JDBC connections
 │   ├── db-rmi/      # Remote connections
 │   └── model/       # UI framework agnostic business logic models

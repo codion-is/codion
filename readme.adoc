@@ -514,7 +514,7 @@ gradlew demo-manual:runStoreDemo
 [cols="2,4,2"]
 |===
 |Module|Artifact|Description
-|is.codion.framework.db.core|is.codion:codion-framework-db-core:{version}|Core
+|is.codion.framework.db|is.codion:codion-framework-db:{version}|Core
 |is.codion.framework.db.local|is.codion:codion-framework-db-local:{version}|JDBC
 |is.codion.framework.db.rmi|is.codion:codion-framework-db-rmi:{version}|RMI
 |is.codion.framework.db.http|is.codion:codion-framework-db-http:{version}|HTTP

@@ -86,7 +86,7 @@ tasks.asciidoctor {
             "common-reactive" to "/is.codion.common.reactive",
             "common-rmi" to "/is.codion.common.rmi",
             "common-utilities" to "/is.codion.common.utilities",
-            "framework-db-core" to "/is.codion.framework.db.core",
+            "framework-db" to "/is.codion.framework.db",
             "framework-db-http" to "/is.codion.framework.db.http",
             "framework-db-local" to "/is.codion.framework.db.local",
             "framework-db-rmi" to "/is.codion.framework.db.rmi",
@@ -104,7 +104,7 @@ tasks.asciidoctor {
             "swing-common-ui" to "/is.codion.swing.common.ui",
             "tools-loadtest-ui" to "/is.codion.tools.loadtest.ui",
             "swing-framework-model" to "/is.codion.swing.framework.model",
-            "tools-generator-model" to "/is.codion.tools.genarator.model",
+            "tools-generator-model" to "/is.codion.tools.generator.model",
             "swing-framework-ui" to "/is.codion.swing.framework.ui"
         )
     )

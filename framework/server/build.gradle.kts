@@ -1,6 +1,6 @@
 dependencies {
     implementation(project(":codion-common-rmi"))
-    implementation(project(":codion-framework-db-core"))
+    implementation(project(":codion-framework-db"))
     implementation(project(":codion-framework-db-local"))
     implementation(project(":codion-framework-db-rmi"))
     implementation(project(":codion-tools-jul-classpath"))

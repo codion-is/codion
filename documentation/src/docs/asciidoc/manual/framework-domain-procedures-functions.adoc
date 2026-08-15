@@ -7,7 +7,7 @@ NOTE: All examples are from the Chinook demo
 
 == Overview
 
-Codion's procedure and function support provides a type-safe abstraction for executing database operations that go beyond simple CRUD. While you can implement procedures and functions by directly calling database stored procedures, Codion encourages implementing business logic in Java using the {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html[EntityConnection] API.
+Codion's procedure and function support provides a type-safe abstraction for executing database operations that go beyond simple CRUD. While you can implement procedures and functions by directly calling database stored procedures, Codion encourages implementing business logic in Java using the {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html[EntityConnection] API.
 
 *{url-javadoc}{common-db}/is/codion/common/db/operation/ProcedureType.html[ProcedureType]*::
 A typed identifier for a procedure that performs an operation without returning a value.
@@ -24,7 +24,7 @@ The implementation interface for functions, taking a connection and optional arg
 Both procedures and functions are:
 
 * Registered with the domain model
-* Executed via {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html[EntityConnection]
+* Executed via {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html[EntityConnection]
 * Type-safe with compile-time checking
 
 TIP: Transaction control should be external to procedures and functions. Let the caller manage transactions rather than implementing transaction control within the procedure or function itself.
@@ -110,7 +110,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[ta
 
 == Usage
 
-Procedures and functions are executed via {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#execute(is.codion.common.db.operation.FunctionType,P)[EntityConnection.execute()]. The connection is passed to the implementation, which can use it for database operations.
+Procedures and functions are executed via {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html#execute(is.codion.common.db.operation.FunctionType,P)[EntityConnection.execute()]. The connection is passed to the implementation, which can use it for database operations.
 
 === Executing a Function
 
@@ -128,7 +128,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/model/InvoiceLineEditModel
 
 === Transactional Execution
 
-Use {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html#transaction(is.codion.framework.db.EntityConnection,is.codion.framework.db.EntityConnection.TransactionalResult)[EntityConnection.transaction()] to execute procedures or functions, when multiple operations must succeed or fail together:
+Use {url-javadoc}{framework-db}/is/codion/framework/db/EntityConnection.html#transaction(is.codion.framework.db.EntityConnection,is.codion.framework.db.EntityConnection.TransactionalResult)[EntityConnection.transaction()] to execute procedures or functions, when multiple operations must succeed or fail together:
 
 [source,java,indent=0]
 ----

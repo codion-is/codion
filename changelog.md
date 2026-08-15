@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.83
 ### is.codion
 - Methods now return unmodifiable collections, where applicable.
+- The codion-framework-db-core and codion-tools-loadtest-core modules renamed codion-framework-db and codion-tools-loadtest, the module names accordingly is.codion.framework.db and is.codion.tools.loadtest.
 ### is.codion.common.db
 - DatabaseFactory.driverCompatible() renamed supports(), driverClassName() removed.
 ### is.codion.common.model

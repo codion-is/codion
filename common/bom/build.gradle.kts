@@ -10,7 +10,7 @@ dependencies.constraints {
     api(project(":codion-swing-common-ui"))
 
     api(project(":codion-tools-jul-classpath"))
-    api(project(":codion-tools-loadtest-core"))
+    api(project(":codion-tools-loadtest"))
     api(project(":codion-tools-loadtest-model"))
     api(project(":codion-tools-loadtest-ui"))
     api(project(":codion-tools-swing-mcp"))
