@@ -22,4 +22,5 @@
  * <li>{@link is.codion.tools.generator.ui.DomainGeneratorPanel#DEFAULT_USER}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.tools.generator.ui;

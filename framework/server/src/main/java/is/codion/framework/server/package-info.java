@@ -27,4 +27,5 @@
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#DOMAIN_CLASSES}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.framework.server;

@@ -14,18 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2026, Björn Darri Sigurðsson.
+ * Copyright (c) 2026, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
- * <ul>
- * <li>{@link is.codion.framework.db.http.HttpEntityConnection#HOSTNAME}
- * <li>{@link is.codion.framework.db.http.HttpEntityConnection#PORT}
- * <li>{@link is.codion.framework.db.http.HttpEntityConnection#SECURE}
- * <li>{@link is.codion.framework.db.http.HttpEntityConnection#JSON}
- * <li>{@link is.codion.framework.db.http.HttpEntityConnection#SOCKET_TIMEOUT}
- * <li>{@link is.codion.framework.db.http.HttpEntityConnection#SOCKET_TIMEOUT}
- * </ul>
+ * <p>UI scaling related classes.
  */
 @org.jspecify.annotations.NullMarked
-package is.codion.framework.db.http;
+package is.codion.plugin.flatlaf.scaler;
