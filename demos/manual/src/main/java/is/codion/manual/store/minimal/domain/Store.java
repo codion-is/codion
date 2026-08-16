@@ -20,7 +20,6 @@ package is.codion.manual.store.minimal.domain;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
@@ -29,8 +28,6 @@ import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-
-import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
@@ -171,7 +168,7 @@ public class Store extends DomainModel {
 										.nullable(false)
 										.maximumLength(50);
 
-		Function<Entity, String> formatter = EntityFormatter.builder()
+		EntityFormatter formatter = EntityFormatter.builder()
 						.value(Address.STREET)
 						.text(", ")
 						.value(Address.CITY)

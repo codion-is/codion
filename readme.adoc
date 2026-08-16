@@ -201,7 +201,7 @@ NOTE:: The constants defined in the above steps represent the domain API and are
 [source,java]
 ----
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.attribute.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 
 // Extend the DomainModel class.
 public class Store extends DomainModel {
@@ -320,12 +320,12 @@ Here's one entity definition from above, pulled apart, with the ingredients expo
 ====
 [source,java]
 ----
-Generator idGenerator = Generator.identity();
+Generator<Long> generator = Generator.identity();
 
 ColumnDefinition.Builder<Long, ?> id =
         Address.ID.as()
                 .primaryKey()
-                .generator(idGenerator);
+                .generator(generator);
 
 ColumnDefinition.Builder<Long, ?> customerId =
         Address.CUSTOMER_ID.as()
@@ -351,19 +351,20 @@ ColumnDefinition.Builder<String, ?> city =
                 .nullable(false)
                 .maximumLength(50);
 
-Function<Entity, String> formatter = EntityFormatter.builder()
+EntityFormatter formatter = EntityFormatter.builder()
         .value(Address.STREET)
         .text(", ")
         .value(Address.CITY)
         .build();
 
-EntityDefinition.Builder address =
+EntityDefinition address =
         Address.TYPE.as()
                 .attributes(id, customerId, customerFk, street, city)
                 .formatter(formatter)
-                .caption("Address");
+                .caption("Address")
+                .build();
 
-add(address.build());
+add(address);
 ----
 ====
 
@@ -387,12 +388,12 @@ public class StoreTest extends DomainTest {
   }
 
   @Test
-  void customer() throws Exception {
+  void customer() {
     test(Customer.TYPE);
   }
 
   @Test
-  void address() throws Exception {
+  void address() {
     test(Address.TYPE);
   }
 }

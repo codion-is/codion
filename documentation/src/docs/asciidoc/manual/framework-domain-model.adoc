@@ -211,13 +211,6 @@ interface Child {
 }
 ----
 
-Domain constant definitions for the World demo application (simplified).
-
-[source,java]
-----
-include::{dir-source}/is/codion/manual/world/domain/World.java[tags=entityTypesAndAttributes]
-----
-
 [#_attributes]
 == Attributes
 

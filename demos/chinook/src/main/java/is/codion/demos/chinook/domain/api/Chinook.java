@@ -25,6 +25,7 @@ import is.codion.common.utilities.TypeReference;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -49,7 +50,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static is.codion.common.db.operation.FunctionType.functionType;
@@ -315,7 +315,7 @@ public interface Chinook {
 	}
 
 	final class CustomerFormatter
-					implements Function<Entity, String>, Serializable {
+					implements EntityFormatter {
 
 		@Serial
 		private static final long serialVersionUID = 1;
