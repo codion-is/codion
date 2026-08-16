@@ -62,16 +62,25 @@ import static is.codion.plugin.jasperreports.JasperReports.export;
 public final class ChinookImpl extends DomainModel {
 
 	// tag::columnTemplates[]
+	private static final ColumnTemplate<Long> IDENTITY_KEY =
+					// tag::identity[]
+					column -> column.as()
+									.primaryKey()
+									.generator(identity());
+	// end::identity[]
 	private static final ColumnTemplate<String> REQUIRED_SEARCHABLE =
-					column -> column.as().column()
+					column -> column.as()
+									.column()
 									.nullable(false)
 									.searchable(true);
 	private static final ColumnTemplate<LocalDateTime> INSERT_TIME =
-					column -> column.as().column()
+					column -> column.as()
+									.column()
 									.readOnly(true)
 									.captionResource(Chinook.class.getName(), "insert_time");
 	private static final ColumnTemplate<String> INSERT_USER =
-					column -> column.as().column()
+					column -> column.as()
+									.column()
 									.readOnly(true)
 									.captionResource(Chinook.class.getName(), "insert_user");
 	// end::columnTemplates[]
@@ -97,9 +106,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition artist() {
 		return Artist.TYPE.as()
 						.attributes(
-										Artist.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Artist.ID.as(IDENTITY_KEY),
 										Artist.NAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(120),
 										Artist.NUMBER_OF_ALBUMS.as()
@@ -121,9 +128,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition artistTag() {
 		return ArtistTag.TYPE.as()
 						.attributes(
-										ArtistTag.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										ArtistTag.ID.as(IDENTITY_KEY),
 										ArtistTag.ARTIST_ID.as()
 														.column()
 														.nullable(false),
@@ -142,9 +147,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition album() {
 		return Album.TYPE.as()
 						.attributes(
-										Album.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Album.ID.as(IDENTITY_KEY),
 										Album.ARTIST_ID.as()
 														.column()
 														.nullable(false),
@@ -181,9 +184,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition employee() {
 		return Employee.TYPE.as()
 						.attributes(
-										Employee.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Employee.ID.as(IDENTITY_KEY),
 										Employee.LASTNAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
 										Employee.FIRSTNAME.as(REQUIRED_SEARCHABLE)
@@ -242,9 +243,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition customer() {
 		return Customer.TYPE.as()
 						.attributes(
-										Customer.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Customer.ID.as(IDENTITY_KEY),
 										Customer.LASTNAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
 										Customer.FIRSTNAME.as(REQUIRED_SEARCHABLE)
@@ -291,9 +290,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition preferences() {
 		return Preferences.TYPE.as()
 						.attributes(
-										Preferences.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Preferences.ID.as(IDENTITY_KEY),
 										Preferences.CUSTOMER_ID.as()
 														.column()
 														.nullable(false),
@@ -311,9 +308,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition genre() {
 		return Genre.TYPE.as()
 						.attributes(
-										Genre.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Genre.ID.as(IDENTITY_KEY),
 										Genre.NAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(120))
 						.orderBy(ascending(Genre.NAME))
@@ -325,9 +320,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition mediaType() {
 		return MediaType.TYPE.as()
 						.attributes(
-										MediaType.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										MediaType.ID.as(IDENTITY_KEY),
 										MediaType.NAME.as()
 														.column()
 														.nullable(false)
@@ -340,9 +333,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition track() {
 		return Track.TYPE.as()
 						.attributes(
-										Track.ID.as()
-														.primaryKey()
-														.generator(identity())
+										Track.ID.as(IDENTITY_KEY)
 														.expression("track.id"),
 										Track.ALBUM_ID.as()
 														.column()
@@ -425,11 +416,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition invoice() {
 		return Invoice.TYPE.as()
 						.attributes(
-										Invoice.ID.as()
-														.primaryKey()
-														// tag::identity[]
-														.generator(identity()),
-										// end::identity[]
+										Invoice.ID.as(IDENTITY_KEY),
 										Invoice.CUSTOMER_ID.as()
 														.column()
 														.nullable(false),
@@ -483,9 +470,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition invoiceLine() {
 		return InvoiceLine.TYPE.as()
 						.attributes(
-										InvoiceLine.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										InvoiceLine.ID.as(IDENTITY_KEY),
 										InvoiceLine.INVOICE_ID.as()
 														.column()
 														.nullable(false),
@@ -523,9 +508,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition playlist() {
 		return Playlist.TYPE.as()
 						.attributes(
-										Playlist.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										Playlist.ID.as(IDENTITY_KEY),
 										Playlist.NAME.as(REQUIRED_SEARCHABLE)
 														.maximumLength(120))
 						.orderBy(ascending(Playlist.NAME))
@@ -536,9 +519,7 @@ public final class ChinookImpl extends DomainModel {
 	EntityDefinition playlistTrack() {
 		return PlaylistTrack.TYPE.as()
 						.attributes(
-										PlaylistTrack.ID.as()
-														.primaryKey()
-														.generator(identity()),
+										PlaylistTrack.ID.as(IDENTITY_KEY),
 										PlaylistTrack.PLAYLIST_ID.as()
 														.column()
 														.nullable(false),
