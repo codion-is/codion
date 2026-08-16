@@ -11,52 +11,52 @@ NOTE: ProgressWorker instances can **not** be reused. Tasks, on the other hand, 
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=taskWorker]
+include::{dir-source}/is/codion/manual/common/model/worker/ProgressWorkerDemo.java[tags=taskWorker]
 ----
 
 == {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.TaskHandler.html[TaskHandler]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=taskHandler]
+include::{dir-source}/is/codion/manual/common/model/worker/ProgressWorkerDemo.java[tags=taskHandler]
 ----
 
 == {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ResultTask.html[ResultTask]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=resultTaskWorker]
+include::{dir-source}/is/codion/manual/common/model/worker/ProgressWorkerDemo.java[tags=resultTaskWorker]
 ----
 
 == {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ResultTaskHandler.html[ResultTaskHandler]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=resultTaskHandler]
+include::{dir-source}/is/codion/manual/common/model/worker/ProgressWorkerDemo.java[tags=resultTaskHandler]
 ----
 
 == {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ProgressTask.html[ProgressTask]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=progressTaskWorker]
+include::{dir-source}/is/codion/manual/common/model/worker/ProgressWorkerDemo.java[tags=progressTaskWorker]
 ----
 
 == {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ProgressTaskHandler.html[ProgressTaskHandler]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=progressTaskHandler]
+include::{dir-source}/is/codion/manual/common/model/worker/ProgressWorkerDemo.java[tags=progressTaskHandler]
 ----
 
 == {url-javadoc}{common-model}/is/codion/common/model/worker/ProgressWorker.ProgressResultTask.html[ProgressResultTask]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=progressResultWorker]
+include::{dir-source}/is/codion/manual/common/model/worker/ProgressWorkerDemo.java[tags=progressResultWorker]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/model/ProgressWorkerDemo.java[tags=progressResultTask1;progressResultTask2]
+include::{dir-source}/is/codion/manual/common/model/worker/ProgressWorkerDemo.java[tags=progressResultTask1;progressResultTask2]
 ----

@@ -24,12 +24,12 @@ Every *EntityTableModel* contains an *EntityEditModel* instance — a default on
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
+include::{dir-source}/is/codion/manual/app/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/model/CustomerAddressTableModel.java[tags=customerAddressTableModel]
+include::{dir-source}/is/codion/manual/app/store/model/CustomerAddressTableModel.java[tags=customerAddressTableModel]
 ----
 
 == Items, selection and query

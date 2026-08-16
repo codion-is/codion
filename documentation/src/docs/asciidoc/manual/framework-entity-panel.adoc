@@ -26,12 +26,12 @@ You can either extend the EntityPanel class or instantiate one directly, dependi
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/framework/EntityPanels.java[tags=extended]
+include::{dir-source}/is/codion/manual/swing/framework/ui/EntityPanelDemo.java[tags=extended]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/framework/EntityPanels.java[tags=setup]
+include::{dir-source}/is/codion/manual/swing/framework/ui/EntityPanelDemo.java[tags=setup]
 ----
 
 == Detail panels

@@ -17,14 +17,14 @@ Control -|> Action
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=control]
+include::{dir-source}/is/codion/manual/swing/common/ui/control/ControlsDemo.java[tags=control]
 ----
 
 == ToggleControl
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=toggleControl]
+include::{dir-source}/is/codion/manual/swing/common/ui/control/ControlsDemo.java[tags=toggleControl]
 ----
 
 [#_controls]
@@ -32,5 +32,5 @@ include::{dir-source}/is/codion/manual/common/InputControls.java[tags=toggleCont
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=controls]
+include::{dir-source}/is/codion/manual/swing/common/ui/control/ControlsDemo.java[tags=controls]
 ----

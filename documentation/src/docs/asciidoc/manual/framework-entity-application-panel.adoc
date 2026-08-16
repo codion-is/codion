@@ -12,7 +12,7 @@ The constructor takes the application's root entity panels, and optionally a set
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/ui/StoreApplicationPanel.java[tags=storeAppPanel]
+include::{dir-source}/is/codion/manual/app/store/ui/StoreApplicationPanel.java[tags=storeAppPanel]
 ----
 
 == Starting the application

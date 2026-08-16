@@ -18,7 +18,7 @@ The example below shows the full life cycle: defaults, setting values, insert, m
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/Misc.java[tags=editModel]
+include::{dir-source}/is/codion/manual/swing/framework/model/EntityEditorDemo.java[tags=editModel]
 ----
 
 == Editing values

@@ -34,10 +34,9 @@ module is.codion.manual {
 	requires is.codion.plugin.flatlaf.themes;
 	requires is.codion.plugin.flatlaf.intellij.themes;
 	requires is.codion.framework.domain.test;
-	requires org.junit.jupiter.api;
 
-	exports is.codion.manual.store.domain;
-	exports is.codion.manual.store.minimal.domain;
-	exports is.codion.manual.store.model;
-	exports is.codion.manual.store.ui;
+	exports is.codion.manual.app.store.domain;
+	exports is.codion.manual.app.store.model;
+	exports is.codion.manual.app.store.ui;
+	exports is.codion.manual.app.readme.domain;
 }

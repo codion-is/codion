@@ -95,7 +95,7 @@ NOTE: The use of https://en.wikipedia.org/wiki/Constant_interface[constant inter
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/minimal/ManualDomainModel.java[tags=storeApi]
+include::{dir-source}/is/codion/manual/framework/domain/DomainModelDemo.java[tags=storeApi]
 ----
 
 <1> The *DomainType* instance serves as a factory for *EntityTypes* associated with that domain.
@@ -116,7 +116,7 @@ TIP: Omitting a caption marks an attribute as hidden. Hidden attributes won’t 
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/minimal/ManualDomainModel.java[tags=storeImpl]
+include::{dir-source}/is/codion/manual/framework/domain/DomainModelDemo.java[tags=storeImpl]
 ----
 
 <1> The *DomainType* constant is a required constructor parameter.
@@ -147,7 +147,7 @@ The domain model provides an {url-javadoc}{framework-domain}/is/codion/framework
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/minimal/ManualDomainModel.java[tags=domainUsage]
+include::{dir-source}/is/codion/manual/framework/domain/DomainModelDemo.java[tags=domainUsage]
 ----
 
 == Data type mapping
@@ -460,7 +460,7 @@ Templates can be based on constants or static methods for more flexibility, and 
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/framework/domain/Examples.java[tags=columnTemplates]
+include::{dir-source}/is/codion/manual/framework/domain/ColumnTemplateDemo.java[tags=columnTemplates]
 ----
 
 This approach provides several benefits:
@@ -481,23 +481,27 @@ public final class GeospatialTemplates {
 
     // Template for Point geometries with custom formatting
     public static final ColumnTemplate<Point> POINT =
-            column -> column.as().column()
+            column -> column.as()
+                    .column()
                     .converter(PGgeometry.class, new PGgeometryPointConverter(), new PGgeometryGetter())
                     .format(new PointFormat());
 
     // Template for LineString geometries
     public static final ColumnTemplate<LineString> LINE =
-            column -> column.as().column()
+            column -> column.as()
+                    .column()
                     .converter(PGgeometry.class, new PGgeometryLineConverter(), new PGgeometryGetter());
 
     // Template for Polygon geometries
     public static final ColumnTemplate<Polygon> POLYGON =
-            column -> column.as().column()
+            column -> column.as()
+                    .column()
                     .converter(PGgeometry.class, new PGgeometryPolygonConverter(), new PGgeometryGetter());
 
     // Template for MultiPolygon geometries
     public static final ColumnTemplate<MultiPolygon> MULTI_POLYGON =
-            column -> column.as().column()
+            column -> column.as()
+                    .column()
                     .converter(PGgeometry.class, new PGgeometryMultiPolygonConverter(), new PGgeometryGetter());
 }
 
@@ -596,7 +600,7 @@ You can provide a custom key generator strategy by implementing a {url-javadoc}{
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=generator]
+include::{dir-source}/is/codion/manual/app/store/domain/Store.java[tags=generator]
 ----
 
 == EntityFormatter
@@ -608,19 +612,19 @@ This value is used wherever entities are displayed, for example in a ComboBox or
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=address]
+include::{dir-source}/is/codion/manual/app/store/domain/Store.java[tags=address]
 ----
 
 For more complex toString() implementations you can implement a custom *Function<Entity, String>*.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=formatter]
+include::{dir-source}/is/codion/manual/app/store/domain/Store.java[tags=formatter]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=customerFormatter]
+include::{dir-source}/is/codion/manual/app/store/domain/Store.java[tags=customerFormatter]
 ----
 
 == Validation
@@ -729,7 +733,7 @@ The most common use case is customizing the FROM clause to join additional table
 
 [source,java]
 ----
-include::{dir-source}/is/codion/manual/framework/domain/CustomSelectQueries.java[tags=fromClause]
+include::{dir-source}/is/codion/manual/framework/domain/SelectQueryDemo.java[tags=fromClause]
 ----
 
 NOTE: Always mark denormalized values as `readOnly(true)`.
@@ -750,7 +754,7 @@ Use the `where()` method to apply a static filter that applies to all queries fo
 
 [source,java]
 ----
-include::{dir-source}/is/codion/manual/framework/domain/CustomSelectQueries.java[tags=whereClause]
+include::{dir-source}/is/codion/manual/framework/domain/SelectQueryDemo.java[tags=whereClause]
 ----
 
 IMPORTANT: The WHERE clause specified in `EntitySelectQuery` is always included and automatically combined (using AND) with any dynamic conditions from the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/Condition.html[Condition] framework. This allows static filtering (like `active = 1`) to coexist with dynamic user-driven filters.
@@ -778,7 +782,7 @@ The simplest form of composition is to include an entire domain model within ano
 
 [source,java]
 ----
-include::{dir-source}/is/codion/manual/framework/domain/Composition.java[tag=composition]
+include::{dir-source}/is/codion/manual/framework/domain/CompositionDemo.java[tag=composition]
 ----
 
 In this example:
@@ -802,7 +806,7 @@ For more fine-grained control, you can selectively include specific entities or 
 
 [source,java]
 ----
-include::{dir-source}/is/codion/manual/framework/domain/Composition.java[tag=selectiveComposition]
+include::{dir-source}/is/codion/manual/framework/domain/CompositionDemo.java[tag=selectiveComposition]
 ----
 
 Selective composition provides several specialized methods:
@@ -898,7 +902,7 @@ You can either create a single *testDomain()* method and call the *test* method 
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/manual/store/domain/StoreTest.java[tags=storeTest]
+include::{dir-test-source}/is/codion/manual/app/store/domain/StoreTest.java[tags=storeTest]
 ----
 
 === Examples

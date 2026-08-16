@@ -63,7 +63,7 @@ For more complex cases, where multiple print controls are required, custom contr
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
+include::{dir-source}/is/codion/manual/app/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----
 
 == Condition and filter panels

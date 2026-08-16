@@ -1,0 +1,66 @@
+/*
+ * This file is part of Codion.
+ *
+ * Codion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Codion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2004 - 2026, Björn Darri Sigurðsson.
+ */
+package is.codion.manual.plugin.jasperreports;
+
+import is.codion.common.utilities.user.User;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.manual.app.store.domain.Store;
+import is.codion.manual.app.store.domain.Store.Customer;
+import is.codion.plugin.jasperreports.JRReport;
+import is.codion.plugin.jasperreports.JasperReports;
+import is.codion.plugin.jasperreports.JasperReportsDataSource;
+
+import net.sf.jasperreports.engine.JasperPrint;
+
+import java.util.Iterator;
+
+import static is.codion.framework.domain.entity.condition.Condition.all;
+import static is.codion.plugin.jasperreports.JasperReports.fileReport;
+
+public final class JasperReportsDemo {
+
+	static void jasperReports() {
+		EntityConnection connection =
+						EntityConnection.builder()
+										.domain(Store.DOMAIN)
+										.user(User.parse("scott:tiger"))
+										.clientType("StoreMisc")
+										.build();
+
+		// tag::jasperReportDataSource[]
+
+		EntityDefinition customerDefinition =
+						connection.entities().definition(Customer.TYPE);
+
+		Iterator<Entity> customerIterator =
+						connection.select(all(Customer.TYPE)).iterator();
+
+		JasperReportsDataSource<Entity> dataSource =
+						new JasperReportsDataSource<>(customerIterator,
+										(entity, reportField) ->
+														entity.get(customerDefinition.attributes().getOrThrow(reportField.getName())));
+
+		JRReport<JasperPrint> customerReport = fileReport("reports/customer.jasper");
+
+		JasperPrint jasperPrint = JasperReports.fillReport(customerReport, dataSource);
+		// end::jasperReportDataSource[]
+	}
+}
