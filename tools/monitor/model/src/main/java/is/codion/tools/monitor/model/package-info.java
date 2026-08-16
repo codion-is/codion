@@ -22,4 +22,5 @@
  * <li>{@link is.codion.tools.monitor.model.EntityServerMonitor#SERVER_MONITOR_UPDATE_RATE}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.tools.monitor.model;

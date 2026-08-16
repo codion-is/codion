@@ -29,4 +29,5 @@
  * <li>{@link is.codion.framework.servlet.EntityService#SERIALIZATION}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.framework.servlet;
