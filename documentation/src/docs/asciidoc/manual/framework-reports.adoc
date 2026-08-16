@@ -15,7 +15,7 @@ You can then create an action calling that method and put it in for example the 
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
+include::{dir-source}/is/codion/manual/app/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----
 
 == Export
@@ -30,17 +30,17 @@ The export is bound where the report is registered, so the report type carries t
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/framework/domain/Reports.java[tags=reportTypes]
+include::{dir-source}/is/codion/manual/framework/domain/ReportDemo.java[tags=reportTypes]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/framework/domain/Reports.java[tags=addReports]
+include::{dir-source}/is/codion/manual/framework/domain/ReportDemo.java[tags=addReports]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/framework/domain/Reports.java[tags=fillReports]
+include::{dir-source}/is/codion/manual/framework/domain/ReportDemo.java[tags=fillReports]
 ----
 
 {url-javadoc}{plugin-jasperreports}/is/codion/plugin/jasperreports/JRExport.html[JRExport] provides *PRINT*, *PDF* and *XML*, any other JasperReports exporter being a lambda.
@@ -55,7 +55,7 @@ The easiest way to make this work is to design the report using field names that
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/Misc.java[tags=jasperReportDataSource]
+include::{dir-source}/is/codion/manual/plugin/jasperreports/JasperReportsDemo.java[tags=jasperReportDataSource]
 ----
 
 == Examples

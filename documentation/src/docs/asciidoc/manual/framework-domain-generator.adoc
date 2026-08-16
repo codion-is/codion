@@ -455,13 +455,13 @@ NOTE: These files can be copied to separate Gradle/Maven modules (e.g., `domain-
 .API interface (simplified)
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/generator/apiimpl/api/Store.java[lines=19..-1]
+include::{dir-source}/is/codion/manual/tools/generator/apiimpl/api/Store.java[lines=19..-1]
 ----
 
 .Implementation class (simplified)
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/generator/apiimpl/StoreImpl.java[lines=19..-1]
+include::{dir-source}/is/codion/manual/tools/generator/apiimpl/StoreImpl.java[lines=19..-1]
 ----
 
 ==== Combined Mode
@@ -485,7 +485,7 @@ NOTE: This mode is suitable for simpler projects using only local JDBC connectio
 .Combined class (simplified)
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/generator/Store.java[lines=19..-1]
+include::{dir-source}/is/codion/manual/tools/generator/Store.java[lines=19..-1]
 ----
 
 == Schema Introspection

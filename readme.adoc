@@ -198,6 +198,7 @@ NOTE:: The constants defined in the above steps represent the domain API and are
 
 . Use the `EntityType` constants to define each entity, based on attributes defined using the `Column` and `ForeignKey` constants, and add the entity definitions to the domain model.
 
+// readme-source: main/java/is/codion/manual/app/readme/domain/Store.java
 [source,java]
 ----
 import static is.codion.framework.domain.DomainType.domainType;
@@ -318,6 +319,7 @@ Here's one entity definition from above, pulled apart, with the ingredients expo
 .Display code
 [%collapsible]
 ====
+// readme-source: main/java/is/codion/manual/app/readme/domain/Store.java
 [source,java]
 ----
 Generator<Long> generator = Generator.identity();
@@ -379,6 +381,7 @@ add(address);
 The `DomainTest` class provides a JUnit testing harness for the domain model.
 The `DomainTest.test(entityType)` method runs insert, select, update and delete on a randomly (or manually) generated entity instance, verifying the results.
 
+// readme-source: test/java/is/codion/manual/app/readme/domain/StoreTest.java
 [source,java]
 ----
 public class StoreTest extends DomainTest {
@@ -411,6 +414,7 @@ In the following example, we use the domain model from above and implement a `Cu
 These edit panels, as their names suggest, provide the UI for editing entity instances.
 In the `main` method we use these building blocks to assemble and display a client.
 
+// readme-source: main/java/is/codion/manual/app/readme/ui/StoreDemo.java
 [source,java]
 ----
 public class StoreDemo {
@@ -524,6 +528,7 @@ gradlew demo-manual:runStoreDemo
 The `EntityConnection` interface defines the database layer.
 There are three implementations available; local, which is based on a direct JDBC connection (used below), RMI and HTTP which are both served by the Codion Server.
 
+// readme-source: main/java/is/codion/manual/app/readme/db/StoreDatabase.java
 [source,java]
 ----
 Database database = H2DatabaseFactory

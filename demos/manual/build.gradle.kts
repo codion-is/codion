@@ -35,30 +35,36 @@ sonarqube {
 
 apply(from = "../../plugins/jasperreports/extra-module-info-jasperreports.gradle")
 
-tasks.withType<Test>().configureEach {
+tasks.test {
     systemProperty("codion.db.initScripts", "src/main/sql/create_schema.sql")
+    // ReadmeTest verifies the code blocks in the readme against the files they were copied from
+    inputs.file(rootProject.file("readme.adoc")).withPropertyName("readme")
+    filter {
+        // The readme application has a schema of its own, incompatible with the store application
+        excludeTestsMatching("is.codion.manual.app.readme.domain.StoreTest")
+    }
 }
 
 tasks.register<JavaExec>("runStoreDemo") {
     group = "application"
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass = "is.codion.manual.store.minimal.ui.StoreDemo"
+    mainClass = "is.codion.manual.app.readme.ui.StoreDemo"
 }
 
 tasks.register<JavaExec>("runNotesDemo") {
     group = "application"
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass = "is.codion.manual.notes.NotesDemo"
+    mainClass = "is.codion.manual.app.notes.NotesDemo"
 }
 
 tasks.register<JavaExec>("runApplicationPanel") {
     group = "application"
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass = "is.codion.manual.common.demo.ApplicationPanel"
+    mainClass = "is.codion.manual.app.components.ApplicationPanel"
 }
 
 tasks.register<JavaExec>("runKeyBindingPanel") {
     group = "application"
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass = "is.codion.manual.keybinding.KeyBindingPanel"
+    mainClass = "is.codion.manual.app.keybinding.KeyBindingPanel"
 }

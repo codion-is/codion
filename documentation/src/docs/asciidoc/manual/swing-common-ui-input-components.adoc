@@ -7,7 +7,7 @@ Binding model data to UI components is accomplished by linking a {url-javadoc}{c
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=basics]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=basics]
 ----
 
 == Text
@@ -16,19 +16,19 @@ include::{dir-source}/is/codion/manual/common/InputControls.java[tags=basics]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=stringField]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=stringField]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=characterField]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=characterField]
 ----
 
 === TextArea
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=textArea]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=textArea]
 ----
 
 == Numbers
@@ -37,35 +37,35 @@ include::{dir-source}/is/codion/manual/common/InputControls.java[tags=textArea]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=integerField]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=integerField]
 ----
 
 === Long
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=longField]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=longField]
 ----
 
 === BigInteger
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=bigIntegerField]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=bigIntegerField]
 ----
 
 === Double
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=doubleField]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=doubleField]
 ----
 
 === BigDecimal
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=bigDecimalField]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=bigDecimalField]
 ----
 
 == Date & Time
@@ -74,21 +74,21 @@ include::{dir-source}/is/codion/manual/common/InputControls.java[tags=bigDecimal
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=localTime]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=localTime]
 ----
 
 === LocalDate
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=localDate]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=localDate]
 ----
 
 === LocalDateTime
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=localDateTime]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=localDateTime]
 ----
 
 == Boolean
@@ -97,21 +97,21 @@ include::{dir-source}/is/codion/manual/common/InputControls.java[tags=localDateT
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=checkBox]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=checkBox]
 ----
 
 === NullableCheckBox
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=nullableCheckBox]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=nullableCheckBox]
 ----
 
 === ComboBox
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=booleanComboBox]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=booleanComboBox]
 ----
 
 == Selection
@@ -120,14 +120,14 @@ include::{dir-source}/is/codion/manual/common/InputControls.java[tags=booleanCom
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=selectionComboBox]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=selectionComboBox]
 ----
 
 ==== FilterComboBoxModel
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=filterComboBoxModel]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=filterComboBoxModel]
 ----
 
 ==== Completion
@@ -150,7 +150,7 @@ Strings are normalized by default during completion, that is, accents are remove
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=comboBoxCompletion]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=comboBoxCompletion]
 ----
 
 == Custom
@@ -161,7 +161,7 @@ In the following example we link a value based on a Person class to a component 
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/InputControls.java[tags=customTextFields]
+include::{dir-source}/is/codion/manual/swing/common/ui/component/ComponentsDemo.java[tags=customTextFields]
 ----
 
 == Examples

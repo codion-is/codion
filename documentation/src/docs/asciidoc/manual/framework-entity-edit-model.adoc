@@ -23,7 +23,7 @@ The simplest edit model requires nothing but a constructor:
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
+include::{dir-source}/is/codion/manual/app/store/model/CustomerEditModel.java[tags=customerEditModel]
 ----
 
 Application logic belongs in the edit model (or its editor), not in the UI: default values, value dependencies and custom persistence configured here work identically whether the entity is edited through an edit panel, a table or a dialog.

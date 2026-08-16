@@ -14,12 +14,12 @@ gradlew demo-manual:runKeyBindingPanel
 
 [source,java,linenums]
 ----
-include::{dir-source}/is/codion/manual/keybinding/KeyBindingPanel.java[lines=19..-1]
+include::{dir-source}/is/codion/manual/app/keybinding/KeyBindingPanel.java[lines=19..-1]
 ----
 
 == KeyBindingTableModel
 
 [source,java,linenums]
 ----
-include::{dir-source}/is/codion/manual/keybinding/KeyBindingModel.java[lines=19..-1]
+include::{dir-source}/is/codion/manual/app/keybinding/KeyBindingModel.java[lines=19..-1]
 ----

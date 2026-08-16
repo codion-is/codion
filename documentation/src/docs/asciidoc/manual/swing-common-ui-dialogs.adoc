@@ -7,7 +7,7 @@
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=dialog]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=dialog]
 ----
 
 == Selection
@@ -16,49 +16,49 @@ include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=dia
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=listSingle]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=listSingle]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=listMultiple]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=listMultiple]
 ----
 
 === Files
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=file]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=file]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=files]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=files]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=fileToSave]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=fileToSave]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=directory]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=directory]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=directories]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=directories]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=fileOrDirectory]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=fileOrDirectory]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=filesOrDirectories]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=filesOrDirectories]
 ----
 
 == Action Dialogs
@@ -67,35 +67,35 @@ include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=fil
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=okCancel]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=okCancel]
 ----
 
 === Action
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=action]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=action]
 ----
 
 == Input
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=input]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=input]
 ----
 
 == Exception
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=exception]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=exception]
 ----
 
 == Calendar
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=calendar]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=calendar]
 ----
 
 == Progress
@@ -114,5 +114,5 @@ The `.delay()` method accepts two parameters: the delay before showing the dialo
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=progress]
+include::{dir-source}/is/codion/manual/swing/common/ui/dialog/DialogsDemo.java[tags=progress]
 ----

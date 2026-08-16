@@ -27,12 +27,12 @@ EntityTableModel --o EntityEditModel
 
 [source,java]
 ----
-include::{dir-source}/is/codion/manual/store/model/AddressModel.java[tags=addressModel]
+include::{dir-source}/is/codion/manual/app/store/model/AddressModel.java[tags=addressModel]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/manual/store/model/CustomerAddressModel.java[tags=customerAddressModel]
+include::{dir-source}/is/codion/manual/app/store/model/CustomerAddressModel.java[tags=customerAddressModel]
 ----
 
 [#_detail_models]
@@ -51,7 +51,7 @@ EntityModel --o EntityModel
 
 [source,java]
 ----
-include::{dir-source}/is/codion/manual/store/model/StoreApplicationModel.java[tags=storeAppModel]
+include::{dir-source}/is/codion/manual/app/store/model/StoreApplicationModel.java[tags=storeAppModel]
 ----
 
 [#_event_binding]
@@ -61,7 +61,7 @@ The model layer classes expose a number of <<manual.adoc#_reactive_classes, *Eve
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/model/CustomerModel.java[tags=bindEvents]
+include::{dir-source}/is/codion/manual/app/store/model/CustomerModel.java[tags=bindEvents]
 ----
 
 == Examples

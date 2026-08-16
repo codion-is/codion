@@ -52,7 +52,7 @@ Events are instantiated via factory methods in the {url-javadoc}{common-reactive
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=event]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=event]
 ----
 
 [#_observer]
@@ -62,7 +62,7 @@ The *Observer* class provides a way to add conditional listeners via {url-javado
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=observer]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=observer]
 ----
 
 [#_value]
@@ -103,7 +103,7 @@ Values can be linked so that changes in one are reflected in the other.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=value]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=value]
 ----
 
 Values can be non-nullable if a _nullValue_ is specified when the value is initialized.
@@ -111,7 +111,7 @@ Null is then translated to the _nullValue_ when set.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=nullValue]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=nullValue]
 ----
 
 [#_value_linking]
@@ -123,7 +123,7 @@ This is the mechanism binding input components to values throughout the framewor
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=valueLinking]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=valueLinking]
 ----
 
 [#_notification_strategies]
@@ -134,7 +134,7 @@ By default, listeners are notified only when a value actually changes ({url-java
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=notifyStrategies]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=notifyStrategies]
 ----
 
 [#_valuecollection]
@@ -142,7 +142,7 @@ include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=notifySt
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=valueCollection]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=valueCollection]
 ----
 
 [#_state]
@@ -173,12 +173,12 @@ States are instantiated via factory methods in the {url-javadoc}{common-reactive
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=state]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=state]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=observers]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=observers]
 ----
 
 Any *Action* or *JComponent* enabled status can be linked to a *State* instance via the *Utilities.enabled()* method.
@@ -187,19 +187,19 @@ Any *Action* or *JComponent* enabled status can be linked to a *State* instance 
 ==== State composition
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=stateComposition]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=stateComposition]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=action]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=action]
 ----
 
 Controls can also be linked to a *State* instance.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=control]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=control]
 ----
 
 NOTE: When a State or Event is linked to a Swing component, for example its enabled state, all state changes must happen on the Event Dispatch Thread.
@@ -211,7 +211,7 @@ A {url-javadoc}{common-reactive}/is/codion/common/reactive/state/State.Group.htm
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=stateGroup]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=stateGroup]
 ----
 
 [#_weak_listeners]
@@ -223,7 +223,7 @@ Dead references are cleaned up automatically; the caller must simply ensure some
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=weakListeners]
+include::{dir-source}/is/codion/manual/common/reactive/ReactiveDemo.java[tags=weakListeners]
 ----
 
 [#_reactive_threading]
