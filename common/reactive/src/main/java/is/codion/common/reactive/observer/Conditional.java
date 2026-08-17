@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 
 final class Conditional<T> extends AbstractObserver<T> {
 
-	private final Predicate<? super T> predicate;
+	private final Predicate<? super @Nullable T> predicate;
 
 	Conditional(Observer<T> observer, @Nullable T value) {
 		this(observer, new Equals<>(value));

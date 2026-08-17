@@ -155,7 +155,7 @@ public interface Observer<T> {
 	 * @param predicate the predicate on which to trigger the observer
 	 * @return a new conditional {@link Observer}
 	 */
-	default Observer<T> when(Predicate<? super T> predicate) {
+	default Observer<T> when(Predicate<? super @Nullable T> predicate) {
 		return observer().when(predicate);
 	}
 

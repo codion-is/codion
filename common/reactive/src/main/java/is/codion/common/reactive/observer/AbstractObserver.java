@@ -107,7 +107,7 @@ public abstract class AbstractObserver<T> implements Observer<T> {
 	}
 
 	@Override
-	public final Observer<T> when(Predicate<? super T> predicate) {
+	public final Observer<T> when(Predicate<? super @Nullable T> predicate) {
 		return new Conditional<>(this, requireNonNull(predicate));
 	}
 
