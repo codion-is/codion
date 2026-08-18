@@ -21,7 +21,6 @@ package is.codion.demos.chinook.model;
 import is.codion.common.utilities.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
-import is.codion.swing.framework.model.SwingEntityModel;
 
 import java.util.List;
 
@@ -33,34 +32,14 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 
 	public ChinookAppModel(EntityConnection connection) {
 		super(connection, List.of(
-						createAlbumModel(connection),
-						createPlaylistModel(connection),
-						createCustomerModel(connection)));
-		this.analytics = new AnalyticsModel(connection);
+						new AlbumModel(connection),
+						new PlaylistModel(connection),
+						new CustomerModel(connection)));
+		analytics = new AnalyticsModel(connection);
+		models().get().forEach(model -> model.tableModel().items().refresh());
 	}
 
 	public AnalyticsModel analytics() {
 		return analytics;
-	}
-
-	private static SwingEntityModel createAlbumModel(EntityConnection connection) {
-		AlbumModel albumModel = new AlbumModel(connection);
-		albumModel.tableModel().items().refresh();
-
-		return albumModel;
-	}
-
-	private static SwingEntityModel createPlaylistModel(EntityConnection connection) {
-		PlaylistModel playlistModel = new PlaylistModel(connection);
-		playlistModel.tableModel().items().refresh();
-
-		return playlistModel;
-	}
-
-	private static SwingEntityModel createCustomerModel(EntityConnection connection) {
-		CustomerModel customerModel = new CustomerModel(connection);
-		customerModel.tableModel().items().refresh();
-
-		return customerModel;
 	}
 }

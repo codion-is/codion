@@ -48,7 +48,7 @@ public final class ArtistTableModel extends SwingEntityTableModel {
 		private final List<Entity> artistsToDelete;
 		private final Entity artistToKeep;
 
-		public CombineArtistsTask(List<Entity> artistsToDelete, Entity artistToKeep) {
+		private CombineArtistsTask(List<Entity> artistsToDelete, Entity artistToKeep) {
 			this.artistsToDelete = artistsToDelete;
 			this.artistToKeep = artistToKeep;
 		}
@@ -58,7 +58,7 @@ public final class ArtistTableModel extends SwingEntityTableModel {
 			EntityConnection connection = connection();
 			transaction(connection, () -> {
 				connection.update(where(Album.ARTIST_FK.in(artistsToDelete))
-								.set(Album.ARTIST_ID, artistToKeep.primaryKey().value()));
+								.set(Album.ARTIST_ID, artistToKeep.get(Artist.ID)));
 				connection.delete(primaryKeys(artistsToDelete));
 			});
 		}
